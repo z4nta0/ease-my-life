@@ -2007,7 +2007,7 @@ button.cat-h-l {
   width: 32px; text-align: center; padding: 0;
   background: transparent; border: 0; outline: none;
   font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--text);
-  -moz-appearance: textfield;
+  -moz-appearance: textfield; appearance: textfield;
 }
 .np-stepper-input::-webkit-outer-spin-button,
 .np-stepper-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
