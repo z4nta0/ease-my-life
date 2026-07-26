@@ -1545,7 +1545,7 @@ button.cat-h-l {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 14px 16px 14px 20px; border-bottom: 0.5px solid var(--border); flex: 0 0 auto;
 }
-.legal-modal-note { font-size: 12px; color: var(--muted); }
+.legal-modal-note { font-size: 15px; font-weight: 600; color: var(--text); }
 .legal-modal-close {
   display: inline-flex; align-items: center; justify-content: center;
   width: 32px; height: 32px; border-radius: 8px; border: 0; background: transparent;
