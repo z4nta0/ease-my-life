@@ -1,0 +1,6 @@
+# Netlify response headers. Lives in public/ so it lands at the root of dist/.
+#
+# Netlify serves .webmanifest as application/octet-stream, which Chrome
+# tolerates but Firefox and some install paths reject. Force the correct type.
+/manifest.webmanifest
+  Content-Type: application/manifest+json
