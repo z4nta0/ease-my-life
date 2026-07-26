@@ -11,6 +11,11 @@ import { STORAGE } from './storage.js';
 const LS_ASKED = 'easemylife.persistasked';
 
 let installEvent = null;   // captured beforeinstallprompt
+// Set by getInstalledRelatedApps() when this PWA is already installed on the
+// device but the user is looking at it in a normal browser tab. Chromium
+// withholds beforeinstallprompt in exactly that situation, which would
+// otherwise be indistinguishable from "this browser cannot install".
+let relatedInstalled = false;
 // Whether we have waited long enough to conclude that beforeinstallprompt is
 // never coming. There is no synchronous way to ask a browser "do you support
 // installing?" — the only signal is the event firing, so absence has to be
@@ -21,6 +26,22 @@ let installEvent = null;   // captured beforeinstallprompt
 let installProbeDone = false;
 const subs = new Set();
 const notify = () => { for (const fn of subs) { try { fn(); } catch (e) {} } };
+
+(function probeInstalledElsewhere() {
+  // Chromium-only, and only resolves usefully when the manifest carries a
+  // related_applications entry naming itself:
+  //   "related_applications": [
+  //     { "platform": "webapp", "url": "https://easemylife.app/manifest.webmanifest" }
+  //   ]
+  // Absence of the API (Firefox, Safari) just leaves this false, which is the
+  // right answer there anyway: neither can install, so nothing is installed.
+  try {
+    if (!navigator.getInstalledRelatedApps) return;
+    navigator.getInstalledRelatedApps().then((apps) => {
+      if (apps && apps.length) { relatedInstalled = true; notify(); }
+    }, () => {});
+  } catch (e) { /* not supported */ }
+})();
 
 (function probeInstallSupport() {
   const START_GRACE = 2500;
@@ -104,17 +125,20 @@ async function requestPersistOnce(force) {
 //   'standalone'  already running as an installed app
 //   'ready'       beforeinstallprompt captured; the in-app button will work
 //   'ios'         iOS/iPadOS Safari — manual Share → Add to Home Screen
+//   'installed'   installed on this device, but being viewed in a browser tab
 //   'pending'     still waiting to find out; show nothing definitive yet
 //   'unsupported' no prompt after the grace period
 //
-// Caveat worth knowing: Chromium also withholds beforeinstallprompt when the
-// app is ALREADY installed and you open the site in a normal tab, so
-// 'unsupported' can mean "already installed elsewhere". The copy keyed to it
-// should stay neutral rather than asserting the browser is incapable.
+// Note 'unsupported' is genuinely ambiguous and the UI copy has to respect it:
+// some browsers (Firefox on Android, Samsung Internet) do offer installing from
+// their own menu, while Firefox on desktop offers no install path at all. There
+// is no reliable way to tell those apart, so the wording covers both instead of
+// sending desktop users hunting for a menu item that does not exist.
 function installState() {
   if (isStandalone()) return 'standalone';
   if (installEvent) return 'ready';
   if (isIOS && isSafari) return 'ios';
+  if (relatedInstalled) return 'installed';
   return installProbeDone ? 'unsupported' : 'pending';
 }
 

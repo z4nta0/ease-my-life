@@ -9,6 +9,10 @@
   "orientation": "any",
   "background_color": "#fafbfc",
   "theme_color": "#fafbfc",
+  "related_applications": [
+  { "platform": "webapp", "url": "https://easemylife.app/manifest.webmanifest" }
+  ],
+  "prefer_related_applications": false,
   "categories": ["productivity", "lifestyle", "utilities"],
   "icons": [
     { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },

@@ -1129,15 +1129,28 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   )}
                 </div>
               </div>
+              {installState === 'installed' && (
+                <div className="set-data-row set-store-ios">
+                  <div className="set-data-info">
+                    <span className="set-data-name">Already installed on this device</span>
+                    <span className="set-data-sub">
+                      You&rsquo;re viewing Ease My Life in a browser tab. Open the installed app from your
+                      home screen or app list instead &mdash; it&rsquo;s the same data, and the installed copy is
+                      the one protected from browser cleanup.
+                    </span>
+                  </div>
+                </div>
+              )}
               {installState === 'unsupported' && !iosInstall && (
                 <div className="set-data-row set-store-ios">
                   <div className="set-data-info">
                     <span className="set-data-name">Installing from this page isn&rsquo;t available here</span>
                     <span className="set-data-sub">
-                      This browser doesn&rsquo;t offer an in-page install button &mdash; look for
-                      <strong> Install app</strong> or <strong>Add to Home screen</strong> in its own menu instead.
-                      Installing is worth doing: it&rsquo;s the surest way to stop your data being cleared automatically.
-                      If you&rsquo;ve already installed Ease My Life, open it from your home screen or app list.
+                      Some browsers offer <strong>Install app</strong> or <strong>Add to Home screen</strong> in their
+                      own menu &mdash; it&rsquo;s worth a look. Others, including Firefox on desktop, can&rsquo;t install
+                      web apps at all; there you&rsquo;d need a Chromium-based browser such as Chrome or Edge.
+                      Either way you can keep using Ease My Life right here &mdash; use <strong>Protect data</strong> above
+                      to make this browser far less likely to clear it.
                     </span>
                   </div>
                 </div>
