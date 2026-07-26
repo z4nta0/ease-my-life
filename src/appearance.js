@@ -106,6 +106,57 @@ function applyPaletteObj(p, name) {
   root.setProperty('--accent-soft', p.accentSoft);
   root.setProperty('--warm', p.warm);
   document.body.dataset.palette = name || 'custom';
+  syncStatusBarTint(p.bg);
+}
+
+// Status-bar tint on installed PWAs.
+//
+// An installed PWA takes its status-bar colour from the manifest's theme_color,
+// which is a single static value — manifests have no media-query support. That
+// is why the light/dark <meta name="theme-color"> pair in index.html works in a
+// browser tab but is ignored once installed. Chrome on Android DOES honour
+// runtime changes to the meta tag in standalone mode, so we rewrite it whenever
+// a palette is applied. Bonus: the status bar then follows the user's in-app
+// theme and palette choice, not just the OS light/dark setting.
+//
+// theme-color must be a colour the UA will definitely parse. Palettes are
+// authored in oklch(), so round-trip through a canvas — assigning to fillStyle
+// and reading it back yields a plain hex string.
+let __tintProbe = null;
+function toHexColor(css) {
+  try {
+    if (window.CSS && CSS.supports && !CSS.supports('color', css)) return null;
+    if (!__tintProbe) {
+      const c = document.createElement('canvas');
+      __tintProbe = c.getContext && c.getContext('2d');
+    }
+    if (!__tintProbe) return null;
+    __tintProbe.fillStyle = '#000000';
+    __tintProbe.fillStyle = css;
+    const out = __tintProbe.fillStyle;
+    return typeof out === 'string' && out.charAt(0) === '#' ? out : null;
+  } catch (e) { return null; }
+}
+
+function syncStatusBarTint(bg) {
+  const hex = toHexColor(bg);
+  if (!hex) return;
+  // Collapse the light/dark pair into one tag: JS now owns this, and a tag
+  // carrying a media attribute would stop matching as soon as the in-app theme
+  // and the OS preference disagree.
+  const metas = document.querySelectorAll('meta[name="theme-color"]');
+  let primary = null;
+  for (const m of metas) {
+    if (!primary) primary = m;
+    else m.remove();
+  }
+  if (!primary) {
+    primary = document.createElement('meta');
+    primary.setAttribute('name', 'theme-color');
+    document.head.appendChild(primary);
+  }
+  primary.removeAttribute('media');
+  primary.setAttribute('content', hex);
 }
 
 // Builds a full palette from the 3 colors a Custom theme lets the user pick
