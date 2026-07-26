@@ -442,7 +442,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
             <span className="sched-line-lbl">In the Daily generator</span>
             <span className="sched-line-sub set-sub-fade" key={inDaily ? 'on' : 'off'}>
               {inDaily
-                ? <>will run <strong>every time</strong> the Today tab\u2019s Daily generator is run</>
+                ? <>will run <strong>every time</strong> the Today tab's Daily generator is run</>
                 : <>can only be <strong>run manually</strong> in the Pickers tab</>}
             </span>
           </span>

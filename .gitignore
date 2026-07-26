@@ -25,6 +25,7 @@ yarn-error.log*
 
 # Miscellaneous Directories and Files
 *.local
+dev-dist
 dist
 dist-ssr
 node_modules
