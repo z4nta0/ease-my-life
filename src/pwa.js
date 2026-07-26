@@ -11,8 +11,35 @@ import { STORAGE } from './storage.js';
 const LS_ASKED = 'easemylife.persistasked';
 
 let installEvent = null;   // captured beforeinstallprompt
+// Whether we have waited long enough to conclude that beforeinstallprompt is
+// never coming. There is no synchronous way to ask a browser "do you support
+// installing?" — the only signal is the event firing, so absence has to be
+// inferred from a grace period. Chromium also needs its own criteria met first
+// (served over HTTPS, manifest parsed, service worker activated), which is why
+// this waits on serviceWorker.ready before starting the clock rather than
+// declaring the browser incapable while the SW is still installing.
+let installProbeDone = false;
 const subs = new Set();
 const notify = () => { for (const fn of subs) { try { fn(); } catch (e) {} } };
+
+(function probeInstallSupport() {
+  const START_GRACE = 2500;
+  const finish = () => {
+    setTimeout(() => { installProbeDone = true; notify(); }, START_GRACE);
+  };
+  try {
+    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+      // Cap the wait: a worker that never activates must not leave the UI
+      // stuck on "checking" forever.
+      Promise.race([
+        navigator.serviceWorker.ready,
+        new Promise((res) => setTimeout(res, 3000)),
+      ]).then(finish, finish);
+    } else {
+      finish();
+    }
+  } catch (e) { finish(); }
+})();
 
 // iOS/iPadOS Safari never fires beforeinstallprompt — installation is a manual
 // Share → Add to Home Screen. Detected so the UI can show instructions instead
@@ -70,9 +97,31 @@ async function requestPersistOnce(force) {
   return ok;
 }
 
+// One value for the UI to switch on, so the "can't install here" case is
+// feature-detected rather than sniffed for Firefox by name — the same answer
+// then covers any browser that doesn't implement the install prompt.
+//
+//   'standalone'  already running as an installed app
+//   'ready'       beforeinstallprompt captured; the in-app button will work
+//   'ios'         iOS/iPadOS Safari — manual Share → Add to Home Screen
+//   'pending'     still waiting to find out; show nothing definitive yet
+//   'unsupported' no prompt after the grace period
+//
+// Caveat worth knowing: Chromium also withholds beforeinstallprompt when the
+// app is ALREADY installed and you open the site in a normal tab, so
+// 'unsupported' can mean "already installed elsewhere". The copy keyed to it
+// should stay neutral rather than asserting the browser is incapable.
+function installState() {
+  if (isStandalone()) return 'standalone';
+  if (installEvent) return 'ready';
+  if (isIOS && isSafari) return 'ios';
+  return installProbeDone ? 'unsupported' : 'pending';
+}
+
 export const PWA = {
   isIOS, isSafari, isStandalone,
   canInstall: () => !!installEvent,
+  installState,
   promptInstall,
   requestPersistOnce,
   // Called when the user creates their first picker: the first moment there is

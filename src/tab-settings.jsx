@@ -663,6 +663,10 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
   const standalone = !!(PWA && PWA.isStandalone());
   const canInstall = !!(PWA && PWA.canInstall());
   const iosInstall = !!(PWA && PWA.isIOS && !standalone);
+  // Feature-detected rather than named-browser: 'unsupported' covers Firefox
+  // and anything else without the install prompt, and stays 'pending' until we
+  // have actually waited long enough to know.
+  const installState = (PWA && PWA.installState) ? PWA.installState() : 'pending';
   const fmtBytes = (n) => {
     if (n == null) return '—';
     if (n < 1024) return n + ' B';
@@ -1117,16 +1121,27 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                 </div>
                 <div className="set-store-actions">
                   {canInstall && <Btn kind="primary" size="sm" icon="download" onClick={onInstall}>Install app</Btn>}
-                  {!canInstall && !standalone && !iosInstall && (
-                    <InfoTip className="set-disabled-btn" label="Use your browser's own Install app / Add to Home screen menu item — this browser doesn't offer an in-page install button.">
-                      <Btn kind="secondary" size="sm" icon="download" disabled>Install app</Btn>
-                    </InfoTip>
+                  {installState === 'pending' && (
+                    <Btn kind="secondary" size="sm" icon="download" disabled>Install app</Btn>
                   )}
                   {!(stor && stor.persisted) && (
                     <Btn kind="secondary" size="sm" onClick={onPersist}>Protect data</Btn>
                   )}
                 </div>
               </div>
+              {installState === 'unsupported' && !iosInstall && (
+                <div className="set-data-row set-store-ios">
+                  <div className="set-data-info">
+                    <span className="set-data-name">Installing from this page isn&rsquo;t available here</span>
+                    <span className="set-data-sub">
+                      This browser doesn&rsquo;t offer an in-page install button &mdash; look for
+                      <strong> Install app</strong> or <strong>Add to Home screen</strong> in its own menu instead.
+                      Installing is worth doing: it&rsquo;s the surest way to stop your data being cleared automatically.
+                      If you&rsquo;ve already installed Ease My Life, open it from your home screen or app list.
+                    </span>
+                  </div>
+                </div>
+              )}
               {iosInstall && (
                 <div className="set-data-row set-store-ios">
                   <div className="set-data-info">
