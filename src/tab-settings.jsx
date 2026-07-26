@@ -141,9 +141,22 @@ const SETTINGS_SECTIONS = [
 // Contact support — a collapsible card (same rd-ctl disclosure used in the
 // Data tab) holding a small form: subject, message, and two read-only
 // diagnostic fields (app version + browser) so bug reports arrive with useful
-// context already attached. Send is disabled for now — there's no backend to
-// receive it yet (see Support the project's Buy-me-a-coffee button for the
-// same "built, but intentionally inert" convention).
+// context already attached.
+//
+// Send POSTs to Netlify Forms. Two things this depends on OUTSIDE this file:
+//   1. The static <form name="support" netlify hidden> in index.html. Netlify
+//      detects forms by parsing the built HTML at deploy time — it never runs
+//      the app, so a React-rendered form alone is invisible to it. The field
+//      names there MUST match the keys posted below.
+//   2. Netlify's Forms feature enabled for the site, plus a notification email
+//      configured (Site config → Forms → Form notifications) so submissions
+//      actually reach an inbox rather than only the Netlify dashboard.
+// If the POST fails for any reason — offline, forms not enabled, a deploy that
+// dropped the static form — the user is shown the address instead and their
+// text is preserved.
+const SUPPORT_EMAIL = 'support@easemylife.app';
+const SUPPORT_FORM_NAME = 'support';
+
 function ContactSupportCard({ state, actions }) {
   // Local open state (not persisted) — the form always starts closed on load.
   const [open, setOpen] = React.useState(false);
@@ -151,11 +164,18 @@ function ContactSupportCard({ state, actions }) {
   const [message, setMessage] = React.useState('');
   const [sentMsg, setSentMsg] = React.useState(0);
   const [validErr, setValidErr] = React.useState(false);
+  // Set when the POST didn't go through, so the address can be surfaced as a
+  // fallback instead of leaving the user stuck.
+  const [sendFailed, setSendFailed] = React.useState(false);
+  const [copied, setCopied] = React.useState(false);
+  // Honeypot. Bots fill every field they find; humans never see this one, so a
+  // non-empty value means we silently accept and drop the submission.
+  const [botField, setBotField] = React.useState('');
   const browser = React.useMemo(() => detectBrowser(), []);
   const versionStr = APP_VERSION == null ? '1.0' : APP_VERSION;
   const formCardRef = React.useRef(null);
   const canSend = subject.trim() && message.trim();
-  const [sendCooling, setSendCooling] = React.useState(false);
+  const [sending, setSending] = React.useState(false);
 
   const openForm = () => {
     setOpen(true);
@@ -181,19 +201,58 @@ function ContactSupportCard({ state, actions }) {
 
   const cancel = () => {
     setSubject(''); setMessage(''); setValidErr(false);
+    setSendFailed(false); setCopied(false);
     setOpen(false);
   };
 
-  // Mock send: no backend yet, so just clear + collapse the form and surface a
-  // confirmation on the "Having problems?" row (same pattern as Data controls).
+  const copyAddress = () => {
+    const done = () => { setCopied(true); setTimeout(() => setCopied(false), 2400); };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(SUPPORT_EMAIL).then(done, () => {});
+      }
+    } catch (e) { /* the address is on screen either way */ }
+  };
+
+  // POST to Netlify Forms. Netlify listens for form-encoded POSTs on any path
+  // of the site and matches them to a detected form by the `form-name` field —
+  // hence posting to '/' rather than to an endpoint of our own.
+  //
+  // Only clear the form on success. A failed send must never eat what the user
+  // typed, which is the whole reason this waits on the response instead of
+  // optimistically confirming.
   const send = () => {
-    if (sendCooling) return;
+    if (sending) return;
     if (!canSend) { setValidErr(true); return; }
-    setSubject(''); setMessage(''); setValidErr(false);
-    setSentMsg(Date.now());
-    setSendCooling(true);
-    setTimeout(() => setSendCooling(false), 3000);
-    setOpen(false);
+
+    setValidErr(false);
+    setSendFailed(false);
+    setSending(true);
+
+    const body = new URLSearchParams({
+      'form-name': SUPPORT_FORM_NAME,
+      'bot-field': botField,
+      subject: subject.trim(),
+      message: message.trim(),
+      version: versionStr,
+      browser: browser,
+    }).toString();
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body,
+    }).then((res) => {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      setSubject(''); setMessage('');
+      setSentMsg(Date.now());
+      setOpen(false);
+    }).catch(() => {
+      // Offline, Forms not enabled, or the static form missing from the build.
+      setSendFailed(true);
+    }).then(() => {
+      setSending(false);
+    });
   };
 
   return (
@@ -235,12 +294,26 @@ function ContactSupportCard({ state, actions }) {
                 <span className="support-diag-val">{browser}</span>
               </div>
             </div>
+            <p className="support-hp" aria-hidden="true">
+              <label>Don&rsquo;t fill this out if you&rsquo;re human:
+                <input tabIndex={-1} autoComplete="off" name="bot-field" value={botField}
+                       onChange={(e) => setBotField(e.target.value)} />
+              </label>
+            </p>
             <div className="support-form-foot">
               {validErr && !canSend && (
                 <span className="support-valid-msg" key="verr">Please fill out both form fields.</span>
               )}
+              {sendFailed && !validErr && (
+                <span className="support-fallback" role="status" key="sfail">
+                  Couldn&rsquo;t send &mdash; you may be offline. Your message is still here, so try again, or write to <span className="support-fallback-addr">{SUPPORT_EMAIL}</span>.
+                </span>
+              )}
+              {sendFailed && !validErr && (
+                <Btn kind="ghost" size="sm" onClick={copyAddress}>{copied ? 'Copied' : 'Copy address'}</Btn>
+              )}
               <Btn kind="ghost" size="sm" onClick={cancel}>Cancel</Btn>
-              <Btn kind="secondary" size="sm" onClick={send} disabled={sendCooling}>Send</Btn>
+              <Btn kind="secondary" size="sm" onClick={send} disabled={sending}>{sending ? 'Sending\u2026' : 'Send'}</Btn>
             </div>
           </div>
         </Card>

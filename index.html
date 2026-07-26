@@ -150,6 +150,25 @@
   </noscript>
   <div id="root"></div>
 
+
+
+    <!-- Netlify Forms detection stub. Netlify finds forms by parsing the BUILT
+       HTML at deploy time — it never runs the app, so the React form in
+       tab-settings.jsx is invisible to it. This static copy is what registers
+       the form and its fields; the app then POSTs to '/' with a matching
+       form-name. Keep the name and every field name in sync with the keys in
+       ContactSupportCard's send(), or submissions are rejected. hidden keeps it
+       out of the page; Netlify still parses it. -->
+  <form name="support" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="subject" />
+    <textarea name="message"></textarea>
+    <input type="text" name="version" />
+    <input type="text" name="browser" />
+    <input type="text" name="bot-field" />
+  </form>
+
+
+
   <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
