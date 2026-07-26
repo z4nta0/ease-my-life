@@ -1,0 +1,15 @@
+<svg width="528" height="528" viewBox="8 8 528 528" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="528" height="528" style="fill: rgb(255, 255, 255);" y="8" x="8"></rect>
+  <g>
+    <path style="stroke-width: 16px; stroke: rgb(137, 183, 217); stroke-opacity: 0.33;" d="M 528 112 L 16 112"></path>
+    <path style="stroke-width: 16px; stroke: rgb(137, 183, 217); stroke-opacity: 0.33;" d="M 216 528 L 216 16"></path>
+    <path style="stroke-width: 16px; stroke: rgb(137, 183, 217); stroke-opacity: 0.33;" d="M 320 528 L 320 16"></path>
+    <path style="stroke-width: 16px; stroke: rgb(137, 183, 217); stroke-opacity: 0.33;" d="M 424 528 L 424 16"></path>
+    <path style="stroke-width: 16px; stroke: rgb(137, 183, 217); stroke-opacity: 0.33;" d="M 112 528 L 112 16"></path>
+    <path style="stroke-width: 16px; stroke: rgb(137, 183, 217); stroke-opacity: 0.33;" d="M 528 216 L 16 216"></path>
+    <path style="stroke-width: 16px; stroke: rgb(137, 183, 217); stroke-opacity: 0.33;" d="M 528 320 L 16 320"></path>
+    <path style="stroke-width: 16px; stroke: rgb(137, 183, 217); stroke-opacity: 0.33;" d="M 528 424 L 16 424"></path>
+  </g>
+  <rect width="512" height="512" style="stroke-width: 16px; stroke-linecap: round; stroke-linejoin: round; stroke: rgb(4, 101, 175);" y="16" x="16"></rect>
+  <path d="M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" style="fill: rgb(4, 101, 175); stroke: rgb(4, 101, 175);"></path>
+</svg>

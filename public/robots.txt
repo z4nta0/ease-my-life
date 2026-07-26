@@ -1,0 +1,5 @@
+# Ease My Life — a single-page app; everything is crawlable from the root.
+User-agent: *
+Allow: /
+
+Sitemap: https://easemylife.app/sitemap.xml

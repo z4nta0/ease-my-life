@@ -1,0 +1,46 @@
+/* Self-hosted variable fonts. Files live in src/fonts/ so Vite fingerprints
+   them and the service worker precaches the hashed filenames.
+
+   RENAME the url() paths to match your actual files.
+
+   These are VARIABLE fonts: one @font-face per family, with a font-weight
+   RANGE rather than a single value. The browser interpolates any weight in
+   that range — which means styles.css's font-weight: 450 and 700 now render as
+   real instrumented weights instead of being synthesized by the browser. Expect
+   text to look very slightly different (better) than it did on Google Fonts,
+   which only served 400/500/600 for Geist.
+
+   Verify each range matches what your files actually support — it is usually in
+   the filename (e.g. Geist[wght].ttf) or readable via:
+     fonttools varLib.instancer --help   /   otfinfo -v font.ttf
+   Declaring a range wider than the font supports just clamps, so these defaults
+   are safe, but accurate ranges are better. */
+
+@font-face {
+  font-family: 'Geist';
+  src: url('./fonts/Geist-VariableFont_wght.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('./fonts/GeistMono-VariableFont_wght.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Quicksand';
+  src: url('./fonts/Quicksand-VariableFont_wght.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Shantell Sans';
+  src: url('./fonts/ShantellSans-VariableFont_BNCE,INFM,SPAC,wght.woff2') format('woff2');
+  font-weight: 300 800;
+  font-style: normal;
+  font-display: swap;
+}

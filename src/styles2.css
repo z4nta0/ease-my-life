@@ -1,0 +1,3476 @@
+/* Tweaks panel — palette swatches */
+.palette-swatches {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.pal-swatch {
+  position: relative;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.08);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 14px 14px;
+  padding: 0;
+  cursor: default;
+  transition: border-color .12s, transform .08s;
+}
+.pal-swatch:hover { transform: translateY(-1px); }
+.pal-swatch.is-on { border-color: rgba(0,0,0,.7); border-width: 1.5px; }
+.pal-swatch i { display: block; height: 100%; }
+.pal-swatch span {
+  position: absolute;
+  bottom: 2px; left: 4px;
+  font-size: 9.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,.45);
+  text-shadow: 0 1px 0 rgba(255,255,255,.5);
+}
+.pal-swatch[title="night"] span { color: rgba(255,255,255,.6); text-shadow: none; }
+.pal-swatch[title="night"] i:first-child { border-color: transparent !important; }
+
+/* ─── Tab: Picker ────────────────────────────────────────────────────────── */
+
+.tab--picker {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.picker-tabs {
+  display: flex; gap: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* Fade either edge so whatever tab sits there is always partially
+     obscured — a built-in scrollability cue. JS toggles .at-start /
+     .at-end on this element so the fade only appears on the side where
+     there's actually more content. */
+  --fade: 36px;
+  --fade-l: var(--fade);
+  --fade-r: var(--fade);
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--fade-l),
+    #000 calc(100% - var(--fade-r)),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--fade-l),
+    #000 calc(100% - var(--fade-r)),
+    transparent 100%
+  );
+}
+/* Drop the matching-side fade when the row is at that edge. */
+.picker-tabs.at-start { --fade-l: 0px; }
+.picker-tabs.at-end   { --fade-r: 0px; }
+.picker-tabs::-webkit-scrollbar { display: none; }
+.picker-tab {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 1px;
+  padding: 12px 16px;
+  min-width: 132px;
+  text-align: left;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-md);
+  scroll-snap-align: start;
+  transition: border-color .12s, background .12s;
+}
+.picker-tab:hover { border-color: var(--muted); }
+.picker-tab.is-on {
+  background: oklch(from var(--accent-soft) l c h);
+  border-color: var(--accent);
+}
+.picker-tab.is-on .picker-tab-name { color: var(--accent); }
+.picker-tab-name { font-weight: 500; font-size: 14px; letter-spacing: -0.01em; }
+.picker-tab-mode { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+
+/* Group filter bar — scrollable pills above the picker strip that scope it to
+   one group (or All). Lighter weight than the picker tabs so the hierarchy
+   reads group → picker → pool. */
+.picker-groups {
+  display: flex; gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+  /* Same edge-fade cue as .picker-tabs; JS toggles .at-start / .at-end so a
+     side only fades when there's more content past it. */
+  --fade: 28px;
+  --fade-l: var(--fade);
+  --fade-r: var(--fade);
+  mask-image: linear-gradient(to right,
+    transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+}
+.picker-groups.at-start { --fade-l: 0px; }
+.picker-groups.at-end   { --fade-r: 0px; }
+.picker-groups::-webkit-scrollbar { display: none; }
+.picker-group-pill {
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 13px;
+  background: transparent;
+  border: 0.5px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px; font-weight: 500; letter-spacing: -0.01em;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color .24s ease, background .24s ease, color .24s ease;
+}
+.picker-group-pill:hover { border-color: var(--muted); color: var(--text); }
+
+/* Attach-a-conditional (Pickers create-flow). Horizontal rail of larger, more
+   square pills (picker-card feel) for choosing an existing conditional or
+   adding a new one; inherits the .picker-groups edge-fade + scroll behavior. */
+.cnd-attach { display: flex; flex-direction: column; gap: 14px; padding-top: 12px; }
+.cnd-rail { gap: 8px; padding-bottom: 2px; }
+.cnd-pill {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 3px; justify-content: center;
+  min-width: 132px; padding: 10px 14px;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 12px;
+  text-align: left; cursor: pointer;
+  transition: border-color .24s ease, background .24s ease, box-shadow .24s ease;
+}
+.cnd-pill:hover { border-color: var(--muted); }
+.cnd-pill.is-on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; background: var(--accent-soft); }
+.cnd-pill-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.cnd-pill-mode { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.cnd-pill--new { flex-direction: row; align-items: center; gap: 8px; color: var(--muted); border-style: dashed; }
+.cnd-pill--new .cnd-pill-name { color: var(--muted); font-weight: 500; }
+.cnd-pill--new.is-on { color: var(--accent); }
+.cnd-pill--new.is-on .cnd-pill-name { color: var(--accent); }
+.cnd-controls { display: flex; flex-direction: column; gap: 20px; padding-top: 4px; }
+.cnd-random-note { margin: 0; }
+.cnd-typectl { margin-top: 4px; display: flex; flex-direction: column; gap: 0; }
+/* Group the mode radio + its per-type controls tighter than the surrounding
+   conditional fields, so they read as one related cluster. */
+.cnd-type-group { display: flex; flex-direction: column; gap: 6px; }
+/* Mode radio in the conditional editor: a bordered, rounded card (the shared
+   rd-mode-radio list bleeds full-width by default; here we clip + border it). */
+.cnd-mode-card { border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; }
+.cnd-mode-card .rd-mode-radio { border-top: 0; border-bottom: 0; }
+/* Keep the two-paragraph explanation from running full width so the toggle sits
+   comfortably on the same line as the title (matches the other toggle rows). */
+.np-cond .np-field--toggle .np-toggle-text { max-width: 440px; }
+/* pie-row styles are scoped to the ease-config / entry-editor elsewhere; mirror
+   them for the conditional controls so rows lay out (flex) and label/sub stack. */
+.cnd-typectl .pie-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 38px; padding: 4px 0; }
+.cnd-typectl .pie-rowlabel { display: flex; flex-direction: column; gap: 1px; }
+.cnd-typectl .pie-lbl { font-size: 15px; font-weight: 500; }
+.cnd-typectl .pie-sub { font-size: 11px; color: var(--muted); }
+.cnd-typectl .pie-ctl { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.cnd-typectl .pie-ctl .np-ease-unit { font-size: 12px; }
+.cnd-typectl .switch { flex: 0 0 auto; cursor: pointer; }
+.cnd-typectl .pie-noweight { font-size: 13px; color: var(--muted); flex: 0 0 auto; }
+/* ── Data-tab (inline) variant of the conditional controls ────────────────
+   Lives inside a card's .rd-ctl-body, so drop the Pickers-tab "card-in-card"
+   look: full-bleed rows with hairline dividers, no bordered mode card, and a
+   doubled border before the footer (matching the picker controls). */
+.rd-item .rd-edit--cnd { padding: 0; }
+.rd-edit--cnd .rd-ctl-body { padding: 0; }
+.cnd-controls--inline { gap: 0; padding: 0; }
+/* Every section is full-bleed (no negative margins — the container has no
+   padding); each provides its own 16px inner padding + a hairline top divider. */
+.cnd-controls--inline > .np-field {
+  margin: 0; padding: 12px 16px; gap: 6px;
+  border-top: 0.5px solid var(--border);
+}
+.cnd-controls--inline > .np-field:first-child { border-top: 0; }
+/* Day-off card text: label+help column on the left, input on the same row. */
+.cnd-controls--inline > .np-field--cardtext {
+  flex-direction: row; align-items: center; justify-content: space-between; gap: 16px;
+}
+.cnd-controls--inline > .np-field--cardtext .np-cardtext-text { display: flex; flex-direction: column; gap: 4px; max-width: 300px; }
+.cnd-controls--inline > .np-field--cardtext .np-help { margin: 0; }
+.cnd-controls--inline > .np-field--cardtext .np-input { flex: 1 1 auto; min-width: 0; max-width: 260px; }
+.cnd-controls--inline .cnd-type-group { gap: 0; }
+.cnd-controls--inline .cnd-type-group > .np-field {
+  margin: 0; padding: 12px 0 0; gap: 8px;
+  border-top: 0.5px solid var(--border);
+}
+.cnd-controls--inline .cnd-type-group > .np-field > .np-label { padding: 0 16px; }
+.cnd-controls--inline .rd-mode-radio { margin: 0; border-top: 0.5px solid var(--border); }
+.cnd-controls--inline .cnd-typectl { margin: 0; }
+.cnd-controls--inline .cnd-typectl .pie-row {
+  padding: 10px 16px; min-height: 44px; border-top: 0.5px solid var(--border);
+}
+/* The standalone Active row (last cnd-typectl) gets a bottom border too, so it
+   doubles against the footer's top border — matching the other controls. */
+.cnd-controls--inline > .cnd-type-group > .cnd-typectl:last-child .pie-row { border-bottom: 0.5px solid var(--border); }
+.rd-edit--cnd .rd-ctl-group--foot { margin: 0; padding: 14px 16px 16px; border-top: 0.5px solid var(--border); }
+/* Delete-confirm: message + actions on one row (text column capped). */
+.rd-edit--cnd .rd-ctl-confirm { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
+.rd-edit--cnd .rd-ctl-confirm .confirm-msg { max-width: 340px; font-size: 12.5px; line-height: 1.4; color: var(--muted); }
+.rd-edit--cnd .rd-ctl-confirm .rem-del-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+.cnd-typectl .pie-boost-val { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--text); }
+.cnd-typectl .pie-reset {
+  font-size: 12px; color: var(--muted); padding: 4px 9px; border-radius: 7px;
+  border: 0.5px solid var(--border); background: var(--surface); transition: color .12s, border-color .12s;
+}
+.cnd-typectl .pie-reset:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
+.cnd-typectl .pie-reset:disabled { opacity: 0.4; cursor: default; }
+/* Collision error on the conditional name field. */
+.np-input.is-error { border-color: oklch(0.55 0.18 25); box-shadow: 0 0 0 1px oklch(0.55 0.18 25) inset; }
+.np-error { margin: 6px 0 0; font-size: 12.5px; line-height: 1.4; color: oklch(0.5 0.18 25); }
+.rd-cnd-name-err { margin: 0 0 12px; padding-left: 16px; }
+.rd-name-input.is-error, .rd-name-input.is-error:focus { border-bottom-color: oklch(0.55 0.18 25); }
+.picker-group-pill.is-on {
+  background: oklch(from var(--accent-soft) l c h);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.picker-group-count {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 10.5px;
+  color: var(--muted);
+  background: oklch(from var(--border) calc(l + 0.02) c h);
+  border-radius: 999px;
+  padding: 1px 6px;
+  min-width: 18px; text-align: center;
+}
+.picker-group-pill.is-on .picker-group-count {
+  background: oklch(from var(--accent) l c h / 0.16);
+  color: var(--accent);
+}
+
+.picker-view { display: flex; flex-direction: column; gap: 18px; }
+
+/* Picker header — kicker, then logo + centered title (mirrors Today + Stats).
+   The sub sits on its own line below; its larger top margin pulls it visually
+   closer to the picker-groups it explains than to the title above. */
+.picker-h-head { display: flex; flex-direction: column; gap: 18px; }
+.picker-h-lead { display: flex; align-items: center; gap: 16px; }
+.picker-h-lead .section-h { flex: 1 1 auto; min-width: 0; justify-content: center; }
+.picker-h-lead .brand-mark { height: 68px; width: 68px; aspect-ratio: auto; align-self: center; }
+.picker-title-accent { color: var(--accent); }
+.picker-h-sub { margin: 18px 0 0; }
+@media (max-width: 640px) {
+  .picker-h-lead { gap: 12px; }
+  .picker-h-lead .brand-mark { height: 56px; width: 56px; }
+}
+
+.picker-h {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16px;
+}
+.picker-title {
+  font-size: 28px; font-weight: 500;
+  letter-spacing: -0.025em;
+  margin: 4px 0 0;
+}
+.picker-hint {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+  max-width: 56ch;
+  text-wrap: pretty;
+}
+.picker-hint + .picker-hint { margin-top: 8px; }
+.mode-opt-hint + .mode-opt-hint { margin-top: 6px; }
+
+.picker-stage {
+  position: relative;
+  /* Fixed to the tallest state — the reel (5 × 56px rows = 280px) plus the
+     64px vertical padding = 344px. Holding this constant stops the stage
+     (and the action buttons below it) from collapsing/expanding as the phase
+     cycles idle → running → done, e.g. on Re-roll. */
+  min-height: 344px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 32px 20px;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+
+.stage-idle, .stage-empty {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  text-align: center;
+}
+
+/* Sent confirmation — replaces the reel briefly after Send to Today. */
+.stage-sent {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  text-align: center;
+  animation: sentRise 320ms cubic-bezier(.22,1.2,.36,1);
+}
+.stage-sent-check {
+  width: 56px; height: 56px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent); color: var(--bg);
+  animation: sentPop 440ms cubic-bezier(.22,1.5,.36,1);
+}
+.stage-sent-name {
+  font-size: 24px; font-weight: 500; letter-spacing: -0.015em;
+  color: var(--text); text-wrap: pretty; max-width: 30ch;
+}
+@keyframes sentRise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes sentPop {
+  0%   { transform: scale(0); }
+  60%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+.btn.is-sent { animation: sentBtnPop 360ms cubic-bezier(.22,1.5,.36,1); }
+@keyframes sentBtnPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+.stage-idle-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 56px;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--text);
+}
+.stage-idle-lbl {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  max-width: 32ch;
+  margin-bottom: 8px;
+}
+
+/* Reel */
+.reel { position: relative; width: 100%; max-width: 420px; overflow: hidden; }
+.reel-track {
+  display: flex; flex-direction: column;
+  /* Duration is set inline per step (see PickerStrip) so each move animates
+     over exactly the gap until the next one — continuous, no stutter. */
+  transition-property: transform;
+  transition-timing-function: linear;
+  will-change: transform;
+}
+.reel-row {
+  height: 56px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--muted);
+  text-wrap: pretty;
+  text-align: center;
+  padding: 0 12px;
+  transition: color .25s;
+}
+.reel-row.is-on { color: var(--text); }
+.reel--settled .reel-row.is-on {
+  color: var(--accent);
+  font-size: 22px;
+  transform: scale(1.02);
+}
+.reel-mask {
+  pointer-events: none;
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, var(--surface), transparent 28%, transparent 72%, var(--surface));
+}
+.reel-line {
+  pointer-events: none;
+  position: absolute; left: 8%; right: 8%;
+  top: calc(50% - 28px); height: 56px;
+  border-top: 0.5px solid var(--border);
+  border-bottom: 0.5px solid var(--border);
+}
+
+/* Dissolve */
+.dissolve {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 120px; width: 100%;
+}
+.dissolve-name {
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  text-align: center;
+  text-wrap: pretty;
+  animation: dissolveIn 180ms ease;
+}
+@keyframes dissolveIn {
+  from { opacity: 0; transform: translateY(4px) scale(0.985); }
+  to   { opacity: 1; transform: none; }
+}
+.dissolve--settled .dissolve-name {
+  color: var(--accent);
+  animation: settleIn 380ms cubic-bezier(.3,1.2,.4,1);
+}
+@keyframes settleIn {
+  0%   { opacity: 0; transform: translateY(6px) scale(0.97); }
+  60%  { opacity: 1; transform: translateY(0) scale(1.03); }
+  100% { transform: scale(1); }
+}
+.dissolve-glow {
+  position: absolute;
+  width: 60%; height: 60%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-soft), transparent 70%);
+  pointer-events: none; z-index: -1;
+  animation: glow 480ms ease-out;
+}
+@keyframes glow {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Spotlight */
+.spot {
+  display: flex; flex-direction: column; gap: 2px;
+  width: 100%; max-width: 380px;
+  max-height: 360px; overflow: hidden;
+}
+.spot-row {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  color: var(--muted);
+  transition: background .12s, color .12s, transform .12s;
+  text-wrap: pretty;
+}
+.spot-row.is-on {
+  color: var(--text);
+  background: oklch(from var(--bg) calc(l - 0.01) c h);
+}
+.spot--settled .spot-row.is-on {
+  color: var(--accent);
+  background: var(--accent-soft);
+  font-weight: 500;
+  transform: scale(1.01);
+}
+
+/* Actions */
+.picker-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* Pool list */
+.picker-pool { display: flex; flex-direction: column; gap: 10px; }
+.pool-h { display: flex; align-items: center; justify-content: space-between; }
+.ghost-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ghost-link:hover { color: var(--text); }
+
+.pool-list {
+  display: flex; flex-direction: column;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+/* Add-new-items (Pickers-tab item creation). Full-width dashed "Add items"
+   button below the pool, expanding into the staging form. */
+.pv-additem-wrap { display: flex; flex-direction: column; gap: 10px; }
+.pv-additem-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; padding: 10px 14px;
+  background: transparent; color: var(--muted);
+  border: 1px dashed var(--border); border-radius: var(--r-md);
+  font: inherit; font-size: 13.5px; font-weight: 500; cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.pv-additem-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+/* In-progress new item reuses the Data-tab rd-item editor, but standalone (not
+   inside a card) so it needs its own surface, border and radius. */
+.pv-newitem { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--r-md); overflow: hidden; animation: pvNewItemIn .3s cubic-bezier(.34,1.2,.5,1) both; }
+@keyframes pvNewItemIn { from { opacity: 0; transform: translateY(-8px) scale(.98); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .pv-newitem { animation: none; } }
+.pv-newitem.rd-item:last-child { border-bottom: 0.5px solid var(--border); }
+/* In the Pickers-tab new-item editor the name row already provides the divider,
+   so drop the pie-rows top border + top margin to avoid a doubled border. */
+.pv-newitem .entry-editor .pie-rows { border-top: 0; margin-top: 0; }
+/* Today-card inline item editor: drop the top padding + pie-rows top border so
+   it sits flush under the card without a doubled gap/hairline (this UI only). */
+.today-entry-editor .rem-inline-editor { padding-top: 0; }
+.today-entry-editor .entry-editor .pie-rows { border-top: 0; }
+/* A brand-new item is discarded via Cancel, so the footer Delete button is
+   redundant here — hide it (this UI only). */
+.pv-newitem .rd-edit-foot > .btn--danger { display: none; }
+.pv-newitem .rd-edit-foot { justify-content: flex-end; }
+.pv-newitem .rd-row { cursor: default; }
+.pv-newitem .rd-edit { border-top: 0.5px solid var(--border); }
+/* Save animation: a just-saved item glides into place at the bottom of the pool. */
+@keyframes poolRowInsert { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.pool-row--insert { animation: poolRowInsert .6s cubic-bezier(.34,1.2,.5,1) both; }
+@media (prefers-reduced-motion: reduce) { .pool-row--insert { animation-duration: .01ms; } }
+/* Delete: the row collapses + fades, letting neighbours slide up to fill. */
+@keyframes poolRowRemove { from { max-height: 160px; opacity: 1; } to { max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; border-bottom-width: 0; } }
+.pool-row--removing { animation: poolRowRemove .34s ease forwards; overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .pool-row--removing { animation-duration: .01ms; } }
+/* Creation UI dismissal: the in-progress editor collapses + fades before the
+   saved item pops into the pool list. */
+@keyframes pvNewItemOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-6px) scale(.98); } }
+.pv-newitem.is-closing { animation: pvNewItemOut .26s ease both; overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .pv-newitem.is-closing { animation-duration: .01ms; } }
+.pool-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 16px;
+  border-bottom: 0.5px solid var(--border);
+}
+.pool-row:last-child { border-bottom: 0; }
+.pool-row.is-vac { opacity: 0.45; }
+.pool-row.is-ineligible { opacity: 0.6; }
+.pool-row--confirm { grid-template-columns: 1fr; }
+.pool-send {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 0;
+  background: transparent; color: var(--muted);
+  border: 0.5px solid var(--border); border-radius: var(--r-sm);
+  cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.pool-send:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.pool-send.is-sent { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); cursor: default; }
+/* Confirmation pop when the check swaps in after Send-to-Today. */
+@keyframes poolSendPop { 0% { transform: scale(.4); opacity: .3; } 60% { transform: scale(1.18); } 100% { transform: scale(1); opacity: 1; } }
+.pool-send.is-sent svg { animation: poolSendPop .32s cubic-bezier(.34,1.5,.5,1) both; }
+@media (prefers-reduced-motion: reduce) { .pool-send.is-sent svg { animation-duration: .01ms; } }
+.pool-send.is-disabled { opacity: 0.4; cursor: default; }
+.pool-send.is-disabled:hover { color: var(--muted); border-color: var(--border); background: none; }
+.pool-del {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 0;
+  background: transparent; color: var(--muted);
+  border: 0.5px solid var(--border); border-radius: var(--r-sm);
+  cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.pool-del:hover { color: var(--danger, #d24545); border-color: var(--danger, #d24545); background: color-mix(in srgb, var(--danger, #d24545) 8%, transparent); }
+.pool-confirm { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.pool-confirm-msg { font-size: 14px; text-wrap: pretty; }
+.pool-confirm-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+.pool-name {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px;
+  text-wrap: pretty;
+}
+.pool-meta {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+.pool-prog {
+  display: flex; align-items: center; gap: 8px;
+  min-width: 100px;
+}
+.pool-val {
+  font-variant-numeric: tabular-nums;
+  min-width: 22px;
+  text-align: right;
+}
+.pool-weight {
+  font-variant-numeric: tabular-nums;
+}
+.pool-ease-meta { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Custom tooltip — styled, viewport-clamped, tap-friendly (see InfoTip). */
+.infotip-trigger { cursor: help; }
+.infotip-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.infotip {
+  position: fixed;
+  z-index: 1000;
+  max-width: 248px;
+  padding: 9px 11px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text);
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px oklch(0 0 0 / 0.14), 0 1px 2px oklch(0 0 0 / 0.06);
+  pointer-events: none;
+  text-wrap: pretty;
+  animation: infotipIn 130ms cubic-bezier(.22,1.2,.36,1);
+}
+.infotip--top    { --itip-dy: 4px; }
+.infotip--bottom { --itip-dy: -4px; }
+@keyframes infotipIn {
+  from { opacity: 0; transform: translateY(var(--itip-dy, 4px)) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .infotip { animation: none; }
+}
+
+/* Progress bar primitive */
+.prog {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: oklch(from var(--border) calc(l + 0.03) c h);
+  overflow: hidden;
+  min-width: 60px;
+}
+.prog i {
+  display: block; height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width .3s cubic-bezier(.4,1.2,.5,1);
+}
+.prog--warm i { background: var(--warm); }
+
+/* ─── Tab: Stats ─────────────────────────────────────────────────────────── */
+
+.tab--stats { display: flex; flex-direction: column; gap: 28px; }
+/* Cards now live inside the .tab-fade wrapper, so the flex gap above can't reach
+   them — lay the wrapper out as a full-width grid with its own row gap. */
+.stat-body { display: grid; grid-template-columns: 1fr; grid-auto-rows: auto; gap: 28px; }
+
+/* Stats header — kicker on its own line, then logo + title (mirroring the
+   Today tab's date/time-above-logo/title layout). "eased" picks up the same
+   accent the Today title turns when a day is complete. */
+.stat-h { display: flex; flex-direction: column; gap: 18px; }
+.stat-h-kicker { margin: 0; }
+.stat-h-lead { display: flex; align-items: center; gap: 16px; }
+.stat-h .section-h { flex: 1 1 auto; min-width: 0; justify-content: center; }
+.stat-h .brand-mark { height: 68px; width: 68px; aspect-ratio: auto; align-self: center; }
+.stat-title-accent { color: var(--accent); }
+.stat-filters-sub { margin: 0 0 2px; }
+@media (max-width: 640px) {
+  .stat-h-lead { gap: 12px; }
+  .stat-h .brand-mark { height: 56px; width: 56px; }
+}
+
+/* Filters — picker scope (scrollable pills) + time range (segmented). */
+/* Filters — picker scope (scrollable pills) + time range (segmented). Labels
+   stack ABOVE their row as small kickers so the pill/card row gets full width
+   (important on mobile, and lets long labels like "Conditionals" breathe). */
+.stat-filters { display: flex; flex-direction: column; gap: 14px; }
+.stat-filter-row { display: flex; flex-direction: column; align-items: stretch; gap: 7px; }
+.stat-filter-lbl {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted);
+}
+/* Data tab has a longer "Conditionals" label — widen its filter labels (which
+   narrows the pill/card rows accordingly, since the row is flex). */
+.data-empty { padding: 40px 4px; text-align: center; }
+.data-empty-title { font-size: 15px; font-weight: 500; color: var(--text); margin: 0 0 6px; }
+.data-empty-sub { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 0; text-wrap: pretty; }
+.stat-filter-pills {
+  display: flex; gap: 7px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+  min-width: 0;
+  /* Edge fades as a scrollability cue; JS toggles .at-start / .at-end so a side
+     only fades when there's more content past it. */
+  --fade: 28px;
+  --fade-l: var(--fade);
+  --fade-r: var(--fade);
+  mask-image: linear-gradient(to right,
+    transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+}
+.stat-filter-pills.at-start { --fade-l: 0px; }
+.stat-filter-pills.at-end   { --fade-r: 0px; }
+.stat-filter-pills::-webkit-scrollbar { display: none; }
+/* Stats scope selector reuses the Pickers-tab group bar + picker tabs verbatim;
+   these modifiers only let them shrink & scroll inside the flex filter row. */
+.stat-scope-groups,
+.stat-scope-tabs { min-width: 0; flex: 1 1 auto; }
+/* The range row wraps on wide screens (no scroll, no fade needed). */
+.stat-filter-pills--seg { flex-wrap: wrap; }
+/* On mobile, collapse it to a single side-scrolling row with faded edges, to
+   match the picker scope row above it. */
+@container app (max-width: 600px) {
+  .stat-filter-pills--seg { flex-wrap: nowrap; }
+}
+.stat-pill {
+  flex-shrink: 0;
+  padding: 6px 13px;
+  background: transparent;
+  border: 0.5px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px; font-weight: 500; letter-spacing: -0.01em;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color .12s, background .12s, color .12s;
+}
+.stat-pill:hover { border-color: var(--muted); color: var(--text); }
+.stat-pill.is-on {
+  background: oklch(from var(--accent-soft) l c h);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.stat-empty {
+  color: var(--muted); font-size: 13.5px;
+  padding: 14px 2px;
+}
+
+/* Single-picker identity block — same vocabulary as the Pickers tab header. */
+.stat-picker-id { display: flex; flex-direction: column; gap: 2px; }
+.stat-picker-id-top { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+.stat-picker-id .picker-title { margin: 6px 0 0; }
+.stat-picker-id .picker-hint { margin: 8px 0 0; }
+
+/* Breakdown: stacked proportion bar + legend (pick source, reminder type). */
+.bd { display: flex; flex-direction: column; gap: 14px; margin-top: 12px; }
+.bd-bar {
+  display: flex; height: 12px;
+  border-radius: 999px; overflow: hidden;
+  background: oklch(from var(--border) calc(l + 0.02) c h);
+}
+.bd-seg { height: 100%; transition: width .3s cubic-bezier(.3,1,.5,1); }
+.bd-seg + .bd-seg { box-shadow: -1px 0 0 var(--surface); }
+.bd-legend { display: flex; flex-direction: column; gap: 0; }
+.bd-legend li {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0;
+  border-bottom: 0.5px solid var(--border);
+  font-size: 14px;
+}
+.bd-legend li:last-child { border-bottom: 0; }
+.bd-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.bd-label { color: var(--text); }
+.bd-val {
+  margin-left: auto;
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+  font-size: 13px; color: var(--text);
+}
+.bd-pct {
+  width: 44px; text-align: right;
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+  font-size: 12px; color: var(--muted);
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.stat-row--2 { grid-template-columns: repeat(2, 1fr); }
+@container app (max-width: 600px) {
+  .stat-row { grid-template-columns: repeat(2, 1fr); }
+  .stat-row--2 { grid-template-columns: 1fr; }
+}
+.stat-card {
+  position: relative;
+  padding: 14px 16px;
+}
+.stat-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.stat-lbl {
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.stat-card svg {
+  position: absolute; top: 14px; right: 14px;
+  color: var(--warm);
+}
+
+/* Heatmap */
+.heat-h {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px;
+}
+.heat-legend {
+  display: flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.heat-legend .heat-cell {
+  width: 13px; height: 13px;
+  aspect-ratio: auto;
+  flex: 0 0 auto;
+}
+/* Heatmap year pager (only when "All time" spans multiple years). */
+.heat-year-nav {
+  display: flex; align-items: center; justify-content: center; gap: 18px;
+  margin-bottom: 14px;
+}
+.heat-year {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 15px; font-weight: 600;
+  min-width: 4ch; text-align: center;
+}
+.heat-year-arrow {
+  border: 0.5px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  font-size: 18px; line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
+}
+.heat-year-arrow:hover:not(:disabled) {
+  background: oklch(from var(--accent) l c h / 0.08);
+  border-color: oklch(from var(--accent) l c h / 0.5);
+}
+.heat-year-arrow:disabled { opacity: 0.3; cursor: default; }
+
+.heat {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+  gap: 4px;
+}
+.heat-cell {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  display: block;
+  background: oklch(from var(--border) calc(l + 0.02) c h);
+}
+/* Cells are <button> for tap support — strip the native chrome. */
+button.heat-cell {
+  border: none; padding: 0; margin: 0; width: 100%;
+  cursor: pointer; -webkit-appearance: none; appearance: none;
+  transition: outline-color 0.12s ease, transform 0.08s ease;
+  outline: 2px solid transparent; outline-offset: 2px;
+}
+button.heat-cell:hover { transform: scale(1.08); }
+button.heat-cell.is-sel {
+  outline-color: var(--text);
+}
+.heat-0 { background: oklch(from var(--border) calc(l + 0.02) c h); }
+.heat-1 { background: oklch(from var(--accent) calc(l + 0.30) calc(c - 0.10) h); }
+.heat-2 { background: oklch(from var(--accent) calc(l + 0.18) calc(c - 0.06) h); }
+.heat-3 { background: oklch(from var(--accent) calc(l + 0.08) calc(c - 0.03) h); }
+.heat-4 { background: var(--accent); }
+
+/* Tap-to-reveal detail line under the grid (mobile-friendly; also works on desktop). */
+.heat-tap-hint {
+  margin: 14px 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: oklch(from var(--muted) l c h / 0.7);
+}
+.heat-detail {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--border);
+}
+.heat-detail-h {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  margin-bottom: 8px;
+}
+.heat-detail-date { font-weight: 600; font-size: 14px; }
+.heat-detail-count {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 12px; color: var(--muted);
+}
+.heat-detail-list { display: flex; flex-direction: column; }
+.heat-detail-list li {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 7px 0;
+  border-bottom: 0.5px solid oklch(from var(--border) l c h / 0.55);
+  font-size: 14px;
+}
+.heat-detail-list li:last-child { border-bottom: 0; }
+.heat-detail-name { color: var(--muted); }
+.heat-detail-list li.is-done .heat-detail-name { color: var(--text); }
+.heat-detail-mark {
+  font-family: var(--font-mono); font-size: 13px;
+  color: oklch(from var(--muted) l c h / 0.6);
+}
+.heat-detail-list li.is-done .heat-detail-mark { color: var(--accent); }
+.heat-detail-empty { margin: 0; font-size: 13px; color: var(--muted); }
+
+/* Reusable range pager ("1–10 of N  ‹ ›"). */
+.pager {
+  display: flex; align-items: center; justify-content: flex-end; gap: 14px;
+  margin-top: 16px; padding-top: 14px;
+  border-top: 0.5px solid var(--border);
+}
+.pager-range {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 12px; color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.pager-of { opacity: 0.6; }
+.pager-arrows { display: flex; align-items: center; gap: 6px; }
+.pager-arrow {
+  border: 0.5px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  font-size: 17px; line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
+}
+.pager-arrow:hover:not(:disabled) {
+  background: oklch(from var(--accent) l c h / 0.08);
+  border-color: oklch(from var(--accent) l c h / 0.5);
+}
+.pager-arrow:disabled { opacity: 0.3; cursor: default; }
+
+.rank {
+  display: flex; flex-direction: column;
+  margin-top: 8px;
+}
+.rank li {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 13px 0;
+  border-bottom: 0.5px solid var(--border);
+  font-size: 14px;
+}
+.rank li:last-child { border-bottom: 0; }
+.rank-n {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  font-size: 12px;
+}
+.rank--cold .rank-n { color: oklch(from var(--muted) l c h / 0.7); }
+
+/* Single-picker "Pick breakdown" — full item list with a sort toggle. */
+.rank-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.rank-sort {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 10px;
+  background: transparent;
+  border: 0.5px solid var(--border);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color .12s, color .12s;
+}
+.rank-sort:hover { border-color: var(--muted); color: var(--text); }
+
+/* Metric switcher pills for the Pick breakdown card — single scrollable row
+   with edge fades, matching the Show/Range filter strips. */
+.bd-metrics {
+  display: flex; flex-wrap: nowrap; gap: 6px;
+  margin: 12px 0 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+  min-width: 0;
+  --fade: 28px;
+  --fade-l: var(--fade);
+  --fade-r: var(--fade);
+  mask-image: linear-gradient(to right,
+    transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+}
+.bd-metrics.at-start { --fade-l: 0px; }
+.bd-metrics.at-end   { --fade-r: 0px; }
+.bd-metrics::-webkit-scrollbar { display: none; }
+.bd-metric {
+  flex: 0 0 auto;
+  padding: 5px 11px;
+  background: transparent;
+  border: 0.5px solid var(--border);
+  border-radius: 999px;
+  font-size: 12.5px; font-weight: 500; letter-spacing: -0.01em;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color .12s, background .12s, color .12s;
+}
+.bd-metric:hover { border-color: var(--muted); color: var(--text); }
+.bd-metric.is-on {
+  background: oklch(from var(--accent-soft) l c h);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.rank-metric-n {
+  flex: 0 0 auto;
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+  font-size: 14px; color: var(--text);
+  min-width: 32px; text-align: right;
+}
+.rank--breakdown li, .rank--freq li { align-items: center; }
+.rank--breakdown .rank-name { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.rank--breakdown .rank-name-row { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.rank--breakdown li.is-vacation .rank-name { color: var(--muted); }
+.rank-meta {
+  font-family: var(--font-mono);
+  font-size: 10.5px; letter-spacing: 0.02em;
+  color: oklch(from var(--muted) l c h / 0.85);
+}
+.rank-tag {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--muted);
+  border: 0.5px solid var(--border); border-radius: 999px;
+  padding: 1px 6px;
+}
+/* "Was on vacation" — item returned but not picked since. Uses the accent tint
+   (not the muted grey of currently-on-vacation) and its row stays un-dimmed. */
+.rank-tag--was {
+  color: var(--accent);
+  border-color: oklch(from var(--accent) l c h / 0.4);
+  background: oklch(from var(--accent-soft) l c h);
+}
+/* Deleted item — history remains in the log but the item no longer exists.
+   Muted/struck name so it reads as historical; tag uses a warm danger tint. */
+.rank--breakdown li.is-deleted .rank-name-text,
+.rank--freq li.is-deleted .rank-name-text {
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-color: oklch(from var(--muted) l c h / 0.5);
+}
+.rank-tag--deleted {
+  color: oklch(0.55 0.16 25);
+  border-color: oklch(0.55 0.16 25 / 0.4);
+  background: oklch(0.55 0.16 25 / 0.08);
+}
+.rank-vals { display: flex; align-items: baseline; gap: 10px; flex: 0 0 auto; }
+.rank-pct {
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+  font-size: 14px; color: var(--text);
+  min-width: 38px; text-align: right;
+}
+.rank-frac {
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+  font-size: 11.5px; color: var(--muted);
+  min-width: 52px; text-align: right;
+}
+
+/* Second single-picker card: pickup frequency / depletion. */
+.rank-note {
+  margin: 12px 0 0;
+  font-size: 12.5px; line-height: 1.45; color: var(--muted);
+  text-wrap: pretty;
+}
+/* Inline unit toggle inside a rank-note (e.g. Last picked: calendar/eligible). */
+.note-link {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  font: inherit; color: var(--muted);
+  text-decoration: underline; text-decoration-style: dotted;
+  text-underline-offset: 2px;
+  transition: color .12s;
+}
+.note-link:hover { color: var(--text); }
+.note-link.is-on {
+  color: var(--accent); font-weight: 600;
+  text-decoration-style: solid;
+}
+.rank--freq { margin-top: 14px; }
+.rank--freq .rank-name { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.rank--freq li.is-vacation .rank-name { color: var(--muted); }
+.rank-freq-val {
+  flex: 0 0 auto;
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+  font-size: 13px; color: var(--text);
+  white-space: nowrap;
+}
+.rank-freq-val.is-dim { color: oklch(from var(--muted) l c h / 0.7); }
+.rank-suffix { color: var(--muted); font-size: 0.92em; white-space: nowrap; }
+.rank-reroll {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: 2px;
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+  font-size: 11px; color: var(--muted);
+  border: 0.5px solid var(--border); border-radius: 999px;
+  padding: 1px 6px 1px 5px;
+}
+.rank-reroll svg { opacity: 0.75; }
+.rank--breakdown.rank--breakdown { margin-top: 14px; }
+
+/* ─── Tab: Data ──────────────────────────────────────────────────────────── */
+
+.tab--data { display: flex; flex-direction: column; gap: 20px; }
+
+.data-list { display: flex; flex-direction: column; gap: 14px; }
+/* Filter-change entrance: when the group/scope changes the list remounts (keyed
+   on the filter) and each card fades + slides up with a small per-index stagger,
+   reading as a smooth reflow to the new filter. */
+@keyframes catEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.cat--enter { animation: catEnter .3s cubic-bezier(.4,0,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .cat--enter { animation: none; } }
+/* Show-filter boxes slide in horizontally (staggered) when the group changes —
+   the row is keyed on the group so the animation replays. */
+@keyframes pickerTabEnter {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: none; }
+}
+.picker-tab--enter { animation: pickerTabEnter .28s cubic-bezier(.4,0,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .picker-tab--enter { animation: none; } }
+
+/* A freshly-added reminder / picker item row slides down + fades in when created
+   via "+ New reminder" / "+ Add to …", so the insertion reads as a deliberate
+   action rather than the row just popping into place. The editor Collapse below
+   it expands at the same time. */
+@keyframes rowInsert {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+.rd-item--insert { animation: rowInsert .32s cubic-bezier(.34,1.32,.5,1) both; }
+@media (prefers-reduced-motion: reduce) { .rd-item--insert { animation-duration: .01ms; } }
+
+.cat {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.cat.is-vac { opacity: 0.7; }
+
+.cat-h {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+}
+.cat-h-l { display: flex; align-items: center; gap: 10px; }
+/* The left cluster is the actual disclosure button; the header remains a plain
+   container so the picker card's nested vac-toggle stays valid HTML. */
+button.cat-h-l {
+  appearance: none; -webkit-appearance: none;
+  border: 0; background: none; font: inherit; color: inherit;
+  padding: 0; margin: 0; cursor: pointer; text-align: left;
+  flex: 1 1 auto; min-width: 0;
+}
+.chev {
+  color: var(--muted);
+  display: inline-flex;
+  transition: transform .15s;
+}
+.chev.is-open { transform: rotate(90deg); }
+/* Animated disclosure (see <Collapse>): grid-rows 0fr↔1fr eases height to auto;
+   the inner wrapper hides overflow and fades+slides its content. */
+.collapse { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .26s cubic-bezier(.4,0,.2,1); }
+.collapse.is-open { grid-template-rows: 1fr; }
+.collapse-inner { overflow: hidden; min-height: 0; opacity: 0; transform: translateY(-4px); transition: opacity .22s ease, transform .22s ease; }
+.collapse.is-open > .collapse-inner { opacity: 1; transform: none; }
+/* Style-picker hint rows (Appearance): the hint is one short line, so a height
+   glide reads as janky — carry the swap with a stronger, slower content fade. */
+.rd-mode-opt .collapse-inner { transition: opacity .8s ease .06s, transform .8s cubic-bezier(.2,.7,.3,1) .06s; }
+.rd-mode-opt .collapse { transition: grid-template-rows .8s cubic-bezier(.4,0,.2,1); }
+.rd-mode-opt .collapse:not(.is-open) > .collapse-inner { transform: translateY(-8px); }
+@media (prefers-reduced-motion: reduce) { .rd-mode-opt .collapse-inner { transition: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .collapse, .collapse-inner { transition: none; }
+}
+.cat-name { margin: 0; font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
+.cat-group {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 2px 8px; border: 0.5px solid var(--border); border-radius: 999px;
+}
+.cat-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+
+.vac-toggle {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 0.5px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color .12s, background .12s;
+}
+.vac-toggle:hover { color: var(--text); background: var(--bg); }
+.cat.is-vac .vac-toggle { color: var(--warm); }
+
+.cat-body {
+  border-top: 0.5px solid var(--border);
+  background: oklch(from var(--surface) calc(l - 0.005) c h);
+}
+
+.item-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 0.5px solid var(--border);
+}
+.item-row:last-child { border-bottom: 0; }
+.item-row.is-vac { opacity: 0.45; }
+.item-name { font-size: 14px; }
+
+.weight-stepper {
+  display: inline-flex; align-items: center;
+  border: 0.5px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+}
+.weight-stepper button {
+  width: 26px; height: 26px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+.weight-stepper button:hover:not(:disabled) { color: var(--text); }
+.weight-stepper button:disabled { opacity: 0.35; cursor: default; }
+.weight-val {
+  padding: 0 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.item-vac, .item-del {
+  width: 28px; height: 28px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  color: var(--muted);
+  transition: background .12s, color .12s;
+}
+.item-vac:hover, .item-del:hover { background: var(--bg); color: var(--text); }
+.item-del:hover { color: oklch(0.5 0.18 25); }
+
+.item-row--add {
+  display: block;
+  padding: 8px 16px;
+}
+.add-input {
+  width: 100%;
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  outline: none;
+  font-size: 14px;
+}
+.add-input:focus { border-color: var(--accent); }
+
+.add-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 16px;
+  width: 100%;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left;
+}
+.add-btn:hover { color: var(--accent); }
+
+/* Inline delete confirmation — shared by item rows and picker rows. */
+.item-row--confirm, .pm-row--confirm {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+  background: oklch(from var(--warm) l c h / 0.08);
+}
+.confirm-msg {
+  font-size: 13px; color: var(--text); text-wrap: pretty;
+}
+.confirm-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+.confirm-cancel, .confirm-go {
+  height: 30px; padding: 0 14px;
+  border-radius: var(--r-sm);
+  font-family: var(--font-sans); font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  border: 0.5px solid var(--border);
+  transition: background .12s, color .12s, border-color .12s;
+}
+.confirm-cancel { background: var(--bg); color: var(--text); }
+.confirm-cancel:hover { border-color: var(--muted); }
+.confirm-go {
+  background: oklch(0.5 0.18 25); color: #fff; border-color: transparent;
+}
+.confirm-go:hover { background: oklch(0.45 0.19 25); }
+
+/* Picker management list (delete pickers). */
+.data-pickers { display: flex; flex-direction: column; gap: 12px; }
+.data-sub { display: flex; flex-direction: column; gap: 4px; }
+.data-sub-h {
+  margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -0.01em;
+  color: var(--text);
+}
+.data-sub-p {
+  margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted);
+  max-width: 60ch; text-wrap: pretty;
+}
+.pm-list {
+  display: flex; flex-direction: column;
+  border: 0.5px solid var(--border); border-radius: var(--r-md, 12px);
+  overflow: hidden;
+  background: var(--surface);
+}
+.pm-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 0.5px solid var(--border);
+}
+.pm-row:last-child { border-bottom: 0; }
+.pm-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.pm-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.pm-meta {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+/* ─── Tab: Settings ──────────────────────────────────────────────────────── */
+
+.tab--settings { gap: 24px; }
+.settings-group { display: flex; flex-direction: column; gap: 10px; }
+.settings-h {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+.settings-sub { margin: 0; color: var(--muted); font-size: 14px; }
+
+/* ── Settings: two-column layout (sticky section nav + scrolling sections) ────
+   Mirrors the Today tab's group rail, but the Settings header is not sticky so
+   the rail parks near the top of the scroll viewport. */
+.tab--settings .settings-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  align-items: start;
+  margin-top: 28px;
+}
+.settings-rail {
+  position: sticky;
+  top: 16px;
+  align-self: start;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.settings-rail::-webkit-scrollbar { display: none; }
+.settings-rail .rail-kicker { padding: 0 12px 4px; }
+.settings-rail ul { display: flex; flex-direction: column; gap: 2px; }
+
+.settings-sections { display: flex; flex-direction: column; gap: 32px; min-width: 0; }
+.set-section {
+  display: flex; flex-direction: column; gap: 12px;
+  scroll-margin-top: 32px;
+}
+/* Mono kicker + dividing line atop each section (matches the Data tab). */
+.set-section-h {
+  display: flex; align-items: center; gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 0.5px solid var(--border);
+}
+.set-section-h .kicker { padding: 0; }
+
+/* Appearance: Theme / Picker animation / Layout subsections within one section. */
+.set-subsection { display: flex; flex-direction: column; gap: 8px; }
+.set-subsection-h {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--muted);
+}
+
+/* ── Theme rows (Appearance) — full-width color strip, name bottom-left. ── */
+.theme-row {
+  position: relative;
+  height: 56px; border-radius: 10px; overflow: hidden;
+  display: flex; cursor: pointer;
+  border: 1.5px solid transparent;
+  outline: none;
+  transition: border-color 0.25s ease;
+}
+.theme-row:focus-visible { border-color: var(--accent); }
+.theme-row.is-on { border-color: var(--text); }
+.theme-row i { display: block; flex: 1; height: 100%; }
+.theme-row span {
+  position: absolute; bottom: 6px; left: 10px;
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.05em;
+  text-transform: uppercase; color: rgba(0,0,0,.45);
+  cursor: pointer;
+}
+.theme-row.is-dark span { color: rgba(255,255,255,.65); }
+.theme-row--custom.is-on span { color: inherit; }
+.theme-row-check {
+  position: absolute; top: 6px; right: 8px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: rgba(255,255,255,.92); color: oklch(0.5 0.14 250);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  /* Springs in when a theme is selected (the node mounts on select). */
+  animation: themeCheckIn 0.34s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+@keyframes themeCheckIn {
+  0%   { opacity: 0; transform: scale(0.4); }
+  60%  { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-row-check { animation: none; }
+}
+/* The generic `.theme-row.is-dark span` rule (label text → white) also matches
+   the check span AND the inner text-span the editor injects around the glyph;
+   keep both blue so the check stays visible on its white disc. */
+.theme-row.is-dark .theme-row-check,
+.theme-row.is-dark .theme-row-check span { color: oklch(0.5 0.14 250); }
+.theme-row + .theme-row, .theme-row + .theme-custom { margin-top: 8px; }
+/* Custom row: dashed frame; its 3 segments are live color inputs rather than
+   a static preview, but the shape (height/radius/name label) matches the
+   preset rows above it. */
+.theme-row--custom {
+  border: 1.5px dashed var(--border);
+}
+.theme-row--custom.is-on { border-style: solid; border-color: var(--text); }
+/* Reset the native color-input chrome so each swatch fills its segment
+   edge-to-edge, matching the plain <i> color blocks on preset rows. */
+.theme-custom-swatch {
+  -webkit-appearance: none; appearance: none;
+  border: 0; padding: 0; height: 100%; cursor: pointer; background: none;
+}
+.theme-custom-swatch::-webkit-color-swatch-wrapper { padding: 0; }
+.theme-custom-swatch::-webkit-color-swatch { border: none; transition: background-color .35s ease; }
+.theme-custom-swatch::-moz-color-swatch { border: none; transition: background-color .35s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .theme-custom-swatch::-webkit-color-swatch { transition: none; }
+  .theme-custom-swatch::-moz-color-swatch { transition: none; }
+}
+/* Editable name field, positioned/styled exactly like the preset rows' name
+   label (bottom-left, mono, uppercase) but a real input so it actually saves. */
+.theme-custom-name {
+  position: absolute; bottom: 6px; left: 10px;
+  width: 100px; max-width: calc(100% - 20px);
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.05em;
+  text-transform: uppercase; color: rgba(0,0,0,.5);
+  background: rgba(255,255,255,.55); border: 0; border-radius: 4px;
+  padding: 1px 4px; outline: none;
+}
+.theme-custom-name::placeholder { color: rgba(0,0,0,.4); }
+.theme-row--custom.is-dark .theme-custom-name { color: rgba(255,255,255,.7); background: rgba(0,0,0,.35); }
+.theme-row--custom.is-dark .theme-custom-name::placeholder { color: rgba(255,255,255,.5); }
+.theme-custom-name:focus { background: white; color: #111; }
+.theme-row--custom.is-dark .theme-custom-name:focus { background: #111; color: white; }
+
+/* Daily-generator roster: full-bleed rows inside the card. */
+.set-daily-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.set-daily-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 0; min-height: 44px;
+  border-bottom: 0.5px solid var(--border);
+}
+.set-daily-row:last-child { border-bottom: 0; }
+.set-daily-info { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.set-daily-name { font-size: 14px; font-weight: 500; }
+.set-daily-group {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--muted);
+}
+
+/* Data control + Account: label/description left, action button right. */
+.set-data-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 0; border-bottom: 0.5px solid var(--border);
+}
+.set-data-row:first-child { padding-top: 4px; }
+.set-data-row:last-child { border-bottom: 0; padding-bottom: 4px; }
+.set-data-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1 1 auto; }
+.set-data-name { font-size: 14px; font-weight: 600; }
+.set-data-sub { font-size: 12.5px; color: var(--muted); line-height: 1.45; text-wrap: pretty; }
+.set-layout-sub { max-width: 190px; }
+/* Keep the placement segmented control on one row (never wrap its pills). */
+.set-data-row .seg { flex-wrap: nowrap; flex: 0 0 auto; }
+.set-data-row--danger .set-data-name { color: oklch(0.5 0.18 25); }
+.set-import-msg { font-size: 12px; margin-top: 2px; animation: importMsgPop .34s cubic-bezier(.34,1.56,.5,1) both; }
+@keyframes importMsgPop { 0% { opacity: 0; transform: scale(.9); } 60% { opacity: 1; transform: scale(1.06); } 100% { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .set-import-msg { animation: none; } }
+.set-import-msg.is-ok { color: var(--accent); }
+.set-import-msg.is-err { color: oklch(0.5 0.18 25); }
+/* Pending destructive confirmation (import) — warm, matching the reminder
+   advisories rather than the red of an error. */
+.set-import-msg.is-warn { color: oklch(0.45 0.13 50); max-width: 52ch; line-height: 1.45; }
+
+/* Legal modal (Settings → Legal). User-initiated, so a modal is acceptable for
+   this rare, self-contained content. Backdrop fades in; panel rises + scales. */
+.legal-modal-backdrop {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: oklch(0 0 0 / 0.42);
+  animation: legalBackdropIn .2s ease both;
+}
+.legal-modal-backdrop.is-closing { animation: legalBackdropOut .2s ease both; }
+.legal-modal {
+  width: 100%; max-width: 680px; max-height: 85vh;
+  display: flex; flex-direction: column;
+  background: var(--surface, var(--bg)); color: var(--text);
+  border: 0.5px solid var(--border); border-radius: 16px;
+  box-shadow: 0 24px 60px oklch(0 0 0 / 0.28); outline: none; overflow: hidden;
+  animation: legalPanelIn .24s cubic-bezier(.2,.8,.3,1) both;
+}
+.legal-modal.is-closing { animation: legalPanelOut .18s ease both; }
+.legal-modal-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 16px 14px 20px; border-bottom: 0.5px solid var(--border); flex: 0 0 auto;
+}
+.legal-modal-note { font-size: 12px; color: var(--muted); }
+.legal-modal-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 8px; border: 0; background: transparent;
+  color: var(--muted); cursor: pointer; flex: 0 0 auto;
+}
+.legal-modal-close:hover { background: var(--hover, oklch(0 0 0 / 0.05)); color: var(--text); }
+.legal-modal-body { padding: 8px 28px 28px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.legal-modal-body h1 { font-size: 26px; letter-spacing: -0.02em; margin: 16px 0 0; }
+.legal-modal-body h2 { font-size: 17px; margin: 1.6em 0 0.4em; }
+.legal-modal-body p, .legal-modal-body li { line-height: 1.6; color: oklch(from var(--text) l c h / 0.88); font-size: 14.5px; }
+.legal-modal-body .legal-meta { color: var(--muted); font-size: 12.5px; }
+@keyframes legalBackdropIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes legalBackdropOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes legalPanelIn { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes legalPanelOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(8px) scale(.98); } }
+@media (prefers-reduced-motion: reduce) {
+  .legal-modal-backdrop, .legal-modal-backdrop.is-closing,
+  .legal-modal, .legal-modal.is-closing { animation: none; }
+}
+/* Quick fade when a dynamic explanation swaps (keyed remount on value change). */
+.set-sub-fade { animation: setSubFade .6s ease; }
+@keyframes setSubFade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .set-sub-fade { animation: none; } }
+.set-empty { color: var(--muted); font-size: 14px; padding: 4px 0; }
+/* Fill / Refill lever: one-shot icon spin on click. */
+@keyframes fillSpin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+.btn.is-spinning svg { animation: fillSpin .5s cubic-bezier(.4,0,.2,1); }
+@media (prefers-reduced-motion: reduce) { .btn.is-spinning svg { animation: none; } }
+/* Breakdown lists (conditionals / reminders / pick breakdown): fade+rise when
+   the metric pill or sort direction changes (keyed remount). */
+.bd-list-fade { animation: setSubFade .3s ease, bdListRise .3s cubic-bezier(.2,.7,.3,1); }
+@keyframes bdListRise { from { transform: translateY(5px); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .bd-list-fade { animation: none; } }
+.set-data-row .set-time-input { flex: 0 0 130px; width: 130px; font-variant-numeric: tabular-nums; }
+.set-data-row .btn { flex: 0 0 auto; white-space: nowrap; }
+.set-data-row .switch { flex: 0 0 auto; }
+.set-reset-confirm { display: flex; gap: 8px; flex: 0 0 auto; animation: footSwapIn .16s ease both; }
+.set-disabled-btn { flex: 0 0 auto; display: inline-flex; }
+.set-reset-confirm.is-leaving { animation: footSwapOut .14s ease both; }
+@media (prefers-reduced-motion: reduce) { .set-reset-confirm { animation: none; } }
+/* The run-time sub-row sits under the toggle with a divider + extra top gap;
+   greys out and disables when the generator is set to manual. */
+.set-data-row--sub { border-top: 0; padding-top: 14px; transition: opacity .3s ease; }
+.set-data-row--sub.is-disabled { opacity: 0.45; }
+.set-data-row--sub.is-disabled .set-time-input { pointer-events: none; }
+
+/* Contact support form (About section) — the form now lives in its own Card
+   below the "Having problems?" row, padded normally (no rd-ctl bleed needed). */
+.support-form { display: flex; flex-direction: column; gap: 14px; }
+.support-form-intro { padding-top: 8px; }
+.support-field { display: flex; flex-direction: column; gap: 6px; }
+.support-flabel {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--muted);
+}
+.support-textarea { resize: vertical; min-height: 90px; font-family: inherit; line-height: 1.5; }
+/* Read-only diagnostic fields — value styled distinctly from an editable input
+   so it reads as informational, not something to type into. */
+.support-diag { display: flex; gap: 24px; flex-wrap: wrap; }
+.support-diag-field { display: flex; flex-direction: column; gap: 4px; }
+.support-diag-val { font-size: 13px; color: var(--text); }
+.support-form-foot {
+  display: flex; justify-content: flex-end; align-items: center; gap: 12px;
+  padding-top: 14px; border-top: 0.5px solid var(--border);
+}
+.support-valid-msg { margin-right: auto; font-size: 12px; color: oklch(0.5 0.18 25); animation: importMsgPop .34s cubic-bezier(.34,1.56,.5,1) both; }
+@media (prefers-reduced-motion: reduce) { .support-valid-msg { animation: none; } }
+
+/* About */
+.set-about { display: flex; flex-direction: column; gap: 10px; }
+.set-about-brand { display: flex; align-items: baseline; gap: 10px; }
+.set-about-name { font-size: 18px; font-weight: 600; letter-spacing: -0.015em; }
+.set-about-ver {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.03em;
+  color: var(--muted);
+}
+.set-about-creator { font-size: 12.5px; color: var(--muted); }
+.set-about-creator a { color: var(--accent); }
+.set-about-creator a:hover { color: var(--text); }
+
+/* Mobile: rail flips to a horizontal sticky pill bar above the sections. */
+@container app (max-width: 760px) {
+  .tab--settings .settings-layout { grid-template-columns: 1fr; gap: 16px; }
+  .settings-rail {
+    position: sticky; top: 0; z-index: 18;
+    max-height: none; overflow-x: auto; overflow-y: hidden;
+    padding: 14px 20px;
+    background: var(--bg);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-l, 16px), #000 calc(100% - var(--fade-r, 16px)), transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-l, 16px), #000 calc(100% - var(--fade-r, 16px)), transparent 100%);
+  }
+  .settings-rail.at-start { --fade-l: 0px; }
+  .settings-rail.at-end   { --fade-r: 0px; }
+  .settings-rail .rail-kicker { display: none; }
+  .settings-rail ul {
+    flex-direction: row; flex-wrap: nowrap; gap: 6px; width: max-content;
+  }
+  .settings-rail .rail-btn {
+    flex-shrink: 0; width: auto; white-space: nowrap;
+    padding: 6px 12px; border: 0.5px solid var(--border); border-radius: 999px;
+  }
+  .settings-rail .rail-btn.is-on { border-color: var(--accent); background: var(--accent-soft); }
+}
+
+.picker-cards { display: flex; flex-direction: column; gap: 8px; }
+
+.pkr-card { padding: 0; }
+.pkr-card-h {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 18px;
+  cursor: pointer;
+}
+.pkr-card-name { font-weight: 500; font-size: 15px; }
+.pkr-card-mode { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.03em; text-transform: uppercase; }
+
+.pkr-card-body {
+  padding: 0 18px 18px;
+  border-top: 0.5px solid var(--border);
+  padding-top: 16px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.pkr-card-hint { color: var(--muted); font-size: 13px; margin: 0; }
+
+.mode-radio { display: flex; flex-direction: column; gap: 4px; }
+.mode-opt {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px;
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-md);
+  background: oklch(from var(--surface) calc(l - 0.005) c h);
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+}
+.mode-opt:hover { border-color: var(--muted); }
+/* Keyboard focus ring: the radio itself is small (or visually hidden in the
+   rd-mode-opt variant), so the ring goes on the whole option row. */
+.mode-opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mode-opt.is-on { border-color: var(--accent); background: var(--accent-soft); }
+.mode-opt input {
+  appearance: none; -webkit-appearance: none;
+  width: 14px; height: 14px; min-width: 14px;
+  margin-top: 2px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  position: relative;
+  transition: border-color .12s;
+}
+.mode-opt.is-on input { border-color: var(--accent); }
+.mode-opt.is-on input::after {
+  content: ''; position: absolute; inset: 3px;
+  border-radius: 50%; background: var(--accent);
+}
+.mode-opt-name { font-weight: 500; font-size: 14px; }
+.mode-opt-hint { font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+
+.ease-config {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 12px 14px;
+  background: oklch(from var(--surface) calc(l - 0.008) c h);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-md);
+}
+.ease-row { display: flex; flex-direction: column; gap: 6px; }
+.ease-row label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.range-pair { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.range-pair input {
+  width: 64px;
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  outline: none;
+}
+.range-pair input:focus { border-color: var(--accent); }
+.ease-unit { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Data picker Controls: the ease drift default renders as full-bleed rows
+   (label + explanation left, day stepper right — matching the item editor).
+   Sits flush under the mode list (single divider) and its last row's bottom
+   border doubles against the "When it runs" top border. Scoped to .rd-ctl-body
+   so the new-picker form's .ease-config keeps its original card styling. */
+/* The parent .rd-ctl-group--picks is ALREADY full-bleed (margin: 0 -16px), so
+   ease-config needs NO negative margin of its own: a horizontal -16px double-bled
+   it past the card edge, and a -12px top pull hoisted its kicker's top padding up
+   out of the section into the mode list. The group stacks with zero gap, so the
+   kicker's own 12px top padding provides the spacing under the mode list. */
+.rd-ctl-body .ease-config {
+  margin: 0; padding: 0;
+  background: none; border: 0; border-radius: 0; display: block;
+}
+.rd-ctl-body .ease-config .pie-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 16px; min-height: 44px;
+  border-bottom: 0.5px solid var(--border);
+}
+.rd-ctl-body .ease-config .pie-rowlabel { display: flex; flex-direction: column; gap: 1px; }
+.rd-ctl-body .ease-config .pie-lbl { font-size: 13.5px; }
+.rd-ctl-body .ease-config .pie-sub { font-size: 11px; color: var(--muted); }
+.rd-ctl-body .ease-config .pie-ctl { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.rd-ctl-body .ease-config .pie-ctl .np-ease-unit { font-size: 12px; }
+/* Kicker labelling the picker's default cadence rows (vs a per-item override). */
+.rd-ctl-body .ease-config .ease-cadence-kicker {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--muted); padding: 12px 16px 8px;
+}
+/* Separator between the kicker and its controls, matching the mode list's
+   border-top under the "How it picks" kicker. */
+.rd-ctl-body .ease-config .ease-cadence-kicker + .pie-row { border-top: 0.5px solid var(--border); }
+
+.daily-list { display: flex; flex-direction: column; }
+.daily-list li {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0;
+  border-bottom: 0.5px solid var(--border);
+}
+.daily-list li:last-child { border-bottom: 0; }
+.daily-name { font-size: 14px; font-weight: 500; }
+.daily-mode { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+
+.switch {
+  position: relative;
+  width: 36px; height: 20px;
+  border-radius: 999px;
+  background: var(--border);
+  transition: background .15s;
+}
+.switch i {
+  position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: 0 1px 2px oklch(0 0 0 / 0.15);
+  transition: transform .15s;
+}
+.switch.is-on { background: var(--accent); }
+.switch.is-on i { transform: translateX(16px); }
+
+/* ─── Add-picker chip + new-picker form ──────────────────────────────────── */
+/* The trailing chip in .picker-tabs that opens the create flow. Dashed + muted
+   so it reads as an action, not another saved picker; solid accent when on. */
+.picker-tab--add {
+  flex-direction: row; align-items: center; justify-content: center;
+  gap: 8px;
+  border-style: dashed;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.picker-tab--add:hover { border-color: var(--accent); color: var(--accent); }
+.picker-tab--add.is-on {
+  border-style: solid;
+  border-color: var(--accent);
+  background: oklch(from var(--accent-soft) l c h);
+  color: var(--accent);
+}
+.picker-tab--add .picker-tab-name { font-size: 13px; color: inherit; }
+.picker-tab--add .picker-tab-add-icon { display: inline-flex; }
+
+.np-fields { display: flex; flex-direction: column; gap: 24px; }
+.np-field { display: flex; flex-direction: column; gap: 8px; }
+.np-field--toggle {
+  display: flex;
+  flex-direction: row; align-items: flex-start; justify-content: space-between;
+  gap: 20px;
+  padding-top: 20px;
+  border-top: 0.5px solid var(--border);
+}
+.np-field--toggle .np-toggle-text { display: flex; flex-direction: column; gap: 8px; }
+.np-field--toggle .switch { flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+.np-label { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; }
+.np-help {
+  margin: 0;
+  font-size: 13px; line-height: 1.5;
+  color: var(--muted);
+  max-width: 60ch; text-wrap: pretty;
+}
+.np-input {
+  width: 100%; max-width: 360px;
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  margin-top: 2px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color .12s;
+}
+.np-input::placeholder { color: var(--muted); opacity: 0.7; }
+.np-input:focus { border-color: var(--accent); }
+.np-input--sm { max-width: 260px; }
+
+.np-groups { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.np-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 14px;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px; font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color .12s, background .12s, color .12s;
+}
+.np-chip:hover { border-color: var(--muted); }
+.np-chip.is-on {
+  border-color: var(--accent);
+  background: oklch(from var(--accent-soft) l c h);
+  color: var(--accent);
+}
+.np-chip--new { color: var(--muted); border-style: dashed; }
+.np-chip--new.is-on { color: var(--accent); border-style: solid; }
+
+.np-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 0.5px solid var(--border);
+}
+.np-footer-note {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.03em;
+  color: var(--muted);
+  flex: 1 1 auto; min-width: 0; max-width: 40ch;
+}
+.np-footer-actions { display: flex; gap: 8px; align-items: center; flex: 0 0 auto; }
+/* Step-2 footer follows the pool directly — add breathing room so its top
+   border doesn't sit flush against the last pool row. */
+.np-pool + .np-footer { margin-top: 20px; }
+.np-footer--step1 { margin-top: 24px; }
+
+/* Step indicator — two segments, current accented, completed checkmarked. */
+.np-steps {
+  display: flex; align-items: center; gap: 10px;
+  margin: 2px 0 4px;
+}
+.np-step {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: none; border: none; padding: 2px; cursor: pointer;
+  color: var(--muted);
+}
+.np-step:disabled { cursor: default; }
+.np-step-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 999px;
+  border: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  color: var(--muted);
+  transition: border-color .12s, background .12s, color .12s;
+}
+.np-step-lbl { font-size: 13px; font-weight: 500; }
+.np-step.is-on { color: var(--text); }
+.np-step.is-on .np-step-num { border-color: var(--accent); background: var(--accent); color: var(--accent-ink, #fff); }
+.np-step.is-done { color: var(--text); }
+.np-step.is-done .np-step-num { border-color: var(--accent); color: var(--accent); }
+.np-step-line { flex: 0 0 28px; height: 1px; background: var(--border); }
+
+/* Add-item row — text field + Add button, like the Data tab's quick-add. */
+.np-additem { display: flex; gap: 8px; align-items: stretch; margin-top: 2px; }
+.np-additem .np-input { flex: 1; max-width: none; margin-top: 0; }
+.np-additem .btn { flex: 0 0 auto; align-self: stretch; }
+
+/* The growing pool list. */
+.np-pool { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+.np-pool-h { display: flex; align-items: center; justify-content: space-between; }
+.np-pool-empty {
+  padding: 18px 16px;
+  border: 1px dashed var(--border); border-radius: var(--r-sm);
+  background: oklch(from var(--surface) l c h / 0.5);
+  color: var(--muted); font-size: 13px; line-height: 1.5;
+  text-wrap: pretty;
+}
+.np-pool-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.np-pool-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 9px 12px;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-sm);
+  animation: np-row-in .16s ease;
+}
+@keyframes np-row-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+.np-pool-name { font-size: 14px; }
+.np-pool-controls { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+
+/* Per-item weight stepper — only rendered for weighted / dynamic modes. */
+.np-weight {
+  display: inline-flex; align-items: center; gap: 2px;
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: 999px;
+  padding: 2px;
+}
+.np-weight-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; flex: 0 0 auto;
+  background: none; border: none; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 15px; line-height: 1;
+  color: var(--muted); cursor: pointer;
+  transition: color .12s, background .12s;
+}
+.np-weight-btn:hover:not(:disabled) { color: var(--accent); background: var(--accent-soft); }
+.np-weight-btn:disabled { opacity: 0.35; cursor: default; }
+.np-weight-val {
+  min-width: 26px; text-align: center;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+  color: var(--text);
+}
+.np-weight-note { margin-top: -2px; }
+
+/* Per-item ease cadence controls (ease-up / ease-down). Each pool row stacks:
+   name + actions on top, the cadence steppers/inputs below. */
+.np-pool-row--ease { flex-direction: column; align-items: stretch; gap: 10px; }
+.np-pool-main { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.np-pool-ease {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 16px;
+  padding-top: 10px;
+  border-top: 0.5px dashed var(--border);
+}
+.np-ease-mini { display: flex; flex-direction: column; gap: 4px; }
+.np-ease-mini .np-stepper, .np-ease-mini .np-input--num { margin-top: 0; }
+.np-ease-mini-readout {
+  margin-left: auto; align-self: center;
+  font-size: 12px; color: var(--muted); font-style: italic;
+  text-align: right;
+}
+.np-mini-lbl {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--muted);
+}
+.np-stepper {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: 999px;
+  padding: 3px;
+}
+.np-stepper-val {
+  min-width: 26px; text-align: center;
+  font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+  color: var(--text);
+}
+/* Editable stepper value — same look as .np-stepper-val, borderless input. */
+.np-stepper-input {
+  width: 32px; text-align: center; padding: 0;
+  background: transparent; border: 0; outline: none;
+  font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--text);
+  -moz-appearance: textfield;
+}
+.np-stepper-input::-webkit-outer-spin-button,
+.np-stepper-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.np-stepper-input:focus { background: var(--surface); border-radius: 5px; }
+.np-ease-unit { font-size: 13px; color: var(--muted); align-self: center; }
+.np-input--num { width: 84px; max-width: 84px; margin-top: 0; }
+.np-ease-toggle {
+  background: none; border: none; padding: 2px 0;
+  font-family: var(--font-sans); font-size: 12px; font-weight: 500;
+  color: var(--accent); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 2px;
+  text-decoration-color: oklch(from var(--accent) l c h / 0.4);
+}
+.np-ease-toggle:hover { text-decoration-color: var(--accent); }
+
+.np-pool-rm {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; flex: 0 0 auto;
+  background: none; border: none; border-radius: var(--r-sm);
+  color: var(--muted); cursor: pointer;
+  transition: color .12s, background .12s;
+}
+.np-pool-rm:hover { color: var(--warm); background: oklch(from var(--warm) l c h / 0.1); }
+
+/* ─── Weekday chips (shared: new-picker form + Data schedule) ─────────────── */
+.dow-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.dow-chip {
+  width: 34px; height: 34px; flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--bg);
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  cursor: pointer;
+  transition: border-color .24s ease, background .24s ease, color .24s ease;
+}
+.dow-chip:hover { border-color: var(--muted); }
+.dow-chip.is-on {
+  background: oklch(from var(--accent-soft) l c h);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.dow-chips--sm .dow-chip { width: 30px; height: 30px; font-size: 12px; }
+/* Locked chip (weekly cadence anchor): looks selected but is an InfoTip trigger,
+   not a toggle — no hover affordance, and the help cursor signals "explains
+   itself" rather than "click me". */
+.dow-chip.is-locked { cursor: help; }
+.dow-chip.is-locked:hover { border-color: var(--accent); }
+.dow-chip--sm { width: 30px; height: 30px; font-size: 12px; }
+
+/* ─── New-picker form: daily schedule sub-area ────────────────────────────── */
+/* Sits beneath the "Include in the Daily generator" toggle; only shown when
+   that toggle is on, so it reads as a refinement of it. */
+.np-sched {
+  display: flex; flex-direction: column; gap: 22px;
+  padding: 18px 0 0 0;
+}
+.np-sched-block { display: flex; flex-direction: column; gap: 8px; }
+/* Daily-generator toggle + its cadence/schedule refinement share one field with a
+   tighter internal gap than the form's section gap, so they read as one group. */
+.np-daily-group { display: flex; flex-direction: column; gap: 4px; }
+/* Cadence selector: a little breathing room below the segmented control. */
+.np-sched .cad-ctl .seg { margin-bottom: 10px; }
+.np-sched-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.np-sched-presets { display: flex; gap: 6px; flex-wrap: wrap; }
+.np-preset {
+  border: none; background: none; cursor: pointer;
+  font-size: 12.5px; color: var(--accent);
+  padding: 4px 6px; border-radius: var(--r-sm);
+}
+.np-preset:hover { background: oklch(from var(--accent-soft) l c h); }
+.np-sched-toggle {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
+}
+.np-sched-toggle .switch { flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+
+/* ─── Data tab: schedule section ──────────────────────────────────────────── */
+.data-schedule { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
+.sched-list { display: flex; flex-direction: column; gap: 10px; }
+.sched-row {
+  border: 0.5px solid var(--border); border-radius: var(--r-md, 12px);
+  background: var(--surface);
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.sched-row.is-off { opacity: 0.72; }
+.sched-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.sched-id { display: flex; flex-direction: column; gap: 2px; }
+.sched-name { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; }
+.sched-meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.sched-head .switch { flex-shrink: 0; cursor: pointer; }
+.sched-controls {
+  display: flex; flex-direction: column; gap: 12px;
+  padding-top: 12px; border-top: 0.5px solid var(--border);
+}
+.sched-line { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.sched-line-lbl { font-size: 13.5px; color: var(--muted); }
+.sched-line .switch { cursor: pointer; }
+.sched-off-note { font-size: 13px; color: var(--muted); }
+
+/* ─── Holiday list (Settings → Days off, rendered inside a Card) ───────────── */
+.holiday-list {
+  list-style: none; margin: 0; padding: 0;
+}
+.holiday-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 11px 0;
+  border-bottom: 0.5px solid var(--border);
+}
+.holiday-row:last-child { border-bottom: 0; }
+.holiday-row.is-off .holiday-name { color: var(--muted); }
+.holiday-name { font-size: 14px; font-weight: 500; transition: color .28s ease; }
+/* Animate the strike-through: a pseudo line that scales in from the left rather
+   than text-decoration (which can't transition). */
+.holiday-date { position: relative; }
+.holiday-date-main { position: relative; align-self: flex-start; }
+.holiday-date-main::after { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left center; transition: transform .28s ease; }
+.holiday-row.is-off .holiday-date-main::after { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) { .holiday-name, .holiday-date-main::after { transition: none; } }
+.holiday-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.holiday-name { font-size: 14px; font-weight: 500; }
+.holiday-date { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.02em; display: flex; flex-direction: column; gap: 2px; }
+/* Custom (user-added) days recur yearly — keep the date + "every year" tag on
+   one line rather than stacked. */
+.holiday-date--custom { flex-direction: row; align-items: baseline; gap: 5px; flex-wrap: wrap; }
+.holiday-recur { opacity: 0.7; }
+/* Newly added custom day slides + fades in. Runs once on mount (existing rows
+   are keyed by id so they don't remount). */
+.holiday-row--enter { animation: holidayRowEnter .4s cubic-bezier(.4,0,.2,1); }
+@keyframes holidayRowEnter {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .holiday-row--enter { animation: none; } }
+/* Removing a custom day fades it up and out (mirrors the enter). The row keeps
+   its height collapse via the animation so siblings slide up smoothly. */
+.holiday-row.is-exiting {
+  animation: holidayRowExit .3s cubic-bezier(.4,0,.2,1) forwards;
+  pointer-events: none; overflow: hidden;
+}
+@keyframes holidayRowExit {
+  from { opacity: 1; transform: none; max-height: 60px; padding-top: 11px; padding-bottom: 11px; }
+  to   { opacity: 0; transform: translateY(-6px); max-height: 0; padding-top: 0; padding-bottom: 0; border-bottom-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .holiday-row.is-exiting { animation-duration: .01s; } }
+.holiday-obs { font-family: var(--font-sans, inherit); font-size: 11px; font-style: italic; color: var(--accent); letter-spacing: 0; }
+.holiday-row .switch { flex-shrink: 0; cursor: pointer; }
+.holiday-add {
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  margin-top: 14px; padding-top: 14px;
+  border-top: 0.5px solid var(--border);
+}
+.holiday-add .np-input { flex: 1 1 180px; }
+.holiday-date-input { flex: 0 0 auto; min-width: 150px; }
+
+/* ─── Reminders ──────────────────────────────────────────────────────────── */
+/* Today section: reuses .today-card / .check / .group-h. Extras only. */
+.rem-section .group-h { align-items: center; }
+.rem-meta { text-transform: none; letter-spacing: 0.02em; }
+.rem-meta .meta-picker { color: var(--muted); }
+
+.rem-add-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; flex: 0 0 auto;
+  border: 0.5px solid var(--border); border-radius: 999px;
+  background: var(--bg); color: var(--muted); cursor: pointer;
+  transition: border-color .12s, color .12s, background .12s;
+}
+.rem-add-btn:hover { border-color: var(--accent); color: var(--accent); background: oklch(from var(--accent-soft) l c h / 0.5); }
+
+/* Pin icon (one-time reminders) gets the warm accent to read as "sticky". */
+.rem-card .rem-meta svg { color: var(--accent); }
+
+/* When a reminder's editor is open, its title becomes a direct-edit input —
+   same affordance as the Data tab's name field, sized to match the card title. */
+.rem-card-name-input {
+  width: 100%; margin: 0; padding: 1px 0;
+  border: none; background: none;
+  font-family: var(--font-sans);
+  font-size: 17px; font-weight: 500; letter-spacing: -0.01em; color: var(--text);
+  border-bottom: 1px solid var(--border);
+  transition: border-color .12s;
+}
+.rem-card-name-input:focus { outline: none; border-bottom-color: var(--accent); }
+.rem-card-name-input::placeholder { color: var(--muted); opacity: 0.7; }
+.rem-card.is-editing { cursor: default; }
+
+/* Today picker entry: edit affordance — name turns into a direct-edit input and
+   a controls box (weight / vacation / delete) opens beneath, mirroring Data. */
+.entry-card-name-input {
+  width: 100%; margin: 0; padding: 1px 0;
+  border: none; background: none;
+  font-family: var(--font-sans);
+  font-size: 17px; font-weight: 500; letter-spacing: -0.01em; color: var(--text);
+  border-bottom: 1px solid var(--border);
+  transition: border-color .12s;
+}
+.entry-card-name-input:focus { outline: none; border-bottom-color: var(--accent); }
+.entry-card-name-input::placeholder { color: var(--muted); opacity: 0.7; }
+.today-card.is-editing { cursor: default; }
+
+/* Picker-item editor: one setting per full-bleed row (label left / control
+   right), with hairline dividers — same shape as the "When it runs" controls.
+   Full-bleed via -16px margins (both Today's card and Data's .rd-edit inset 16px). */
+.entry-editor .pie-rows {
+  display: flex; flex-direction: column;
+  margin: 2px -16px 0;
+  border-top: 0.5px solid var(--border);
+}
+.entry-editor .pie-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 16px; min-height: 44px;
+  border-bottom: 0.5px solid var(--border);
+}
+.entry-editor .pie-rowlabel { display: flex; flex-direction: column; gap: 1px; }
+.entry-editor .pie-lbl { font-size: 13.5px; }
+.entry-editor .pie-sub { font-size: 11px; color: var(--muted); }
+.entry-editor .pie-note { font-size: 13px; color: var(--muted); }
+.entry-editor .pie-ctl { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.entry-editor .pie-ctl .np-ease-unit { font-size: 12px; }
+/* Dynamic-only read-only Boost row: the accrued drift value + a Reset lever. */
+.entry-editor .pie-boost-val { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--text); }
+.entry-editor .pie-reset {
+  font-size: 12px; color: var(--muted); padding: 4px 9px; border-radius: 7px;
+  border: 0.5px solid var(--border); background: var(--surface); transition: color .12s, border-color .12s;
+}
+.entry-editor .pie-reset:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
+.entry-editor .pie-reset:disabled { opacity: 0.4; cursor: default; }
+/* Data picker items: dim a vacationed item's name in the resting row. */
+.rd-item.is-vac .rd-name { color: var(--muted); }
+.entry-edit-foot {
+  display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+  margin-top: 14px;
+}
+.entry-edit-confirm { display: flex; flex-direction: column; gap: 12px; }
+.entry-edit-confirm .confirm-msg { font-size: 13.5px; color: var(--text); }
+.entry-edit-confirm-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+.rem-quickadd {
+  display: flex; gap: 8px; align-items: center;
+  padding: 4px 2px;
+  animation: np-row-in .16s ease;
+}
+.rem-quickadd .np-input { flex: 1; max-width: none; margin-top: 0; }
+.rem-quickadd .btn { flex: 0 0 auto; }
+
+.rem-empty {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 16px;
+  border: 1px dashed var(--border); border-radius: var(--r-md);
+  background: oklch(from var(--surface) l c h / 0.5);
+  color: var(--muted); font-size: 13.5px; text-align: left;
+  cursor: pointer;
+  transition: border-color .12s, color .12s;
+}
+.rem-empty:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Inline editor shown under a Today card when its pencil is toggled. */
+.rem-inline-editor {
+  margin: -4px 0 4px;
+  padding: 16px;
+  background: oklch(from var(--surface) calc(l - 0.006) c h);
+  border: 0.5px solid var(--border); border-radius: var(--r-md);
+  animation: np-row-in .16s ease;
+}
+.rem-inline-foot { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+/* Data tab: the item/reminder editors sit inside a full-bleed row (.rd-edit),
+   so strip the Today card chrome (border, tint, radius, padding) — Today keeps
+   its card since the override is scoped to .rd-edit. */
+.rd-edit > .rem-inline-editor,
+.rd-edit > .entry-editor {
+  margin: 0; padding: 0; background: none; border: 0; border-radius: 0;
+}
+/* Inline delete confirm: footer morphs in place — message left, actions right. */
+.rem-foot-confirm { justify-content: space-between; align-items: center; }
+.rem-del-msg { font-size: 13px; color: var(--text); text-wrap: pretty; }
+.rem-del-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+/* Reminder editor footer: Delete anchored left, Cancel + Done grouped right.
+   Extra top margin separates the destructive/confirm row from the schedule
+   controls — clearer, and safer against accidental taps on mobile. */
+.rd-edit-foot, .rem-foot-confirm { margin-top: 18px; }
+.rem-foot-right { display: flex; gap: 8px; flex: 0 0 auto; margin-left: auto; }
+/* Picker-item editor: the footer doubles its top border against the Active row's
+   bottom border (full-bleed, no gap) — the same doubled-line section divider used
+   in the Controls sections. Scoped to .entry-editor so the reminders editor's
+   footer keeps its plain 18px gap. */
+.entry-editor .rd-edit-foot,
+.entry-editor .rem-foot-confirm {
+  margin: 0 -16px; padding: 14px 16px 0;
+  border-top: 0.5px solid var(--border);
+}
+
+/* Quick-add: name input sits flush above the same scheduling box. */
+.rem-quickadd-wrap { animation: np-row-in .16s ease; }
+.rem-quickadd-wrap.is-closing { animation: remQuickOut .18s ease both; overflow: hidden; }
+@keyframes remQuickOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-6px); } }
+@media (prefers-reduced-motion: reduce) { .rem-quickadd-wrap, .rem-quickadd-wrap.is-closing { animation-duration: .01ms; } }
+/* Reminder card entrance (freshly added) + collapse-out (deleted). The removing
+   keyframe drives removeTask via onAnimationEnd, so keep it instant (not none)
+   under reduced motion. */
+@keyframes remCardIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+.rem-card--insert { animation: remCardIn .32s cubic-bezier(.34,1.2,.5,1) both; }
+@keyframes remCardOut { from { opacity: 1; max-height: 140px; } to { opacity: 0; max-height: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; } }
+.rem-card--removing { animation: remCardOut .34s ease forwards; overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .rem-card--insert, .rem-card--removing { animation-duration: .01ms; } }
+.rem-quickadd-wrap .rem-quickadd { padding-bottom: 8px; }
+.rem-quickadd-wrap .rem-inline-editor { margin-top: 0; }
+
+/* Today inline reminder editor: row separators (top border on every row but the
+   first) + a bottom border on the last control row that doubles against the
+   footer's top border — matching the Data manager's editor while keeping the
+   Today stacked layout. Scoped to .today-list so Data (.rd-edit) is untouched. */
+.today-list .rem-inline-editor:not(.entry-editor) { padding-left: 0; padding-right: 0; }
+.today-list .rem-inline-editor .rem-editor { gap: 0; border-bottom: 0.5px solid var(--border); }
+.today-list .rem-inline-editor .rem-editor .rem-field { padding: 12px 16px; }
+.today-list .rem-inline-editor .rem-editor .rem-field:first-child { padding-top: 0; }
+.today-list .rem-inline-editor .rem-editor .rem-field + .rem-field,
+.today-list .rem-inline-editor .rem-editor > .rem-hint { border-top: 0.5px solid var(--border); }
+.today-list .rem-inline-editor .rem-editor > .rem-hint { padding: 12px 16px; margin: 0; }
+.today-list .rem-inline-editor .rem-inline-foot { border-top: 0.5px solid var(--border); padding: 14px 16px 0; margin-top: 0; }
+.today-list .rem-inline-editor .rem-inline-foot.rd-edit-foot { margin-top: 0; }
+/* Extra fields sit in a Collapse+fade wrapper (Today only), which breaks the
+   `.rem-field + .rem-field` divider / `:first-child` padding chain — restore the
+   top divider + padding on the wrapped field, and cross-fade on pill switch. */
+.today-list .rem-inline-editor .rem-editor .rem-extra-fade > .rem-field { border-top: 0.5px solid var(--border); padding-top: 12px; }
+.rem-extra-fade { animation: setSubFade .3s ease; }
+.cad-anchor-fade { animation: setSubFade .3s ease; }
+@media (prefers-reduced-motion: reduce) { .rem-extra-fade, .cad-anchor-fade { animation: none; } }
+
+/* Skip-until confirmation, revealed under a reminder like the inline editor. */
+.rem-skip-confirm {
+  margin: -4px 0 4px;
+  padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  flex-wrap: wrap;
+  background: oklch(from var(--surface) calc(l - 0.006) c h);
+  border: 0.5px solid var(--border); border-radius: var(--r-md);
+  animation: np-row-in .16s ease;
+}
+.rem-skip-msg { font-size: 14px; color: var(--text); }
+.rem-skip-msg strong { font-weight: 600; }
+.rem-skip-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+
+/* ── The scheduling editor (shared: Today inline + Data manager) ── */
+.rem-editor { display: flex; flex-direction: column; gap: 16px; }
+.rem-field { display: flex; flex-direction: column; gap: 8px; }
+.rem-flabel {
+  font-family: var(--font-mono); font-size: 10.5px;
+  letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted);
+}
+.rem-hint { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
+/* Repeat label + its dynamic per-kind explanation. Stacked (Today) or on the
+   left column (Data), the sub is normal-case so it reads as a sentence. */
+.rem-flabel-wrap { display: flex; flex-direction: column; gap: 2px; }
+.rem-flabel-sub { font-size: 11px; line-height: 1.35; color: var(--muted); }
+
+/* Segmented control for repeat kind. A single accent thumb (.seg-thumb) slides
+   between options; buttons sit above it and only animate their text colour. */
+.seg {
+  display: inline-flex; flex-wrap: wrap; gap: 4px;
+  justify-content: space-between;
+  background: var(--bg); padding: 4px;
+  border: 0.5px solid var(--border); border-radius: 20px;
+  position: relative;
+}
+.seg-thumb {
+  position: absolute; top: 0; left: 0; width: 0; height: 0;
+  background: var(--accent); border-radius: 999px;
+  opacity: 0; pointer-events: none; z-index: 0;
+}
+.seg-btn {
+  border: none; background: none; cursor: pointer;
+  padding: 6px 14px; border-radius: 999px;
+  position: relative; z-index: 1;
+  font-family: var(--font-sans); font-size: 13px; font-weight: 500;
+  color: var(--muted);
+  transition: background .12s, color .12s;
+}
+.seg-btn:hover { color: var(--text); }
+.seg-btn.is-on { color: var(--bg); }
+.seg-btn.is-on:hover { color: var(--bg); }
+
+.rem-inline { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
+.rem-num { width: 72px; max-width: 72px; margin-top: 0; text-align: center; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.rem-sel { width: auto; max-width: none; margin-top: 0; cursor: pointer; }
+/* Data-tab cadence row: cadence + anchor selects, right-aligned, wrap on narrow. */
+.sched-cad-ctls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.rd-cad-sel { width: auto; max-width: none; margin-top: 0; cursor: pointer; font-size: 13px; }
+
+/* Editable interval start date: a link-styled toggle that swaps to a native
+   date input inline within the "Counted from …" hint. */
+.rem-date-link {
+  border: none; background: none; padding: 0; cursor: pointer;
+  font: inherit; font-weight: 600; color: var(--accent);
+  text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px;
+}
+.rem-date-link:hover { opacity: 0.82; }
+.rem-date-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+.rem-date-inline {
+  font-family: var(--font-mono); font-size: 12px;
+  padding: 2px 6px; border: 0.5px solid var(--border); border-radius: var(--r-sm);
+  background: var(--bg); color: var(--text); vertical-align: baseline;
+}
+.rem-date-inline:focus { outline: none; border-color: var(--accent); }
+/* The "Counted from" control swaps between a link and a native date input on
+   click. Both fade + settle in on mount so the swap eases instead of snapping. */
+@keyframes dateSwapIn {
+  from { opacity: 0; transform: translateY(1px) scale(.94); }
+  to   { opacity: 1; transform: none; }
+}
+.rem-date-link, .rem-date-inline {
+  animation: dateSwapIn .2s cubic-bezier(.3,1.1,.5,1) both;
+  transform-origin: left center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rem-date-link, .rem-date-inline { animation: none; }
+}
+
+/* ── Data tab: reminder manager ── */
+.data-reminders { display: flex; flex-direction: column; gap: 12px; margin: 12px 0 32px; }
+.data-sub--row { flex-direction: row; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.data-sub--row .btn { flex: 0 0 auto; margin-top: 2px; }
+.data-empty {
+  padding: 18px 16px; border: 1px dashed var(--border); border-radius: var(--r-md);
+  background: oklch(from var(--surface) l c h / 0.5);
+  color: var(--muted); font-size: 13px;
+}
+.rem-manage-list { display: flex; flex-direction: column; gap: 10px; }
+
+/* ── Data tab: Reminders section (finalized) ──────────────────────────────────
+   One collapsible .cat section. Inside: a nested "Controls" disclosure + a
+   settings matrix, then a full-bleed items list whose rows expand into the
+   exact Today scheduling editor. */
+
+/* Controls disclosure — a secondary, nested collapsible. Kept visually a rank
+   below the section header (mono kicker + small chevron, recessed tint). */
+.rd-ctl {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; cursor: pointer; user-select: none;
+  background: oklch(from var(--surface) calc(l - 0.012) c h);
+  border-bottom: 0.5px solid var(--border);
+  /* Real <button> now (was a div with role="button" and no tabindex — announced
+     as a button but unreachable by keyboard). Reset UA chrome, keep this rule's
+     own background and bottom border. */
+  appearance: none; -webkit-appearance: none;
+  border-top: 0; border-left: 0; border-right: 0; border-radius: 0;
+  width: 100%; text-align: left; font: inherit; color: inherit;
+}
+.rd-ctl-l { display: flex; align-items: center; gap: 9px; }
+.rd-ctl-l .chev { color: var(--muted); }
+.rd-ctl-l .kicker { line-height: 1; }
+.rd-ctl-sum { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.03em; color: var(--muted); }
+/* Boundary between the Controls section and the Items section: the second
+   disclosure header (Items) gets a top border that doubles against the bottom
+   border of whatever precedes it — the Controls body when expanded, or the
+   Controls header when collapsed — giving the app's doubled-hairline seam in
+   both states. (Only the two disclosure headers use .rd-ctl, so the general
+   sibling combinator targets the Items header alone.) */
+.cat-body .rd-ctl ~ .rd-ctl { border-top: 0.5px solid var(--border); }
+
+/* Settings matrix — 5 rows × 2 toggle columns (One-time / Recurring). */
+.rd-matrix {
+  background: oklch(from var(--surface) calc(l - 0.012) c h);
+  border-bottom: 0.5px solid var(--border);
+}
+.rd-mx-head, .rd-mx-row { display: grid; grid-template-columns: 1fr 76px 76px; align-items: center; }
+.rd-mx-head { padding: 8px 16px; }
+.rd-mx-col { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-align: center; }
+.rd-mx-row { padding: 11px 16px; border-bottom: 0.5px solid var(--border); }
+.rd-mx-row:last-child { border-bottom: 0; }
+/* Reminders Controls footer — Cancel + Save, right-aligned, above the matrix's
+   bottom edge with a separating hairline. */
+.rd-mx-foot { display: flex; justify-content: flex-end; padding: 12px 16px; border-top: 0.5px solid var(--border); }
+.rd-mx-name { font-size: 13.5px; display: flex; flex-direction: column; gap: 1px; padding-right: 12px; }
+.rd-mx-sub { font-size: 11px; color: var(--muted); line-height: 1.35; }
+.rd-mx-cell { display: flex; justify-content: center; }
+.rd-mx-cell .switch { cursor: pointer; }
+
+/* Items zone */
+.rd-items-label { display: block; padding: 14px 16px 10px; }
+.rd-add {
+  display: flex; align-items: center; gap: 7px; width: 100%;
+  padding: 13px 16px; border-bottom: 0.5px solid var(--border);
+  color: var(--muted); font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; text-align: left;
+}
+.rd-add:hover { color: var(--accent); }
+.rd-empty { padding: 14px 16px 18px; color: var(--muted); font-size: 13px; }
+
+.rd-item { border-bottom: 0.5px solid var(--border); }
+.rd-item:last-child { border-bottom: 0; }
+/* Real <button> (conditional rows + picker item rows) — they were divs with a
+   click handler and no tabindex, so keyboard users couldn't open an editor. The
+   reset strips UA chrome only; layout, padding and hover stay owned here. */
+.rd-row { display: flex; align-items: center; gap: 12px; padding: 11px 16px; cursor: pointer; user-select: none;
+  appearance: none; -webkit-appearance: none; border: 0; background: none;
+  font: inherit; color: inherit; width: 100%; text-align: left; }
+.rd-row:hover { background: oklch(from var(--surface) calc(l - 0.008) c h); }
+.rd-item.is-editing > .rd-row:hover { background: transparent; }
+.rd-ico {
+  flex: 0 0 auto; width: 30px; height: 30px; border-radius: 9px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--accent-soft); color: var(--accent);
+}
+.rd-ico.is-once { background: oklch(from var(--warm) calc(l + 0.28) c h); color: var(--warm); }
+.rd-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.rd-name { font-size: 14px; font-weight: 500; letter-spacing: -0.005em; }
+.rd-sched { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.rd-name-input {
+  border: 0; background: transparent; font: inherit;
+  font-size: 14px; font-weight: 500; letter-spacing: -0.005em;
+  padding: 1px 0; width: 100%;
+  border-bottom: 1px solid var(--border);
+  transition: border-color .12s;
+}
+.rd-name-input:focus { outline: none; border-bottom-color: var(--accent); }
+.rd-name-input::placeholder { color: var(--muted); opacity: 0.7; }
+.rd-chev { flex: 0 0 auto; color: var(--muted); }
+.rd-item.is-editing .rd-chev { color: var(--accent); }
+.rd-edit { padding: 2px 16px 14px; }
+/* Picker Controls body — the pick-algorithm config, on the same recessed tint
+   as the Reminders matrix so both sections' Controls read identically. */
+.rd-ctl-body {
+  background: oklch(from var(--surface) calc(l - 0.012) c h);
+  border-bottom: 0.5px solid var(--border);
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 0;
+}
+.rd-ctl-body .pkr-card-hint { margin: 0; }
+/* Full-bleed picker-type radio (Data controls). Edge-to-edge rows with hairline
+   dividers instead of card-in-card boxes; the selected row gets an accent tint +
+   left bar and reveals its hint, unselected rows show the name only. The bottom
+   border pairs with the next section's top border for a subtle double-line
+   separator (matching the Reminders controls → footer divider). */
+.rd-mode-radio {
+  display: flex; flex-direction: column;
+  margin: 0 -16px;
+  border-top: 0.5px solid var(--border);
+  border-bottom: 0.5px solid var(--border);
+}
+/* Appearance's Picker animation / Completion celebration cards go unpadded +
+   overflow:hidden (see style-radio-card) so the option list can bleed edge-
+   to-edge without a padding gap top/bottom — the radio list's own -16px
+   horizontal bleed isn't needed there since there's no padding to eat into. */
+.style-radio-card { overflow: hidden; }
+.style-radio-card .rd-mode-radio { margin: 0; border-top: 0; }
+.rd-mode-opt {
+  position: relative; display: flex; align-items: flex-start; gap: 11px;
+  padding: 12px 16px; cursor: pointer;
+  border-bottom: 0.5px solid var(--border);
+  transition: background .24s ease;
+}
+.rd-mode-opt:last-child { border-bottom: 0; }
+.rd-mode-opt:hover { background: oklch(from var(--surface) calc(l - 0.02) c h); }
+.rd-mode-opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
+.rd-mode-opt.is-on { background: var(--accent-soft); }
+.rd-mode-opt.is-on:hover { background: var(--accent-soft); }
+/* Per-row "Preview" button (Appearance style pickers). */
+.style-preview-btn {
+  flex: 0 0 auto; align-self: center; margin-left: auto;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.03em;
+  color: var(--accent); background: transparent;
+  border: 0.5px solid var(--accent); border-radius: 7px;
+  padding: 5px 11px; cursor: pointer; transition: background .18s ease, opacity .18s ease;
+}
+.style-preview-btn:hover { background: var(--accent-soft); }
+.style-preview-btn:disabled { opacity: 0.4; cursor: default; }
+/* Celebration preview stage — sized to echo the Today cards area. */
+.celeb-preview-stage {
+  position: relative; overflow: hidden;
+  padding: 20px 18px; display: block;
+  background: oklch(from var(--surface) calc(l - 0.015) c h);
+  border-top: 0.5px solid var(--border);
+}
+.celeb-preview-cards { position: relative; display: flex; flex-direction: column; gap: 10px; }
+.celeb-preview-card { cursor: default; }
+.celeb-preview-card .check { background: var(--accent); border-color: var(--accent); color: #fff; }
+.celeb-preview-ring { position: relative; width: 96px; height: 96px; }
+.ring--preview { position: relative; width: 96px; height: 96px; }
+.ring--preview svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring--preview .ring-track { fill: none; stroke: var(--border); stroke-width: 5; }
+.ring--preview .ring-fill { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; }
+.ring--preview .ring-center {
+  position: absolute; inset: 0; display: flex; align-items: baseline; justify-content: center; gap: 1px;
+  font-family: var(--font-mono);
+}
+.ring--preview .ring-num { font-size: 26px; font-weight: 600; color: var(--text); }
+.ring--preview .ring-den { font-size: 12px; color: var(--muted); }
+.celeb-preview-particles { position: absolute; inset: 0; pointer-events: none; }
+.celeb-preview-particles .confetti-piece { top: 50%; left: 50%; }
+.celeb-preview-cap {
+  position: absolute; bottom: 12px; left: 0; right: 0; text-align: center;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--muted);
+}
+/* Picker-animation preview — reuses the selector's own box: fade the list out,
+   show the strip over it, fade back. */
+.pickanim-swap { position: relative; }
+.pickanim-swap-list { transition: opacity .32s ease; }
+.pickanim-swap.is-previewing .pickanim-swap-list { opacity: 0; pointer-events: none; }
+.pickanim-swap-stage {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  animation: setSubFade .32s ease;
+}
+.pickanim-preview-stage { width: 100%; display: flex; align-items: center; justify-content: center; min-height: 180px; }
+.pickanim-preview-stage .spot-row { text-align: center; }
+.pickanim-preview-pick { font-family: var(--font-mono); font-size: 16px; color: var(--accent); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) {
+  .pickanim-swap-list, .pickanim-swap.is-previewing .pickanim-swap-list { transition: none; }
+}
+.rd-mode-opt.is-on::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--accent);
+}
+.rd-mode-opt input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.rd-mode-dot {
+  flex: 0 0 auto; width: 16px; height: 16px; margin-top: 1px;
+  border-radius: 50%; border: 1.5px solid var(--border); position: relative;
+  transition: border-color .12s;
+}
+.rd-mode-opt.is-on .rd-mode-dot { border-color: var(--accent); }
+.rd-mode-opt.is-on .rd-mode-dot::after {
+  content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--accent);
+}
+.rd-mode-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.rd-mode-name { font-size: 14px; font-weight: 500; letter-spacing: -0.005em; }
+/* Label + (?) help trigger on one line, with the explanation beneath. */
+.pie-lbl-row { display: inline-flex; align-items: center; gap: 6px; }
+.pie-help {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 15px; height: 15px; flex: 0 0 auto;
+  border: 1px solid var(--muted); border-radius: 50%;
+  font-size: 10px; font-weight: 700; line-height: 1; color: var(--muted);
+  cursor: help; transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+.pie-help:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.rd-mode-hint { display: block; font-size: 12px; line-height: 1.45; color: var(--muted); text-wrap: pretty; }
+.rd-mode-hint + .rd-mode-hint { margin-top: 8px; }
+/* Two labeled subgroups inside a picker's Controls: how it picks / when it runs.
+   The sched + footer groups are full-bleed with top+bottom borders; with the body
+   gap removed, each border touches its neighbour's for the subtle doubled-line
+   separator (matching the Reminders controls → footer divider). */
+.rd-ctl-group { display: flex; flex-direction: column; gap: 12px; }
+.rd-ctl-group--sched, .rd-ctl-group--foot, .rd-ctl-group--danger {
+  margin: 0 -16px; padding: 16px; border-top: 0.5px solid var(--border);
+}
+/* Picker Details: subhead, then each control row (Name, Group) carries a
+   full-bleed top border to separate it from the previous row — the same
+   row-divider pattern the scheduling section uses. The section's own bottom
+   border pairs with "How it picks" top border for the inter-section double line. */
+.rd-ctl-group--basics {
+  margin: 0 -16px; padding: 0; gap: 0;
+  border-bottom: 0.5px solid var(--border);
+}
+.rd-ctl-group--basics .rd-ctl-subhead { padding: 0 16px 8px; }
+/* "How it picks" gains a full-bleed top border that pairs flush with Picker
+   Details' bottom border (double hairline, no gap — body gap is 0), mirroring
+   the mode-list → "When it runs" separator. Top padding gives the subhead room. */
+.rd-ctl-group--picks {
+  margin: 0 -16px; padding: 0; gap: 0;
+  border-top: 0.5px solid var(--border);
+}
+.rd-ctl-group--picks .rd-ctl-subhead { padding: 14px 16px 8px; }
+.rd-ctl-group--picks .rd-mode-radio { margin: 0; }
+.rd-basics-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px;
+  border-top: 0.5px solid var(--border);
+}
+.rd-basics-row--group { align-items: flex-start; }
+.rd-basics-lbl {
+  flex: 0 0 52px;
+  font-size: 13px; color: var(--muted);
+  padding-top: 6px;
+}
+.rd-basics-row:not(.rd-basics-row--group) .rd-basics-lbl { padding-top: 0; }
+.rd-basics-name {
+  flex: 1; min-width: 0;
+  height: 34px; padding: 0 12px;
+  border: 1px solid var(--border); border-radius: 9px;
+  background: var(--surface); color: var(--text);
+  font-size: 14px; font-family: inherit;
+  outline: none; transition: border-color .12s;
+}
+.rd-basics-name:focus { border-color: var(--accent); }
+.rd-basics-name::placeholder { color: var(--muted); opacity: 0.7; }
+.rd-basics-row--group .rd-group-pills { flex: 1; min-width: 0; }
+/* On small screens the wrapped pills look ragged (uneven lengths across rows),
+   so collapse to a single horizontally-scrolling row — the same convention as
+   the Pickers/Stats/Data filter pill rails. */
+@container app (max-width: 640px) {
+  .rd-basics-row--group .rd-group-pills {
+    flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    /* Edge-fade cue (JS toggles .at-start/.at-end) matching the filter rails. */
+    --fade: 24px; --fade-l: var(--fade); --fade-r: var(--fade);
+    mask-image: linear-gradient(to right,
+      transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right,
+      transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+  }
+  .rd-basics-row--group .rd-group-pills.at-start { --fade-l: 0px; }
+  .rd-basics-row--group .rd-group-pills.at-end   { --fade-r: 0px; }
+  .rd-basics-row--group .rd-group-pills::-webkit-scrollbar { display: none; }
+  .rd-basics-row--group .picker-group-pill,
+  .rd-basics-row--group .rd-group-new { flex-shrink: 0; }
+}
+/* Footer with Delete/Cancel/Save — no bottom padding (the Controls body already
+   pads its bottom edge) so it matches the item editor footer's height. */
+.rd-ctl-group--foot { padding-bottom: 0; }
+.rd-ctl-group--sched { border-bottom: 0.5px solid var(--border); }
+.rd-ctl-subhead {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--muted);
+}
+/* Group selector — single-select pills + inline "New group" create. Reuses the
+   .picker-group-pill vocabulary from the filter rows, wrapping instead of
+   scrolling since these sit inside the narrow controls body. */
+.rd-group-pills { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding-bottom: 4px; }
+.picker-group-pill--new {
+  border-style: dashed;
+  color: var(--muted);
+  gap: 5px;
+}
+.picker-group-pill--new:hover { color: var(--accent); border-color: var(--accent); }
+.rd-group-new { display: inline-flex; align-items: center; gap: 6px; }
+/* Open animation: the field unfurls (grows + fades in) from where the "+ New
+   group" pill sat, then the confirm/cancel buttons pop in just after. */
+.rd-group-new { animation: rdGroupNewIn .16s ease-out both; }
+@keyframes rdGroupNewIn { from { opacity: 0; } to { opacity: 1; } }
+.rd-group-new-input {
+  animation: rdGroupInputGrow .2s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes rdGroupInputGrow {
+  from { width: 32px; opacity: 0.3; }
+  to   { width: 130px; opacity: 1; }
+}
+.rd-group-new-ok, .rd-group-new-cancel {
+  animation: rdGroupBtnIn .16s ease-out both; animation-delay: .11s;
+}
+@keyframes rdGroupBtnIn {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rd-group-new, .rd-group-new-input, .rd-group-new-ok, .rd-group-new-cancel { animation: none; }
+}
+/* On close, the returning "+ New group" pill animates in (fade + slight grow),
+   mirroring how opening animates the input in while the pill vanishes at once. */
+.picker-group-pill--new.is-returning { animation: rdNewPillIn .18s cubic-bezier(0.34, 1.4, 0.64, 1) both; }
+@keyframes rdNewPillIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .picker-group-pill--new.is-returning { animation: none; }
+}
+.rd-group-new-input {
+  height: 32px; width: 130px;
+  padding: 0 10px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--surface); color: var(--text);
+  font-size: 13px; font-family: inherit;
+  outline: none;
+}
+.rd-group-new-ok, .rd-group-new-cancel {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--muted); cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.rd-group-new-ok:not(:disabled):hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.rd-group-new-ok:disabled { opacity: 0.4; cursor: default; }
+.rd-group-new-cancel:hover { color: var(--danger, #c0392b); border-color: var(--danger, #c0392b); }
+/* "When it runs" rows use the same full-bleed divider system as the ease
+   cadence + item editor: a border under the kicker, then a hairline between
+   every control row (last row's own border is dropped so only the group's
+   bottom border shows at the section boundary). */
+.rd-ctl-group--sched { padding: 0; gap: 0; }
+.rd-ctl-group--sched .rd-ctl-subhead { padding: 12px 16px 8px; }
+.rd-ctl-group--sched .rd-ctl-subhead + .sched-line { border-top: 0.5px solid var(--border); }
+.rd-ctl-group--sched .sched-line,
+.rd-ctl-group--sched .sched-off-note {
+  padding: 10px 16px; min-height: 44px; box-sizing: border-box;
+  border-bottom: 0.5px solid var(--border);
+}
+.rd-ctl-group--sched .sched-line:last-child,
+.rd-ctl-group--sched .sched-off-note:last-child { border-bottom: 0; }
+/* Attach-a-conditional rail inside the Data-tab "When it runs" section. Full-
+   bleed row matching the sched-line horizontal padding, with a divider below. */
+.rd-ctl-group--sched .rd-cnd-rail-row { padding: 8px 16px 12px; border-bottom: 0.5px solid var(--border); }
+.rd-ctl-group--sched .rd-cnd-rail-row .cnd-rail { gap: 8px; }
+.rd-cnd-empty { font-size: 12.5px; line-height: 1.4; color: var(--muted); margin: 2px 0; text-wrap: pretty; }
+.cat-body > .rd-cnd-empty { margin: 0; padding: 12px 14px 14px; }
+.rd-ctl-group .sched-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.rd-ctl-group .sched-line-lbl { font-size: 13.5px; }
+/* Optional label + explanation column for a schedule line (e.g. Daily generator). */
+.rd-ctl-group .sched-line-label { display: flex; flex-direction: column; gap: 1px; flex: 1 1 0; min-width: 130px; }
+.rd-ctl-group .sched-line-sub { font-size: 11px; line-height: 1.35; color: var(--muted); }
+.rd-ctl-group .sched-off-note { font-size: 12.5px; color: var(--muted); font-style: italic; }
+/* Delete-picker control lives in the Controls footer now. */
+.rd-ctl-group--danger { align-items: flex-start; }
+.rd-ctl-foot-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+/* Picker card delete: collapse height + fade out before removal. */
+.cat--removing { animation: catRemove .3s ease forwards; overflow: hidden; }
+@keyframes catRemove { from { opacity: 1; max-height: 800px; } to { opacity: 0; max-height: 0; margin: 0; padding-top: 0; padding-bottom: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .cat--removing { animation-duration: .01ms; } }
+.rd-pk-del-confirm { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; width: 100%; }
+.rd-pk-del-confirm .confirm-msg { flex: 1 1 auto; min-width: 0; font-size: 13px; color: var(--text); text-wrap: pretty; }
+.rd-pk-del-confirm .rem-del-actions { justify-content: flex-end; flex: 0 0 auto; }
+/* Delete anchored bottom-left, opposite Done (destructive-left / confirm-right). */
+/* Tab switch: the incoming tab's content fades + rises in (peer tabs, so no
+   directional slide). Keyed on the active tab so it replays each switch. */
+.tab-fade { animation: tabFadeIn .2s ease both; }
+/* Picker action buttons: enter (fade+rise, staggered via inline delay) when the
+   pick resolves; exit (fade+fall) on Re-roll / Done / Send. */
+@keyframes pvActIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes pvActOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(6px); } }
+.picker-actions .pv-act { animation: pvActIn .22s cubic-bezier(.34,1.2,.5,1) both; }
+.picker-actions .pv-act.is-leaving { animation: pvActOut .18s ease both; }
+.pv-send-label { display: inline-block; }
+@media (prefers-reduced-motion: reduce) {
+  .picker-actions .pv-act, .picker-actions .pv-act.is-leaving { animation-duration: .01ms; }
+}
+@keyframes tabFadeIn { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .tab-fade { animation: none; } }
+/* Heatmap year paging: directional slide+fade — next year enters from the
+   right, previous from the left. */
+@keyframes heatSlideNext { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+@keyframes heatSlidePrev { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+.heat-slide-next { animation: heatSlideNext .26s cubic-bezier(.2,.7,.3,1) both; }
+.heat-slide-prev { animation: heatSlidePrev .26s cubic-bezier(.2,.7,.3,1) both; }
+@media (prefers-reduced-motion: reduce) { .heat-slide-next, .heat-slide-prev { animation: none; } }
+
+.rd-edit-foot { justify-content: space-between; }
+/* Footer ↔ delete-confirm swap: whichever row appears fades + slides in (the
+   ternary branches carry distinct keys so React remounts them to replay this).
+   Covers every editor footer — picker item, reminder, picker settings, conditional. */
+@keyframes footSwapIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+@keyframes footSwapOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(3px); } }
+.pool-confirm.is-leaving { animation: footSwapOut .14s ease both; }
+.rem-foot-confirm, .rd-pk-del-confirm, .rd-ctl-confirm, .rd-ctl-foot-row, .rd-edit-foot, .pool-confirm { animation: footSwapIn .16s ease both; }
+@media (prefers-reduced-motion: reduce) {
+  .rem-foot-confirm, .rd-pk-del-confirm, .rd-ctl-confirm, .rd-ctl-foot-row, .rd-edit-foot, .pool-confirm { animation: none; }
+}
+.rem-manage {
+  border: 0.5px solid var(--border); border-radius: var(--r-md);
+  background: var(--surface); overflow: hidden;
+}
+.rem-manage.is-open { border-color: var(--accent); }
+.rem-manage-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px 10px 14px;
+}
+.rem-name-input {
+  flex: 1 1 auto; min-width: 0;
+  border: none; background: none; padding: 4px 0;
+  font-family: var(--font-sans); font-size: 15px; font-weight: 500; color: var(--text);
+  border-bottom: 1px solid transparent;
+  transition: border-color .12s;
+}
+.rem-name-input:focus { outline: none; border-bottom-color: var(--accent); }
+.rem-manage-sched {
+  flex: 0 0 auto;
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 2px 8px; border: 0.5px solid var(--border); border-radius: 999px;
+}
+.rem-manage-actions { display: flex; gap: 4px; flex: 0 0 auto; }
+.icon-btn--danger:hover { background: oklch(from var(--warm) l c h / 0.12); color: var(--warm); }
+.rem-manage .rem-manage-editor {
+  padding: 16px; border-top: 0.5px solid var(--border);
+  background: oklch(from var(--surface) calc(l - 0.006) c h);
+}
+.rem-manage .rem-manage-editor .rem-editor { padding: 0; border-top: 0; background: none; }
+
+/* ── Data reminder editor: match the picker item editor ──────────────────────
+   One setting per full-bleed row (label left / control right), a hairline
+   between rows, and a doubled border into the footer. Scoped to .rd-edit so
+   Today's reminder editor keeps its stacked card layout. */
+.rd-edit .rem-editor { gap: 0; }
+.rd-edit .rem-editor .rem-field {
+  flex-direction: row; flex-wrap: wrap; align-items: center;
+  justify-content: space-between; column-gap: 12px; row-gap: 8px;
+  margin: 0 -16px; padding: 10px 16px; min-height: 44px; box-sizing: border-box;
+  border-bottom: 0.5px solid var(--border);
+}
+/* Divider above the first control row too (matches the picker item editor's
+   line under its name field). */
+.rd-edit .rem-editor .rem-field:first-child { border-top: 0.5px solid var(--border); }
+.rd-edit .rem-editor .rem-field .rem-flabel { flex: 0 0 auto; }
+/* Explanation column absorbs the slack: zero basis + grow so it only takes
+   leftover width (never demands its content width) and wraps the sentence over
+   as many lines as needed. Because it doesn't push outward, the seg is no longer
+   bumped to a second line when the explanation is longer (Monthly / Yearly). */
+.rd-edit .rem-editor .rem-field .rem-flabel-wrap { flex: 1 1 0; min-width: 160px; }
+/* Repeat seg keeps its natural width on wide rows so it stays put, but remains
+   shrinkable (flex-shrink 1): when the row is too narrow (mobile) it drops to a
+   full-width second line and compresses to fit, wrapping its pills into two rows
+   instead of overflowing. */
+.rd-edit .rem-editor .rem-field .seg { flex: 0 1 auto; max-width: 100%; }
+.rd-edit .rem-editor .rem-field .rem-inline,
+.rd-edit .rem-editor .rem-field .weekday-chips { flex: 0 1 auto; }
+/* A field's own hint (interval / monthly) drops below on its own full line. */
+.rd-edit .rem-editor .rem-field .rem-hint { flex-basis: 100%; }
+/* The one-time explanation is a standalone hint — render it as its own bordered
+   row so it too doubles against the footer's top border. */
+.rd-edit .rem-editor > .rem-hint {
+  margin: 0 -16px; padding: 11px 16px; border-bottom: 0.5px solid var(--border);
+}
+/* Doubled border between the last control row and the footer. */
+.rd-edit .rd-edit-foot,
+.rd-edit .rem-foot-confirm { margin: 0 -16px; padding: 14px 16px 0; border-top: 0.5px solid var(--border); }
+
+/* Rail entry for Reminders — subtle accent tint to set it apart as pinned. */
+.rail-btn--rem.is-on .rail-name { color: var(--accent); }
+
+/* Settings → Reminders: two participation panels (one-time / recurring). */
+.rem-opts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.rem-opts-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
+.rem-opts-icon {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 999px;
+  background: oklch(from var(--accent-soft) l c h); color: var(--accent);
+}
+.rem-opts-title { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.rem-opts-blurb { margin: 2px 0 0; font-size: 12px; line-height: 1.45; color: var(--muted); }
+.opt-list { border-top: 0.5px solid var(--border); margin-top: 6px; }
+.opt-list .daily-name { font-weight: 450; }
+@container app (max-width: 640px) {
+  .rem-opts-grid { grid-template-columns: 1fr; }
+}
+
+/* Stats → Reminders completed (separate additive metric, not in the heatmap). */
+.rem-stats-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  flex-wrap: wrap; margin-bottom: 12px;
+}
+.rem-stats-nums { display: flex; gap: 18px; }
+.rem-stat { font-size: 13px; color: var(--muted); }
+.rem-stat strong {
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+  font-size: 18px; font-weight: 600; color: var(--text); margin-right: 4px;
+}
+.rem-log { list-style: none; margin: 0; padding: 0; }
+.rem-log li {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 13px 0; border-bottom: 0.5px solid var(--border);
+}
+.rem-log li:last-child { border-bottom: 0; }
+.rem-log-name { font-size: 14px; font-weight: 450; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rem-log-meta { display: inline-flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+.rem-log-type {
+  font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.05em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 999px;
+  border: 0.5px solid var(--border); color: var(--muted);
+}
+.rem-log-type--recurring { color: var(--accent); border-color: oklch(from var(--accent) l c h / 0.4); background: oklch(from var(--accent-soft) l c h / 0.5); }
+.rem-log-when {
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.02em;
+  color: var(--muted); white-space: nowrap;
+}
+.rem-log-empty { font-size: 13px; color: var(--muted); padding: 6px 0; }
+
+/* ─── Conditionals stats ─────────────────────────────────────────────────── */
+.stat-num--sm { font-size: 0.62em; letter-spacing: -0.01em; }
+/* All-view summary card (mirrors .rem-stats-card layout) */
+.cnd-sum-list { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; }
+.cnd-sum-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid var(--border); }
+.cnd-sum-list li:first-child { border-top: 0; }
+.cnd-sum-name { display: flex; align-items: center; gap: 8px; font-size: 14px; min-width: 0; }
+.cnd-sum-meta { display: flex; align-items: baseline; gap: 12px; flex: 0 0 auto; }
+.cnd-sum-frac { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 54px; text-align: right; }
+.cnd-sum-rate { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); min-width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
+/* Dedicated scope: per-conditional rows with a fire-rate bar */
+.cnd-stat-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.cnd-stat { display: flex; flex-direction: column; gap: 7px; padding-top: 14px; border-top: 1px solid var(--border); }
+.cnd-stat:first-child { padding-top: 0; border-top: 0; }
+.cnd-stat.is-deleted { opacity: 0.6; }
+.cnd-stat-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cnd-stat-name { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; min-width: 0; }
+.cnd-stat-mode { flex: 0 0 auto; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+.cnd-stat-bar-row { display: flex; align-items: center; gap: 10px; }
+.cnd-stat-bar { flex: 1 1 auto; height: 7px; border-radius: 4px; background: oklch(from var(--muted) l c h / 0.16); overflow: hidden; }
+.cnd-stat-bar span { display: block; height: 100%; border-radius: 4px; background: var(--accent); transition: width 0.3s ease; }
+.cnd-stat-rate { flex: 0 0 auto; font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); min-width: 42px; text-align: right; }
+.cnd-stat-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); }
+.cnd-stat-meta strong { color: var(--text); font-weight: 600; }
+/* Conditionals breakdown: mode pill + configured-target suffix under the name */
+.cnd-bd-meta { display: flex; align-items: center; gap: 8px; margin-top: 3px; }
+.cnd-bd-meta .rem-log-type { flex: 0 0 auto; }
+.cnd-bd-meta .rank-meta { white-space: nowrap; }
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+
+@container app (min-width: 880px) {
+  .app[data-placement="bottom"] .main { --main-pad-x: 32px; padding-bottom: 110px; }
+}
+@container app (max-width: 520px) {
+  .section-title { font-size: 26px; }
+  .today-title { font-size: 28px; }
+  .picker-title { font-size: 24px; }
+  .stage-idle-num { font-size: 48px; }
+}
+
+/* Side placement on small screens: instead of falling back to bottom tabs,
+   the rail becomes an off-canvas drawer. It's position:fixed (contained by
+   .app, which is a containing block via container-type), so it overlays the
+   content rather than consuming layout width — main stays full-width. The pull
+   handle rides the rail's right edge and stays visible when the rail is
+   translated off-screen; a scrim dims the content while it's open. */
+@container app (max-width: 700px) {
+  .tabbar--side {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    height: 100dvh; width: 232px;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 200;
+  }
+  .tabbar--side.is-open { transform: translateX(0); box-shadow: 12px 0 44px -14px rgba(0,0,0,0.3); }
+  .tabbar--side .rail-handle { display: flex; }
+  .app[data-placement="side"] .rail-scrim { display: block; }
+  /* Rail is an overlay now — main reclaims full width + its own padding. */
+  .app[data-placement="side"] { flex-direction: row; }
+  .app[data-placement="side"] .main { --main-pad-x: 20px; padding-bottom: 32px; }
+}
+
+/* Top placement on small screens: keep everything on one line by dropping the
+   tab text (icon-only tabs). Below a narrower cutoff the wordmark collapses to
+   just the easing-check mark so five icons + brand always fit. */
+@container app (max-width: 720px) {
+  .tabbar--top .tabbtn span { display: none; }
+  .tabbar--top .tabbtn { padding: 8px; gap: 0; }
+  .tabbar--top .tabbar-brand { padding-right: 12px; margin-right: 4px; }
+}
+@container app (max-width: 460px) {
+  .tabbar--top .brand-wordmark .bw-lines { display: none; }
+  .tabbar--top .brand-wordmark { gap: 0; }
+}
+
+/* ═══ Today "Edit Mode" (drag-to-reorder) ══════════════════════════════════
+   Turns the list into a structural-editing state: rows/groups grow a grip
+   handle, task actions hide, and a sticky banner offers Done / Cancel. */
+
+/* Sticky banner — lives inside .today-body (960px content width), sits just
+   below the page header and above the group rail + list, pushing them down. */
+.editmode-banner {
+  position: sticky;
+  top: calc(var(--today-h-h, 140px) + 8px);
+  z-index: 60;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  margin: 0 0 20px;
+  padding: 11px 16px;
+  background: var(--accent-soft);
+  border: 1px solid oklch(from var(--accent) l c h / 0.35);
+  border-radius: var(--r-md, 12px);
+  animation: emBannerIn 0.26s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes emBannerIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+/* Reverse of the intro: collapse height + fade so the list slides back up. */
+@keyframes emBannerOut {
+  from { opacity: 1; transform: translateY(0); max-height: 100px; margin-bottom: 20px; padding-top: 11px; padding-bottom: 11px; }
+  to   { opacity: 0; transform: translateY(-6px); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; }
+}
+.editmode-banner.is-closing { animation: emBannerOut 0.24s cubic-bezier(0.4, 0, 0.2, 1) both; overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .editmode-banner.is-closing { animation-duration: .01ms; } }
+.editmode-banner-msg {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 13px; font-weight: 600; color: var(--accent);
+}
+.editmode-banner-msg svg { opacity: 0.85; }
+.editmode-banner-actions { display: flex; align-items: center; gap: 8px; flex: none; }
+
+/* Grip handles — sit where the check / group title lead was. */
+.card-grip, .group-grip {
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--muted);
+  cursor: grab;
+  touch-action: none;                 /* let pointer drag own the gesture */
+  border-radius: 8px;
+  transition: color .12s, background .12s;
+}
+.card-grip { width: 24px; height: 24px; }
+.group-grip { width: 26px; height: 26px; margin-left: -4px; }
+.card-grip:hover, .group-grip:hover { color: var(--text); background: var(--accent-soft); }
+.card-grip:active, .group-grip:active { cursor: grabbing; }
+.group-h.is-reorderable .group-h-l { gap: 10px; }
+
+/* Resting draggable rows: dashed outline + grab cursor, no click affordances. */
+.today-card.is-reorderable {
+  cursor: grab;
+  border-style: dashed;
+  border-color: oklch(from var(--accent) l c h / 0.4);
+  perspective: none;                  /* Firefox: 3D context interferes with the drag translate */
+  animation: emUnlock 0.28s ease both;
+}
+.today-card.is-reorderable:hover {
+  border-color: oklch(from var(--accent) l c h / 0.6);
+  background: var(--surface);
+}
+.today-card.is-reorderable:active { background: var(--surface); }
+/* Opacity-only unlock. IMPORTANT: do NOT animate `transform` here — with
+   `both` fill-mode the animation permanently holds its final transform value
+   and overrides the inline `translateY()` the drag controller sets, which
+   silently froze every item row in place (group headers have no such animation,
+   so they dragged fine — that was the whole bug). */
+@keyframes emUnlock {
+  from { opacity: 0.4; }
+  to   { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .today-card.is-reorderable, .editmode-banner { animation: none; }
+}
+
+/* The row/section actively under the pointer: lifted, scaled, above the rest. */
+.today-card.is-dragging {
+  cursor: grabbing;
+  border-style: solid;
+  border-color: oklch(from var(--accent) l c h / 0.55);
+  box-shadow: 0 18px 40px -12px oklch(0 0 0 / 0.34), 0 6px 14px -4px oklch(0 0 0 / 0.18);
+  transform: scale(1.015);
+}
+.group-section.is-dragging {
+  box-shadow: 0 20px 46px -14px oklch(0 0 0 / 0.32);
+  background: var(--surface);
+  border-radius: var(--r-lg, 16px);
+}
+/* A dragged group section shouldn't show its top divider while lifted. */
+.group-section.is-dragging { border-top: 0 !important; padding-top: 0 !important; }
+
+/* While a drag is in progress, kill the grab-hover text-selection everywhere. */
+body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-select: none !important; }
+
+/* Group rename (Edit Mode): the name becomes a clickable button with a pencil,
+   then an inline input on click. */
+.group-name--editable {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 18px; font-weight: 500; letter-spacing: -0.015em;
+  color: var(--text);
+  background: none; border: 0; padding: 2px 6px; margin: -2px -6px;
+  border-radius: 7px; cursor: text;
+  font-family: inherit;
+  transition: background .12s, color .12s;
+}
+.group-name--editable svg { color: var(--muted); opacity: 0; transition: opacity .12s; }
+.group-name--editable:hover { background: var(--accent-soft); }
+.group-name--editable:hover svg { opacity: 0.8; }
+.group-name-input {
+  font-size: 18px; font-weight: 500; letter-spacing: -0.015em;
+  font-family: inherit; color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--accent); border-radius: 8px;
+  padding: 2px 8px; margin: -3px 0;
+  min-width: 0; max-width: 240px; width: auto;
+  outline: none;
+  transform-origin: left center;
+  animation: groupNameIn .16s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes groupNameIn {
+  from { opacity: 0; transform: translateX(-5px); }
+  to   { opacity: 1; transform: none; }
+}
+.group-name-input.is-closing { animation: groupNameOut .15s cubic-bezier(0.4, 0, 0.2, 1) both; }
+@keyframes groupNameOut {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateX(-5px); }
+}
+@media (prefers-reduced-motion: reduce) { .group-name-input, .group-name-input.is-closing { animation: none; } }
+
+/* Inline merge confirm — mirrors the delete-confirm bars elsewhere (picker /
+   reminder). Sits directly under the group header it belongs to. */
+.group-merge-confirm {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 4px; padding: 12px 14px;
+  background: var(--accent-soft);
+  border: 1px solid oklch(from var(--accent) l c h / 0.3);
+  border-radius: var(--r-md, 12px);
+  animation: groupMergeIn .18s ease-out both;
+}
+.group-merge-confirm .confirm-msg { flex: 1; min-width: 180px; font-size: 13px; line-height: 1.45; color: var(--text); }
+@keyframes groupMergeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .group-merge-confirm { animation: none; } }
+
+
+
+/* ── Day Log ─────────────────────────────────────────────────────────────── */
+.dl-chip{display:inline-flex;align-items:center;align-self:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;border:0.5px solid var(--border);background:var(--surface);color:var(--muted);font-family:var(--font-mono);font-size:10px;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;transition:background .14s,color .14s,border-color .14s}
+.dl-chip svg{width:13px;height:13px}
+.dl-chip:hover{color:var(--text);border-color:var(--muted)}
+.dl-chip.is-on{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+
+.dl-panel{margin:2px 0 14px;border:0.5px solid var(--border);border-radius:var(--r-md);background:oklch(from var(--surface) calc(l + 0.006) c h);overflow:hidden}
+.dl-panel-h{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--bg);border-bottom:0.5px solid var(--border)}
+.dl-kicker{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted)}
+.dl-kicker svg{width:13px;height:13px;color:var(--accent)}
+.dl-body{padding:2px 12px 10px}
+.dl-close{width:26px;height:26px;border-radius:8px;border:0.5px solid var(--border);background:var(--surface);color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;transition:color .14s,border-color .14s}
+.dl-close svg{width:15px;height:15px}
+.dl-close:hover{color:var(--text);border-color:var(--muted)}
+.dl-body--rem{padding:8px 12px 12px}
+.dl-empty{padding:12px 10px;font-size:13px;color:var(--muted)}
+
+/* status icons */
+.dl-ico{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:7px;flex:none}
+.dl-ico svg{width:13px;height:13px}
+.dl-c-auto{background:var(--accent-soft);color:var(--accent)}
+.dl-c-push{background:oklch(0.95 0.045 50);color:oklch(0.55 0.13 50)}
+.dl-c-roll{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
+.dl-c-skip{background:oklch(0.955 0.02 25);color:oklch(0.53 0.16 25)}
+.dl-c-done{background:oklch(0.95 0.035 155);color:oklch(0.5 0.11 155)}
+
+/* key band */
+.dl-key{display:flex;flex-wrap:nowrap;align-items:baseline;gap:16px;padding:11px 14px;background:oklch(from var(--surface) calc(l + 0.006) c h);border-bottom:0.5px solid var(--border)}
+.dl-key-items{display:flex;flex-wrap:wrap;align-items:center;gap:9px 16px;min-width:0}
+.dl-ki{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.dl-ki b{color:var(--text);font-weight:500}
+
+/* picker sub-block */
+.dl-block{border-top:0.5px solid var(--border)}
+.dl-block:first-child{border-top:0}
+.dl-block-h{display:flex;align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
+.dl-block-h--static{cursor:default}
+.dl-block-name{font-size:14px;font-weight:600;letter-spacing:-0.01em}
+.dl-cond-title{color:var(--accent)}
+.dl-mode{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.dl-mode.neutral{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
+.dl-sum{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.dl-dchip{display:inline-flex;align-items:center;gap:4px;color:oklch(0.5 0.11 155)}
+.dl-dchip svg{width:12px;height:12px}
+.dl-chev{color:var(--muted);display:inline-flex;transition:transform .2s}
+.dl-chev svg{width:15px;height:15px;display:block}
+.dl-block.is-closed .dl-chev{transform:rotate(-90deg)}
+.dl-rest{margin-left:auto;font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.03em;text-transform:uppercase;color:var(--accent);display:inline-flex;align-items:center;gap:6px}
+.dl-rest svg{width:13px;height:13px}
+
+/* table */
+.dl-table{padding-bottom:12px}
+.dl-thead,.dl-trow{display:grid;grid-template-columns:1fr 46px 44px 46px 118px;align-items:center;gap:6px}
+.dl-thead{padding:6px 10px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
+.dl-thead .r,.dl-trow .r{text-align:right;justify-self:end}
+.dl-trow{padding:8px 10px;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
+.dl-trow:last-child{border-bottom:0}
+.dl-trow.is-done{background:oklch(0.95 0.035 155)}
+.dl-item{min-width:0;display:flex;flex-direction:column;gap:1px}
+.dl-nrow{display:flex;align-items:center;gap:7px;min-width:0}
+.dl-name{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dl-sub{font-family:var(--font-mono);font-size:10px;letter-spacing:0.02em;color:var(--muted)}
+.dl-val{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:13px}
+.dl-delta{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:12px}
+.dl-delta.up{color:oklch(0.5 0.11 155)}
+.dl-delta.down{color:var(--accent)}
+.dl-delta.flat{color:oklch(from var(--muted) l c h/0.5)}
+.dl-after{font-weight:600}
+/* Dynamic boost in the item subline — same green as a positive Δ, since it is
+   the same number the value columns track. */
+.dl-boost{color:oklch(0.5 0.11 155)}
+.dl-boost.is-zero{color:oklch(from var(--muted) l c h/0.5)}
+.dl-na{font-family:var(--font-mono);font-size:11px;color:oklch(from var(--muted) l c h/0.55)}
+.dl-status{display:flex;gap:4px;justify-self:end;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.dl-none{color:oklch(from var(--muted) l c h/0.4);font-family:var(--font-mono);font-size:13px;text-align:right}
+.dl-vac{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.04em;text-transform:uppercase;color:oklch(from var(--muted) l c h/0.7)}
+.dl-trow.is-dim .dl-name{color:var(--muted)}
+
+/* conditionals section */
+.dl-cond-row{background:oklch(from var(--accent) 0.93 0.05 h)!important;border-bottom:0!important;margin-bottom:2px}
+.dl-cond-aff{display:flex;align-items:center;gap:7px;margin:0 0 8px;padding:6px 10px 6px 12px;border-radius:0 0 8px 8px;background:oklch(from var(--accent) 0.95 0.035 h);font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.02em;color:oklch(from var(--accent) calc(l - 0.02) c h)}
+.dl-cond-aff svg{width:12px;height:12px;flex:none;opacity:0.8}
+.dl-cond-aff b{color:var(--accent);font-weight:600}
+.dl-st-pill{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.04em;text-transform:uppercase;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.dl-st-trig{background:var(--accent);color:var(--bg)}
+.dl-st-nottrig{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
+.dl-mode--cond{background:var(--bg);color:var(--accent);border:0.5px solid oklch(from var(--accent) l c h/0.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.dl-nrow .dl-name{min-width:0}
+.dl-mode--cond.is-neutral{background:var(--bg);color:var(--muted);border-color:var(--border)}
+
+/* reminders log */
+.dl-rt-head,.dl-rt-row{display:grid;grid-template-columns:1fr 150px 130px;align-items:center;gap:8px}
+.dl-rt-head{padding:6px 10px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
+.dl-rt-head .r,.dl-rt-row .r{text-align:right;justify-self:end}
+.dl-rt-row{padding:9px 10px;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
+.dl-rt-row:last-child{border-bottom:0}
+.dl-rt-row.is-done{background:oklch(0.95 0.035 155)}
+.dl-rt-row.is-due{background:var(--accent-soft)}
+.dl-r-name{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.dl-rt-row.is-notdue .dl-r-name{color:var(--muted)}
+.dl-r-when{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.dl-r-st{justify-self:end;text-align:right;display:inline-flex;align-items:center;justify-content:flex-end;gap:6px}
+.dl-st-done{background:oklch(0.95 0.035 155);color:oklch(0.5 0.11 155)}
+.dl-st-due{background:var(--accent-soft);color:var(--accent)}
+.dl-st-skip{background:oklch(0.955 0.02 25);color:oklch(0.53 0.16 25)}
+.dl-st-not{color:oklch(from var(--muted) l c h/0.75);font-family:var(--font-mono);font-size:10px;letter-spacing:0.04em;text-transform:uppercase;text-align:right}
+
+@container app (max-width:560px){
+  .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 106px;gap:4px}
+  .dl-rt-head,.dl-rt-row{grid-template-columns:1fr 104px 104px;gap:6px}
+  .dl-cond-row .dl-nrow{flex-wrap:wrap;gap:4px}
+  .dl-cond-row .dl-name{flex:0 0 100%;width:100%}
+  .dl-cond-row .dl-mode--cond{display:block;width:100%;text-align:center}
+}
+
+/* ── Onboarding ──────────────────────────────────────────────────────────
+   Welcome modal, get-started checklist, first-picker CTA, and the spotlight
+   tour (dim + cut-out + coach card). Uses app tokens throughout. */
+.ob-scrim{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;background:oklch(0.15 0.02 250/0.5);animation:obFade .22s ease both}
+.ob-welcome{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-lg);width:100%;max-width:400px;padding:28px 24px 22px;text-align:center;box-shadow:0 24px 60px -20px oklch(0 0 0/0.5)}
+.ob-welcome.ob-in{animation:obRise .26s cubic-bezier(.2,.8,.3,1) both}
+.ob-wmark{width:54px;height:54px;margin:0 auto 14px;color:var(--accent)}
+.ob-wmark svg{width:100%;height:100%}
+.ob-welcome h2{font-size:21px;font-weight:600;letter-spacing:-0.02em;margin:0 0 8px}
+.ob-welcome>p{font-size:13.5px;line-height:1.55;color:var(--muted);margin:0 6px}
+.ob-chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0 4px}
+.ob-chips span{font-family:var(--font-mono);font-size:11px;padding:5px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);border:none;outline:none}
+.ob-wact{display:flex;flex-direction:column;gap:9px;margin-top:20px}
+.ob-btn{font-size:14px;font-weight:600;border-radius:var(--r-md);padding:13px;font-family:inherit;border:0.5px solid var(--border);cursor:pointer;color:var(--text);background:transparent}
+.ob-btn--primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ob-btn--ghost:hover{background:var(--hover,oklch(0 0 0/0.05))}
+
+.ob-tour{position:fixed;inset:0;z-index:1000;pointer-events:none}
+.ob-dim{position:absolute;inset:0;background:oklch(0.15 0.02 250/0.55)}
+.ob-spot{position:fixed;border-radius:var(--r-md);box-shadow:0 0 0 9999px oklch(0.15 0.02 250/0.6);border:2px solid oklch(from var(--accent) l c h/0.9)}
+.ob-coach{position:fixed;pointer-events:auto;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);box-shadow:0 16px 40px -14px oklch(0 0 0/0.45);padding:14px 15px;animation:obFade .18s ease both}
+.ob-coach .ob-prog{font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.05em;color:var(--accent);margin:0 0 5px}
+.ob-coach h4{font-size:15px;font-weight:600;margin:0 0 5px}
+.ob-coach .ob-body{font-size:12.5px;line-height:1.5;color:var(--muted);margin:0}
+.ob-crow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:13px}
+.ob-lnav{display:flex;align-items:center;gap:12px}
+.ob-skip{font-size:12px;color:var(--muted);background:0;border:0;font-family:inherit;cursor:pointer;padding:4px 2px}
+.ob-back{font-size:12px;font-weight:500;color:var(--accent);background:0;border:0;font-family:inherit;cursor:pointer;padding:4px 2px}
+.ob-next{font-size:12.5px;font-weight:600;border-radius:999px;padding:8px 15px;font-family:inherit;cursor:pointer;border:0.5px solid var(--accent);background:var(--accent);color:#fff}
+.ob-next:disabled{opacity:.6;cursor:default}
+.ob-coach::before{content:"";position:absolute;width:14px;height:14px;background:var(--surface);border:0.5px solid var(--border);transform:rotate(45deg);left:var(--ob-ax,28px)}
+.ob-coach--up::before{top:-8px;border-right:0;border-bottom:0}
+.ob-coach--down::before{bottom:-8px;border-left:0;border-top:0}
+.ob-coach--none::before{display:none}
+
+.ob-gsc{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);padding:14px 15px 9px;margin-bottom:16px}
+.ob-gsc.is-celebrating{transform:scale(0.99);transition:transform .16s ease}
+.ob-gsc-h b,.ob-gsc-prog{transition:color .28s ease}
+.ob-gsc.is-celebrating .ob-gsc-prog{color:oklch(0.62 0.15 155);font-size:14px;font-weight:700}
+.ob-gsc.is-celebrating .ob-gsc-h b{color:oklch(0.62 0.15 155)}
+.ob-gsc.is-collapsing{overflow:hidden;transform-origin:top center;animation:obGscOut .38s cubic-bezier(.4,0,.5,1) forwards}
+@keyframes obGscOut{from{opacity:1;max-height:240px;transform:scaleY(1);margin-bottom:16px;padding-top:14px;padding-bottom:9px}to{opacity:0;max-height:0;transform:scaleY(0.9);margin-bottom:0;padding-top:0;padding-bottom:0;border-width:0}}
+@media (prefers-reduced-motion:reduce){.ob-gsc.is-celebrating{transform:none;transition:none}.ob-gsc.is-collapsing{animation:none;opacity:0;max-height:0;margin-bottom:0;padding:0;border-width:0;overflow:hidden}}
+.ob-gsc-h{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.ob-gsc-h b{font-size:14px;font-weight:600;flex:1}
+.ob-gsc-prog{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.ob-gsc-x{width:24px;height:24px;border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;cursor:pointer;border-radius:6px}
+.ob-gsc-x:hover{background:var(--hover,oklch(0 0 0/0.05));color:var(--text)}
+.ob-gsc-task{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:0.5px solid var(--border)}
+.ob-gsc-task[role=button]{cursor:pointer}
+.ob-gsc-task .ob-gsc-tb{width:19px;height:19px;border-radius:50%;border:1.6px solid var(--border);flex:0 0 auto;position:relative}
+.ob-gsc-task.is-done .ob-gsc-tb{background:oklch(0.62 0.15 155);border-color:oklch(0.62 0.15 155)}
+.ob-gsc-task.is-done .ob-gsc-tb::after{content:"";position:absolute;left:5.5px;top:2.5px;width:4.5px;height:8.5px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(43deg)}
+.ob-gsc-task span:not(.ob-gsc-tb):not(.ob-gsc-arr){font-size:13.5px;flex:1}
+.ob-gsc-task.is-done span{color:var(--muted);text-decoration:line-through}
+.ob-gsc-arr{color:var(--muted);font-size:16px}
+.ob-create{border:1px dashed oklch(from var(--accent) l c h/0.5);background:var(--accent-soft);border-radius:var(--r-md);padding:18px 16px;text-align:center;margin-bottom:16px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.ob-create-i{width:40px;height:40px;border-radius:11px;background:var(--surface);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent)}
+.ob-create b{font-size:15px;font-weight:600}
+.ob-create p{font-size:12.5px;color:var(--muted);margin:0 0 6px;line-height:1.5;max-width:34ch}
+/* Two-paragraph variant with no action button (no eligible pickers today): the
+   flex gap owns the spacing, so kill the per-paragraph margin that would double
+   it between them and leave a dangling gap under the last one. */
+.ob-create--norun p{margin:0;max-width:38ch}
+@keyframes obFade{from{opacity:0}to{opacity:1}}
+@keyframes obRise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.ob-scrim,.ob-welcome,.ob-coach,.ob-spot{animation:none;transition:none}}
+body.ob-touring .tab{padding-bottom:200px}
+.np-tour-name{margin:16px 0 16px}
+
+/* ─── Settings: storage & installation panel ──────────────────────────────── */
+.set-store-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.set-store-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border:0.5px solid var(--border);border-radius:999px;background:var(--bg);color:var(--muted);font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.01em;white-space:nowrap}
+.set-store-chip.is-ok{border-color:oklch(0.5 0.11 155/0.35);background:oklch(0.5 0.11 155/0.08);color:oklch(0.42 0.1 155)}
+/* Darkened rather than raw --warm (L=0.62): at 10.5px this is body text and
+   needs 4.5:1, and "Not protected yet" is the panel's most consequential line.
+   Same treatment as .is-ok above — hue/chroma kept, lightness dropped. */
+.set-store-chip.is-warn{border-color:oklch(from var(--warm) l c h/0.4);background:oklch(from var(--warm) l c h/0.08);color:oklch(0.45 0.13 50)}
+.set-store-actions{display:flex;flex-direction:column;gap:8px;align-items:stretch;flex-shrink:0}
+/* iOS instruction row reads as a note, not another action. */
+.set-store-ios .set-data-sub{max-width:60ch}
+
+
+/* ─── Reduced motion: gaps closed (see the matching block in styles.css) ───── */
+@media (prefers-reduced-motion: reduce) {
+  /* Send-to-Today confirmation: sentRise/sentPop start at opacity 0 and scale 0,
+     so these must be pinned visible or the confirmation never appears. */
+  .stage-sent,
+  .stage-sent-check,
+  .btn.is-sent {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  /* Dissolve pick animation: show the landed name, skip the fade-through and
+     the settle bounce. The glow is decorative. */
+  .dissolve-name,
+  .dissolve--settled .dissolve-name {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .dissolve-glow {
+    animation: none;
+    opacity: 0;
+  }
+  /* Pick-animation preview stage (Settings) — .pickanim-swap-list was already
+     covered; this is its missing counterpart. */
+  .pickanim-swap-stage {
+    animation: none;
+    opacity: 1;
+  }
+  /* New-item pool rows and the inline editors: all entrance fades. */
+  /* .rem-quickadd-wrap was already covered; this is the inner row, which has its
+     own np-row-in fade. */
+  .np-pool-row,
+  .rem-quickadd,
+  .rem-inline-editor,
+  .rem-skip-confirm {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* Settings pick-animation preview: restore the dissolve style's own motion inside
+   .motion-ok only (reel and spotlight were never suppressed — they animate via
+   inline transition durations, not keyframes). */
+@media (prefers-reduced-motion: reduce) {
+  .motion-ok .dissolve-name {
+    animation: dissolveIn 180ms ease;
+    opacity: 1;
+  }
+  .motion-ok .dissolve--settled .dissolve-name {
+    animation: settleIn 380ms cubic-bezier(.3,1.2,.4,1);
+  }
+  .motion-ok .dissolve-glow {
+    animation: glow 480ms ease-out;
+    opacity: 1;
+  }
+}
+
+/* Reduced-motion advisory under the two animation-choice headings. Darkened from
+   raw --warm (L=0.62), which only reaches 3.64:1 at this 14px/400 body size —
+   same treatment as .set-store-chip.is-warn. */
+.set-rm-note { color: oklch(0.45 0.13 50); }
+
+/* Live "won't show today" advisory inside the reminder editor. Sits under the
+   control that caused it; warm rather than red because nothing is broken. */
+.rem-vis-note { margin: 8px 0 0; font-size: 12.5px; line-height: 1.5; color: oklch(0.45 0.13 50); max-width: 52ch; }
+/* The note's live-region wrapper stays mounted even with nothing to say, so an
+   advisory that appears after a schedule edit is actually announced. While empty
+   it is taken out of flow (an empty flex child would otherwise add one parent
+   `gap` of dead space) but kept in the accessibility tree. */
+.rem-vis-live:empty { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); }
+/* "Never shows" is a dead configuration, not a deferral — red, and it reads as an
+   alert to screen readers rather than a status. Darkened from --danger for AA at
+   this size. */
+.rem-vis-note.is-never { color: oklch(0.45 0.17 25); }
+/* Post-create confirmation, in the list where the new card would appear. */
+.rem-added-msg { margin: 0 0 8px; font-size: 12.5px; line-height: 1.5; padding: 9px 12px; border-radius: var(--r-sm); border: 0.5px solid var(--border); background: var(--surface); }
+.rem-added-msg.is-ok { color: oklch(0.42 0.1 155); border-color: oklch(0.5 0.11 155/0.3); background: oklch(0.5 0.11 155/0.06); }
+.rem-added-msg.is-warn { color: oklch(0.45 0.13 50); border-color: oklch(from var(--warm) l c h/0.35); background: oklch(from var(--warm) l c h/0.07); }
+@media (prefers-reduced-motion: reduce) { .rem-added-msg, .rem-vis-note { animation: none; } }

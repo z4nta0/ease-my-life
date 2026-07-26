@@ -1,0 +1,1391 @@
+/* ─── Reset + tokens ─────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+/* One-shot theme cross-fade: while `.theme-animating` is on <html> (added by
+   applyPaletteObj on a user theme swap, ~480ms), ease the themable properties so
+   the palette change glides instead of snapping. Scoped to the swap window so it
+   never interferes with normal interaction transitions. */
+.theme-animating, .theme-animating *, .theme-animating *::before, .theme-animating *::after {
+  transition: background-color .42s ease, color .42s ease, border-color .42s ease, fill .42s ease, stroke .42s ease !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-animating, .theme-animating * { transition: none !important; }
+}
+html, body { margin: 0; padding: 0; height: 100%; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+input { font: inherit; color: inherit; }
+
+a { color: var(--accent); }
+a:hover { color: oklch(from var(--accent) calc(l - 0.1) c h); }
+
+:root {
+  --bg: oklch(0.985 0.003 240);
+  --surface: oklch(0.975 0.004 240);
+  --border: oklch(0.91 0.005 240);
+  --text: oklch(0.17 0.012 250);
+  --muted: oklch(0.5 0.012 250);
+  --accent: oklch(0.5 0.14 250);
+  --accent-soft: oklch(0.95 0.025 250);
+  --warm: oklch(0.62 0.13 50);
+
+  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+
+  --shadow-sm: 0 1px 0 oklch(1 0 0 / 0.5), 0 1px 2px oklch(0 0 0 / 0.03);
+  --shadow-md: 0 1px 0 oklch(1 0 0 / 0.5), 0 6px 20px oklch(0 0 0 / 0.05);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.005em;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 22px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.kicker-time {
+  margin-left: 6px;
+  padding-left: 8px;
+  border-left: 0.5px solid var(--border);
+}
+
+/* ─── App shell ──────────────────────────────────────────────────────────── */
+
+.app {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  container: app / inline-size;
+}
+.app[data-placement="side"] { flex-direction: row; }
+.app[data-placement="top"]  { flex-direction: column; }
+
+/* Mobile preview: constrain the app to phone-like width. Transform turns it
+   into a containing block so position:fixed descendants (bottom tab bar) sit
+   inside the frame instead of spanning the whole window. The body bg shows
+   around it like a phone-on-desktop preview. */
+body[data-viewport="mobile"] {
+  background: oklch(from var(--bg) calc(l - 0.025) c h);
+}
+.app[data-viewport="mobile"] {
+  width: min(420px, 100%);
+  margin: 0 auto;
+  transform: translateZ(0);
+  box-shadow: 0 0 0 0.5px var(--border);
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  padding-left: var(--main-pad-x, 20px);
+  padding-right: var(--main-pad-x, 20px);
+  padding-bottom: 96px;
+  overflow-y: auto;
+  transition: padding 0.42s cubic-bezier(.4, 0, .2, 1);
+}
+/* Nav layout-switch animation. The old bar exits toward its own edge as a
+   fixed-overlay GHOST (out of flow, non-interactive); the real bar enters from
+   its target edge after a short stagger. Main's padding transition (above)
+   eases the content reflow so it doesn't snap. */
+.tabbar--exiting { pointer-events: none; z-index: 150; }
+.tabbar--exiting.tabbar--side { position: fixed; top: 0; left: 0; bottom: 0; }
+.tabbar--exiting.tabbar--top { position: fixed; top: 0; left: 0; right: 0; }
+@keyframes navExitBottom { to { transform: translateX(-50%) translateY(130%); opacity: 0; } }
+@keyframes navExitTop { to { transform: translateY(-130%); opacity: 0; } }
+@keyframes navExitSide { to { transform: translateX(-115%); opacity: 0; } }
+.tabbar--exiting.tabbar--bottom { animation: navExitBottom .34s cubic-bezier(.4, 0, 1, 1) forwards; }
+.tabbar--exiting.tabbar--top { animation: navExitTop .34s cubic-bezier(.4, 0, 1, 1) forwards; }
+.tabbar--exiting.tabbar--side { animation: navExitSide .34s cubic-bezier(.4, 0, 1, 1) forwards; }
+@keyframes navEnterBottom { from { transform: translateX(-50%) translateY(130%); opacity: 0; } to { transform: translateX(-50%); opacity: 1; } }
+@keyframes navEnterTop { from { transform: translateY(-130%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes navEnterSide { from { transform: translateX(-115%); opacity: 0; } to { transform: none; opacity: 1; } }
+.tabbar--entering.tabbar--bottom { animation: navEnterBottom .42s cubic-bezier(.2, .7, .3, 1) .12s both; }
+.tabbar--entering.tabbar--top { animation: navEnterTop .42s cubic-bezier(.2, .7, .3, 1) .12s both; }
+.tabbar--entering.tabbar--side { animation: navEnterSide .42s cubic-bezier(.2, .7, .3, 1) .12s both; }
+@media (prefers-reduced-motion: reduce) {
+  .main { transition: none; }
+  .tabbar--exiting { display: none; }
+  .tabbar--entering.tabbar--bottom, .tabbar--entering.tabbar--top, .tabbar--entering.tabbar--side { animation: none; }
+}
+.main-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.tab--today { max-width: none; }
+.main:has(.tab--today) .main-inner { padding-top: 0; }
+@container app (min-width: 760px) {
+  .main:has(.tab--today) .main-inner { max-width: 960px; }
+}
+.app[data-placement="side"] .main { --main-pad-x: 32px; padding-bottom: 32px; }
+.app[data-placement="top"]  .main { padding-bottom: 32px; }
+.main:has(.tab--today) { --main-pad-x: 0; }
+
+/* ─── Tab bar ────────────────────────────────────────────────────────────── */
+
+.tabbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: oklch(from var(--bg) l c h / 0.85);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 0 solid var(--border);
+}
+
+/* Bottom placement (mobile feel) */
+.tabbar--bottom {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  border-top-width: 0.5px;
+  padding: 8px max(env(safe-area-inset-left), 12px) calc(8px + env(safe-area-inset-bottom)) max(env(safe-area-inset-right), 12px);
+  z-index: 100;
+  justify-content: center;
+}
+.tabbar--bottom .tabbar-brand { display: none; }
+.tabbar--bottom .tabbtn {
+  flex: 1 1 0;
+  max-width: 120px;
+  flex-direction: column; gap: 3px;
+  padding: 6px 4px; min-height: 52px;
+  font-size: 10.5px; font-weight: 500; letter-spacing: 0.01em;
+  color: var(--muted);
+  border-radius: 10px;
+}
+.tabbar--bottom .tabbtn.is-on { color: var(--accent); background: transparent; }
+.tabbar--bottom .tabbtn span { font-size: 10.5px; }
+@container app (min-width: 720px) {
+  .tabbar--bottom {
+    width: max-content;
+    left: 50%; right: auto;
+    bottom: 20px;
+    transform: translateX(-50%);
+    padding: 6px 8px;
+    border: 0.5px solid var(--border);
+    border-radius: 999px;
+    box-shadow: 0 10px 30px -8px oklch(0 0 0 / 0.32), 0 3px 10px -2px oklch(0 0 0 / 0.14);
+    background: oklch(from var(--surface) l c h / 0.94);
+    gap: 2px;
+  }
+  .tabbar--bottom .tabbtn {
+    flex: 0 0 auto;
+    flex-direction: row;
+    gap: 7px;
+    padding: 8px 14px;
+    min-height: 0;
+    max-width: none;
+    border-radius: 999px;
+    font-size: 13px;
+  }
+  .tabbar--bottom .tabbtn span { font-size: 13px; }
+  .app[data-placement="bottom"] .main { padding-bottom: 110px; }
+}
+
+/* Bottom bar on small screens: floating icon-only pill, consistent with the
+   larger-screen overlay above (safe-area aware). To switch BACK to the standard
+   full-bleed mobile bar, delete this whole @container block — the base
+   .tabbar--bottom rules restore the edge-to-edge boxy layout. */
+@container app (max-width: 719.98px) {
+  .tabbar--bottom {
+    width: max-content;
+    max-width: calc(100% - 24px);
+    left: 50%; right: auto;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    border-top-width: 0;
+    transform: translateX(-50%);
+    padding: 6px 8px;
+    border: 0.5px solid var(--border);
+    border-radius: 999px;
+    box-shadow: 0 10px 30px -8px oklch(0 0 0 / 0.32), 0 3px 10px -2px oklch(0 0 0 / 0.14);
+    background: oklch(from var(--surface) l c h / 0.94);
+    gap: 2px;
+  }
+  .tabbar--bottom .tabbtn {
+    flex: 0 0 auto;
+    max-width: none;
+    flex-direction: row;
+    gap: 0;
+    padding: 12px 28px;
+    min-height: 0;
+    border-radius: 999px;
+  }
+  .tabbar--bottom .tabbtn span { display: none; }
+  .app[data-placement="bottom"] .main { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+}
+
+/* Side placement */
+.tabbar--side {
+  position: sticky; top: 0;
+  flex-direction: column;
+  align-items: stretch;
+  width: 220px;
+  height: 100dvh;
+  padding: 24px 16px;
+  gap: 2px;
+  border-right-width: 0.5px;
+}
+.tabbar--side .tabbar-brand {
+  display: flex; align-items: center; gap: 9px;
+  padding: 6px 10px 18px;
+  font-weight: 600;
+}
+/* Side rail uses the "Ease My Life" wordmark in place of the mark + "EML" —
+   the mark already appears in each tab's header, so repeating it here reads
+   redundant. "Ease" (Shantell Sans, accent) stacks over "My Life" (Quicksand). */
+.tabbar--side .brand-mark,
+.tabbar--side .brand-name,
+.tabbar--top .brand-mark,
+.tabbar--top .brand-name { display: none; }
+.tabbar--side .brand-wordmark,
+.tabbar--top .brand-wordmark {
+  display: flex; flex-direction: row; align-items: center; gap: 11px;
+  line-height: 0.98;
+  padding: 2px 2px 0;
+  text-transform: uppercase;
+}
+.tabbar--side .brand-wordmark .bw-mark,
+.tabbar--top .brand-wordmark .bw-mark {
+  width: 30px; height: 30px; flex: none;
+  color: var(--accent); display: inline-flex;
+}
+.tabbar--side .brand-wordmark .bw-mark svg,
+.tabbar--top .brand-wordmark .bw-mark svg { display: block; width: 100%; height: 100%; }
+.tabbar--side .brand-wordmark .bw-lines,
+.tabbar--top .brand-wordmark .bw-lines {
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.tabbar--side .brand-wordmark .bw-ease,
+.tabbar--top .brand-wordmark .bw-ease {
+  font-family: "Shantell Sans", "Geist", sans-serif;
+  font-weight: 600;
+  font-size: 34px;
+  color: var(--accent);
+  letter-spacing: -0.01em;
+}
+.tabbar--side .brand-wordmark .bw-rest,
+.tabbar--top .brand-wordmark .bw-rest {
+  font-family: "Quicksand", "Geist", sans-serif;
+  font-weight: 700;
+  font-size: 25px;
+  color: var(--text);
+  letter-spacing: -0.005em;
+}
+.tabbar--side .tabbtn {
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+.tabbar--side .tabbtn.is-on { color: var(--accent); background: transparent; }
+.tabbar--side .tabbtn.is-on svg { color: var(--accent); }
+
+/* Pull handle + scrim — inert on desktop; the small-screen drawer query below
+   turns them on. Handle rides the rail's right edge, vertically centered. */
+.rail-handle {
+  display: none;
+  position: absolute;
+  top: 50%; left: 100%;
+  transform: translateY(-50%);
+  width: 22px; height: 60px;
+  align-items: center; justify-content: center;
+  padding: 0;
+  background: oklch(from var(--bg) l c h / 0.92);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 0.5px solid var(--border);
+  border-left: 0;
+  border-radius: 0 12px 12px 0;
+  color: var(--muted);
+  cursor: pointer;
+  box-shadow: 6px 0 16px -8px rgba(0,0,0,0.28);
+}
+.rail-handle:hover { color: var(--accent); }
+.rail-scrim {
+  display: none;
+  position: fixed; inset: 0;
+  background: oklch(from var(--text) l c h / 0.32);
+  z-index: 190;
+}
+
+/* Top placement */
+.tabbar--top {
+  position: sticky; top: 0;
+  /* Content constrained to a centered column matching the main content width.
+     Using the Today-tab width (960px). Stored alternative — other-tabs width:
+       padding: 12px max(20px, calc((100% - 720px) / 2)); */
+  padding: 12px max(20px, calc((100% - 960px) / 2));
+  border-bottom-width: 0.5px;
+  justify-content: space-between;
+  z-index: 100;
+}
+.tabbar--top .tabbar-brand {
+  display: flex; align-items: center;
+  padding-right: 16px; margin-right: 8px;
+  border-right: 0.5px solid var(--border);
+  font-weight: 600;
+}
+/* Top bar now uses the same eased-check + "Ease / My Life" wordmark as the
+   side rail (see the shared .brand-wordmark rules above). */
+.tabbar--top .tabbtn {
+  flex-direction: row; gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+.tabbar--top .tabbtn.is-on { color: var(--accent); background: transparent; }
+.tabbar--top .tabbtn.is-on svg { color: var(--accent); }
+
+.tabbtn {
+  display: flex; align-items: center;
+  transition: color .12s, background .12s;
+  position: relative; z-index: 1;
+}
+/* Sliding active-tab indicator — a single pill measured from the active tab
+   (nav-relative), gliding on transform between tabs (X for bottom/top, Y for
+   side). Sits behind the buttons. */
+.tabbar-indicator {
+  position: absolute; top: 0; left: 0; z-index: 0; pointer-events: none;
+  background: var(--accent-soft); border-radius: 10px;
+  transition: transform .34s cubic-bezier(.2, .7, .3, 1), width .34s cubic-bezier(.2, .7, .3, 1), height .34s cubic-bezier(.2, .7, .3, 1);
+}
+@media (prefers-reduced-motion: reduce) { .tabbar-indicator { transition: none; } }
+/* Bottom bar uses a highly-rounded floating container, so its indicator pill
+   needs a rounder radius than the squarer side/top pills. */
+.tabbar--bottom .tabbar-indicator { border-radius: 22px; }
+.tabbtn:hover:not(.is-on) { color: var(--text); }
+
+.brand-mark { color: var(--accent); display: inline-flex; }
+/* Header logos are now <button>s (link back to Today) — strip native chrome. */
+button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; background: none; padding: 0; font: inherit; cursor: pointer; }
+/* .tabbar-brand is a <button> (links back to Today) — strip native chrome so
+   the placement layout rules below style it as before. */
+.tabbar-brand { appearance: none; -webkit-appearance: none; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+.brand-name { letter-spacing: -0.02em; }
+.brand-name span { color: var(--accent); }
+/* Wordmark renders in the side rail and top bar — hidden elsewhere (bottom). */
+.brand-wordmark { display: none; }
+
+/* ─── Generic atoms ──────────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 0 14px; height: 38px;
+  border-radius: 999px;
+  font-size: 14px; font-weight: 500;
+  letter-spacing: -0.005em;
+  transition: background .12s, color .12s, transform .08s;
+}
+.btn:active { transform: translateY(0.5px); }
+.btn:disabled { opacity: 0.5; cursor: default; }
+.btn--sm { height: 30px; padding: 0 11px; font-size: 13px; gap: 5px; border-radius: 999px; }
+.btn--primary { background: var(--text); color: var(--bg); }
+.btn--primary:hover { background: oklch(from var(--text) calc(l + 0.06) c h); }
+.btn--ghost { color: var(--muted); }
+.btn--ghost:hover { color: var(--text); background: var(--surface); }
+.btn--danger { color: oklch(0.5 0.18 25); border: 0.5px solid currentColor; background: transparent; }
+.btn--danger:hover { background: oklch(0.97 0.02 25); }
+.btn--secondary { color: var(--text); border: 0.5px solid var(--border); background: var(--surface); }
+.btn--secondary:hover { border-color: var(--muted); }
+
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.card--p { padding: 18px 20px; }
+
+.pill {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.pill--default { background: var(--surface); color: var(--muted); border: 0.5px solid var(--border); }
+.pill--mode    { background: var(--accent-soft); color: var(--accent); }
+.pill--muted   { background: transparent; color: var(--muted); border: 0.5px solid var(--border); padding: 1px 7px; font-size: 9.5px; }
+
+.section-h { display: flex; flex-direction: column; gap: 18px; }
+.section-title {
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+.section-sub { color: var(--muted); margin: 0; max-width: 52ch; }
+.sub-tablink { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.sub-tablink:hover { text-decoration-thickness: 2px; }
+
+/* ─── Tab: Today ─────────────────────────────────────────────────────────── */
+
+.tab--today { gap: 0; }
+.today-h {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 28px 20px 24px;
+  background: var(--bg);
+  border-bottom: 0.5px solid var(--border);
+}
+.today-h-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.today-h-l {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+}
+/* Row that holds the date + day-streak pill. The streak's pill height
+   matches the kicker's line-height box so the row reads as a single line. */
+.kicker-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+.today-h-lead {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+.brand-mark {
+  flex: 0 0 auto;
+  display: block;
+  /* Match the title's two-line height: font-size × line-height × 2. */
+  height: calc(34px * 1.1 * 2);
+  --brand-mark-h: calc(34px * 1.1 * 2);
+  aspect-ratio: 1 / 1;
+  border-radius: 11px;
+  text-decoration: none;
+  transition: transform 180ms ease;
+}
+.brand-mark:hover { transform: translateY(-1px); }
+.brand-mark svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+@media (max-width: 640px) {
+  .today-h-lead { gap: 12px; }
+}
+.today-body {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px 20px 0;
+}
+.today-title {
+  font-size: 34px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  margin: 0;
+  align-items: center;
+  /* Stack the default + celebratory titles on top of each other so they can
+     cross-fade cleanly without the header reflowing. */
+  display: grid;
+}
+.today-title .title-state {
+  grid-area: 1 / 1;
+  transition: opacity 280ms ease, transform 280ms ease;
+  will-change: opacity, transform;
+}
+.today-title .title-state.is-out {
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+}
+.today-title .title-state.is-in {
+  opacity: 1;
+  transform: none;
+}
+/* Celebratory title: words enter one by one. "Your" + "life," fade-rise;
+   "eased!" lands with a spring-bounce to match the word's meaning. */
+.today-title .title-state--done .title-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: titleWordRise 420ms cubic-bezier(.22,.9,.3,1) forwards;
+}
+.today-title .title-state--done.is-in .title-word--1 { animation-delay: 60ms; }
+.today-title .title-state--done.is-in .title-word--2 { animation-delay: 200ms; }
+.today-title .title-state--done.is-in .title-word--3 {
+  animation: titleWordSpring 720ms cubic-bezier(.22,1.5,.36,1) 380ms forwards;
+  color: var(--accent);
+  transform-origin: 0% 70%;
+}
+/* When the celebratory title is not active, hold all words at their start
+   state so the reveal plays cleanly on next entry. */
+.today-title .title-state--done.is-out .title-word { animation: none; }
+@keyframes titleWordRise {
+  0%   { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes titleWordSpring {
+  0%   { opacity: 0; transform: translateY(10px) scale(0.86); }
+  55%  { opacity: 1; transform: translateY(0)    scale(1.12); }
+  78%  {            transform: translateY(0)    scale(0.97); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+.today-h-lead .today-title { flex: 1 1 auto; min-width: 0; }
+.today-h-lead .ring { margin-left: auto; flex: 0 0 auto; }
+
+.today-counter {
+  display: flex; flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+/* Sized to match the brand-mark's height so the title row reads as a
+   logo / title / ring triad of equal vertical weight. */
+.ring { position: relative; width: calc(34px * 1.1 * 2); height: calc(34px * 1.1 * 2); }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: var(--border); stroke-width: 2.8; }
+.ring-fg { fill: none; stroke: var(--accent); stroke-width: 2.8; stroke-linecap: round;
+  transition: stroke-dasharray .55s cubic-bezier(.3,1.3,.5,1); }
+.ring-glow {
+  position: absolute; inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent), transparent 65%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+.ring.is-pulsing svg {
+  animation: ringPulse 620ms cubic-bezier(.22,1.4,.36,1);
+}
+.ring.is-pulsing .ring-num {
+  animation: ringNumPulse 620ms cubic-bezier(.22,1.4,.36,1);
+}
+.ring.is-pulsing .ring-glow {
+  animation: ringGlow 700ms ease-out;
+}
+@keyframes ringPulse {
+  0%   { transform: rotate(-90deg) scale(1); }
+  35%  { transform: rotate(-90deg) scale(1.10); }
+  100% { transform: rotate(-90deg) scale(1); }
+}
+@keyframes ringNumPulse {
+  0%   { transform: scale(1); color: var(--text); }
+  35%  { transform: scale(1.18); color: var(--accent); }
+  100% { transform: scale(1); color: var(--text); }
+}
+@keyframes ringGlow {
+  0%   { opacity: 0; transform: scale(0.85); }
+  35%  { opacity: 0.35; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.05); }
+}
+
+/* Completion-celebration style variables (Appearance → Completion
+   celebration). "Ripple" is the pure-CSS default (ripple-ring + card-exhale,
+   values below); "Confetti" and "Sparkle" are separate particle-based
+   effects rendered in tab-today.jsx (see .confetti-piece/.sparkle-piece) —
+   the ring number pulse and title text-swap stay constant across all three
+   per the design decision (those aren't "ripple" effects). */
+:root {
+  --celeb-ripple-dur: 1600ms;
+  --celeb-ripple-scale: 10;
+  --celeb-ripple-opacity: 0.55;
+  --exhale-dur: 900ms;
+  --exhale-scale: 1.012;
+  --exhale-glow: 6px;
+  --exhale-glow-op: 0.18;
+}
+
+/* Ring completion — runs once when the ring fills. The ring itself
+   stays put; only the number pulses to the accent color, while the wider
+   celebration-ripple + card-exhale cascade carry the moment. */
+.ring.is-celebrating .ring-num {
+  animation: ringCompleteNum 1200ms cubic-bezier(.22,1.4,.36,1);
+}
+.ring.is-celebrating .ring-glow {
+  animation: ringCompleteGlow 1200ms ease-out;
+}
+.ring-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes ringCompleteScale {
+  0%   { transform: rotate(-90deg) scale(1); }
+  30%  { transform: rotate(-90deg) scale(1.14); }
+  60%  { transform: rotate(-90deg) scale(0.98); }
+  100% { transform: rotate(-90deg) scale(1); }
+}
+@keyframes ringCompleteNum {
+  0%   { transform: scale(1); color: var(--text); }
+  30%  { transform: scale(1.35); color: var(--accent); }
+  60%  { transform: scale(0.96); color: var(--accent); }
+  100% { transform: scale(1); color: var(--text); }
+}
+@keyframes ringCompleteGlow {
+  0%   { opacity: 0; transform: scale(0.85); }
+  30%  { opacity: 0.55; transform: scale(1.15); }
+  100% { opacity: 0; transform: scale(1.45); }
+}
+@keyframes ringCompleteRipple {
+  0%   { opacity: 0.85; transform: scale(1); border-width: 1.5px; }
+  100% { opacity: 0;    transform: scale(2.4); border-width: 0.5px; }
+}
+
+/* Celebration ripple — fires after the ring + title resolve, as part of the
+   broader "all-done" moment. Bigger, slower, more atmospheric than the
+   ring-ripple. Positioned absolute over the ring so it expands past it. */
+.celebration-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  pointer-events: none;
+  opacity: 0;
+}
+.ring.is-celebrating .celebration-ripple {
+  animation: celebrationRipple var(--celeb-ripple-dur) cubic-bezier(.2,.6,.3,1) forwards;
+}
+@keyframes celebrationRipple {
+  0%   { opacity: var(--celeb-ripple-opacity); transform: scale(1);  border-width: 1.5px; }
+  100% { opacity: 0;    transform: scale(var(--celeb-ripple-scale)); border-width: 0.5px; }
+}
+
+/* Card exhale — each completed card pulses once with a soft accent halo as
+   the celebration cascades top-to-bottom. Delay set inline via --exhale-delay. */
+.today-card.is-exhaling {
+  animation: cardExhale var(--exhale-dur) cubic-bezier(.3,.7,.4,1) var(--exhale-delay, 0ms) both;
+}
+@keyframes cardExhale {
+  0%   { transform: none;          box-shadow: 0 0 0 0 oklch(from var(--accent) l c h / 0); }
+  35%  { transform: scale(var(--exhale-scale));  box-shadow: 0 0 0 var(--exhale-glow) oklch(from var(--accent) l c h / var(--exhale-glow-op)); }
+  100% { transform: none;          box-shadow: 0 0 0 0 oklch(from var(--accent) l c h / 0); }
+}
+
+/* Confetti + Sparkle — the two completion-celebration styles that use actual
+   generated particles (tab-today.jsx) rather than pure CSS variants of the
+   ripple. They overlay the cards area only (not the group rail), positioned
+   fixed at a snapshot of that area's on-screen rect so "center of the
+   viewable area" holds regardless of scroll position or list length.
+   Overflow is clipped so pieces stay contained to the cards area per the
+   "subtle, not a party popper" brief. */
+.celeb-overlay { position: fixed; pointer-events: none; overflow: hidden; z-index: 5; }
+.confetti-piece {
+  position: absolute; top: 50%; left: 50%;
+  width: 9px; height: 14px; border-radius: 2px;
+  background: var(--accent);
+  opacity: 0;
+  animation: confettiBurst 850ms cubic-bezier(.2,.7,.3,1) both;
+}
+@keyframes confettiBurst {
+  0%   { opacity: var(--piece-opacity, 0.9); transform: translate(-50%, -50%) rotate(0deg); }
+  100% { opacity: 0;   transform: translate(calc(-50% + cos(var(--angle)) * var(--dist)), calc(-50% + sin(var(--angle)) * var(--dist) + 14px)) rotate(var(--rot)); }
+}
+.sparkle-piece {
+  position: absolute;
+  transform: translate(-50%, -50%) scale(0.4);
+  font-size: 18px; line-height: 1; color: var(--accent);
+  opacity: 0;
+  animation: sparkleTwinkle 780ms ease-in-out both;
+}
+@keyframes sparkleTwinkle {
+  0%, 100% { opacity: 0;   transform: translate(-50%, -50%) scale(0.4); }
+  50%      { opacity: 0.9; transform: translate(-50%, -50%) scale(1.15); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .confetti-piece, .sparkle-piece { animation: none; opacity: 0; }
+}
+.ring-text {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; gap: 2px;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.ring-num { font-size: 23px; font-weight: 500; letter-spacing: -0.04em; line-height: 1; }
+.ring-den { font-size: 12px; color: var(--muted); line-height: 1; }
+
+/* Small inline pill that sits on the kicker row. Its height matches the
+   kicker's line-height box so the row stays tight. */
+.streak {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 22px;
+  padding: 0 10px;
+  font-family: var(--font-mono);
+  font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted);
+  background: var(--surface); border: 0.5px solid var(--border);
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: background .2s, border-color .2s;
+}
+.streak svg { flex: 0 0 auto; color: var(--warm); transition: filter .2s, transform .2s; }
+.streak.is-bumped {
+  animation: streakBump 800ms cubic-bezier(.22,1.4,.36,1);
+  background: oklch(from var(--warm) calc(l + 0.32) calc(c - 0.05) h);
+  border-color: oklch(from var(--warm) calc(l + 0.2) calc(c - 0.03) h);
+}
+.streak.is-bumped svg {
+  animation: streakFlame 800ms cubic-bezier(.22,1.4,.36,1);
+}
+.streak.is-bumped span {
+  animation: streakNum 800ms cubic-bezier(.22,1.4,.36,1);
+}
+@keyframes streakBump {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.10); }
+  100% { transform: scale(1); }
+}
+@keyframes streakFlame {
+  0%   { transform: scale(1) rotate(0); filter: drop-shadow(0 0 0 transparent); }
+  35%  { transform: scale(1.4) rotate(-6deg); filter: drop-shadow(0 0 5px var(--warm)); }
+  70%  { transform: scale(1.1) rotate(3deg); }
+  100% { transform: scale(1) rotate(0); filter: drop-shadow(0 0 0 transparent); }
+}
+@keyframes streakNum {
+  0%   { color: var(--muted); }
+  35%  { color: var(--warm); font-weight: 600; }
+  100% { color: var(--muted); }
+}
+
+.today-list { display: flex; flex-direction: column; }
+
+.today-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-lg);
+  transition: background .15s, opacity .2s, border-color .12s;
+  cursor: pointer;
+  user-select: none;
+  perspective: 800px;
+}
+.today-card:last-child { margin-bottom: 0; }
+.today-card:hover { border-color: oklch(from var(--border) calc(l - 0.08) c h); }
+.today-card:active { background: oklch(from var(--surface) calc(l - 0.01) c h); }
+.today-card.is-removing {
+  pointer-events: none;
+  overflow: hidden;
+  animation: cardSkipOut 380ms cubic-bezier(.4,.05,.7,.4) forwards;
+}
+
+/* Loader card — replaces EntryCard during regeneration. Three states:
+   pending (waiting its turn), active (reel cycling), settled (locked in). */
+.today-card--loader {
+  cursor: default;
+  pointer-events: none;
+}
+.today-card--loader .check {
+  opacity: 0.4;
+  border-style: dashed;
+}
+.today-card--loader.is-pending {
+  background: oklch(from var(--surface) calc(l + 0.005) c h);
+}
+.today-card--loader.is-pending .today-card-meta,
+.today-card--loader.is-pending .today-card-name {
+  opacity: 0.55;
+}
+.loader-pending {
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  font-size: 15px;
+}
+.loader-reel-name {
+  display: inline-block;
+  animation: loaderReelStep 90ms ease-out;
+  will-change: transform, opacity;
+}
+@keyframes loaderReelStep {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+.loader-settled {
+  animation: loaderSettleLand 320ms cubic-bezier(.22,1.4,.36,1) both;
+  color: var(--accent);
+}
+@keyframes loaderSettleLand {
+  0%   { opacity: 0; transform: translateY(6px) scale(0.96); color: var(--accent); }
+  50%  { opacity: 1; transform: scale(1.04);                  color: var(--accent); }
+  100% { transform: scale(1);                                 color: var(--text); }
+}
+
+/* Re-roll flip — full 360° tumble on X axis (single direction). State swaps
+   at the midpoint (180°, card upside-down) so the new content rolls through
+   from upside-down back to right-side up. Backface stays visible so the
+   tumble reads continuously. */
+.today-card.is-rolling .today-card-body {
+  transform-style: preserve-3d;
+  animation: rerollFlip 760ms cubic-bezier(.5,.1,.5,.9);
+}
+@keyframes rerollFlip {
+  from { transform: rotateX(0deg); }
+  to   { transform: rotateX(-360deg); }
+}
+.icon-btn.is-spinning svg {
+  animation: rerollSpin 760ms cubic-bezier(.4,0,.4,1);
+}
+@keyframes rerollSpin {
+  from { transform: rotate(0); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes cardSkipOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+    max-height: 200px;
+    margin-bottom: 10px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    border-top-width: 0.5px;
+    border-bottom-width: 0.5px;
+  }
+  50% {
+    opacity: 0;
+    transform: translateX(-18px);
+    max-height: 200px;
+    margin-bottom: 10px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-18px);
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+  }
+}
+
+/* ── Today: group layout ──────────────────────────────────────────────── */
+
+.today-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.group-rail {
+  position: sticky;
+  top: calc(var(--today-h-h, 140px) + 16px);
+  align-self: start;
+  display: flex; flex-direction: column;
+  gap: 6px;
+  max-height: calc(100dvh - var(--today-h-h, 140px) - 120px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.group-rail::-webkit-scrollbar { display: none; }
+.rail-kicker { padding: 0 12px 4px; }
+.group-rail ul { display: flex; flex-direction: column; gap: 2px; }
+.rail-btn {
+  width: 100%;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--muted);
+  transition: background .12s, color .12s;
+  text-align: left;
+}
+.rail-btn:hover { color: var(--text); }
+.rail-btn.is-on {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.rail-name { text-wrap: pretty; }
+.rail-count {
+  display: inline-flex; align-items: baseline; gap: 1px;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: inherit;
+  opacity: 0.7;
+}
+.rail-of { opacity: 0.6; }
+
+/* Edit Mode entry point in the group sidebar (desktop). Its own block with a
+   dashed divider + light fill so it reads as a list action, not a group link.
+   Hidden on mobile (the horizontal rail); the footer button takes over there. */
+.rail-editmode { margin-top: 12px; padding-top: 14px; border-top: 1px dashed var(--border); }
+.em-rail-btn {
+  width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 12px;
+  border: 1px dashed var(--border); border-radius: 8px;
+  background: oklch(from var(--surface) calc(l - 0.015) c h);
+  color: var(--muted);
+  font-size: 12.5px; font-weight: 600; letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: color .12s, border-color .12s, background .12s;
+}
+.em-rail-btn:hover { color: var(--accent); border-color: var(--accent); }
+.em-rail-btn.is-on {
+  color: var(--accent); border-style: solid; border-color: var(--accent);
+  background: var(--accent-soft);
+}
+/* Desktop shows the sidebar button, so the footer's duplicate is hidden there. */
+.foot-editmode { display: none; }
+
+.today-groups {
+  display: flex; flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
+/* Holds the reorderable Reminders + group sections. Mirrors .today-groups' own
+   column gap so each section's top-border separator keeps its 28px of breathing
+   room above it (the sections used to inherit that gap from .today-groups). */
+.groups-dnd { display: flex; flex-direction: column; gap: 28px; }
+
+.group-section {
+  display: flex; flex-direction: column;
+  gap: 12px;
+  scroll-margin-top: calc(var(--sticky-top-h, 140px) + 16px);
+}
+.group-section + .group-section {
+  border-top: 0.5px solid var(--border);
+  padding-top: 28px;
+}
+
+.group-h {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 16px;
+}
+.group-h-l {
+  display: flex; align-items: baseline; gap: 10px;
+  min-width: 0;
+}
+.group-name {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  margin: 0;
+  text-wrap: pretty;
+}
+.group-count {
+  display: inline-flex; align-items: baseline; gap: 4px;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.group-done { color: var(--text); }
+.group-of { opacity: 0.7; }
+
+.group-progress {
+  display: flex; gap: 4px;
+}
+.group-progress i {
+  position: relative;
+  width: 14px; height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background .25s ease;
+  overflow: hidden;
+}
+.group-progress i.is-done { background: var(--accent); }
+.group-progress i.is-fresh {
+  background: var(--border);   /* base stays grey while overlay sweeps */
+}
+.group-progress i.is-fresh::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--accent);
+  border-radius: inherit;
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: dashSweep 480ms cubic-bezier(.4,.6,.3,1) forwards;
+}
+@keyframes dashSweep {
+  0%   { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+/* Mobile: rail collapses, sections stack with dividers */
+@container app (max-width: 760px) {
+  .today-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .group-rail {
+    position: sticky;
+    top: var(--today-h-h, 132px);
+    z-index: 18;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-height: none;
+    margin: 0 -20px;
+    padding: 14px 20px;
+    gap: 6px;
+    background: oklch(from var(--bg) l c h / 0.92);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    border-bottom: 0.5px solid var(--border);
+    /* Same edge-fade treatment as .picker-tabs — JS toggles
+       .at-start / .at-end so the fade only appears on the side that
+       has more content to scroll into. */
+    --fade: 36px;
+    --fade-l: var(--fade);
+    --fade-r: var(--fade);
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--fade-l),
+      #000 calc(100% - var(--fade-r)),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--fade-l),
+      #000 calc(100% - var(--fade-r)),
+      transparent 100%
+    );
+  }
+  .group-rail.at-start { --fade-l: 0px; }
+  .group-rail.at-end   { --fade-r: 0px; }
+  .group-rail::-webkit-scrollbar { display: none; }
+  .rail-kicker { display: none; }
+  .group-rail ul {
+    flex: 0 0 auto;
+    flex-direction: row;
+    gap: 6px;
+    width: max-content;
+  }
+  .rail-btn {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 0.5px solid var(--border);
+    background: var(--surface);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  /* Mobile: the sidebar Edit Mode block is hidden (no room in the horizontal
+     pill row); the footer button takes over instead. */
+  .rail-editmode { display: none; }
+  .foot-editmode { display: inline-flex; }
+  .rail-btn.is-on {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .group-section + .group-section {
+    padding-top: 20px;
+  }
+  /* Mobile header trims its padding a touch */
+  .today-h { padding: 16px 20px 14px; }
+}
+
+.today-card.is-done { background: oklch(from var(--surface) calc(l - 0.005) c h); }
+.today-card.is-done .today-card-name { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 0.5px; }
+
+/* Day-off card — a conditional is active and its dependent pickers are resting.
+   Reads as a gentle "rest" state: accent-soft wash + accent meta label. */
+.today-card--dayoff { background: var(--accent-soft); }
+.today-card--dayoff .meta-picker { color: var(--accent); font-weight: 600; }
+/* Combined "{picker} — {conditional}" title: single line, ellipsis on overflow
+   (mobile-safe — a wrapped two-line title looks unbalanced). The conditional
+   name keeps the bold accent; the picker prefix is de-emphasised. */
+.today-card-meta--dayoff { min-width: 0; }
+.meta-dayoff-title { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 400; }
+.meta-dayoff-title strong { font-weight: 700; }
+.today-card--dayoff.is-done { background: oklch(from var(--accent-soft) calc(l - 0.02) c h); }
+
+/* Charging card — an ease-up picker has nothing eligible yet. Neutral/muted
+   "resting" look; its name reads as a status line rather than a task. */
+.today-card--charging .today-card-name { color: var(--muted); font-style: italic; }
+.today-card--charging .icon-btn.is-disabled { opacity: 0.4; cursor: default; }
+.today-card--charging .icon-btn.is-disabled:hover { background: none; color: var(--muted); }
+
+/* Rendered as a real <button> on interactive cards (keyboard + screen-reader
+   access to the app's primary action) and as a plain <span> on the loader and
+   the Settings celebration preview, which aren't interactive. The reset below
+   strips UA button chrome only — border/background/size stay owned by this rule
+   and by .today-card.is-done .check. */
+.check {
+  position: relative;
+  width: 24px; height: 24px; border-radius: 8px;
+  border: 1px solid var(--border);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background .12s, border-color .12s, color .12s;
+  appearance: none; -webkit-appearance: none;
+  padding: 0; margin: 0; flex: none;
+  background: none; font: inherit; color: inherit;
+}
+/* Screen-reader-only live region (window.announce). Present from load so status
+   changes are reliably announced; clipped rather than display:none, which would
+   remove it from the accessibility tree. */
+.sr-live { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+button.check { cursor: pointer; }
+/* Keyboard focus: an explicit accent ring separated from the box by a
+   background-coloured gap. The gap is what makes it legible on the DONE state,
+   where the box is filled solid accent and a touching accent ring vanishes —
+   so both states can share one rule instead of a state-specific colour. */
+.check:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--bg);
+}
+.today-card.is-done .check:focus-visible {
+  /* Filled box: pull the ring's inner edge to the card surface, and add a thin
+     bg-coloured inset line so the checkmark's edge stays distinct from it. */
+  box-shadow: 0 0 0 3px var(--bg), inset 0 0 0 1.5px var(--bg);
+}
+.check:hover { border-color: var(--text); }
+.today-card.is-done .check {
+  background: var(--accent); border-color: var(--accent); color: var(--bg);
+}
+.today-card.is-done .check svg {
+  animation: checkSpring 360ms cubic-bezier(.22,1.4,.36,1) both;
+}
+@keyframes checkSpring {
+  0%   { opacity: 0; transform: scale(0.4); }
+  55%  { opacity: 1; transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+.check-ripple {
+  position: absolute;
+  inset: -1px;
+  border-radius: 9px;
+  border: 1.5px solid var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+.today-card.is-fresh .check-ripple {
+  animation: checkRipple 600ms cubic-bezier(.2,.6,.3,1) forwards;
+}
+@keyframes checkRipple {
+  0%   { opacity: 0.85; transform: scale(1); border-width: 1.5px; }
+  100% { opacity: 0;    transform: scale(2.6); border-width: 0.5px; }
+}
+
+.today-card-body { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.today-card-meta {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.meta-dot { opacity: 0.5; }
+.today-card-name {
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.today-card-actions { display: flex; gap: 4px; }
+.icon-btn {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--muted);
+  transition: background .12s, color .12s;
+}
+.icon-btn:hover { background: var(--bg); color: var(--text); }
+/* Disabled re-roll (ease-up with only one charged item): rendered as an InfoTip
+   trigger so the explanatory tip still shows on hover/tap. Looks inert, no hover
+   affordance, but stays focusable/tappable for the tip. */
+.icon-btn.is-disabled {
+  opacity: 0.4; cursor: default;
+}
+.icon-btn.is-disabled:hover { background: none; color: var(--muted); }
+
+.today-footer {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 12px 0;
+  color: var(--muted);
+}
+.today-foot-actions { display: flex; gap: 10px; align-items: center; justify-content: center; }
+.today-foot-actions + .today-foot-sub { margin-top: 8px; }
+.today-footer .btn { font-variant-numeric: tabular-nums; }
+.foot-sep { color: var(--border); margin: 0 2px; }
+.today-foot-sub { font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Inline "regenerate" confirmation that replaces the footer button, matching the
+   inline-delete-confirm convention used elsewhere. */
+.gen-confirm { display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 420px; text-align: center; }
+.gen-confirm-msg { margin: 0; font-size: 13px; line-height: 1.5; color: var(--text); text-wrap: pretty; }
+.gen-confirm-actions { display: flex; gap: 8px; }
+
+
+/* ─── Reduced motion: gaps closed ────────────────────────────────────────────
+   Each rule pairs animation removal with an EXPLICIT end state. Several of the
+   keyframes below start at opacity 0 or scale 0, so removing the animation alone
+   would leave the element permanently invisible (the pre-existing
+   .confetti-piece rule is the pattern being followed here).
+   Three categories:
+     • decorative/additive (glow, ripple, exhale, spin) — removed outright
+     • entrance/exit of real content — snapped to its finished state
+     • state feedback that must stay legible — motion dropped, visibility kept */
+@media (prefers-reduced-motion: reduce) {
+  /* Celebratory title: words animate IN from opacity 0 — must be pinned visible. */
+  .today-title .title-state--done .title-word,
+  .today-title .title-state--done.is-in .title-word--1,
+  .today-title .title-state--done.is-in .title-word--2,
+  .today-title .title-state--done.is-in .title-word--3 {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  /* Progress ring: pulse/glow are purely decorative. The ring's own stroke
+     transition is untouched so progress still reads. */
+  .ring.is-pulsing svg,
+  .ring.is-pulsing .ring-num,
+  .ring.is-celebrating .ring-num,
+  .ring.is-celebrating svg {
+    animation: none;
+    transform: none;
+  }
+  .ring.is-pulsing .ring-glow,
+  .ring.is-celebrating .ring-glow,
+  .ring.is-celebrating .celebration-ripple {
+    animation: none;
+    opacity: 0;
+  }
+  /* Card exhale halo — additive only. */
+  .today-card.is-exhaling {
+    animation: none;
+    box-shadow: none;
+    transform: none;
+  }
+  /* Streak chip: the background/border-colour fade STAYS — a colour change is
+     not motion, and it is the signal that the streak advanced. Only the icon's
+     transform transition is movement. */
+  .streak svg { transition: filter .2s; }
+  .streak.is-bumped,
+  .streak.is-bumped svg,
+  .streak.is-bumped span {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  /* Check mark: the glyph is state, so it stays; the spring and ripple go. */
+  .today-card.is-done .check svg {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .today-card.is-fresh .check-ripple {
+    animation: none;
+    opacity: 0;
+  }
+  /* Group progress dot sweep — the .is-done fill already conveys the state. */
+  .group-progress i.is-fresh::after {
+    animation: none;
+    opacity: 0;
+  }
+  /* Card removal: cardSkipOut ends at opacity 0 / height 0. Keep the collapse
+     instant rather than reverting it, or the row would linger fully visible
+     until React unmounts it. */
+  .today-card.is-removing {
+    animation: none;
+    opacity: 0;
+    height: 0;
+    min-height: 0;
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-width: 0;
+  }
+  /* Pick loader: the reel is the animation. Reduced motion shows the settled
+     name directly — visible, accent-coloured, no cycling or landing bounce. */
+  .loader-reel-name,
+  .loader-settled {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  /* Re-roll: no 3D tumble, no spinner rotation. */
+  .today-card.is-rolling .today-card-body {
+    animation: none;
+    transform: none;
+  }
+  .icon-btn.is-spinning svg {
+    animation: none;
+    transform: none;
+  }
+}
+
+
+/* Settings previews opt back IN to motion (see .motion-ok in settings-previews.jsx):
+   pressing Play is an explicit request to see the animation, so the global
+   reduced-motion rules above are undone for these contained stages only. Each
+   declaration mirrors the original rule it is restoring. */
+@media (prefers-reduced-motion: reduce) {
+  .motion-ok .today-card.is-exhaling {
+    animation: cardExhale var(--exhale-dur) cubic-bezier(.3,.7,.4,1) var(--exhale-delay, 0ms) both;
+  }
+  .motion-ok .today-card.is-done .check svg {
+    animation: checkSpring 360ms cubic-bezier(.22,1.4,.36,1) both;
+  }
+  /* Base opacity stays 0 — `both` fill lets the keyframes own it, exactly as the
+     unprefixed rules do. Per-piece delays are set inline by JS and survive. */
+  .motion-ok .confetti-piece {
+    animation: confettiBurst 850ms cubic-bezier(.2,.7,.3,1) both;
+  }
+  .motion-ok .sparkle-piece {
+    animation: sparkleTwinkle 780ms ease-in-out both;
+  }
+}
