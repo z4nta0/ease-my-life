@@ -21,10 +21,13 @@ export default defineConfig({
       // then move the JSON into a `manifest: {...}` option here.
       manifest: false,
       workbox: {
-        // Precache the built app. Fonts are NOT covered until they are
-        // self-hosted — a cross-origin Google Fonts stylesheet cannot be
-        // precached, which is why offline still renders fallback faces.
+        // Precache the built app. Fonts are self-hosted under src/, so they are
+        // fingerprinted and covered by the glob below.
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        // Adds our notificationclick handler to the generated worker. Keeps us
+        // on generateSW (Workbox writes the precache) instead of having to
+        // switch to injectManifest and hand-maintain the whole service worker.
+        importScripts: ['/sw-notify.js'],
       },
       // Lets you exercise the service worker with `npm run dev`. Without this
       // the SW only exists in a real build (`npm run build && npm run preview`).

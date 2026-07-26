@@ -1395,8 +1395,9 @@ function TabToday({ state, actions, onHome, onNavTab }) {
         generateRef.current();
         // Post-hoc notice only: the list is already built, so clicking the
         // notification just focuses the app — it can never generate twice. Also
-        // suppressed when the app is visible and focused.
-        try { if (NOTIFY) NOTIFY.generated(); } catch (e) {}
+        // suppressed when the app is visible and focused. Async; the result is
+        // deliberately ignored, a failed notification must never break the run.
+        try { if (NOTIFY) Promise.resolve(NOTIFY.generated()).catch(() => {}); } catch (e) {}
       }
     };
     check();

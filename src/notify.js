@@ -1,6 +1,6 @@
-// Local notifications — the "cheap version": no service worker, no push server,
-// so these only fire while the app is open in a tab. Full scheduled delivery for
-// a closed app needs Web Push + a backend (see PWA-PLAN.md).
+// Local notifications. These fire only while the app is RUNNING (foreground or
+// backgrounded tab) — the page is what decides to show them. Delivery to a
+// fully closed app needs Web Push + a backend (see PWA-PLAN.md).
 //
 // Deliberate constraints:
 //  • Fires only AFTER the Daily generator has already run, never as a prompt to
@@ -52,26 +52,46 @@ async function request() {
 }
 
 // Fired by the Today scheduler immediately after an AUTOMATIC generation.
-// Returns true only if a notification was actually shown.
-function generated() {
+// Async, but callers can ignore the promise — failures are never surfaced.
+//
+// Prefers the service worker's showNotification() over the page-level
+// Notification constructor. This matters: on Android Chrome the constructor
+// THROWS (`Failed to construct 'Notification'`) and always has — it requires a
+// service worker registration. That was the reason notifications appeared to do
+// nothing on mobile. The click behaviour for this path lives in
+// public/sw-notify.js, since SW-owned notifications don't reach page handlers.
+async function generated() {
   if (!supported() || Notification.permission !== 'granted') return false;
   // Don't interrupt someone who is already looking at the app.
   const visible = document.visibilityState === 'visible' && document.hasFocus();
   if (visible) return false;
   const today = localDay(new Date());
   if (get(LS_DAY) === today) return false;
+  // Claim the day BEFORE the await, so two near-simultaneous calls can't both
+  // get past the guard.
   set(LS_DAY, today);
+
+  const title = 'Your life is ready to be eased!';
+  const opts = {
+    body: 'Your personalized list for today is ready. Click here to open it.',
+    icon: 'assets/icon-192.png',
+    badge: 'assets/icon-192.png',
+    tag: 'eml-daily-' + today,   // collapses duplicates across tabs
+    requireInteraction: false,
+  };
+
   try {
-    // Note: on Android Chrome the Notification constructor throws — it requires
-    // a service worker registration. That lands with the Vite/PWA step; until
-    // then this is a desktop-tab feature and failing silently is correct.
-    const n = new Notification('Your life is ready to be eased!', {
-      body: 'Your personalized list for today is ready. Click here to open it.',
-      icon: 'assets/icon-192.png',
-      badge: 'assets/icon-192.png',
-      tag: 'eml-daily-' + today,   // collapses duplicates across tabs
-      requireInteraction: false,
-    });
+    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+      const reg = await navigator.serviceWorker.ready;
+      if (reg && reg.showNotification) {
+        await reg.showNotification(title, opts);
+        return true;
+      }
+    }
+  } catch (e) { /* fall through to the page-level constructor */ }
+
+  try {
+    const n = new Notification(title, opts);
     // Click focuses the existing window — it never regenerates, because the
     // list this notification is about has already been built.
     n.onclick = () => {
@@ -79,7 +99,11 @@ function generated() {
       try { n.close(); } catch (e) {}
     };
     return true;
-  } catch (e) { return false; }
+  } catch (e) {
+    // Both paths failed — release the day so a later attempt can still notify.
+    if (get(LS_DAY) === today) set(LS_DAY, '');
+    return false;
+  }
 }
 
 export const NOTIFY = {
