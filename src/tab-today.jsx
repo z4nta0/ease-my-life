@@ -1370,27 +1370,34 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   // When the Daily generator is in 'auto' mode, build the day on its own at or
   // after the configured run time (default 4:00 AM). It's a catch-up check, not
   // a fire-at-exactly-4:00 alarm: opening the app any time after the run time on
-  // a day that hasn't been generated yet triggers it. Uses the same reel
-  // animation as manual Regenerate. If today's list already exists it does
-  // nothing (the list simply shows, no animation). Checked on mount and once a
-  // minute, so an app left open across the run-time boundary still fires. The
-  // generatingRef guard (set synchronously at the top of generate) plus the
-  // generatedAt-day check prevent any double run.
+  // a period that hasn't been generated yet triggers it. Uses the same reel
+  // animation as manual Regenerate. If the current period's list already exists
+  // it does nothing (the list simply shows, no animation). Checked on mount and
+  // once a minute, so an app left open across the run-time boundary still fires.
+  // The generatingRef guard (set synchronously at the top of generate) plus the
+  // boundary check prevent any double run.
+  //
+  // The period boundary is the RUN TIME, not midnight. That distinction matters:
+  // comparing calendar days meant a generation between midnight and the run time
+  // (the onboarding tour at 1am, say) marked the whole day as done and silently
+  // cancelled that day's auto-run. The app's day starts at the run time, so a
+  // 1am list belongs to the previous period and 4am should still refresh it.
   React.useEffect(() => {
     const daily = state.daily || {};
     if ((daily.mode || 'auto') !== 'auto') return;
-    const pad = (n) => String(n).padStart(2, '0');
-    const localDay = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     const check = () => {
       if (generatingRef.current) return;
       if (!state.pickers || !state.pickers.length) return; // nothing runs daily
       const now = new Date();
-      // Already built today? generatedAt is an ISO timestamp; compare local day.
-      const genAt = state.today && state.today.generatedAt ? new Date(state.today.generatedAt) : null;
-      if (genAt && localDay(genAt) === localDay(now)) return;
-      // Reached the configured run time yet? (minutes-since-midnight, local).
+      // Most recent occurrence of the run time: today's if we've passed it,
+      // otherwise yesterday's.
       const [rh, rm] = (daily.runTime || '04:00').split(':').map(Number);
-      if (now.getHours() * 60 + now.getMinutes() < rh * 60 + rm) return;
+      const boundary = new Date(now);
+      boundary.setHours(rh, rm, 0, 0);
+      if (boundary > now) boundary.setDate(boundary.getDate() - 1);
+      // Already generated within the current period?
+      const genAt = state.today && state.today.generatedAt ? new Date(state.today.generatedAt) : null;
+      if (genAt && genAt >= boundary) return;
       if (generateRef.current) {
         generateRef.current();
         // Post-hoc notice only: the list is already built, so clicking the
