@@ -226,10 +226,32 @@ async function wipe() {
   cached = null;
 }
 
+// Byte size of the actual saved data. navigator.storage.estimate() cannot
+// answer this: it is origin-wide (IDB + localStorage + the service worker
+// precache), and browsers deliberately distort it — Chromium pads opaque cached
+// responses by ~7MB each, and Firefox has been observed returning a `usage`
+// three orders of magnitude above both its own site-data figure and the real
+// bytes (1838MB reported against 1.3MB actual). Presenting that to a user as
+// "used" reads as a bug in the app. So we measure what we wrote instead, and
+// keep estimate() only for headroom, where an enforced approximation is the
+// right input.
+async function dataBytes() {
+  try {
+    const state = (await readPersisted()) || cached;
+    if (!state) return null;
+    const json = JSON.stringify(state);
+    // Blob is exact on bytes; TextEncoder covers anywhere Blob is missing.
+    if (typeof Blob === 'function') return new Blob([json]).size;
+    if (typeof TextEncoder === 'function') return new TextEncoder().encode(json).length;
+    return null;
+  } catch (e) { return null; }
+}
+
 async function status() {
   let mirrorAt = null;
   try { mirrorAt = localStorage.getItem(LS_MIRROR_AT); } catch (e) {}
-  const out = { engine, persisted: false, usage: null, quota: null, mirrorOk, mirrorAt };
+  const out = { engine, persisted: false, dataBytes: null, usage: null, quota: null, mirrorOk, mirrorAt };
+  out.dataBytes = await dataBytes();
   try {
     if (navigator.storage && navigator.storage.persisted) out.persisted = await navigator.storage.persisted();
     if (navigator.storage && navigator.storage.estimate) {

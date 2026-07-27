@@ -1109,7 +1109,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                     <span className={`set-store-chip ${stor && stor.persisted ? 'is-ok' : 'is-warn'}`}>
                       {stor && stor.persisted ? 'Protected from cleanup' : 'Not protected yet'}
                     </span>
-                    <span className="set-store-chip">{fmtBytes(stor && stor.usage)} used</span>
+                    <span className="set-store-chip">{fmtBytes(stor && stor.dataBytes)} of your data</span>
                     <span className={`set-store-chip ${stor && stor.mirrorOk === false ? 'is-warn' : ''}`}>
                       Fallback copy: {stor && stor.mirrorOk === false ? 'out of date' : fmtWhen(stor && stor.mirrorAt)}
                     </span>
