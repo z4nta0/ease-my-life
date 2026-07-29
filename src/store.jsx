@@ -725,7 +725,14 @@ function useStore(opts) {
 
     // Rebuild the entire entries list from scratch (used by Generate). Each
     // gets a fresh eid and starts not-done.
-    replaceTodayEntries: (list) => setState((s) => {
+    // `opts.resetStreak` — when true, clears today.streakClaimed so the new
+    // period starts unclaimed (the just-finished period's point, if any, was
+    // already banked into `streak` and is never touched here). Only the
+    // scheduled auto-run passes this; a manual Regenerate does NOT, so a user
+    // can't "farm" extra streak points by repeatedly regenerating + completing
+    // within the same calendar day. Deliberately NOT derived from the date —
+    // it's purely which caller asked for it.
+    replaceTodayEntries: (list, opts) => setState((s) => {
       const day = isoDay();
       // Two kinds of items in `list`:
       //  • carried  — a fully-formed prior entry (has _carry + entry) to keep
@@ -749,7 +756,9 @@ function useStore(opts) {
       const rows = fresh.filter((e) => !e.kind && e.pickerId).map((e) =>
         logRow(s, { eid: e.eid, pickerId: e.pickerId, itemId: e.itemId, source: 'auto', date: day }));
       const pickLog = (s.pickLog || []).filter((r) => r.date !== day || carriedEids.has(r.eid)).concat(rows);
-      return { ...s, today: { ...s.today, entries }, pickLog };
+      const today = { ...s.today, entries };
+      if (opts && opts.resetStreak) today.streakClaimed = false;
+      return { ...s, today, pickLog };
     }),
 
     // Phase A of Generate: resolve each conditional's `active` for the new day
