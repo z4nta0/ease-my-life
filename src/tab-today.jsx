@@ -1179,7 +1179,12 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   // savorable, more → quicker so the whole cascade still wraps at TOTAL_MS.
   const TOTAL_MS = 3200;
 
-  const generate = async () => {
+  // `opts.auto` — true only when the scheduled boundary-check effect below
+  // invokes this (never for the manual "Regenerate" button or the onboarding
+  // tour's simulated click). Threaded straight into replaceTodayEntries so
+  // only an auto-run resets today's streak claim — see its comment for why.
+  const generate = async (opts = {}) => {
+    const isAuto = !!opts.auto;
     if (generatingRef.current) return;
     generatingRef.current = true;
 
@@ -1349,7 +1354,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
       await new Promise((r) => setTimeout(r, 260));
     }
 
-    actions.replaceTodayEntries(nextEntries);
+    actions.replaceTodayEntries(nextEntries, { resetStreak: isAuto });
     actions.markGenerated();
     setLeavingEids(new Set());
 
@@ -1399,7 +1404,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
       const genAt = state.today && state.today.generatedAt ? new Date(state.today.generatedAt) : null;
       if (genAt && genAt >= boundary) return;
       if (generateRef.current) {
-        generateRef.current();
+        generateRef.current({ auto: true });
         // Post-hoc notice only: the list is already built, so clicking the
         // notification just focuses the app — it can never generate twice. Also
         // suppressed when the app is visible and focused. Async; the result is
@@ -1795,7 +1800,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                   <p className="gen-confirm-msg">This will replace any items marked as completed and these will not show up in the Stats tab. Continue?</p>
                   <div className="gen-confirm-actions">
                     <Btn kind="ghost" size="sm" onClick={() => setConfirmGen(false)}>Cancel</Btn>
-                    <Btn kind="primary" size="sm" icon="refresh" onClick={generate}>Continue</Btn>
+                    <Btn kind="primary" size="sm" icon="refresh" onClick={() => generate()}>Continue</Btn>
                   </div>
                 </div>
               ) : editMode ? (
