@@ -431,7 +431,7 @@ function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, on
 }
 
 // ── Today: the Reminders section (list + inline edit + quick add) ───────────
-function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog }) {
+function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds }) {
   const due = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays);
   const [adding, setAdding] = React.useState(false);
   const [draftTask, setDraftTask] = React.useState(null);
@@ -570,7 +570,9 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
             <ReminderCard task={t} actions={actions} justChecked={justChecked}
                           isOpen={openId === t.id} isSkipping={skipId === t.id} onToggle={onToggle}
                           onRename={(name) => actions.renameTask(t.id, name)}
-                          extraClass={insertId === t.id ? 'rem-card--insert' : removingId === t.id ? 'rem-card--removing' : ''}
+                          extraClass={insertId === t.id ? 'rem-card--insert'
+                            : removingId === t.id ? 'rem-card--removing'
+                            : (leavingTaskIds && leavingTaskIds.has(t.id)) ? 'rem-card--purging' : ''}
                           onAnimEnd={(e) => {
                             if (e.target !== e.currentTarget) return;
                             if (insertId === t.id) setInsertId(null);

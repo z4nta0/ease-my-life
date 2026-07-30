@@ -1172,6 +1172,9 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   // card, so without this they sat untouched through the whole generation and
   // then blinked out. Marked here so they play the normal removal animation.
   const [leavingEids, setLeavingEids] = React.useState(() => new Set());
+  // Completed one-time reminders a Generate is about to purge — same idea,
+  // played out on the reminder card before replaceTodayEntries removes it.
+  const [leavingTaskIds, setLeavingTaskIds] = React.useState(() => new Set());
   const generatingRef = React.useRef(false);
   const generatingMapRef = React.useRef(null);
   // Total animation duration is fixed; per-step pace flexes with how many
@@ -1349,14 +1352,21 @@ function TabToday({ state, actions, onHome, onNavTab }) {
         return !(e.pickerId && generatingMapRef.current && generatingMapRef.current[e.pickerId]);
       })
       .map((e) => e.eid);
-    if (departing.length && !(reduceMotion && reduceMotion())) {
-      setLeavingEids(new Set(departing));
+    // Completed one-time reminders are purged by replaceTodayEntries below;
+    // play their exit animation first instead of letting them vanish instantly.
+    const departingTaskIds = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays)
+      .filter((t) => TASKS.isCompletedOnce(t)).map((t) => t.id);
+
+    if ((departing.length || departingTaskIds.length) && !(reduceMotion && reduceMotion())) {
+      if (departing.length) setLeavingEids(new Set(departing));
+      if (departingTaskIds.length) setLeavingTaskIds(new Set(departingTaskIds));
       await new Promise((r) => setTimeout(r, 260));
     }
 
     actions.replaceTodayEntries(nextEntries, { resetStreak: isAuto });
     actions.markGenerated();
     setLeavingEids(new Set());
+    setLeavingTaskIds(new Set());
 
     setGenerating(false);
     setGeneratingMap(null);
@@ -1712,6 +1722,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                                    editMode={editMode} onGripDown={startGroupDrag}
                                    logOpen={openLogs.has('__reminders')}
                                    onToggleLog={() => toggleLog('__reminders')}
+                                   leavingTaskIds={leavingTaskIds}
                                    sectionRef={(el) => { sectionRefs.current['__reminders'] = el; }} />
                 );
               }

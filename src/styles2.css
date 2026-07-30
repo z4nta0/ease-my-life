@@ -2312,6 +2312,14 @@ button.cat-h-l {
 @keyframes remCardOut { from { opacity: 1; max-height: 140px; } to { opacity: 0; max-height: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; } }
 .rem-card--removing { animation: remCardOut .34s ease forwards; overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .rem-card--insert, .rem-card--removing { animation-duration: .01ms; } }
+/* Completed one-time reminder purged by Generate: slides up + fades before the
+   commit removes it from state, instead of vanishing instantly. */
+@keyframes remCardPurgeOut {
+  from { opacity: 1; transform: none; max-height: 140px; margin-bottom: 10px; padding-top: 16px; padding-bottom: 16px; }
+  to   { opacity: 0; transform: translateY(-10px); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; }
+}
+.rem-card--purging { animation: remCardPurgeOut .3s cubic-bezier(.4,0,.2,1) forwards; overflow: hidden; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .rem-card--purging { animation-duration: .01ms; } }
 .rem-quickadd-wrap .rem-quickadd { padding-bottom: 8px; }
 .rem-quickadd-wrap .rem-inline-editor { margin-top: 0; }
 
