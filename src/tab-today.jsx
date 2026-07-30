@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { CADENCE } from './cadence.js';
 import { CONDITIONALS } from './conditionals.js';
 import { EASE_UP_RANGE_WARN } from './constants.js';
@@ -739,9 +740,10 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   const completionStyle = (state.appearance && state.appearance.completionStyle) || 'confetti';
   const [particles, setParticles] = React.useState([]);
   // Confetti/Sparkle overlay the viewable cards area (not the group rail) —
-  // snapshotting the scroll container's current on-screen rect at trigger
-  // time and positioning the overlay there (fixed) so "center of the
-  // viewable area" holds regardless of scroll position or list length.
+  // horizontally bounded to the cards column, but vertically spanning the
+  // scroll container's own on-screen viewport (not the cards list's own,
+  // possibly-scrolled-away, bounding box) so the celebration always shows
+  // regardless of where the user is scrolled to within the list.
   const [celebRect, setCelebRect] = React.useState(null);
   const cardsAreaRef = React.useRef(null);
   React.useEffect(() => {
@@ -752,17 +754,12 @@ function TabToday({ state, actions, onHome, onNavTab }) {
       void el.offsetWidth;
       setCompletionNonce((n) => n + 1);
       if (completionStyle === 'confetti' || completionStyle === 'sparkle') {
-        // Restrict to the cards area only (not the group rail), and clip to
-        // whatever portion of it is actually on-screen right now (not the
-        // full, possibly-tall, scrolled-away list).
         const cardsEl = cardsAreaRef.current;
         const scroller = cardsEl?.closest('.main');
         if (cardsEl && scroller) {
           const cardsRect = cardsEl.getBoundingClientRect();
           const scrollerRect = scroller.getBoundingClientRect();
-          const top = Math.max(cardsRect.top, scrollerRect.top);
-          const bottom = Math.min(cardsRect.bottom, scrollerRect.bottom);
-          setCelebRect({ left: cardsRect.left, top, width: cardsRect.width, height: Math.max(0, bottom - top) });
+          setCelebRect({ left: cardsRect.left, top: scrollerRect.top, width: cardsRect.width, height: scrollerRect.height });
         } else {
           setCelebRect({ left: 0, top: 0, width: window.innerWidth, height: window.innerHeight });
         }
@@ -1700,7 +1697,13 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                 <Btn kind="primary" size="sm" icon="plus" onClick={() => onNavTab && onNavTab('picker')}>Create a picker</Btn>
               </div>
             )}
-            {celebRect && particles.length > 0 && (completionStyle === 'confetti' || completionStyle === 'sparkle') && (
+            {celebRect && particles.length > 0 && (completionStyle === 'confetti' || completionStyle === 'sparkle') && createPortal(
+              // Portaled straight to <body> — the tab-switch fade wrapper
+              // (.tab-fade) keeps a resolved (identity) transform for the
+              // life of its enter animation, which makes it a containing
+              // block for any `position: fixed` descendant. Left in place,
+              // this overlay would be fixed to that scrolled ancestor
+              // instead of the viewport, so it'd scroll out of view.
               <div className={`celeb-overlay celeb-overlay--${completionStyle}`} aria-hidden="true"
                    style={{ left: celebRect.left, top: celebRect.top, width: celebRect.width, height: celebRect.height }}>
                 {completionStyle === 'confetti' && particles.map((p) => (
@@ -1712,7 +1715,8 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                   <span key={p.id} className="sparkle-piece"
                         style={{ left: `${p.xPct}%`, top: `${p.yPct}%`, animationDelay: `${p.delay}ms` }}>&#10022;</span>
                 ))}
-              </div>
+              </div>,
+              document.body
             )}
             <div className="groups-dnd" ref={groupsDndRef}>
             {genBlockOrder.map((id) => {
