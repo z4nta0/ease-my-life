@@ -94,6 +94,12 @@ function isStaleOnce(task, date = new Date()) {
   return task.repeat === 'once' && task.lastDone && task.lastDone !== isoOf(date);
 }
 
+// A completed one-time reminder, any day including today — Generate purges
+// these outright rather than waiting for isStaleOnce (next day).
+function isCompletedOnce(task) {
+  return task.repeat === 'once' && !!task.lastDone;
+}
+
 const DAY_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DAY_ABBR = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const ordinal = (n) => {
@@ -249,7 +255,7 @@ function nextEligible(task, opts, holidayState, from = new Date(), respectSkipUn
 }
 
 export const TASKS = {
-  defaultTask, isDueToday, isDoneToday, isStaleOnce, summary, dueToday,
+  defaultTask, isDueToday, isDoneToday, isStaleOnce, isCompletedOnce, summary, dueToday,
   defaultOpts, normalizeOpts, isRecurring, optsFor, visibleToday, nextEligible, todayVisibility,
   isoToday, isoOf, REPEATS: ['once', 'weekly', 'interval', 'monthly', 'annual'],
 };

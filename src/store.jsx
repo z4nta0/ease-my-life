@@ -758,7 +758,12 @@ function useStore(opts) {
       const pickLog = (s.pickLog || []).filter((r) => r.date !== day || carriedEids.has(r.eid)).concat(rows);
       const today = { ...s.today, entries };
       if (opts && opts.resetStreak) today.streakClaimed = false;
-      return { ...s, today, pickLog };
+      // Every Generate (manual Regenerate or scheduled auto-run) also drops
+      // completed one-time reminders outright — Generate is the refresh point
+      // for the whole Today list, so a checked-off once reminder shouldn't
+      // wait for a future reload/day-change to disappear.
+      const tasks = (s.tasks || []).filter((t) => !TASKS.isCompletedOnce(t));
+      return { ...s, today, pickLog, tasks };
     }),
 
     // Phase A of Generate: resolve each conditional's `active` for the new day
