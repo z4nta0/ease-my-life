@@ -725,11 +725,10 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   // edits on collapse/unmount — see EntryEditor's __editGuard revert and
   // ReminderInlineEdit/quick-add's plain local draft state).
   const [activeEditor, setActiveEditor] = React.useState(null);
-  // Day Log: which groups' (and the Reminders block's) log panels are open.
-  const [openLogs, setOpenLogs] = React.useState(() => new Set());
-  const toggleLog = (key) => setOpenLogs((prev) => {
-    const n = new Set(prev); n.has(key) ? n.delete(key) : n.add(key); return n;
-  });
+  // Day Log: which single group's (or the Reminders block's) log panel is
+  // open — opening one closes whichever other was open.
+  const [openLogKey, setOpenLogKey] = React.useState(null);
+  const toggleLog = (key) => setOpenLogKey((cur) => cur === key ? null : key);
   const ringRef = React.useRef(null);
   const streakRef = React.useRef(null);
   const prevDone = React.useRef(doneCount);
@@ -1306,7 +1305,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     }
     generatingMapRef.current = initialMap;
     setGeneratingMap(initialMap);
-    setOpenLogs((prev) => (prev.size ? new Set() : prev));
+    setOpenLogKey(null);
     setGenerating(true);
 
     // Reduced motion: the picks are already computed above, so the pending →
@@ -1731,7 +1730,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                 return (
                   <ReminderSection key="__reminders" state={state} actions={actions}
                                    editMode={editMode} onGripDown={startGroupDrag}
-                                   logOpen={openLogs.has('__reminders')}
+                                   logOpen={openLogKey === '__reminders'}
                                    onToggleLog={() => toggleLog('__reminders')}
                                    leavingTaskIds={leavingTaskIds}
                                    activeEditor={activeEditor} setActiveEditor={setActiveEditor}
@@ -1749,13 +1748,13 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                          ref={(el) => { sectionRefs.current[g.name] = el; }}>
                   <GroupHeader name={g.name} doneCount={gDone} total={g.entries.length}
                                editMode={editMode} onGripDown={startGroupDrag}
-                               logOpen={openLogs.has(g.name)}
+                               logOpen={openLogKey === g.name}
                                onToggleLog={() => toggleLog(g.name)}
                                onRenameGroup={(newName) => requestRenameGroup(g.name, newName)}
                                mergePending={mergePrompt && mergePrompt.from === g.name ? mergePrompt : null}
                                onConfirmMerge={() => { actions.renameGroup(mergePrompt.from, mergePrompt.to); setMergePrompt(null); }}
                                onCancelMerge={() => setMergePrompt(null)} />
-                  <Collapse open={openLogs.has(g.name) && !editMode}>
+                  <Collapse open={openLogKey === g.name && !editMode}>
                     <GroupLog state={state} group={g.name} onClose={() => toggleLog(g.name)} />
                   </Collapse>
                   <div className="today-list">
