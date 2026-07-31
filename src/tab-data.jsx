@@ -1102,7 +1102,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                           <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''}`}
                                onAnimationEnd={() => { if (insertItemId === it.id) setInsertItemId(null); }}>
                             <button type="button" className="rd-row" aria-expanded={itemOpen}
-                                  onClick={() => { justAddedItemRef.current = null; setOpenItemId(itemOpen ? null : it.id); }}>
+                                  onClick={() => setOpenItemId(itemOpen ? null : it.id)}>
                               <span className="rd-main">
                                 {itemOpen ? (
                                   <input className="rd-name-input" type="text" value={it.name} maxLength={60}
