@@ -883,9 +883,13 @@ function ReminderManager({ state, actions, hidden }) {
                         <ReminderEditor task={t} actions={actions} animateExtra state={state} />
                         <ReminderEditFoot task={t} isNew={justAddedRef.current === t.id}
                           onDelete={() => {
-                            justAddedRef.current = null;
+                            if (justAddedRef.current === t.id) justAddedRef.current = null;
                             const rid = t.id;
-                            setOpenId(null);
+                            // Only close OUR row — this can fire well after the user has
+                            // already switched to a different reminder's editor (isNew's
+                            // implicit-close discard is deferred to unmount), so a bare
+                            // setOpenId(null) would clobber whichever one is now open.
+                            setOpenId((cur) => cur === t.id ? null : cur);
                             if (reduceMotion()) { actions.removeTask(rid); return; }
                             setTimeout(() => actions.removeTask(rid), 280);
                           }}
@@ -895,15 +899,17 @@ function ReminderManager({ state, actions, hidden }) {
                               // collapse-close animation (as Save does) before removing it.
                               justAddedRef.current = null;
                               const rid = t.id;
-                              setOpenId(null);
+                              setOpenId((cur) => cur === t.id ? null : cur);
                               setTimeout(() => actions.removeTask(rid), 280);
                             } else {
                               actions.replaceTask(t.id, snap);
-                              justAddedRef.current = null;
-                              setOpenId(null);
+                              setOpenId((cur) => cur === t.id ? null : cur);
                             }
                           }}
-                          onDone={() => { justAddedRef.current = null; setOpenId(null); }} />
+                          onDone={() => {
+                            if (justAddedRef.current === t.id) justAddedRef.current = null;
+                            setOpenId((cur) => cur === t.id ? null : cur);
+                          }} />
                       </div>
                     </div>
                   </Collapse>
