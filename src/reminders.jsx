@@ -335,16 +335,27 @@ function ReminderEditFoot({ task, onDelete, onDone, onCancel, isNew }) {
   // the editor), so Cancel can restore it after live edits.
   const orig = React.useRef(task);
   const [confirm, setConfirm] = React.useState(false);
+  // Set the instant Save/Cancel/Delete explicitly runs, so the implicit-close
+  // effect below doesn't ALSO fire for an action that already handled itself.
+  const doneRef = React.useRef(false);
+  const cancelNow = () => { doneRef.current = true; onCancel(orig.current); };
+  const doneNow = () => { doneRef.current = true; onDone(); };
+  const deleteNow = () => { doneRef.current = true; onDelete(); };
+  // A brand-new, not-yet-kept reminder (isNew) should be discarded if its
+  // editor closes ANY other way — switching to a different reminder, the
+  // Items list collapsing, navigating to another tab, ... — not just an
+  // explicit Cancel. Mirrors the Today tab's "provisional until Save" editors.
+  React.useEffect(() => () => { if (isNew && !doneRef.current) onCancel(orig.current); }, []);
   // Escape = Cancel (discards live edits), except while the delete confirm is up,
   // where it just backs out of the confirm.
-  useEscapeCancel(true, () => { if (confirm) setConfirm(false); else onCancel(orig.current); });
+  useEscapeCancel(true, () => { if (confirm) setConfirm(false); else cancelNow(); });
   if (confirm) {
     return (
       <div className="rem-inline-foot rem-foot-confirm" key="confirm">
         <span className="rem-del-msg">Delete this reminder?</span>
         <div className="rem-del-actions">
           <Btn kind="ghost" size="sm" onClick={() => setConfirm(false)}>Cancel</Btn>
-          <Btn kind="danger" size="sm" onClick={onDelete}>Delete</Btn>
+          <Btn kind="danger" size="sm" onClick={deleteNow}>Delete</Btn>
         </div>
       </div>
     );
@@ -353,8 +364,8 @@ function ReminderEditFoot({ task, onDelete, onDone, onCancel, isNew }) {
     <div className="rem-inline-foot rd-edit-foot" key="foot">
       {!isNew && <Btn kind="danger" size="sm" icon="trash" onClick={() => setConfirm(true)}>Delete</Btn>}
       <div className="rem-foot-right">
-        <Btn kind="ghost" size="sm" onClick={() => onCancel(orig.current)}>Cancel</Btn>
-        <Btn kind="ghost" size="sm" onClick={onDone}>Save</Btn>
+        <Btn kind="ghost" size="sm" onClick={cancelNow}>Cancel</Btn>
+        <Btn kind="ghost" size="sm" onClick={doneNow}>Save</Btn>
       </div>
     </div>
   );
@@ -843,7 +854,7 @@ function ReminderManager({ state, actions, hidden }) {
                 <div key={t.id} className={`rd-item ${cardOpen ? 'is-editing' : ''} ${insertId === t.id ? 'rd-item--insert' : ''}`}
                      onAnimationEnd={() => { if (insertId === t.id) setInsertId(null); }}>
                   <button type="button" className="rd-row" aria-expanded={cardOpen}
-                       onClick={() => { justAddedRef.current = null; setOpenId(cardOpen ? null : t.id); }}>
+                       onClick={() => setOpenId(cardOpen ? null : t.id)}>
                     <span className={`rd-ico ${once ? 'is-once' : ''}`}>
                       <Icon name={once ? 'pin' : 'calendar'} size={15} />
                     </span>
@@ -872,9 +883,13 @@ function ReminderManager({ state, actions, hidden }) {
                         <ReminderEditor task={t} actions={actions} animateExtra state={state} />
                         <ReminderEditFoot task={t} isNew={justAddedRef.current === t.id}
                           onDelete={() => {
-                            justAddedRef.current = null;
+                            if (justAddedRef.current === t.id) justAddedRef.current = null;
                             const rid = t.id;
-                            setOpenId(null);
+                            // Only close OUR row — this can fire well after the user has
+                            // already switched to a different reminder's editor (isNew's
+                            // implicit-close discard is deferred to unmount), so a bare
+                            // setOpenId(null) would clobber whichever one is now open.
+                            setOpenId((cur) => cur === t.id ? null : cur);
                             if (reduceMotion()) { actions.removeTask(rid); return; }
                             setTimeout(() => actions.removeTask(rid), 280);
                           }}
@@ -884,15 +899,17 @@ function ReminderManager({ state, actions, hidden }) {
                               // collapse-close animation (as Save does) before removing it.
                               justAddedRef.current = null;
                               const rid = t.id;
-                              setOpenId(null);
+                              setOpenId((cur) => cur === t.id ? null : cur);
                               setTimeout(() => actions.removeTask(rid), 280);
                             } else {
                               actions.replaceTask(t.id, snap);
-                              justAddedRef.current = null;
-                              setOpenId(null);
+                              setOpenId((cur) => cur === t.id ? null : cur);
                             }
                           }}
-                          onDone={() => { justAddedRef.current = null; setOpenId(null); }} />
+                          onDone={() => {
+                            if (justAddedRef.current === t.id) justAddedRef.current = null;
+                            setOpenId((cur) => cur === t.id ? null : cur);
+                          }} />
                       </div>
                     </div>
                   </Collapse>

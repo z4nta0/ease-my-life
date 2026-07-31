@@ -1102,7 +1102,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                           <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''}`}
                                onAnimationEnd={() => { if (insertItemId === it.id) setInsertItemId(null); }}>
                             <button type="button" className="rd-row" aria-expanded={itemOpen}
-                                  onClick={() => { justAddedItemRef.current = null; setOpenItemId(itemOpen ? null : it.id); }}>
+                                  onClick={() => setOpenItemId(itemOpen ? null : it.id)}>
                               <span className="rd-main">
                                 {itemOpen ? (
                                   <input className="rd-name-input" type="text" value={it.name} maxLength={60}
@@ -1125,7 +1125,15 @@ function TabData({ state, actions, onHome, onNavTab }) {
                             <Collapse open={itemOpen}>
                               <div className="rd-edit">
                                 <ItemEditor item={it} picker={pk} actions={actions}
-                                            onClose={() => { justAddedItemRef.current = null; setOpenItemId(null); }}
+                                            onClose={() => {
+                                              if (justAddedItemRef.current === it.id) justAddedItemRef.current = null;
+                                              // Only close OUR row — this can fire well after the user
+                                              // has already switched to a different item's editor (this
+                                              // callback is invoked from a deferred implicit-close), so a
+                                              // bare setOpenItemId(null) would clobber whichever item is
+                                              // now open.
+                                              setOpenItemId((cur) => cur === it.id ? null : cur);
+                                            }}
                                             onCancel={(snap) => {
                                               if (justAddedItemRef.current === it.id) {
                                                 // Discard a brand-new item, but let the editor play
@@ -1133,17 +1141,17 @@ function TabData({ state, actions, onHome, onNavTab }) {
                                                 // then remove the row once it's closed.
                                                 justAddedItemRef.current = null;
                                                 const rid = it.id;
-                                                setOpenItemId(null);
+                                                setOpenItemId((cur) => cur === it.id ? null : cur);
                                                 setTimeout(() => actions.removeItem(rid), 280);
                                               } else {
                                                 actions.replaceItem(it.id, snap);
-                                                setOpenItemId(null);
+                                                setOpenItemId((cur) => cur === it.id ? null : cur);
                                               }
                                             }}
                                             onDelete={() => {
-                                              justAddedItemRef.current = null;
+                                              if (justAddedItemRef.current === it.id) justAddedItemRef.current = null;
                                               const rid = it.id;
-                                              setOpenItemId(null);
+                                              setOpenItemId((cur) => cur === it.id ? null : cur);
                                               if (reduceMotion()) { actions.removeItem(rid); return; }
                                               setTimeout(() => actions.removeItem(rid), 280);
                                             }} />
