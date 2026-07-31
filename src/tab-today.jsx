@@ -717,7 +717,14 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   // The "becomes complete" check also handles the case where a skip drops
   // the total such that the remaining done entries fill the ring.
   const [justChecked, setJustChecked] = React.useState(null);
-  const [editingEid, setEditingEid] = React.useState(null);
+  // Single lifted "which editor is open" slot shared across the whole tab —
+  // a picker item's inline editor (`item:<eid>`), a reminder's inline editor
+  // or its quick-add form (owned by ReminderSection, passed down below) all
+  // read/write this same value, so opening any one of them collapses
+  // whichever of the others was open (each already discards its own unsaved
+  // edits on collapse/unmount — see EntryEditor's __editGuard revert and
+  // ReminderInlineEdit/quick-add's plain local draft state).
+  const [activeEditor, setActiveEditor] = React.useState(null);
   // Day Log: which groups' (and the Reminders block's) log panels are open.
   const [openLogs, setOpenLogs] = React.useState(() => new Set());
   const toggleLog = (key) => setOpenLogs((prev) => {
@@ -891,7 +898,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   // Deleting a picker item from its Today editor: play the same card slide-out
   // as skip, then remove the item (which drops the entry).
   const handleDeleteItem = (eid, itemId) => {
-    setEditingEid(null);
+    setActiveEditor((cur) => cur === `item:${eid}` ? null : cur);
     if (reduceMotion()) { actions.removeItem(itemId); return; }
     if (removingIds.has(eid)) return;
     setRemovingIds((prev) => { const n = new Set(prev); n.add(eid); return n; });
@@ -1104,7 +1111,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
       groupOrder: (state.groupOrder || []).slice(),
       pickerOrder: JSON.parse(JSON.stringify(state.pickerOrder || {})),
     };
-    setEditingEid(null);
+    setActiveEditor(null);
     setConfirmGen(false);
     setEditMode(true);
   };
@@ -1727,6 +1734,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                                    logOpen={openLogs.has('__reminders')}
                                    onToggleLog={() => toggleLog('__reminders')}
                                    leavingTaskIds={leavingTaskIds}
+                                   activeEditor={activeEditor} setActiveEditor={setActiveEditor}
                                    sectionRef={(el) => { sectionRefs.current['__reminders'] = el; }} />
                 );
               }
@@ -1765,16 +1773,16 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                                      onSkip={handleSkip} onReroll={handleReroll}
                                      isRemoving={removingIds.has(entry.eid) || leavingEids.has(entry.eid)}
                                      isRolling={rollingIds.has(entry.eid)}
-                                     isEditing={editingEid === entry.eid}
+                                     isEditing={activeEditor === `item:${entry.eid}`}
                                      editMode={editMode}
                                      onGripDown={(ev) => startItemDrag(ev, g)}
-                                     onEdit={() => setEditingEid((id2) => id2 === entry.eid ? null : entry.eid)}
+                                     onEdit={() => setActiveEditor((cur) => cur === `item:${entry.eid}` ? null : `item:${entry.eid}`)}
                                      onRename={(name) => actions.renameItem(entry.itemId, name)} />
-                          <Collapse open={editingEid === entry.eid && !!item}>
+                          <Collapse open={activeEditor === `item:${entry.eid}` && !!item}>
                             {item && (
                               <div className="today-entry-editor">
                                 <EntryEditor item={item} picker={picker} actions={actions}
-                                             onClose={() => setEditingEid(null)}
+                                             onClose={() => setActiveEditor((cur) => cur === `item:${entry.eid}` ? null : cur)}
                                              onDelete={() => handleDeleteItem(entry.eid, item.id)} />
                               </div>
                             )}

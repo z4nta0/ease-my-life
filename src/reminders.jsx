@@ -431,34 +431,70 @@ function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, on
 }
 
 // ── Today: the Reminders section (list + inline edit + quick add) ───────────
-function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds }) {
+function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, activeEditor, setActiveEditor }) {
   const due = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays);
-  const [adding, setAdding] = React.useState(false);
+  // The quick-add form and each saved reminder's inline editor are both gated
+  // off the tab-wide `activeEditor` slot (shared with the picker item editor
+  // in tab-today.jsx) so opening any one of them collapses whichever of the
+  // others was open. `draftTask` still lives here since it's just the local
+  // in-progress data, not the "is this open" flag.
+  const adding = activeEditor === 'reminder-add';
+  const openId = (typeof activeEditor === 'string' && activeEditor.startsWith('reminder:'))
+    ? activeEditor.slice('reminder:'.length) : null;
+  // `visible` (not `adding`) gates whether the quick-add form is mounted, so
+  // it can stay on-screen for the exit animation even after `activeEditor`
+  // has already moved on to a different editor (forced closed from
+  // elsewhere) — mirrors the animated close Cancel/Add already play.
+  const [visible, setVisible] = React.useState(adding);
+  const wasAddingRef = React.useRef(adding);
+  const selfClosingRef = React.useRef(false);   // set just before OUR OWN cancel/commit starts the exit anim, so the effect below doesn't also re-trigger it
+  const closeTimerRef = React.useRef(null);
   const [draftTask, setDraftTask] = React.useState(null);
   const [addClosing, setAddClosing] = React.useState(false);   // quick-add exit anim
   const [insertId, setInsertId] = React.useState(null);        // newly added card entrance
   const [removingId, setRemovingId] = React.useState(null);    // card collapsing out before delete/skip
   const removeActionRef = React.useRef(null);                  // what to run once the collapse-out ends
-  const [openId, setOpenId] = React.useState(null);
   const [skipId, setSkipId] = React.useState(null);
   const [justChecked, setJustChecked] = React.useState(null);
   const inputRef = React.useRef(null);
 
   React.useEffect(() => { if (adding && inputRef.current) inputRef.current.focus(); }, [adding]);
 
+  React.useEffect(() => {
+    if (adding) { setVisible(true); }
+    else if (wasAddingRef.current && !selfClosingRef.current) {
+      // Another editor opened elsewhere and forced this one closed — play the
+      // same exit animation Cancel uses, then discard the in-progress draft.
+      clearTimeout(closeTimerRef.current);
+      if (reduceMotion()) { setDraftTask(null); setVisible(false); }
+      else {
+        setAddClosing(true);
+        closeTimerRef.current = setTimeout(() => { setDraftTask(null); setAddClosing(false); setVisible(false); }, 180);
+      }
+    }
+    selfClosingRef.current = false;
+    wasAddingRef.current = adding;
+  }, [adding]);
+
   // Quick-add holds a full draft task so the same scheduling editor used on an
   // existing reminder can configure recurrence *before* it's created. The
   // editor edits via actions.updateTask; here that just mutates local draft.
   const draftActions = { updateTask: (_id, patch) => setDraftTask((d) => ({ ...d, ...patch })) };
   const startAdd = () => {
+    clearTimeout(closeTimerRef.current);   // a pending forced-close discard from a moment ago shouldn't wipe this fresh draft
     setDraftTask(TASKS.defaultTask({ repeat: 'once' }));
-    setAdding(true);
-    setOpenId(null);
+    setAddClosing(false);
+    setActiveEditor('reminder-add');
   };
+  // Only clear the shared slot if it's still ours — it may have already moved
+  // on to a different editor (e.g. the animated close below finishes after
+  // the user opened something else in the meantime).
+  const closeAddSlot = () => setActiveEditor((cur) => cur === 'reminder-add' ? null : cur);
   const cancelAdd = () => {
-    if (reduceMotion()) { setDraftTask(null); setAdding(false); setAddClosing(false); return; }
+    selfClosingRef.current = true;
+    if (reduceMotion()) { setDraftTask(null); setVisible(false); closeAddSlot(); setAddClosing(false); return; }
     setAddClosing(true);
-    setTimeout(() => { setDraftTask(null); setAdding(false); setAddClosing(false); }, 180);
+    closeTimerRef.current = setTimeout(() => { setDraftTask(null); setVisible(false); closeAddSlot(); setAddClosing(false); }, 180);
   };
 
   const onToggle = (task) => {
@@ -490,24 +526,26 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
     const name = (draftTask?.name || '').trim();
     if (!name || committingRef.current) return;   // guard: ignore rapid double-click
     committingRef.current = true;
+    selfClosingRef.current = true;
     const newId = draftTask.id;
     const finish = () => {
       actions.addTask({ ...draftTask, name });
       announceAdded({ ...draftTask, name });
       setInsertId(newId);   // play the entrance on the new card
       setDraftTask(null);
-      setAdding(false);
+      setVisible(false);
+      closeAddSlot();
       setAddClosing(false);
       setTimeout(() => { committingRef.current = false; }, 500);
     };
     if (reduceMotion()) { finish(); return; }
     setAddClosing(true);   // collapse the quick-add out, then reveal the new card
-    setTimeout(finish, 180);
+    closeTimerRef.current = setTimeout(finish, 180);
   };
 
   // Escape discards the quick-add regardless of what's been typed or which of
   // its controls has focus.
-  useEscapeCancel(adding && !addClosing, cancelAdd);
+  useEscapeCancel(visible && !addClosing, cancelAdd);
 
   const doneCount = due.filter((t) => TASKS.isDoneToday(t)).length;
 
@@ -548,7 +586,7 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
         {addedMsg && (
           <p className={`rem-added-msg ${addedMsg.ok ? 'is-ok' : 'is-warn'}`} role="status">{addedMsg.text}</p>
         )}
-        {adding && draftTask && (
+        {visible && draftTask && (
           <div className={`rem-quickadd-wrap ${addClosing ? 'is-closing' : ''}`}>
             <div className="rem-quickadd">
               <input ref={inputRef} className="np-input" type="text" value={draftTask.name} maxLength={60}
@@ -582,13 +620,16 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
                               setRemovingId(null);
                             }
                           }}
-                          onEdit={() => { setOpenId((id) => id === t.id ? null : t.id); setSkipId(null); }}
-                          onSkip={() => { setSkipId((id) => id === t.id ? null : t.id); setOpenId(null); }} />
+                          onEdit={() => { setActiveEditor((cur) => cur === `reminder:${t.id}` ? null : `reminder:${t.id}`); setSkipId(null); }}
+                          onSkip={() => {
+                            setSkipId((id) => id === t.id ? null : t.id);
+                            setActiveEditor((cur) => (typeof cur === 'string' && cur.startsWith('reminder:')) ? null : cur);
+                          }} />
             <Collapse open={openId === t.id}>
               <ReminderInlineEdit task={t} state={state}
-                onClose={() => setOpenId(null)}
+                onClose={() => setActiveEditor((cur) => cur === `reminder:${t.id}` ? null : cur)}
                 onDelete={() => {
-                  setOpenId(null);
+                  setActiveEditor((cur) => cur === `reminder:${t.id}` ? null : cur);
                   if (reduceMotion()) { actions.removeTask(t.id); return; }
                   removeActionRef.current = () => actions.removeTask(t.id);
                   setRemovingId(t.id);   // card plays collapse-out, then removeTask on animEnd
