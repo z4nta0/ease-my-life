@@ -977,10 +977,13 @@ function useStore(opts) {
         name: it.name, pickerId: pid,
         // Ease-down: every item starts at fairness-weight 1 (system-managed), so
         // the first pick is uniform; user-supplied weights don't apply to it.
-        weight: isDown ? 1 : (it.weight || 1), value: initialValue,
+        weight: isDown ? 1 : (it.weight || 1),
+        // Honor a value the create form already set (e.g. Fill/Refill charging an
+        // ease item to threshold); otherwise fall back to the mode's default.
+        value: it.value != null ? it.value : initialValue,
         // Per-item drift band for ease modes; omitted otherwise.
         ...(isEase ? { easeMin: it.easeMin ?? 7, easeMax: it.easeMax ?? 14 } : {}),
-        vacation: false, picks: 0, lastPicked: null,
+        vacation: !!it.vacation, picks: 0, lastPicked: null,
       }));
       // A brand-new inline conditional gets a fresh id here so we can attach it.
       const madeCond = newConditional ? {

@@ -673,7 +673,9 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     let base = 'New item', nm = base, n = 1;
     const names = new Set(items.map((x) => x.name.toLowerCase()));
     while (names.has(nm.toLowerCase())) { n++; nm = `${base} ${n}`; }
-    setItems((xs) => [...xs, { id, name: nm, weight: 1, ...DEFAULT_EASE }]);
+    // Ease-down items start fully charged (mirrors addPicker's initialValue) —
+    // otherwise the editor shows a spent item needing a Refill it never needed.
+    setItems((xs) => [...xs, { id, name: nm, weight: 1, value: mode === 'ease-down' ? THRESHOLD : 0, ...DEFAULT_EASE }]);
     setNewDraftId(id);
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const el = addWrapRef.current, sc = el && el.closest('.main');
