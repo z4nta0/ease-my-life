@@ -442,7 +442,7 @@ function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, on
 }
 
 // ── Today: the Reminders section (list + inline edit + quick add) ───────────
-function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, activeEditor, setActiveEditor }) {
+function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, arrivingTaskIds, activeEditor, setActiveEditor }) {
   // Pinned to the last generation, not live "now" — a reminder due on a new
   // day shouldn't appear until the generator (auto or manual Regenerate)
   // actually runs on/after that day. See TASKS.anchorDate.
@@ -625,7 +625,8 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
                           onRename={(name) => actions.renameTask(t.id, name)}
                           extraClass={insertId === t.id ? 'rem-card--insert'
                             : removingId === t.id ? 'rem-card--removing'
-                            : (leavingTaskIds && leavingTaskIds.has(t.id)) ? 'rem-card--purging' : ''}
+                            : (leavingTaskIds && leavingTaskIds.has(t.id)) ? 'rem-card--purging'
+                            : (arrivingTaskIds && arrivingTaskIds.has(t.id)) ? 'rem-card--insert' : ''}
                           onAnimEnd={(e) => {
                             if (e.target !== e.currentTarget) return;
                             if (insertId === t.id) setInsertId(null);
