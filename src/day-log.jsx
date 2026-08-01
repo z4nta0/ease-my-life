@@ -343,15 +343,19 @@ function fmtDue(next, day) {
 }
 
 function RemindersLog({ state, onClose }) {
-  const day = isoDay();
+  // Pinned to the last generation, not live "now" (TASKS.anchorDate) — this
+  // panel is a snapshot of the Reminders section right above it, which is
+  // itself frozen to the last generate() until the next one runs.
+  const anchor = TASKS.anchorDate(state.today && state.today.generatedAt);
+  const day = isoDay(anchor);
   const tasks = state.tasks || [];
-  const visible = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays);
+  const visible = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays, anchor);
   const visibleIds = new Set(visible.map((t) => t.id));
   const skippedIds = new Set((state.reminderSkipLog || [])
     .filter((r) => isoDay(new Date(r.skippedAt)) === day).map((r) => r.taskId));
 
   const rows = tasks.map((t) => {
-    const done = TASKS.isDoneToday(t);
+    const done = TASKS.isDoneToday(t, anchor);
     let status = 'notdue';
     if (done) status = 'done';
     else if (skippedIds.has(t.id)) status = 'skip';
@@ -360,7 +364,7 @@ function RemindersLog({ state, onClose }) {
     if (status === 'notdue') {
       // respectSkipUntil: this label says when the reminder will REAPPEAR, so a
       // manual skip has to be honored or the date lands inside the skip window.
-      const next = TASKS.nextEligible(t, state.reminderOpts, state.holidays, new Date(), true);
+      const next = TASKS.nextEligible(t, state.reminderOpts, state.holidays, anchor, true);
       dueLabel = fmtDue(next, day);
     }
     return { t, status, dueLabel, when: TASKS.summary(t) };
@@ -371,7 +375,7 @@ function RemindersLog({ state, onClose }) {
   return (
     <div className="dl-panel">
       <div className="dl-panel-h">
-        <span className="dl-kicker"><Ico name="clock" /><span>Reminders log · {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span></span>
+        <span className="dl-kicker"><Ico name="clock" /><span>Reminders log · {anchor.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span></span>
         {onClose && <button type="button" className="dl-close" aria-label="Close log" onClick={onClose}><Ico name="x" w={2} /></button>}
       </div>
       <div className="dl-body dl-body--rem">

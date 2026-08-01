@@ -550,14 +550,17 @@ function reconcileStreak(s, entries, tasks) {
   // streak participate. (Skipped picker entries are already removed from the
   // entries list, so they can't block the day; re-rolled entries keep one live
   // entry that must be completed.)
-  const visible = TASKS.visibleToday(tasks, s.reminderOpts, s.holidays);
+  // Pinned to the last generation, not live "now" (TASKS.anchorDate) — must
+  // agree with whatever ReminderSection is actually showing right now.
+  const anchor = TASKS.anchorDate(s.today && s.today.generatedAt);
+  const visible = TASKS.visibleToday(tasks, s.reminderOpts, s.holidays, anchor);
   const streakTasks = visible.filter((t) => TASKS.optsFor(t, s.reminderOpts).streak);
   // The day is claimed only when EVERYTHING on Today is done — every picker
   // entry AND every streak-counting reminder. A day with nothing to do can't
   // claim a streak.
   const hasAny = entriesList.length > 0 || streakTasks.length > 0;
   const allEntriesDone = entriesList.every((e) => e.done);
-  const allTasksDone = streakTasks.every((t) => TASKS.isDoneToday(t));
+  const allTasksDone = streakTasks.every((t) => TASKS.isDoneToday(t, anchor));
   const nowDone = hasAny && allEntriesDone && allTasksDone;
   const wasClaimed = !!s.today.streakClaimed;
   let streak = s.streak;
@@ -1226,8 +1229,12 @@ function useStore(opts) {
     toggleTaskDone: (id) => setState((s) => {
       const task = s.tasks.find((t) => t.id === id);
       if (!task) return s;
-      const today = TASKS.isoToday();
-      const wasDone = TASKS.isDoneToday(task);
+      // Stamped against the generator's day (TASKS.anchorDate), not live real
+      // time — Today's reminders list is itself pinned to the last generation,
+      // so "done" must agree with whatever day that list is currently showing.
+      const anchor = TASKS.anchorDate(s.today && s.today.generatedAt);
+      const today = TASKS.isoOf(anchor);
+      const wasDone = TASKS.isDoneToday(task, anchor);
       const tasks = s.tasks.map((t) =>
         t.id === id ? { ...t, lastDone: wasDone ? null : today } : t);
 

@@ -687,13 +687,17 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   // Manual reminders due today join the picker entries in the ring + rail
   // totals (they count toward completion + streak, but never toward Stats).
   // Visibility honors each type's weekend / holiday exclusions; the ring only
-  // counts reminders whose type has "include in completion ring" on.
+  // counts reminders whose type has "include in completion ring" on. Pinned
+  // to the last generation (not live "now") — see TASKS.anchorDate — so these
+  // totals always agree with what ReminderSection is actually showing.
+  const generatedAt = state.today && state.today.generatedAt;
+  const remindersAnchor = React.useMemo(() => TASKS.anchorDate(generatedAt), [generatedAt]);
   const dueReminders = React.useMemo(
-    () => TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays),
-    [state.tasks, state.reminderOpts, state.holidays]);
-  const remindersDoneVisible = dueReminders.filter((t) => TASKS.isDoneToday(t)).length;
+    () => TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays, remindersAnchor),
+    [state.tasks, state.reminderOpts, state.holidays, remindersAnchor]);
+  const remindersDoneVisible = dueReminders.filter((t) => TASKS.isDoneToday(t, remindersAnchor)).length;
   const ringReminders = dueReminders.filter((t) => TASKS.optsFor(t, state.reminderOpts).ring);
-  const remindersDone = ringReminders.filter((t) => TASKS.isDoneToday(t)).length;
+  const remindersDone = ringReminders.filter((t) => TASKS.isDoneToday(t, remindersAnchor)).length;
   const doneCount = entries.filter((e) => e.done).length + remindersDone;
   const total = entries.length + ringReminders.length;
 
@@ -1178,6 +1182,9 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   // Completed one-time reminders a Generate is about to purge — same idea,
   // played out on the reminder card before replaceTodayEntries removes it.
   const [leavingTaskIds, setLeavingTaskIds] = React.useState(() => new Set());
+  // Reminders a Generate just made newly visible (their day arrived but the
+  // generator hadn't run yet) — played as an entrance instead of popping in.
+  const [arrivingTaskIds, setArrivingTaskIds] = React.useState(() => new Set());
   const generatingRef = React.useRef(false);
   const generatingMapRef = React.useRef(null);
   // Total animation duration is fixed; per-step pace flexes with how many
@@ -1357,8 +1364,17 @@ function TabToday({ state, actions, onHome, onNavTab }) {
       .map((e) => e.eid);
     // Completed one-time reminders are purged by replaceTodayEntries below;
     // play their exit animation first instead of letting them vanish instantly.
-    const departingTaskIds = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays)
-      .filter((t) => TASKS.isCompletedOnce(t)).map((t) => t.id);
+    // Uses the PRE-generate anchor (this generate() call hasn't bumped
+    // generatedAt yet), matching what's actually on screen right now.
+    const oldDueReminders = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays, remindersAnchor);
+    const departingTaskIds = oldDueReminders.filter((t) => TASKS.isCompletedOnce(t)).map((t) => t.id);
+    // Reminders whose day arrived while the generator was overdue (this fix's
+    // whole point) — they weren't shown a moment ago under the old anchor, and
+    // are about to become visible under this generate()'s new one. Diff the
+    // two id sets so they get the entrance animation instead of popping in.
+    const oldDueIds = new Set(oldDueReminders.map((t) => t.id));
+    const newDueReminders = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays, new Date());
+    const arrivingIds = newDueReminders.filter((t) => !oldDueIds.has(t.id)).map((t) => t.id);
 
     if ((departing.length || departingTaskIds.length) && !(reduceMotion && reduceMotion())) {
       if (departing.length) setLeavingEids(new Set(departing));
@@ -1370,6 +1386,10 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     actions.markGenerated();
     setLeavingEids(new Set());
     setLeavingTaskIds(new Set());
+    if (arrivingIds.length && !(reduceMotion && reduceMotion())) {
+      setArrivingTaskIds(new Set(arrivingIds));
+      setTimeout(() => setArrivingTaskIds(new Set()), 400);
+    }
 
     setGenerating(false);
     setGeneratingMap(null);
@@ -1732,7 +1752,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                                    editMode={editMode} onGripDown={startGroupDrag}
                                    logOpen={openLogKey === '__reminders'}
                                    onToggleLog={() => toggleLog('__reminders')}
-                                   leavingTaskIds={leavingTaskIds}
+                                   leavingTaskIds={leavingTaskIds} arrivingTaskIds={arrivingTaskIds}
                                    activeEditor={activeEditor} setActiveEditor={setActiveEditor}
                                    sectionRef={(el) => { sectionRefs.current['__reminders'] = el; }} />
                 );
