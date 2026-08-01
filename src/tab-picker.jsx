@@ -202,10 +202,12 @@ function PickerView({ picker, state, actions, animStyle }) {
   };
   const commitDraft = (draft) => {
     actions.addItem(picker.id, draft.name, draft.id);
-    const patch = {};
+    // addItem always creates the item active — carry over the draft's Active
+    // toggle too, not just weight/ease fields, or turning it off is silently lost.
+    const patch = { vacation: draft.vacation };
     if (usesWeight) patch.weight = draft.weight;
     if (isEaseMode) { patch.easeMin = draft.easeMin; patch.easeMax = draft.easeMax; patch.value = draft.value; }
-    if (Object.keys(patch).length) actions.updateItem(draft.id, patch);
+    actions.updateItem(draft.id, patch);
     actions.moveItemToEnd(draft.id);
     setInsertSavedId(draft.id);
   };
