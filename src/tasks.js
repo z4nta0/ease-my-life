@@ -24,6 +24,16 @@ const pad = (n) => String(n).padStart(2, '0');
 const isoOf = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const isoToday = () => isoOf(new Date());
 
+// The Today tab's reminders list is generator-driven, not calendar-driven:
+// a reminder due on a new day shouldn't appear until the daily generator
+// (auto or manual Regenerate) actually runs on/after that day, exactly like
+// picker entries only change on generation. Callers computing what's
+// CURRENTLY shown on Today (visibility, done-state, streak) should pass this
+// as their `date` instead of letting it default to live `new Date()`; callers
+// doing schedule advisories (Data tab, "will this show today" notes) should
+// keep using the real current date.
+const anchorDate = (generatedAt) => generatedAt ? new Date(generatedAt) : new Date();
+
 // Local-midnight Date from a 'YYYY-MM-DD' string (avoids UTC drift).
 const fromIso = (s) => {
   const [y, m, d] = (s || '').split('-').map(Number);
@@ -257,5 +267,5 @@ function nextEligible(task, opts, holidayState, from = new Date(), respectSkipUn
 export const TASKS = {
   defaultTask, isDueToday, isDoneToday, isStaleOnce, isCompletedOnce, summary, dueToday,
   defaultOpts, normalizeOpts, isRecurring, optsFor, visibleToday, nextEligible, todayVisibility,
-  isoToday, isoOf, REPEATS: ['once', 'weekly', 'interval', 'monthly', 'annual'],
+  isoToday, isoOf, anchorDate, REPEATS: ['once', 'weekly', 'interval', 'monthly', 'annual'],
 };

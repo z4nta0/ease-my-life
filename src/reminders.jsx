@@ -392,8 +392,8 @@ function ReminderInlineEdit({ task, onClose, onDelete, commit, state }) {
 // Matches EntryCard's structure: the whole row toggles done; the actions area
 // (edit / delete) is click-isolated. Schedule summary sits where a picker
 // entry shows its picker name.
-function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, onRename, onSkip, isSkipping, extraClass = '', onAnimEnd }) {
-  const done = TASKS.isDoneToday(task);
+function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, onRename, onSkip, isSkipping, extraClass = '', onAnimEnd, date }) {
+  const done = TASKS.isDoneToday(task, date);
   const fresh = justChecked === task.id && done;
   const handleRowClick = (e) => {
     if (e.target.closest('.today-card-actions')) return;
@@ -443,7 +443,11 @@ function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, on
 
 // ── Today: the Reminders section (list + inline edit + quick add) ───────────
 function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, activeEditor, setActiveEditor }) {
-  const due = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays);
+  // Pinned to the last generation, not live "now" — a reminder due on a new
+  // day shouldn't appear until the generator (auto or manual Regenerate)
+  // actually runs on/after that day. See TASKS.anchorDate.
+  const anchor = TASKS.anchorDate(state.today && state.today.generatedAt);
+  const due = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays, anchor);
   // The quick-add form and each saved reminder's inline editor are both gated
   // off the tab-wide `activeEditor` slot (shared with the picker item editor
   // in tab-today.jsx) so opening any one of them collapses whichever of the
@@ -509,7 +513,7 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   };
 
   const onToggle = (task) => {
-    const wasDone = TASKS.isDoneToday(task);
+    const wasDone = TASKS.isDoneToday(task, anchor);
     actions.toggleTaskDone(task.id);
     if (!wasDone) {
       setJustChecked(task.id);
@@ -558,7 +562,7 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   // its controls has focus.
   useEscapeCancel(visible && !addClosing, cancelAdd);
 
-  const doneCount = due.filter((t) => TASKS.isDoneToday(t)).length;
+  const doneCount = due.filter((t) => TASKS.isDoneToday(t, anchor)).length;
 
   return (
     <section className="group-section rem-section" ref={sectionRef}>
@@ -616,7 +620,7 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
         )}
         {due.map((t) => (
           <React.Fragment key={t.id}>
-            <ReminderCard task={t} actions={actions} justChecked={justChecked}
+            <ReminderCard task={t} actions={actions} justChecked={justChecked} date={anchor}
                           isOpen={openId === t.id} isSkipping={skipId === t.id} onToggle={onToggle}
                           onRename={(name) => actions.renameTask(t.id, name)}
                           extraClass={insertId === t.id ? 'rem-card--insert'
