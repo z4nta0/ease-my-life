@@ -1096,7 +1096,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                         const latest = Math.max(1, Math.round(100 / (eMin || 1)));
                         const meta = it.vacation
                           ? 'On vacation'
-                          : (isEase ? `${soonest}\u2013${latest} days`
+                          : (isEase ? `${soonest}\u2013${latest} ${CADENCE.unitWord(pk.cadence, latest)}`
                              : (usesWeight ? `Weight w${it.weight}` : 'Equal chance'));
                         return (
                           <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''}`}
