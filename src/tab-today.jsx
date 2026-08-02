@@ -376,7 +376,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
               <div className="pie-row">
                 <div className="pie-rowlabel">
                   <span className="pie-lbl">Fill</span>
-                  <span className="pie-sub set-sub-fade" key={(item.value ?? 0) >= THRESHOLD ? 'full' : 'part'}>{(item.value ?? 0) >= THRESHOLD ? <>item is <strong>fully charged</strong></> : <>item at <strong>{Math.round(item.value ?? 0)} charge</strong></>}</span>
+                  <span className="pie-sub set-sub-fade" key={(item.value ?? 0) >= THRESHOLD ? 'full' : 'part'}>{(item.value ?? 0) >= THRESHOLD ? <>item is <strong>fully charged</strong> at {Math.round(item.value ?? 0)}</> : <>item at <strong>{Math.round(item.value ?? 0)} charge</strong></>}</span>
                 </div>
                 <FillButton label="Fill"
                      disabled={(item.value ?? 0) >= (picker.threshold ?? 100)}
