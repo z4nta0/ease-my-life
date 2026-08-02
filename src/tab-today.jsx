@@ -1719,7 +1719,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
               <div className="ob-create" data-tour="create-picker">
                 <div className="ob-create-i"><Icon name="plus" size={22} /></div>
                 <b>Create your first picker</b>
-                <p>A pool the app picks from each day — like your chores or workouts.</p>
+                <p>A picker is like a dispenser of tasks, with rules for how and when it runs. The app will go through each picker that you create and according to the rules that you set, it will then dispense 1 item from a pool of items that you put into it. That&rsquo;s how the app works, by generating a todo list with 1 item from each picker that you create.</p>
                 <Btn kind="primary" size="sm" icon="plus" onClick={() => onNavTab && onNavTab('picker')}>Create a picker</Btn>
               </div>
             )}
