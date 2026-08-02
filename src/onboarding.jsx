@@ -295,8 +295,8 @@ function Onboarding({ state, actions, active, selectTab }) {
         <div className={`ob-welcome ${reduce ? '' : 'ob-in'}`}>
           <div className="ob-wmark"><svg viewBox="8 8 528 528" fill="none"><path d={OB_BRAND} style={{ fill: 'currentColor', stroke: 'currentColor' }} strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" /></svg></div>
           <h2>Welcome to Ease My Life</h2>
-          <p>Decide less. Set up <b>pickers</b>, which are pools of tasks or choices, and each day the app picks for you. Chores, workouts, what to cook, whatever you’d rather not decide. You add the items, so the picker is guaranteed to choose something you want.</p>
-          <div className="ob-chips"><span>pickers</span><span>reminders</span><span>auto-picked days</span></div>
+          <p>Decide less. Ease My Life is a todo app that will generate a daily list of tasks for you. You will set up <b>pickers</b>, which are pools of tasks or choices, and then each day the app picks an item from each picker for you. Chores, meals, workouts or whatever you’d rather have the app decide for you. You add the items, so the picker is guaranteed to choose something you want.</p>
+          <div className="ob-chips"><span>todo list</span><span>pickers</span><span>reminders</span></div>
           <div className="ob-wact">
             <button className="ob-btn ob-btn--primary" autoFocus onClick={() => { selectTab('today'); welcomeDone(); setPhase('tour'); setStep(0); }}>Take the quick tour</button>
             <button className="ob-btn ob-btn--ghost" onClick={() => { welcomeDone(); finish(); }}>I’ll explore myself</button>
