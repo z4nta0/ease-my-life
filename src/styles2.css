@@ -3408,6 +3408,10 @@ body.ob-touring .tab{padding-bottom:200px}
 .set-store-actions{display:flex;flex-direction:column;gap:8px;align-items:stretch;flex-shrink:0}
 /* iOS instruction row reads as a note, not another action. */
 .set-store-ios .set-data-sub{max-width:60ch}
+/* The install-steps paragraph and the WARNING paragraph below it are two
+   distinct notes, not a name+description pair — give them breathing room
+   instead of .set-data-info's tight 3px gap. */
+.set-store-ios .set-data-sub + .set-data-sub{margin-top:8px}
 
 
 /* ─── Reduced motion: gaps closed (see the matching block in styles.css) ───── */

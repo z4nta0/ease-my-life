@@ -663,6 +663,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
   const standalone = !!(PWA && PWA.isStandalone());
   const canInstall = !!(PWA && PWA.canInstall());
   const iosInstall = !!(PWA && PWA.isIOS && !standalone);
+  const macInstall = !!(PWA && PWA.isMac && !standalone);
   // Feature-detected rather than named-browser: 'unsupported' covers Firefox
   // and anything else without the install prompt, and stays 'pending' until we
   // have actually waited long enough to know.
@@ -1141,7 +1142,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   </div>
                 </div>
               )}
-              {installState === 'unsupported' && !iosInstall && (
+              {installState === 'unsupported' && !iosInstall && !macInstall && (
                 <div className="set-data-row set-store-ios">
                   <div className="set-data-info">
                     <span className="set-data-name">Installing from this page isn&rsquo;t available here</span>
@@ -1163,6 +1164,28 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                       On iPhone and iPad, tap <strong>Share</strong> then <strong>Add to Home Screen</strong>. Do this and
                       Safari stops clearing your data when the app sits unused &mdash; without it, everything here can be
                       wiped after a period of not opening the app.
+                    </span>
+                    <span className="set-data-sub">
+                      <strong>WARNING:</strong> iOS and iPadOS do not copy over your existing data when installing
+                      the app. Please use the Export feature below to export your data and then import your data
+                      back in using the Import feature.
+                    </span>
+                  </div>
+                </div>
+              )}
+              {macInstall && (
+                <div className="set-data-row set-store-ios">
+                  <div className="set-data-info">
+                    <span className="set-data-name">Add to your Dock</span>
+                    <span className="set-data-sub">
+                      On Mac, open Safari&rsquo;s <strong>File</strong> menu and choose <strong>Add to Dock</strong>. Do this
+                      and Safari stops clearing your data when the app sits unused &mdash; without it, everything here can be
+                      wiped after a period of not opening the app.
+                    </span>
+                    <span className="set-data-sub">
+                      <strong>WARNING:</strong> macOS does not copy over your existing data when installing
+                      the app. Please use the Export feature below to export your data and then import your data
+                      back in using the Import feature.
                     </span>
                   </div>
                 </div>
