@@ -168,3 +168,12 @@ outside the normal React import graph.
 There is a stray duplicate `store.jsx` at the repo root (identical to
 `src/store.jsx`). It isn't imported by anything (Vite serves from `src/`) —
 treat `src/store.jsx` as the canonical file if you need to edit store logic.
+
+# Claude Code Rules
+
+## CRITICAL: Development Server Management
+- NEVER use global or pattern-based kill commands (e.g., `pkill`, `killall`, `fuser -k`) for `node`, `npm`, `vite`, `next`, or port numbers.
+- When starting your own test server, capture its specific Process ID (PID) using `$!` immediately after running the background command.
+- ONLY terminate the specific server you started by targeting that captured PID directly (`kill $PID`).
+- Do not interfere with any pre-existing Node processes running in this WSL environment.
+
