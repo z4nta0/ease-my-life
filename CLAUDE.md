@@ -172,8 +172,10 @@ treat `src/store.jsx` as the canonical file if you need to edit store logic.
 # Claude Code Rules
 
 ## CRITICAL: Development Server Management
-- NEVER use global or pattern-based kill commands (e.g., `pkill`, `killall`, `fuser -k`) for `node`, `npm`, `vite`, `next`, or port numbers.
-- When starting your own test server, capture its specific Process ID (PID) using `$!` immediately after running the background command.
-- ONLY terminate the specific server you started by targeting that captured PID directly (`kill $PID`).
-- Do not interfere with any pre-existing Node processes running in this WSL environment.
+- NEVER use global or pattern-based kill commands (e.g., `pkill`, `killall`, `fuser -k`) for `node`, `npm`, `vite`, `next`, or port numbers — these match by process name/command line across the *entire system*, so they can just as easily kill the user's own separately-running dev server as the one Claude started.
+- Shell state (including a PID captured via `$!`) does NOT persist between separate Bash tool calls in this environment — capturing a PID in one command and referencing it in a later command silently fails.
+- Start any dev/test server via the Bash tool's `run_in_background: true` option (not a manual `&` subshell) — this returns a task ID that stays valid across turns.
+- To stop a server started that way, use the `TaskStop` tool with that task ID. Never `pkill`/`kill` by name, port, or a guessed PID.
+- Do not interfere with any pre-existing Node processes running in this environment, or any dev server the user started themselves.
+
 
