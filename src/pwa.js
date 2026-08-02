@@ -69,6 +69,10 @@ const isIOS = /iP(hone|ad|od)/.test(navigator.platform || '')
   || (/Mac/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)
   || /iPhone|iPad|iPod/.test(navigator.userAgent);
 const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent);
+// Genuine desktop macOS (not iPadOS masquerading as Mac, hence excluding the
+// touch case isIOS already claims above). Safari on macOS also never fires
+// beforeinstallprompt — installation there is File menu → Add to Dock.
+const isMac = /Mac/.test(navigator.userAgent) && !(navigator.maxTouchPoints > 1);
 
 function isStandalone() {
   try {
@@ -125,6 +129,7 @@ async function requestPersistOnce(force) {
 //   'standalone'  already running as an installed app
 //   'ready'       beforeinstallprompt captured; the in-app button will work
 //   'ios'         iOS/iPadOS Safari — manual Share → Add to Home Screen
+//   'mac'         macOS Safari — manual File menu → Add to Dock
 //   'installed'   installed on this device, but being viewed in a browser tab
 //   'pending'     still waiting to find out; show nothing definitive yet
 //   'unsupported' no prompt after the grace period
@@ -138,12 +143,13 @@ function installState() {
   if (isStandalone()) return 'standalone';
   if (installEvent) return 'ready';
   if (isIOS && isSafari) return 'ios';
+  if (isMac && isSafari) return 'mac';
   if (relatedInstalled) return 'installed';
   return installProbeDone ? 'unsupported' : 'pending';
 }
 
 export const PWA = {
-  isIOS, isSafari, isStandalone,
+  isIOS, isMac, isSafari, isStandalone,
   canInstall: () => !!installEvent,
   installState,
   promptInstall,
