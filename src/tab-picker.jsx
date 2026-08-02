@@ -499,7 +499,7 @@ function PickerView({ picker, state, actions, animStyle }) {
 //
 // Every field carries plain-language helper copy: the goal is that someone
 // who has never seen a "picker" before can fill this in without guessing.
-function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCancel, onCreate, initial }) {
+function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCancel, onCreate, initial, openedByTour }) {
   const [step, setStep] = React.useState((initial && initial.step) || 1);
   const [name, setName] = React.useState((initial && initial.name) || '');
   // Focus the name input on mount when arriving from Today's empty-state card.
@@ -760,7 +760,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       </header>
 
       <div className="np-steps">
-        <button type="button" className={`np-step ${step === 1 ? 'is-on' : 'is-done'}`}
+        <button type="button" className={`np-step ob-picker-details ${step === 1 ? 'is-on' : 'is-done'}`}
                 onClick={() => setStep(1)}>
           <span className="np-step-num">{step > 1 ? <Icon name="check" size={12} /> : '1'}</span>
           <span className="np-step-lbl">Details</span>
@@ -1033,7 +1033,11 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         </p>
       )}
 
-      {initial && (
+      {/* The guided tour now walks through the Details sub-step normally (where
+          the real name input already lives) before reaching Items, so this
+          redundant field is only needed for the OTHER initial-prefill path —
+          Today's "no pickers yet" quick-start card, which jumps straight here. */}
+      {initial && !openedByTour && (
         <div className="np-field np-tour-name">
           <label className="np-label" htmlFor="np-tour-name">Picker name</label>
           <input id="np-tour-name" className="np-input" type="text" maxLength={40}
@@ -1325,6 +1329,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
                          initialGroup={groupFilter === 'all' ? '' : groupFilter}
                          conditionals={state.conditionals || []}
                          initial={tour.prefill || emptyInitial || null}
+                         openedByTour={openedByTour}
                          onCancel={() => { setOpenedByTour(false); setEmptyInitial(null); cancelCreate(); }}
                          onCreate={(payload) => {
                            // During onboarding, never create a second copy of
