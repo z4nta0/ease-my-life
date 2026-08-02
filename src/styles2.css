@@ -3387,6 +3387,11 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .ob-create-i{width:40px;height:40px;border-radius:11px;background:var(--surface);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent)}
 .ob-create b{font-size:15px;font-weight:600}
 .ob-create p{font-size:12.5px;color:var(--muted);margin:0 0 6px;line-height:1.5;max-width:34ch}
+/* Wider than mobile's 34ch, or the line wraps awkwardly early on bigger
+   screens where .ob-create has much more room than its text needs. 760px
+   matches the Today tab's own main-content breakpoint just above. */
+@container app (min-width:600px){.ob-create p{max-width:47ch}}
+@container app (min-width:760px){.ob-create p{max-width:60ch}}
 /* Two-paragraph variant with no action button (no eligible pickers today): the
    flex gap owns the spacing, so kill the per-paragraph margin that would double
    it between them and leave a dangling gap under the last one. */
