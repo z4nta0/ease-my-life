@@ -160,11 +160,16 @@
        ContactSupportCard's send(), or submissions are rejected. hidden keeps it
        out of the page; Netlify still parses it. -->
   <form name="support" netlify netlify-honeypot="bot-field" hidden>
-    <input type="text" name="subject" />
-    <textarea name="message"></textarea>
-    <input type="text" name="version" />
-    <input type="text" name="browser" />
-    <input type="text" name="bot-field" />
+    <label for="support-subject">Subject</label>
+    <input type="text" name="subject" id="support-subject" />
+    <label for="support-message">Message</label>
+    <textarea name="message" id="support-message"></textarea>
+    <label for="support-version">App version</label>
+    <input type="text" name="version" id="support-version" />
+    <label for="support-browser">Browser</label>
+    <input type="text" name="browser" id="support-browser" />
+    <label for="support-bot-field">Leave this field blank</label>
+    <input type="text" name="bot-field" id="support-bot-field" />
   </form>
 
 

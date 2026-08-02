@@ -144,7 +144,7 @@
 .cnd-pill:hover { border-color: var(--muted); }
 .cnd-pill.is-on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; background: var(--accent-soft); }
 .cnd-pill-name { font-size: 14px; font-weight: 500; color: var(--text); }
-.cnd-pill-mode { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.cnd-pill-mode { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
 .cnd-pill--new { flex-direction: row; align-items: center; gap: 8px; color: var(--muted); border-style: dashed; }
 .cnd-pill--new .cnd-pill-name { color: var(--muted); font-weight: 500; }
 .cnd-pill--new.is-on { color: var(--accent); }
@@ -232,7 +232,7 @@
 .picker-group-count {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  font-size: 10.5px;
+  font-size: 11px;
   color: var(--muted);
   background: oklch(from var(--border) calc(l + 0.02) c h);
   border-radius: 999px;
@@ -464,7 +464,7 @@
 .ghost-link {
   display: inline-flex; align-items: center; gap: 5px;
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--muted);
@@ -667,7 +667,7 @@
 .stat-filter-lbl {
   flex-shrink: 0;
   font-family: var(--font-mono);
-  font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase;
+  font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--muted);
 }
 /* Data tab has a longer "Conditionals" label — widen its filter labels (which
@@ -974,7 +974,7 @@ button.heat-cell.is-sel {
   border: 0.5px solid var(--border);
   border-radius: 999px;
   font-family: var(--font-mono);
-  font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase;
+  font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
   color: var(--muted);
   cursor: pointer;
   transition: border-color .12s, color .12s;
@@ -1030,7 +1030,7 @@ button.heat-cell.is-sel {
 .rank--breakdown li.is-vacation .rank-name { color: var(--muted); }
 .rank-meta {
   font-family: var(--font-mono);
-  font-size: 10.5px; letter-spacing: 0.02em;
+  font-size: 11px; letter-spacing: 0.02em;
   color: oklch(from var(--muted) l c h / 0.85);
 }
 .rank-tag {
@@ -1211,7 +1211,7 @@ button.cat-h-l {
   border-radius: 999px;
   border: 0.5px solid var(--border);
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--muted);
@@ -1420,7 +1420,7 @@ button.cat-h-l {
 .theme-row i { display: block; flex: 1; height: 100%; }
 .theme-row span {
   position: absolute; bottom: 6px; left: 10px;
-  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.05em;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; color: rgba(0,0,0,.45);
   cursor: pointer;
 }
@@ -1474,7 +1474,7 @@ button.cat-h-l {
 .theme-custom-name {
   position: absolute; bottom: 6px; left: 10px;
   width: 100px; max-width: calc(100% - 20px);
-  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.05em;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; color: rgba(0,0,0,.5);
   background: rgba(255,255,255,.55); border: 0; border-radius: 4px;
   padding: 1px 4px; outline: none;
@@ -1733,7 +1733,7 @@ button.cat-h-l {
   outline: none;
 }
 .range-pair input:focus { border-color: var(--accent); }
-.ease-unit { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase; }
+.ease-unit { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; }
 
 /* Data picker Controls: the ease drift default renders as full-bleed rows
    (label + explanation left, day stepper right — matching the item editor).
@@ -1776,7 +1776,7 @@ button.cat-h-l {
 }
 .daily-list li:last-child { border-bottom: 0; }
 .daily-name { font-size: 14px; font-weight: 500; }
-.daily-mode { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.daily-mode { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
 
 .switch {
   position: relative;
@@ -2096,7 +2096,7 @@ button.cat-h-l {
 .sched-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .sched-id { display: flex; flex-direction: column; gap: 2px; }
 .sched-name { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; }
-.sched-meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.sched-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
 .sched-head .switch { flex-shrink: 0; cursor: pointer; }
 .sched-controls {
   display: flex; flex-direction: column; gap: 12px;
@@ -2362,7 +2362,7 @@ button.cat-h-l {
 .rem-editor { display: flex; flex-direction: column; gap: 16px; }
 .rem-field { display: flex; flex-direction: column; gap: 8px; }
 .rem-flabel {
-  font-family: var(--font-mono); font-size: 10.5px;
+  font-family: var(--font-mono); font-size: 11px;
   letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted);
 }
 .rem-hint { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
@@ -2644,9 +2644,9 @@ button.cat-h-l {
 .pie-lbl-row { display: inline-flex; align-items: center; gap: 6px; }
 .pie-help {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 15px; height: 15px; flex: 0 0 auto;
+  width: 16px; height: 16px; flex: 0 0 auto;
   border: 1px solid var(--muted); border-radius: 50%;
-  font-size: 10px; font-weight: 700; line-height: 1; color: var(--muted);
+  font-size: 11px; font-weight: 700; line-height: 1; color: var(--muted);
   cursor: help; transition: border-color .2s ease, color .2s ease, background .2s ease;
 }
 .pie-help:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
@@ -2881,7 +2881,7 @@ button.cat-h-l {
 .rem-name-input:focus { outline: none; border-bottom-color: var(--accent); }
 .rem-manage-sched {
   flex: 0 0 auto;
-  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em;
   text-transform: uppercase; color: var(--muted);
   padding: 2px 8px; border: 0.5px solid var(--border); border-radius: 999px;
 }
@@ -2976,7 +2976,7 @@ button.cat-h-l {
 }
 .rem-log-type--recurring { color: var(--accent); border-color: oklch(from var(--accent) l c h / 0.4); background: oklch(from var(--accent-soft) l c h / 0.5); }
 .rem-log-when {
-  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.02em;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.02em;
   color: var(--muted); white-space: nowrap;
 }
 .rem-log-empty { font-size: 13px; color: var(--muted); padding: 6px 0; }
@@ -3220,7 +3220,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 
 .dl-panel{margin:2px 0 14px;border:0.5px solid var(--border);border-radius:var(--r-md);background:oklch(from var(--surface) calc(l + 0.006) c h);overflow:hidden}
 .dl-panel-h{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--bg);border-bottom:0.5px solid var(--border)}
-.dl-kicker{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted)}
+.dl-kicker{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted)}
 .dl-kicker svg{width:13px;height:13px;color:var(--accent)}
 .dl-body{padding:2px 12px 10px}
 .dl-close{width:26px;height:26px;border-radius:8px;border:0.5px solid var(--border);background:var(--surface);color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;transition:color .14s,border-color .14s}
@@ -3259,7 +3259,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-chev{color:var(--muted);display:inline-flex;transition:transform .2s}
 .dl-chev svg{width:15px;height:15px;display:block}
 .dl-block.is-closed .dl-chev{transform:rotate(-90deg)}
-.dl-rest{margin-left:auto;font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.03em;text-transform:uppercase;color:var(--accent);display:inline-flex;align-items:center;gap:6px}
+.dl-rest{margin-left:auto;font-family:var(--font-mono);font-size:11px;letter-spacing:0.03em;text-transform:uppercase;color:var(--accent);display:inline-flex;align-items:center;gap:6px}
 .dl-rest svg{width:13px;height:13px}
 
 /* table */
@@ -3292,7 +3292,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 
 /* conditionals section */
 .dl-cond-row{background:oklch(from var(--accent) 0.93 0.05 h)!important;border-bottom:0!important;margin-bottom:2px}
-.dl-cond-aff{display:flex;align-items:center;gap:7px;margin:0 0 8px;padding:6px 10px 6px 12px;border-radius:0 0 8px 8px;background:oklch(from var(--accent) 0.95 0.035 h);font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.02em;color:oklch(from var(--accent) calc(l - 0.02) c h)}
+.dl-cond-aff{display:flex;align-items:center;gap:7px;margin:0 0 8px;padding:6px 10px 6px 12px;border-radius:0 0 8px 8px;background:oklch(from var(--accent) 0.95 0.035 h);font-family:var(--font-mono);font-size:11px;letter-spacing:0.02em;color:oklch(from var(--accent) calc(l - 0.02) c h)}
 .dl-cond-aff svg{width:12px;height:12px;flex:none;opacity:0.8}
 .dl-cond-aff b{color:var(--accent);font-weight:600}
 .dl-st-pill{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.04em;text-transform:uppercase;padding:2px 9px;border-radius:999px;white-space:nowrap}
@@ -3348,7 +3348,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .ob-dim{position:absolute;inset:0;background:oklch(0.15 0.02 250/0.55)}
 .ob-spot{position:fixed;border-radius:var(--r-md);box-shadow:0 0 0 9999px oklch(0.15 0.02 250/0.6);border:2px solid oklch(from var(--accent) l c h/0.9)}
 .ob-coach{position:fixed;pointer-events:auto;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);box-shadow:0 16px 40px -14px oklch(0 0 0/0.45);padding:14px 15px;animation:obFade .18s ease both}
-.ob-coach .ob-prog{font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.05em;color:var(--accent);margin:0 0 5px}
+.ob-coach .ob-prog{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;color:var(--accent);margin:0 0 5px}
 .ob-coach h4{font-size:15px;font-weight:600;margin:0 0 5px}
 .ob-coach .ob-body{font-size:12.5px;line-height:1.5;color:var(--muted);margin:0}
 .ob-crow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:13px}
@@ -3399,9 +3399,9 @@ body.ob-touring .tab{padding-bottom:200px}
 
 /* ─── Settings: storage & installation panel ──────────────────────────────── */
 .set-store-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.set-store-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border:0.5px solid var(--border);border-radius:999px;background:var(--bg);color:var(--muted);font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.01em;white-space:nowrap}
+.set-store-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border:0.5px solid var(--border);border-radius:999px;background:var(--bg);color:var(--muted);font-family:var(--font-mono);font-size:11px;letter-spacing:0.01em;white-space:nowrap}
 .set-store-chip.is-ok{border-color:oklch(0.5 0.11 155/0.35);background:oklch(0.5 0.11 155/0.08);color:oklch(0.42 0.1 155)}
-/* Darkened rather than raw --warm (L=0.62): at 10.5px this is body text and
+/* Darkened rather than raw --warm (L=0.62): at 11px this is body text and
    needs 4.5:1, and "Not protected yet" is the panel's most consequential line.
    Same treatment as .is-ok above — hue/chroma kept, lightness dropped. */
 .set-store-chip.is-warn{border-color:oklch(from var(--warm) l c h/0.4);background:oklch(from var(--warm) l c h/0.08);color:oklch(0.45 0.13 50)}
