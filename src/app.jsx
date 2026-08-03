@@ -93,6 +93,7 @@ function TabBar({ active, onChange, placement, railOpen, onToggleRail, className
       {TABS.map((t) => (
         <button key={t.id}
                 className={`tabbtn ${t.id === active ? 'is-on' : ''}`}
+                data-tab={t.id}
                 onClick={() => onChange(t.id)}
                 aria-current={t.id === active ? 'page' : undefined}>
           <Icon name={t.icon} size={20} />
