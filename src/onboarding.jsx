@@ -34,10 +34,10 @@ export const useEmlTour = function useEmlTour() {
 
 // The example picker the tour seeds (editable in the real form).
 const OB_EXAMPLE = {
-  name: 'Chores', group: 'Chores', mode: 'random', step: 1,
+  name: 'Daily Chores', group: 'Chores', mode: 'ease-up', step: 1,
   items: [
-    { id: 'ob_it_laundry', name: 'Laundry', weight: 1, easeMin: 7, easeMax: 14 },
-    { id: 'ob_it_bath', name: 'Clean bathrooms', weight: 1, easeMin: 7, easeMax: 14 },
+    { id: 'ob_it_laundry', name: 'Laundry', weight: 1, easeMin: 7, easeMax: 14, value: 100 },
+    { id: 'ob_it_bath', name: 'Clean bathrooms', weight: 1, easeMin: 7, easeMax: 14, value: 100 },
   ],
 };
 
@@ -120,7 +120,7 @@ function Onboarding({ state, actions, active, selectTab }) {
       // PLACEHOLDER copy — wording/what-to-point-out for this step is still TBD.
       sel: '.np-form', place: 'above',
       title: 'Your first picker',
-      body: 'We’ve filled this out for you — feel free to rename it or change any of the details. Click Next once you’re ready to add items to its pool.',
+      body: 'We’ve filled this out for you but feel free to change any of the details. Explore the form on your own to better understand how it works, or click Next once you’re ready to add items to its pool.',
       primary: 'Next', back: true,
       run: () => {
         // Advances the form itself (Details → Items); the tour's own step
