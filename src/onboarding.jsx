@@ -47,6 +47,69 @@ const OB_EXAMPLE = {
 
 const OB_BRAND = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z';
 
+// Extra pickers seeded silently (not via the form) once the tour's own
+// "Daily Chores" picker is created, so the Generate step produces a fuller,
+// more realistic-looking list instead of a single lonely item. Each uses the
+// Create-a-picker form's own defaults (daily cadence, every day of the week,
+// holidays not skipped, included in the daily generator) aside from what's
+// specified here.
+const OB_EXTRA_PICKERS = [
+  {
+    name: 'Monthly Chores', group: 'Chores', mode: 'ease-up',
+    items: [
+      { name: 'Deep clean the oven', weight: 1, easeMin: 2.5, easeMax: 4.1667, value: 100 },
+      { name: 'Dust the entire house', weight: 1, easeMin: 3.7037, easeMax: 5.5556, value: 100 },
+      { name: 'Clean out the fridge', weight: 1, easeMin: 2.2222, easeMax: 3.0303, value: 100 },
+      { name: 'Vacuum under the furniture', weight: 1, easeMin: 1.6667, easeMax: 2.5, value: 100 },
+      { name: 'Mop the floors', weight: 1, easeMin: 4.3478, easeMax: 6.6667, value: 100 },
+    ],
+  },
+  {
+    name: 'Coffee Creamer', group: 'Food', mode: 'dynamic',
+    items: [
+      { name: 'French Vanilla', weight: 1 },
+      { name: 'Caramel', weight: 3 },
+      { name: 'Sweet Cream', weight: 2 },
+      { name: 'Cinnamon', weight: 1 },
+      { name: 'Pumpkin Spice', weight: 2 },
+      { name: 'Hazelnut', weight: 1 },
+      { name: 'Mocha', weight: 3 },
+    ],
+  },
+  {
+    name: 'Dinner', group: 'Food', mode: 'ease-up',
+    items: [
+      { name: 'Spaghetti and meatballs', weight: 1, easeMin: 8.3333, easeMax: 14.2857, value: 100 },
+      { name: 'Meatloaf', weight: 1, easeMin: 7.1429, easeMax: 10, value: 100 },
+      { name: 'Tacos', weight: 1, easeMin: 10, easeMax: 16.6667, value: 100 },
+      { name: 'Pizza', weight: 1, easeMin: 12.5, easeMax: 20, value: 100 },
+      { name: 'Steak and potatoes', weight: 1, easeMin: 7.6923, easeMax: 11.1111, value: 100 },
+      { name: 'Burger and fries', weight: 1, easeMin: 9.0909, easeMax: 12.5, value: 100 },
+      { name: 'Lemon Chicken', weight: 1, easeMin: 7.1429, easeMax: 14.2857, value: 100 },
+      { name: 'Fried chicken', weight: 1, easeMin: 11.1111, easeMax: 16.6667, value: 100 },
+    ],
+  },
+  {
+    name: 'Workouts', group: 'Self Care', mode: 'ease-up',
+    items: [
+      { name: 'Chest', weight: 1, easeMin: 14.2857, easeMax: 20, value: 100 },
+      { name: 'Legs', weight: 1, easeMin: 12.5, easeMax: 16.6667, value: 100 },
+      { name: 'Shoulders', weight: 1, easeMin: 11.1111, easeMax: 14.2857, value: 100 },
+      { name: 'Arms', weight: 1, easeMin: 12.5, easeMax: 25, value: 100 },
+      { name: 'Core', weight: 1, easeMin: 12.5, easeMax: 20, value: 100 },
+    ],
+  },
+  {
+    name: 'Relax', group: 'Entertainment', mode: 'ease-down',
+    items: [
+      { name: 'Read a book', weight: 1, easeMin: 14.2857, easeMax: 20, value: 100 },
+      { name: 'Binge watch a show', weight: 1, easeMin: 20, easeMax: 50, value: 100 },
+      { name: 'Watch a movie', weight: 1, easeMin: 16.6667, easeMax: 33.3333, value: 100 },
+      { name: 'Browse YouTube', weight: 1, easeMin: 25, easeMax: 50, value: 100 },
+    ],
+  },
+];
+
 function Onboarding({ state, actions, active, selectTab }) {
   const ob = state.onboarding || { welcomed: true };
   // phase: 'welcome' | 'tour' | 'off'
@@ -69,6 +132,13 @@ function Onboarding({ state, actions, active, selectTab }) {
     // the Items step (a user can fill everything in and hit the form's own
     // Create button before the tour's own Next catches up), so both count.
     if (phase === 'tour' && (step === 2 || step === 3)) {
+      // Seed the behind-the-scenes extra pickers now that "Daily Chores"
+      // definitely exists — guard by name so Back/Next cycling (which can
+      // re-fire this callback via the form's own dedupe path) never adds
+      // duplicates.
+      OB_EXTRA_PICKERS.forEach((p) => {
+        if (!state.pickers.some((pk) => pk.name === p.name)) actions.addPicker(p);
+      });
       emlTour.set({ prefill: null });
       selectTab('today');
       setStep(4);
