@@ -36,8 +36,12 @@ export const useEmlTour = function useEmlTour() {
 const OB_EXAMPLE = {
   name: 'Daily Chores', group: 'Chores', mode: 'ease-up', step: 1,
   items: [
-    { id: 'ob_it_laundry', name: 'Laundry', weight: 1, easeMin: 7, easeMax: 14, value: 100 },
-    { id: 'ob_it_bath', name: 'Clean bathrooms', weight: 1, easeMin: 7, easeMax: 14, value: 100 },
+    { id: 'ob_it_laundry', name: 'Do the laundry', weight: 1, easeMin: 7, easeMax: 14, value: 100 },
+    { id: 'ob_it_bath', name: 'Clean the bathrooms', weight: 1, easeMin: 12.5, easeMax: 20, value: 100 },
+    { id: 'ob_it_dust', name: 'Dust the main living area', weight: 1, easeMin: 9.0909, easeMax: 12.5, value: 100 },
+    { id: 'ob_it_vacuum', name: 'Vacuum the floors', weight: 1, easeMin: 11.1111, easeMax: 16.6667, value: 100 },
+    { id: 'ob_it_shower', name: 'Clean the shower', weight: 1, easeMin: 5.5556, easeMax: 8.3333, value: 100 },
+    { id: 'ob_it_oven', name: 'Clean the oven', weight: 1, easeMin: 4.7619, easeMax: 7.1429, value: 100 },
   ],
 };
 
@@ -131,10 +135,9 @@ function Onboarding({ state, actions, active, selectTab }) {
       },
     },
     {
-      // PLACEHOLDER copy — wording/what-to-point-out for this step is still TBD.
       sel: '.np-form', place: 'above',
-      title: 'Add items to the pool',
-      body: 'We’ve added a couple of example items — rename or replace them, or just keep them and click Next to create the picker.',
+      title: 'Your first picker’s items',
+      body: 'We’ve already added some items for you but feel free to delete any or add your own. Click Next once you are ready to generate your first todo list.',
       primary: 'Next', back: true,
       run: () => {
         // Both this "Next" and the form's own Create button funnel through the
@@ -293,10 +296,10 @@ function Onboarding({ state, actions, active, selectTab }) {
       const el = findTarget(cur.sel);
       if (!el) return;
       const sc = getScroller(el);
-      // Landing on the Details step: the form is tall and starts at the very
-      // top of the Pickers tab anyway, so scroll all the way up rather than
-      // just nudging it into view — reads better fully from the top.
-      if (step === 2) {
+      // Landing on the Details or Items step: the form is tall and starts at
+      // the very top of the Pickers tab anyway, so scroll all the way up
+      // rather than just nudging it into view — reads better fully from the top.
+      if (step === 2 || step === 3) {
         if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo(0, 0);
         else sc.scrollTop = 0;
         return;
