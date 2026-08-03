@@ -239,8 +239,8 @@ function Onboarding({ state, actions, active, selectTab }) {
     },
     {
       sel: '.ob-generate', place: 'above',
-      title: 'Your day builds itself',
-      body: 'Each morning at a set time the app auto-picks your day or you can click Regenerate to run it whenever you like. Let’s go ahead and run it now.',
+      title: 'Your first todo list',
+      body: 'Each morning the app will automatically generate your daily todo list, using the pickers that you created. You can also click Regenerate to run it whenever you like. Let’s go ahead and run it now.',
       primary: 'Next', back: true,
       run: () => {
         // On replay (dismissed:true) the user already has a real Today list —
