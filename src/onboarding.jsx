@@ -265,15 +265,8 @@ function Onboarding({ state, actions, active, selectTab }) {
       place: 'below',
       title: 'Your first picks were generated',
       body: 'The app created some extra pickers for you, so that you can see what a typical todo list will look like. You can check these off to mark them as completed. Let’s do that now to celebrate!',
-      primary: 'Next', back: true,
-      run: () => { markAllPicksDone(); setStep(6); },
-    },
-    {
-      sel: '.rem-section', place: 'above',
-      title: 'Reminders',
-      body: 'These are like normal to-dos, but with optional repeatability built in. e.g. “every 3 days”, “monthly”, etc... They surface here when due. You’re all set!',
       primary: 'Done', back: true,
-      run: () => { finish(); },
+      run: () => { markAllPicksDone(); finish(); },
     },
   ];
   const cur = phase === 'tour' ? steps[step] : null;
