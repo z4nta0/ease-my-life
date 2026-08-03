@@ -175,6 +175,15 @@ function Onboarding({ state, actions, active, selectTab }) {
   // ── Step definitions ────────────────────────────────────────────────
   // Each: target selector, placement hint, copy, primary action.
   const firstEntry = (state.today.entries || []).find((e) => e.itemId && !e.kind);
+  // Marks every picker-item entry (not reminders/day-off/etc.) not already
+  // done — used both by the review step's own Next and by the watcher below,
+  // so however the user completes one item, the whole list finishes together
+  // and the real completion celebration plays.
+  const markAllPicksDone = () => {
+    (state.today.entries || []).forEach((e) => {
+      if (e.itemId && !e.kind && !e.done) actions.toggleDone(e.eid);
+    });
+  };
   const steps = [
     {
       sel: '[data-tour="create-picker"], .ob-gsc', place: 'above',
@@ -254,10 +263,10 @@ function Onboarding({ state, actions, active, selectTab }) {
     {
       sel: '.today-groups .today-card:not(.today-card--loader):not(.today-card--dayoff):not(.today-card--charging):not(.rem-card)',
       place: 'below',
-      title: 'Your first pick was generated',
-      body: 'The app picked one option from Chores. You can click it to check it off and mark it as completed, let’s do that now to celebrate!',
+      title: 'Your first picks were generated',
+      body: 'The app created some extra pickers for you, so that you can see what a typical todo list will look like. You can check these off to mark them as completed. Let’s do that now to celebrate!',
       primary: 'Next', back: true,
-      run: () => { if (firstEntry) actions.toggleDone(firstEntry.eid); setStep(6); },
+      run: () => { markAllPicksDone(); setStep(6); },
     },
     {
       sel: '.rem-section', place: 'above',
@@ -305,6 +314,18 @@ function Onboarding({ state, actions, active, selectTab }) {
       setWaiting(false); setStep(5);
     }
   }, [phase, step, waiting, firstEntry]);
+
+  // On the review step, if the user checks off one item themselves (rather
+  // than clicking the coach's Next), finish the rest for them so the list
+  // completes together and the real completion celebration plays.
+  React.useEffect(() => {
+    if (phase !== 'tour' || step !== 5) return;
+    const picks = (state.today.entries || []).filter((e) => e.itemId && !e.kind);
+    if (picks.length === 0) return;
+    const someDone = picks.some((e) => e.done);
+    const allDone = picks.every((e) => e.done);
+    if (someDone && !allDone) markAllPicksDone();
+  }, [phase, step, state.today.entries]);
 
   // If the user clicks the real Pickers nav button (or the create-picker
   // card's own button) instead of the coach's Next, they navigate to Pickers
