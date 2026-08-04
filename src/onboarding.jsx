@@ -326,17 +326,24 @@ function Onboarding({ state, actions, active, selectTab }) {
   };
   const steps = [
     {
+      sel: '[data-tab="today"]', place: 'below',
+      title: 'This is the Today page',
+      body: <>The <b>Today</b> page is the main page of the app, and it will be where your auto-generated list will be displayed every day. Let’s explore this page now.</>,
+      primary: 'Next', back: false,
+      run: () => { setStep(1); },
+    },
+    {
       sel: '.ob-generate', place: 'above',
       title: 'Your first todo list',
       body: 'Each morning the app will automatically generate your daily todo list, using the pickers that you created. You can also click Regenerate to run it whenever you like. Let’s go ahead and run it now.',
-      primary: 'Next', back: false,
+      primary: 'Next', back: true,
       run: () => {
         // On replay (dismissed:true) the user already has a real Today list —
         // don't regenerate and clobber it; just advance to the pick-highlight,
         // which anchors on their existing first pick.
-        if (ob.dismissed) { setStep(1); return; }
+        if (ob.dismissed) { setStep(2); return; }
         if (window.__emlGenerate) { setWaiting(true); window.__emlGenerate(); }
-        else setStep(1);
+        else setStep(2);
       },
     },
     {
@@ -362,8 +369,8 @@ function Onboarding({ state, actions, active, selectTab }) {
 
   // Auto-advance past the generate step once the day has entries.
   React.useEffect(() => {
-    if (phase === 'tour' && step === 0 && waiting && firstEntry) {
-      setWaiting(false); setStep(1);
+    if (phase === 'tour' && step === 1 && waiting && firstEntry) {
+      setWaiting(false); setStep(2);
     }
   }, [phase, step, waiting, firstEntry]);
 
@@ -371,7 +378,7 @@ function Onboarding({ state, actions, active, selectTab }) {
   // than clicking the coach's Next), finish the rest for them so the list
   // completes together and the real completion celebration plays.
   React.useEffect(() => {
-    if (phase !== 'tour' || step !== 1) return;
+    if (phase !== 'tour' || step !== 2) return;
     const picks = (state.today.entries || []).filter((e) => e.itemId && !e.kind);
     if (picks.length === 0) return;
     const someDone = picks.some((e) => e.done);

@@ -1537,7 +1537,9 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   // remounted already-celebrating (popping in green "All set!" with no visible
   // transition). Removal is owned solely by the celebrate→collapse→dismiss
   // timers below, so the beat animates smoothly from the live "3 of 3" card.
-  const obShowChecklist = !ob.dismissed;
+  // Hidden while the tour itself is up — it reappears once the tour ends
+  // (phase flips back to 'off') since ob.dismissed is untouched by any of this.
+  const obShowChecklist = !ob.dismissed && obBus.phase !== 'tour';
   // Runs post-paint (plain effect, not layout) so the card first paints its live
   // "Get started / 3 of 3" state, THEN transitions into the "All set!" beat —
   // making the text+color change a visible transition rather than an instant
