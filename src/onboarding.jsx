@@ -274,7 +274,6 @@ function Onboarding({ state, actions, active, selectTab }) {
   // phase: 'welcome' | 'tour' | 'off'
   const [phase, setPhase] = React.useState(ob.welcomed ? 'off' : 'welcome');
   const [step, setStep] = React.useState(0);
-  const [waiting, setWaiting] = React.useState(false); // generating in progress
   const [rect, setRect] = React.useState(null);
   const hadRectRef = React.useRef(false); // suppress the spot's slide-in on first paint
   const spotRef = React.useRef(null); // positioned imperatively each frame (no React lag)
@@ -301,7 +300,7 @@ function Onboarding({ state, actions, active, selectTab }) {
   React.useEffect(() => { emlTour.set({ phase, step }); }, [phase, step]);
 
   const finish = React.useCallback(() => {
-    setPhase('off'); setWaiting(false); emlTour.set({ prefill: null });
+    setPhase('off'); emlTour.set({ prefill: null });
   }, []);
   const welcomeDone = () => actions.setOnboarding({ welcomed: true });
 
@@ -314,7 +313,6 @@ function Onboarding({ state, actions, active, selectTab }) {
 
   // ── Step definitions ────────────────────────────────────────────────
   // Each: target selector, placement hint, copy, primary action.
-  const firstEntry = (state.today.entries || []).find((e) => e.itemId && !e.kind);
   // Marks every picker-item entry (not reminders/day-off/etc.) not already
   // done — used both by the review step's own Next and by the watcher below,
   // so however the user completes one item, the whole list finishes together
@@ -339,40 +337,61 @@ function Onboarding({ state, actions, active, selectTab }) {
       primary: 'Next', back: true,
       run: () => {
         // On replay (dismissed:true) the user already has a real Today list —
-        // don't regenerate and clobber it; just advance to the pick-highlight,
-        // which anchors on their existing first pick.
-        if (ob.dismissed) { setStep(2); return; }
-        if (window.__emlGenerate) { setWaiting(true); window.__emlGenerate(); }
-        else setStep(2);
+        // don't regenerate and clobber it, just advance to the review step,
+        // which highlights the list as it already stands. Otherwise kick off
+        // the real generator and move on immediately (rather than waiting for
+        // it to finish) — the next step's highlight covers the whole list,
+        // group sections included, so it already has a real target to point
+        // at while the list is still filling in.
+        if (!ob.dismissed && window.__emlGenerate) window.__emlGenerate();
+        setStep(2);
       },
     },
     {
-      sel: '.today-groups .today-card:not(.today-card--loader):not(.today-card--dayoff):not(.today-card--charging):not(.rem-card)',
+      sel: '.group-section:not(.rem-section)',
       place: 'below',
-      title: 'Your first picks were generated',
-      body: 'The app created some extra pickers for you, so that you can see what a typical todo list will look like. You can check these off to mark them as completed. Let’s do that now to celebrate!',
+      title: 'Your first todo list!',
+      body: 'This is what a typical todo list will look like once you set up your own pickers. The app will guide you through the picker creation process later on. Let’s move on for now.',
+      primary: 'Next', back: true,
+      run: () => { markAllPicksDone(); setStep(3); },
+    },
+    {
+      // PLACEHOLDER copy — wording/what-to-point-out for this step is still TBD.
+      sel: '.rem-section', place: 'above',
+      title: 'Don’t forget your reminders',
+      body: 'This section is for one-off or recurring reminders that aren’t tied to a picker — things like paying a bill or watering the plants. They’ll show up here whenever they’re due.',
       primary: 'Done', back: true,
-      run: () => { markAllPicksDone(); finish(); },
+      run: () => { finish(); },
     },
   ];
   const cur = phase === 'tour' ? steps[step] : null;
-  // Resolve a step target honoring selector ORDER (querySelector uses DOM order).
-  const findTarget = (sel) => { for (const s of sel.split(',')) { const el = document.querySelector(s.trim()); if (el) return el; } return null; };
+  // Resolve every element a step's selector matches — honoring selector
+  // ORDER (comma-separated fallbacks) — so a step can spotlight more than one
+  // element (e.g. "the whole list") as a single combined highlight.
+  const findTargets = (sel) => {
+    for (const s of sel.split(',')) {
+      const els = [...document.querySelectorAll(s.trim())];
+      if (els.length) return els;
+    }
+    return [];
+  };
+  // The bounding box that encloses every matched element.
+  const unionRect = (els) => {
+    let top = Infinity, left = Infinity, right = -Infinity, bottom = -Infinity;
+    els.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      top = Math.min(top, r.top); left = Math.min(left, r.left);
+      right = Math.max(right, r.right); bottom = Math.max(bottom, r.bottom);
+    });
+    return { top, left, right, bottom, width: right - left, height: bottom - top };
+  };
 
   // Back reverses the step's navigation so the previous target exists again.
   const goBack = () => {
-    setWaiting(false);
     const to = Math.max(0, step - 1);
     selectTab('today');
     setStep(to);
   };
-
-  // Auto-advance past the generate step once the day has entries.
-  React.useEffect(() => {
-    if (phase === 'tour' && step === 1 && waiting && firstEntry) {
-      setWaiting(false); setStep(2);
-    }
-  }, [phase, step, waiting, firstEntry]);
 
   // On the review step, if the user checks off one item themselves (rather
   // than clicking the coach's Next), finish the rest for them so the list
@@ -409,13 +428,22 @@ function Onboarding({ state, actions, active, selectTab }) {
       if (sc === document.scrollingElement || sc === document.documentElement) window.scrollBy(0, dy);
       else sc.scrollTop += dy;
     };
-    // Bring the target into view once when the step opens.
+    // Bring the target(s) into view once when the step opens.
     const bring = () => {
-      const el = findTarget(cur.sel);
-      if (!el) return;
-      const sc = getScroller(el);
+      const els = findTargets(cur.sel);
+      if (!els.length) return;
+      const sc = getScroller(els[0]);
+      // Landing on the review step: the highlighted list starts right at the
+      // top of the page anyway, so scroll all the way up rather than just
+      // nudging it into view — keeps every group visible from the top
+      // instead of opening mid-scroll.
+      if (step === 2) {
+        if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo(0, 0);
+        else sc.scrollTop = 0;
+        return;
+      }
       const isDoc = sc === document.scrollingElement || sc === document.documentElement;
-      const er = el.getBoundingClientRect();
+      const er = unionRect(els);
       const sr = isDoc ? { top: 0, bottom: window.innerHeight } : sc.getBoundingClientRect();
       const pad = 90, padB = 130;
       if (er.top < sr.top + pad) scrollByAmt(sc, -(sr.top + pad - er.top));
@@ -423,10 +451,29 @@ function Onboarding({ state, actions, active, selectTab }) {
     };
     bring();
     let broughtRef = false;
-    const place = (el) => {
-      const r = el.getBoundingClientRect();
+    // The Today tab's own header is `position: sticky; top: 0` with a higher
+    // z-index than the surrounding content but a LOWER one than this tour
+    // overlay — so if a highlighted rect's top scrolls above the header's
+    // bottom edge, the spotlight's cutout (a box-shadow "hole") would expose
+    // the header through it instead of dimming it, reading as if the header
+    // itself were the highlighted target. Clamp the rect actually drawn (not
+    // the one bring() scrolls by, which needs the real position) so the
+    // spotlight never reaches into the header's screen space.
+    const spotPad = 8;
+    const clampToHeader = (r) => {
+      const header = document.querySelector('.today-h');
+      if (!header) return r;
+      // Clamp to the header's bottom edge PLUS the spot's own padding, so the
+      // padded box drawn below never overlaps the header even by that margin.
+      const minTop = header.getBoundingClientRect().bottom + spotPad;
+      if (r.top >= minTop) return r;
+      const top = Math.max(r.top, minTop);
+      return { ...r, top, height: r.bottom - top };
+    };
+    const place = (els) => {
+      const r = clampToHeader(unionRect(els));
       if (spotRef.current) {
-        const pad = 8, s = spotRef.current.style;
+        const pad = spotPad, s = spotRef.current.style;
         s.top = (r.top - pad) + 'px'; s.left = (r.left - pad) + 'px';
         s.width = (r.width + pad * 2) + 'px'; s.height = (r.height + pad * 2) + 'px';
       }
@@ -435,14 +482,14 @@ function Onboarding({ state, actions, active, selectTab }) {
     // Reposition synchronously as scroll fires (before paint) so the highlight
     // doesn't trail the content the way a purely rAF-driven fixed box does.
     // Listen broadly (capture) so it fires for whichever element scrolls.
-    const onScroll = () => { const el = findTarget(cur.sel); if (el) place(el); };
+    const onScroll = () => { const els = findTargets(cur.sel); if (els.length) place(els); };
     window.addEventListener('scroll', onScroll, { passive: true, capture: true });
     const loop = () => {
       if (cancelled) return;
-      const el = findTarget(cur.sel);
-      if (el) {
+      const els = findTargets(cur.sel);
+      if (els.length) {
         if (!broughtRef) { broughtRef = true; bring(); } // scroll once the target actually exists
-        const r = place(el);
+        const r = place(els);
         setRect((p) => (p && Math.abs(p.top - r.top) < 0.5 && Math.abs(p.left - r.left) < 0.5 && p.width === r.width && p.height === r.height)
           ? p : { top: r.top, left: r.left, width: r.width, height: r.height });
       } else {
@@ -494,10 +541,6 @@ function Onboarding({ state, actions, active, selectTab }) {
       coachStyle = { bottom: vh - rect.top + 16, left };
       arrowClass = 'ob-coach--down';
     }
-  } else if (waiting) {
-    // Generating: target is briefly gone — center the coach with its wait state.
-    coachStyle = { top: '50%', left: '50%', transform: 'translate(-50%,-50%)' };
-    arrowClass = 'ob-coach--none';
   } else {
     // Target not found yet (mid-navigation). Show only the dim; the coach
     // appears once its target resolves, so no stale/centered flash.
@@ -518,8 +561,8 @@ function Onboarding({ state, actions, active, selectTab }) {
             <button className="ob-skip" onClick={finish}>Skip</button>
             {cur.back && <button className="ob-back" onClick={goBack}>‹ Back</button>}
           </div>
-          <button className="ob-next" disabled={waiting} onClick={cur.run}>
-            {waiting ? 'Generating\u2026' : cur.primary}{cur.primary !== 'Done' && !waiting ? ' \u203A' : ''}
+          <button className="ob-next" onClick={cur.run}>
+            {cur.primary}{cur.primary !== 'Done' ? ' \u203A' : ''}
           </button>
         </div>
       </div>
