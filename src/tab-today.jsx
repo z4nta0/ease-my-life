@@ -1715,14 +1715,6 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                 </div>
               </div>
             )}
-            {obShowCreate && (
-              <div className="ob-create" data-tour="create-picker">
-                <div className="ob-create-i"><Icon name="plus" size={22} /></div>
-                <b>Create your first picker</b>
-                <p>A picker is like a dispenser of tasks, with rules for how and when it runs. The app will go through each picker that you create and according to the rules that you set, it will then dispense 1 item from a pool of items that you put into it. That&rsquo;s how the app works, by generating a todo list with 1 item from each picker that you create.</p>
-                <Btn kind="primary" size="sm" icon="plus" onClick={() => onNavTab && onNavTab('picker')}>Create a picker</Btn>
-              </div>
-            )}
             {celebRect && particles.length > 0 && (completionStyle === 'confetti' || completionStyle === 'sparkle') && createPortal(
               // Portaled straight to <body> — the tab-switch fade wrapper
               // (.tab-fade) keeps a resolved (identity) transform for the

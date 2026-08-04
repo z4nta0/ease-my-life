@@ -43,10 +43,11 @@ export const useEmlTour = function useEmlTour() {
   return v;
 };
 
-// Sample "Daily Chores" picker — prefill data for the (currently stashed)
-// create-a-picker form flow below. Kept live and exported-in-spirit (reused
-// by OB_EXTRA_PICKERS' sibling groups too) so both the future create-a-picker
-// mini-tour and the main tour's own reseeding can draw on the same data.
+// Sample "Daily Chores" picker — seeded (along with OB_EXTRA_PICKERS, below)
+// on a fresh install before the welcome tour begins, see the seeding effect
+// in Onboarding(). Also prefill data for the (currently stashed)
+// create-a-picker form flow further down, for whenever the future
+// create-a-picker mini-tour reuses this same data.
 const OB_EXAMPLE = {
   name: 'Daily Chores', group: 'Chores', mode: 'ease-up', step: 1,
   items: [
@@ -65,14 +66,8 @@ const OB_BRAND = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.4
 // generated day look like a fuller, more realistic todo list instead of a
 // single lonely item. Each uses the Create-a-picker form's own defaults
 // (daily cadence, every day of the week, holidays not skipped, included in
-// the daily generator) aside from what's specified here.
-//
-// Not currently wired up to anything — the code that seeded these (tied to
-// the now-stashed create-a-picker tour content below, via the
-// window.__emlPickerCreated callback) has been removed along with it. Reseed
-// them directly (e.g. actions.addPicker(p) for each, guarded by name so
-// re-running never duplicates) once we decide where in the rebuilt main tour
-// that should happen.
+// the daily generator) aside from what's specified here. Seeded alongside
+// OB_EXAMPLE — see the seeding effect in Onboarding().
 const OB_EXTRA_PICKERS = [
   {
     name: 'Monthly Chores', group: 'Chores', mode: 'ease-up',
@@ -291,10 +286,18 @@ function Onboarding({ state, actions, active, selectTab }) {
     if (!ob.welcomed && phase === 'off') { setPhase('welcome'); setStep(0); }
   }, [ob.welcomed]);
 
+  // Seed the sample pickers immediately on a fresh install — before the
+  // welcome tour even begins — so every tour step always has real pickers to
+  // point at and generate from. Checked once on mount only (an intentionally
+  // empty dep array): re-running on later state changes would fight a user
+  // who's since deleted every picker on purpose.
+  React.useEffect(() => {
+    if (ob.welcomed || state.pickers.length > 0) return;
+    [OB_EXAMPLE, ...OB_EXTRA_PICKERS].forEach((p) => actions.addPicker(p));
+  }, []);
+
   // Publish live phase/step on the bus so tabs can anchor tour targets even
-  // when their normal render gate is off. TabToday uses this to force-render
-  // the create-picker card during step 0 on replay (when ob.dismissed is true,
-  // which otherwise hides both step-0 anchors → the dim-only "no coach" bug).
+  // when their normal render gate is off.
   React.useEffect(() => { emlTour.set({ phase, step }); }, [phase, step]);
 
   const finish = React.useCallback(() => {
@@ -454,7 +457,8 @@ function Onboarding({ state, actions, active, selectTab }) {
         <div className={`ob-welcome ${reduce ? '' : 'ob-in'}`}>
           <div className="ob-wmark"><svg viewBox="8 8 528 528" fill="none"><path d={OB_BRAND} style={{ fill: 'currentColor', stroke: 'currentColor' }} strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" /></svg></div>
           <h2>Welcome to Ease My Life</h2>
-          <p>Decide less. Ease My Life is a todo app that will generate a daily list of tasks for you. You will set up <b>pickers</b>, which are pools of tasks or choices, and then each day the app picks an item from each picker for you. Chores, meals, workouts or whatever you’d rather have the app decide for you. You add the items, so the picker is guaranteed to choose something you want.</p>
+          <p>Decide less and add some variety to your life! Ease My Life is a todo app that generates a daily list of tasks from pools of items that you create and according to the rules that you set.</p>
+          <p>This welcome tour will show you the layout of the app and help you understand how it works. After it finishes, there will be a few smaller tours that will guide you through setting up everything you need in order to generate your first list. Let’s get started!</p>
           <div className="ob-chips"><span>todo list</span><span>pickers</span><span>reminders</span></div>
           <div className="ob-wact">
             <button className="ob-btn ob-btn--primary" autoFocus onClick={() => { selectTab('today'); welcomeDone(); setPhase('tour'); setStep(0); }}>Take the quick tour</button>
