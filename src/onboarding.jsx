@@ -2,14 +2,25 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { reduceMotion } from './ui.jsx';
 
-// Onboarding: first-run welcome modal + a 5-step spotlight tour that actually
-// drives the app (each coach card's primary button performs the step, so the
-// user can do it themselves or let the tour do it). Leaves the user a real
-// "Chores" picker to tinker with. Decoupled from the tabs via:
-//   • emlTour — a tiny observable bus (prefill for the picker form).
+// Onboarding: first-run welcome modal + a spotlight tour that actually drives
+// the app (each coach card's primary button performs the step, so the user
+// can do it themselves or let the tour do it).
+//
+// Mid-rework: the tour used to walk the user through creating a real picker
+// via the Create-a-picker form. That content — the steps themselves plus the
+// mechanics that drove the form — has been cut from the active tour below and
+// preserved verbatim in the "STASHED" comment block ahead of the component,
+// for reuse when we build a dedicated "Create your first picker" mini-tour
+// (launched from its own dismissible card, alongside other per-feature
+// mini-tours). The active tour is being rebuilt to instead orient the user
+// around what the app is/does and how it works. Decoupled from the tabs via:
+//   • emlTour — a tiny observable bus (prefill for the picker form, plus live
+//     phase/step so other tabs can react to the tour without a context
+//     provider — e.g. the Today tab's "Get started" checklist gates its own
+//     completion celebration on obBus.phase).
 //   • window.__emlGenerate() — registered by TabToday so the tour can run the
 //     generator without reaching into the footer's confirm dialog.
-//   • data-tour / .ob-* selectors on real target elements.
+//   • data-tour / .ob-* / data-tab selectors on real target elements.
 //
 // Trigger: shows when state.onboarding.welcomed is false (clean state). The dev
 // SEED ships welcomed:true so the sample-data build isn't nagged; visit
@@ -32,7 +43,10 @@ export const useEmlTour = function useEmlTour() {
   return v;
 };
 
-// The example picker the tour seeds (editable in the real form).
+// Sample "Daily Chores" picker — prefill data for the (currently stashed)
+// create-a-picker form flow below. Kept live and exported-in-spirit (reused
+// by OB_EXTRA_PICKERS' sibling groups too) so both the future create-a-picker
+// mini-tour and the main tour's own reseeding can draw on the same data.
 const OB_EXAMPLE = {
   name: 'Daily Chores', group: 'Chores', mode: 'ease-up', step: 1,
   items: [
@@ -47,12 +61,18 @@ const OB_EXAMPLE = {
 
 const OB_BRAND = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z';
 
-// Extra pickers seeded silently (not via the form) once the tour's own
-// "Daily Chores" picker is created, so the Generate step produces a fuller,
-// more realistic-looking list instead of a single lonely item. Each uses the
-// Create-a-picker form's own defaults (daily cadence, every day of the week,
-// holidays not skipped, included in the daily generator) aside from what's
-// specified here.
+// Extra sample pickers (Chores/Food/Self Care/Entertainment) meant to make a
+// generated day look like a fuller, more realistic todo list instead of a
+// single lonely item. Each uses the Create-a-picker form's own defaults
+// (daily cadence, every day of the week, holidays not skipped, included in
+// the daily generator) aside from what's specified here.
+//
+// Not currently wired up to anything — the code that seeded these (tied to
+// the now-stashed create-a-picker tour content below, via the
+// window.__emlPickerCreated callback) has been removed along with it. Reseed
+// them directly (e.g. actions.addPicker(p) for each, guarded by name so
+// re-running never duplicates) once we decide where in the rebuilt main tour
+// that should happen.
 const OB_EXTRA_PICKERS = [
   {
     name: 'Monthly Chores', group: 'Chores', mode: 'ease-up',
@@ -110,6 +130,150 @@ const OB_EXTRA_PICKERS = [
   },
 ];
 
+// ── STASHED: create-a-picker tour content ──────────────────────────────────
+// Cut from the active tour below when it was refocused on orienting the user
+// around the app in general, rather than building a real picker step by
+// step. Preserved verbatim (not live code — everything here is inside this
+// comment) for reuse when we build a dedicated "Create your first picker"
+// mini-tour, launched from its own dismissible card. All `step` numbers
+// below are relative to the OLD 6-step layout (this content occupied indices
+// 0-3, Generate was 4, the review/celebration step was 5) — recalculate for
+// whatever local step numbering the new mini-tour ends up using.
+//
+// Supporting hooks this content depends on are NOT stashed — they were left
+// in place in their own files, dormant but ready:
+//   • app.jsx's TabBar renders `data-tab={t.id}` on every nav button (used
+//     below to target the Pickers nav button).
+//   • tab-picker.jsx's NewPickerForm still accepts an `openedByTour` prop
+//     (suppresses its own tour-only "Picker name" field) and still renders
+//     `.ob-picker-details` / `.ob-picker-next` / `.ob-picker-create` classes
+//     on its Details-pill / Next / Create buttons for the tour to drive.
+//   • tab-picker.jsx's onCreate still dedupes by name when `openedByTour` and
+//     still calls `window.__emlPickerCreated()` on create/dedupe — that
+//     window callback just isn't registered by anything right now (see the
+//     advanceRef effect below, which needs to be restored to register it).
+//
+// 1) The advanceRef / window.__emlPickerCreated registration (lived right
+//    after the `bus` line, inside the component body):
+//
+//   const advanceRef = React.useRef(null);
+//   advanceRef.current = () => {
+//     if (phase === 'tour' && (step === 2 || step === 3)) {
+//       OB_EXTRA_PICKERS.forEach((p) => {
+//         if (!state.pickers.some((pk) => pk.name === p.name)) actions.addPicker(p);
+//       });
+//       emlTour.set({ prefill: null });
+//       selectTab('today');
+//       setStep(4);
+//     }
+//   };
+//   React.useEffect(() => {
+//     window.__emlPickerCreated = () => { if (advanceRef.current) advanceRef.current(); };
+//     return () => { if (window.__emlPickerCreated) delete window.__emlPickerCreated; };
+//   }, []);
+//
+// 2) The four step definitions themselves (old indices 0-3, prepended to
+//    whatever `steps` starts with today):
+//
+//   {
+//     sel: '[data-tour="create-picker"], .ob-gsc', place: 'above',
+//     title: 'Start with a picker',
+//     body: 'Pickers are the heart of the app, containing a pool of items it chooses from each day. We’ll make one together.',
+//     primary: 'Next', back: false,
+//     run: () => { setStep(1); },
+//   },
+//   {
+//     sel: '[data-tab="picker"]', place: 'below',
+//     title: 'Pickers live here',
+//     body: 'All of your pickers can be found on this page, which is also where new pickers are created. Click this button now so that we can create a new picker together.',
+//     primary: 'Next', back: true,
+//     run: () => { emlTour.set({ prefill: OB_EXAMPLE }); selectTab('picker'); setStep(2); },
+//   },
+//   {
+//     sel: '.np-form', place: 'above',
+//     title: 'Your first picker',
+//     body: 'We’ve filled this out for you but feel free to change any of the details. Explore the form on your own to better understand how it works, or click Next once you’re ready to add items to its pool.',
+//     primary: 'Next', back: true,
+//     run: () => {
+//       const toItems = document.querySelector('.ob-picker-next');
+//       if (toItems) toItems.click();
+//       setStep(3);
+//     },
+//   },
+//   {
+//     sel: '.np-form', place: 'above',
+//     title: 'Your first picker’s items',
+//     body: 'We’ve already added some items for you but feel free to delete any or add your own. Click Next once you are ready to generate your first todo list.',
+//     primary: 'Next', back: true,
+//     run: () => {
+//       const create = document.querySelector('.ob-picker-create');
+//       if (create) { create.click(); return; }
+//       const toItems = document.querySelector('.ob-picker-next');
+//       if (toItems) {
+//         toItems.click();
+//         let tries = 0;
+//         const iv = setInterval(() => {
+//           const c = document.querySelector('.ob-picker-create');
+//           if (c) { clearInterval(iv); c.click(); }
+//           else if (++tries > 25) clearInterval(iv);
+//         }, 60);
+//         return;
+//       }
+//       emlTour.set({ prefill: { ...OB_EXAMPLE, step: 2 } });
+//       selectTab('picker');
+//     },
+//   },
+//
+// 3) goBack()'s special cases for to===0,1,2,3 (replaced the generic
+//    `else selectTab('today')` fallback that's there now):
+//
+//   if (to === 0) { emlTour.set({ prefill: null }); selectTab('today'); }
+//   else if (to === 1) { emlTour.set({ prefill: null }); selectTab('today'); }
+//   else if (to === 2) {
+//     emlTour.set({ prefill: { ...OB_EXAMPLE } });
+//     selectTab('picker');
+//     const details = document.querySelector('.ob-picker-details');
+//     if (details) details.click();
+//   }
+//   else if (to === 3) { emlTour.set({ prefill: { ...OB_EXAMPLE, step: 2 } }); selectTab('picker'); }
+//   else selectTab('today');
+//
+// 4) Desync-detection effect (catches the user clicking the real Pickers nav
+//    button instead of the coach's Next during steps 0-1):
+//
+//   React.useEffect(() => {
+//     if (phase === 'tour' && (step === 0 || step === 1) && active === 'picker') {
+//       emlTour.set({ prefill: { ...OB_EXAMPLE } });
+//       setStep(2);
+//     }
+//   }, [phase, step, active]);
+//
+// 5) Watchdog effect for steps 2-3 (re-opens the form if it hasn't mounted
+//    shortly after the step opens):
+//
+//   React.useEffect(() => {
+//     if (phase !== 'tour' || (step !== 2 && step !== 3)) return;
+//     let tries = 0;
+//     const iv = setInterval(() => {
+//       if (document.querySelector('.np-form')) { clearInterval(iv); return; }
+//       if (++tries > 20) { clearInterval(iv); return; }
+//       emlTour.set({ prefill: { ...OB_EXAMPLE, ...(step === 3 ? { step: 2 } : {}) } });
+//       selectTab('picker');
+//     }, 120);
+//     return () => clearInterval(iv);
+//   }, [phase, step]);
+//
+// 6) Scroll-to-top special case inside the position-tracking effect's
+//    bring() (landing on Details/Items scrolls the page to the very top
+//    instead of just nudging the target into view):
+//
+//   if (step === 2 || step === 3) {
+//     if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo(0, 0);
+//     else sc.scrollTop = 0;
+//     return;
+//   }
+// ─────────────────────────────────────────────────────────────────────────
+
 function Onboarding({ state, actions, active, selectTab }) {
   const ob = state.onboarding || { welcomed: true };
   // phase: 'welcome' | 'tour' | 'off'
@@ -121,33 +285,6 @@ function Onboarding({ state, actions, active, selectTab }) {
   const spotRef = React.useRef(null); // positioned imperatively each frame (no React lag)
   const reduce = reduceMotion && reduceMotion();
   const bus = useEmlTour ? useEmlTour() : {};
-
-  // The picker form (both its own Create button and the coach's "Next") calls
-  // window.__emlPickerCreated() after create/dedupe — a direct callback rather
-  // than a mutable-bus flag, so advancement is deterministic. We keep the
-  // handler current via a ref and register a stable window function once.
-  const advanceRef = React.useRef(null);
-  advanceRef.current = () => {
-    // Fires once the picker is actually created — from either the Details or
-    // the Items step (a user can fill everything in and hit the form's own
-    // Create button before the tour's own Next catches up), so both count.
-    if (phase === 'tour' && (step === 2 || step === 3)) {
-      // Seed the behind-the-scenes extra pickers now that "Daily Chores"
-      // definitely exists — guard by name so Back/Next cycling (which can
-      // re-fire this callback via the form's own dedupe path) never adds
-      // duplicates.
-      OB_EXTRA_PICKERS.forEach((p) => {
-        if (!state.pickers.some((pk) => pk.name === p.name)) actions.addPicker(p);
-      });
-      emlTour.set({ prefill: null });
-      selectTab('today');
-      setStep(4);
-    }
-  };
-  React.useEffect(() => {
-    window.__emlPickerCreated = () => { if (advanceRef.current) advanceRef.current(); };
-    return () => { if (window.__emlPickerCreated) delete window.__emlPickerCreated; };
-  }, []);
 
   // If the flag flips (replay from Settings / demo route), re-open.
   React.useEffect(() => {
@@ -186,78 +323,17 @@ function Onboarding({ state, actions, active, selectTab }) {
   };
   const steps = [
     {
-      sel: '[data-tour="create-picker"], .ob-gsc', place: 'above',
-      title: 'Start with a picker',
-      body: 'Pickers are the heart of the app, containing a pool of items it chooses from each day. We\u2019ll make one together.',
-      primary: 'Next', back: false,
-      run: () => { setStep(1); },
-    },
-    {
-      sel: '[data-tab="picker"]', place: 'below',
-      title: 'Pickers live here',
-      body: 'All of your pickers can be found on this page, which is also where new pickers are created. Click this button now so that we can create a new picker together.',
-      primary: 'Next', back: true,
-      run: () => { emlTour.set({ prefill: OB_EXAMPLE }); selectTab('picker'); setStep(2); },
-    },
-    {
-      // PLACEHOLDER copy — wording/what-to-point-out for this step is still TBD.
-      sel: '.np-form', place: 'above',
-      title: 'Your first picker',
-      body: 'We’ve filled this out for you but feel free to change any of the details. Explore the form on your own to better understand how it works, or click Next once you’re ready to add items to its pool.',
-      primary: 'Next', back: true,
-      run: () => {
-        // Advances the form itself (Details → Items); the tour's own step
-        // then moves independently to the Items coach card.
-        const toItems = document.querySelector('.ob-picker-next');
-        if (toItems) toItems.click();
-        setStep(3);
-      },
-    },
-    {
-      sel: '.np-form', place: 'above',
-      title: 'Your first picker’s items',
-      body: 'We’ve already added some items for you but feel free to delete any or add your own. Click Next once you are ready to generate your first todo list.',
-      primary: 'Next', back: true,
-      run: () => {
-        // Both this "Next" and the form's own Create button funnel through the
-        // picker form's onCreate, which dedupes and calls window.__emlPickerCreated()
-        // to advance the tour.
-        const create = document.querySelector('.ob-picker-create');
-        if (create) { create.click(); return; }
-        // The user hit the form's own "Details" step-pill, so the Create
-        // button (only on the Items sub-step) isn't mounted. Advance the form
-        // to Items (keeps the current name + prefilled items), then submit
-        // once it mounts. Never blind-advance the tour here: doing so moved
-        // on with no picker created and hung the generator in the next step.
-        const toItems = document.querySelector('.ob-picker-next');
-        if (toItems) {
-          toItems.click();
-          let tries = 0;
-          const iv = setInterval(() => {
-            const c = document.querySelector('.ob-picker-create');
-            if (c) { clearInterval(iv); c.click(); }
-            else if (++tries > 25) clearInterval(iv);
-          }, 60);
-          return;
-        }
-        // No form at all (shouldn't happen — the watchdog below re-opens it):
-        // re-assert the prefill/tab rather than skipping ahead pickerless.
-        emlTour.set({ prefill: { ...OB_EXAMPLE, step: 2 } });
-        selectTab('picker');
-      },
-    },
-    {
       sel: '.ob-generate', place: 'above',
       title: 'Your first todo list',
       body: 'Each morning the app will automatically generate your daily todo list, using the pickers that you created. You can also click Regenerate to run it whenever you like. Let’s go ahead and run it now.',
-      primary: 'Next', back: true,
+      primary: 'Next', back: false,
       run: () => {
         // On replay (dismissed:true) the user already has a real Today list —
         // don't regenerate and clobber it; just advance to the pick-highlight,
         // which anchors on their existing first pick.
-        if (ob.dismissed) { setStep(5); return; }
+        if (ob.dismissed) { setStep(1); return; }
         if (window.__emlGenerate) { setWaiting(true); window.__emlGenerate(); }
-        else setStep(5);
+        else setStep(1);
       },
     },
     {
@@ -270,41 +346,21 @@ function Onboarding({ state, actions, active, selectTab }) {
     },
   ];
   const cur = phase === 'tour' ? steps[step] : null;
-  // Resolve a step target honoring selector ORDER (querySelector uses DOM order),
-  // so step 0 prefers the create-picker card and falls back to the checklist.
+  // Resolve a step target honoring selector ORDER (querySelector uses DOM order).
   const findTarget = (sel) => { for (const s of sel.split(',')) { const el = document.querySelector(s.trim()); if (el) return el; } return null; };
 
   // Back reverses the step's navigation so the previous target exists again.
   const goBack = () => {
     setWaiting(false);
     const to = Math.max(0, step - 1);
-    if (to === 0) { emlTour.set({ prefill: null }); selectTab('today'); }
-    // Coming back to "Pickers live here": undo the navigation so the coach
-    // replays from the same vantage point (Today, pointing at the nav button)
-    // it started from, rather than leaving the primed form open behind it.
-    else if (to === 1) { emlTour.set({ prefill: null }); selectTab('today'); }
-    else if (to === 2) {
-      emlTour.set({ prefill: { ...OB_EXAMPLE } });
-      selectTab('picker');
-      // Coming back from the Items step: the form is still mounted (its own
-      // internal sub-step doesn't reset just because the prefill ref changed),
-      // so drive it back to Details itself — otherwise the coach card's
-      // Details-oriented copy would sit over a form still showing Items.
-      const details = document.querySelector('.ob-picker-details');
-      if (details) details.click();
-    }
-    // Backing up from Generate to Items: force the form back open ON Items
-    // (OB_EXAMPLE itself now starts on Details) in case it had already closed
-    // after a successful create.
-    else if (to === 3) { emlTour.set({ prefill: { ...OB_EXAMPLE, step: 2 } }); selectTab('picker'); }
-    else selectTab('today');
+    selectTab('today');
     setStep(to);
   };
 
   // Auto-advance past the generate step once the day has entries.
   React.useEffect(() => {
-    if (phase === 'tour' && step === 4 && waiting && firstEntry) {
-      setWaiting(false); setStep(5);
+    if (phase === 'tour' && step === 0 && waiting && firstEntry) {
+      setWaiting(false); setStep(1);
     }
   }, [phase, step, waiting, firstEntry]);
 
@@ -312,45 +368,13 @@ function Onboarding({ state, actions, active, selectTab }) {
   // than clicking the coach's Next), finish the rest for them so the list
   // completes together and the real completion celebration plays.
   React.useEffect(() => {
-    if (phase !== 'tour' || step !== 5) return;
+    if (phase !== 'tour' || step !== 1) return;
     const picks = (state.today.entries || []).filter((e) => e.itemId && !e.kind);
     if (picks.length === 0) return;
     const someDone = picks.some((e) => e.done);
     const allDone = picks.every((e) => e.done);
     if (someDone && !allDone) markAllPicksDone();
   }, [phase, step, state.today.entries]);
-
-  // If the user clicks the real Pickers nav button (or the create-picker
-  // card's own button) instead of the coach's Next, they navigate to Pickers
-  // without the prefill/advance — which desyncs the tour. Treat arriving on
-  // Pickers during step 0 (the intro card) or step 1 ("Pickers live here",
-  // this button's whole point) as the advance.
-  React.useEffect(() => {
-    if (phase === 'tour' && (step === 0 || step === 1) && active === 'picker') {
-      emlTour.set({ prefill: { ...OB_EXAMPLE } });
-      setStep(2);
-    }
-  }, [phase, step, active]);
-
-  // Watchdog for steps 2-3 (the create-picker form's Details/Items sub-steps):
-  // if the form hasn't mounted shortly after the step opens — a race where the
-  // Picker tab or the prefill effect lagged — re-assert the prefill and tab so
-  // the step can never strand on a blank dim. Checking for .np-form itself
-  // (rather than a sub-step-specific target) means this doesn't misfire just
-  // because the user has already clicked ahead to the other sub-step.
-  React.useEffect(() => {
-    if (phase !== 'tour' || (step !== 2 && step !== 3)) return;
-    let tries = 0;
-    const iv = setInterval(() => {
-      if (document.querySelector('.np-form')) { clearInterval(iv); return; }
-      if (++tries > 20) { clearInterval(iv); return; }
-      // Fresh ref forces the form to (re)open; land it on whichever sub-step
-      // this tour step represents.
-      emlTour.set({ prefill: { ...OB_EXAMPLE, ...(step === 3 ? { step: 2 } : {}) } });
-      selectTab('picker');
-    }, 120);
-    return () => clearInterval(iv);
-  }, [phase, step]);
 
   // ── Position tracking: follow the target every frame while a step is up ──
   React.useEffect(() => {
@@ -380,14 +404,6 @@ function Onboarding({ state, actions, active, selectTab }) {
       const el = findTarget(cur.sel);
       if (!el) return;
       const sc = getScroller(el);
-      // Landing on the Details or Items step: the form is tall and starts at
-      // the very top of the Pickers tab anyway, so scroll all the way up
-      // rather than just nudging it into view — reads better fully from the top.
-      if (step === 2 || step === 3) {
-        if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo(0, 0);
-        else sc.scrollTop = 0;
-        return;
-      }
       const isDoc = sc === document.scrollingElement || sc === document.documentElement;
       const er = el.getBoundingClientRect();
       const sr = isDoc ? { top: 0, bottom: window.innerHeight } : sc.getBoundingClientRect();

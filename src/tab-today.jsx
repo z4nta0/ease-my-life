@@ -1485,13 +1485,13 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   const obReminderDone = (state.tasks || []).length > 0;
   const obGenDone = (state.today.entries || []).length > 0;
   const obCount = (obPickerDone ? 1 : 0) + (obReminderDone ? 1 : 0) + (obGenDone ? 1 : 0);
-  // Step 0 of the tour anchors on this card. On replay ob.dismissed is true (so
-  // the checklist stays hidden), which also hid the create card and stranded
-  // step 0 on a coach-less dim. Force the card while the tour is on step 0 so
-  // step 0 always has a target, regardless of dismissed / existing pickers.
   const obBus = useEmlTour ? useEmlTour() : {};
-  const obTourStep0 = obBus.phase === 'tour' && obBus.step === 0;
-  const obShowCreate = (!ob.dismissed && state.pickers.length === 0) || obTourStep0;
+  // Used to also force-show while the tour's own step 0 was up (that step
+  // anchored on this card) — see the "STASHED: create-a-picker tour content"
+  // block atop onboarding.jsx. The future "Create your first picker"
+  // mini-tour will need an equivalent force-render once it exists, keyed off
+  // its own step numbering.
+  const obShowCreate = !ob.dismissed && state.pickers.length === 0;
   // Empty state (edge case): user has no pickers and the tour isn't running.
   // Distinct from the onboarding create card — plainer copy so it doesn't read
   // as a bug, no coach highlight. Tapping it jumps to Pickers with the create
