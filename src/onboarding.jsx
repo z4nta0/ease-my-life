@@ -336,6 +336,13 @@ function Onboarding({ state, actions, active, selectTab }) {
       sel: '[data-tab="stats"]', place: 'below',
       title: 'This is the Stats page',
       body: <>The <b>Stats</b> page is where you can find a breakdown of all the statistics associated with a given picker and its items. Let’s explore this page now.</>,
+      primary: 'Next', back: true,
+      run: () => { selectTab('data'); setStep(5); },
+    },
+    {
+      sel: '[data-tab="data"]', place: 'below',
+      title: 'This is the Data page',
+      body: <>The <b>Data</b> page is where you will be able to view and edit all your reminders, pickers and their items. There will be a tutorial later on to explain this in more detail. Let’s move on for now.</>,
       primary: 'Done', back: true,
       run: () => { finish(); },
     },
