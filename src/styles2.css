@@ -683,7 +683,7 @@
 .stat-h .section-h { flex: 1 1 auto; min-width: 0; justify-content: center; }
 .stat-h .brand-mark { height: 68px; width: 68px; aspect-ratio: auto; align-self: center; }
 .stat-title-accent { color: var(--accent); }
-.stat-filters-sub { margin: 0 0 2px; }
+.stat-h-sub { margin: 18px 0 0; }
 @media (max-width: 640px) {
   .stat-h-lead { gap: 12px; }
   .stat-h .brand-mark { height: 56px; width: 56px; }

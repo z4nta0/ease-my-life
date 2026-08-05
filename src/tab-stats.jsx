@@ -866,12 +866,12 @@ function TabStats({ state, onHome, onNavTab }) {
             <h1 className="section-title">Your <span className="stat-title-accent">eased</span> life, according to the numbers.</h1>
           </div>
         </div>
+        <p className="section-sub stat-h-sub">Filter by group, conditionals, reminders, pickers, and time below. This tab is best used in conjunction with the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>, so that you can view the statistics here in order to see if your created items' numbers line up with your expectations and then tweak them in the Data tab if they do not.</p>
       </header>
 
       <div className="stat-body-wrap" style={tour.reserveTop ? { paddingTop: tour.reserveTop } : undefined}>
       {/* ── Filters ── */}
       <div className="stat-filters ob-stat-content">
-        <p className="section-sub stat-filters-sub">Filter by group, conditionals, reminders, pickers, and time below. This tab is best used in conjunction with the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>, so that you can view the statistics here in order to see if your created items' numbers line up with your expectations and then tweak them in the Data tab if they do not.</p>
         {existingGroups.length > 1 && (
           <div className="stat-filter-row">
             <span className="stat-filter-lbl">Group</span>
