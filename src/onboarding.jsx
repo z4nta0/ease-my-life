@@ -323,14 +323,14 @@ function Onboarding({ state, actions, active, selectTab }) {
       title: 'Your first todo list!',
       body: <>This is what a typical <b>todo list</b> will look like once you set up your own pickers. The app will guide you through the picker creation process later on. Let’s move on for now.</>,
       primary: 'Next', back: true,
-      run: () => { markAllPicksDone(); setStep(3); },
+      run: () => { markAllPicksDone(); selectTab('picker'); setStep(3); },
     },
     {
       sel: '[data-tab="picker"]', place: 'below',
       title: 'This is the Pickers page',
       body: <>The <b>Pickers</b> page is where new pickers and their items can be created. You can also run any picker to generate a task. Let’s explore this page now.</>,
       primary: 'Next', back: true,
-      run: () => { setStep(4); },
+      run: () => { selectTab('stats'); setStep(4); },
     },
     {
       sel: '[data-tab="stats"]', place: 'below',
