@@ -61,6 +61,7 @@ function defaultTask(p = {}) {
     lastDone: p.lastDone ?? null,
     skipUntil: p.skipUntil ?? null,
     createdAt: p.createdAt || isoToday(),
+    hidden: !!p.hidden,
   };
 }
 
@@ -146,9 +147,12 @@ function summary(task) {
 }
 
 // Reminders due today, in a stable order (one-time first, then newest-added).
+// Hidden reminders (see the store.jsx migrate() comment on the `hidden`
+// flag) are excluded here so every downstream consumer — Today, Stats,
+// streak reconciliation — never has to filter them out separately.
 function dueToday(tasks, date = new Date()) {
   return (tasks || [])
-    .filter((t) => isDueToday(t, date))
+    .filter((t) => !t.hidden && isDueToday(t, date))
     .sort((a, b) => {
       if (a.repeat === 'once' && b.repeat !== 'once') return -1;
       if (b.repeat === 'once' && a.repeat !== 'once') return 1;

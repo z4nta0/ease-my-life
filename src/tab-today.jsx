@@ -68,7 +68,7 @@ function groupEntries(state) {
       continue;
     }
     const picker = state.pickers.find((p) => p.id === e.pickerId);
-    if (!picker) continue;
+    if (!picker || picker.hidden) continue;
     const g = picker.group || 'Other';
     if (!byGroup.has(g)) byGroup.set(g, { name: g, entries: [] });
     byGroup.get(g).entries.push({ entry: e, picker });
@@ -683,7 +683,13 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   const groupByName = React.useMemo(() => {
     const m = {}; groups.forEach((g) => { m[g.name] = g; }); return m;
   }, [groups]);
-  const entries = state.today.entries;
+  // Entries belonging to a hidden picker (see the `hidden` flag in
+  // store.jsx's migrate()) are excluded from every count here, same as
+  // groupEntries() already excludes them from the rendered groups above.
+  const entries = React.useMemo(() => {
+    const hiddenPickerIds = new Set(state.pickers.filter((p) => p.hidden).map((p) => p.id));
+    return state.today.entries.filter((e) => !e.pickerId || !hiddenPickerIds.has(e.pickerId));
+  }, [state.today.entries, state.pickers]);
   // Manual reminders due today join the picker entries in the ring + rail
   // totals (they count toward completion + streak, but never toward Stats).
   // Visibility honors each type's weekend / holiday exclusions; the ring only
@@ -1247,7 +1253,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     const CAD = CADENCE;
     for (const pid of state.daily.pickerIds) {
       const picker = state.pickers.find((p) => p.id === pid);
-      if (!picker) continue;
+      if (!picker || picker.hidden) continue;
       if (Array.isArray(picker.daysOfWeek) && !picker.daysOfWeek.includes(dow)) continue;
       if (picker.skipHolidays && holidayToday) continue;
       // Phase B: Picker Cadence gate (early-out). Non-daily pickers surface at
@@ -1481,10 +1487,6 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   }, [blockOrder, newSlotsByGroup]);
   renderedOrderRef.current = genBlockOrder;
 
-  const obPickerDone = state.pickers.length > 0;
-  const obReminderDone = (state.tasks || []).length > 0;
-  const obGenDone = (state.today.entries || []).length > 0;
-  const obCount = (obPickerDone ? 1 : 0) + (obReminderDone ? 1 : 0) + (obGenDone ? 1 : 0);
   const obBus = useEmlTour ? useEmlTour() : {};
   // Used to also force-show while the tour's own step 0 was up (that step
   // anchored on this card) — see the "STASHED: create-a-picker tour content"
@@ -1508,6 +1510,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     const dow = now.getDay();
     const holiday = HOLIDAYS.holidayOn(state.holidays, now);
     return !state.pickers.some((p) => (
+      !p.hidden &&
       state.daily.pickerIds.includes(p.id) &&
       (!Array.isArray(p.daysOfWeek) || p.daysOfWeek.includes(dow)) &&
       !(p.skipHolidays && holiday)
@@ -1519,50 +1522,6 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     emlTour.set({ startCreate: { name: 'Chores', step: 1, focusName: true } });
     if (onNavTab) onNavTab('picker');
   };
-
-  // Get-started card lifecycle: once all 3 complete, pop the last check, hold an
-  // "All set!" beat, then collapse the card up-and-out and auto-dismiss so it
-  // never lingers fully-checked (and never re-shows on replay).
-  const [obCeleb, setObCeleb] = React.useState(false);   // playing the beat + collapse
-  const [obCollapse, setObCollapse] = React.useState(false); // height→0 phase
-  const obComplete = obCount === 3;
-  // Only celebrate a LIVE completion — the card must have been shown incomplete
-  // first. Prevents the beat+collapse from firing when the card mounts already
-  // complete (e.g. replay re-arm), which flashed the card for a frame.
-  const obWasIncomplete = React.useRef(false);
-  if (!ob.dismissed && !obComplete) obWasIncomplete.current = true;
-  // Stay mounted continuously until dismissed — never unmount on completion.
-  // Auto-hiding at 3/3 caused two problems: it unmounted the card mid-tour when
-  // a Reminder completed the list, and on the Done render it unmounted then
-  // remounted already-celebrating (popping in green "All set!" with no visible
-  // transition). Removal is owned solely by the celebrate→collapse→dismiss
-  // timers below, so the beat animates smoothly from the live "3 of 3" card.
-  // Hidden while the tour itself is up — it reappears once the tour ends
-  // (phase flips back to 'off') since ob.dismissed is untouched by any of this.
-  const obShowChecklist = !ob.dismissed && obBus.phase !== 'tour';
-  // Runs post-paint (plain effect, not layout) so the card first paints its live
-  // "Get started / 3 of 3" state, THEN transitions into the "All set!" beat —
-  // making the text+color change a visible transition rather than an instant
-  // pre-paint snap. Safe now that the card never unmounts on completion.
-  React.useEffect(() => {
-    if (ob.dismissed || !obComplete || obCeleb || !obWasIncomplete.current) return;
-    // Don't play the celebrate-then-collapse while the tour is still up — step 5
-    // lets the user add a Reminder, which completes the checklist mid-tour. Defer
-    // until the tour closes (obBus.phase flips off, re-running this effect); then
-    // it plays normally. Outside the tour it fires on-demand as before.
-    if (obBus.phase === 'tour') return;
-    // Small lead-in delay before the beat starts, so after Done (or after a
-    // post-tour Reminder completes the list) the user has a moment to shift
-    // focus to the card and actually watch the "Get started" → "All set!"
-    // transition play, instead of it firing the instant the UI settles.
-    const reduced = reduceMotion && reduceMotion();
-    const leadMs = reduced ? 150 : 400;
-    const holdMs = reduced ? 700 : 1050;
-    const t0 = setTimeout(() => setObCeleb(true), leadMs);
-    const t1 = setTimeout(() => setObCollapse(true), leadMs + holdMs);
-    const t2 = setTimeout(() => actions.setOnboarding({ dismissed: true }), leadMs + holdMs + (reduced ? 0 : 380));
-    return () => { clearTimeout(t0); clearTimeout(t1); clearTimeout(t2); };
-  }, [obComplete, ob.dismissed, obBus.phase]);
 
   return (
     <div className={`tab tab--today ${editMode ? 'is-editmode' : ''}`}>
@@ -1698,26 +1657,6 @@ function TabToday({ state, actions, onHome, onNavTab }) {
 
           <div className="today-groups" ref={cardsAreaRef}
                style={obBus.reserveTop ? { paddingTop: obBus.reserveTop } : undefined}>
-            {obShowChecklist && (
-              <div className={`ob-gsc ${obCeleb ? 'is-celebrating' : ''} ${obCollapse ? 'is-collapsing' : ''}`}>
-                <div className="ob-gsc-h">
-                  <b>{obCeleb ? 'All set!' : 'Get started'}</b>
-                  <span className="ob-gsc-prog">{obCeleb ? '✓' : `${obCount} of 3`}</span>
-                  {!obCeleb && <button type="button" className="ob-gsc-x" aria-label="Dismiss" onClick={() => actions.setOnboarding({ dismissed: true })}>×</button>}
-                </div>
-                <div className={`ob-gsc-task ${obPickerDone ? 'is-done' : ''}`}
-                     role={obPickerDone ? undefined : 'button'}
-                     onClick={obPickerDone ? undefined : () => onNavTab && onNavTab('picker')}>
-                  <span className="ob-gsc-tb" /><span>Create your first picker</span>{!obPickerDone && <span className="ob-gsc-arr">›</span>}
-                </div>
-                <div className={`ob-gsc-task ${obReminderDone ? 'is-done' : ''}`}>
-                  <span className="ob-gsc-tb" /><span>Add a reminder</span>
-                </div>
-                <div className={`ob-gsc-task ${obGenDone ? 'is-done' : ''}`}>
-                  <span className="ob-gsc-tb" /><span>Generate your day</span>
-                </div>
-              </div>
-            )}
             {celebRect && particles.length > 0 && (completionStyle === 'confetti' || completionStyle === 'sparkle') && createPortal(
               // Portaled straight to <body> — the tab-switch fade wrapper
               // (.tab-fade) keeps a resolved (identity) transform for the

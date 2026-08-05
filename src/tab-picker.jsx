@@ -1149,7 +1149,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
 }
 
 export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
-  const [activeId, setActiveId] = React.useState(state.pickers[0]?.id);
+  const [activeId, setActiveId] = React.useState(state.pickers.find((p) => !p.hidden)?.id);
   const [creating, setCreating] = React.useState(false);
   const [groupFilter, setGroupFilter] = React.useState('all');
   const active = state.pickers.find((p) => p.id === activeId);
@@ -1181,15 +1181,14 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   // and as the group filter bar above the picker strip.
   const existingGroups = React.useMemo(() => {
     const seen = [];
-    for (const p of state.pickers) if (p.group && !seen.includes(p.group)) seen.push(p.group);
+    for (const p of state.pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
     return seen;
   }, [state.pickers]);
 
   // The picker strip is scoped to the selected group ("all" shows everything).
+  // Hidden pickers (see store.jsx's `hidden` flag) never appear here.
   const visiblePickers = React.useMemo(() => (
-    groupFilter === 'all'
-      ? state.pickers
-      : state.pickers.filter((p) => p.group === groupFilter)
+    state.pickers.filter((p) => !p.hidden && (groupFilter === 'all' || p.group === groupFilter))
   ), [state.pickers, groupFilter]);
 
   // Keep the selection coherent with the filter: if the active picker falls
@@ -1284,12 +1283,12 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
           <div className="picker-groups" ref={groupsRef} role="tablist" aria-label="Filter pickers by group">
             <button type="button" role="tab" aria-selected={groupFilter === 'all'}
                     className={`picker-group-pill ${groupFilter === 'all' ? 'is-on' : ''}`}
-                    onClick={() => { setGroupFilter('all'); setCreating(false); setActiveId(state.pickers[0]?.id); }}>
+                    onClick={() => { setGroupFilter('all'); setCreating(false); setActiveId(state.pickers.find((p) => !p.hidden)?.id); }}>
               All
-              <span className="picker-group-count">{state.pickers.length}</span>
+              <span className="picker-group-count">{state.pickers.filter((p) => !p.hidden).length}</span>
             </button>
             {existingGroups.map((g) => {
-              const n = state.pickers.filter((p) => p.group === g).length;
+              const n = state.pickers.filter((p) => p.group === g && !p.hidden).length;
               return (
                 <button key={g} type="button" role="tab" aria-selected={groupFilter === g}
                         className={`picker-group-pill ${groupFilter === g ? 'is-on' : ''}`}

@@ -178,6 +178,16 @@ function TabStats({ state, onHome, onNavTab }) {
 
   const log = state.pickLog || [];
   const pickers = state.pickers || [];
+  // Hidden pickers/tasks (see store.jsx's `hidden` flag) keep their history
+  // rows in pickLog/reminderLog/reminderSkipLog — nothing here is deleted —
+  // but every rollup below excludes them by id so the numbers reflect only
+  // what's currently visible, same as Today/Pickers/Data.
+  const hiddenPickerIds = React.useMemo(() => (
+    new Set(pickers.filter((p) => p.hidden).map((p) => p.id))
+  ), [pickers]);
+  const hiddenTaskIds = React.useMemo(() => (
+    new Set((state.tasks || []).filter((t) => t.hidden).map((t) => t.id))
+  ), [state.tasks]);
 
   // ── Conditionals: definitions + trigger history, summarized per conditional.
   const conditionalDefs = state.conditionals || [];
@@ -244,14 +254,15 @@ function TabStats({ state, onHome, onNavTab }) {
   // narrows the "Show" picker row below it (mirrors the Pickers tab).
   const existingGroups = React.useMemo(() => {
     const seen = [];
-    for (const p of pickers) if (p.group && !seen.includes(p.group)) seen.push(p.group);
+    for (const p of pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
     return seen;
   }, [pickers]);
   // statGroup only scopes which pickers appear in the Show row; it never filters
-  // the stats itself. 'all' also lets the All + Reminders options show.
+  // the stats itself. 'all' also lets the All + Reminders options show. Hidden
+  // pickers (see store.jsx's `hidden` flag) never appear here.
   const [statGroup, setStatGroup] = React.useState('all');
   const visiblePickers = React.useMemo(() => (
-    statGroup === 'all' ? pickers : pickers.filter((p) => p.group === statGroup)
+    pickers.filter((p) => !p.hidden && (statGroup === 'all' || p.group === statGroup))
   ), [pickers, statGroup]);
 
   // Which reminder types opt into Stats. If none, the Reminders scope is hidden.
@@ -314,9 +325,10 @@ function TabStats({ state, onHome, onNavTab }) {
     if (isReminders) return [];
     return log.filter((r) =>
       !r.outcome &&
+      !hiddenPickerIds.has(r.pickerId) &&
       (scope === 'all' || r.pickerId === scope) &&
       (!cutoffIso || r.date >= cutoffIso));
-  }, [log, scope, cutoffIso, isReminders]);
+  }, [log, scope, cutoffIso, isReminders, hiddenPickerIds]);
 
   // Per-item count of re-rolled-away (rejected) rows, range + scope aware.
   const rejectedById = React.useMemo(() => {
@@ -324,12 +336,13 @@ function TabStats({ state, onHome, onNavTab }) {
     if (isReminders) return m;
     for (const r of log) {
       if (r.outcome !== 'rejected') continue;
+      if (hiddenPickerIds.has(r.pickerId)) continue;
       if (scope !== 'all' && r.pickerId !== scope) continue;
       if (cutoffIso && r.date < cutoffIso) continue;
       m.set(r.itemId, (m.get(r.itemId) || 0) + 1);
     }
     return m;
-  }, [log, scope, cutoffIso, isReminders]);
+  }, [log, scope, cutoffIso, isReminders, hiddenPickerIds]);
 
   // Per-item count of skipped rows, range + scope aware.
   const skippedById = React.useMemo(() => {
@@ -337,19 +350,21 @@ function TabStats({ state, onHome, onNavTab }) {
     if (isReminders) return m;
     for (const r of log) {
       if (r.outcome !== 'skipped') continue;
+      if (hiddenPickerIds.has(r.pickerId)) continue;
       if (scope !== 'all' && r.pickerId !== scope) continue;
       if (cutoffIso && r.date < cutoffIso) continue;
       m.set(r.itemId, (m.get(r.itemId) || 0) + 1);
     }
     return m;
-  }, [log, scope, cutoffIso, isReminders]);
+  }, [log, scope, cutoffIso, isReminders, hiddenPickerIds]);
 
   // ── Reminder rows for the active range ────────────────────────────────────
   const remRows = React.useMemo(() => (
     (state.reminderLog || [])
       .filter((r) => enabledTypes.includes(r.type))
+      .filter((r) => !hiddenTaskIds.has(r.taskId))
       .filter((r) => !cutoffIso || statIso(new Date(r.completedAt)) >= cutoffIso)
-  ), [state.reminderLog, enabledTypes.join(','), cutoffIso]);
+  ), [state.reminderLog, enabledTypes.join(','), cutoffIso, hiddenTaskIds]);
 
   // Per-day aggregation. Picks → { done, total, items:[{name,done}] };
   // reminders → { done:count, total:count, items:[names] }.
@@ -453,12 +468,12 @@ function TabStats({ state, onHome, onNavTab }) {
 
   const cold = React.useMemo(() => {
     const items = (state.items || []).filter((it) =>
-      (scope === 'all' || it.pickerId === scope) && !it.vacation);
+      !hiddenPickerIds.has(it.pickerId) && (scope === 'all' || it.pickerId === scope) && !it.vacation);
     return items
       .map((it) => ({ name: it.name, n: (countById.get(it.id) || {}).n || 0 }))
       .sort((a, b) => a.n - b.n || a.name.localeCompare(b.name))
       .slice(0, 5);
-  }, [state.items, scope, countById]);
+  }, [state.items, scope, countById, hiddenPickerIds]);
 
   // Single-picker breakdown — EVERY item in the picker (incl. zero-pick and
   // vacation), with all per-item metrics on one object. The "Pick breakdown"
@@ -796,6 +811,7 @@ function TabStats({ state, onHome, onNavTab }) {
     const m = new Map();
     for (const r of (state.reminderSkipLog || [])) {
       if (!enabledTypes.includes(r.type)) continue;
+      if (hiddenTaskIds.has(r.taskId)) continue;
       if (cutoffIso && statIso(new Date(r.skippedAt)) < cutoffIso) continue;
       const e = m.get(r.taskId) || { name: r.name, type: r.type, n: 0 };
       e.n++; e.name = r.name; e.type = r.type;
@@ -803,7 +819,7 @@ function TabStats({ state, onHome, onNavTab }) {
     }
     const dir = remBdSort === 'desc' ? -1 : 1;
     return [...m.values()].sort((a, b) => dir * (a.n - b.n) || a.name.localeCompare(b.name));
-  }, [isReminders, state.reminderSkipLog, enabledTypes.join(','), cutoffIso, remBdSort]);
+  }, [isReminders, state.reminderSkipLog, enabledTypes.join(','), cutoffIso, remBdSort, hiddenTaskIds]);
 
   // Active list for the card + paging. pageSize 10 like Gmail.
   const REM_PAGE_SIZE = 10;
@@ -880,10 +896,10 @@ function TabStats({ state, onHome, onNavTab }) {
                       className={`picker-group-pill ${statGroup === 'all' ? 'is-on' : ''}`}
                       onClick={() => { setStatGroup('all'); setScope('all'); }}>
                 All
-                <span className="picker-group-count">{pickers.length}</span>
+                <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
               </button>
               {existingGroups.map((g) => {
-                const n = pickers.filter((p) => p.group === g).length;
+                const n = pickers.filter((p) => p.group === g && !p.hidden).length;
                 return (
                   <button key={g} type="button" role="tab" aria-selected={statGroup === g}
                           className={`picker-group-pill ${statGroup === g ? 'is-on' : ''}`}

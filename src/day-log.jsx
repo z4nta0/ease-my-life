@@ -255,7 +255,7 @@ function CondSection({ state, pickersInGroup, day }) {
       <div className="dl-table">
         <TableHead first="Conditional" />
         {conds.map((c) => {
-          const attached = state.pickers.filter((p) => p.conditionalId === c.id).map((p) => p.name);
+          const attached = state.pickers.filter((p) => p.conditionalId === c.id && !p.hidden).map((p) => p.name);
           const trig = !!(c.active !== false && c.triggered);
           const hv = CONDITIONALS.isValue(c.mode);
           const snap = genConds[c.id];
@@ -293,7 +293,7 @@ function CondSection({ state, pickersInGroup, day }) {
 // ── The whole group log panel (opens inline under the group header) ──
 function GroupLog({ state, group, onClose }) {
   const day = isoDay();
-  const inGroup = state.pickers.filter((p) => (p.group || 'Other') === group);
+  const inGroup = state.pickers.filter((p) => (p.group || 'Other') === group && !p.hidden);
   const order = (state.pickerOrder && state.pickerOrder[group]) || [];
   const pickers = inGroup.slice().sort((a, b) => {
     const ia = order.indexOf(a.id), ib = order.indexOf(b.id);
@@ -348,7 +348,7 @@ function RemindersLog({ state, onClose }) {
   // itself frozen to the last generate() until the next one runs.
   const anchor = TASKS.anchorDate(state.today && state.today.generatedAt);
   const day = isoDay(anchor);
-  const tasks = state.tasks || [];
+  const tasks = (state.tasks || []).filter((t) => !t.hidden);
   const visible = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays, anchor);
   const visibleIds = new Set(visible.map((t) => t.id));
   const skippedIds = new Set((state.reminderSkipLog || [])

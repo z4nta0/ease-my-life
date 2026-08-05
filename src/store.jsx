@@ -360,6 +360,14 @@ function migrate(s) {
   if (s && Array.isArray(s.tasks) && TASKS) {
     s.tasks = s.tasks.filter((t) => !TASKS.isStaleOnce(t));
   }
+  // Hidden flag (added later): lets a picker/task be kept — items, weights,
+  // and all its pickLog/reminderLog history intact — while being excluded
+  // from every list, count, and the daily generator. Used to tuck the
+  // Welcome Tour's sample pickers/reminders out of sight once the tour ends,
+  // without deleting the data future mini-tours will reuse.
+  if (s && Array.isArray(s.tasks)) {
+    s.tasks = s.tasks.map((t) => (typeof t.hidden === 'boolean' ? t : { ...t, hidden: false }));
+  }
   // Per-type reminder participation options (added later). Normalize so partial
   // or absent state gets the full default switch set.
   if (s && TASKS) s.reminderOpts = TASKS.normalizeOpts(s.reminderOpts);
@@ -450,6 +458,8 @@ function migrate(s) {
       // Picker Cadence (added later): surfacing anchor + display unit. Backfill
       // to 'daily' (original behavior) with sensible default anchors.
       if (!CADENCE.isCadence(np.cadence)) Object.assign(np, CADENCE.normalize(np));
+      // Hidden flag (added later) — see the tasks backfill above for why.
+      if (typeof np.hidden !== 'boolean') np.hidden = false;
       return np;
     });
   }
@@ -545,7 +555,11 @@ function flushState(s) {
 // streak count against whether it was already claimed (so toggling the last
 // done item back off un-claims, and never double-counts).
 function reconcileStreak(s, entries, tasks) {
-  const entriesList = entries || [];
+  // Entries belonging to a hidden picker (see the `hidden` flag backfilled
+  // in migrate()) don't count toward — or block — the streak, same as if
+  // that picker didn't exist.
+  const hiddenPickerIds = new Set((s.pickers || []).filter((p) => p.hidden).map((p) => p.id));
+  const entriesList = (entries || []).filter((e) => !e.pickerId || !hiddenPickerIds.has(e.pickerId));
   // Only reminders that are visible today AND whose type counts toward the
   // streak participate. (Skipped picker entries are already removed from the
   // entries list, so they can't block the day; re-rolled entries keep one live
@@ -1017,6 +1031,7 @@ function useStore(opts) {
         ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay }),
         // Optional conditional gate (existing id, or the freshly-made one).
         conditionalId: madeCond ? madeCond.id : (conditionalId || null),
+        hidden: false,
       };
       setState((s) => {
         // Tidy + de-duplicate the picker name against existing pickers (same

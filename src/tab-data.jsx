@@ -638,7 +638,7 @@ function ConditionalsManager({ state, actions }) {
   const [pending, setPending] = React.useState(null);
   // Row currently playing its collapse-shut animation before removal (delete).
   const [closingId, setClosingId] = React.useState(null);
-  const usingCount = (cid) => pickers.filter((p) => p.conditionalId === cid).length;
+  const usingCount = (cid) => pickers.filter((p) => p.conditionalId === cid && !p.hidden).length;
   // Section collapse — same persisted mechanism + chevron as the picker cards.
   // Defaults COLLAPSED: absent = collapsed, explicit false = expanded.
   const collapsedMap = (state.ui && state.ui.controlsCollapsed) || {};
@@ -793,16 +793,17 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // narrows the picker box row below it (mirrors the Pickers + Stats tabs).
   const existingGroups = React.useMemo(() => {
     const seen = [];
-    for (const p of pickers) if (p.group && !seen.includes(p.group)) seen.push(p.group);
+    for (const p of pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
     return seen;
   }, [pickers]);
   const visiblePickers = React.useMemo(() => (
     pickers.filter((p) =>
+      !p.hidden &&
       (statGroup === 'all' || p.group === statGroup) &&
       (condFilter === 'all' || p.conditionalId === condFilter))
   ), [pickers, statGroup, condFilter]);
   const conditionals = state.conditionals || [];
-  const condPickerCount = (cid) => pickers.filter((p) => p.conditionalId === cid).length;
+  const condPickerCount = (cid) => pickers.filter((p) => p.conditionalId === cid && !p.hidden).length;
 
   // Keep scope coherent with the group filter: 'all' is always valid; a specific
   // picker scope is only valid if that picker is in the current group. When it
@@ -919,10 +920,10 @@ function TabData({ state, actions, onHome, onNavTab }) {
                       className={`picker-group-pill ${statGroup === 'all' ? 'is-on' : ''}`}
                       onClick={() => { setStatGroup('all'); setScope('all'); }}>
                 All
-                <span className="picker-group-count">{pickers.length}</span>
+                <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
               </button>
               {existingGroups.map((g) => {
-                const n = pickers.filter((p) => p.group === g).length;
+                const n = pickers.filter((p) => p.group === g && !p.hidden).length;
                 return (
                   <button key={g} type="button" role="tab" aria-selected={statGroup === g}
                           className={`picker-group-pill ${statGroup === g ? 'is-on' : ''}`}

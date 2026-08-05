@@ -3393,27 +3393,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .ob-coach--up::before{top:-8px;border-right:0;border-bottom:0}
 .ob-coach--down::before{bottom:-8px;border-left:0;border-top:0}
 
-.ob-gsc{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);padding:14px 15px 9px;margin-bottom:16px}
-.ob-gsc.is-celebrating{transform:scale(0.99);transition:transform .16s ease}
-.ob-gsc-h b,.ob-gsc-prog{transition:color .28s ease}
-.ob-gsc.is-celebrating .ob-gsc-prog{color:oklch(0.62 0.15 155);font-size:14px;font-weight:700}
-.ob-gsc.is-celebrating .ob-gsc-h b{color:oklch(0.62 0.15 155)}
-.ob-gsc.is-collapsing{overflow:hidden;transform-origin:top center;animation:obGscOut .38s cubic-bezier(.4,0,.5,1) forwards}
-@keyframes obGscOut{from{opacity:1;max-height:240px;transform:scaleY(1);margin-bottom:16px;padding-top:14px;padding-bottom:9px}to{opacity:0;max-height:0;transform:scaleY(0.9);margin-bottom:0;padding-top:0;padding-bottom:0;border-width:0}}
-@media (prefers-reduced-motion:reduce){.ob-gsc.is-celebrating{transform:none;transition:none}.ob-gsc.is-collapsing{animation:none;opacity:0;max-height:0;margin-bottom:0;padding:0;border-width:0;overflow:hidden}}
-.ob-gsc-h{display:flex;align-items:center;gap:10px;margin-bottom:6px}
-.ob-gsc-h b{font-size:14px;font-weight:600;flex:1}
-.ob-gsc-prog{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
-.ob-gsc-x{width:24px;height:24px;border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;cursor:pointer;border-radius:6px}
-.ob-gsc-x:hover{background:var(--hover,oklch(0 0 0/0.05));color:var(--text)}
-.ob-gsc-task{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:0.5px solid var(--border)}
-.ob-gsc-task[role=button]{cursor:pointer}
-.ob-gsc-task .ob-gsc-tb{width:19px;height:19px;border-radius:50%;border:1.6px solid var(--border);flex:0 0 auto;position:relative}
-.ob-gsc-task.is-done .ob-gsc-tb{background:oklch(0.62 0.15 155);border-color:oklch(0.62 0.15 155)}
-.ob-gsc-task.is-done .ob-gsc-tb::after{content:"";position:absolute;left:5.5px;top:2.5px;width:4.5px;height:8.5px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(43deg)}
-.ob-gsc-task span:not(.ob-gsc-tb):not(.ob-gsc-arr){font-size:13.5px;flex:1}
-.ob-gsc-task.is-done span{color:var(--muted);text-decoration:line-through}
-.ob-gsc-arr{color:var(--muted);font-size:16px}
 .ob-create{border:1px dashed oklch(from var(--accent) l c h/0.5);background:var(--accent-soft);border-radius:var(--r-md);padding:18px 16px;text-align:center;margin-bottom:16px;display:flex;flex-direction:column;align-items:center;gap:6px}
 .ob-create-i{width:40px;height:40px;border-radius:11px;background:var(--surface);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent)}
 .ob-create b{font-size:15px;font-weight:600}

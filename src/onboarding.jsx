@@ -3,6 +3,11 @@ import { createPortal } from 'react-dom';
 import { OB_EXAMPLE, OB_EXTRA_PICKERS, OB_TASKS, hydrateOnboardingStats } from './onboarding-seed-data.js';
 import { reduceMotion } from './ui.jsx';
 
+// Ids of every sample picker seeded for the tour (see the seeding effect in
+// Onboarding()) — used at tour end to hide them (not delete — the mini-tours
+// still need this exact data) via actions.updatePicker/updateTask.
+const OB_SAMPLE_PICKER_IDS = [OB_EXAMPLE, ...OB_EXTRA_PICKERS].map((p) => p.id);
+
 // Onboarding: first-run welcome modal + a spotlight tour that actually drives
 // the app (each coach card's primary button performs the step, so the user
 // can do it themselves or let the tour do it).
@@ -351,7 +356,16 @@ function Onboarding({ state, actions, active, selectTab }) {
       title: 'This is the Settings page',
       body: <>The <b>Settings</b> page is where you will be able to customize various aspects of the app, install the app and export/import your data. There will be a tutorial later on to explain this in more detail. Let’s move on for now.</>,
       primary: 'Done', back: true,
-      run: () => { finish(); },
+      run: () => {
+        // Tuck the sample pickers/reminders out of sight — not deleted, the
+        // per-page mini-tours will reuse this exact data (and its precomputed
+        // Stats history) later. Done before selectTab so Today never flashes
+        // the sample content on its way back into view.
+        OB_SAMPLE_PICKER_IDS.forEach((id) => actions.updatePicker(id, { hidden: true }));
+        OB_TASKS.forEach((t) => actions.updateTask(t.id, { hidden: true }));
+        selectTab('today');
+        finish();
+      },
     },
   ];
   const cur = phase === 'tour' ? steps[step] : null;

@@ -781,7 +781,7 @@ function ReminderManager({ state, actions, hidden }) {
   const justAddedRef = React.useRef(null);
   // Id of a just-inserted reminder row, so it plays the slide-in entrance once.
   const [insertId, setInsertId] = React.useState(null);
-  const tasks = state.tasks || [];
+  const tasks = (state.tasks || []).filter((t) => !t.hidden);
   const opts = TASKS.normalizeOpts(state.reminderOpts);
   // Main section collapse persists (like the pickers) so it survives tab
   // switches. Reserved key '__reminders_main'; defaults COLLAPSED, so absent =
