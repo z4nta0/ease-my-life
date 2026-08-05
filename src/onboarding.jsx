@@ -336,6 +336,13 @@ function Onboarding({ state, actions, active, selectTab }) {
       sel: '.ob-picker-content', place: 'below',
       title: 'Pickers',
       body: <>You can find all of your existing pickers here, as well as <b>create new pickers</b>. You can also select a picker and have it randomly select a task. We will explore this page later on in more detail. Let’s move on for now.</>,
+      primary: 'Next', back: true,
+      run: () => { setStep(5); },
+    },
+    {
+      sel: '[data-tab="stats"]', place: 'below',
+      title: 'This is the Stats page',
+      body: <>The <b>Stats</b> page is where you can find a breakdown of all the statistics associated with a given picker and its items. Let’s explore this page now.</>,
       primary: 'Done', back: true,
       run: () => { finish(); },
     },
