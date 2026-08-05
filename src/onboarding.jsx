@@ -343,6 +343,13 @@ function Onboarding({ state, actions, active, selectTab }) {
       sel: '[data-tab="data"]', place: 'below',
       title: 'This is the Data page',
       body: <>The <b>Data</b> page is where you will be able to view and edit all your reminders, pickers and their items. There will be a tutorial later on to explain this in more detail. Let’s move on for now.</>,
+      primary: 'Next', back: true,
+      run: () => { selectTab('settings'); setStep(6); },
+    },
+    {
+      sel: '[data-tab="settings"]', place: 'below',
+      title: 'This is the Settings page',
+      body: <>The <b>Settings</b> page is where you will be able to customize various aspects of the app, install the app and export/import your data. There will be a tutorial later on to explain this in more detail. Let’s move on for now.</>,
       primary: 'Done', back: true,
       run: () => { finish(); },
     },
