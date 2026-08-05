@@ -3361,7 +3361,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .ob-coach::before{content:"";position:absolute;width:14px;height:14px;background:var(--surface);border:0.5px solid var(--border);transform:rotate(45deg);left:var(--ob-ax,28px)}
 .ob-coach--up::before{top:-8px;border-right:0;border-bottom:0}
 .ob-coach--down::before{bottom:-8px;border-left:0;border-top:0}
-.ob-coach--none::before{display:none}
 
 .ob-gsc{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);padding:14px 15px 9px;margin-bottom:16px}
 .ob-gsc.is-celebrating{transform:scale(0.99);transition:transform .16s ease}

@@ -548,6 +548,11 @@ function buildConditionalLog() {
 
 export const SEED = buildSeed;
 
+// Exported for reuse by scripts/build-onboarding-stats.mjs, which precomputes
+// a similar ~1yr pick-log history for the Welcome Tour's sample pickers —
+// same simulation, different (much smaller) picker/item list.
+export { weightedPick, seedIsoDay, buildPickLog };
+
 // Clean state — what a brand-new user sees: no pickers, no items, no reminders,
 // and every app setting at its default. Reset restores exactly this (NOT the
 // sample data, which is only for development/first-run demoing).

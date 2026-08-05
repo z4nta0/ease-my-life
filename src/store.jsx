@@ -963,7 +963,7 @@ function useStore(opts) {
     // easeMin/easeMax is just a fallback span. Returns the new picker id.
     // Initial drift `value` depends on mode — ease-down items start "charged"
     // at the threshold; else 0.
-    addPicker: ({ name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay }) => {
+    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay }) => {
       // First picker = the first data worth protecting from eviction. Ask the
       // browser for persistent storage now rather than on a cold first load,
       // where a denial would be sticky for the session.
@@ -971,12 +971,15 @@ function useStore(opts) {
         const cur = latestRef.current;
         if (PWA && cur && (cur.pickers || []).length === 0) PWA.noteFirstPicker();
       } catch (e) {}
-      const pid = 'pkr_' + Math.random().toString(36).slice(2, 8);
+      // An explicit id (onboarding's sample pickers only, so their ids match
+      // the ones baked into the precomputed Stats history) wins; every other
+      // caller gets a fresh random one as before.
+      const pid = id || ('pkr_' + Math.random().toString(36).slice(2, 8));
       const initialValue = mode === 'ease-down' ? 100 : 0;
       const isEase = mode === 'ease-up' || mode === 'ease-down';
       const isDown = mode === 'ease-down';
       const newItems = (items || []).map((it) => ({
-        id: 'it_' + Math.random().toString(36).slice(2, 8),
+        id: it.id || ('it_' + Math.random().toString(36).slice(2, 8)),
         name: it.name, pickerId: pid,
         // Ease-down: every item starts at fairness-weight 1 (system-managed), so
         // the first pick is uniform; user-supplied weights don't apply to it.
@@ -1036,6 +1039,18 @@ function useStore(opts) {
       });
       return pid;
     },
+
+    // Merges precomputed, already-hydrated history rows into state — used
+    // only by the Welcome Tour's onboarding seeding, to backfill Stats for
+    // the sample pickers/reminders without ~1yr of rows needing to be
+    // computed live. Rows must already be full pickLog / reminderLog /
+    // reminderSkipLog row shapes (id/date/completedAt etc. filled in).
+    seedHistory: ({ pickLog, reminderLog, reminderSkipLog }) => setState((s) => ({
+      ...s,
+      pickLog: [...(pickLog || []), ...(s.pickLog || [])],
+      reminderLog: [...(reminderLog || []), ...(s.reminderLog || [])],
+      reminderSkipLog: [...(reminderSkipLog || []), ...(s.reminderSkipLog || [])],
+    })),
 
     removeItem: (id) => setState((s) => {
       const items = s.items.filter((it) => it.id !== id);

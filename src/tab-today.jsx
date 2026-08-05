@@ -1696,7 +1696,8 @@ function TabToday({ state, actions, onHome, onNavTab }) {
             </div>
           </aside>
 
-          <div className="today-groups" ref={cardsAreaRef}>
+          <div className="today-groups" ref={cardsAreaRef}
+               style={obBus.reserveTop ? { paddingTop: obBus.reserveTop } : undefined}>
             {obShowChecklist && (
               <div className={`ob-gsc ${obCeleb ? 'is-celebrating' : ''} ${obCollapse ? 'is-collapsing' : ''}`}>
                 <div className="ob-gsc-h">
