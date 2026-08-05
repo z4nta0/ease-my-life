@@ -343,6 +343,13 @@ function Onboarding({ state, actions, active, selectTab }) {
       sel: '[data-tab="stats"]', place: 'below',
       title: 'This is the Stats page',
       body: <>The <b>Stats</b> page is where you can find a breakdown of all the statistics associated with a given picker and its items. Let’s explore this page now.</>,
+      primary: 'Next', back: true,
+      run: () => { selectTab('stats'); setStep(6); },
+    },
+    {
+      sel: '.ob-stat-content', place: 'below',
+      title: 'Stats',
+      body: <>You can find all of the relevant <b>statistics</b> for pickers and their items here. We will explore this page in more detail later, but suffice it to say that if you use the app for any length of time then this page will be extremely helpful. Let’s move on for now.</>,
       primary: 'Done', back: true,
       run: () => { finish(); },
     },
@@ -425,7 +432,7 @@ function Onboarding({ state, actions, active, selectTab }) {
       // highlighted content starts right at the top of the page anyway, so
       // scroll all the way up rather than just nudging it into view — keeps
       // everything visible from the top instead of opening mid-scroll.
-      if (step === 2 || step === 4) {
+      if (step === 2 || step === 4 || step === 6) {
         if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo(0, 0);
         else sc.scrollTop = 0;
         return;

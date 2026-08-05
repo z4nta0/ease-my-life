@@ -1,5 +1,6 @@
 import React from 'react';
 import { CADENCE } from './cadence.js';
+import { useEmlTour } from './onboarding.jsx';
 import { MODES } from './seed.js';
 import { TASKS } from './tasks.js';
 import { Card, Icon, Pill } from './ui.jsx';
@@ -122,6 +123,10 @@ function Pager({ page, pageSize, total, onChange, unit = 'items', alwaysShow = f
 }
 
 function TabStats({ state, onHome, onNavTab }) {
+  // Welcome Tour: reserves top-space above the page content when its own
+  // coach card doesn't fit above/below the highlighted area — see the
+  // reserve-space effect in onboarding.jsx (same mechanism as the Pickers tab).
+  const tour = useEmlTour ? useEmlTour() : { reserveTop: 0 };
   // scope: 'all' | <pickerId> | 'reminders'
   const [scope, setScope] = React.useState('all');
   const [range, setRange] = React.useState('all');
@@ -863,8 +868,9 @@ function TabStats({ state, onHome, onNavTab }) {
         </div>
       </header>
 
+      <div className="stat-body-wrap" style={tour.reserveTop ? { paddingTop: tour.reserveTop } : undefined}>
       {/* ── Filters ── */}
-      <div className="stat-filters">
+      <div className="stat-filters ob-stat-content">
         <p className="section-sub stat-filters-sub">Filter by group, conditionals, reminders, pickers, and time below. This tab is best used in conjunction with the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>, so that you can view the statistics here in order to see if your created items' numbers line up with your expectations and then tweak them in the Data tab if they do not.</p>
         {existingGroups.length > 1 && (
           <div className="stat-filter-row">
@@ -945,7 +951,7 @@ function TabStats({ state, onHome, onNavTab }) {
         </div>
       </div>
 
-      <div className="tab-fade stat-body" key={scope + '|' + range}>
+      <div className="tab-fade stat-body ob-stat-content" key={scope + '|' + range}>
       {/* ── Picker identity (single-picker scope) — mirrors the Pickers tab
           header: "Picker" + colored mode pill, then name, then the mode's
           description. ── */}
@@ -1492,6 +1498,7 @@ function TabStats({ state, onHome, onNavTab }) {
           ) : <div className="stat-empty">This picker has no items yet.</div>}
         </Card>
       )}
+      </div>
       </div>
     </div>
   );

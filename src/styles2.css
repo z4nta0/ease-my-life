@@ -655,6 +655,21 @@
 /* ─── Tab: Stats ─────────────────────────────────────────────────────────── */
 
 .tab--stats { display: flex; flex-direction: column; gap: 28px; }
+
+/* Wraps everything below the page header (filters and the stat-body grid) as
+   a single unit — mirrors .picker-body's role for the Pickers tab. Exists so
+   the Welcome Tour has a container to reserve top-space on (see onboarding.jsx's
+   reserve-space effect) without pushing the page header itself down too. The
+   tour's own highlight target is `.ob-stat-content` on this element's two
+   children, NOT this element — highlighting .stat-body-wrap itself would
+   include its own reserved padding as empty space at the top of the spotlight. */
+.stat-body-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
 /* Cards now live inside the .tab-fade wrapper, so the flex gap above can't reach
    them — lay the wrapper out as a full-width grid with its own row gap. */
 .stat-body { display: grid; grid-template-columns: 1fr; grid-auto-rows: auto; gap: 28px; }
