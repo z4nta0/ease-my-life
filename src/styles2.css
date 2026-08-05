@@ -39,6 +39,22 @@
   gap: 28px;
 }
 
+/* Wraps everything below the page header (group filters, picker strip, and
+   the active picker's detail view / create form) as a single unit — mirrors
+   .tab--picker's own flex/gap so wrapping these two previously-direct
+   children doesn't change spacing. Exists specifically so the Welcome Tour
+   has a container to reserve top-space on (see onboarding.jsx's reserve-space
+   effect) without pushing the page header itself down too. The tour's own
+   highlight target is `.ob-picker-content` on this element's two children,
+   NOT this element — highlighting .picker-body itself would include its own
+   reserved padding as empty space at the top of the spotlight. */
+.picker-body {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
 .picker-tabs {
   display: flex; gap: 8px;
   overflow-x: auto;

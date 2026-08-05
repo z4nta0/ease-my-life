@@ -329,6 +329,13 @@ function Onboarding({ state, actions, active, selectTab }) {
       sel: '[data-tab="picker"]', place: 'below',
       title: 'This is the Pickers page',
       body: <>The <b>Pickers</b> page is where new pickers and their items can be created. You can also run any picker to generate a task. Let’s explore this page now.</>,
+      primary: 'Next', back: true,
+      run: () => { selectTab('picker'); setStep(4); },
+    },
+    {
+      sel: '.ob-picker-content', place: 'below',
+      title: 'Pickers',
+      body: <>You can find all of your existing pickers here, as well as <b>create new pickers</b>. You can also select a picker and have it randomly select a task. We will explore this page later on in more detail. Let’s move on for now.</>,
       primary: 'Done', back: true,
       run: () => { finish(); },
     },
@@ -407,11 +414,11 @@ function Onboarding({ state, actions, active, selectTab }) {
       const els = findTargets(cur.sel);
       if (!els.length) return;
       const sc = getScroller(els[0]);
-      // Landing on the review step: the highlighted list starts right at the
-      // top of the page anyway, so scroll all the way up rather than just
-      // nudging it into view — keeps every group visible from the top
-      // instead of opening mid-scroll.
-      if (step === 2) {
+      // Landing on the review step, or the Pickers-page content step: the
+      // highlighted content starts right at the top of the page anyway, so
+      // scroll all the way up rather than just nudging it into view — keeps
+      // everything visible from the top instead of opening mid-scroll.
+      if (step === 2 || step === 4) {
         if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo(0, 0);
         else sc.scrollTop = 0;
         return;
@@ -452,6 +459,27 @@ function Onboarding({ state, actions, active, selectTab }) {
       }
       return r;
     };
+    // Decide how much top-space (if any) THIS step's target needs reserved
+    // above it, ONCE — the very first time the target resolves (right after
+    // bring()'s scroll-to-top has settled, so the measurement is accurate) —
+    // rather than continuously on every frame. A continuous decision looks
+    // right on Today (its highlight is tall enough that scrolling never
+    // changes the verdict) but flips mid-scroll on shorter pages like
+    // Pickers: scrolling the header over the target can cross the "fits
+    // above" threshold WHILE THE USER IS STILL SCROLLING, jumping the layout
+    // under them. Deciding once and locking it for the step's duration reads
+    // like a person who sized up the space up front, not one who keeps
+    // rearranging things as you scroll.
+    let reserveDecided = false;
+    const decideReserve = (els) => {
+      if (reserveDecided) return;
+      reserveDecided = true;
+      const r = unionRect(els);
+      const vh = window.innerHeight;
+      if (vh - (r.top + r.height) >= OB_COACH_H + 16) return; // fits below — reserveTop is already 0
+      if (r.top - 16 - OB_COACH_H >= obSafeTop() + 12) return; // fits above — reserveTop is already 0
+      setReserveTop(OB_COACH_H + 40);
+    };
     // Reposition synchronously as scroll fires (before paint) so the highlight
     // doesn't trail the content the way a purely rAF-driven fixed box does.
     // Listen broadly (capture) so it fires for whichever element scrolls.
@@ -462,6 +490,7 @@ function Onboarding({ state, actions, active, selectTab }) {
       const els = findTargets(cur.sel);
       if (els.length) {
         if (!broughtRef) { broughtRef = true; bring(); } // scroll once the target actually exists
+        decideReserve(els);
         const r = place(els);
         setRect((p) => (p && Math.abs(p.top - r.top) < 0.5 && Math.abs(p.left - r.left) < 0.5 && p.width === r.width && p.height === r.height)
           ? p : { top: r.top, left: r.left, width: r.width, height: r.height });
@@ -474,42 +503,11 @@ function Onboarding({ state, actions, active, selectTab }) {
     return () => { cancelled = true; cancelAnimationFrame(raf); window.removeEventListener('scroll', onScroll, { capture: true }); };
   }, [phase, step, cur && cur.sel]);
 
-  // How much extra top-space (if any) the CURRENT target needs reserved
-  // above it for the coach to fit — 0 when it already fits below OR above
-  // as-is (the common cases; most targets, like the nav bar in step 0,
-  // aren't even inside the reservable container, so reserving for them
-  // would do nothing useful anyway). Only when NEITHER direction has room —
-  // e.g. a highlight spanning most of the page — is a fixed amount applied.
-  //
-  // Both checks use naturalTop/naturalBottom — `rect` MINUS whatever reserve
-  // is already applied — rather than `rect` itself, and this isn't optional
-  // polish: once reserve IS applied to an in-container target, its own
-  // purpose is to make the "fits above" check pass, so checking that against
-  // the already-reserved `rect` always says yes — which removes the
-  // reserve — which makes the target snap back to its unreserved position —
-  // which fails the check again — forever. Evaluating against the geometry
-  // BEFORE this component's own reserve touched it breaks that self-defeat.
-  // Fixed (not computed from exactly how much room is missing) because
-  // `rect` is real layout that the position-tracking effect above reads back
-  // every frame — a value derived from it would feed back into the next
-  // measurement too. The effect below also resets reserve to 0 on every step
-  // change, so a brand new target's very first measurement isn't muddied by
-  // a step it has nothing to do with.
-  const neededReserve = (() => {
-    if (phase !== 'tour' || !rect) return 0;
-    const vh = window.innerHeight;
-    const naturalTop = rect.top - reserveTop;
-    const naturalBottom = naturalTop + rect.height;
-    if (vh - naturalBottom >= OB_COACH_H + 16) return 0;
-    if (naturalTop - 16 - OB_COACH_H >= obSafeTop() + 12) return 0;
-    return OB_COACH_H + 40;
-  })();
-  React.useEffect(() => {
-    if (neededReserve !== reserveTop) setReserveTop(neededReserve);
-  }, [neededReserve]);
-  // Published on the bus so TabToday (which owns the actual scrollable list)
-  // can apply it — this component only overlays the page, it doesn't own
-  // that layout.
+  // Published on the bus so the active tab (which owns the actual scrollable
+  // content) can apply it — this component only overlays the page, it
+  // doesn't own that layout. reserveTop itself is set by the position-
+  // tracking effect above, decided ONCE per step rather than continuously —
+  // see the comment on decideReserve there for why.
   React.useEffect(() => { emlTour.set({ reserveTop }); }, [reserveTop]);
 
   if (phase === 'off') return null;

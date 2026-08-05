@@ -1276,7 +1276,8 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
         </div>
         <p className="section-sub picker-h-sub">Each picker has its own rule for how it chooses. Run a picker for a random item or just select a item manually and then push it to the Today tab. You can also create an entirely new picker here, along with new picker items but editing existing pickers and their items' settings must be done in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>.</p>
       </header>
-      <div className="stat-filters">
+      <div className="picker-body" style={tour.reserveTop ? { paddingTop: tour.reserveTop } : undefined}>
+      <div className="stat-filters ob-picker-content">
       {existingGroups.length > 1 && (
         <div className="stat-filter-row">
           <span className="stat-filter-lbl">Group</span>
@@ -1323,7 +1324,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
         </div>
       </div>
       </div>
-      <div className="tab-fade" key={creating ? '__new' : (activeId || '__none')}>
+      <div className="tab-fade ob-picker-content" key={creating ? '__new' : (activeId || '__none')}>
       {creating
         ? <NewPickerForm existingGroups={existingGroups}
                          initialGroup={groupFilter === 'all' ? '' : groupFilter}
@@ -1350,6 +1351,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
                            setTimeout(finish, 240);
                          }} />
         : (active && <PickerView picker={active} state={state} actions={actions} animStyle={animStyle} />)}
+      </div>
       </div>
     </div>
   );
