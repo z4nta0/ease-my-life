@@ -1,7 +1,8 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import {
-  OB_EXAMPLE, OB_EXTRA_PICKERS, OB_TASKS, OB_SAMPLE_PICKER_IDS, hydrateOnboardingStats,
+  OB_EXAMPLE, OB_EXTRA_PICKERS, OB_TASKS, OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS,
+  hydrateOnboardingStats,
 } from './onboarding-seed-data.js';
 import { reduceMotion } from './ui.jsx';
 
@@ -261,16 +262,12 @@ function Onboarding({ state, actions, active, selectTab }) {
   React.useEffect(() => {
     if (ob.welcomed || state.pickers.length > 0) return;
     [OB_EXAMPLE, ...OB_EXTRA_PICKERS].forEach((p) => actions.addPicker(p));
-    // A weekly sample reminder's daysOfWeek locks to whichever day the user
-    // is actually taking the tour on, rather than a fixed weekday — the
-    // precomputed history below doesn't care which weekday it lands on (it's
-    // stored as day-offsets from today, so it already silently matches
-    // whatever day this seeding runs on), so this just keeps the reminder's
-    // own schedule/card text consistent with that history.
-    const today = new Date().getDay();
-    OB_TASKS.forEach((t) => actions.addTask(
-      t.repeat === 'weekly' ? { ...t, daysOfWeek: [today] } : t
-    ));
+    // The sample reminders themselves are seeded later, at the Generate
+    // step (see that step's run() below) — unlike picker items, a reminder
+    // needs no "generate" to become visible on Today, so seeding it here
+    // would show it during Step 1, before the user has generated anything.
+    // The precomputed history seeded below is independent of whether the
+    // live task exists yet (log rows are denormalized), so it stays here.
     import('./onboarding-stats-data.js').then(({ ONBOARDING_STATS }) => {
       actions.seedHistory(hydrateOnboardingStats(ONBOARDING_STATS));
     });
@@ -324,7 +321,19 @@ function Onboarding({ state, actions, active, selectTab }) {
         // it to finish) — the next step's highlight covers the whole list,
         // group sections included, so it already has a real target to point
         // at while the list is still filling in.
-        if (!ob.dismissed && window.__emlGenerate) window.__emlGenerate();
+        if (!ob.dismissed) {
+          if (window.__emlGenerate) window.__emlGenerate();
+          // Sample reminders appear alongside the generated picks, not
+          // before — seeded here rather than on mount (see that effect's
+          // comment). Guarded by existence so navigating back to this step
+          // and forward again can't add them twice.
+          if (!state.tasks.some((t) => OB_SAMPLE_TASK_IDS.includes(t.id))) {
+            const today = new Date().getDay();
+            OB_TASKS.forEach((t) => actions.addTask(
+              t.repeat === 'weekly' ? { ...t, daysOfWeek: [today] } : t
+            ));
+          }
+        }
         setStep(2);
       },
     },
