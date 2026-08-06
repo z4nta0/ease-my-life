@@ -261,7 +261,16 @@ function Onboarding({ state, actions, active, selectTab }) {
   React.useEffect(() => {
     if (ob.welcomed || state.pickers.length > 0) return;
     [OB_EXAMPLE, ...OB_EXTRA_PICKERS].forEach((p) => actions.addPicker(p));
-    OB_TASKS.forEach((t) => actions.addTask(t));
+    // A weekly sample reminder's daysOfWeek locks to whichever day the user
+    // is actually taking the tour on, rather than a fixed weekday — the
+    // precomputed history below doesn't care which weekday it lands on (it's
+    // stored as day-offsets from today, so it already silently matches
+    // whatever day this seeding runs on), so this just keeps the reminder's
+    // own schedule/card text consistent with that history.
+    const today = new Date().getDay();
+    OB_TASKS.forEach((t) => actions.addTask(
+      t.repeat === 'weekly' ? { ...t, daysOfWeek: [today] } : t
+    ));
     import('./onboarding-stats-data.js').then(({ ONBOARDING_STATS }) => {
       actions.seedHistory(hydrateOnboardingStats(ONBOARDING_STATS));
     });

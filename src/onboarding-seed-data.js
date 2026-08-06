@@ -108,13 +108,19 @@ export const OB_SAMPLE_PICKER_IDS = [OB_EXAMPLE, ...OB_EXTRA_PICKERS].map((p) =>
 export const OB_SAMPLE_TASK_IDS = OB_TASKS.map((t) => t.id);
 
 // Override copy for each sample reminder's mini-tour launcher card — the
-// card's kicker + name read as an instruction ("Set up a ... reminder")
-// rather than the sample's own real name/schedule summary. Sample pickers
-// don't need an equivalent table: their card kicker is just the picker's own
-// name, and the card name is "Set up a {picker name} picker".
+// card's name always reads as an instruction ("Set up a ... reminder")
+// rather than the sample's own real name. `kicker` is an explicit override
+// only where the real schedule summary (TASKS.summary(task)) isn't what we
+// want shown — the one-time reminder wants "One-Time" instead of
+// TASKS.summary's "One-time". The recurring reminder has no kicker override
+// here on purpose: its daysOfWeek is set dynamically at seed time (see
+// onboarding.jsx) to whatever day the tour is taken on, so TASKS.summary
+// already produces the right "Every {Day}" text for it. Sample pickers don't
+// need an equivalent table: their card kicker is just the picker's own name,
+// and the card name is "Set up a {picker name} picker".
 export const OB_REMINDER_CARD_TEXT = {
   tk_ob_meds: { kicker: 'One-Time', name: 'Set up a one time reminder' },
-  tk_ob_trash: { kicker: 'Every Monday', name: 'Set up a recurring reminder' },
+  tk_ob_trash: { name: 'Set up a recurring reminder' },
 };
 
 // Same local-timezone-adjusted ISO day string as store.jsx's isoDay /

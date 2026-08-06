@@ -399,7 +399,11 @@ function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, on
   // it done — Play (or the card itself) starts the mini-tour; X permanently
   // discards the sample.
   if (isTutorial) {
-    const text = OB_REMINDER_CARD_TEXT[task.id] || { kicker: '', name: task.name };
+    const override = OB_REMINDER_CARD_TEXT[task.id] || {};
+    // No explicit kicker override → fall back to the real schedule summary
+    // (e.g. "Every Wednesday") so a recurring sample's card always matches
+    // whatever day it was actually seeded for.
+    const text = { kicker: override.kicker || TASKS.summary(task), name: override.name || task.name };
     const onRowClick = (e) => {
       if (e.target.closest('.today-card-actions')) return;
       onPlayTutorial('reminder', task.id);
