@@ -400,10 +400,18 @@ function migrate(s) {
   // state that lacks the field is treated as already welcomed/dismissed. Fresh
   // clean state sets welcomed:false explicitly to trigger the first-run flow.
   if (s && !s.onboarding) s.onboarding = { welcomed: true, dismissed: true };
-  // Completed page-exploration tours (added later) — see onboarding-checklist.js.
-  // Array of tour ids rather than a per-tour boolean map, so a brand-new tour
-  // needs no backfill of its own here, just a manifest entry.
-  if (s && s.onboarding && !Array.isArray(s.onboarding.toursDone)) s.onboarding.toursDone = [];
+  // Mini-tour checklist (added later) — see onboarding-checklist.js. `checklist`
+  // maps an item id to its resolution ({ status, createdId? }); `checklistDone`
+  // flips true once the closing Generate card's flow completes, at which
+  // point every checklist card stops rendering. An object map (not an array)
+  // so a brand-new checklist item needs no backfill of its own, just a
+  // manifest entry in onboarding-checklist.js.
+  if (s && s.onboarding && (!s.onboarding.checklist || typeof s.onboarding.checklist !== 'object')) {
+    s.onboarding.checklist = {};
+  }
+  if (s && s.onboarding && typeof s.onboarding.checklistDone !== 'boolean') {
+    s.onboarding.checklistDone = false;
+  }
   // Reminder completion log (added later). Append-only history of check-offs.
   if (s && !Array.isArray(s.reminderLog)) s.reminderLog = [];
   // Reminder skip log (added later). Append-only history of skip actions.
@@ -638,11 +646,22 @@ function useStore(opts) {
     // 'pageTour' items) — the only checklist items that need explicit
     // tracking, since (unlike a sample picker/reminder) there's no other
     // state to derive "done" from. Idempotent.
-    markTourDone: (tourId) => setState((s) => {
-      const done = (s.onboarding && s.onboarding.toursDone) || [];
-      if (done.includes(tourId)) return s;
-      return { ...s, onboarding: { ...(s.onboarding || {}), toursDone: [...done, tourId] } };
+    // Resolves (or un-resolves) one checklist item — see onboarding-checklist.js.
+    // `patch` is `{ status: 'finished'|'skipped'|'cancelled', createdId? }` to
+    // resolve it, or `null` to uncheck it back to pending (redo). Never
+    // touches the underlying sample picker/task — resolution is tracked here
+    // only, which is exactly what makes unchecking free.
+    setChecklistItem: (itemId, patch) => setState((s) => {
+      const checklist = { ...((s.onboarding && s.onboarding.checklist) || {}) };
+      if (patch) checklist[itemId] = patch; else delete checklist[itemId];
+      return { ...s, onboarding: { ...(s.onboarding || {}), checklist } };
     }),
+
+    // Flips once the closing Generate card's flow completes — every
+    // checklist card stops rendering the instant this is true.
+    setChecklistDone: (done = true) => setState((s) => (
+      { ...s, onboarding: { ...(s.onboarding || {}), checklistDone: done } }
+    )),
 
     // Replace the whole store from an imported JSON blob (Settings → Data
     // control → Import). Runs through migrate() so older/partial exports get
@@ -991,7 +1010,7 @@ function useStore(opts) {
     // easeMin/easeMax is just a fallback span. Returns the new picker id.
     // Initial drift `value` depends on mode — ease-down items start "charged"
     // at the threshold; else 0.
-    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay }) => {
+    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, createdFromSample }) => {
       // First picker = the first data worth protecting from eviction. Ask the
       // browser for persistent storage now rather than on a cold first load,
       // where a denial would be sticky for the session.
@@ -1046,6 +1065,10 @@ function useStore(opts) {
         // Optional conditional gate (existing id, or the freshly-made one).
         conditionalId: madeCond ? madeCond.id : (conditionalId || null),
         hidden: false,
+        // Set only when created by finishing a mini-tour — links back to the
+        // sample template it was built from (see onboarding-checklist.js).
+        // Ignored everywhere else in the app.
+        ...(createdFromSample ? { createdFromSample } : {}),
       };
       setState((s) => {
         // Tidy + de-duplicate the picker name against existing pickers (same

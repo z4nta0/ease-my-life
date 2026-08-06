@@ -62,6 +62,10 @@ function defaultTask(p = {}) {
     skipUntil: p.skipUntil ?? null,
     createdAt: p.createdAt || isoToday(),
     hidden: !!p.hidden,
+    // Set only when created by finishing a mini-tour — links back to the
+    // sample template it was built from (see onboarding-checklist.js).
+    // Ignored everywhere else in the app.
+    ...(p.createdFromSample ? { createdFromSample: p.createdFromSample } : {}),
   };
 }
 
