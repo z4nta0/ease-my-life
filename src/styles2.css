@@ -2284,17 +2284,6 @@ button.cat-h-l {
 .rem-quickadd .np-input { flex: 1; max-width: none; margin-top: 0; }
 .rem-quickadd .btn { flex: 0 0 auto; }
 
-.rem-empty {
-  display: flex; align-items: center; gap: 8px;
-  width: 100%; padding: 16px;
-  border: 1px dashed var(--border); border-radius: var(--r-md);
-  background: oklch(from var(--surface) l c h / 0.5);
-  color: var(--muted); font-size: 13.5px; text-align: left;
-  cursor: pointer;
-  transition: border-color .12s, color .12s;
-}
-.rem-empty:hover { border-color: var(--accent); color: var(--accent); }
-
 /* Inline editor shown under a Today card when its pencil is toggled. */
 .rem-inline-editor {
   margin: -4px 0 4px;

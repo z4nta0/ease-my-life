@@ -762,13 +762,6 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
             </Collapse>
           </React.Fragment>
         ))}
-
-        {due.length === 0 && !adding && (
-          <button className="rem-empty" onClick={startAdd}>
-            <Icon name="plus" size={14} />
-            <span>Add a reminder &mdash; a one-off to-do or a recurring task.</span>
-          </button>
-        )}
       </div>
     </section>
   );
