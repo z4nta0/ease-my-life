@@ -400,6 +400,10 @@ function migrate(s) {
   // state that lacks the field is treated as already welcomed/dismissed. Fresh
   // clean state sets welcomed:false explicitly to trigger the first-run flow.
   if (s && !s.onboarding) s.onboarding = { welcomed: true, dismissed: true };
+  // Completed page-exploration tours (added later) — see onboarding-checklist.js.
+  // Array of tour ids rather than a per-tour boolean map, so a brand-new tour
+  // needs no backfill of its own here, just a manifest entry.
+  if (s && s.onboarding && !Array.isArray(s.onboarding.toursDone)) s.onboarding.toursDone = [];
   // Reminder completion log (added later). Append-only history of check-offs.
   if (s && !Array.isArray(s.reminderLog)) s.reminderLog = [];
   // Reminder skip log (added later). Append-only history of skip actions.
@@ -626,9 +630,19 @@ function useStore(opts) {
       setState(migrate(CLEAN_STATE()));
     },
 
-    // Onboarding progress (welcome modal / get-started checklist). Merges a
+    // Onboarding progress (welcome modal / mini-tour checklist). Merges a
     // partial patch so callers can flip one flag at a time.
     setOnboarding: (patch) => setState((s) => ({ ...s, onboarding: { ...(s.onboarding || {}), ...patch } })),
+
+    // Records a completed page-exploration tour (see onboarding-checklist.js's
+    // 'pageTour' items) — the only checklist items that need explicit
+    // tracking, since (unlike a sample picker/reminder) there's no other
+    // state to derive "done" from. Idempotent.
+    markTourDone: (tourId) => setState((s) => {
+      const done = (s.onboarding && s.onboarding.toursDone) || [];
+      if (done.includes(tourId)) return s;
+      return { ...s, onboarding: { ...(s.onboarding || {}), toursDone: [...done, tourId] } };
+    }),
 
     // Replace the whole store from an imported JSON blob (Settings → Data
     // control → Import). Runs through migrate() so older/partial exports get

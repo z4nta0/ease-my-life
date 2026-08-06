@@ -7,6 +7,7 @@ import { DayLogChip, GroupLog } from './day-log.jsx';
 import { HOLIDAYS } from './holidays.js';
 import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
+import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { PICKERS, normalizeGroupName } from './pickers.js';
 import { ReminderSection } from './reminders.jsx';
@@ -1497,8 +1498,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     return () => clearInterval(iv);
   }, [state.daily, state.today && state.today.generatedAt, state.pickers.length]);
 
-  // ── Get-started checklist + first-picker CTA (new users) ──────────────
-  const ob = state.onboarding || {};
+  // ── Empty-state CTAs for new users (no pickers / nothing runnable today) ──
   const newSlotsByGroup = React.useMemo(() => {
     if (!generating || !generatingMap) return {};
     const entries = state.today.entries || [];
@@ -1529,12 +1529,17 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   renderedOrderRef.current = genBlockOrder;
 
   const obBus = useEmlTour ? useEmlTour() : {};
+  // Whether the user is still mid-onboarding at all — replaces the old
+  // onboarding.dismissed flag (which only ever got set by the now-removed
+  // "Get started" checklist, so it was permanently stuck false). Derived
+  // instead of stored: see onboarding-checklist.js for what counts as done.
+  const obChecklistComplete = OB_CHECKLIST.status(state).complete;
   // Used to also force-show while the tour's own step 0 was up (that step
   // anchored on this card) — see the "STASHED: create-a-picker tour content"
   // block atop onboarding.jsx. The future "Create your first picker"
   // mini-tour will need an equivalent force-render once it exists, keyed off
   // its own step numbering.
-  const obShowCreate = !ob.dismissed && state.pickers.length === 0;
+  const obShowCreate = !obChecklistComplete && state.pickers.length === 0;
   // Empty state (edge case): user has no pickers and the tour isn't running.
   // Distinct from the onboarding create card — plainer copy so it doesn't read
   // as a bug, no coach highlight. Tapping it jumps to Pickers with the create
