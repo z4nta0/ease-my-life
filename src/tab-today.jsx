@@ -120,7 +120,7 @@ function groupEntries(state) {
   });
 }
 
-function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGroup, mergePending, onConfirmMerge, onCancelMerge, logOpen, onToggleLog }) {
+function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGroup, mergePending, onConfirmMerge, onCancelMerge, logOpen, onToggleLog, validate }) {
   // Cascade: animate the dash that just turned on.
   const prev = React.useRef(doneCount);
   const [freshIdx, setFreshIdx] = React.useState(-1);
@@ -128,6 +128,12 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
   const [editing, setEditing] = React.useState(false);
   const [closing, setClosing] = React.useState(false);
   const [draft, setDraft] = React.useState(name);
+  // Only set when `validate` rejects a commit (e.g. Page Tours blocking a
+  // rename that collides with an existing group name — it has nothing to
+  // merge into, unlike renameGroup, so it blocks instead of offering a
+  // merge). Keeps the input open with the input un-committed until the user
+  // edits again or cancels.
+  const [nameError, setNameError] = React.useState('');
   const nameInputRef = React.useRef(null);
   React.useEffect(() => {
     if (doneCount > prev.current) {
@@ -142,7 +148,7 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
   React.useEffect(() => { if (editing && nameInputRef.current) nameInputRef.current.select(); }, [editing]);
   // Leaving Edit Mode cancels any in-progress name edit.
   React.useEffect(() => { if (!editMode) setEditing(false); }, [editMode]);
-  const startEdit = () => { setDraft(name); setEditing(true); };
+  const startEdit = () => { setDraft(name); setNameError(''); setEditing(true); };
   // Close = play the out animation (is-closing) for ~150ms, THEN unmount the
   // input and (for a real change) commit the rename. Guarded so the blur that
   // Enter triggers can't double-fire.
@@ -158,9 +164,17 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
   const commit = () => {
     if (closing) return;
     const val = draft.trim();
-    finishClose(!!val && val !== name, draft);
+    const changed = !!val && val !== name;
+    if (changed && validate) {
+      const err = validate(val);
+      // Stays open, doesn't close. commit() runs from onBlur too (Enter blurs
+      // the input) so focus may already be gone — reclaim it so the user can
+      // just keep typing to fix the collision.
+      if (err) { setNameError(err); nameInputRef.current?.focus(); return; }
+    }
+    finishClose(changed, val);
   };
-  const cancel = () => { if (closing) return; finishClose(false); };
+  const cancel = () => { if (closing) return; setNameError(''); finishClose(false); };
   return (
     <React.Fragment>
     <header className={`group-h ${editMode ? 'is-reorderable' : ''}`}>
@@ -174,9 +188,9 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
           </span>
         )}
         {editMode && editing ? (
-          <input ref={nameInputRef} className={`group-name-input ${closing ? 'is-closing' : ''}`} type="text" value={draft} maxLength={30}
+          <input ref={nameInputRef} className={`group-name-input ${closing ? 'is-closing' : ''} ${nameError ? 'is-invalid' : ''}`} type="text" value={draft} maxLength={30}
                  aria-label="Group name" autoFocus
-                 onChange={(e) => setDraft(e.target.value)}
+                 onChange={(e) => { setDraft(e.target.value); if (nameError) setNameError(''); }}
                  onBlur={commit}
                  onKeyDown={(e) => {
                    if (e.key === 'Enter') e.currentTarget.blur();
@@ -213,6 +227,11 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
           <Btn kind="ghost" size="sm" onClick={onCancelMerge}>Cancel</Btn>
           <Btn kind="primary" size="sm" onClick={onConfirmMerge}>Merge</Btn>
         </div>
+      </div>
+    )}
+    {editing && nameError && (
+      <div className="group-merge-confirm group-name-conflict">
+        <span className="confirm-msg">{nameError}</span>
       </div>
     )}
     </React.Fragment>
@@ -839,6 +858,20 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   const mainTourEnded = state.pickers.some((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id))
     || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
   const showChecklist = mainTourEnded && !checklistDone;
+  const pageToursName = (state.onboarding && state.onboarding.pageToursName) || 'Page Tours';
+  // Page Tours has no pickers to merge into on a name collision (unlike
+  // renameGroup), so a collision just blocks the rename outright — checked
+  // against every real group name plus the fixed "Reminders" label, the
+  // other section header that isn't itself a real group.
+  const pageToursNameCollision = (raw) => {
+    const val = String(raw || '').trim();
+    if (!val) return null;
+    const target = normalizeGroupName(val) || val;
+    const existing = [...new Set(state.pickers.filter((p) => p.group).map((p) => p.group))];
+    existing.push('Reminders');
+    const hit = existing.find((g) => g.toLowerCase() === target.toLowerCase());
+    return hit ? `A group named “${hit}” already exists.` : null;
+  };
   const tutorialPickerCount = showChecklist
     ? state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id)).length : 0;
   const tutorialPickerDone = showChecklist
@@ -1842,7 +1875,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                     <li key="__pageTours">
                       <button className={`rail-btn ${activeGroup === '__pageTours' ? 'is-on' : ''}`}
                               onClick={() => jumpToGroup('__pageTours')}>
-                        <span className="rail-name">Page Tours</span>
+                        <span className="rail-name">{pageToursName}</span>
                         <span className="rail-count">
                           <span>{pDone}</span><span className="rail-of">/{OB_PAGE_TOURS.length}</span>
                         </span>
@@ -1925,28 +1958,10 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                 return (
                   <section key="__pageTours" className="group-section"
                            ref={(el) => { sectionRefs.current['__pageTours'] = el; }}>
-                    <header className={`group-h ${editMode ? 'is-reorderable' : ''}`}>
-                      <div className="group-h-l">
-                        {editMode && (
-                          <span className="group-grip" aria-label="Drag to reorder group" role="button" tabIndex={0}
-                                draggable={false}
-                                onDragStart={(e) => e.preventDefault()}
-                                onPointerDown={(e) => startGroupDrag(e)}>
-                            <Icon name="grip" size={16} />
-                          </span>
-                        )}
-                        <h2 className="group-name">Page Tours</h2>
-                        <span className="group-count">
-                          <span className="group-done">{pDone}</span>
-                          <span className="group-of">of {OB_PAGE_TOURS.length}</span>
-                        </span>
-                      </div>
-                      <div className="group-progress">
-                        {OB_PAGE_TOURS.map((t) => (
-                          <i key={t.id} className={OB_CHECKLIST.entryFor(state, t.id) ? 'is-done' : ''} />
-                        ))}
-                      </div>
-                    </header>
+                    <GroupHeader name={pageToursName} doneCount={pDone} total={OB_PAGE_TOURS.length}
+                                 editMode={editMode} onGripDown={startGroupDrag}
+                                 onRenameGroup={(newName) => actions.renamePageTours(newName)}
+                                 validate={pageToursNameCollision} />
                     <div className="today-list">
                       {OB_PAGE_TOURS.map((t) => (
                         <PageTourCard key={t.id} tour={t} state={state} actions={actions}

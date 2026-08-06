@@ -412,6 +412,13 @@ function migrate(s) {
   if (s && s.onboarding && typeof s.onboarding.checklistDone !== 'boolean') {
     s.onboarding.checklistDone = false;
   }
+  // Page Tours group display name (Edit Mode rename, added later) — unlike a
+  // real group's name, this doesn't double as the group's identity (that's
+  // still the fixed '__pageTours' sentinel everywhere else), so renaming it
+  // is just a plain label swap with no cascading effects.
+  if (s && s.onboarding && typeof s.onboarding.pageToursName !== 'string') {
+    s.onboarding.pageToursName = 'Page Tours';
+  }
   // Reminder completion log (added later). Append-only history of check-offs.
   if (s && !Array.isArray(s.reminderLog)) s.reminderLog = [];
   // Reminder skip log (added later). Append-only history of skip actions.
@@ -1373,6 +1380,15 @@ function useStore(opts) {
         delete pickerOrder[oldName];
       }
       return { ...s, pickers, groupOrder, pickerOrder };
+    }),
+
+    // Page Tours has no pickers to rewrite (unlike renameGroup) — just a
+    // label swap. Collision-with-an-existing-group blocking happens in the
+    // UI before this ever fires; this only normalizes and writes.
+    renamePageTours: (rawNew) => setState((s) => {
+      const newName = (normalizeGroupName && normalizeGroupName(rawNew)) || String(rawNew || '').trim();
+      if (!newName) return s;
+      return { ...s, onboarding: { ...(s.onboarding || {}), pageToursName: newName } };
     }),
 
     setDailyPickers: (pickerIds) => setState((s) => ({

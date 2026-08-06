@@ -3205,6 +3205,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   from { opacity: 0; transform: translateX(-5px); }
   to   { opacity: 1; transform: none; }
 }
+.group-name-input.is-invalid { border-color: var(--warm); }
 .group-name-input.is-closing { animation: groupNameOut .15s cubic-bezier(0.4, 0, 0.2, 1) both; }
 @keyframes groupNameOut {
   from { opacity: 1; transform: none; }
@@ -3229,6 +3230,15 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   to   { opacity: 1; transform: none; }
 }
 @media (prefers-reduced-motion: reduce) { .group-merge-confirm { animation: none; } }
+
+/* Blocked rename (Page Tours colliding with an existing group name) — same
+   bar, warm/warning treatment instead of accent since there's nothing to
+   confirm, just an error to fix. */
+.group-name-conflict {
+  background: oklch(from var(--warm) l c h / 0.08);
+  border-color: oklch(from var(--warm) l c h / 0.35);
+}
+.group-name-conflict .confirm-msg { color: oklch(0.45 0.13 50); }
 
 
 
