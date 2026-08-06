@@ -7,7 +7,7 @@ import { DayLogChip, GroupLog } from './day-log.jsx';
 import { HOLIDAYS } from './holidays.js';
 import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
-import { OB_CHECKLIST } from './onboarding-checklist.js';
+import { OB_CHECKLIST, OB_GENERATE_ITEM_ID } from './onboarding-checklist.js';
 import { OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { PICKERS, normalizeGroupName } from './pickers.js';
 import { ReminderSection } from './reminders.jsx';
@@ -75,15 +75,20 @@ function groupEntries(state) {
     if (!byGroup.has(g)) byGroup.set(g, { name: g, entries: [] });
     byGroup.get(g).entries.push({ entry: e, picker });
   }
-  // Mini-tour launcher cards: one per still-hidden sample picker (see the
-  // `hidden` flag + OB_SAMPLE_PICKER_IDS), slotted into its normal group like
-  // any other card. Disappears on its own once the picker is either unhidden
-  // (tutorial finished) or deleted (X'd) — no separate bookkeeping needed.
-  for (const p of state.pickers) {
-    if (!p.hidden || !OB_SAMPLE_PICKER_IDS.includes(p.id)) continue;
-    const g = p.group || 'Other';
-    if (!byGroup.has(g)) byGroup.set(g, { name: g, entries: [] });
-    byGroup.get(g).entries.push({ entry: { kind: 'tutorial', eid: 'tut_' + p.id, done: false }, picker: p });
+  // Mini-tour launcher cards: one per sample picker, slotted into its normal
+  // group like any other card. `p.hidden` gates the timing — samples stay
+  // visible/real for the main Welcome Tour and only flip hidden once, at
+  // that tour's last step (see onboarding.jsx), which is when these start
+  // rendering. They stay on screen — checked or not — until checklistDone,
+  // set once the closing Generate card runs (see onboarding-checklist.js).
+  if (!(state.onboarding && state.onboarding.checklistDone)) {
+    for (const p of state.pickers) {
+      if (!p.hidden || !OB_SAMPLE_PICKER_IDS.includes(p.id)) continue;
+      const g = p.group || 'Other';
+      if (!byGroup.has(g)) byGroup.set(g, { name: g, entries: [] });
+      const done = !!OB_CHECKLIST.entryFor(state, p.id);
+      byGroup.get(g).entries.push({ entry: { kind: 'tutorial', eid: 'tut_' + p.id, done }, picker: p });
+    }
   }
   // Group order: user-defined (state.groupOrder from Edit Mode), then any group
   // not yet listed appended by first occurrence in state.pickers, Other last.
@@ -470,34 +475,57 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
   );
 }
 
-function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip, onReroll, isRemoving, isRolling, isEditing, onEdit, onRename, editMode, onGripDown, onPlayTutorial }) {
-  // Mini-tour launcher: a still-hidden sample picker from the Welcome Tour,
-  // offered as a "try this" card in its normal group. No item, no re-roll/
-  // skip/edit, and clicking it never marks it done — Play (or the card
-  // itself) starts the mini-tour; X permanently discards the sample.
+function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip, onReroll, isRemoving, isRolling, isEditing, onEdit, onRename, editMode, onGripDown, onPlayTutorial, onUncheckTutorial, checklistExiting }) {
+  // Mini-tour launcher: a sample picker from the Welcome Tour, offered as a
+  // "try this" card in its normal group. Stays on screen resolved or not —
+  // Play (or the card itself) starts the mini-tour; X marks it cancelled
+  // without touching the sample. Once resolved (any of the 3 ways — see
+  // onboarding-checklist.js) it shows checked, and — unlike a pending card,
+  // which can only be resolved via Play/X, never by clicking the checkbox
+  // directly — clicking it (or the row) then un-resolves it, same as a
+  // normal completed card toggling back off, so the tutorial can be redone.
   if (entry.kind === 'tutorial') {
+    const done = entry.done;
+    // Only picker cards participate in the "at least one real picker" gate
+    // (see OB_CHECKLIST.finishedPickerCount) — flagged with a visible cue
+    // rather than requiring a tap to discover, since it blocks the closing
+    // Generate card.
+    const needsAttention = !done && OB_CHECKLIST.finishedPickerCount(state) === 0;
     const onRowClick = (e) => {
       if (e.target.closest('.today-card-actions')) return;
-      onPlayTutorial('picker', picker.id);
+      if (done) onUncheckTutorial('picker', picker.id);
+      else onPlayTutorial('picker', picker.id);
     };
     return (
-      <article className="today-card today-card--tutorial" onClick={onRowClick}>
-        <button type="button" className="check" aria-label={`Start the ${picker.name} tutorial`}
-                onClick={(e) => { e.stopPropagation(); onPlayTutorial('picker', picker.id); }}>
-          <Icon name="play" size={13} />
-        </button>
+      <article className={`today-card today-card--tutorial ${done ? 'is-done' : ''} ${needsAttention ? 'is-needed' : ''} ${checklistExiting ? 'is-removing' : ''}`}
+                onClick={onRowClick}>
+        {done ? (
+          <button type="button" className="check" aria-pressed="true"
+                  aria-label={`Undo ${picker.name} tutorial`}
+                  onClick={(e) => { e.stopPropagation(); onUncheckTutorial('picker', picker.id); }}>
+            <span className="check-ripple" aria-hidden="true" />
+            <Icon name="check" size={14} />
+          </button>
+        ) : (
+          <button type="button" className="check" aria-label={`Start the ${picker.name} tutorial`}
+                  onClick={(e) => { e.stopPropagation(); onPlayTutorial('picker', picker.id); }}>
+            <Icon name="play" size={13} />
+          </button>
+        )}
         <div className="today-card-body">
           <div className="today-card-meta">
             <span className="meta-picker">{picker.name}</span>
           </div>
           <div className="today-card-name">Set up a {picker.name} picker</div>
         </div>
-        <div className="today-card-actions">
-          <button className="icon-btn" onClick={(e) => { e.stopPropagation(); actions.removePicker(picker.id); }}
-                  aria-label="Cancel tutorial" title="Cancel">
-            <Icon name="x" size={15} />
-          </button>
-        </div>
+        {!done && (
+          <div className="today-card-actions">
+            <button className="icon-btn" onClick={(e) => { e.stopPropagation(); actions.setChecklistItem(picker.id, { status: 'cancelled' }); }}
+                    aria-label="Cancel tutorial" title="Cancel">
+              <Icon name="x" size={15} />
+            </button>
+          </div>
+        )}
       </article>
     );
   }
@@ -746,8 +774,27 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   const remindersDoneVisible = dueReminders.filter((t) => TASKS.isDoneToday(t, remindersAnchor)).length;
   const ringReminders = dueReminders.filter((t) => TASKS.optsFor(t, state.reminderOpts).ring);
   const remindersDone = ringReminders.filter((t) => TASKS.isDoneToday(t, remindersAnchor)).length;
-  const doneCount = entries.filter((e) => e.done).length + remindersDone;
-  const total = entries.length + ringReminders.length;
+  // Mini-tour launcher cards (pickers + reminders + the closing Generate
+  // card) join the ring/rail totals the whole time they're on screen — see
+  // groupEntries()'s own copy of this same gate. Kept additive/separate from
+  // `entries`/`dueReminders` (rather than merged in) so streak reconciliation
+  // and Stats stay untouched by tutorial-card completion — see store.jsx's
+  // reconcileStreak, which only ever reads state.today.entries/state.tasks.
+  const checklistDone = !!(state.onboarding && state.onboarding.checklistDone);
+  const tutorialPickerCount = checklistDone ? 0
+    : state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id)).length;
+  const tutorialPickerDone = checklistDone ? 0
+    : state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id) && OB_CHECKLIST.entryFor(state, p.id)).length;
+  const tutorialTaskCount = checklistDone ? 0
+    : (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)).length;
+  const tutorialTaskDone = checklistDone ? 0
+    : (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id) && OB_CHECKLIST.entryFor(state, t.id)).length;
+  const generateCardCount = checklistDone ? 0 : 1;
+  const generateCardDone = (!checklistDone && OB_CHECKLIST.entryFor(state, OB_GENERATE_ITEM_ID)) ? 1 : 0;
+  const doneCount = entries.filter((e) => e.done).length + remindersDone
+    + tutorialPickerDone + tutorialTaskDone + generateCardDone;
+  const total = entries.length + ringReminders.length
+    + tutorialPickerCount + tutorialTaskCount + generateCardCount;
 
   // Live clock — re-render at the top of every minute so the displayed time
   // stays accurate without spamming setState every second.
@@ -1562,13 +1609,14 @@ function TabToday({ state, actions, onHome, onNavTab }) {
       !(p.skipHolidays && holiday)
     ));
   }, [state.pickers, state.daily.pickerIds, state.holidays]);
-  // Suppressed while any mini-tour launcher card is still showing (picker or
-  // reminder) — the page isn't actually empty then, it's just full of "try
-  // this" suggestions instead of real picks. Reappears normally once every
-  // sample has been finished or X'd away and there's still genuinely nothing
-  // to run.
-  const hasTutorialCards = state.pickers.some((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id))
-    || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
+  // Suppressed while the mini-tour checklist is still up (any launcher card,
+  // checked or not, until checklistDone) — the page isn't actually empty
+  // then, it's full of tutorial cards instead of real picks. Reappears
+  // normally once the checklist concludes and there's still genuinely
+  // nothing to run.
+  const hasTutorialCards = !checklistDone
+    && (state.pickers.some((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id))
+      || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)));
   const obShowNoRun = !obShowCreate && obBus.phase !== 'tour'
     && obNoRunToday && entries.length === 0 && !hasTutorialCards;
   const startCreatePicker = () => {
@@ -1583,6 +1631,45 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   const startMiniTour = (kind, id) => {
     // TODO: launch the mini-tour for this picker/reminder once it exists.
   };
+  // Unchecks an already-resolved launcher card (skipped/cancelled/finished)
+  // back to pending, so its mini-tour can be redone. Never touches the
+  // sample itself — see onboarding-checklist.js.
+  const uncheckTutorial = (kind, id) => actions.setChecklistItem(id, null);
+
+  // The closing "Generate a real list" card — see onboarding-checklist.js.
+  // Actionable once every other checklist item is resolved AND at least one
+  // picker was actually finished (readyToGenerate), so there's always
+  // something real for the generator to draw from.
+  const obReadyToGenerate = OB_CHECKLIST.readyToGenerate(state);
+  const generateItemResolved = !!OB_CHECKLIST.entryFor(state, OB_GENERATE_ITEM_ID);
+  const onGenerateCardClick = () => {
+    if (!obReadyToGenerate) return;
+    actions.setChecklistItem(OB_GENERATE_ITEM_ID, { status: 'finished' });
+  };
+  // Resolving the Generate item pushes doneCount up to equal total (every
+  // other item was already resolved), which triggers the existing
+  // completion-celebration effect above automatically — nothing extra
+  // needed to fire it. This effect only owns what happens AFTER: let the
+  // celebration play, animate every checklist card out together, then
+  // conclude the checklist and hand off to a completely normal generate().
+  const [checklistExiting, setChecklistExiting] = React.useState(false);
+  const prevGenerateResolved = React.useRef(generateItemResolved);
+  React.useEffect(() => {
+    if (generateItemResolved && !prevGenerateResolved.current) {
+      const reduced = reduceMotion && reduceMotion();
+      const celebrateMs = reduced ? 200 : 1700;
+      const exitMs = reduced ? 0 : 380;
+      const t1 = setTimeout(() => setChecklistExiting(true), celebrateMs);
+      const t2 = setTimeout(() => {
+        actions.setChecklistDone(true);
+        setChecklistExiting(false);
+        generate();
+      }, celebrateMs + exitMs);
+      prevGenerateResolved.current = generateItemResolved;
+      return () => { clearTimeout(t1); clearTimeout(t2); };
+    }
+    prevGenerateResolved.current = generateItemResolved;
+  }, [generateItemResolved]);
 
   return (
     <div className={`tab tab--today ${editMode ? 'is-editmode' : ''}`}>
@@ -1683,7 +1770,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                               onClick={() => jumpToGroup('__reminders')}>
                         <span className="rail-name">Reminders</span>
                         <span className="rail-count">
-                          <span>{remindersDoneVisible}</span><span className="rail-of">/{dueReminders.length}</span>
+                          <span>{remindersDoneVisible + tutorialTaskDone}</span><span className="rail-of">/{dueReminders.length + tutorialTaskCount}</span>
                         </span>
                       </button>
                     </li>
@@ -1691,17 +1778,17 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                 }
                 const g = groupByName[id];
                 if (!g) return null;
-                // Tutorial launcher cards aren't real todo items — excluded from
-                // this count same as the overall ring at the top of the tab.
-                const gCountable = g.entries.filter((e) => e.entry.kind !== 'tutorial');
-                const gDone = gCountable.filter((e) => e.entry.done).length;
+                // Mini-tour launcher cards count toward this the whole time
+                // they're on screen — resolved (any of the 3 ways) counts as
+                // done, same as any other card.
+                const gDone = g.entries.filter((e) => e.entry.done).length;
                 return (
                   <li key={g.name}>
                     <button className={`rail-btn ${activeGroup === g.name ? 'is-on' : ''}`}
                             onClick={() => jumpToGroup(g.name)}>
                       <span className="rail-name">{g.name}</span>
                       <span className="rail-count">
-                        <span>{gDone}</span><span className="rail-of">/{gCountable.length}</span>
+                        <span>{gDone}</span><span className="rail-of">/{g.entries.length}</span>
                       </span>
                     </button>
                   </li>
@@ -1753,6 +1840,8 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                                    leavingTaskIds={leavingTaskIds} arrivingTaskIds={arrivingTaskIds}
                                    activeEditor={activeEditor} setActiveEditor={setActiveEditor}
                                    onPlayTutorial={startMiniTour}
+                                   onUncheckTutorial={uncheckTutorial}
+                                   checklistExiting={checklistExiting}
                                    sectionRef={(el) => { sectionRefs.current['__reminders'] = el; }} />
                 );
               }
@@ -1760,15 +1849,15 @@ function TabToday({ state, actions, onHome, onNavTab }) {
               // loader card during generation.
               const g = groupByName[id] || (newSlotsByGroup[id] ? { name: id, entries: [] } : null);
               if (!g) return null;
-              // Tutorial launcher cards aren't real todo items — excluded from
-              // this count same as the overall ring at the top of the tab.
-              const gCountable = g.entries.filter((e) => e.entry.kind !== 'tutorial');
-              const gDone = gCountable.filter((e) => e.entry.done).length;
+              // Mini-tour launcher cards count toward this the whole time
+              // they're on screen — resolved (any of the 3 ways) counts as
+              // done, same as any other card.
+              const gDone = g.entries.filter((e) => e.entry.done).length;
               return (
                 <section key={g.name}
                          className="group-section"
                          ref={(el) => { sectionRefs.current[g.name] = el; }}>
-                  <GroupHeader name={g.name} doneCount={gDone} total={gCountable.length}
+                  <GroupHeader name={g.name} doneCount={gDone} total={g.entries.length}
                                editMode={editMode} onGripDown={startGroupDrag}
                                logOpen={openLogKey === g.name}
                                onToggleLog={() => toggleLog(g.name)}
@@ -1799,7 +1888,9 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                                      onGripDown={(ev) => startItemDrag(ev, g)}
                                      onEdit={() => setActiveEditor((cur) => cur === `item:${entry.eid}` ? null : `item:${entry.eid}`)}
                                      onRename={(name) => actions.renameItem(entry.itemId, name)}
-                                     onPlayTutorial={startMiniTour} />
+                                     onPlayTutorial={startMiniTour}
+                                     onUncheckTutorial={uncheckTutorial}
+                                     checklistExiting={checklistExiting} />
                           <Collapse open={activeEditor === `item:${entry.eid}` && !!item}>
                             {item && (
                               <div className="today-entry-editor">
@@ -1820,6 +1911,22 @@ function TabToday({ state, actions, onHome, onNavTab }) {
               );
             })}
             </div>
+
+            {!checklistDone && (
+              <div className={`ob-create ob-create--generate ${checklistExiting ? 'is-removing' : ''} ${!obReadyToGenerate ? 'is-needed' : ''}`}>
+                <div className="ob-create-i"><Icon name="check" size={22} /></div>
+                <b>Generate your real list</b>
+                <p>Once every tutorial above is checked off, this replaces all of them with your own real, generated list.</p>
+                {obReadyToGenerate ? (
+                  <Btn kind="primary" size="sm" icon="check" onClick={onGenerateCardClick}>Generate your list</Btn>
+                ) : (
+                  <InfoTip className="btn btn--primary btn--sm is-disabled" action="Generate your list"
+                           label='Complete at least one "Create a picker" tutorial above first.'>
+                    Generate your list
+                  </InfoTip>
+                )}
+              </div>
+            )}
 
             {obShowEmpty && (
               <div className="ob-create ob-create--empty">

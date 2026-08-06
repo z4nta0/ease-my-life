@@ -1256,6 +1256,10 @@ button.check { cursor: pointer; }
   opacity: 0.4; cursor: default;
 }
 .icon-btn.is-disabled:hover { background: none; color: var(--muted); }
+/* Same InfoTip-trigger pattern as .icon-btn.is-disabled above, for a full
+   .btn (e.g. the mini-tour checklist's blocked Generate button). */
+.btn.is-disabled { opacity: 0.4; cursor: default; }
+.btn.is-disabled:hover { background: var(--bg); color: inherit; }
 
 .today-footer {
   display: flex; flex-direction: column; align-items: center; gap: 4px;

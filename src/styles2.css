@@ -3406,6 +3406,18 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    flex gap owns the spacing, so kill the per-paragraph margin that would double
    it between them and leave a dangling gap under the last one. */
 .ob-create--norun p{margin:0;max-width:38ch}
+/* Mini-tour checklist: "needs attention" cue — visible without any tap/hover,
+   for the closing Generate card while it's blocked (see .today-card--tutorial
+   .is-needed below for its sibling on the "Create a picker" launcher cards).
+   Warm/amber rather than --danger red: this isn't an error, just unfinished. */
+.ob-create--generate.is-needed{border-color:oklch(from var(--warm) l c h/0.55);background:oklch(from var(--warm) l c h/0.07)}
+.ob-create.is-removing{animation:cardSkipOut 380ms cubic-bezier(.4,.05,.7,.4) forwards}
+@media (prefers-reduced-motion:reduce){.ob-create.is-removing{animation:none;opacity:0}}
+/* Same "needs attention" cue as .ob-create--generate.is-needed above, applied
+   to every still-open "Create a picker" launcher card while zero pickers
+   have been finished — see OB_CHECKLIST.finishedPickerCount. */
+.today-card--tutorial.is-needed{border-color:oklch(from var(--warm) l c h/0.55);background:oklch(from var(--warm) l c h/0.06)}
+.today-card--tutorial.is-needed:hover{border-color:oklch(from var(--warm) l c h/0.7)}
 @keyframes obFade{from{opacity:0}to{opacity:1}}
 @keyframes obRise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.ob-scrim,.ob-welcome,.ob-coach,.ob-spot{animation:none;transition:none}}
