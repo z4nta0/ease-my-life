@@ -22,18 +22,30 @@ import { OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data
 //                programmatically from OB_SAMPLE_PICKER_IDS/
 //                OB_SAMPLE_TASK_IDS, so a new sample card needs no changes
 //                here.
-//   'pageTour' — a future "Explore the {page}" tour, not tied to any sample
-//                picker/reminder (no data to finish/skip/cancel, just the
-//                same checklist bookkeeping). Add a manifest entry here
-//                whenever one is built — nothing else changes.
+//   'pageTour' — an "Explore the {page}" tour, not tied to any sample
+//                picker/reminder — no data to finish/skip/cancel, just the
+//                same checklist bookkeeping. Rendered in their own "Page
+//                Tours" section on Today (see tab-today.jsx), between
+//                Reminders and the picker groups.
 //   'generate' — the single closing card. Fixed id below.
 export const OB_GENERATE_ITEM_ID = 'ob_generate';
+
+// One entry per page tour, in the order their cards/tours should appear.
+// `page` matches the `data-tab` value on that page's nav button (see
+// app.jsx's TabBar) — not used yet, but it's what each tour's own "explore"
+// step will target once built.
+export const OB_PAGE_TOURS = [
+  { id: 'explore_today', page: 'today', label: 'Today' },
+  { id: 'explore_pickers', page: 'picker', label: 'Pickers' },
+  { id: 'explore_stats', page: 'stats', label: 'Stats' },
+  { id: 'explore_data', page: 'data', label: 'Data' },
+  { id: 'explore_settings', page: 'settings', label: 'Settings' },
+];
 
 const CHECKLIST_ITEMS = [
   ...OB_SAMPLE_PICKER_IDS.map((id) => ({ id, kind: 'sample', entityKind: 'picker' })),
   ...OB_SAMPLE_TASK_IDS.map((id) => ({ id, kind: 'sample', entityKind: 'task' })),
-  // Page-exploration tours land here as they're built, e.g.:
-  // { id: 'explore_pickers', kind: 'pageTour' },
+  ...OB_PAGE_TOURS.map((t) => ({ id: t.id, kind: 'pageTour' })),
   { id: OB_GENERATE_ITEM_ID, kind: 'generate' },
 ];
 

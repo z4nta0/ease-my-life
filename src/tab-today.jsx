@@ -7,7 +7,7 @@ import { DayLogChip, GroupLog } from './day-log.jsx';
 import { HOLIDAYS } from './holidays.js';
 import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
-import { OB_CHECKLIST, OB_GENERATE_ITEM_ID } from './onboarding-checklist.js';
+import { OB_CHECKLIST, OB_GENERATE_ITEM_ID, OB_PAGE_TOURS } from './onboarding-checklist.js';
 import { OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { PICKERS, normalizeGroupName } from './pickers.js';
 import { ReminderSection } from './reminders.jsx';
@@ -730,6 +730,51 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
   );
 }
 
+// A "Page Tours" launcher card — same shape/behavior as a picker's tutorial
+// card (persistent, checked/unchecked toggle, Play/X — see EntryCard's
+// 'tutorial' branch above), just with no sample picker/task backing it: no
+// data to finish/skip/cancel, only the checklist bookkeeping itself.
+function PageTourCard({ tour, state, actions, onPlayTutorial, onUncheckTutorial, checklistExiting }) {
+  const done = !!OB_CHECKLIST.entryFor(state, tour.id);
+  const onRowClick = (e) => {
+    if (e.target.closest('.today-card-actions')) return;
+    if (done) onUncheckTutorial('pageTour', tour.id);
+    else onPlayTutorial('pageTour', tour.id);
+  };
+  return (
+    <article className={`today-card today-card--tutorial ${done ? 'is-done' : ''} ${checklistExiting ? 'is-removing' : ''}`}
+              onClick={onRowClick}>
+      {done ? (
+        <button type="button" className="check" aria-pressed="true"
+                aria-label={`Undo ${tour.label} tour`}
+                onClick={(e) => { e.stopPropagation(); onUncheckTutorial('pageTour', tour.id); }}>
+          <span className="check-ripple" aria-hidden="true" />
+          <Icon name="check" size={14} />
+        </button>
+      ) : (
+        <button type="button" className="check" aria-label={`Start the ${tour.label} tour`}
+                onClick={(e) => { e.stopPropagation(); onPlayTutorial('pageTour', tour.id); }}>
+          <Icon name="play" size={13} />
+        </button>
+      )}
+      <div className="today-card-body">
+        <div className="today-card-meta">
+          <span className="meta-picker">{tour.label} Tour</span>
+        </div>
+        <div className="today-card-name">Take an in depth tour of the {tour.label} page</div>
+      </div>
+      {!done && (
+        <div className="today-card-actions">
+          <button className="icon-btn" onClick={(e) => { e.stopPropagation(); actions.setChecklistItem(tour.id, { status: 'cancelled' }); }}
+                  aria-label="Cancel tutorial" title="Cancel">
+            <Icon name="x" size={15} />
+          </button>
+        </div>
+      )}
+    </article>
+  );
+}
+
 function TabToday({ state, actions, onHome, onNavTab }) {
   const groups = React.useMemo(() => groupEntries(state), [state]);
   // Unified block order: the Reminders block ('__reminders' sentinel) plus the
@@ -748,6 +793,10 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     }
     for (const n of names) push(n);
     push('__reminders');
+    // Page Tours sits in a fixed position — right after Reminders, before
+    // every picker group. Unlike Reminders/picker groups it isn't part of
+    // state.groupOrder's user-customizable sequence, so it can't be dragged.
+    order.splice(order.indexOf('__reminders') + 1, 0, '__pageTours');
     return order;
   }, [state.groupOrder, groups]);
   const groupByName = React.useMemo(() => {
@@ -774,27 +823,38 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   const remindersDoneVisible = dueReminders.filter((t) => TASKS.isDoneToday(t, remindersAnchor)).length;
   const ringReminders = dueReminders.filter((t) => TASKS.optsFor(t, state.reminderOpts).ring);
   const remindersDone = ringReminders.filter((t) => TASKS.isDoneToday(t, remindersAnchor)).length;
-  // Mini-tour launcher cards (pickers + reminders + the closing Generate
-  // card) join the ring/rail totals the whole time they're on screen — see
-  // groupEntries()'s own copy of this same gate. Kept additive/separate from
-  // `entries`/`dueReminders` (rather than merged in) so streak reconciliation
-  // and Stats stay untouched by tutorial-card completion — see store.jsx's
-  // reconcileStreak, which only ever reads state.today.entries/state.tasks.
+  // Mini-tour launcher cards (pickers + reminders + Page Tours + the closing
+  // Generate card) join the ring/rail totals the whole time they're on
+  // screen — see groupEntries()'s own copy of this same gate. Kept
+  // additive/separate from `entries`/`dueReminders` (rather than merged in)
+  // so streak reconciliation and Stats stay untouched by tutorial-card
+  // completion — see store.jsx's reconcileStreak, which only ever reads
+  // state.today.entries/state.tasks.
   const checklistDone = !!(state.onboarding && state.onboarding.checklistDone);
-  const tutorialPickerCount = checklistDone ? 0
-    : state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id)).length;
-  const tutorialPickerDone = checklistDone ? 0
-    : state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id) && OB_CHECKLIST.entryFor(state, p.id)).length;
-  const tutorialTaskCount = checklistDone ? 0
-    : (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)).length;
-  const tutorialTaskDone = checklistDone ? 0
-    : (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id) && OB_CHECKLIST.entryFor(state, t.id)).length;
-  const generateCardCount = checklistDone ? 0 : 1;
-  const generateCardDone = (!checklistDone && OB_CHECKLIST.entryFor(state, OB_GENERATE_ITEM_ID)) ? 1 : 0;
+  // Whether the main Welcome Tour has concluded (sample pickers/tasks flip
+  // hidden exactly once, at that tour's last step) — i.e. whether the
+  // mini-tour checklist phase (launcher cards + Page Tours + the closing
+  // Generate card) should be showing at all, independent of checklistDone.
+  const mainTourEnded = state.pickers.some((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id))
+    || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
+  const showChecklist = mainTourEnded && !checklistDone;
+  const tutorialPickerCount = showChecklist
+    ? state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id)).length : 0;
+  const tutorialPickerDone = showChecklist
+    ? state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id) && OB_CHECKLIST.entryFor(state, p.id)).length : 0;
+  const tutorialTaskCount = showChecklist
+    ? (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)).length : 0;
+  const tutorialTaskDone = showChecklist
+    ? (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id) && OB_CHECKLIST.entryFor(state, t.id)).length : 0;
+  const pageTourCount = showChecklist ? OB_PAGE_TOURS.length : 0;
+  const pageTourDone = showChecklist
+    ? OB_PAGE_TOURS.filter((t) => OB_CHECKLIST.entryFor(state, t.id)).length : 0;
+  const generateCardCount = showChecklist ? 1 : 0;
+  const generateCardDone = (showChecklist && OB_CHECKLIST.entryFor(state, OB_GENERATE_ITEM_ID)) ? 1 : 0;
   const doneCount = entries.filter((e) => e.done).length + remindersDone
-    + tutorialPickerDone + tutorialTaskDone + generateCardDone;
+    + tutorialPickerDone + tutorialTaskDone + pageTourDone + generateCardDone;
   const total = entries.length + ringReminders.length
-    + tutorialPickerCount + tutorialTaskCount + generateCardCount;
+    + tutorialPickerCount + tutorialTaskCount + pageTourCount + generateCardCount;
 
   // Live clock — re-render at the top of every minute so the displayed time
   // stays accurate without spamming setState every second.
@@ -1614,9 +1674,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   // then, it's full of tutorial cards instead of real picks. Reappears
   // normally once the checklist concludes and there's still genuinely
   // nothing to run.
-  const hasTutorialCards = !checklistDone
-    && (state.pickers.some((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id))
-      || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)));
+  const hasTutorialCards = showChecklist;
   const obShowNoRun = !obShowCreate && obBus.phase !== 'tour'
     && obNoRunToday && entries.length === 0 && !hasTutorialCards;
   const startCreatePicker = () => {
@@ -1776,6 +1834,21 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                     </li>
                   );
                 }
+                if (id === '__pageTours') {
+                  if (!showChecklist) return null;
+                  const pDone = OB_PAGE_TOURS.filter((t) => !!OB_CHECKLIST.entryFor(state, t.id)).length;
+                  return (
+                    <li key="__pageTours">
+                      <button className={`rail-btn ${activeGroup === '__pageTours' ? 'is-on' : ''}`}
+                              onClick={() => jumpToGroup('__pageTours')}>
+                        <span className="rail-name">Page Tours</span>
+                        <span className="rail-count">
+                          <span>{pDone}</span><span className="rail-of">/{OB_PAGE_TOURS.length}</span>
+                        </span>
+                      </button>
+                    </li>
+                  );
+                }
                 const g = groupByName[id];
                 if (!g) return null;
                 // Mini-tour launcher cards count toward this the whole time
@@ -1845,6 +1918,36 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                                    sectionRef={(el) => { sectionRefs.current['__reminders'] = el; }} />
                 );
               }
+              if (id === '__pageTours') {
+                if (!showChecklist) return null;
+                const pDone = OB_PAGE_TOURS.filter((t) => !!OB_CHECKLIST.entryFor(state, t.id)).length;
+                return (
+                  <section key="__pageTours" className="group-section"
+                           ref={(el) => { sectionRefs.current['__pageTours'] = el; }}>
+                    <header className="group-h">
+                      <div className="group-h-l">
+                        <h2 className="group-name">Page Tours</h2>
+                        <span className="group-count">
+                          <span className="group-done">{pDone}</span>
+                          <span className="group-of">of {OB_PAGE_TOURS.length}</span>
+                        </span>
+                      </div>
+                      <div className="group-progress">
+                        {OB_PAGE_TOURS.map((t) => (
+                          <i key={t.id} className={OB_CHECKLIST.entryFor(state, t.id) ? 'is-done' : ''} />
+                        ))}
+                      </div>
+                    </header>
+                    <div className="today-list">
+                      {OB_PAGE_TOURS.map((t) => (
+                        <PageTourCard key={t.id} tour={t} state={state} actions={actions}
+                                      onPlayTutorial={startMiniTour} onUncheckTutorial={uncheckTutorial}
+                                      checklistExiting={checklistExiting} />
+                      ))}
+                    </div>
+                  </section>
+                );
+              }
               // A group with no entries yet, mounted only to host an incoming
               // loader card during generation.
               const g = groupByName[id] || (newSlotsByGroup[id] ? { name: id, entries: [] } : null);
@@ -1912,7 +2015,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
             })}
             </div>
 
-            {!checklistDone && (
+            {showChecklist && (
               <div className={`ob-create ob-create--generate ${checklistExiting ? 'is-removing' : ''} ${!obReadyToGenerate ? 'is-needed' : ''}`}>
                 <div className="ob-create-i"><Icon name="check" size={22} /></div>
                 <b>Generate your real list</b>
