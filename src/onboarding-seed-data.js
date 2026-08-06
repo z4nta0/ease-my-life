@@ -101,6 +101,22 @@ export const OB_TASKS = [
   { id: 'tk_ob_trash', name: 'Take trash out for pickup', repeat: 'weekly', daysOfWeek: [1] },
 ];
 
+// Every sample picker/task id in one place — used to hide them once the
+// Welcome Tour ends (see onboarding.jsx) and to recognize a still-hidden one
+// as a mini-tour launcher card on Today (see tab-today.jsx/reminders.jsx).
+export const OB_SAMPLE_PICKER_IDS = [OB_EXAMPLE, ...OB_EXTRA_PICKERS].map((p) => p.id);
+export const OB_SAMPLE_TASK_IDS = OB_TASKS.map((t) => t.id);
+
+// Override copy for each sample reminder's mini-tour launcher card — the
+// card's kicker + name read as an instruction ("Set up a ... reminder")
+// rather than the sample's own real name/schedule summary. Sample pickers
+// don't need an equivalent table: their card kicker is just the picker's own
+// name, and the card name is "Set up a {picker name} picker".
+export const OB_REMINDER_CARD_TEXT = {
+  tk_ob_meds: { kicker: 'One-Time', name: 'Set up a one time reminder' },
+  tk_ob_trash: { kicker: 'Every Monday', name: 'Set up a recurring reminder' },
+};
+
 // Same local-timezone-adjusted ISO day string as store.jsx's isoDay /
 // seed.js's seedIsoDay — kept as a local copy since this module has no
 // dependency on either.

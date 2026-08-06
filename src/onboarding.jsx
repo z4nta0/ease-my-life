@@ -1,12 +1,9 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { OB_EXAMPLE, OB_EXTRA_PICKERS, OB_TASKS, hydrateOnboardingStats } from './onboarding-seed-data.js';
+import {
+  OB_EXAMPLE, OB_EXTRA_PICKERS, OB_TASKS, OB_SAMPLE_PICKER_IDS, hydrateOnboardingStats,
+} from './onboarding-seed-data.js';
 import { reduceMotion } from './ui.jsx';
-
-// Ids of every sample picker seeded for the tour (see the seeding effect in
-// Onboarding()) — used at tour end to hide them (not delete — the mini-tours
-// still need this exact data) via actions.updatePicker/updateTask.
-const OB_SAMPLE_PICKER_IDS = [OB_EXAMPLE, ...OB_EXTRA_PICKERS].map((p) => p.id);
 
 // Onboarding: first-run welcome modal + a spotlight tour that actually drives
 // the app (each coach card's primary button performs the step, so the user

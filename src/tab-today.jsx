@@ -7,6 +7,7 @@ import { DayLogChip, GroupLog } from './day-log.jsx';
 import { HOLIDAYS } from './holidays.js';
 import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
+import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';
 import { PICKERS, normalizeGroupName } from './pickers.js';
 import { ReminderSection } from './reminders.jsx';
 import { REORDER } from './reorder.js';
@@ -73,6 +74,16 @@ function groupEntries(state) {
     if (!byGroup.has(g)) byGroup.set(g, { name: g, entries: [] });
     byGroup.get(g).entries.push({ entry: e, picker });
   }
+  // Mini-tour launcher cards: one per still-hidden sample picker (see the
+  // `hidden` flag + OB_SAMPLE_PICKER_IDS), slotted into its normal group like
+  // any other card. Disappears on its own once the picker is either unhidden
+  // (tutorial finished) or deleted (X'd) — no separate bookkeeping needed.
+  for (const p of state.pickers) {
+    if (!p.hidden || !OB_SAMPLE_PICKER_IDS.includes(p.id)) continue;
+    const g = p.group || 'Other';
+    if (!byGroup.has(g)) byGroup.set(g, { name: g, entries: [] });
+    byGroup.get(g).entries.push({ entry: { kind: 'tutorial', eid: 'tut_' + p.id, done: false }, picker: p });
+  }
   // Group order: user-defined (state.groupOrder from Edit Mode), then any group
   // not yet listed appended by first occurrence in state.pickers, Other last.
   const order = [];
@@ -96,7 +107,7 @@ function groupEntries(state) {
     // to the top (-1), regular picks to the end (1e6).
     const posOf = (row) => {
       if (row.picker.id in idx) return idx[row.picker.id];
-      return (row.entry.kind === 'dayoff' || row.entry.kind === 'charging') ? -1 : 1e6;
+      return (row.entry.kind === 'dayoff' || row.entry.kind === 'charging' || row.entry.kind === 'tutorial') ? -1 : 1e6;
     };
     grp.entries.sort((a, b) => (posOf(a) - posOf(b)) || (a._i - b._i));
     return grp;
@@ -458,7 +469,37 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
   );
 }
 
-function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip, onReroll, isRemoving, isRolling, isEditing, onEdit, onRename, editMode, onGripDown }) {
+function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip, onReroll, isRemoving, isRolling, isEditing, onEdit, onRename, editMode, onGripDown, onPlayTutorial }) {
+  // Mini-tour launcher: a still-hidden sample picker from the Welcome Tour,
+  // offered as a "try this" card in its normal group. No item, no re-roll/
+  // skip/edit, and clicking it never marks it done — Play (or the card
+  // itself) starts the mini-tour; X permanently discards the sample.
+  if (entry.kind === 'tutorial') {
+    const onRowClick = (e) => {
+      if (e.target.closest('.today-card-actions')) return;
+      onPlayTutorial('picker', picker.id);
+    };
+    return (
+      <article className="today-card today-card--tutorial" onClick={onRowClick}>
+        <button type="button" className="check" aria-label={`Start the ${picker.name} tutorial`}
+                onClick={(e) => { e.stopPropagation(); onPlayTutorial('picker', picker.id); }}>
+          <Icon name="play" size={13} />
+        </button>
+        <div className="today-card-body">
+          <div className="today-card-meta">
+            <span className="meta-picker">{picker.name}</span>
+          </div>
+          <div className="today-card-name">Set up a {picker.name} picker</div>
+        </div>
+        <div className="today-card-actions">
+          <button className="icon-btn" onClick={(e) => { e.stopPropagation(); actions.removePicker(picker.id); }}
+                  aria-label="Cancel tutorial" title="Cancel">
+            <Icon name="x" size={15} />
+          </button>
+        </div>
+      </article>
+    );
+  }
   // Day-off card: a conditional is active and its dependent pickers are
   // suppressed. Renders like a completable card (drives the conditional's
   // reset/discharge) but has no item, no re-roll, and no editable name.
@@ -1523,6 +1564,14 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     if (onNavTab) onNavTab('picker');
   };
 
+  // Mini-tour launcher cards' Play button / row click. The mini-tours
+  // themselves don't exist yet — this is a placeholder hook for when each is
+  // built (one at a time, like the main tour). `kind` is 'picker' or
+  // 'reminder', `id` is the sample picker/task's id.
+  const startMiniTour = (kind, id) => {
+    // TODO: launch the mini-tour for this picker/reminder once it exists.
+  };
+
   return (
     <div className={`tab tab--today ${editMode ? 'is-editmode' : ''}`}>
       <header className="today-h" ref={headerRef}>
@@ -1630,14 +1679,17 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                 }
                 const g = groupByName[id];
                 if (!g) return null;
-                const gDone = g.entries.filter((e) => e.entry.done).length;
+                // Tutorial launcher cards aren't real todo items — excluded from
+                // this count same as the overall ring at the top of the tab.
+                const gCountable = g.entries.filter((e) => e.entry.kind !== 'tutorial');
+                const gDone = gCountable.filter((e) => e.entry.done).length;
                 return (
                   <li key={g.name}>
                     <button className={`rail-btn ${activeGroup === g.name ? 'is-on' : ''}`}
                             onClick={() => jumpToGroup(g.name)}>
                       <span className="rail-name">{g.name}</span>
                       <span className="rail-count">
-                        <span>{gDone}</span><span className="rail-of">/{g.entries.length}</span>
+                        <span>{gDone}</span><span className="rail-of">/{gCountable.length}</span>
                       </span>
                     </button>
                   </li>
@@ -1688,6 +1740,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                                    onToggleLog={() => toggleLog('__reminders')}
                                    leavingTaskIds={leavingTaskIds} arrivingTaskIds={arrivingTaskIds}
                                    activeEditor={activeEditor} setActiveEditor={setActiveEditor}
+                                   onPlayTutorial={startMiniTour}
                                    sectionRef={(el) => { sectionRefs.current['__reminders'] = el; }} />
                 );
               }
@@ -1695,12 +1748,15 @@ function TabToday({ state, actions, onHome, onNavTab }) {
               // loader card during generation.
               const g = groupByName[id] || (newSlotsByGroup[id] ? { name: id, entries: [] } : null);
               if (!g) return null;
-              const gDone = g.entries.filter((e) => e.entry.done).length;
+              // Tutorial launcher cards aren't real todo items — excluded from
+              // this count same as the overall ring at the top of the tab.
+              const gCountable = g.entries.filter((e) => e.entry.kind !== 'tutorial');
+              const gDone = gCountable.filter((e) => e.entry.done).length;
               return (
                 <section key={g.name}
                          className="group-section"
                          ref={(el) => { sectionRefs.current[g.name] = el; }}>
-                  <GroupHeader name={g.name} doneCount={gDone} total={g.entries.length}
+                  <GroupHeader name={g.name} doneCount={gDone} total={gCountable.length}
                                editMode={editMode} onGripDown={startGroupDrag}
                                logOpen={openLogKey === g.name}
                                onToggleLog={() => toggleLog(g.name)}
@@ -1730,7 +1786,8 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                                      editMode={editMode}
                                      onGripDown={(ev) => startItemDrag(ev, g)}
                                      onEdit={() => setActiveEditor((cur) => cur === `item:${entry.eid}` ? null : `item:${entry.eid}`)}
-                                     onRename={(name) => actions.renameItem(entry.itemId, name)} />
+                                     onRename={(name) => actions.renameItem(entry.itemId, name)}
+                                     onPlayTutorial={startMiniTour} />
                           <Collapse open={activeEditor === `item:${entry.eid}` && !!item}>
                             {item && (
                               <div className="today-entry-editor">

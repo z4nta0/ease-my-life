@@ -1,5 +1,6 @@
 import React from 'react';
 import { DayLogChip, RemindersLog } from './day-log.jsx';
+import { OB_REMINDER_CARD_TEXT, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { TASKS } from './tasks.js';
 import { Btn, Collapse, Icon, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
 
@@ -392,7 +393,38 @@ function ReminderInlineEdit({ task, onClose, onDelete, commit, state }) {
 // Matches EntryCard's structure: the whole row toggles done; the actions area
 // (edit / delete) is click-isolated. Schedule summary sits where a picker
 // entry shows its picker name.
-function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, onRename, onSkip, isSkipping, extraClass = '', onAnimEnd, date }) {
+function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, onRename, onSkip, isSkipping, extraClass = '', onAnimEnd, date, isTutorial, onPlayTutorial }) {
+  // Mini-tour launcher: a still-hidden sample reminder from the Welcome Tour,
+  // offered as a "try this" card. No skip/edit, and clicking it never marks
+  // it done — Play (or the card itself) starts the mini-tour; X permanently
+  // discards the sample.
+  if (isTutorial) {
+    const text = OB_REMINDER_CARD_TEXT[task.id] || { kicker: '', name: task.name };
+    const onRowClick = (e) => {
+      if (e.target.closest('.today-card-actions')) return;
+      onPlayTutorial('reminder', task.id);
+    };
+    return (
+      <article className="today-card rem-card today-card--tutorial" onClick={onRowClick}>
+        <button type="button" className="check" aria-label={`Start the ${text.name} tutorial`}
+                onClick={(e) => { e.stopPropagation(); onPlayTutorial('reminder', task.id); }}>
+          <Icon name="play" size={13} />
+        </button>
+        <div className="today-card-body">
+          <div className="today-card-meta rem-meta">
+            <span className="meta-picker">{text.kicker}</span>
+          </div>
+          <div className="today-card-name">{text.name}</div>
+        </div>
+        <div className="today-card-actions">
+          <button className="icon-btn" onClick={(e) => { e.stopPropagation(); actions.removeTask(task.id); }}
+                  aria-label="Cancel tutorial" title="Cancel">
+            <Icon name="x" size={15} />
+          </button>
+        </div>
+      </article>
+    );
+  }
   const done = TASKS.isDoneToday(task, date);
   const fresh = justChecked === task.id && done;
   const handleRowClick = (e) => {
@@ -442,12 +474,16 @@ function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, on
 }
 
 // ── Today: the Reminders section (list + inline edit + quick add) ───────────
-function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, arrivingTaskIds, activeEditor, setActiveEditor }) {
+function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, arrivingTaskIds, activeEditor, setActiveEditor, onPlayTutorial }) {
   // Pinned to the last generation, not live "now" — a reminder due on a new
   // day shouldn't appear until the generator (auto or manual Regenerate)
   // actually runs on/after that day. See TASKS.anchorDate.
   const anchor = TASKS.anchorDate(state.today && state.today.generatedAt);
   const due = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays, anchor);
+  // Mini-tour launcher cards: one per still-hidden sample reminder. Kept out
+  // of `due` (and its "X of Y" count) since they're not real due reminders —
+  // see the `hidden` flag + OB_SAMPLE_TASK_IDS.
+  const tutorialTasks = (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
   // The quick-add form and each saved reminder's inline editor are both gated
   // off the tab-wide `activeEditor` slot (shared with the picker item editor
   // in tab-today.jsx) so opening any one of them collapses whichever of the
@@ -618,6 +654,9 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
             </div>
           </div>
         )}
+        {tutorialTasks.map((t) => (
+          <ReminderCard key={t.id} task={t} actions={actions} isTutorial onPlayTutorial={onPlayTutorial} />
+        ))}
         {due.map((t) => (
           <React.Fragment key={t.id}>
             <ReminderCard task={t} actions={actions} justChecked={justChecked} date={anchor}
