@@ -504,7 +504,9 @@ function migrate(s) {
       });
       // Bring stored order structures onto the normalized names too.
       if (Array.isArray(s.groupOrder)) {
-        s.groupOrder = s.groupOrder.map((g) => g === '__reminders' ? g : (normalizeGroupName(g) || g));
+        s.groupOrder = s.groupOrder.map((g) => (
+          (g === '__reminders' || g === '__pageTours') ? g : (normalizeGroupName(g) || g)
+        ));
       }
       if (s.pickerOrder && typeof s.pickerOrder === 'object') {
         const remapped = {};

@@ -788,15 +788,16 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     const push = (id) => { if (!seen.has(id)) { seen.add(id); order.push(id); } };
     if (!go.includes('__reminders')) push('__reminders');
     for (const x of go) {
-      if (x === '__reminders') push('__reminders');
+      if (x === '__reminders' || x === '__pageTours') push(x);
       else if (names.includes(x)) push(x);
     }
     for (const n of names) push(n);
     push('__reminders');
-    // Page Tours sits in a fixed position — right after Reminders, before
-    // every picker group. Unlike Reminders/picker groups it isn't part of
-    // state.groupOrder's user-customizable sequence, so it can't be dragged.
-    order.splice(order.indexOf('__reminders') + 1, 0, '__pageTours');
+    // Page Tours defaults to right after Reminders the first time it shows up
+    // (e.g. state.groupOrder saved before Page Tours existed) so it doesn't
+    // need a backfill in migrate(); once the user drags it in Edit Mode, its
+    // saved position in state.groupOrder takes over like any other group.
+    if (!seen.has('__pageTours')) order.splice(order.indexOf('__reminders') + 1, 0, '__pageTours');
     return order;
   }, [state.groupOrder, groups]);
   const groupByName = React.useMemo(() => {
@@ -1924,8 +1925,16 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                 return (
                   <section key="__pageTours" className="group-section"
                            ref={(el) => { sectionRefs.current['__pageTours'] = el; }}>
-                    <header className="group-h">
+                    <header className={`group-h ${editMode ? 'is-reorderable' : ''}`}>
                       <div className="group-h-l">
+                        {editMode && (
+                          <span className="group-grip" aria-label="Drag to reorder group" role="button" tabIndex={0}
+                                draggable={false}
+                                onDragStart={(e) => e.preventDefault()}
+                                onPointerDown={(e) => startGroupDrag(e)}>
+                            <Icon name="grip" size={16} />
+                          </span>
+                        )}
                         <h2 className="group-name">Page Tours</h2>
                         <span className="group-count">
                           <span className="group-done">{pDone}</span>
