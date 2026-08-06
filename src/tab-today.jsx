@@ -7,7 +7,7 @@ import { DayLogChip, GroupLog } from './day-log.jsx';
 import { HOLIDAYS } from './holidays.js';
 import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
-import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';
+import { OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { PICKERS, normalizeGroupName } from './pickers.js';
 import { ReminderSection } from './reminders.jsx';
 import { REORDER } from './reorder.js';
@@ -1557,8 +1557,15 @@ function TabToday({ state, actions, onHome, onNavTab }) {
       !(p.skipHolidays && holiday)
     ));
   }, [state.pickers, state.daily.pickerIds, state.holidays]);
+  // Suppressed while any mini-tour launcher card is still showing (picker or
+  // reminder) — the page isn't actually empty then, it's just full of "try
+  // this" suggestions instead of real picks. Reappears normally once every
+  // sample has been finished or X'd away and there's still genuinely nothing
+  // to run.
+  const hasTutorialCards = state.pickers.some((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id))
+    || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
   const obShowNoRun = !obShowCreate && obBus.phase !== 'tour'
-    && obNoRunToday && entries.length === 0;
+    && obNoRunToday && entries.length === 0 && !hasTutorialCards;
   const startCreatePicker = () => {
     emlTour.set({ startCreate: { name: 'Chores', step: 1, focusName: true } });
     if (onNavTab) onNavTab('picker');
