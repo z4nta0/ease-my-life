@@ -20,27 +20,27 @@ const OB_NAV_TARGETS = {
   today: {
     sel: '[data-tab="today"]', place: 'below',
     title: 'This is the Today page',
-    body: <>The <b>Today</b> page is the main page of the app, and it will be where your auto-generated list will be displayed every day.</>,
+    body: <>This is the <b>main page of the app</b>, and it is where your auto-generated todo list will be displayed every day.</>,
   },
   picker: {
     sel: '[data-tab="picker"]', place: 'below',
     title: 'This is the Pickers page',
-    body: <>The <b>Pickers</b> page is where new pickers and their items can be created. You can also run any picker to generate a task.</>,
+    body: <>Pickers are the <b>heart of the app</b> and this is where you can create new pickers and their items. You can also manually run any picker to generate a task.</>,
   },
   stats: {
     sel: '[data-tab="stats"]', place: 'below',
     title: 'This is the Stats page',
-    body: <>The <b>Stats</b> page is where you can find a breakdown of all the statistics associated with a given picker and its items.</>,
+    body: <>This is where you can find a <b>breakdown of all the statistics</b> associated with your created pickers and their items. As you continue to use the app over time, this page will become extremely useful.</>,
   },
   data: {
     sel: '[data-tab="data"]', place: 'below',
     title: 'This is the Data page',
-    body: <>The <b>Data</b> page is where you will be able to view and edit all your reminders, pickers and their items.</>,
+    body: <>This is where you can <b>view and edit all of the data</b> that you have created. That includes all of your reminders, pickers and their related items.</>,
   },
   settings: {
     sel: '[data-tab="settings"]', place: 'below',
     title: 'This is the Settings page',
-    body: <>The <b>Settings</b> page is where you will be able to customize various aspects of the app, install the app and export/import your data.</>,
+    body: <>This is where you will be able to customize various aspects of the app, adjust the daily generator, customize holiday observances, <b>install the app</b> and export/import your data.</>,
   },
 };
 

@@ -325,14 +325,13 @@ function Onboarding({ state, actions, active, selectTab }) {
     {
       ...OB_NAV_TARGETS.today,
       tab: 'today',
-      body: <>{OB_NAV_TARGETS.today.body} Let’s explore this page now.</>,
       primary: 'Next', back: false,
       run: () => { setStep(1); },
     },
     {
       sel: '.ob-generate', place: 'above', tab: 'today',
-      title: 'Your first todo list',
-      body: <>Each morning the app will automatically generate your daily todo list. The app is set up with some sample data so that you can see how it works. You can always click <b>Regenerate</b> if you’d rather generate the list yourself. Let’s go ahead and run it now.</>,
+      title: 'Todo list generation',
+      body: <>Each morning the app will <b>automatically generate your daily todo list</b>. Since you have not created anything yet, the app will use some sample data so that you can see how it works. You can always click Regenerate if you’d rather generate the list yourself. Let’s go ahead and run that now.</>,
       primary: 'Next', back: true,
       run: () => {
         // On replay (dismissed:true) the user already has a real Today list —
@@ -361,47 +360,51 @@ function Onboarding({ state, actions, active, selectTab }) {
     {
       sel: '.group-section',
       place: 'below', tab: 'today',
-      title: 'Your first todo list!',
-      body: <>This is what a typical <b>todo list</b> will look like once you set up your own pickers. The app will guide you through the picker creation process later on. Let’s move on for now.</>,
+      title: 'Daily todo list',
+      body: <>This is what a <b>typical todo list</b> will look like once you’ve set up your own pickers and reminders. There will be tutorials for setting these up once this tour ends.</>,
       primary: 'Next', back: true,
       run: () => { markAllPicksDone(); selectTab('picker'); setStep(3); },
     },
     {
       ...OB_NAV_TARGETS.picker,
       tab: 'picker',
-      body: <>{OB_NAV_TARGETS.picker.body} Let’s explore this page now.</>,
       primary: 'Next', back: true,
       run: () => { selectTab('stats'); setStep(4); },
     },
     {
       ...OB_NAV_TARGETS.stats,
       tab: 'stats',
-      body: <>{OB_NAV_TARGETS.stats.body} Let’s explore this page now.</>,
       primary: 'Next', back: true,
       run: () => { selectTab('data'); setStep(5); },
     },
     {
       ...OB_NAV_TARGETS.data,
       tab: 'data',
-      body: <>{OB_NAV_TARGETS.data.body} There will be a tutorial later on to explain this in more detail. Let’s move on for now.</>,
       primary: 'Next', back: true,
       run: () => { selectTab('settings'); setStep(6); },
     },
     {
       ...OB_NAV_TARGETS.settings,
       tab: 'settings',
-      body: <>{OB_NAV_TARGETS.settings.body} There will be a tutorial later on to explain this in more detail. Let’s move on for now.</>,
-      primary: 'Done', back: true,
+      primary: 'Next', back: true,
       run: () => {
         // Tuck the sample pickers/reminders out of sight — not deleted, the
         // per-page mini-tours will reuse this exact data (and its precomputed
         // Stats history) later. Done before selectTab so Today never flashes
-        // the sample content on its way back into view.
+        // the sample content on its way back into view, and before the final
+        // step so its highlight below finds the checklist already showing.
         OB_SAMPLE_PICKER_IDS.forEach((id) => actions.updatePicker(id, { hidden: true }));
         OB_TASKS.forEach((t) => actions.updateTask(t.id, { hidden: true }));
         selectTab('today');
-        finish();
+        setStep(7);
       },
+    },
+    {
+      sel: '.groups-dnd', place: 'below', tab: 'today',
+      title: 'You’re all finished!',
+      body: <>That is all for the Welcome Tour. Highlighted here are a few small tutorials that will help get you set up to start using the app. Enjoy!</>,
+      primary: 'Done', back: true,
+      run: () => { finish(); },
     },
   ];
   // Guards a resumed step index that no longer exists (e.g. a stale
