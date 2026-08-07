@@ -134,11 +134,16 @@ function App() {
   // a step spotlighting a nav button can actually find it there even when
   // collapsed — see onboarding.jsx's wantRailOpen publish. Only acts while a
   // tour is actually active, so it never fights the user's own manual
-  // toggling outside of one.
+  // toggling outside of one. Depends on obBus.step too, not just
+  // wantRailOpen's own value — two consecutive nav-button steps both want it
+  // open (true → true, no value change to react to), but selectTab (called
+  // by the outgoing step's own run()) unconditionally closes the rail on
+  // every tab switch in between. Without step in the deps, that close would
+  // never get corrected past the first pair of back-to-back nav steps.
   const obBus = useEmlTour();
   React.useEffect(() => {
     if (obBus.phase === 'tour' && typeof obBus.wantRailOpen === 'boolean') setRailOpen(obBus.wantRailOpen);
-  }, [obBus.phase, obBus.wantRailOpen]);
+  }, [obBus.phase, obBus.wantRailOpen, obBus.step]);
   const mainRef = React.useRef(null);
   // Nav layout-switch animation: when tabPlacement changes, keep a fixed-overlay
   // GHOST of the old bar mounted to play its exit-toward-edge keyframe while the
