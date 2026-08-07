@@ -312,15 +312,6 @@ function Onboarding({ state, actions, active, selectTab }) {
   // PREVIOUS step's run() already navigated to, but load-bearing on a resume
   // (see the tab-sync effect below), where there was no previous step to do
   // that navigating.
-  // Marks every picker-item entry (not reminders/day-off/etc.) not already
-  // done — used both by the review step's own Next and by the watcher below,
-  // so however the user completes one item, the whole list finishes together
-  // and the real completion celebration plays.
-  const markAllPicksDone = () => {
-    (state.today.entries || []).forEach((e) => {
-      if (e.itemId && !e.kind && !e.done) actions.toggleDone(e.eid);
-    });
-  };
   const steps = [
     {
       ...OB_NAV_TARGETS.today,
@@ -363,7 +354,7 @@ function Onboarding({ state, actions, active, selectTab }) {
       title: 'Daily todo list',
       body: <>This is what a <b>typical todo list</b> will look like once you’ve set up your own pickers and reminders. There will be tutorials for setting these up once this tour ends.</>,
       primary: 'Next', back: true,
-      run: () => { markAllPicksDone(); selectTab('picker'); setStep(3); },
+      run: () => { selectTab('picker'); setStep(3); },
     },
     {
       ...OB_NAV_TARGETS.picker,
@@ -448,18 +439,6 @@ function Onboarding({ state, actions, active, selectTab }) {
     selectTab('today');
     setStep(to);
   };
-
-  // On the review step, if the user checks off one item themselves (rather
-  // than clicking the coach's Next), finish the rest for them so the list
-  // completes together and the real completion celebration plays.
-  React.useEffect(() => {
-    if (phase !== 'tour' || step !== 2) return;
-    const picks = (state.today.entries || []).filter((e) => e.itemId && !e.kind);
-    if (picks.length === 0) return;
-    const someDone = picks.some((e) => e.done);
-    const allDone = picks.every((e) => e.done);
-    if (someDone && !allDone) markAllPicksDone();
-  }, [phase, step, state.today.entries]);
 
   // ── Position tracking: follow the target every frame while a step is up ──
   React.useEffect(() => {
