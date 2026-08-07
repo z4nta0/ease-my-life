@@ -225,9 +225,15 @@ const obSafeTop = () => {
 
 function Onboarding({ state, actions, active, selectTab }) {
   const ob = state.onboarding || { welcomed: true };
+  // A tour a reload interrupted resumes exactly where it left off instead of
+  // vanishing — activeTour survives a reload (it's real persisted state),
+  // unlike phase/step below. See the persist-on-change effect further down
+  // and store.jsx's activeTour migrate(). Ignored if welcomed is false — the
+  // welcome modal (not yet dismissed) always takes priority.
+  const resumable = ob.welcomed && ob.activeTour && ob.activeTour.id === 'welcome' ? ob.activeTour : null;
   // phase: 'welcome' | 'tour' | 'off'
-  const [phase, setPhase] = React.useState(ob.welcomed ? 'off' : 'welcome');
-  const [step, setStep] = React.useState(0);
+  const [phase, setPhase] = React.useState(!ob.welcomed ? 'welcome' : (resumable ? 'tour' : 'off'));
+  const [step, setStep] = React.useState(resumable ? resumable.step : 0);
   const [rect, setRect] = React.useState(null);
   // Extra top-space (px) reserved above the Today list, ON the Today tab,
   // when the current step's highlight is too tall for the coach to fit
@@ -278,8 +284,18 @@ function Onboarding({ state, actions, active, selectTab }) {
   // when their normal render gate is off.
   React.useEffect(() => { emlTour.set({ phase, step }); }, [phase, step]);
 
+  // Persist tour progress as it advances, so a reload can resume from
+  // `resumable` above instead of losing it — this is the ONLY place a step
+  // change gets written to real state; finish() below clears it again once
+  // the tour ends (however it ends: Done, Skip, or the watchdog bailing out
+  // of a step whose target never resolves).
+  React.useEffect(() => {
+    if (phase === 'tour') actions.setOnboarding({ activeTour: { id: 'welcome', step } });
+  }, [phase, step]);
+
   const finish = React.useCallback(() => {
     setPhase('off'); emlTour.set({ prefill: null });
+    actions.setOnboarding({ activeTour: null });
   }, []);
   const welcomeDone = () => actions.setOnboarding({ welcomed: true });
 
@@ -291,7 +307,11 @@ function Onboarding({ state, actions, active, selectTab }) {
   }, [phase]);
 
   // ── Step definitions ────────────────────────────────────────────────
-  // Each: target selector, placement hint, copy, primary action.
+  // Each: target selector, placement hint, copy, primary action, and which
+  // tab its target lives on (`tab`) — normally redundant with whatever the
+  // PREVIOUS step's run() already navigated to, but load-bearing on a resume
+  // (see the tab-sync effect below), where there was no previous step to do
+  // that navigating.
   // Marks every picker-item entry (not reminders/day-off/etc.) not already
   // done — used both by the review step's own Next and by the watcher below,
   // so however the user completes one item, the whole list finishes together
@@ -304,12 +324,13 @@ function Onboarding({ state, actions, active, selectTab }) {
   const steps = [
     {
       ...OB_NAV_TARGETS.today,
+      tab: 'today',
       body: <>{OB_NAV_TARGETS.today.body} Let’s explore this page now.</>,
       primary: 'Next', back: false,
       run: () => { setStep(1); },
     },
     {
-      sel: '.ob-generate', place: 'above',
+      sel: '.ob-generate', place: 'above', tab: 'today',
       title: 'Your first todo list',
       body: <>Each morning the app will automatically generate your daily todo list. The app is set up with some sample data so that you can see how it works. You can always click <b>Regenerate</b> if you’d rather generate the list yourself. Let’s go ahead and run it now.</>,
       primary: 'Next', back: true,
@@ -339,7 +360,7 @@ function Onboarding({ state, actions, active, selectTab }) {
     },
     {
       sel: '.group-section',
-      place: 'below',
+      place: 'below', tab: 'today',
       title: 'Your first todo list!',
       body: <>This is what a typical <b>todo list</b> will look like once you set up your own pickers. The app will guide you through the picker creation process later on. Let’s move on for now.</>,
       primary: 'Next', back: true,
@@ -347,24 +368,28 @@ function Onboarding({ state, actions, active, selectTab }) {
     },
     {
       ...OB_NAV_TARGETS.picker,
+      tab: 'picker',
       body: <>{OB_NAV_TARGETS.picker.body} Let’s explore this page now.</>,
       primary: 'Next', back: true,
       run: () => { selectTab('stats'); setStep(4); },
     },
     {
       ...OB_NAV_TARGETS.stats,
+      tab: 'stats',
       body: <>{OB_NAV_TARGETS.stats.body} Let’s explore this page now.</>,
       primary: 'Next', back: true,
       run: () => { selectTab('data'); setStep(5); },
     },
     {
       ...OB_NAV_TARGETS.data,
+      tab: 'data',
       body: <>{OB_NAV_TARGETS.data.body} There will be a tutorial later on to explain this in more detail. Let’s move on for now.</>,
       primary: 'Next', back: true,
       run: () => { selectTab('settings'); setStep(6); },
     },
     {
       ...OB_NAV_TARGETS.settings,
+      tab: 'settings',
       body: <>{OB_NAV_TARGETS.settings.body} There will be a tutorial later on to explain this in more detail. Let’s move on for now.</>,
       primary: 'Done', back: true,
       run: () => {
@@ -379,7 +404,20 @@ function Onboarding({ state, actions, active, selectTab }) {
       },
     },
   ];
-  const cur = phase === 'tour' ? steps[step] : null;
+  // Guards a resumed step index that no longer exists (e.g. a stale
+  // activeTour left over from before an app update changed the step count) —
+  // steps[step] is undefined rather than throwing, and the position-tracking
+  // effect below bails out to finish() the moment it sees a falsy cur.
+  const cur = phase === 'tour' ? (steps[step] || null) : null;
+  // Resuming after a reload lands on whichever tab the app opens to by
+  // default, not necessarily the tab THIS step's target lives on — normally
+  // the OUTGOING step's run() is what navigates there, but a resume has no
+  // outgoing step to do that. The `active !== cur.tab` check makes this a
+  // no-op during ordinary advancing (run() already got there first) and
+  // only actually acts on a resume.
+  React.useEffect(() => {
+    if (phase === 'tour' && cur && cur.tab && active !== cur.tab) selectTab(cur.tab);
+  }, [phase, step]);
   // Resolve every element a step's selector matches — honoring selector
   // ORDER (comma-separated fallbacks) — so a step can spotlight more than one
   // element (e.g. "the whole list") as a single combined highlight.
@@ -429,7 +467,12 @@ function Onboarding({ state, actions, active, selectTab }) {
     // already reflecting stale leftover padding.
     setReserveTop(0);
     hadRectRef.current = false; // next appearance jumps into place, no slide-in
-    if (!cur) return;
+    if (!cur) {
+      // phase 'tour' with no valid step (see the clamp on `cur` above) — bail
+      // out cleanly rather than leave a permanent dim with nothing to click.
+      if (phase === 'tour') finish();
+      return;
+    }
     let raf, cancelled = false;
     // Resolve the ACTUAL scrolling ancestor of the target. On narrow/mobile
     // layouts the scroller isn't ".main" (the page/body scrolls instead), so a
@@ -524,10 +567,18 @@ function Onboarding({ state, actions, active, selectTab }) {
     // Listen broadly (capture) so it fires for whichever element scrolls.
     const onScroll = () => { const els = findTargets(cur.sel); if (els.length) place(els); };
     window.addEventListener('scroll', onScroll, { passive: true, capture: true });
+    // Watchdog: a step whose target never resolves (normally just the tab-sync
+    // effect's selectTab() still settling) would otherwise sit as a permanent
+    // dim with nothing to click — most likely on a resume, where a stale
+    // activeTour survived some app change that moved or removed the target.
+    // Generous enough not to fire during ordinary mounting.
+    const NOT_FOUND_TIMEOUT = 4000;
+    let notFoundSince = null;
     const loop = () => {
       if (cancelled) return;
       const els = findTargets(cur.sel);
       if (els.length) {
+        notFoundSince = null;
         if (!broughtRef) { broughtRef = true; bring(); } // scroll once the target actually exists
         decideReserve(els);
         const r = place(els);
@@ -535,6 +586,8 @@ function Onboarding({ state, actions, active, selectTab }) {
           ? p : { top: r.top, left: r.left, width: r.width, height: r.height });
       } else {
         setRect(null);
+        if (notFoundSince == null) notFoundSince = performance.now();
+        else if (performance.now() - notFoundSince > NOT_FOUND_TIMEOUT) { cancelled = true; finish(); return; }
       }
       raf = requestAnimationFrame(loop);
     };

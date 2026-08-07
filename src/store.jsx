@@ -419,6 +419,14 @@ function migrate(s) {
   if (s && s.onboarding && typeof s.onboarding.pageToursName !== 'string') {
     s.onboarding.pageToursName = 'Page Tours';
   }
+  // Active tour progress (added later) — { id, step } | null. Lets a guided
+  // tour resume exactly where a reload interrupted it instead of losing all
+  // progress; see onboarding.jsx. Generic across tour "id"s (the main
+  // Welcome Tour today, future per-page mini-tours later) rather than
+  // welcome-tour-specific fields, since only one tour can ever be active.
+  if (s && s.onboarding && typeof s.onboarding.activeTour === 'undefined') {
+    s.onboarding.activeTour = null;
+  }
   // Reminder completion log (added later). Append-only history of check-offs.
   if (s && !Array.isArray(s.reminderLog)) s.reminderLog = [];
   // Reminder skip log (added later). Append-only history of skip actions.
