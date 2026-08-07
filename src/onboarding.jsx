@@ -4,6 +4,7 @@ import {
   OB_EXAMPLE, OB_EXTRA_PICKERS, OB_TASKS, OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS,
   hydrateOnboardingStats,
 } from './onboarding-seed-data.js';
+import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
 import { reduceMotion } from './ui.jsx';
 
 // Onboarding: first-run welcome modal + a spotlight tour that actually drives
@@ -302,9 +303,8 @@ function Onboarding({ state, actions, active, selectTab }) {
   };
   const steps = [
     {
-      sel: '[data-tab="today"]', place: 'below',
-      title: 'This is the Today page',
-      body: <>The <b>Today</b> page is the main page of the app, and it will be where your auto-generated list will be displayed every day. Let’s explore this page now.</>,
+      ...OB_NAV_TARGETS.today,
+      body: <>{OB_NAV_TARGETS.today.body} Let’s explore this page now.</>,
       primary: 'Next', back: false,
       run: () => { setStep(1); },
     },
@@ -346,30 +346,26 @@ function Onboarding({ state, actions, active, selectTab }) {
       run: () => { markAllPicksDone(); selectTab('picker'); setStep(3); },
     },
     {
-      sel: '[data-tab="picker"]', place: 'below',
-      title: 'This is the Pickers page',
-      body: <>The <b>Pickers</b> page is where new pickers and their items can be created. You can also run any picker to generate a task. Let’s explore this page now.</>,
+      ...OB_NAV_TARGETS.picker,
+      body: <>{OB_NAV_TARGETS.picker.body} Let’s explore this page now.</>,
       primary: 'Next', back: true,
       run: () => { selectTab('stats'); setStep(4); },
     },
     {
-      sel: '[data-tab="stats"]', place: 'below',
-      title: 'This is the Stats page',
-      body: <>The <b>Stats</b> page is where you can find a breakdown of all the statistics associated with a given picker and its items. Let’s explore this page now.</>,
+      ...OB_NAV_TARGETS.stats,
+      body: <>{OB_NAV_TARGETS.stats.body} Let’s explore this page now.</>,
       primary: 'Next', back: true,
       run: () => { selectTab('data'); setStep(5); },
     },
     {
-      sel: '[data-tab="data"]', place: 'below',
-      title: 'This is the Data page',
-      body: <>The <b>Data</b> page is where you will be able to view and edit all your reminders, pickers and their items. There will be a tutorial later on to explain this in more detail. Let’s move on for now.</>,
+      ...OB_NAV_TARGETS.data,
+      body: <>{OB_NAV_TARGETS.data.body} There will be a tutorial later on to explain this in more detail. Let’s move on for now.</>,
       primary: 'Next', back: true,
       run: () => { selectTab('settings'); setStep(6); },
     },
     {
-      sel: '[data-tab="settings"]', place: 'below',
-      title: 'This is the Settings page',
-      body: <>The <b>Settings</b> page is where you will be able to customize various aspects of the app, install the app and export/import your data. There will be a tutorial later on to explain this in more detail. Let’s move on for now.</>,
+      ...OB_NAV_TARGETS.settings,
+      body: <>{OB_NAV_TARGETS.settings.body} There will be a tutorial later on to explain this in more detail. Let’s move on for now.</>,
       primary: 'Done', back: true,
       run: () => {
         // Tuck the sample pickers/reminders out of sight — not deleted, the
