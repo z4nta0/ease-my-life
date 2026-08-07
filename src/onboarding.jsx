@@ -79,6 +79,16 @@ const obSafeTop = () => {
   return bottom;
 };
 
+// The highest screen-y a spotlight/coach can safely reach without landing
+// UNDER the floating bottom tab bar (tabPlacement 'bottom' only — the other
+// two placements don't occupy this edge, so there's nothing to clamp against
+// and this returns the viewport height, i.e. no constraint). Mirrors
+// obSafeTop's job for the opposite edge.
+const obSafeBottom = () => {
+  const bar = document.querySelector('.tabbar--bottom');
+  return bar ? bar.getBoundingClientRect().top : window.innerHeight;
+};
+
 // ── STASHED: create-a-picker tour content ──────────────────────────────────
 // Cut from the active tour below when it was refocused on orienting the user
 // around the app in general, rather than building a real picker step by
@@ -496,26 +506,27 @@ function Onboarding({ state, actions, active, selectTab }) {
     };
     bring();
     let broughtRef = false;
-    // The Today tab's own header (and, on mobile, the groups rail stacked
-    // below it) is `position: sticky; top: 0`-ish, with a higher z-index than
-    // the surrounding content but a LOWER one than this tour overlay — so if
-    // a highlighted rect's top scrolls above that chrome's bottom edge, the
-    // spotlight's cutout (a box-shadow "hole") would expose it through the
-    // dim instead of dimming it, reading as if the chrome itself were the
+    // Today's own sticky header (and, on mobile, the groups rail stacked below
+    // it) plus a floating bottom tab bar (tabPlacement 'bottom') both sit at a
+    // higher z-index than the surrounding content but a LOWER one than this
+    // tour overlay — so a highlighted rect reaching past either one's edge
+    // would expose it through the spotlight's cutout (a box-shadow "hole")
+    // instead of dimming it, reading as if that chrome were part of the
     // highlighted target. Clamp the rect actually drawn (not the one bring()
     // scrolls by, which needs the real position) so the spotlight never
-    // reaches into that safe zone.
+    // reaches into either safe zone.
     const spotPad = 8;
-    const clampToHeader = (r) => {
+    const clampToChrome = (r) => {
       // Clamp to the safe boundary PLUS the spot's own padding, so the
       // padded box drawn below never overlaps that chrome even by that margin.
       const minTop = obSafeTop() + spotPad;
-      if (r.top >= minTop) return r;
+      const maxBottom = obSafeBottom() - spotPad;
       const top = Math.max(r.top, minTop);
-      return { ...r, top, height: r.bottom - top };
+      const bottom = Math.min(r.bottom, maxBottom);
+      return { ...r, top, bottom, height: bottom - top };
     };
     const place = (els) => {
-      const r = clampToHeader(unionRect(els));
+      const r = clampToChrome(unionRect(els));
       if (spotRef.current) {
         const pad = spotPad, s = spotRef.current.style;
         s.top = (r.top - pad) + 'px'; s.left = (r.left - pad) + 'px';
