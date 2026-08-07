@@ -422,6 +422,19 @@ function Onboarding({ state, actions, active, selectTab }) {
   React.useEffect(() => {
     if (phase === 'tour' && cur && cur.tab && active !== cur.tab) selectTab(cur.tab);
   }, [phase, step]);
+  // On tabPlacement 'side', the rail collapses to an off-canvas drawer on
+  // small screens (App owns the actual open/close state — see its
+  // subscription to this same field) — a step targeting a nav button would
+  // otherwise never find it there. Published unconditionally (not just when
+  // opening) so it also closes the drawer again once we move to a step that
+  // doesn't need it, rather than leaving it open to cover a content target.
+  // A no-op at desktop widths, where the rail is never collapsed to begin
+  // with. Keyed off the selector string itself, not resolved elements —
+  // resolving would need the rail already open, which is exactly what this
+  // is for.
+  React.useEffect(() => {
+    emlTour.set({ wantRailOpen: !!(phase === 'tour' && cur && cur.sel.includes('[data-tab=')) });
+  }, [phase, step]);
   // Resolve every element a step's selector matches — honoring selector
   // ORDER (comma-separated fallbacks) — so a step can spotlight more than one
   // element (e.g. "the whole list") as a single combined highlight.
