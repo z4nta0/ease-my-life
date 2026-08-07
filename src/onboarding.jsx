@@ -504,13 +504,25 @@ function Onboarding({ state, actions, active, selectTab }) {
     // Today list.
     if (!ob.dismissed) {
       OB_SAMPLE_PICKER_IDS.forEach((id) => actions.updatePicker(id, { hidden: false }));
-      OB_TASKS.forEach((t) => actions.updateTask(t.id, { hidden: false }));
-      // Back to the Generate step specifically: clear whatever's on the
-      // list so it again looks like nothing's been generated yet, matching
-      // the very first time this step showed, rather than a stale list left
-      // over from generating (tour-driven or the user's own) before going
-      // further and coming back.
-      if (to === 1) actions.clearTodayEntries();
+      if (to === 1) {
+        // Back to the Generate step specifically: sample REMINDERS don't
+        // exist yet the very first time this step shows — Step 2's own
+        // run() only adds them once its Next actually fires (see there).
+        // Removed rather than hidden — hidden would keep mainTourEnded
+        // true (it's an OR across hidden pickers OR hidden tasks), which
+        // would leave the checklist phase (Page Tours, the closing Generate
+        // card) showing right alongside this step's own plain sample
+        // preview. Safe to fully delete: the forward run()'s own existence
+        // check re-adds them exactly as before the moment Next fires again.
+        // Also clear whatever's on the picker list so it again looks like
+        // nothing's been generated yet, rather than a stale list left over
+        // from generating (tour-driven or the user's own) before going
+        // further and coming back.
+        OB_TASKS.forEach((t) => actions.removeTask(t.id));
+        actions.clearTodayEntries();
+      } else {
+        OB_TASKS.forEach((t) => actions.updateTask(t.id, { hidden: false }));
+      }
     }
     selectTab('today');
     setStep(to);
@@ -554,11 +566,11 @@ function Onboarding({ state, actions, active, selectTab }) {
       const els = findTargets(cur.sel);
       if (!els.length) return;
       const sc = getScroller(els[0]);
-      // Landing on the review step: the highlighted content starts right at
-      // the top of the page anyway, so scroll all the way up rather than
-      // just nudging it into view — keeps everything visible from the top
-      // instead of opening mid-scroll.
-      if (step === 2) {
+      // Landing on the review step or the closing step: both highlight
+      // content that starts right at the top of the page anyway, so scroll
+      // all the way up rather than just nudging it into view — keeps
+      // everything visible from the top instead of opening mid-scroll.
+      if (step === 2 || step === 7) {
         if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo(0, 0);
         else sc.scrollTop = 0;
         return;
