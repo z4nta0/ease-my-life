@@ -564,7 +564,8 @@ function Onboarding({ state, actions, active, selectTab }) {
           <div className="ob-wmark"><svg viewBox="8 8 528 528" fill="none"><path d={OB_BRAND} style={{ fill: 'currentColor', stroke: 'currentColor' }} strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" /></svg></div>
           <h2>Welcome to Ease My Life</h2>
           <p>Decide less and add some variety to your life! Ease My Life is a todo app that generates a daily list of tasks from pools of items that you create and according to the rules that you set.</p>
-          <p>This welcome tour will show you the layout of the app and help you understand how it works. After it finishes, there will be a few smaller tours that will guide you through setting up everything you need in order to generate your first list. Let’s get started!</p>
+          <p>Ease My Life requires no account to use, works completely offline, stores all data on your device and is ad free!</p>
+          <p>This welcome tour will show you the layout of the app and help you understand how it works. After it finishes, there will be a few small tutorials that will guide you through setting up everything you need in order to generate your first todo list. Let’s get started!</p>
           <div className="ob-chips"><span>todo list</span><span>pickers</span><span>reminders</span></div>
           <div className="ob-wact">
             <button className="ob-btn ob-btn--primary" autoFocus onClick={() => { selectTab('today'); welcomeDone(); setPhase('tour'); setStep(0); }}>Take the quick tour</button>
