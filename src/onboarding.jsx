@@ -623,12 +623,25 @@ function Onboarding({ state, actions, active, selectTab }) {
     // Generous enough not to fire during ordinary mounting.
     const NOT_FOUND_TIMEOUT = 4000;
     let notFoundSince = null;
+    // Tracks the scrollable content's total height so a step whose target
+    // stays put (no tab/step change) but whose SURROUNDING content grows or
+    // shrinks — e.g. the user regenerates themselves via Step 2's own
+    // Regenerate button, without ever clicking the coach's Next — can still
+    // get nudged back into view. Ordinary scrolling never changes this
+    // value, so it doesn't fight the user scrolling around on purpose; only
+    // an actual content-size change re-triggers bring().
+    let lastScrollHeight = null;
     const loop = () => {
       if (cancelled) return;
       const els = findTargets(cur.sel);
       if (els.length) {
         notFoundSince = null;
+        const sc = getScroller(els[0]);
+        const h = (sc === document.scrollingElement || sc === document.documentElement)
+          ? document.documentElement.scrollHeight : sc.scrollHeight;
         if (!broughtRef) { broughtRef = true; bring(); } // scroll once the target actually exists
+        else if (lastScrollHeight != null && Math.abs(h - lastScrollHeight) > 40) bring();
+        lastScrollHeight = h;
         decideReserve(els);
         const r = place(els);
         setRect((p) => (p && Math.abs(p.top - r.top) < 0.5 && Math.abs(p.left - r.left) < 0.5 && p.width === r.width && p.height === r.height)
