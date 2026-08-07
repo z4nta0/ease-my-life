@@ -330,7 +330,13 @@ function Onboarding({ state, actions, active, selectTab }) {
       run: () => { setStep(1); },
     },
     {
-      sel: '.ob-generate', place: 'above', tab: 'today',
+      // .gen-confirm is a fallback, not the primary target: clicking
+      // Regenerate yourself (the step's own "do it yourself" path) replaces
+      // the button with tab-today.jsx's confirm prompt, and without this the
+      // step's target would genuinely vanish for however long the user
+      // takes to read it and click Continue — long enough, on a real human
+      // timescale, to trip the not-found watchdog and end the tour outright.
+      sel: '.ob-generate, .gen-confirm', place: 'above', tab: 'today',
       title: 'Todo list generation',
       body: <>Each morning the app will <b>automatically generate your daily todo list</b>. Since you have not created anything yet, the app will use some sample data so that you can see how it works. You can always click Regenerate if you’d rather generate the list yourself. Let’s go ahead and run that now.</>,
       primary: 'Next', back: true,
@@ -455,6 +461,34 @@ function Onboarding({ state, actions, active, selectTab }) {
     });
     return { top, left, right, bottom, width: right - left, height: bottom - top };
   };
+
+  // Block every click during a tour except the coach card and the current
+  // step's own highlighted target(s) — otherwise the user can click straight
+  // through the dim to whatever's actually underneath (delete a picker,
+  // jump to an unrelated tab, etc.) and desync the tour from the real app
+  // state. Capture-phase on document so it runs before the click reaches
+  // whatever it landed on. Reads via a ref rather than re-attaching per
+  // step — the listener only needs to exist for the phase's duration, and
+  // findTargets/cur are re-evaluated fresh on every click, not closed over
+  // stale. Deliberately built into this same shared engine code (not
+  // step-specific) so any future mini-tour reusing it gets this for free —
+  // the planned on-demand help mode, being non-sequential and click-around
+  // by design, would use a different, non-guided component and never hit
+  // this at all.
+  const curRef = React.useRef(cur);
+  curRef.current = cur;
+  React.useEffect(() => {
+    if (phase !== 'tour') return;
+    const onClickCapture = (e) => {
+      const c = curRef.current;
+      if (e.target.closest('.ob-coach')) return;
+      if (c && findTargets(c.sel).some((el) => el.contains(e.target))) return;
+      e.preventDefault();
+      e.stopPropagation();
+    };
+    document.addEventListener('click', onClickCapture, true);
+    return () => document.removeEventListener('click', onClickCapture, true);
+  }, [phase]);
 
   // Back reverses the step's navigation so the previous target exists again.
   const goBack = () => {
