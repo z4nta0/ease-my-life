@@ -714,6 +714,14 @@ function useStore(opts) {
       return { ...s, items, pickers };
     }),
 
+    // Wipes today's picks back to empty without touching anything else about
+    // `today` (generatedAt, streakClaimed, ...) — used by the Welcome Tour
+    // when backing up to its Generate step, so it shows the same pristine
+    // "nothing generated yet" state it did the first time through rather
+    // than whatever was already on the list from having gone further before
+    // coming back.
+    clearTodayEntries: () => setState((s) => ({ ...s, today: { ...s.today, entries: [] } })),
+
     // Add a NEW today entry for `pickerId` showing `itemId`. Multiple entries
     // per picker are allowed for other modes — the Pickers tab uses this to ADD
     // a choice; the user prunes any they don't want with each entry's own Skip

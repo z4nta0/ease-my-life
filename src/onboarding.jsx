@@ -493,6 +493,25 @@ function Onboarding({ state, actions, active, selectTab }) {
   // Back reverses the step's navigation so the previous target exists again.
   const goBack = () => {
     const to = Math.max(0, step - 1);
+    // Sample pickers/tasks only ever get hidden once, at the Settings→final
+    // transition (see that step's run()) — stepping back before that point
+    // should show them exactly as they did the first time through, not
+    // whatever the checklist phase (tutorial cards, Page Tours) left behind
+    // from having reached the end. Skipped during a replay (dismissed:true):
+    // those samples are the ORIGINAL ones from the user's first-ever
+    // onboarding, already hidden long before this session started, and
+    // un-hiding them would mix stale demo pickers into the real, current
+    // Today list.
+    if (!ob.dismissed) {
+      OB_SAMPLE_PICKER_IDS.forEach((id) => actions.updatePicker(id, { hidden: false }));
+      OB_TASKS.forEach((t) => actions.updateTask(t.id, { hidden: false }));
+      // Back to the Generate step specifically: clear whatever's on the
+      // list so it again looks like nothing's been generated yet, matching
+      // the very first time this step showed, rather than a stale list left
+      // over from generating (tour-driven or the user's own) before going
+      // further and coming back.
+      if (to === 1) actions.clearTodayEntries();
+    }
     selectTab('today');
     setStep(to);
   };
