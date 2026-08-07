@@ -514,9 +514,18 @@ function Onboarding({ state, actions, active, selectTab }) {
     // instead of dimming it, reading as if that chrome were part of the
     // highlighted target. Clamp the rect actually drawn (not the one bring()
     // scrolls by, which needs the real position) so the spotlight never
-    // reaches into either safe zone.
+    // reaches into either safe zone. Targets that live INSIDE the nav bar
+    // itself are exempt from both — the nav is a separate region, never
+    // actually "under" either piece of chrome regardless of its on-screen
+    // position, so clamping it by the same rule can do real damage: a
+    // tabPlacement 'side' nav sits in the same general screen area as
+    // Today's header, and its topmost item (Today itself) can have a smaller
+    // top-coordinate than obSafeTop()'s Today-header-derived floor purely by
+    // being first in an unrelated column — clamping it there squashed the
+    // highlight down to a sliver sitting below the actual button.
     const spotPad = 8;
-    const clampToChrome = (r) => {
+    const clampToChrome = (r, els) => {
+      if (els.some((el) => el.closest('.tabbar'))) return r;
       // Clamp to the safe boundary PLUS the spot's own padding, so the
       // padded box drawn below never overlaps that chrome even by that margin.
       const minTop = obSafeTop() + spotPad;
@@ -526,7 +535,7 @@ function Onboarding({ state, actions, active, selectTab }) {
       return { ...r, top, bottom, height: bottom - top };
     };
     const place = (els) => {
-      const r = clampToChrome(unionRect(els));
+      const r = clampToChrome(unionRect(els), els);
       if (spotRef.current) {
         const pad = spotPad, s = spotRef.current.style;
         s.top = (r.top - pad) + 'px'; s.left = (r.left - pad) + 'px';
