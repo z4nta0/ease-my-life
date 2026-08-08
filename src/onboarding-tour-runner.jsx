@@ -125,6 +125,20 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   const [reserveTop, setReserveTop] = React.useState(0);
   const hadRectRef = React.useRef(false); // suppress the spot's slide-in on first paint
   const spotRef = React.useRef(null); // positioned imperatively each frame (no React lag)
+  const coachRef = React.useRef(null);
+  // The coach's REAL rendered height, measured after paint — OB_COACH_H is
+  // only a rough estimate (used as the initial value here, before any step
+  // has actually been measured) and steps with longer body text render
+  // taller than it. Using the stale estimate for the "place above" branch
+  // below made a long step's coach overlap the top of its own target instead
+  // of sitting flush above it. No deps: runs after every render, but only
+  // commits a new value (and thus only triggers another render) when the
+  // measurement actually changed, so this settles instead of looping.
+  const [coachH, setCoachH] = React.useState(OB_COACH_H);
+  React.useLayoutEffect(() => {
+    const h = coachRef.current && coachRef.current.offsetHeight;
+    if (h && h !== coachH) setCoachH(h);
+  });
 
   // Publish on the bus for the duration this component is mounted — other
   // tabs read bus.phase === 'tour' to know a guided tour of SOME kind is
@@ -477,11 +491,11 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // a frame or two).
     const safeTop = obSafeTop() + 12;
     const spaceBelow = vh - (rect.top + rect.height);
-    if (spaceBelow >= OB_COACH_H + 16) {
+    if (spaceBelow >= coachH + 16) {
       coachStyle = { top: rect.top + rect.height + 16, left };
       arrowClass = 'ob-coach--up';
     } else {
-      coachStyle = { top: Math.max(rect.top - 16 - OB_COACH_H, safeTop), left };
+      coachStyle = { top: Math.max(rect.top - 16 - coachH, safeTop), left };
       arrowClass = 'ob-coach--down';
     }
   } else {
@@ -495,7 +509,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     <div className="ob-tour" aria-live="polite">
       {spotStyle && <div className="ob-spot" ref={spotRef} style={spotStyle} />}
       {!spotStyle && <div className="ob-dim" />}
-      <div className={`ob-coach ${arrowClass}`} style={{ ...coachStyle, width: coachW, '--ob-ax': arrowX + 'px' }}>
+      <div className={`ob-coach ${arrowClass}`} ref={coachRef} style={{ ...coachStyle, width: coachW, '--ob-ax': arrowX + 'px' }}>
         <p className="ob-prog">Step {step + 1} of {total}</p>
         <h4>{cur.title}</h4>
         <p className="ob-body">{cur.body}</p>
