@@ -72,7 +72,16 @@ const buildPickerTourStep2 = (pickerId) => ({
 const PICKER_TOUR_STEP_3 = {
   sel: '.np-fields .np-field:first-child', tab: 'picker',
   title: 'Give it a name',
-  body: 'This is the name of the picker and should be descriptive of the types of tasks contained in its pool of items. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.',
+  body: <>This is the <b>name of the picker</b> and should be descriptive of the types of tasks contained in its pool of items. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
+  primary: 'Next', back: true,
+};
+
+// Highlights the Group field's whole group (label + description + chips) as
+// one region — the second .np-field in the Details step, right after Name.
+const PICKER_TOUR_STEP_4 = {
+  sel: '.np-fields .np-field:nth-child(2)', tab: 'picker',
+  title: 'Attach to a group',
+  body: <>This is the group that the picker will be attached to and <b>controls how pickers are organized on the Today page</b>. You can either select an existing group or create a new one. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
   primary: 'Next', back: true,
 };
 
@@ -124,7 +133,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3];
+  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4];
 
   return (
     <GuidedTour
