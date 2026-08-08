@@ -92,7 +92,17 @@ const PICKER_TOUR_STEP_4 = {
 const PICKER_TOUR_STEP_5 = {
   sel: '.np-fields .np-field:nth-child(3)', tab: 'picker',
   title: 'Select a picker type',
-  body: <>These are the different types of pickers. They are <b>the main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you but please read each description to get a better idea of how they work.</>,
+  body: <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you but please read each description to get a better idea of how they work.</>,
+  primary: 'Next', back: true,
+};
+
+// Highlights the Conditionals field — .np-cond, a distinct class rather than
+// a positional :nth-child since it's the last .np-field and more likely to
+// get a sibling added after it later than the earlier fields are to reorder.
+const PICKER_TOUR_STEP_6 = {
+  sel: '.np-fields .np-cond', tab: 'picker',
+  title: 'Conditionals',
+  body: <>These are called Conditionals and <b>we will leave these alone for now</b> as they are beyond the scope of this tutorial. Click the Next button to advance to the next step.</>,
   primary: 'Next', back: true,
 };
 
@@ -144,7 +154,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5];
+  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6];
 
   return (
     <GuidedTour
