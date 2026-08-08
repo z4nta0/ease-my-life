@@ -85,6 +85,17 @@ const PICKER_TOUR_STEP_4 = {
   primary: 'Next', back: true,
 };
 
+// Highlights the "How should it choose?" field as one region — the third
+// .np-field, which contains the label/description AND all 5 mode options
+// (.mode-radio) together, so the whole picker-type list gets highlighted as
+// a single unit, not just its label.
+const PICKER_TOUR_STEP_5 = {
+  sel: '.np-fields .np-field:nth-child(3)', tab: 'picker',
+  title: 'Select a picker type',
+  body: <>These are the different types of pickers. They are <b>the main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you but please read each description to get a better idea of how they work.</>,
+  primary: 'Next', back: true,
+};
+
 // Why Step 2's run() (not, say, Step 1's, or PickerTour's onStart) is where
 // prefill gets published: tab-picker.jsx has its own dormant effect from the
 // original (stashed) create-a-picker tour design — `if (tour.prefill &&
@@ -133,7 +144,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4];
+  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5];
 
   return (
     <GuidedTour
