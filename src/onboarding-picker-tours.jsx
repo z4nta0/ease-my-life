@@ -1,6 +1,8 @@
 import React from 'react';
 import { Icon } from './ui.jsx';
 import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
+import { GuidedTour } from './onboarding-tour-runner.jsx';
+import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
 import { MODES } from './seed.js';
 
 // Content for the picker mini-tours ("Set up a {picker name} picker"),
@@ -20,31 +22,79 @@ const PICKER_TOUR_COPY = {
   },
 };
 
-// `pickerId` is the sample picker's id. Every step so far stays on Today,
-// and this component is only ever mounted from within TabToday (see
-// tab-today.jsx's startMiniTour) — same constraints as ReminderTour, see its
-// own comment in onboarding-reminder-tours.jsx.
-function PickerTour({ pickerId, state, actions, onClose }) {
+// Step 1 is identical for every picker tutorial — just the Pickers nav
+// button itself, requireClick so Next stays disabled and the user has to
+// actually click the real icon to advance. Deliberately NOT the Welcome
+// Tour's OB_NAV_TARGETS.picker content (which describes the page you've
+// already arrived at) — the point here is teaching icon-only nav on mobile,
+// so the copy has to instruct the click, and the step has to stay on Today
+// (tab: 'today') rather than pre-navigating, so there's something left for
+// the user's own click to do.
+const PICKER_TOUR_STEPS_SHARED = [
+  {
+    sel: '[data-tab="picker"]', tab: 'today',
+    title: 'The Pickers page',
+    body: <>Pickers are the <b>heart of the app</b> and this is where you can create new pickers and their items. You can also manually run any picker to generate a task. Go ahead and click it now.</>,
+    primary: 'Next', back: false, requireClick: true,
+  },
+  // Lands at the top of the Pickers page (scrollToTop) and highlights the
+  // real "+ Add new picker" tab — requireClick again, same teaching-the-
+  // real-interface pattern as the Reminders tours' "+" step.
+  {
+    sel: '.picker-tab--add', tab: 'picker', scrollToTop: true,
+    title: 'Create a new picker',
+    body: <>This button will <b>open up the form</b> for creating a new picker. Go ahead and click it now.</>,
+    primary: 'Next', back: true, requireClick: true,
+  },
+];
+
+// `pickerId` is the sample picker's id. Mounted at the app level (see
+// app.jsx's activePickerTour), not inside TabToday like ReminderTour —
+// Step 1 navigates to the Pickers tab, which would unmount TabToday (and
+// this along with it) if it lived there instead. active/selectTab are the
+// real app-wide ones as a result, not stubs.
+function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
   const picker = (state.pickers || []).find((p) => p.id === pickerId);
   const copy = PICKER_TOUR_COPY[pickerId];
   const modeLabel = ((MODES[picker.mode] || {}).label || picker.mode).toLowerCase();
+
+  const [phase, setPhase] = React.useState('intro');
 
   const closeTour = (status) => {
     actions.setChecklistItem(pickerId, { status });
     onClose();
   };
 
+  if (phase === 'intro') {
+    return (
+      <TutorialIntroModal
+        icon={<Icon name="picker" size={54} />}
+        title={`${picker.name} Picker`}
+        paragraphs={[PICKER_TOUR_BODY_1, copy.body2]}
+        pills={['pickers', modeLabel, (picker.group || '').toLowerCase()]}
+        onStart={() => setPhase('tour')}
+        // Mirrors the launcher card's own X button exactly — marks the card
+        // cancelled without touching the underlying sample picker.
+        onSkip={() => closeTour('cancelled')}
+      />
+    );
+  }
+
   return (
-    <TutorialIntroModal
-      icon={<Icon name="picker" size={54} />}
-      title={`${picker.name} Picker`}
-      paragraphs={[PICKER_TOUR_BODY_1, copy.body2]}
-      pills={['pickers', modeLabel, (picker.group || '').toLowerCase()]}
-      // TODO: launch the GuidedTour walkthrough once its steps are written.
-      onStart={() => {}}
-      // Mirrors the launcher card's own X button exactly — marks the card
-      // cancelled without touching the underlying sample picker.
-      onSkip={() => closeTour('cancelled')}
+    <GuidedTour
+      tourId={`picker-${pickerId}`}
+      steps={PICKER_TOUR_STEPS_SHARED}
+      resumeStep={0}
+      actions={actions}
+      active={active}
+      selectTab={selectTab}
+      onGoBack={null}
+      // No 'Done' step exists yet, so the only way this is reachable right
+      // now is Skip (or the not-found watchdog) — both read as "the user
+      // didn't finish", distinct from the intro modal's 'cancelled'. See
+      // onboarding-checklist.js's status comment.
+      onSkip={() => closeTour('skipped')}
+      onFinish={() => closeTour('finished')}
     />
   );
 }
