@@ -400,6 +400,10 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // like a person who sized up the space up front, not one who keeps
     // rearranging things as you scroll.
     let reserveDecided = false;
+    // Tracked outside React state (read by the scrollHeight watchdog below,
+    // in the same closure, so no staleness risk the way reading the actual
+    // `reserveTop` state here would have) — see its use there for why.
+    let reservedAmount = 0;
     const decideReserve = (els) => {
       if (reserveDecided) return;
       reserveDecided = true;
@@ -407,7 +411,8 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       const vh = window.innerHeight;
       if (vh - (r.top + r.height) >= OB_COACH_H + 16) return; // fits below — reserveTop is already 0
       if (r.top - 16 - OB_COACH_H >= obSafeTop() + 12) return; // fits above — reserveTop is already 0
-      setReserveTop(OB_COACH_H + 40);
+      reservedAmount = OB_COACH_H + 40;
+      setReserveTop(reservedAmount);
     };
     // Reposition synchronously as scroll fires (before paint) so the highlight
     // doesn't trail the content the way a purely rAF-driven fixed box does.
@@ -427,7 +432,12 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // ever clicking the coach's Next — can still get nudged back into view.
     // Ordinary scrolling never changes this value, so it doesn't fight the
     // user scrolling around on purpose; only an actual content-size change
-    // re-triggers bring().
+    // re-triggers bring(). Measured with reservedAmount subtracted out —
+    // otherwise decideReserve's own CSS padding (added specifically to make
+    // room for the coach above a highlight too tall to fit either way) reads
+    // as "content grew", re-triggers bring(), and bring() scrolls the target
+    // right back up to its usual pad-from-top position — undoing the
+    // reserve and putting the coach right back on top of it.
     let lastScrollHeight = null;
     const loop = () => {
       if (cancelled) return;
@@ -435,8 +445,8 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       if (els.length) {
         notFoundSince = null;
         const sc = getScroller(els[0]);
-        const h = (sc === document.scrollingElement || sc === document.documentElement)
-          ? document.documentElement.scrollHeight : sc.scrollHeight;
+        const h = ((sc === document.scrollingElement || sc === document.documentElement)
+          ? document.documentElement.scrollHeight : sc.scrollHeight) - reservedAmount; // exclude our own reserve-space padding — see decideReserve's comment on reservedAmount
         if (!broughtRef) { broughtRef = true; bring(); } // scroll once the target actually exists
         else if (lastScrollHeight != null && Math.abs(h - lastScrollHeight) > 40) bring();
         lastScrollHeight = h;
