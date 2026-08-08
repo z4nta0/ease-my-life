@@ -1,5 +1,6 @@
 import React from 'react';
 import { DayLogChip, RemindersLog } from './day-log.jsx';
+import { emlTour } from './eml-tour-bus.js';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { OB_REMINDER_CARD_TEXT, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { TASKS } from './tasks.js';
@@ -557,9 +558,29 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   // existing reminder can configure recurrence *before* it's created. The
   // editor edits via actions.updateTask; here that just mutates local draft.
   const draftActions = { updateTask: (_id, patch) => setDraftTask((d) => ({ ...d, ...patch })) };
+  // Published so a reminder mini-tour's later steps (onboarding-reminder-
+  // tours.jsx) can show copy that matches whichever schedule type is
+  // currently selected in this draft, without needing this local state
+  // lifted anywhere — the tour just re-renders off the bus like any other
+  // subscriber.
+  React.useEffect(() => {
+    emlTour.set({ draftRepeat: draftTask ? draftTask.repeat : null });
+  }, [draftTask && draftTask.repeat]);
   const startAdd = () => {
     clearTimeout(closeTimerRef.current);   // a pending forced-close discard from a moment ago shouldn't wipe this fresh draft
-    setDraftTask(TASKS.defaultTask({ repeat: 'once' }));
+    // A reminder mini-tour (onboarding-reminder-tours.jsx) publishes the
+    // sample it's walking through here so the real "+" button — which the
+    // tour has the user click themselves, not a simulated one — opens
+    // pre-filled with that sample's data instead of blank. Never touches the
+    // sample task itself, just seeds this brand-new draft.
+    const bus = emlTour.get();
+    // Any reminder created while the mini-tour checklist is up — not just
+    // ones a tour itself creates — stays out of the real list until it
+    // concludes; otherwise a real item mixed in with the still-open
+    // launcher cards reads as more tutorial clutter. Unhidden in
+    // tab-today.jsx's generateItemResolved effect once the checklist's
+    // closing Generate step runs.
+    setDraftTask(TASKS.defaultTask({ ...(bus.prefill || { repeat: 'once' }), ...(bus.showChecklist ? { hidden: true } : {}) }));
     setAddClosing(false);
     setActiveEditor('reminder-add');
   };

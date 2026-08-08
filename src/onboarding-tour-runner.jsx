@@ -1,6 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { emlTour } from './eml-tour-bus.js';
+import { InfoTip } from './ui.jsx';
 
 // Generic guided-tour engine: sequential single-spotlight steps with a coach
 // card (Step N of N, Skip/Back/Next). Shared by the Welcome Tour
@@ -32,6 +33,12 @@ import { emlTour } from './eml-tour-bus.js';
 //              page anyway (e.g. a full-list review step), so landing on it
 //              scrolls all the way to 0 instead of just nudging the target
 //              into view.
+//   requireClick — true if this step teaches the real interface rather than
+//              narrating it: Next is disabled (with a hover/tap hint) and
+//              the step only advances when the user clicks the highlighted
+//              target itself — the same click-guard exemption that already
+//              lets a target's own click through now also triggers the
+//              primary action (run(), then advance) instead of a no-op.
 //
 // Props:
 //   tourId     — this tour's slot key in state.onboarding.activeTour, e.g.
@@ -48,11 +55,16 @@ import { emlTour } from './eml-tour-bus.js';
 //                before navigating back to a given step (e.g. undoing
 //                something a later step did). Called before the step
 //                actually changes.
-//   onFinish   — called once the tour ends, however it ends (Done, Skip, or
-//                the watchdog bailing out of a step whose target never
-//                resolves) — after this component's own cleanup
-//                (activeTour, the bus's phase, the body class) has already
-//                run.
+//   onFinish   — called on genuine completion only: the primary button on a
+//                step whose `primary` is 'Done'. After this component's own
+//                cleanup (activeTour, the bus's phase, the body class) has
+//                already run.
+//   onSkip     — called for everything else the tour can end from: the Skip
+//                button, a target that never resolves (the not-found
+//                watchdog), or a resumed/advanced step index past the end of
+//                `steps`. Optional — omit it to route all of these through
+//                onFinish instead, for a tour with nothing tracking the
+//                distinction (e.g. the Welcome Tour).
 
 // Conservative estimate of the coach card's own height — good enough to
 // decide whether it fits above/below a step's highlighted target; the real
@@ -100,7 +112,7 @@ const goToTodayTop = (active, selectTab) => {
   });
 };
 
-function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onGoBack, onFinish }) {
+function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onGoBack, onFinish, onSkip }) {
   const [step, setStep] = React.useState(resumeStep || 0);
   const [rect, setRect] = React.useState(null);
   // Extra top-space (px) reserved above the Today list, ON the Today tab,
@@ -138,13 +150,27 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     actions.setOnboarding({ activeTour: { id: tourId, step } });
   }, [step]);
 
+  // Genuine completion only — the primary button on a step whose `primary`
+  // is 'Done'. Also lands back on a pristine, scrolled-to-top Today, same as
+  // skip() below, so a caller's last step doesn't need to remember to also
+  // be scrollToTop just to stick the landing.
   const finish = React.useCallback(() => {
     actions.setOnboarding({ activeTour: null });
     onFinish();
-  }, [onFinish]);
-  // Skip always lands back on a pristine Today, regardless of which step (or
-  // which tab) it was clicked from.
-  const skip = () => { finish(); goToTodayTop(active, selectTab); };
+    goToTodayTop(active, selectTab);
+  }, [onFinish, active, selectTab]);
+  // Everything that ISN'T genuine completion: the Skip button, but also the
+  // two internal safety nets below (a target that never resolves, or a
+  // resumed/advanced step index past the end of `steps`) — none of these
+  // mean the tour's content was actually finished, so they're routed away
+  // from onFinish. onSkip is optional: a caller that doesn't need the
+  // distinction (e.g. the Welcome Tour, which isn't tracked in a per-tour
+  // checklist) can omit it and everything still funnels through onFinish.
+  const skip = () => {
+    actions.setOnboarding({ activeTour: null });
+    (onSkip || onFinish)();
+    goToTodayTop(active, selectTab);
+  };
 
   // While a tour runs, pad the scrollable content so bottom-anchored targets
   // can scroll clear of the floating tab bar.
@@ -212,11 +238,20 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // not closed over stale.
   const curRef = React.useRef(cur);
   curRef.current = cur;
+  // Same lazy-ref pattern as curRef — onPrimary closes over step/cur/finish,
+  // all of which change every render, but the click-guard effect below is
+  // only ever set up once.
+  const onPrimaryRef = React.useRef(() => {});
   React.useEffect(() => {
     const onClickCapture = (e) => {
       const c = curRef.current;
       if (e.target.closest('.ob-coach')) return;
-      if (c && findTargets(c.sel).some((el) => el.contains(e.target))) return;
+      if (c && findTargets(c.sel).some((el) => el.contains(e.target))) {
+        // A requireClick step's target click IS its primary action — the
+        // Next button is disabled, so this is the only way forward.
+        if (c.requireClick) onPrimaryRef.current();
+        return;
+      }
       e.preventDefault();
       e.stopPropagation();
     };
@@ -243,6 +278,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     if (cur.primary === 'Done') finish();
     else goToStep(step + 1);
   };
+  onPrimaryRef.current = onPrimary;
 
   // ── Position tracking: follow the target every frame while a step is up ──
   React.useEffect(() => {
@@ -255,8 +291,9 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     hadRectRef.current = false; // next appearance jumps into place, no slide-in
     if (!cur) {
       // No valid step (see the clamp on `cur` above) — bail out cleanly
-      // rather than leave a permanent dim with nothing to click.
-      finish();
+      // rather than leave a permanent dim with nothing to click. Not a
+      // genuine completion, so skip() (not finish()) — see its comment.
+      skip();
       return;
     }
     let raf, cancelled = false;
@@ -396,7 +433,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       } else {
         setRect(null);
         if (notFoundSince == null) notFoundSince = performance.now();
-        else if (performance.now() - notFoundSince > NOT_FOUND_TIMEOUT) { cancelled = true; finish(); return; }
+        else if (performance.now() - notFoundSince > NOT_FOUND_TIMEOUT) { cancelled = true; skip(); return; }
       }
       raf = requestAnimationFrame(loop);
     };
@@ -412,6 +449,15 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   React.useEffect(() => { emlTour.set({ reserveTop }); }, [reserveTop]);
 
   const portal = (node) => createPortal(node, document.body);
+
+  // No valid step (advanced past the end of a `steps` array whose last entry
+  // isn't primary:'Done' yet, most likely mid-content-authoring) — the
+  // position-tracking effect above already calls finish() the moment it sees
+  // this, but that's a separate effect firing after this render commits, so
+  // this render still needs to not crash reading off a null `cur` in the
+  // meantime. Same one-frame dim-only fallback as the "target not found yet"
+  // case below.
+  if (!cur) return portal(<div className="ob-tour" aria-live="polite"><div className="ob-dim" /></div>);
 
   const total = steps.length;
   const vw = window.innerWidth, vh = window.innerHeight;
@@ -458,9 +504,17 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
             <button className="ob-skip" onClick={skip}>Skip</button>
             {cur.back && <button className="ob-back" onClick={goBack}>‹ Back</button>}
           </div>
-          <button className="ob-next" onClick={onPrimary}>
-            {cur.primary}{cur.primary !== 'Done' ? ' ›' : ''}
-          </button>
+          {cur.requireClick ? (
+            <InfoTip label="Please click the indicated element in order to advance.">
+              <button className="ob-next" disabled>
+                {cur.primary}{cur.primary !== 'Done' ? ' ›' : ''}
+              </button>
+            </InfoTip>
+          ) : (
+            <button className="ob-next" onClick={onPrimary}>
+              {cur.primary}{cur.primary !== 'Done' ? ' ›' : ''}
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
 import { OB_CHECKLIST, OB_GENERATE_ITEM_ID, OB_PAGE_TOURS } from './onboarding-checklist.js';
 import { OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
+import { ReminderTour } from './onboarding-reminder-tours.jsx';
 import { PICKERS, normalizeGroupName } from './pickers.js';
 import { ReminderSection } from './reminders.jsx';
 import { REORDER } from './reorder.js';
@@ -858,6 +859,12 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   const mainTourEnded = state.pickers.some((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id))
     || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
   const showChecklist = mainTourEnded && !checklistDone;
+  // Published so reminders.jsx's startAdd can hide ANY reminder created
+  // while the checklist is up — not just ones a mini-tour itself creates —
+  // so a user manually clicking "+" mid-onboarding doesn't clutter the list
+  // alongside the still-open launcher cards either. See the unhide side in
+  // the generateItemResolved effect below.
+  React.useEffect(() => { emlTour.set({ showChecklist }); }, [showChecklist]);
   const pageToursName = (state.onboarding && state.onboarding.pageToursName) || 'Page Tours';
   // Page Tours has no pickers to merge into on a name collision (unlike
   // renameGroup), so a collision just blocks the rename outright — checked
@@ -1716,12 +1723,15 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     if (onNavTab) onNavTab('picker');
   };
 
-  // Mini-tour launcher cards' Play button / row click. The mini-tours
-  // themselves don't exist yet — this is a placeholder hook for when each is
-  // built (one at a time, like the main tour). `kind` is 'picker' or
+  // Which mini-tour's intro modal (or, later, walkthrough) is currently
+  // showing — null when none is. Only 'reminder' is wired up so far; picker
+  // and page-tour mini-tours land later, one at a time, like the main tour.
+  const [activeMiniTour, setActiveMiniTour] = React.useState(null);
+  // Mini-tour launcher cards' Play button / row click. `kind` is 'picker' or
   // 'reminder', `id` is the sample picker/task's id.
   const startMiniTour = (kind, id) => {
-    // TODO: launch the mini-tour for this picker/reminder once it exists.
+    if (kind === 'reminder') setActiveMiniTour({ kind, id });
+    // TODO: launch the picker/page-tour mini-tours once they exist.
   };
   // Unchecks an already-resolved launcher card (skipped/cancelled/finished)
   // back to pending, so its mini-tour can be redone. Never touches the
@@ -1753,6 +1763,16 @@ function TabToday({ state, actions, onHome, onNavTab }) {
       const exitMs = reduced ? 0 : 380;
       const t1 = setTimeout(() => setChecklistExiting(true), celebrateMs);
       const t2 = setTimeout(() => {
+        // Any real reminder created while the checklist was up — whether by
+        // finishing a mini-tour or just the user clicking "+" themselves
+        // (see reminders.jsx's startAdd, gated on the showChecklist bus
+        // field) — was seeded hidden so it didn't clutter the list
+        // alongside the still-open launcher cards. Surface them all now,
+        // right before generate() actually runs. Excludes the two eternal
+        // samples themselves by id, which stay hidden forever.
+        state.tasks.forEach((t) => {
+          if (t.hidden && !OB_SAMPLE_TASK_IDS.includes(t.id)) actions.updateTask(t.id, { hidden: false });
+        });
         actions.setChecklistDone(true);
         setChecklistExiting(false);
         generate();
@@ -2106,6 +2126,15 @@ function TabToday({ state, actions, onHome, onNavTab }) {
           </div>
         </div>
       </div>
+      {activeMiniTour && activeMiniTour.kind === 'reminder' && (
+        <ReminderTour
+          variant={activeMiniTour.id === 'tk_ob_meds' ? 'once' : 'recurring'}
+          state={state}
+          actions={actions}
+          closeReminderForm={() => setActiveEditor((cur) => cur === 'reminder-add' ? null : cur)}
+          onClose={() => setActiveMiniTour(null)}
+        />
+      )}
     </div>
   );
 }
