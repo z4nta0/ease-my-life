@@ -10,6 +10,7 @@ import { emlTour, useEmlTour } from './onboarding.jsx';
 import { OB_CHECKLIST, OB_GENERATE_ITEM_ID, OB_PAGE_TOURS } from './onboarding-checklist.js';
 import { OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { ReminderTour } from './onboarding-reminder-tours.jsx';
+import { PickerTour } from './onboarding-picker-tours.jsx';
 import { PICKERS, normalizeGroupName } from './pickers.js';
 import { ReminderSection } from './reminders.jsx';
 import { REORDER } from './reorder.js';
@@ -1724,14 +1725,13 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   };
 
   // Which mini-tour's intro modal (or, later, walkthrough) is currently
-  // showing — null when none is. Only 'reminder' is wired up so far; picker
-  // and page-tour mini-tours land later, one at a time, like the main tour.
+  // showing — null when none is. Page-tour mini-tours land later.
   const [activeMiniTour, setActiveMiniTour] = React.useState(null);
   // Mini-tour launcher cards' Play button / row click. `kind` is 'picker' or
   // 'reminder', `id` is the sample picker/task's id.
   const startMiniTour = (kind, id) => {
-    if (kind === 'reminder') setActiveMiniTour({ kind, id });
-    // TODO: launch the picker/page-tour mini-tours once they exist.
+    if (kind === 'reminder' || kind === 'picker') setActiveMiniTour({ kind, id });
+    // TODO: launch the page-tour mini-tours once they exist.
   };
   // Unchecks an already-resolved launcher card (skipped/cancelled/finished)
   // back to pending, so its mini-tour can be redone. Never touches the
@@ -2132,6 +2132,14 @@ function TabToday({ state, actions, onHome, onNavTab }) {
           state={state}
           actions={actions}
           closeReminderForm={() => setActiveEditor((cur) => cur === 'reminder-add' ? null : cur)}
+          onClose={() => setActiveMiniTour(null)}
+        />
+      )}
+      {activeMiniTour && activeMiniTour.kind === 'picker' && (
+        <PickerTour
+          pickerId={activeMiniTour.id}
+          state={state}
+          actions={actions}
           onClose={() => setActiveMiniTour(null)}
         />
       )}
