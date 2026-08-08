@@ -1848,7 +1848,7 @@ button.cat-h-l {
 .picker-tab--add .picker-tab-name { font-size: 13px; color: inherit; }
 .picker-tab--add .picker-tab-add-icon { display: inline-flex; }
 
-.np-fields { display: flex; flex-direction: column; gap: 24px; }
+.np-fields { display: flex; flex-direction: column; gap: 24px; margin-top: 16px; }
 .np-field { display: flex; flex-direction: column; gap: 8px; }
 .np-field--toggle {
   display: flex;

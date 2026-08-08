@@ -1,9 +1,22 @@
 import React from 'react';
+import { emlTour } from './eml-tour-bus.js';
 import { Icon } from './ui.jsx';
 import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
 import { GuidedTour } from './onboarding-tour-runner.jsx';
 import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
+import { OB_EXAMPLE, OB_EXTRA_PICKERS } from './onboarding-seed-data.js';
 import { MODES } from './seed.js';
+
+// Every sample picker's own template data, keyed by id — this IS the exact
+// shape NewPickerForm's `initial` prop expects (name/group/mode/items/step),
+// and unlike the reminder samples, nothing seeds a picker with per-field
+// overrides at tour time (see onboarding.jsx's seeding effect: pickers are
+// added from these templates verbatim), so reading the static template here
+// is safe — no live-vs-template divergence to worry about the way the
+// reminder tours had to for daysOfWeek.
+const PICKER_SAMPLES = Object.fromEntries(
+  [OB_EXAMPLE, ...OB_EXTRA_PICKERS].map((p) => [p.id, p])
+);
 
 // Content for the picker mini-tours ("Set up a {picker name} picker"),
 // launched by Play on each still-hidden sample picker's launcher card (see
@@ -30,24 +43,55 @@ const PICKER_TOUR_COPY = {
 // so the copy has to instruct the click, and the step has to stay on Today
 // (tab: 'today') rather than pre-navigating, so there's something left for
 // the user's own click to do.
-const PICKER_TOUR_STEPS_SHARED = [
-  {
-    sel: '[data-tab="picker"]', tab: 'today',
-    title: 'The Pickers page',
-    body: <>Pickers are the <b>heart of the app</b> and this is where you can create new pickers and their items. You can also manually run any picker to generate a task. Go ahead and click it now.</>,
-    primary: 'Next', back: false, requireClick: true,
-  },
-  // Lands at the top of the Pickers page (scrollToTop) and highlights the
-  // real "+ Add new picker" tab — requireClick again, same teaching-the-
-  // real-interface pattern as the Reminders tours' "+" step.
-  {
-    sel: '.picker-tab--add', tab: 'picker', scrollToTop: true,
-    title: 'Create a new picker',
-    body: <>This button will <b>open up the form</b> for creating a new picker. Go ahead and click it now.</>,
-    primary: 'Next', back: true, requireClick: true,
-  },
-];
+const PICKER_TOUR_STEP_1 = {
+  sel: '[data-tab="picker"]', tab: 'today',
+  title: 'The Pickers page',
+  body: <>Pickers are the <b>heart of the app</b> and this is where you can create new pickers and their items. You can also manually run any picker to generate a task. Go ahead and click it now.</>,
+  primary: 'Next', back: false, requireClick: true,
+};
 
+// Lands at the top of the Pickers page (scrollToTop) and highlights the real
+// "+ Add new picker" tab — requireClick again, same teaching-the-real-
+// interface pattern as the Reminders tours' "+" step. run() publishes the
+// sample's data as the emlTour bus's prefill, timed so the real click (which
+// natively opens the form via the button's own onClick, not this run()) ends
+// up mounting NewPickerForm with it already applied — see the long comment
+// on PickerTour below for why this specific ordering matters.
+const buildPickerTourStep2 = (pickerId) => ({
+  sel: '.picker-tab--add', tab: 'picker', scrollToTop: true,
+  title: 'Create a new picker',
+  body: <>This button will <b>open up the form</b> for creating a new picker. Go ahead and click it now.</>,
+  primary: 'Next', back: true, requireClick: true,
+  run: () => { emlTour.set({ prefill: PICKER_SAMPLES[pickerId] }); },
+});
+
+// Highlights the Name field's whole group (label + description + input) as
+// one region — the first .np-field in the Details step, which is what's
+// showing once Step 2's click opens the form (initial.step === 1 in the
+// sample template keeps it on Details rather than jumping to Items).
+const PICKER_TOUR_STEP_3 = {
+  sel: '.np-fields .np-field:first-child', tab: 'picker',
+  title: 'Give it a name',
+  body: 'This is the name of the picker and should be descriptive of the types of tasks contained in its pool of items. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.',
+  primary: 'Next', back: true,
+};
+
+// Why Step 2's run() (not, say, Step 1's, or PickerTour's onStart) is where
+// prefill gets published: tab-picker.jsx has its own dormant effect from the
+// original (stashed) create-a-picker tour design — `if (tour.prefill &&
+// !creating) { setCreating(true); setOpenedByTour(true); }` — that
+// auto-opens the form the instant prefill appears. Publishing any earlier
+// (tour start, or even Step 1) would trigger that the moment TabPicker
+// mounts, skipping Step 2 entirely (the form would already be open before
+// the user ever sees "+ Add new picker" highlighted). run() fires in the
+// click-guard's CAPTURE-phase handling of the same click whose native
+// bubble-phase handler is the button's own `onClick={() => setCreating(true)}`
+// — both land in the same React batch, so by the time TabPicker/NewPickerForm
+// actually render, `creating` is already true, prefill is already set, and
+// the dormant effect's `!creating` guard never fires (openedByTour correctly
+// stays false — this tour walks Details normally, unlike the OTHER prefill
+// entry point that comment block still documents).
+//
 // `pickerId` is the sample picker's id. Mounted at the app level (see
 // app.jsx's activePickerTour), not inside TabToday like ReminderTour —
 // Step 1 navigates to the Pickers tab, which would unmount TabToday (and
@@ -80,10 +124,12 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
+  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3];
+
   return (
     <GuidedTour
       tourId={`picker-${pickerId}`}
-      steps={PICKER_TOUR_STEPS_SHARED}
+      steps={steps}
       resumeStep={0}
       actions={actions}
       active={active}
