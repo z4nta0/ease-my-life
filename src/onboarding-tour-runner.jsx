@@ -469,10 +469,15 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // Today's header, and its topmost item (Today itself) can have a smaller
     // top-coordinate than obSafeTop()'s Today-header-derived floor purely by
     // being first in an unrelated column — clamping it there squashed the
-    // highlight down to a sliver sitting below the actual button.
+    // highlight down to a sliver sitting below the actual button. Same
+    // exemption for the group rail itself — obSafeTop() folds ITS OWN bottom
+    // edge into the safe-top floor (mobile-only, so content further down the
+    // page doesn't scroll under it), which is exactly backwards for a step
+    // whose target IS the rail: clamping squashed that highlight down to a
+    // sliver sitting just below the rail instead of on it.
     const spotPad = 8;
     const clampToChrome = (r, els) => {
-      if (els.some((el) => el.closest('.tabbar'))) return r;
+      if (els.some((el) => el.closest('.tabbar') || el.closest('.group-rail'))) return r;
       // Clamp to the safe boundary PLUS the spot's own padding, so the
       // padded box drawn below never overlaps that chrome even by that margin.
       const minTop = obSafeTop() + spotPad;
