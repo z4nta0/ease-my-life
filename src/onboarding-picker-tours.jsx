@@ -245,6 +245,20 @@ const PICKER_TOUR_STEP_WEIGHT = {
   primary: 'Next', back: true, resumable: false,
 };
 
+// Highlights the Boost row — the second .pie-row, right after Weight, in
+// the editor's isDynamic-only branch (Dynamic mode specifically; unlike
+// Weight, Weighted-mode pickers don't get this row at all). Not
+// interactive (there's no requireClick — the BoostReset control only ever
+// does something once an item has actually accrued a boost, never true for
+// a freshly-created item), just narration, since this value is the core
+// mechanic of how Dynamic Weighted differs from plain Weighted.
+const PICKER_TOUR_STEP_BOOST = {
+  sel: '.pv-additem-wrap .pie-row:nth-child(2)', tab: 'picker',
+  title: 'Boost value',
+  body: <>This is the crucial piece of a Dynamic Weighted picker. Every time an item does not get picked this value will increase, making it more and more likely to be picked. Then when it does get picked this value will reset, making it much less likely to be picked. Nothing to adjust here, click Next whenever you are ready.</>,
+  primary: 'Next', back: true, resumable: false,
+};
+
 // Highlights the item editor's Save button — .ob-item-save (tagged
 // alongside .ob-item-cancel, see EntryEditor in tab-today.jsx). requireClick
 // since this closes the editor for good, same real-interface-teaching
@@ -341,14 +355,17 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
   // every other mode's item editor doesn't have those rows at all (see the
   // steps' own comments), so including them there would highlight nothing
   // and trip the not-found watchdog. The Weight step is the mirror image:
-  // only Weighted/Dynamic samples get it.
+  // only Weighted/Dynamic samples get it. The Boost step is narrower still
+  // — only Dynamic samples (not plain Weighted) get that row at all.
   const isEase = picker.mode === 'ease-up' || picker.mode === 'ease-down';
   const usesWeight = picker.mode === 'weighted' || picker.mode === 'dynamic';
+  const isDynamic = picker.mode === 'dynamic';
   const steps = [
     PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4,
     buildPickerTourStep5(pickerId), PICKER_TOUR_STEP_6, buildPickerTourStep7(pickerId), PICKER_TOUR_STEP_8,
     ...(isEase ? [buildPickerTourStep9(pickerId), PICKER_TOUR_STEP_10] : []),
     ...(usesWeight ? [PICKER_TOUR_STEP_WEIGHT] : []),
+    ...(isDynamic ? [PICKER_TOUR_STEP_BOOST] : []),
     PICKER_TOUR_STEP_11, PICKER_TOUR_STEP_12,
   ];
 
