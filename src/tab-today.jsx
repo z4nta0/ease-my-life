@@ -486,7 +486,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
         <div className="rem-inline-foot rd-edit-foot" key="foot">
           <Btn kind="danger" size="sm" icon="trash" onClick={() => setConfirmDel(true)}>Delete</Btn>
           <div className="rem-foot-right">
-            <Btn kind="ghost" size="sm" onClick={cancel}>Cancel</Btn>
+            <Btn kind="ghost" size="sm" className="ob-item-cancel" onClick={cancel}>Cancel</Btn>
             <Btn kind="ghost" size="sm" onClick={saveClose}>Save</Btn>
           </div>
         </div>

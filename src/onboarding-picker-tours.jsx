@@ -134,12 +134,28 @@ const PICKER_TOUR_STEP_8 = {
 };
 
 // Highlights the "+ Add item" button on the now-showing Items sub-step
-// (reached via Step 8's click) — .pv-additem-btn.
+// (reached via Step 8's click) — .pv-additem-btn. run() stages the item's
+// name on the bus (same timing trick as Step 2's picker-level prefill —
+// fires in the click-guard's capture phase, same batch as addNewDraft's own
+// bubble-phase handler) so the draft item addNewDraft creates is named
+// "Mop the floors" instead of the generic "New item" default.
 const PICKER_TOUR_STEP_9 = {
   sel: '.pv-additem-btn', tab: 'picker',
   title: 'Add a task to the picker’s pool',
   body: <>Pickers need a <b>pool of tasks to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click this button now.</>,
   primary: 'Next', back: true, requireClick: true,
+  run: () => { emlTour.set({ itemPrefill: 'Mop the floors' }); },
+};
+
+// Highlights the item name input inside the inline editor Step 9's click
+// just opened — .rd-name-input, scoped under .pv-additem-wrap since the same
+// class is reused (mutually exclusively at render time) by the existing-
+// picker "add item" flow elsewhere on this tab.
+const PICKER_TOUR_STEP_10 = {
+  sel: '.pv-additem-wrap .rd-name-input', tab: 'picker',
+  title: 'Give it a name',
+  body: <>This is the name of the task item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
+  primary: 'Next', back: true,
 };
 
 // Why Step 2's run() (not, say, Step 1's, or PickerTour's onStart) is where
@@ -190,7 +206,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8, PICKER_TOUR_STEP_9];
+  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8, PICKER_TOUR_STEP_9, PICKER_TOUR_STEP_10];
 
   return (
     <GuidedTour
@@ -213,6 +229,13 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
         if (to === 7) {
           const detailsTab = document.querySelector('.ob-picker-details');
           if (detailsTab) detailsTab.click();
+        } else if (to === 8) {
+          // Step 9→10's click opened the inline item editor, which is also a
+          // one-way transition (no toggle) — Cancel is the only real-DOM way
+          // to close it back to the bare .pv-additem-btn from outside, same
+          // reasoning as the to===7 branch above.
+          const cancelBtn = document.querySelector('.ob-item-cancel');
+          if (cancelBtn) cancelBtn.click();
         }
       }}
       // No 'Done' step exists yet, so the only way this is reachable right

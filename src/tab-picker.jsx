@@ -683,9 +683,18 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     if (newDraftId) return;
     setDraftClosing(false);   // clear any stale closing state from a prior editor
     const id = 'draft_' + Math.random().toString(36).slice(2, 8);
-    let base = 'New item', nm = base, n = 1;
-    const names = new Set(items.map((x) => x.name.toLowerCase()));
-    while (names.has(nm.toLowerCase())) { n++; nm = `${base} ${n}`; }
+    // The tour stages a specific name for its own walkthrough item (see
+    // PICKER_TOUR_STEP_9's run()) rather than falling back to "New item".
+    let nm;
+    if (obTour.phase === 'tour' && obTour.itemPrefill) {
+      nm = obTour.itemPrefill;
+    } else {
+      const base = 'New item';
+      let n = 1;
+      nm = base;
+      const names = new Set(items.map((x) => x.name.toLowerCase()));
+      while (names.has(nm.toLowerCase())) { n++; nm = `${base} ${n}`; }
+    }
     // Ease-down items start fully charged (mirrors addPicker's initialValue) —
     // otherwise the editor shows a spent item needing a Refill it never needed.
     setItems((xs) => [...xs, { id, name: nm, weight: 1, value: mode === 'ease-down' ? THRESHOLD : 0, ...DEFAULT_EASE }]);
