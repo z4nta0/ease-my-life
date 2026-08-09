@@ -38,6 +38,29 @@ const buildPageTourStep1 = (page) => {
   };
 };
 
+// Target + description catalog for the Today page's OWN interior elements
+// (as opposed to OB_NAV_TARGETS, which only covers the nav bar buttons) —
+// same shape/reasoning as that file's own catalog: content only (sel/title/
+// body), no navigation fields, written to stand alone with no reference to
+// "this tour" or "the next step" baked in. Kept here rather than moved into
+// onboarding-targets.jsx for now (nothing outside this file reads it yet),
+// but is exactly what a future on-demand multi-highlight help mode would
+// pull from by id — see the onboarding-engine-reuse-design memory. Extract
+// into its own module alongside OB_NAV_TARGETS if/when that help mode
+// actually gets built and needs to reference these same targets.
+const TODAY_PAGE_TARGETS = {
+  progressRing: {
+    sel: '.ring',
+    title: 'Progress Ring',
+    body: <>This <b>tracks your current progress of completed / total tasks for today’s todo list</b>. Once filled completely, your Day Streak will increase and some celebration animations will play.</>,
+  },
+  groupsNav: {
+    sel: '.group-rail',
+    title: 'List Navigation',
+    body: <>This is the todo list’s navigation, allowing you to <b>jump directly to a group’s section</b>. Over time your list can grow quite long and this helps to eliminate any long scrolling.</>,
+  },
+};
+
 // Steps beyond Step 1 (the nav-highlight every page tour shares), keyed by
 // page tour id — empty/absent for any page that only has Step 1 so far.
 // Advancing past the last step in here falls through GuidedTour's own "ran
@@ -45,12 +68,8 @@ const buildPageTourStep1 = (page) => {
 // behaved before its own final Done step existed.
 const PAGE_TOUR_STEPS = {
   explore_today: [
-    {
-      sel: '.ring', tab: 'today',
-      title: 'Progress Ring',
-      body: <>This <b>tracks your current progress of completed / total tasks for today’s todo list</b>. Once filled completely, your Day Streak will increase and some celebration animations will play.</>,
-      primary: 'Next', back: true,
-    },
+    { ...TODAY_PAGE_TARGETS.progressRing, tab: 'today', primary: 'Next', back: true },
+    { ...TODAY_PAGE_TARGETS.groupsNav, tab: 'today', primary: 'Next', back: true },
   ],
 };
 
