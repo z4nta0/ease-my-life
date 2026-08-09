@@ -685,8 +685,9 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     const id = 'draft_' + Math.random().toString(36).slice(2, 8);
     // The tour stages a specific name for its own walkthrough item (see
     // PICKER_TOUR_STEP_9's run()) rather than falling back to "New item".
+    const inTour = obTour.phase === 'tour' && obTour.itemPrefill;
     let nm;
-    if (obTour.phase === 'tour' && obTour.itemPrefill) {
+    if (inTour) {
       nm = obTour.itemPrefill;
     } else {
       const base = 'New item';
@@ -697,7 +698,11 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     }
     // Ease-down items start fully charged (mirrors addPicker's initialValue) —
     // otherwise the editor shows a spent item needing a Refill it never needed.
-    setItems((xs) => [...xs, { id, name: nm, weight: 1, value: mode === 'ease-down' ? THRESHOLD : 0, ...DEFAULT_EASE }]);
+    // The tour's own item is also given a full charge regardless of mode —
+    // like the rest of the sample pool (see onboarding-seed-data.js's
+    // OB_EXAMPLE, every item value:100), so the later generation demo step
+    // actually has something eligible to pick.
+    setItems((xs) => [...xs, { id, name: nm, weight: 1, value: (inTour || mode === 'ease-down') ? THRESHOLD : 0, ...DEFAULT_EASE }]);
     setNewDraftId(id);
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const el = addWrapRef.current, sc = el && el.closest('.main');
