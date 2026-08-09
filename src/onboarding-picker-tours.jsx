@@ -63,6 +63,11 @@ const PICKER_TOUR_COPY = {
   pkr_ob_workouts: {
     body2: 'This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease-up and is perfect for something like physical workouts where you don’t want a muscle group to be picked twice within, say, a few days. e.g. once it picks "Chest", you don’t want that muscle group picked again for at least 5 days but also no later than a week. Let’s create one of these now.',
     itemPrefill: 'Cardio',
+    itemSoonest: 3,
+    itemLatest: 6,
+    step8Body: <>This is the name of the workout item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
+    step9Body: <>This controls the <b>minimum number of days that a workout item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same workout to be chosen again for at least a few days or so.</>,
+    step10Body: <>This controls the <b>maximum number of days that a workout item must wait before it should be picked again</b>. This is also useful since you usually want a workout to be picked again within a certain timeframe.</>,
   },
   pkr_ob_relax: {
     body2: 'This tutorial will guide you through creating a Relax picker. This type of picker is an Ease-down and is perfect for activities you want to stick with for a few days at a time instead of changing every day. e.g. once it picks "Read a book", that activity will stay your pick for at least 5 days but no more than a week before a new one is chosen. Let’s create one of these now.',
