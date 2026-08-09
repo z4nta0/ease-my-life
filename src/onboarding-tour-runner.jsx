@@ -46,6 +46,17 @@ import { InfoTip } from './ui.jsx';
 //              target itself — the same click-guard exemption that already
 //              lets a target's own click through now also triggers the
 //              primary action (run(), then advance) instead of a no-op.
+//   resumable — defaults to true (every Welcome Tour step qualifies, since
+//              its targets are all durable/already-rendered). Set false on
+//              a step whose target only exists because an EARLIER step's
+//              un-persisted side effect put it there (e.g. a form opened by
+//              a previous click) — a reload wipes that side effect, so
+//              resuming directly into such a step would highlight nothing
+//              and just trip the not-found watchdog a few seconds later.
+//              The persisted resume checkpoint (see the effect below) only
+//              ever advances to a resumable step, so a tour with a long
+//              non-resumable tail still resumes at its last safe step
+//              instead of being knocked all the way back to the intro.
 //
 // Props:
 //   tourId     — this tour's slot key in state.onboarding.activeTour, e.g.
@@ -178,8 +189,12 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // this tour is — the caller is responsible for reading
   // state.onboarding.activeTour back out as `resumeStep` on mount (and for
   // only ever mounting one GuidedTour at a time); tourId just labels this
-  // tour's slot in that shared field.
+  // tour's slot in that shared field. Only actually persists a step marked
+  // resumable (default true — see that field's own comment above); landing
+  // on a non-resumable step (forward OR back) leaves the last persisted
+  // checkpoint alone, so it always names the latest SAFE step to resume at.
   React.useEffect(() => {
+    if (steps[step] && steps[step].resumable === false) return;
     actions.setOnboarding({ activeTour: { id: tourId, step } });
   }, [step]);
 

@@ -104,11 +104,15 @@ const buildPickerTourStep2 = (pickerId) => ({
 // one region — the first .np-field in the Details step, which is what's
 // showing once Step 2's click opens the form (initial.step === 1 in the
 // sample template keeps it on Details rather than jumping to Items).
+// resumable:false — this and every step through Step 12 only has a target
+// because the create-picker form is open, which a reload doesn't survive
+// (see resumable's own doc comment in onboarding-tour-runner.jsx); Steps
+// 1-2 stay resumable since neither depends on the form already being open.
 const PICKER_TOUR_STEP_3 = {
   sel: '.np-fields .np-field:first-child', tab: 'picker',
   title: 'Give it a name',
   body: <>This is the <b>name of the picker</b> and should be descriptive of the types of tasks contained in its pool of items. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-  primary: 'Next', back: true,
+  primary: 'Next', back: true, resumable: false,
 };
 
 // Highlights the Group field's whole group (label + description + chips) as
@@ -117,7 +121,7 @@ const PICKER_TOUR_STEP_4 = {
   sel: '.np-fields .np-field:nth-child(2)', tab: 'picker',
   title: 'Attach to a group',
   body: <>This is the group that the picker will be attached to and <b>controls how pickers are organized on the Today page</b>. You can either select an existing group or create a new one. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-  primary: 'Next', back: true,
+  primary: 'Next', back: true, resumable: false,
 };
 
 // Highlights ONLY the sample's own mode option — .mode-opt[data-mode="..."]
@@ -132,7 +136,7 @@ const buildPickerTourStep5 = (pickerId) => ({
   sel: `.np-fields .mode-opt[data-mode="${PICKER_SAMPLES[pickerId].mode}"]`, tab: 'picker',
   title: 'Select a picker type',
   body: <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you, so you can go ahead and click Next whenever you are ready.</>,
-  primary: 'Next', back: true,
+  primary: 'Next', back: true, resumable: false,
 });
 
 // Highlights the "Add items" button that advances the form from its Details
@@ -148,7 +152,7 @@ const PICKER_TOUR_STEP_6 = {
   sel: '.ob-picker-next', tab: 'picker', scrollToBottom: true,
   title: 'Add items to this picker',
   body: <>The picker options are all done, you just need to <b>add some task items for the picker to choose from</b>. Go ahead and click this button now.</>,
-  primary: 'Next', back: true, requireClick: true,
+  primary: 'Next', back: true, requireClick: true, resumable: false,
 };
 
 // Highlights the "+ Add item" button on the now-showing Items sub-step
@@ -162,7 +166,7 @@ const buildPickerTourStep7 = (pickerId) => ({
   sel: '.pv-additem-btn', tab: 'picker',
   title: 'Add a task to the picker’s pool',
   body: <>Pickers need a <b>pool of tasks to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click this button now.</>,
-  primary: 'Next', back: true, requireClick: true,
+  primary: 'Next', back: true, requireClick: true, resumable: false,
   run: () => { emlTour.set({ itemPrefill: PICKER_TOUR_COPY[pickerId].itemPrefill }); },
 });
 
@@ -174,7 +178,7 @@ const PICKER_TOUR_STEP_8 = {
   sel: '.pv-additem-wrap .rd-name-input', tab: 'picker',
   title: 'Give it a name',
   body: <>This is the name of the task item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-  primary: 'Next', back: true,
+  primary: 'Next', back: true, resumable: false,
 };
 
 // Highlights the Soonest/Shortest row — the first .pie-row in the editor's
@@ -192,7 +196,7 @@ const PICKER_TOUR_STEP_9 = {
   sel: '.pv-additem-wrap .pie-row:first-child', tab: 'picker',
   title: 'Set a timeout',
   body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again for at least a week or so.</>,
-  primary: 'Next', back: true,
+  primary: 'Next', back: true, resumable: false,
 };
 
 // Highlights the Latest/Longest row — the second .pie-row in the editor's
@@ -203,7 +207,7 @@ const PICKER_TOUR_STEP_10 = {
   sel: '.pv-additem-wrap .pie-row:nth-child(2)', tab: 'picker',
   title: 'Set a maximum wait',
   body: <>This controls the <b>maximum number of days that a task item must wait before it should be picked again</b>. This is also useful since most chores need to be done again within a certain timeframe.</>,
-  primary: 'Next', back: true,
+  primary: 'Next', back: true, resumable: false,
 };
 
 // Highlights the item editor's Save button — .ob-item-save (tagged
@@ -214,7 +218,7 @@ const PICKER_TOUR_STEP_11 = {
   sel: '.ob-item-save', tab: 'picker',
   title: 'Save this task item',
   body: <>This task item is now complete and can be <b>saved to this picker’s pool</b>. Go ahead and click this button now.</>,
-  primary: 'Next', back: true, requireClick: true,
+  primary: 'Next', back: true, requireClick: true, resumable: false,
 };
 
 // Highlights the form's real "Create picker" button — .ob-picker-create
@@ -230,7 +234,7 @@ const PICKER_TOUR_STEP_12 = {
   sel: '.ob-picker-create', tab: 'picker',
   title: 'Create this picker',
   body: <>You’re all set! You’ve created this picker and its pool of task items. All that’s left is to <b>click the Create picker button</b>. Go ahead and click it now.</>,
-  primary: 'Done', back: true, requireClick: true,
+  primary: 'Done', back: true, requireClick: true, resumable: false,
 };
 
 // Why Step 2's run() (not, say, Step 1's, or PickerTour's onStart) is where
@@ -262,7 +266,13 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
   const copy = PICKER_TOUR_COPY[pickerId];
   const modeLabel = ((MODES[picker.mode] || {}).label || picker.mode).toLowerCase();
 
-  const [phase, setPhase] = React.useState('intro');
+  // A reload lands here with app.jsx already having re-derived activePickerTour
+  // from the SAME persisted activeTour (that's how this component gets
+  // (re)mounted for pickerId at all) — re-reading it here just decides
+  // whether to skip the intro modal and which (resumable) step to land on.
+  const ob = state.onboarding || {};
+  const resumable = ob.activeTour && ob.activeTour.id === `picker-${pickerId}` ? ob.activeTour : null;
+  const [phase, setPhase] = React.useState(resumable ? 'tour' : 'intro');
 
   const closeTour = (status) => {
     // Clear both bus fields regardless of exit path (cancelled/skipped/
@@ -308,7 +318,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     <GuidedTour
       tourId={`picker-${pickerId}`}
       steps={steps}
-      resumeStep={0}
+      resumeStep={resumable ? resumable.step : 0}
       actions={actions}
       active={active}
       selectTab={selectTab}

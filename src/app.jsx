@@ -135,8 +135,15 @@ function App() {
   // is. Lives here rather than in TabToday (unlike the reminder mini-tours)
   // because Step 1 navigates to the Pickers tab, which would unmount
   // TabToday (and anything it owns) along with it; same reasoning as
-  // Onboarding itself living at this level.
-  const [activePickerTour, setActivePickerTour] = React.useState(null);
+  // Onboarding itself living at this level. Seeded from a persisted
+  // activeTour on first mount (a reload) so the tour resumes instead of
+  // silently vanishing — see onboarding-picker-tours.jsx's own resume
+  // handling for the other half of this (skipping the intro modal,
+  // resuming at the right — resumable — step).
+  const [activePickerTour, setActivePickerTour] = React.useState(() => {
+    const at = state.onboarding && state.onboarding.activeTour;
+    return (at && typeof at.id === 'string' && at.id.startsWith('picker-')) ? at.id.slice('picker-'.length) : null;
+  });
   // The Welcome Tour auto-opens/closes this same rail while it's running, so
   // a step spotlighting a nav button can actually find it there even when
   // collapsed — see onboarding.jsx's wantRailOpen publish. Only acts while a
