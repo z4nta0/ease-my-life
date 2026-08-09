@@ -409,9 +409,16 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       reserveDecided = true;
       const r = unionRect(els);
       const vh = window.innerHeight;
-      if (vh - (r.top + r.height) >= OB_COACH_H + 16) return; // fits below — reserveTop is already 0
-      if (r.top - 16 - OB_COACH_H >= obSafeTop() + 12) return; // fits above — reserveTop is already 0
-      reservedAmount = OB_COACH_H + 40;
+      // coachH (measured off the always-rendered hidden clone — see the
+      // `measurer` in the render below) rather than the fixed OB_COACH_H
+      // estimate: a narrower coach (small/mobile screens) wraps the same
+      // body text over more lines and renders taller, so the fixed guess
+      // under-reserved there specifically — this step fit "above" by the
+      // estimate but not in reality, and the coach ended up overlapping the
+      // highlight's top edge anyway.
+      if (vh - (r.top + r.height) >= coachH + 16) return; // fits below — reserveTop is already 0
+      if (r.top - 16 - coachH >= obSafeTop() + 12) return; // fits above — reserveTop is already 0
+      reservedAmount = coachH + 40;
       setReserveTop(reservedAmount);
     };
     // Reposition synchronously as scroll fires (before paint) so the highlight
@@ -486,6 +493,29 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   const total = steps.length;
   const vw = window.innerWidth, vh = window.innerHeight;
   const coachW = Math.min(300, vw - 24);
+  // Hidden clone of the coach, rendered off-screen the moment a step's
+  // content is known — BEFORE its target (and so `rect`) resolves, unlike
+  // the real coach below. Its only job is to give coachRef's layout effect
+  // something to measure early enough for decideReserve (which runs inside
+  // the position-tracking effect, as soon as the target is first found — the
+  // real coach doesn't exist in the DOM yet at that point) to see this
+  // step's REAL height instead of a stale one measured off whatever the
+  // previous, possibly shorter, step happened to be.
+  const measurer = (
+    <div className="ob-coach" ref={coachRef} aria-hidden="true"
+         style={{ position: 'fixed', top: 0, left: -9999, width: coachW, visibility: 'hidden', pointerEvents: 'none' }}>
+      <p className="ob-prog">Step {step + 1} of {total}</p>
+      <h4>{cur.title}</h4>
+      <p className="ob-body">{cur.body}</p>
+      <div className="ob-crow">
+        <div className="ob-lnav">
+          <button className="ob-skip">Skip</button>
+          {cur.back && <button className="ob-back">‹ Back</button>}
+        </div>
+        <button className="ob-next">{cur.primary}{cur.primary !== 'Done' ? ' ›' : ''}</button>
+      </div>
+    </div>
+  );
   let coachStyle, arrowClass, spotStyle = null;
   if (rect) {
     const pad = 8;
@@ -509,17 +539,20 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       arrowClass = 'ob-coach--down';
     }
   } else {
-    // Target not found yet (mid-navigation). Show only the dim; the coach
-    // appears once its target resolves, so no stale/centered flash.
-    return portal(<div className="ob-tour" aria-live="polite"><div className="ob-dim" /></div>);
+    // Target not found yet (mid-navigation). Show only the dim; the visible
+    // coach appears once its target resolves, so no stale/centered flash —
+    // but the hidden measurer still needs to be here so its height is ready
+    // by the time the target IS found.
+    return portal(<div className="ob-tour" aria-live="polite"><div className="ob-dim" />{measurer}</div>);
   }
   const arrowX = rect ? Math.max(18, Math.min(rect.left + rect.width / 2 - (coachStyle.left || 0), coachW - 26)) : 0;
 
   return portal(
     <div className="ob-tour" aria-live="polite">
+      {measurer}
       {spotStyle && <div className="ob-spot" ref={spotRef} style={spotStyle} />}
       {!spotStyle && <div className="ob-dim" />}
-      <div className={`ob-coach ${arrowClass}`} ref={coachRef} style={{ ...coachStyle, width: coachW, '--ob-ax': arrowX + 'px' }}>
+      <div className={`ob-coach ${arrowClass}`} style={{ ...coachStyle, width: coachW, '--ob-ax': arrowX + 'px' }}>
         <p className="ob-prog">Step {step + 1} of {total}</p>
         <h4>{cur.title}</h4>
         <p className="ob-body">{cur.body}</p>

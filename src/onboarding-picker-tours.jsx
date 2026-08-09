@@ -117,6 +117,17 @@ const PICKER_TOUR_STEP_7 = {
   primary: 'Next', back: true,
 };
 
+// Highlights the "Add items" button that advances the form from its Details
+// sub-step to its Items sub-step — .ob-picker-next, a class name left over
+// from the original stashed create-a-picker tour design, reused here as-is
+// since it already targets exactly this button.
+const PICKER_TOUR_STEP_8 = {
+  sel: '.ob-picker-next', tab: 'picker',
+  title: 'Add item to this picker',
+  body: <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click this button now.</>,
+  primary: 'Next', back: true, requireClick: true,
+};
+
 // Why Step 2's run() (not, say, Step 1's, or PickerTour's onStart) is where
 // prefill gets published: tab-picker.jsx has its own dormant effect from the
 // original (stashed) create-a-picker tour design — `if (tour.prefill &&
@@ -165,7 +176,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7];
+  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8];
 
   return (
     <GuidedTour
