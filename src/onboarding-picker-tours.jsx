@@ -120,9 +120,14 @@ const PICKER_TOUR_STEP_7 = {
 // Highlights the "Add items" button that advances the form from its Details
 // sub-step to its Items sub-step — .ob-picker-next, a class name left over
 // from the original stashed create-a-picker tour design, reused here as-is
-// since it already targets exactly this button.
+// since it already targets exactly this button. scrollToBottom since it's
+// always the last thing in the Details footer regardless of how the form
+// got here — reached going forward (scrolled down from filling out fields)
+// or Back from Step 9 (the form just switched back from its Items sub-step,
+// a completely different shape, so whatever scroll position carried over
+// means nothing).
 const PICKER_TOUR_STEP_8 = {
-  sel: '.ob-picker-next', tab: 'picker',
+  sel: '.ob-picker-next', tab: 'picker', scrollToBottom: true,
   title: 'Add item to this picker',
   body: <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click this button now.</>,
   primary: 'Next', back: true, requireClick: true,

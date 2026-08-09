@@ -33,6 +33,13 @@ import { InfoTip } from './ui.jsx';
 //              page anyway (e.g. a full-list review step), so landing on it
 //              scrolls all the way to 0 instead of just nudging the target
 //              into view.
+//   scrollToBottom — the same idea, inverted: true if this step's target
+//              always sits at the very bottom of its page/form (e.g. a
+//              footer button), so landing on it scrolls all the way to the
+//              end instead of nudging — more reliable than the pad-based
+//              nudge when the surrounding content just changed shape (a
+//              form switching sub-steps) and the carried-over scroll
+//              position no longer means anything.
 //   requireClick — true if this step teaches the real interface rather than
 //              narrating it: Next is disabled (with a hover/tap hint) and
 //              the step only advances when the user clicks the highlighted
@@ -368,6 +375,18 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       if (cur.scrollToTop) {
         if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo(0, 0);
         else sc.scrollTop = 0;
+        return;
+      }
+      // Symmetric case: a step whose target always sits at the very bottom
+      // of its page/form (e.g. a footer "next" button) — scrolling by pad
+      // math alone can undershoot after the surrounding content just
+      // changed shape (e.g. a form switching back from a longer sub-step to
+      // a shorter one, whatever scroll position carried over from before no
+      // longer means anything), landing short of the target instead of
+      // reaching it.
+      if (cur.scrollToBottom) {
+        if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo(0, document.documentElement.scrollHeight);
+        else sc.scrollTop = sc.scrollHeight;
         return;
       }
       const isDoc = sc === document.scrollingElement || sc === document.documentElement;
