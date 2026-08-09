@@ -50,7 +50,7 @@ const PICKER_TOUR_COPY = {
     step9Tail: 'This is useful since most monthly chores do not usually need to be done again for at least a month or so.',
   },
   pkr_ob_coffee: {
-    body2: 'This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is perfect for something like flavors, where each one starts with its own likelihood but becomes more likely to be picked the longer it goes without being chosen. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.',
+    body2: 'This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is perfect for randomly choosing something, while also making sure that every item is eventually picked and for prioritizing certain items over others. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.',
     itemPrefill: 'Peppermint Mocha',
   },
   pkr_ob_dinner: {
