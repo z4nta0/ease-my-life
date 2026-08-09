@@ -28,11 +28,15 @@ const PAGE_TOUR_COPY = {
 // tab: 'today' keeps this from auto-navigating when the step opens (a page
 // tour is launched from Today, and clicking the real nav icon is meant to
 // be what does the navigating, not the step itself).
-const buildPageTourStep1 = (page) => ({
-  ...OB_NAV_TARGETS[page],
-  tab: 'today',
-  primary: 'Next', back: false, requireClick: true,
-});
+const buildPageTourStep1 = (page) => {
+  const nav = OB_NAV_TARGETS[page];
+  return {
+    ...nav,
+    body: <>{nav.body} Go ahead and click it now.</>,
+    tab: 'today',
+    primary: 'Next', back: false, requireClick: true,
+  };
+};
 
 function PageTour({ pageId, actions, onClose }) {
   const tour = OB_PAGE_TOURS.find((t) => t.id === pageId);
