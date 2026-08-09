@@ -1096,12 +1096,18 @@ function useStore(opts) {
         ...(createdFromSample ? { createdFromSample } : {}),
       };
       setState((s) => {
-        // Tidy + de-duplicate the picker name against existing pickers (same
-        // policy as items/reminders, but scoped globally since picker names are
-        // container-style identifiers shown across every tab).
+        // Tidy + de-duplicate the picker name against existing, VISIBLE
+        // pickers (same policy as items/reminders, but scoped globally since
+        // picker names are container-style identifiers shown across every
+        // tab). Hidden ones (onboarding's sample pickers) are excluded —
+        // they're invisible reference data the user can't see or tell apart
+        // from, so they shouldn't cost a real picker an ugly " (2)" suffix
+        // for a collision with something the user doesn't know exists (seen
+        // concretely: the Picker mini-tour's own "Create picker" step
+        // recreates a sample by name, e.g. "Daily Chores").
         const finalName = uniqueName(
           normalizePickerName(name) || name,
-          s.pickers.map((p) => p.name),
+          s.pickers.filter((p) => !p.hidden).map((p) => p.name),
         );
         return {
           ...s,
