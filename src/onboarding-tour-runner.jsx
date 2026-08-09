@@ -271,10 +271,17 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
 
   // Resolve every element a step's selector matches — honoring selector
   // ORDER (comma-separated fallbacks) — so a step can spotlight more than one
-  // element (e.g. "the whole list") as a single combined highlight.
+  // element (e.g. "the whole list") as a single combined highlight. Filters
+  // out zero-rect (CSS display:none) elements before checking emptiness —
+  // some responsive pairs (e.g. the sidebar vs. footer Edit Mode button)
+  // both exist in the DOM at every width, only swapping which one is
+  // display:none via a container query, unlike .ob-generate/.gen-confirm's
+  // conditional-render swap. Without this, the first alternative in a
+  // fallback list would always win even when it's the hidden one.
   const findTargets = (sel) => {
     for (const s of sel.split(',')) {
-      const els = [...document.querySelectorAll(s.trim())];
+      const els = [...document.querySelectorAll(s.trim())]
+        .filter((el) => { const r = el.getBoundingClientRect(); return r.width > 0 || r.height > 0; });
       if (els.length) return els;
     }
     return [];
