@@ -135,6 +135,18 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // commits a new value (and thus only triggers another render) when the
   // measurement actually changed, so this settles instead of looping.
   const [coachH, setCoachH] = React.useState(OB_COACH_H);
+  // The position-tracking effect below reads this ref, not `coachH`
+  // directly — that effect's own deps are [step, cur.sel], so whenever
+  // React re-renders WITHOUT those changing (exactly what happens right
+  // after this same layout effect corrects `coachH` for a step whose
+  // coach differs in height from whatever step came before it), React
+  // reuses the position-tracking effect's ORIGINAL closure rather than
+  // the fresher one from the new render — permanently freezing whatever
+  // coachH was still stale at that render. decideReserve read that frozen
+  // value forever after, most visible navigating Back into a step whose
+  // coach is taller than the one it's coming from.
+  const coachHRef = React.useRef(coachH);
+  coachHRef.current = coachH;
   React.useLayoutEffect(() => {
     const h = coachRef.current && coachRef.current.offsetHeight;
     if (h && h !== coachH) setCoachH(h);
@@ -404,21 +416,42 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // in the same closure, so no staleness risk the way reading the actual
     // `reserveTop` state here would have) — see its use there for why.
     let reservedAmount = 0;
+    // The TARGET can still be settling too, in two different ways: (1) mid-
+    // CSS-transition — e.g. a Collapse section still animating open the
+    // first time this step's target mounts, .np-daily-group's weekday chips
+    // are exactly this — reading a shorter height than its final one, or
+    // (2) bring()'s own scroll adjustment hasn't fully landed yet — most
+    // visible going BACK to a step whose target was already on-screen
+    // (nothing to animate open this time), where the height reads correctly
+    // right away but the top position is still moving as the scroll
+    // settles. Deciding off either kind of transient reading wrongly
+    // concludes "fits" and skips the reserve the final, settled geometry
+    // actually needs. Wait for BOTH top and height to stop changing between
+    // consecutive frames before locking in the decision — same idea as
+    // coachH's own stabilize-then-use pattern above, just for the other
+    // side of the same math.
+    let lastTargetTop = null, lastTargetH = null, stableFrames = 0;
     const decideReserve = (els) => {
       if (reserveDecided) return;
-      reserveDecided = true;
       const r = unionRect(els);
+      if (lastTargetH != null && Math.abs(r.height - lastTargetH) < 1 && Math.abs(r.top - lastTargetTop) < 1) stableFrames++;
+      else stableFrames = 0;
+      lastTargetTop = r.top;
+      lastTargetH = r.height;
+      if (stableFrames < 2) return;
+      reserveDecided = true;
       const vh = window.innerHeight;
-      // coachH (measured off the always-rendered hidden clone — see the
-      // `measurer` in the render below) rather than the fixed OB_COACH_H
-      // estimate: a narrower coach (small/mobile screens) wraps the same
-      // body text over more lines and renders taller, so the fixed guess
-      // under-reserved there specifically — this step fit "above" by the
-      // estimate but not in reality, and the coach ended up overlapping the
-      // highlight's top edge anyway.
-      if (vh - (r.top + r.height) >= coachH + 16) return; // fits below — reserveTop is already 0
-      if (r.top - 16 - coachH >= obSafeTop() + 12) return; // fits above — reserveTop is already 0
-      reservedAmount = coachH + 40;
+      // coachHRef.current, not the closed-over coachH — see coachHRef's own
+      // comment above for why the closure can't be trusted here. Also not
+      // the fixed OB_COACH_H estimate: a narrower coach (small/mobile
+      // screens) wraps the same body text over more lines and renders
+      // taller, so the fixed guess under-reserved there specifically — this
+      // step fit "above" by the estimate but not in reality, and the coach
+      // ended up overlapping the highlight's top edge anyway.
+      const ch = coachHRef.current;
+      if (vh - (r.top + r.height) >= ch + 16) return; // fits below — reserveTop is already 0
+      if (r.top - 16 - ch >= obSafeTop() + 12) return; // fits above — reserveTop is already 0
+      reservedAmount = ch + 40;
       setReserveTop(reservedAmount);
     };
     // Reposition synchronously as scroll fires (before paint) so the highlight
