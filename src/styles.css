@@ -237,6 +237,20 @@ body[data-viewport="mobile"] {
   .app[data-placement="bottom"] .main { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
 }
 
+/* At ~430px and narrower (e.g. iPhone SE at 375px), 5 buttons at 28px
+   horizontal padding each (76px wide, 388px total incl. gaps) no longer fit
+   within the pill's own max-width: calc(100% - 24px) — the row overflows
+   its rounded container symmetrically, pushing the first (Today) button's
+   highlight/background past the pill's left edge and the last (Settings)
+   button's past its right edge. 20px keeps every button comfortably inside
+   down to the narrowest common phone width; border-radius:999px doesn't
+   need any adjustment alongside it — being larger than any realistic
+   button half-height, it already clips to a full stadium shape regardless
+   of the exact width. */
+@container app (max-width: 430px) {
+  .tabbar--bottom .tabbtn { padding-left: 20px; padding-right: 20px; }
+}
+
 /* Side placement */
 .tabbar--side {
   position: sticky; top: 0;
