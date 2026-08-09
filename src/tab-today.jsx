@@ -782,7 +782,7 @@ function PageTourCard({ tour, state, actions, onPlayTutorial, onUncheckTutorial,
         <div className="today-card-meta">
           <span className="meta-picker">{tour.label} Tour</span>
         </div>
-        <div className="today-card-name">Take an in depth tour of the {tour.label} page</div>
+        <div className="today-card-name">Take a quick tour of the {tour.label} page</div>
       </div>
       {!done && (
         <div className="today-card-actions">
