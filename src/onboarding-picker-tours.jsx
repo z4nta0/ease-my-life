@@ -128,6 +128,15 @@ const PICKER_TOUR_STEP_8 = {
   primary: 'Next', back: true, requireClick: true,
 };
 
+// Highlights the "+ Add item" button on the now-showing Items sub-step
+// (reached via Step 8's click) — .pv-additem-btn.
+const PICKER_TOUR_STEP_9 = {
+  sel: '.pv-additem-btn', tab: 'picker',
+  title: 'Add a task to the picker’s pool',
+  body: <>Pickers need a <b>pool of tasks to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click this button now.</>,
+  primary: 'Next', back: true, requireClick: true,
+};
+
 // Why Step 2's run() (not, say, Step 1's, or PickerTour's onStart) is where
 // prefill gets published: tab-picker.jsx has its own dormant effect from the
 // original (stashed) create-a-picker tour design — `if (tour.prefill &&
@@ -176,7 +185,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8];
+  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8, PICKER_TOUR_STEP_9];
 
   return (
     <GuidedTour

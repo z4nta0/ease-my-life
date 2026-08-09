@@ -545,7 +545,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
           <button className="ob-skip">Skip</button>
           {cur.back && <button className="ob-back">‹ Back</button>}
         </div>
-        <button className="ob-next">{cur.primary}{cur.primary !== 'Done' ? ' ›' : ''}</button>
+        <button className="ob-next" disabled={cur.requireClick}>{cur.primary}{cur.primary !== 'Done' ? ' ›' : ''}</button>
       </div>
     </div>
   );
