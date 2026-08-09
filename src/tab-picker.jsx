@@ -1377,14 +1377,33 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
                          onCreate={(payload) => {
                            // During onboarding, never create a second copy of
                            // the example picker on a revisit — dedupe by name and
-                           // just advance the tour instead.
-                           if (openedByTour && state.pickers.some((p) => p.name === payload.name)) {
+                           // just advance the tour instead. Skipped when
+                           // existingPickerId is set: that's an INTENTIONAL
+                           // replay of an already-finished tutorial (see
+                           // onboarding-picker-tours.jsx's Step 2 run()), where
+                           // payload.name matching the prior picker is expected,
+                           // not a same-session double-fire to guard against.
+                           if (openedByTour && !tour.existingPickerId && state.pickers.some((p) => p.name === payload.name)) {
                              setOpenedByTour(false);
                              cancelCreate();
                              if (window.__emlPickerCreated) window.__emlPickerCreated();
                              return;
                            }
-                           const id = actions.addPicker(payload);
+                           // A replay updates the SAME picker in place (via
+                           // replaceId) instead of creating a duplicate — see
+                           // store.jsx's addPicker. createdFromSample tags
+                           // this run's picker either way, so a LATER replay
+                           // can find it too. Gated on tour.prefill, not
+                           // openedByTour — this tour walks the form via a
+                           // real click (openedByTour only ever gets set by
+                           // the OTHER, dormant-auto-open prefill entry
+                           // point, see NewPickerForm's own comment above),
+                           // so openedByTour is always false here.
+                           const id = actions.addPicker({
+                             ...payload,
+                             ...(tour.prefill ? { createdFromSample: tour.createdFromSample } : {}),
+                             ...(tour.existingPickerId ? { replaceId: tour.existingPickerId } : {}),
+                           });
                            if (openedByTour) { setOpenedByTour(false); if (window.__emlPickerCreated) window.__emlPickerCreated(); }
                            setEmptyInitial(null);
                            const finish = () => { setCreating(false); setActiveId(id); };

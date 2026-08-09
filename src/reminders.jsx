@@ -625,9 +625,18 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
     if (!name || committingRef.current) return;   // guard: ignore rapid double-click
     committingRef.current = true;
     selfClosingRef.current = true;
-    const newId = draftTask.id;
+    // A reminder mini-tour replayed after already finishing once should
+    // update the SAME real reminder it created before, not spawn a
+    // duplicate — mirrors tab-picker.jsx's own replaceId handling. The
+    // existing task is found via createdFromSample (see store.jsx's addTask
+    // and onboarding-reminder-tours.jsx's Step 1 run(), which tags the
+    // draft with it).
+    const existing = draftTask.createdFromSample
+      ? state.tasks.find((t) => t.createdFromSample === draftTask.createdFromSample)
+      : null;
+    const newId = existing ? existing.id : draftTask.id;
     const finish = () => {
-      actions.addTask({ ...draftTask, name });
+      actions.addTask({ ...draftTask, name, ...(existing ? { replaceId: existing.id } : {}) });
       announceAdded({ ...draftTask, name });
       setInsertId(newId);   // play the entrance on the new card
       setDraftTask(null);

@@ -102,7 +102,7 @@ const PICKER_TOUR_STEP_1 = {
 // natively opens the form via the button's own onClick, not this run()) ends
 // up mounting NewPickerForm with it already applied — see the long comment
 // on PickerTour below for why this specific ordering matters.
-const buildPickerTourStep2 = (pickerId) => ({
+const buildPickerTourStep2 = (pickerId, state) => ({
   sel: '.picker-tab--add', tab: 'picker', scrollToTop: true,
   title: 'Create a new picker',
   body: <>This button will <b>open up the form</b> for creating a new picker. Go ahead and click it now.</>,
@@ -117,7 +117,23 @@ const buildPickerTourStep2 = (pickerId) => ({
   // effect fires first, flips openedByTour to true, and Step 12's onCreate
   // then treats the picker as a dedup-and-skip revisit instead of actually
   // creating it.
-  run: () => { emlTour.set({ prefill: PICKER_SAMPLES[pickerId], suppressAutoOpen: true }); },
+  //
+  // existingPickerId/createdFromSample: if this sample tour has already been
+  // finished once before, there's a real picker out there tagged with
+  // createdFromSample === pickerId (see store.jsx's addPicker) — publishing
+  // its id here lets tab-picker.jsx's onCreate UPDATE that same picker in
+  // place (via addPicker's replaceId) instead of creating a brand-new,
+  // name-colliding duplicate. createdFromSample is republished regardless
+  // (even on a genuine first run) so THIS run's picker is tagged for any
+  // future replay to find.
+  run: () => {
+    const existing = state.pickers.find((p) => p.createdFromSample === pickerId);
+    emlTour.set({
+      prefill: PICKER_SAMPLES[pickerId], suppressAutoOpen: true,
+      existingPickerId: existing ? existing.id : null,
+      createdFromSample: pickerId,
+    });
+  },
 });
 
 // Highlights the Name field's whole group (label + description + input) as
@@ -360,7 +376,10 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     // with stale sample data the next time TabPicker mounts (e.g. just
     // revisiting the Pickers tab), same class of bug the Reminders tours'
     // closeTour already guards against.
-    emlTour.set({ prefill: null, itemPrefill: null, itemEaseMin: null, itemEaseMax: null, suppressAutoOpen: false });
+    emlTour.set({
+      prefill: null, itemPrefill: null, itemEaseMin: null, itemEaseMax: null,
+      suppressAutoOpen: false, existingPickerId: null, createdFromSample: null,
+    });
     actions.setChecklistItem(pickerId, { status });
     onClose();
   };
@@ -390,7 +409,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
   const usesWeight = picker.mode === 'weighted' || picker.mode === 'dynamic';
   const isDynamic = picker.mode === 'dynamic';
   const steps = [
-    PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4,
+    PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId, state), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4,
     buildPickerTourStep5(pickerId), PICKER_TOUR_STEP_6, buildPickerTourStep7(pickerId), buildPickerTourStep8(pickerId),
     ...(isEase ? [buildPickerTourStep9(pickerId), buildPickerTourStep10(pickerId)] : []),
     ...(usesWeight ? [PICKER_TOUR_STEP_WEIGHT] : []),

@@ -1035,7 +1035,14 @@ function useStore(opts) {
     // easeMin/easeMax is just a fallback span. Returns the new picker id.
     // Initial drift `value` depends on mode — ease-down items start "charged"
     // at the threshold; else 0.
-    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, createdFromSample }) => {
+    // replaceId: update THIS existing picker in place (same id) instead of
+    // appending a new one — used when a picker mini-tour is replayed after
+    // already finishing once (see onboarding-picker-tours.jsx's Step 2
+    // run(), which looks up the prior real picker via createdFromSample).
+    // Keeping the id alive is what makes it "the same picker" rather than a
+    // renamed-on-collision duplicate — Stats history/pick log/daily
+    // generator membership all keep pointing at it.
+    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, createdFromSample, replaceId }) => {
       // First picker = the first data worth protecting from eviction. Ask the
       // browser for persistent storage now rather than on a cold first load,
       // where a denial would be sticky for the session.
@@ -1046,7 +1053,7 @@ function useStore(opts) {
       // An explicit id (onboarding's sample pickers only, so their ids match
       // the ones baked into the precomputed Stats history) wins; every other
       // caller gets a fresh random one as before.
-      const pid = id || ('pkr_' + Math.random().toString(36).slice(2, 8));
+      const pid = replaceId || id || ('pkr_' + Math.random().toString(36).slice(2, 8));
       const initialValue = mode === 'ease-down' ? 100 : 0;
       const isEase = mode === 'ease-up' || mode === 'ease-down';
       const isDown = mode === 'ease-down';
@@ -1104,20 +1111,31 @@ function useStore(opts) {
         // from, so they shouldn't cost a real picker an ugly " (2)" suffix
         // for a collision with something the user doesn't know exists (seen
         // concretely: the Picker mini-tour's own "Create picker" step
-        // recreates a sample by name, e.g. "Daily Chores").
+        // recreates a sample by name, e.g. "Daily Chores"). Excludes itself
+        // too, so a replaceId update keeping the same name never collides
+        // with its own prior name.
         const finalName = uniqueName(
           normalizePickerName(name) || name,
-          s.pickers.filter((p) => !p.hidden).map((p) => p.name),
+          s.pickers.filter((p) => !p.hidden && p.id !== pid).map((p) => p.name),
         );
+        const finalPicker = { ...picker, name: finalName };
+        // On a replace, the old items belonging to this picker are dropped
+        // wholesale and rebuilt from this run's payload — same "recreate,
+        // but keep the id" semantics as the picker itself, not a merge with
+        // whatever the last run (or manual edits) left behind.
+        const pickerIds = includeInDaily
+          ? (s.daily.pickerIds.includes(pid) ? s.daily.pickerIds : [...s.daily.pickerIds, pid])
+          : s.daily.pickerIds.filter((x) => x !== pid);
         return {
           ...s,
-          items: [...s.items, ...newItems],
-          pickers: [...s.pickers, { ...picker, name: finalName }],
+          items: replaceId
+            ? [...s.items.filter((it) => it.pickerId !== replaceId), ...newItems]
+            : [...s.items, ...newItems],
+          pickers: replaceId
+            ? s.pickers.map((p) => p.id === replaceId ? finalPicker : p)
+            : [...s.pickers, finalPicker],
           conditionals: madeCond ? [...(s.conditionals || []), madeCond] : (s.conditionals || []),
-          // Honour the create-form toggle; included by default like the seed pickers.
-          daily: { ...s.daily, pickerIds: includeInDaily
-            ? [...s.daily.pickerIds, pid]
-            : s.daily.pickerIds },
+          daily: { ...s.daily, pickerIds },
         };
       });
       return pid;
@@ -1184,9 +1202,21 @@ function useStore(opts) {
     }),
 
     // ── Manual reminders (statically-scheduled tasks shown atop Today) ──
+    // replaceId: update THIS existing task in place (same id) instead of
+    // prepending a new one — mirrors addPicker's own replaceId, used when a
+    // reminder mini-tour is replayed after already finishing once (see
+    // reminders.jsx's commit(), which looks up the prior real task via
+    // createdFromSample).
     addTask: (fields) => setState((s) => {
       const t = TASKS.defaultTask(fields);
-      return { ...s, tasks: [{ ...t, name: uniqueName(t.name, s.tasks.map((x) => x.name)) }, ...s.tasks] };
+      const pid = fields.replaceId || t.id;
+      const finalTask = { ...t, id: pid };
+      const siblings = s.tasks.filter((x) => x.id !== pid).map((x) => x.name);
+      const named = { ...finalTask, name: uniqueName(finalTask.name, siblings) };
+      const tasks = fields.replaceId
+        ? s.tasks.map((x) => x.id === pid ? named : x)
+        : [named, ...s.tasks];
+      return { ...s, tasks };
     }),
 
     updateTask: (id, patch) => setState((s) => ({
