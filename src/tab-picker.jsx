@@ -858,7 +858,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
           </p>
           <div className="mode-radio">
             {Object.entries(MODES).map(([key, m]) => (
-              <label key={key} className={`mode-opt ${mode === key ? 'is-on' : ''}`}>
+              <label key={key} data-mode={key} className={`mode-opt ${mode === key ? 'is-on' : ''}`}>
                 <input type="radio" name="np-mode" checked={mode === key}
                        onChange={() => setMode(key)} />
                 <div>
