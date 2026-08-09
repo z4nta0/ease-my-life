@@ -38,6 +38,22 @@ const buildPageTourStep1 = (page) => {
   };
 };
 
+// Steps beyond Step 1 (the nav-highlight every page tour shares), keyed by
+// page tour id — empty/absent for any page that only has Step 1 so far.
+// Advancing past the last step in here falls through GuidedTour's own "ran
+// off the end" safety net into onSkip, same as every other mini-tour
+// behaved before its own final Done step existed.
+const PAGE_TOUR_STEPS = {
+  explore_today: [
+    {
+      sel: '.ring', tab: 'today',
+      title: 'Progress Ring',
+      body: <>This <b>tracks your current progress of completed / total tasks for today’s todo list</b>. Once filled completely, your Day Streak will increase and some celebration animations will play.</>,
+      primary: 'Next', back: true,
+    },
+  ],
+};
+
 function PageTour({ pageId, actions, onClose }) {
   const tour = OB_PAGE_TOURS.find((t) => t.id === pageId);
   const nav = OB_NAV_TARGETS[tour.page];
@@ -62,13 +78,10 @@ function PageTour({ pageId, actions, onClose }) {
     );
   }
 
-  // Only Step 1 exists so far — advancing past it falls through
-  // GuidedTour's own "ran off the end" safety net into onSkip, same as
-  // every other mini-tour behaved before its own final Done step existed.
   return (
     <GuidedTour
       tourId={`page-${pageId}`}
-      steps={[buildPageTourStep1(tour.page)]}
+      steps={[buildPageTourStep1(tour.page), ...(PAGE_TOUR_STEPS[pageId] || [])]}
       resumeStep={0}
       actions={actions}
       active="today"
