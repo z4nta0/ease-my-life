@@ -70,7 +70,7 @@ const PICKER_TOUR_COPY = {
     step10Body: <>This controls the <b>maximum number of days that a workout item must wait before it should be picked again</b>. This is also useful since you usually want a workout to be picked again within a certain timeframe.</>,
   },
   pkr_ob_relax: {
-    body2: 'This tutorial will guide you through creating a Relax picker. This type of picker is an Ease-down and is perfect for activities you want to stick with for a few days at a time instead of changing every day. e.g. once it picks "Read a book", that activity will stay your pick for at least 5 days but no more than a week before a new one is chosen. Let’s create one of these now.',
+    body2: 'This tutorial will guide you through creating a Relax picker. This type of picker is an Ease-down and is perfect for activities you want to stick with for a few days at a time instead of changing every day. e.g. once it picks "Read a book", that activity will stay as the picked item for at least 5 days but no more than a week before a new activity is chosen. Let’s create one of these now.',
     itemPrefill: 'Take a nap',
   },
 };
