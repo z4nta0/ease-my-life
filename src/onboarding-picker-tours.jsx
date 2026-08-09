@@ -39,7 +39,7 @@ const PICKER_TOUR_COPY = {
     itemPrefill: 'Mop the floors',
   },
   pkr_ob_monthly: {
-    body2: 'This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease-up and is perfect for household tasks that only need attention every so often. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least a few weeks but also no later than about a month and a half. Let’s create one of these now.',
+    body2: 'This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease-up and is perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 month. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least 1 month but also no later than 2 months. Let’s create one of these now.',
     itemPrefill: 'Wash the windows',
   },
   pkr_ob_coffee: {
