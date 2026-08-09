@@ -54,7 +54,7 @@ const PICKER_TOUR_COPY = {
     itemPrefill: 'Peppermint Mocha',
   },
   pkr_ob_dinner: {
-    body2: 'This tutorial will guide you through creating a Dinner picker. This type of picker is an Ease-up and is perfect for meals where you don’t want the same dinner to repeat too soon. e.g. once it picks "Spaghetti and meatballs", you don’t want that meal picked again for at least a week but also no later than two weeks. Let’s create one of these now.',
+    body2: 'This tutorial will guide you through creating a Dinner picker. This type of picker is an Ease-up and is perfect for something like meals where you don’t want an item to be picked twice within, say, 1 week. e.g. once it picks "Spaghetti and meatballs", you don’t want that task picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.',
     itemPrefill: 'Grilled salmon',
   },
   pkr_ob_workouts: {
