@@ -255,7 +255,7 @@ const PICKER_TOUR_STEP_WEIGHT = {
 const PICKER_TOUR_STEP_BOOST = {
   sel: '.pv-additem-wrap .pie-row:nth-child(2)', tab: 'picker',
   title: 'Boost value',
-  body: <>This is the crucial piece of a Dynamic Weighted picker. Every time an item does not get picked this value will increase, making it more and more likely to be picked. Then when it does get picked this value will reset, making it much less likely to be picked. Nothing to adjust here, click Next whenever you are ready.</>,
+  body: <>This is the <b>crucial piece of a Dynamic Weighted picker</b>. Every time an item does not get picked this value will increase, making it more and more likely to be picked. Then when it does get picked this value will reset, making it much less likely to be picked. Nothing to adjust here, click Next whenever you are ready.</>,
   primary: 'Next', back: true, resumable: false,
 };
 
