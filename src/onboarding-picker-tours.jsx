@@ -105,7 +105,7 @@ const PICKER_TOUR_STEP_4 = {
 const PICKER_TOUR_STEP_5 = {
   sel: '.np-fields .mode-opt[data-mode="ease-up"]', tab: 'picker',
   title: 'Select a picker type',
-  body: <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you but please read each description to get a better idea of how they work.</>,
+  body: <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you, so you can go ahead and click Next whenever you are ready.</>,
   primary: 'Next', back: true,
 };
 
