@@ -30,27 +30,59 @@ const REMINDER_TOUR_COPY = {
   },
 };
 
-// Steps 1-2 are identical for either variant — only the sample data they end
-// up prefilling (set on the emlTour bus below, read by reminders.jsx's
-// startAdd) differs by variant. Step 3 onward is where the two diverge.
-const REMINDER_TOUR_STEPS_SHARED = [
-  // Requires the user to actually click the "+" button themselves (Next
-  // stays disabled) — the click isn't just a gate, it's the thing being
-  // taught, and it also opens the real add-reminder form pre-filled with
-  // the sample's data (see the prefill wiring below).
-  {
+// Requires the user to actually click the "+" button themselves (Next stays
+// disabled) — the click isn't just a gate, it's the thing being taught, and
+// it also opens the real add-reminder form. run() publishes the sample's
+// prefill data onto the emlTour bus (read by reminders.jsx's startAdd)
+// in the click-guard's capture phase, same batch as startAdd's own
+// bubble-phase handler — same ordering trick as the Picker tour's Step 2.
+// Deliberately NOT set any earlier (e.g. the intro modal's onStart, where
+// an earlier version of this tour published it): resuming skips the intro
+// modal entirely (see ReminderTour's own resumable handling below), and a
+// resumed session still reaches this step via a real click, so publishing
+// here — not there — is the one place that fires on every path. Resumable
+// (the default — no flag needed): this button always exists on Today
+// regardless of any form being open, so it survives a reload fine.
+const buildReminderTourStep1 = (variant, state) => {
+  const copy = REMINDER_TOUR_COPY[variant];
+  return {
     sel: '.rem-add-btn', tab: 'today',
     title: 'Create Reminder item',
     body: <>This button is always present on the Today page. It will <b>open the interface</b> for creating a Reminder. Go ahead and click it now.</>,
     primary: 'Next', back: false, requireClick: true,
-  },
-  {
-    sel: '.rem-quickadd input', tab: 'today',
-    title: 'Give it a name',
-    body: <>This is the name of the reminder and is what will be <b>shown in your todo list on the Today page</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-    primary: 'Next', back: true,
-  },
-];
+    run: () => {
+      // Read off the LIVE sample task, not the static OB_TASKS template —
+      // the Welcome Tour seeds tk_ob_trash with today's actual weekday (see
+      // onboarding.jsx's Step 2 run()), not OB_TASKS' own hardcoded Monday,
+      // so the template would prefill the wrong day.
+      const sample = (state.tasks || []).find((t) => t.id === copy.taskId) || OB_TASKS.find((t) => t.id === copy.taskId);
+      // Stays out of the real Today list until every mini-tour is done and
+      // the closing Generate step unhides it — reminders.jsx's startAdd
+      // applies `hidden: true` generically whenever the checklist is up,
+      // not just for tutorial-prefilled ones, so nothing needs to be set
+      // here for that.
+      emlTour.set({
+        prefill: {
+          name: sample.name,
+          repeat: sample.repeat,
+          ...(sample.daysOfWeek ? { daysOfWeek: sample.daysOfWeek } : {}),
+          createdFromSample: copy.taskId,
+        },
+      });
+    },
+  };
+};
+
+// resumable:false — this and every step after it only has a target because
+// the add-reminder form (opened by Step 1's click) is open, which a reload
+// doesn't survive (see resumable's own doc comment in
+// onboarding-tour-runner.jsx).
+const REMINDER_TOUR_STEP_2 = {
+  sel: '.rem-quickadd input', tab: 'today',
+  title: 'Give it a name',
+  body: <>This is the name of the reminder and is what will be <b>shown in your todo list on the Today page</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
+  primary: 'Next', back: true, resumable: false,
+};
 
 // The recurring tour's Step 3: all 4 non-"Once" pills of the Repeat
 // segmented control, as one combined highlight — scoped to the quick-add
@@ -62,7 +94,7 @@ const REMINDER_TOUR_STEP_3 = {
   sel: '.rem-quickadd-wrap .seg-btn ~ .seg-btn', tab: 'today',
   title: 'Select recurring schedule',
   body: <>Recurring reminders have multiple options for <b>how often they should show up in your todo list</b>. We’ve already selected "Weekly" for you but feel free to select whichever one you’d prefer.</>,
-  primary: 'Next', back: true,
+  primary: 'Next', back: true, resumable: false,
 };
 
 // Step 4 highlights whichever schedule control Step 3's pill choice reveals
@@ -103,7 +135,7 @@ const buildReminderTourStep4 = (repeat) => {
     sel: '.rem-quickadd-wrap .rem-extra-fade', tab: 'today',
     title: c.title,
     body: <>This option controls <b>{c.lead}</b>{c.tail} We’ve already made {c.plural ? 'these selections' : 'this selection'} for you but feel free to customize it to whatever you’d prefer.</>,
-    primary: 'Next', back: true,
+    primary: 'Next', back: true, resumable: false,
   };
 };
 
@@ -118,24 +150,30 @@ const buildReminderTourAddStep = (variant) => ({
   body: variant === 'recurring'
     ? <>We’re all done creating this reminder item. Go ahead and click this button now to <b>add it to your todo list</b>. NOTE: if you selected a day other than today as the recurrence date, then this item will not show up in your todo list until it is due.</>
     : <>We’re all done creating this reminder item. Go ahead and click this button now to <b>add it to your todo list</b>.</>,
-  primary: 'Done', back: true, requireClick: true,
+  primary: 'Done', back: true, requireClick: true, resumable: false,
 });
 
 // `variant` is 'once' or 'recurring'. Every step so far stays on Today, and
 // this component is only ever mounted from within TabToday (see
 // tab-today.jsx's startMiniTour), so `active`/`selectTab` are hardcoded/
 // stubbed rather than threaded all the way up — a future step needing
-// another tab would need this lifted the way Onboarding is. Resume-across-
-// reload isn't wired up yet either (GuidedTour still persists activeTour for
-// free, but nothing reads it back into activeMiniTour on mount) — fine while
-// each tour is still short, worth revisiting once there's more to lose.
+// another tab would need this lifted the way Onboarding is.
 function ReminderTour({ variant, state, actions, closeReminderForm, onClose }) {
   const copy = REMINDER_TOUR_COPY[variant];
   // Only the recurring tour's Step 4 actually depends on this, but the hook
   // has to run unconditionally either way — harmless to read it up front.
   const bus = useEmlTour();
 
-  const [phase, setPhase] = React.useState('intro');
+  // A reload lands here with tab-today.jsx's activeMiniTour already
+  // re-derived from this SAME persisted activeTour (that's how this
+  // component gets (re)mounted for this variant at all) — re-reading it
+  // here just decides whether to skip the intro modal and which
+  // (resumable) step to land on. See onboarding-tour-runner.jsx's
+  // `resumable` step field for why this is a checkpoint, not necessarily
+  // the exact step the user was last on.
+  const ob = state.onboarding || {};
+  const resumable = ob.activeTour && ob.activeTour.id === `reminder-${variant}` ? ob.activeTour : null;
+  const [phase, setPhase] = React.useState(resumable ? 'tour' : 'intro');
 
   // Clears the checklist status and the shared bus's prefill together — the
   // only two bits of state this tour ever touches outside its own local
@@ -154,31 +192,7 @@ function ReminderTour({ variant, state, actions, closeReminderForm, onClose }) {
         title={copy.title}
         paragraphs={[REMINDER_TOUR_BODY_1, copy.body2]}
         pills={['reminders', 'one-time', 'recurring']}
-        onStart={() => {
-          // Published before Step 1 even opens the add-reminder form (the
-          // user clicks the real "+" themselves) so it's already there for
-          // reminders.jsx's startAdd to pick up the moment that happens.
-          // Read off the LIVE sample task, not the static OB_TASKS template
-          // — the Welcome Tour seeds tk_ob_trash with today's actual weekday
-          // (see onboarding.jsx's Step 2 run()), not OB_TASKS' own
-          // hardcoded Monday, so the template would prefill the wrong day.
-          const sample = (state.tasks || []).find((t) => t.id === copy.taskId)
-            || OB_TASKS.find((t) => t.id === copy.taskId);
-          // Stays out of the real Today list until every mini-tour is done
-          // and the closing Generate step unhides it — reminders.jsx's
-          // startAdd applies `hidden: true` generically whenever the
-          // checklist is up, not just for tutorial-prefilled ones, so
-          // nothing needs to be set here for that.
-          emlTour.set({
-            prefill: {
-              name: sample.name,
-              repeat: sample.repeat,
-              ...(sample.daysOfWeek ? { daysOfWeek: sample.daysOfWeek } : {}),
-              createdFromSample: copy.taskId,
-            },
-          });
-          setPhase('tour');
-        }}
+        onStart={() => setPhase('tour')}
         // Mirrors the launcher card's own X button exactly — marks the card
         // cancelled without touching the underlying sample reminder. Never
         // set the prefill yet at this point, so nothing to clear.
@@ -188,14 +202,14 @@ function ReminderTour({ variant, state, actions, closeReminderForm, onClose }) {
   }
 
   const steps = variant === 'recurring'
-    ? [...REMINDER_TOUR_STEPS_SHARED, REMINDER_TOUR_STEP_3, buildReminderTourStep4(bus.draftRepeat), buildReminderTourAddStep(variant)]
-    : [...REMINDER_TOUR_STEPS_SHARED, buildReminderTourAddStep(variant)];
+    ? [buildReminderTourStep1(variant, state), REMINDER_TOUR_STEP_2, REMINDER_TOUR_STEP_3, buildReminderTourStep4(bus.draftRepeat), buildReminderTourAddStep(variant)]
+    : [buildReminderTourStep1(variant, state), REMINDER_TOUR_STEP_2, buildReminderTourAddStep(variant)];
 
   return (
     <GuidedTour
       tourId={`reminder-${variant}`}
       steps={steps}
-      resumeStep={0}
+      resumeStep={resumable ? resumable.step : 0}
       actions={actions}
       active="today"
       selectTab={() => {}}

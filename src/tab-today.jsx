@@ -1729,7 +1729,17 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour }) {
   // highlights its nav button), which would unmount this component along
   // with them, so that state lives at the app level instead — see app.jsx's
   // activePickerTour and this component's own onStartPickerTour prop.
-  const [activeMiniTour, setActiveMiniTour] = React.useState(null);
+  // Seeded from a persisted activeTour on first mount (a reload) so the
+  // tour resumes instead of silently vanishing — mirrors app.jsx's own
+  // activePickerTour seeding. activeTour.id only encodes the variant
+  // ('reminder-once'/'reminder-recurring'), not the task id, so map it back
+  // via the same taskId pairing ReminderTour's own variant prop uses below.
+  const [activeMiniTour, setActiveMiniTour] = React.useState(() => {
+    const at = state.onboarding && state.onboarding.activeTour;
+    if (!at || typeof at.id !== 'string' || !at.id.startsWith('reminder-')) return null;
+    const variant = at.id.slice('reminder-'.length);
+    return { kind: 'reminder', id: variant === 'once' ? 'tk_ob_meds' : 'tk_ob_trash' };
+  });
   // Mini-tour launcher cards' Play button / row click. `kind` is 'picker' or
   // 'reminder', `id` is the sample picker/task's id.
   const startMiniTour = (kind, id) => {
