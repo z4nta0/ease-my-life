@@ -158,6 +158,17 @@ const PICKER_TOUR_STEP_10 = {
   primary: 'Next', back: true,
 };
 
+// Highlights the Soonest row — the first .pie-row in the editor's isEase
+// branch (this sample is Ease-up, so the row's own label reads "Soonest").
+// No new one-way DOM transition happens between Step 10 and here (the
+// editor stays open the whole time), so no onGoBack handling is needed.
+const PICKER_TOUR_STEP_11 = {
+  sel: '.pv-additem-wrap .pie-row:first-child', tab: 'picker',
+  title: 'Set a timeout',
+  body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not need to be done again for at least a week usually.</>,
+  primary: 'Next', back: true,
+};
+
 // Why Step 2's run() (not, say, Step 1's, or PickerTour's onStart) is where
 // prefill gets published: tab-picker.jsx has its own dormant effect from the
 // original (stashed) create-a-picker tour design — `if (tour.prefill &&
@@ -206,7 +217,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8, PICKER_TOUR_STEP_9, PICKER_TOUR_STEP_10];
+  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8, PICKER_TOUR_STEP_9, PICKER_TOUR_STEP_10, PICKER_TOUR_STEP_11];
 
   return (
     <GuidedTour
