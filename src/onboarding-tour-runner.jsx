@@ -322,10 +322,26 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // finishes the tour ('Done') or advances to the next step — step authors
   // never call goToStep/selectTab themselves, keeping run() a pure side
   // effect and navigation fully generic.
+  //
+  // For a requireClick step, this fires from the click-guard's CAPTURE-phase
+  // handling of the real target's click — same event as the target's own
+  // native (bubble-phase) handler, which hasn't run yet. run() has to stay
+  // synchronous here (Steps 2/9's prefill staging depends on landing before
+  // that native handler reads it), but advancing/finishing must NOT: a
+  // 'Done' step's finish() calls selectTab away and unmounts this tour,
+  // and doing that synchronously here can remove the target from the DOM
+  // before its own bubble-phase handler ever fires — observed concretely on
+  // the Picker tour's "Create picker" step, where the real submit() got
+  // skipped entirely because finish() tore down the page mid-click. Deferring
+  // the advance/finish by a tick lets the browser finish dispatching the
+  // native click (including the target's own handler) first; a requireClick
+  // step's target is real UI the user just interacted with, so nothing in
+  // `steps` should be reading tour `step` synchronously off this same click.
   const onPrimary = () => {
     if (cur.run) cur.run();
-    if (cur.primary === 'Done') finish();
-    else goToStep(step + 1);
+    const advance = () => { if (cur.primary === 'Done') finish(); else goToStep(step + 1); };
+    if (cur.requireClick) setTimeout(advance, 0);
+    else advance();
   };
   onPrimaryRef.current = onPrimary;
 

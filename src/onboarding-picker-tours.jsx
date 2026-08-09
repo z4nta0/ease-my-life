@@ -62,7 +62,17 @@ const buildPickerTourStep2 = (pickerId) => ({
   title: 'Create a new picker',
   body: <>This button will <b>open up the form</b> for creating a new picker. Go ahead and click it now.</>,
   primary: 'Next', back: true, requireClick: true,
-  run: () => { emlTour.set({ prefill: PICKER_SAMPLES[pickerId] }); },
+  // suppressAutoOpen: tab-picker.jsx's dormant effect (`if (tour.prefill &&
+  // !creating)`) is meant to stay silent for this tour — see the long
+  // comment on PickerTour below — but its `!creating` check reads a value
+  // from a DIFFERENT, earlier render than the one that eventually sets
+  // `creating` true (this bus update flows through a plain subscriber
+  // callback, outside the click's own React batch, so it commits before the
+  // real button's native handler does). Without this flag the dormant
+  // effect fires first, flips openedByTour to true, and Step 14's onCreate
+  // then treats the picker as a dedup-and-skip revisit instead of actually
+  // creating it.
+  run: () => { emlTour.set({ prefill: PICKER_SAMPLES[pickerId], suppressAutoOpen: true }); },
 });
 
 // Highlights the Name field's whole group (label + description + input) as
@@ -193,6 +203,22 @@ const PICKER_TOUR_STEP_13 = {
   primary: 'Next', back: true, requireClick: true,
 };
 
+// Highlights the form's real "Create picker" button — .ob-picker-create
+// (see tab-picker.jsx's np-footer). requireClick + primary:'Done': this is
+// the ONE step where the real target's native click handler (submit, which
+// actually calls actions.addPicker) has to survive finish()'s own side
+// effects (selectTab away from Pickers, unmounting this whole tour) —
+// GuidedTour's onPrimary defers the 'Done'/advance half of a requireClick
+// click by a tick for exactly this reason (see its own comment), so submit()
+// still fires normally in the click's native bubble phase before finish()
+// tears anything down.
+const PICKER_TOUR_STEP_14 = {
+  sel: '.ob-picker-create', tab: 'picker',
+  title: 'Create this picker',
+  body: <>You’re all set! You’ve created this picker and its pool of task items. All that’s left is to <b>click the Create picker button</b>. Go ahead and click it now.</>,
+  primary: 'Done', back: true, requireClick: true,
+};
+
 // Why Step 2's run() (not, say, Step 1's, or PickerTour's onStart) is where
 // prefill gets published: tab-picker.jsx has its own dormant effect from the
 // original (stashed) create-a-picker tour design — `if (tour.prefill &&
@@ -203,11 +229,14 @@ const PICKER_TOUR_STEP_13 = {
 // the user ever sees "+ Add new picker" highlighted). run() fires in the
 // click-guard's CAPTURE-phase handling of the same click whose native
 // bubble-phase handler is the button's own `onClick={() => setCreating(true)}`
-// — both land in the same React batch, so by the time TabPicker/NewPickerForm
-// actually render, `creating` is already true, prefill is already set, and
-// the dormant effect's `!creating` guard never fires (openedByTour correctly
-// stays false — this tour walks Details normally, unlike the OTHER prefill
-// entry point that comment block still documents).
+// — that ordering (not, as an earlier version of this comment assumed, both
+// landing in one React batch — they don't: the bus's plain-JS subscriber
+// callback commits its own render before the native handler's does) is
+// exactly why run() also sets `suppressAutoOpen: true` — without it, the
+// dormant effect would see `creating` still false on its own earlier render
+// and wrongly claim credit, flipping openedByTour to true (this tour walks
+// Details normally via a real click, unlike the OTHER prefill entry point
+// that comment block still documents, which SHOULD trigger that effect).
 //
 // `pickerId` is the sample picker's id. Mounted at the app level (see
 // app.jsx's activePickerTour), not inside TabToday like ReminderTour —
@@ -222,6 +251,14 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
   const [phase, setPhase] = React.useState('intro');
 
   const closeTour = (status) => {
+    // Clear both bus fields regardless of exit path (cancelled/skipped/
+    // finished) — tab-picker.jsx's dormant auto-open effect keys off
+    // tour.prefill's mere presence (`if (tour.prefill && !creating)`), so a
+    // leftover value from THIS tour would silently reopen the create form
+    // with stale sample data the next time TabPicker mounts (e.g. just
+    // revisiting the Pickers tab), same class of bug the Reminders tours'
+    // closeTour already guards against.
+    emlTour.set({ prefill: null, itemPrefill: null, suppressAutoOpen: false });
     actions.setChecklistItem(pickerId, { status });
     onClose();
   };
@@ -241,7 +278,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8, PICKER_TOUR_STEP_9, PICKER_TOUR_STEP_10, PICKER_TOUR_STEP_11, PICKER_TOUR_STEP_12, PICKER_TOUR_STEP_13];
+  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8, PICKER_TOUR_STEP_9, PICKER_TOUR_STEP_10, PICKER_TOUR_STEP_11, PICKER_TOUR_STEP_12, PICKER_TOUR_STEP_13, PICKER_TOUR_STEP_14];
 
   return (
     <GuidedTour
@@ -273,10 +310,10 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
           if (cancelBtn) cancelBtn.click();
         }
       }}
-      // No 'Done' step exists yet, so the only way this is reachable right
-      // now is Skip (or the not-found watchdog) — both read as "the user
-      // didn't finish", distinct from the intro modal's 'cancelled'. See
-      // onboarding-checklist.js's status comment.
+      // Skip (or the not-found watchdog) reads as "the user didn't finish",
+      // distinct both from the intro modal's 'cancelled' and from Step 14's
+      // genuine 'finished' via onFinish below. See onboarding-checklist.js's
+      // status comment.
       onSkip={() => closeTour('skipped')}
       onFinish={() => closeTour('finished')}
     />

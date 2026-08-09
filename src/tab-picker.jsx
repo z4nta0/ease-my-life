@@ -1184,7 +1184,14 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   // Prefill staged by Today's empty-state card (name focus + "Chores"), held
   // locally so it survives clearing the bus signal.
   const [emptyInitial, setEmptyInitial] = React.useState(null);
-  React.useEffect(() => { if (tour.prefill && !creating) { setCreating(true); setOpenedByTour(true); } }, [tour.prefill]);
+  // suppressAutoOpen: set by the Picker mini-tour's Step 2 (see
+  // onboarding-picker-tours.jsx) — that tour always opens this form via a
+  // real click on the button below, which sets `creating` itself; without
+  // this flag, that same click's prefill can reach this effect on an
+  // earlier render than the one where `creating` turns true (the bus's
+  // subscriber callback isn't part of the click's own React batch), making
+  // this effect wrongly claim credit and flip openedByTour to true.
+  React.useEffect(() => { if (tour.prefill && !creating && !tour.suppressAutoOpen) { setCreating(true); setOpenedByTour(true); } }, [tour.prefill]);
   // Empty-state entry (Today's "no pickers" card): open the create form with the
   // staged prefill, but WITHOUT openedByTour — this isn't the tour, so creating
   // the picker must not fire the tour's advance callback. Consume once, then clear.
