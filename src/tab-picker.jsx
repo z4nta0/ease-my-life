@@ -500,6 +500,11 @@ function PickerView({ picker, state, actions, animStyle }) {
 // Every field carries plain-language helper copy: the goal is that someone
 // who has never seen a "picker" before can fill this in without guessing.
 function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCancel, onCreate, initial, openedByTour }) {
+  // Whether a guided tour (of any kind — Welcome Tour or a mini-tour) is
+  // currently driving the page, per the shared onboarding bus. Read here
+  // specifically so goToStep2 can skip its own scroll-to-top when a picker
+  // mini-tour is mid-flight — see its own comment for why.
+  const obTour = useEmlTour();
   const [step, setStep] = React.useState((initial && initial.step) || 1);
   const [name, setName] = React.useState((initial && initial.name) || '');
   // Focus the name input on mount when arriving from Today's empty-state card.
@@ -592,9 +597,14 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
 
   // Advancing to step 2 from the bottom-of-form button leaves the user scrolled
   // down; pull the form's scroll container back to the top so the add-item
-  // field is in view without a manual scroll.
+  // field is in view without a manual scroll. Skipped while a guided tour is
+  // active — a picker mini-tour's own next step highlights something further
+  // down this same Items sub-step (the "+ Add item" button), and this
+  // scroll-to-top fought that positioning, landing the highlight below the
+  // fold instead of where the tour was trying to bring it into view.
   const goToStep2 = () => {
     setStep(2);
+    if (obTour.phase === 'tour') return;
     requestAnimationFrame(() => {
       let el = formRef.current;
       while (el && el !== document.body) {

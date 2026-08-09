@@ -195,7 +195,21 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
       actions={actions}
       active={active}
       selectTab={selectTab}
-      onGoBack={null}
+      // Back from Step 9 (index 8, the Items sub-step's "+ Add item"
+      // button) to Step 8 (index 7, "Add items") needs the form pushed back
+      // to its Details sub-step first — unlike the Reminders tours' "+"
+      // button, .ob-picker-next's click is a one-way step change inside
+      // NewPickerForm, not a toggle, so without this Step 8's own target
+      // stays gone (the form is still showing Items) and the tour has
+      // nothing to highlight. .ob-picker-details is the form's own "Details"
+      // step-indicator tab — clicking it is the only way to reverse this
+      // from outside the form, which owns that step state locally.
+      onGoBack={(to) => {
+        if (to === 7) {
+          const detailsTab = document.querySelector('.ob-picker-details');
+          if (detailsTab) detailsTab.click();
+        }
+      }}
       // No 'Done' step exists yet, so the only way this is reachable right
       // now is Skip (or the not-found watchdog) — both read as "the user
       // didn't finish", distinct from the intro modal's 'cancelled'. See

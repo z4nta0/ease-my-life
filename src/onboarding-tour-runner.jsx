@@ -268,8 +268,19 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // all of which change every render, but the click-guard effect below is
   // only ever set up once.
   const onPrimaryRef = React.useRef(() => {});
+  // Lets onGoBack's own side effects click through the guard below — e.g. a
+  // picker mini-tour's onGoBack simulates a click on the create-form's own
+  // "Details" step tab to undo a later step's "Add items" click. That
+  // synthetic click isn't the step's own target (curRef still points at the
+  // step being left, since onGoBack runs before goToStep actually changes
+  // it), so without this the guard would block onGoBack from doing anything
+  // at all — the exact clicks meant to fix the page up before navigating
+  // back are the ones most likely to look like "not the current target" to
+  // it.
+  const suppressGuardRef = React.useRef(false);
   React.useEffect(() => {
     const onClickCapture = (e) => {
+      if (suppressGuardRef.current) return;
       const c = curRef.current;
       if (e.target.closest('.ob-coach')) return;
       if (c && findTargets(c.sel).some((el) => el.contains(e.target))) {
@@ -289,10 +300,15 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // Back reverses navigation so the previous target exists again. Any
   // tour-specific side effects (undoing something a later step did) are the
   // caller's job via onGoBack, called with the destination step before it
-  // actually changes.
+  // actually changes — with the click-guard suppressed for its duration, see
+  // suppressGuardRef's own comment for why.
   const goBack = () => {
     const to = Math.max(0, step - 1);
-    if (onGoBack) onGoBack(to);
+    if (onGoBack) {
+      suppressGuardRef.current = true;
+      onGoBack(to);
+      suppressGuardRef.current = false;
+    }
     goToStep(to);
   };
   // The primary button's side effect (if any) runs first, then either
