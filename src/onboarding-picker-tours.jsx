@@ -47,7 +47,7 @@ const PICKER_TOUR_COPY = {
     // own step9Tail override below for the matching copy change.
     itemSoonest: 31,
     itemLatest: 62,
-    step9Tail: 'This is useful since most monthly chores do not usually need to be done again for at least a month or so.',
+    step9Body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most monthly chores do not usually need to be done again for at least a month or so.</>,
   },
   pkr_ob_coffee: {
     body2: 'This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is perfect for randomly choosing something, while also making sure that every item is eventually picked and for prioritizing certain items over others. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.',
@@ -56,6 +56,9 @@ const PICKER_TOUR_COPY = {
   pkr_ob_dinner: {
     body2: 'This tutorial will guide you through creating a Dinner picker. This type of picker is an Ease-up and is perfect for something like meals where you don’t want an item to be picked twice within, say, 1 week. e.g. once it picks "Spaghetti and meatballs", you don’t want that meal picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.',
     itemPrefill: 'Grilled salmon',
+    step8Body: <>This is the name of the meal item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
+    step9Body: <>This controls the <b>minimum number of days that a meal item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same meal to be chosen again for at least a week or so.</>,
+    step10Body: <>This controls the <b>maximum number of days that a meal item must wait before it should be picked again</b>. This is also useful since you usually want a meal to be picked again within a certain timeframe.</>,
   },
   pkr_ob_workouts: {
     body2: 'This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease-up and is perfect for muscle groups you want to rotate through so the same one doesn’t get worked again too soon. e.g. once it picks "Chest", you don’t want that muscle group picked again for at least 5 days but also no later than a week. Let’s create one of these now.',
@@ -188,24 +191,32 @@ const buildPickerTourStep7 = (pickerId) => ({
   },
 });
 
+// Default bodies for Steps 8/9/10 — used whenever PICKER_TOUR_COPY[pickerId]
+// doesn't set its own step8Body/step9Body/step10Body override (e.g. Dinner's
+// "meal item" wording). Kept as named constants rather than inlined so the
+// per-picker fallback (`copy.stepNBody || DEFAULT_STEPN_BODY`) reads clearly.
+const DEFAULT_STEP8_BODY = <>This is the name of the task item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>;
+const DEFAULT_STEP9_BODY = <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again for at least a week or so.</>;
+const DEFAULT_STEP10_BODY = <>This controls the <b>maximum number of days that a task item must wait before it should be picked again</b>. This is also useful since most chores need to be done again within a certain timeframe.</>;
+
 // Highlights the item name input inside the inline editor Step 7's click
 // just opened — .rd-name-input, scoped under .pv-additem-wrap since the same
 // class is reused (mutually exclusively at render time) by the existing-
 // picker "add item" flow elsewhere on this tab.
-const PICKER_TOUR_STEP_8 = {
+const buildPickerTourStep8 = (pickerId) => ({
   sel: '.pv-additem-wrap .rd-name-input', tab: 'picker',
   title: 'Give it a name',
-  body: <>This is the name of the task item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
+  body: PICKER_TOUR_COPY[pickerId].step8Body || DEFAULT_STEP8_BODY,
   primary: 'Next', back: true, resumable: false,
-};
+});
 
 // Highlights the Soonest/Shortest row — the first .pie-row in the editor's
 // isEase branch. Only meaningful for Ease-up/Ease-down samples (the row
 // doesn't exist at all for Weighted/Dynamic/Random modes, where this same
 // .pie-row position is a Weight stepper instead) — PickerTour only includes
-// this step when the sample's own mode is one of the ease modes. The
-// closing sentence is per-picker (PICKER_TOUR_COPY[pickerId].step9Tail),
-// defaulting to the original Ease-up/"week" wording — Daily Chores is the
+// this step when the sample's own mode is one of the ease modes. The whole
+// body is per-picker (PICKER_TOUR_COPY[pickerId].step9Body), defaulting to
+// the original Ease-up/"task item"/"week" wording — Daily Chores is the
 // only sample this has been manually verified against so far; Ease-down
 // samples (Relax) reuse the default as a first pass, not yet touched up for
 // the "Shortest" label or ease-down's reversed stays-picked-until-
@@ -215,20 +226,21 @@ const PICKER_TOUR_STEP_8 = {
 const buildPickerTourStep9 = (pickerId) => ({
   sel: '.pv-additem-wrap .pie-row:first-child', tab: 'picker',
   title: 'Set a timeout',
-  body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. {PICKER_TOUR_COPY[pickerId].step9Tail || 'This is useful since most chores do not usually need to be done again for at least a week or so.'}</>,
+  body: PICKER_TOUR_COPY[pickerId].step9Body || DEFAULT_STEP9_BODY,
   primary: 'Next', back: true, resumable: false,
 });
 
 // Highlights the Latest/Longest row — the second .pie-row in the editor's
-// isEase branch, right after Soonest/Shortest. Same mode gating and
-// Ease-down caveat as Step 9 above. Same reasoning as Step 9: the editor
-// stays open, so no new DOM transition to revert on Back.
-const PICKER_TOUR_STEP_10 = {
+// isEase branch, right after Soonest/Shortest. Same mode gating, Ease-down
+// caveat, and per-picker step10Body override as Step 9 above. Same
+// reasoning as Step 9: the editor stays open, so no new DOM transition to
+// revert on Back.
+const buildPickerTourStep10 = (pickerId) => ({
   sel: '.pv-additem-wrap .pie-row:nth-child(2)', tab: 'picker',
   title: 'Set a maximum wait',
-  body: <>This controls the <b>maximum number of days that a task item must wait before it should be picked again</b>. This is also useful since most chores need to be done again within a certain timeframe.</>,
+  body: PICKER_TOUR_COPY[pickerId].step10Body || DEFAULT_STEP10_BODY,
   primary: 'Next', back: true, resumable: false,
-};
+});
 
 // Highlights the Weight stepper row — the first .pie-row in the editor's
 // usesWeight branch (Weighted/Dynamic modes only; mutually exclusive with
@@ -362,8 +374,8 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
   const isDynamic = picker.mode === 'dynamic';
   const steps = [
     PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4,
-    buildPickerTourStep5(pickerId), PICKER_TOUR_STEP_6, buildPickerTourStep7(pickerId), PICKER_TOUR_STEP_8,
-    ...(isEase ? [buildPickerTourStep9(pickerId), PICKER_TOUR_STEP_10] : []),
+    buildPickerTourStep5(pickerId), PICKER_TOUR_STEP_6, buildPickerTourStep7(pickerId), buildPickerTourStep8(pickerId),
+    ...(isEase ? [buildPickerTourStep9(pickerId), buildPickerTourStep10(pickerId)] : []),
     ...(usesWeight ? [PICKER_TOUR_STEP_WEIGHT] : []),
     ...(isDynamic ? [PICKER_TOUR_STEP_BOOST] : []),
     PICKER_TOUR_STEP_11, PICKER_TOUR_STEP_12,
