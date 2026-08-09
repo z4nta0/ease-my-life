@@ -165,7 +165,7 @@ const PICKER_TOUR_STEP_10 = {
 const PICKER_TOUR_STEP_11 = {
   sel: '.pv-additem-wrap .pie-row:first-child', tab: 'picker',
   title: 'Set a timeout',
-  body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not need to be done again for at least a week usually.</>,
+  body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again for at least a week or so.</>,
   primary: 'Next', back: true,
 };
 
