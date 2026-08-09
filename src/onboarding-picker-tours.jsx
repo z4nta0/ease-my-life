@@ -169,6 +169,16 @@ const PICKER_TOUR_STEP_11 = {
   primary: 'Next', back: true,
 };
 
+// Highlights the Latest row — the second .pie-row in the editor's isEase
+// branch, right after Soonest. Same reasoning as Step 11: the editor stays
+// open, so no new DOM transition to revert on Back.
+const PICKER_TOUR_STEP_12 = {
+  sel: '.pv-additem-wrap .pie-row:nth-child(2)', tab: 'picker',
+  title: 'Set a maximum wait',
+  body: <>This controls the <b>maximum number of days that a task item must wait before it should be picked again</b>. This is also useful since most chores need to be done again within a certain timeframe.</>,
+  primary: 'Next', back: true,
+};
+
 // Why Step 2's run() (not, say, Step 1's, or PickerTour's onStart) is where
 // prefill gets published: tab-picker.jsx has its own dormant effect from the
 // original (stashed) create-a-picker tour design — `if (tour.prefill &&
@@ -217,7 +227,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8, PICKER_TOUR_STEP_9, PICKER_TOUR_STEP_10, PICKER_TOUR_STEP_11];
+  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8, PICKER_TOUR_STEP_9, PICKER_TOUR_STEP_10, PICKER_TOUR_STEP_11, PICKER_TOUR_STEP_12];
 
   return (
     <GuidedTour
