@@ -52,7 +52,7 @@ const TODAY_PAGE_TARGETS = {
   progressRing: {
     sel: '.ring',
     title: 'Progress Ring',
-    body: <>This <b>tracks your current progress of completed / total tasks for today’s todo list</b>. Once filled completely, your Day Streak will increase and some celebration animations will play.</>,
+    body: <>This <b>tracks your current progress of completed / total tasks for today’s todo list</b>. Once filled completely, your Day Streak will increase and the celebration animations will play.</>,
   },
   groupsNav: {
     sel: '.group-rail',
