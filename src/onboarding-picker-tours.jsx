@@ -179,6 +179,20 @@ const PICKER_TOUR_STEP_12 = {
   primary: 'Next', back: true,
 };
 
+// Highlights the item editor's Save button — .ob-item-save (tagged
+// alongside .ob-item-cancel, see EntryEditor in tab-today.jsx). requireClick
+// since this closes the editor for good, same real-interface-teaching
+// pattern as Steps 2/8/9. No Step 14 exists yet, so clicking Save advances
+// past the end of `steps` — same "not really finished" fallback every other
+// tour had before its own Done step was built (see the onSkip comment on
+// PickerTour below).
+const PICKER_TOUR_STEP_13 = {
+  sel: '.ob-item-save', tab: 'picker',
+  title: 'Save this task item',
+  body: <>This task item is now complete and can be <b>saved to this picker’s pool</b>. Go ahead and click this button now.</>,
+  primary: 'Next', back: true, requireClick: true,
+};
+
 // Why Step 2's run() (not, say, Step 1's, or PickerTour's onStart) is where
 // prefill gets published: tab-picker.jsx has its own dormant effect from the
 // original (stashed) create-a-picker tour design — `if (tour.prefill &&
@@ -227,7 +241,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8, PICKER_TOUR_STEP_9, PICKER_TOUR_STEP_10, PICKER_TOUR_STEP_11, PICKER_TOUR_STEP_12];
+  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8, PICKER_TOUR_STEP_9, PICKER_TOUR_STEP_10, PICKER_TOUR_STEP_11, PICKER_TOUR_STEP_12, PICKER_TOUR_STEP_13];
 
   return (
     <GuidedTour

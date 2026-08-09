@@ -487,7 +487,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
           <Btn kind="danger" size="sm" icon="trash" onClick={() => setConfirmDel(true)}>Delete</Btn>
           <div className="rem-foot-right">
             <Btn kind="ghost" size="sm" className="ob-item-cancel" onClick={cancel}>Cancel</Btn>
-            <Btn kind="ghost" size="sm" onClick={saveClose}>Save</Btn>
+            <Btn kind="ghost" size="sm" className="ob-item-save" onClick={saveClose}>Save</Btn>
           </div>
         </div>
       )}
