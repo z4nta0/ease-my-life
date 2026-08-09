@@ -61,7 +61,7 @@ const PICKER_TOUR_COPY = {
     step10Body: <>This controls the <b>maximum number of days that a meal item must wait before it should be picked again</b>. This is also useful since you usually want a meal to be picked again within a certain timeframe.</>,
   },
   pkr_ob_workouts: {
-    body2: 'This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease-up and is perfect for something like physical workouts where you don’t want a muscle group to be picked twice within, say, a few days. e.g. once it picks "Chest", you don’t want that muscle group picked again for at least 5 days but also no later than a week. Let’s create one of these now.',
+    body2: 'This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease-up and is perfect for something like workouts where you don’t want a workout item to be picked twice within, say, a few days. e.g. once it picks "Chest", you don’t want that workout item picked again for at least 5 days but also no later than a week. Let’s create one of these now.',
     itemPrefill: 'Cardio',
     itemSoonest: 3,
     itemLatest: 6,
