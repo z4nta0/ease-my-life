@@ -13,6 +13,15 @@ import { reduceMotion } from './ui.jsx';
 // mini-tour's plainer "Get started" / "Skip".
 function TutorialIntroModal({ icon, title, paragraphs, pills, onStart, onSkip, startLabel = 'Get started', skipLabel = 'Skip' }) {
   const reduce = reduceMotion && reduceMotion();
+  // Focused on mount (so Enter submits immediately) without autoFocus:
+  // now that .ob-scrim can be a scroll container (see its own CSS comment),
+  // a plain autoFocus's default scroll-into-view would land the page
+  // scrolled down to this button — near the bottom of the modal — instead
+  // of at the top. preventScroll keeps the focus without moving the scroll
+  // position, so the modal opens showing its own top (icon/title) like the
+  // scrollable content it now is.
+  const primaryRef = React.useRef(null);
+  React.useEffect(() => { primaryRef.current && primaryRef.current.focus({ preventScroll: true }); }, []);
   return createPortal(
     <div className="ob-scrim" role="dialog" aria-modal="true" aria-label={title}>
       <div className={`ob-welcome ${reduce ? '' : 'ob-in'}`}>
@@ -23,7 +32,7 @@ function TutorialIntroModal({ icon, title, paragraphs, pills, onStart, onSkip, s
           <div className="ob-chips">{pills.map((p) => <span key={p}>{p}</span>)}</div>
         )}
         <div className="ob-wact">
-          <button className="ob-btn ob-btn--primary" autoFocus onClick={onStart}>{startLabel}</button>
+          <button ref={primaryRef} className="ob-btn ob-btn--primary" onClick={onStart}>{startLabel}</button>
           <button className="ob-btn ob-btn--ghost" onClick={onSkip}>{skipLabel}</button>
         </div>
       </div>
