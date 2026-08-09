@@ -59,6 +59,19 @@ const TODAY_PAGE_TARGETS = {
     title: 'List Navigation',
     body: <>This is the todo list’s navigation, allowing you to <b>jump directly to a group’s section</b>. Over time your list can grow quite long and this helps to eliminate any long scrolling.</>,
   },
+  // .em-rail-btn (sidebar, desktop) / .foot-editmode (footer, mobile) both
+  // exist in the DOM at every width — a container query just toggles which
+  // one is display:none — so this relies on findTargets' own zero-rect
+  // filtering (see its comment) to resolve to whichever is actually visible.
+  // Unlike the other two targets here, this body isn't a pure standalone
+  // reference blurb — it bakes in the click instruction, since Edit Mode
+  // (like Step 1's nav button) is taught by having the user click the real
+  // control, not just described.
+  editMode: {
+    sel: '.em-rail-btn, .foot-editmode',
+    title: 'Edit Mode',
+    body: <>This will allow you to both <b>rearrange the positions of the groups and items, as well as rename the groups</b>. Go ahead and click it now.</>,
+  },
 };
 
 // Steps beyond Step 1 (the nav-highlight every page tour shares), keyed by
@@ -70,6 +83,7 @@ const PAGE_TOUR_STEPS = {
   explore_today: [
     { ...TODAY_PAGE_TARGETS.progressRing, tab: 'today', primary: 'Next', back: true },
     { ...TODAY_PAGE_TARGETS.groupsNav, tab: 'today', primary: 'Next', back: true },
+    { ...TODAY_PAGE_TARGETS.editMode, tab: 'today', primary: 'Next', back: true, requireClick: true },
   ],
 };
 
