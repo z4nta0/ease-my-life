@@ -706,7 +706,14 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     // is a weight boost, not a charge), so forcing 100 would just unfairly
     // skew the new item's odds against its siblings for no reason.
     const fullCharge = mode === 'ease-down' || (inTour && mode === 'ease-up');
-    setItems((xs) => [...xs, { id, name: nm, weight: 1, value: fullCharge ? THRESHOLD : 0, ...DEFAULT_EASE }]);
+    // A tour can override the generic 7/14-day DEFAULT_EASE for its own
+    // added item (see buildPickerTourStep7's run() in
+    // onboarding-picker-tours.jsx) — e.g. a monthly-cadence sample's own
+    // item shouldn't look like a daily one.
+    const ease = (inTour && obTour.itemEaseMin != null && obTour.itemEaseMax != null)
+      ? { easeMin: obTour.itemEaseMin, easeMax: obTour.itemEaseMax }
+      : DEFAULT_EASE;
+    setItems((xs) => [...xs, { id, name: nm, weight: 1, value: fullCharge ? THRESHOLD : 0, ...ease }]);
     setNewDraftId(id);
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const el = addWrapRef.current, sc = el && el.closest('.main');

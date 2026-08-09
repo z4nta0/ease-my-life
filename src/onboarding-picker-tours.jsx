@@ -41,6 +41,13 @@ const PICKER_TOUR_COPY = {
   pkr_ob_monthly: {
     body2: 'This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease-up and is perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 month. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least 1 month but also no later than 2 months. Let’s create one of these now.',
     itemPrefill: 'Wash the windows',
+    // Overrides the generic 7/14-day DEFAULT_EASE (tab-picker.jsx) for just
+    // this tour's own added item — a monthly-cadence picker's own sample
+    // item should look the part instead of a daily/weekly one. See Step 9's
+    // own step9Tail override below for the matching copy change.
+    itemSoonest: 31,
+    itemLatest: 62,
+    step9Tail: 'This is useful since most monthly chores do not usually need to be done again for at least a month or so.',
   },
   pkr_ob_coffee: {
     body2: 'This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is perfect for something like flavors, where each one starts with its own likelihood but becomes more likely to be picked the longer it goes without being chosen. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.',
@@ -157,17 +164,28 @@ const PICKER_TOUR_STEP_6 = {
 
 // Highlights the "+ Add item" button on the now-showing Items sub-step
 // (reached via Step 6's click) — .pv-additem-btn. run() stages the item's
-// name on the bus (same timing trick as Step 2's picker-level prefill —
-// fires in the click-guard's capture phase, same batch as addNewDraft's own
-// bubble-phase handler) so the draft item addNewDraft creates is named
-// after PICKER_TOUR_COPY[pickerId].itemPrefill instead of the generic
-// "New item" default.
+// name (and, if this sample overrides them, its Soonest/Latest days too —
+// see pkr_ob_monthly's itemSoonest/itemLatest) on the bus (same timing trick
+// as Step 2's picker-level prefill — fires in the click-guard's capture
+// phase, same batch as addNewDraft's own bubble-phase handler) so the draft
+// item addNewDraft creates matches this sample's own cadence instead of the
+// generic "New item" / 7-14 day defaults.
 const buildPickerTourStep7 = (pickerId) => ({
   sel: '.pv-additem-btn', tab: 'picker',
   title: 'Add a task to the picker’s pool',
   body: <>Pickers need a <b>pool of tasks to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click this button now.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
-  run: () => { emlTour.set({ itemPrefill: PICKER_TOUR_COPY[pickerId].itemPrefill }); },
+  run: () => {
+    const copy = PICKER_TOUR_COPY[pickerId];
+    emlTour.set({
+      itemPrefill: copy.itemPrefill,
+      // 100/days is the same days↔drift conversion tab-picker.jsx's own
+      // driftToSoonest/daysToDrift use — kept in sync manually since those
+      // aren't exported (see addNewDraft's read side in tab-picker.jsx).
+      itemEaseMax: copy.itemSoonest ? 100 / copy.itemSoonest : null,
+      itemEaseMin: copy.itemLatest ? 100 / copy.itemLatest : null,
+    });
+  },
 });
 
 // Highlights the item name input inside the inline editor Step 7's click
@@ -185,19 +203,21 @@ const PICKER_TOUR_STEP_8 = {
 // isEase branch. Only meaningful for Ease-up/Ease-down samples (the row
 // doesn't exist at all for Weighted/Dynamic/Random modes, where this same
 // .pie-row position is a Weight stepper instead) — PickerTour only includes
-// this step when the sample's own mode is one of the ease modes. The copy
-// below is written for Ease-up specifically (Daily Chores, the only sample
-// this has been manually verified against so far); Ease-down samples
-// (Relax) reuse it as a first pass, not yet touched up for the "Shortest"
-// label or ease-down's reversed stays-picked-until-discharged semantics.
-// No new one-way DOM transition happens between Step 8 and here (the
-// editor stays open the whole time), so no onGoBack handling is needed.
-const PICKER_TOUR_STEP_9 = {
+// this step when the sample's own mode is one of the ease modes. The
+// closing sentence is per-picker (PICKER_TOUR_COPY[pickerId].step9Tail),
+// defaulting to the original Ease-up/"week" wording — Daily Chores is the
+// only sample this has been manually verified against so far; Ease-down
+// samples (Relax) reuse the default as a first pass, not yet touched up for
+// the "Shortest" label or ease-down's reversed stays-picked-until-
+// discharged semantics. No new one-way DOM transition happens between Step
+// 8 and here (the editor stays open the whole time), so no onGoBack
+// handling is needed.
+const buildPickerTourStep9 = (pickerId) => ({
   sel: '.pv-additem-wrap .pie-row:first-child', tab: 'picker',
   title: 'Set a timeout',
-  body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again for at least a week or so.</>,
+  body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. {PICKER_TOUR_COPY[pickerId].step9Tail || 'This is useful since most chores do not usually need to be done again for at least a week or so.'}</>,
   primary: 'Next', back: true, resumable: false,
-};
+});
 
 // Highlights the Latest/Longest row — the second .pie-row in the editor's
 // isEase branch, right after Soonest/Shortest. Same mode gating and
@@ -282,7 +302,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     // with stale sample data the next time TabPicker mounts (e.g. just
     // revisiting the Pickers tab), same class of bug the Reminders tours'
     // closeTour already guards against.
-    emlTour.set({ prefill: null, itemPrefill: null, suppressAutoOpen: false });
+    emlTour.set({ prefill: null, itemPrefill: null, itemEaseMin: null, itemEaseMax: null, suppressAutoOpen: false });
     actions.setChecklistItem(pickerId, { status });
     onClose();
   };
@@ -310,7 +330,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
   const steps = [
     PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4,
     buildPickerTourStep5(pickerId), PICKER_TOUR_STEP_6, buildPickerTourStep7(pickerId), PICKER_TOUR_STEP_8,
-    ...(isEase ? [PICKER_TOUR_STEP_9, PICKER_TOUR_STEP_10] : []),
+    ...(isEase ? [buildPickerTourStep9(pickerId), PICKER_TOUR_STEP_10] : []),
     PICKER_TOUR_STEP_11, PICKER_TOUR_STEP_12,
   ];
 
