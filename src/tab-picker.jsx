@@ -534,8 +534,9 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     return () => clearTimeout(t);
   }, [includeInDaily]);
   // When included, an optional schedule: which weekdays it may run, and whether
-  // it sits out public holidays. Defaults match "runs every day".
-  const [daysOfWeek, setDaysOfWeek] = React.useState([0, 1, 2, 3, 4, 5, 6]);
+  // it sits out public holidays. Defaults match "runs every day", unless a
+  // prefill (e.g. a picker mini-tour's sample data) specifies otherwise.
+  const [daysOfWeek, setDaysOfWeek] = React.useState((initial && initial.daysOfWeek) || [0, 1, 2, 3, 4, 5, 6]);
   const [skipHolidays, setSkipHolidays] = React.useState(false);
   // Picker Cadence: how often it surfaces + the anchor. Defaults to daily.
   const [cad, setCad] = React.useState(() => CADENCE.normalize({}));

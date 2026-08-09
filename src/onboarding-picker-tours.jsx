@@ -106,6 +106,17 @@ const PICKER_TOUR_STEP_6 = {
   primary: 'Next', back: true,
 };
 
+// Highlights the whole "Include in the Daily generator" field — .np-daily-
+// group, which contains both the toggle and (while it's on, which it is for
+// every sample picker) the "Which days?" weekday chips beneath it — as one
+// region.
+const PICKER_TOUR_STEP_7 = {
+  sel: '.np-fields .np-daily-group', tab: 'picker',
+  title: 'When the picker should run',
+  body: <>This controls whether the picker should be <b>included when the app runs its daily generator</b>. There are also controls for <b>which days of the week it should be included</b>, because you may not want something like chores to show up in your todo list on the weekend. Feel free to customize it to whatever you prefer or click the Next button to advance to the next step.</>,
+  primary: 'Next', back: true,
+};
+
 // Why Step 2's run() (not, say, Step 1's, or PickerTour's onStart) is where
 // prefill gets published: tab-picker.jsx has its own dormant effect from the
 // original (stashed) create-a-picker tour design — `if (tour.prefill &&
@@ -154,7 +165,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6];
+  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7];
 
   return (
     <GuidedTour
