@@ -120,8 +120,8 @@ const PICKER_TOUR_STEP_5 = {
 // means nothing).
 const PICKER_TOUR_STEP_6 = {
   sel: '.ob-picker-next', tab: 'picker', scrollToBottom: true,
-  title: 'Add item to this picker',
-  body: <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click this button now.</>,
+  title: 'Add items to this picker',
+  body: <>The picker options are all done, you just need to <b>add some task items for the picker to choose from</b>. Go ahead and click this button now.</>,
   primary: 'Next', back: true, requireClick: true,
 };
 
