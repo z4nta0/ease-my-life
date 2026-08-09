@@ -72,6 +72,11 @@ const PICKER_TOUR_COPY = {
   pkr_ob_relax: {
     body2: 'This tutorial will guide you through creating a Relax picker. This type of picker is an Ease-down and is perfect for activities you want to stick with for a few days at a time instead of changing every day. e.g. once it picks "Read a book", that activity will stay as the picked item for at least 5 days but no more than a week before a new activity is chosen. Let’s create one of these now.',
     itemPrefill: 'Take a nap',
+    itemSoonest: 3,
+    itemLatest: 5,
+    step8Body: <>This is the name of the activity item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
+    step9Body: <>This controls the <b>minimum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is useful since most activities you want to stick with for a few days at a time instead of changing every day.</>,
+    step10Body: <>This controls the <b>maximum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is also useful since most activities you don’t want to stay picked past a certain timeframe.</>,
   },
 };
 
