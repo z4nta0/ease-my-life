@@ -13,7 +13,6 @@
 export const OB_EXAMPLE = {
   id: 'pkr_ob_daily',
   name: 'Daily Chores', group: 'Chores', mode: 'ease-up', step: 1,
-  daysOfWeek: [1, 2, 3, 4, 5], // weekdays only — chores stay off the weekend
   items: [
     { id: 'ob_it_laundry', name: 'Do the laundry', weight: 1, easeMin: 7, easeMax: 14, value: 100 },
     { id: 'ob_it_bath', name: 'Clean the bathrooms', weight: 1, easeMin: 12.5, easeMax: 20, value: 100 },
@@ -34,7 +33,6 @@ export const OB_EXTRA_PICKERS = [
   {
     id: 'pkr_ob_monthly',
     name: 'Monthly Chores', group: 'Chores', mode: 'ease-up',
-    daysOfWeek: [1, 2, 3, 4, 5], // weekdays only — same reasoning as Daily Chores
     items: [
       { id: 'it_ob_oven2', name: 'Deep clean the oven', weight: 1, easeMin: 2.5, easeMax: 4.1667, value: 100 },
       { id: 'it_ob_dust2', name: 'Dust the entire house', weight: 1, easeMin: 3.7037, easeMax: 5.5556, value: 100 },
