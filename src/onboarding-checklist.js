@@ -59,30 +59,37 @@ function checklistStatus(state) {
   return { total, done, remaining: total - done, complete: done === total };
 }
 
-// How many sample pickers have been actually FINISHED (not skipped/
-// cancelled) — the Generate card (and every still-open "Create a picker"
-// card) stays gated on this being >= 1, so there's always at least one real
-// picker for the real generate to draw from.
-function finishedPickerCount(state) {
-  return OB_SAMPLE_PICKER_IDS.filter((id) => {
-    const e = entryFor(state, id);
-    return e && e.status === 'finished';
-  }).length;
+// How many real (non-sample) pickers currently exist — the Generate card
+// (and every still-open "Create a picker" card's amber "needs attention"
+// cue) stays gated on this being >= 1, so there's always at least one real
+// picker for the real generate to draw from. Checks actual EXISTENCE in
+// state.pickers, not checklist status — a picker's own checklist entry can
+// go from 'finished' back to unresolved (uncheck) or to 'cancelled'/
+// 'skipped' (X, or Skip on a replay) without the real picker it already
+// created ever being deleted (see store.jsx's addPicker replaceId comment),
+// so checking status here would wrongly re-flag cards as needing attention
+// even though real data already exists. Counts hidden ones too — a picker
+// created while the mini-tour checklist is still up stays hidden only until
+// the closing Generate step (see tab-today.jsx's generateItemResolved
+// effect), at which point it becomes exactly the real data this is asking
+// about.
+function realPickerCount(state) {
+  return state.pickers.filter((p) => !OB_SAMPLE_PICKER_IDS.includes(p.id)).length;
 }
 
 // The Generate card is actionable once every OTHER item is resolved AND at
-// least one picker was actually finished (not just skipped/cancelled) — see
-// finishedPickerCount above. It's still visible before that, just blocked.
+// least one real picker exists — see realPickerCount above. It's still
+// visible before that, just blocked.
 function readyToGenerate(state) {
   const othersRemaining = CHECKLIST_ITEMS
     .filter((item) => item.id !== OB_GENERATE_ITEM_ID && !entryFor(state, item.id)).length;
-  return othersRemaining === 0 && finishedPickerCount(state) >= 1;
+  return othersRemaining === 0 && realPickerCount(state) >= 1;
 }
 
 export const OB_CHECKLIST = {
   items: CHECKLIST_ITEMS,
   status: checklistStatus,
   entryFor,
-  finishedPickerCount,
+  realPickerCount,
   readyToGenerate,
 };

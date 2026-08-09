@@ -508,10 +508,10 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
   if (entry.kind === 'tutorial') {
     const done = entry.done;
     // Only picker cards participate in the "at least one real picker" gate
-    // (see OB_CHECKLIST.finishedPickerCount) — flagged with a visible cue
+    // (see OB_CHECKLIST.realPickerCount) — flagged with a visible cue
     // rather than requiring a tap to discover, since it blocks the closing
     // Generate card.
-    const needsAttention = !done && OB_CHECKLIST.finishedPickerCount(state) === 0;
+    const needsAttention = !done && OB_CHECKLIST.realPickerCount(state) === 0;
     const onRowClick = (e) => {
       if (e.target.closest('.today-card-actions')) return;
       if (done) onUncheckTutorial('picker', picker.id);
@@ -1777,15 +1777,19 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour }) {
       const exitMs = reduced ? 0 : 380;
       const t1 = setTimeout(() => setChecklistExiting(true), celebrateMs);
       const t2 = setTimeout(() => {
-        // Any real reminder created while the checklist was up — whether by
-        // finishing a mini-tour or just the user clicking "+" themselves
-        // (see reminders.jsx's startAdd, gated on the showChecklist bus
-        // field) — was seeded hidden so it didn't clutter the list
-        // alongside the still-open launcher cards. Surface them all now,
-        // right before generate() actually runs. Excludes the two eternal
-        // samples themselves by id, which stay hidden forever.
+        // Any real reminder OR picker created while the checklist was up —
+        // whether by finishing a mini-tour or just the user clicking "+"/
+        // "Add new picker" themselves (see reminders.jsx's startAdd and
+        // tab-picker.jsx's onCreate, both gated on the showChecklist bus
+        // field) — was seeded hidden so it didn't clutter the list alongside
+        // the still-open launcher cards. Surface them all now, right before
+        // generate() actually runs. Excludes the eternal samples themselves
+        // by id, which stay hidden forever.
         state.tasks.forEach((t) => {
           if (t.hidden && !OB_SAMPLE_TASK_IDS.includes(t.id)) actions.updateTask(t.id, { hidden: false });
+        });
+        state.pickers.forEach((p) => {
+          if (p.hidden && !OB_SAMPLE_PICKER_IDS.includes(p.id)) actions.updatePicker(p.id, { hidden: false });
         });
         actions.setChecklistDone(true);
         setChecklistExiting(false);

@@ -232,9 +232,7 @@ function ReminderTour({ variant, state, actions, closeReminderForm, onClose }) {
       // real click that saves the reminder hasn't reached the button's own
       // handler yet at this point (this runs in the capture phase, before
       // it) — closing the form here would discard the save instead of
-      // letting it happen. TODO: pass createdId once there's a reason to
-      // track it — nothing currently reads a reminder checklist entry's
-      // createdId the way finishedPickerCount reads a picker's.
+      // letting it happen.
       onFinish={() => closeTour('finished')}
     />
   );

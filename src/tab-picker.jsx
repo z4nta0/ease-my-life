@@ -1399,8 +1399,16 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
                            // the OTHER, dormant-auto-open prefill entry
                            // point, see NewPickerForm's own comment above),
                            // so openedByTour is always false here.
+                           // hidden: while the mini-tour checklist is up, ANY
+                           // picker created here — via a tutorial's own walk-
+                           // through OR the user just clicking this same real
+                           // button themselves — stays out of the real list
+                           // until the closing Generate step (mirrors
+                           // reminders.jsx's own startAdd; see addPicker's
+                           // own comment).
                            const id = actions.addPicker({
                              ...payload,
+                             hidden: !!tour.showChecklist,
                              ...(tour.prefill ? { createdFromSample: tour.createdFromSample } : {}),
                              ...(tour.existingPickerId ? { replaceId: tour.existingPickerId } : {}),
                            });

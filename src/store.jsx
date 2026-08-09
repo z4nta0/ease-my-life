@@ -1042,7 +1042,7 @@ function useStore(opts) {
     // Keeping the id alive is what makes it "the same picker" rather than a
     // renamed-on-collision duplicate — Stats history/pick log/daily
     // generator membership all keep pointing at it.
-    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, createdFromSample, replaceId }) => {
+    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, createdFromSample, replaceId, hidden = false }) => {
       // First picker = the first data worth protecting from eviction. Ask the
       // browser for persistent storage now rather than on a cold first load,
       // where a denial would be sticky for the session.
@@ -1096,7 +1096,14 @@ function useStore(opts) {
         ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay }),
         // Optional conditional gate (existing id, or the freshly-made one).
         conditionalId: madeCond ? madeCond.id : (conditionalId || null),
-        hidden: false,
+        // Defaults false for every normal caller; tab-picker.jsx passes true
+        // while the mini-tour checklist is up (mirrors reminders.jsx's own
+        // startAdd) so a picker created during onboarding — whether by a
+        // tutorial or just the user clicking the real "+ Add new picker"
+        // button themselves — stays out of the real list alongside the
+        // still-open launcher cards, revealed at the closing Generate step
+        // (see tab-today.jsx's generateItemResolved effect).
+        hidden,
         // Set only when created by finishing a mini-tour — links back to the
         // sample template it was built from (see onboarding-checklist.js).
         // Ignored everywhere else in the app.
@@ -1211,7 +1218,13 @@ function useStore(opts) {
       const t = TASKS.defaultTask(fields);
       const pid = fields.replaceId || t.id;
       const finalTask = { ...t, id: pid };
-      const siblings = s.tasks.filter((x) => x.id !== pid).map((x) => x.name);
+      // Hidden ones (onboarding's sample reminders, plus any real reminder
+      // still hidden pending the checklist's closing Generate step — see
+      // reminders.jsx's startAdd) are excluded, same policy as addPicker's
+      // own uniqueName call — otherwise the FIRST real reminder a tutorial
+      // ever creates collides with its own still-hidden sample template and
+      // comes out named e.g. "Pick up prescription (2)".
+      const siblings = s.tasks.filter((x) => x.id !== pid && !x.hidden).map((x) => x.name);
       const named = { ...finalTask, name: uniqueName(finalTask.name, siblings) };
       const tasks = fields.replaceId
         ? s.tasks.map((x) => x.id === pid ? named : x)

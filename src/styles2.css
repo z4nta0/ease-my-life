@@ -3424,8 +3424,8 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .ob-create.is-removing{animation:cardSkipOut 380ms cubic-bezier(.4,.05,.7,.4) forwards}
 @media (prefers-reduced-motion:reduce){.ob-create.is-removing{animation:none;opacity:0}}
 /* Same "needs attention" cue as .ob-create--generate.is-needed above, applied
-   to every still-open "Create a picker" launcher card while zero pickers
-   have been finished — see OB_CHECKLIST.finishedPickerCount. */
+   to every still-open "Create a picker" launcher card while zero real
+   pickers exist yet — see OB_CHECKLIST.realPickerCount. */
 .today-card--tutorial.is-needed{border-color:oklch(from var(--warm) l c h/0.55);background:oklch(from var(--warm) l c h/0.06)}
 .today-card--tutorial.is-needed:hover{border-color:oklch(from var(--warm) l c h/0.7)}
 @keyframes obFade{from{opacity:0}to{opacity:1}}
