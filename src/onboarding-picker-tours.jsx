@@ -27,11 +27,36 @@ const PICKER_SAMPLES = Object.fromEntries(
 // onboarding-seed-data.js's OB_EXAMPLE/OB_EXTRA_PICKERS).
 const PICKER_TOUR_BODY_1 = 'Pickers are where the magic happens. They have rules for when and how they should pick from its pool of items. There are 5 basic types of pickers: Truly Random, Weighted, Dynamic Weighted, Ease-up and Ease-down. Don’t worry too much about the details right now, as you start to use the app it will become more clear.';
 
-// TODO: body2 for the other 5 sample pickers (pkr_ob_monthly, pkr_ob_coffee,
-// pkr_ob_dinner, pkr_ob_workouts, pkr_ob_relax) hasn't been written yet.
+// itemPrefill is the name Step 7's run() stages for the tour's own added
+// item (see buildPickerTourStep7) — a new item distinct from anything
+// already in that sample's own pool, themed to fit. body2/itemPrefill for
+// every non-daily sample here is a first pass, not yet manually verified
+// live the way Daily Chores' own tour was — expect touch-ups once each one
+// gets its own dedicated pass.
 const PICKER_TOUR_COPY = {
   pkr_ob_daily: {
     body2: 'This tutorial will guide you through creating a Daily Chores picker. This type of picker is an Ease-up and is perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 week. e.g. once it picks "Do the laundry", you don’t want that task picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.',
+    itemPrefill: 'Mop the floors',
+  },
+  pkr_ob_monthly: {
+    body2: 'This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease-up and is perfect for household tasks that only need attention every so often. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least a few weeks but also no later than about a month and a half. Let’s create one of these now.',
+    itemPrefill: 'Wash the windows',
+  },
+  pkr_ob_coffee: {
+    body2: 'This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is perfect for something like flavors, where each one starts with its own likelihood but becomes more likely to be picked the longer it goes without being chosen. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.',
+    itemPrefill: 'Peppermint Mocha',
+  },
+  pkr_ob_dinner: {
+    body2: 'This tutorial will guide you through creating a Dinner picker. This type of picker is an Ease-up and is perfect for meals where you don’t want the same dinner to repeat too soon. e.g. once it picks "Spaghetti and meatballs", you don’t want that meal picked again for at least a week but also no later than two weeks. Let’s create one of these now.',
+    itemPrefill: 'Grilled salmon',
+  },
+  pkr_ob_workouts: {
+    body2: 'This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease-up and is perfect for muscle groups you want to rotate through so the same one doesn’t get worked again too soon. e.g. once it picks "Chest", you don’t want that muscle group picked again for at least 5 days but also no later than a week. Let’s create one of these now.',
+    itemPrefill: 'Cardio',
+  },
+  pkr_ob_relax: {
+    body2: 'This tutorial will guide you through creating a Relax picker. This type of picker is an Ease-down and is perfect for activities you want to stick with for a few days at a time instead of changing every day. e.g. once it picks "Read a book", that activity will stay your pick for at least 5 days but no more than a week before a new one is chosen. Let’s create one of these now.',
+    itemPrefill: 'Take a nap',
   },
 };
 
@@ -95,19 +120,20 @@ const PICKER_TOUR_STEP_4 = {
   primary: 'Next', back: true,
 };
 
-// Highlights ONLY the Ease-up option — .mode-opt[data-mode="ease-up"] (the
-// data-mode attribute exists purely for this) — rather than the whole
+// Highlights ONLY the sample's own mode option — .mode-opt[data-mode="..."]
+// (the data-mode attribute exists purely for this) — rather than the whole
 // .mode-radio list. Deliberately narrow: the click-guard blocks clicks
 // outside a step's target for non-requireClick steps too, so scoping to
-// just Ease-up also prevents switching to a different type here, which
-// would break the mode-specific copy/targets several later steps assume
-// (Soonest/Latest wording, the Fill row, etc. are all Ease-up-specific).
-const PICKER_TOUR_STEP_5 = {
-  sel: '.np-fields .mode-opt[data-mode="ease-up"]', tab: 'picker',
+// just this one mode also prevents switching to a different type here,
+// which would break the mode-specific copy/targets later steps assume
+// (Soonest/Latest wording, the Fill row, etc. are all Ease-mode-specific —
+// see the isEase check that conditionally includes Steps 9/10 below).
+const buildPickerTourStep5 = (pickerId) => ({
+  sel: `.np-fields .mode-opt[data-mode="${PICKER_SAMPLES[pickerId].mode}"]`, tab: 'picker',
   title: 'Select a picker type',
   body: <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you, so you can go ahead and click Next whenever you are ready.</>,
   primary: 'Next', back: true,
-};
+});
 
 // Highlights the "Add items" button that advances the form from its Details
 // sub-step to its Items sub-step — .ob-picker-next, a class name left over
@@ -130,14 +156,15 @@ const PICKER_TOUR_STEP_6 = {
 // name on the bus (same timing trick as Step 2's picker-level prefill —
 // fires in the click-guard's capture phase, same batch as addNewDraft's own
 // bubble-phase handler) so the draft item addNewDraft creates is named
-// "Mop the floors" instead of the generic "New item" default.
-const PICKER_TOUR_STEP_7 = {
+// after PICKER_TOUR_COPY[pickerId].itemPrefill instead of the generic
+// "New item" default.
+const buildPickerTourStep7 = (pickerId) => ({
   sel: '.pv-additem-btn', tab: 'picker',
   title: 'Add a task to the picker’s pool',
   body: <>Pickers need a <b>pool of tasks to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click this button now.</>,
   primary: 'Next', back: true, requireClick: true,
-  run: () => { emlTour.set({ itemPrefill: 'Mop the floors' }); },
-};
+  run: () => { emlTour.set({ itemPrefill: PICKER_TOUR_COPY[pickerId].itemPrefill }); },
+});
 
 // Highlights the item name input inside the inline editor Step 7's click
 // just opened — .rd-name-input, scoped under .pv-additem-wrap since the same
@@ -150,8 +177,15 @@ const PICKER_TOUR_STEP_8 = {
   primary: 'Next', back: true,
 };
 
-// Highlights the Soonest row — the first .pie-row in the editor's isEase
-// branch (this sample is Ease-up, so the row's own label reads "Soonest").
+// Highlights the Soonest/Shortest row — the first .pie-row in the editor's
+// isEase branch. Only meaningful for Ease-up/Ease-down samples (the row
+// doesn't exist at all for Weighted/Dynamic/Random modes, where this same
+// .pie-row position is a Weight stepper instead) — PickerTour only includes
+// this step when the sample's own mode is one of the ease modes. The copy
+// below is written for Ease-up specifically (Daily Chores, the only sample
+// this has been manually verified against so far); Ease-down samples
+// (Relax) reuse it as a first pass, not yet touched up for the "Shortest"
+// label or ease-down's reversed stays-picked-until-discharged semantics.
 // No new one-way DOM transition happens between Step 8 and here (the
 // editor stays open the whole time), so no onGoBack handling is needed.
 const PICKER_TOUR_STEP_9 = {
@@ -161,9 +195,10 @@ const PICKER_TOUR_STEP_9 = {
   primary: 'Next', back: true,
 };
 
-// Highlights the Latest row — the second .pie-row in the editor's isEase
-// branch, right after Soonest. Same reasoning as Step 9: the editor stays
-// open, so no new DOM transition to revert on Back.
+// Highlights the Latest/Longest row — the second .pie-row in the editor's
+// isEase branch, right after Soonest/Shortest. Same mode gating and
+// Ease-down caveat as Step 9 above. Same reasoning as Step 9: the editor
+// stays open, so no new DOM transition to revert on Back.
 const PICKER_TOUR_STEP_10 = {
   sel: '.pv-additem-wrap .pie-row:nth-child(2)', tab: 'picker',
   title: 'Set a maximum wait',
@@ -257,7 +292,17 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  const steps = [PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4, PICKER_TOUR_STEP_5, PICKER_TOUR_STEP_6, PICKER_TOUR_STEP_7, PICKER_TOUR_STEP_8, PICKER_TOUR_STEP_9, PICKER_TOUR_STEP_10, PICKER_TOUR_STEP_11, PICKER_TOUR_STEP_12];
+  // Steps 9/10 (Soonest/Latest) only apply to Ease-up/Ease-down samples —
+  // every other mode's item editor doesn't have those rows at all (see the
+  // steps' own comments), so including them there would highlight nothing
+  // and trip the not-found watchdog.
+  const isEase = picker.mode === 'ease-up' || picker.mode === 'ease-down';
+  const steps = [
+    PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4,
+    buildPickerTourStep5(pickerId), PICKER_TOUR_STEP_6, buildPickerTourStep7(pickerId), PICKER_TOUR_STEP_8,
+    ...(isEase ? [PICKER_TOUR_STEP_9, PICKER_TOUR_STEP_10] : []),
+    PICKER_TOUR_STEP_11, PICKER_TOUR_STEP_12,
+  ];
 
   return (
     <GuidedTour

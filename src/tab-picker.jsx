@@ -684,7 +684,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     setDraftClosing(false);   // clear any stale closing state from a prior editor
     const id = 'draft_' + Math.random().toString(36).slice(2, 8);
     // The tour stages a specific name for its own walkthrough item (see
-    // PICKER_TOUR_STEP_9's run()) rather than falling back to "New item".
+    // buildPickerTourStep7's run()) rather than falling back to "New item".
     const inTour = obTour.phase === 'tour' && obTour.itemPrefill;
     let nm;
     if (inTour) {
@@ -698,11 +698,15 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     }
     // Ease-down items start fully charged (mirrors addPicker's initialValue) —
     // otherwise the editor shows a spent item needing a Refill it never needed.
-    // The tour's own item is also given a full charge regardless of mode —
-    // like the rest of the sample pool (see onboarding-seed-data.js's
-    // OB_EXAMPLE, every item value:100), so the later generation demo step
-    // actually has something eligible to pick.
-    setItems((xs) => [...xs, { id, name: nm, weight: 1, value: (inTour || mode === 'ease-down') ? THRESHOLD : 0, ...DEFAULT_EASE }]);
+    // The tour's own Ease-up item is also given a full charge — like the rest
+    // of the sample pool (see onboarding-seed-data.js's OB_EXAMPLE, every
+    // item value:100) — so the later generation demo step actually has
+    // something eligible to pick. Doesn't apply to Weighted/Dynamic/Random
+    // tour samples: those modes have no eligibility gate at all (value there
+    // is a weight boost, not a charge), so forcing 100 would just unfairly
+    // skew the new item's odds against its siblings for no reason.
+    const fullCharge = mode === 'ease-down' || (inTour && mode === 'ease-up');
+    setItems((xs) => [...xs, { id, name: nm, weight: 1, value: fullCharge ? THRESHOLD : 0, ...DEFAULT_EASE }]);
     setNewDraftId(id);
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const el = addWrapRef.current, sc = el && el.closest('.main');
