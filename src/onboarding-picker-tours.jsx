@@ -142,11 +142,18 @@ const PICKER_TOUR_STEP_4 = {
 // which would break the mode-specific copy/targets later steps assume
 // (Soonest/Latest wording, the Fill row, etc. are all Ease-mode-specific —
 // see the isEase check that conditionally includes Steps 9/10 below).
+// coachAtTop: a single mode option (label + description) can be tall enough
+// on its own to rival a short mobile viewport's whole height — the ease
+// modes' 2-paragraph descriptions are the longest of the 5. Not every
+// sample's selected mode is long enough to actually need this, but there's
+// no real cost to always requesting it (see the flag's own doc comment in
+// onboarding-tour-runner.jsx), so it's set unconditionally here rather than
+// only for the samples currently known to need it.
 const buildPickerTourStep5 = (pickerId) => ({
   sel: `.np-fields .mode-opt[data-mode="${PICKER_SAMPLES[pickerId].mode}"]`, tab: 'picker',
   title: 'Select a picker type',
   body: <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you, so you can go ahead and click Next whenever you are ready.</>,
-  primary: 'Next', back: true, resumable: false,
+  primary: 'Next', back: true, resumable: false, coachAtTop: true,
 });
 
 // Highlights the "Add items" button that advances the form from its Details

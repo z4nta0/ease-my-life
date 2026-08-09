@@ -40,6 +40,21 @@ import { InfoTip } from './ui.jsx';
 //              nudge when the surrounding content just changed shape (a
 //              form switching sub-steps) and the carried-over scroll
 //              position no longer means anything.
+//   coachAtTop — true if this step's target can be TALLER than the
+//              viewport itself (e.g. a highlighted region that's most of a
+//              mobile screen's height). The normal reserve-space logic
+//              (decideReserve below) only solves "does the coach fit
+//              adjacent to the target" — it pads the target further down
+//              the page to make room for the coach above it, which is
+//              exactly backwards when the target is already tall enough to
+//              fill the viewport: the padding pushes its own bottom edge
+//              past the fold instead of helping. Pins the coach to the very
+//              top of the viewport instead (skipping decideReserve
+//              entirely) and scrolls just enough that the target starts
+//              right below it, so as much of the target as will fit is
+//              visible beneath the coach — the whole thing, on most
+//              screens; some of it, on the shortest ones, which is still
+//              strictly better than what decideReserve would have done.
 //   requireClick — true if this step teaches the real interface rather than
 //              narrating it: Next is disabled (with a hover/tap hint) and
 //              the step only advances when the user clicks the highlighted
@@ -423,6 +438,15 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       const isDoc = sc === document.scrollingElement || sc === document.documentElement;
       const er = unionRect(els);
       const sr = isDoc ? { top: 0, bottom: window.innerHeight } : sc.getBoundingClientRect();
+      // See coachAtTop's own doc comment above — scrolls so the target
+      // starts right where the coach (pinned to safeTop) leaves off,
+      // instead of trying to fit the target's WHOLE height within the
+      // normal pad/padB window below, which a too-tall target can't do.
+      if (cur.coachAtTop) {
+        const desiredTop = obSafeTop() + 12 + coachHRef.current + 16;
+        scrollByAmt(sc, er.top - desiredTop);
+        return;
+      }
       const pad = 90, padB = 130;
       if (er.top < sr.top + pad) scrollByAmt(sc, -(sr.top + pad - er.top));
       else if (er.bottom > sr.bottom - padB) scrollByAmt(sc, er.bottom - (sr.bottom - padB));
@@ -498,6 +522,9 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // side of the same math.
     let lastTargetTop = null, lastTargetH = null, stableFrames = 0;
     const decideReserve = (els) => {
+      // coachAtTop steps never reserve — see that flag's own doc comment;
+      // reserveTop stays at its already-0 default.
+      if (cur.coachAtTop) { reserveDecided = true; return; }
       if (reserveDecided) return;
       const r = unionRect(els);
       if (lastTargetH != null && Math.abs(r.height - lastTargetH) < 1 && Math.abs(r.top - lastTargetTop) < 1) stableFrames++;
@@ -630,7 +657,13 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // a frame or two).
     const safeTop = obSafeTop() + 12;
     const spaceBelow = vh - (rect.top + rect.height);
-    if (spaceBelow >= coachH + 16) {
+    if (cur.coachAtTop) {
+      // Pinned to the top regardless of spaceBelow — see this flag's own
+      // doc comment. bring() already scrolled the target to start right
+      // below where this lands, so the coach and target never fight.
+      coachStyle = { top: safeTop, left };
+      arrowClass = 'ob-coach--down';
+    } else if (spaceBelow >= coachH + 16) {
       coachStyle = { top: rect.top + rect.height + 16, left };
       arrowClass = 'ob-coach--up';
     } else {
