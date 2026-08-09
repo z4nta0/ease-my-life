@@ -230,6 +230,21 @@ const PICKER_TOUR_STEP_10 = {
   primary: 'Next', back: true, resumable: false,
 };
 
+// Highlights the Weight stepper row — the first .pie-row in the editor's
+// usesWeight branch (Weighted/Dynamic modes only; mutually exclusive with
+// the isEase branch above, so reusing the same :first-child position is
+// safe — only one of the two ever renders for a given picker). PickerTour
+// only includes this step when the sample's own mode is Weighted or
+// Dynamic. No new one-way DOM transition happens between Step 8 and here
+// (the editor stays open the whole time), so no onGoBack handling is
+// needed — same reasoning as the isEase steps above.
+const PICKER_TOUR_STEP_WEIGHT = {
+  sel: '.pv-additem-wrap .pie-row:first-child', tab: 'picker',
+  title: 'Give it a weight',
+  body: <>The Weight control allows you to <b>prioritize some items over others</b>. e.g. an item with a weight of 2 is twice as likely to be picked as an item with a weight of 1. That way the pick is still random while allowing you some control over how it works.</>,
+  primary: 'Next', back: true, resumable: false,
+};
+
 // Highlights the item editor's Save button — .ob-item-save (tagged
 // alongside .ob-item-cancel, see EntryEditor in tab-today.jsx). requireClick
 // since this closes the editor for good, same real-interface-teaching
@@ -325,12 +340,15 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
   // Steps 9/10 (Soonest/Latest) only apply to Ease-up/Ease-down samples —
   // every other mode's item editor doesn't have those rows at all (see the
   // steps' own comments), so including them there would highlight nothing
-  // and trip the not-found watchdog.
+  // and trip the not-found watchdog. The Weight step is the mirror image:
+  // only Weighted/Dynamic samples get it.
   const isEase = picker.mode === 'ease-up' || picker.mode === 'ease-down';
+  const usesWeight = picker.mode === 'weighted' || picker.mode === 'dynamic';
   const steps = [
     PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4,
     buildPickerTourStep5(pickerId), PICKER_TOUR_STEP_6, buildPickerTourStep7(pickerId), PICKER_TOUR_STEP_8,
     ...(isEase ? [buildPickerTourStep9(pickerId), PICKER_TOUR_STEP_10] : []),
+    ...(usesWeight ? [PICKER_TOUR_STEP_WEIGHT] : []),
     PICKER_TOUR_STEP_11, PICKER_TOUR_STEP_12,
   ];
 
