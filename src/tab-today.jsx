@@ -147,7 +147,18 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
     }
     prev.current = doneCount;
   }, [doneCount]);
-  React.useEffect(() => { if (editing && nameInputRef.current) nameInputRef.current.select(); }, [editing]);
+  // Explicit focus (not the input's own autoFocus) so preventScroll can be
+  // passed — autoFocus's default scroll-into-view fights any guided-tour
+  // spotlight/coach already mid-positioning this same input (the tour's own
+  // scroll-to-target math runs a tick later, in a passive effect, so it
+  // sees this as a moving target and its own one-time adjustment gets
+  // overridden once the native scroll settles). Already-focused elements
+  // don't re-trigger a native scroll, so select() alone doesn't need this.
+  React.useEffect(() => {
+    if (!editing || !nameInputRef.current) return;
+    nameInputRef.current.focus({ preventScroll: true });
+    nameInputRef.current.select();
+  }, [editing]);
   // Leaving Edit Mode cancels any in-progress name edit.
   React.useEffect(() => { if (!editMode) setEditing(false); }, [editMode]);
   const startEdit = () => { setDraft(name); setNameError(''); setEditing(true); };
@@ -191,7 +202,7 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
         )}
         {editMode && editing ? (
           <input ref={nameInputRef} className={`group-name-input ${closing ? 'is-closing' : ''} ${nameError ? 'is-invalid' : ''}`} type="text" value={draft} maxLength={30}
-                 aria-label="Group name" autoFocus
+                 aria-label="Group name"
                  onChange={(e) => { setDraft(e.target.value); if (nameError) setNameError(''); }}
                  onBlur={commit}
                  onKeyDown={(e) => {
@@ -2003,7 +2014,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour }) {
                 if (!showChecklist) return null;
                 const pDone = OB_PAGE_TOURS.filter((t) => !!OB_CHECKLIST.entryFor(state, t.id)).length;
                 return (
-                  <section key="__pageTours" className="group-section"
+                  <section key="__pageTours" className="group-section pt-section"
                            ref={(el) => { sectionRefs.current['__pageTours'] = el; }}>
                     <GroupHeader name={pageToursName} doneCount={pDone} total={OB_PAGE_TOURS.length}
                                  editMode={editMode} onGripDown={startGroupDrag}
