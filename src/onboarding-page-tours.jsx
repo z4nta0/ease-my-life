@@ -4,7 +4,7 @@ import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
 import { GuidedTour } from './onboarding-tour-runner.jsx';
 import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
 import { OB_PAGE_TOURS } from './onboarding-checklist.js';
-import { OB_EXAMPLE, OB_EXTRA_PICKERS, OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';
+import { OB_EXAMPLE, OB_EXTRA_PICKERS, OB_SAMPLE_PICKER_IDS, hydrateOnboardingStats } from './onboarding-seed-data.js';
 import { emlTour } from './onboarding.jsx';
 
 // Page tours ("Explore the {page}" — Today/Pickers/Stats/Data/Settings) are
@@ -112,14 +112,30 @@ const clearPageTourPickers = (actions) => {
 // protect against corruption. A copy would also be worse here specifically:
 // it'd start with zero pick history, leaving the heatmap/breakdown empty,
 // the opposite of what the tour is trying to demonstrate. Instead it
-// borrows the REAL hidden sample pickers directly — which already carry
-// ~1yr of precomputed pickLog history, seeded once on fresh install (see
-// onboarding.jsx's own mount effect) — unhiding them for this tour's own
-// duration and hiding them again the moment it ends. Mirrors the exact
+// borrows the REAL hidden sample pickers directly — which normally already
+// carry ~1yr of precomputed pickLog history, seeded once on fresh install
+// (see onboarding.jsx's own mount effect) — unhiding them for this tour's
+// own duration and hiding them again the moment it ends. Mirrors the exact
 // hide/show mechanism the main Welcome Tour itself already uses for its own
 // Back-navigation (see onboarding.jsx's handleGoBack / Settings-step run()).
-const unhideSampleHistory = (actions) => {
+//
+// "Normally" above is load-bearing: that mount effect only seeds history on
+// a genuinely virgin install (`state.pickers.length === 0`) — anyone who
+// already had a picker of their own the very first time it ran (e.g. they
+// used the app before this tour existed, or before the precomputed-history
+// feature shipped at all) ends up with the sample PICKERS but none of their
+// history, which is exactly what made the heatmap/breakdown look empty
+// through Step 5 here. Backfilled the same way as that effect, guarded by
+// existence (checking for any pickLog row already belonging to a sample
+// picker) so a repeat tour run — or Back-then-Forward re-firing this same
+// run() — can't duplicate rows.
+const unhideSampleHistory = (state, actions) => {
   OB_SAMPLE_PICKER_IDS.forEach((id) => actions.updatePicker(id, { hidden: false }));
+  if (!(state.pickLog || []).some((r) => OB_SAMPLE_PICKER_IDS.includes(r.pickerId))) {
+    import('./onboarding-stats-data.js').then(({ ONBOARDING_STATS }) => {
+      actions.seedHistory(hydrateOnboardingStats(ONBOARDING_STATS));
+    });
+  }
 };
 const hideSampleHistory = (actions) => {
   OB_SAMPLE_PICKER_IDS.forEach((id) => actions.updatePicker(id, { hidden: true }));
@@ -240,7 +256,7 @@ const STATS_PAGE_TARGETS = {
   pickerBreakdown: {
     sel: '.stat-breakdown-card',
     title: 'Picker Breakdown',
-    body: <>Once a specific picker is selected, its individual items are broken down here. You can view things like pick count, pick frequency, last picked date and others. This concludes the Stats page tutorial, click Done when you are ready to finish this tutorial.</>,
+    body: <>Once a specific picker is selected, its individual items are broken down here. You can <b>view things like pick count, pick frequency, last picked date</b> and others. This concludes the Stats page tutorial, click Done when you are ready to finish this tutorial.</>,
   },
 };
 
@@ -685,7 +701,7 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
       steps={[
         buildPageTourStep1(tour.page,
           usesSampleCopies(pageId) ? () => seedPageTourPickers(state, actions) :
-          pageId === 'explore_stats' ? () => unhideSampleHistory(actions) :
+          pageId === 'explore_stats' ? () => unhideSampleHistory(state, actions) :
           undefined),
         ...buildPageTourSteps(pageId, actions),
       ]}
