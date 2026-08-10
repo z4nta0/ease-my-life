@@ -172,6 +172,11 @@ function PickerView({ picker, state, actions, animStyle }) {
   // tourId+step gating as tab-picker.jsx's own disableTourAddPicker.
   const tour = useEmlTour();
   const tourInterceptSend = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 5;
+  // Step 7 ("Picker Items") highlights the pool's per-item Send to Today/
+  // Edit/Delete buttons but explicitly doesn't want any of them actually
+  // usable from there — narrating what they do is the point, not inviting
+  // the user to act on a disposable tutorial picker's real items.
+  const disablePoolItemButtons = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 6;
   const [busy, setBusy] = React.useState(false);
   const [result, setResult] = React.useState(null);
   const [phase, setPhase] = React.useState('idle'); // idle | running | done | sent | empty
@@ -476,11 +481,13 @@ function PickerView({ picker, state, actions, animStyle }) {
                     ) : (
                       <button type="button" className="pool-send"
                               aria-label={`Send ${it.name} to Today`}
-                              title="Send to Today" onClick={() => sendToday(it.id)}>
+                              title="Send to Today" disabled={disablePoolItemButtons}
+                              onClick={() => sendToday(it.id)}>
                         <Icon name="calendar" size={15} />
                       </button>
                     )}
                     <button type="button" className="pool-del" aria-label={`Delete ${it.name}`}
+                            disabled={disablePoolItemButtons}
                             onClick={() => setConfirmDelId(it.id)}>
                       <Icon name="trash" size={15} />
                     </button>

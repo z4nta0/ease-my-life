@@ -147,6 +147,15 @@ const PICKER_PAGE_TARGETS = {
     title: 'Add to Todo List',
     body: <>This will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click this button now to give it a try.</>,
   },
+  // Per-item Send to Today/Edit/Delete are disabled while this step is up
+  // (tab-picker.jsx's own disablePoolItemButtons, gated on this exact
+  // tourId+step) — narrating what they do is the point, not inviting the
+  // user to act on a disposable tutorial picker's real items.
+  pickerItems: {
+    sel: '.picker-pool',
+    title: 'Picker Items',
+    body: <>Here you can <b>view all items</b> that are <b>in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial, so click Next when you are ready to move on.</>,
+  },
 };
 
 // Target + description catalog for the Today page's OWN interior elements
@@ -306,6 +315,7 @@ const buildPageTourSteps = (pageId, actions) => {
         advanceWhen: PICKER_PAGE_TARGETS.addToTodoList.sel,
       },
       { ...PICKER_PAGE_TARGETS.addToTodoList, tab: 'picker', primary: 'Next', back: true, requireClick: true },
+      { ...PICKER_PAGE_TARGETS.pickerItems, tab: 'picker', primary: 'Next', back: true },
     ];
   }
   if (pageId !== 'explore_today') return [];
