@@ -150,11 +150,22 @@ const PICKER_PAGE_TARGETS = {
   // Per-item Send to Today/Edit/Delete are disabled while this step is up
   // (tab-picker.jsx's own disablePoolItemButtons, gated on this exact
   // tourId+step) — narrating what they do is the point, not inviting the
-  // user to act on a disposable tutorial picker's real items.
+  // user to act on a disposable tutorial picker's real items. Excludes
+  // "+ Add item" below (.pool-items, not .picker-pool) — that gets its own
+  // step next.
   pickerItems: {
-    sel: '.picker-pool',
+    sel: '.pool-items',
     title: 'Picker Items',
     body: <>Here you can <b>view all items in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial, so click Next when you are ready to move on.</>,
+  },
+  // Disabled while this step is up (tab-picker.jsx's own
+  // disableAddItemButton, same tourId+step gating pattern) — narrating
+  // what it does is the point, not inviting the user to open the real
+  // create-item form on a disposable tutorial picker.
+  addPickerItem: {
+    sel: '.pv-additem-btn',
+    title: 'Add Picker Item',
+    body: <>This will allow you to <b>add new items to the selected picker's pool</b>. This button is disabled for this tutorial, so go ahead and click Done when you are ready to finish this tutorial.</>,
   },
 };
 
@@ -327,6 +338,7 @@ const buildPageTourSteps = (pageId, actions) => {
         advanceDelay: 1600,
       },
       { ...PICKER_PAGE_TARGETS.pickerItems, tab: 'picker', primary: 'Next', back: true },
+      { ...PICKER_PAGE_TARGETS.addPickerItem, tab: 'picker', primary: 'Done', back: true },
     ];
   }
   if (pageId !== 'explore_today') return [];

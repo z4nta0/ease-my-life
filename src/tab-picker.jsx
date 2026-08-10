@@ -177,6 +177,10 @@ function PickerView({ picker, state, actions, animStyle }) {
   // usable from there — narrating what they do is the point, not inviting
   // the user to act on a disposable tutorial picker's real items.
   const disablePoolItemButtons = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 6;
+  // Step 8 ("Add Picker Item") highlights "+ Add item" but explicitly
+  // doesn't want the user opening the real create-item form from a
+  // disposable tutorial picker.
+  const disableAddItemButton = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 7;
   const [busy, setBusy] = React.useState(false);
   const [result, setResult] = React.useState(null);
   const [phase, setPhase] = React.useState('idle'); // idle | running | done | sent | empty
@@ -465,6 +469,12 @@ function PickerView({ picker, state, actions, animStyle }) {
       </div>
 
       <div className="picker-pool">
+        {/* Purely structural — lets the Pickers page tour highlight the
+            header + item list as one combined box without also catching
+            "+ Add item" below (a step of its own — see .pv-additem-wrap
+            further down). Mirrors .picker-pool's own flex/gap so wrapping
+            these two doesn't change their spacing. */}
+        <div className="pool-items">
         <div className="pool-h">
           <span className="kicker">Pool · {eligibleItems.filter((it) => !onTodayIds.has(it.id) && PICKERS.modeEligible(it, picker)).length} of {pickerItems.length} eligible</span>
           {(picker.mode !== 'random' && picker.mode !== 'weighted') && (
@@ -563,6 +573,7 @@ function PickerView({ picker, state, actions, animStyle }) {
             );
           })}
         </div>
+        </div>
         <div className="pv-additem-wrap" ref={addWrapRef}>
           {(() => {
             if (editingItemId) {
@@ -608,7 +619,7 @@ function PickerView({ picker, state, actions, animStyle }) {
             }
             const newItem = newDraft;
             if (!newItem) return (
-              <button type="button" className="pv-additem-btn" onClick={addNewItem}>
+              <button type="button" className="pv-additem-btn" disabled={disableAddItemButton} onClick={addNewItem}>
                 <Icon name="plus" size={14} /> Add item
               </button>
             );

@@ -497,6 +497,10 @@
 
 /* Pool list */
 .picker-pool { display: flex; flex-direction: column; gap: 10px; }
+/* Purely structural — see its own comment in tab-picker.jsx. Mirrors
+   .picker-pool's own flex/gap so wrapping .pool-h + .pool-list doesn't
+   change their spacing. */
+.pool-items { display: flex; flex-direction: column; gap: 10px; }
 .pool-h { display: flex; align-items: center; justify-content: space-between; }
 .ghost-link {
   display: inline-flex; align-items: center; gap: 5px;
