@@ -91,7 +91,7 @@ const TODAY_PAGE_TARGETS = {
   // (e.g. "Chores") would only exist once the user has already finished a
   // picker tutorial first, which this tour can't assume.
   renameGroup: {
-    sel: '.group-name-input',
+    sel: '.pt-section .group-name-input',
     title: 'Rename Group',
     body: <>This will alow you to change a group’s name. You can go ahead and try it yourself, but once you exit this tutorial the changes will be reverted. You can still change them afterwards if you’d like. This concludes the Today page tutorial, click Done when you are ready.</>,
   },
@@ -99,28 +99,42 @@ const TODAY_PAGE_TARGETS = {
 
 // The Page Tours group's real name at the moment Step 5 (below) opens its
 // rename input — captured off the rename button's own aria-label ("Rename
-// group {name}") before it disappears behind the input. Lets both Step 6's
-// Done and a Back from Step 6 reset the input to a genuine no-op edit
-// (draft === name) rather than an actual rename, without needing this
-// module to otherwise know the live app state (PageTour itself is only
-// ever passed `actions`, not `state`).
+// group {name}") before it disappears behind the input. Lets a Back from
+// Step 6 reset the input to a genuine no-op edit (draft === name) rather
+// than an actual rename, without needing this module to otherwise know the
+// live app state (PageTour itself is only ever passed `actions`, not
+// `state`).
 let lastPageToursName = 'Page Tours';
 
-// Resets the rename input back to its real name and blurs it — a NO-OP
+// Discards a typed rename WITHOUT exiting Edit Mode — used only for a Back
+// to Step 5, which needs Edit Mode to stay on (Step 6's own Done doesn't
+// need this at all; see its run() below for why). Resets the input's value
+// back to its real name first so the blur that follows reads as a NO-OP
 // commit (see tab-today.jsx's GroupHeader: commit() only calls
-// onRenameGroup when draft differs from the name prop), so this discards
-// whatever was typed without touching Edit Mode itself. Deliberately NOT
-// Escape: GroupHeader's own Escape handling is exactly this (see its
-// cancel()), but a real Escape keydown also bubbles to tab-today.jsx's
-// OWN global window listener, which exits Edit Mode entirely — fine for
-// Step 6's own Done (see its run() below, which wants that anyway) but
-// wrong for a Back to Step 5, which needs Edit Mode to stay on.
-const resetRenameInput = () => {
-  const input = document.querySelector('.group-name-input');
+// onRenameGroup when draft differs from the name prop) instead of an actual
+// rename. Deliberately NOT Escape: GroupHeader's own Escape handling is
+// exactly this (see its cancel()), but a real Escape keydown also bubbles
+// to tab-today.jsx's OWN global window listener, which exits Edit Mode
+// entirely.
+//
+// The blur is deferred a frame — NOT a cosmetic choice. Dispatching the
+// reset 'input' event calls React's onChange (setDraft) synchronously, but
+// that only SCHEDULES the re-render; draft's actual value inside the
+// ALREADY-DEFINED commit() closure doesn't update until React re-renders.
+// Calling blur() in the same tick invokes that same (stale) commit() —
+// reading the pre-reset, still-typed draft — and genuinely renames the
+// group for real. This is not hypothetical: it's exactly how an earlier
+// version of this function (calling blur() synchronously right after
+// dispatch) shipped and broke — Done appeared to discard the rename but
+// actually committed it, then Step 5's own run() on the next tour run
+// could never find "Rename group Page Tours" again since the group's real
+// name no longer matched.
+const cancelRenameKeepEditMode = () => {
+  const input = document.querySelector('.pt-section .group-name-input');
   if (!input) return;
   input.value = lastPageToursName;
   input.dispatchEvent(new Event('input', { bubbles: true }));
-  input.blur();
+  requestAnimationFrame(() => input.blur());
 };
 
 // Steps beyond Step 1 (the nav-highlight every page tour shares), keyed by
@@ -145,27 +159,37 @@ const PAGE_TOUR_STEPS = {
       // direct user click on the rename button itself). Deferred a frame
       // so it fires after the click's own re-render has actually mounted
       // the input.
+      //
+      // Found via .pt-section (see tab-today.jsx), not by matching the
+      // aria-label's current name text — a user who's already renamed Page
+      // Tours themselves, entirely outside any tour, would otherwise make
+      // this selector (and the whole rest of the step) silently never
+      // match again.
       run: () => {
-        const btn = document.querySelector('button.group-name--editable[aria-label="Rename group Page Tours"]');
+        const btn = document.querySelector('.pt-section button.group-name--editable');
         if (btn) {
           lastPageToursName = (btn.getAttribute('aria-label') || '').replace(/^Rename group /, '') || 'Page Tours';
           btn.click();
         }
         requestAnimationFrame(() => {
-          const input = document.querySelector('.group-name-input');
-          if (input) input.focus();
+          const input = document.querySelector('.pt-section .group-name-input');
+          if (input) input.focus({ preventScroll: true });
         });
       },
     },
     {
       ...TODAY_PAGE_TARGETS.renameGroup, tab: 'today', primary: 'Done', back: true,
-      // Discards any typed rename (see resetRenameInput above), then exits
-      // Edit Mode via its real Cancel control — present regardless of
-      // viewport, unlike the desktop/mobile-specific one Step 4's own
-      // onGoBack has to branch on — reverting any group reordering from
-      // Step 5 too, before the tour itself navigates away.
+      // Edit Mode's own real Cancel control discards any group reordering
+      // from Step 5 AND closes the rename input — GroupHeader force-closes
+      // `editing` the instant editMode itself goes false (see its own
+      // effect), without ever going through the input's own commit() — so
+      // nothing needs to touch the input directly here. Deliberately does
+      // NOT reset-and-blur it first the way a Back to Step 5 has to
+      // (cancelRenameKeepEditMode below): that risks committing a real
+      // rename if the blur's own commit() runs before the reset's state
+      // update has actually applied — see that function's own comment for
+      // why, and why this bit Done specifically before.
       run: () => {
-        resetRenameInput();
         const cancelBtn = document.querySelector('.editmode-banner-actions .btn--ghost');
         if (cancelBtn) cancelBtn.click();
       },
@@ -222,9 +246,9 @@ function PageTour({ pageId, actions, onClose }) {
         } else if (to === 4) {
           // Back from Step 6 (Rename Group) to Step 5 — discards the
           // in-progress rename WITHOUT exiting Edit Mode (unlike Step 6's
-          // own Done, which wants both) — see resetRenameInput's own
-          // comment for why this can't just be an Escape keydown.
-          resetRenameInput();
+          // own Done, which wants both) — see cancelRenameKeepEditMode's
+          // own comment for why this can't just be an Escape keydown.
+          cancelRenameKeepEditMode();
         }
       }}
       onSkip={() => closeTour('skipped')}
