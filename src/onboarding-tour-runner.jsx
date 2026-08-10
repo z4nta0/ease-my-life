@@ -315,11 +315,46 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     }
     return [];
   };
+  // Clamps a rect's left/right against every ancestor that horizontally
+  // clips its own overflow (overflow-x auto/scroll/hidden — e.g. the
+  // Pickers page's Group/Show rows) — an element scrolled past the edge of
+  // one of these still has a real, full-width getBoundingClientRect() even
+  // though none of it is actually visible there. Without this, a step
+  // whose selector matches several items in the SAME scrollable row (e.g.
+  // "every picker tab") would union in whichever ones happen to be
+  // scrolled out of view, stretching the highlight into the empty space
+  // past the row's own clipped edge — invisible on a narrow viewport
+  // (nothing renders past its edge anyway) but very visible on a wide one,
+  // where the row's clip boundary sits well short of the actual viewport
+  // edge. Deliberately horizontal-only: bring()'s own scroll-to-target
+  // already settles the VERTICAL case before this ever runs steady-state,
+  // and clipping vertically too would fight that during the brief transient
+  // scroll itself. Returns null if the element ends up fully clipped away.
+  const clipHorizontalOverflow = (rect, el) => {
+    // Copies top/left/right/bottom out into plain numbers up front rather
+    // than spreading `rect` itself (a DOMRect) — DOMRect's fields are
+    // getters on its prototype, not its own enumerable properties, so a
+    // spread silently drops every field this function doesn't explicitly
+    // set, poisoning every later Math.min/max call downstream with NaN.
+    let top = rect.top, left = rect.left, right = rect.right, bottom = rect.bottom;
+    let n = el.parentElement;
+    while (n && n !== document.body) {
+      const oxs = getComputedStyle(n).overflowX;
+      if (oxs === 'auto' || oxs === 'scroll' || oxs === 'hidden') {
+        const nr = n.getBoundingClientRect();
+        left = Math.max(left, nr.left); right = Math.min(right, nr.right);
+        if (right <= left) return null;
+      }
+      n = n.parentElement;
+    }
+    return { top, left, right, bottom };
+  };
   // The bounding box that encloses every matched element.
   const unionRect = (els) => {
     let top = Infinity, left = Infinity, right = -Infinity, bottom = -Infinity;
     els.forEach((el) => {
-      const r = el.getBoundingClientRect();
+      const r = clipHorizontalOverflow(el.getBoundingClientRect(), el);
+      if (!r) return;
       top = Math.min(top, r.top); left = Math.min(left, r.left);
       right = Math.max(right, r.right); bottom = Math.max(bottom, r.bottom);
     });
