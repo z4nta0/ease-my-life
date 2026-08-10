@@ -561,7 +561,7 @@
 @media (prefers-reduced-motion: reduce) { .pv-newitem.is-closing { animation-duration: .01ms; } }
 .pool-row {
   display: grid;
-  grid-template-columns: 1fr auto auto auto;
+  grid-template-columns: 1fr auto auto auto auto;
   align-items: center;
   gap: 16px;
   padding: 18px 16px;
@@ -586,6 +586,14 @@
 @media (prefers-reduced-motion: reduce) { .pool-send.is-sent svg { animation-duration: .01ms; } }
 .pool-send.is-disabled { opacity: 0.4; cursor: default; }
 .pool-send.is-disabled:hover { color: var(--muted); border-color: var(--border); background: none; }
+.pool-edit {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 0;
+  background: transparent; color: var(--muted);
+  border: 0.5px solid var(--border); border-radius: var(--r-sm);
+  cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.pool-edit:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
 .pool-del {
   display: inline-flex; align-items: center; justify-content: center;
   width: 30px; height: 30px; padding: 0;

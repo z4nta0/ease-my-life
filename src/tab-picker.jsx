@@ -253,11 +253,54 @@ function PickerView({ picker, state, actions, animStyle }) {
     setInsertSavedId(draft.id);
   };
   const addNewItem = () => {
-    if (newDraft) return;   // one draft at a time
+    if (newDraft || editingItemId) return;   // one editor at a time
     const id = 'it_' + Math.random().toString(36).slice(2, 8);
     setNewDraft({ id, name: 'New item', weight: 1, easeMin: 7, easeMax: 14,
       value: picker.mode === 'ease-down' ? (picker.threshold ?? 100) : 0, vacation: false });
     // Bring the just-opened creation UI fully into view.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const el = addWrapRef.current;
+      const sc = el && el.closest('.main');
+      if (!el || !sc) return;
+      const overflowBelow = el.getBoundingClientRect().bottom - sc.getBoundingClientRect().bottom + 96;
+      if (overflowBelow > 0) sc.scrollTo({ top: sc.scrollTop + overflowBelow, behavior: reduceMotion() ? 'auto' : 'smooth' });
+    }));
+  };
+  // Edit an EXISTING pool item — reuses the exact same visual slot/interface
+  // as "+ Add item" (.pv-additem-wrap, below the pool list), just populated
+  // from a real item and wired to the REAL actions instead of a draft. This
+  // is deliberately NOT the same draft-until-Save pattern the new-item flow
+  // above uses: that pattern exists specifically because a brand-new item
+  // doesn't exist yet and shouldn't touch real state before an intentional
+  // save. An existing item already does exist, so EntryEditor's own
+  // built-in behavior (live actions.updateItem calls as fields change, and
+  // — since no onCancel is passed here, unlike the new-item flow — a
+  // revert-via-actions.replaceItem back to the pre-edit snapshot on Cancel/
+  // Escape) already gives correct semantics with no extra bookkeeping here.
+  const [editingItemId, setEditingItemId] = React.useState(null);
+  const [editingItemClosing, setEditingItemClosing] = React.useState(false);
+  const [editingName, setEditingName] = React.useState('');
+  // Deleted out from under the open editor (the row's own trash icon stays
+  // reachable while editing — see the render's own null-guard below). That
+  // guard alone only stops THIS render from crashing; without also clearing
+  // the id here, it would stay set forever, permanently tripping
+  // startEditItem's own "one editor at a time" guard against ever opening
+  // another.
+  React.useEffect(() => {
+    if (editingItemId && !state.items.some((x) => x.id === editingItemId)) {
+      setEditingItemId(null);
+      setEditingItemClosing(false);
+    }
+  }, [editingItemId, state.items]);
+  const startEditItem = (id) => {
+    if (newDraft || editingItemId) return;   // one editor at a time
+    const it = state.items.find((x) => x.id === id);
+    if (!it) return;
+    setEditingItemId(id);
+    setEditingName(it.name);
+    // Same reveal as addNewItem's own — the editor renders in the same
+    // below-the-list slot, which can be well out of view from wherever in
+    // a long pool the Edit button that opened it was.
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const el = addWrapRef.current;
       const sc = el && el.closest('.main');
@@ -486,6 +529,11 @@ function PickerView({ picker, state, actions, animStyle }) {
                         <Icon name="calendar" size={15} />
                       </button>
                     )}
+                    <button type="button" className="pool-edit" aria-label={`Edit ${it.name}`}
+                            title="Edit" disabled={disablePoolItemButtons}
+                            onClick={() => startEditItem(it.id)}>
+                      <Icon name="edit" size={15} />
+                    </button>
                     <button type="button" className="pool-del" aria-label={`Delete ${it.name}`}
                             disabled={disablePoolItemButtons}
                             onClick={() => setConfirmDelId(it.id)}>
@@ -499,6 +547,47 @@ function PickerView({ picker, state, actions, animStyle }) {
         </div>
         <div className="pv-additem-wrap" ref={addWrapRef}>
           {(() => {
+            if (editingItemId) {
+              // Looked up live (not snapshotted) so weight/ease stepper
+              // clicks inside EntryEditor — which call the REAL
+              // actions.updateItem/setItemWeight directly — are reflected
+              // here immediately, same as the pool row itself.
+              const editItem = state.items.find((x) => x.id === editingItemId);
+              // The item vanished out from under the open editor (deleted
+              // via the row's own trash icon while this was open) —
+              // nothing left to show; that confirm flow already owns
+              // closing this out.
+              if (!editItem) return null;
+              return (
+                <div className={`pv-newitem rd-item is-editing ${editingItemClosing ? 'is-closing' : ''}`}
+                     onAnimationEnd={(e) => {
+                       if (!editingItemClosing || e.target !== e.currentTarget) return;
+                       setEditingItemClosing(false);
+                       setEditingItemId(null);
+                     }}>
+                  <div className="rd-row" onClick={(e) => e.stopPropagation()}>
+                    <span className="rd-main">
+                      <input className="rd-name-input" type="text" value={editingName} maxLength={60}
+                             placeholder="Item name" aria-label="Item name" autoFocus
+                             onChange={(e) => setEditingName(e.target.value)}
+                             onBlur={(e) => { const n = e.target.value.trim(); if (n) actions.renameItem(editItem.id, n); }}
+                             onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
+                    </span>
+                  </div>
+                  <div className="rd-edit">
+                    {/* No onDelete: EntryEditor's own footer Delete button is
+                        already hidden by the existing .pv-newitem CSS rule
+                        (".rd-edit-foot > .btn--danger { display: none }"),
+                        same as the new-item flow below — deleting an
+                        existing item stays solely the row's own trash icon
+                        + confirm flow, one delete affordance per item
+                        instead of two that could disagree with each other. */}
+                    <EntryEditor item={editItem} picker={picker} actions={actions}
+                                 onClose={() => setEditingItemClosing(true)} />
+                  </div>
+                </div>
+              );
+            }
             const newItem = newDraft;
             if (!newItem) return (
               <button type="button" className="pv-additem-btn" onClick={addNewItem}>
