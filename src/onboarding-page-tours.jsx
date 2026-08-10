@@ -82,6 +82,45 @@ const TODAY_PAGE_TARGETS = {
     title: 'Movable Icon',
     body: <>This will allow to <b>move an entire group section to a different position in the todo list</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now or click Next if you are ready to move on.</>,
   },
+  // Reminders has no rename feature (its own header is a plain, non-
+  // editable <h2> — see reminders.jsx), so this targets Page Tours instead:
+  // it's rendered through the same GroupHeader component as a real picker
+  // group (rename included), and — unlike any actual picker group — is
+  // guaranteed to exist the moment this tour is reachable at all, since
+  // both live under the same mini-tour checklist. A real picker group
+  // (e.g. "Chores") would only exist once the user has already finished a
+  // picker tutorial first, which this tour can't assume.
+  renameGroup: {
+    sel: '.group-name-input',
+    title: 'Rename Group',
+    body: <>This will alow you to change a group’s name. You can go ahead and try it yourself, but once you exit this tutorial the changes will be reverted. You can still change them afterwards if you’d like. This concludes the Today page tutorial, click Done when you are ready.</>,
+  },
+};
+
+// The Page Tours group's real name at the moment Step 5 (below) opens its
+// rename input — captured off the rename button's own aria-label ("Rename
+// group {name}") before it disappears behind the input. Lets both Step 6's
+// Done and a Back from Step 6 reset the input to a genuine no-op edit
+// (draft === name) rather than an actual rename, without needing this
+// module to otherwise know the live app state (PageTour itself is only
+// ever passed `actions`, not `state`).
+let lastPageToursName = 'Page Tours';
+
+// Resets the rename input back to its real name and blurs it — a NO-OP
+// commit (see tab-today.jsx's GroupHeader: commit() only calls
+// onRenameGroup when draft differs from the name prop), so this discards
+// whatever was typed without touching Edit Mode itself. Deliberately NOT
+// Escape: GroupHeader's own Escape handling is exactly this (see its
+// cancel()), but a real Escape keydown also bubbles to tab-today.jsx's
+// OWN global window listener, which exits Edit Mode entirely — fine for
+// Step 6's own Done (see its run() below, which wants that anyway) but
+// wrong for a Back to Step 5, which needs Edit Mode to stay on.
+const resetRenameInput = () => {
+  const input = document.querySelector('.group-name-input');
+  if (!input) return;
+  input.value = lastPageToursName;
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.blur();
 };
 
 // Steps beyond Step 1 (the nav-highlight every page tour shares), keyed by
@@ -94,7 +133,43 @@ const PAGE_TOUR_STEPS = {
     { ...TODAY_PAGE_TARGETS.progressRing, tab: 'today', primary: 'Next', back: true },
     { ...TODAY_PAGE_TARGETS.groupsNav, tab: 'today', primary: 'Next', back: true },
     { ...TODAY_PAGE_TARGETS.editMode, tab: 'today', primary: 'Next', back: true, requireClick: true },
-    { ...TODAY_PAGE_TARGETS.groupGrip, tab: 'today', primary: 'Next', back: true },
+    {
+      ...TODAY_PAGE_TARGETS.groupGrip, tab: 'today', primary: 'Next', back: true,
+      // Stages the next step's target: a real click into Page Tours' own
+      // rename control (same real-UI-driving pattern used throughout the
+      // Picker/Reminder tours), so its input already exists once Step 6
+      // mounts. Fires on advancing OUT of this step, not into it — see
+      // onPrimary's own comment in onboarding-tour-runner.jsx. Explicit
+      // focus alongside the input's own autoFocus — belt-and-suspenders,
+      // since the click driving it here is synthetic (this run(), not a
+      // direct user click on the rename button itself). Deferred a frame
+      // so it fires after the click's own re-render has actually mounted
+      // the input.
+      run: () => {
+        const btn = document.querySelector('button.group-name--editable[aria-label="Rename group Page Tours"]');
+        if (btn) {
+          lastPageToursName = (btn.getAttribute('aria-label') || '').replace(/^Rename group /, '') || 'Page Tours';
+          btn.click();
+        }
+        requestAnimationFrame(() => {
+          const input = document.querySelector('.group-name-input');
+          if (input) input.focus();
+        });
+      },
+    },
+    {
+      ...TODAY_PAGE_TARGETS.renameGroup, tab: 'today', primary: 'Done', back: true,
+      // Discards any typed rename (see resetRenameInput above), then exits
+      // Edit Mode via its real Cancel control — present regardless of
+      // viewport, unlike the desktop/mobile-specific one Step 4's own
+      // onGoBack has to branch on — reverting any group reordering from
+      // Step 5 too, before the tour itself navigates away.
+      run: () => {
+        resetRenameInput();
+        const cancelBtn = document.querySelector('.editmode-banner-actions .btn--ghost');
+        if (cancelBtn) cancelBtn.click();
+      },
+    },
   ],
 };
 
@@ -140,9 +215,17 @@ function PageTour({ pageId, actions, onClose }) {
       // swaps to Cancel/Done buttons instead of keeping .foot-editmode, so
       // Cancel (.btn--ghost) is the equivalent control there.
       onGoBack={(to) => {
-        if (pageId !== 'explore_today' || to !== 3) return;
-        const btn = document.querySelector('.em-rail-btn.is-on') || document.querySelector('.today-foot-actions .btn--ghost');
-        if (btn) btn.click();
+        if (pageId !== 'explore_today') return;
+        if (to === 3) {
+          const btn = document.querySelector('.em-rail-btn.is-on') || document.querySelector('.today-foot-actions .btn--ghost');
+          if (btn) btn.click();
+        } else if (to === 4) {
+          // Back from Step 6 (Rename Group) to Step 5 — discards the
+          // in-progress rename WITHOUT exiting Edit Mode (unlike Step 6's
+          // own Done, which wants both) — see resetRenameInput's own
+          // comment for why this can't just be an Escape keydown.
+          resetRenameInput();
+        }
       }}
       onSkip={() => closeTour('skipped')}
       onFinish={() => closeTour('finished')}
