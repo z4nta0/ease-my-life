@@ -716,7 +716,7 @@
 
 /* Cards now live inside the .tab-fade wrapper, so the flex gap above can't reach
    them — lay the wrapper out as a full-width grid with its own row gap. */
-.stat-body { display: grid; grid-template-columns: 1fr; grid-auto-rows: auto; gap: 28px; }
+.stat-body { display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: auto; gap: 28px; }
 
 /* Stats header — kicker on its own line, then logo + title (mirroring the
    Today tab's date/time-above-logo/title layout). "eased" picks up the same
