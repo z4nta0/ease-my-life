@@ -80,7 +80,7 @@ const TODAY_PAGE_TARGETS = {
   groupGrip: {
     sel: '.rem-section .group-grip',
     title: 'Movable Icon',
-    body: <>This will allow to <b>move an entire group section to a different position in the todo list</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now or click Next when you are ready to move on.</>,
+    body: <>This will allow to <b>move an entire group section to a different position in the todo list</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now or click Next if you are ready to move on.</>,
   },
 };
 
