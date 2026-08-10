@@ -387,7 +387,20 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // step's target is real UI the user just interacted with, so nothing in
   // `steps` should be reading tour `step` synchronously off this same click.
   const onPrimary = () => {
-    if (cur.run) cur.run();
+    // Suppressed the same way goBack's own onGoBack call is (see
+    // suppressGuardRef's doc comment above) — a run() that drives a real
+    // click on something outside the CURRENT step's own target (e.g.
+    // staging the NEXT step's target on a different part of the page)
+    // would otherwise get blocked by the same document-level guard that
+    // stops the USER clicking off-target: curRef.current still points at
+    // this step (the index hasn't advanced yet), so a synthetic click
+    // landing anywhere else reads as "off-target" and gets preventDefault/
+    // stopPropagation'd before its own handler ever runs.
+    if (cur.run) {
+      suppressGuardRef.current = true;
+      cur.run();
+      suppressGuardRef.current = false;
+    }
     const advance = () => { if (cur.primary === 'Done') finish(); else goToStep(step + 1); };
     if (cur.requireClick) setTimeout(advance, 0);
     else advance();
