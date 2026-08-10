@@ -590,6 +590,18 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       if (r.top - 16 - ch >= obSafeTop() + 12) return; // fits above — reserveTop is already 0
       reservedAmount = ch + 40;
       setReserveTop(reservedAmount);
+      // Compensates for the padding this just added above the list —
+      // without it, the target (already scrolled close to the top by
+      // bring()'s own earlier pass) gets pushed down by the FULL reserved
+      // amount with nothing scrolling further to keep it on-screen, sliding
+      // it toward — or past — the bottom of the viewport instead of
+      // roughly holding its position with new room opened up above it for
+      // the coach. Deferred a frame so the padding has actually landed in
+      // the DOM before scrolling to compensate for it; recomputes its own
+      // scroller rather than closing over bring()'s local `sc`, which this
+      // function doesn't have access to.
+      const els2 = findTargets(cur.sel);
+      if (els2.length) requestAnimationFrame(() => scrollByAmt(getScroller(els2[0]), reservedAmount));
     };
     // Reposition synchronously as scroll fires (before paint) so the highlight
     // doesn't trail the content the way a purely rAF-driven fixed box does.
