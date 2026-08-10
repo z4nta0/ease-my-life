@@ -914,7 +914,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
 
         <div className="settings-sections">
           {/* ── Appearance ───────────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['appearance'] = el; }}>
+          <section className="set-section set-section--appearance" ref={(el) => { sectionRefs.current['appearance'] = el; }}>
             <div className="set-section-h"><span className="kicker">Appearance</span></div>
             <p className="settings-sub">
               Control the appearance of Ease My life, including colors, animations and tab placement.
@@ -1012,7 +1012,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           </section>
 
           {/* ── Daily generator ─────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['daily'] = el; }}>
+          <section className="set-section set-section--daily" ref={(el) => { sectionRefs.current['daily'] = el; }}>
             <div className="set-section-h"><span className="kicker">Daily generator</span></div>
             <p className="settings-sub">
               The Daily generator can always be run manually from the Today tab regardless of this setting.
@@ -1075,7 +1075,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           </section>
 
           {/* ── Holidays ────────────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['holidays'] = el; }}>
+          <section className="set-section set-section--holidays" ref={(el) => { sectionRefs.current['holidays'] = el; }}>
             <div className="set-section-h"><span className="kicker">Holidays</span></div>
             <p className="settings-sub">
               Any pickers that are set to &ldquo;Skip on holidays&rdquo; will not be run on the days
@@ -1088,7 +1088,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           </section>
 
           {/* ── Data control ────────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['data'] = el; }}>
+          <section className="set-section set-section--data" ref={(el) => { sectionRefs.current['data'] = el; }}>
             <div className="set-section-h"><span className="kicker">Data control</span></div>
             <p className="settings-sub">
               All of your data is stored locally, on this device - do with it as you will. Unfortunately,
@@ -1265,7 +1265,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
 
           {/* ── About ───────────────────────────────────────────────────────── */}
           {/* ── Account ─────────────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['account'] = el; }}>
+          <section className="set-section set-section--account" ref={(el) => { sectionRefs.current['account'] = el; }}>
             <div className="set-section-h"><span className="kicker">Account</span></div>
             <p className="settings-sub">
               Ease My Life runs entirely on this device &mdash; no account required. Sign in to
@@ -1283,7 +1283,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           </section>
 
           {/* ── About ───────────────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['about'] = el; }}>
+          <section className="set-section set-section--about" ref={(el) => { sectionRefs.current['about'] = el; }}>
             <div className="set-section-h"><span className="kicker">About</span></div>
             <p className="settings-sub">
               Ease My Life is a labor of love for me. I have been using a version of this app on
@@ -1339,7 +1339,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           </section>
 
           {/* ── Legal ───────────────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['legal'] = el; }}>
+          <section className="set-section set-section--legal" ref={(el) => { sectionRefs.current['legal'] = el; }}>
             <div className="set-section-h"><span className="kicker">Legal</span></div>
             <p className="settings-sub">
               The documents below outline what you&rsquo;re agreeing to by using Ease My Life.

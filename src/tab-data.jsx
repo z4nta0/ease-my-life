@@ -988,7 +988,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
               </button>
             )}
             {visiblePickers.map((p, i) => (
-              <button key={p.id} type="button"
+              <button key={p.id} type="button" data-picker-id={p.id}
                       className={`picker-tab picker-tab--enter ${scope === p.id ? 'is-on' : ''}`}
                       style={{ animationDelay: ((statGroup === 'all' ? (conditionals.length > 0 ? 3 : 2) : 0) + i) * 40 + 'ms' }}
                       onClick={() => onSelectScope(p.id)}>

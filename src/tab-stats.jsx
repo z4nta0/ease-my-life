@@ -943,7 +943,7 @@ function TabStats({ state, onHome, onNavTab }) {
               </button>
             )}
             {visiblePickers.map((p, i) => (
-              <button key={p.id} type="button"
+              <button key={p.id} type="button" data-picker-id={p.id}
                       className={`picker-tab picker-tab--enter ${scope === p.id ? 'is-on' : ''}`}
                       style={{ animationDelay: ((statGroup === 'all' ? (1 + (hasConditionals ? 1 : 0) + (remEnabled ? 1 : 0)) : 0) + i) * 40 + 'ms' }}
                       onClick={() => setScope(p.id)}>
@@ -1142,7 +1142,7 @@ function TabStats({ state, onHome, onNavTab }) {
 
       {/* ── Heatmap ── */}
       {!isConditionals && (
-      <Card>
+      <Card className="stat-heatmap-card">
         <div className="heat-h">
           <div className="kicker">{rangeKicker}{isReminders ? ' · reminders' : ''}</div>
           <HeatLegend />
@@ -1388,7 +1388,7 @@ function TabStats({ state, onHome, onNavTab }) {
 
       {/* ── Single-picker Pick breakdown: one card, metric switcher ── */}
       {isPicker && (
-        <Card>
+        <Card className="stat-breakdown-card">
           <div className="rank-head">
             <div className="kicker">Pick breakdown</div>
             <button type="button" className="rank-sort"
