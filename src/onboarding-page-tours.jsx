@@ -4,7 +4,7 @@ import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
 import { GuidedTour } from './onboarding-tour-runner.jsx';
 import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
 import { OB_PAGE_TOURS } from './onboarding-checklist.js';
-import { OB_EXAMPLE, OB_EXTRA_PICKERS } from './onboarding-seed-data.js';
+import { OB_EXAMPLE, OB_EXTRA_PICKERS, OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';
 import { emlTour } from './onboarding.jsx';
 
 // Page tours ("Explore the {page}" — Today/Pickers/Stats/Data/Settings) are
@@ -61,23 +61,24 @@ const buildPageTourStep1 = (page, run) => {
   };
 };
 
-// The Pickers/Stats/Data tours all need real pickers on screen to point at
-// (e.g. the group filter row doesn't even render with fewer than 2 groups),
-// but reusing the Welcome Tour's own hidden sample pickers directly — the
-// same ones the Today mini-tour launcher cards and Replay Tour depend on —
-// would let the user's own interaction here (deleting one, editing an item,
+// The Pickers/Data tours need real pickers on screen to point at (e.g. the
+// group filter row doesn't even render with fewer than 2 groups), but both
+// expose real edit/delete controls on whatever picker they highlight —
+// reusing the Welcome Tour's own hidden sample pickers directly (the same
+// ones the Today mini-tour launcher cards and Replay Tour depend on) would
+// let the user's own interaction here (deleting one, editing an item,
 // re-selecting a scope, etc.) corrupt that shared reference data. Seeded as
 // full COPIES instead, under their own `pt_`-prefixed ids (never colliding
 // with the real `pkr_ob_*`/`it_ob_*` ones), and cleaned up again the moment
 // whichever tour used them ends (see clearPageTourPickers) — real,
-// interactive, but disposable. Shared across all three page tours rather
-// than kept Pickers-only, so Stats/Data can point at the exact same
-// generated content without each maintaining its own copy set.
+// interactive, but disposable. Shared between the two tours rather than
+// each maintaining its own copy set. Stats does NOT use this — see
+// unhideSampleHistory below for why it borrows the real samples instead.
 const PAGE_TOUR_SAMPLE_PICKERS = [OB_EXAMPLE, ...OB_EXTRA_PICKERS];
 const pageTourCopyId = (id) => `pt_${id}`;
-// Which page tours need the sample pickers seeded/cleared at all — Today
-// and Settings don't touch pickers, so they skip this entirely.
-const usesSamplePickers = (pageId) => pageId === 'explore_pickers' || pageId === 'explore_stats' || pageId === 'explore_data';
+// Which page tours need disposable copies seeded/cleared at all — Today and
+// Settings don't touch pickers, and Stats uses the real samples instead.
+const usesSampleCopies = (pageId) => pageId === 'explore_pickers' || pageId === 'explore_data';
 
 // Fired from Step 1's run() (see PageTour below) — between the nav click
 // and Step 2 ever mounting, same "prepare what the NEXT step needs" timing
@@ -104,6 +105,24 @@ const seedPageTourPickers = (state, actions) => {
 // (e.g. Skip from the intro modal, before Step 1's run() ever fires).
 const clearPageTourPickers = (actions) => {
   PAGE_TOUR_SAMPLE_PICKERS.forEach((p) => actions.removePicker(pageTourCopyId(p.id)));
+};
+
+// The Stats tour has no edit/delete controls anywhere on the page — it's
+// pure viewing — so unlike Pickers/Data it doesn't need a disposable copy to
+// protect against corruption. A copy would also be worse here specifically:
+// it'd start with zero pick history, leaving the heatmap/breakdown empty,
+// the opposite of what the tour is trying to demonstrate. Instead it
+// borrows the REAL hidden sample pickers directly — which already carry
+// ~1yr of precomputed pickLog history, seeded once on fresh install (see
+// onboarding.jsx's own mount effect) — unhiding them for this tour's own
+// duration and hiding them again the moment it ends. Mirrors the exact
+// hide/show mechanism the main Welcome Tour itself already uses for its own
+// Back-navigation (see onboarding.jsx's handleGoBack / Settings-step run()).
+const unhideSampleHistory = (actions) => {
+  OB_SAMPLE_PICKER_IDS.forEach((id) => actions.updatePicker(id, { hidden: false }));
+};
+const hideSampleHistory = (actions) => {
+  OB_SAMPLE_PICKER_IDS.forEach((id) => actions.updatePicker(id, { hidden: true }));
 };
 
 // Target + description catalog for the Pickers page's OWN interior elements
@@ -175,13 +194,17 @@ const PICKER_PAGE_TARGETS = {
   },
 };
 
-// Id of the disposable sample picker (see PAGE_TOUR_SAMPLE_PICKERS) that the
-// Stats/Data tours pre-select for their own "single picker" steps below —
-// matched by [data-picker-id] on the tab button (tab-stats.jsx/tab-data.jsx),
-// NOT by its display name: a real picker sharing that same name (nothing
-// stops a user from naming their own picker "Daily Chores") would otherwise
-// let a stale/duplicate name-match select the WRONG picker.
-const PAGE_TOUR_PRESELECT_PICKER_ID = pageTourCopyId(OB_EXAMPLE.id);
+// Id of the picker the Data/Stats tours each pre-select for their own
+// "single picker" steps below — matched by [data-picker-id] on the tab
+// button (tab-stats.jsx/tab-data.jsx), NOT by its display name: a real
+// picker sharing that same name (nothing stops a user from naming their own
+// picker "Daily Chores") would otherwise let a stale/duplicate name-match
+// select the WRONG picker. Data's own highlighted picker section exposes
+// real edit/delete controls, so it points at the DISPOSABLE COPY; Stats is
+// pure viewing, so it points at the REAL sample directly (see
+// unhideSampleHistory's own comment for why).
+const DATA_TOUR_PRESELECT_PICKER_ID = pageTourCopyId(OB_EXAMPLE.id);
+const STATS_TOUR_PRESELECT_PICKER_ID = OB_EXAMPLE.id;
 
 // Target + description catalog for the Stats page's OWN interior elements —
 // same shape/reasoning as PICKER_PAGE_TARGETS above. A first draft covering
@@ -191,20 +214,25 @@ const STATS_PAGE_TARGETS = {
   groupFilter: {
     sel: '.stat-scope-groups .picker-group-pill',
     title: 'Group Filter',
-    body: <>This will allow you to <b>filter the Show row below by group</b>, which is extremely useful if you have created a lot of pickers. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers. Feel free to select one now or click Next to advance to the next step.</>,
   },
   // All/Conditionals/Reminders/individual pickers all render as tabs in the
   // same row — one combined step rather than splitting them out, since
   // they're really one "what am I looking at" choice.
-  showFilter: {
+  pickersFilter: {
     sel: '.stat-scope-tabs .picker-tab',
-    title: 'Show',
-    body: <>This will allow you to <b>choose exactly what to view statistics for</b> — everything combined, just your conditionals, just your reminders, or one specific picker. Feel free to select one now or click Next to advance to the next step.</>,
+    title: 'Pickers Filter',
+    body: <>This will allow you to narrow your selection to specific pickers or reminders, or you can view everything all at once. Feel free to select one now or click Next to advance to the next step.</>,
+  },
+  rangeFilter: {
+    sel: '.stat-filter-pills--seg',
+    title: 'Range Filter',
+    body: <>This will allow you to further <b>narrow your selection by date range</b>, with ranges from 1 week to 1 year to all time. Feel free to select one now or click Next to advance to the next step.</>,
   },
   heatmap: {
     sel: '.stat-heatmap-card',
     title: 'Activity Heatmap',
-    body: <>This <b>visualizes your completed activity over time</b>, with each day shaded by how much you got done. Click on any day for more detail, or use the arrows to browse previous years. Click Next to see what happens when a specific picker is selected above.</>,
+    body: <>This visualizes your completed activity over time, with <b>each day shaded by how much you got done</b>. Click on any day for more details. Click Next when you are ready to advance to the next step.</>,
   },
   // Only rendered once a specific picker is the active scope — the PREVIOUS
   // step's own run() (below) selects one before this step ever mounts, same
@@ -212,7 +240,7 @@ const STATS_PAGE_TARGETS = {
   pickerBreakdown: {
     sel: '.stat-breakdown-card',
     title: 'Picker Breakdown',
-    body: <>Once a <b>specific picker is selected</b> from the Show row above, its individual items are broken down here — by pick count, last picked date, or current weight/ease value, depending on the picker's mode. This concludes the Stats page tutorial, click Done when you are ready.</>,
+    body: <>Once a specific picker is selected, its individual items are broken down here. You can view things like pick count, pick frequency, last picked date and others. This concludes the Stats page tutorial, click Done when you are ready to finish this tutorial.</>,
   },
 };
 
@@ -474,15 +502,16 @@ const buildPageTourSteps = (pageId, actions) => {
   if (pageId === 'explore_stats') {
     return [
       { ...STATS_PAGE_TARGETS.groupFilter, tab: 'stats', primary: 'Next', back: true },
-      { ...STATS_PAGE_TARGETS.showFilter, tab: 'stats', primary: 'Next', back: true },
+      { ...STATS_PAGE_TARGETS.pickersFilter, tab: 'stats', primary: 'Next', back: true },
+      { ...STATS_PAGE_TARGETS.rangeFilter, tab: 'stats', primary: 'Next', back: true },
       {
         ...STATS_PAGE_TARGETS.heatmap, tab: 'stats', primary: 'Next', back: true,
         // Stages the picker-breakdown step's own target — that card only
         // renders once a specific picker is the active scope, so this
-        // selects one (the same disposable sample the Data tour also
-        // preselects) before that step ever mounts.
+        // selects the real sample picker (unhidden for this whole tour, see
+        // unhideSampleHistory) before that step ever mounts.
         run: () => {
-          const btn = document.querySelector(`.stat-scope-tabs .picker-tab[data-picker-id="${PAGE_TOUR_PRESELECT_PICKER_ID}"]`);
+          const btn = document.querySelector(`.stat-scope-tabs .picker-tab[data-picker-id="${STATS_TOUR_PRESELECT_PICKER_ID}"]`);
           if (btn) btn.click();
         },
       },
@@ -491,11 +520,12 @@ const buildPageTourSteps = (pageId, actions) => {
         // `scope` (tab-stats.jsx's own local useState, choosing which picker
         // is active) is NOT persisted — a reload always lands back at 'all',
         // so this step's own target wouldn't exist to resume into even
-        // though the disposable picker itself (a real, persisted addPicker)
-        // would still be there. Not resumable — see that field's own doc
-        // comment in onboarding-tour-runner.jsx; a reload mid this step
-        // falls back to Step 4 (the heatmap), which is always safe to land
-        // on and re-runs the selection on its own next Next click.
+        // though the real sample picker itself stays unhidden (a real,
+        // persisted field) across the reload. Not resumable — see that
+        // field's own doc comment in onboarding-tour-runner.jsx; a reload
+        // mid this step falls back to the heatmap step, which is always
+        // safe to land on and re-runs the selection on its own next Next
+        // click.
         resumable: false,
       },
     ];
@@ -512,7 +542,7 @@ const buildPageTourSteps = (pageId, actions) => {
         // managers above (both only show at scope 'all'/their own scope),
         // leaving exactly one picker card inside .data-list.
         run: () => {
-          const btn = document.querySelector(`.stat-scope-tabs .picker-tab[data-picker-id="${PAGE_TOUR_PRESELECT_PICKER_ID}"]`);
+          const btn = document.querySelector(`.stat-scope-tabs .picker-tab[data-picker-id="${DATA_TOUR_PRESELECT_PICKER_ID}"]`);
           if (btn) btn.click();
         },
       },
@@ -628,8 +658,10 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
   const closeTour = (status) => {
     // Discard this tour's own disposable sample copies (see their own
     // comment) the moment it ends, however it ends — a harmless no-op if
-    // Step 1's run() never got the chance to seed them.
-    if (usesSamplePickers(pageId)) clearPageTourPickers(actions);
+    // Step 1's run() never got the chance to seed them. Stats instead
+    // re-hides the REAL samples it borrowed (see unhideSampleHistory).
+    if (usesSampleCopies(pageId)) clearPageTourPickers(actions);
+    else if (pageId === 'explore_stats') hideSampleHistory(actions);
     actions.setChecklistItem(pageId, { status });
     onClose();
   };
@@ -651,7 +683,10 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
     <GuidedTour
       tourId={`page-${pageId}`}
       steps={[
-        buildPageTourStep1(tour.page, usesSamplePickers(pageId) ? () => seedPageTourPickers(state, actions) : undefined),
+        buildPageTourStep1(tour.page,
+          usesSampleCopies(pageId) ? () => seedPageTourPickers(state, actions) :
+          pageId === 'explore_stats' ? () => unhideSampleHistory(actions) :
+          undefined),
         ...buildPageTourSteps(pageId, actions),
       ]}
       resumeStep={resumable ? resumable.step : 0}
