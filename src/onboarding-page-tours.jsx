@@ -295,7 +295,15 @@ const buildPageTourSteps = (pageId, actions) => {
       {
         ...PICKER_PAGE_TARGETS.createNewPickers, tab: 'picker', primary: 'Next', back: true,
       },
-      { ...PICKER_PAGE_TARGETS.manualGeneration, tab: 'picker', primary: 'Next', back: true, requireClick: true },
+      {
+        ...PICKER_PAGE_TARGETS.manualGeneration, tab: 'picker', primary: 'Next', back: true, requireClick: true,
+        // Pick one kicks off the multi-second spin animation — its result
+        // (Step 6's own target) isn't ready the instant the click fires.
+        // Stay on THIS step's own already-resolved coach/highlight for the
+        // whole wait instead of advancing into a blank "not found yet" dim
+        // — see advanceWhen's own doc comment in onboarding-tour-runner.jsx.
+        advanceWhen: PICKER_PAGE_TARGETS.addToTodoList.sel,
+      },
       { ...PICKER_PAGE_TARGETS.addToTodoList, tab: 'picker', primary: 'Next', back: true, requireClick: true },
     ];
   }

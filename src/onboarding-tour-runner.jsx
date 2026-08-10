@@ -372,6 +372,21 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // not closed over stale.
   const curRef = React.useRef(cur);
   curRef.current = cur;
+  // Mirrors curRef, but for the raw step NUMBER rather than the step
+  // object — used by onPrimary's advanceWhen poll below, which needs to
+  // notice a step change made for some OTHER reason (Back, Skip) while it
+  // was still waiting. `cur` itself isn't reliable for that same check:
+  // steps are rebuilt as fresh objects on every render (buildPageTourStep1/
+  // buildPageTourSteps are called anew each time), so curRef.current would
+  // read as "changed" on the very next unrelated re-render even when the
+  // step index never actually moved.
+  const stepRef = React.useRef(step);
+  stepRef.current = step;
+  // Lets the advanceWhen poll (and anything else scheduling a callback
+  // beyond this render's own lifetime) notice this component has actually
+  // unmounted and stop, rather than firing a state update into the void.
+  const mountedRef = React.useRef(true);
+  React.useEffect(() => () => { mountedRef.current = false; }, []);
   // Same lazy-ref pattern as curRef — onPrimary closes over step/cur/finish,
   // all of which change every render, but the click-guard effect below is
   // only ever set up once.
@@ -516,8 +531,33 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       suppressGuardRef.current = false;
     }
     const advance = () => { if (cur.primary === 'Done') finish(); else goToStep(step + 1); };
-    if (cur.requireClick) setTimeout(advance, 0);
-    else advance();
+    if (cur.requireClick && cur.advanceWhen) {
+      // The real click just kicked off something ASYNC whose result is the
+      // next step's own target — e.g. the Pickers tour's "Manual
+      // Generation" step: clicking Pick one starts a multi-second spin
+      // animation, and the Send to Today button (the next step's target)
+      // doesn't exist until it resolves. Advancing on the usual immediate
+      // timer would move the step index forward before that target exists,
+      // and the position-tracking effect's own "target not found yet"
+      // fallback renders a bare dim with no coach at all for however long
+      // that takes — reading as the tour blanking out mid-click. Polling
+      // here instead means THIS step's own already-resolved coach and
+      // highlight just keep sitting there, unbothered, for the whole wait,
+      // and the jump to the next step only happens once its target is
+      // actually ready to be found immediately. Checks the LIVE step
+      // number (via stepRef, not this closure's own `step`) on each poll,
+      // so if the user Back's/Skip's away in the meantime this notices and
+      // bails out instead of firing a stale advance() later.
+      const startedForStep = step;
+      const check = () => {
+        if (!mountedRef.current || stepRef.current !== startedForStep) return;
+        if (findTargets(cur.advanceWhen).length) advance();
+        else requestAnimationFrame(check);
+      };
+      requestAnimationFrame(check);
+    } else if (cur.requireClick) {
+      setTimeout(advance, 0);
+    } else advance();
   };
   onPrimaryRef.current = onPrimary;
 
