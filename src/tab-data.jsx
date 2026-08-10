@@ -3,6 +3,7 @@ import { CAD_OPTS } from './cadence-control.jsx';
 import { CADENCE } from './cadence.js';
 import { EASE_UP_RANGE_WARN } from './constants.js';
 import { normalizeConditionalName, normalizeGroupName } from './pickers.js';
+import { useEmlTour } from './onboarding.jsx';
 import { ReminderManager } from './reminders.jsx';
 import { MODES } from './seed.js';
 import { ConditionalControls, conditionalDraftDefault } from './tab-conditional.jsx';
@@ -751,6 +752,15 @@ function ConditionalsManager({ state, actions }) {
 }
 
 function TabData({ state, actions, onHome, onNavTab }) {
+  // Group Filter / Pickers Filter are disabled while their own Data page
+  // tour step is up — narrating what they do is the point; letting the user
+  // actually change statGroup/scope mid-tour would leave a LATER step's own
+  // target (Reminders, which only renders at scope 'all') unable to find
+  // anything, since nothing resets it back afterward. Same tourId+step
+  // gating pattern as tab-picker.jsx's own disableTourAddPicker.
+  const tour = useEmlTour();
+  const disableGroupFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 1;
+  const disablePickersFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 2;
   // Which picker item is expanded for editing (mirrors the Reminders list).
   const [openItemId, setOpenItemId] = React.useState(null);
   // Tracks a brand-new picker item whose edits aren't kept yet. Cancel on such
@@ -918,6 +928,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
             <div className="picker-groups stat-scope-groups" ref={groupsRef} role="tablist" aria-label="Filter pickers by group">
               <button type="button" role="tab" aria-selected={statGroup === 'all'}
                       className={`picker-group-pill ${statGroup === 'all' ? 'is-on' : ''}`}
+                      disabled={disableGroupFilter}
                       onClick={() => { setStatGroup('all'); setScope('all'); }}>
                 All
                 <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
@@ -927,6 +938,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                 return (
                   <button key={g} type="button" role="tab" aria-selected={statGroup === g}
                           className={`picker-group-pill ${statGroup === g ? 'is-on' : ''}`}
+                          disabled={disableGroupFilter}
                           onClick={() => setStatGroup(g)}>
                     {g}
                     <span className="picker-group-count">{n}</span>
@@ -942,6 +954,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
             <div className="picker-groups stat-scope-groups" ref={condRowRef} role="tablist" aria-label="Filter pickers by conditional">
               <button type="button" role="tab" aria-selected={condFilter === 'all'}
                       className={`picker-group-pill ${condFilter === 'all' ? 'is-on' : ''}`}
+                      disabled={disableGroupFilter}
                       onClick={() => { setCondFilter('all'); if (scope !== 'all' && scope !== 'reminders' && scope !== 'conditionals') setScope('all'); }}>
                 All
                 <span className="picker-group-count">{pickers.length}</span>
@@ -949,6 +962,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
               {conditionals.map((c) => (
                 <button key={c.id} type="button" role="tab" aria-selected={condFilter === c.id}
                         className={`picker-group-pill ${condFilter === c.id ? 'is-on' : ''}`}
+                        disabled={disableGroupFilter}
                         onClick={() => { setCondFilter(c.id); setScope('all'); setStatGroup('all'); }}>
                   {c.name}
                   <span className="picker-group-count">{condPickerCount(c.id)}</span>
@@ -964,6 +978,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
               <button type="button"
                       className={`picker-tab picker-tab--enter ${scope === 'all' ? 'is-on' : ''}`}
                       style={{ animationDelay: '0ms' }}
+                      disabled={disablePickersFilter}
                       onClick={() => onSelectScope('all')}>
                 <span className="picker-tab-name">All</span>
                 <span className="picker-tab-mode">Everything</span>
@@ -973,6 +988,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
               <button type="button"
                       className={`picker-tab picker-tab--enter ${scope === 'conditionals' ? 'is-on' : ''}`}
                       style={{ animationDelay: '40ms' }}
+                      disabled={disablePickersFilter}
                       onClick={() => onSelectScope('conditionals')}>
                 <span className="picker-tab-name">Conditionals</span>
                 <span className="picker-tab-mode">Gates</span>
@@ -982,6 +998,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
               <button type="button"
                       className={`picker-tab picker-tab--enter ${scope === 'reminders' ? 'is-on' : ''}`}
                       style={{ animationDelay: '80ms' }}
+                      disabled={disablePickersFilter}
                       onClick={() => onSelectScope('reminders')}>
                 <span className="picker-tab-name">Reminders</span>
                 <span className="picker-tab-mode">Tasks</span>
@@ -991,6 +1008,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
               <button key={p.id} type="button" data-picker-id={p.id}
                       className={`picker-tab picker-tab--enter ${scope === p.id ? 'is-on' : ''}`}
                       style={{ animationDelay: ((statGroup === 'all' ? (conditionals.length > 0 ? 3 : 2) : 0) + i) * 40 + 'ms' }}
+                      disabled={disablePickersFilter}
                       onClick={() => onSelectScope(p.id)}>
                 <span className="picker-tab-name">{p.name}</span>
                 <span className="picker-tab-mode">{MODES[p.mode].label}</span>

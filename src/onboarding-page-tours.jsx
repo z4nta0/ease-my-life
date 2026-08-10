@@ -210,16 +210,15 @@ const PICKER_PAGE_TARGETS = {
   },
 };
 
-// Id of the picker the Data/Stats tours each pre-select for their own
-// "single picker" steps below — matched by [data-picker-id] on the tab
-// button (tab-stats.jsx/tab-data.jsx), NOT by its display name: a real
-// picker sharing that same name (nothing stops a user from naming their own
-// picker "Daily Chores") would otherwise let a stale/duplicate name-match
-// select the WRONG picker. Data's own highlighted picker section exposes
-// real edit/delete controls, so it points at the DISPOSABLE COPY; Stats is
-// pure viewing, so it points at the REAL sample directly (see
-// unhideSampleHistory's own comment for why).
-const DATA_TOUR_PRESELECT_PICKER_ID = pageTourCopyId(OB_EXAMPLE.id);
+// Id of the picker the Stats tour pre-selects for its own "single picker"
+// steps below — matched by [data-picker-id] on the tab button
+// (tab-stats.jsx), NOT by its display name: a real picker sharing that same
+// name (nothing stops a user from naming their own picker "Daily Chores")
+// would otherwise let a stale/duplicate name-match select the WRONG picker.
+// Points at the REAL sample directly (not a disposable copy) — see
+// unhideSampleHistory's own comment for why. The Data tour doesn't need an
+// equivalent: it never narrows scope to one specific picker (see
+// DATA_PAGE_TARGETS' own header comment).
 const STATS_TOUR_PRESELECT_PICKER_ID = OB_EXAMPLE.id;
 
 // Target + description catalog for the Stats page's OWN interior elements —
@@ -238,7 +237,7 @@ const STATS_PAGE_TARGETS = {
   pickersFilter: {
     sel: '.stat-scope-tabs .picker-tab',
     title: 'Pickers Filter',
-    body: <>This will allow you to narrow your selection to specific pickers or reminders, or you can view everything all at once. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will allow you to <b>narrow your selection to specific pickers or reminders</b>, or you can view everything all at once. Feel free to select one now or click Next to advance to the next step.</>,
   },
   rangeFilter: {
     sel: '.stat-filter-pills--seg',
@@ -264,38 +263,36 @@ const STATS_PAGE_TARGETS = {
 // same shape/reasoning as STATS_PAGE_TARGETS above. Also a first draft
 // covering only the "main sections" per instruction; likely to grow more
 // steps later (see this catalog's own comment header in the codebase).
+// Group Filter / Pickers Filter are both disabled while their own step is
+// up (tab-data.jsx's own disableGroupFilter/disablePickersFilter, same
+// tourId+step gating pattern as tab-picker.jsx) — narrating what they do is
+// the point, and changing statGroup/scope mid-tour would otherwise leave a
+// LATER step's own target (e.g. Reminders, which only shows at scope 'all')
+// unable to find anything, since nothing here resets it back afterward.
 const DATA_PAGE_TARGETS = {
   groupFilter: {
     sel: '.stat-scope-groups .picker-group-pill',
     title: 'Group Filter',
-    body: <>This will allow you to <b>filter the Show row below by group</b>, which is extremely useful if you have created a lot of pickers. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers. These buttons are disabled for this tutorial, so click Next when you are ready to advance to the next step.</>,
   },
-  showFilter: {
+  pickersFilter: {
     sel: '.stat-scope-tabs .picker-tab',
-    title: 'Show',
-    body: <>This will allow you to <b>choose exactly what to view and edit</b> — everything combined, just your conditionals, just your reminders, or one specific picker. Feel free to select one now or click Next to advance to the next step.</>,
-  },
-  conditionalsManager: {
-    sel: '.cnd-manager',
-    title: 'Conditionals',
-    body: <>This is where you can <b>create and edit conditionals</b> — day-off gates that can suppress one or more pickers for a day, on a schedule or a probability of your choosing.</>,
+    title: 'Pickers Filter',
+    body: <>This will allow you to <b>further narrow exactly what you want to view and edit</b>. These buttons are disabled for this tutorial, so click Next when you are ready to advance to the next step.</>,
   },
   remindersManager: {
     sel: '.cat--reminders',
-    title: 'Reminders',
-    body: <>This is where you can <b>create and edit reminders</b> — one-time or recurring tasks that show up on your todo list on a fixed schedule, separate from your randomly-picked items.</>,
+    title: 'View and Edit Reminders',
+    body: <>This is where you can <b>view and edit all of your reminders, as well as create new ones</b>. Feel free to explore this section yourself or click Next when you are ready to advance to the next step.</>,
   },
-  // Only rendered once a specific picker is the active scope — the PREVIOUS
-  // step's own run() (below) selects one before this step ever mounts, same
-  // "prepare what the NEXT step needs" timing used throughout this file.
-  // Targets .data-list rather than the individual .cat section — with a
-  // specific picker as scope, exactly one picker card renders inside it, so
-  // the two resolve to the same highlight, but .data-list stays valid even
-  // if this picker's own card gets a distinguishing class of its own later.
-  pickerSection: {
+  // Targets .data-list, not an individual .cat section — scope stays 'all'
+  // for the whole Data tour (nothing narrows it to one picker anymore, see
+  // this catalog's own header comment), so every picker card renders here,
+  // same as the Welcome Tour's own whole-list highlight on Today.
+  pickersManager: {
     sel: '.data-list',
-    title: 'Picker Section',
-    body: <>This is one example of a <b>picker section</b>, where you can edit a picker's own name, group and mode, as well as add, edit, re-order or delete any of its items. Every picker you create gets its own section here. This concludes the Data page tutorial, click Done when you are ready.</>,
+    title: 'View and Edit Pickers',
+    body: <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. This concludes the Data page tutorial, click Done when you are ready to finish this tutorial.</>,
   },
 };
 
@@ -549,27 +546,9 @@ const buildPageTourSteps = (pageId, actions) => {
   if (pageId === 'explore_data') {
     return [
       { ...DATA_PAGE_TARGETS.groupFilter, tab: 'data', primary: 'Next', back: true },
-      { ...DATA_PAGE_TARGETS.showFilter, tab: 'data', primary: 'Next', back: true },
-      { ...DATA_PAGE_TARGETS.conditionalsManager, tab: 'data', primary: 'Next', back: true },
-      {
-        ...DATA_PAGE_TARGETS.remindersManager, tab: 'data', primary: 'Next', back: true,
-        // Stages the picker-section step's own target — narrowing scope to
-        // one specific picker also hides the Conditionals/Reminders
-        // managers above (both only show at scope 'all'/their own scope),
-        // leaving exactly one picker card inside .data-list.
-        run: () => {
-          const btn = document.querySelector(`.stat-scope-tabs .picker-tab[data-picker-id="${DATA_TOUR_PRESELECT_PICKER_ID}"]`);
-          if (btn) btn.click();
-        },
-      },
-      {
-        ...DATA_PAGE_TARGETS.pickerSection, tab: 'data', primary: 'Done', back: true,
-        // Same reasoning as Stats' own pickerBreakdown step above — `scope`
-        // is local, unpersisted UI state, so a reload can't resume directly
-        // here. Falls back to Step 5 (Reminders), which re-selects the
-        // picker on its own next Next click.
-        resumable: false,
-      },
+      { ...DATA_PAGE_TARGETS.pickersFilter, tab: 'data', primary: 'Next', back: true },
+      { ...DATA_PAGE_TARGETS.remindersManager, tab: 'data', primary: 'Next', back: true },
+      { ...DATA_PAGE_TARGETS.pickersManager, tab: 'data', primary: 'Done', back: true },
     ];
   }
   if (pageId === 'explore_settings') {
