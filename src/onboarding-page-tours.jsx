@@ -330,38 +330,33 @@ const DATA_PAGE_TARGETS = {
 const SETTINGS_PAGE_TARGETS = {
   appearance: {
     sel: '.set-section--appearance',
-    title: 'Appearance',
-    body: <>This is where you can <b>customize the app's look and feel</b> — light/dark/custom theme and accent color, the completion celebration style, the picker pick animation style, and where the tab bar sits on screen.</>,
+    title: 'App Customization',
+    body: <>This is where you can <b>customize the app's look and feel</b>: light, dark and custom theme colors, completion celebration animations, picker pick animations, and tab bar placement.</>,
   },
   daily: {
     sel: '.set-section--daily',
     title: 'Daily Generator',
-    body: <>This is where you can control the <b>daily generator</b> — whether today's list builds itself automatically, what time it runs, and whether you get a notification when it does.</>,
+    body: <>This is where you can <b>control the daily generator</b>: turn auto generation on or off, what time it runs, and enabling notifications for when it does.</>,
   },
   holidays: {
     sel: '.set-section--holidays',
-    title: 'Holidays',
-    body: <>This is where you can <b>manage holiday observances</b> — turn off the app's built-in US holidays, or add your own custom recurring days off.</>,
+    title: 'Holiday Controls',
+    body: <>This is where you can <b>toggle which holiday observances that the pickers and reminders option uses</b>. You can even add your own custom holidays, like your birthday!</>,
   },
   data: {
     sel: '.set-section--data',
     title: 'Data Control',
-    body: <>This is where you can <b>back up, restore, or wipe your data</b> — export a full backup file, import one back in, or reset everything on this device. You can also see this device's storage/install status here.</>,
-  },
-  account: {
-    sel: '.set-section--account',
-    title: 'Account',
-    body: <>This is reserved for <b>syncing your data across devices</b>, which is coming in a future update. There's nothing to configure here yet.</>,
+    body: <>This is where you can protect your data from browser deletion, <b>install the app directly to your device</b>, back up your data (export), restore your data (import), or erase all of your data.</>,
   },
   about: {
     sel: '.set-section--about',
-    title: 'About',
-    body: <>This is where you can find <b>app info and support options</b> — the current version, links to the project, ways to support it, replaying the welcome tour, and contacting support directly.</>,
+    title: 'About Ease My Life',
+    body: <>This is where you can find information about this app and its developer, replay the welcome tour and all of these tutorials at any time, and <b>contact the developer if you have any problems or suggestions</b>.</>,
   },
   legal: {
     sel: '.set-section--legal',
-    title: 'Legal',
-    body: <>This is where you can <b>view the Privacy Policy and Terms of Service</b>. This concludes the Settings page tutorial, click Done when you are ready.</>,
+    title: 'Legal Information',
+    body: <>This is where you can <b>view the Privacy Policy and Terms of Service</b>. This concludes the Settings page tutorial, so go ahead and click Done when you are ready to finish this tutorial.</>,
   },
 };
 
@@ -587,13 +582,17 @@ const buildPageTourSteps = (pageId, actions) => {
     ];
   }
   if (pageId === 'explore_settings') {
+    // coachAtTop on every section but Legal (short enough to fit normally)
+    // — each of these can be taller than the viewport, same "pin the coach
+    // to the top instead of padding the target past the fold" reasoning as
+    // the Data tour's own tall .data-list step — see coachAtTop's own doc
+    // comment in onboarding-tour-runner.jsx.
     return [
-      { ...SETTINGS_PAGE_TARGETS.appearance, tab: 'settings', primary: 'Next', back: true },
-      { ...SETTINGS_PAGE_TARGETS.daily, tab: 'settings', primary: 'Next', back: true },
-      { ...SETTINGS_PAGE_TARGETS.holidays, tab: 'settings', primary: 'Next', back: true },
-      { ...SETTINGS_PAGE_TARGETS.data, tab: 'settings', primary: 'Next', back: true },
-      { ...SETTINGS_PAGE_TARGETS.account, tab: 'settings', primary: 'Next', back: true },
-      { ...SETTINGS_PAGE_TARGETS.about, tab: 'settings', primary: 'Next', back: true },
+      { ...SETTINGS_PAGE_TARGETS.appearance, tab: 'settings', primary: 'Next', back: true, coachAtTop: true },
+      { ...SETTINGS_PAGE_TARGETS.daily, tab: 'settings', primary: 'Next', back: true, coachAtTop: true },
+      { ...SETTINGS_PAGE_TARGETS.holidays, tab: 'settings', primary: 'Next', back: true, coachAtTop: true },
+      { ...SETTINGS_PAGE_TARGETS.data, tab: 'settings', primary: 'Next', back: true, coachAtTop: true },
+      { ...SETTINGS_PAGE_TARGETS.about, tab: 'settings', primary: 'Next', back: true, coachAtTop: true },
       { ...SETTINGS_PAGE_TARGETS.legal, tab: 'settings', primary: 'Done', back: true },
     ];
   }
