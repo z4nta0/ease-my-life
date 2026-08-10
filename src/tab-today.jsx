@@ -1346,6 +1346,12 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour }) {
       handleEl: sectionEl,
       gripEl,
       scroller: mainRef.current?.closest('.main'),
+      // Hides the mini-tour coach for the gesture's duration (see Today
+      // page tour's own Movable Icon step) — its own tooltip card can sit
+      // right over the group being dragged, making it hard to see where to
+      // drop. A no-op harmless bus write when no tour is active/mounted.
+      onStart: () => emlTour.set({ dragging: true }),
+      onEnd: () => emlTour.set({ dragging: false }),
       onDrop: (order) => {
         const rendered = renderedOrderRef.current || [];
         const present = order.map((i) => rendered[i]).filter(Boolean);
@@ -1364,6 +1370,9 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour }) {
       handleEl: cardEl,
       gripEl,
       scroller: mainRef.current?.closest('.main'),
+      // Same reasoning as startGroupDrag's own onStart/onEnd above.
+      onStart: () => emlTour.set({ dragging: true }),
+      onEnd: () => emlTour.set({ dragging: false }),
       onDrop: (order) => {
         const present = order.map((i) => g.entries[i].picker.id);
         actions.reorderPickersInGroup(g.name, mergeOrder((state.pickerOrder || {})[g.name] || [], present));

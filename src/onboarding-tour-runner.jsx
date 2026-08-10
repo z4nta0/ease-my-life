@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { emlTour } from './eml-tour-bus.js';
+import { emlTour, useEmlTour } from './eml-tour-bus.js';
 import { InfoTip } from './ui.jsx';
 
 // Generic guided-tour engine: sequential single-spotlight steps with a coach
@@ -152,6 +152,12 @@ const goToTodayTop = (active, selectTab) => {
 };
 
 function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onGoBack, onFinish, onSkip }) {
+  // Published by tab-today.jsx's group/item drag handlers (see REORDER's
+  // own onStart/onEnd hooks) for the duration of a reorder gesture — the
+  // coach card can sit right over whatever's being dragged, making it hard
+  // to see where to drop. Only the coach hides; the spotlight/dim stay so
+  // the highlighted target is still visible to drop onto.
+  const { dragging } = useEmlTour();
   const [step, setStep] = React.useState(resumeStep || 0);
   const [rect, setRect] = React.useState(null);
   // Extra top-space (px) reserved above the Today list, ON the Today tab,
@@ -709,28 +715,30 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       {measurer}
       {spotStyle && <div className="ob-spot" ref={spotRef} style={spotStyle} />}
       {!spotStyle && <div className="ob-dim" />}
-      <div className={`ob-coach ${arrowClass}`} style={{ ...coachStyle, width: coachW, '--ob-ax': arrowX + 'px' }}>
-        <p className="ob-prog">Step {step + 1} of {total}</p>
-        <h4>{cur.title}</h4>
-        <p className="ob-body">{cur.body}</p>
-        <div className="ob-crow">
-          <div className="ob-lnav">
-            <button className="ob-skip" onClick={skip}>Skip</button>
-            {cur.back && <button className="ob-back" onClick={goBack}>‹ Back</button>}
-          </div>
-          {cur.requireClick ? (
-            <InfoTip label="Please click the indicated element in order to advance.">
-              <button className="ob-next" disabled>
+      {!dragging && (
+        <div className={`ob-coach ${arrowClass}`} style={{ ...coachStyle, width: coachW, '--ob-ax': arrowX + 'px' }}>
+          <p className="ob-prog">Step {step + 1} of {total}</p>
+          <h4>{cur.title}</h4>
+          <p className="ob-body">{cur.body}</p>
+          <div className="ob-crow">
+            <div className="ob-lnav">
+              <button className="ob-skip" onClick={skip}>Skip</button>
+              {cur.back && <button className="ob-back" onClick={goBack}>‹ Back</button>}
+            </div>
+            {cur.requireClick ? (
+              <InfoTip label="Please click the indicated element in order to advance.">
+                <button className="ob-next" disabled>
+                  {cur.primary}{cur.primary !== 'Done' ? ' ›' : ''}
+                </button>
+              </InfoTip>
+            ) : (
+              <button className="ob-next" onClick={onPrimary}>
                 {cur.primary}{cur.primary !== 'Done' ? ' ›' : ''}
               </button>
-            </InfoTip>
-          ) : (
-            <button className="ob-next" onClick={onPrimary}>
-              {cur.primary}{cur.primary !== 'Done' ? ' ›' : ''}
-            </button>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
