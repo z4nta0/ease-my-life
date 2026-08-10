@@ -154,7 +154,7 @@ const PICKER_PAGE_TARGETS = {
   pickerItems: {
     sel: '.picker-pool',
     title: 'Picker Items',
-    body: <>Here you can <b>view all items</b> that are <b>in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial, so click Next when you are ready to move on.</>,
+    body: <>Here you can <b>view all items in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial, so click Next when you are ready to move on.</>,
   },
 };
 
