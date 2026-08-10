@@ -125,6 +125,17 @@ const PICKER_PAGE_TARGETS = {
     title: 'Create New Pickers',
     body: <>This is where you can <b>create new pickers</b>. We will not include this as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished. Click Next when you are ready to move on.</>,
   },
+  // .picker-run is a purely structural wrapper (tab-picker.jsx) around
+  // .picker-stage + .picker-actions — added specifically so this step can
+  // highlight both as one combined box without also catching the header/
+  // pool above and below (the two aren't adjacent-enough on their own for
+  // a single selector, and findTargets' comma syntax means "fallback", not
+  // "union" — see its own comment in onboarding-tour-runner.jsx).
+  manualGeneration: {
+    sel: '.picker-run',
+    title: 'Manual Generation',
+    body: <>This will allow to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the Pick one button now to see how this works.</>,
+  },
 };
 
 // Target + description catalog for the Today page's OWN interior elements
@@ -274,6 +285,7 @@ const buildPageTourSteps = (pageId, actions) => {
       {
         ...PICKER_PAGE_TARGETS.createNewPickers, tab: 'picker', primary: 'Next', back: true,
       },
+      { ...PICKER_PAGE_TARGETS.manualGeneration, tab: 'picker', primary: 'Next', back: true, requireClick: true },
     ];
   }
   if (pageId !== 'explore_today') return [];

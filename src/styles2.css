@@ -261,6 +261,11 @@
 }
 
 .picker-view { display: flex; flex-direction: column; gap: 18px; }
+/* Purely structural — lets the Pickers page tour highlight the stage +
+   action buttons as one combined box without also catching the header/pool
+   above and below. Mirrors .picker-view's own flex/gap so wrapping these
+   two doesn't change their spacing. */
+.picker-run { display: flex; flex-direction: column; gap: 18px; }
 
 /* Picker header — kicker, then logo + centered title (mirrors Today + Stats).
    The sub sits on its own line below; its larger top margin pulls it visually

@@ -294,6 +294,7 @@ function PickerView({ picker, state, actions, animStyle }) {
         : <p className="picker-hint">{mode.hint}</p>}
       <p className="picker-hint">Please note that any items in this picker's pool that are already included in the Today tab will be excluded from being selected.</p>
 
+      <div className="picker-run">
       <div className="picker-stage">
         {phase === 'idle' && (
           <div className="stage-idle">
@@ -353,6 +354,7 @@ function PickerView({ picker, state, actions, animStyle }) {
             {busy ? 'Picking\u2026' : 'Pick one'}
           </Btn>
         )}
+      </div>
       </div>
 
       <div className="picker-pool">
