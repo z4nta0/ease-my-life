@@ -314,7 +314,18 @@ const buildPageTourSteps = (pageId, actions) => {
         // — see advanceWhen's own doc comment in onboarding-tour-runner.jsx.
         advanceWhen: PICKER_PAGE_TARGETS.addToTodoList.sel,
       },
-      { ...PICKER_PAGE_TARGETS.addToTodoList, tab: 'picker', primary: 'Next', back: true, requireClick: true },
+      {
+        ...PICKER_PAGE_TARGETS.addToTodoList, tab: 'picker', primary: 'Next', back: true, requireClick: true,
+        // Send to Today swaps its own label to "Sent!" for 1500ms (see
+        // sendToToday's own setTimeout in tab-picker.jsx) before reverting
+        // — advancing immediately would cut that confirmation off before
+        // the user ever sees it. 100ms past that own timer as a safety
+        // margin. See advanceDelay's own doc comment in
+        // onboarding-tour-runner.jsx for why this needs a fixed delay
+        // rather than advanceWhen's target-polling (nothing new appears in
+        // the DOM to poll for — the button reverts to what it already was).
+        advanceDelay: 1600,
+      },
       { ...PICKER_PAGE_TARGETS.pickerItems, tab: 'picker', primary: 'Next', back: true },
     ];
   }
@@ -478,6 +489,21 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
             // this step actually expects and forecloses both failure modes
             // by construction instead of specifically patching either one.
             emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
+          } else if (to === 5) {
+            // Back from Step 7 (Picker Items) to Step 6 (Add to Todo List)
+            // — Step 6's own target is .pv-act--send, which only exists
+            // while phase is 'done'/'sent'. By the time this fires, Step
+            // 6's own advanceDelay wait (see its own comment) has already
+            // let phase run all the way through 'sent' and back to 'idle'
+            // (Send to Today reverted to Pick one), so that target is gone
+            // — the exact "different state than when Step 6 finished"
+            // mismatch that made this crash. Unlike Step 5→4's reset
+            // above, this can't just drop back to idle — Step 6 NEEDS a
+            // real 'done' result to show Send to Today at all — so this
+            // fires a SEPARATE bus nonce telling PickerView to synthesize
+            // one directly (skipping the spin animation, since this is a
+            // revisit, not the user's first time seeing it).
+            emlTour.set({ pickerTourRedoNonce: (emlTour.get().pickerTourRedoNonce || 0) + 1 });
           }
           return;
         }

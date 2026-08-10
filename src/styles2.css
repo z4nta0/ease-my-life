@@ -622,10 +622,14 @@
 }
 .pool-prog {
   display: flex; align-items: center; gap: 8px;
-  /* Was 100px — on a narrow (mobile) row, that + the three 30px action
-     buttons + their gaps left too little of the row's own width for the
-     1fr name column, wrapping names awkwardly. */
-  min-width: 70px;
+  min-width: 100px;
+}
+/* On a narrow (mobile) row, 100px + the three 30px action button columns +
+   their gaps left too little of the row's own width for the 1fr name
+   column, wrapping names awkwardly — desktop has room to spare, so this is
+   scoped to mobile only. */
+@media (max-width: 640px) {
+  .pool-prog { min-width: 70px; }
 }
 .pool-val {
   font-variant-numeric: tabular-nums;

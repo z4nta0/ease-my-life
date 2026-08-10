@@ -344,6 +344,24 @@ function PickerView({ picker, state, actions, animStyle }) {
     // value/weight changes are staged and applied only when the resulting Today
     // entry is marked done (see sendToToday → addTodayEntry pending).
   };
+  // Whenever the Pickers page tour's own onGoBack bumps this nonce (Back
+  // from its "Picker Items" step to "Add to Todo List" — see its own
+  // comment in onboarding-page-tours.jsx), synthesize a fresh 'done' result
+  // directly instead of going through runPick's own animated 'running'
+  // phase — Step 6's target (.pv-act--send) needs phase to genuinely be
+  // 'done'/'sent', not 'idle', and by the time this fires the earlier real
+  // pick has already run its full course and reverted. Skipping the spin
+  // is deliberate: this is a revisit, the user already watched it play out
+  // once going forward.
+  React.useEffect(() => {
+    if (!tour.pickerTourRedoNonce) return;
+    const res = PICKERS.pick(picker, state.items, { forceNew: true, excludeIds: onTodayIds });
+    if (!res.picked) { setResult(res); setPhase('empty'); return; }
+    setResult(res);
+    setBusy(false);
+    setPhase('done');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tour.pickerTourRedoNonce]);
 
   const reroll = () => {
     setPhase('idle');

@@ -555,6 +555,22 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
         else requestAnimationFrame(check);
       };
       requestAnimationFrame(check);
+    } else if (cur.requireClick && cur.advanceDelay) {
+      // The real click plays a self-contained confirmation animation with a
+      // fixed duration and no lasting DOM trace to poll for — e.g. the
+      // Pickers tour's own "Add to Todo List" step: Send to Today swaps its
+      // label to "Sent!" for a beat, then reverts on its own. advanceWhen
+      // above can't express "wait for this ANIMATION", only "wait for a
+      // target to exist" — advancing on the usual immediate timer would cut
+      // that confirmation off before the user ever sees it. Same
+      // stepRef/mountedRef staleness guard as advanceWhen's own poll, for
+      // the same reason (a Back/Skip during the wait shouldn't fire a stale
+      // advance() once the timer finally elapses).
+      const startedForStep = step;
+      setTimeout(() => {
+        if (!mountedRef.current || stepRef.current !== startedForStep) return;
+        advance();
+      }, cur.advanceDelay);
     } else if (cur.requireClick) {
       setTimeout(advance, 0);
     } else advance();
