@@ -72,6 +72,16 @@ const TODAY_PAGE_TARGETS = {
     title: 'Edit Mode',
     body: <>This will allow you to both <b>rearrange the positions of the groups and items, as well as rename the groups</b>. Go ahead and click it now.</>,
   },
+  // Scoped to the Reminders section specifically (.rem-section, its own
+  // distinguishing class — every OTHER group section shares plain
+  // .group-section) since .group-grip itself isn't unique: one renders per
+  // section once editMode is on (see reminders.jsx's ReminderSection and
+  // tab-today.jsx's GroupHeader, which share this exact class/aria-label).
+  groupGrip: {
+    sel: '.rem-section .group-grip',
+    title: 'Movable Icon',
+    body: <>This will allow to <b>move an entire group section to a different position in the todo list</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now or click Next when you are ready to move on.</>,
+  },
 };
 
 // Steps beyond Step 1 (the nav-highlight every page tour shares), keyed by
@@ -84,6 +94,7 @@ const PAGE_TOUR_STEPS = {
     { ...TODAY_PAGE_TARGETS.progressRing, tab: 'today', primary: 'Next', back: true },
     { ...TODAY_PAGE_TARGETS.groupsNav, tab: 'today', primary: 'Next', back: true },
     { ...TODAY_PAGE_TARGETS.editMode, tab: 'today', primary: 'Next', back: true, requireClick: true },
+    { ...TODAY_PAGE_TARGETS.groupGrip, tab: 'today', primary: 'Next', back: true },
   ],
 };
 
@@ -119,6 +130,20 @@ function PageTour({ pageId, actions, onClose }) {
       actions={actions}
       active="today"
       selectTab={() => {}}
+      // Edit Mode (Today's Step 4, index 3) is a one-way real-UI transition,
+      // same class of problem as the Picker tour's own onGoBack: its target
+      // (.foot-editmode on mobile) only exists in the DOM while editMode is
+      // off, and the step's own real click (required to reach Step 5) flips
+      // it on. Reverse it via the real toggle/Cancel control so a Back from
+      // Step 5 finds Step 4's target again — .em-rail-btn (desktop) always
+      // exists and toggles itself regardless of state; the mobile footer
+      // swaps to Cancel/Done buttons instead of keeping .foot-editmode, so
+      // Cancel (.btn--ghost) is the equivalent control there.
+      onGoBack={(to) => {
+        if (pageId !== 'explore_today' || to !== 3) return;
+        const btn = document.querySelector('.em-rail-btn.is-on') || document.querySelector('.today-foot-actions .btn--ghost');
+        if (btn) btn.click();
+      }}
       onSkip={() => closeTour('skipped')}
       onFinish={() => closeTour('finished')}
     />
