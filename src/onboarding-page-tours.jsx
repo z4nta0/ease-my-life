@@ -102,8 +102,13 @@ const clearPickerTourPickers = (actions) => {
 // Target + description catalog for the Pickers page's OWN interior elements
 // — same shape/reasoning as TODAY_PAGE_TARGETS below.
 const PICKER_PAGE_TARGETS = {
+  // The pills specifically, not their .picker-groups container — that
+  // container stretches to the FULL width of its row (.stat-filter-row's
+  // own align-items: stretch), well past the pills' own content width, so
+  // highlighting it left a big undimmed gap of empty background after the
+  // last visible pill.
   groupFilter: {
-    sel: '.picker-groups',
+    sel: '.picker-groups .picker-group-pill',
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers. Feel free to select one now or click Next to advance to the next step.</>,
   },
