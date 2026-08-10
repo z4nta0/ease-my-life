@@ -713,8 +713,14 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   return portal(
     <div className="ob-tour" aria-live="polite">
       {measurer}
-      {spotStyle && <div className="ob-spot" ref={spotRef} style={spotStyle} />}
-      {!spotStyle && <div className="ob-dim" />}
+      {/* The highlight border itself stays during a drag (still marks the
+          section being dragged) — only its box-shadow, which is what dims
+          the REST of the page (the ".ob-spot" trick: a giant shadow darkens
+          everything outside its own bounds), drops out, via the
+          is-dragging CSS override. Otherwise the darkened background would
+          make it hard to see exactly where the group's landing. */}
+      {spotStyle && <div className={`ob-spot ${dragging ? 'is-dragging' : ''}`} ref={spotRef} style={spotStyle} />}
+      {!spotStyle && !dragging && <div className="ob-dim" />}
       {!dragging && (
         <div className={`ob-coach ${arrowClass}`} style={{ ...coachStyle, width: coachW, '--ob-ax': arrowX + 'px' }}>
           <p className="ob-prog">Step {step + 1} of {total}</p>
