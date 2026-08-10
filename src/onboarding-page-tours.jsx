@@ -105,7 +105,14 @@ const PICKER_PAGE_TARGETS = {
   groupFilter: {
     sel: '.picker-groups',
     title: 'Group Filter',
-    body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</>,
+    body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers. Feel free to select one now or click Next to advance to the next step.</>,
+  },
+  // Includes the trailing "Add new picker" button, not just the existing
+  // picker tabs — same row, same "which picker am I looking at" purpose.
+  pickerSelection: {
+    sel: '.picker-tabs',
+    title: 'Picker Selection',
+    body: <>This will allow you to <b>select a specific picker</b>, in order to initiate a manual picker generation down below as well as edit or delete its items. Feel free to select one now or click Next to advance to the next step.</>,
   },
 };
 
@@ -241,6 +248,7 @@ const buildPageTourSteps = (pageId, actions) => {
   if (pageId === 'explore_pickers') {
     return [
       { ...PICKER_PAGE_TARGETS.groupFilter, tab: 'picker', primary: 'Next', back: true },
+      { ...PICKER_PAGE_TARGETS.pickerSelection, tab: 'picker', primary: 'Next', back: true },
     ];
   }
   if (pageId !== 'explore_today') return [];
