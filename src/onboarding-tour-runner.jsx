@@ -554,10 +554,16 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // edge into the safe-top floor (mobile-only, so content further down the
     // page doesn't scroll under it), which is exactly backwards for a step
     // whose target IS the rail: clamping squashed that highlight down to a
-    // sliver sitting just below the rail instead of on it.
+    // sliver sitting just below the rail instead of on it. Same again for
+    // .today-h itself — obSafeTop()'s FIRST term is the header's own bottom
+    // edge, so a target that lives INSIDE it (e.g. the progress ring) is
+    // never actually "under" its own container: obSafeTop() there is always
+    // >= the target's bottom, clamping the highlight's top down past the
+    // target's own bottom and collapsing it to an empty sliver instead of
+    // leaving it alone.
     const spotPad = 8;
     const clampToChrome = (r, els) => {
-      if (els.some((el) => el.closest('.tabbar') || el.closest('.group-rail'))) return r;
+      if (els.some((el) => el.closest('.tabbar') || el.closest('.group-rail') || el.closest('.today-h'))) return r;
       // Clamp to the safe boundary PLUS the spot's own padding, so the
       // padded box drawn below never overlaps that chrome even by that margin.
       const minTop = obSafeTop() + spotPad;
