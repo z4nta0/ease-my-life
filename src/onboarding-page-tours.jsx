@@ -136,6 +136,16 @@ const PICKER_PAGE_TARGETS = {
     title: 'Manual Generation',
     body: <>This will allow to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the Pick one button now to see how this works.</>,
   },
+  // Only rendered once phase is 'done'/'sent' — i.e. after the PREVIOUS
+  // step's own Pick one click resolves. tab-picker.jsx's own
+  // tourInterceptSend (gated on this exact tourId+step) skips the real
+  // actions.addTodayEntry while this step is up, so the Sent! animation
+  // plays without actually landing an entry on Today.
+  addToTodoList: {
+    sel: '.pv-act--send',
+    title: 'Add to Todo List',
+    body: <>This will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click this button now to give it a try.</>,
+  },
 };
 
 // Target + description catalog for the Today page's OWN interior elements
@@ -286,6 +296,7 @@ const buildPageTourSteps = (pageId, actions) => {
         ...PICKER_PAGE_TARGETS.createNewPickers, tab: 'picker', primary: 'Next', back: true,
       },
       { ...PICKER_PAGE_TARGETS.manualGeneration, tab: 'picker', primary: 'Next', back: true, requireClick: true },
+      { ...PICKER_PAGE_TARGETS.addToTodoList, tab: 'picker', primary: 'Next', back: true, requireClick: true },
     ];
   }
   if (pageId !== 'explore_today') return [];

@@ -148,6 +148,14 @@ function PickerStrip({ candidates, picked, style, onDone, forceMotion }) {
 export { PickerStrip };
 
 function PickerView({ picker, state, actions, animStyle }) {
+  // The Pickers page tour's own "Add to Todo List" step wants the real
+  // Send to Today → Sent! animation to play (so the user sees what the
+  // button actually does) but explicitly does NOT want a real entry
+  // landing on Today from it — this is a tutorial pick on a disposable
+  // sample picker, not something the user meant to act on. Same
+  // tourId+step gating as tab-picker.jsx's own disableTourAddPicker.
+  const tour = useEmlTour();
+  const tourInterceptSend = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 5;
   const [busy, setBusy] = React.useState(false);
   const [result, setResult] = React.useState(null);
   const [phase, setPhase] = React.useState('idle'); // idle | running | done | sent | empty
@@ -270,9 +278,14 @@ function PickerView({ picker, state, actions, animStyle }) {
   const sendToToday = () => {
     if (phase !== 'done' || !result || !result.picked) return;
     // Stage the spin's computed mutation on the entry; it applies on done.
-    actions.addTodayEntry(picker.id, result.picked.id, {
-      updates: result.updates, pickerPatch: result.pickerPatch,
-      depletedEnd: result.depletedEnd, pickedId: result.picked.id, bumpPick: true });
+    // Skipped during the tour's own "Add to Todo List" step — see
+    // tourInterceptSend's own comment above — so the Sent! animation still
+    // plays but nothing lands on the real Today list.
+    if (!tourInterceptSend) {
+      actions.addTodayEntry(picker.id, result.picked.id, {
+        updates: result.updates, pickerPatch: result.pickerPatch,
+        depletedEnd: result.depletedEnd, pickedId: result.picked.id, bumpPick: true });
+    }
     // Confirmation beat: the stage swaps to a “Added to Today” checkmark and
     // the button morphs to “Sent!”, then the picker resets to idle so it’s
     // ready for the next pick.
@@ -339,7 +352,7 @@ function PickerView({ picker, state, actions, animStyle }) {
         {(phase === 'done' || phase === 'sent') ? (
           <>
             <Btn kind="primary" icon="check" onClick={sendToToday}
-                 className={`pv-act ${phase === 'sent' ? 'is-sent' : ''}`} style={{ animationDelay: '0ms' }}>
+                 className={`pv-act pv-act--send ${phase === 'sent' ? 'is-sent' : ''}`} style={{ animationDelay: '0ms' }}>
               <span className="pv-send-label set-sub-fade" key={phase === 'sent' ? 'sent' : 'send'}>
                 {phase === 'sent' ? 'Sent!' : 'Send to Today'}
               </span>

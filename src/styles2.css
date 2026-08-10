@@ -314,6 +314,16 @@
   border-radius: var(--r-xl);
   overflow: hidden;
 }
+/* On a short viewport, 344px alone can push the action buttons below it (the
+   Pickers page tour's own "Manual Generation" step surfaced this: the coach
+   tooltip, this stage, AND the Pick one button below it don't all fit above
+   ~750px of height) — clipping the reel a bit is the better tradeoff than
+   the actual controls sitting below the fold, unreachable without knowing to
+   scroll. App-wide, not scoped to the tour: any short-viewport visit to the
+   Pickers page hits the same problem regardless of whether a tour is up. */
+@media (max-height: 750px) {
+  .picker-stage { min-height: 260px; }
+}
 
 .stage-idle, .stage-empty {
   display: flex; flex-direction: column; align-items: center; gap: 4px;
