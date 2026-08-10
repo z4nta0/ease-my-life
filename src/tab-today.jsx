@@ -10,7 +10,6 @@ import { emlTour, useEmlTour } from './onboarding.jsx';
 import { OB_CHECKLIST, OB_GENERATE_ITEM_ID, OB_PAGE_TOURS } from './onboarding-checklist.js';
 import { OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { ReminderTour } from './onboarding-reminder-tours.jsx';
-import { PageTour } from './onboarding-page-tours.jsx';
 import { PICKERS, normalizeGroupName } from './pickers.js';
 import { ReminderSection } from './reminders.jsx';
 import { REORDER } from './reorder.js';
@@ -807,7 +806,7 @@ function PageTourCard({ tour, state, actions, onPlayTutorial, onUncheckTutorial,
   );
 }
 
-function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour }) {
+function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStartPageTour }) {
   const groups = React.useMemo(() => groupEntries(state), [state]);
   // Unified block order: the Reminders block ('__reminders' sentinel) plus the
   // picker groups, sequenced by state.groupOrder. Drives both the rail and the
@@ -1744,33 +1743,30 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour }) {
     if (onNavTab) onNavTab('picker');
   };
 
-  // Which mini-tour's intro modal (or walkthrough) is currently showing —
-  // null when none is. Reminder and page tours never leave Today, so this
-  // stays local here; picker tours can navigate to the Pickers tab (Step 1
-  // highlights its nav button), which would unmount this component along
-  // with them, so that state lives at the app level instead — see app.jsx's
-  // activePickerTour and this component's own onStartPickerTour prop.
-  // Seeded from a persisted activeTour on first mount (a reload) so the
-  // tour resumes instead of silently vanishing — mirrors app.jsx's own
-  // activePickerTour seeding. A reminder activeTour.id only encodes the
-  // variant ('reminder-once'/'reminder-recurring'), not the task id, so map
-  // it back via the same taskId pairing ReminderTour's own variant prop
-  // uses below; a page tour's id is `page-${checklist id}` (see PageTour's
-  // own tourId), which already IS the id this needs.
+  // Which reminder mini-tour's intro modal (or walkthrough) is currently
+  // showing — null when none is. Reminder tours never leave Today, so this
+  // stays local here; picker tours AND page tours can navigate to another
+  // tab (a picker tour's Step 1 highlights the Pickers nav button; a page
+  // tour now can too, e.g. the Pickers page tour's own Step 2+), which would
+  // unmount this component along with them, so both live at the app level
+  // instead — see app.jsx's activePickerTour/activePageTour and this
+  // component's own onStartPickerTour/onStartPageTour props. Seeded from a
+  // persisted activeTour on first mount (a reload) so the tour resumes
+  // instead of silently vanishing — mirrors app.jsx's own seeding.
+  // activeTour.id only encodes the variant ('reminder-once'/
+  // 'reminder-recurring'), not the task id, so map it back via the same
+  // taskId pairing ReminderTour's own variant prop uses below.
   const [activeMiniTour, setActiveMiniTour] = React.useState(() => {
     const at = state.onboarding && state.onboarding.activeTour;
-    if (!at || typeof at.id !== 'string') return null;
-    if (at.id.startsWith('reminder-')) {
-      const variant = at.id.slice('reminder-'.length);
-      return { kind: 'reminder', id: variant === 'once' ? 'tk_ob_meds' : 'tk_ob_trash' };
-    }
-    if (at.id.startsWith('page-')) return { kind: 'pageTour', id: at.id.slice('page-'.length) };
-    return null;
+    if (!at || typeof at.id !== 'string' || !at.id.startsWith('reminder-')) return null;
+    const variant = at.id.slice('reminder-'.length);
+    return { kind: 'reminder', id: variant === 'once' ? 'tk_ob_meds' : 'tk_ob_trash' };
   });
   // Mini-tour launcher cards' Play button / row click. `kind` is 'picker',
   // 'reminder', or 'pageTour'; `id` is the sample picker/task/page-tour id.
   const startMiniTour = (kind, id) => {
     if (kind === 'picker') onStartPickerTour(id);
+    else if (kind === 'pageTour') onStartPageTour(id);
     else setActiveMiniTour({ kind, id });
   };
   // Unchecks an already-resolved launcher card (skipped/cancelled/finished)
@@ -2178,9 +2174,6 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour }) {
           closeReminderForm={() => setActiveEditor((cur) => cur === 'reminder-add' ? null : cur)}
           onClose={() => setActiveMiniTour(null)}
         />
-      )}
-      {activeMiniTour && activeMiniTour.kind === 'pageTour' && (
-        <PageTour pageId={activeMiniTour.id} state={state} actions={actions} onClose={() => setActiveMiniTour(null)} />
       )}
     </div>
   );

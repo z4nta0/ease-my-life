@@ -4,6 +4,7 @@ import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
 import { GuidedTour } from './onboarding-tour-runner.jsx';
 import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
 import { OB_PAGE_TOURS } from './onboarding-checklist.js';
+import { OB_EXAMPLE, OB_EXTRA_PICKERS } from './onboarding-seed-data.js';
 
 // Page tours ("Explore the {page}" — Today/Pickers/Stats/Data/Settings) are
 // still growing in from an intro-only stub — Today is the only one with real
@@ -48,14 +49,64 @@ const PAGE_TOUR_COPY = {
 // tab: 'today' keeps this from auto-navigating when the step opens (a page
 // tour is launched from Today, and clicking the real nav icon is meant to
 // be what does the navigating, not the step itself).
-const buildPageTourStep1 = (page) => {
+const buildPageTourStep1 = (page, run) => {
   const nav = OB_NAV_TARGETS[page];
   return {
     ...nav,
     body: <>{nav.body} Go ahead and click it now.</>,
     tab: 'today',
     primary: 'Next', back: false, requireClick: true,
+    ...(run ? { run } : {}),
   };
+};
+
+// The Pickers tour needs real pickers on screen to point at (the group
+// filter row below doesn't even render with fewer than 2 groups), but
+// reusing the Welcome Tour's own hidden sample pickers directly — the same
+// ones the Today mini-tour launcher cards and Replay Tour depend on — would
+// let the user's own interaction here (deleting one, editing an item, etc.)
+// corrupt that shared reference data. Seeded as full COPIES instead, under
+// their own `pt_`-prefixed ids (never colliding with the real
+// `pkr_ob_*`/`it_ob_*` ones), and cleaned up again the moment this tour
+// ends (see clearPickerTourPickers) — real, interactive, but disposable.
+const PICKER_TOUR_SAMPLE_PICKERS = [OB_EXAMPLE, ...OB_EXTRA_PICKERS];
+const pickerTourCopyId = (id) => `pt_${id}`;
+
+// Fired from Step 1's run() (see PageTour below) — between the nav click
+// and Step 2 ever mounting, same "prepare what the NEXT step needs" timing
+// already used elsewhere in this file (e.g. Today's Step 5 staging Step
+// 6's rename input). Guarded by existence so navigating back to Step 1 and
+// forward again (re-firing this run()) can't create duplicate-id pickers.
+const seedPickerTourPickers = (state, actions) => {
+  PICKER_TOUR_SAMPLE_PICKERS.forEach((p) => {
+    const copyId = pickerTourCopyId(p.id);
+    if (state.pickers.some((x) => x.id === copyId)) return;
+    // Items keep their own name/weight/ease fields but drop their `id` —
+    // passing the real sample's item ids through would collide with the
+    // real hidden picker's own items in `state.items`.
+    actions.addPicker({
+      id: copyId, name: p.name, group: p.group, mode: p.mode,
+      items: p.items.map(({ id, ...rest }) => rest),
+    });
+  });
+};
+
+// Discards the copies made above — called whenever this tour ends (Skip or
+// Done), so they never linger as clutter in the user's real picker list.
+// Harmless no-op for any copy that was never actually seeded (e.g. Skip
+// from the intro modal, before Step 1's run() ever fires).
+const clearPickerTourPickers = (actions) => {
+  PICKER_TOUR_SAMPLE_PICKERS.forEach((p) => actions.removePicker(pickerTourCopyId(p.id)));
+};
+
+// Target + description catalog for the Pickers page's OWN interior elements
+// — same shape/reasoning as TODAY_PAGE_TARGETS below.
+const PICKER_PAGE_TARGETS = {
+  groupFilter: {
+    sel: '.picker-groups',
+    title: 'Group Filter',
+    body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</>,
+  },
 };
 
 // Target + description catalog for the Today page's OWN interior elements
@@ -187,6 +238,11 @@ const forceRealPageToursName = (actions) => {
 // Step 6's own Done needs to call actions.renamePageTours directly (see its
 // own comment below).
 const buildPageTourSteps = (pageId, actions) => {
+  if (pageId === 'explore_pickers') {
+    return [
+      { ...PICKER_PAGE_TARGETS.groupFilter, tab: 'picker', primary: 'Next', back: true },
+    ];
+  }
   if (pageId !== 'explore_today') return [];
   return [
     { ...TODAY_PAGE_TARGETS.progressRing, tab: 'today', primary: 'Next', back: true },
@@ -262,7 +318,7 @@ const buildPageTourSteps = (pageId, actions) => {
   ];
 };
 
-function PageTour({ pageId, state, actions, onClose }) {
+function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
   const tour = OB_PAGE_TOURS.find((t) => t.id === pageId);
   const nav = OB_NAV_TARGETS[tour.page];
   const copy = PAGE_TOUR_COPY[pageId];
@@ -276,6 +332,10 @@ function PageTour({ pageId, state, actions, onClose }) {
   const [phase, setPhase] = React.useState(resumable ? 'tour' : 'intro');
 
   const closeTour = (status) => {
+    // Discard the Pickers tour's own disposable sample copies (see their
+    // own comment) the moment this tour ends, however it ends — a harmless
+    // no-op if Step 1's run() never got the chance to seed them.
+    if (pageId === 'explore_pickers') clearPickerTourPickers(actions);
     actions.setChecklistItem(pageId, { status });
     onClose();
   };
@@ -296,11 +356,14 @@ function PageTour({ pageId, state, actions, onClose }) {
   return (
     <GuidedTour
       tourId={`page-${pageId}`}
-      steps={[buildPageTourStep1(tour.page), ...buildPageTourSteps(pageId, actions)]}
+      steps={[
+        buildPageTourStep1(tour.page, pageId === 'explore_pickers' ? () => seedPickerTourPickers(state, actions) : undefined),
+        ...buildPageTourSteps(pageId, actions),
+      ]}
       resumeStep={resumable ? resumable.step : 0}
       actions={actions}
-      active="today"
-      selectTab={() => {}}
+      active={active}
+      selectTab={selectTab}
       // Edit Mode (Today's Step 4, index 3) is a one-way real-UI transition,
       // same class of problem as the Picker tour's own onGoBack: its target
       // (.foot-editmode on mobile) only exists in the DOM while editMode is
