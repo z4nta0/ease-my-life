@@ -55,7 +55,15 @@ const TODAY_PAGE_TARGETS = {
     body: <>This <b>tracks your current progress of completed / total tasks for today’s todo list</b>. Once filled completely, your Day Streak will increase and the celebration animations will play.</>,
   },
   groupsNav: {
-    sel: '.group-rail',
+    // The <ul> specifically, not the whole .group-rail aside — on desktop
+    // (a vertical sidebar) that aside also contains .rail-editmode's own
+    // Edit Mode button below the group list, and highlighting the whole
+    // container would spotlight that button right alongside the group
+    // buttons this step is actually about, reading as if Edit Mode were
+    // part of the list navigation. Mobile's .group-rail is a horizontal
+    // pill row with Edit Mode surfaced separately in the footer instead, so
+    // this scoping is a no-op difference there — same highlight either way.
+    sel: '.group-rail ul',
     title: 'List Navigation',
     body: <>This is the todo list’s navigation, allowing you to <b>jump directly to a group’s section</b>. Over time your list can grow quite long and this helps to eliminate any long scrolling.</>,
   },
