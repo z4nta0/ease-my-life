@@ -108,8 +108,12 @@ const OB_COACH_H = 220;
 // The lowest screen-y a spotlight/coach can safely sit without landing
 // under fixed/sticky Today-tab chrome: the sticky header, PLUS — on mobile,
 // where the groups rail flips from a side column to a horizontal pill bar
-// stacked below the header — that rail too. Shared by the spotlight clamp,
-// the reserve-space decision, and the coach's own placement, so all three
+// stacked below the header — that rail too, PLUS the Edit Mode banner
+// (present whenever editMode is on, any width — see tab-today.jsx's
+// editmode-banner, which sits sticky just below the header and, despite
+// being in normal flow, doesn't actually push .today-layout's content down
+// to clear it). Shared by the spotlight clamp, the reserve-space decision,
+// the coach's own placement, AND bring()'s own scroll-up nudge, so all four
 // agree on where "safe" starts.
 const obSafeTop = () => {
   const header = document.querySelector('.today-h');
@@ -118,6 +122,8 @@ const obSafeTop = () => {
   if (rail && getComputedStyle(rail).flexDirection === 'row') {
     bottom = Math.max(bottom, rail.getBoundingClientRect().bottom);
   }
+  const banner = document.querySelector('.editmode-banner');
+  if (banner) bottom = Math.max(bottom, banner.getBoundingClientRect().bottom);
   return bottom;
 };
 
@@ -455,7 +461,14 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
         return;
       }
       const pad = 90, padB = 130;
-      if (er.top < sr.top + pad) scrollByAmt(sc, -(sr.top + pad - er.top));
+      // The top boundary also can't sit above obSafeTop() — a fixed pad
+      // alone assumes Today's own sticky header (plus, when present, the
+      // Edit Mode banner) is shorter than it actually is, which on a short
+      // enough viewport (or once the banner adds its own height) lets a
+      // target that "fits" by the pad's math alone still land partly behind
+      // that chrome, with bring() then seeing no need to scroll further.
+      const minTop = Math.max(sr.top + pad, obSafeTop() + 12);
+      if (er.top < minTop) scrollByAmt(sc, -(minTop - er.top));
       else if (er.bottom > sr.bottom - padB) scrollByAmt(sc, er.bottom - (sr.bottom - padB));
     };
     bring();
