@@ -6,16 +6,36 @@ import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
 import { OB_PAGE_TOURS } from './onboarding-checklist.js';
 
 // Page tours ("Explore the {page}" — Today/Pickers/Stats/Data/Settings) are
-// still growing in from an intro-only stub — this is their first real step.
-// Falls back to OB_NAV_TARGETS' own per-page title/body (already written to
-// stand alone, with no reference to "this tour" or "the next step" baked in
-// — see that file's own comment) for any page PAGE_TOUR_COPY below hasn't
-// gotten its own dedicated pass yet.
+// still growing in from an intro-only stub — Today is the only one with real
+// steps beyond this so far. Falls back to OB_NAV_TARGETS' own per-page
+// title/body (already written to stand alone, with no reference to "this
+// tour" or "the next step" baked in — see that file's own comment) for any
+// page PAGE_TOUR_COPY below hasn't gotten its own dedicated pass yet.
 const PAGE_TOUR_COPY = {
   explore_today: {
     title: 'Today Page',
     body: 'This tutorial will take you on a quick tour of the Today page, in order to highlight important elements and functionality.',
     pills: ['page tour', 'today page', 'todo list'],
+  },
+  explore_pickers: {
+    title: 'Pickers Page',
+    body: 'This tutorial will take you on a quick tour of the Pickers page, in order to highlight important elements and functionality.',
+    pills: ['page tour', 'pickers page', 'new pickers'],
+  },
+  explore_stats: {
+    title: 'Stats Page',
+    body: 'This tutorial will take you on a quick tour of the Stats page, in order to highlight important elements and functionality.',
+    pills: ['page tour', 'stats page', 'picker statistics'],
+  },
+  explore_data: {
+    title: 'Data Page',
+    body: 'This tutorial will take you on a quick tour of the Data page, in order to highlight important elements and functionality.',
+    pills: ['page tour', 'data page', 'edit pickers'],
+  },
+  explore_settings: {
+    title: 'Settings Page',
+    body: 'This tutorial will take you on a quick tour of the Settings page, in order to highlight important elements and functionality.',
+    pills: ['page tour', 'settings page', 'app customization'],
   },
 };
 
