@@ -1191,6 +1191,12 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   const active = state.pickers.find((p) => p.id === activeId);
   // Onboarding tour: when it stages a prefill, open the create form for it.
   const tour = useEmlTour ? useEmlTour() : { prefill: null, startCreate: null };
+  // The Pickers page tour's own Step 4 highlights "Add new picker" but
+  // explicitly doesn't want the user opening the real create form from it —
+  // that flow is what the separate picker mini-tours already cover. Gated
+  // on tourId, not just step index alone: some OTHER tour could just as
+  // easily be sitting on step index 3 for its own unrelated reason.
+  const disableTourAddPicker = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 3;
   const [openedByTour, setOpenedByTour] = React.useState(false);
   // Prefill staged by Today's empty-state card (name focus + "Chores"), held
   // locally so it survives clearing the bus signal.
@@ -1359,6 +1365,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
         <button type="button"
                 className={`picker-tab picker-tab--add picker-tab--enter ${creating ? 'is-on' : ''}`}
                 style={{ animationDelay: (visiblePickers.length * 40) + 'ms' }}
+                disabled={disableTourAddPicker}
                 onClick={() => setCreating(true)}>
           <span className="picker-tab-add-icon" aria-hidden="true"><Icon name="plus" size={16} /></span>
           <span className="picker-tab-name">Add new picker</span>

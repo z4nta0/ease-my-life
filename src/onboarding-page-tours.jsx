@@ -107,12 +107,18 @@ const PICKER_PAGE_TARGETS = {
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers. Feel free to select one now or click Next to advance to the next step.</>,
   },
-  // Includes the trailing "Add new picker" button, not just the existing
-  // picker tabs — same row, same "which picker am I looking at" purpose.
+  // Excludes the trailing "Add new picker" button — Step 4 (below) covers
+  // that on its own, and this step's own copy is entirely about selecting
+  // an EXISTING picker.
   pickerSelection: {
-    sel: '.picker-tabs',
+    sel: '.picker-tabs .picker-tab:not(.picker-tab--add)',
     title: 'Picker Selection',
     body: <>This will allow you to <b>select a specific picker</b>, in order to initiate a manual picker generation down below as well as edit or delete its items. Feel free to select one now or click Next to advance to the next step.</>,
+  },
+  createNewPickers: {
+    sel: '.picker-tab--add',
+    title: 'Create New Pickers',
+    body: <>This is where you can <b>create new pickers</b>. We will not include this as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished. Click Next when you are ready to move on.</>,
   },
 };
 
@@ -248,7 +254,21 @@ const buildPageTourSteps = (pageId, actions) => {
   if (pageId === 'explore_pickers') {
     return [
       { ...PICKER_PAGE_TARGETS.groupFilter, tab: 'picker', primary: 'Next', back: true },
-      { ...PICKER_PAGE_TARGETS.pickerSelection, tab: 'picker', primary: 'Next', back: true },
+      {
+        ...PICKER_PAGE_TARGETS.pickerSelection, tab: 'picker', primary: 'Next', back: true,
+        // Stages Step 4's own target: .picker-tabs scrolls horizontally
+        // (the engine's own bring()/getScroller only ever handle VERTICAL
+        // scrolling, so the Add button — last in the row — needs its own
+        // reveal here), same "prepare what the NEXT step needs" timing used
+        // elsewhere in this file. Already-in-view is a harmless no-op.
+        run: () => {
+          const btn = document.querySelector('.picker-tab--add');
+          if (btn) btn.scrollIntoView({ inline: 'end', block: 'nearest' });
+        },
+      },
+      {
+        ...PICKER_PAGE_TARGETS.createNewPickers, tab: 'picker', primary: 'Next', back: true,
+      },
     ];
   }
   if (pageId !== 'explore_today') return [];
@@ -382,6 +402,19 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
       // swaps to Cancel/Done buttons instead of keeping .foot-editmode, so
       // Cancel (.btn--ghost) is the equivalent control there.
       onGoBack={(to) => {
+        if (pageId === 'explore_pickers') {
+          // Back from Step 4 (Create New Pickers) to Step 3 (Picker
+          // Selection) — undoes Step 3's own run(), which scrolled
+          // .picker-tabs horizontally to reveal the Add button. Left
+          // scrolled, Step 3's own target (every OTHER tab in the row,
+          // excluding Add) could include tabs now scrolled out of view on
+          // the opposite side, stretching its highlight across the gap.
+          if (to === 2) {
+            const row = document.querySelector('.picker-tabs');
+            if (row) row.scrollTo({ left: 0 });
+          }
+          return;
+        }
         if (pageId !== 'explore_today') return;
         if (to === 3) {
           const btn = document.querySelector('.em-rail-btn.is-on') || document.querySelector('.today-foot-actions .btn--ghost');

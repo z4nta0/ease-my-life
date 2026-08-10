@@ -211,6 +211,15 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     return () => { emlTour.set({ phase: 'off', reserveTop: 0 }); };
   }, []);
   React.useEffect(() => { emlTour.set({ step }); }, [step]);
+  // Lets a consumer that needs to act only during a SPECIFIC tour's specific
+  // step (not just "some tour is up", like phase/step alone give you) tell
+  // them apart — e.g. tab-picker.jsx disabling its own "Add new picker"
+  // button only during the Pickers page tour's own Step 4, not any other
+  // tour that happens to pass through step index 3. Never cleared on
+  // unmount (like `step` itself isn't) — consumers already have to gate on
+  // `phase === 'tour'` too, which IS cleared, so a stale tourId left over
+  // from the last tour can't be read as still current.
+  React.useEffect(() => { emlTour.set({ tourId }); }, [tourId]);
 
   // Persist progress as it advances, so a reload can resume from wherever
   // this tour is — the caller is responsible for reading
