@@ -467,6 +467,12 @@
   width: 100%; max-width: 380px;
   max-height: 360px; overflow: hidden;
 }
+/* Same short-viewport squeeze as .picker-stage's own (see its comment) —
+   this cap is pure CSS (unlike the 'reel' style's fixed inline height, so
+   nothing extra is needed in tab-picker.jsx to make it responsive here). */
+@media (max-height: 750px) {
+  .spot { max-height: 200px; }
+}
 .spot-row {
   padding: 8px 14px;
   border-radius: 8px;

@@ -5,6 +5,7 @@ import { GuidedTour } from './onboarding-tour-runner.jsx';
 import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
 import { OB_PAGE_TOURS } from './onboarding-checklist.js';
 import { OB_EXAMPLE, OB_EXTRA_PICKERS } from './onboarding-seed-data.js';
+import { emlTour } from './onboarding.jsx';
 
 // Page tours ("Explore the {page}" — Today/Pickers/Stats/Data/Settings) are
 // still growing in from an intro-only stub — Today is the only one with real
@@ -448,6 +449,25 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
           if (to === 2) {
             const row = document.querySelector('.picker-tabs');
             if (row) row.scrollTo({ left: 0 });
+          } else if (to === 4) {
+            // Back from Step 6 (Add to Todo List) to Step 5 (Manual
+            // Generation) — a pick already ran, so PickerView's own local
+            // phase is still 'done'/'sent', showing Send to Today/Re-roll/
+            // Done instead of Pick one. Step 5's own requireClick target is
+            // .picker-run (the whole stage + actions box, not just the Pick
+            // one button specifically — see its own comment), so those
+            // buttons being there at all means the user can trigger them
+            // from a step that was never written to expect it: Re-roll
+            // silently re-runs the pick behind the scenes (advanceWhen just
+            // waits for it, reading as a multi-second hang) and Done clears
+            // the result with no re-run, so advanceWhen's poll never finds
+            // its target again and the tour sits stuck forever. Resetting
+            // PickerView back to its own idle state — via a bus nonce, since
+            // phase/result are local state this module has no other way to
+            // reach — means only Pick one ever shows here, matching what
+            // this step actually expects and forecloses both failure modes
+            // by construction instead of specifically patching either one.
+            emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
           }
           return;
         }

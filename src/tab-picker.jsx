@@ -44,6 +44,22 @@ function PickerStrip({ candidates, picked, style, onDone, forceMotion }) {
   const reduce = !forceMotion && !!(reduceMotion && reduceMotion());
   const [phase, setPhase] = React.useState(reduce ? 'settled' : 'cycling'); // cycling | settled
   const wrapRef = React.useRef(null);
+  // Mirrors styles2.css's own `@media (max-height: 750px)` — .picker-stage's
+  // min-height drops there (see its own comment), but that alone can't help
+  // the 'reel' style below: its height is a fixed inline style (ROW *
+  // visible, JS-computed), not CSS, so nothing in the stylesheet can shrink
+  // it. Without also reducing the row count here, the reel's own real
+  // content stayed exactly as tall as before, growing .picker-stage right
+  // back past its reduced min-height as soon as a pick starts running.
+  const [shortViewport, setShortViewport] = React.useState(
+    () => typeof matchMedia === 'function' && matchMedia('(max-height: 750px)').matches);
+  React.useEffect(() => {
+    if (typeof matchMedia !== 'function') return;
+    const mq = matchMedia('(max-height: 750px)');
+    const onChange = (e) => setShortViewport(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   React.useEffect(() => {
     if (!len || !picked) return;
@@ -94,7 +110,7 @@ function PickerStrip({ candidates, picked, style, onDone, forceMotion }) {
   // ── Reel: vertical strip, shifts up
   if (style === 'reel') {
     const ROW = 56;
-    const visible = 5; // odd, so picked sits in center
+    const visible = shortViewport ? 3 : 5; // odd, so picked sits in center
     const top = -(idx * ROW) + (Math.floor(visible / 2) * ROW);
     // Render enough rows (each mapped back to a candidate by modulo) to cover
     // the full monotonic travel plus the visible window above the landing.
@@ -159,6 +175,18 @@ function PickerView({ picker, state, actions, animStyle }) {
   const [busy, setBusy] = React.useState(false);
   const [result, setResult] = React.useState(null);
   const [phase, setPhase] = React.useState('idle'); // idle | running | done | sent | empty
+  // Reset back to idle whenever the Pickers page tour's own onGoBack bumps
+  // this nonce (see its own comment in onboarding-page-tours.jsx) — a Back
+  // from its "Add to Todo List" step to "Manual Generation" needs Pick one
+  // showing again, not whatever real Send to Today/Re-roll/Done state a
+  // completed pick left behind. Guarded on truthiness (not just present in
+  // the deps array) so the unset/0 starting value doesn't also reset on
+  // every fresh mount — only a genuine bump does anything.
+  React.useEffect(() => {
+    if (!tour.pickerTourResetNonce) return;
+    setBusy(false); setResult(null); setPhase('idle');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tour.pickerTourResetNonce]);
   // Drives the exit animation on Re-roll / Done: hold the buttons mounted with
   // an out-animation for a beat, then run the real transition.
   const [leaving, setLeaving] = React.useState(false);
