@@ -385,11 +385,40 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       e.preventDefault();
       e.stopPropagation();
     };
+    // The mousedown guard above only covers focus loss caused by something
+    // ELSE on the page stealing it — it can't do anything about the target
+    // itself losing focus for a reason with no in-page click behind it at
+    // all, e.g. the browser window/tab losing OS-level focus (alt-tabbing
+    // away, or a mobile browser backgrounding and dismissing its own
+    // keyboard). That still fires a real 'focusout' on the target (unlike
+    // 'blur' on window, which doesn't reach the element), and unlike
+    // mousedown's default-focus-transfer, blur/focusout isn't cancelable —
+    // preventDefault does nothing here. What DOES work: React's onBlur is
+    // itself just a delegated listener for the native 'focusout' bubbling
+    // up to the root container, so stopping propagation on it up here, in
+    // capture phase at the document (above where it would ever reach that
+    // root listener), keeps React from ever calling the target's own onBlur
+    // at all — e.g. GroupHeader's commit(), which is what actually closes
+    // the rename input and makes the step's target vanish. Exempts a
+    // focus move INTO the coach (e.relatedTarget) — e.g. Tab-ing to the
+    // Next/Done button — since that's a legitimate, deliberate way to leave
+    // the target, same as a click on it already is via isOffTarget's own
+    // '.ob-coach' exemption.
+    const onFocusOutCapture = (e) => {
+      if (suppressGuardRef.current) return;
+      const c = curRef.current;
+      if (!c) return;
+      if (e.relatedTarget && e.relatedTarget.closest('.ob-coach')) return;
+      if (!findTargets(c.sel).some((el) => el.contains(e.target))) return;
+      e.stopPropagation();
+    };
     document.addEventListener('mousedown', onMouseDownCapture, true);
     document.addEventListener('click', onClickCapture, true);
+    document.addEventListener('focusout', onFocusOutCapture, true);
     return () => {
       document.removeEventListener('mousedown', onMouseDownCapture, true);
       document.removeEventListener('click', onClickCapture, true);
+      document.removeEventListener('focusout', onFocusOutCapture, true);
     };
   }, []);
 
