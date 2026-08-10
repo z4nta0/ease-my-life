@@ -342,7 +342,36 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // back are the ones most likely to look like "not the current target" to
   // it.
   const suppressGuardRef = React.useRef(false);
+  // Off-target check shared by both listeners below.
+  const isOffTarget = (e) => {
+    if (suppressGuardRef.current) return false;
+    if (e.target.closest('.ob-coach')) return false;
+    const c = curRef.current;
+    return !(c && findTargets(c.sel).some((el) => el.contains(e.target)));
+  };
   React.useEffect(() => {
+    // A focused real input (e.g. a step's own rename field) blurs the
+    // instant *mousedown* fires on whatever it lands on — the browser's
+    // default focus-transfer runs before the 'click' event below ever gets
+    // a chance to block anything, and it isn't tied to whether the click
+    // goes on to do anything: it fires just from clicking a focusable
+    // element (any button/link under the dim, not just ones a click
+    // handler would otherwise act on). That blur can cascade into real app
+    // state changes (e.g. GroupHeader committing a rename on blur) the
+    // click-guard below was never in a position to stop, and the step's
+    // own target can vanish from the DOM as a result, which reads as the
+    // tour randomly dying a moment after a click that "did nothing"
+    // visible. preventDefault on mousedown itself is what suppresses the
+    // browser's default focus transfer (well-worn trick for toolbar
+    // buttons that shouldn't steal focus from a text field) — stopped here
+    // for exactly the same off-target elements the click guard blocks, so
+    // an in-progress edit stays focused and open until the user genuinely
+    // interacts with this step's own target.
+    const onMouseDownCapture = (e) => {
+      if (!isOffTarget(e)) return;
+      e.preventDefault();
+      e.stopPropagation();
+    };
     const onClickCapture = (e) => {
       if (suppressGuardRef.current) return;
       const c = curRef.current;
@@ -356,8 +385,12 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       e.preventDefault();
       e.stopPropagation();
     };
+    document.addEventListener('mousedown', onMouseDownCapture, true);
     document.addEventListener('click', onClickCapture, true);
-    return () => document.removeEventListener('click', onClickCapture, true);
+    return () => {
+      document.removeEventListener('mousedown', onMouseDownCapture, true);
+      document.removeEventListener('click', onClickCapture, true);
+    };
   }, []);
 
   const goToStep = (n) => setStep(n);
