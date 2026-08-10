@@ -4,7 +4,7 @@ import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
 import { GuidedTour } from './onboarding-tour-runner.jsx';
 import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
 import { OB_PAGE_TOURS } from './onboarding-checklist.js';
-import { OB_EXAMPLE, OB_EXTRA_PICKERS, OB_SAMPLE_PICKER_IDS, hydrateOnboardingStats } from './onboarding-seed-data.js';
+import { OB_EXAMPLE, OB_EXTRA_PICKERS, OB_SAMPLE_PICKER_IDS, OB_TASKS, hydrateOnboardingStats } from './onboarding-seed-data.js';
 import { emlTour } from './onboarding.jsx';
 
 // Page tours ("Explore the {page}" — Today/Pickers/Stats/Data/Settings) are
@@ -105,6 +105,31 @@ const seedPageTourPickers = (state, actions) => {
 // (e.g. Skip from the intro modal, before Step 1's run() ever fires).
 const clearPageTourPickers = (actions) => {
   PAGE_TOUR_SAMPLE_PICKERS.forEach((p) => actions.removePicker(pageTourCopyId(p.id)));
+};
+
+// The Data tour's own Reminders step needs real reminders to point at, same
+// reasoning as PAGE_TOUR_SAMPLE_PICKERS just above (real edit/delete
+// controls are exposed there too, so a disposable copy protects the real
+// hidden samples) — just for OB_TASKS instead of pickers. Data-only: the
+// Pickers tour never touches reminders at all.
+const pageTourTaskCopyId = (id) => `pt_${id}`;
+const seedPageTourTasks = (state, actions) => {
+  OB_TASKS.forEach((t) => {
+    const copyId = pageTourTaskCopyId(t.id);
+    if (state.tasks.some((x) => x.id === copyId)) return;
+    actions.addTask({
+      id: copyId, name: t.name, repeat: t.repeat,
+      // Mirrors the real Welcome Tour's own seeding (see onboarding.jsx's
+      // Generate-step run()): the recurring sample's own daysOfWeek is
+      // whatever weekday it happens to be, not the base template's
+      // hardcoded Monday — so it reads as "due today" like the real one
+      // does, rather than an arbitrary fixed day.
+      ...(t.repeat === 'weekly' ? { daysOfWeek: [new Date().getDay()] } : {}),
+    });
+  });
+};
+const clearPageTourTasks = (actions) => {
+  OB_TASKS.forEach((t) => actions.removeTask(pageTourTaskCopyId(t.id)));
 };
 
 // The Stats tour has no edit/delete controls anywhere on the page — it's
@@ -548,7 +573,17 @@ const buildPageTourSteps = (pageId, actions) => {
       { ...DATA_PAGE_TARGETS.groupFilter, tab: 'data', primary: 'Next', back: true },
       { ...DATA_PAGE_TARGETS.pickersFilter, tab: 'data', primary: 'Next', back: true },
       { ...DATA_PAGE_TARGETS.remindersManager, tab: 'data', primary: 'Next', back: true },
-      { ...DATA_PAGE_TARGETS.pickersManager, tab: 'data', primary: 'Done', back: true },
+      {
+        ...DATA_PAGE_TARGETS.pickersManager, tab: 'data', primary: 'Done', back: true,
+        // .data-list can be much taller than the viewport once every picker
+        // card renders (6 real disposable copies plus whatever the user has
+        // of their own) — the normal reserve-space padding would push the
+        // target's own bottom edge further past the fold instead of
+        // helping, exactly backwards. Pins the coach to the top and lets
+        // the target run off the bottom instead — see coachAtTop's own doc
+        // comment in onboarding-tour-runner.jsx.
+        coachAtTop: true,
+      },
     ];
   }
   if (pageId === 'explore_settings') {
@@ -657,6 +692,7 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
     // re-hides the REAL samples it borrowed (see unhideSampleHistory).
     if (usesSampleCopies(pageId)) clearPageTourPickers(actions);
     else if (pageId === 'explore_stats') hideSampleHistory(actions);
+    if (pageId === 'explore_data') clearPageTourTasks(actions);
     actions.setChecklistItem(pageId, { status });
     onClose();
   };
@@ -679,6 +715,7 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
       tourId={`page-${pageId}`}
       steps={[
         buildPageTourStep1(tour.page,
+          pageId === 'explore_data' ? () => { seedPageTourPickers(state, actions); seedPageTourTasks(state, actions); } :
           usesSampleCopies(pageId) ? () => seedPageTourPickers(state, actions) :
           pageId === 'explore_stats' ? () => unhideSampleHistory(state, actions) :
           undefined),
