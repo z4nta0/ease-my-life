@@ -166,6 +166,14 @@ const buildPageTourSteps = (pageId, actions) => {
     { ...TODAY_PAGE_TARGETS.editMode, tab: 'today', primary: 'Next', back: true, requireClick: true },
     {
       ...TODAY_PAGE_TARGETS.groupGrip, tab: 'today', primary: 'Next', back: true,
+      // Edit Mode is local, unpersisted UI state (tab-today.jsx's own
+      // useState, not part of `state`) — a reload always lands back with it
+      // off, so this step's target (only rendered while Edit Mode is on)
+      // wouldn't exist to resume into. Not resumable — see that field's own
+      // doc comment in onboarding-tour-runner.jsx; a reload mid this step or
+      // Step 6 falls back to Step 4 (Edit Mode's own toggle), which is
+      // always safe to land on.
+      resumable: false,
       // Stages the next step's target: a real click into Page Tours' own
       // rename control (same real-UI-driving pattern used throughout the
       // Picker/Reminder tours), so its input already exists once Step 6
@@ -196,6 +204,10 @@ const buildPageTourSteps = (pageId, actions) => {
     },
     {
       ...TODAY_PAGE_TARGETS.renameGroup, tab: 'today', primary: 'Done', back: true,
+      // Same as Step 5's own resumable:false — this step's target depends on
+      // BOTH Edit Mode being on AND Step 5's run() having already clicked
+      // the rename button open, neither of which survives a reload.
+      resumable: false,
       // Edit Mode's own real Cancel control discards any group reordering
       // from Step 5 AND closes the rename input — GroupHeader force-closes
       // `editing` the instant editMode itself goes false (see its own
@@ -222,11 +234,18 @@ const buildPageTourSteps = (pageId, actions) => {
   ];
 };
 
-function PageTour({ pageId, actions, onClose }) {
+function PageTour({ pageId, state, actions, onClose }) {
   const tour = OB_PAGE_TOURS.find((t) => t.id === pageId);
   const nav = OB_NAV_TARGETS[tour.page];
   const copy = PAGE_TOUR_COPY[pageId];
-  const [phase, setPhase] = React.useState('intro');
+  // A reload lands here with tab-today.jsx's activeMiniTour already
+  // re-derived from this SAME persisted activeTour (that's how this
+  // component gets (re)mounted for this pageId at all) — re-reading it here
+  // just decides whether to skip the intro modal and which (resumable) step
+  // to land on. Same pattern as ReminderTour/PickerTour's own `resumable`.
+  const ob = state.onboarding || {};
+  const resumable = ob.activeTour && ob.activeTour.id === `page-${pageId}` ? ob.activeTour : null;
+  const [phase, setPhase] = React.useState(resumable ? 'tour' : 'intro');
 
   const closeTour = (status) => {
     actions.setChecklistItem(pageId, { status });
@@ -250,7 +269,7 @@ function PageTour({ pageId, actions, onClose }) {
     <GuidedTour
       tourId={`page-${pageId}`}
       steps={[buildPageTourStep1(tour.page), ...buildPageTourSteps(pageId, actions)]}
-      resumeStep={0}
+      resumeStep={resumable ? resumable.step : 0}
       actions={actions}
       active="today"
       selectTab={() => {}}

@@ -1744,22 +1744,28 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour }) {
     if (onNavTab) onNavTab('picker');
   };
 
-  // Which reminder mini-tour's intro modal (or walkthrough) is currently
-  // showing — null when none is. Reminder tours never leave Today, so this
+  // Which mini-tour's intro modal (or walkthrough) is currently showing —
+  // null when none is. Reminder and page tours never leave Today, so this
   // stays local here; picker tours can navigate to the Pickers tab (Step 1
   // highlights its nav button), which would unmount this component along
   // with them, so that state lives at the app level instead — see app.jsx's
   // activePickerTour and this component's own onStartPickerTour prop.
   // Seeded from a persisted activeTour on first mount (a reload) so the
   // tour resumes instead of silently vanishing — mirrors app.jsx's own
-  // activePickerTour seeding. activeTour.id only encodes the variant
-  // ('reminder-once'/'reminder-recurring'), not the task id, so map it back
-  // via the same taskId pairing ReminderTour's own variant prop uses below.
+  // activePickerTour seeding. A reminder activeTour.id only encodes the
+  // variant ('reminder-once'/'reminder-recurring'), not the task id, so map
+  // it back via the same taskId pairing ReminderTour's own variant prop
+  // uses below; a page tour's id is `page-${checklist id}` (see PageTour's
+  // own tourId), which already IS the id this needs.
   const [activeMiniTour, setActiveMiniTour] = React.useState(() => {
     const at = state.onboarding && state.onboarding.activeTour;
-    if (!at || typeof at.id !== 'string' || !at.id.startsWith('reminder-')) return null;
-    const variant = at.id.slice('reminder-'.length);
-    return { kind: 'reminder', id: variant === 'once' ? 'tk_ob_meds' : 'tk_ob_trash' };
+    if (!at || typeof at.id !== 'string') return null;
+    if (at.id.startsWith('reminder-')) {
+      const variant = at.id.slice('reminder-'.length);
+      return { kind: 'reminder', id: variant === 'once' ? 'tk_ob_meds' : 'tk_ob_trash' };
+    }
+    if (at.id.startsWith('page-')) return { kind: 'pageTour', id: at.id.slice('page-'.length) };
+    return null;
   });
   // Mini-tour launcher cards' Play button / row click. `kind` is 'picker',
   // 'reminder', or 'pageTour'; `id` is the sample picker/task/page-tour id.
@@ -2174,7 +2180,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour }) {
         />
       )}
       {activeMiniTour && activeMiniTour.kind === 'pageTour' && (
-        <PageTour pageId={activeMiniTour.id} actions={actions} onClose={() => setActiveMiniTour(null)} />
+        <PageTour pageId={activeMiniTour.id} state={state} actions={actions} onClose={() => setActiveMiniTour(null)} />
       )}
     </div>
   );
