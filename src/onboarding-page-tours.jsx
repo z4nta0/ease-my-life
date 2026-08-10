@@ -137,13 +137,30 @@ const cancelRenameKeepEditMode = () => {
   requestAnimationFrame(() => input.blur());
 };
 
+// Forces the real Page Tours name back — used wherever a click (Done, Back,
+// Skip) might have blurred a still-open, typed-in rename input a tick
+// earlier (see each call site's own comment for that race). Deferred a
+// full 200ms, NOT just a frame: GroupHeader's own blur-triggered commit()
+// doesn't call onRenameGroup synchronously either — it defers to its OWN
+// setTimeout(…, 150) (the closing-animation delay in finishClose) — so
+// calling this immediately would fire BEFORE that delayed commit and get
+// overwritten right back to the typed value 150ms later. 200ms leaves a
+// safety margin past it.
+const forceRealPageToursName = (actions) => {
+  setTimeout(() => actions.renamePageTours(lastPageToursName), 200);
+};
+
 // Steps beyond Step 1 (the nav-highlight every page tour shares), keyed by
 // page tour id — empty/absent for any page that only has Step 1 so far.
 // Advancing past the last step in here falls through GuidedTour's own "ran
 // off the end" safety net into onSkip, same as every other mini-tour
-// behaved before its own final Done step existed.
-const PAGE_TOUR_STEPS = {
-  explore_today: [
+// behaved before its own final Done step existed. A function of `actions`
+// (built fresh per render, like buildPageTourStep1), not a static object —
+// Step 6's own Done needs to call actions.renamePageTours directly (see its
+// own comment below).
+const buildPageTourSteps = (pageId, actions) => {
+  if (pageId !== 'explore_today') return [];
+  return [
     { ...TODAY_PAGE_TARGETS.progressRing, tab: 'today', primary: 'Next', back: true },
     { ...TODAY_PAGE_TARGETS.groupsNav, tab: 'today', primary: 'Next', back: true },
     { ...TODAY_PAGE_TARGETS.editMode, tab: 'today', primary: 'Next', back: true, requireClick: true },
@@ -182,19 +199,27 @@ const PAGE_TOUR_STEPS = {
       // Edit Mode's own real Cancel control discards any group reordering
       // from Step 5 AND closes the rename input — GroupHeader force-closes
       // `editing` the instant editMode itself goes false (see its own
-      // effect), without ever going through the input's own commit() — so
-      // nothing needs to touch the input directly here. Deliberately does
-      // NOT reset-and-blur it first the way a Back to Step 5 has to
-      // (cancelRenameKeepEditMode below): that risks committing a real
-      // rename if the blur's own commit() runs before the reset's state
-      // update has actually applied — see that function's own comment for
-      // why, and why this bit Done specifically before.
+      // effect), without ever going through the input's own commit().
+      //
+      // That's still not enough on its own, though: clicking this step's
+      // Done button (a totally different element) blurs the currently-
+      // focused rename input FIRST — as an intrinsic part of the click's
+      // own focus-change handling, which happens before React's onClick
+      // (and therefore this run()) ever fires — and that blur's own
+      // commit() genuinely renames the group for real if the user typed
+      // something, exactly like the earlier reset-and-blur race, just
+      // triggered by a click on a DIFFERENT element instead of this step's
+      // own code. There's no way to intercept that ordering from here, so
+      // this doesn't try to — it just forces the real name back
+      // afterward, directly, via the same action a real rename commit
+      // would have called. A harmless no-op if nothing was ever typed.
       run: () => {
         const cancelBtn = document.querySelector('.editmode-banner-actions .btn--ghost');
         if (cancelBtn) cancelBtn.click();
+        forceRealPageToursName(actions);
       },
     },
-  ],
+  ];
 };
 
 function PageTour({ pageId, actions, onClose }) {
@@ -224,7 +249,7 @@ function PageTour({ pageId, actions, onClose }) {
   return (
     <GuidedTour
       tourId={`page-${pageId}`}
-      steps={[buildPageTourStep1(tour.page), ...(PAGE_TOUR_STEPS[pageId] || [])]}
+      steps={[buildPageTourStep1(tour.page), ...buildPageTourSteps(pageId, actions)]}
       resumeStep={0}
       actions={actions}
       active="today"
@@ -249,9 +274,29 @@ function PageTour({ pageId, actions, onClose }) {
           // own Done, which wants both) — see cancelRenameKeepEditMode's
           // own comment for why this can't just be an Escape keydown.
           cancelRenameKeepEditMode();
+          // Same blur-races-the-click risk as Step 6's own Done (see its
+          // run() comment) — clicking Back is ALSO a click on a different
+          // element than the input, which can blur-and-commit a real
+          // rename before onGoBack even runs. Same fix: force the real
+          // name back directly afterward, regardless of what the DOM did.
+          forceRealPageToursName(actions);
         }
       }}
-      onSkip={() => closeTour('skipped')}
+      // Skip can fire from Step 4 or 5 too, mid-Edit-Mode — exits it via
+      // the same real Cancel control (a harmless no-op if Edit Mode was
+      // never entered, since the banner/button won't exist), reverting any
+      // reorder from Step 5. If Step 6's rename input is specifically open,
+      // also forces the real name back first — same blur-races-the-click
+      // risk as Step 6's own Done (see its run() comment): clicking Skip
+      // is ALSO a click on a different element than the input.
+      onSkip={() => {
+        if (document.querySelector('.pt-section .group-name-input')) {
+          forceRealPageToursName(actions);
+        }
+        const cancelBtn = document.querySelector('.editmode-banner-actions .btn--ghost');
+        if (cancelBtn) cancelBtn.click();
+        closeTour('skipped');
+      }}
       onFinish={() => closeTour('finished')}
     />
   );

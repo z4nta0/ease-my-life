@@ -243,7 +243,15 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // checklist) can omit it and everything still funnels through onFinish.
   const skip = () => {
     actions.setOnboarding({ activeTour: null });
+    // Same suppression as goBack's own onGoBack call (see suppressGuardRef's
+    // doc comment) — a caller's onSkip can drive real synthetic clicks to
+    // undo in-progress state (e.g. clicking Edit Mode's real Cancel button),
+    // and curRef.current still points at the step being left, so without
+    // this the guard reads that click as off-target and blocks it via
+    // preventDefault/stopPropagation before the target's own handler runs.
+    suppressGuardRef.current = true;
     (onSkip || onFinish)();
+    suppressGuardRef.current = false;
     goToTodayTop(active, selectTab);
   };
 
@@ -590,18 +598,30 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       if (r.top - 16 - ch >= obSafeTop() + 12) return; // fits above — reserveTop is already 0
       reservedAmount = ch + 40;
       setReserveTop(reservedAmount);
-      // Compensates for the padding this just added above the list —
-      // without it, the target (already scrolled close to the top by
-      // bring()'s own earlier pass) gets pushed down by the FULL reserved
-      // amount with nothing scrolling further to keep it on-screen, sliding
-      // it toward — or past — the bottom of the viewport instead of
-      // roughly holding its position with new room opened up above it for
-      // the coach. Deferred a frame so the padding has actually landed in
-      // the DOM before scrolling to compensate for it; recomputes its own
-      // scroller rather than closing over bring()'s local `sc`, which this
-      // function doesn't have access to.
+      // Scrolls so the target lands exactly ch+16 below safeTop — the same
+      // threshold the "fits above" check just above uses, and what the
+      // coach's own render-time placement (top: rect.top - 16 - coachH,
+      // clamped to safeTop) needs to actually seat it flush above the
+      // target instead of overlapping it. Deliberately NOT a scroll that
+      // compensates for the padding just added (e.g. scrolling by
+      // +reservedAmount) — that fully cancels the reserve's own effect,
+      // undoing the room it just opened up and leaving the coach exactly
+      // as short on space as before any reserve existed. Re-measures the
+      // target after a frame (rather than computing from `r`, which is
+      // now stale) since the padding needs to have actually landed in the
+      // DOM first; recomputes its own scroller rather than closing over
+      // bring()'s local `sc`, which this function doesn't have access to.
       const els2 = findTargets(cur.sel);
-      if (els2.length) requestAnimationFrame(() => scrollByAmt(getScroller(els2[0]), reservedAmount));
+      if (els2.length) {
+        const sc2 = getScroller(els2[0]);
+        requestAnimationFrame(() => {
+          const freshEls = findTargets(cur.sel);
+          if (!freshEls.length) return;
+          const freshTop = unionRect(freshEls).top;
+          const desiredTop = obSafeTop() + 12 + ch + 16;
+          scrollByAmt(sc2, freshTop - desiredTop);
+        });
+      }
     };
     // Reposition synchronously as scroll fires (before paint) so the highlight
     // doesn't trail the content the way a purely rAF-driven fixed box does.
