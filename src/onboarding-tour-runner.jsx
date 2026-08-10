@@ -48,13 +48,17 @@ import { InfoTip } from './ui.jsx';
 //              the page to make room for the coach above it, which is
 //              exactly backwards when the target is already tall enough to
 //              fill the viewport: the padding pushes its own bottom edge
-//              past the fold instead of helping. Pins the coach to the very
-//              top of the viewport instead (skipping decideReserve
-//              entirely) and scrolls just enough that the target starts
-//              right below it, so as much of the target as will fit is
-//              visible beneath the coach — the whole thing, on most
-//              screens; some of it, on the shortest ones, which is still
-//              strictly better than what decideReserve would have done.
+//              past the fold instead of helping. Skips decideReserve
+//              entirely and scrolls just enough that the target starts
+//              right below the coach's initial position, so as much of the
+//              target as will fit is visible beneath it — the whole thing,
+//              on most screens; some of it, on the shortest ones, which is
+//              still strictly better than what decideReserve would have
+//              done. The coach then tracks the target's own top edge as the
+//              user scrolls afterward (clamped so it never rises above the
+//              safe top boundary) rather than staying frozen at that
+//              initial spot — a frozen coach visibly detaches from the
+//              highlight the moment the user scrolls it away underneath.
 //   requireClick — true if this step teaches the real interface rather than
 //              narrating it: Next is disabled (with a hover/tap hint) and
 //              the step only advances when the user clicks the highlighted
@@ -902,10 +906,14 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     const safeTop = obSafeTop() + 12;
     const spaceBelow = vh - (rect.top + rect.height);
     if (cur.coachAtTop) {
-      // Pinned to the top regardless of spaceBelow — see this flag's own
-      // doc comment. bring() already scrolled the target to start right
-      // below where this lands, so the coach and target never fight.
-      coachStyle = { top: safeTop, left };
+      // Tracks the target's own top edge (same "sit just above it" math the
+      // plain else branch below uses), clamped so it never rises above the
+      // safe top boundary — see this flag's own doc comment. bring() already
+      // scrolled the target to start right below the coach's initial
+      // (clamped) position, so the two don't fight on mount; this keeps them
+      // attached as the user scrolls afterward instead of leaving the coach
+      // frozen while the target drifts away underneath it.
+      coachStyle = { top: Math.max(rect.top - 16 - coachH, safeTop), left };
       arrowClass = 'ob-coach--down';
     } else if (spaceBelow >= coachH + 16) {
       coachStyle = { top: rect.top + rect.height + 16, left };
