@@ -203,13 +203,23 @@ const PICKER_PAGE_TARGETS = {
     title: 'Manual Generation',
     body: <>This will allow to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the Pick one button now to see how this works.</>,
   },
-  // Only rendered once phase is 'done'/'sent' — i.e. after the PREVIOUS
-  // step's own Pick one click resolves. tab-picker.jsx's own
-  // tourInterceptSend (gated on this exact tourId+step) skips the real
-  // actions.addTodayEntry while this step is up, so the Sent! animation
-  // plays without actually landing an entry on Today.
+  // Highlights the whole stage+actions box (same as manualGeneration, one
+  // step back) rather than just the Send to Today button on its own, so the
+  // picker window stays visible/framed instead of the highlight shrinking
+  // down to a single button. Re-roll/Done render alongside it once phase is
+  // 'done'/'sent' but are disabled — see tourInterceptSend's own gating in
+  // tab-picker.jsx, which also drives their .is-tour-disabled look (a plain
+  // `disabled` attribute alone renders no differently here) — so clickSel
+  // narrows the click-guard/requireClick target down to Send to Today
+  // specifically; without it, a click landing anywhere else in this bigger
+  // box (the stage, or a disabled sibling button — pointer-events:none
+  // passes its click through to the container) would satisfy requireClick
+  // as if Send to Today itself had been clicked. tourInterceptSend also
+  // skips the real actions.addTodayEntry while this step is up, so the
+  // Sent! animation plays without actually landing an entry on Today.
   addToTodoList: {
-    sel: '.pv-act--send',
+    sel: '.picker-run',
+    clickSel: '.pv-act--send',
     title: 'Add to Todo List',
     body: <>This will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click this button now to give it a try.</>,
   },
@@ -514,7 +524,11 @@ const buildPageTourSteps = (pageId, actions) => {
         // Stay on THIS step's own already-resolved coach/highlight for the
         // whole wait instead of advancing into a blank "not found yet" dim
         // — see advanceWhen's own doc comment in onboarding-tour-runner.jsx.
-        advanceWhen: PICKER_PAGE_TARGETS.addToTodoList.sel,
+        // Polls for .pv-act--send specifically (Step 6's clickSel, NOT its
+        // sel) — .picker-run itself (Step 6's sel) already exists the whole
+        // time, spin animation included, so polling for that would advance
+        // immediately instead of waiting for the pick to actually resolve.
+        advanceWhen: PICKER_PAGE_TARGETS.addToTodoList.clickSel,
       },
       {
         ...PICKER_PAGE_TARGETS.addToTodoList, tab: 'picker', primary: 'Next', back: true, requireClick: true,

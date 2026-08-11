@@ -17,6 +17,20 @@ import { InfoTip } from './ui.jsx';
 //   sel      — CSS selector(s) for the element(s) to highlight (comma-
 //              separated fallbacks honored in order — findTargets tries each
 //              in turn and uses the first that matches anything).
+//   clickSel — optional override for what counts as "on target" for the
+//              click-guard/requireClick logic specifically (spotlight
+//              tracking, scroll-into-view, and advanceWhen's own default
+//              still key off `sel`). Defaults to `sel` — only needed when a
+//              step highlights a BIGGER box than what it actually wants
+//              clicked, e.g. the whole picker stage+actions area with
+//              multiple buttons in it, only one of which should count.
+//              Without this, any click landing anywhere inside `sel`
+//              (including a disabled sibling button, since a disabled
+//              element with pointer-events:none passes its click through to
+//              whatever's underneath — typically the highlighted container
+//              itself) would satisfy requireClick, which is almost never
+//              what a step author actually wants from a highlight that's
+//              wider than its real target.
 //   title/body — coach card copy.
 //   tab      — which app tab this step's target lives on. The tour switches
 //              there automatically whenever the active tab doesn't already
@@ -412,7 +426,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     if (suppressGuardRef.current) return false;
     if (e.target.closest('.ob-coach')) return false;
     const c = curRef.current;
-    return !(c && findTargets(c.sel).some((el) => el.contains(e.target)));
+    return !(c && findTargets(c.clickSel || c.sel).some((el) => el.contains(e.target)));
   };
   React.useEffect(() => {
     // A focused real input (e.g. a step's own rename field) blurs the
@@ -441,7 +455,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       if (suppressGuardRef.current) return;
       const c = curRef.current;
       if (e.target.closest('.ob-coach')) return;
-      if (c && findTargets(c.sel).some((el) => el.contains(e.target))) {
+      if (c && findTargets(c.clickSel || c.sel).some((el) => el.contains(e.target))) {
         // A requireClick step's target click IS its primary action — the
         // Next button is disabled, so this is the only way forward.
         if (c.requireClick) onPrimaryRef.current();
@@ -474,7 +488,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       const c = curRef.current;
       if (!c) return;
       if (e.relatedTarget && e.relatedTarget.closest('.ob-coach')) return;
-      if (!findTargets(c.sel).some((el) => el.contains(e.target))) return;
+      if (!findTargets(c.clickSel || c.sel).some((el) => el.contains(e.target))) return;
       e.stopPropagation();
     };
     document.addEventListener('mousedown', onMouseDownCapture, true);

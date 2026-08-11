@@ -455,10 +455,10 @@ function PickerView({ picker, state, actions, animStyle }) {
                 {phase === 'sent' ? 'Sent!' : 'Send to Today'}
               </span>
             </Btn>
-            <Btn kind="ghost" icon="refresh" onClick={() => afterExit(reroll)}
-                 className={`pv-act ${(leaving || phase === 'sent') ? 'is-leaving' : ''}`} style={{ animationDelay: '60ms' }}>Re-roll</Btn>
-            <Btn kind="ghost" size="sm" onClick={() => afterExit(() => { setPhase('idle'); setResult(null); })}
-                 className={`pv-act ${(leaving || phase === 'sent') ? 'is-leaving' : ''}`} style={{ animationDelay: '120ms' }}>Done</Btn>
+            <Btn kind="ghost" icon="refresh" onClick={() => afterExit(reroll)} disabled={tourInterceptSend}
+                 className={`pv-act ${(leaving || phase === 'sent') ? 'is-leaving' : ''} ${tourInterceptSend ? 'is-tour-disabled' : ''}`} style={{ animationDelay: '60ms' }}>Re-roll</Btn>
+            <Btn kind="ghost" size="sm" onClick={() => afterExit(() => { setPhase('idle'); setResult(null); })} disabled={tourInterceptSend}
+                 className={`pv-act ${(leaving || phase === 'sent') ? 'is-leaving' : ''} ${tourInterceptSend ? 'is-tour-disabled' : ''}`} style={{ animationDelay: '120ms' }}>Done</Btn>
           </>
         ) : (
           <Btn kind="primary" icon="play" onClick={runPick} disabled={busy} className="pv-act">

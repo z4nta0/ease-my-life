@@ -2902,6 +2902,15 @@ button.cat-h-l {
 .picker-actions .pv-act { animation: pvActIn .22s cubic-bezier(.34,1.2,.5,1) both; }
 .picker-actions .pv-act.is-leaving { animation: pvActOut .18s ease both; }
 .pv-send-label { display: inline-block; }
+/* Re-roll/Done during the Pickers page tour's "Add to Todo List" step: the
+   native `disabled` attribute alone renders no differently on a .btn (no
+   :disabled rule exists for it anywhere), which would leave these looking
+   fully clickable while silently doing nothing — confusing specifically
+   because Send to Today right next to them IS meant to be clicked for
+   real. Applied only while that exact tour step is up (see
+   tab-picker.jsx's own tourInterceptSend), so it disappears again the
+   moment the step ends. */
+.pv-act.is-tour-disabled { opacity: 0.4; cursor: default; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) {
   .picker-actions .pv-act, .picker-actions .pv-act.is-leaving { animation-duration: .01ms; }
 }
