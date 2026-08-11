@@ -5,6 +5,7 @@ import { CONDITIONALS } from './conditionals.js';
 import { EASE_UP_RANGE_WARN } from './constants.js';
 import { DayLogChip, GroupLog } from './day-log.jsx';
 import { HOLIDAYS } from './holidays.js';
+import { HelpButton, HelpOverlay } from './help-mode.jsx';
 import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
 import { OB_CHECKLIST, OB_GENERATE_ITEM_ID, OB_PAGE_TOURS } from './onboarding-checklist.js';
@@ -807,6 +808,23 @@ function PageTourCard({ tour, state, actions, onPlayTutorial, onUncheckTutorial,
 }
 
 function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStartPageTour }) {
+  // Help mode engine test case (see help-mode.jsx's own header comment) —
+  // local, resets to off on every remount (tab switch), which is exactly
+  // the "navigating away closes it, the page you land on doesn't inherit
+  // it" behavior the design called for. Two targets specifically to prove
+  // the "several highlights, independent badges, one shared open tooltip"
+  // mechanics work before rolling real content out to every page.
+  const [helpOn, setHelpOn] = React.useState(false);
+  const helpItems = React.useMemo(() => [
+    {
+      id: 'progressRing', sel: '.ring', title: 'Progress Ring',
+      body: <>This tracks your current progress of completed / total tasks for today's todo list. Once filled completely, your Day Streak will increase and the celebration animations will play.</>,
+    },
+    {
+      id: 'brandMark', sel: '.brand-mark', title: 'Home',
+      body: <>Click this logo any time to jump back to the top of your todo list.</>,
+    },
+  ], []);
   const groups = React.useMemo(() => groupEntries(state), [state]);
   // Unified block order: the Reminders block ('__reminders' sentinel) plus the
   // picker groups, sequenced by state.groupOrder. Drives both the rail and the
@@ -1839,14 +1857,18 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
 
   return (
     <div className={`tab tab--today ${editMode ? 'is-editmode' : ''}`}>
+      <HelpOverlay active={helpOn} items={helpItems} />
       <header className="today-h" ref={headerRef}>
         <div className="today-h-inner">
           <div className="today-h-l">
             <div className="kicker-row">
               <div className="kicker">{fmtDate(now)} <span className="kicker-time">{fmtTime(now)}</span></div>
-              <div className="streak" ref={streakRef}>
-                <Icon name="flame" size={12} />
-                <span>{state.streak}-day streak</span>
+              <div className="kicker-row-r">
+                <div className="streak" ref={streakRef}>
+                  <Icon name="flame" size={12} />
+                  <span>{state.streak}-day streak</span>
+                </div>
+                <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
               </div>
             </div>
             <div className="today-h-lead">

@@ -501,6 +501,11 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   gap: 12px;
   min-width: 0;
 }
+/* Groups the streak indicator with the help-mode toggle (see
+   help-mode.jsx) so kicker-row's own space-between still reads as
+   "date/time on the left, everything else on the right" with the new
+   button added, rather than splitting into three evenly-spaced columns. */
+.kicker-row-r { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
 .today-h-lead {
   display: flex;
   align-items: center;
