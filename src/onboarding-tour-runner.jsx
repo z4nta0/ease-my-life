@@ -49,16 +49,18 @@ import { InfoTip } from './ui.jsx';
 //              exactly backwards when the target is already tall enough to
 //              fill the viewport: the padding pushes its own bottom edge
 //              past the fold instead of helping. Skips decideReserve
-//              entirely and scrolls just enough that the target starts
-//              right below the coach's initial position, so as much of the
-//              target as will fit is visible beneath it — the whole thing,
-//              on most screens; some of it, on the shortest ones, which is
-//              still strictly better than what decideReserve would have
-//              done. The coach then tracks the target's own top edge as the
-//              user scrolls afterward (clamped so it never rises above the
-//              safe top boundary) rather than staying frozen at that
-//              initial spot — a frozen coach visibly detaches from the
-//              highlight the moment the user scrolls it away underneath.
+//              entirely and gives bring() a precise initial scroll target
+//              (the target starts right below where the coach will land)
+//              instead of the general pad/padB math, which doesn't reliably
+//              land a too-tall target anywhere useful on the very first
+//              frame. The coach's own ONGOING position needs no special
+//              case at all beyond that — the normal below/above placement
+//              logic already reacts to rect (which is clamped to the safe
+//              viewport area, not the target's full height), so it
+//              naturally sits above the target while most of it is still
+//              below the fold and flips to sit below it, arrow up, once
+//              the user has scrolled far enough that the target's real
+//              bottom edge comes into view with room to spare.
 //   requireClick — true if this step teaches the real interface rather than
 //              narrating it: Next is disabled (with a hover/tap hint) and
 //              the step only advances when the user clicks the highlighted
@@ -904,18 +906,23 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // leaves enough room above it, once that reflow settles (usually within
     // a frame or two).
     const safeTop = obSafeTop() + 12;
+    // rect itself is already clamped to the safe viewport area (see
+    // clampToChrome), so spaceBelow naturally goes from "basically none"
+    // (target's clamped bottom sits at the safe boundary — true for most of
+    // a coachAtTop target's own scroll range, since it's TALLER than that
+    // area by definition) to genuinely large once the user has scrolled far
+    // enough that the target's REAL bottom edge is what's being measured
+    // instead. No coachAtTop-specific branch needed here at all any more —
+    // letting it fall through to the exact same below/above logic every
+    // other step already uses is what lets the coach flip to sit BELOW the
+    // target (arrow up) once there's room, instead of only ever attaching
+    // above it. coachAtTop's own remaining job is upstream of this: skip
+    // decideReserve's padding (see that flag's own doc comment) and give
+    // bring() a precise initial scroll target instead of the general pad/
+    // padB math, which doesn't reliably land a too-tall target anywhere
+    // useful on the very first frame.
     const spaceBelow = vh - (rect.top + rect.height);
-    if (cur.coachAtTop) {
-      // Tracks the target's own top edge (same "sit just above it" math the
-      // plain else branch below uses), clamped so it never rises above the
-      // safe top boundary — see this flag's own doc comment. bring() already
-      // scrolled the target to start right below the coach's initial
-      // (clamped) position, so the two don't fight on mount; this keeps them
-      // attached as the user scrolls afterward instead of leaving the coach
-      // frozen while the target drifts away underneath it.
-      coachStyle = { top: Math.max(rect.top - 16 - coachH, safeTop), left };
-      arrowClass = 'ob-coach--down';
-    } else if (spaceBelow >= coachH + 16) {
+    if (spaceBelow >= coachH + 16) {
       coachStyle = { top: rect.top + rect.height + 16, left };
       arrowClass = 'ob-coach--up';
     } else {
