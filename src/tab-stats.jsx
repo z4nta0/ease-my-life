@@ -4,6 +4,9 @@ import { useEmlTour } from './onboarding.jsx';
 import { MODES } from './seed.js';
 import { TASKS } from './tasks.js';
 import { Card, Icon, Pill } from './ui.jsx';
+import { HelpButton, HelpOverlay } from './help-mode.jsx';
+import { STATS_HELP_ITEMS } from './help-content.jsx';
+import { unhideHelpStatsHistory, hideHelpStatsHistory } from './help-sample-data.js';
 
 // Stats tab — everything is derived on the fly from the per-pick log
 // (state.pickLog), so the picker + range filters apply uniformly to every
@@ -122,11 +125,23 @@ function Pager({ page, pageSize, total, onChange, unit = 'items', alwaysShow = f
   );
 }
 
-function TabStats({ state, onHome, onNavTab }) {
+function TabStats({ state, actions, onHome, onNavTab }) {
   // Welcome Tour: reserves top-space above the page content when its own
   // coach card doesn't fit above/below the highlighted area — see the
   // reserve-space effect in onboarding.jsx (same mechanism as the Pickers tab).
   const tour = useEmlTour ? useEmlTour() : { reserveTop: 0 };
+  // Help mode (see help-mode.jsx) — nothing here is editable, so unlike
+  // Pickers/Data this doesn't seed a disposable copy: it borrows the REAL
+  // hidden sample pickers directly (same reasoning as the page tour's own
+  // unhideSampleHistory) so the heatmap/breakdown have genuine history to
+  // show, and hides them again once help mode turns off.
+  const [helpOn, setHelpOn] = React.useState(false);
+  const helpExit = React.useCallback(() => setHelpOn(false), []);
+  React.useEffect(() => {
+    if (helpOn) unhideHelpStatsHistory(state, actions);
+    else hideHelpStatsHistory(actions);
+  }, [helpOn]);
+  React.useEffect(() => () => hideHelpStatsHistory(actions), []);
   // scope: 'all' | <pickerId> | 'reminders'
   const [scope, setScope] = React.useState('all');
   const [range, setRange] = React.useState('all');
@@ -846,8 +861,12 @@ function TabStats({ state, onHome, onNavTab }) {
 
   return (
     <div className="tab tab--stats">
+      <HelpOverlay active={helpOn} items={STATS_HELP_ITEMS} onExit={helpExit} />
       <header className="stat-h">
-        <div className="kicker stat-h-kicker">Stats</div>
+        <div className="kicker-row">
+          <div className="kicker stat-h-kicker">Stats</div>
+          <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
+        </div>
         <div className="stat-h-lead">
           <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
             {/* Same theme-wired logo as the Today header (currentColor → accent,
