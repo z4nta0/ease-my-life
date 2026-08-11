@@ -217,13 +217,13 @@ const NAV_HELP_ITEM = {
   id: '__nav', sel: '[data-tab]',
   title: 'Navigation',
   body: (
-    <ol className="help-tip-list">
-      <li><b>Today</b> — your auto-generated daily todo list.</li>
-      <li><b>Pickers</b> — create pickers/items, or run one manually.</li>
-      <li><b>Stats</b> — statistics for your pickers and items.</li>
-      <li><b>Data</b> — view and edit all your pickers, items and reminders.</li>
-      <li><b>Settings</b> — customize the app, the daily generator, and more.</li>
-    </ol>
+    <>
+      <p><b>Today:</b> This is the main page of the app and contains your auto-generated daily todo list.</p>
+      <p><b>Pickers:</b> This is where you can manually run a picker to generate a task and then push it to the Today page's todo list. This is also where you can create new pickers and their items.</p>
+      <p><b>Stats:</b> This is where you can view all of the statistics for everything that you have created. That includes conditionals, reminder items, pickers and picker items. You can see how many times an item has been picked, items' pick frequency, and much more.</p>
+      <p><b>Data:</b> This is where you can view and edit everything that you have created. You can also create new conditionals, new reminders items and new picker items.</p>
+      <p><b>Settings:</b> This is where you can customize the app, adjust the daily generator, edit which holidays are observed, control your data, install the app, get app information and view legal documents.</p>
+    </>
   ),
 };
 

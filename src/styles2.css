@@ -3546,8 +3546,6 @@ body.ob-touring .tab{padding-bottom:200px}
    back into pointer-events under .help-mode's blanket pointer-events:none. */
 .help-tip{pointer-events:auto;width:280px}
 .help-tip-title{font-size:15px;font-weight:600;margin:0 0 5px}
-.help-tip-list{margin:0;padding-left:18px;font-size:12.5px;line-height:1.6;color:var(--muted)}
-.help-tip-list li+li{margin-top:4px}
 .help-tip .ob-body p{margin:0}
 .help-tip .ob-body p+p{margin-top:8px}
 
