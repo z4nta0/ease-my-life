@@ -94,10 +94,12 @@ const TODAY_HELP_ITEMS = [
     // whatever extra fields the current selection reveals below the pills
     // (the weekday chips for Weekly, the day/date pickers for the others) —
     // every option's own extra fields, not just whichever ones happened to
-    // share a class with the Reminder Name field above. pinBelowSel anchors
-    // the TIP itself below the whole form (not just below this section) so
-    // it never lands overlapping whichever extra fields are showing.
-    id: 'addReminderRepeat', sel: '.rem-quickadd-wrap .rem-editor', pinBelowSel: '.rem-quickadd-wrap', title: 'Repeat Schedule',
+    // share a class with the Reminder Name field above. No pinBelowSel here
+    // (unlike a first attempt at this) — the highlighted rect IS .rem-editor
+    // itself, so the tip's normal "below the target" placement already
+    // tracks its own bottom edge as it grows/shrinks with the selection,
+    // without needing to pin to some other, unrelated element.
+    id: 'addReminderRepeat', sel: '.rem-quickadd-wrap .rem-editor', title: 'Repeat Schedule',
     body: (
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
