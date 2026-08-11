@@ -81,6 +81,31 @@ const TODAY_HELP_ITEMS = [
     body: <>This creates a new one-time or recurring reminder. Reminders are separate from pickers since some tasks cannot be randomly chosen and must be done on a schedule (recurring reminder) or are a one-time thing (one-time reminder).</>,
   },
   {
+    id: 'addReminderName', sel: '.rem-quickadd-wrap .np-input', title: 'Reminder Name',
+    body: <>Give your reminder a short, descriptive name. This is what will show up on your todo list.</>,
+  },
+  {
+    id: 'addReminderRepeat', sel: '.rem-quickadd-wrap .seg', title: 'Repeat Schedule',
+    body: (
+      <>
+        <p><b>Once:</b> a one-time reminder that stays on your todo list every day until you complete it, then it's gone for good.</p>
+        <p><b>Every N days:</b> due on a recurring interval you choose, counted from a start date you can also adjust.</p>
+        <p><b>Weekly:</b> due on whichever days of the week you choose.</p>
+        <p><b>Monthly:</b> due on a specific day of the month.</p>
+        <p><b>Yearly:</b> due on a specific date each year.</p>
+      </>
+    ),
+  },
+  {
+    id: 'addReminderFoot', sel: '.rem-quickadd-wrap .rem-inline-foot', title: 'Cancel / Add',
+    body: (
+      <>
+        <p><b>Cancel:</b> discards this reminder without saving it.</p>
+        <p><b>Add:</b> saves this reminder and adds it to your list. Stays disabled until a name is entered.</p>
+      </>
+    ),
+  },
+  {
     id: 'dayLog', sel: '.rem-section .dl-chip', title: 'Section Log',
     body: <>This opens a log of everything that has happened for this section today. Including what was auto-picked, skipped, manually selected, re-rolled, and completed. It will also show the new updated values, if applicable, once an item has been marked as completed.</>,
   },
