@@ -86,7 +86,7 @@ const TODAY_HELP_ITEMS = [
   },
   {
     id: 'regenerate', sel: '.ob-generate', title: 'Regenerate',
-    body: <>This re-runs the daily generator by hand, replacing today's list. Anything already marked complete will be replaced too, and won't show up in the Stats tab.</>,
+    body: <>This re-runs the daily generator manually, replacing your todo list. Anything already marked complete will be replaced too and won't show up in the Stats tab.</>,
   },
 ];
 
