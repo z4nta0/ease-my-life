@@ -1815,7 +1815,21 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
         });
         actions.setChecklistDone(true);
         setChecklistExiting(false);
-        generate();
+        // Deferred, and via the ref rather than calling generate() directly
+        // — the three actions.* calls just above are async state updates
+        // that haven't re-rendered yet at this point in the callback, so a
+        // bare generate() here would run against THIS closure's stale
+        // snapshot, where every picker/task the loop above just unhid still
+        // reads hidden:true. generate()'s own picker loop skips anything
+        // hidden, so the real (freshly un-hidden) pickers would silently
+        // produce nothing — only reminders would show, since those render
+        // live off state.tasks rather than being baked into entries by a
+        // one-time generate() run. generateRef always points at the LATEST
+        // generate closure (see its own comment above); scheduling this on
+        // a new macrotask gives React a chance to flush the batched updates
+        // from the three actions.* calls into a fresh render first, so by
+        // the time this fires, generateRef.current() sees the real state.
+        setTimeout(() => generateRef.current(), 0);
       }, celebrateMs + exitMs);
       prevGenerateResolved.current = generateItemResolved;
       return () => { clearTimeout(t1); clearTimeout(t2); };
