@@ -117,8 +117,8 @@ const TODAY_HELP_ITEMS = [
     id: 'addReminderFoot', sel: '.rem-quickadd-wrap .rem-inline-foot .btn', title: 'Cancel / Add',
     body: (
       <>
-        <p><b>Cancel:</b> discards this reminder without saving it.</p>
-        <p><b>Add:</b> saves this reminder and adds it to your list. Stays disabled until a name is entered.</p>
+        <p><b>Cancel:</b> This button discards the reminder form without saving anything.</p>
+        <p><b>Add:</b> This button saves the reminder and adds it to your todo list, unless you selected a recurring reminder that is not due today. Stays disabled until at least a name is entered.</p>
       </>
     ),
   },
