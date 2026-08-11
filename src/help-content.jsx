@@ -42,7 +42,12 @@ const TODAY_HELP_ITEMS = [
   },
   {
     id: 'cardCheck', sel: '.rem-section .today-card:first-of-type .check', title: 'Mark Complete',
-    body: <>Click this circle to mark an item as done. Doing so applies that item's value/weight consequences and, once everything for the day is checked off, increases your Day Streak.</>,
+    body: (
+      <>
+        <p>Clicking this circle marks an item as completed and updates the progress ring's completed count. When all items are completed your Day Streak increase and celebration animations will play.</p>
+        <p>For items that belong to a picker with updatable values, marking as complete will also apply updates to all of the pickers' items. Dynamic Weighted items wil have their boost value increased or reset to 0. Ease-up and Ease-down items will have their charge values increased or decreased, respectively.</p>
+      </>
+    ),
   },
   {
     id: 'cardActions', sel: '.rem-section .today-card:first-of-type .today-card-actions', title: 'Card Actions',
