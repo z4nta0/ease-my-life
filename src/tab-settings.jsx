@@ -8,6 +8,8 @@ import { Segmented } from './reminders.jsx';
 import { CelebrationPreviewStage, PickerAnimStage } from './settings-previews.jsx';
 import { STORAGE } from './storage.js';
 import { Btn, Card, Collapse, Icon, InfoTip, announce, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { HelpButton, HelpOverlay } from './help-mode.jsx';
+import { SETTINGS_HELP_ITEMS } from './help-content.jsx';
 
 // Settings — picker config + daily generator config + days off + reset.
 
@@ -475,6 +477,11 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
   // the right pane and the sticky rail on the left tracks / drives position.
   const [activeSection, setActiveSection] = React.useState('daily');
   const [legalDoc, setLegalDoc] = React.useState(null); // 'privacy' | 'terms' | null
+  // Help mode (see help-mode.jsx) — every section here is static UI chrome,
+  // no data-dependent content, so unlike Pickers/Data/Stats no disposable
+  // sample data needs seeding.
+  const [helpOn, setHelpOn] = React.useState(false);
+  const helpExit = React.useCallback(() => setHelpOn(false), []);
   // Appearance preview stages: bumping a token replays; celebPreview/pickPreview
   // hold which style is showing (null = idle, selector visible).
   const [celebToken, setCelebToken] = React.useState(0);
@@ -859,8 +866,12 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
 
   return (
     <div className="tab tab--settings" ref={rootRef}>
+      <HelpOverlay active={helpOn} items={SETTINGS_HELP_ITEMS} onExit={helpExit} />
       <header className="stat-h">
-        <div className="kicker stat-h-kicker">Settings</div>
+        <div className="kicker-row">
+          <div className="kicker stat-h-kicker">Settings</div>
+          <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
+        </div>
         <div className="stat-h-lead">
           <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
             {/* Same theme-wired logo as the Today + Stats + Data headers. */}
