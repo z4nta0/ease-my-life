@@ -52,10 +52,39 @@ const findTargets = (sel) => {
   }
   return [];
 };
+// Same fix as onboarding-tour-runner.jsx's own clipHorizontalOverflow (see
+// its header comment there for the full story) ported here for the same
+// reason: an item like Pickers' "Picker Selection" matches every tab in a
+// horizontally-scrollable row (.picker-tabs), and once there are enough
+// pickers to overflow it, the ones scrolled out of view still report a
+// real, full-width getBoundingClientRect() — unioning them in stretches the
+// highlight into empty space past the row's own clipped edge. Clips each
+// element's rect against its own overflow-x (if it's the scrollable box
+// itself) and every scrollable ancestor's visible bounds before it ever
+// reaches the union; returns null if an element ends up fully clipped away.
+const clipHorizontalOverflow = (rect, el) => {
+  let top = rect.top, left = rect.left, right = rect.right, bottom = rect.bottom;
+  const selfOxs = getComputedStyle(el).overflowX;
+  if ((selfOxs === 'auto' || selfOxs === 'scroll' || selfOxs === 'hidden') && el.clientWidth < (right - left) - 2) {
+    right = left + el.clientWidth;
+  }
+  let n = el.parentElement;
+  while (n && n !== document.body) {
+    const oxs = getComputedStyle(n).overflowX;
+    if (oxs === 'auto' || oxs === 'scroll' || oxs === 'hidden') {
+      const nr = n.getBoundingClientRect();
+      left = Math.max(left, nr.left); right = Math.min(right, nr.right);
+      if (right <= left) return null;
+    }
+    n = n.parentElement;
+  }
+  return { top, left, right, bottom };
+};
 const unionRect = (els) => {
   let top = Infinity, left = Infinity, right = -Infinity, bottom = -Infinity;
   els.forEach((el) => {
-    const r = el.getBoundingClientRect();
+    const r = clipHorizontalOverflow(el.getBoundingClientRect(), el);
+    if (!r) return;
     top = Math.min(top, r.top); left = Math.min(left, r.left);
     right = Math.max(right, r.right); bottom = Math.max(bottom, r.bottom);
   });
@@ -207,6 +236,13 @@ function HelpOverlay({ active, items, onExit }) {
         const els = findTargets(it.sel);
         if (!els.length) return;
         const r = unionRect(els);
+        // Every matched element can still end up fully clipped away by
+        // unionRect's own horizontal-scroll clipping (e.g. a target scrolled
+        // out of a row with nothing else in the selector to fall back on) —
+        // same "not currently reachable, so no badge this frame" outcome as
+        // finding zero elements in the first place, rather than feeding an
+        // Infinity-valued rect to the SVG below.
+        if (!Number.isFinite(r.width) || !Number.isFinite(r.height)) return;
         const shape = els.length === 1 ? shapeFor(els[0], r.width + PAD * 2, r.height + PAD * 2, it.shape) : null;
         next[it.id] = { ...r, shape };
       });

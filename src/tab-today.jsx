@@ -6,6 +6,7 @@ import { EASE_UP_RANGE_WARN } from './constants.js';
 import { DayLogChip, GroupLog } from './day-log.jsx';
 import { HOLIDAYS } from './holidays.js';
 import { HelpButton, HelpOverlay } from './help-mode.jsx';
+import { TODAY_HELP_ITEMS } from './help-content.jsx';
 import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
 import { OB_CHECKLIST, OB_GENERATE_ITEM_ID, OB_PAGE_TOURS } from './onboarding-checklist.js';
@@ -808,24 +809,16 @@ function PageTourCard({ tour, state, actions, onPlayTutorial, onUncheckTutorial,
 }
 
 function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStartPageTour }) {
-  // Help mode engine test case (see help-mode.jsx's own header comment) —
-  // local, resets to off on every remount (tab switch), which is exactly
-  // the "navigating away closes it, the page you land on doesn't inherit
-  // it" behavior the design called for. Two targets specifically to prove
-  // the "several highlights, independent badges, one shared open tooltip"
-  // mechanics work before rolling real content out to every page.
+  // Help mode (see help-mode.jsx's own header comment) — local, resets to
+  // off on every remount (tab switch), which is exactly the "navigating
+  // away closes it, the page you land on doesn't inherit it" behavior the
+  // design called for. Content lives in help-content.jsx (TODAY_HELP_ITEMS)
+  // rather than inline here, same as every other tab — Today doesn't need
+  // any disposable sample data seeded for it (every target it points at is
+  // either always-present UI chrome or gracefully renders no badge if the
+  // user has no entries yet), unlike Pickers/Data/Stats.
   const [helpOn, setHelpOn] = React.useState(false);
   const helpExit = React.useCallback(() => setHelpOn(false), []);
-  const helpItems = React.useMemo(() => [
-    {
-      id: 'progressRing', sel: '.ring', shape: 'circle', title: 'Progress Ring',
-      body: <>This tracks your current progress of completed / total tasks for today's todo list. Once filled completely, your Day Streak will increase and the celebration animations will play.</>,
-    },
-    {
-      id: 'brandMark', sel: '.brand-mark', title: 'Home',
-      body: <>Click this logo any time to jump back to the top of your todo list.</>,
-    },
-  ], []);
   const groups = React.useMemo(() => groupEntries(state), [state]);
   // Unified block order: the Reminders block ('__reminders' sentinel) plus the
   // picker groups, sequenced by state.groupOrder. Drives both the rail and the
@@ -1858,7 +1851,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
 
   return (
     <div className={`tab tab--today ${editMode ? 'is-editmode' : ''}`}>
-      <HelpOverlay active={helpOn} items={helpItems} onExit={helpExit} />
+      <HelpOverlay active={helpOn} items={TODAY_HELP_ITEMS} onExit={helpExit} />
       <header className="today-h" ref={headerRef}>
         <div className="today-h-inner">
           <div className="today-h-l">

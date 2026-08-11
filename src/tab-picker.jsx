@@ -7,6 +7,9 @@ import { PICKERS, normalizeConditionalName, normalizeGroupName } from './pickers
 import { MODES } from './seed.js';
 import { ConditionalControls, conditionalDraftDefault } from './tab-conditional.jsx';
 import { Btn, Collapse, Icon, InfoTip, Pill, ProgressBar, WeekdayChips, reduceMotion } from './ui.jsx';
+import { HelpButton, HelpOverlay } from './help-mode.jsx';
+import { PICKER_HELP_ITEMS } from './help-content.jsx';
+import { seedHelpPickers, clearHelpPickers } from './help-sample-data.js';
 
 // PickerView — the heart of the app. Choose a saved picker, hit "Pick",
 // watch the cycle animation, and apply the result. Three animation styles
@@ -1357,6 +1360,23 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   const [creating, setCreating] = React.useState(false);
   const [groupFilter, setGroupFilter] = React.useState('all');
   const active = state.pickers.find((p) => p.id === activeId);
+  // Help mode (see help-mode.jsx) — needs real pickers of every mode plus a
+  // conditional-gated one to point at, so a disposable copy set is seeded
+  // the moment it turns on and torn down the moment it turns off (see
+  // help-sample-data.js's own header comment for why this is a SEPARATE
+  // disposable namespace from the page tour's own `pt_`-prefixed copies).
+  const [helpOn, setHelpOn] = React.useState(false);
+  const helpExit = React.useCallback(() => setHelpOn(false), []);
+  React.useEffect(() => {
+    if (helpOn) seedHelpPickers(state, actions);
+    else clearHelpPickers(actions);
+  }, [helpOn]);
+  // Unmount (tab switch) with help mode still on — the effect above's own
+  // cleanup only fires on a DEPENDENCY change, not unmount, so this is the
+  // unmount-specific counterpart. Unconditional and harmless if nothing was
+  // ever seeded (clearHelpPickers's own removePicker/removeConditional
+  // calls are no-ops against ids that don't exist).
+  React.useEffect(() => () => clearHelpPickers(actions), []);
   // Onboarding tour: when it stages a prefill, open the create form for it.
   const tour = useEmlTour ? useEmlTour() : { prefill: null, startCreate: null };
   // The Pickers page tour's own Step 4 highlights "Add new picker" but
@@ -1454,8 +1474,12 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
 
   return (
     <div className="tab tab--picker">
+      <HelpOverlay active={helpOn} items={PICKER_HELP_ITEMS} onExit={helpExit} />
       <header className="picker-h-head">
-        <div className="kicker">Pickers</div>
+        <div className="kicker-row">
+          <div className="kicker">Pickers</div>
+          <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
+        </div>
         <div className="picker-h-lead">
           <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
             {/* Same theme-wired logo as the Today + Stats headers so the tabs
