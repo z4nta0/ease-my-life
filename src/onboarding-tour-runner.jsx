@@ -357,6 +357,21 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // spread silently drops every field this function doesn't explicitly
     // set, poisoning every later Math.min/max call downstream with NaN.
     let top = rect.top, left = rect.left, right = rect.right, bottom = rect.bottom;
+    // Same idea as the ancestor loop below, but for a step whose selector
+    // matches the scrollable row ITSELF as one element (e.g. the Stats
+    // tour's Range row, .stat-filter-pills--seg) rather than several
+    // children inside it — the loop below only ever inspects el's
+    // ancestors, so a too-wide getBoundingClientRect() on el's own
+    // overflow-x:auto box (seen on some engine/layout combinations even
+    // with min-width:0 set — the row's own content still fits, so this is
+    // usually a no-op) never gets caught. clientWidth reflects what's
+    // actually rendered/visible regardless of that; only clamps if it's
+    // meaningfully narrower than the raw rect, so a normal thin border
+    // doesn't shave a couple pixels off every ordinary highlight.
+    const selfOxs = getComputedStyle(el).overflowX;
+    if ((selfOxs === 'auto' || selfOxs === 'scroll' || selfOxs === 'hidden') && el.clientWidth < (right - left) - 2) {
+      right = left + el.clientWidth;
+    }
     let n = el.parentElement;
     while (n && n !== document.body) {
       const oxs = getComputedStyle(n).overflowX;
