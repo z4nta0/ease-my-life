@@ -61,7 +61,7 @@ const TODAY_HELP_ITEMS = [
   },
   {
     id: 'addReminder', sel: '.rem-add-btn', title: 'Add a Reminder',
-    body: <>This creates a new one-time or recurring reminder — a task with a fixed schedule, distinct from a picker's randomly-chosen items.</>,
+    body: <>This creates a new one-time or recurring reminder. Reminders are separate from pickers since some tasks cannot be randomly chosen and must be done on a schedule (recurring reminder) or are a one-time thing (one-time reminder).</>,
   },
   {
     id: 'dayLog', sel: '.rem-section .dl-chip', title: 'Section Log',
