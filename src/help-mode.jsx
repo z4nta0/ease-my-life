@@ -137,11 +137,25 @@ const shapeFor = (el, paddedW, paddedH, shapeOverride) => {
 // Badge geometry, shared between where it's actually drawn and where a tip
 // anchored to it should point — a 20px circle overlapping the highlighted
 // box's own top-right corner (matching the "small corner marker" design,
-// distinct from InfoTip's own inline-trigger placement).
+// distinct from InfoTip's own inline-trigger placement). Falls back to the
+// top-LEFT corner instead when the target's own right edge sits past the
+// viewport — e.g. a horizontally-scrollable row (Today's group nav) whose
+// own rect is its full unclipped content width, not just what's currently
+// visible; a right-corner badge there would only be reachable by scrolling
+// the row all the way to its end. The target's LEFT edge is always what's
+// initially in view (these rows start scrolled to 0), so that corner is
+// always reachable.
 const BADGE_SIZE = 20;
 const badgeRectFor = (targetRect) => {
   const top = targetRect.top - PAD - BADGE_SIZE / 2;
-  const left = targetRect.right + PAD - BADGE_SIZE / 2;
+  // Checks where a right-corner badge's own edge would actually land, not
+  // just the target's raw right edge — a target rect already clipped flush
+  // to the viewport (see clipHorizontalOverflow) can sit exactly AT the
+  // viewport width, which still overflows once the badge's own PAD gap and
+  // half-width are added on top of it.
+  const rightLeft = targetRect.right + PAD - BADGE_SIZE / 2;
+  const overflowsRight = rightLeft + BADGE_SIZE > window.innerWidth;
+  const left = overflowsRight ? targetRect.left - PAD - BADGE_SIZE / 2 : rightLeft;
   return { top, left, width: BADGE_SIZE, height: BADGE_SIZE, bottom: top + BADGE_SIZE };
 };
 
