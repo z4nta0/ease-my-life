@@ -257,8 +257,18 @@ function HelpOverlay({ active, items, onExit }) {
       if (cancelled) return;
       const next = {};
       allItems.forEach((it) => {
-        const els = findTargets(it.sel);
+        let els = findTargets(it.sel);
         if (!els.length) return;
+        // `firstOnly` takes just the first DOCUMENT-order match instead of
+        // unioning every match — needed when a selector's matches are
+        // scattered across several different parents (e.g. one entry card
+        // per today-list group section), where CSS's own :first-of-type
+        // can't express "first anywhere on the page" (it resets per
+        // parent, matching one per section instead of one overall — see
+        // cardCheck's own narrower .rem-section-scoped selector for a case
+        // where that per-parent reset is actually safe, since there's only
+        // one such parent on the page).
+        if (it.firstOnly) els = els.slice(0, 1);
         const r = unionRect(els);
         // Every matched element can still end up fully clipped away by
         // unionRect's own horizontal-scroll clipping (e.g. a target scrolled

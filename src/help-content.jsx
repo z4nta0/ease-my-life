@@ -50,13 +50,30 @@ const TODAY_HELP_ITEMS = [
     ),
   },
   {
-    id: 'cardActions', sel: '.rem-section .today-card:first-of-type .today-card-actions', title: 'Card Actions',
+    // Reminders and picker-generated entries share the same .today-card-
+    // actions markup but not the same buttons (reminders have no Re-roll —
+    // there's nothing to re-roll TO, it's a fixed task, not a random pick),
+    // so this needs two separate items rather than one shared description.
+    // firstOnly (see help-mode.jsx) rather than :first-of-type here — picker
+    // entries are scattered across however many group sections the user
+    // has, and :first-of-type resets per section instead of picking one
+    // overall.
+    id: 'cardActionsPicker', sel: '.today-card:not(.rem-card):not(.today-card--tutorial) .today-card-actions', firstOnly: true, title: 'Card Actions',
     body: (
-      <ol className="help-tip-list">
-        <li><b>Re-roll</b> — swap this item for a different one from the same picker, without waiting for the next generation.</li>
-        <li><b>Skip</b> — remove this item from today's list without completing it.</li>
-        <li><b>Edit</b> — rename this item on the spot.</li>
-      </ol>
+      <>
+        <p><b>Re-roll:</b> swaps this item for a different one from the same picker, without waiting for the next generation.</p>
+        <p><b>Skip:</b> removes this item from today's list without completing it and updates the progress ring's total count accordingly.</p>
+        <p><b>Edit:</b> adjusts this item's properties. This includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
+      </>
+    ),
+  },
+  {
+    id: 'cardActionsReminder', sel: '.rem-card:first-of-type .today-card-actions', title: 'Card Actions',
+    body: (
+      <>
+        <p><b>Skip:</b> removes this item from today's list without completing it and updates the progress ring's total count accordingly.</p>
+        <p><b>Edit:</b> adjusts this item's properties. This includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
+      </>
     ),
   },
   {
