@@ -59,8 +59,8 @@ const TODAY_HELP_ITEMS = [
     body: <>This creates a new one-time or recurring reminder — a task with a fixed schedule, distinct from a picker's randomly-chosen items.</>,
   },
   {
-    id: 'dayLog', sel: '.rem-section .dl-chip', title: 'Day Log',
-    body: <>This opens a log of everything the daily generator did for this section today — what was auto-picked, what was skipped, and why.</>,
+    id: 'dayLog', sel: '.rem-section .dl-chip', title: 'Section Log',
+    body: <>This opens a log of everything that has happened for this section today. Including what was auto-picked, skipped, manually selected, re-rolled, and completed. It will also show the new updated values, if applicable, once an item has been marked as completed.</>,
   },
   {
     id: 'regenerate', sel: '.ob-generate', title: 'Regenerate',
