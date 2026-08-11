@@ -815,9 +815,10 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   // the "several highlights, independent badges, one shared open tooltip"
   // mechanics work before rolling real content out to every page.
   const [helpOn, setHelpOn] = React.useState(false);
+  const helpExit = React.useCallback(() => setHelpOn(false), []);
   const helpItems = React.useMemo(() => [
     {
-      id: 'progressRing', sel: '.ring', title: 'Progress Ring',
+      id: 'progressRing', sel: '.ring', shape: 'circle', title: 'Progress Ring',
       body: <>This tracks your current progress of completed / total tasks for today's todo list. Once filled completely, your Day Streak will increase and the celebration animations will play.</>,
     },
     {
@@ -1857,7 +1858,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
 
   return (
     <div className={`tab tab--today ${editMode ? 'is-editmode' : ''}`}>
-      <HelpOverlay active={helpOn} items={helpItems} />
+      <HelpOverlay active={helpOn} items={helpItems} onExit={helpExit} />
       <header className="today-h" ref={headerRef}>
         <div className="today-h-inner">
           <div className="today-h-l">

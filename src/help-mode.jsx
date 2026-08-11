@@ -8,14 +8,15 @@ import { createPortal } from 'react-dom';
 // that, a genuinely different engine). Deliberately NOT built on top of
 // GuidedTour: that engine is sequential/single-spotlight and its dimming
 // trick (one element's own box-shadow spread darkening everything outside
-// it) doesn't compose for "many holes at once" — this instead paints ONE
-// SVG path (evenodd fill-rule: an outer full-viewport rect plus one inner
-// rect per highlighted target) so arbitrarily many cutouts coexist in a
-// single dim layer. What DOES carry over from the tour: reusing its exact
-// coach visual language (.ob-coach and its arrow) for the tip itself, per
-// the design conversation this was built from — the only difference is the
-// tip's own content (no nav chrome) and how it's triggered (click a badge,
-// not "the current tour step").
+// it) doesn't compose for "many holes at once" — this instead paints a
+// single SVG mask (a full-viewport white rect, plus one black rounded-rect
+// per highlighted target) so arbitrarily many cutouts coexist in one dim
+// layer, each shaped to roughly match its own target's own border-radius
+// rather than always being a plain square. What DOES carry over from the
+// tour: reusing its exact coach visual language (.ob-coach and its arrow)
+// for the tip itself, per the design conversation this was built from — the
+// only difference is the tip's own content (no nav chrome) and how it's
+// triggered (click a badge, not "the current tour step").
 //
 // Ownership: the parent (each tab component) owns the on/off boolean as
 // plain local state and renders both <HelpButton> (controlled toggle) and
@@ -61,47 +62,87 @@ const unionRect = (els) => {
   return { top, left, right, bottom, width: right - left, height: bottom - top };
 };
 
+// Extra margin drawn around every highlighted target's own rect — module-
+// level (not a render-local const) since the shape math below needs it too,
+// at the point rects are first computed, not just at render time.
+const PAD = 8;
+// Only meaningful for a SINGLE matched element — a multi-element union (a
+// clustered group of buttons, say) has no one shape of its own, so those
+// fall back to the default rounded-rect (see DEFAULT_R below) instead of
+// trying to average several unrelated corner radii together. Reads the
+// element's own computed border-radius and reproduces it at the padded
+// box's size: a percentage (almost always 50%, i.e. "fully round") scales
+// with the padded width/height the exact way CSS's own border-radius:50%
+// already does, so a padded circle stays a circle and a padded pill stays a
+// pill; a pixel value just gets the same pad added back on top, to roughly
+// preserve how rounded it reads once the box has grown.
+const DEFAULT_R = 12; // matches --r-md
+// `shapeOverride: 'circle'` on a help item skips CSS inspection entirely —
+// needed for targets like the progress ring, whose round appearance comes
+// from an inner SVG <circle> rather than the element's own border-radius
+// (which reads as a plain 0), so auto-detection has nothing to read.
+const shapeFor = (el, paddedW, paddedH, shapeOverride) => {
+  if (shapeOverride === 'circle') return { rx: paddedW / 2, ry: paddedH / 2 };
+  const first = (getComputedStyle(el).borderRadius || '').split(' ')[0];
+  if (!first) return { rx: DEFAULT_R, ry: DEFAULT_R };
+  if (first.endsWith('%')) {
+    const pct = parseFloat(first) / 100;
+    if (Number.isNaN(pct)) return { rx: DEFAULT_R, ry: DEFAULT_R };
+    return { rx: pct * paddedW, ry: pct * paddedH };
+  }
+  const px = parseFloat(first);
+  if (Number.isNaN(px) || px === 0) return { rx: DEFAULT_R, ry: DEFAULT_R };
+  return { rx: px + PAD, ry: px + PAD };
+};
+
 // Badge geometry, shared between where it's actually drawn and where a tip
 // anchored to it should point — a 20px circle overlapping the highlighted
 // box's own top-right corner (matching the "small corner marker" design,
 // distinct from InfoTip's own inline-trigger placement).
 const BADGE_SIZE = 20;
-const badgeRectFor = (targetRect, pad) => {
-  const top = targetRect.top - pad - BADGE_SIZE / 2;
-  const left = targetRect.right + pad - BADGE_SIZE / 2;
+const badgeRectFor = (targetRect) => {
+  const top = targetRect.top - PAD - BADGE_SIZE / 2;
+  const left = targetRect.right + PAD - BADGE_SIZE / 2;
   return { top, left, width: BADGE_SIZE, height: BADGE_SIZE, bottom: top + BADGE_SIZE };
 };
 
-// Where the open tip should sit relative to the badge that opened it — same
-// "prefer below, flip above if it'd clip, clamp horizontally, keep the
-// arrow pointed at the badge" math as both InfoTip's place() and the tour's
-// own coach placement, just centered on a badge's small rect instead of a
-// trigger span or a whole highlighted target.
-const placeTip = (badgeRect, tw, th) => {
+// Where the open tip should sit relative to the target it describes — same
+// "prefer below, flip above if it'd clip, clamp horizontally" idea as both
+// InfoTip's place() and the tour's own coach placement. Both axes are
+// TARGET-relative, not badge-relative (the badge only marks where to click,
+// it isn't where the tip should point): vertically it clears the target's
+// own rect so a big target (e.g. the progress ring) can't have "below"
+// still land inside its own box; horizontally the arrow centers on the
+// target's own midpoint, and the tip box is what shifts left/right off that
+// centerpoint to stay clear of the viewport edge — e.g. a target near the
+// left edge gets a tip whose bulk extends rightward with the arrow near the
+// tip's own left end, and vice versa near the right edge.
+const placeTip = (targetRect, tw, th) => {
   const vw = window.innerWidth, vh = window.innerHeight, M = 8;
-  const spaceBelow = vh - badgeRect.bottom;
+  const spaceBelow = vh - targetRect.bottom;
   let top, arrowClass;
-  if (spaceBelow >= th + 16) { top = badgeRect.bottom + 16; arrowClass = 'ob-coach--up'; }
-  else { top = Math.max(M, badgeRect.top - 16 - th); arrowClass = 'ob-coach--down'; }
-  const left = Math.max(M, Math.min(badgeRect.left + badgeRect.width / 2 - tw / 2, vw - tw - M));
-  const arrowX = Math.max(18, Math.min(badgeRect.left + badgeRect.width / 2 - left, tw - 26));
+  if (spaceBelow >= th + 16) { top = targetRect.bottom + 16; arrowClass = 'ob-coach--up'; }
+  else { top = Math.max(M, targetRect.top - 16 - th); arrowClass = 'ob-coach--down'; }
+  const centerX = targetRect.left + targetRect.width / 2;
+  const left = Math.max(M, Math.min(centerX - tw / 2, vw - tw - M));
+  const arrowX = Math.max(18, Math.min(centerX - left, tw - 26));
   return { top, left, arrowClass, arrowX };
 };
 
 // One tip, positioned once its own size is known (mirrors InfoTip's own
 // measure-after-mount approach) — simpler than the tour's permanent hidden
 // measurer since at most one of these ever exists at a time.
-function HelpTip({ item, badgeRect }) {
+function HelpTip({ item, targetRect }) {
   const ref = React.useRef(null);
   const [style, setStyle] = React.useState(null);
   const [arrowClass, setArrowClass] = React.useState('ob-coach--up');
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const { top, left, arrowClass: ac, arrowX } = placeTip(badgeRect, el.offsetWidth, el.offsetHeight);
+    const { top, left, arrowClass: ac, arrowX } = placeTip(targetRect, el.offsetWidth, el.offsetHeight);
     setStyle({ top, left, '--ob-ax': arrowX + 'px' });
     setArrowClass(ac);
-  }, [badgeRect]);
+  }, [targetRect]);
   return (
     <div ref={ref} className={`ob-coach help-tip ${arrowClass}`}
          style={style || { top: -9999, left: -9999 }} role="tooltip">
@@ -111,39 +152,82 @@ function HelpTip({ item, badgeRect }) {
   );
 }
 
+// Always included ahead of whatever page-specific items are passed in —
+// every page shares the same bottom/side nav, and it was flagged as a real
+// point of user confusion (icon-only on mobile, no label) worth explaining
+// everywhere rather than something each page's own catalog has to remember
+// to add. One shared badge/tip for the whole bar rather than one per
+// button: five that close together would be its own clutter problem, the
+// same reasoning behind clustering e.g. a card's Re-roll/Skip/Edit under
+// one badge.
+const NAV_HELP_ITEM = {
+  id: '__nav', sel: '[data-tab]',
+  title: 'Navigation',
+  body: (
+    <ol className="help-tip-list">
+      <li><b>Today</b> — your auto-generated daily todo list.</li>
+      <li><b>Pickers</b> — create pickers/items, or run one manually.</li>
+      <li><b>Stats</b> — statistics for your pickers and items.</li>
+      <li><b>Data</b> — view and edit all your pickers, items and reminders.</li>
+      <li><b>Settings</b> — customize the app, the daily generator, and more.</li>
+    </ol>
+  ),
+};
+
 // items: [{ id, sel, title, body }] — sel follows GuidedTour's own
 // comma-fallback convention, and can match several elements at once (e.g. a
 // tightly-clustered row of buttons) the same way a tour step's sel can; the
 // whole group shares one badge and one tip, positioned off their combined
 // union — same "union of matched elements" idea as unionRect above, just
-// for a badge anchor instead of a single spotlight.
-function HelpOverlay({ active, items }) {
+// for a badge anchor instead of a single spotlight. `onExit` fires when the
+// user asks to leave help mode entirely (Escape with no tip open, or a
+// second Escape after one closes a tip) — the parent is the one that
+// actually flips its own `active` state back off in response.
+function HelpOverlay({ active, items, onExit }) {
+  const allItems = React.useMemo(() => [NAV_HELP_ITEM, ...items], [items]);
   const [rectsById, setRectsById] = React.useState({});
   const [openId, setOpenId] = React.useState(null);
+  const [toggleRect, setToggleRect] = React.useState(null);
 
-  // Recomputes every tagged element's current rect every frame while
-  // active — simplest reliable way to stay correct under scrolling AND
-  // content reflow without hand-rolling separate scroll/resize/
+  // Recomputes every tagged element's current rect (plus, for a single-
+  // element target, its own shape — see shapeFor's own comment) every frame
+  // while active — simplest reliable way to stay correct under scrolling
+  // AND content reflow without hand-rolling separate scroll/resize/
   // MutationObserver plumbing, and with only a handful of elements per page
   // the per-frame cost is negligible (same trade-off the tour's own
   // position-tracking loop already makes, just over N targets instead of
   // one).
   React.useEffect(() => {
-    if (!active) { setRectsById({}); setOpenId(null); return; }
+    if (!active) { setRectsById({}); setOpenId(null); setToggleRect(null); return; }
     let raf, cancelled = false;
     const loop = () => {
       if (cancelled) return;
       const next = {};
-      items.forEach((it) => {
+      allItems.forEach((it) => {
         const els = findTargets(it.sel);
-        if (els.length) next[it.id] = unionRect(els);
+        if (!els.length) return;
+        const r = unionRect(els);
+        const shape = els.length === 1 ? shapeFor(els[0], r.width + PAD * 2, r.height + PAD * 2, it.shape) : null;
+        next[it.id] = { ...r, shape };
       });
       setRectsById(next);
+      // The page's own toggle button is never one of `allItems` (it's not a
+      // highlighted target), but it still needs a mask cutout: it sits
+      // inside `header.today-h`, which is `position:sticky` with its own
+      // z-index — a nested stacking context that traps the button's own
+      // z-index below the dim layer's, so without a hole punched for it
+      // here it would render visually dimmed despite intending to read as
+      // "always on top, always clickable".
+      const btnEl = document.querySelector('.help-btn');
+      if (btnEl) {
+        const r = btnEl.getBoundingClientRect();
+        setToggleRect({ top: r.top, left: r.left, width: r.width, height: r.height });
+      }
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => { cancelled = true; cancelAnimationFrame(raf); };
-  }, [active, items]);
+  }, [active, allItems]);
 
   // Blocks interaction with anything NOT currently tagged (or part of help
   // mode's own UI) while active — same capture-phase idea as the tour's own
@@ -155,50 +239,75 @@ function HelpOverlay({ active, items }) {
   // .tabbar is always exempt too — navigating away is what's SUPPOSED to
   // close this (see this file's own header comment on ownership), which
   // can't happen if the nav buttons themselves get blocked like everything
-  // else untagged.
+  // else untagged. Escape closes one thing at a time: a tip first if one's
+  // open (so you can back out of what you clicked into without leaving help
+  // mode altogether), then help mode itself on a second press.
   React.useEffect(() => {
     if (!active) return;
     const isOnTarget = (e) => {
       if (e.target.closest('.help-badge, .help-tip, .help-btn, .tabbar')) return true;
-      return items.some((it) => findTargets(it.sel).some((el) => el.contains(e.target)));
+      return allItems.some((it) => findTargets(it.sel).some((el) => el.contains(e.target)));
     };
     const onClickCapture = (e) => {
       if (isOnTarget(e)) return;
       e.preventDefault(); e.stopPropagation();
       setOpenId(null);
     };
+    const onKeyDown = (e) => {
+      if (e.key !== 'Escape') return;
+      if (openId != null) { setOpenId(null); return; }
+      onExit();
+    };
     document.addEventListener('click', onClickCapture, true);
-    return () => document.removeEventListener('click', onClickCapture, true);
-  }, [active, items]);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('click', onClickCapture, true);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [active, allItems, onExit, openId]);
 
   if (!active) return null;
 
-  const vw = window.innerWidth, vh = window.innerHeight, pad = 8;
+  const vw = window.innerWidth, vh = window.innerHeight;
   const entries = Object.entries(rectsById);
-  // Evenodd path: an outer full-viewport rect, then one inner rect per
-  // highlighted target — evenodd doesn't care about winding direction, so
-  // each hole just needs to be A closed rect, not a specifically-wound one.
-  const pathD = `M0,0H${vw}V${vh}H0Z ` + entries.map(([, r]) => {
-    const w = r.width + pad * 2, h = r.height + pad * 2;
-    return `M${r.left - pad},${r.top - pad}h${w}v${h}h${-w}Z`;
-  }).join(' ');
-
-  const openItem = openId ? items.find((it) => it.id === openId) : null;
+  const openItem = openId ? allItems.find((it) => it.id === openId) : null;
   const openRect = openId ? rectsById[openId] : null;
 
   return createPortal(
     <div className="help-mode" aria-live="polite">
       <svg className="help-dim-svg" width={vw} height={vh}>
-        <path d={pathD} fillRule="evenodd" />
+        <mask id="help-mask">
+          <rect x="0" y="0" width={vw} height={vh} fill="#fff" />
+          {entries.map(([id, r]) => {
+            const { rx, ry } = r.shape || { rx: DEFAULT_R, ry: DEFAULT_R };
+            return (
+              <rect key={id} x={r.left - PAD} y={r.top - PAD} rx={rx} ry={ry}
+                    width={r.width + PAD * 2} height={r.height + PAD * 2} fill="#000" />
+            );
+          })}
+          {toggleRect && (
+            <rect x={toggleRect.left - PAD} y={toggleRect.top - PAD}
+                  rx={(toggleRect.height + PAD * 2) / 2} ry={(toggleRect.height + PAD * 2) / 2}
+                  width={toggleRect.width + PAD * 2} height={toggleRect.height + PAD * 2} fill="#000" />
+          )}
+        </mask>
+        <rect className="help-dim-fill" x="0" y="0" width={vw} height={vh} mask="url(#help-mask)" />
       </svg>
-      {entries.map(([id, r]) => (
-        <div key={id} className="help-spot"
-             style={{ top: r.top - pad, left: r.left - pad, width: r.width + pad * 2, height: r.height + pad * 2 }} />
-      ))}
-      {items.map((it) => {
+      {entries.map(([id, r]) => {
+        const { rx, ry } = r.shape || { rx: DEFAULT_R, ry: DEFAULT_R };
+        return (
+          <div key={id} className="help-spot"
+               style={{
+                 top: r.top - PAD, left: r.left - PAD,
+                 width: r.width + PAD * 2, height: r.height + PAD * 2,
+                 borderRadius: `${rx}px / ${ry}px`,
+               }} />
+        );
+      })}
+      {allItems.map((it) => {
         const r = rectsById[it.id];
         if (!r) return null;
-        const br = badgeRectFor(r, pad);
+        const br = badgeRectFor(r);
         return (
           <button key={it.id} type="button"
                   className={`help-badge ${openId === it.id ? 'is-on' : ''}`}
@@ -210,7 +319,7 @@ function HelpOverlay({ active, items }) {
         );
       })}
       {openItem && openRect && (
-        <HelpTip item={openItem} badgeRect={badgeRectFor(openRect, pad)} />
+        <HelpTip item={openItem} targetRect={openRect} />
       )}
     </div>,
     document.body

@@ -3496,13 +3496,18 @@ body.ob-touring .tab{padding-bottom:200px}
 /* The per-page toggle. Muted by default like .pie-help's own "rarely used,
    shouldn't compete with real controls" treatment — this one lives in a
    page header, so it's visible far more often than a single field's own
-   (?) trigger, which is exactly why it stays this quiet until engaged. */
+   (?) trigger, which is exactly why it stays this quiet until engaged.
+   position+z-index lift it above .help-mode's own z-index:1000 dim layer —
+   without that it'd read as dimmed like everything else despite staying
+   genuinely clickable the whole time, which is exactly backwards from what
+   its own state (still active, still the way out) should communicate. */
 .help-btn{
+  position:relative;z-index:1001;
   width:26px;height:26px;flex:0 0 auto;
   display:inline-flex;align-items:center;justify-content:center;
   border:1px solid var(--muted);border-radius:50%;
   background:none;color:var(--muted);
-  font-family:var(--font-mono);font-size:13px;font-weight:700;line-height:1;
+  font-size:13px;font-weight:700;line-height:1;
   cursor:pointer;transition:border-color .15s ease,color .15s ease,background .15s ease;
 }
 .help-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
@@ -3510,12 +3515,15 @@ body.ob-touring .tab{padding-bottom:200px}
 
 .help-mode{position:fixed;inset:0;z-index:1000;pointer-events:none}
 .help-dim-svg{position:absolute;inset:0}
-.help-dim-svg path{fill:oklch(0.15 0.02 250/0.55)}
-/* The outlined box alone (no box-shadow spread) — the SVG path above
+.help-dim-fill{fill:oklch(0.15 0.02 250/0.55)}
+/* The outlined box alone (no box-shadow spread) — the SVG mask above
    already does the "dim everything except the holes" job that .ob-spot's
    own box-shadow trick handles for a single target; stacking N box-shadows
    here instead would re-darken every OTHER hole, which is the exact
-   compose failure this whole separate engine exists to avoid. */
+   compose failure this whole separate engine exists to avoid. border-radius
+   is set inline per target (see help-mode.jsx's own shapeFor) to roughly
+   match what it's actually outlining instead of always being a plain
+   rounded rect — this is just the fallback for whenever that isn't set. */
 .help-spot{
   position:fixed;border-radius:var(--r-md);pointer-events:none;
   border:2px solid oklch(from var(--accent) l c h/0.9);
@@ -3526,7 +3534,7 @@ body.ob-touring .tab{padding-bottom:200px}
   display:inline-flex;align-items:center;justify-content:center;
   border:1px solid var(--muted);border-radius:50%;
   background:var(--surface);color:var(--muted);
-  font-family:var(--font-mono);font-size:11px;font-weight:700;line-height:1;
+  font-size:11px;font-weight:700;line-height:1;
   cursor:pointer;transition:border-color .15s ease,color .15s ease,background .15s ease;
 }
 .help-badge:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
@@ -3538,6 +3546,8 @@ body.ob-touring .tab{padding-bottom:200px}
    back into pointer-events under .help-mode's blanket pointer-events:none. */
 .help-tip{pointer-events:auto;width:280px}
 .help-tip-title{font-size:15px;font-weight:600;margin:0 0 5px}
+.help-tip-list{margin:0;padding-left:18px;font-size:12.5px;line-height:1.6;color:var(--muted)}
+.help-tip-list li+li{margin-top:4px}
 
 /* ─── Settings: storage & installation panel ──────────────────────────────── */
 .set-store-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
