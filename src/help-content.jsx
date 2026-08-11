@@ -127,8 +127,72 @@ const TODAY_HELP_ITEMS = [
     body: <>This opens a log of everything that has happened for this section today. Including what was auto-picked, skipped, manually selected, re-rolled, and completed. It will also show the new updated values, if applicable, once an item has been marked as completed.</>,
   },
   {
+    // Every OTHER group section (Chores, Food, ...) gets the same Log chip
+    // as Reminders — :not(.rem-section):not(.pt-section) excludes Reminders
+    // itself (already covered above) and the Page Tours onboarding section.
+    // firstOnly (see help-mode.jsx) since a user can have several such
+    // groups; this just needs one representative example.
+    id: 'dayLogPicker', sel: '.group-section:not(.rem-section):not(.pt-section) .dl-chip', firstOnly: true, title: 'Section Log',
+    body: <>This opens a log of everything that has happened for this section today. Including what was auto-picked, skipped, manually selected, re-rolled, and completed. It will also show the new updated values, if applicable, once an item has been marked as completed.</>,
+  },
+  {
     id: 'regenerate', sel: '.ob-generate', title: 'Regenerate',
     body: <>This re-runs the daily generator manually, replacing your todo list. Anything already marked complete will be replaced too and won't show up in the Stats tab.</>,
+  },
+  // ── Reminders Log panel (day-log.jsx's RemindersLog) — dl-mk-r* classes
+  // are dedicated selector hooks, kept separate from the visually-styled
+  // .dl-r-name/.dl-r-when/.dl-r-st classes so adding them to the header row
+  // (alongside the data rows, for one column-spanning highlight) doesn't
+  // drag data-row font styling onto the header labels.
+  {
+    id: 'logReminderName', sel: '.dl-mk-rname', title: 'Reminder Column',
+    body: <>Lists every reminder you've created, whether it's due today or not.</>,
+  },
+  {
+    id: 'logReminderWhen', sel: '.dl-mk-rwhen', title: 'When Column',
+    body: <>Shows each reminder's schedule — how often it repeats, or that it's a one-time reminder.</>,
+  },
+  {
+    id: 'logReminderStatus', sel: '.dl-mk-rst', title: 'Status Column',
+    body: <>Shows whether this reminder is done, due today, skipped for today, or not yet due — along with when it will next come due.</>,
+  },
+  // ── Picker/Conditional Log panel (day-log.jsx's GroupLog) — dl-mk-* here
+  // are the same kind of dedicated hooks, shared by both a picker's own
+  // item rows and the Conditionals section's rows (they reuse the same
+  // ValueCells/.dl-item/.dl-status markup), so each column's highlight
+  // naturally spans both.
+  {
+    id: 'logPickerKey', sel: '.dl-key', title: 'Key',
+    body: (
+      <>
+        <p>This explains the icons used in the Status column below:</p>
+        <p><b>Auto-picked:</b> chosen automatically by the daily generator.</p>
+        <p><b>Pushed:</b> sent to Today manually, from the Pickers tab.</p>
+        <p><b>Rolled off:</b> swapped away via Re-roll.</p>
+        <p><b>Skipped:</b> removed from today's list without completing it.</p>
+        <p><b>Completed:</b> marked as done.</p>
+      </>
+    ),
+  },
+  {
+    id: 'logPickerItem', sel: '.dl-mk-item', title: 'Item Column',
+    body: <>Lists every item in this picker's pool, along with its weight or eligible range depending on the picker's mode.</>,
+  },
+  {
+    id: 'logPickerAtGen', sel: '.dl-mk-atgen', title: 'At Gen Column',
+    body: <>This item's value at the moment today's list was generated. Only applies to Ease-up, Ease-down and Dynamic Weighted pickers — shows N/A otherwise.</>,
+  },
+  {
+    id: 'logPickerDelta', sel: '.dl-mk-delta', title: 'Δ Column',
+    body: <>How much this item's value changed since generation — positive when it climbed, negative when it dropped.</>,
+  },
+  {
+    id: 'logPickerAfter', sel: '.dl-mk-after', title: 'After Column',
+    body: <>This item's current value, reflecting any changes from being picked, re-rolled, skipped, or completed today.</>,
+  },
+  {
+    id: 'logPickerStatus', sel: '.dl-mk-status', title: 'Status Column',
+    body: <>Icons showing what happened to this item today — see the Key above for what each icon means.</>,
   },
 ];
 
