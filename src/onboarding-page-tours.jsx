@@ -274,8 +274,13 @@ const STATS_PAGE_TARGETS = {
     title: 'Pickers Filter',
     body: <>This will allow you to <b>narrow your selection to specific pickers or reminders</b>, or you can view everything all at once. Feel free to select one now or click Next to advance to the next step.</>,
   },
+  // The pills specifically, not their .stat-filter-pills--seg container —
+  // that container stretches to the FULL width of its row (.stat-filter-row's
+  // own align-items: stretch), well past the pills' own content width, so
+  // highlighting it left a big undimmed gap of empty background past the
+  // last visible pill. Same fix as groupFilter's own sel, above.
   rangeFilter: {
-    sel: '.stat-filter-pills--seg',
+    sel: '.stat-filter-pills--seg .stat-pill',
     title: 'Range Filter',
     body: <>This will allow you to further <b>narrow your selection by date range</b>, with ranges from 1 week to 1 year to all time. Feel free to select one now or click Next to advance to the next step.</>,
   },
