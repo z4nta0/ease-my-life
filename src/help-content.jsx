@@ -41,11 +41,11 @@ const TODAY_HELP_ITEMS = [
     body: <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</>,
   },
   {
-    id: 'cardCheck', sel: '.today-card:first-of-type .check', title: 'Mark Complete',
+    id: 'cardCheck', sel: '.rem-section .today-card:first-of-type .check', title: 'Mark Complete',
     body: <>Click this circle to mark an item as done. Doing so applies that item's value/weight consequences and, once everything for the day is checked off, increases your Day Streak.</>,
   },
   {
-    id: 'cardActions', sel: '.today-card:first-of-type .today-card-actions', title: 'Card Actions',
+    id: 'cardActions', sel: '.rem-section .today-card:first-of-type .today-card-actions', title: 'Card Actions',
     body: (
       <ol className="help-tip-list">
         <li><b>Re-roll</b> — swap this item for a different one from the same picker, without waiting for the next generation.</li>

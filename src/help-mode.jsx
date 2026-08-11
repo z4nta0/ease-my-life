@@ -121,6 +121,16 @@ const shapeFor = (el, paddedW, paddedH, shapeOverride) => {
   }
   const px = parseFloat(first);
   if (Number.isNaN(px) || px === 0) return { rx: DEFAULT_R, ry: DEFAULT_R };
+  // A "pill" source radius (e.g. 999px on a chip/badge — comfortably past
+  // any real rounded-corner value like --r-lg's 16px) renders as visibly
+  // faceted rather than a smooth stadium once fed through the SVG mask's
+  // own rx/ry clamping at such extreme values — confirmed by an isolated
+  // test: the identical box rendered as a clean pill via plain CSS
+  // border-radius, so the SVG corner-arc math is where this breaks down,
+  // not the padding math above it. Rather than chase the true pill shape,
+  // cap it to a plain rounded rectangle — reads cleanly at any size and
+  // sidesteps the SVG precision issue entirely.
+  if (px >= 24) return { rx: DEFAULT_R, ry: DEFAULT_R };
   return { rx: px + PAD, ry: px + PAD };
 };
 
