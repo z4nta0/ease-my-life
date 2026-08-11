@@ -189,16 +189,24 @@ function HelpTip({ item, targetRect }) {
   const ref = React.useRef(null);
   const [style, setStyle] = React.useState(null);
   const [arrowClass, setArrowClass] = React.useState('ob-coach--up');
+  // `matchTargetWidth` (e.g. the nav tip, once it grew to 5 paragraphs) sizes
+  // the tip to targetRect.tipWidth (see matchWidthSel in the rAF loop above,
+  // if the item set one) or the highlighted rect's own width otherwise,
+  // instead of the usual fixed 280px — applied as an inline style (wins
+  // over .help-tip's width regardless of render order) so it's already in
+  // effect the moment offsetWidth below measures it, not just once CSS
+  // catches up on a later paint.
+  const widthStyle = item.matchTargetWidth ? { width: targetRect.tipWidth ?? targetRect.width } : null;
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
     const { top, left, arrowClass: ac, arrowX } = placeTip(targetRect, el.offsetWidth, el.offsetHeight);
     setStyle({ top, left, '--ob-ax': arrowX + 'px' });
     setArrowClass(ac);
-  }, [targetRect]);
+  }, [targetRect, item.matchTargetWidth]);
   return (
     <div ref={ref} className={`ob-coach help-tip ${arrowClass}`}
-         style={style || { top: -9999, left: -9999 }} role="tooltip">
+         style={{ ...(style || { top: -9999, left: -9999 }), ...widthStyle }} role="tooltip">
       <p className="help-tip-title">{item.title}</p>
       <div className="ob-body">{item.body}</div>
     </div>
@@ -214,7 +222,7 @@ function HelpTip({ item, targetRect }) {
 // same reasoning behind clustering e.g. a card's Re-roll/Skip/Edit under
 // one badge.
 const NAV_HELP_ITEM = {
-  id: '__nav', sel: '[data-tab]',
+  id: '__nav', sel: '[data-tab]', matchTargetWidth: true, matchWidthSel: '.tabbar',
   title: 'Navigation',
   body: (
     <>
@@ -278,7 +286,13 @@ function HelpOverlay({ active, items, onExit }) {
         // Infinity-valued rect to the SVG below.
         if (!Number.isFinite(r.width) || !Number.isFinite(r.height)) return;
         const shape = els.length === 1 ? shapeFor(els[0], r.width + PAD * 2, r.height + PAD * 2, it.shape) : null;
-        next[it.id] = { ...r, shape };
+        // `matchWidthSel` sizes the open tip to a DIFFERENT element's width
+        // than whatever's highlighted — e.g. the nav tip highlights the
+        // individual [data-tab] buttons (tested and correct as a spotlight),
+        // but "as wide as the navbar itself" means the .tabbar container's
+        // own width, padding included, not just the buttons' own union.
+        const tipWidth = it.matchWidthSel ? document.querySelector(it.matchWidthSel)?.getBoundingClientRect().width : undefined;
+        next[it.id] = { ...r, shape, tipWidth };
       });
       setRectsById(next);
       // The page's own toggle button is never one of `allItems` (it's not a
