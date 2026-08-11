@@ -9,6 +9,9 @@ import { MODES } from './seed.js';
 import { ConditionalControls, conditionalDraftDefault } from './tab-conditional.jsx';
 import { EntryEditor } from './tab-today.jsx';
 import { Btn, Collapse, FillButton, Icon, InfoTip, NumStepper, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { HelpButton, HelpOverlay } from './help-mode.jsx';
+import { DATA_HELP_ITEMS } from './help-content.jsx';
+import { seedHelpPickers, clearHelpPickers, seedHelpTasks, clearHelpTasks } from './help-sample-data.js';
 
 // Data tab — items grouped by their owning picker, plus weights, vacation,
 // picker deletion, and per-picker Daily-generator scheduling (weekday +
@@ -761,6 +764,18 @@ function TabData({ state, actions, onHome, onNavTab }) {
   const tour = useEmlTour();
   const disableGroupFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 1;
   const disablePickersFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 2;
+  // Help mode (see help-mode.jsx) — needs real pickers of every mode (with a
+  // conditional-gated one) AND reminders of every recurrence kind to show a
+  // representative "view and edit" section, so both disposable seed sets
+  // are seeded together while it's on and cleared when it turns off or this
+  // tab unmounts.
+  const [helpOn, setHelpOn] = React.useState(false);
+  const helpExit = React.useCallback(() => setHelpOn(false), []);
+  React.useEffect(() => {
+    if (helpOn) { seedHelpPickers(state, actions); seedHelpTasks(state, actions); }
+    else { clearHelpPickers(actions); clearHelpTasks(actions); }
+  }, [helpOn]);
+  React.useEffect(() => () => { clearHelpPickers(actions); clearHelpTasks(actions); }, []);
   // Which picker item is expanded for editing (mirrors the Reminders list).
   const [openItemId, setOpenItemId] = React.useState(null);
   // Tracks a brand-new picker item whose edits aren't kept yet. Cancel on such
@@ -878,8 +893,12 @@ function TabData({ state, actions, onHome, onNavTab }) {
 
   return (
     <div className="tab tab--data">
+      <HelpOverlay active={helpOn} items={DATA_HELP_ITEMS} onExit={helpExit} />
       <header className="stat-h">
-        <div className="kicker stat-h-kicker">Data</div>
+        <div className="kicker-row">
+          <div className="kicker stat-h-kicker">Data</div>
+          <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
+        </div>
         <div className="stat-h-lead">
           <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
             {/* Same theme-wired logo as the Today + Stats headers (currentColor →
