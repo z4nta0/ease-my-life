@@ -81,23 +81,38 @@ const TODAY_HELP_ITEMS = [
     body: <>This creates a new one-time or recurring reminder. Reminders are separate from pickers since some tasks cannot be randomly chosen and must be done on a schedule (recurring reminder) or are a one-time thing (one-time reminder).</>,
   },
   {
-    id: 'addReminderName', sel: '.rem-quickadd-wrap .np-input', title: 'Reminder Name',
+    // Scoped to .rem-quickadd specifically, NOT the wider .rem-quickadd-wrap
+    // — .np-input is reused by the Repeat editor's own extra fields (the
+    // Every N Days number input, the Monthly/Yearly selects), so the wider
+    // scope was unioning the name field with whichever of those happened to
+    // be visible, stretching this highlight down into the Repeat section.
+    id: 'addReminderName', sel: '.rem-quickadd .np-input', title: 'Reminder Name',
     body: <>Give your reminder a short, descriptive name. This is what will show up on your todo list.</>,
   },
   {
-    id: 'addReminderRepeat', sel: '.rem-quickadd-wrap .seg', title: 'Repeat Schedule',
+    // .rem-editor (not just .seg, the pill row) so this always covers
+    // whatever extra fields the current selection reveals below the pills
+    // (the weekday chips for Weekly, the day/date pickers for the others) —
+    // every option's own extra fields, not just whichever ones happened to
+    // share a class with the Reminder Name field above. pinBelowSel anchors
+    // the TIP itself below the whole form (not just below this section) so
+    // it never lands overlapping whichever extra fields are showing.
+    id: 'addReminderRepeat', sel: '.rem-quickadd-wrap .rem-editor', pinBelowSel: '.rem-quickadd-wrap', title: 'Repeat Schedule',
     body: (
       <>
-        <p><b>Once:</b> a one-time reminder that stays on your todo list every day until you complete it, then it's gone for good.</p>
-        <p><b>Every N days:</b> due on a recurring interval you choose, counted from a start date you can also adjust.</p>
-        <p><b>Weekly:</b> due on whichever days of the week you choose.</p>
-        <p><b>Monthly:</b> due on a specific day of the month.</p>
-        <p><b>Yearly:</b> due on a specific date each year.</p>
+        <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
+        <p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>
+        <p><b>Weekly:</b> This reminder will show up on your todo list every week on the days that you select below.</p>
+        <p><b>Monthly:</b> This reminder will show up on your todo list every month on the day that you select below.</p>
+        <p><b>Yearly:</b> This reminder will show up on your todo list every year on the date that you select below.</p>
       </>
     ),
   },
   {
-    id: 'addReminderFoot', sel: '.rem-quickadd-wrap .rem-inline-foot', title: 'Cancel / Add',
+    // .btn, not the .rem-inline-foot row itself — that row is
+    // right-aligned/space-between and wider than its own buttons, which
+    // left a big empty gap included in the highlight.
+    id: 'addReminderFoot', sel: '.rem-quickadd-wrap .rem-inline-foot .btn', title: 'Cancel / Add',
     body: (
       <>
         <p><b>Cancel:</b> discards this reminder without saving it.</p>

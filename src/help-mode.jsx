@@ -170,12 +170,23 @@ const badgeRectFor = (targetRect) => {
 // centerpoint to stay clear of the viewport edge — e.g. a target near the
 // left edge gets a tip whose bulk extends rightward with the arrow near the
 // tip's own left end, and vice versa near the right edge.
-const placeTip = (targetRect, tw, th) => {
+//
+// `pinBelowY`, when set (see pinBelowSel in the rAF loop), skips the
+// "prefer below, flip above" choice entirely and always places the tip
+// below that fixed Y — e.g. the Repeat Schedule tip always sits below the
+// WHOLE add-reminder form, not just below whichever repeat option's own
+// extra fields happen to be showing, so it never lands overlapping them
+// regardless of which option is selected or how tall its fields are.
+const placeTip = (targetRect, tw, th, pinBelowY) => {
   const vw = window.innerWidth, vh = window.innerHeight, M = 8;
-  const spaceBelow = vh - targetRect.bottom;
   let top, arrowClass;
-  if (spaceBelow >= th + 16) { top = targetRect.bottom + 16; arrowClass = 'ob-coach--up'; }
-  else { top = Math.max(M, targetRect.top - 16 - th); arrowClass = 'ob-coach--down'; }
+  if (pinBelowY != null) {
+    top = pinBelowY + 16; arrowClass = 'ob-coach--up';
+  } else {
+    const spaceBelow = vh - targetRect.bottom;
+    if (spaceBelow >= th + 16) { top = targetRect.bottom + 16; arrowClass = 'ob-coach--up'; }
+    else { top = Math.max(M, targetRect.top - 16 - th); arrowClass = 'ob-coach--down'; }
+  }
   const centerX = targetRect.left + targetRect.width / 2;
   const left = Math.max(M, Math.min(centerX - tw / 2, vw - tw - M));
   const arrowX = Math.max(18, Math.min(centerX - left, tw - 26));
@@ -200,7 +211,7 @@ function HelpTip({ item, targetRect }) {
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const { top, left, arrowClass: ac, arrowX } = placeTip(targetRect, el.offsetWidth, el.offsetHeight);
+    const { top, left, arrowClass: ac, arrowX } = placeTip(targetRect, el.offsetWidth, el.offsetHeight, targetRect.pinBelowY);
     setStyle({ top, left, '--ob-ax': arrowX + 'px' });
     setArrowClass(ac);
   }, [targetRect, item.matchTargetWidth]);
@@ -292,7 +303,9 @@ function HelpOverlay({ active, items, onExit }) {
         // but "as wide as the navbar itself" means the .tabbar container's
         // own width, padding included, not just the buttons' own union.
         const tipWidth = it.matchWidthSel ? document.querySelector(it.matchWidthSel)?.getBoundingClientRect().width : undefined;
-        next[it.id] = { ...r, shape, tipWidth };
+        // `pinBelowSel` — see placeTip's own doc comment for why this exists.
+        const pinBelowY = it.pinBelowSel ? document.querySelector(it.pinBelowSel)?.getBoundingClientRect().bottom : undefined;
+        next[it.id] = { ...r, shape, tipWidth, pinBelowY };
       });
       setRectsById(next);
       // The page's own toggle button is never one of `allItems` (it's not a
