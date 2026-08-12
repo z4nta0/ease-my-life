@@ -652,9 +652,103 @@ const STATS_HELP_ITEMS = [
     id: 'rangeFilter', sel: '.stat-filter-pills--seg .stat-pill', title: 'Range Filter',
     body: <>This further narrows your selection by date range, with ranges from 1 week to 1 year to all time.</>,
   },
+  // ── Headline numbers — three different card sets share the same position
+  // (between the Range filter and the heatmap/breakdown below), one per
+  // scope: All/a specific picker, Reminders, and Conditionals. Each card
+  // needed its own stat-mk-* marker class in tab-stats.jsx first, since
+  // they all otherwise share the plain .stat-card class with nothing to
+  // distinguish one from another.
+  {
+    id: 'statStreak', sel: '.stat-mk-streak', title: 'Day Streak',
+    body: <>This shows your current streak of consecutive days where you've completed at least one item. An empty today doesn't break the streak since the day isn't over yet, but a day that had items go uncompleted does.</>,
+  },
+  {
+    id: 'statFullDays', sel: '.stat-mk-fulldays', title: 'Full Days',
+    body: <>This shows the number of days, out of the active days shown next to it, where you completed everything on your todo list that day.</>,
+  },
+  {
+    id: 'statDone', sel: '.stat-mk-done', title: 'Items Done',
+    body: <>This shows the total number of items you've completed in this range.</>,
+  },
+  {
+    id: 'statRate', sel: '.stat-mk-rate', title: 'Completion Rate',
+    body: <>This shows the percentage of items completed, out of every item that was on your todo list in this range.</>,
+  },
+  {
+    id: 'statRemDone', sel: '.stat-mk-remdone', title: 'Reminders Completed',
+    body: <>This shows the total number of reminders you've completed in this range.</>,
+  },
+  {
+    id: 'statRemWeek', sel: '.stat-mk-remweek', title: 'This Week',
+    body: <>This shows the number of reminders you've completed in the last 7 days, regardless of the range filter above.</>,
+  },
+  {
+    id: 'statRemActive', sel: '.stat-mk-remactive', title: 'Active Days',
+    body: <>This shows the number of days in this range where you completed at least one reminder.</>,
+  },
+  {
+    id: 'statRemBusiest', sel: '.stat-mk-rembusiest', title: 'Busiest Day',
+    body: <>This shows the highest number of reminders you've completed in a single day within this range.</>,
+  },
+  {
+    id: 'statCondFired', sel: '.stat-mk-condfired', title: 'Triggered',
+    body: <>This shows the total number of times any conditional in this scope has triggered.</>,
+  },
+  {
+    id: 'statCondCycles', sel: '.stat-mk-condcycles', title: 'Cycles',
+    body: <>This shows the total number of cycles any conditional in this scope was evaluated over, whether it triggered or not.</>,
+  },
+  {
+    id: 'statCondRate', sel: '.stat-mk-condrate', title: 'Fire Rate',
+    body: <>This shows the percentage of evaluated cycles that ended in a trigger, across every conditional in this scope.</>,
+  },
+  {
+    id: 'statCondLast', sel: '.stat-mk-condlast', title: 'Last Fired',
+    body: <>This shows the most recent date that any conditional in this scope triggered.</>,
+  },
   {
     id: 'heatmap', sel: '.stat-heatmap-card', title: 'Activity Heatmap',
     body: <>This visualizes your completed activity over time, with each day shaded by how much you got done. Click on any day for more details.</>,
+  },
+  // ── All-scope only ──────────────────────────────────────────────────────
+  {
+    id: 'statConditionalsSummary', sel: '.cnd-sum-card', title: 'Conditionals',
+    body: <>This summarizes your conditionals' activity in this range — how many times they've triggered, their overall fire rate, and a per-conditional breakdown. Only shows if you have at least one conditional.</>,
+  },
+  {
+    id: 'statRemindersSummary', sel: '.rem-stats-card', title: 'Reminders',
+    body: <>This summarizes your completed reminders in this range, along with a short recent-activity list. Only shows if you have reminders enabled.</>,
+  },
+  {
+    id: 'statSource', sel: '.stat-mk-source', title: 'How Picks Were Chosen',
+    body: <>This breaks down how your picks made it onto your todo list — auto-generated, re-rolled, or hand-picked from the Pickers tab.</>,
+  },
+  {
+    id: 'statMostPicked', sel: '.stat-mk-mostpicked', title: 'Most Picked',
+    body: <>This lists the 5 items that have been picked the most in this scope and range.</>,
+  },
+  {
+    id: 'statColdest', sel: '.stat-mk-coldest', title: 'Coldest Items',
+    body: <>This lists the 5 items that have been picked the least in this scope, excluding any items currently on vacation.</>,
+  },
+  // ── Conditionals scope only ─────────────────────────────────────────────
+  {
+    id: 'statCondBreakdown', sel: '.stat-mk-condbreakdown', title: 'Conditionals Breakdown',
+    body: <>This breaks down every conditional in this scope individually. Switch between fire rate, triggers, cycles, interval, and last fired to see each conditional from a different angle.</>,
+  },
+  // ── Reminders scope only ────────────────────────────────────────────────
+  {
+    id: 'statRemType', sel: '.stat-mk-remtype', title: 'By Reminder Type',
+    body: <>This breaks down your completed reminders by type — one-time versus recurring.</>,
+  },
+  {
+    id: 'statRemBreakdown', sel: '.stat-mk-rembreakdown', title: 'Reminders Breakdown',
+    body: <>This breaks down every reminder individually. Switch between recent completions, total completions, and skips to see each reminder from a different angle.</>,
+  },
+  // ── Single-picker scope only ────────────────────────────────────────────
+  {
+    id: 'pickerIdentity', sel: '.stat-picker-id', title: 'Picker Identity',
+    body: <>This shows which picker you're currently viewing stats for, along with its type and a short explanation of how it chooses.</>,
   },
   {
     id: 'pickerBreakdown', sel: '.stat-breakdown-card', title: 'Picker Breakdown',
