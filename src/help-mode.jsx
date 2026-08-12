@@ -280,134 +280,139 @@ function HelpOverlay({ active, items, onExit }) {
   const [toggleRect, setToggleRect] = React.useState(null);
 
   // Recomputes every tagged element's current rect (plus, for a single-
-  // element target, its own shape — see shapeFor's own comment) every frame
-  // while active — simplest reliable way to stay correct under scrolling
-  // AND content reflow without hand-rolling separate scroll/resize/
-  // MutationObserver plumbing, and with only a handful of elements per page
-  // the per-frame cost is negligible (same trade-off the tour's own
-  // position-tracking loop already makes, just over N targets instead of
-  // one).
+  // element target, its own shape — see shapeFor's own comment). Shared by
+  // the rAF tracking loop below (every frame while active, to stay correct
+  // under scrolling/reflow) AND the click-guard (right after a click that
+  // lands on a real target, e.g. Save/Cancel/Delete closing an editor) —
+  // without the latter, a click that removes/changes a highlighted
+  // element's DOM only self-corrects on the NEXT rAF tick, which can read
+  // as a highlight "stuck" until something else (like a scroll) forces a
+  // frame.
+  const recomputeRects = React.useCallback(() => {
+    const next = {};
+    allItems.forEach((it) => {
+      let els = findTargets(it.sel);
+      if (!els.length) return;
+      // `perElement` gives EVERY matched element its own badge/highlight
+      // (synthesized sub-ids `${it.id}::${i}`, all sharing the parent
+      // item's title/body) instead of unioning them into one — needed
+      // wherever a user could reasonably be looking at ANY one of several
+      // repeated instances (every group's own Log button, every card's
+      // own Mark Complete/Card Actions) rather than just "the first one
+      // on the page", which they might not have scrolled to, or which
+      // could even have its own buttons disabled for that specific card
+      // (e.g. a day-off/charging card's Card Actions) even though other
+      // cards' don't.
+      if (it.perElement) {
+        els.forEach((el, i) => {
+          const r = clipHorizontalOverflow(el.getBoundingClientRect(), el);
+          if (!r) return;
+          const width = r.right - r.left, height = r.bottom - r.top;
+          if (!Number.isFinite(width) || !Number.isFinite(height)) return;
+          const shape = shapeFor(el, width + PAD * 2, height + PAD * 2, it.shape);
+          next[`${it.id}::${i}`] = { ...r, width, height, shape, padY: it.padY ?? PAD };
+        });
+        return;
+      }
+      // `firstOnly` takes just the first DOCUMENT-order match instead of
+      // unioning every match — needed when a selector's matches are
+      // scattered across several different parents (e.g. one entry card
+      // per today-list group section), where CSS's own :first-of-type
+      // can't express "first anywhere on the page" (it resets per
+      // parent, matching one per section instead of one overall — see
+      // cardCheck's own narrower .rem-section-scoped selector for a case
+      // where that per-parent reset is actually safe, since there's only
+      // one such parent on the page).
+      if (it.firstOnly) els = els.slice(0, 1);
+      const r = unionRect(els);
+      // Every matched element can still end up fully clipped away by
+      // unionRect's own horizontal-scroll clipping (e.g. a target scrolled
+      // out of a row with nothing else in the selector to fall back on) —
+      // same "not currently reachable, so no badge this frame" outcome as
+      // finding zero elements in the first place, rather than feeding an
+      // Infinity-valued rect to the SVG below.
+      if (!Number.isFinite(r.width) || !Number.isFinite(r.height)) return;
+      const shape = els.length === 1 ? shapeFor(els[0], r.width + PAD * 2, r.height + PAD * 2, it.shape) : null;
+      // `matchWidthSel` sizes the open tip to a DIFFERENT element's width
+      // than whatever's highlighted — e.g. the nav tip highlights the
+      // individual [data-tab] buttons (tested and correct as a spotlight),
+      // but "as wide as the navbar itself" means the .tabbar container's
+      // own width, padding included, not just the buttons' own union.
+      const tipWidth = it.matchWidthSel ? document.querySelector(it.matchWidthSel)?.getBoundingClientRect().width : undefined;
+      // `pinBelowSel` — see placeTip's own doc comment for why this exists.
+      const pinBelowY = it.pinBelowSel ? document.querySelector(it.pinBelowSel)?.getBoundingClientRect().bottom : undefined;
+      next[it.id] = { ...r, shape, tipWidth, pinBelowY, padY: it.padY ?? PAD };
+    });
+    // `columnGroup` (e.g. the Day Log panel's per-column highlights) —
+    // each column's own union naturally shrinks to just its content's
+    // width (a "+3" delta or a short label), leaving dead gaps between
+    // neighboring columns and brushing right up against the column's own
+    // text with no breathing room. Snaps each group's members edge-to-
+    // edge instead: interior boundaries meet at the exact midpoint
+    // between neighbors (touching, no gap, no overlap — the fix for a
+    // narrow column like Δ getting crowded out or "bleeding" into the
+    // next column), and the group's own outer left/right edges get a
+    // normal PAD of breathing room, same as any other highlight.
+    const groups = {};
+    allItems.forEach((it) => {
+      if (!it.columnGroup || !next[it.id]) return;
+      (groups[it.columnGroup] || (groups[it.columnGroup] = [])).push(it.id);
+    });
+    Object.values(groups).forEach((ids) => {
+      // Vertical: a column whose cells span two lines (e.g. an item's
+      // name + its weight/range sub-line) is naturally taller than a
+      // single-line column in the SAME rows — .dl-trow's own
+      // align-items:center centers each cell within its row rather than
+      // stretching it to match, so the shorter columns' own top/bottom
+      // sit inset from the row's true edges. Give every member of the
+      // group the tallest member's own span so the whole group reads as
+      // one continuous table height instead of some columns overhanging
+      // their shorter siblings on both ends.
+      const top = Math.min(...ids.map((id) => next[id].top));
+      const bottom = Math.max(...ids.map((id) => next[id].bottom));
+      ids.forEach((id) => { next[id].top = top; next[id].bottom = bottom; next[id].height = bottom - top; });
+      ids.sort((a, b) => next[a].left - next[b].left);
+      ids.forEach((id, i) => {
+        const cur = next[id];
+        cur.noPadX = true;
+        if (i === 0) cur.left -= PAD;
+        if (i === ids.length - 1) {
+          cur.right += PAD;
+        } else {
+          const nxt = next[ids[i + 1]];
+          const mid = (cur.right + nxt.left) / 2;
+          cur.right = mid;
+          nxt.left = mid;
+        }
+        cur.width = cur.right - cur.left;
+      });
+    });
+    setRectsById(next);
+    // The page's own toggle button is never one of `allItems` (it's not a
+    // highlighted target), but it still needs a mask cutout: it sits
+    // inside `header.today-h`, which is `position:sticky` with its own
+    // z-index — a nested stacking context that traps the button's own
+    // z-index below the dim layer's, so without a hole punched for it
+    // here it would render visually dimmed despite intending to read as
+    // "always on top, always clickable".
+    const btnEl = document.querySelector('.help-btn');
+    if (btnEl) {
+      const r = btnEl.getBoundingClientRect();
+      setToggleRect({ top: r.top, left: r.left, width: r.width, height: r.height });
+    }
+  }, [allItems]);
+
   React.useEffect(() => {
     if (!active) { setRectsById({}); setOpenId(null); setToggleRect(null); return; }
     let raf, cancelled = false;
     const loop = () => {
       if (cancelled) return;
-      const next = {};
-      allItems.forEach((it) => {
-        let els = findTargets(it.sel);
-        if (!els.length) return;
-        // `perElement` gives EVERY matched element its own badge/highlight
-        // (synthesized sub-ids `${it.id}::${i}`, all sharing the parent
-        // item's title/body) instead of unioning them into one — needed
-        // wherever a user could reasonably be looking at ANY one of several
-        // repeated instances (every group's own Log button, every card's
-        // own Mark Complete/Card Actions) rather than just "the first one
-        // on the page", which they might not have scrolled to, or which
-        // could even have its own buttons disabled for that specific card
-        // (e.g. a day-off/charging card's Card Actions) even though other
-        // cards' don't.
-        if (it.perElement) {
-          els.forEach((el, i) => {
-            const r = clipHorizontalOverflow(el.getBoundingClientRect(), el);
-            if (!r) return;
-            const width = r.right - r.left, height = r.bottom - r.top;
-            if (!Number.isFinite(width) || !Number.isFinite(height)) return;
-            const shape = shapeFor(el, width + PAD * 2, height + PAD * 2, it.shape);
-            next[`${it.id}::${i}`] = { ...r, width, height, shape, padY: it.padY ?? PAD };
-          });
-          return;
-        }
-        // `firstOnly` takes just the first DOCUMENT-order match instead of
-        // unioning every match — needed when a selector's matches are
-        // scattered across several different parents (e.g. one entry card
-        // per today-list group section), where CSS's own :first-of-type
-        // can't express "first anywhere on the page" (it resets per
-        // parent, matching one per section instead of one overall — see
-        // cardCheck's own narrower .rem-section-scoped selector for a case
-        // where that per-parent reset is actually safe, since there's only
-        // one such parent on the page).
-        if (it.firstOnly) els = els.slice(0, 1);
-        const r = unionRect(els);
-        // Every matched element can still end up fully clipped away by
-        // unionRect's own horizontal-scroll clipping (e.g. a target scrolled
-        // out of a row with nothing else in the selector to fall back on) —
-        // same "not currently reachable, so no badge this frame" outcome as
-        // finding zero elements in the first place, rather than feeding an
-        // Infinity-valued rect to the SVG below.
-        if (!Number.isFinite(r.width) || !Number.isFinite(r.height)) return;
-        const shape = els.length === 1 ? shapeFor(els[0], r.width + PAD * 2, r.height + PAD * 2, it.shape) : null;
-        // `matchWidthSel` sizes the open tip to a DIFFERENT element's width
-        // than whatever's highlighted — e.g. the nav tip highlights the
-        // individual [data-tab] buttons (tested and correct as a spotlight),
-        // but "as wide as the navbar itself" means the .tabbar container's
-        // own width, padding included, not just the buttons' own union.
-        const tipWidth = it.matchWidthSel ? document.querySelector(it.matchWidthSel)?.getBoundingClientRect().width : undefined;
-        // `pinBelowSel` — see placeTip's own doc comment for why this exists.
-        const pinBelowY = it.pinBelowSel ? document.querySelector(it.pinBelowSel)?.getBoundingClientRect().bottom : undefined;
-        next[it.id] = { ...r, shape, tipWidth, pinBelowY, padY: it.padY ?? PAD };
-      });
-      // `columnGroup` (e.g. the Day Log panel's per-column highlights) —
-      // each column's own union naturally shrinks to just its content's
-      // width (a "+3" delta or a short label), leaving dead gaps between
-      // neighboring columns and brushing right up against the column's own
-      // text with no breathing room. Snaps each group's members edge-to-
-      // edge instead: interior boundaries meet at the exact midpoint
-      // between neighbors (touching, no gap, no overlap — the fix for a
-      // narrow column like Δ getting crowded out or "bleeding" into the
-      // next column), and the group's own outer left/right edges get a
-      // normal PAD of breathing room, same as any other highlight.
-      const groups = {};
-      allItems.forEach((it) => {
-        if (!it.columnGroup || !next[it.id]) return;
-        (groups[it.columnGroup] || (groups[it.columnGroup] = [])).push(it.id);
-      });
-      Object.values(groups).forEach((ids) => {
-        // Vertical: a column whose cells span two lines (e.g. an item's
-        // name + its weight/range sub-line) is naturally taller than a
-        // single-line column in the SAME rows — .dl-trow's own
-        // align-items:center centers each cell within its row rather than
-        // stretching it to match, so the shorter columns' own top/bottom
-        // sit inset from the row's true edges. Give every member of the
-        // group the tallest member's own span so the whole group reads as
-        // one continuous table height instead of some columns overhanging
-        // their shorter siblings on both ends.
-        const top = Math.min(...ids.map((id) => next[id].top));
-        const bottom = Math.max(...ids.map((id) => next[id].bottom));
-        ids.forEach((id) => { next[id].top = top; next[id].bottom = bottom; next[id].height = bottom - top; });
-        ids.sort((a, b) => next[a].left - next[b].left);
-        ids.forEach((id, i) => {
-          const cur = next[id];
-          cur.noPadX = true;
-          if (i === 0) cur.left -= PAD;
-          if (i === ids.length - 1) {
-            cur.right += PAD;
-          } else {
-            const nxt = next[ids[i + 1]];
-            const mid = (cur.right + nxt.left) / 2;
-            cur.right = mid;
-            nxt.left = mid;
-          }
-          cur.width = cur.right - cur.left;
-        });
-      });
-      setRectsById(next);
-      // The page's own toggle button is never one of `allItems` (it's not a
-      // highlighted target), but it still needs a mask cutout: it sits
-      // inside `header.today-h`, which is `position:sticky` with its own
-      // z-index — a nested stacking context that traps the button's own
-      // z-index below the dim layer's, so without a hole punched for it
-      // here it would render visually dimmed despite intending to read as
-      // "always on top, always clickable".
-      const btnEl = document.querySelector('.help-btn');
-      if (btnEl) {
-        const r = btnEl.getBoundingClientRect();
-        setToggleRect({ top: r.top, left: r.left, width: r.width, height: r.height });
-      }
+      recomputeRects();
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => { cancelled = true; cancelAnimationFrame(raf); };
-  }, [active, allItems]);
+  }, [active, allItems, recomputeRects]);
 
   // Blocks interaction with anything NOT currently tagged (or part of help
   // mode's own UI) while active — same capture-phase idea as the tour's own
@@ -429,7 +434,15 @@ function HelpOverlay({ active, items, onExit }) {
       return allItems.some((it) => findTargets(it.sel).some((el) => el.contains(e.target)));
     };
     const onClickCapture = (e) => {
-      if (isOnTarget(e)) return;
+      if (isOnTarget(e)) {
+        // Fires in the capture phase, before the click's own handler (e.g.
+        // a Save/Cancel/Delete button closing an editor) has run — defer to
+        // a macrotask so the resulting DOM/React commit has already landed
+        // by the time we re-measure, instead of waiting for the next
+        // natural rAF tick.
+        setTimeout(recomputeRects, 0);
+        return;
+      }
       e.preventDefault(); e.stopPropagation();
       setOpenId(null);
     };
@@ -444,7 +457,7 @@ function HelpOverlay({ active, items, onExit }) {
       document.removeEventListener('click', onClickCapture, true);
       document.removeEventListener('keydown', onKeyDown);
     };
-  }, [active, allItems, onExit, openId]);
+  }, [active, allItems, onExit, openId, recomputeRects]);
 
   if (!active) return null;
 
