@@ -489,8 +489,15 @@ const PICKER_HELP_ITEMS = [
     // (the conditional pill rail + inline "create new conditional" form) —
     // that's its own whole nested interface, left for a future pass rather
     // than reaching into collapsed content on this first one.
-    id: 'newPickerConditional', sel: '.np-cond .np-field--toggle', title: 'Attach a Conditional',
-    body: <>This lets you optionally gate this picker behind a conditional. When attached, the picker will only run on days determined by that conditional's own rules — for example, giving yourself an occasional day off from chores. You can attach an existing conditional or create a new one.</>,
+    id: 'newPickerConditional', sel: '.np-cond .np-field--toggle', title: 'Picker Conditional',
+    body: <>This lets you optionally gate this picker behind a conditional. When you attach a conditional, the picker will only run on days determined by that conditional's own rules. For example, giving yourself an occasional day off from chores. You can attach an existing conditional or create a new one.</>,
+  },
+  {
+    // Only present once the toggle above is on (the whole .cnd-attach block
+    // is a Collapse) — findTargets naturally won't match anything while
+    // it's closed, no visibility check needed here.
+    id: 'newPickerConditionalRail', sel: '.cnd-rail', title: 'Select a Conditional',
+    body: <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, or want to create another, use the Add new conditional button to build one inline.</>,
   },
 ];
 
