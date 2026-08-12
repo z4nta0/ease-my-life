@@ -398,6 +398,72 @@ const PICKER_HELP_ITEMS = [
     id: 'addPickerItem', sel: '.pv-additem-btn', title: 'Add Picker Item', padY: 4,
     body: <>This button will open a form that allows you to add a new item to the selected picker's pool.</>,
   },
+  // Clicking Edit on a pool item opens the shared EntryEditor (same
+  // component/markup as Today's and Data's item-editor coverage — see
+  // those catalogs' own comments) — but it renders inside .pv-additem-wrap,
+  // BELOW the pool list, not inline where the item's own row is. No
+  // scroll-into-view step exists in help mode (unlike the guided tour), so
+  // these badges simply appear wherever that section currently sits once
+  // an edit is open; the user scrolls to find them like anything else
+  // below the fold.
+  {
+    // .rd-name-input is also used by the Conditionals section elsewhere in
+    // the app (same .rd-item wrapper shape) — :has(.entry-editor) picks out
+    // only a .rd-item that's actually an ITEM editor.
+    id: 'itemName', sel: '.rd-item:has(.entry-editor) .rd-name-input', title: 'Item Name',
+    body: <>This is the name field for this item, you can rename it here.</>,
+  },
+  {
+    id: 'itemChargeRangeUp', sel: '.entry-editor .pie-ease-up-row', padY: 0, title: 'Charge Controls',
+    body: () => {
+      const unit = document.querySelector('.entry-editor .pie-ease-up-row .np-ease-unit')?.textContent || 'days';
+      return (
+        <>
+          <p><b>Soonest:</b> This controls the minimum number of {unit} that the item must wait before becoming eligible to be picked again.</p>
+          <p><b>Latest:</b> This controls the maximum number of {unit} that the item must wait before becoming eligible to be picked again.</p>
+          <p><b>Fill:</b> This will fill the item's charge to 100, making it eligible to be picked again.</p>
+        </>
+      );
+    },
+  },
+  {
+    id: 'itemChargeRangeDown', sel: '.entry-editor .pie-ease-down-row', padY: 0, title: 'Charge Controls',
+    body: () => {
+      const unit = document.querySelector('.entry-editor .pie-ease-down-row .np-ease-unit')?.textContent || 'days';
+      return (
+        <>
+          <p><b>Shortest:</b> This controls the minimum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p>
+          <p><b>Longest:</b> This controls the maximum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p>
+          <p><b>Refill:</b> This will refill the item's charge back to 100, effectively resetting its active pick cadence.</p>
+        </>
+      );
+    },
+  },
+  {
+    id: 'itemWeight', sel: '.entry-editor .pie-row:has(.weight-stepper)', padY: 0, title: 'Weight',
+    body: <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked and a lower weight makes it less likely.</>,
+  },
+  {
+    id: 'itemBoost', sel: '.entry-editor .pie-row:has(.pie-boost-val)', padY: 0, title: 'Boost',
+    body: <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
+  },
+  {
+    id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Active',
+    body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
+  },
+  {
+    // Unlike Today/Data, the Delete button is CSS-hidden here
+    // (.pv-newitem .rd-edit-foot > .btn--danger) — deleting an existing
+    // item stays solely the pool row's own trash icon + confirm flow on
+    // this tab, so the copy only covers Cancel/Save.
+    id: 'itemFoot', sel: '.entry-editor .rd-edit-foot .btn', title: 'Cancel / Save',
+    body: (
+      <>
+        <p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>
+        <p><b>Save:</b> This button saves your changes to this item.</p>
+      </>
+    ),
+  },
 ];
 
 const STATS_HELP_ITEMS = [
