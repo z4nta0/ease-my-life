@@ -260,7 +260,7 @@ function ContactSupportCard({ state, actions }) {
   return (
     <React.Fragment>
       <Card>
-        <div className="set-data-row">
+        <div className="set-data-row set-contact-trigger">
           <div className="set-data-info">
             <span className="set-data-name">Having problems?</span>
             <span className="set-data-sub">Send a note and it&rsquo;ll come through with your app version and browser attached, so there&rsquo;s no back-and-forth to track those down.</span>
@@ -387,7 +387,7 @@ function ThemeSection({ state, actions }) {
 
   return (
     <React.Fragment>
-      <div className="set-subsection">
+      <div className="set-subsection set-subsection--theme-light">
         <div className="set-subsection-h">Theme &middot; Light</div>
         <p className="settings-sub">
           Pick a light based theme below or create your own. If you enable the system
@@ -409,7 +409,7 @@ function ThemeSection({ state, actions }) {
         </Card>
       </div>
 
-      <div className="set-subsection">
+      <div className="set-subsection set-subsection--theme-dark">
         <div className="set-subsection-h">Theme &middot; Dark</div>
         <p className="settings-sub">
           Pick a dark based theme below or create your own. If you enable the system
@@ -951,7 +951,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
 
             <ThemeSection state={state} actions={actions} />
 
-            <div className="set-subsection">
+            <div className="set-subsection set-subsection--celebration">
               <div className="set-subsection-h">Completion celebration</div>
               <p className="settings-sub">
                 Pick which animation will play when all tasks are marked as completed
@@ -972,7 +972,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               </Card>
             </div>
 
-            <div className="set-subsection">
+            <div className="set-subsection set-subsection--pickanim">
               <div className="set-subsection-h">Picker animation</div>
               <p className="settings-sub">
                 Pick which animation will play when the &ldquo;Pick one&rdquo; button is clicked
@@ -993,7 +993,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               </Card>
             </div>
 
-            <div className="set-subsection">
+            <div className="set-subsection set-subsection--layout">
               <div className="set-subsection-h">Layout</div>
               <p className="settings-sub">
                 Pick where the app&rsquo;s main navigation links should be located.
@@ -1060,7 +1060,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                        aria-label="Daily generator run time" />
               </div>
               {dailyMode === 'auto' && notifPerm !== 'unsupported' && (
-                <div className="set-data-row">
+                <div className="set-data-row set-notify-row">
                   <div className="set-data-info">
                     <span className="set-data-name">Notify me when it runs</span>
                     <span className="set-data-sub">
@@ -1201,7 +1201,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   </div>
                 </div>
               )}
-              <div className="set-data-row">
+              <div className="set-data-row set-export-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Export a backup</span>
                   <span className="set-data-sub">Downloads a JSON file of everything &mdash; <strong>{pickerCount}</strong> pickers, <strong>{itemCount}</strong> items, <strong>{reminderCount}</strong> reminders and <strong>all app settings</strong>.</span>
@@ -1215,7 +1215,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   ? <Btn kind="secondary" size="sm" icon="download" ref={exportBtnRef} onClick={exportData}>Export</Btn>
                   : <InfoTip className="set-disabled-btn" label="There is no user data to export."><Btn kind="secondary" size="sm" icon="download" disabled>Export</Btn></InfoTip>}
               </div>
-              <div className="set-data-row">
+              <div className="set-data-row set-import-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Import a backup</span>
                   <span className="set-data-sub"><strong>Replaces all data</strong> that is currently being stored by this app with a previously exported file.</span>
@@ -1240,7 +1240,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   <Btn kind="secondary" size="sm" icon="upload" ref={importBtnRef} onClick={() => fileRef.current && fileRef.current.click()}>Import</Btn>
                 )}
               </div>
-              <div className="set-data-row set-data-row--danger">
+              <div className="set-data-row set-data-row--danger set-reset-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Reset all data</span>
                   <span className="set-data-sub" id="set-reset-confirm-msg">Wipes everything and restores the app to a clean state. <strong>This can&rsquo;t be undone.</strong></span>
@@ -1326,7 +1326,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
             </Card>
 
             <Card>
-              <div className="set-data-row">
+              <div className="set-data-row set-support-project-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Support the project</span>
                   <span className="set-data-sub">Enjoying Ease My Life? Consider buying me a coffee.</span>
@@ -1336,7 +1336,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
             </Card>
 
             <Card>
-              <div className="set-data-row">
+              <div className="set-data-row set-replay-tour-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Replay the welcome tour</span>
                   <span className="set-data-sub">Runs the first-run walkthrough again. Including the welcome message, a guided tour of pickers, generating your day, and reminders.</span>
@@ -1356,7 +1356,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               The documents below outline what you&rsquo;re agreeing to by using Ease My Life.
             </p>
             <Card>
-              <div className="set-data-row">
+              <div className="set-data-row set-privacy-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Privacy Policy</span>
                   <span className="set-data-sub">How your data is collected, used, and stored.</span>
@@ -1364,7 +1364,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                 <button type="button" className="btn btn--secondary btn--sm"
                    onClick={() => setLegalDoc('privacy')}>View</button>
               </div>
-              <div className="set-data-row">
+              <div className="set-data-row set-terms-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Terms of Service</span>
                   <span className="set-data-sub">The rules for using Ease My Life, including paid features.</span>

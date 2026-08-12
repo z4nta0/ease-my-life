@@ -1067,29 +1067,113 @@ const DATA_HELP_ITEMS = [
 ];
 
 const SETTINGS_HELP_ITEMS = [
+  // ── Appearance ─────────────────────────────────────────────────────────
   {
-    id: 'appearance', sel: '.set-section--appearance', title: 'App Customization',
-    body: <>This is where you can customize the app's look and feel: light, dark and custom theme colors, completion celebration animations, picker pick animations, and tab bar placement.</>,
+    id: 'appearanceSystemPref', sel: '.set-section--appearance .set-data-row:has(button[aria-label="System preference"])', title: 'System Preference',
+    body: <>When on, the app follows your system's own light/dark setting and automatically switches between your chosen light and dark themes (e.g. Ink &rarr; Night) whenever your system does. When off, only your manually-selected theme below applies.</>,
   },
   {
-    id: 'daily', sel: '.set-section--daily', title: 'Daily Generator',
-    body: <>This is where you can control the daily generator: turn auto generation on or off, what time it runs, and enabling notifications for when it does.</>,
+    id: 'appearanceThemeLight', sel: '.set-subsection--theme-light', title: 'Light Theme',
+    body: <>This is where you choose the theme that's used when the app is in light mode. Pick any of the presets, or use the Custom row to mix your own colors &mdash; doing so automatically generates a matching dark theme, which you're then free to edit separately.</>,
   },
   {
-    id: 'holidays', sel: '.set-section--holidays', title: 'Holiday Controls',
-    body: <>This is where you can toggle which holiday observances the pickers and reminders option uses. You can even add your own custom holidays, like your birthday!</>,
+    id: 'appearanceThemeDark', sel: '.set-subsection--theme-dark', title: 'Dark Theme',
+    body: <>This is where you choose the theme that's used when the app is in dark mode. Pick any of the presets, or use the Custom row to mix your own colors &mdash; doing so automatically generates a matching light theme, which you're then free to edit separately.</>,
   },
   {
-    id: 'data', sel: '.set-section--data', title: 'Data Control',
-    body: <>This is where you can protect your data from browser deletion, install the app directly to your device, back up your data (export), restore your data (import), or erase all of your data.</>,
+    id: 'appearanceCelebration', sel: '.set-subsection--celebration', title: 'Completion Celebration',
+    body: <>This is where you choose which animation plays in the Today tab when every item on your list is marked as done. Use Preview to watch any of them play out before picking one.</>,
   },
   {
-    id: 'about', sel: '.set-section--about', title: 'About Ease My Life',
-    body: <>This is where you can find information about this app and its developer, replay the welcome tour and all of these tutorials at any time, and contact the developer if you have any problems or suggestions.</>,
+    id: 'appearancePickAnim', sel: '.set-subsection--pickanim', title: 'Picker Animation',
+    body: <>This is where you choose which animation plays in the Pickers tab when the "Pick one" button is pressed. Use Preview to watch any of them play out before picking one.</>,
   },
   {
-    id: 'legal', sel: '.set-section--legal', title: 'Legal Information',
-    body: <>This is where you can view the Privacy Policy and Terms of Service.</>,
+    id: 'appearanceLayout', sel: '.set-subsection--layout', title: 'Tab Bar Placement',
+    body: <>This controls where the app's main navigation is positioned on screen: a floating bar at the bottom, a sidebar on the left, or a bar along the top.</>,
+  },
+  // ── Daily generator ────────────────────────────────────────────────────
+  {
+    id: 'dailyAutoToggle', sel: '.set-section--daily .set-data-row:has(button[aria-label="Run the Daily generator automatically"])', title: 'Run Automatically',
+    body: <>This toggles whether the Daily generator runs on its own each day. When off, you'll need to run it manually from the button at the bottom of the Today tab.</>,
+  },
+  {
+    id: 'dailyRunTime', sel: '.set-section--daily .set-data-row--sub', title: 'Run Time',
+    body: <>This sets what time of day the Daily generator runs automatically. A quiet, early hour works best so your list is ready first thing in the morning.</>,
+  },
+  {
+    id: 'dailyNotify', sel: '.set-notify-row', title: 'Run Notifications',
+    body: <>This lets you get a notification once your list has been generated for the day. It only works while the app is open in a tab or window &mdash; notifications for a closed app are coming in a future release.</>,
+  },
+  // ── Holidays ───────────────────────────────────────────────────────────
+  {
+    id: 'holidayList', sel: '.holiday-list', title: 'Observed Holidays',
+    body: <>This lists every computed holiday for the current year. Toggle any of them off if you don't observe it &mdash; any picker set to "Skip on holidays" will stop skipping that day.</>,
+  },
+  {
+    id: 'holidayAdd', sel: '.holiday-add', title: 'Add a Custom Day Off',
+    body: <>This lets you add your own recurring day off, like a birthday or anniversary, which pickers set to "Skip on holidays" will also respect.</>,
+  },
+  // ── Data control ───────────────────────────────────────────────────────
+  {
+    id: 'dataStorageStatus', sel: '.set-store-row', title: 'Where Your Data Lives',
+    body: <>This shows how your data is currently being stored, whether the browser has promised not to clear it, and roughly how much data you have. Installing the app or granting persistent storage both help protect it from being cleared automatically.</>,
+  },
+  {
+    id: 'dataExport', sel: '.set-export-row', title: 'Export a Backup',
+    body: <>This downloads a JSON file containing everything: all of your pickers, items, reminders, history and app settings. This is the only way to move your data to another device, and it's also worth doing periodically as a backup.</>,
+  },
+  {
+    id: 'dataImport', sel: '.set-import-row', title: 'Import a Backup',
+    body: <>This restores your data from a previously exported backup file. Importing a backup <b>replaces all data</b> currently stored in the app, so make sure that's what you want first.</>,
+  },
+  {
+    id: 'dataReset', sel: '.set-reset-row', title: 'Reset All Data',
+    body: <>This wipes everything and restores the app to a clean, first-run state. <b>This can't be undone</b>, so export a backup first if there's any chance you'll want this data again.</>,
+  },
+  // ── Account ────────────────────────────────────────────────────────────
+  {
+    id: 'account', sel: '.set-section--account', title: 'Account',
+    body: <>Ease My Life runs entirely on this device with no account required. Syncing your data across devices is planned as a future paid feature (a one-time fee, not a subscription).</>,
+  },
+  // ── About ──────────────────────────────────────────────────────────────
+  {
+    id: 'aboutInfo', sel: '.set-about', title: 'App Info',
+    body: <>This shows the app's current version, along with links to the creator's website and this app's source code on GitHub.</>,
+  },
+  {
+    id: 'aboutSupportProject', sel: '.set-support-project-row', title: 'Support the Project',
+    body: <>A planned way to support development of the app directly, coming in a future release.</>,
+  },
+  {
+    id: 'aboutReplayTour', sel: '.set-replay-tour-row', title: 'Replay the Welcome Tour',
+    body: <>This replays the first-run walkthrough from the very beginning, including the welcome message and the guided tutorials for pickers, generating your day, and reminders.</>,
+  },
+  {
+    id: 'aboutContactTrigger', sel: '.set-contact-trigger', title: 'Contact Support',
+    body: <>This opens a short form for sending a note directly. Your app version and browser are attached automatically, so there's no back-and-forth needed to track those down.</>,
+  },
+  {
+    id: 'aboutContactForm', sel: '.support-form', title: 'Support Message',
+    body: <>Fill in a subject and message describing your problem or suggestion. Your app version and browser are already filled in below for reference.</>,
+  },
+  {
+    id: 'aboutContactFormFoot', sel: '.support-form-foot', title: 'Cancel / Send',
+    body: (
+      <>
+        <p><b>Cancel:</b> This discards your message and closes the form without sending.</p>
+        <p><b>Send:</b> This sends your message. If it can't go through &mdash; for example if you're offline &mdash; you'll be shown an email address to reach out to instead, and your message will be kept so you can try again.</p>
+      </>
+    ),
+  },
+  // ── Legal ──────────────────────────────────────────────────────────────
+  {
+    id: 'legalPrivacy', sel: '.set-privacy-row', title: 'Privacy Policy',
+    body: <>This opens the Privacy Policy, which explains how your data is collected, used, and stored.</>,
+  },
+  {
+    id: 'legalTerms', sel: '.set-terms-row', title: 'Terms of Service',
+    body: <>This opens the Terms of Service, which covers the rules for using Ease My Life, including any paid features.</>,
   },
 ];
 
