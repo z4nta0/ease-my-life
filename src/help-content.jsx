@@ -718,24 +718,24 @@ const STATS_HELP_ITEMS = [
   },
   // ── All-scope only ──────────────────────────────────────────────────────
   {
-    id: 'statConditionalsSummary', sel: '.cnd-sum-card', title: 'Conditionals',
-    body: <>This summarizes your conditionals' activity in this range — how many times they've triggered, their overall fire rate, and a per-conditional breakdown. Only shows if you have at least one conditional.</>,
+    id: 'statConditionalsSummary', sel: '.cnd-sum-card', title: 'Conditional Statistics',
+    body: <>This summarizes your conditionals' activity for your selected range. It includes how many times they've triggered, their overall fire rate, and a per-conditional breakdown. It will only show if you have at least one conditional.</>,
   },
   {
-    id: 'statRemindersSummary', sel: '.rem-stats-card', title: 'Reminders',
-    body: <>This summarizes your completed reminders in this range, along with a short recent-activity list. Only shows if you have reminders enabled.</>,
+    id: 'statRemindersSummary', sel: '.rem-stats-card', title: 'Reminders Statistics',
+    body: <>This summarizes your completed reminders' activity for your selected range, along with a short recent-activity list. It will only show if you have the "Include in Stats" toggle enabled for reminders.</>,
   },
   {
-    id: 'statSource', sel: '.stat-mk-source', title: 'How Picks Were Chosen',
-    body: <>This breaks down how your picks made it onto your todo list — auto-generated, re-rolled, or hand-picked from the Pickers tab.</>,
+    id: 'statSource', sel: '.stat-mk-source', title: 'Picker Items Chosen Type',
+    body: <>This breaks down how your picker items made it onto your todo list. This includes auto-generated, re-rolled, or hand-picked from the Pickers tab.</>,
   },
   {
-    id: 'statMostPicked', sel: '.stat-mk-mostpicked', title: 'Most Picked',
-    body: <>This lists the 5 items that have been picked the most in this scope and range.</>,
+    id: 'statMostPicked', sel: '.stat-mk-mostpicked', title: 'Picker Items Most Picked', padX: 4, padY: 4,
+    body: <>This lists the 5 picker items that have been picked the most for your selected range.</>,
   },
   {
-    id: 'statColdest', sel: '.stat-mk-coldest', title: 'Coldest Items',
-    body: <>This lists the 5 items that have been picked the least in this scope, excluding any items currently on vacation.</>,
+    id: 'statColdest', sel: '.stat-mk-coldest', title: 'Picker Items Least Picked', padX: 4, padY: 4,
+    body: <>This lists the 5 picker items that have been picked the least for your selected range. This excludes any picker items that are currently on vacation.</>,
   },
   // ── Conditionals scope only ─────────────────────────────────────────────
   {
