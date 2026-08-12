@@ -787,7 +787,7 @@ const STATS_HELP_ITEMS = [
   },
   {
     id: 'pickerBreakdown', sel: '.stat-breakdown-card', title: 'Picker Breakdown',
-    body: <>Once a specific picker is selected as the scope above, its individual items are broken down here — pick count, pick frequency, last picked date, and more.</>,
+    body: <>This breaks down every picker item for your selected range individually. You can switch between pick count, pick frequency, last picked date and more to see each picker item from a different angle.</>,
   },
 ];
 
