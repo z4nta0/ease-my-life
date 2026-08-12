@@ -665,20 +665,41 @@ const STATS_HELP_ITEMS = [
     // neighbor's own pad by 6px, on whichever edge is shared (right/left
     // in the desktop single-row layout, all four edges in the mobile 2x2
     // grid). 4+4=8 leaves 2px of daylight in the 10px gap instead.
-    id: 'statStreak', sel: '.stat-mk-streak', title: 'Day Streak', padX: 4, padY: 4,
+    //
+    // All and a specific picker scope both render these same stat-mk-*
+    // cards (see tab-stats.jsx's own comment on stat-mk-scope-*), so each
+    // gets its own entry below scoped to stat-mk-scope-all/-picker, with
+    // its own title/copy.
+    id: 'statStreak', sel: '.stat-mk-scope-all.stat-mk-streak', title: 'Day Streak', padX: 4, padY: 4,
     body: <>This shows your current streak of consecutive days where you've completed all items in your todo list.</>,
   },
   {
-    id: 'statFullDays', sel: '.stat-mk-fulldays', title: 'Full Days', padX: 4, padY: 4,
-    body: <>This shows the number of days where you completed everything on your todo list that day, compared to the number of total active days shown next to it.</>,
+    id: 'statFullDays', sel: '.stat-mk-scope-all.stat-mk-fulldays', title: 'Full Days', padX: 4, padY: 4,
+    body: <>This shows the number of days where you completed everything in your todo list that day, compared to the number of total active days shown next to it.</>,
   },
   {
-    id: 'statDone', sel: '.stat-mk-done', title: 'Items Done', padX: 4, padY: 4,
+    id: 'statDone', sel: '.stat-mk-scope-all.stat-mk-done', title: 'Items Done', padX: 4, padY: 4,
     body: <>This shows the total number of items you've completed in this range.</>,
   },
   {
-    id: 'statRate', sel: '.stat-mk-rate', title: 'Completion Rate', padX: 4, padY: 4,
-    body: <>This shows the percentage of items you've completed, out of every item that was on your todo list in this range.</>,
+    id: 'statRate', sel: '.stat-mk-scope-all.stat-mk-rate', title: 'Completion Rate', padX: 4, padY: 4,
+    body: <>This shows the percentage of items you've completed, out of every item that was in your todo list in this range.</>,
+  },
+  {
+    id: 'statPickerStreak', sel: '.stat-mk-scope-picker.stat-mk-streak', title: 'Picker Day Streak', padX: 4, padY: 4,
+    body: <>This shows your current streak of consecutive days where you've completed all items in your todo list.</>,
+  },
+  {
+    id: 'statPickerFullDays', sel: '.stat-mk-scope-picker.stat-mk-fulldays', title: 'Picker Full Days', padX: 4, padY: 4,
+    body: <>This shows the number of days where you've completed everything in your todo list for that day, compared to the number of total active days shown next to it.</>,
+  },
+  {
+    id: 'statPickerDone', sel: '.stat-mk-scope-picker.stat-mk-done', title: 'Picker Items Done', padX: 4, padY: 4,
+    body: <>This shows the total number of items that you've completed for your selected range.</>,
+  },
+  {
+    id: 'statPickerRate', sel: '.stat-mk-scope-picker.stat-mk-rate', title: 'Picker Completion Rate', padX: 4, padY: 4,
+    body: <>This shows the percentage of items that you've completed, out of every item that was in your todo list.</>,
   },
   {
     // padX/padY: 4 — same .stat-row (10px gap) bleed fix as the other

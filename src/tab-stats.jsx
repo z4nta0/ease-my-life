@@ -1141,20 +1141,24 @@ function TabStats({ state, actions, onHome, onNavTab }) {
           </>
         ) : (
           <>
-            <Card className="stat-card stat-mk-streak">
+            {/* stat-mk-scope-{all,picker} — All and a specific picker both
+                fall into this branch and share the exact same stat-mk-*
+                classes above, so help mode needs an extra hook to give the
+                two scopes their own separate tooltip copy. */}
+            <Card className={`stat-card stat-mk-streak ${isPicker ? 'stat-mk-scope-picker' : 'stat-mk-scope-all'}`}>
               <div className="stat-num">{streak}</div>
               <div className="stat-lbl">day streak</div>
               <Icon name="flame" size={16} />
             </Card>
-            <Card className="stat-card stat-mk-fulldays">
+            <Card className={`stat-card stat-mk-fulldays ${isPicker ? 'stat-mk-scope-picker' : 'stat-mk-scope-all'}`}>
               <div className="stat-num">{fullDays}</div>
               <div className="stat-lbl">full days · {activeDays}</div>
             </Card>
-            <Card className="stat-card stat-mk-done">
+            <Card className={`stat-card stat-mk-done ${isPicker ? 'stat-mk-scope-picker' : 'stat-mk-scope-all'}`}>
               <div className="stat-num">{totalDone}</div>
               <div className="stat-lbl">items done</div>
             </Card>
-            <Card className="stat-card stat-mk-rate">
+            <Card className={`stat-card stat-mk-rate ${isPicker ? 'stat-mk-scope-picker' : 'stat-mk-scope-all'}`}>
               <div className="stat-num">{rate}%</div>
               <div className="stat-lbl">completion</div>
             </Card>
