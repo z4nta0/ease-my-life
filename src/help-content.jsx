@@ -331,6 +331,47 @@ const DATA_HELP_ITEMS = [
     id: 'pickersManager', sel: '.data-list', title: 'View and Edit Pickers',
     body: <>This is where you can view and edit all of your pickers, as well as their containing items. You can also create new picker items here.</>,
   },
+  // ── Editing an individual picker item (EntryEditor, defined in
+  // tab-today.jsx but reused here — see .entry-editor's own doc comment
+  // there). Which of these actually renders depends on the OWNING
+  // PICKER's mode, so most items below only ever show up for some modes:
+  // Charge Range (Ease-up/Ease-down only), Weight (Weighted/Dynamic
+  // Weighted), Boost (Dynamic Weighted only). Active and the footer
+  // always render regardless of mode.
+  {
+    // .rd-name-input is also used by the Conditionals section's own name
+    // field (same .rd-item wrapper shape) — :has(.entry-editor) picks out
+    // only a .rd-item that's actually an ITEM editor, since .entry-editor
+    // is unique to EntryEditor and never rendered for a conditional.
+    id: 'itemName', sel: '.rd-item:has(.entry-editor) .rd-name-input', title: 'Item Name',
+    body: <>This is the name field for this item, you can rename it here.</>,
+  },
+  {
+    id: 'itemChargeRange', sel: '.entry-editor .pie-ease-row', title: 'Charge Range',
+    body: <>This controls how quickly this item's charge builds up or drains, depending on the picker's mode. For Ease-up pickers, Soonest/Latest set the fewest/most days before this item becomes eligible to be picked. For Ease-down pickers, Shortest/Longest set the fewest/most days it stays picked once chosen. The Fill/Refill button instantly maxes out this item's charge.</>,
+  },
+  {
+    id: 'itemWeight', sel: '.entry-editor .weight-stepper', title: 'Weight',
+    body: <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked; a lower weight makes it less likely.</>,
+  },
+  {
+    id: 'itemBoost', sel: '.entry-editor .pie-row:has(.pie-boost-val)', title: 'Boost',
+    body: <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked. Reset clears it back to 0.</>,
+  },
+  {
+    id: 'itemActive', sel: '.entry-editor .switch', title: 'Active',
+    body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
+  },
+  {
+    id: 'itemFoot', sel: '.entry-editor .rd-edit-foot .btn', title: 'Delete / Cancel / Save',
+    body: (
+      <>
+        <p><b>Delete:</b> This button permanently deletes this item, after asking you to confirm.</p>
+        <p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>
+        <p><b>Save:</b> This button saves your changes to this item.</p>
+      </>
+    ),
+  },
 ];
 
 const SETTINGS_HELP_ITEMS = [

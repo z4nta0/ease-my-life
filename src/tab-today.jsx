@@ -389,8 +389,15 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
     <div className="rem-inline-editor entry-editor">
       <div className="pie-rows">
         {isEase ? (
+          // pie-ease-row (on all 3 rows below, in addition to their own
+          // pie-row) is a pure selector hook for help mode (see
+          // DATA_HELP_ITEMS's Charge Range item) — FillButton (ui.jsx) has
+          // no class of its own to distinguish it by, and unlike the other
+          // rows here, it only renders for ONE of the two ease directions
+          // at a time, so there's no single existing class shared by
+          // exactly "the ease-related rows, not Active" to select by.
           <React.Fragment>
-            <div className="pie-row">
+            <div className="pie-row pie-ease-row">
               <div className="pie-rowlabel">
                 <span className="pie-lbl-row">
                   <span className="pie-lbl">{soonestLbl}</span>
@@ -406,7 +413,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
                 <span className="np-ease-unit">{uw(soonest)}</span>
               </div>
             </div>
-            <div className="pie-row">
+            <div className="pie-row pie-ease-row">
               <div className="pie-rowlabel">
                 <span className="pie-lbl-row">
                   <span className="pie-lbl">{latestLbl}</span>
@@ -423,7 +430,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
               </div>
             </div>
             {mode === 'ease-up' && (
-              <div className="pie-row">
+              <div className="pie-row pie-ease-row">
                 <div className="pie-rowlabel">
                   <span className="pie-lbl">Fill</span>
                   <span className="pie-sub set-sub-fade" key={(item.value ?? 0) >= THRESHOLD ? 'full' : 'part'}>{(item.value ?? 0) >= THRESHOLD ? <>item is <strong>fully charged</strong> at {Math.round(item.value ?? 0)}</> : <>item at <strong>{Math.round(item.value ?? 0)} charge</strong></>}</span>
@@ -434,7 +441,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
               </div>
             )}
             {mode === 'ease-down' && (
-              <div className="pie-row">
+              <div className="pie-row pie-ease-row">
                 <div className="pie-rowlabel">
                   <span className="pie-lbl">Refill</span>
                   <span className="pie-sub set-sub-fade" key={(item.value ?? 0) >= THRESHOLD ? 'full' : 'part'}>{(item.value ?? 0) >= THRESHOLD ? <>item is <strong>fully charged</strong></> : <>item at <strong>{Math.round(item.value ?? 0)} charge</strong></>}</span>
