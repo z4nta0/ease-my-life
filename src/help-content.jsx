@@ -822,7 +822,12 @@ const DATA_HELP_ITEMS = [
   // re-derive — see PICKER_HELP_ITEMS' own newCond* entries for the
   // original comments on each of these.
   {
-    id: 'conditionalsManager', sel: '.cnd-manager .cat-h', title: 'Conditionals',
+    // padY:0 — .cat-h has no border/gap of its own below it, but .cat-body
+    // (wrapping the Add button and every row) sits directly against it with
+    // only a hairline border, same zero-gap stacking as the rest of this
+    // card. The 20px flex gap above .cnd-manager itself (from .tab--data)
+    // easily absorbs losing the default pad on that side too.
+    id: 'conditionalsManager', sel: '.cnd-manager .cat-h', title: 'Conditionals', padY: 0,
     body: <>This is where you can view and edit all of your conditionals. Tap the header to expand or collapse the section.</>,
   },
   {
@@ -909,7 +914,8 @@ const DATA_HELP_ITEMS = [
   // Today's own editReminderRepeat/editReminderFoot verbatim, since this is
   // the exact same .rem-inline-editor markup either way.
   {
-    id: 'remindersManager', sel: '.cat--reminders .cat-h', title: 'Reminders',
+    // padY:0 — same .cat-h/.cat-body zero-gap stacking as conditionalsManager.
+    id: 'remindersManager', sel: '.cat--reminders .cat-h', title: 'Reminders', padY: 0,
     body: <>This is where you can view and edit all of your reminders. Tap the header to expand or collapse the section.</>,
   },
   {
@@ -963,7 +969,9 @@ const DATA_HELP_ITEMS = [
     // .data-list > .cat > .cat-h chain since .cat-h is also reused by the
     // Conditionals/Reminders managers' own outer headers (which render
     // outside .data-list entirely).
-    id: 'pickerRow', sel: '.data-list > .cat > .cat-h', perElement: true, title: 'Picker',
+    // padY:0 — same .cat-h/.cat-body zero-gap stacking as conditionalsManager;
+    // matters once a picker is expanded and .cat-body renders beneath it.
+    id: 'pickerRow', sel: '.data-list > .cat > .cat-h', perElement: true, padY: 0, title: 'Picker',
     body: <>This is one of your pickers. Tap it to view and edit its settings and items.</>,
   },
   {
