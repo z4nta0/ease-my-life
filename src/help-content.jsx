@@ -143,24 +143,28 @@ const TODAY_HELP_ITEMS = [
   // are dedicated selector hooks, kept separate from the visually-styled
   // .dl-r-name/.dl-r-when/.dl-r-st classes so adding them to the header row
   // (alongside the data rows, for one column-spanning highlight) doesn't
-  // drag data-row font styling onto the header labels.
+  // drag data-row font styling onto the header labels. columnGroup (see
+  // help-mode.jsx) makes the 3 highlights meet edge-to-edge with no gap or
+  // overlap between them, rather than each shrinking to its own content.
   {
-    id: 'logReminderName', sel: '.dl-mk-rname', title: 'Reminder Column',
+    id: 'logReminderName', sel: '.dl-mk-rname', columnGroup: 'reminderLogCols', title: 'Reminder Column',
     body: <>Lists every reminder you've created, whether it's due today or not.</>,
   },
   {
-    id: 'logReminderWhen', sel: '.dl-mk-rwhen', title: 'When Column',
+    id: 'logReminderWhen', sel: '.dl-mk-rwhen', columnGroup: 'reminderLogCols', title: 'When Column',
     body: <>Shows each reminder's schedule — how often it repeats, or that it's a one-time reminder.</>,
   },
   {
-    id: 'logReminderStatus', sel: '.dl-mk-rst', title: 'Status Column',
+    id: 'logReminderStatus', sel: '.dl-mk-rst', columnGroup: 'reminderLogCols', title: 'Status Column',
     body: <>Shows whether this reminder is done, due today, skipped for today, or not yet due — along with when it will next come due.</>,
   },
   // ── Picker/Conditional Log panel (day-log.jsx's GroupLog) — dl-mk-* here
-  // are the same kind of dedicated hooks, shared by both a picker's own
-  // item rows and the Conditionals section's rows (they reuse the same
-  // ValueCells/.dl-item/.dl-status markup), so each column's highlight
-  // naturally spans both.
+  // are the same kind of dedicated hooks. Deliberately TWO separate column
+  // groups (picker item rows vs. Conditionals section rows) rather than one
+  // shared set: the Conditionals section has its own full-width "Rested:
+  // .../Attached: ..." line between rows, which a single highlight spanning
+  // BOTH sections would otherwise stretch across, making it look like that
+  // unrelated text was part of the column.
   {
     id: 'logPickerKey', sel: '.dl-key', title: 'Key',
     body: (
@@ -175,24 +179,44 @@ const TODAY_HELP_ITEMS = [
     ),
   },
   {
-    id: 'logPickerItem', sel: '.dl-mk-item', title: 'Item Column',
+    id: 'logPickerItem', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-item', columnGroup: 'pickerLogCols', title: 'Item Column',
     body: <>Lists every item in this picker's pool, along with its weight or eligible range depending on the picker's mode.</>,
   },
   {
-    id: 'logPickerAtGen', sel: '.dl-mk-atgen', title: 'At Gen Column',
+    id: 'logPickerAtGen', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-atgen', columnGroup: 'pickerLogCols', title: 'At Gen Column',
     body: <>This item's value at the moment today's list was generated. Only applies to Ease-up, Ease-down and Dynamic Weighted pickers — shows N/A otherwise.</>,
   },
   {
-    id: 'logPickerDelta', sel: '.dl-mk-delta', title: 'Δ Column',
+    id: 'logPickerDelta', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-delta', columnGroup: 'pickerLogCols', title: 'Δ Column',
     body: <>How much this item's value changed since generation — positive when it climbed, negative when it dropped.</>,
   },
   {
-    id: 'logPickerAfter', sel: '.dl-mk-after', title: 'After Column',
+    id: 'logPickerAfter', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-after', columnGroup: 'pickerLogCols', title: 'After Column',
     body: <>This item's current value, reflecting any changes from being picked, re-rolled, skipped, or completed today.</>,
   },
   {
-    id: 'logPickerStatus', sel: '.dl-mk-status', title: 'Status Column',
+    id: 'logPickerStatus', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-status', columnGroup: 'pickerLogCols', title: 'Status Column',
     body: <>Icons showing what happened to this item today — see the Key above for what each icon means.</>,
+  },
+  {
+    id: 'logCondItem', sel: '.dl-cond-sec .dl-mk-item', columnGroup: 'condLogCols', title: 'Conditional Column',
+    body: <>Lists every conditional attached to a picker in this group, along with its own odds or charge range depending on its mode.</>,
+  },
+  {
+    id: 'logCondAtGen', sel: '.dl-cond-sec .dl-mk-atgen', columnGroup: 'condLogCols', title: 'At Gen Column',
+    body: <>This conditional's value at the moment today's list was generated. Only applies to Ease-up and Ease-down conditionals — shows N/A otherwise.</>,
+  },
+  {
+    id: 'logCondDelta', sel: '.dl-cond-sec .dl-mk-delta', columnGroup: 'condLogCols', title: 'Δ Column',
+    body: <>How much this conditional's value changed since generation — positive when it climbed, negative when it dropped.</>,
+  },
+  {
+    id: 'logCondAfter', sel: '.dl-cond-sec .dl-mk-after', columnGroup: 'condLogCols', title: 'After Column',
+    body: <>This conditional's current value, reflecting any change from a dependent picker's item being completed today.</>,
+  },
+  {
+    id: 'logCondStatus', sel: '.dl-cond-sec .dl-mk-status', columnGroup: 'condLogCols', title: 'Status Column',
+    body: <>Whether this conditional is currently triggered (its dependent pickers are resting today) or not.</>,
   },
 ];
 

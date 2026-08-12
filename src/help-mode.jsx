@@ -307,6 +307,38 @@ function HelpOverlay({ active, items, onExit }) {
         const pinBelowY = it.pinBelowSel ? document.querySelector(it.pinBelowSel)?.getBoundingClientRect().bottom : undefined;
         next[it.id] = { ...r, shape, tipWidth, pinBelowY };
       });
+      // `columnGroup` (e.g. the Day Log panel's per-column highlights) —
+      // each column's own union naturally shrinks to just its content's
+      // width (a "+3" delta or a short label), leaving dead gaps between
+      // neighboring columns and brushing right up against the column's own
+      // text with no breathing room. Snaps each group's members edge-to-
+      // edge instead: interior boundaries meet at the exact midpoint
+      // between neighbors (touching, no gap, no overlap — the fix for a
+      // narrow column like Δ getting crowded out or "bleeding" into the
+      // next column), and the group's own outer left/right edges get a
+      // normal PAD of breathing room, same as any other highlight.
+      const groups = {};
+      allItems.forEach((it) => {
+        if (!it.columnGroup || !next[it.id]) return;
+        (groups[it.columnGroup] || (groups[it.columnGroup] = [])).push(it.id);
+      });
+      Object.values(groups).forEach((ids) => {
+        ids.sort((a, b) => next[a].left - next[b].left);
+        ids.forEach((id, i) => {
+          const cur = next[id];
+          cur.noPadX = true;
+          if (i === 0) cur.left -= PAD;
+          if (i === ids.length - 1) {
+            cur.right += PAD;
+          } else {
+            const nxt = next[ids[i + 1]];
+            const mid = (cur.right + nxt.left) / 2;
+            cur.right = mid;
+            nxt.left = mid;
+          }
+          cur.width = cur.right - cur.left;
+        });
+      });
       setRectsById(next);
       // The page's own toggle button is never one of `allItems` (it's not a
       // highlighted target), but it still needs a mask cutout: it sits
@@ -377,9 +409,15 @@ function HelpOverlay({ active, items, onExit }) {
           <rect x="0" y="0" width={vw} height={vh} fill="#fff" />
           {entries.map(([id, r]) => {
             const { rx, ry } = r.shape || { rx: DEFAULT_R, ry: DEFAULT_R };
+            // noPadX (columnGroup items) — r.left/right/width already have
+            // their final, edge-to-edge-adjusted values baked in (see the
+            // columnGroup post-processing above), so padding them again
+            // here would reopen the exact gap/overlap that adjustment
+            // exists to close.
+            const padX = r.noPadX ? 0 : PAD;
             return (
-              <rect key={id} x={r.left - PAD} y={r.top - PAD} rx={rx} ry={ry}
-                    width={r.width + PAD * 2} height={r.height + PAD * 2} fill="#000" />
+              <rect key={id} x={r.left - padX} y={r.top - PAD} rx={rx} ry={ry}
+                    width={r.width + padX * 2} height={r.height + PAD * 2} fill="#000" />
             );
           })}
           {toggleRect && (
@@ -392,11 +430,12 @@ function HelpOverlay({ active, items, onExit }) {
       </svg>
       {entries.map(([id, r]) => {
         const { rx, ry } = r.shape || { rx: DEFAULT_R, ry: DEFAULT_R };
+        const padX = r.noPadX ? 0 : PAD;
         return (
           <div key={id} className="help-spot"
                style={{
-                 top: r.top - PAD, left: r.left - PAD,
-                 width: r.width + PAD * 2, height: r.height + PAD * 2,
+                 top: r.top - PAD, left: r.left - padX,
+                 width: r.width + padX * 2, height: r.height + PAD * 2,
                  borderRadius: `${rx}px / ${ry}px`,
                }} />
         );
