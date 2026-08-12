@@ -464,6 +464,13 @@ const PICKER_HELP_ITEMS = [
       </>
     ),
   },
+  // ── Create a Picker form (NewPickerForm, Step 1) ──────────────────────
+  {
+    // :has(#np-name) scopes to just this field, since every field in the
+    // form shares the plain .np-field wrapper class.
+    id: 'newPickerName', sel: '.np-field:has(#np-name)', title: 'Picker Name',
+    body: <>This is the name field for your new picker, give it a short, descriptive name. This is what will show up on the picker bar and your Today list.</>,
+  },
 ];
 
 const STATS_HELP_ITEMS = [
