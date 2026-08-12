@@ -659,19 +659,25 @@ const STATS_HELP_ITEMS = [
   // they all otherwise share the plain .stat-card class with nothing to
   // distinguish one from another.
   {
-    id: 'statStreak', sel: '.stat-mk-streak', title: 'Day Streak',
-    body: <>This shows your current streak of consecutive days where you've completed at least one item. An empty today doesn't break the streak since the day isn't over yet, but a day that had items go uncompleted does.</>,
+    // padX/padY: 4 — these 4 cards sit in a CSS grid with only a 10px gap
+    // (both row-gap and column-gap, since it's a single `gap: 10px` on
+    // .stat-row), so the default 8px pad on each side would overlap a
+    // neighbor's own pad by 6px, on whichever edge is shared (right/left
+    // in the desktop single-row layout, all four edges in the mobile 2x2
+    // grid). 4+4=8 leaves 2px of daylight in the 10px gap instead.
+    id: 'statStreak', sel: '.stat-mk-streak', title: 'Day Streak', padX: 4, padY: 4,
+    body: <>This shows your current streak of consecutive days where you've completed all items in your todo list.</>,
   },
   {
-    id: 'statFullDays', sel: '.stat-mk-fulldays', title: 'Full Days',
-    body: <>This shows the number of days, out of the active days shown next to it, where you completed everything on your todo list that day.</>,
+    id: 'statFullDays', sel: '.stat-mk-fulldays', title: 'Full Days', padX: 4, padY: 4,
+    body: <>This shows the number of days where you completed everything on your todo list that day, compared to the number of total active days shown next to it.</>,
   },
   {
-    id: 'statDone', sel: '.stat-mk-done', title: 'Items Done',
+    id: 'statDone', sel: '.stat-mk-done', title: 'Items Done', padX: 4, padY: 4,
     body: <>This shows the total number of items you've completed in this range.</>,
   },
   {
-    id: 'statRate', sel: '.stat-mk-rate', title: 'Completion Rate',
+    id: 'statRate', sel: '.stat-mk-rate', title: 'Completion Rate', padX: 4, padY: 4,
     body: <>This shows the percentage of items completed, out of every item that was on your todo list in this range.</>,
   },
   {
