@@ -200,23 +200,23 @@ const TODAY_HELP_ITEMS = [
   },
   {
     id: 'logCondItem', sel: '.dl-cond-sec .dl-mk-item', columnGroup: 'condLogCols', title: 'Conditional Column',
-    body: <>Lists every conditional attached to a picker in this group, along with its own odds or charge range depending on its mode.</>,
+    body: <>This lists every conditional attached to a picker in this group. It also show its odds of being triggered or its charge range, depending on its mode.</>,
   },
   {
     id: 'logCondAtGen', sel: '.dl-cond-sec .dl-mk-atgen', columnGroup: 'condLogCols', title: 'At Gen Column',
-    body: <>This conditional's value at the moment today's list was generated. Only applies to Ease-up and Ease-down conditionals — shows N/A otherwise.</>,
+    body: <>This lists the conditional's value at the moment your todo list was generated. This only applies to Dynamic Weighted, Ease-up and Ease-down conditionals, it shows N/A otherwise.</>,
   },
   {
     id: 'logCondDelta', sel: '.dl-cond-sec .dl-mk-delta', columnGroup: 'condLogCols', title: 'Δ Column',
-    body: <>How much this conditional's value changed since generation — positive when it climbed, negative when it dropped.</>,
+    body: <>This shows how much this conditional's value changed since your todo list was generated. This only applies to Dynamic Weighted, Ease-up and Ease-down conditionals.</>,
   },
   {
     id: 'logCondAfter', sel: '.dl-cond-sec .dl-mk-after', columnGroup: 'condLogCols', title: 'After Column',
-    body: <>This conditional's current value, reflecting any change from a dependent picker's item being completed today.</>,
+    body: <>This shows the conditional's current value, reflecting any change from a dependent picker's item being marked as completed in your todo list.</>,
   },
   {
     id: 'logCondStatus', sel: '.dl-cond-sec .dl-mk-status', columnGroup: 'condLogCols', title: 'Status Column',
-    body: <>Whether this conditional is currently triggered (its dependent pickers are resting today) or not.</>,
+    body: <>This shows whether this conditional is currently triggered (its dependent pickers are resting today) or not.</>,
   },
 ];
 
