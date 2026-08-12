@@ -735,7 +735,7 @@ const STATS_HELP_ITEMS = [
   },
   {
     id: 'statSource', sel: '.stat-mk-source', title: 'Picker Items Chosen Type',
-    body: <>This breaks down how your picker items made it onto your todo list. This includes auto-generated, re-rolled, or hand-picked from the Pickers tab.</>,
+    body: <>This breaks down how your picker items made it onto your todo list. This includes auto-generated, re-rolled or hand-picked from the Pickers tab.</>,
   },
   {
     id: 'statMostPicked', sel: '.stat-mk-mostpicked', title: 'Picker Items Most Picked', padX: 4, padY: 4,
@@ -748,16 +748,16 @@ const STATS_HELP_ITEMS = [
   // ── Conditionals scope only ─────────────────────────────────────────────
   {
     id: 'statCondBreakdown', sel: '.stat-mk-condbreakdown', title: 'Conditionals Breakdown',
-    body: <>This breaks down every conditional for your selected range individually. You can switch between fire rate, triggers, cycles, interval, and last fired to see each conditional from a different angle.</>,
+    body: <>This breaks down every conditional for your selected range individually. You can switch between fire rate, triggers, cycles, interval and last fired to see each conditional from a different angle.</>,
   },
   // ── Reminders scope only ────────────────────────────────────────────────
   {
-    id: 'statRemType', sel: '.stat-mk-remtype', title: 'By Reminder Type',
-    body: <>This breaks down your completed reminders by type — one-time versus recurring.</>,
+    id: 'statRemType', sel: '.stat-mk-remtype', title: 'Reminders Completed Type',
+    body: <>This breaks down your completed reminders by type, one-time versus recurring, for your selected range.</>,
   },
   {
     id: 'statRemBreakdown', sel: '.stat-mk-rembreakdown', title: 'Reminders Breakdown',
-    body: <>This breaks down every reminder individually. Switch between recent completions, total completions, and skips to see each reminder from a different angle.</>,
+    body: <>This breaks down every reminder for your selected range individually. You can switch between recent completions, total completions and skips to see each reminder from a different angle.</>,
   },
   // ── Single-picker scope only ────────────────────────────────────────────
   {
