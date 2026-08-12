@@ -41,7 +41,11 @@ const TODAY_HELP_ITEMS = [
     body: <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</>,
   },
   {
-    id: 'cardCheck', sel: '.rem-section .today-card:first-of-type .check', title: 'Mark Complete',
+    // perElement (see help-mode.jsx): every real entry card gets its own
+    // badge — a user could be looking at any card on the page, not just
+    // whichever one happened to be first, and the main help toggle can be
+    // clicked from anywhere regardless of scroll position.
+    id: 'cardCheck', sel: '.today-card:not(.today-card--tutorial) .check', perElement: true, title: 'Mark Complete',
     body: (
       <>
         <p>When you click this circle, it marks the item as completed and updates the progress ring's completed count. When all items are completed, your Day Streak increases and the celebration animations will play.</p>
@@ -54,11 +58,15 @@ const TODAY_HELP_ITEMS = [
     // actions markup but not the same buttons (reminders have no Re-roll —
     // there's nothing to re-roll TO, it's a fixed task, not a random pick),
     // so this needs two separate items rather than one shared description.
-    // firstOnly (see help-mode.jsx) rather than :first-of-type here — picker
-    // entries are scattered across however many group sections the user
-    // has, and :first-of-type resets per section instead of picking one
-    // overall.
-    id: 'cardActionsPicker', sel: '.today-card:not(.rem-card):not(.today-card--tutorial) .today-card-actions', firstOnly: true, title: 'Card Actions',
+    // Also excludes day-off and charging cards — both render a
+    // .today-card-actions row too, but with Re-roll and/or Edit genuinely
+    // disabled (the app's own InfoTip there says "This action is disabled
+    // for this type of item"), which this tip's copy doesn't describe.
+    // perElement (see help-mode.jsx) so every OTHER card gets its own badge
+    // — a single shared one could land on a card whose buttons happen to
+    // be in an unusual state, or just not be near wherever the user
+    // actually scrolled to.
+    id: 'cardActionsPicker', sel: '.today-card:not(.rem-card):not(.today-card--tutorial):not(.today-card--dayoff):not(.today-card--charging) .today-card-actions', perElement: true, title: 'Card Actions',
     body: (
       <>
         <p><b>Re-roll:</b> This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>
@@ -68,13 +76,26 @@ const TODAY_HELP_ITEMS = [
     ),
   },
   {
-    id: 'cardActionsReminder', sel: '.rem-card:first-of-type .today-card-actions', title: 'Card Actions',
+    id: 'cardActionsReminder', sel: '.rem-card .today-card-actions', perElement: true, title: 'Card Actions',
     body: (
       <>
         <p><b>Skip:</b> This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>
         <p><b>Edit:</b> This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
       </>
     ),
+  },
+  {
+    // A day-off card (a conditional's triggered "rest" state) is excluded
+    // from cardActionsPicker above since it doesn't have the normal 3-
+    // button set — but unlike a charging card (where Re-roll/Skip/Edit are
+    // ALL genuinely disabled, nothing real to highlight), a day-off card's
+    // own Skip IS a real, working button — only Re-roll and Edit are
+    // disabled there. `button` (not .icon-btn generally) specifically
+    // targets that one real button — the disabled Re-roll/Edit are
+    // InfoTip's own <span> root, not a <button>, so this selector can't
+    // accidentally catch them.
+    id: 'cardActionsDayOff', sel: '.today-card--dayoff .today-card-actions button', perElement: true, title: 'Skip',
+    body: <>This button removes this day off from your todo list without completing it and updates the progress ring's total count accordingly. Re-roll and Edit are disabled for this type of card.</>,
   },
   {
     id: 'addReminder', sel: '.rem-add-btn', title: 'Add a Reminder',
@@ -174,9 +195,9 @@ const TODAY_HELP_ITEMS = [
     // Every OTHER group section (Chores, Food, ...) gets the same Log chip
     // as Reminders — :not(.rem-section):not(.pt-section) excludes Reminders
     // itself (already covered above) and the Page Tours onboarding section.
-    // firstOnly (see help-mode.jsx) since a user can have several such
-    // groups; this just needs one representative example.
-    id: 'dayLogPicker', sel: '.group-section:not(.rem-section):not(.pt-section) .dl-chip', firstOnly: true, title: 'Section Log',
+    // perElement (see help-mode.jsx) gives each group's OWN Log button its
+    // own badge, since the user could be scrolled to any one of them.
+    id: 'dayLogPicker', sel: '.group-section:not(.rem-section):not(.pt-section) .dl-chip', perElement: true, title: 'Section Log',
     body: <>This opens a log of everything that has happened for this section today. Including what was auto-picked, skipped, manually selected, re-rolled, and completed. It will also show the new updated values, if applicable, once an item has been marked as completed.</>,
   },
   {

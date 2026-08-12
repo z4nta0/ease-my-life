@@ -290,6 +290,27 @@ function HelpOverlay({ active, items, onExit }) {
       allItems.forEach((it) => {
         let els = findTargets(it.sel);
         if (!els.length) return;
+        // `perElement` gives EVERY matched element its own badge/highlight
+        // (synthesized sub-ids `${it.id}::${i}`, all sharing the parent
+        // item's title/body) instead of unioning them into one — needed
+        // wherever a user could reasonably be looking at ANY one of several
+        // repeated instances (every group's own Log button, every card's
+        // own Mark Complete/Card Actions) rather than just "the first one
+        // on the page", which they might not have scrolled to, or which
+        // could even have its own buttons disabled for that specific card
+        // (e.g. a day-off/charging card's Card Actions) even though other
+        // cards' don't.
+        if (it.perElement) {
+          els.forEach((el, i) => {
+            const r = clipHorizontalOverflow(el.getBoundingClientRect(), el);
+            if (!r) return;
+            const width = r.right - r.left, height = r.bottom - r.top;
+            if (!Number.isFinite(width) || !Number.isFinite(height)) return;
+            const shape = shapeFor(el, width + PAD * 2, height + PAD * 2, it.shape);
+            next[`${it.id}::${i}`] = { ...r, width, height, shape };
+          });
+          return;
+        }
         // `firstOnly` takes just the first DOCUMENT-order match instead of
         // unioning every match — needed when a selector's matches are
         // scattered across several different parents (e.g. one entry card
@@ -423,7 +444,11 @@ function HelpOverlay({ active, items, onExit }) {
 
   const vw = window.innerWidth, vh = window.innerHeight;
   const entries = Object.entries(rectsById);
-  const openItem = openId ? allItems.find((it) => it.id === openId) : null;
+  // openId can be a perElement sub-id (`${it.id}::${i}`) — strip the
+  // suffix to find the catalog item whose title/body every instance
+  // shares, while the rect lookup itself still uses the FULL id.
+  const openBaseId = openId ? openId.split('::')[0] : null;
+  const openItem = openBaseId ? allItems.find((it) => it.id === openBaseId) : null;
   const openRect = openId ? rectsById[openId] : null;
 
   return createPortal(
@@ -464,19 +489,26 @@ function HelpOverlay({ active, items, onExit }) {
                }} />
         );
       })}
-      {allItems.map((it) => {
-        const r = rectsById[it.id];
-        if (!r) return null;
-        const br = badgeRectFor(r, !!it.columnGroup);
-        return (
-          <button key={it.id} type="button"
-                  className={`help-badge ${openId === it.id ? 'is-on' : ''}`}
-                  style={{ top: br.top, left: br.left }}
-                  onClick={(e) => { e.stopPropagation(); setOpenId((cur) => cur === it.id ? null : it.id); }}
-                  aria-label={typeof it.title === 'string' ? it.title : 'More info'}>
-            i
-          </button>
-        );
+      {allItems.flatMap((it) => {
+        // perElement items have no single rectsById[it.id] — one badge per
+        // synthesized `${it.id}::${i}` sub-id instead (see the rAF loop
+        // above), all opening the same shared title/body.
+        const ids = it.perElement
+          ? Object.keys(rectsById).filter((k) => k.startsWith(`${it.id}::`))
+          : (rectsById[it.id] ? [it.id] : []);
+        return ids.map((id) => {
+          const r = rectsById[id];
+          const br = badgeRectFor(r, !!it.columnGroup);
+          return (
+            <button key={id} type="button"
+                    className={`help-badge ${openId === id ? 'is-on' : ''}`}
+                    style={{ top: br.top, left: br.left }}
+                    onClick={(e) => { e.stopPropagation(); setOpenId((cur) => cur === id ? null : id); }}
+                    aria-label={typeof it.title === 'string' ? it.title : 'More info'}>
+              i
+            </button>
+          );
+        });
       })}
       {openItem && openRect && (
         <HelpTip item={openItem} targetRect={openRect} />
