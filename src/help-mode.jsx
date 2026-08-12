@@ -331,18 +331,16 @@ function HelpTip({ item, targetRect }) {
 // one badge.
 const NAV_HELP_ITEM = {
   // padY:7 makes the highlight's own bounding box flush with the tabbar's
-  // outer edge (its vertical padding is 7px at every breakpoint). That
-  // alone wasn't enough, though: the tabbar is a fully-rounded pill
-  // (border-radius: 999px), and a plain DEFAULT_R(12)-radius rectangle
-  // flush with that bounding box still has square-ish corners that poke
-  // past the pill's much-more-aggressively-curved ends, near the far
-  // left/right where the [data-tab] buttons' own union sits close to the
-  // tabbar's edge — this is what actually read as "bleeding" at the top/
-  // bottom (most visible right at the corners, not the flat middle of an
-  // edge). shape:{rx,ry} (see its own comment above) makes this box a
-  // true pill matching the tabbar's own shape instead.
+  // outer edge (its vertical padding is 7px at every breakpoint). The
+  // tabbar itself is a fully-rounded pill (border-radius: 999px, which
+  // resolves to a plain circular corner of exactly half the tabbar's own
+  // height once CSS's overflow algorithm scales it down for a box this
+  // much wider than tall) — matched here with the same math, rx=ry=half
+  // of whichever padded dimension is smaller (see the function-shape
+  // comment above for why an oversized literal rx/ry doesn't reproduce
+  // this reliably).
   id: '__nav', sel: '[data-tab]', matchTargetWidth: true, matchWidthSel: '.tabbar', padY: 7,
-  shape: { rx: 999, ry: 999 },
+  shape: (w, h) => { const r = Math.min(w, h) / 2; return { rx: r, ry: r }; },
   title: 'Navigation',
   body: (
     <>
@@ -450,16 +448,28 @@ function HelpOverlay({ active, items, onExit }) {
         if (!clipped) return;
         r = { ...clipped, width: clipped.right - clipped.left, height: clipped.bottom - clipped.top };
       }
-      // A literal `{ rx, ry }` shape override (as opposed to the 'circle'
-      // string form) skips shapeFor/CSS-inspection entirely — needed for a
-      // multi-element union like the nav bar, which has no single source
-      // element's border-radius to read. An oversized value here (rather
-      // than trying to guess the tabbar's actual pixel radius, which varies
-      // by breakpoint) relies on both the SVG <rect> and the CSS
-      // border-radius below auto-clamping to exactly half the box's own
-      // height per spec — a true pill at any size, no magic number needed.
-      const shape = (it.shape && typeof it.shape === 'object')
-        ? it.shape
+      // A function shape override (as opposed to the pre-existing 'circle'
+      // string form) skips shapeFor/CSS-inspection entirely — needed for a multi-element
+      // union like the nav bar, which has no single source element's
+      // border-radius to read. Passed the box's own PADDED dimensions (this
+      // item's own padX/padY, not the bare global PAD) so it can compute a
+      // radius relative to the box it'll actually be drawn at. An oversized
+      // literal rx/ry (e.g. 999) does NOT work here even though both the
+      // SVG <rect> and the CSS border-radius auto-clamp oversized values —
+      // they clamp with DIFFERENT algorithms: SVG clamps rx/ry
+      // independently per axis (rx→width/2, ry→height/2, unrelated to each
+      // other), while CSS border-radius scales ALL corners' radii by a
+      // single shared ratio computed across every side at once. For a wide,
+      // short box like the tabbar those disagree — SVG clamped to a much
+      // larger horizontal radius than CSS did, so the mask cutout and the
+      // highlight div's own border rendered visibly different shapes.
+      // Computing the true pill radius explicitly (half of whichever
+      // dimension is smaller) up front sidesteps both engines' clamping
+      // entirely, since a value that already fits needs no further
+      // adjustment by either one — the two renders end up identical.
+      const padXForShape = it.padX ?? PAD, padYForShape = it.padY ?? PAD;
+      const shape = typeof it.shape === 'function'
+        ? it.shape(r.width + padXForShape * 2, r.height + padYForShape * 2)
         : (els.length === 1 ? shapeFor(els[0], r.width + PAD * 2, r.height + PAD * 2, it.shape) : null);
       // `matchWidthSel` sizes the open tip to a DIFFERENT element's width
       // than whatever's highlighted — e.g. the nav tip highlights the
