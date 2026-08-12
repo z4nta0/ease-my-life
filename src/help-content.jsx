@@ -405,13 +405,17 @@ const PICKER_HELP_ITEMS = [
   // scroll-into-view step exists in help mode (unlike the guided tour), so
   // these badges simply appear wherever that section currently sits once
   // an edit is open; the user scrolls to find them like anything else
-  // below the fold.
+  // below the fold. This same markup/selector set is ALSO what Step 2 of
+  // the Create a Picker form uses for each new item's editor (identical
+  // .pv-newitem/.rd-item/.entry-editor structure) — one shared set of
+  // entries covers editing an existing pool item, adding one from an
+  // existing picker's own pool, and building a brand new picker's pool.
   {
     // .rd-name-input is also used by the Conditionals section elsewhere in
     // the app (same .rd-item wrapper shape) — :has(.entry-editor) picks out
     // only a .rd-item that's actually an ITEM editor.
     id: 'itemName', sel: '.rd-item:has(.entry-editor) .rd-name-input', title: 'Item Name',
-    body: <>This is the name field for this item, you can rename it here.</>,
+    body: <>This is the name field for your new item, give it a short, descriptive name. This is what will show up on your todo list.</>,
   },
   {
     id: 'itemChargeRangeUp', sel: '.entry-editor .pie-ease-up-row', padY: 0, title: 'Charge Controls',
@@ -440,15 +444,15 @@ const PICKER_HELP_ITEMS = [
     },
   },
   {
-    id: 'itemWeight', sel: '.entry-editor .pie-row:has(.weight-stepper)', padY: 0, title: 'Weight',
-    body: <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked and a lower weight makes it less likely.</>,
+    id: 'itemWeight', sel: '.entry-editor .pie-row:has(.weight-stepper)', padY: 0, title: 'Item Weight',
+    body: <>This adjusts the item's pick chance relative to the picker's other items. For example, an item with a weight of w2 is twice as likely to be picked as an item with a weight of w1.</>,
   },
   {
-    id: 'itemBoost', sel: '.entry-editor .pie-row:has(.pie-boost-val)', padY: 0, title: 'Boost',
+    id: 'itemBoost', sel: '.entry-editor .pie-row:has(.pie-boost-val)', padY: 0, title: 'Item Boost',
     body: <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
   },
   {
-    id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Active',
+    id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Item Active Toggle',
     body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
   },
   {
@@ -459,8 +463,8 @@ const PICKER_HELP_ITEMS = [
     id: 'itemFoot', sel: '.entry-editor .rd-edit-foot .btn', title: 'Cancel / Save',
     body: (
       <>
-        <p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>
-        <p><b>Save:</b> This button saves your changes to this item.</p>
+        <p><b>Cancel:</b> This button discards the form and closes the editor without saving the new item.</p>
+        <p><b>Save:</b> This button saves the new item to the picker's pool.</p>
       </>
     ),
   },
@@ -598,15 +602,34 @@ const PICKER_HELP_ITEMS = [
     body: <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
   },
   {
-    id: 'newPickerFooterNote', sel: '.np-footer-note', title: 'Picker Form Status',
+    // .np-footer--step1 scopes this to Step 1 specifically — Step 2's own
+    // footer (see newPickerItemsFooterNote below) is a bare .np-footer with
+    // no modifier class, so without this both steps' .np-footer-note would
+    // match the same selector and only one entry could ever win.
+    id: 'newPickerFooterNote', sel: '.np-footer--step1 .np-footer-note', title: 'Picker Form Status',
     body: <>This area lets you know if anything still needs to be filled out before you can advance to the next step, or confirms that you're ready to move on.</>,
   },
   {
-    id: 'newPickerFooterActions', sel: '.np-footer-actions .btn', title: 'Cancel / Add Items',
+    id: 'newPickerFooterActions', sel: '.np-footer--step1 .np-footer-actions .btn', title: 'Cancel / Add Items',
     body: (
       <>
         <p><b>Cancel:</b> This button discards the picker form without saving anything.</p>
         <p><b>Add Items:</b> This button advances to the next step, where you'll build this picker's item pool. Stays disabled until at least a name and group are set.</p>
+      </>
+    ),
+  },
+  // ── Create a Picker form, Step 2 (adding items to the pool) ────────────
+  {
+    // :not(.np-footer--step1) — see newPickerFooterNote's own comment.
+    id: 'newPickerItemsFooterNote', sel: '.np-footer:not(.np-footer--step1) .np-footer-note', title: 'Add Items Form Status',
+    body: <>This area lets you know if anything still needs to be filled out before you can submit the form, or confirms that the picker is ready to be created.</>,
+  },
+  {
+    id: 'newPickerItemsFooterActions', sel: '.np-footer:not(.np-footer--step1) .np-footer-actions .btn', title: 'Back / Create Picker',
+    body: (
+      <>
+        <p><b>Back:</b> This button will take you back to the first part of the form, allowing you to adjust the picker's settings.</p>
+        <p><b>Create Picker:</b> This button will create the new picker. Stays disabled until at least 2 items are created.</p>
       </>
     ),
   },
