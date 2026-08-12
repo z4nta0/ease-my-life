@@ -97,6 +97,44 @@ const TODAY_HELP_ITEMS = [
     id: 'cardActionsDayOff', sel: '.today-card--dayoff .today-card-actions button', perElement: true, title: 'Skip',
     body: <>This button removes this day off from your todo list without completing it and updates the progress ring's total count accordingly. Re-roll and Edit are disabled for this type of card.</>,
   },
+  // ── Editing a picker item's full settings (EntryEditor) — reachable from
+  // Today's own Edit button too, not just the Data tab (DATA_HELP_ITEMS has
+  // its own copy of these same 6 items, scoped identically via
+  // .entry-editor — that class is shared verbatim by both tabs since it's
+  // literally the same EntryEditor component either way). Item Name is the
+  // one exception: Today's own name field lives right on the card
+  // (.entry-card-name-input, EntryCard's own markup), not inside
+  // .entry-editor like Data's .rd-name-input does.
+  {
+    id: 'itemName', sel: '.entry-card-name-input', title: 'Item Name',
+    body: <>This is the name field for this item, you can rename it here.</>,
+  },
+  {
+    id: 'itemChargeRange', sel: '.entry-editor .pie-ease-row', title: 'Charge Range',
+    body: <>This controls how quickly this item's charge builds up or drains, depending on the picker's mode. For Ease-up pickers, Soonest/Latest set the fewest/most days before this item becomes eligible to be picked. For Ease-down pickers, Shortest/Longest set the fewest/most days it stays picked once chosen. The Fill/Refill button instantly maxes out this item's charge.</>,
+  },
+  {
+    id: 'itemWeight', sel: '.entry-editor .weight-stepper', title: 'Weight',
+    body: <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked; a lower weight makes it less likely.</>,
+  },
+  {
+    id: 'itemBoost', sel: '.entry-editor .pie-row:has(.pie-boost-val)', title: 'Boost',
+    body: <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked. Reset clears it back to 0.</>,
+  },
+  {
+    id: 'itemActive', sel: '.entry-editor .switch', title: 'Active',
+    body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
+  },
+  {
+    id: 'itemFoot', sel: '.entry-editor .rd-edit-foot .btn', title: 'Delete / Cancel / Save',
+    body: (
+      <>
+        <p><b>Delete:</b> This button permanently deletes this item, after asking you to confirm.</p>
+        <p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>
+        <p><b>Save:</b> This button saves your changes to this item.</p>
+      </>
+    ),
+  },
   {
     id: 'addReminder', sel: '.rem-add-btn', title: 'Add a Reminder',
     body: <>This creates a new one-time or recurring reminder. Reminders are separate from pickers since some tasks cannot be randomly chosen and must be done on a schedule (recurring reminder) or are a one-time thing (one-time reminder).</>,
@@ -155,12 +193,14 @@ const TODAY_HELP_ITEMS = [
     body: <>This is the name field for your reminder, give it a short, descriptive name. This is what will show up on your todo list.</>,
   },
   {
-    // :has(.rd-edit-foot) picks out an EXISTING reminder's own editor
-    // specifically — .rem-inline-editor is shared markup also used by the
-    // Add Reminder quick-add form (already covered above, under its own
-    // .rem-quickadd-wrap scope), but only THIS editor's footer carries the
-    // rd-edit-foot class (the quick-add form's own footer doesn't).
-    id: 'editReminderRepeat', sel: '.rem-inline-editor:has(.rd-edit-foot) .rem-editor', title: 'Repeat Schedule',
+    // .rem-inline-editor is shared markup used by THREE different editors:
+    // the Add Reminder quick-add form (already covered above, under its
+    // own .rem-quickadd-wrap scope), an existing reminder's own editor
+    // (this item), AND a picker item's EntryEditor (tab-today.jsx), whose
+    // root carries an EXTRA entry-editor class specifically so it can be
+    // excluded here — :not(.entry-editor) is what actually picks out "an
+    // existing reminder's editor, not a picker item's".
+    id: 'editReminderRepeat', sel: '.rem-inline-editor:not(.entry-editor) .rem-editor', title: 'Repeat Schedule',
     body: (
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
@@ -172,13 +212,18 @@ const TODAY_HELP_ITEMS = [
     ),
   },
   {
-    // .btn, not the .rd-edit-foot row itself, same "row is wider than its
-    // own buttons" reasoning as addReminderFoot. Only matches in the
-    // NORMAL footer state — Delete's own confirm prompt swaps in a
-    // different class (.rem-foot-confirm), so this gracefully has nothing
-    // to highlight while that's up, same as any other transient confirm
-    // state elsewhere in this catalog.
-    id: 'editReminderFoot', sel: '.rd-edit-foot .btn', title: 'Delete / Cancel / Save',
+    // BUG FIXED HERE: this used to be the unscoped '.rd-edit-foot .btn',
+    // which — since .rd-edit-foot is the SAME class a picker item's own
+    // EntryEditor footer uses — was ALSO matching that footer on the Today
+    // tab, showing this reminder-specific copy ("this reminder...") on a
+    // picker item's Delete/Cancel/Save instead of itemFoot's own "this
+    // item..." copy just below. .rem-inline-editor:not(.entry-editor) (see
+    // editReminderRepeat's own comment) properly scopes this to an actual
+    // reminder's editor. Only matches in the NORMAL footer state — Delete's
+    // own confirm prompt swaps in a different class (.rem-foot-confirm), so
+    // this gracefully has nothing to highlight while that's up, same as
+    // any other transient confirm state elsewhere in this catalog.
+    id: 'editReminderFoot', sel: '.rem-inline-editor:not(.entry-editor) .rd-edit-foot .btn', title: 'Delete / Cancel / Save',
     body: (
       <>
         <p><b>Delete:</b> This button permanently deletes this reminder, after asking you to confirm.</p>
