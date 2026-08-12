@@ -90,6 +90,44 @@ const unionRect = (els) => {
   });
   return { top, left, right, bottom, width: right - left, height: bottom - top };
 };
+// Clips a rect against the app's own always-on-top navigation chrome (the
+// Today page's sticky header, its stacked group-filter rail, and the tabbar
+// in whatever placement it's currently rendered — bottom/top/side) so a
+// target scrolled underneath one of them doesn't draw its highlight ON TOP
+// of it. The dim layer has to sit above ordinary page content (up to the
+// highest z-index any sticky panel or FAB uses) to dim it correctly, which
+// also puts it above this chrome's own, much lower z-index — the chrome's
+// own opacity doesn't hide a highlight painted above it in stacking order.
+// The header/rail are hardcoded as top-anchored (a structural fact about
+// this app's layout, not something worth detecting at runtime — getComputedStyle
+// can't tell us anyway: a position:fixed element's `top` resolves to a real
+// computed pixel value even when only `bottom` was ever set in CSS, at
+// least in Chromium, so checking for the literal 'auto' string is
+// unreliable). Only the tabbar's placement genuinely varies, and since it's
+// position:fixed (not sticky), geometric edge-detection is safe for that
+// one specifically, unlike for a sticky element stacked at a non-zero
+// offset (the group rail sticks below the header, not flush to 0). Picks
+// the viewport edge the rect is CLOSEST to rather than requiring it to
+// literally touch (rect.bottom >= innerHeight etc) — this tabbar renders as
+// a floating inset pill (rounded, margin on every side, safe-area padding
+// baked in), never flush against any edge at all.
+const detectEdgeSide = (rect) => {
+  const gaps = { top: rect.top, bottom: window.innerHeight - rect.bottom, left: rect.left, right: window.innerWidth - rect.right };
+  return Object.entries(gaps).reduce((a, b) => (b[1] < a[1] ? b : a))[0];
+};
+const clipToChrome = (rect, chromeItems) => {
+  let { top, left, right, bottom } = rect;
+  for (const { rect: c, side } of chromeItems) {
+    const hOverlap = left < c.right && right > c.left;
+    const vOverlap = top < c.bottom && bottom > c.top;
+    if (side === 'top' && hOverlap) top = Math.max(top, c.bottom);
+    if (side === 'bottom' && hOverlap) bottom = Math.min(bottom, c.top);
+    if (side === 'left' && vOverlap) left = Math.max(left, c.right);
+    if (side === 'right' && vOverlap) right = Math.min(right, c.left);
+  }
+  if (right - left <= 0 || bottom - top <= 0) return null;
+  return { top, left, right, bottom };
+};
 
 // Extra margin drawn around every highlighted target's own rect — module-
 // level (not a render-local const) since the shape math below needs it too,
@@ -290,9 +328,27 @@ function HelpOverlay({ active, items, onExit }) {
   // frame.
   const recomputeRects = React.useCallback(() => {
     const next = {};
+    // Gathered once per frame (not per-item) — see clipToChrome's own
+    // comment for why highlights need clipping against this chrome at all.
+    // '.today-h' and '.group-rail' only exist on the Today page; '.tabbar'
+    // exists everywhere. 'auto' defers to detectEdgeSide since the tabbar's
+    // placement varies at runtime; the other two are always top-anchored.
+    const chromeMatches = [['.today-h', 'top'], ['.group-rail', 'top'], ['.tabbar', 'auto']]
+      .map(([sel, side]) => { const el = document.querySelector(sel); return el ? { el, side } : null; })
+      .filter(Boolean);
+    const chromeEls = chromeMatches.map((c) => c.el);
+    const chromeItems = chromeMatches
+      .map(({ el, side }) => { const rect = el.getBoundingClientRect(); return { rect, side: side === 'auto' ? detectEdgeSide(rect) : side }; })
+      .filter((c) => c.side);
     allItems.forEach((it) => {
       let els = findTargets(it.sel);
       if (!els.length) return;
+      // The nav item's own targets (and anything else whose selector
+      // happens to live inside the header, like the streak/progress ring)
+      // ARE this chrome — clipping those against their own container would
+      // erase them, not just keep them from floating on top of something
+      // else.
+      const isChromeContent = els.some((el) => chromeEls.some((c) => c === el || c.contains(el)));
       // `perElement` gives EVERY matched element its own badge/highlight
       // (synthesized sub-ids `${it.id}::${i}`, all sharing the parent
       // item's title/body) instead of unioning them into one — needed
@@ -305,8 +361,12 @@ function HelpOverlay({ active, items, onExit }) {
       // cards' don't.
       if (it.perElement) {
         els.forEach((el, i) => {
-          const r = clipHorizontalOverflow(el.getBoundingClientRect(), el);
+          let r = clipHorizontalOverflow(el.getBoundingClientRect(), el);
           if (!r) return;
+          if (!isChromeContent) {
+            r = clipToChrome(r, chromeItems);
+            if (!r) return;
+          }
           const width = r.right - r.left, height = r.bottom - r.top;
           if (!Number.isFinite(width) || !Number.isFinite(height)) return;
           const shape = shapeFor(el, width + PAD * 2, height + PAD * 2, it.shape);
@@ -324,7 +384,7 @@ function HelpOverlay({ active, items, onExit }) {
       // where that per-parent reset is actually safe, since there's only
       // one such parent on the page).
       if (it.firstOnly) els = els.slice(0, 1);
-      const r = unionRect(els);
+      let r = unionRect(els);
       // Every matched element can still end up fully clipped away by
       // unionRect's own horizontal-scroll clipping (e.g. a target scrolled
       // out of a row with nothing else in the selector to fall back on) —
@@ -332,6 +392,11 @@ function HelpOverlay({ active, items, onExit }) {
       // finding zero elements in the first place, rather than feeding an
       // Infinity-valued rect to the SVG below.
       if (!Number.isFinite(r.width) || !Number.isFinite(r.height)) return;
+      if (!isChromeContent) {
+        const clipped = clipToChrome(r, chromeItems);
+        if (!clipped) return;
+        r = { ...clipped, width: clipped.right - clipped.left, height: clipped.bottom - clipped.top };
+      }
       const shape = els.length === 1 ? shapeFor(els[0], r.width + PAD * 2, r.height + PAD * 2, it.shape) : null;
       // `matchWidthSel` sizes the open tip to a DIFFERENT element's width
       // than whatever's highlighted — e.g. the nav tip highlights the
