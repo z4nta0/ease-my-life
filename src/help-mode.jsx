@@ -120,10 +120,20 @@ const clipToChrome = (rect, chromeItems) => {
   for (const { rect: c, side } of chromeItems) {
     const hOverlap = left < c.right && right > c.left;
     const vOverlap = top < c.bottom && bottom > c.top;
-    if (side === 'top' && hOverlap) top = Math.max(top, c.bottom);
-    if (side === 'bottom' && hOverlap) bottom = Math.min(bottom, c.top);
-    if (side === 'left' && vOverlap) left = Math.max(left, c.right);
-    if (side === 'right' && vOverlap) right = Math.min(right, c.left);
+    // Require an ACTUAL rect intersection (both axes) before clipping —
+    // hOverlap alone isn't enough for a top/bottom-anchored chrome, since
+    // almost every target shares SOME horizontal range with a near-full-
+    // width bar regardless of how far away it is vertically. Without this,
+    // any target entirely below a bottom-pinned tabbar (no vertical overlap
+    // at all) still got its bottom clamped down to the tabbar's own top,
+    // producing a negative-height rect that then reads as "fully occluded"
+    // and silently disappears — exactly what happened to a Pickers-page
+    // form field sitting well below the tabbar with nothing behind it.
+    if (!hOverlap || !vOverlap) continue;
+    if (side === 'top') top = Math.max(top, c.bottom);
+    if (side === 'bottom') bottom = Math.min(bottom, c.top);
+    if (side === 'left') left = Math.max(left, c.right);
+    if (side === 'right') right = Math.min(right, c.left);
   }
   if (right - left <= 0 || bottom - top <= 0) return null;
   return { top, left, right, bottom };
