@@ -59,9 +59,9 @@ function countLevel(n) { return n <= 0 ? 0 : n >= 4 ? 4 : n; }
 
 // Stacked proportion bar + legend. Used for the pick-source split and the
 // reminder one-time/recurring split.
-function BreakdownBar({ title, total, segments, empty }) {
+function BreakdownBar({ title, total, segments, empty, className = '' }) {
   return (
-    <Card>
+    <Card className={className}>
       <div className="kicker">{title}</div>
       {total > 0 ? (
         <div className="bd">
@@ -1010,24 +1010,24 @@ function TabStats({ state, actions, onHome, onNavTab }) {
         return (
           <>
             <div className="stat-row">
-              <Card className="stat-card">
+              <Card className="stat-card stat-mk-condfired">
                 <div className="stat-num">{condTotals.fired}</div>
                 <div className="stat-lbl">triggered</div>
               </Card>
-              <Card className="stat-card">
+              <Card className="stat-card stat-mk-condcycles">
                 <div className="stat-num">{condTotals.total}</div>
                 <div className="stat-lbl">cycles</div>
               </Card>
-              <Card className="stat-card">
+              <Card className="stat-card stat-mk-condrate">
                 <div className="stat-num">{condTotals.rate}%</div>
                 <div className="stat-lbl">fire rate</div>
               </Card>
-              <Card className="stat-card">
+              <Card className="stat-card stat-mk-condlast">
                 <div className="stat-num">{condTotals.lastFired ? fmtCondDate(condTotals.lastFired) : '—'}</div>
                 <div className="stat-lbl">last fired</div>
               </Card>
             </div>
-            <Card>
+            <Card className="stat-mk-condbreakdown">
               <div className="rank-head">
                 <div className="kicker">Conditionals breakdown</div>
                 <button type="button" className="rank-sort"
@@ -1116,41 +1116,45 @@ function TabStats({ state, actions, onHome, onNavTab }) {
       {/* ── Headline numbers ── */}
       {!isConditionals && (
       <div className="stat-row">
+        {/* stat-mk-* — dedicated, zero-styling selector hooks for help mode
+            (same idea as day-log.jsx's dl-mk-* classes), since every
+            headline card here shares the plain .stat-card class with no
+            other way to address one specifically. */}
         {isReminders ? (
           <>
-            <Card className="stat-card">
+            <Card className="stat-card stat-mk-remdone">
               <div className="stat-num">{totalDone}</div>
               <div className="stat-lbl">completed</div>
             </Card>
-            <Card className="stat-card">
+            <Card className="stat-card stat-mk-remweek">
               <div className="stat-num">{remWeek}</div>
               <div className="stat-lbl">this week</div>
             </Card>
-            <Card className="stat-card">
+            <Card className="stat-card stat-mk-remactive">
               <div className="stat-num">{activeDays}</div>
               <div className="stat-lbl">active days</div>
             </Card>
-            <Card className="stat-card">
+            <Card className="stat-card stat-mk-rembusiest">
               <div className="stat-num">{busiest}</div>
               <div className="stat-lbl">busiest day</div>
             </Card>
           </>
         ) : (
           <>
-            <Card className="stat-card">
+            <Card className="stat-card stat-mk-streak">
               <div className="stat-num">{streak}</div>
               <div className="stat-lbl">day streak</div>
               <Icon name="flame" size={16} />
             </Card>
-            <Card className="stat-card">
+            <Card className="stat-card stat-mk-fulldays">
               <div className="stat-num">{fullDays}</div>
               <div className="stat-lbl">full days · {activeDays}</div>
             </Card>
-            <Card className="stat-card">
+            <Card className="stat-card stat-mk-done">
               <div className="stat-num">{totalDone}</div>
               <div className="stat-lbl">items done</div>
             </Card>
-            <Card className="stat-card">
+            <Card className="stat-card stat-mk-rate">
               <div className="stat-num">{rate}%</div>
               <div className="stat-lbl">completion</div>
             </Card>
@@ -1284,8 +1288,8 @@ function TabStats({ state, actions, onHome, onNavTab }) {
       {isReminders && (
         <>
           <BreakdownBar title="By reminder type" total={totalDone} segments={typeSegments}
-                        empty={`No reminders completed in ${rangeNoun} yet.`} />
-          <Card>
+                        empty={`No reminders completed in ${rangeNoun} yet.`} className="stat-mk-remtype" />
+          <Card className="stat-mk-rembreakdown">
             <div className="rank-head">
               <div className="kicker">Reminders breakdown</div>
               <button type="button" className="rank-sort"
@@ -1370,13 +1374,13 @@ function TabStats({ state, actions, onHome, onNavTab }) {
       {/* ── Source split (picks) — All view shows it last; picker scope too ── */}
       {!isReminders && !isConditionals && (
         <BreakdownBar title="How picks were chosen" total={totalPossible} segments={sourceSegments}
-                      empty={`Nothing picked in ${rangeNoun} yet.`} />
+                      empty={`Nothing picked in ${rangeNoun} yet.`} className="stat-mk-source" />
       )}
 
       {/* ── Rankings (picks) ── */}
       {scope === 'all' && (
         <div className="stat-row stat-row--2">
-          <Card>
+          <Card className="stat-mk-mostpicked">
             <div className="kicker">Most picked</div>
             {top.length ? (
               <ul className="rank">
@@ -1389,7 +1393,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
               </ul>
             ) : <div className="stat-empty">Nothing picked in {rangeNoun} yet.</div>}
           </Card>
-          <Card>
+          <Card className="stat-mk-coldest">
             <div className="kicker">Coldest items</div>
             {cold.length ? (
               <ul className="rank rank--cold">
