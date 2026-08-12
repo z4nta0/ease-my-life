@@ -3527,6 +3527,13 @@ body.ob-touring .tab{padding-bottom:200px}
 .help-spot{
   position:fixed;border-radius:var(--r-md);pointer-events:none;
   border:2px solid oklch(from var(--accent) l c h/0.9);
+  /* Firefox specifically can fail to repaint a position:fixed element after
+     a rapid top/left/width/height style change (this one updates every rAF
+     tick while help mode is active) — it visibly sticks at its old rect
+     until something else forces a recomposite, like a scroll. Promoting it
+     to its own compositor layer works around that; Chrome/Safari don't need
+     it but aren't hurt by it either. */
+  transform:translateZ(0);
 }
 .help-badge{
   position:fixed;pointer-events:auto;
@@ -3536,6 +3543,7 @@ body.ob-touring .tab{padding-bottom:200px}
   background:var(--surface);color:var(--muted);
   font-size:11px;font-weight:700;line-height:1;
   cursor:pointer;transition:border-color .15s ease,color .15s ease,background .15s ease;
+  transform:translateZ(0); /* same stuck-repaint workaround as .help-spot above */
 }
 .help-badge:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .help-badge.is-on{border-color:var(--accent);color:#fff;background:var(--accent)}
@@ -3544,7 +3552,7 @@ body.ob-touring .tab{padding-bottom:200px}
    help-mode.jsx's own header comment. Only overrides what's actually
    different: fixed width (matching the tour's own coachW cap) and opting
    back into pointer-events under .help-mode's blanket pointer-events:none. */
-.help-tip{pointer-events:auto;width:280px}
+.help-tip{pointer-events:auto;width:280px;transform:translateZ(0)} /* same stuck-repaint workaround as .help-spot */
 .help-tip-title{font-size:15px;font-weight:600;margin:0 0 5px}
 .help-tip .ob-body p{margin:0}
 .help-tip .ob-body p+p{margin-top:8px}
