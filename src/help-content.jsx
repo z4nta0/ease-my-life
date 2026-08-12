@@ -117,7 +117,7 @@ const TODAY_HELP_ITEMS = [
     // cadence unit word (days/weeks/months/years) straight off the
     // already-rendered .np-ease-unit label instead of hardcoding "days",
     // which would be wrong for a non-daily cadence picker.
-    id: 'itemChargeRangeUp', sel: '.entry-editor .pie-ease-up-row', padY: 0, title: 'Charge Controls',
+    id: 'itemChargeRangeUp', sel: '.entry-editor .pie-ease-up-row', padY: 0, title: 'Item Charge Controls',
     body: () => {
       const unit = document.querySelector('.entry-editor .pie-ease-up-row .np-ease-unit')?.textContent || 'days';
       return (
@@ -130,7 +130,7 @@ const TODAY_HELP_ITEMS = [
     },
   },
   {
-    id: 'itemChargeRangeDown', sel: '.entry-editor .pie-ease-down-row', padY: 0, title: 'Charge Controls',
+    id: 'itemChargeRangeDown', sel: '.entry-editor .pie-ease-down-row', padY: 0, title: 'Item Charge Controls',
     body: () => {
       const unit = document.querySelector('.entry-editor .pie-ease-down-row .np-ease-unit')?.textContent || 'days';
       return (
@@ -143,15 +143,15 @@ const TODAY_HELP_ITEMS = [
     },
   },
   {
-    id: 'itemWeight', sel: '.entry-editor .pie-row:has(.weight-stepper)', padY: 0, title: 'Weight',
+    id: 'itemWeight', sel: '.entry-editor .pie-row:has(.weight-stepper)', padY: 0, title: 'Item Weight',
     body: <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked and a lower weight makes it less likely.</>,
   },
   {
-    id: 'itemBoost', sel: '.entry-editor .pie-row:has(.pie-boost-val)', padY: 0, title: 'Boost',
+    id: 'itemBoost', sel: '.entry-editor .pie-row:has(.pie-boost-val)', padY: 0, title: 'Item Boost',
     body: <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
   },
   {
-    id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Active',
+    id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Item Active Toggle',
     body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
   },
   {
@@ -187,7 +187,7 @@ const TODAY_HELP_ITEMS = [
     // itself, so the tip's normal "below the target" placement already
     // tracks its own bottom edge as it grows/shrinks with the selection,
     // without needing to pin to some other, unrelated element.
-    id: 'addReminderRepeat', sel: '.rem-quickadd-wrap .rem-editor', title: 'Repeat Schedule',
+    id: 'addReminderRepeat', sel: '.rem-quickadd-wrap .rem-editor', title: 'Reminder Schedule',
     body: (
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
@@ -223,13 +223,17 @@ const TODAY_HELP_ITEMS = [
   },
   {
     // .rem-inline-editor is shared markup used by THREE different editors:
-    // the Add Reminder quick-add form (already covered above, under its
-    // own .rem-quickadd-wrap scope), an existing reminder's own editor
-    // (this item), AND a picker item's EntryEditor (tab-today.jsx), whose
-    // root carries an EXTRA entry-editor class specifically so it can be
-    // excluded here — :not(.entry-editor) is what actually picks out "an
-    // existing reminder's editor, not a picker item's".
-    id: 'editReminderRepeat', sel: '.rem-inline-editor:not(.entry-editor) .rem-editor', title: 'Repeat Schedule',
+    // the Add Reminder quick-add form, an existing reminder's own editor
+    // (this item), AND a picker item's EntryEditor (tab-today.jsx). The
+    // picker-item case is excluded via :not(.entry-editor) (its root
+    // carries that extra class) — but :not(.rem-quickadd-wrap *) is ALSO
+    // required: .rem-quickadd-wrap merely WRAPS its own .rem-inline-editor,
+    // it doesn't stop the bare :not(.entry-editor) check from still
+    // matching that inner element too, which produced two overlapping
+    // "Reminder Schedule" badges at once whenever the Add Reminder form was
+    // open (found via live testing — addReminderRepeat's own comment above
+    // claiming this was "already covered, doesn't conflict" was wrong).
+    id: 'editReminderRepeat', sel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor', title: 'Reminder Schedule',
     body: (
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
