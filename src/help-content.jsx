@@ -418,7 +418,7 @@ const PICKER_HELP_ITEMS = [
     body: <>This is the name field for your new item, give it a short, descriptive name. This is what will show up on your todo list.</>,
   },
   {
-    id: 'itemChargeRangeUp', sel: '.entry-editor .pie-ease-up-row', padY: 0, title: 'Charge Controls',
+    id: 'itemChargeRangeUp', sel: '.entry-editor .pie-ease-up-row', padY: 0, title: 'Item Charge Controls',
     body: () => {
       const unit = document.querySelector('.entry-editor .pie-ease-up-row .np-ease-unit')?.textContent || 'days';
       return (
@@ -431,7 +431,7 @@ const PICKER_HELP_ITEMS = [
     },
   },
   {
-    id: 'itemChargeRangeDown', sel: '.entry-editor .pie-ease-down-row', padY: 0, title: 'Charge Controls',
+    id: 'itemChargeRangeDown', sel: '.entry-editor .pie-ease-down-row', padY: 0, title: 'Item Charge Controls',
     body: () => {
       const unit = document.querySelector('.entry-editor .pie-ease-down-row .np-ease-unit')?.textContent || 'days';
       return (
