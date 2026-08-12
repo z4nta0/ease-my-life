@@ -169,12 +169,12 @@ const TODAY_HELP_ITEMS = [
     id: 'logPickerKey', sel: '.dl-key', title: 'Key',
     body: (
       <>
-        <p>This explains the icons used in the Status column below:</p>
-        <p><b>Auto-picked:</b> chosen automatically by the daily generator.</p>
-        <p><b>Pushed:</b> sent to Today manually, from the Pickers tab.</p>
-        <p><b>Rolled off:</b> swapped away via Re-roll.</p>
-        <p><b>Skipped:</b> removed from today's list without completing it.</p>
-        <p><b>Completed:</b> marked as done.</p>
+        <p>This explains the icons that are used in the Status column below.</p>
+        <p><b>Auto-picked:</b> This indicates that an item was chosen automatically by the daily generator.</p>
+        <p><b>Pushed:</b> This indicates that an item was pushed onto your todo list manually from the Pickers page.</p>
+        <p><b>Rolled off:</b> This indicates that an item was on your todo list but was then replaced by another item via the Re-roll button.</p>
+        <p><b>Skipped:</b> This indicates that an item was on your todo list but was then removed via the Skip button.</p>
+        <p><b>Completed:</b> This indicates that the item is on your todo list and has been marked as completed.</p>
       </>
     ),
   },
