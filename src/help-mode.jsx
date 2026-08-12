@@ -330,7 +330,13 @@ function HelpTip({ item, targetRect }) {
 // same reasoning behind clustering e.g. a card's Re-roll/Skip/Edit under
 // one badge.
 const NAV_HELP_ITEM = {
-  id: '__nav', sel: '[data-tab]', matchTargetWidth: true, matchWidthSel: '.tabbar',
+  // padY:7 — the default PAD (8) is 1px more than the tabbar's own
+  // vertical padding around the [data-tab] buttons at every breakpoint,
+  // so the highlight's top/bottom edges poked 1px past the tabbar's own
+  // rounded pill edge. padX is left at the default: the buttons' own
+  // horizontal padding is comfortably larger than PAD at every
+  // breakpoint, so there's no matching bleed on that axis.
+  id: '__nav', sel: '[data-tab]', matchTargetWidth: true, matchWidthSel: '.tabbar', padY: 7,
   title: 'Navigation',
   body: (
     <>
