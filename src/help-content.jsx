@@ -744,7 +744,7 @@ const STATS_HELP_ITEMS = [
   // ── Conditionals scope only ─────────────────────────────────────────────
   {
     id: 'statCondBreakdown', sel: '.stat-mk-condbreakdown', title: 'Conditionals Breakdown',
-    body: <>This breaks down every conditional in this scope individually. Switch between fire rate, triggers, cycles, interval, and last fired to see each conditional from a different angle.</>,
+    body: <>This breaks down every conditional for your selected range individually. You can switch between fire rate, triggers, cycles, interval, and last fired to see each conditional from a different angle.</>,
   },
   // ── Reminders scope only ────────────────────────────────────────────────
   {
