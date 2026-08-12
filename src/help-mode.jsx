@@ -330,13 +330,19 @@ function HelpTip({ item, targetRect }) {
 // same reasoning behind clustering e.g. a card's Re-roll/Skip/Edit under
 // one badge.
 const NAV_HELP_ITEM = {
-  // padY:7 — the default PAD (8) is 1px more than the tabbar's own
-  // vertical padding around the [data-tab] buttons at every breakpoint,
-  // so the highlight's top/bottom edges poked 1px past the tabbar's own
-  // rounded pill edge. padX is left at the default: the buttons' own
-  // horizontal padding is comfortably larger than PAD at every
-  // breakpoint, so there's no matching bleed on that axis.
+  // padY:7 makes the highlight's own bounding box flush with the tabbar's
+  // outer edge (its vertical padding is 7px at every breakpoint). That
+  // alone wasn't enough, though: the tabbar is a fully-rounded pill
+  // (border-radius: 999px), and a plain DEFAULT_R(12)-radius rectangle
+  // flush with that bounding box still has square-ish corners that poke
+  // past the pill's much-more-aggressively-curved ends, near the far
+  // left/right where the [data-tab] buttons' own union sits close to the
+  // tabbar's edge — this is what actually read as "bleeding" at the top/
+  // bottom (most visible right at the corners, not the flat middle of an
+  // edge). shape:{rx,ry} (see its own comment above) makes this box a
+  // true pill matching the tabbar's own shape instead.
   id: '__nav', sel: '[data-tab]', matchTargetWidth: true, matchWidthSel: '.tabbar', padY: 7,
+  shape: { rx: 999, ry: 999 },
   title: 'Navigation',
   body: (
     <>
@@ -444,7 +450,17 @@ function HelpOverlay({ active, items, onExit }) {
         if (!clipped) return;
         r = { ...clipped, width: clipped.right - clipped.left, height: clipped.bottom - clipped.top };
       }
-      const shape = els.length === 1 ? shapeFor(els[0], r.width + PAD * 2, r.height + PAD * 2, it.shape) : null;
+      // A literal `{ rx, ry }` shape override (as opposed to the 'circle'
+      // string form) skips shapeFor/CSS-inspection entirely — needed for a
+      // multi-element union like the nav bar, which has no single source
+      // element's border-radius to read. An oversized value here (rather
+      // than trying to guess the tabbar's actual pixel radius, which varies
+      // by breakpoint) relies on both the SVG <rect> and the CSS
+      // border-radius below auto-clamping to exactly half the box's own
+      // height per spec — a true pill at any size, no magic number needed.
+      const shape = (it.shape && typeof it.shape === 'object')
+        ? it.shape
+        : (els.length === 1 ? shapeFor(els[0], r.width + PAD * 2, r.height + PAD * 2, it.shape) : null);
       // `matchWidthSel` sizes the open tip to a DIFFERENT element's width
       // than whatever's highlighted — e.g. the nav tip highlights the
       // individual [data-tab] buttons (tested and correct as a spotlight),
