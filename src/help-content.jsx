@@ -766,12 +766,236 @@ const DATA_HELP_ITEMS = [
     body: <>This further narrows exactly what you want to view and edit.</>,
   },
   {
-    id: 'remindersManager', sel: '.cat--reminders', title: 'View and Edit Reminders',
-    body: <>This is where you can view and edit all of your reminders, as well as create new ones.</>,
+    // Only rendered once at least one conditional exists — a second filter
+    // row alongside Group, narrowing the pickers list to whichever
+    // conditional gates them.
+    id: 'conditionalsFilter', sel: '.stat-scope-groups--cond .picker-group-pill', title: 'Conditionals Filter',
+    body: <>This filters the pickers list below by conditional, showing only pickers gated by the conditional you select.</>,
+  },
+  // ── Conditionals manager — each conditional gets its own highlight/
+  // tooltip, not just the section as a whole. The per-type controls
+  // (Type/Weight/Odds/Boost/Charge Controls/Active) reuse the EXACT same
+  // selectors as the Pickers-page create-flow verbatim: ConditionalControls
+  // is the same shared component either way (this tab passes
+  // variant="inline" instead of the default 'card', but that only swaps a
+  // wrapper class neither selector touches), so there was nothing to
+  // re-derive — see PICKER_HELP_ITEMS' own newCond* entries for the
+  // original comments on each of these.
+  {
+    id: 'conditionalsManager', sel: '.cnd-manager .cat-h', title: 'Conditionals',
+    body: <>This is where you can view and edit all of your conditionals. Tap the header to expand or collapse the section.</>,
   },
   {
-    id: 'pickersManager', sel: '.data-list', title: 'View and Edit Pickers',
-    body: <>This is where you can view and edit all of your pickers, as well as their containing items. You can also create new picker items here.</>,
+    // perElement — every conditional gets its own badge, not one for the
+    // whole list, since a user could be looking at any of them.
+    id: 'conditionalRow', sel: '.cnd-manager .rd-item > .rd-row', perElement: true, title: 'Conditional',
+    body: <>This is one of your conditionals. Tap it to view and edit its settings, or use the Add a conditional button below to create a new one.</>,
+  },
+  {
+    // hideName is set on ConditionalControls here, so the name field lives
+    // on the ROW itself (same .rd-name-input shape as a picker item's own
+    // row), not inside the shared controls component.
+    id: 'dataCondName', sel: '.cnd-manager .rd-item.is-editing .rd-name-input', title: 'Conditional Name',
+    body: <>This is the name field for this conditional, you can rename it here.</>,
+  },
+  {
+    id: 'dataCondType', sel: '.cnd-controls .np-field:has(.rd-mode-radio)', title: 'Conditional Type', padY: 0,
+    body: <>This is where you choose the rule this conditional follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
+  },
+  {
+    id: 'dataCondRandom', sel: '.cnd-typectl:has(.pie-noweight)', title: 'Conditional Weight', padY: 0,
+    body: <>Truly random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
+  },
+  {
+    id: 'dataCondOdds', sel: '.cnd-typectl .pie-row:has(.weight-stepper)', title: 'Conditional Trigger Odds', padY: 0,
+    body: <>This adjusts the conditional's chance to trigger each time it runs. A higher percentage makes it more likely to trigger and a lower percentage makes it less likely.</>,
+  },
+  {
+    id: 'dataCondBoost', sel: '.cnd-typectl .pie-row:has(.pie-boost-val)', title: 'Conditional Boost', padY: 0,
+    body: <>This is the conditional's current boost, which climbs by a percentage each time it doesn't trigger and resets to 0 the next time it does. A higher boost makes it more likely to trigger.</>,
+  },
+  {
+    id: 'dataCondEaseUp', sel: '.cnd-typectl .cnd-ease-up-row', padY: 0, title: 'Conditional Charge Controls',
+    body: (
+      <>
+        <p><b>Soonest:</b> This controls the minimum number of days that must pass before the conditional becomes eligible to trigger.</p>
+        <p><b>Latest:</b> This controls the maximum number of days that must pass before the conditional is guaranteed to trigger.</p>
+        <p><b>Fill:</b> This will fill the conditional's charge to 100, making it eligible to trigger.</p>
+      </>
+    ),
+  },
+  {
+    id: 'dataCondEaseDown', sel: '.cnd-typectl .cnd-ease-down-row', padY: 0, title: 'Conditional Charge Controls',
+    body: (
+      <>
+        <p><b>Shortest:</b> This controls the minimum number of days that the conditional must stay triggered before it can stop.</p>
+        <p><b>Longest:</b> This controls the maximum number of days that the conditional can stay triggered before it must stop.</p>
+        <p><b>Refill:</b> This will refill the conditional's charge back to 100, effectively resetting how long it stays triggered.</p>
+      </>
+    ),
+  },
+  {
+    id: 'dataCondActive', sel: '.cnd-controls .pie-row:has(.switch)', title: 'Conditional Active Toggle', padY: 3,
+    body: <>This toggles whether this conditional is currently active. Turning it off effectively disables the conditional, so its attached picker will always run regardless of the conditional's own trigger state.</>,
+  },
+  {
+    // .rd-edit--cnd scopes this to ConditionalEditor's own footer — its
+    // .rd-ctl-group--foot wrapper class is shared with PickerControls'
+    // footer below, which lives in a differently-rooted tree (.rd-edit--cnd
+    // is unique to this one).
+    id: 'dataCondFoot', sel: '.rd-edit--cnd .rd-ctl-group--foot .btn', title: 'Delete / Cancel / Save',
+    body: (
+      <>
+        <p><b>Delete:</b> This button permanently deletes this conditional, after asking you to confirm. Any pickers using it will be detached.</p>
+        <p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>
+        <p><b>Save:</b> This button saves your changes to this conditional.</p>
+      </>
+    ),
+  },
+  // ── Reminders manager — the participation-settings matrix is new content
+  // (not present anywhere else); the per-reminder row + its editor reuse
+  // Today's own editReminderRepeat/editReminderFoot verbatim, since this is
+  // the exact same .rem-inline-editor markup either way.
+  {
+    id: 'remindersManager', sel: '.cat--reminders .cat-h', title: 'Reminders',
+    body: <>This is where you can view and edit all of your reminders. Tap the header to expand or collapse the section.</>,
+  },
+  {
+    id: 'remControlsMatrix', sel: '.rd-matrix', title: 'Reminder Participation Settings',
+    body: <>This controls whether one-time and recurring reminders each participate in the day streak, completion ring, weekend/holiday exclusion, and the Stats tab — toggle each independently for the two types.</>,
+  },
+  {
+    id: 'remAddButton', sel: '.cat--reminders .rd-add', title: 'New Reminder',
+    body: <>This creates a new one-time or recurring reminder. Reminders are separate from pickers since some tasks cannot be randomly chosen and must be done on a schedule (recurring reminder) or are a one-time thing (one-time reminder).</>,
+  },
+  {
+    // perElement — every reminder gets its own badge, not one for the whole
+    // list.
+    id: 'reminderRow', sel: '.cat--reminders .rd-item > .rd-row', perElement: true, title: 'Reminder',
+    body: <>This is one of your reminders. Tap it to view and edit its settings.</>,
+  },
+  {
+    id: 'dataReminderName', sel: '.cat--reminders .rd-name-input', title: 'Reminder Name',
+    body: <>This is the name field for your reminder, give it a short, descriptive name. This is what will show up on your todo list.</>,
+  },
+  {
+    // Reused verbatim from TODAY_HELP_ITEMS' editReminderRepeat/editReminderFoot
+    // — same .rem-inline-editor markup, and this tab has no quickadd form for
+    // that selector's own :not(.rem-quickadd-wrap *) exclusion to worry about.
+    id: 'dataReminderRepeat', sel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor', title: 'Reminder Schedule',
+    body: (
+      <>
+        <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
+        <p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>
+        <p><b>Weekly:</b> This reminder will show up on your todo list every week on the days that you select below.</p>
+        <p><b>Monthly:</b> This reminder will show up on your todo list every month on the day that you select below.</p>
+        <p><b>Yearly:</b> This reminder will show up on your todo list every year on the date that you select below.</p>
+      </>
+    ),
+  },
+  {
+    id: 'dataReminderFoot', sel: '.rem-inline-editor:not(.entry-editor) .rd-edit-foot .btn', title: 'Delete / Cancel / Save',
+    body: (
+      <>
+        <p><b>Delete:</b> This button permanently deletes this reminder, after asking you to confirm.</p>
+        <p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>
+        <p><b>Save:</b> This button saves your changes to this reminder.</p>
+      </>
+    ),
+  },
+  // ── Pickers list — each picker gets its own highlight, plus each of its
+  // own settings controls individually (PickerControls) and each of its
+  // items individually (reusing the shared item-editor entries below).
+  {
+    // perElement — every picker gets its own badge. Scoped via the direct
+    // .data-list > .cat > .cat-h chain since .cat-h is also reused by the
+    // Conditionals/Reminders managers' own outer headers (which render
+    // outside .data-list entirely).
+    id: 'pickerRow', sel: '.data-list > .cat > .cat-h', perElement: true, title: 'Picker',
+    body: <>This is one of your pickers. Tap it to view and edit its settings and items.</>,
+  },
+  {
+    id: 'dataPickerName', sel: '.rd-basics-row:has(.rd-basics-name)', title: 'Picker Name',
+    body: <>This is the name field for this picker, you can rename it here.</>,
+  },
+  {
+    id: 'dataPickerGroup', sel: '.rd-basics-row--group', title: 'Picker Group',
+    body: <>This lets you choose which group this picker belongs to. Groups cluster related pickers together on your todo list, like "Food" or "Chores". You can select an existing group or create a new one.</>,
+  },
+  {
+    // Scoped to PickerControls' own "How it picks" group — ConditionalEditor
+    // has its own separate .rd-mode-radio inside .cnd-controls, which
+    // doesn't live under .rd-ctl-group--picks.
+    id: 'dataPickerType', sel: '.rd-ctl-group--picks .rd-mode-radio', title: 'Picker Type',
+    body: <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
+  },
+  {
+    // New content — this picker-level default charge range (Ease-up/down
+    // only) has no equivalent on the Pickers-page create flow, which only
+    // sets charge ranges per item, not a picker-wide default. Prefills new
+    // items added to this picker; Fill/Refill here acts on every item at
+    // once (actions.refillPicker), not just one.
+    id: 'dataPickerDefaultCadence', sel: '.ease-config', title: 'Default Charge Controls',
+    body: (
+      <>
+        <p><b>Soonest / Shortest:</b> This sets the picker's own default minimum, used to prefill new items you add to this picker.</p>
+        <p><b>Latest / Longest:</b> This sets the picker's own default maximum, used to prefill new items you add to this picker.</p>
+        <p><b>Fill / Refill:</b> This fills or refills the charge of every item in this picker at once.</p>
+      </>
+    ),
+  },
+  {
+    id: 'dataPickerConditionalToggle', sel: '.sched-line:has(button[aria-label="Attach a conditional"])', title: 'Picker Conditional',
+    body: <>This lets you optionally gate this picker behind a conditional. When you attach a conditional, the picker will only run on days determined by that conditional's own rules. For example, giving yourself an occasional day off from chores. You can attach any existing conditional below — to create a new one, use the Conditionals section above.</>,
+  },
+  {
+    id: 'dataPickerConditionalRail', sel: '.rd-cnd-rail-row .cnd-rail', title: 'Select a Conditional',
+    body: <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, create one in the Conditionals section above.</>,
+  },
+  {
+    id: 'dataPickerDailyToggle', sel: '.sched-line:has(button[aria-label*="Daily generator"])', title: 'Daily Generator Toggle',
+    body: <>This determines whether the picker will be included in the app's daily auto-generator. When on, this picker's items will be automatically added to your todo list. When off, the picker won't run automatically, but you can still generate a pick manually from the Pickers tab.</>,
+  },
+  {
+    id: 'dataPickerCadence', sel: '.sched-line:has(select[aria-label="Cadence"])', title: 'Picker Cadence',
+    body: (
+      <>
+        <p><b>Daily:</b> This is the picker's default cadence. It surfaces every day that it's scheduled to run, exactly like an ordinary picker.</p>
+        <p><b>Weekly:</b> This surfaces the picker once a week, on whichever weekday you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p>
+        <p><b>Monthly:</b> This surfaces the picker once a month, on whichever day you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p>
+        <p><b>Yearly:</b> This surfaces the picker once a year, on whichever date you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p>
+      </>
+    ),
+  },
+  {
+    id: 'dataPickerDays', sel: '.sched-line:has(.dow-chips)', title: 'Picker Day Selection',
+    body: <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off.</>,
+  },
+  {
+    id: 'dataPickerSkipHolidays', sel: '.sched-line:has(button[aria-label="Skip on holidays"])', title: 'Picker Holidays Toggle',
+    body: <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
+  },
+  {
+    id: 'dataPickerFoot', sel: '.pk-ctl-foot .btn', title: 'Delete / Cancel / Save',
+    body: (
+      <>
+        <p><b>Delete:</b> This button permanently deletes this picker, after asking you to confirm. This will also delete all of its items.</p>
+        <p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>
+        <p><b>Save:</b> This button saves your changes to this picker.</p>
+      </>
+    ),
+  },
+  {
+    // Scoped to .data-list so this doesn't also match the Conditionals/
+    // Reminders managers' own "Add" buttons, which share the plain .rd-add
+    // class but render outside .data-list entirely.
+    id: 'dataAddItem', sel: '.data-list .rd-add', title: 'Add Item',
+    body: <>This adds a new item to this picker's pool.</>,
+  },
+  {
+    // perElement — every item in every expanded picker gets its own badge.
+    id: 'dataItemRow', sel: '.data-list .rd-item > .rd-row', perElement: true, title: 'Picker Item',
+    body: <>This is one of this picker's items. Tap it to view and edit its settings.</>,
   },
   // ── Editing an individual picker item (EntryEditor, defined in
   // tab-today.jsx but reused here — see .entry-editor's own doc comment

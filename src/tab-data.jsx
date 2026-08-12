@@ -558,7 +558,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
       {/* Footer — Delete (left) · Cancel + Done (right), mirroring the item
           editor. Delete morphs the footer into a confirm that reuses the
           "also delete its N items" message. */}
-      <div className="rd-ctl-group rd-ctl-group--foot">
+      <div className="rd-ctl-group rd-ctl-group--foot pk-ctl-foot">
         {confirmDel ? (
           <div className="rd-pk-del-confirm" key="confirm">
             <div className="confirm-msg">Delete the &ldquo;{pk.name}&rdquo; picker? This will also delete its {items.length} {items.length === 1 ? 'item' : 'items'}. This can&rsquo;t be undone.</div>
@@ -970,7 +970,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
         {conditionals.length > 0 && (
           <div className="stat-filter-row">
             <span className="stat-filter-lbl">Conditionals</span>
-            <div className="picker-groups stat-scope-groups" ref={condRowRef} role="tablist" aria-label="Filter pickers by conditional">
+            <div className="picker-groups stat-scope-groups stat-scope-groups--cond" ref={condRowRef} role="tablist" aria-label="Filter pickers by conditional">
               <button type="button" role="tab" aria-selected={condFilter === 'all'}
                       className={`picker-group-pill ${condFilter === 'all' ? 'is-on' : ''}`}
                       disabled={disableGroupFilter}
