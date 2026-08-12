@@ -77,7 +77,7 @@ function Segmented({ options, value, onChange, ariaLabel, describedBy }) {
     <div className="seg" role="group" aria-label={ariaLabel} aria-describedby={describedBy} ref={segRef}>
       <span className="seg-thumb" ref={thumbRef} aria-hidden="true"></span>
       {options.map((o) => (
-        <button key={o.key} type="button"
+        <button key={o.key} type="button" data-key={o.key}
                 className={`seg-btn ${value === o.key ? 'is-on' : ''}`}
                 aria-pressed={value === o.key} aria-describedby={describedBy}
                 onClick={() => onChange(o.key)}>{o.label}</button>

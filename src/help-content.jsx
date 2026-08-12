@@ -566,6 +566,39 @@ const PICKER_HELP_ITEMS = [
     id: 'newCondActive', sel: '.cnd-controls .pie-row:has(.switch)', title: 'Conditional Active Toggle', padY: 3,
     body: <>This toggles whether this conditional is currently active. Turning it off effectively disables the conditional, so its attached picker will always run regardless of the conditional's own trigger state.</>,
   },
+  // ── Daily Generator section (still Step 1 of the Create a Picker form) ──
+  {
+    id: 'newPickerDaily', sel: '.np-daily-group .np-field--toggle', title: 'Daily Generator',
+    body: <>This determines whether this picker is included in the app's daily auto-generator. When on, this picker's items can be automatically added to your Today list. When off, this picker won't run automatically, but you can still generate a pick manually from this tab.</>,
+  },
+  // Each cadence gets its own highlight/tooltip: while unselected, just its
+  // own pill (data-key added to Segmented's button specifically for this);
+  // once selected, the comma-fallback instead matches its own expanded
+  // "which day/date" field below the pill row, since that's the richer,
+  // more informative target at that point. padX: 1 — .seg's own gap between
+  // pills is only 4px, and the default 8px pad on each side would overlap
+  // by 12px when several pills sit compact side by side (e.g. every
+  // non-selected cadence at once).
+  {
+    id: 'cadenceDaily', sel: '.seg-btn[data-key="daily"]', title: 'Daily Cadence', padX: 1,
+    body: <>This is the picker's default cadence. It surfaces every day that it's scheduled to run, exactly like an ordinary picker.</>,
+  },
+  {
+    id: 'cadenceWeekly', sel: '.rem-field:has(select[aria-label="Anchor weekday"]), .seg-btn[data-key="weekly"]', title: 'Weekly Cadence', padX: 1,
+    body: <>This surfaces the picker once a week, on whichever weekday you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</>,
+  },
+  {
+    id: 'cadenceMonthly', sel: '.rem-field:has(select[aria-label="Anchor day of month"]), .seg-btn[data-key="monthly"]', title: 'Monthly Cadence', padX: 1,
+    body: <>This surfaces the picker once a month, on whichever day you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</>,
+  },
+  {
+    id: 'cadenceYearly', sel: '.rem-field:has(select[aria-label="Anchor month"]), .seg-btn[data-key="yearly"]', title: 'Yearly Cadence', padX: 1,
+    body: <>This surfaces the picker once a year, on whichever date you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</>,
+  },
+  {
+    id: 'newPickerSkipHolidays', sel: '.np-sched-toggle', title: 'Skip on Holidays',
+    body: <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
+  },
 ];
 
 const STATS_HELP_ITEMS = [
