@@ -110,16 +110,42 @@ const TODAY_HELP_ITEMS = [
     body: <>This is the name field for this item, you can rename it here.</>,
   },
   {
-    id: 'itemChargeRange', sel: '.entry-editor .pie-ease-row', padY: 0, title: 'Charge Range',
-    body: <>This controls how quickly this item's charge builds up or drains, depending on the picker's mode. For Ease-up pickers, Soonest/Latest set the fewest/most days before this item becomes eligible to be picked. For Ease-down pickers, Shortest/Longest set the fewest/most days it stays picked once chosen. The Fill/Refill button instantly maxes out this item's charge.</>,
+    // Function body (see help-mode.jsx's HelpTip) — reads the picker's own
+    // cadence unit word (days/weeks/months/years) straight off the
+    // already-rendered .np-ease-unit label instead of hardcoding "days",
+    // which would be wrong for a non-daily cadence picker.
+    id: 'itemChargeRangeUp', sel: '.entry-editor .pie-ease-up-row', padY: 0, title: 'Charge Controls',
+    body: () => {
+      const unit = document.querySelector('.entry-editor .pie-ease-up-row .np-ease-unit')?.textContent || 'days';
+      return (
+        <>
+          <p><b>Soonest:</b> This controls the minimum number of {unit} that the item must wait before becoming eligible to be picked again.</p>
+          <p><b>Latest:</b> This controls the maximum number of {unit} that the item must wait before becoming eligible to be picked again.</p>
+          <p><b>Fill:</b> This will fill the item's charge to 100, making it eligible to be picked again.</p>
+        </>
+      );
+    },
+  },
+  {
+    id: 'itemChargeRangeDown', sel: '.entry-editor .pie-ease-down-row', padY: 0, title: 'Charge Controls',
+    body: () => {
+      const unit = document.querySelector('.entry-editor .pie-ease-down-row .np-ease-unit')?.textContent || 'days';
+      return (
+        <>
+          <p><b>Shortest:</b> This controls the minimum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p>
+          <p><b>Longest:</b> This controls the maximum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p>
+          <p><b>Refill:</b> This will refill the item's charge back to 100, effectively resetting its active pick cadence.</p>
+        </>
+      );
+    },
   },
   {
     id: 'itemWeight', sel: '.entry-editor .pie-row:has(.weight-stepper)', padY: 0, title: 'Weight',
-    body: <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked; a lower weight makes it less likely.</>,
+    body: <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked and a lower weight makes it less likely.</>,
   },
   {
     id: 'itemBoost', sel: '.entry-editor .pie-row:has(.pie-boost-val)', padY: 0, title: 'Boost',
-    body: <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked. Reset clears it back to 0.</>,
+    body: <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
   },
   {
     id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Active',
@@ -413,16 +439,42 @@ const DATA_HELP_ITEMS = [
     body: <>This is the name field for this item, you can rename it here.</>,
   },
   {
-    id: 'itemChargeRange', sel: '.entry-editor .pie-ease-row', padY: 0, title: 'Charge Range',
-    body: <>This controls how quickly this item's charge builds up or drains, depending on the picker's mode. For Ease-up pickers, Soonest/Latest set the fewest/most days before this item becomes eligible to be picked. For Ease-down pickers, Shortest/Longest set the fewest/most days it stays picked once chosen. The Fill/Refill button instantly maxes out this item's charge.</>,
+    // Function body (see help-mode.jsx's HelpTip) — reads the picker's own
+    // cadence unit word (days/weeks/months/years) straight off the
+    // already-rendered .np-ease-unit label instead of hardcoding "days",
+    // which would be wrong for a non-daily cadence picker.
+    id: 'itemChargeRangeUp', sel: '.entry-editor .pie-ease-up-row', padY: 0, title: 'Charge Controls',
+    body: () => {
+      const unit = document.querySelector('.entry-editor .pie-ease-up-row .np-ease-unit')?.textContent || 'days';
+      return (
+        <>
+          <p><b>Soonest:</b> This controls the minimum number of {unit} that the item must wait before becoming eligible to be picked again.</p>
+          <p><b>Latest:</b> This controls the maximum number of {unit} that the item must wait before becoming eligible to be picked again.</p>
+          <p><b>Fill:</b> This will fill the item's charge to 100, making it eligible to be picked again.</p>
+        </>
+      );
+    },
+  },
+  {
+    id: 'itemChargeRangeDown', sel: '.entry-editor .pie-ease-down-row', padY: 0, title: 'Charge Controls',
+    body: () => {
+      const unit = document.querySelector('.entry-editor .pie-ease-down-row .np-ease-unit')?.textContent || 'days';
+      return (
+        <>
+          <p><b>Shortest:</b> This controls the minimum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p>
+          <p><b>Longest:</b> This controls the maximum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p>
+          <p><b>Refill:</b> This will refill the item's charge back to 100, effectively resetting its active pick cadence.</p>
+        </>
+      );
+    },
   },
   {
     id: 'itemWeight', sel: '.entry-editor .pie-row:has(.weight-stepper)', padY: 0, title: 'Weight',
-    body: <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked; a lower weight makes it less likely.</>,
+    body: <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked and a lower weight makes it less likely.</>,
   },
   {
     id: 'itemBoost', sel: '.entry-editor .pie-row:has(.pie-boost-val)', padY: 0, title: 'Boost',
-    body: <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked. Reset clears it back to 0.</>,
+    body: <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
   },
   {
     id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Active',

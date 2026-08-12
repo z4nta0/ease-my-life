@@ -230,8 +230,14 @@ function HelpTip({ item, targetRect }) {
   return (
     <div ref={ref} className={`ob-coach help-tip ${arrowClass}`}
          style={{ ...(style || { top: -9999, left: -9999 }), ...widthStyle }} role="tooltip">
+      {/* `body` as a function (e.g. the Charge Controls items) is called
+          fresh on every render instead of being static JSX — lets a tip
+          read something off the live DOM at open time, like the picker's
+          own cadence unit word (days/weeks/months/years), rather than
+          baking in a value that could be wrong for a different picker's
+          own cadence setting. */}
       <p className="help-tip-title">{item.title}</p>
-      <div className="ob-body">{item.body}</div>
+      <div className="ob-body">{typeof item.body === 'function' ? item.body() : item.body}</div>
     </div>
   );
 }
