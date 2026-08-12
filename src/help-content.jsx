@@ -131,7 +131,7 @@ const TODAY_HELP_ITEMS = [
   // Delete button Add's form doesn't have.
   {
     id: 'editReminderName', sel: '.rem-card-name-input', title: 'Reminder Name',
-    body: <>This is the name field for your new reminder, give it a short, descriptive name. This is what will show up on your todo list.</>,
+    body: <>This is the name field for your reminder, give it a short, descriptive name. This is what will show up on your todo list.</>,
   },
   {
     // :has(.rd-edit-foot) picks out an EXISTING reminder's own editor
@@ -157,12 +157,12 @@ const TODAY_HELP_ITEMS = [
     // different class (.rem-foot-confirm), so this gracefully has nothing
     // to highlight while that's up, same as any other transient confirm
     // state elsewhere in this catalog.
-    id: 'editReminderFoot', sel: '.rd-edit-foot .btn', title: 'Cancel / Save / Delete',
+    id: 'editReminderFoot', sel: '.rd-edit-foot .btn', title: 'Delete / Cancel / Save',
     body: (
       <>
+        <p><b>Delete:</b> This button permanently deletes this reminder, after asking you to confirm.</p>
         <p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>
         <p><b>Save:</b> This button saves your changes to this reminder and updates it on your todo list.</p>
-        <p><b>Delete:</b> This button permanently deletes this reminder, after asking you to confirm.</p>
       </>
     ),
   },
