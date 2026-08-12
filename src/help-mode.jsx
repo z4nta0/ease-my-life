@@ -130,22 +130,33 @@ const clipToChrome = (rect, chromeItems) => {
     // and silently disappears — exactly what happened to a Pickers-page
     // form field sitting well below the tabbar with nothing behind it.
     if (!hOverlap || !vOverlap) continue;
-    // Always keep whichever remaining portion (before the chrome, or after
-    // it) is larger, rather than assuming clipping always favors one fixed
-    // direction — a target only touching the chrome from one side
-    // naturally has a negative/zero span on the other, so this still
-    // reduces to the simple one-directional clamp in that common case, but
-    // also handles a long scrolling card (e.g. the heatmap) whose current
-    // scroll position can put the chrome's own band anywhere within it,
-    // not just at one edge.
-    if (side === 'top' || side === 'bottom') {
-      const beforeSpan = c.top - top, afterSpan = bottom - c.bottom;
-      if (afterSpan > beforeSpan) top = Math.max(top, c.bottom);
-      else bottom = Math.min(bottom, c.top);
-    } else if (side === 'left' || side === 'right') {
-      const beforeSpan = c.left - left, afterSpan = right - c.right;
-      if (afterSpan > beforeSpan) left = Math.max(left, c.right);
-      else right = Math.min(right, c.left);
+    // Prefer the "natural" clamp direction for this chrome side (e.g. for
+    // a bottom-anchored tabbar, keep whatever's ABOVE it — that's what's
+    // already in view without scrolling further) — NOT whichever side
+    // happens to have more raw span. A previous version of this function
+    // picked the larger side unconditionally, which for a target that
+    // genuinely extends past the chrome on BOTH sides with real content on
+    // each (e.g. a long card comfortably spanning from well above the
+    // tabbar to well below it) discarded the near, already-visible portion
+    // just because the far portion measured bigger — the highlight then
+    // didn't appear until the user scrolled far enough for the near
+    // portion to vanish entirely, taking its badge out of reach with it.
+    // Only fall back to the opposite side when the natural direction's own
+    // candidate would be degenerate (<=0 height/width) — i.e. there's
+    // nothing real on the near side at all, same as the earlier
+    // heatmap-badge-never-appears bug this whole rule was built to fix.
+    if (side === 'top') {
+      const candidate = Math.max(top, c.bottom);
+      if (bottom - candidate > 0) top = candidate; else bottom = Math.min(bottom, c.top);
+    } else if (side === 'bottom') {
+      const candidate = Math.min(bottom, c.top);
+      if (candidate - top > 0) bottom = candidate; else top = Math.max(top, c.bottom);
+    } else if (side === 'left') {
+      const candidate = Math.max(left, c.right);
+      if (right - candidate > 0) left = candidate; else right = Math.min(right, c.left);
+    } else if (side === 'right') {
+      const candidate = Math.min(right, c.left);
+      if (candidate - left > 0) right = candidate; else left = Math.max(left, c.right);
     }
   }
   if (right - left <= 0 || bottom - top <= 0) return null;
