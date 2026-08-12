@@ -323,6 +323,18 @@ function HelpOverlay({ active, items, onExit }) {
         (groups[it.columnGroup] || (groups[it.columnGroup] = [])).push(it.id);
       });
       Object.values(groups).forEach((ids) => {
+        // Vertical: a column whose cells span two lines (e.g. an item's
+        // name + its weight/range sub-line) is naturally taller than a
+        // single-line column in the SAME rows — .dl-trow's own
+        // align-items:center centers each cell within its row rather than
+        // stretching it to match, so the shorter columns' own top/bottom
+        // sit inset from the row's true edges. Give every member of the
+        // group the tallest member's own span so the whole group reads as
+        // one continuous table height instead of some columns overhanging
+        // their shorter siblings on both ends.
+        const top = Math.min(...ids.map((id) => next[id].top));
+        const bottom = Math.max(...ids.map((id) => next[id].bottom));
+        ids.forEach((id) => { next[id].top = top; next[id].bottom = bottom; next[id].height = bottom - top; });
         ids.sort((a, b) => next[a].left - next[b].left);
         ids.forEach((id, i) => {
           const cur = next[id];
