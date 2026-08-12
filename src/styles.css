@@ -67,6 +67,18 @@ body {
   padding-left: 8px;
   border-left: 0.5px solid var(--border);
 }
+/* Below 400px the date + " | " + time no longer fit on one line without
+   awkward wrapping mid-timestamp — drop the divider (it was only ever
+   there to visually separate the two on a shared line) and let the time
+   fall to its own line instead. */
+@container app (max-width: 399px) {
+  .kicker-time {
+    display: block;
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+  }
+}
 
 /* ─── App shell ──────────────────────────────────────────────────────────── */
 
@@ -505,7 +517,7 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
    help-mode.jsx) so kicker-row's own space-between still reads as
    "date/time on the left, everything else on the right" with the new
    button added, rather than splitting into three evenly-spaced columns. */
-.kicker-row-r { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+.kicker-row-r { display: flex; align-items: center; gap: 20px; flex: 0 0 auto; }
 .today-h-lead {
   display: flex;
   align-items: center;
