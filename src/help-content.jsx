@@ -114,7 +114,7 @@ const TODAY_HELP_ITEMS = [
     body: <>This controls how quickly this item's charge builds up or drains, depending on the picker's mode. For Ease-up pickers, Soonest/Latest set the fewest/most days before this item becomes eligible to be picked. For Ease-down pickers, Shortest/Longest set the fewest/most days it stays picked once chosen. The Fill/Refill button instantly maxes out this item's charge.</>,
   },
   {
-    id: 'itemWeight', sel: '.entry-editor .weight-stepper', title: 'Weight',
+    id: 'itemWeight', sel: '.entry-editor .pie-row:has(.weight-stepper)', title: 'Weight',
     body: <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked; a lower weight makes it less likely.</>,
   },
   {
@@ -122,7 +122,7 @@ const TODAY_HELP_ITEMS = [
     body: <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked. Reset clears it back to 0.</>,
   },
   {
-    id: 'itemActive', sel: '.entry-editor .switch', title: 'Active',
+    id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', title: 'Active',
     body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
   },
   {
@@ -417,7 +417,7 @@ const DATA_HELP_ITEMS = [
     body: <>This controls how quickly this item's charge builds up or drains, depending on the picker's mode. For Ease-up pickers, Soonest/Latest set the fewest/most days before this item becomes eligible to be picked. For Ease-down pickers, Shortest/Longest set the fewest/most days it stays picked once chosen. The Fill/Refill button instantly maxes out this item's charge.</>,
   },
   {
-    id: 'itemWeight', sel: '.entry-editor .weight-stepper', title: 'Weight',
+    id: 'itemWeight', sel: '.entry-editor .pie-row:has(.weight-stepper)', title: 'Weight',
     body: <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked; a lower weight makes it less likely.</>,
   },
   {
@@ -425,7 +425,7 @@ const DATA_HELP_ITEMS = [
     body: <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked. Reset clears it back to 0.</>,
   },
   {
-    id: 'itemActive', sel: '.entry-editor .switch', title: 'Active',
+    id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', title: 'Active',
     body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
   },
   {
