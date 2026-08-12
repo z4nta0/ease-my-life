@@ -505,8 +505,8 @@ const PICKER_HELP_ITEMS = [
     body: <>This is the name field for your new conditional, and it should have a short, descriptive name.</>,
   },
   {
-    id: 'newCondCardText', sel: '.np-field--cardtext', title: 'Replacement Card Text',
-    body: <>This is the text that will show on the card that appears in your Today list whenever this conditional suppresses its attached picker.</>,
+    id: 'newCondCardText', sel: '.np-field--cardtext', title: 'Conditional Card Text',
+    body: <>This is the text that will show on the card that appears in your todo list whenever this conditional suppresses any attached pickers.</>,
   },
   {
     // Deliberately doesn't re-explain each type — every option already has
