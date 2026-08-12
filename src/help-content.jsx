@@ -475,7 +475,14 @@ const PICKER_HELP_ITEMS = [
     // :has(.np-groups) scopes to just this field, same reasoning as
     // newPickerName's own comment.
     id: 'newPickerGroup', sel: '.np-field:has(.np-groups)', title: 'Picker Group',
-    body: <>This is where you choose which group this new picker belongs to. Groups cluster related pickers together on your Today list, like "Food" or "Chores". You can select an existing group or create a new one.</>,
+    body: <>This will let you choose which group this new picker belongs to. Groups cluster related pickers together on your todo list, like "Food" or "Chores". You can select an existing group or create a new one.</>,
+  },
+  {
+    // Deliberately doesn't re-explain each mode — every option already has
+    // its own ruleset/explanation copy right there on the page, and there
+    // isn't room for that much text in a tooltip anyway.
+    id: 'newPickerMode', sel: '.np-field:has(.mode-radio)', title: 'Picker Mode',
+    body: <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
   },
 ];
 
