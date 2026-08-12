@@ -26,7 +26,7 @@ const TODAY_HELP_ITEMS = [
   },
   {
     id: 'brandMark', sel: '.today-h-lead .brand-mark', title: 'Home',
-    body: <>Click this logo any time to jump back to the top of your todo list.</>,
+    body: <>You can click this logo any time to jump back to the top of your todo list.</>,
   },
   {
     id: 'streak', sel: '.streak', title: 'Day Streak',
@@ -61,9 +61,9 @@ const TODAY_HELP_ITEMS = [
     id: 'cardActionsPicker', sel: '.today-card:not(.rem-card):not(.today-card--tutorial) .today-card-actions', firstOnly: true, title: 'Card Actions',
     body: (
       <>
-        <p><b>Re-roll:</b> swaps this item for a different one from the same picker, without waiting for the next generation.</p>
-        <p><b>Skip:</b> removes this item from today's list without completing it and updates the progress ring's total count accordingly.</p>
-        <p><b>Edit:</b> adjusts this item's properties. This includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
+        <p><b>Re-roll:</b> This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>
+        <p><b>Skip:</b> This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>
+        <p><b>Edit:</b> This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
       </>
     ),
   },
@@ -71,8 +71,8 @@ const TODAY_HELP_ITEMS = [
     id: 'cardActionsReminder', sel: '.rem-card:first-of-type .today-card-actions', title: 'Card Actions',
     body: (
       <>
-        <p><b>Skip:</b> removes this item from today's list without completing it and updates the progress ring's total count accordingly.</p>
-        <p><b>Edit:</b> adjusts this item's properties. This includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
+        <p><b>Skip:</b> This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>
+        <p><b>Edit:</b> This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
       </>
     ),
   },
@@ -87,7 +87,7 @@ const TODAY_HELP_ITEMS = [
     // scope was unioning the name field with whichever of those happened to
     // be visible, stretching this highlight down into the Repeat section.
     id: 'addReminderName', sel: '.rem-quickadd .np-input', title: 'Reminder Name',
-    body: <>Give your reminder a short, descriptive name. This is what will show up on your todo list.</>,
+    body: <>This is the name field for your new reminder, give it a short, descriptive name. This is what will show up on your todo list.</>,
   },
   {
     // .rem-editor (not just .seg, the pill row) so this always covers
