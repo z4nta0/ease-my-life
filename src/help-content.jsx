@@ -681,20 +681,24 @@ const STATS_HELP_ITEMS = [
     body: <>This shows the percentage of items you've completed, out of every item that was on your todo list in this range.</>,
   },
   {
-    id: 'statRemDone', sel: '.stat-mk-remdone', title: 'Reminders Completed',
-    body: <>This shows the total number of reminders you've completed in this range.</>,
+    // padX/padY: 4 — same .stat-row (10px gap) bleed fix as the other
+    // headline-card rows: default 8px pad on each side overlaps a
+    // neighbor's own pad across the shared edge, side by side on wide
+    // viewports and 2x2 on narrow ones.
+    id: 'statRemDone', sel: '.stat-mk-remdone', title: 'Reminders Completed', padX: 4, padY: 4,
+    body: <>This shows the total number of reminders that you've completed for your selected range.</>,
   },
   {
-    id: 'statRemWeek', sel: '.stat-mk-remweek', title: 'This Week',
-    body: <>This shows the number of reminders you've completed in the last 7 days, regardless of the range filter above.</>,
+    id: 'statRemWeek', sel: '.stat-mk-remweek', title: 'Reminders This Week', padX: 4, padY: 4,
+    body: <>This shows the number of reminders that you've completed in the last 7 days, regardless of your selected range.</>,
   },
   {
-    id: 'statRemActive', sel: '.stat-mk-remactive', title: 'Active Days',
-    body: <>This shows the number of days in this range where you completed at least one reminder.</>,
+    id: 'statRemActive', sel: '.stat-mk-remactive', title: 'Reminders Active Days', padX: 4, padY: 4,
+    body: <>This shows the total number of days for your selected range where you've completed at least one reminder.</>,
   },
   {
-    id: 'statRemBusiest', sel: '.stat-mk-rembusiest', title: 'Busiest Day',
-    body: <>This shows the highest number of reminders you've completed in a single day within this range.</>,
+    id: 'statRemBusiest', sel: '.stat-mk-rembusiest', title: 'Reminders Busiest Day', padX: 4, padY: 4,
+    body: <>This shows the highest number of reminders that you've completed in a single day for your selected range.</>,
   },
   {
     // padX/padY: 4 — same .stat-row (10px gap) bleed fix as the other
