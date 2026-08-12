@@ -122,6 +122,50 @@ const TODAY_HELP_ITEMS = [
       </>
     ),
   },
+  // ── Editing an EXISTING reminder (ReminderCard's name input + the
+  // ReminderInlineEdit/ReminderEditFoot pair it expands into) — same
+  // underlying editor as Add a Reminder above, so these reuse its exact
+  // copy where the content is identical (name field, repeat schedule).
+  // The only real difference: Save replaces Add (no "stays disabled"
+  // caveat — Save has no disabled state, unlike Add), and there's a
+  // Delete button Add's form doesn't have.
+  {
+    id: 'editReminderName', sel: '.rem-card-name-input', title: 'Reminder Name',
+    body: <>This is the name field for your new reminder, give it a short, descriptive name. This is what will show up on your todo list.</>,
+  },
+  {
+    // :has(.rd-edit-foot) picks out an EXISTING reminder's own editor
+    // specifically — .rem-inline-editor is shared markup also used by the
+    // Add Reminder quick-add form (already covered above, under its own
+    // .rem-quickadd-wrap scope), but only THIS editor's footer carries the
+    // rd-edit-foot class (the quick-add form's own footer doesn't).
+    id: 'editReminderRepeat', sel: '.rem-inline-editor:has(.rd-edit-foot) .rem-editor', title: 'Repeat Schedule',
+    body: (
+      <>
+        <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
+        <p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>
+        <p><b>Weekly:</b> This reminder will show up on your todo list every week on the days that you select below.</p>
+        <p><b>Monthly:</b> This reminder will show up on your todo list every month on the day that you select below.</p>
+        <p><b>Yearly:</b> This reminder will show up on your todo list every year on the date that you select below.</p>
+      </>
+    ),
+  },
+  {
+    // .btn, not the .rd-edit-foot row itself, same "row is wider than its
+    // own buttons" reasoning as addReminderFoot. Only matches in the
+    // NORMAL footer state — Delete's own confirm prompt swaps in a
+    // different class (.rem-foot-confirm), so this gracefully has nothing
+    // to highlight while that's up, same as any other transient confirm
+    // state elsewhere in this catalog.
+    id: 'editReminderFoot', sel: '.rd-edit-foot .btn', title: 'Cancel / Save / Delete',
+    body: (
+      <>
+        <p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>
+        <p><b>Save:</b> This button saves your changes to this reminder and updates it on your todo list.</p>
+        <p><b>Delete:</b> This button permanently deletes this reminder, after asking you to confirm.</p>
+      </>
+    ),
+  },
   {
     id: 'dayLog', sel: '.rem-section .dl-chip', title: 'Section Log',
     body: <>This opens a log of everything that has happened for this section today. Including what was auto-picked, skipped, manually selected, re-rolled, and completed. It will also show the new updated values, if applicable, once an item has been marked as completed.</>,
