@@ -148,15 +148,15 @@ const TODAY_HELP_ITEMS = [
   // overlap between them, rather than each shrinking to its own content.
   {
     id: 'logReminderName', sel: '.dl-mk-rname', columnGroup: 'reminderLogCols', title: 'Reminder Column',
-    body: <>Lists every reminder you've created, whether it's due today or not.</>,
+    body: <>This lists every reminder you've created, whether it's due today or not.</>,
   },
   {
     id: 'logReminderWhen', sel: '.dl-mk-rwhen', columnGroup: 'reminderLogCols', title: 'When Column',
-    body: <>Shows each reminder's schedule — how often it repeats, or that it's a one-time reminder.</>,
+    body: <>This shows each reminder's schedule. That includes how often it repeats, or if it's only a one-time reminder.</>,
   },
   {
     id: 'logReminderStatus', sel: '.dl-mk-rst', columnGroup: 'reminderLogCols', title: 'Status Column',
-    body: <>Shows whether this reminder is done, due today, skipped for today, or not yet due — along with when it will next come due.</>,
+    body: <>This shows whether this reminder is done, due today, skipped for today, or when it will next come due.</>,
   },
   // ── Picker/Conditional Log panel (day-log.jsx's GroupLog) — dl-mk-* here
   // are the same kind of dedicated hooks. Deliberately TWO separate column
