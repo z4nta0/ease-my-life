@@ -146,8 +146,20 @@ const shapeFor = (el, paddedW, paddedH, shapeOverride) => {
 // initially in view (these rows start scrolled to 0), so that corner is
 // always reachable.
 const BADGE_SIZE = 20;
-const badgeRectFor = (targetRect) => {
+// `center`, true for columnGroup items (see help-mode's own columnGroup
+// post-processing), centers the badge over the column's own top edge
+// instead of using the usual right-corner placement below. A columnGroup
+// member's own `right` is a shared, TOUCHING boundary with its neighbor
+// (that's the whole point of columnGroup — no gap between columns), not a
+// free edge with neutral space past it — the normal "right + PAD" math
+// would land the badge on top of the next column over instead, and the
+// last column in a group has no neighbor past it to land on at all.
+const badgeRectFor = (targetRect, center) => {
   const top = targetRect.top - PAD - BADGE_SIZE / 2;
+  if (center) {
+    const left = targetRect.left + targetRect.width / 2 - BADGE_SIZE / 2;
+    return { top, left, width: BADGE_SIZE, height: BADGE_SIZE, bottom: top + BADGE_SIZE };
+  }
   // Checks where a right-corner badge's own edge would actually land, not
   // just the target's raw right edge — a target rect already clipped flush
   // to the viewport (see clipHorizontalOverflow) can sit exactly AT the
@@ -455,7 +467,7 @@ function HelpOverlay({ active, items, onExit }) {
       {allItems.map((it) => {
         const r = rectsById[it.id];
         if (!r) return null;
-        const br = badgeRectFor(r);
+        const br = badgeRectFor(r, !!it.columnGroup);
         return (
           <button key={it.id} type="button"
                   className={`help-badge ${openId === it.id ? 'is-on' : ''}`}
