@@ -714,7 +714,7 @@ const STATS_HELP_ITEMS = [
   },
   {
     id: 'heatmap', sel: '.stat-heatmap-card', title: 'Activity Heatmap',
-    body: <>This visualizes your completed activity over time, with each day shaded by how much you got done. Click on any day for more details.</>,
+    body: <>This visualizes your completed activity over time, with each day shaded by how much you got done. If you click on any day, more details for it will be shown below the heatmap.</>,
   },
   // ── All-scope only ──────────────────────────────────────────────────────
   {
