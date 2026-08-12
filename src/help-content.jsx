@@ -366,12 +366,16 @@ const PICKER_HELP_ITEMS = [
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
   {
-    id: 'pickerSelection', sel: '.picker-tabs .picker-tab:not(.picker-tab--add)', title: 'Picker Selection',
+    // padX: 3 — the add button sits right after the last tab in the same
+    // 8px-gap scrollable row; the default 8px pad on each side would
+    // overlap by 8px otherwise (same bleed as Today's Edit Mode/Regenerate).
+    id: 'pickerSelection', sel: '.picker-tabs .picker-tab:not(.picker-tab--add)', title: 'Picker Selection', padX: 3,
     body: <>This selects a specific picker, in order to initiate a manual picker generation down below as well as edit or delete its items.</>,
   },
   {
-    id: 'createNewPickers', sel: '.picker-tab--add', title: 'Create New Pickers',
-    body: <>This is where you can create new pickers.</>,
+    // padX: 3 — see pickerSelection's own comment, same gap, same fix.
+    id: 'createNewPickers', sel: '.picker-tab--add', title: 'Create New Pickers', padX: 3,
+    body: <>This is where you can create new pickers. This button will open up a full page form with 2 parts, picker settings and picker items.</>,
   },
   {
     id: 'manualGeneration', sel: '.picker-run', title: 'Manual Generation',
