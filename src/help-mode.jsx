@@ -307,7 +307,7 @@ function HelpOverlay({ active, items, onExit }) {
             const width = r.right - r.left, height = r.bottom - r.top;
             if (!Number.isFinite(width) || !Number.isFinite(height)) return;
             const shape = shapeFor(el, width + PAD * 2, height + PAD * 2, it.shape);
-            next[`${it.id}::${i}`] = { ...r, width, height, shape };
+            next[`${it.id}::${i}`] = { ...r, width, height, shape, padY: it.padY ?? PAD };
           });
           return;
         }
@@ -338,7 +338,7 @@ function HelpOverlay({ active, items, onExit }) {
         const tipWidth = it.matchWidthSel ? document.querySelector(it.matchWidthSel)?.getBoundingClientRect().width : undefined;
         // `pinBelowSel` — see placeTip's own doc comment for why this exists.
         const pinBelowY = it.pinBelowSel ? document.querySelector(it.pinBelowSel)?.getBoundingClientRect().bottom : undefined;
-        next[it.id] = { ...r, shape, tipWidth, pinBelowY };
+        next[it.id] = { ...r, shape, tipWidth, pinBelowY, padY: it.padY ?? PAD };
       });
       // `columnGroup` (e.g. the Day Log panel's per-column highlights) —
       // each column's own union naturally shrinks to just its content's
@@ -462,11 +462,16 @@ function HelpOverlay({ active, items, onExit }) {
             // their final, edge-to-edge-adjusted values baked in (see the
             // columnGroup post-processing above), so padding them again
             // here would reopen the exact gap/overlap that adjustment
-            // exists to close.
+            // exists to close. padY (see it.padY) is the vertical analog
+            // for items whose target sits directly against a neighbor with
+            // no gap — e.g. EntryEditor's own stacked .pie-row elements,
+            // separated only by a hairline border — where the default PAD
+            // would bleed the highlight into whatever's above/below it.
             const padX = r.noPadX ? 0 : PAD;
+            const padY = r.padY ?? PAD;
             return (
-              <rect key={id} x={r.left - padX} y={r.top - PAD} rx={rx} ry={ry}
-                    width={r.width + padX * 2} height={r.height + PAD * 2} fill="#000" />
+              <rect key={id} x={r.left - padX} y={r.top - padY} rx={rx} ry={ry}
+                    width={r.width + padX * 2} height={r.height + padY * 2} fill="#000" />
             );
           })}
           {toggleRect && (
@@ -480,11 +485,12 @@ function HelpOverlay({ active, items, onExit }) {
       {entries.map(([id, r]) => {
         const { rx, ry } = r.shape || { rx: DEFAULT_R, ry: DEFAULT_R };
         const padX = r.noPadX ? 0 : PAD;
+        const padY = r.padY ?? PAD;
         return (
           <div key={id} className="help-spot"
                style={{
-                 top: r.top - PAD, left: r.left - padX,
-                 width: r.width + padX * 2, height: r.height + PAD * 2,
+                 top: r.top - padY, left: r.left - padX,
+                 width: r.width + padX * 2, height: r.height + padY * 2,
                  borderRadius: `${rx}px / ${ry}px`,
                }} />
         );
