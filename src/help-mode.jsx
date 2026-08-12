@@ -193,7 +193,14 @@ const BADGE_SIZE = 20;
 // would land the badge on top of the next column over instead, and the
 // last column in a group has no neighbor past it to land on at all.
 const badgeRectFor = (targetRect, center) => {
-  const top = targetRect.top - PAD - BADGE_SIZE / 2;
+  // Must match the render code's own effective padding exactly (see the
+  // .help-spot/.mask <rect> computations below) — otherwise the badge marks
+  // a corner that isn't actually the highlight box's corner anymore, which
+  // is exactly what happened when padX/padY overrides were added: this
+  // function kept using the flat PAD constant regardless.
+  const padX = targetRect.noPadX ? 0 : (targetRect.padX ?? PAD);
+  const padY = targetRect.padY ?? PAD;
+  const top = targetRect.top - padY - BADGE_SIZE / 2;
   if (center) {
     const left = targetRect.left + targetRect.width / 2 - BADGE_SIZE / 2;
     return { top, left, width: BADGE_SIZE, height: BADGE_SIZE, bottom: top + BADGE_SIZE };
@@ -201,11 +208,11 @@ const badgeRectFor = (targetRect, center) => {
   // Checks where a right-corner badge's own edge would actually land, not
   // just the target's raw right edge — a target rect already clipped flush
   // to the viewport (see clipHorizontalOverflow) can sit exactly AT the
-  // viewport width, which still overflows once the badge's own PAD gap and
+  // viewport width, which still overflows once the badge's own pad gap and
   // half-width are added on top of it.
-  const rightLeft = targetRect.right + PAD - BADGE_SIZE / 2;
+  const rightLeft = targetRect.right + padX - BADGE_SIZE / 2;
   const overflowsRight = rightLeft + BADGE_SIZE > window.innerWidth;
-  const left = overflowsRight ? targetRect.left - PAD - BADGE_SIZE / 2 : rightLeft;
+  const left = overflowsRight ? targetRect.left - padX - BADGE_SIZE / 2 : rightLeft;
   return { top, left, width: BADGE_SIZE, height: BADGE_SIZE, bottom: top + BADGE_SIZE };
 };
 
