@@ -512,46 +512,58 @@ const PICKER_HELP_ITEMS = [
     // Deliberately doesn't re-explain each type — every option already has
     // its own ruleset/explanation copy right there on the page, same as
     // newPickerMode's own comment.
-    id: 'newCondType', sel: '.cnd-controls .np-field:has(.rd-mode-radio)', title: 'Conditional Type',
+    // padY: 0 — this whole cluster (Type/Weight/Odds/Boost/Charge Controls/
+    // Active) sits close enough together — .cnd-type-group's own gap to a
+    // sibling block is only 6px, and Odds-to-Boost specifically share the
+    // SAME block with next to no gap at all — that the default 8px pad
+    // would overlap somewhere no matter which type is selected. Zero pad on
+    // all of them relies on newCondActive's own padY to open a gap instead
+    // (see its comment), same "let one side of the boundary do the work"
+    // approach as EntryEditor's itemWeight/itemBoost.
+    id: 'newCondType', sel: '.cnd-controls .np-field:has(.rd-mode-radio)', title: 'Conditional Type', padY: 0,
     body: <>This is where you choose the rule this conditional follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
   },
   {
-    id: 'newCondRandom', sel: '.cnd-typectl:has(.pie-noweight)', title: 'Weight',
-    body: <>Truly random conditionals have no adjustable settings — every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
+    id: 'newCondRandom', sel: '.cnd-typectl:has(.pie-noweight)', title: 'Conditional Weight', padY: 0,
+    body: <>Truly random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
   },
   {
-    id: 'newCondOdds', sel: '.cnd-typectl .pie-row:has(.weight-stepper)', title: 'Odds',
-    body: <>This adjusts this conditional's chance to trigger each time it runs. A higher percentage makes it more likely to trigger and a lower percentage makes it less likely.</>,
+    id: 'newCondOdds', sel: '.cnd-typectl .pie-row:has(.weight-stepper)', title: 'Conditional Trigger Odds', padY: 0,
+    body: <>This adjusts the conditional's chance to trigger each time it runs. A higher percentage makes it more likely to trigger and a lower percentage makes it less likely.</>,
   },
   {
-    id: 'newCondBoost', sel: '.cnd-typectl .pie-row:has(.pie-boost-val)', title: 'Boost',
+    id: 'newCondBoost', sel: '.cnd-typectl .pie-row:has(.pie-boost-val)', title: 'Conditional Boost', padY: 0,
     body: <>This is the conditional's current boost, which climbs by a percentage each time it doesn't trigger and resets to 0 the next time it does. A higher boost makes it more likely to trigger.</>,
   },
   {
     // cnd-ease-up-row / cnd-ease-down-row — see tab-conditional.jsx's own
     // comment; same split-by-direction pattern as EntryEditor's
     // itemChargeRangeUp/Down.
-    id: 'newCondEaseUp', sel: '.cnd-typectl .cnd-ease-up-row', padY: 0, title: 'Charge Controls',
+    id: 'newCondEaseUp', sel: '.cnd-typectl .cnd-ease-up-row', padY: 0, title: 'Conditional Charge Controls',
     body: (
       <>
-        <p><b>Soonest:</b> This controls the minimum number of days that must pass before this conditional becomes eligible to trigger.</p>
-        <p><b>Latest:</b> This controls the maximum number of days that must pass before this conditional is guaranteed to trigger.</p>
+        <p><b>Soonest:</b> This controls the minimum number of days that must pass before the conditional becomes eligible to trigger.</p>
+        <p><b>Latest:</b> This controls the maximum number of days that must pass before the conditional is guaranteed to trigger.</p>
         <p><b>Fill:</b> This will fill the conditional's charge to 100, making it eligible to trigger.</p>
       </>
     ),
   },
   {
-    id: 'newCondEaseDown', sel: '.cnd-typectl .cnd-ease-down-row', padY: 0, title: 'Charge Controls',
+    id: 'newCondEaseDown', sel: '.cnd-typectl .cnd-ease-down-row', padY: 0, title: 'Conditional Charge Controls',
     body: (
       <>
-        <p><b>Shortest:</b> This controls the minimum number of days that this conditional must stay triggered before it can stop.</p>
-        <p><b>Longest:</b> This controls the maximum number of days that this conditional can stay triggered before it must stop.</p>
+        <p><b>Shortest:</b> This controls the minimum number of days that the conditional must stay triggered before it can stop.</p>
+        <p><b>Longest:</b> This controls the maximum number of days that the conditional can stay triggered before it must stop.</p>
         <p><b>Refill:</b> This will refill the conditional's charge back to 100, effectively resetting how long it stays triggered.</p>
       </>
     ),
   },
   {
-    id: 'newCondActive', sel: '.cnd-controls .pie-row:has(.switch)', title: 'Active',
+    // padY: 3 — opens a gap against whichever zero-pad block sits above it
+    // (Weight/Odds/Boost/Charge Controls all now padY: 0 — see their own
+    // comment), while staying comfortably under the real 6px gap so it
+    // can't reach up into that block's own content.
+    id: 'newCondActive', sel: '.cnd-controls .pie-row:has(.switch)', title: 'Conditional Active Toggle', padY: 3,
     body: <>This toggles whether this conditional is currently active. Turning it off effectively disables the conditional, so its attached picker will always run regardless of the conditional's own trigger state.</>,
   },
 ];
