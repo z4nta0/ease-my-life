@@ -191,10 +191,17 @@ function ContactSupportCard({ state, actions }) {
       if (!el || !container) return;
       const rect = el.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
+      // The floating bottom tab bar overlays .main rather than sitting
+      // outside it, so its own top edge — not the container's raw bottom —
+      // is the real visible boundary content can scroll up to. Other tab
+      // placements (side/top) don't occupy this edge, so .tabbar--bottom
+      // simply won't exist and containerRect.bottom is used as-is.
+      const bar = document.querySelector('.tabbar--bottom');
+      const visibleBottom = bar ? Math.min(containerRect.bottom, bar.getBoundingClientRect().top) : containerRect.bottom;
       // Bring the form's bottom into view (with a little breathing room),
       // but never scroll past its top — so the "Having problems?" row stays
       // visible too when the form is short enough to fit alongside it.
-      const overflowBelow = rect.bottom - containerRect.bottom + 24;
+      const overflowBelow = rect.bottom - visibleBottom + 24;
       if (overflowBelow > 0) {
         container.scrollTo({ top: container.scrollTop + overflowBelow, behavior: reduceMotion() ? 'auto' : 'smooth' });
       }
