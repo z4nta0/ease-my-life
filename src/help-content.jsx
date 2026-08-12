@@ -568,8 +568,8 @@ const PICKER_HELP_ITEMS = [
   },
   // ── Daily Generator section (still Step 1 of the Create a Picker form) ──
   {
-    id: 'newPickerDaily', sel: '.np-daily-group .np-field--toggle', title: 'Daily Generator',
-    body: <>This determines whether this picker is included in the app's daily auto-generator. When on, this picker's items can be automatically added to your Today list. When off, this picker won't run automatically, but you can still generate a pick manually from this tab.</>,
+    id: 'newPickerDaily', sel: '.np-daily-group .np-field--toggle', title: 'Daily Generator Toggle',
+    body: <>This determines whether the picker will be included in the app's daily auto-generator. When on, this picker's items will be automatically added to your todo list. When off, the picker won't run automatically, but you can still generate a pick manually from this tab.</>,
   },
   {
     // .cad-ctl wraps BOTH the pill row and whichever extra "which day/date"
@@ -577,7 +577,7 @@ const PICKER_HELP_ITEMS = [
     // together" shape as Today's own addReminderRepeat/.rem-editor — so one
     // highlight over the whole thing, growing/shrinking with the selection,
     // instead of a per-option split.
-    id: 'newPickerCadence', sel: '.cad-ctl', title: 'How Often?',
+    id: 'newPickerCadence', sel: '.cad-ctl', title: 'Picker Cadence',
     body: (
       <>
         <p><b>Daily:</b> This is the picker's default cadence. It surfaces every day that it's scheduled to run, exactly like an ordinary picker.</p>
@@ -590,12 +590,25 @@ const PICKER_HELP_ITEMS = [
   {
     // :has(.np-sched-row) distinguishes this from the OTHER .np-sched-block
     // (CadenceControl's own wrapper), which shares the same bare class.
-    id: 'newPickerWhichDays', sel: '.np-sched-block:has(.np-sched-row)', title: 'Which Days?',
+    id: 'newPickerWhichDays', sel: '.np-sched-block:has(.np-sched-row)', title: 'Picker Day Selection',
     body: <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off, or use the Every day/Weekdays/Weekends presets to quickly set a common pattern.</>,
   },
   {
-    id: 'newPickerSkipHolidays', sel: '.np-sched-toggle', title: 'Skip on Holidays',
+    id: 'newPickerSkipHolidays', sel: '.np-sched-toggle', title: 'Picker Holidays Toggle',
     body: <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
+  },
+  {
+    id: 'newPickerFooterNote', sel: '.np-footer-note', title: 'Picker Form Status',
+    body: <>This area lets you know if anything still needs to be filled out before you can advance to the next step, or confirms that you're ready to move on.</>,
+  },
+  {
+    id: 'newPickerFooterActions', sel: '.np-footer-actions .btn', title: 'Cancel / Add Items',
+    body: (
+      <>
+        <p><b>Cancel:</b> This button discards the picker form without saving anything.</p>
+        <p><b>Add Items:</b> This button advances to the next step, where you'll build this picker's item pool. Stays disabled until at least a name and group are set.</p>
+      </>
+    ),
   },
 ];
 
