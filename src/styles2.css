@@ -571,6 +571,9 @@
   padding: 18px 16px;
   border-bottom: 0.5px solid var(--border);
 }
+@container app (max-width: 399px) {
+  .pool-row { gap: 10px; }
+}
 .pool-row:last-child { border-bottom: 0; }
 .pool-row.is-vac { opacity: 0.45; }
 .pool-row.is-ineligible { opacity: 0.6; }
