@@ -697,20 +697,24 @@ const STATS_HELP_ITEMS = [
     body: <>This shows the highest number of reminders you've completed in a single day within this range.</>,
   },
   {
-    id: 'statCondFired', sel: '.stat-mk-condfired', title: 'Triggered',
-    body: <>This shows the total number of times any conditional in this scope has triggered.</>,
+    // padX/padY: 4 — same .stat-row (10px gap) bleed fix as the other
+    // headline-card rows: default 8px pad on each side overlaps a
+    // neighbor's own pad across the shared edge, side by side on wide
+    // viewports and 2x2 on narrow ones.
+    id: 'statCondFired', sel: '.stat-mk-condfired', title: 'Conditionals Triggered', padX: 4, padY: 4,
+    body: <>This shows the total number of times that any conditional has been triggered for your selected range.</>,
   },
   {
-    id: 'statCondCycles', sel: '.stat-mk-condcycles', title: 'Cycles',
-    body: <>This shows the total number of cycles any conditional in this scope was evaluated over, whether it triggered or not.</>,
+    id: 'statCondCycles', sel: '.stat-mk-condcycles', title: 'Conditionals Cycles', padX: 4, padY: 4,
+    body: <>This shows the total number of cycles that any conditional was evaluated over for your selected range, regardless of whether it was triggered or not.</>,
   },
   {
-    id: 'statCondRate', sel: '.stat-mk-condrate', title: 'Fire Rate',
-    body: <>This shows the percentage of evaluated cycles that ended in a trigger, across every conditional in this scope.</>,
+    id: 'statCondRate', sel: '.stat-mk-condrate', title: 'Conditionals Fire Rate', padX: 4, padY: 4,
+    body: <>This shows the percentage of evaluated cycles that resulted in a triggered conditional for your selected range.</>,
   },
   {
-    id: 'statCondLast', sel: '.stat-mk-condlast', title: 'Last Fired',
-    body: <>This shows the most recent date that any conditional in this scope triggered.</>,
+    id: 'statCondLast', sel: '.stat-mk-condlast', title: 'Conditionals Last Fired', padX: 4, padY: 4,
+    body: <>This shows the most recent data that any conditional in your selected range was triggered.</>,
   },
   {
     id: 'heatmap', sel: '.stat-heatmap-card', title: 'Activity Heatmap',
