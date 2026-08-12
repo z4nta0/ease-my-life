@@ -387,11 +387,15 @@ const PICKER_HELP_ITEMS = [
     ),
   },
   {
-    id: 'pickerItems', sel: '.pool-items', title: 'Picker Items',
+    // padY: 4 — .picker-pool (the shared flex-column parent) only has a
+    // 10px gap to the Add Picker Item button below; the default 8px pad on
+    // each side would overlap by 6px otherwise.
+    id: 'pickerItems', sel: '.pool-items', title: 'Picker Items', padY: 4,
     body: <>This lists all of the items that are in this picker's pool, including their values (if applicable). The Send to Today button will send the item to your todo list on the Today page, the Edit button will allow you to edit the item's properties and the Delete button will delete the item after asking for confirmation.</>,
   },
   {
-    id: 'addPickerItem', sel: '.pv-additem-btn', title: 'Add Picker Item',
+    // padY: 4 — see pickerItems' own comment, same gap, same fix.
+    id: 'addPickerItem', sel: '.pv-additem-btn', title: 'Add Picker Item', padY: 4,
     body: <>This adds a new item to the selected picker's pool.</>,
   },
 ];
