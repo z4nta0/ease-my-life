@@ -402,17 +402,28 @@ function HelpOverlay({ active, items, onExit }) {
     }
   }, [allItems]);
 
+  // A thrown error from a single bad measurement (e.g. a target mid-reflow)
+  // must not kill the rAF loop permanently — without this, an exception
+  // inside recomputeRects skips the requestAnimationFrame call after it and
+  // the whole per-frame tracking silently stops until something unrelated
+  // remounts this effect, which reads as a highlight "stuck" until
+  // something else forces a re-render. Shared by both callers (the rAF loop
+  // and the click-guard's deferred call below) so neither can go dark.
+  const safeRecompute = React.useCallback(() => {
+    try { recomputeRects(); } catch (err) { console.error('[help-mode] recompute failed', err); }
+  }, [recomputeRects]);
+
   React.useEffect(() => {
     if (!active) { setRectsById({}); setOpenId(null); setToggleRect(null); return; }
     let raf, cancelled = false;
     const loop = () => {
       if (cancelled) return;
-      recomputeRects();
+      safeRecompute();
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => { cancelled = true; cancelAnimationFrame(raf); };
-  }, [active, allItems, recomputeRects]);
+  }, [active, allItems, safeRecompute]);
 
   // Blocks interaction with anything NOT currently tagged (or part of help
   // mode's own UI) while active — same capture-phase idea as the tour's own
@@ -440,7 +451,7 @@ function HelpOverlay({ active, items, onExit }) {
         // a macrotask so the resulting DOM/React commit has already landed
         // by the time we re-measure, instead of waiting for the next
         // natural rAF tick.
-        setTimeout(recomputeRects, 0);
+        setTimeout(safeRecompute, 0);
         return;
       }
       e.preventDefault(); e.stopPropagation();
@@ -457,7 +468,7 @@ function HelpOverlay({ active, items, onExit }) {
       document.removeEventListener('click', onClickCapture, true);
       document.removeEventListener('keydown', onKeyDown);
     };
-  }, [active, allItems, onExit, openId, recomputeRects]);
+  }, [active, allItems, onExit, openId, safeRecompute]);
 
   if (!active) return null;
 
