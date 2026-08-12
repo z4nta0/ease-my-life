@@ -469,7 +469,13 @@ const PICKER_HELP_ITEMS = [
     // :has(#np-name) scopes to just this field, since every field in the
     // form shares the plain .np-field wrapper class.
     id: 'newPickerName', sel: '.np-field:has(#np-name)', title: 'Picker Name',
-    body: <>This is the name field for your new picker, give it a short, descriptive name. This is what will show up on the picker bar and your Today list.</>,
+    body: <>This is the name field for your new picker, and it should have a short, descriptive name.</>,
+  },
+  {
+    // :has(.np-groups) scopes to just this field, same reasoning as
+    // newPickerName's own comment.
+    id: 'newPickerGroup', sel: '.np-field:has(.np-groups)', title: 'Picker Group',
+    body: <>This is where you choose which group this new picker belongs to. Groups cluster related pickers together on your Today list, like "Food" or "Chores". You can select an existing group or create a new one.</>,
   },
 ];
 
