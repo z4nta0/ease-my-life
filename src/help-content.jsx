@@ -481,8 +481,16 @@ const PICKER_HELP_ITEMS = [
     // Deliberately doesn't re-explain each mode — every option already has
     // its own ruleset/explanation copy right there on the page, and there
     // isn't room for that much text in a tooltip anyway.
-    id: 'newPickerMode', sel: '.np-field:has(.mode-radio)', title: 'Picker Mode',
+    id: 'newPickerMode', sel: '.np-field:has(.mode-radio)', title: 'Picker Type',
     body: <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
+  },
+  {
+    // Scoped to just the toggle row, not the collapsed attach-flow below it
+    // (the conditional pill rail + inline "create new conditional" form) —
+    // that's its own whole nested interface, left for a future pass rather
+    // than reaching into collapsed content on this first one.
+    id: 'newPickerConditional', sel: '.np-cond .np-field--toggle', title: 'Attach a Conditional',
+    body: <>This lets you optionally gate this picker behind a conditional. When attached, the picker will only run on days determined by that conditional's own rules — for example, giving yourself an occasional day off from chores. You can attach an existing conditional or create a new one.</>,
   },
 ];
 
