@@ -678,7 +678,7 @@ const STATS_HELP_ITEMS = [
   },
   {
     id: 'statRate', sel: '.stat-mk-rate', title: 'Completion Rate', padX: 4, padY: 4,
-    body: <>This shows the percentage of items completed, out of every item that was on your todo list in this range.</>,
+    body: <>This shows the percentage of items you've completed, out of every item that was on your todo list in this range.</>,
   },
   {
     id: 'statRemDone', sel: '.stat-mk-remdone', title: 'Reminders Completed',
