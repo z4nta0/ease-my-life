@@ -571,29 +571,27 @@ const PICKER_HELP_ITEMS = [
     id: 'newPickerDaily', sel: '.np-daily-group .np-field--toggle', title: 'Daily Generator',
     body: <>This determines whether this picker is included in the app's daily auto-generator. When on, this picker's items can be automatically added to your Today list. When off, this picker won't run automatically, but you can still generate a pick manually from this tab.</>,
   },
-  // Each cadence gets its own highlight/tooltip: while unselected, just its
-  // own pill (data-key added to Segmented's button specifically for this);
-  // once selected, the comma-fallback instead matches its own expanded
-  // "which day/date" field below the pill row, since that's the richer,
-  // more informative target at that point. padX: 1 — .seg's own gap between
-  // pills is only 4px, and the default 8px pad on each side would overlap
-  // by 12px when several pills sit compact side by side (e.g. every
-  // non-selected cadence at once).
   {
-    id: 'cadenceDaily', sel: '.seg-btn[data-key="daily"]', title: 'Daily Cadence', padX: 1,
-    body: <>This is the picker's default cadence. It surfaces every day that it's scheduled to run, exactly like an ordinary picker.</>,
+    // .cad-ctl wraps BOTH the pill row and whichever extra "which day/date"
+    // field is currently showing below it, same "one editor, styled
+    // together" shape as Today's own addReminderRepeat/.rem-editor — so one
+    // highlight over the whole thing, growing/shrinking with the selection,
+    // instead of a per-option split.
+    id: 'newPickerCadence', sel: '.cad-ctl', title: 'How Often?',
+    body: (
+      <>
+        <p><b>Daily:</b> This is the picker's default cadence. It surfaces every day that it's scheduled to run, exactly like an ordinary picker.</p>
+        <p><b>Weekly:</b> This surfaces the picker once a week, on whichever weekday you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p>
+        <p><b>Monthly:</b> This surfaces the picker once a month, on whichever day you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p>
+        <p><b>Yearly:</b> This surfaces the picker once a year, on whichever date you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p>
+      </>
+    ),
   },
   {
-    id: 'cadenceWeekly', sel: '.rem-field:has(select[aria-label="Anchor weekday"]), .seg-btn[data-key="weekly"]', title: 'Weekly Cadence', padX: 1,
-    body: <>This surfaces the picker once a week, on whichever weekday you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</>,
-  },
-  {
-    id: 'cadenceMonthly', sel: '.rem-field:has(select[aria-label="Anchor day of month"]), .seg-btn[data-key="monthly"]', title: 'Monthly Cadence', padX: 1,
-    body: <>This surfaces the picker once a month, on whichever day you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</>,
-  },
-  {
-    id: 'cadenceYearly', sel: '.rem-field:has(select[aria-label="Anchor month"]), .seg-btn[data-key="yearly"]', title: 'Yearly Cadence', padX: 1,
-    body: <>This surfaces the picker once a year, on whichever date you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</>,
+    // :has(.np-sched-row) distinguishes this from the OTHER .np-sched-block
+    // (CadenceControl's own wrapper), which shares the same bare class.
+    id: 'newPickerWhichDays', sel: '.np-sched-block:has(.np-sched-row)', title: 'Which Days?',
+    body: <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off, or use the Every day/Weekdays/Weekends presets to quickly set a common pattern.</>,
   },
   {
     id: 'newPickerSkipHolidays', sel: '.np-sched-toggle', title: 'Skip on Holidays',
