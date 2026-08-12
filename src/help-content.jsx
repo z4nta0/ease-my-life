@@ -379,7 +379,12 @@ const PICKER_HELP_ITEMS = [
   },
   {
     id: 'manualGeneration', sel: '.picker-run', title: 'Manual Generation',
-    body: <>Pick one runs a manual pick generation for the selected picker, so you don't have to completely rely on the todo list's auto generation. Once it resolves, Send to Today adds the result to your list, or Re-roll tries again.</>,
+    body: (
+      <>
+        <p>The Pick one button runs a manual pick generation for the selected picker, so that you don't have to completely rely on your todo list's auto generation.</p>
+        <p>Once it resolves and generates a pick it is replaced by the Send to Today button, which will add the selected pick to your todo list. The Re-roll button will run the process again and the Done button end the process without doing anything.</p>
+      </>
+    ),
   },
   {
     id: 'pickerItems', sel: '.pool-items', title: 'Picker Items',
