@@ -130,10 +130,23 @@ const clipToChrome = (rect, chromeItems) => {
     // and silently disappears — exactly what happened to a Pickers-page
     // form field sitting well below the tabbar with nothing behind it.
     if (!hOverlap || !vOverlap) continue;
-    if (side === 'top') top = Math.max(top, c.bottom);
-    if (side === 'bottom') bottom = Math.min(bottom, c.top);
-    if (side === 'left') left = Math.max(left, c.right);
-    if (side === 'right') right = Math.min(right, c.left);
+    // Always keep whichever remaining portion (before the chrome, or after
+    // it) is larger, rather than assuming clipping always favors one fixed
+    // direction — a target only touching the chrome from one side
+    // naturally has a negative/zero span on the other, so this still
+    // reduces to the simple one-directional clamp in that common case, but
+    // also handles a long scrolling card (e.g. the heatmap) whose current
+    // scroll position can put the chrome's own band anywhere within it,
+    // not just at one edge.
+    if (side === 'top' || side === 'bottom') {
+      const beforeSpan = c.top - top, afterSpan = bottom - c.bottom;
+      if (afterSpan > beforeSpan) top = Math.max(top, c.bottom);
+      else bottom = Math.min(bottom, c.top);
+    } else if (side === 'left' || side === 'right') {
+      const beforeSpan = c.left - left, afterSpan = right - c.right;
+      if (afterSpan > beforeSpan) left = Math.max(left, c.right);
+      else right = Math.min(right, c.left);
+    }
   }
   if (right - left <= 0 || bottom - top <= 0) return null;
   return { top, left, right, bottom };
