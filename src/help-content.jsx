@@ -793,7 +793,12 @@ const STATS_HELP_ITEMS = [
 
 const DATA_HELP_ITEMS = [
   {
-    id: 'groupFilter', sel: '.stat-scope-groups .picker-group-pill', title: 'Group Filter',
+    // The Conditionals filter row below carries BOTH .stat-scope-groups
+    // AND .stat-scope-groups--cond (it's an additional modifier, not a
+    // replacement — see its own conditionalsFilter entry) — unscoped, this
+    // selector matched that row's pills too, unioning the highlight all
+    // the way down through the Conditionals row.
+    id: 'groupFilter', sel: '.stat-scope-groups:not(.stat-scope-groups--cond) .picker-group-pill', title: 'Group Filter',
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
   {
