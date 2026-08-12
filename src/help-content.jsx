@@ -180,27 +180,27 @@ const TODAY_HELP_ITEMS = [
   },
   {
     id: 'logPickerItem', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-item', columnGroup: 'pickerLogCols', title: 'Item Column',
-    body: <>Lists every item in this picker's pool, along with its weight or eligible range depending on the picker's mode.</>,
+    body: <>This lists every item in this picker's pool. It also shows its weight (Weighted), weight + boost (Dynamic Weighted) or eligible range (Ease-up or Ease-down), depending on the picker's mode.</>,
   },
   {
     id: 'logPickerAtGen', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-atgen', columnGroup: 'pickerLogCols', title: 'At Gen Column',
-    body: <>This item's value at the moment today's list was generated. Only applies to Ease-up, Ease-down and Dynamic Weighted pickers — shows N/A otherwise.</>,
+    body: <>This lists the item's value at the moment your todo list was generated. This only applies to Dynamic Weighted, Ease-up and Ease-down picker items, it shows N/A otherwise.</>,
   },
   {
     id: 'logPickerDelta', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-delta', columnGroup: 'pickerLogCols', title: 'Δ Column',
-    body: <>How much this item's value changed since generation — positive when it climbed, negative when it dropped.</>,
+    body: <>This shows how much this item's value changed since your todo list was generated. This only applies to Dynamic Weighted, Ease-up and Ease-down picker items.</>,
   },
   {
     id: 'logPickerAfter', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-after', columnGroup: 'pickerLogCols', title: 'After Column',
-    body: <>This item's current value, reflecting any changes from being picked, re-rolled, skipped, or completed today.</>,
+    body: <>This shows the item's current value, reflecting updated values due to the current item being marked as completed in your todo list.</>,
   },
   {
     id: 'logPickerStatus', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-status', columnGroup: 'pickerLogCols', title: 'Status Column',
-    body: <>Icons showing what happened to this item today — see the Key above for what each icon means.</>,
+    body: <>This shows any relevant icons that reflect what has happened to this item today. Please see the KEY row above for what each icon means.</>,
   },
   {
     id: 'logCondItem', sel: '.dl-cond-sec .dl-mk-item', columnGroup: 'condLogCols', title: 'Conditional Column',
-    body: <>This lists every conditional attached to a picker in this group. It also show its odds of being triggered or its charge range, depending on its mode.</>,
+    body: <>This lists every conditional attached to a picker in this group. It also shows its odds of being triggered or its charge range, depending on its mode.</>,
   },
   {
     id: 'logCondAtGen', sel: '.dl-cond-sec .dl-mk-atgen', columnGroup: 'condLogCols', title: 'At Gen Column',
