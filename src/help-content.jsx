@@ -837,7 +837,10 @@ const DATA_HELP_ITEMS = [
     body: <>You tap this conditional expand and collapse this section. Expand it in order to view and edit its settings.</>,
   },
   {
-    id: 'dataCondAdd', sel: '.cnd-manager .rd-add', title: 'Add a Conditional',
+    // padY:0 — .rd-add has the same zero-gap stacking as .rd-item (a
+    // hairline border, no margin), touching both the header above it and
+    // the first conditional row below it.
+    id: 'dataCondAdd', sel: '.cnd-manager .rd-add', title: 'Add a Conditional', padY: 0,
     body: <>This creates a new conditional, letting you gate a picker behind a rule of your choosing so it only runs on days that rule allows.</>,
   },
   {
