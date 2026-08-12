@@ -396,7 +396,7 @@ const PICKER_HELP_ITEMS = [
   {
     // padY: 4 — see pickerItems' own comment, same gap, same fix.
     id: 'addPickerItem', sel: '.pv-additem-btn', title: 'Add Picker Item', padY: 4,
-    body: <>This adds a new item to the selected picker's pool.</>,
+    body: <>This button will open a form that allows you to add a new item to the selected picker's pool.</>,
   },
 ];
 
