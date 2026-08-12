@@ -315,7 +315,7 @@ function HelpTip({ item, targetRect }) {
           own cadence unit word (days/weeks/months/years), rather than
           baking in a value that could be wrong for a different picker's
           own cadence setting. */}
-      <p className="help-tip-title">{item.title}</p>
+      <p className="help-tip-title">{typeof item.title === 'function' ? item.title(targetRect) : item.title}</p>
       <div className="ob-body">{typeof item.body === 'function' ? item.body() : item.body}</div>
     </div>
   );
@@ -421,7 +421,16 @@ function HelpOverlay({ active, items, onExit }) {
           const width = r.right - r.left, height = r.bottom - r.top;
           if (!Number.isFinite(width) || !Number.isFinite(height)) return;
           const shape = shapeFor(el, width + PAD * 2, height + PAD * 2, it.shape);
-          next[`${it.id}::${i}`] = { ...r, width, height, shape, padY: it.padY ?? PAD, padX: it.padX ?? PAD };
+          // `labelSel` — reads text (or an input's value, for a row that
+          // happens to already be open/editing) from within this specific
+          // matched element, for a `title` function to read back — e.g. a
+          // perElement conditional/reminder/item row whose title should
+          // read "{its own name} Conditional" rather than one generic
+          // title shared by every instance.
+          const label = it.labelSel
+            ? (el.querySelector(it.labelSel)?.textContent || el.querySelector(it.labelSel)?.value)
+            : undefined;
+          next[`${it.id}::${i}`] = { ...r, width, height, shape, padY: it.padY ?? PAD, padX: it.padX ?? PAD, label };
         });
         return;
       }
@@ -679,7 +688,7 @@ function HelpOverlay({ active, items, onExit }) {
                     className={`help-badge ${openId === id ? 'is-on' : ''}`}
                     style={{ top: br.top, left: br.left }}
                     onClick={(e) => { e.stopPropagation(); setOpenId((cur) => cur === id ? null : id); }}
-                    aria-label={typeof it.title === 'string' ? it.title : 'More info'}>
+                    aria-label={typeof it.title === 'function' ? it.title(r) : (typeof it.title === 'string' ? it.title : 'More info')}>
               i
             </button>
           );

@@ -827,9 +827,18 @@ const DATA_HELP_ITEMS = [
   },
   {
     // perElement — every conditional gets its own badge, not one for the
-    // whole list, since a user could be looking at any of them.
-    id: 'conditionalRow', sel: '.cnd-manager .rd-item > .rd-row', perElement: true, title: 'Conditional',
-    body: <>This is one of your conditionals. Tap it to view and edit its settings, or use the Add a conditional button below to create a new one.</>,
+    // whole list, since a user could be looking at any of them. padY:0 —
+    // .rd-item rows stack with zero gap (touching, separated only by a
+    // hairline border), so the default 8px pad bled a highlight box into
+    // both neighboring rows above and below it.
+    id: 'conditionalRow', sel: '.cnd-manager .rd-item > .rd-row', perElement: true, padY: 0,
+    labelSel: '.rd-name, .rd-name-input',
+    title: (r) => `${r?.label || 'This'} Conditional`,
+    body: <>You tap this conditional expand and collapse this section. Expand it in order to view and edit its settings.</>,
+  },
+  {
+    id: 'dataCondAdd', sel: '.cnd-manager .rd-add', title: 'Add a Conditional',
+    body: <>This creates a new conditional, letting you gate a picker behind a rule of your choosing so it only runs on days that rule allows.</>,
   },
   {
     // hideName is set on ConditionalControls here, so the name field lives
