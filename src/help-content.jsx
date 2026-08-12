@@ -645,8 +645,8 @@ const STATS_HELP_ITEMS = [
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
   {
-    id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Pickers Filter',
-    body: <>This narrows your selection to specific pickers or reminders, or you can view everything all at once.</>,
+    id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Type Filter',
+    body: <>This further narrows your selection to conditionals, reminders or specific pickers, or you can view everything all at once.</>,
   },
   {
     id: 'rangeFilter', sel: '.stat-filter-pills--seg .stat-pill', title: 'Range Filter',
@@ -802,8 +802,8 @@ const DATA_HELP_ITEMS = [
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
   {
-    id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Pickers Filter',
-    body: <>This further narrows exactly what you want to view and edit.</>,
+    id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Type Filter',
+    body: <>This further narrows your selection to conditionals, reminders or specific pickers, or you can view everything all at once.</>,
   },
   {
     // Only rendered once at least one conditional exists — a second filter
