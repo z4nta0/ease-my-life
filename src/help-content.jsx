@@ -37,7 +37,10 @@ const TODAY_HELP_ITEMS = [
     body: <>This is the todo list's navigation, allowing you to jump directly to a group's section. Over time your list can grow quite long and this helps to eliminate any long scrolling.</>,
   },
   {
-    id: 'editMode', sel: '.em-rail-btn, .foot-editmode', title: 'Edit Mode',
+    // padX: 4 — .foot-editmode sits right next to .ob-generate (Regenerate)
+    // with only a 10px gap between them; the default 8px pad on each side
+    // would overlap by 6px.
+    id: 'editMode', sel: '.em-rail-btn, .foot-editmode', title: 'Edit Mode', padX: 4,
     body: <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</>,
   },
   {
@@ -272,7 +275,8 @@ const TODAY_HELP_ITEMS = [
     body: <>This opens a log of everything that has happened for this section today. Including what was auto-picked, skipped, manually selected, re-rolled, and completed. It will also show the new updated values, if applicable, once an item has been marked as completed.</>,
   },
   {
-    id: 'regenerate', sel: '.ob-generate', title: 'Regenerate',
+    // padX: 4 — see editMode's own comment; same gap, same fix, symmetric.
+    id: 'regenerate', sel: '.ob-generate', title: 'Regenerate', padX: 4,
     body: <>This re-runs the daily generator manually, replacing your todo list. Anything already marked complete will be replaced too and won't show up in the Stats tab.</>,
   },
   // ── Reminders Log panel (day-log.jsx's RemindersLog) — dl-mk-r* classes
