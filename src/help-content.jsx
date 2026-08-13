@@ -864,7 +864,7 @@ const DATA_HELP_ITEMS = [
     // padY:0 — .rd-add has the same zero-gap stacking as .rd-item (a
     // hairline border, no margin), touching both the header above it and
     // the first conditional row below it.
-    id: 'dataCondAdd', sel: '.cnd-manager .rd-add', title: 'Add a Conditional', padY: 0,
+    id: 'dataCondAdd', sel: '.cnd-manager .rd-add', title: 'Create New Conditional', padY: 0,
     body: <>This creates a new conditional, letting you gate a picker behind a rule of your choosing so it only runs on days that rule allows.</>,
   },
   {
@@ -987,7 +987,7 @@ const DATA_HELP_ITEMS = [
     // padY:0 — .rd-add has the same zero-gap stacking as .rd-item (a
     // hairline border, no margin), touching both the header above it and
     // the first reminder row below it.
-    id: 'remAddButton', sel: '.cat--reminders .rd-add', title: 'New Reminder', padY: 0,
+    id: 'remAddButton', sel: '.cat--reminders .rd-add', title: 'Create New Reminder', padY: 0,
     body: <>This creates a new one-time or recurring reminder. Reminders are separate from pickers since some tasks cannot be randomly chosen and must be done on a schedule (recurring reminder) or are a one-time thing (one-time reminder).</>,
   },
   {
@@ -1088,7 +1088,7 @@ const DATA_HELP_ITEMS = [
     body: <>Tap this to expand or collapse this picker's settings. This includes its name, its group, how it picks, its conditional gate and when it runs. Collapsed, it shows how many setting options exist.</>,
   },
   {
-    id: 'dataPickerItemsHeader', sel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)', perElement: true, padY: 0, title: 'Items',
+    id: 'dataPickerItemsHeader', sel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)', perElement: true, padY: 0, title: 'Picker Items',
     body: <>Tap this to expand or collapse this picker's list of items below. Collapsed, it shows how many items are in the picker.</>,
   },
   {
@@ -1197,7 +1197,7 @@ const DATA_HELP_ITEMS = [
     // class but render outside .data-list entirely. padY:0 — .rd-add has
     // the same zero-gap stacking as .rd-item, touching the first item row
     // below it.
-    id: 'dataAddItem', sel: '.data-list .rd-add', title: 'Add Item', padY: 0,
+    id: 'dataAddItem', sel: '.data-list .rd-add', title: 'Create New Picker Item', padY: 0,
     body: <>This adds a new item to this picker's pool.</>,
   },
   {
@@ -1227,7 +1227,7 @@ const DATA_HELP_ITEMS = [
     // cadence unit word (days/weeks/months/years) straight off the
     // already-rendered .np-ease-unit label instead of hardcoding "days",
     // which would be wrong for a non-daily cadence picker.
-    id: 'itemChargeRangeUp', sel: '.entry-editor .pie-ease-up-row', padY: 0, title: 'Charge Controls',
+    id: 'itemChargeRangeUp', sel: '.entry-editor .pie-ease-up-row', padY: 0, title: 'Item Charge Controls',
     body: () => {
       const unit = document.querySelector('.entry-editor .pie-ease-up-row .np-ease-unit')?.textContent || 'days';
       return (
@@ -1240,7 +1240,7 @@ const DATA_HELP_ITEMS = [
     },
   },
   {
-    id: 'itemChargeRangeDown', sel: '.entry-editor .pie-ease-down-row', padY: 0, title: 'Charge Controls',
+    id: 'itemChargeRangeDown', sel: '.entry-editor .pie-ease-down-row', padY: 0, title: 'Item Charge Controls',
     body: () => {
       const unit = document.querySelector('.entry-editor .pie-ease-down-row .np-ease-unit')?.textContent || 'days';
       return (
@@ -1253,15 +1253,15 @@ const DATA_HELP_ITEMS = [
     },
   },
   {
-    id: 'itemWeight', sel: '.entry-editor .pie-row:has(.weight-stepper)', padY: 0, title: 'Weight',
+    id: 'itemWeight', sel: '.entry-editor .pie-row:has(.weight-stepper)', padY: 0, title: 'Item Weight',
     body: <>This adjusts this item's pick chance relative to the picker's other items. A higher weight makes it more likely to be picked and a lower weight makes it less likely.</>,
   },
   {
-    id: 'itemBoost', sel: '.entry-editor .pie-row:has(.pie-boost-val)', padY: 0, title: 'Boost',
+    id: 'itemBoost', sel: '.entry-editor .pie-row:has(.pie-boost-val)', padY: 0, title: 'Item Boost',
     body: <>This is the item's current boost, which climbs by 1 each time it isn't picked and resets to 0 the next time it is. A higher boost makes it more likely to be picked.</>,
   },
   {
-    id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Active',
+    id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Item Active Toggle',
     body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
   },
   {
