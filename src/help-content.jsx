@@ -973,7 +973,10 @@ const DATA_HELP_ITEMS = [
     body: <>Tap this to expand or collapse the reminder participation settings below. Collapsed, it shows how many settings there are.</>,
   },
   {
-    id: 'remControlsMatrix', sel: '.rd-matrix', title: 'Reminder Participation Settings',
+    // padY:0 — .rd-matrix sits flush against the Controls header above and
+    // the Items header below (no .rd-ctl-body padding wrapper here, unlike
+    // PickerControls), so the default pad bled 8px into both.
+    id: 'remControlsMatrix', sel: '.rd-matrix', title: 'Reminder Participation Settings', padY: 0,
     body: <>This controls whether one-time and recurring reminders each participate in the day streak, completion ring, weekend/holiday exclusion, and the Stats tab — toggle each independently for the two types.</>,
   },
   {
