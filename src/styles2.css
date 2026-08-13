@@ -1281,6 +1281,41 @@ button.cat-h-l {
   font-size: 11px;
   color: var(--muted);
   letter-spacing: 0.03em;
+  /* Own elements (not one text run — see tab-data.jsx) so the narrow-
+     viewport rule below can stack them into 3 rows; row+baseline here
+     keeps the current "6 of 6" look on every other width. */
+  display: flex; align-items: baseline; gap: 3px;
+}
+/* Each picker's own header row (name / group pill / eligible count) —
+   scoped to .data-list so Conditionals'/Reminders' OWN section headers
+   (outside .data-list, sharing the same .cat-name/.cat-count classes for
+   a "Conditionals"/"Reminders" title + a plain count with no group pill)
+   aren't affected; they never had this crowding problem since they have
+   far fewer things competing for the row's width.
+   On narrow viewports .cat-h-l had nowhere near enough room for a full
+   name + a group pill + "N of N", so the browser fell back to wrapping
+   each one's own text — ragged, uneven heights, and a long group name
+   could run into its neighbor entirely. Give each a defined, predictable
+   footprint instead: the name truncates with an ellipsis rather than
+   wrapping to a second line (keeping the row a single height), the group
+   pill gets a fixed max-width + ellipsis (so an especially long group
+   name truncates instead of overlapping), and the count restacks into 3
+   centered rows (its own column) instead of wrapping mid-fraction. */
+@container app (max-width: 400px) {
+  .data-list > .cat > .cat-h .chev { flex: 0 0 auto; }
+  .data-list > .cat > .cat-h .cat-name {
+    flex: 1 1 0%; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .data-list > .cat > .cat-h .cat-group {
+    flex: 0 0 auto; max-width: 72px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .data-list > .cat > .cat-h .cat-count {
+    flex: 0 0 auto;
+    flex-direction: column; align-items: center; gap: 0;
+    text-align: center;
+  }
 }
 
 .vac-toggle {

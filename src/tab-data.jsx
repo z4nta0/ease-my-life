@@ -1072,7 +1072,14 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
                   <h3 className="cat-name">{pk.name}</h3>
                   <span className="cat-group">{pk.group}</span>
-                  <span className="cat-count">{eligible} of {items.length}</span>
+                  {/* Each part its own element (not one text run) so a narrow
+                      viewport can stack them into 3 centered rows — see
+                      .cat-count's own @container rule in styles2.css. */}
+                  <span className="cat-count">
+                    <span className="cat-count-n">{eligible}</span>
+                    <span className="cat-count-of">of</span>
+                    <span className="cat-count-n">{items.length}</span>
+                  </span>
                   {/* Not shown — read by help-mode's pickerRow entry via
                       labelSel to build "{type} Picker" per-picker badge
                       titles; the type itself isn't otherwise surfaced
