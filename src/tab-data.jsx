@@ -1073,6 +1073,11 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   <h3 className="cat-name">{pk.name}</h3>
                   <span className="cat-group">{pk.group}</span>
                   <span className="cat-count">{eligible} of {items.length}</span>
+                  {/* Not shown — read by help-mode's pickerRow entry via
+                      labelSel to build "{type} Picker" per-picker badge
+                      titles; the type itself isn't otherwise surfaced
+                      anywhere in the collapsed header. */}
+                  <span className="cat-mode-label" hidden>{MODES[pk.mode].label}</span>
                 </button>
                 <button className="vac-toggle" aria-pressed={!!allVac}
                         aria-label={`${allVac ? 'End vacation for' : 'Start vacation for'} all items in ${pk.name}`}
