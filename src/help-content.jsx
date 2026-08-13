@@ -1326,7 +1326,7 @@ const SETTINGS_HELP_ITEMS = [
   },
   {
     id: 'appearanceCelebration', sel: '.set-subsection--celebration', title: 'Completion Celebration', padY: 4,
-    body: <>This is where you choose which animation plays in the Today tab when every item in your todo list is marked as done. Use Preview to watch any of them play out before picking one.</>,
+    body: <>This is where you choose which animation plays in the Today page when every item in your todo list is marked as done. Use Preview to watch any of them play out before picking one.</>,
   },
   {
     id: 'appearancePickAnim', sel: '.set-subsection--pickanim', title: 'Picker Animation', padY: 4,
@@ -1342,7 +1342,7 @@ const SETTINGS_HELP_ITEMS = [
   // not a flex/grid gap container), so they touch with zero gap.
   {
     id: 'dailyAutoToggle', sel: '.set-section--daily .set-data-row:has(button[aria-label="Run the Daily generator automatically"])', title: 'Run Generator Automatically', padY: 0,
-    body: <>This toggles whether the Daily generator runs on its own each day. When off, you'll need to run it manually using the Regenerate button at the bottom of the Today tab.</>,
+    body: <>This toggles whether the Daily generator runs on its own each day. When off, you'll need to run it manually using the Regenerate button at the bottom of the Today page.</>,
   },
   {
     id: 'dailyRunTime', sel: '.set-section--daily .set-data-row--sub', title: 'Run Generator Time', padY: 0,
