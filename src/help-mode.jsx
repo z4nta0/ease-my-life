@@ -115,9 +115,30 @@ const detectEdgeSide = (rect) => {
   const gaps = { top: rect.top, bottom: window.innerHeight - rect.bottom, left: rect.left, right: window.innerWidth - rect.right };
   return Object.entries(gaps).reduce((a, b) => (b[1] < a[1] ? b : a))[0];
 };
-const clipToChrome = (rect, chromeItems) => {
+// A target that's part of one chrome item (e.g. the nav bar's own
+// [data-tab] buttons, "part of" .tabbar) must still be clippable against
+// a DIFFERENT chrome item it visually sits behind — but never against one
+// it sits IN FRONT OF. The tab bar's off-canvas 'side' drawer overlays
+// .today-h with a real, higher z-index (200 vs. .today-h's own ~20 sticky
+// stacking context) rather than sharing layout width with it, so a target
+// that's part of the tab bar should never be clipped against .today-h —
+// that direction would clip the thing actually on top against the thing
+// underneath it. Higher number = visually wins; equal (both chrome
+// content the same page renders once) never clips the other.
+const CHROME_Z = { '.tabbar': 2, '.today-h': 1, '.group-rail': 1 };
+const clipToChrome = (rect, chromeItems, els) => {
   let { top, left, right, bottom } = rect;
-  for (const { rect: c, side } of chromeItems) {
+  // The chrome item (if any) this target is itself part of, e.g. the
+  // streak ring is part of .today-h — used below to compare stacking
+  // priority against each candidate chrome item in the loop.
+  const home = els && chromeItems.find(({ el: chromeEl }) => els.some((el) => chromeEl === el || chromeEl.contains(el)));
+  const homeZ = home ? (CHROME_Z[home.sel] ?? 0) : -Infinity;
+  for (const { rect: c, side, sel } of chromeItems) {
+    // Skip clipping against any chrome item this target's own home chrome
+    // already outranks (or IS) — see the comment above CHROME_Z. A target
+    // with no home chrome at all (homeZ stays -Infinity) is never exempt
+    // from anything, same as before this distinction existed.
+    if (homeZ >= (CHROME_Z[sel] ?? 0)) continue;
     const hOverlap = left < c.right && right > c.left;
     const vOverlap = top < c.bottom && bottom > c.top;
     // Require an ACTUAL rect intersection (both axes) before clipping —
@@ -172,13 +193,14 @@ const clipToChrome = (rect, chromeItems) => {
 // amount right back into the chrome. Runs clipToChrome a second time on
 // the PADDED box and reports how much pad actually survived per side —
 // full pad on sides with no chrome to hit, less (down to 0) on a side
-// that runs into one. Chrome content itself (e.g. the nav item highlighting
-// its own [data-tab] buttons) was never clipped in the first place, so its
-// pad is never clamped either.
-const clampPad = (r, padX, padY, chromeItems, isChromeContent) => {
-  if (isChromeContent) return { padTop: padY, padBottom: padY, padLeft: padX, padRight: padX };
+// that runs into one. `els` — the target's own matched element(s) —
+// lets clipToChrome exempt this target from whichever SPECIFIC chrome
+// item it's actually part of (e.g. the nav item's own [data-tab]
+// buttons against .tabbar) while still clamping it against any other,
+// unrelated chrome it isn't part of but happens to overlap.
+const clampPad = (r, padX, padY, chromeItems, els) => {
   const padded = { top: r.top - padY, bottom: r.bottom + padY, left: r.left - padX, right: r.right + padX };
-  const clipped = clipToChrome(padded, chromeItems);
+  const clipped = clipToChrome(padded, chromeItems, els);
   if (!clipped) return { padTop: 0, padBottom: 0, padLeft: 0, padRight: 0 };
   return {
     padTop: r.top - clipped.top,
@@ -494,21 +516,23 @@ function HelpOverlay({ active, items, onExit }) {
     // exists everywhere. 'auto' defers to detectEdgeSide since the tabbar's
     // placement varies at runtime; the other two are always top-anchored.
     const chromeMatches = [['.today-h', 'top'], ['.group-rail', 'top'], ['.tabbar', 'auto']]
-      .map(([sel, side]) => { const el = document.querySelector(sel); return el ? { el, side } : null; })
+      .map(([sel, side]) => { const el = document.querySelector(sel); return el ? { el, side, sel } : null; })
       .filter(Boolean);
-    const chromeEls = chromeMatches.map((c) => c.el);
+    // `el`/`sel` carry through so clipToChrome can exempt a target from
+    // just the chrome item(s) it's actually part of — and, via `sel`
+    // looking up CHROME_Z, weigh that against a DIFFERENT chrome item's
+    // own stacking priority — not chrome in general. See clipToChrome's
+    // own comment for why that distinction matters (a header highlight on
+    // the Today page needs to stay exempt from .today-h itself while
+    // still being clippable against a side-placed tab bar that visually
+    // overlaps the header in narrow/drawer mode, but the reverse must
+    // NOT clip the tab bar's own nav highlight against .today-h).
     const chromeItems = chromeMatches
-      .map(({ el, side }) => { const rect = el.getBoundingClientRect(); return { rect, side: side === 'auto' ? detectEdgeSide(rect) : side }; })
+      .map(({ el, side, sel }) => { const rect = el.getBoundingClientRect(); return { rect, side: side === 'auto' ? detectEdgeSide(rect) : side, el, sel }; })
       .filter((c) => c.side);
     allItems.forEach((it) => {
       let els = findTargets(it.sel);
       if (!els.length) return;
-      // The nav item's own targets (and anything else whose selector
-      // happens to live inside the header, like the streak/progress ring)
-      // ARE this chrome — clipping those against their own container would
-      // erase them, not just keep them from floating on top of something
-      // else.
-      const isChromeContent = els.some((el) => chromeEls.some((c) => c === el || c.contains(el)));
       // `perElement` gives EVERY matched element its own badge/highlight
       // (synthesized sub-ids `${it.id}::${i}`, all sharing the parent
       // item's title/body) instead of unioning them into one — needed
@@ -523,10 +547,8 @@ function HelpOverlay({ active, items, onExit }) {
         els.forEach((el, i) => {
           let r = clipHorizontalOverflow(el.getBoundingClientRect(), el);
           if (!r) return;
-          if (!isChromeContent) {
-            r = clipToChrome(r, chromeItems);
-            if (!r) return;
-          }
+          r = clipToChrome(r, chromeItems, [el]);
+          if (!r) return;
           const width = r.right - r.left, height = r.bottom - r.top;
           if (!Number.isFinite(width) || !Number.isFinite(height)) return;
           const shape = shapeFor(el, width + PAD * 2, height + PAD * 2, it.shape);
@@ -539,7 +561,7 @@ function HelpOverlay({ active, items, onExit }) {
           const label = it.labelSel
             ? (el.querySelector(it.labelSel)?.textContent || el.querySelector(it.labelSel)?.value)
             : undefined;
-          const pad = clampPad(r, it.padX ?? PAD, it.padY ?? PAD, chromeItems, isChromeContent);
+          const pad = clampPad(r, it.padX ?? PAD, it.padY ?? PAD, chromeItems, [el]);
           next[`${it.id}::${i}`] = { ...r, width, height, shape, ...pad, label };
         });
         return;
@@ -562,11 +584,9 @@ function HelpOverlay({ active, items, onExit }) {
       // finding zero elements in the first place, rather than feeding an
       // Infinity-valued rect to the SVG below.
       if (!Number.isFinite(r.width) || !Number.isFinite(r.height)) return;
-      if (!isChromeContent) {
-        const clipped = clipToChrome(r, chromeItems);
-        if (!clipped) return;
-        r = { ...clipped, width: clipped.right - clipped.left, height: clipped.bottom - clipped.top };
-      }
+      const clipped = clipToChrome(r, chromeItems, els);
+      if (!clipped) return;
+      r = { ...clipped, width: clipped.right - clipped.left, height: clipped.bottom - clipped.top };
       // A function shape override (as opposed to the pre-existing 'circle'
       // string form) skips shapeFor/CSS-inspection entirely — needed for a multi-element
       // union like the nav bar, which has no single source element's
@@ -614,7 +634,7 @@ function HelpOverlay({ active, items, onExit }) {
       // other tip, including the nav tip on 'bottom'/'top' placement,
       // leaves this unset and keeps the normal above/below choice.
       const alwaysBelow = it.alwaysBelowSel ? !!document.querySelector(it.alwaysBelowSel) : false;
-      const pad = clampPad(r, it.padX ?? PAD, it.padY ?? PAD, chromeItems, isChromeContent);
+      const pad = clampPad(r, it.padX ?? PAD, it.padY ?? PAD, chromeItems, els);
       next[it.id] = { ...r, shape, tipWidth, pinBelowY, alwaysBelow, scrollable: !!it.scrollable, ...pad };
     });
     // `columnGroup` (e.g. the Day Log panel's per-column highlights) —
