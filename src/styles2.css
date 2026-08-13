@@ -2447,6 +2447,22 @@ button.cat-h-l {
   border: 0.5px solid var(--border); border-radius: 20px;
   position: relative;
 }
+/* Repeat (5 options) is the only segmented control long enough to wrap on
+   narrow viewports — flex-wrap's space-between spread the wrapped row's
+   fewer items across the full width (e.g. Monthly/Yearly landing at
+   opposite edges with a big gap), and each wrapped row justified
+   independently with no relation to the row above it. Grid's auto-fit
+   gives every row the SAME column template, so wrapped rows line up
+   under the row above (Monthly under Once, Yearly under Every N days)
+   instead of re-justifying on their own. When everything fits on one
+   line this renders identically to the flex version above (no slack
+   width for start-vs-space-between to differ on) — only the wrapped
+   case looks different. */
+.seg[aria-label="Repeat"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, max-content));
+  justify-content: start;
+}
 .seg-thumb {
   position: absolute; top: 0; left: 0; width: 0; height: 0;
   background: var(--accent); border-radius: 999px;
