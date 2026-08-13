@@ -1063,18 +1063,23 @@ const DATA_HELP_ITEMS = [
     body: <>Tap this to expand or collapse this picker's list of items below. Collapsed, it shows how many items are in the picker.</>,
   },
   {
-    id: 'dataPickerName', sel: '.rd-basics-row:has(.rd-basics-name)', title: 'Picker Name',
+    // padY:0 — .rd-basics-row has no margin, just its own padding + a
+    // border-top, so consecutive rows (this one and Group below) touch
+    // with zero gap.
+    id: 'dataPickerName', sel: '.rd-basics-row:has(.rd-basics-name)', title: 'Picker Name', padY: 0,
     body: <>This is the name field for this picker, you can rename it here.</>,
   },
   {
-    id: 'dataPickerGroup', sel: '.rd-basics-row--group', title: 'Picker Group',
+    id: 'dataPickerGroup', sel: '.rd-basics-row--group', title: 'Picker Group', padY: 0,
     body: <>This lets you choose which group this picker belongs to. Groups cluster related pickers together on your todo list, like "Food" or "Chores". You can select an existing group or create a new one.</>,
   },
   {
     // Scoped to PickerControls' own "How it picks" group — ConditionalEditor
     // has its own separate .rd-mode-radio inside .cnd-controls, which
-    // doesn't live under .rd-ctl-group--picks.
-    id: 'dataPickerType', sel: '.rd-ctl-group--picks .rd-mode-radio', title: 'Picker Type',
+    // doesn't live under .rd-ctl-group--picks. padY:0 — .rd-ctl-group--picks
+    // (this group's own wrapper) touches .ease-config (Default Charge
+    // Controls) below with zero gap.
+    id: 'dataPickerType', sel: '.rd-ctl-group--picks .rd-mode-radio', title: 'Picker Type', padY: 0,
     body: <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
   },
   {
@@ -1082,8 +1087,9 @@ const DATA_HELP_ITEMS = [
     // only) has no equivalent on the Pickers-page create flow, which only
     // sets charge ranges per item, not a picker-wide default. Prefills new
     // items added to this picker; Fill/Refill here acts on every item at
-    // once (actions.refillPicker), not just one.
-    id: 'dataPickerDefaultCadence', sel: '.ease-config', title: 'Default Charge Controls',
+    // once (actions.refillPicker), not just one. padY:0 — touches Picker
+    // Type above with zero gap (see that entry's own comment).
+    id: 'dataPickerDefaultCadence', sel: '.ease-config', title: 'Default Charge Controls', padY: 0,
     body: (
       <>
         <p><b>Soonest / Shortest:</b> This sets the picker's own default minimum, used to prefill new items you add to this picker.</p>
@@ -1093,19 +1099,25 @@ const DATA_HELP_ITEMS = [
     ),
   },
   {
-    id: 'dataPickerConditionalToggle', sel: '.sched-line:has(button[aria-label="Attach a conditional"])', title: 'Picker Conditional',
+    // padY:0 — .sched-line rows stack with zero gap (same pattern as
+    // .rd-basics-row above), touching Daily Generator Toggle below.
+    id: 'dataPickerConditionalToggle', sel: '.sched-line:has(button[aria-label="Attach a conditional"])', title: 'Picker Conditional', padY: 0,
     body: <>This lets you optionally gate this picker behind a conditional. When you attach a conditional, the picker will only run on days determined by that conditional's own rules. For example, giving yourself an occasional day off from chores. You can attach any existing conditional below — to create a new one, use the Conditionals section above.</>,
   },
   {
-    id: 'dataPickerConditionalRail', sel: '.rd-cnd-rail-row .cnd-rail', title: 'Select a Conditional',
+    id: 'dataPickerConditionalRail', sel: '.rd-cnd-rail-row .cnd-rail', title: 'Select a Conditional', padY: 0,
     body: <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, create one in the Conditionals section above.</>,
   },
   {
-    id: 'dataPickerDailyToggle', sel: '.sched-line:has(button[aria-label*="Daily generator"])', title: 'Daily Generator Toggle',
+    // padY:0 — same .sched-line zero-gap stacking, touching Picker Cadence
+    // below.
+    id: 'dataPickerDailyToggle', sel: '.sched-line:has(button[aria-label*="Daily generator"])', title: 'Daily Generator Toggle', padY: 0,
     body: <>This determines whether the picker will be included in the app's daily auto-generator. When on, this picker's items will be automatically added to your todo list. When off, the picker won't run automatically, but you can still generate a pick manually from the Pickers tab.</>,
   },
   {
-    id: 'dataPickerCadence', sel: '.sched-line:has(select[aria-label="Cadence"])', title: 'Picker Cadence',
+    // padY:0 — same .sched-line zero-gap stacking, touching Picker Day
+    // Selection below.
+    id: 'dataPickerCadence', sel: '.sched-line:has(select[aria-label="Cadence"])', title: 'Picker Cadence', padY: 0,
     body: (
       <>
         <p><b>Daily:</b> This is the picker's default cadence. It surfaces every day that it's scheduled to run, exactly like an ordinary picker.</p>
@@ -1116,11 +1128,15 @@ const DATA_HELP_ITEMS = [
     ),
   },
   {
-    id: 'dataPickerDays', sel: '.sched-line:has(.dow-chips)', title: 'Picker Day Selection',
+    // padY:0 — same .sched-line zero-gap stacking, touching Picker
+    // Holidays Toggle below.
+    id: 'dataPickerDays', sel: '.sched-line:has(.dow-chips)', title: 'Picker Day Selection', padY: 0,
     body: <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off.</>,
   },
   {
-    id: 'dataPickerSkipHolidays', sel: '.sched-line:has(button[aria-label="Skip on holidays"])', title: 'Picker Holidays Toggle',
+    // padY:0 — same .sched-line zero-gap stacking, touching Picker Day
+    // Selection above.
+    id: 'dataPickerSkipHolidays', sel: '.sched-line:has(button[aria-label="Skip on holidays"])', title: 'Picker Holidays Toggle', padY: 0,
     body: <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
   },
   {
@@ -1136,13 +1152,17 @@ const DATA_HELP_ITEMS = [
   {
     // Scoped to .data-list so this doesn't also match the Conditionals/
     // Reminders managers' own "Add" buttons, which share the plain .rd-add
-    // class but render outside .data-list entirely.
-    id: 'dataAddItem', sel: '.data-list .rd-add', title: 'Add Item',
+    // class but render outside .data-list entirely. padY:0 — .rd-add has
+    // the same zero-gap stacking as .rd-item, touching the first item row
+    // below it.
+    id: 'dataAddItem', sel: '.data-list .rd-add', title: 'Add Item', padY: 0,
     body: <>This adds a new item to this picker's pool.</>,
   },
   {
     // perElement — every item in every expanded picker gets its own badge.
-    id: 'dataItemRow', sel: '.data-list .rd-item > .rd-row', perElement: true, title: 'Picker Item',
+    // padY:0 — .rd-item rows stack with zero gap (touching, separated only
+    // by a hairline border), same as conditionalRow/reminderRow.
+    id: 'dataItemRow', sel: '.data-list .rd-item > .rd-row', perElement: true, padY: 0, title: 'Picker Item',
     body: <>This is one of this picker's items. Tap it to view and edit its settings.</>,
   },
   // ── Editing an individual picker item (EntryEditor, defined in
