@@ -1245,12 +1245,28 @@ const DATA_HELP_ITEMS = [
     // would miss entirely once that swap happens: no dim-mask hole, AND the
     // click-guard would treat its buttons as off-target and block them,
     // making the confirmation genuinely unreachable while help mode is on.
-    id: 'itemFoot', sel: '.entry-editor .rem-inline-foot .btn', title: 'Delete / Cancel / Save',
+    // Delete is only rendered when !isNew (see EntryEditor in
+    // tab-today.jsx) — :has(.btn--danger) splits this from itemFootNew
+    // below rather than always mentioning Delete, same fix as
+    // dataCondFoot/dataReminderFoot.
+    id: 'itemFoot', sel: '.entry-editor .rem-inline-foot:has(.btn--danger) .btn', title: 'Delete / Cancel / Save',
     body: (
       <>
         <p><b>Delete:</b> This button permanently deletes this item, after asking you to confirm.</p>
         <p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>
         <p><b>Save:</b> This button saves your changes to this item.</p>
+      </>
+    ),
+  },
+  {
+    // New (unsaved) items never render a Delete button — see EntryEditor's
+    // `!isNew &&` guard — so this covers that footer state with its own
+    // Cancel/Save-only copy.
+    id: 'itemFootNew', sel: '.entry-editor .rem-inline-foot:not(:has(.btn--danger)) .btn', title: 'Cancel / Save',
+    body: (
+      <>
+        <p><b>Cancel:</b> This button discards the new item without saving it.</p>
+        <p><b>Save:</b> This button saves the new item.</p>
       </>
     ),
   },

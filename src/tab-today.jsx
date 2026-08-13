@@ -311,7 +311,7 @@ function LoaderCard({ picker, info }) {
 // human face of its drift band) since weight is irrelevant to those modes.
 // Plus a vacation toggle and a confirm-gated delete (delete behaves exactly as
 // Data — actions.removeItem).
-function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
+function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew }) {
   const [confirmDel, setConfirmDel] = React.useState(false);
   // Snapshot the item as it was when this editor opened, so Cancel can revert
   // the live weight / cadence / vacation / name edits. Data passes onCancel to
@@ -506,7 +506,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
         </div>
       ) : (
         <div className="rem-inline-foot rd-edit-foot" key="foot">
-          <Btn kind="danger" size="sm" icon="trash" onClick={() => setConfirmDel(true)}>Delete</Btn>
+          {!isNew && <Btn kind="danger" size="sm" icon="trash" onClick={() => setConfirmDel(true)}>Delete</Btn>}
           <div className="rem-foot-right">
             <Btn kind="ghost" size="sm" className="ob-item-cancel" onClick={cancel}>Cancel</Btn>
             <Btn kind="ghost" size="sm" className="ob-item-save" onClick={saveClose}>Save</Btn>
