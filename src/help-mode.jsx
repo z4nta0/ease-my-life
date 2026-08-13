@@ -320,13 +320,20 @@ function HelpTip({ item, targetRect }) {
   const [style, setStyle] = React.useState(null);
   const [arrowClass, setArrowClass] = React.useState('ob-coach--up');
   // `matchTargetWidth` (e.g. the nav tip, once it grew to 5 paragraphs) sizes
-  // the tip to targetRect.tipWidth (see matchWidthSel in the rAF loop above,
-  // if the item set one) or the highlighted rect's own width otherwise,
-  // instead of the usual fixed 280px — applied as an inline style (wins
-  // over .help-tip's width regardless of render order) so it's already in
-  // effect the moment offsetWidth below measures it, not just once CSS
-  // catches up on a later paint.
-  const widthStyle = item.matchTargetWidth ? { width: targetRect.tipWidth ?? targetRect.width } : null;
+  // the tip to targetRect.tipWidth (see matchWidthSel in the rAF loop above)
+  // instead of the usual fixed 280px, when that's actually been computed —
+  // applied as an inline style (wins over .help-tip's width regardless of
+  // render order) so it's already in effect the moment offsetWidth below
+  // measures it, not just once CSS catches up on a later paint. Falls
+  // through to the normal 280px default (no override at all) rather than
+  // ever falling back to the highlighted rect's OWN width: that used to be
+  // the fallback, and for the nav tip's portrait-oriented 'side' placement
+  // target (~190px wide) it forced 5 paragraphs of text into an extremely
+  // tall narrow column that ended up covering most of the sidebar. tipWidth
+  // itself is only ever computed for 'bottom' placement (see matchWidthSel's
+  // own comment) — 280px is a perfectly reasonable width for 'top'/'side'
+  // too, and matches every other tip in the app.
+  const widthStyle = item.matchTargetWidth && targetRect.tipWidth != null ? { width: targetRect.tipWidth } : null;
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -530,7 +537,18 @@ function HelpOverlay({ active, items, onExit }) {
       // individual [data-tab] buttons (tested and correct as a spotlight),
       // but "as wide as the navbar itself" means the .tabbar container's
       // own width, padding included, not just the buttons' own union.
-      const tipWidth = it.matchWidthSel ? document.querySelector(it.matchWidthSel)?.getBoundingClientRect().width : undefined;
+      // Only sane on 'bottom' placement, though — its container really is
+      // a reasonably-sized pill. On 'top' the container spans the ENTIRE
+      // page width (the tip rendered off-screen past the right edge); on
+      // 'side' it's only ~220px, forcing the tip's 5 paragraphs of text
+      // to wrap into an extremely tall narrow column that then had
+      // nowhere to fit above/below its own (also tall) target and ended
+      // up covering most of the sidebar. Gated on the matched element's
+      // own 'tabbar--bottom' class rather than being made placement-
+      // generic, since this whole mechanism only exists for the nav item.
+      const matchWidthEl = it.matchWidthSel ? document.querySelector(it.matchWidthSel) : null;
+      const tipWidth = matchWidthEl && matchWidthEl.classList.contains('tabbar--bottom')
+        ? matchWidthEl.getBoundingClientRect().width : undefined;
       // `pinBelowSel` — see placeTip's own doc comment for why this exists.
       const pinBelowY = it.pinBelowSel ? document.querySelector(it.pinBelowSel)?.getBoundingClientRect().bottom : undefined;
       const pad = clampPad(r, it.padX ?? PAD, it.padY ?? PAD, chromeItems, isChromeContent);
