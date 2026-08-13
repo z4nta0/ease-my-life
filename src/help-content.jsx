@@ -155,7 +155,13 @@ const TODAY_HELP_ITEMS = [
     body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
   },
   {
-    id: 'itemFoot', sel: '.entry-editor .rd-edit-foot .btn', title: 'Delete / Cancel / Save',
+    // sel targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot
+    // specifically — Delete swaps that sibling out for .rem-foot-confirm
+    // (its own Cancel/Delete pair), which a selector scoped to .rd-edit-foot
+    // would miss entirely once that swap happens: no dim-mask hole, AND the
+    // click-guard would treat its buttons as off-target and block them,
+    // making the confirmation genuinely unreachable while help mode is on.
+    id: 'itemFoot', sel: '.entry-editor .rem-inline-foot .btn', title: 'Delete / Cancel / Save',
     body: (
       <>
         <p><b>Delete:</b> This button permanently deletes this item, after asking you to confirm.</p>
@@ -252,11 +258,24 @@ const TODAY_HELP_ITEMS = [
     // picker item's Delete/Cancel/Save instead of itemFoot's own "this
     // item..." copy just below. .rem-inline-editor:not(.entry-editor) (see
     // editReminderRepeat's own comment) properly scopes this to an actual
-    // reminder's editor. Only matches in the NORMAL footer state — Delete's
-    // own confirm prompt swaps in a different class (.rem-foot-confirm), so
-    // this gracefully has nothing to highlight while that's up, same as
-    // any other transient confirm state elsewhere in this catalog.
-    id: 'editReminderFoot', sel: '.rem-inline-editor:not(.entry-editor) .rd-edit-foot .btn', title: 'Delete / Cancel / Save',
+    // reminder's editor. sel targets .rem-inline-foot (the shared wrapper),
+    // not .rd-edit-foot specifically — Delete's own confirm prompt swaps in
+    // a DIFFERENT sibling class (.rem-foot-confirm), which a selector
+    // scoped to .rd-edit-foot would miss entirely: no dim-mask hole, AND
+    // the click-guard would treat its Cancel/Delete buttons as off-target
+    // and block them, making the confirmation genuinely unreachable while
+    // help mode is on — this was wrongly assumed harmless ("gracefully has
+    // nothing to highlight") until the user found it actually blocks the
+    // click too, not just the highlight.
+    // :not(.rem-quickadd-wrap *) — the Add Reminder quickadd form (Today
+    // only) uses this exact same .rem-inline-editor > .rem-inline-foot
+    // structure for its own Cancel/Add buttons (no rd-edit-foot/
+    // rem-foot-confirm distinction there, since a brand-new draft has
+    // nothing to delete yet) — widening from .rd-edit-foot to the shared
+    // .rem-inline-foot wrapper (see the comment above) would otherwise
+    // ALSO match those, duplicating this badge the same way
+    // editReminderRepeat's own selector once did.
+    id: 'editReminderFoot', sel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-inline-foot .btn', title: 'Delete / Cancel / Save',
     body: (
       <>
         <p><b>Delete:</b> This button permanently deletes this reminder, after asking you to confirm.</p>
@@ -952,7 +971,13 @@ const DATA_HELP_ITEMS = [
     ),
   },
   {
-    id: 'dataReminderFoot', sel: '.rem-inline-editor:not(.entry-editor) .rd-edit-foot .btn', title: 'Delete / Cancel / Save',
+    // sel targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot
+    // specifically — see editReminderFoot's own comment (TODAY_HELP_ITEMS)
+    // for why: Delete's own confirm prompt swaps in a different sibling
+    // class (.rem-foot-confirm), which .rd-edit-foot alone would miss,
+    // leaving its Cancel/Delete buttons genuinely unreachable (no dim-mask
+    // hole, blocked by the click-guard) while help mode is on.
+    id: 'dataReminderFoot', sel: '.rem-inline-editor:not(.entry-editor) .rem-inline-foot .btn', title: 'Delete / Cancel / Save',
     body: (
       <>
         <p><b>Delete:</b> This button permanently deletes this reminder, after asking you to confirm.</p>
@@ -1115,7 +1140,13 @@ const DATA_HELP_ITEMS = [
     body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
   },
   {
-    id: 'itemFoot', sel: '.entry-editor .rd-edit-foot .btn', title: 'Delete / Cancel / Save',
+    // sel targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot
+    // specifically — Delete swaps that sibling out for .rem-foot-confirm
+    // (its own Cancel/Delete pair), which a selector scoped to .rd-edit-foot
+    // would miss entirely once that swap happens: no dim-mask hole, AND the
+    // click-guard would treat its buttons as off-target and block them,
+    // making the confirmation genuinely unreachable while help mode is on.
+    id: 'itemFoot', sel: '.entry-editor .rem-inline-foot .btn', title: 'Delete / Cancel / Save',
     body: (
       <>
         <p><b>Delete:</b> This button permanently deletes this item, after asking you to confirm.</p>
