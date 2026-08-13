@@ -1305,8 +1305,8 @@ const SETTINGS_HELP_ITEMS = [
   // One combined highlight over the whole rail rather than per-button,
   // matching the nav bar's own precedent.
   {
-    id: 'settingsRail', sel: '.settings-rail', title: 'Sections',
-    body: <>This lets you jump straight to any section of Settings. On a phone, it collapses into a horizontal scrolling bar pinned to the top of the screen.</>,
+    id: 'settingsRail', sel: '.settings-rail', title: 'Sections Navigation',
+    body: <>This will let you jump straight to any section of the Settings page. On mobile devices, this will stay pinned to the top of the page no matter how far down you have scrolled.</>,
   },
   // ── Appearance ─────────────────────────────────────────────────────────
   {
