@@ -1299,6 +1299,15 @@ const DATA_HELP_ITEMS = [
 ];
 
 const SETTINGS_HELP_ITEMS = [
+  // ── Section rail — on mobile this collapses into a horizontal sticky
+  // pill bar pinned above the sections (see .settings-rail's own
+  // @container rule in styles2.css); on desktop it's a vertical sidebar.
+  // One combined highlight over the whole rail rather than per-button,
+  // matching the nav bar's own precedent.
+  {
+    id: 'settingsRail', sel: '.settings-rail', title: 'Sections',
+    body: <>This lets you jump straight to any section of Settings. On a phone, it collapses into a horizontal scrolling bar pinned to the top of the screen.</>,
+  },
   // ── Appearance ─────────────────────────────────────────────────────────
   {
     id: 'appearanceSystemPref', sel: '.set-section--appearance .set-data-row:has(button[aria-label="System preference"])', title: 'System Preference',
@@ -1309,58 +1318,76 @@ const SETTINGS_HELP_ITEMS = [
     body: <>This is where you choose the theme that's used when the app is in light mode. Pick any of the presets, or use the Custom row to mix your own colors &mdash; doing so automatically generates a matching dark theme, which you're then free to edit separately.</>,
   },
   {
-    id: 'appearanceThemeDark', sel: '.set-subsection--theme-dark', title: 'Dark Theme',
+    // padY:4 (not the default 8) — consecutive .set-subsection blocks have
+    // a real but modest 12px gap (.set-section's own flex gap), and 8+8
+    // exceeds that by 4px; 4+4 stays safely inside it.
+    id: 'appearanceThemeDark', sel: '.set-subsection--theme-dark', title: 'Dark Theme', padY: 4,
     body: <>This is where you choose the theme that's used when the app is in dark mode. Pick any of the presets, or use the Custom row to mix your own colors &mdash; doing so automatically generates a matching light theme, which you're then free to edit separately.</>,
   },
   {
-    id: 'appearanceCelebration', sel: '.set-subsection--celebration', title: 'Completion Celebration',
+    id: 'appearanceCelebration', sel: '.set-subsection--celebration', title: 'Completion Celebration', padY: 4,
     body: <>This is where you choose which animation plays in the Today tab when every item on your list is marked as done. Use Preview to watch any of them play out before picking one.</>,
   },
   {
-    id: 'appearancePickAnim', sel: '.set-subsection--pickanim', title: 'Picker Animation',
+    id: 'appearancePickAnim', sel: '.set-subsection--pickanim', title: 'Picker Animation', padY: 4,
     body: <>This is where you choose which animation plays in the Pickers tab when the "Pick one" button is pressed. Use Preview to watch any of them play out before picking one.</>,
   },
   {
-    id: 'appearanceLayout', sel: '.set-subsection--layout', title: 'Tab Bar Placement',
+    id: 'appearanceLayout', sel: '.set-subsection--layout', title: 'Tab Bar Placement', padY: 4,
     body: <>This controls where the app's main navigation is positioned on screen: a floating bar at the bottom, a sidebar on the left, or a bar along the top.</>,
   },
   // ── Daily generator ────────────────────────────────────────────────────
+  // padY:0 on all three below — .set-data-row rows have no margin between
+  // them, just their own padding + a border-bottom (Card is a plain div,
+  // not a flex/grid gap container), so they touch with zero gap.
   {
-    id: 'dailyAutoToggle', sel: '.set-section--daily .set-data-row:has(button[aria-label="Run the Daily generator automatically"])', title: 'Run Automatically',
+    id: 'dailyAutoToggle', sel: '.set-section--daily .set-data-row:has(button[aria-label="Run the Daily generator automatically"])', title: 'Run Automatically', padY: 0,
     body: <>This toggles whether the Daily generator runs on its own each day. When off, you'll need to run it manually from the button at the bottom of the Today tab.</>,
   },
   {
-    id: 'dailyRunTime', sel: '.set-section--daily .set-data-row--sub', title: 'Run Time',
+    id: 'dailyRunTime', sel: '.set-section--daily .set-data-row--sub', title: 'Run Time', padY: 0,
     body: <>This sets what time of day the Daily generator runs automatically. A quiet, early hour works best so your list is ready first thing in the morning.</>,
   },
   {
-    id: 'dailyNotify', sel: '.set-notify-row', title: 'Run Notifications',
+    id: 'dailyNotify', sel: '.set-notify-row', title: 'Run Notifications', padY: 0,
     body: <>This lets you get a notification once your list has been generated for the day. It only works while the app is open in a tab or window &mdash; notifications for a closed app are coming in a future release.</>,
   },
   // ── Holidays ───────────────────────────────────────────────────────────
+  // padY:4 — .holiday-add has a real but modest 14px margin-top from
+  // .holiday-list above it, and default 8+8 pad exceeds that by 2px.
   {
-    id: 'holidayList', sel: '.holiday-list', title: 'Observed Holidays',
+    id: 'holidayList', sel: '.holiday-list', title: 'Observed Holidays', padY: 4,
     body: <>This lists every computed holiday for the current year. Toggle any of them off if you don't observe it &mdash; any picker set to "Skip on holidays" will stop skipping that day.</>,
   },
   {
-    id: 'holidayAdd', sel: '.holiday-add', title: 'Add a Custom Day Off',
+    id: 'holidayAdd', sel: '.holiday-add', title: 'Add a Custom Day Off', padY: 4,
     body: <>This lets you add your own recurring day off, like a birthday or anniversary, which pickers set to "Skip on holidays" will also respect.</>,
   },
   // ── Data control ───────────────────────────────────────────────────────
+  // padY:0 on the whole group below — same zero-gap .set-data-row stacking
+  // as Daily generator above.
   {
-    id: 'dataStorageStatus', sel: '.set-store-row', title: 'Where Your Data Lives',
+    id: 'dataStorageStatus', sel: '.set-store-row', title: 'Where Your Data Lives', padY: 0,
     body: <>This shows how your data is currently being stored, whether the browser has promised not to clear it, and roughly how much data you have. Installing the app or granting persistent storage both help protect it from being cleared automatically.</>,
   },
   {
-    id: 'dataExport', sel: '.set-export-row', title: 'Export a Backup',
+    // Exactly one of these four mutually-exclusive rows ever renders at a
+    // time (already installed / can't install here / iOS Add to Home
+    // Screen / Mac Add to Dock — see tab-settings.jsx), all sharing this
+    // one class, so this covers whichever is actually showing.
+    id: 'dataInstallInstructions', sel: '.set-store-ios', title: 'Install Instructions', padY: 0,
+    body: <>This shows extra information about installing the app or protecting your data, specific to your current browser and device.</>,
+  },
+  {
+    id: 'dataExport', sel: '.set-export-row', title: 'Export a Backup', padY: 0,
     body: <>This downloads a JSON file containing everything: all of your pickers, items, reminders, history and app settings. This is the only way to move your data to another device, and it's also worth doing periodically as a backup.</>,
   },
   {
-    id: 'dataImport', sel: '.set-import-row', title: 'Import a Backup',
+    id: 'dataImport', sel: '.set-import-row', title: 'Import a Backup', padY: 0,
     body: <>This restores your data from a previously exported backup file. Importing a backup <b>replaces all data</b> currently stored in the app, so make sure that's what you want first.</>,
   },
   {
-    id: 'dataReset', sel: '.set-reset-row', title: 'Reset All Data',
+    id: 'dataReset', sel: '.set-reset-row', title: 'Reset All Data', padY: 0,
     body: <>This wipes everything and restores the app to a clean, first-run state. <b>This can't be undone</b>, so export a backup first if there's any chance you'll want this data again.</>,
   },
   // ── Account ────────────────────────────────────────────────────────────
@@ -1399,12 +1426,13 @@ const SETTINGS_HELP_ITEMS = [
     ),
   },
   // ── Legal ──────────────────────────────────────────────────────────────
+  // padY:0 on both — same zero-gap .set-data-row stacking as above.
   {
-    id: 'legalPrivacy', sel: '.set-privacy-row', title: 'Privacy Policy',
+    id: 'legalPrivacy', sel: '.set-privacy-row', title: 'Privacy Policy', padY: 0,
     body: <>This opens the Privacy Policy, which explains how your data is collected, used, and stored.</>,
   },
   {
-    id: 'legalTerms', sel: '.set-terms-row', title: 'Terms of Service',
+    id: 'legalTerms', sel: '.set-terms-row', title: 'Terms of Service', padY: 0,
     body: <>This opens the Terms of Service, which covers the rules for using Ease My Life, including any paid features.</>,
   },
 ];
