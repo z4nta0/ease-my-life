@@ -260,8 +260,13 @@ const badgeRectFor = (targetRect, center) => {
   // Left/Right (see clampPad) are what actually got drawn, per side —
   // using the flat padX/padY here again would put the badge back outside
   // a highlight box whose pad got clamped down on the side the badge sits.
+  // Clamped to a small margin rather than left to go negative — most
+  // targets sit comfortably away from the viewport's own top edge, but
+  // the nav badge on 'top' tab-bar placement can sit only a few px below
+  // it (the tabbar itself is pinned to y:0), tipping the badge partially
+  // off-screen at some sizes/font-metrics.
   const padTop = targetRect.padTop ?? PAD;
-  const top = targetRect.top - padTop - BADGE_SIZE / 2;
+  const top = Math.max(4, targetRect.top - padTop - BADGE_SIZE / 2);
   if (center) {
     const left = targetRect.left + targetRect.width / 2 - BADGE_SIZE / 2;
     return { top, left, width: BADGE_SIZE, height: BADGE_SIZE, bottom: top + BADGE_SIZE };
@@ -298,6 +303,22 @@ const badgeRectFor = (targetRect, center) => {
 // regardless of which option is selected or how tall its fields are.
 const placeTip = (targetRect, tw, th, pinBelowY) => {
   const vw = window.innerWidth, vh = window.innerHeight, M = 8;
+  // `placeBeside` (see besideWhenSel in the rAF loop above) skips the
+  // above/below choice entirely — for a target that itself spans most of
+  // the viewport's own height (the nav tip's button column on 'side'
+  // tab-bar placement), there's often no room above OR below tall enough
+  // to fit a multi-paragraph tip at all. Placed to the target's right
+  // instead, vertically centered on it (clamped to the viewport) — same
+  // "clamp within viewport, offset the arrow to still point at the
+  // target's own center" shape as the horizontal centering below, just
+  // rotated 90°.
+  if (targetRect.placeBeside) {
+    const left = Math.min(targetRect.right + 16, vw - tw - M);
+    const centerY = targetRect.top + targetRect.height / 2;
+    const top = Math.max(M, Math.min(centerY - th / 2, vh - th - M));
+    const arrowY = Math.max(18, Math.min(centerY - top, th - 26));
+    return { top, left, arrowClass: 'ob-coach--left', arrowY };
+  }
   let top, arrowClass;
   if (pinBelowY != null) {
     top = pinBelowY + 16; arrowClass = 'ob-coach--up';
@@ -337,8 +358,8 @@ function HelpTip({ item, targetRect }) {
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const { top, left, arrowClass: ac, arrowX } = placeTip(targetRect, el.offsetWidth, el.offsetHeight, targetRect.pinBelowY);
-    setStyle({ top, left, '--ob-ax': arrowX + 'px' });
+    const { top, left, arrowClass: ac, arrowX, arrowY } = placeTip(targetRect, el.offsetWidth, el.offsetHeight, targetRect.pinBelowY);
+    setStyle(arrowY != null ? { top, left, '--ob-ay': arrowY + 'px' } : { top, left, '--ob-ax': arrowX + 'px' });
     setArrowClass(ac);
   }, [targetRect, item.matchTargetWidth]);
   return (
@@ -373,6 +394,7 @@ const NAV_HELP_ITEM = {
   // on 'side', 250+px on 'top'), so this is just reasonable breathing room
   // for those, not an attempt to reach the container's real edge.
   id: '__nav', sel: '[data-tab]', matchTargetWidth: true, matchWidthSel: '.tabbar', padY: 7,
+  besideWhenSel: '.tabbar--side',
   // The tabbar is a true pill ONLY on 'bottom' placement (border-radius:
   // 999px, resolving to a circular corner of exactly half its own height
   // once CSS's overflow algorithm scales it down for a box that much wider
@@ -551,8 +573,17 @@ function HelpOverlay({ active, items, onExit }) {
         ? matchWidthEl.getBoundingClientRect().width : undefined;
       // `pinBelowSel` — see placeTip's own doc comment for why this exists.
       const pinBelowY = it.pinBelowSel ? document.querySelector(it.pinBelowSel)?.getBoundingClientRect().bottom : undefined;
+      // `besideWhenSel` — the usual "prefer below, flip above" placement
+      // (see placeTip) assumes there's real vertical room near the target
+      // to work with. For the nav tip on 'side' tab-bar placement, the
+      // target itself (the vertical button column) can span most of the
+      // viewport's own height, leaving no room above or below to fit a
+      // tip tall enough for 5 paragraphs. Matched only when this selector
+      // finds something (e.g. '.tabbar--side') — every other tip leaves
+      // this unset and keeps the normal above/below behavior.
+      const placeBeside = it.besideWhenSel ? !!document.querySelector(it.besideWhenSel) : false;
       const pad = clampPad(r, it.padX ?? PAD, it.padY ?? PAD, chromeItems, isChromeContent);
-      next[it.id] = { ...r, shape, tipWidth, pinBelowY, ...pad };
+      next[it.id] = { ...r, shape, tipWidth, pinBelowY, placeBeside, ...pad };
     });
     // `columnGroup` (e.g. the Day Log panel's per-column highlights) —
     // each column's own union naturally shrinks to just its content's
