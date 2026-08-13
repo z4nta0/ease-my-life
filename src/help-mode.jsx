@@ -286,9 +286,16 @@ const badgeRectFor = (targetRect, center) => {
   // targets sit comfortably away from the viewport's own top edge, but
   // the nav badge on 'top' tab-bar placement can sit only a few px below
   // it (the tabbar itself is pinned to y:0), tipping the badge partially
-  // off-screen at some sizes/font-metrics.
+  // off-screen at some sizes/font-metrics. Only nudges a badge that's
+  // ALMOST on screen (within one badge-height of the top edge) — an
+  // unconditional floor here also caught ordinary scrolled-away content
+  // (a target scrolled far above the viewport has a hugely negative top,
+  // not just a few px), dragging every off-screen badge down to the same
+  // y:4 as the page scrolled — exactly what looked like every "i" icon
+  // getting stuck at the top of the viewport while scrolling.
   const padTop = targetRect.padTop ?? PAD;
-  const top = Math.max(4, targetRect.top - padTop - BADGE_SIZE / 2);
+  const rawTop = targetRect.top - padTop - BADGE_SIZE / 2;
+  const top = rawTop < -BADGE_SIZE ? rawTop : Math.max(4, rawTop);
   if (center) {
     const left = targetRect.left + targetRect.width / 2 - BADGE_SIZE / 2;
     return { top, left, width: BADGE_SIZE, height: BADGE_SIZE, bottom: top + BADGE_SIZE };
