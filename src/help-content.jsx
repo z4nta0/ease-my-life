@@ -930,13 +930,27 @@ const DATA_HELP_ITEMS = [
     // .rd-edit--cnd scopes this to ConditionalEditor's own footer — its
     // .rd-ctl-group--foot wrapper class is shared with PickerControls'
     // footer below, which lives in a differently-rooted tree (.rd-edit--cnd
-    // is unique to this one).
-    id: 'dataCondFoot', sel: '.rd-edit--cnd .rd-ctl-group--foot .btn', title: 'Delete / Cancel / Save',
+    // is unique to this one). Delete is only rendered when !isNew (see
+    // tab-data.jsx's ConditionalEditor), so :has(.btn--danger) splits this
+    // from dataCondFootNew below rather than always mentioning Delete.
+    id: 'dataCondFoot', sel: '.rd-edit--cnd .rd-ctl-group--foot:has(.btn--danger) .btn', title: 'Delete / Cancel / Save',
     body: (
       <>
         <p><b>Delete:</b> This button permanently deletes this conditional, after asking you to confirm. Any pickers using it will be detached.</p>
         <p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>
         <p><b>Save:</b> This button saves your changes to this conditional.</p>
+      </>
+    ),
+  },
+  {
+    // New (unsaved) conditionals never render a Delete button — see
+    // ConditionalEditor's `!isNew &&` guard — so this covers that footer
+    // state with its own Cancel/Save-only copy.
+    id: 'dataCondFootNew', sel: '.rd-edit--cnd .rd-ctl-group--foot:not(:has(.btn--danger)) .btn', title: 'Cancel / Save',
+    body: (
+      <>
+        <p><b>Cancel:</b> This button discards the new conditional without saving it.</p>
+        <p><b>Save:</b> This button saves the new conditional.</p>
       </>
     ),
   },
