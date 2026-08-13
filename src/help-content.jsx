@@ -964,8 +964,21 @@ const DATA_HELP_ITEMS = [
     body: <>This is where you can view and edit all of your reminders. Tap the header to expand or collapse the section.</>,
   },
   {
+    // The Controls/Items disclosures share the .rd-ctl class (see the
+    // matching pair on each picker below), so :nth-of-type splits them —
+    // Controls always renders first in .cat-body, Items second. padY:0 —
+    // .rd-ctl touches its neighbor with only a hairline border, same
+    // zero-gap stacking as everywhere else on this page.
+    id: 'remindersControlsHeader', sel: '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(1)', title: 'Controls', padY: 0,
+    body: <>Tap this to expand or collapse the reminder participation settings below. Collapsed, it shows how many settings there are.</>,
+  },
+  {
     id: 'remControlsMatrix', sel: '.rd-matrix', title: 'Reminder Participation Settings',
     body: <>This controls whether one-time and recurring reminders each participate in the day streak, completion ring, weekend/holiday exclusion, and the Stats tab — toggle each independently for the two types.</>,
+  },
+  {
+    id: 'remindersItemsHeader', sel: '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(2)', title: 'Items', padY: 0,
+    body: <>Tap this to expand or collapse the list of your reminders below. Collapsed, it shows how many reminders you have.</>,
   },
   {
     id: 'remAddButton', sel: '.cat--reminders .rd-add', title: 'New Reminder',
@@ -1024,6 +1037,20 @@ const DATA_HELP_ITEMS = [
     // matters once a picker is expanded and .cat-body renders beneath it.
     id: 'pickerRow', sel: '.data-list > .cat > .cat-h', perElement: true, padY: 0, title: 'Picker',
     body: <>This is one of your pickers. Tap it to view and edit its settings and items.</>,
+  },
+  {
+    // perElement — each expanded picker gets its own Controls/Items pair
+    // (more than one can be open at once). Same .rd-ctl class and
+    // :nth-of-type split as the Reminders manager's own pair above.
+    // .cat-body is a descendant, not a direct child, of .cat — it's wrapped
+    // in its own <Collapse> div (unlike .cat-h, which isn't). padY:0 —
+    // .rd-ctl touches its neighbor with only a hairline border.
+    id: 'dataPickerControlsHeader', sel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)', perElement: true, padY: 0, title: 'Controls',
+    body: <>Tap this to expand or collapse this picker's settings — how it picks, when it runs, and its conditional gate. Collapsed, it shows how many setting options exist.</>,
+  },
+  {
+    id: 'dataPickerItemsHeader', sel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)', perElement: true, padY: 0, title: 'Items',
+    body: <>Tap this to expand or collapse this picker's list of items below. Collapsed, it shows how many items are in the picker.</>,
   },
   {
     id: 'dataPickerName', sel: '.rd-basics-row:has(.rd-basics-name)', title: 'Picker Name',
