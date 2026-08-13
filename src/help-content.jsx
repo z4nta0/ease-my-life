@@ -1356,12 +1356,12 @@ const SETTINGS_HELP_ITEMS = [
   // padY:4 — .holiday-add has a real but modest 14px margin-top from
   // .holiday-list above it, and default 8+8 pad exceeds that by 2px.
   {
-    id: 'holidayList', sel: '.holiday-list', title: 'Observed Holidays', padY: 4,
-    body: <>This lists every computed holiday for the current year. Toggle any of them off if you don't observe it &mdash; any picker set to "Skip on holidays" will stop skipping that day.</>,
+    id: 'holidayList', sel: '.holiday-list', title: 'Edit Observed Holidays', padY: 4,
+    body: <>This lists every computed holiday for the current year. Toggle any of them off if you don't observe it, any picker set to "Skip on holidays" will respect these settings.</>,
   },
   {
-    id: 'holidayAdd', sel: '.holiday-add', title: 'Add a Custom Day Off', padY: 4,
-    body: <>This lets you add your own recurring day off, like a birthday or anniversary, which pickers set to "Skip on holidays" will also respect.</>,
+    id: 'holidayAdd', sel: '.holiday-add', title: 'Add Custom Holiday', padY: 4,
+    body: <>This lets you add your own custom holiday, like a birthday or anniversary, which pickers will respect if their "Skip on holidays" toggle is turned on.</>,
   },
   // ── Data control ───────────────────────────────────────────────────────
   // padY:0 on the whole group below — same zero-gap .set-data-row stacking
