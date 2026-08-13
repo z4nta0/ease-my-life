@@ -1326,7 +1326,7 @@ const SETTINGS_HELP_ITEMS = [
   },
   {
     id: 'appearanceCelebration', sel: '.set-subsection--celebration', title: 'Completion Celebration', padY: 4,
-    body: <>This is where you choose which animation plays in the Today tab when every item on your list is marked as done. Use Preview to watch any of them play out before picking one.</>,
+    body: <>This is where you choose which animation plays in the Today tab when every item in your todo list is marked as done. Use Preview to watch any of them play out before picking one.</>,
   },
   {
     id: 'appearancePickAnim', sel: '.set-subsection--pickanim', title: 'Picker Animation', padY: 4,
@@ -1341,16 +1341,16 @@ const SETTINGS_HELP_ITEMS = [
   // them, just their own padding + a border-bottom (Card is a plain div,
   // not a flex/grid gap container), so they touch with zero gap.
   {
-    id: 'dailyAutoToggle', sel: '.set-section--daily .set-data-row:has(button[aria-label="Run the Daily generator automatically"])', title: 'Run Automatically', padY: 0,
-    body: <>This toggles whether the Daily generator runs on its own each day. When off, you'll need to run it manually from the button at the bottom of the Today tab.</>,
+    id: 'dailyAutoToggle', sel: '.set-section--daily .set-data-row:has(button[aria-label="Run the Daily generator automatically"])', title: 'Run Generator Automatically', padY: 0,
+    body: <>This toggles whether the Daily generator runs on its own each day. When off, you'll need to run it manually using the Regenerate button at the bottom of the Today tab.</>,
   },
   {
-    id: 'dailyRunTime', sel: '.set-section--daily .set-data-row--sub', title: 'Run Time', padY: 0,
+    id: 'dailyRunTime', sel: '.set-section--daily .set-data-row--sub', title: 'Run Generator Time', padY: 0,
     body: <>This sets what time of day the Daily generator runs automatically. A quiet, early hour works best so your list is ready first thing in the morning.</>,
   },
   {
-    id: 'dailyNotify', sel: '.set-notify-row', title: 'Run Notifications', padY: 0,
-    body: <>This lets you get a notification once your list has been generated for the day. It only works while the app is open in a tab or window &mdash; notifications for a closed app are coming in a future release.</>,
+    id: 'dailyNotify', sel: '.set-notify-row', title: 'Run Generator Notification', padY: 0,
+    body: <>This lets you get a notification once your todo list has been generated for the day. This is the only notification the app will ever send and only once a day. It only works while the app is open in a tab or window, but always push notifications are coming in a future release.</>,
   },
   // ── Holidays ───────────────────────────────────────────────────────────
   // padY:4 — .holiday-add has a real but modest 14px margin-top from
