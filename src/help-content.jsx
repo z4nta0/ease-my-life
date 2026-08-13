@@ -969,28 +969,32 @@ const DATA_HELP_ITEMS = [
     // Controls always renders first in .cat-body, Items second. padY:0 —
     // .rd-ctl touches its neighbor with only a hairline border, same
     // zero-gap stacking as everywhere else on this page.
-    id: 'remindersControlsHeader', sel: '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(1)', title: 'Controls', padY: 0,
-    body: <>Tap this to expand or collapse the reminder participation settings below. Collapsed, it shows how many settings there are.</>,
+    id: 'remindersControlsHeader', sel: '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(1)', title: 'Reminder Controls', padY: 0,
+    body: <>Tap this to expand or collapse the reminders settings below. Collapsed, it shows how many settings there are.</>,
   },
   {
     // padY:0 — .rd-matrix sits flush against the Controls header above and
     // the Items header below (no .rd-ctl-body padding wrapper here, unlike
     // PickerControls), so the default pad bled 8px into both.
-    id: 'remControlsMatrix', sel: '.rd-matrix', title: 'Reminder Participation Settings', padY: 0,
-    body: <>This controls whether one-time and recurring reminders each participate in the day streak, completion ring, weekend/holiday exclusion, and the Stats tab — toggle each independently for the two types.</>,
+    id: 'remControlsMatrix', sel: '.rd-matrix', title: 'Reminders Settings', padY: 0,
+    body: <>This controls whether one-time and recurring reminders are included in the day streak, completion ring or the Stats page. There are also controls to exclude those same types from weekends or holidays. Each type of reminder can be toggled independently.</>,
   },
   {
-    id: 'remindersItemsHeader', sel: '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(2)', title: 'Items', padY: 0,
+    id: 'remindersItemsHeader', sel: '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(2)', title: 'Reminders Items', padY: 0,
     body: <>Tap this to expand or collapse the list of your reminders below. Collapsed, it shows how many reminders you have.</>,
   },
   {
-    id: 'remAddButton', sel: '.cat--reminders .rd-add', title: 'New Reminder',
+    // padY:0 — .rd-add has the same zero-gap stacking as .rd-item (a
+    // hairline border, no margin), touching both the header above it and
+    // the first reminder row below it.
+    id: 'remAddButton', sel: '.cat--reminders .rd-add', title: 'New Reminder', padY: 0,
     body: <>This creates a new one-time or recurring reminder. Reminders are separate from pickers since some tasks cannot be randomly chosen and must be done on a schedule (recurring reminder) or are a one-time thing (one-time reminder).</>,
   },
   {
     // perElement — every reminder gets its own badge, not one for the whole
-    // list.
-    id: 'reminderRow', sel: '.cat--reminders .rd-item > .rd-row', perElement: true, title: 'Reminder',
+    // list. padY:0 — .rd-item rows stack with zero gap (touching, separated
+    // only by a hairline border), same as conditionalRow/pickerRow.
+    id: 'reminderRow', sel: '.cat--reminders .rd-item > .rd-row', perElement: true, padY: 0, title: 'Reminder',
     body: <>This is one of your reminders. Tap it to view and edit its settings.</>,
   },
   {
@@ -1001,7 +1005,10 @@ const DATA_HELP_ITEMS = [
     // Reused verbatim from TODAY_HELP_ITEMS' editReminderRepeat/editReminderFoot
     // — same .rem-inline-editor markup, and this tab has no quickadd form for
     // that selector's own :not(.rem-quickadd-wrap *) exclusion to worry about.
-    id: 'dataReminderRepeat', sel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor', title: 'Reminder Schedule',
+    // padY:0 — unlike Today's card-based editor, this tab's .rd-edit wrapper
+    // overrides .rem-inline-foot's margin-top to 0 (see .rd-edit .rd-edit-foot
+    // in styles2.css), so .rem-editor touches the footer row with zero gap.
+    id: 'dataReminderRepeat', sel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor', title: 'Reminder Schedule', padY: 0,
     body: (
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
