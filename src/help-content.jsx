@@ -1026,12 +1026,28 @@ const DATA_HELP_ITEMS = [
     // class (.rem-foot-confirm), which .rd-edit-foot alone would miss,
     // leaving its Cancel/Delete buttons genuinely unreachable (no dim-mask
     // hole, blocked by the click-guard) while help mode is on.
-    id: 'dataReminderFoot', sel: '.rem-inline-editor:not(.entry-editor) .rem-inline-foot .btn', title: 'Delete / Cancel / Save',
+    // Delete is only rendered when !isNew (see reminders.jsx's
+    // ReminderEditFoot) — :has(.btn--danger) splits this from
+    // dataReminderFootNew below rather than always mentioning Delete,
+    // same fix as dataCondFoot/dataCondFootNew.
+    id: 'dataReminderFoot', sel: '.rem-inline-editor:not(.entry-editor) .rem-inline-foot:has(.btn--danger) .btn', title: 'Delete / Cancel / Save',
     body: (
       <>
         <p><b>Delete:</b> This button permanently deletes this reminder, after asking you to confirm.</p>
         <p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>
         <p><b>Save:</b> This button saves your changes to this reminder.</p>
+      </>
+    ),
+  },
+  {
+    // New (unsaved) reminders never render a Delete button — see
+    // ReminderEditFoot's `!isNew &&` guard — so this covers that footer
+    // state with its own Cancel/Save-only copy.
+    id: 'dataReminderFootNew', sel: '.rem-inline-editor:not(.entry-editor) .rem-inline-foot:not(:has(.btn--danger)) .btn', title: 'Cancel / Save',
+    body: (
+      <>
+        <p><b>Cancel:</b> This button discards the new reminder without saving it.</p>
+        <p><b>Save:</b> This button saves the new reminder.</p>
       </>
     ),
   },
