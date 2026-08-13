@@ -359,16 +359,32 @@ function HelpTip({ item, targetRect }) {
 // one badge.
 const NAV_HELP_ITEM = {
   // padY:7 makes the highlight's own bounding box flush with the tabbar's
-  // outer edge (its vertical padding is 7px at every breakpoint). The
-  // tabbar itself is a fully-rounded pill (border-radius: 999px, which
-  // resolves to a plain circular corner of exactly half the tabbar's own
-  // height once CSS's overflow algorithm scales it down for a box this
-  // much wider than tall) — matched here with the same math, rx=ry=half
-  // of whichever padded dimension is smaller (see the function-shape
-  // comment above for why an oversized literal rx/ry doesn't reproduce
-  // this reliably).
+  // outer edge on 'bottom' placement (its vertical padding is 7px at every
+  // breakpoint there). 'top'/'side' placements' own tabbar container isn't
+  // snug around the button row at all (extra logo/wordmark space, sticky
+  // full-height sidebar, etc. — confirmed via measurement: gaps of 100+px
+  // on 'side', 250+px on 'top'), so this is just reasonable breathing room
+  // for those, not an attempt to reach the container's real edge.
   id: '__nav', sel: '[data-tab]', matchTargetWidth: true, matchWidthSel: '.tabbar', padY: 7,
-  shape: (w, h) => { const r = Math.min(w, h) / 2; return { rx: r, ry: r }; },
+  // The tabbar is a true pill ONLY on 'bottom' placement (border-radius:
+  // 999px, resolving to a circular corner of exactly half its own height
+  // once CSS's overflow algorithm scales it down for a box that much wider
+  // than tall) — matched with the same math, rx=ry=half of whichever
+  // padded dimension is smaller. 'top' happens to also read fine with this
+  // same formula (its button row is wide/short too, long/short ~15, even
+  // though its own container has border-radius:0 — coincidence of a
+  // similar aspect ratio). But 'side' stacks the 5 buttons in a column
+  // whose union is nearly SQUARE (long/short ~1.1) — half its shorter
+  // dimension is then uncomfortably large relative to BOTH axes, rounding
+  // the box into a circle/oval instead of a rectangle with modestly
+  // rounded corners. Only apply the true-pill radius when the box is
+  // meaningfully elongated; fall back to the app's normal small corner
+  // radius otherwise.
+  shape: (w, h) => {
+    const short = Math.min(w, h), long = Math.max(w, h);
+    const r = long / short >= 2 ? short / 2 : DEFAULT_R;
+    return { rx: r, ry: r };
+  },
   title: 'Navigation',
   body: (
     <>
