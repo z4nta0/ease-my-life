@@ -870,15 +870,20 @@ const DATA_HELP_ITEMS = [
   {
     // hideName is set on ConditionalControls here, so the name field lives
     // on the ROW itself (same .rd-name-input shape as a picker item's own
-    // row), not inside the shared controls component.
-    id: 'dataCondName', sel: '.cnd-manager .rd-item.is-editing .rd-name-input', title: 'Conditional Name',
+    // row), not inside the shared controls component. padY:0 — the row and
+    // whatever's directly below it (the first ConditionalControls field)
+    // stack with zero gap, same as everywhere else on this page.
+    id: 'dataCondName', sel: '.cnd-manager .rd-item.is-editing .rd-name-input', title: 'Conditional Name', padY: 0,
     body: <>This is the name field for this conditional, you can rename it here.</>,
   },
   {
     // Reused verbatim from PICKER_HELP_ITEMS' newCondCardText — same
     // ConditionalControls markup either way, missed when the other newCond*
-    // entries were copied over for this pass.
-    id: 'dataCondCardText', sel: '.np-field--cardtext', title: 'Conditional Card Text',
+    // entries were copied over for this pass. padY:0 — .cnd-controls--inline
+    // (the variant used here, unlike the Pickers-page card variant) has
+    // gap:0 between fields, so this bleeds into its neighbors above/below
+    // without it.
+    id: 'dataCondCardText', sel: '.np-field--cardtext', title: 'Conditional Card Text', padY: 0,
     body: <>This is the text that will show on the card that appears in your todo list whenever this conditional suppresses any attached pickers.</>,
   },
   {
