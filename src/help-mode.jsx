@@ -505,6 +505,7 @@ function HelpOverlay({ active, items, onExit }) {
   const [rectsById, setRectsById] = React.useState({});
   const [openId, setOpenId] = React.useState(null);
   const [toggleRect, setToggleRect] = React.useState(null);
+  const overlayRef = React.useRef(null);
 
   // Recomputes every tagged element's current rect (plus, for a single-
   // element target, its own shape — see shapeFor's own comment). Shared by
@@ -715,6 +716,29 @@ function HelpOverlay({ active, items, onExit }) {
     try { recomputeRects(); } catch (err) { console.error('[help-mode] recompute failed', err); }
   }, [recomputeRects]);
 
+  // Firefox-specific: closing an editor's Save/Cancel/Delete can leave its
+  // highlight visibly stuck (a stale hole in the dim layer, or a stale
+  // .help-spot box) until something else — a scroll — forces a repaint.
+  // Confirmed Chrome-only-fine, so this is a real Firefox rendering quirk,
+  // not a React/state bug (rectsById itself updates correctly either way —
+  // this is purely about getting the pixels Firefox already computed
+  // internally to actually reach the screen). Two earlier translateZ(0)
+  // attempts (on .help-spot/.help-badge/.help-tip, then on .help-dim-fill)
+  // didn't fix it. This forces a hard reflow via a display toggle — a
+  // blunter, more reliable repaint trigger than a stacking-context hint —
+  // on the whole overlay right after its content has actually re-rendered
+  // with the post-close geometry (double-rAF: one to let the DOM commit,
+  // one to let it paint) rather than on every recompute (60/sec would be
+  // wasteful and risks visible flicker) — only after a click that closes
+  // something, the one scenario actually reported stuck.
+  const forceRepaint = React.useCallback(() => {
+    const el = overlayRef.current;
+    if (!el) return;
+    el.style.display = 'none';
+    void el.offsetHeight;
+    el.style.display = '';
+  }, []);
+
   React.useEffect(() => {
     if (!active) { setRectsById({}); setOpenId(null); setToggleRect(null); return; }
     let raf, cancelled = false;
@@ -752,8 +776,14 @@ function HelpOverlay({ active, items, onExit }) {
         // a Save/Cancel/Delete button closing an editor) has run — defer to
         // a macrotask so the resulting DOM/React commit has already landed
         // by the time we re-measure, instead of waiting for the next
-        // natural rAF tick.
-        setTimeout(safeRecompute, 0);
+        // natural rAF tick. The forced repaint (see its own comment) waits
+        // one more double-rAF past that — one for React's resulting
+        // re-render to commit, one for the browser to actually paint it —
+        // so it's forcing a reflow of the NEW geometry, not the stale one.
+        setTimeout(() => {
+          safeRecompute();
+          requestAnimationFrame(() => requestAnimationFrame(forceRepaint));
+        }, 0);
         return;
       }
       e.preventDefault(); e.stopPropagation();
@@ -770,7 +800,7 @@ function HelpOverlay({ active, items, onExit }) {
       document.removeEventListener('click', onClickCapture, true);
       document.removeEventListener('keydown', onKeyDown);
     };
-  }, [active, allItems, onExit, openId, safeRecompute]);
+  }, [active, allItems, onExit, openId, safeRecompute, forceRepaint]);
 
   if (!active) return null;
 
@@ -784,7 +814,7 @@ function HelpOverlay({ active, items, onExit }) {
   const openRect = openId ? rectsById[openId] : null;
 
   return createPortal(
-    <div className="help-mode" aria-live="polite">
+    <div ref={overlayRef} className="help-mode" aria-live="polite">
       <svg className="help-dim-svg" width={vw} height={vh}>
         <mask id="help-mask">
           <rect x="0" y="0" width={vw} height={vh} fill="#fff" />

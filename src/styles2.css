@@ -3518,7 +3518,17 @@ body.ob-touring .tab{padding-bottom:200px}
 
 .help-mode{position:fixed;inset:0;z-index:1000;pointer-events:none}
 .help-dim-svg{position:absolute;inset:0}
-.help-dim-fill{fill:oklch(0.15 0.02 250/0.55)}
+/* transform:translateZ(0) forces its own compositor layer — works around a
+   Firefox-specific bug distinct from the position:fixed stale-paint issue
+   the .help-spot/.help-badge/.help-tip translateZ(0) below targets: Firefox
+   doesn't always repaint an element when only its SVG <mask>'s geometry
+   changes via attribute updates on the <rect>s inside it (as opposed to a
+   new element or a style change), leaving the dimmed backdrop showing a
+   stale hole/highlight until something else (e.g. a scroll) forces a
+   repaint. Confirmed via user report: closing an item editor's Save/
+   Cancel/Delete left its highlight visibly stuck in Firefox specifically
+   (Chrome unaffected) until scrolling. */
+.help-dim-fill{fill:oklch(0.15 0.02 250/0.55);transform:translateZ(0)}
 /* The outlined box alone (no box-shadow spread) — the SVG mask above
    already does the "dim everything except the holes" job that .ob-spot's
    own box-shadow trick handles for a single target; stacking N box-shadows
