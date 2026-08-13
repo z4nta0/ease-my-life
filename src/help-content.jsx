@@ -992,9 +992,16 @@ const DATA_HELP_ITEMS = [
   },
   {
     // perElement — every reminder gets its own badge, not one for the whole
-    // list. padY:0 — .rd-item rows stack with zero gap (touching, separated
-    // only by a hairline border), same as conditionalRow/pickerRow.
-    id: 'reminderRow', sel: '.cat--reminders .rd-item > .rd-row', perElement: true, padY: 0, title: 'Reminder',
+    // list. Split by type (rather than by name, like conditionalRow/
+    // pickerRow) via the row's own .rd-ico.is-once marker — set per user
+    // request instead of the name-based labelSel pattern. padY:0 — .rd-item
+    // rows stack with zero gap (touching, separated only by a hairline
+    // border), same as conditionalRow/pickerRow.
+    id: 'reminderRowOnce', sel: '.cat--reminders .rd-item > .rd-row:has(.rd-ico.is-once)', perElement: true, padY: 0, title: 'One-Time Reminder Item',
+    body: <>This is one of your reminders. Tap it to view and edit its settings.</>,
+  },
+  {
+    id: 'reminderRowRecurring', sel: '.cat--reminders .rd-item > .rd-row:not(:has(.rd-ico.is-once))', perElement: true, padY: 0, title: 'Recurring Reminder Item',
     body: <>This is one of your reminders. Tap it to view and edit its settings.</>,
   },
   {
