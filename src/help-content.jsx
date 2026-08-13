@@ -1310,19 +1310,19 @@ const SETTINGS_HELP_ITEMS = [
   },
   // ── Appearance ─────────────────────────────────────────────────────────
   {
-    id: 'appearanceSystemPref', sel: '.set-section--appearance .set-data-row:has(button[aria-label="System preference"])', title: 'System Preference',
-    body: <>When on, the app follows your system's own light/dark setting and automatically switches between your chosen light and dark themes (e.g. Ink &rarr; Night) whenever your system does. When off, only your manually-selected theme below applies.</>,
+    id: 'appearanceSystemPref', sel: '.set-section--appearance .set-data-row:has(button[aria-label="System preference"])', title: 'System Theme Preference',
+    body: <>When on, the app follows your system's own light/dark setting and automatically switches between your chosen light and dark themes (e.g. Ink &rarr; Night) whenever your system does. When off, only your manually selected theme below applies.</>,
   },
   {
     id: 'appearanceThemeLight', sel: '.set-subsection--theme-light', title: 'Light Theme',
-    body: <>This is where you choose the theme that's used when the app is in light mode. Pick any of the presets, or use the Custom row to mix your own colors &mdash; doing so automatically generates a matching dark theme, which you're then free to edit separately.</>,
+    body: <>This is where you choose the theme that's used when the app is in light mode. Pick any of the presets, or use the Custom row to mix your own colors. Custom themes will automatically generate a matching dark theme, which you're then free to edit separately.</>,
   },
   {
     // padY:4 (not the default 8) — consecutive .set-subsection blocks have
     // a real but modest 12px gap (.set-section's own flex gap), and 8+8
     // exceeds that by 4px; 4+4 stays safely inside it.
     id: 'appearanceThemeDark', sel: '.set-subsection--theme-dark', title: 'Dark Theme', padY: 4,
-    body: <>This is where you choose the theme that's used when the app is in dark mode. Pick any of the presets, or use the Custom row to mix your own colors &mdash; doing so automatically generates a matching light theme, which you're then free to edit separately.</>,
+    body: <>This is where you choose the theme that's used when the app is in dark mode. Pick any of the presets, or use the Custom row to mix your own colors. Custom themes will automatically generate a matching light theme, which you're then free to edit separately.</>,
   },
   {
     id: 'appearanceCelebration', sel: '.set-subsection--celebration', title: 'Completion Celebration', padY: 4,
