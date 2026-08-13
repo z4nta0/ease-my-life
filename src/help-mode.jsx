@@ -722,21 +722,32 @@ function HelpOverlay({ active, items, onExit }) {
   // Confirmed Chrome-only-fine, so this is a real Firefox rendering quirk,
   // not a React/state bug (rectsById itself updates correctly either way —
   // this is purely about getting the pixels Firefox already computed
-  // internally to actually reach the screen). Two earlier translateZ(0)
-  // attempts (on .help-spot/.help-badge/.help-tip, then on .help-dim-fill)
-  // didn't fix it. This forces a hard reflow via a display toggle — a
-  // blunter, more reliable repaint trigger than a stacking-context hint —
-  // on the whole overlay right after its content has actually re-rendered
-  // with the post-close geometry (double-rAF: one to let the DOM commit,
-  // one to let it paint) rather than on every recompute (60/sec would be
-  // wasteful and risks visible flicker) — only after a click that closes
-  // something, the one scenario actually reported stuck.
+  // internally to actually reach the screen). Two earlier attempts
+  // (translateZ(0) on .help-spot/.help-badge/.help-tip, then also on
+  // .help-dim-fill, then will-change/backface-visibility stacked on top of
+  // both) didn't fix it — this forces a hard reflow via a display toggle
+  // instead, a blunter, more reliable repaint trigger than a stacking-
+  // context hint. Applied to the outer overlay AND, individually, every
+  // currently-rendered .help-spot/.help-badge/the SVG dim layer — toggling
+  // an ANCESTOR's display doesn't reliably force Firefox to specifically
+  // re-evaluate an SVG <mask>'s content the same way toggling the masked
+  // element's own display does, so covering both is cheap insurance. Timed
+  // to run after the post-close re-render has actually committed and
+  // painted (double-rAF: one for the DOM commit, one for the paint) rather
+  // than on every recompute (60/sec would be wasteful and risks visible
+  // flicker) — only after a click that closes something, the one scenario
+  // actually reported stuck.
   const forceRepaint = React.useCallback(() => {
-    const el = overlayRef.current;
-    if (!el) return;
-    el.style.display = 'none';
-    void el.offsetHeight;
-    el.style.display = '';
+    const toggle = (el) => {
+      if (!el) return;
+      el.style.display = 'none';
+      void el.offsetHeight;
+      el.style.display = '';
+    };
+    toggle(overlayRef.current);
+    if (overlayRef.current) {
+      overlayRef.current.querySelectorAll('.help-dim-svg, .help-spot, .help-badge').forEach(toggle);
+    }
   }, []);
 
   React.useEffect(() => {

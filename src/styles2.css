@@ -3527,8 +3527,12 @@ body.ob-touring .tab{padding-bottom:200px}
    stale hole/highlight until something else (e.g. a scroll) forces a
    repaint. Confirmed via user report: closing an item editor's Save/
    Cancel/Delete left its highlight visibly stuck in Firefox specifically
-   (Chrome unaffected) until scrolling. */
-.help-dim-fill{fill:oklch(0.15 0.02 250/0.55);transform:translateZ(0)}
+   (Chrome unaffected) until scrolling. translateZ(0) alone (this rule's
+   original attempt) didn't fix it — will-change/backface-visibility
+   stacked on top are other standard forced-compositing hints for the same
+   class of Firefox bug; harmless combined with translateZ(0), Chrome/
+   Safari don't need any of them but aren't hurt by them either. */
+.help-dim-fill{fill:oklch(0.15 0.02 250/0.55);transform:translateZ(0);will-change:transform;backface-visibility:hidden;-moz-backface-visibility:hidden}
 /* The outlined box alone (no box-shadow spread) — the SVG mask above
    already does the "dim everything except the holes" job that .ob-spot's
    own box-shadow trick handles for a single target; stacking N box-shadows
@@ -3543,10 +3547,13 @@ body.ob-touring .tab{padding-bottom:200px}
   /* Firefox specifically can fail to repaint a position:fixed element after
      a rapid top/left/width/height style change (this one updates every rAF
      tick while help mode is active) — it visibly sticks at its old rect
-     until something else forces a recomposite, like a scroll. Promoting it
-     to its own compositor layer works around that; Chrome/Safari don't need
-     it but aren't hurt by it either. */
-  transform:translateZ(0);
+     until something else forces a recomposite, like a scroll. translateZ(0)
+     alone didn't fix it (confirmed by the user in real Firefox); stacking
+     will-change/backface-visibility are other standard forced-compositing
+     hints for the same bug class. Chrome/Safari don't need any of this but
+     aren't hurt by it either. */
+  transform:translateZ(0);will-change:transform;
+  backface-visibility:hidden;-moz-backface-visibility:hidden;
 }
 .help-badge{
   position:fixed;pointer-events:auto;
@@ -3556,7 +3563,9 @@ body.ob-touring .tab{padding-bottom:200px}
   background:var(--surface);color:var(--muted);
   font-size:11px;font-weight:700;line-height:1;
   cursor:pointer;transition:border-color .15s ease,color .15s ease,background .15s ease;
-  transform:translateZ(0); /* same stuck-repaint workaround as .help-spot above */
+  /* same stuck-repaint workaround as .help-spot above */
+  transform:translateZ(0);will-change:transform;
+  backface-visibility:hidden;-moz-backface-visibility:hidden;
 }
 .help-badge:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .help-badge.is-on{border-color:var(--accent);color:#fff;background:var(--accent)}
@@ -3565,7 +3574,7 @@ body.ob-touring .tab{padding-bottom:200px}
    help-mode.jsx's own header comment. Only overrides what's actually
    different: fixed width (matching the tour's own coachW cap) and opting
    back into pointer-events under .help-mode's blanket pointer-events:none. */
-.help-tip{pointer-events:auto;width:280px;transform:translateZ(0)} /* same stuck-repaint workaround as .help-spot */
+.help-tip{pointer-events:auto;width:280px;transform:translateZ(0);will-change:transform;backface-visibility:hidden;-moz-backface-visibility:hidden} /* same stuck-repaint workaround as .help-spot */
 .help-tip-title{font-size:15px;font-weight:600;margin:0 0 5px}
 .help-tip .ob-body p{margin:0}
 .help-tip .ob-body p+p{margin-top:8px}
