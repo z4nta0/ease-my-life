@@ -875,6 +875,13 @@ const DATA_HELP_ITEMS = [
     body: <>This is the name field for this conditional, you can rename it here.</>,
   },
   {
+    // Reused verbatim from PICKER_HELP_ITEMS' newCondCardText — same
+    // ConditionalControls markup either way, missed when the other newCond*
+    // entries were copied over for this pass.
+    id: 'dataCondCardText', sel: '.np-field--cardtext', title: 'Conditional Card Text',
+    body: <>This is the text that will show on the card that appears in your todo list whenever this conditional suppresses any attached pickers.</>,
+  },
+  {
     id: 'dataCondType', sel: '.cnd-controls .np-field:has(.rd-mode-radio)', title: 'Conditional Type', padY: 0,
     body: <>This is where you choose the rule this conditional follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
   },
