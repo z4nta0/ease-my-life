@@ -163,6 +163,31 @@ const clipToChrome = (rect, chromeItems) => {
   return { top, left, right, bottom };
 };
 
+// The padding drawn around a target's CORE rect (see PAD below) is added
+// entirely separately, at render time, from the clipToChrome call above —
+// so a target whose core rect was correctly clamped flush to a chrome
+// edge (e.g. the Stats heatmap's bottom stopped exactly at the tab bar's
+// top) still got that same padding tacked on afterward with no awareness
+// of the boundary it had just been pulled back from, re-bleeding the pad
+// amount right back into the chrome. Runs clipToChrome a second time on
+// the PADDED box and reports how much pad actually survived per side —
+// full pad on sides with no chrome to hit, less (down to 0) on a side
+// that runs into one. Chrome content itself (e.g. the nav item highlighting
+// its own [data-tab] buttons) was never clipped in the first place, so its
+// pad is never clamped either.
+const clampPad = (r, padX, padY, chromeItems, isChromeContent) => {
+  if (isChromeContent) return { padTop: padY, padBottom: padY, padLeft: padX, padRight: padX };
+  const padded = { top: r.top - padY, bottom: r.bottom + padY, left: r.left - padX, right: r.right + padX };
+  const clipped = clipToChrome(padded, chromeItems);
+  if (!clipped) return { padTop: 0, padBottom: 0, padLeft: 0, padRight: 0 };
+  return {
+    padTop: r.top - clipped.top,
+    padBottom: clipped.bottom - r.bottom,
+    padLeft: r.left - clipped.left,
+    padRight: clipped.right - r.right,
+  };
+};
+
 // Extra margin drawn around every highlighted target's own rect — module-
 // level (not a render-local const) since the shape math below needs it too,
 // at the point rects are first computed, not just at render time.
@@ -231,10 +256,12 @@ const badgeRectFor = (targetRect, center) => {
   // .help-spot/.mask <rect> computations below) — otherwise the badge marks
   // a corner that isn't actually the highlight box's corner anymore, which
   // is exactly what happened when padX/padY overrides were added: this
-  // function kept using the flat PAD constant regardless.
-  const padX = targetRect.noPadX ? 0 : (targetRect.padX ?? PAD);
-  const padY = targetRect.padY ?? PAD;
-  const top = targetRect.top - padY - BADGE_SIZE / 2;
+  // function kept using the flat PAD constant regardless. padTop/Bottom/
+  // Left/Right (see clampPad) are what actually got drawn, per side —
+  // using the flat padX/padY here again would put the badge back outside
+  // a highlight box whose pad got clamped down on the side the badge sits.
+  const padTop = targetRect.padTop ?? PAD;
+  const top = targetRect.top - padTop - BADGE_SIZE / 2;
   if (center) {
     const left = targetRect.left + targetRect.width / 2 - BADGE_SIZE / 2;
     return { top, left, width: BADGE_SIZE, height: BADGE_SIZE, bottom: top + BADGE_SIZE };
@@ -244,9 +271,10 @@ const badgeRectFor = (targetRect, center) => {
   // to the viewport (see clipHorizontalOverflow) can sit exactly AT the
   // viewport width, which still overflows once the badge's own pad gap and
   // half-width are added on top of it.
-  const rightLeft = targetRect.right + padX - BADGE_SIZE / 2;
+  const padRight = targetRect.padRight ?? PAD, padLeft = targetRect.padLeft ?? PAD;
+  const rightLeft = targetRect.right + padRight - BADGE_SIZE / 2;
   const overflowsRight = rightLeft + BADGE_SIZE > window.innerWidth;
-  const left = overflowsRight ? targetRect.left - padX - BADGE_SIZE / 2 : rightLeft;
+  const left = overflowsRight ? targetRect.left - padLeft - BADGE_SIZE / 2 : rightLeft;
   return { top, left, width: BADGE_SIZE, height: BADGE_SIZE, bottom: top + BADGE_SIZE };
 };
 
@@ -430,7 +458,8 @@ function HelpOverlay({ active, items, onExit }) {
           const label = it.labelSel
             ? (el.querySelector(it.labelSel)?.textContent || el.querySelector(it.labelSel)?.value)
             : undefined;
-          next[`${it.id}::${i}`] = { ...r, width, height, shape, padY: it.padY ?? PAD, padX: it.padX ?? PAD, label };
+          const pad = clampPad(r, it.padX ?? PAD, it.padY ?? PAD, chromeItems, isChromeContent);
+          next[`${it.id}::${i}`] = { ...r, width, height, shape, ...pad, label };
         });
         return;
       }
@@ -488,7 +517,8 @@ function HelpOverlay({ active, items, onExit }) {
       const tipWidth = it.matchWidthSel ? document.querySelector(it.matchWidthSel)?.getBoundingClientRect().width : undefined;
       // `pinBelowSel` — see placeTip's own doc comment for why this exists.
       const pinBelowY = it.pinBelowSel ? document.querySelector(it.pinBelowSel)?.getBoundingClientRect().bottom : undefined;
-      next[it.id] = { ...r, shape, tipWidth, pinBelowY, padY: it.padY ?? PAD, padX: it.padX ?? PAD };
+      const pad = clampPad(r, it.padX ?? PAD, it.padY ?? PAD, chromeItems, isChromeContent);
+      next[it.id] = { ...r, shape, tipWidth, pinBelowY, ...pad };
     });
     // `columnGroup` (e.g. the Day Log panel's per-column highlights) —
     // each column's own union naturally shrinks to just its content's
@@ -521,7 +551,8 @@ function HelpOverlay({ active, items, onExit }) {
       ids.sort((a, b) => next[a].left - next[b].left);
       ids.forEach((id, i) => {
         const cur = next[id];
-        cur.noPadX = true;
+        cur.padLeft = 0;
+        cur.padRight = 0;
         if (i === 0) cur.left -= PAD;
         if (i === ids.length - 1) {
           cur.right += PAD;
@@ -635,21 +666,24 @@ function HelpOverlay({ active, items, onExit }) {
           <rect x="0" y="0" width={vw} height={vh} fill="#fff" />
           {entries.map(([id, r]) => {
             const { rx, ry } = r.shape || { rx: DEFAULT_R, ry: DEFAULT_R };
-            // noPadX (columnGroup items) — r.left/right/width already have
-            // their final, edge-to-edge-adjusted values baked in (see the
-            // columnGroup post-processing above), so padding them again
-            // here would reopen the exact gap/overlap that adjustment
-            // exists to close. padY/padX (see it.padY/it.padX) are numeric
-            // overrides for items whose target sits close enough to a
-            // neighbor that the default PAD on both would visibly overlap —
-            // e.g. EntryEditor's own stacked .pie-row elements (padY: 0,
-            // separated only by a hairline border) or two footer buttons
-            // sitting closer together than 2*PAD (padX below).
-            const padX = r.noPadX ? 0 : (r.padX ?? PAD);
-            const padY = r.padY ?? PAD;
+            // padTop/Bottom/Left/Right (see clampPad) — a columnGroup
+            // member's padLeft/padRight are forced to 0 in the
+            // post-processing above (its left/right already have their
+            // final, edge-to-edge-adjusted values baked in — padding them
+            // again here would reopen the exact gap/overlap that
+            // adjustment exists to close), and any side already clamped
+            // against chrome (e.g. a highlight whose bottom pad would
+            // otherwise re-bleed into the tab bar) is smaller than the
+            // nominal request. padY/padX overrides (see it.padY/it.padX)
+            // are for items whose target sits close enough to a neighbor
+            // that the default PAD on both would visibly overlap — e.g.
+            // EntryEditor's own stacked .pie-row elements (padY: 0,
+            // separated only by a hairline border).
+            const padTop = r.padTop ?? PAD, padBottom = r.padBottom ?? PAD;
+            const padLeft = r.padLeft ?? PAD, padRight = r.padRight ?? PAD;
             return (
-              <rect key={id} x={r.left - padX} y={r.top - padY} rx={rx} ry={ry}
-                    width={r.width + padX * 2} height={r.height + padY * 2} fill="#000" />
+              <rect key={id} x={r.left - padLeft} y={r.top - padTop} rx={rx} ry={ry}
+                    width={r.width + padLeft + padRight} height={r.height + padTop + padBottom} fill="#000" />
             );
           })}
           {toggleRect && (
@@ -662,13 +696,13 @@ function HelpOverlay({ active, items, onExit }) {
       </svg>
       {entries.map(([id, r]) => {
         const { rx, ry } = r.shape || { rx: DEFAULT_R, ry: DEFAULT_R };
-        const padX = r.noPadX ? 0 : (r.padX ?? PAD);
-        const padY = r.padY ?? PAD;
+        const padTop = r.padTop ?? PAD, padBottom = r.padBottom ?? PAD;
+        const padLeft = r.padLeft ?? PAD, padRight = r.padRight ?? PAD;
         return (
           <div key={id} className="help-spot"
                style={{
-                 top: r.top - padY, left: r.left - padX,
-                 width: r.width + padX * 2, height: r.height + padY * 2,
+                 top: r.top - padTop, left: r.left - padLeft,
+                 width: r.width + padLeft + padRight, height: r.height + padTop + padBottom,
                  borderRadius: `${rx}px / ${ry}px`,
                }} />
         );
