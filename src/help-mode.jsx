@@ -125,7 +125,7 @@ const detectEdgeSide = (rect) => {
 // that direction would clip the thing actually on top against the thing
 // underneath it. Higher number = visually wins; equal (both chrome
 // content the same page renders once) never clips the other.
-const CHROME_Z = { '.tabbar': 2, '.today-h': 1, '.group-rail': 1 };
+const CHROME_Z = { '.tabbar': 2, '.today-h': 1, '.group-rail': 1, '.settings-rail': 1 };
 const clipToChrome = (rect, chromeItems, els) => {
   let { top, left, right, bottom } = rect;
   // The chrome item (if any) this target is itself part of, e.g. the
@@ -519,10 +519,16 @@ function HelpOverlay({ active, items, onExit }) {
     const next = {};
     // Gathered once per frame (not per-item) — see clipToChrome's own
     // comment for why highlights need clipping against this chrome at all.
-    // '.today-h' and '.group-rail' only exist on the Today page; '.tabbar'
-    // exists everywhere. 'auto' defers to detectEdgeSide since the tabbar's
-    // placement varies at runtime; the other two are always top-anchored.
-    const chromeMatches = [['.today-h', 'top'], ['.group-rail', 'top'], ['.tabbar', 'auto']]
+    // '.today-h' and '.group-rail' only exist on the Today page,
+    // '.settings-rail' only on Settings; '.tabbar' exists everywhere.
+    // 'auto' defers to detectEdgeSide since the tabbar's placement varies
+    // at runtime; the other three are always top-anchored — .settings-rail
+    // only actually sticks to the top on narrow/mobile viewports (its own
+    // @container rule in styles2.css), but on wide viewports it's a side
+    // column that never horizontally overlaps the main content anyway, so
+    // clipToChrome's hOverlap check naturally no-ops there without needing
+    // a separate "is it currently sticky" check.
+    const chromeMatches = [['.today-h', 'top'], ['.group-rail', 'top'], ['.settings-rail', 'top'], ['.tabbar', 'auto']]
       .map(([sel, side]) => { const el = document.querySelector(sel); return el ? { el, side, sel } : null; })
       .filter(Boolean);
     // `el`/`sel` carry through so clipToChrome can exempt a target from

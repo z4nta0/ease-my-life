@@ -1305,7 +1305,14 @@ const SETTINGS_HELP_ITEMS = [
   // One combined highlight over the whole rail rather than per-button,
   // matching the nav bar's own precedent.
   {
-    id: 'settingsRail', sel: '.settings-rail', title: 'Sections Navigation',
+    // padY:0 — on narrow viewports this is sticky (position:sticky; top:0)
+    // with its own opaque background; the default pad extended the mask
+    // cutout past the rail's own real bottom edge, revealing whatever
+    // page content had scrolled underneath it in that gap (nothing there
+    // covers it — the dim overlay sits above the rail's own z-index:18,
+    // and the cutout hole doesn't care that the rail's own box doesn't
+    // reach that far).
+    id: 'settingsRail', sel: '.settings-rail', title: 'Sections Navigation', padY: 0,
     body: <>This will let you jump straight to any section of the Settings page. On mobile devices, this will stay pinned to the top of the page no matter how far down you have scrolled.</>,
   },
   // ── Appearance ─────────────────────────────────────────────────────────
