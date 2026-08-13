@@ -2463,6 +2463,19 @@ button.cat-h-l {
   grid-template-columns: repeat(auto-fit, minmax(70px, max-content));
   justify-content: start;
 }
+/* In the Data-tab reminder editor (.rd-edit .rem-editor .rem-field is a
+   wrapping flex ROW — label left, control right; see that rule further
+   down), whether this control ends up alongside the label on the same
+   line or wraps to its own line depends on the browser's computed
+   hypothetical/intrinsic width for it as a flex item. That computation
+   isn't reliable for a grid-display item across browsers — it can come
+   out small enough to fit next to the label, which then also starves
+   the grid's own column count down to one. Forcing its own full-width
+   line explicitly removes that ambiguity; every browser we could test
+   already rendered it on its own line anyway (the label's explanation
+   sentence alone is wide enough), so this doesn't change anything
+   visible, just makes it deterministic. */
+.rd-edit .rem-editor .rem-field .seg[aria-label="Repeat"] { flex-basis: 100%; }
 .seg-thumb {
   position: absolute; top: 0; left: 0; width: 0; height: 0;
   background: var(--accent); border-radius: 999px;
