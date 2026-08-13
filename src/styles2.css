@@ -1302,13 +1302,22 @@ button.cat-h-l {
    name truncates instead of overlapping), and the count restacks into 3
    centered rows (its own column) instead of wrapping mid-fraction. */
 @container app (max-width: 400px) {
+  /* Own gap (rather than relying on .cat-h-l's flex-grow to naturally
+     leave room) — otherwise .cat-h-l fills every last px up to
+     .vac-toggle's own edge, butting the count's last digit right up
+     against it. */
+  .data-list > .cat > .cat-h { gap: 8px; }
   .data-list > .cat > .cat-h .chev { flex: 0 0 auto; }
   .data-list > .cat > .cat-h .cat-name {
     flex: 1 1 0%; min-width: 0;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  /* Fixed (not max-) width so every collapsed picker's pill lines up at
+     the same edge regardless of its own group name's length, with the
+     (possibly truncated) text centered in that fixed box rather than
+     hugging its left edge. */
   .data-list > .cat > .cat-h .cat-group {
-    flex: 0 0 auto; max-width: 72px;
+    flex: 0 0 auto; width: 72px; text-align: center;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .data-list > .cat > .cat-h .cat-count {
