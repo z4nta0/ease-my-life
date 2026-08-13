@@ -1766,11 +1766,26 @@ button.cat-h-l {
     max-height: none; overflow-x: auto; overflow-y: hidden;
     padding: 14px 20px;
     background: var(--bg);
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-l, 16px), #000 calc(100% - var(--fade-r, 16px)), transparent 100%);
-            mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-l, 16px), #000 calc(100% - var(--fade-r, 16px)), transparent 100%);
   }
-  .settings-rail.at-start { --fade-l: 0px; }
-  .settings-rail.at-end   { --fade-r: 0px; }
+  /* Fade as an opaque gradient OVERLAY, not a mask — two reasons neither
+     mask placement worked: masking .settings-rail itself faded its own
+     background too, letting page content scrolled underneath the sticky
+     rail show through; masking the inner <ul> instead positioned the
+     fade relative to the ul's own full scrollable width (~628px, the
+     width of every pill combined) rather than the rail's visible ~335px
+     viewport, putting the fade zone hundreds of px off-screen. A
+     gradient overlay pinned to the rail's own (non-scrolling) box has
+     neither problem: it sits on top of the always-opaque rail background
+     at the actual visible edges, regardless of how far the pills scroll
+     underneath it. */
+  .settings-rail::before, .settings-rail::after {
+    content: ''; position: absolute; top: 0; bottom: 0; width: 24px;
+    pointer-events: none; z-index: 1; transition: opacity .15s ease;
+  }
+  .settings-rail::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+  .settings-rail::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+  .settings-rail.at-start::before { opacity: 0; }
+  .settings-rail.at-end::after { opacity: 0; }
   .settings-rail .rail-kicker { display: none; }
   .settings-rail ul {
     flex-direction: row; flex-wrap: nowrap; gap: 6px; width: max-content;
