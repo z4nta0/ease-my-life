@@ -3463,7 +3463,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .ob-coach::before{content:"";position:absolute;width:14px;height:14px;background:var(--surface);border:0.5px solid var(--border);transform:rotate(45deg);left:var(--ob-ax,28px)}
 .ob-coach--up::before{top:-8px;border-right:0;border-bottom:0}
 .ob-coach--down::before{bottom:-8px;border-left:0;border-top:0}
-.ob-coach--left::before{left:-8px;top:var(--ob-ay,28px);border-top:0;border-right:0}
 
 .ob-create{border:1px dashed oklch(from var(--accent) l c h/0.5);background:var(--accent-soft);border-radius:var(--r-md);padding:18px 16px;text-align:center;margin-bottom:16px;display:flex;flex-direction:column;align-items:center;gap:6px}
 .ob-create-i{width:40px;height:40px;border-radius:11px;background:var(--surface);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent)}
