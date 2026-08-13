@@ -304,7 +304,27 @@ const badgeRectFor = (targetRect, center) => {
 const placeTip = (targetRect, tw, th, pinBelowY) => {
   const vw = window.innerWidth, vh = window.innerHeight, M = 8;
   let top, arrowClass;
-  if (pinBelowY != null) {
+  // `alwaysBelow` (see alwaysBelowSel in the rAF loop above) skips the
+  // "does the FULL natural height fit below, else flip above" choice —
+  // that choice is measured against `th`, the content's own UNCONSTRAINED
+  // height, which defeats the purpose of scrolling: for the nav tip on
+  // 'side' placement, `th` (5 paragraphs) is almost always taller than
+  // "below" has room for, so the normal logic always flipped to "above" —
+  // clamped against a target whose own top sits close to the viewport's
+  // top edge, that produced a `top` at the viewport's very top while the
+  // (still full-height, unconstrained at the moment of this decision) tip
+  // extended down past the target's own bottom too, covering it entirely.
+  // Going below unconditionally and THEN capping height (maxHeight below)
+  // to whatever room is actually there is what makes scrolling work at
+  // all — but only where "below" is actually the right side to try in the
+  // first place: NOT 'bottom' tab-bar placement, whose target already
+  // sits at the very bottom of the screen with no room below it at all
+  // (there `scrollable`'s cap is a pure safety net, and the normal
+  // below/above choice — which correctly flips to "above" there — still
+  // applies).
+  if (targetRect.alwaysBelow) {
+    top = targetRect.bottom + 16; arrowClass = 'ob-coach--up';
+  } else if (pinBelowY != null) {
     top = pinBelowY + 16; arrowClass = 'ob-coach--up';
   } else {
     const spaceBelow = vh - targetRect.bottom;
@@ -329,6 +349,7 @@ function HelpTip({ item, targetRect }) {
   const ref = React.useRef(null);
   const [style, setStyle] = React.useState(null);
   const [arrowClass, setArrowClass] = React.useState('ob-coach--up');
+  const [scrollMaxHeight, setScrollMaxHeight] = React.useState(null);
   // `matchTargetWidth` (e.g. the nav tip, once it grew to 5 paragraphs) sizes
   // the tip to targetRect.tipWidth (see matchWidthSel in the rAF loop above)
   // instead of the usual fixed 280px, when that's actually been computed —
@@ -349,27 +370,37 @@ function HelpTip({ item, targetRect }) {
   // past that, instead of overflowing past the viewport — e.g. the nav
   // tip's 5 paragraphs, which on a short viewport can be taller than any
   // amount of above/below repositioning could ever fully accommodate.
+  // Applied to an INNER wrapper (see the JSX below), not the outer
+  // .ob-coach itself: overflow:auto on the outer box would clip its own
+  // ::before arrow triangle too, which is deliberately positioned OUTSIDE
+  // the box's normal content area (top/bottom: -8px) to poke out and
+  // point at the target — overflow clips a box's own generated content
+  // right along with everything else, there's no way to exempt just the
+  // arrow. 28 below is .ob-coach's own vertical padding (14px top + 14px
+  // bottom, see its CSS) — the inner wrapper's cap needs to leave room for
+  // that padding too, or the outer box (padding + capped inner content)
+  // would still overflow the room placeTip actually found.
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
     const { top, left, arrowClass: ac, arrowX, maxHeight } = placeTip(targetRect, el.offsetWidth, el.offsetHeight, targetRect.pinBelowY);
-    setStyle({
-      top, left, '--ob-ax': arrowX + 'px',
-      ...(item.scrollable ? { maxHeight, overflowY: 'auto' } : null),
-    });
+    setStyle({ top, left, '--ob-ax': arrowX + 'px' });
     setArrowClass(ac);
+    setScrollMaxHeight(item.scrollable ? maxHeight - 28 : null);
   }, [targetRect, item.matchTargetWidth, item.scrollable]);
   return (
     <div ref={ref} className={`ob-coach help-tip ${arrowClass}`}
          style={{ ...(style || { top: -9999, left: -9999 }), ...widthStyle }} role="tooltip">
-      {/* `body` as a function (e.g. the Charge Controls items) is called
-          fresh on every render instead of being static JSX — lets a tip
-          read something off the live DOM at open time, like the picker's
-          own cadence unit word (days/weeks/months/years), rather than
-          baking in a value that could be wrong for a different picker's
-          own cadence setting. */}
-      <p className="help-tip-title">{typeof item.title === 'function' ? item.title(targetRect) : item.title}</p>
-      <div className="ob-body">{typeof item.body === 'function' ? item.body() : item.body}</div>
+      <div style={scrollMaxHeight != null ? { maxHeight: scrollMaxHeight, overflowY: 'auto' } : null}>
+        {/* `body` as a function (e.g. the Charge Controls items) is called
+            fresh on every render instead of being static JSX — lets a tip
+            read something off the live DOM at open time, like the picker's
+            own cadence unit word (days/weeks/months/years), rather than
+            baking in a value that could be wrong for a different picker's
+            own cadence setting. */}
+        <p className="help-tip-title">{typeof item.title === 'function' ? item.title(targetRect) : item.title}</p>
+        <div className="ob-body">{typeof item.body === 'function' ? item.body() : item.body}</div>
+      </div>
     </div>
   );
 }
@@ -395,7 +426,11 @@ const NAV_HELP_ITEM = {
   // no room above or below tall enough for the full 5-paragraph body no
   // matter how it's positioned; caps to whatever room placeTip found and
   // scrolls internally past that rather than overflowing the viewport.
+  // alwaysBelowSel — only 'side' placement's target spans most of the
+  // viewport's own height (see placeTip's own comment on alwaysBelow);
+  // 'bottom'/'top' keep the normal above/below choice.
   id: '__nav', sel: '[data-tab]', matchTargetWidth: true, matchWidthSel: '.tabbar', padY: 7, scrollable: true,
+  alwaysBelowSel: '.tabbar--side',
   // The tabbar is a true pill ONLY on 'bottom' placement (border-radius:
   // 999px, resolving to a circular corner of exactly half its own height
   // once CSS's overflow algorithm scales it down for a box that much wider
@@ -574,8 +609,13 @@ function HelpOverlay({ active, items, onExit }) {
         ? matchWidthEl.getBoundingClientRect().width : undefined;
       // `pinBelowSel` — see placeTip's own doc comment for why this exists.
       const pinBelowY = it.pinBelowSel ? document.querySelector(it.pinBelowSel)?.getBoundingClientRect().bottom : undefined;
+      // `alwaysBelowSel` — see placeTip's own comment. Matched only when
+      // this selector finds something (e.g. '.tabbar--side') — every
+      // other tip, including the nav tip on 'bottom'/'top' placement,
+      // leaves this unset and keeps the normal above/below choice.
+      const alwaysBelow = it.alwaysBelowSel ? !!document.querySelector(it.alwaysBelowSel) : false;
       const pad = clampPad(r, it.padX ?? PAD, it.padY ?? PAD, chromeItems, isChromeContent);
-      next[it.id] = { ...r, shape, tipWidth, pinBelowY, ...pad };
+      next[it.id] = { ...r, shape, tipWidth, pinBelowY, alwaysBelow, scrollable: !!it.scrollable, ...pad };
     });
     // `columnGroup` (e.g. the Day Log panel's per-column highlights) —
     // each column's own union naturally shrinks to just its content's
