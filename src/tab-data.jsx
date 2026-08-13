@@ -341,7 +341,11 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
         {/* Default Cadence expands/collapses when Ease-up/Ease-down is (de)selected,
             sharing the app's Collapse height animation. */}
         <Collapse open={isEase}>
-          <div className="ease-config">
+          {/* ease-config--up/--down — pure selector hook so help-mode can
+              give this section mode-specific copy (Soonest/Latest/Fill vs.
+              Shortest/Longest/Refill), same idea as EntryEditor's own
+              pie-ease-up-row/pie-ease-down-row split. */}
+          <div className={`ease-config ${isDown ? 'ease-config--down' : 'ease-config--up'}`}>
             <div className="ease-cadence-kicker">Default cadence</div>
             <div className="pie-row">
               <div className="pie-rowlabel">

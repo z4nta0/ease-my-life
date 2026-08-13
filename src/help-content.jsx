@@ -1084,8 +1084,8 @@ const DATA_HELP_ITEMS = [
     // .cat-body is a descendant, not a direct child, of .cat — it's wrapped
     // in its own <Collapse> div (unlike .cat-h, which isn't). padY:0 —
     // .rd-ctl touches its neighbor with only a hairline border.
-    id: 'dataPickerControlsHeader', sel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)', perElement: true, padY: 0, title: 'Controls',
-    body: <>Tap this to expand or collapse this picker's settings — how it picks, when it runs, and its conditional gate. Collapsed, it shows how many setting options exist.</>,
+    id: 'dataPickerControlsHeader', sel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)', perElement: true, padY: 0, title: 'Picker Controls',
+    body: <>Tap this to expand or collapse this picker's settings. This includes its name, its group, how it picks, its conditional gate and when it runs. Collapsed, it shows how many setting options exist.</>,
   },
   {
     id: 'dataPickerItemsHeader', sel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)', perElement: true, padY: 0, title: 'Items',
@@ -1117,13 +1117,26 @@ const DATA_HELP_ITEMS = [
     // sets charge ranges per item, not a picker-wide default. Prefills new
     // items added to this picker; Fill/Refill here acts on every item at
     // once (actions.refillPicker), not just one. padY:0 — touches Picker
-    // Type above with zero gap (see that entry's own comment).
-    id: 'dataPickerDefaultCadence', sel: '.ease-config', title: 'Default Charge Controls', padY: 0,
+    // Type above with zero gap (see that entry's own comment). Split by
+    // mode (ease-config--up/--down, tab-data.jsx) rather than one combined
+    // Soonest/Shortest-Latest/Longest-Fill/Refill entry, same idea as
+    // itemChargeRangeUp/Down below.
+    id: 'dataPickerDefaultCadenceUp', sel: '.ease-config.ease-config--up', title: 'Default Charge Controls', padY: 0,
     body: (
       <>
-        <p><b>Soonest / Shortest:</b> This sets the picker's own default minimum, used to prefill new items you add to this picker.</p>
-        <p><b>Latest / Longest:</b> This sets the picker's own default maximum, used to prefill new items you add to this picker.</p>
-        <p><b>Fill / Refill:</b> This fills or refills the charge of every item in this picker at once.</p>
+        <p><b>Soonest:</b> This sets the picker's own default minimum, used to prefill new items you add to this picker.</p>
+        <p><b>Latest:</b> This sets the picker's own default maximum, used to prefill new items you add to this picker.</p>
+        <p><b>Fill:</b> This fills the charge of every item in this picker at once.</p>
+      </>
+    ),
+  },
+  {
+    id: 'dataPickerDefaultCadenceDown', sel: '.ease-config.ease-config--down', title: 'Default Charge Controls', padY: 0,
+    body: (
+      <>
+        <p><b>Shortest:</b> This sets the picker's own default minimum, used to prefill new items you add to this picker.</p>
+        <p><b>Longest:</b> This sets the picker's own default maximum, used to prefill new items you add to this picker.</p>
+        <p><b>Refill:</b> This refills the charge of every item in this picker at once.</p>
       </>
     ),
   },
@@ -1131,7 +1144,7 @@ const DATA_HELP_ITEMS = [
     // padY:0 — .sched-line rows stack with zero gap (same pattern as
     // .rd-basics-row above), touching Daily Generator Toggle below.
     id: 'dataPickerConditionalToggle', sel: '.sched-line:has(button[aria-label="Attach a conditional"])', title: 'Picker Conditional', padY: 0,
-    body: <>This lets you optionally gate this picker behind a conditional. When you attach a conditional, the picker will only run on days determined by that conditional's own rules. For example, giving yourself an occasional day off from chores. You can attach any existing conditional below — to create a new one, use the Conditionals section above.</>,
+    body: <>This lets you optionally gate this picker behind a conditional. When you attach a conditional, the picker will only run on days determined by that conditional's own rules. For example, giving yourself an occasional day off from chores. You can attach any existing conditional below, but if you want to create a new one you will need to use the Conditionals section above.</>,
   },
   {
     id: 'dataPickerConditionalRail', sel: '.rd-cnd-rail-row .cnd-rail', title: 'Select a Conditional', padY: 0,
