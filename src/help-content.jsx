@@ -1367,8 +1367,8 @@ const SETTINGS_HELP_ITEMS = [
   // padY:0 on the whole group below — same zero-gap .set-data-row stacking
   // as Daily generator above.
   {
-    id: 'dataStorageStatus', sel: '.set-store-row', title: 'Where Your Data Lives', padY: 0,
-    body: <>This shows how your data is currently being stored, whether the browser has promised not to clear it, and roughly how much data you have. Installing the app or granting persistent storage both help protect it from being cleared automatically.</>,
+    id: 'dataStorageStatus', sel: '.set-store-row', title: 'Protect Your Data', padY: 0,
+    body: <>This shows how your data is currently being stored, whether the browser has promised not to clear it, and roughly how much data you are storing in the app. Installing the app or granting persistent storage both help protect it from being cleared automatically.</>,
   },
   {
     // Exactly one of these four mutually-exclusive rows ever renders at a
@@ -1376,14 +1376,14 @@ const SETTINGS_HELP_ITEMS = [
     // Screen / Mac Add to Dock — see tab-settings.jsx), all sharing this
     // one class, so this covers whichever is actually showing.
     id: 'dataInstallInstructions', sel: '.set-store-ios', title: 'Install Instructions', padY: 0,
-    body: <>This shows extra information about installing the app or protecting your data, specific to your current browser and device.</>,
+    body: <>This shows device and browser specific information about how to install the app. Installing the app has many benefits, but you can always keep using the app as a website if you prefer.</>,
   },
   {
-    id: 'dataExport', sel: '.set-export-row', title: 'Export a Backup', padY: 0,
-    body: <>This downloads a JSON file containing everything: all of your pickers, items, reminders, history and app settings. This is the only way to move your data to another device, and it's also worth doing periodically as a backup.</>,
+    id: 'dataExport', sel: '.set-export-row', title: 'Export Your Data', padY: 0,
+    body: <>This downloads a file containing all of your data: pickers, items, reminders, history and app settings. Since all app data lives on your device, you alone are responsible for taking care of it. It is also handy for moving your data to a new, or second, device.</>,
   },
   {
-    id: 'dataImport', sel: '.set-import-row', title: 'Import a Backup', padY: 0,
+    id: 'dataImport', sel: '.set-import-row', title: 'Import Your Data', padY: 0,
     body: <>This restores your data from a previously exported backup file. Importing a backup <b>replaces all data</b> currently stored in the app, so make sure that's what you want first.</>,
   },
   {
@@ -1392,7 +1392,7 @@ const SETTINGS_HELP_ITEMS = [
   },
   // ── Account ────────────────────────────────────────────────────────────
   {
-    id: 'account', sel: '.set-section--account', title: 'Account',
+    id: 'account', sel: '.set-section--account', title: 'Your Account',
     body: <>Ease My Life runs entirely on this device with no account required. Syncing your data across devices is planned as a future paid feature (a one-time fee, not a subscription).</>,
   },
   // ── About ──────────────────────────────────────────────────────────────
@@ -1410,7 +1410,7 @@ const SETTINGS_HELP_ITEMS = [
   },
   {
     id: 'aboutContactTrigger', sel: '.set-contact-trigger', title: 'Contact Support',
-    body: <>This opens a short form for sending a note directly. Your app version and browser are attached automatically, so there's no back-and-forth needed to track those down.</>,
+    body: <>This opens a short form for sending a message directly to the developer. Your app version and browser are attached automatically, so there's no back-and-forth needed to track those down.</>,
   },
   {
     id: 'aboutContactForm', sel: '.support-form', title: 'Support Message',
