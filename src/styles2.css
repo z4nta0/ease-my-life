@@ -1780,7 +1780,7 @@ button.cat-h-l {
      underneath it. */
   .settings-rail::before, .settings-rail::after {
     content: ''; position: absolute; top: 0; bottom: 0; width: 24px;
-    pointer-events: none; z-index: 1; transition: opacity .15s ease;
+    pointer-events: none; z-index: 1;
   }
   .settings-rail::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
   .settings-rail::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
