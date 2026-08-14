@@ -177,12 +177,13 @@ function PickerView({ picker, state, actions, animStyle }) {
   const tourInterceptSend = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 5;
   // Done needs the same visual + functional disabling during App Features'
   // own "Make your first manual pick" tour's equivalent step (onboarding-
-  // app-features.jsx's buildAppFeatureSteps, feat_manual_pick's Step 3 —
-  // index 2: Step 1 is the shared nav-click, Step 2 is Manual Generation)
-  // — leaving would discard the very pick that tour just walked the user
-  // through making, and would also make the step's own target (this whole
-  // done/sent view) vanish, reverting to the pre-pick "Pick one" button
-  // Step 2 already moved past. Re-roll is deliberately NOT included here —
+  // app-features.jsx's buildAppFeatureSteps, feat_manual_pick's Step 4 —
+  // index 3: Step 1 is the shared nav-click, Step 2 is Picker Selection,
+  // Step 3 is Manual Generation) — leaving would discard the very pick that
+  // tour just walked the user through making, and would also make the
+  // step's own target (this whole done/sent view) vanish, reverting to the
+  // pre-pick "Pick one" button Step 3 already moved past. Re-roll is
+  // deliberately NOT included here —
   // unlike the page tour (tourInterceptSend, above), App Features wants
   // Re-roll to stay genuinely usable (a real re-roll, its own animation)
   // without counting as this step's own advancing click; see
@@ -194,7 +195,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   // Features tours operate on the user's own real data, so Send to Today
   // should genuinely land the entry.
   const tourDisableDone = tourInterceptSend
-    || (tour.phase === 'tour' && tour.tourId === 'appfeature-feat_manual_pick' && tour.step === 2);
+    || (tour.phase === 'tour' && tour.tourId === 'appfeature-feat_manual_pick' && tour.step === 3);
   // Step 7 ("Picker Items") highlights the pool's per-item Send to Today/
   // Edit/Delete buttons but explicitly doesn't want any of them actually
   // usable from there — narrating what they do is the point, not inviting

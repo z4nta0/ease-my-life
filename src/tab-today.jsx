@@ -10,7 +10,7 @@ import { TODAY_HELP_ITEMS } from './help-content.jsx';
 import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
 import { OB_CHECKLIST, OB_GENERATE_ITEM_ID, OB_PAGE_TOURS } from './onboarding-checklist.js';
-import { APP_FEATURES, APP_FEATURE_PAGE_LABELS } from './onboarding-app-features.jsx';
+import { APP_FEATURES, APP_FEATURE_PAGE_LABELS, appFeatureBlockedReason } from './onboarding-app-features.jsx';
 import { OB_PICKER_CARD_TIME, OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { ReminderTour } from './onboarding-reminder-tours.jsx';
 import { PICKERS, normalizeGroupName } from './pickers.js';
@@ -838,13 +838,15 @@ function PageTourCard({ tour, state, actions, onPlayTutorial, onUncheckTutorial,
 // own comment in TabToday for why).
 function AppFeatureCard({ feature, state, actions, onPlayTutorial, onUncheckAppFeature }) {
   const done = !!(state.onboarding && state.onboarding.appFeatures && state.onboarding.appFeatures[feature.id]);
+  const blockedReason = !done ? appFeatureBlockedReason(feature.id, state) : null;
   const onRowClick = (e) => {
     if (e.target.closest('.today-card-actions')) return;
+    if (blockedReason) return;
     if (done) onUncheckAppFeature(feature.id);
     else onPlayTutorial('appFeature', feature.id);
   };
   return (
-    <article className={`today-card today-card--tutorial ${done ? 'is-done' : ''}`}
+    <article className={`today-card today-card--tutorial ${done ? 'is-done' : ''} ${blockedReason ? 'is-needed' : ''}`}
               onClick={onRowClick}>
       {done ? (
         <button type="button" className="check" aria-pressed="true"
@@ -853,6 +855,10 @@ function AppFeatureCard({ feature, state, actions, onPlayTutorial, onUncheckAppF
           <span className="check-ripple" aria-hidden="true" />
           <Icon name="check" size={14} />
         </button>
+      ) : blockedReason ? (
+        <InfoTip className="check is-disabled" action={`Start the ${feature.label} tutorial`} label={blockedReason}>
+          <Icon name="play" size={13} />
+        </InfoTip>
       ) : (
         <button type="button" className="check" aria-label={`Start the ${feature.label} tutorial`}
                 onClick={(e) => { e.stopPropagation(); onPlayTutorial('appFeature', feature.id); }}>

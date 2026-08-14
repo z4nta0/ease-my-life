@@ -1228,6 +1228,12 @@ button.check { cursor: pointer; }
   box-shadow: 0 0 0 3px var(--bg), inset 0 0 0 1.5px var(--bg);
 }
 .check:hover { border-color: var(--text); }
+/* Same InfoTip-trigger pattern as .icon-btn.is-disabled/.btn.is-disabled
+   above, for a blocked App Feature launcher's Play button (see
+   AppFeatureCard in tab-today.jsx) — stays focusable/tappable so the tip
+   explaining why is still reachable. */
+.check.is-disabled { opacity: 0.4; cursor: default; }
+.check.is-disabled:hover { border-color: var(--border); }
 .today-card.is-done .check {
   background: var(--accent); border-color: var(--accent); color: var(--bg);
 }

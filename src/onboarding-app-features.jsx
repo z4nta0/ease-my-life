@@ -95,6 +95,19 @@ const buildAppFeatureSteps = (featureId) => {
   if (featureId === 'feat_manual_pick') {
     return [
       // Title/body copied verbatim from the Pickers page tour's own
+      // pickerSelection step. Has to come before Manual Generation below
+      // (the user needs to choose WHICH picker before running one) —
+      // that's the whole reason this exists: letting the user pick a
+      // different picker than whichever one happened to already be
+      // active. No requireClick — same as the page tour's own step,
+      // this is purely optional ("select one now or click Next").
+      {
+        sel: '.picker-tabs .picker-tab:not(.picker-tab--add)', tab: 'picker',
+        title: 'Picker Selection',
+        body: <>This will allow you to <b>select a specific picker</b>, in order to initiate a manual picker generation down below as well as edit or delete its items. Feel free to select one now or click Next to advance to the next step.</>,
+        primary: 'Next', back: true,
+      },
+      // Title/body copied verbatim from the Pickers page tour's own
       // manualGeneration step (PICKER_PAGE_TARGETS in onboarding-page-
       // tours.jsx) — same functionality, same explanation. .picker-run
       // wraps the picker's stage + actions as one combined box (see that
@@ -105,7 +118,7 @@ const buildAppFeatureSteps = (featureId) => {
       // an immediate advance): Pick one kicks off a multi-second spin
       // animation, so stay on THIS step's already-resolved coach for the
       // whole wait — same reasoning as the page tour's own step, whose
-      // advanceWhen this copies (Step 3's own clickSel below).
+      // advanceWhen this copies (Step 4's own clickSel below).
       {
         sel: '.picker-run', tab: 'picker',
         title: 'Manual Generation',
@@ -116,10 +129,10 @@ const buildAppFeatureSteps = (featureId) => {
       // Title/body copied verbatim from the Pickers page tour's own
       // addToTodoList step. Still .picker-run, not just the Send to
       // Today button on its own — same combined-box reasoning as Step
-      // 2, and .picker-actions (which .picker-run wraps) contains the
+      // 3, and .picker-actions (which .picker-run wraps) contains the
       // WHOLE row (Send to Today, Re-roll, AND Done), so this highlights
       // all three together (the picker window itself staying highlighted
-      // the whole time, same element as Step 2). clickSel narrows the
+      // the whole time, same element as Step 3). clickSel narrows the
       // actual click-guard/requireClick target down to Send to Today
       // specifically — only that click satisfies this step, matching the
       // page tour's own behavior exactly. Re-roll is a deliberate
@@ -131,7 +144,7 @@ const buildAppFeatureSteps = (featureId) => {
       // blocked (tab-picker.jsx's own tourDisableDone, gated on this
       // exact tourId+step) since leaving would discard the pick AND
       // make this step's own target — the done/sent view itself —
-      // vanish, reverting to the pre-pick "Pick one" button Step 2
+      // vanish, reverting to the pre-pick "Pick one" button Step 3
       // already moved past. advanceDelay: Send to Today swaps its own
       // label to "Sent!" for a beat (see tab-picker.jsx's sendToToday)
       // before reverting — finishing immediately would cut that
@@ -147,6 +160,25 @@ const buildAppFeatureSteps = (featureId) => {
   }
   return [];
 };
+
+// "Make your first manual pick" needs a real target to run the tour against:
+// a real (non-hidden), non-sample picker with at least 2 items. 2, not 1 —
+// Step 4's own copy invites a Re-roll ("give it a try"), and with a single
+// item Re-roll would deterministically return the same result every time,
+// making that invitation pointless. Unlike the checklist's own amber "needs
+// attention" cue on the Create-a-picker cards (which are always runnable,
+// just flagged as unfinished — see onboarding-checklist.js's
+// realPickerCount), this actually blocks the card: there's no partial tour
+// to offer without a real picker to run one on. No other App Feature has a
+// requirement yet, so this stays a one-off check rather than a generic
+// per-feature schema field.
+function appFeatureBlockedReason(featureId, state) {
+  if (featureId !== 'feat_manual_pick') return null;
+  const items = state.items || [];
+  const eligible = (state.pickers || []).some((p) => !p.hidden
+    && items.filter((i) => i.pickerId === p.id).length >= 2);
+  return eligible ? null : 'Create a picker with at least 2 items first, then come back to try this.';
+}
 
 function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose }) {
   const feature = APP_FEATURES.find((f) => f.id === featureId);
@@ -193,4 +225,4 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
   );
 }
 
-export { AppFeatureTour };
+export { AppFeatureTour, appFeatureBlockedReason };
