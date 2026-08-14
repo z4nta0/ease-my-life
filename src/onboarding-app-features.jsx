@@ -121,14 +121,23 @@ const buildAppFeatureSteps = (featureId) => {
       // all three together (the picker window itself staying highlighted
       // the whole time, same element as Step 2). clickSel narrows the
       // actual click-guard/requireClick target down to Send to Today
-      // specifically — a click on Re-roll or Done shouldn't satisfy
-      // this step, since either discards the very pick Step 2 just made.
-      // advanceDelay: Send to Today swaps its own label to "Sent!" for
-      // a beat (see tab-picker.jsx's sendToToday) before reverting —
-      // finishing immediately would cut that confirmation off before
-      // the user ever sees it.
+      // specifically — only that click satisfies this step, matching the
+      // page tour's own behavior exactly. Re-roll is a deliberate
+      // exception, unlike the page tour (which disables it outright via
+      // tab-picker.jsx's tourInterceptSend): clickPassThroughSel lets it
+      // reach its own real handler — a genuine re-roll, own animation —
+      // WITHOUT also satisfying requireClick, so the user can re-roll as
+      // many times as they like before eventually sending. Done stays
+      // blocked (tab-picker.jsx's own tourDisableDone, gated on this
+      // exact tourId+step) since leaving would discard the pick AND
+      // make this step's own target — the done/sent view itself —
+      // vanish, reverting to the pre-pick "Pick one" button Step 2
+      // already moved past. advanceDelay: Send to Today swaps its own
+      // label to "Sent!" for a beat (see tab-picker.jsx's sendToToday)
+      // before reverting — finishing immediately would cut that
+      // confirmation off before the user ever sees it.
       {
-        sel: '.picker-run', clickSel: '.pv-act--send', tab: 'picker',
+        sel: '.picker-run', clickSel: '.pv-act--send', clickPassThroughSel: '.pv-act--reroll', tab: 'picker',
         title: 'Add to Todo List',
         body: <>This will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click this button now to give it a try.</>,
         primary: 'Done', back: true, requireClick: true,

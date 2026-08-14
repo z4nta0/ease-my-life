@@ -454,10 +454,23 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // back are the ones most likely to look like "not the current target" to
   // it.
   const suppressGuardRef = React.useRef(false);
+  // A step's optional clickPassThroughSel names element(s) that should
+  // reach their OWN real click handler normally — unlike clickSel (which
+  // ALSO satisfies requireClick and advances the tour), a pass-through
+  // click does neither: it's neither blocked nor treated as "the" action.
+  // Built for App Features' own manual-pick tour: Re-roll needs to stay
+  // genuinely usable (a real re-roll, its own animation) without also
+  // counting as the step's advancing click the way clicking Send to
+  // Today does — see onboarding-app-features.jsx's own comment on it.
+  const isPassThrough = (e) => {
+    const c = curRef.current;
+    return !!(c && c.clickPassThroughSel && findTargets(c.clickPassThroughSel).some((el) => el.contains(e.target)));
+  };
   // Off-target check shared by both listeners below.
   const isOffTarget = (e) => {
     if (suppressGuardRef.current) return false;
     if (e.target.closest('.ob-coach')) return false;
+    if (isPassThrough(e)) return false;
     const c = curRef.current;
     return !(c && findTargets(c.clickSel || c.sel).some((el) => el.contains(e.target)));
   };
@@ -494,6 +507,9 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
         if (c.requireClick) onPrimaryRef.current();
         return;
       }
+      // See isPassThrough's own comment above — reaches its real handler
+      // untouched, neither blocked nor treated as this step's own click.
+      if (isPassThrough(e)) return;
       e.preventDefault();
       e.stopPropagation();
     };
