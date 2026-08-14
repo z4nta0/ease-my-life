@@ -1,7 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { emlTour, useEmlTour } from './eml-tour-bus.js';
-import { InfoTip } from './ui.jsx';
+import { InfoTip, reduceMotion } from './ui.jsx';
 
 // Generic guided-tour engine: sequential single-spotlight steps with a coach
 // card (Step N of N, Skip/Back/Next). Shared by the Welcome Tour
@@ -642,9 +642,18 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       }
       return document.scrollingElement || document.documentElement;
     };
+    // Smooth (unless prefers-reduced-motion) so a step that jumps to a
+    // different part of the page — or, via bring()'s content-grew re-trigger
+    // and decideReserve's own follow-up correction below, mid-step too —
+    // reads as the tour visibly navigating there rather than an
+    // unexplained cut. Deliberately NOT applied to goToTodayTop (the
+    // tour-END reset on Skip/Done) — that's a closing reset, not a "here's
+    // the next thing" step transition, and it already fires alongside a
+    // tab switch back to Today, which stays an instant cut by design.
     const scrollByAmt = (sc, dy) => {
-      if (sc === document.scrollingElement || sc === document.documentElement) window.scrollBy(0, dy);
-      else sc.scrollTop += dy;
+      const opts = { top: dy, behavior: reduceMotion() ? 'auto' : 'smooth' };
+      if (sc === document.scrollingElement || sc === document.documentElement) window.scrollBy(opts);
+      else sc.scrollBy(opts);
     };
     // Bring the target(s) into view once when the step opens.
     const bring = () => {
@@ -656,8 +665,9 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       // just nudging it into view — keeps everything visible from the top
       // instead of opening mid-scroll.
       if (cur.scrollToTop) {
-        if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo(0, 0);
-        else sc.scrollTop = 0;
+        const opts = { top: 0, behavior: reduceMotion() ? 'auto' : 'smooth' };
+        if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo(opts);
+        else sc.scrollTo(opts);
         return;
       }
       // Symmetric case: a step whose target always sits at the very bottom
@@ -668,8 +678,9 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       // longer means anything), landing short of the target instead of
       // reaching it.
       if (cur.scrollToBottom) {
-        if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo(0, document.documentElement.scrollHeight);
-        else sc.scrollTop = sc.scrollHeight;
+        const behavior = reduceMotion() ? 'auto' : 'smooth';
+        if (sc === document.scrollingElement || sc === document.documentElement) window.scrollTo({ top: document.documentElement.scrollHeight, behavior });
+        else sc.scrollTo({ top: sc.scrollHeight, behavior });
         return;
       }
       const isDoc = sc === document.scrollingElement || sc === document.documentElement;
