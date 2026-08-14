@@ -287,7 +287,28 @@ const buildAppFeatureSteps = (featureId, actions) => {
         clickSel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)', tab: 'data',
         title: 'Controls Section',
         body: <>This is where you can <b>view and edit a picker's Controls</b>. This includes its name, group, type, and other settings. Click on the Controls header now to advance this tutorial.</>,
-        primary: 'Done', back: true, requireClick: true,
+        primary: 'Next', back: true, requireClick: true,
+      },
+      // Same sel as Step 3 — still the whole picker box, now with Controls
+      // ITSELF expanded (the previous step's own click), so the box has
+      // grown to include all of PickerControls' real fields. No clickSel
+      // this time: every click inside stays genuinely usable (name/group/
+      // type fields, weight steppers, the works) — "explore and do
+      // whatever you want" is the point. The only two things still guarded
+      // are the picker's own header and the Items header, both via real
+      // `disabled` props in tab-data.jsx (disableEditTourToggles) rather
+      // than the click-guard, since collapsing either would pull this
+      // step's own target out from under the user mid-step. coachAtTop:
+      // true — Controls' real field set is easily taller than a short
+      // viewport can fit alongside the coach, same "pin coach to top, let
+      // the section run off the bottom" treatment as the manual-pick
+      // tour's own tall-target steps — see coachAtTop's own doc comment in
+      // onboarding-tour-runner.jsx.
+      {
+        sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])', tab: 'data',
+        title: 'Explore Controls',
+        body: <>Feel free to <b>explore this section and make any changes you'd like</b> to the picker's name, group, type, or other settings. Click Done when you are ready to finish this tutorial.</>,
+        primary: 'Done', back: true, coachAtTop: true,
       },
     ];
   }
