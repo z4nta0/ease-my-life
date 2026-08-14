@@ -267,20 +267,26 @@ const buildAppFeatureSteps = (featureId, actions) => {
           requestAnimationFrame(tryCollapse);
         },
       },
-      // Highlights only the Controls header — same selector help-
-      // content.jsx's own dataPickerControlsHeader entry uses (:nth-of-
-      // type(1), Controls always renders before Items), scoped to
-      // .data-list so this can't also match Conditionals/Reminders' own
-      // same-classed header above it. Only the picker just expanded in
-      // Step 2 has a mounted .cat-body at all (Collapse unmounts a closed
-      // section's children, see ui.jsx's own Collapse), so this naturally
-      // targets just that one picker's own Controls header without needing
-      // to track which picker it was. requireClick — expanding Controls is
-      // the only way to finish this tutorial.
+      // sel highlights the WHOLE expanded picker's own .cat section (header
+      // + its collapsed Controls/Items rows) — keeps the user oriented on
+      // WHICH picker this is, same "highlight the bigger box, narrow the
+      // click" reasoning as the manual-pick tour's own Add to Todo List
+      // step (.picker-run + .pv-act--send). :has() scopes to whichever
+      // picker is currently expanded specifically — unlike .cat-body's
+      // content, the outer .cat <section>/header render for EVERY picker
+      // unconditionally, so a bare .data-list > .cat would highlight every
+      // picker's header at once. clickSel then narrows the actual
+      // click-guard/requireClick target down to the Controls header alone
+      // (same selector help-content.jsx's own dataPickerControlsHeader
+      // entry uses) — doubling as a safety net: clicking the picker's own
+      // header (inside sel but outside clickSel) is silently blocked by
+      // the guard instead of collapsing the section and losing this step's
+      // target out from under the user.
       {
-        sel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)', tab: 'data',
-        title: 'Controls',
-        body: <>This is where you can <b>view and edit a picker's Controls</b> — its pick algorithm, weight, and other settings. Click on the Controls header now to expand it and finish this tutorial.</>,
+        sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])',
+        clickSel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)', tab: 'data',
+        title: 'Controls Section',
+        body: <>This is where you can <b>view and edit a picker's Controls</b>. This includes its name, group, type, and other settings. Click on the Controls header now to advance this tutorial.</>,
         primary: 'Done', back: true, requireClick: true,
       },
     ];
