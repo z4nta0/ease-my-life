@@ -137,10 +137,22 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   // show, and hides them again once help mode turns off.
   const [helpOn, setHelpOn] = React.useState(false);
   const helpExit = React.useCallback(() => setHelpOn(false), []);
+  // Skipped while the Stats PAGE TOUR owns these same real samples (see
+  // onboarding-page-tours.jsx's unhideSampleHistory) — this effect also
+  // runs on mount (helpOn starts false), and without this guard it would
+  // immediately re-hide the samples the instant the tour navigates onto
+  // this page, right after the tour's own Step 1 just unhid them. Confirmed
+  // as the cause of the Stats page tour going dim-with-nothing-then-ending:
+  // the group filter's own `existingGroups.length > 1` never got the
+  // chance to see any unhidden pickers before this ran the samples back to
+  // hidden.
+  const statsTourActive = !!(state.onboarding && state.onboarding.activeTour
+    && state.onboarding.activeTour.id === 'page-explore_stats');
   React.useEffect(() => {
+    if (statsTourActive) return;
     if (helpOn) unhideHelpStatsHistory(state, actions);
     else hideHelpStatsHistory(actions);
-  }, [helpOn]);
+  }, [helpOn, statsTourActive]);
   React.useEffect(() => () => hideHelpStatsHistory(actions), []);
   // scope: 'all' | <pickerId> | 'reminders'
   const [scope, setScope] = React.useState('all');
