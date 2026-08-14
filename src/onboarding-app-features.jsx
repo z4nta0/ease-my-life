@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon } from './ui.jsx';
 import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
 import { GuidedTour } from './onboarding-tour-runner.jsx';
-import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
+import { buildPageTourStep1 } from './onboarding-page-tours.jsx';
 
 // App Features — a SEPARATE, later-stage set of mini-tours shown on Today
 // only once the user has generated their first real todo list (see
@@ -88,7 +88,6 @@ export const APP_FEATURES = [
 
 function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose }) {
   const feature = APP_FEATURES.find((f) => f.id === featureId);
-  const nav = OB_NAV_TARGETS[feature.page];
   // Same resumable pattern as PageTour — see its own comment.
   const ob = state.onboarding || {};
   const resumable = ob.activeTour && ob.activeTour.id === `appfeature-${featureId}` ? ob.activeTour : null;
@@ -116,12 +115,9 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
     <GuidedTour
       tourId={`appfeature-${featureId}`}
       steps={[
-        {
-          ...nav,
-          body: <>{nav.body} Go ahead and click it now.</>,
-          tab: 'today',
-          primary: 'Done', back: false, requireClick: true,
-        },
+        // Same Step 1 every page tour uses (see its own comment) — still
+        // this tour's only step, so 'Done' instead of the default 'Next'.
+        buildPageTourStep1(feature.page, undefined, 'Done'),
       ]}
       resumeStep={resumable ? resumable.step : 0}
       actions={actions}

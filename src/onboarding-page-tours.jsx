@@ -49,14 +49,18 @@ const PAGE_TOUR_COPY = {
 // exactly — requireClick's own hover hint is what tells the user to click.
 // tab: 'today' keeps this from auto-navigating when the step opens (a page
 // tour is launched from Today, and clicking the real nav icon is meant to
-// be what does the navigating, not the step itself).
-const buildPageTourStep1 = (page, run) => {
+// be what does the navigating, not the step itself). `primary` defaults to
+// 'Next' (every page tour has more steps after this one) but is overridable
+// — App Features' own tours (onboarding-app-features.jsx) reuse this exact
+// step verbatim as their OWN Step 1, currently still their only step, so
+// theirs pass 'Done' instead.
+const buildPageTourStep1 = (page, run, primary = 'Next') => {
   const nav = OB_NAV_TARGETS[page];
   return {
     ...nav,
     body: <>{nav.body} Go ahead and click it now.</>,
     tab: 'today',
-    primary: 'Next', back: false, requireClick: true,
+    primary, back: false, requireClick: true,
     ...(run ? { run } : {}),
   };
 };
@@ -838,4 +842,4 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
   );
 }
 
-export { PageTour };
+export { PageTour, buildPageTourStep1 };
