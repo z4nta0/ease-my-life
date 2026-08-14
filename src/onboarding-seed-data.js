@@ -118,24 +118,25 @@ export const OB_SAMPLE_TASK_IDS = OB_TASKS.map((t) => t.id);
 // already produces the right "Every {Day}" text for it. Sample pickers don't
 // need an equivalent table: their card kicker is just the picker's own name,
 // and the card name is "Set up a {picker name} picker".
-// time is a placeholder estimate shown on the card — false numbers for now,
-// real ones to be filled in by hand later.
+// time is a real, user-confirmed estimate (manually timed 2026-08-14) shown
+// on the card.
 export const OB_REMINDER_CARD_TEXT = {
-  tk_ob_meds: { kicker: 'One-Time', name: 'Set up a one time reminder', time: '1 min' },
-  tk_ob_trash: { name: 'Set up a recurring reminder', time: '2 min' },
+  tk_ob_meds: { kicker: 'One-Time', name: 'Set up a one time reminder', time: '< 1 min' },
+  tk_ob_trash: { name: 'Set up a recurring reminder', time: '1 min' },
 };
 
 // Same idea as OB_REMINDER_CARD_TEXT's `time` above, but pickers have no
 // equivalent card-text override table to hang it off of (their kicker/name
 // are derived directly from the picker, not overridden) — a standalone map
-// keyed by sample picker id. Placeholder figures for now.
+// keyed by sample picker id. Real, user-confirmed estimates (manually timed
+// 2026-08-14).
 export const OB_PICKER_CARD_TIME = {
-  pkr_ob_daily: '3 min',
-  pkr_ob_monthly: '3 min',
-  pkr_ob_coffee: '2 min',
-  pkr_ob_dinner: '3 min',
-  pkr_ob_workouts: '3 min',
-  pkr_ob_relax: '2 min',
+  pkr_ob_daily: '2.5 min',
+  pkr_ob_monthly: '2.5 min',
+  pkr_ob_coffee: '2.5 min',
+  pkr_ob_dinner: '2.5 min',
+  pkr_ob_workouts: '2.5 min',
+  pkr_ob_relax: '2.5 min',
 };
 
 // Same local-timezone-adjusted ISO day string as store.jsx's isoDay /

@@ -34,15 +34,14 @@ export const OB_GENERATE_ITEM_ID = 'ob_generate';
 // `page` matches the `data-tab` value on that page's nav button (see
 // app.jsx's TabBar) — not used yet, but it's what each tour's own "explore"
 // step will target once built.
-// time is a placeholder estimate shown on the tour's Today launcher card
-// (see tab-today.jsx's PageTourCard) — false numbers for now, real ones to
-// be filled in by hand later.
+// time is a real, user-confirmed estimate (manually timed 2026-08-14) shown
+// on the tour's Today launcher card (see tab-today.jsx's PageTourCard).
 export const OB_PAGE_TOURS = [
-  { id: 'explore_today', page: 'today', label: 'Today', time: '2 min' },
-  { id: 'explore_pickers', page: 'picker', label: 'Pickers', time: '3 min' },
-  { id: 'explore_stats', page: 'stats', label: 'Stats', time: '2 min' },
-  { id: 'explore_data', page: 'data', label: 'Data', time: '3 min' },
-  { id: 'explore_settings', page: 'settings', label: 'Settings', time: '2 min' },
+  { id: 'explore_today', page: 'today', label: 'Today', time: '1 min' },
+  { id: 'explore_pickers', page: 'picker', label: 'Pickers', time: '1.5 min' },
+  { id: 'explore_stats', page: 'stats', label: 'Stats', time: '1 min' },
+  { id: 'explore_data', page: 'data', label: 'Data', time: '< 1 min' },
+  { id: 'explore_settings', page: 'settings', label: 'Settings', time: '1 min' },
 ];
 
 const CHECKLIST_ITEMS = [
