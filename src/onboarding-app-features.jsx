@@ -118,13 +118,17 @@ const buildAppFeatureSteps = (featureId) => {
       // an immediate advance): Pick one kicks off a multi-second spin
       // animation, so stay on THIS step's already-resolved coach for the
       // whole wait — same reasoning as the page tour's own step, whose
-      // advanceWhen this copies (Step 4's own clickSel below).
+      // advanceWhen this copies (Step 4's own clickSel below). coachAtTop:
+      // true — on a short viewport (iPhone SE height, 667px, or shorter)
+      // the coach can't fit above .picker-run without overlapping its top
+      // edge; pins the coach to safeTop instead, same treatment as Step 5's
+      // own fix (see that step's comment for the full reasoning).
       {
         sel: '.picker-run', tab: 'picker',
         title: 'Manual Generation',
         body: <>This will allow to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the Pick one button now to see how this works.</>,
         primary: 'Next', back: true, requireClick: true,
-        advanceWhen: '.pv-act--send',
+        advanceWhen: '.pv-act--send', coachAtTop: true,
       },
       // Title/body copied verbatim from the Pickers page tour's own
       // addToTodoList step. Still .picker-run, not just the Send to
@@ -148,13 +152,42 @@ const buildAppFeatureSteps = (featureId) => {
       // already moved past. advanceDelay: Send to Today swaps its own
       // label to "Sent!" for a beat (see tab-picker.jsx's sendToToday)
       // before reverting — finishing immediately would cut that
-      // confirmation off before the user ever sees it.
+      // confirmation off before the user ever sees it. coachAtTop: true —
+      // same short-viewport overlap as Step 3 (same .picker-run target,
+      // now even taller with the result + all three action buttons showing)
+      // — see that step's own comment for the full reasoning.
       {
         sel: '.picker-run', clickSel: '.pv-act--send', clickPassThroughSel: '.pv-act--reroll', tab: 'picker',
         title: 'Add to Todo List',
         body: <>This will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click this button now to give it a try.</>,
-        primary: 'Done', back: true, requireClick: true,
-        advanceDelay: 1600,
+        primary: 'Next', back: true, requireClick: true,
+        advanceDelay: 1600, coachAtTop: true,
+      },
+      // Title/body copied (lightly reworded) from the Pickers page tour's
+      // own pickerItems step. Same target (.pool-items, excludes "+ Add
+      // item" — see that step's own comment in onboarding-page-tours.jsx),
+      // but unlike the page tour (which disables ALL THREE per-item
+      // buttons via tab-picker.jsx's disablePoolItemButtons), only Edit and
+      // Delete stay narrated-not-usable here (disablePoolEditDelete, a
+      // separate flag gated on this exact tourId+step) — Send to Today
+      // stays genuinely usable, since it's real data and a second valid way
+      // to land a pick besides Manual Generation above. No requireClick:
+      // Send to Today is optional here, same "stays usable but doesn't
+      // gate advancing" treatment as Re-roll in the previous step — clicking
+      // anywhere inside .pool-items (including Send to Today) is already
+      // "on target" for the click-guard, so no clickPassThroughSel is
+      // needed the way Re-roll required one. coachAtTop: true — on a short
+      // viewport (e.g. iPhone SE) a pool of even a few real items is tall
+      // enough that the coach can't fit either above or below it without
+      // overlapping; pins the coach to safeTop and lets the pool run off
+      // the bottom instead, same tall-target treatment as the Data tour's
+      // own .data-list step and every Settings section — see coachAtTop's
+      // own doc comment in onboarding-tour-runner.jsx.
+      {
+        sel: '.pool-items', tab: 'picker',
+        title: 'Picker Items',
+        body: <>Here you can <b>view all items in this picker's pool</b>. You can see a given item's values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. Edit and Delete are disabled for this tutorial, but feel free to try Send to Today on any item now, or click Done when you are ready to finish this tutorial.</>,
+        primary: 'Done', back: true, coachAtTop: true,
       },
     ];
   }

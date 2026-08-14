@@ -201,6 +201,15 @@ function PickerView({ picker, state, actions, animStyle }) {
   // usable from there — narrating what they do is the point, not inviting
   // the user to act on a disposable tutorial picker's real items.
   const disablePoolItemButtons = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 6;
+  // App Features' own "Make your first manual pick" tour reaches this same
+  // pool at its own Step 5 (index 4) — but unlike the page tour above, Send
+  // to Today should stay genuinely usable there (real data, a second valid
+  // way to land a pick besides Manual Generation), only Edit/Delete stay
+  // narrated-not-usable. Deliberately only gates pool-edit/pool-del below,
+  // NOT pool-send's own disabled prop (still disablePoolItemButtons alone,
+  // so it's naturally unaffected/enabled during this tour).
+  const disablePoolEditDelete = disablePoolItemButtons
+    || (tour.phase === 'tour' && tour.tourId === 'appfeature-feat_manual_pick' && tour.step === 4);
   // Step 8 ("Add Picker Item") highlights "+ Add item" but explicitly
   // doesn't want the user opening the real create-item form from a
   // disposable tutorial picker.
@@ -589,12 +598,12 @@ function PickerView({ picker, state, actions, animStyle }) {
                       </button>
                     )}
                     <button type="button" className="pool-edit" aria-label={`Edit ${it.name}`}
-                            title="Edit" disabled={disablePoolItemButtons}
+                            title="Edit" disabled={disablePoolEditDelete}
                             onClick={() => startEditItem(it.id)}>
                       <Icon name="edit" size={15} />
                     </button>
                     <button type="button" className="pool-del" aria-label={`Delete ${it.name}`}
-                            disabled={disablePoolItemButtons}
+                            disabled={disablePoolEditDelete}
                             onClick={() => setConfirmDelId(it.id)}>
                       <Icon name="trash" size={15} />
                     </button>
