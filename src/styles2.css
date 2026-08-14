@@ -1764,6 +1764,20 @@ button.cat-h-l {
   .settings-rail {
     position: sticky; top: 0; z-index: 18;
     max-height: none;
+    /* Undo the desktop rule's overflow-y: auto — with overflow-x left
+       untouched otherwise, the browser force-pairs it to overflow-x: auto
+       too (CSS overflow spec), turning .settings-rail into a SECOND,
+       invisible scroll/clip container even with nothing to scroll
+       (scrollWidth === clientWidth). That silently clipped ::after's
+       right-edge fade despite its computed styles looking correct.
+       min-width: 0 replaces overflow as the fix for the OTHER thing that
+       overflow-y: auto was incidentally doing: as a grid item (see
+       .settings-layout), .settings-rail's default min-width:auto is
+       content-based, so without an explicit min-width it balloons to fit
+       .settings-rail-scroll's full unscrolled content width (628px)
+       instead of respecting the 1fr grid track. */
+    overflow: visible;
+    min-width: 0;
     padding: 14px 20px;
     background: var(--bg);
   }
@@ -1785,13 +1799,25 @@ button.cat-h-l {
      element (.settings-rail, sticky, never itself scrolls) fixes all
      three: the rail's own background stays opaque, the fade tracks the
      rail's real visible width, and the fade itself never moves. */
-  .settings-rail-scroll { overflow-x: auto; overflow-y: hidden; }
+  .settings-rail-scroll {
+    overflow-x: auto; overflow-y: hidden;
+    scrollbar-width: none;
+  }
+  .settings-rail-scroll::-webkit-scrollbar { display: none; }
   .settings-rail::before, .settings-rail::after {
     content: ''; position: absolute; top: 0; bottom: 0; width: 24px;
     pointer-events: none; z-index: 1;
   }
-  .settings-rail::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
-  .settings-rail::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+  /* left/right: 20px, not 0 — 0 would sit flush with .settings-rail's own
+     padding edge (padding: 14px 20px), but .settings-rail-scroll's actual
+     visible content edge is inset 20px further in than that. A fade at
+     the padding edge overlaps almost entirely with the empty padding
+     gutter, which is already var(--bg) — a bg-to-transparent gradient
+     painted over bg-colored padding is visually a no-op, so the fade
+     appeared to not render at all. Insetting by the padding amount
+     aligns the fade with where the pills actually get cut off. */
+  .settings-rail::before { left: 20px; background: linear-gradient(to right, var(--bg), transparent); }
+  .settings-rail::after { right: 20px; background: linear-gradient(to left, var(--bg), transparent); }
   .settings-rail.at-start::before { opacity: 0; }
   .settings-rail.at-end::after { opacity: 0; }
   .settings-rail .rail-kicker { display: none; }
