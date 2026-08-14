@@ -196,6 +196,30 @@ const PICKER_TOUR_STEP_6 = {
   title: 'Add items to this picker',
   body: <>The picker options are all done, you just need to <b>add some task items for the picker to choose from</b>. Go ahead and click this button now.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
+  // The click this run() accompanies swaps the form from Details to its own
+  // (much shorter) Items sub-step IN PLACE, within the same scrollable
+  // container — not a real navigation, so bring() never gets a chance to
+  // animate anything: the instant the shorter content mounts, the browser
+  // auto-clamps the still-scrolled-to-the-bottom-of-the-old-content scroll
+  // position down to whatever's now valid, synchronously and completely
+  // unanimatably, before Step 7's own tour effect ever runs (confirmed live
+  // — .main.scrollTop dropped from ~2960 to ~1060 within 50ms of the click,
+  // with zero scroll calls of ours in between). By the time Step 7's own
+  // bring() checks, the "+ Add item" target is usually already sitting
+  // wherever that clamp landed, so no scroll fires and the whole transition
+  // reads as an unexplained jump instead of the tour visibly navigating
+  // there. Resetting to the top HERE — before the native click's own
+  // handler swaps the content — sidesteps the clamp entirely (0 is always a
+  // valid scroll position, whatever the new content's height turns out to
+  // be) and leaves a real gap for Step 7's own bring() to smoothly scroll
+  // across instead. Instant, not smooth: this reset needs to be invisible
+  // (same frame as the click, before the old content is even gone) — an
+  // animated scroll here would show as its own, separate upward motion
+  // before the content swap, on top of Step 7's own real one after it.
+  run: () => {
+    const main = document.querySelector('.main');
+    if (main) main.scrollTop = 0;
+  },
 };
 
 // Highlights the "+ Add item" button on the now-showing Items sub-step
