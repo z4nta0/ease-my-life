@@ -647,6 +647,15 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       return;
     }
     let raf, cancelled = false;
+    // Whether THIS step's target needs top-space reserved above it, and how
+    // much — declared here (not down by decideReserve's own definition,
+    // where they conceptually belong) because bring() now needs to read/set
+    // them on its very first call, before decideReserve's own code further
+    // down has even run. See decideReserve's own comment for the full
+    // reasoning on what these track and why the decision only ever happens
+    // once per step.
+    let reserveDecided = false;
+    let reservedAmount = 0;
     // Resolve the ACTUAL scrolling ancestor of the target. On narrow/mobile
     // layouts the scroller isn't ".main" (the page/body scrolls instead), so a
     // hardcoded ".main" left the target below the fold with the coach + spot
@@ -675,6 +684,12 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     };
     // Bring the target(s) into view once when the step opens.
     const bring = () => {
+      // Guards the recursive requestAnimationFrame(() => bring()) call
+      // below (the reserve-space retry) — that one fires on its own
+      // timer, outside this effect's own raf loop, so the ordinary
+      // `cancelled` check further down never gets a chance to catch it
+      // if the step/tour has already moved on by the time it fires.
+      if (cancelled) return;
       const els = findTargets(cur.sel);
       if (!els.length) return;
       const sc = getScroller(els[0]);
@@ -721,6 +736,44 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       // target that "fits" by the pad's math alone still land partly behind
       // that chrome, with bring() then seeing no need to scroll further.
       const minTop = Math.max(sr.top + pad, obSafeTop() + 12);
+      // A target too tall to fit alongside the coach no matter where it's
+      // scrolled to needs reserve space — decided HERE, using a PREDICTED
+      // landing position (wherever the branch just below is about to place
+      // it) rather than an OBSERVED post-scroll one, so it can be applied
+      // before this step's very first scroll instead of discovered only
+      // after that scroll already settled. The latter is what this
+      // replaces: the loop's own decideReserve (below, unchanged) used to
+      // be the only place this got decided, which meant a visibly separate
+      // second "jump then re-scroll" once it found the overlap — this
+      // step's target genuinely overlapping the coach at its settled
+      // position is exactly the case reproduced live and reported as jank.
+      // predictedTop mirrors whichever of the two branches below will
+      // actually fire (null — no scroll needed at all — is deliberately
+      // left unhandled; a target that already fits without scrolling was
+      // never going to need reserve either), then plugs it into the exact
+      // same fits-below/fits-above checks decideReserve itself uses, so
+      // this can't disagree with what decideReserve would have decided
+      // anyway — just decided proactively instead of reactively. Once the
+      // reserve padding lands and this retries, decideReserve (called from
+      // the loop below, after reserveDecided is already true) just no-ops.
+      let predictedTop = null;
+      if (er.top < minTop) predictedTop = minTop;
+      else if (er.bottom > sr.bottom - padB) predictedTop = (sr.bottom - padB) - er.height;
+      if (!cur.coachAtTop && !reserveDecided && predictedTop != null) {
+        const vh = window.innerHeight, ch = coachHRef.current;
+        const fitsBelow = vh - (predictedTop + er.height) >= ch + 16;
+        const fitsAbove = predictedTop - 16 - ch >= obSafeTop() + 12;
+        if (!fitsBelow && !fitsAbove) {
+          reserveDecided = true;
+          reservedAmount = ch + 40;
+          setReserveTop(reservedAmount);
+          // The padding hasn't rendered yet (React hasn't re-committed) —
+          // wait a real frame so the retry measures the actual,
+          // already-reserved layout instead of guessing at it.
+          requestAnimationFrame(() => bring());
+          return;
+        }
+      }
       if (er.top < minTop) scrollByAmt(sc, -(minTop - er.top));
       else if (er.bottom > sr.bottom - padB) scrollByAmt(sc, er.bottom - (sr.bottom - padB));
     };
@@ -803,12 +856,10 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // above" threshold WHILE THE USER IS STILL SCROLLING, jumping the layout
     // under them. Deciding once and locking it for the step's duration reads
     // like a person who sized up the space up front, not one who keeps
-    // rearranging things as you scroll.
-    let reserveDecided = false;
-    // Tracked outside React state (read by the scrollHeight watchdog below,
-    // in the same closure, so no staleness risk the way reading the actual
-    // `reserveTop` state here would have) — see its use there for why.
-    let reservedAmount = 0;
+    // rearranging things as you scroll. (reserveDecided/reservedAmount
+    // themselves are declared further up, before bring()'s own definition —
+    // bring() now needs them on its very first call, before this point in
+    // the file has even run yet.)
     // The TARGET can still be settling too, in two different ways: (1) mid-
     // CSS-transition — e.g. a Collapse section still animating open the
     // first time this step's target mounts, .np-daily-group's weekday chips
