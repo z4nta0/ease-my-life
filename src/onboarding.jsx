@@ -367,7 +367,30 @@ function Onboarding({ state, actions, active, selectTab }) {
         startLabel="Take the quick tour"
         skipLabel="I’ll explore myself"
         onStart={() => { selectTab('today'); welcomeDone(); setPhase('tour'); }}
-        onSkip={() => { welcomeDone(); finish(); goToTodayTop(active, selectTab); }}
+        onSkip={() => {
+          welcomeDone();
+          // Skipping the tour still needs to land on the same "few small
+          // tutorials" checklist phase the full tour reaches at its last
+          // step (Generate step's task-seeding run(), Settings step's
+          // hide-everything run() — see the `steps` array above) — otherwise
+          // Today has nothing to show: the sample pickers exist but aren't
+          // hidden yet (groupEntries only renders a tutorial launcher card
+          // for a hidden sample), and no sample reminders exist at all.
+          // Seeded straight into `hidden`, unlike the tour's own Generate
+          // step — there's no in-between "review the generated list" step
+          // here for them to be visible during first.
+          if (!state.tasks.some((t) => OB_SAMPLE_TASK_IDS.includes(t.id))) {
+            const today = new Date().getDay();
+            OB_TASKS.forEach((t) => actions.addTask({
+              ...t,
+              ...(t.repeat === 'weekly' ? { daysOfWeek: [today] } : {}),
+              hidden: true,
+            }));
+          }
+          OB_SAMPLE_PICKER_IDS.forEach((id) => actions.updatePicker(id, { hidden: true }));
+          finish();
+          goToTodayTop(active, selectTab);
+        }}
       />
     );
   }
