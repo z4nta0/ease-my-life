@@ -43,10 +43,10 @@ export const APP_FEATURES = [
     pills: ['manual pick', 'pickers page', 'run a picker'],
   },
   {
-    id: 'feat_edit_item', page: 'picker', label: 'Edit your first item',
+    id: 'feat_edit_item', page: 'data', label: 'Edit your first item',
     title: 'Editing Items',
     body: 'This tutorial will show you how to edit one of your own items — updating its name, weight, or other values whenever your needs change.',
-    pills: ['edit item', 'pickers page', 'update values'],
+    pills: ['edit item', 'data page', 'update values'],
   },
   {
     id: 'feat_run_time', page: 'settings', label: 'Adjust your generator run time',
