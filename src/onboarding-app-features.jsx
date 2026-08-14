@@ -41,6 +41,11 @@ export const APP_FEATURES = [
     title: 'Manual Picks',
     body: 'This tutorial will show you how to manually run one of your pickers and send its result straight to your todo list, without waiting for the next automatic generation.',
     pills: ['pickers page', 'run a picker', 'manual pick'],
+    // Real, user-confirmed estimate (same convention as OB_PAGE_TOURS' own
+    // `time` field in onboarding-checklist.js) — only this feature has real
+    // step-by-step content built out so far, the rest stay untimed until
+    // they do too.
+    time: '1 min',
   },
   {
     id: 'feat_edit_item', page: 'data', label: 'Edit your first item',

@@ -868,6 +868,12 @@ function AppFeatureCard({ feature, state, actions, onPlayTutorial, onUncheckAppF
       <div className="today-card-body">
         <div className="today-card-meta">
           <span className="meta-picker">{APP_FEATURE_PAGE_LABELS[feature.page]}</span>
+          {feature.time && (
+            <>
+              <span className="meta-dot">·</span>
+              <span className="meta-time">{feature.time}</span>
+            </>
+          )}
         </div>
         <div className="today-card-name">{feature.label}</div>
       </div>
