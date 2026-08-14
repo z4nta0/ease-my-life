@@ -10,7 +10,7 @@ import { TODAY_HELP_ITEMS } from './help-content.jsx';
 import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
 import { OB_CHECKLIST, OB_GENERATE_ITEM_ID, OB_PAGE_TOURS } from './onboarding-checklist.js';
-import { OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
+import { OB_PICKER_CARD_TIME, OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { ReminderTour } from './onboarding-reminder-tours.jsx';
 import { PICKERS, normalizeGroupName } from './pickers.js';
 import { ReminderSection } from './reminders.jsx';
@@ -557,6 +557,12 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
         <div className="today-card-body">
           <div className="today-card-meta">
             <span className="meta-picker">{picker.name}</span>
+            {OB_PICKER_CARD_TIME[picker.id] && (
+              <>
+                <span className="meta-dot">·</span>
+                <span className="meta-time">{OB_PICKER_CARD_TIME[picker.id]}</span>
+              </>
+            )}
           </div>
           <div className="today-card-name">Set up a {picker.name} picker</div>
         </div>
@@ -802,6 +808,12 @@ function PageTourCard({ tour, state, actions, onPlayTutorial, onUncheckTutorial,
       <div className="today-card-body">
         <div className="today-card-meta">
           <span className="meta-picker">{tour.label} Tour</span>
+          {tour.time && (
+            <>
+              <span className="meta-dot">·</span>
+              <span className="meta-time">{tour.time}</span>
+            </>
+          )}
         </div>
         <div className="today-card-name">Take a quick tour of the {tour.label} page</div>
       </div>

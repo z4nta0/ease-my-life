@@ -409,7 +409,7 @@ function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, on
     // No explicit kicker override → fall back to the real schedule summary
     // (e.g. "Every Wednesday") so a recurring sample's card always matches
     // whatever day it was actually seeded for.
-    const text = { kicker: override.kicker || TASKS.summary(task), name: override.name || task.name };
+    const text = { kicker: override.kicker || TASKS.summary(task), name: override.name || task.name, time: override.time };
     const onRowClick = (e) => {
       if (e.target.closest('.today-card-actions')) return;
       if (tutorialDone) onUncheckTutorial('reminder', task.id);
@@ -434,6 +434,12 @@ function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, on
         <div className="today-card-body">
           <div className="today-card-meta rem-meta">
             <span className="meta-picker">{text.kicker}</span>
+            {text.time && (
+              <>
+                <span className="meta-dot">·</span>
+                <span className="meta-time">{text.time}</span>
+              </>
+            )}
           </div>
           <div className="today-card-name">{text.name}</div>
         </div>
