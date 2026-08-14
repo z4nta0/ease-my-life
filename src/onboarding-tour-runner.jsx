@@ -157,6 +157,23 @@ const obSafeBottom = () => {
   return bar ? bar.getBoundingClientRect().top : window.innerHeight;
 };
 
+// Where the coach should sit relative to the (already clamped) highlight
+// rect `r` — shared by the render function's own React-driven placement AND
+// place()'s imperative per-frame write below, so the two can never disagree.
+// Having both matters: place() is what keeps the coach in lockstep with the
+// highlight DURING a smooth scroll (see its own comment), but React's
+// render still needs the same math for the coach's very first paint each
+// step (before place() has run at all) and as the eventual-consistency
+// fallback once React catches up.
+const computeCoachLayout = (r, coachHVal, coachWVal, vw, vh) => {
+  const left = Math.max(12, Math.min(r.left, vw - coachWVal - 12));
+  const safeTop = obSafeTop() + 12;
+  const spaceBelow = vh - (r.top + r.height);
+  if (spaceBelow >= coachHVal + 16) return { top: r.top + r.height + 16, left, arrowClass: 'ob-coach--up' };
+  return { top: Math.max(r.top - 16 - coachHVal, safeTop), left, arrowClass: 'ob-coach--down' };
+};
+const computeArrowX = (r, coachLeft, coachWVal) => Math.max(18, Math.min(r.left + r.width / 2 - coachLeft, coachWVal - 26));
+
 // Shared by every tour's Skip action (both the intro modal's and, once a
 // tour is under way, the coach card's) — skipping should always land back on
 // a pristine Today, not wherever a mid-tour tab-switch or scroll happened to
@@ -190,7 +207,8 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   const [reserveTop, setReserveTop] = React.useState(0);
   const hadRectRef = React.useRef(false); // suppress the spot's slide-in on first paint
   const spotRef = React.useRef(null); // positioned imperatively each frame (no React lag)
-  const coachRef = React.useRef(null);
+  const coachRef = React.useRef(null); // the off-screen measurer clone — see its own comment below
+  const realCoachRef = React.useRef(null); // the real, visible coach — also positioned imperatively each frame, see place()
   // The coach's REAL rendered height, measured after paint — OB_COACH_H is
   // only a rough estimate (used as the initial value here, before any step
   // has actually been measured) and steps with longer body text render
@@ -754,6 +772,25 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
         s.top = (r.top - pad) + 'px'; s.left = (r.left - pad) + 'px';
         s.width = (r.width + pad * 2) + 'px'; s.height = (r.height + pad * 2) + 'px';
       }
+      // Same reasoning as the spot above: during bring()'s (now smooth)
+      // scroll, the render function's OWN coach position — driven by the
+      // `rect` React state set below, once per animation frame — lags a
+      // render/commit cycle behind the browser's own scroll animation and
+      // visibly stutters instead of gliding. Writing directly to the DOM
+      // here keeps the coach locked to the highlight, frame for frame; the
+      // render function still computes the same layout as a fallback for
+      // the coach's first paint each step (before this has run at all) and
+      // as the eventual React-driven value once it catches up.
+      if (realCoachRef.current) {
+        const vwNow = window.innerWidth, vhNow = window.innerHeight;
+        const coachWNow = Math.min(300, vwNow - 24);
+        const layout = computeCoachLayout(r, coachHRef.current, coachWNow, vwNow, vhNow);
+        const cs = realCoachRef.current.style;
+        cs.top = layout.top + 'px'; cs.left = layout.left + 'px';
+        cs.setProperty('--ob-ax', computeArrowX(r, layout.left, coachWNow) + 'px');
+        realCoachRef.current.classList.toggle('ob-coach--up', layout.arrowClass === 'ob-coach--up');
+        realCoachRef.current.classList.toggle('ob-coach--down', layout.arrowClass === 'ob-coach--down');
+      }
       return r;
     };
     // Decide how much top-space (if any) THIS step's target needs reserved
@@ -937,38 +974,21 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     const pad = 8;
     hadRectRef.current = true;
     spotStyle = { top: rect.top - pad, left: rect.left - pad, width: rect.width + pad * 2, height: rect.height + pad * 2, transition: 'none' };
-    let left = Math.max(12, Math.min(rect.left, vw - coachW - 12));
-    // The lowest the coach can sit without going under the Today tab's sticky
-    // header (and, on mobile, the groups rail stacked below it) — raw
-    // viewport space above the target isn't usable if that chrome occupies
-    // part of it. Only a safety clamp at this point: the reserve-space effect
-    // above already pushes the list down so the target's real position
-    // leaves enough room above it, once that reflow settles (usually within
-    // a frame or two).
-    const safeTop = obSafeTop() + 12;
-    // rect itself is already clamped to the safe viewport area (see
-    // clampToChrome), so spaceBelow naturally goes from "basically none"
-    // (target's clamped bottom sits at the safe boundary — true for most of
-    // a coachAtTop target's own scroll range, since it's TALLER than that
-    // area by definition) to genuinely large once the user has scrolled far
-    // enough that the target's REAL bottom edge is what's being measured
-    // instead. No coachAtTop-specific branch needed here at all any more —
-    // letting it fall through to the exact same below/above logic every
-    // other step already uses is what lets the coach flip to sit BELOW the
-    // target (arrow up) once there's room, instead of only ever attaching
-    // above it. coachAtTop's own remaining job is upstream of this: skip
+    // Same math place() uses to position the coach imperatively every frame
+    // (see its own comment) — kept here too as the coach's first-paint value
+    // each step and the eventual React-driven fallback once it catches up.
+    // No coachAtTop-specific branch needed here at all any more — letting it
+    // fall through to the exact same below/above logic every other step
+    // already uses is what lets the coach flip to sit BELOW the target
+    // (arrow up) once there's room, instead of only ever attaching above it.
+    // coachAtTop's own remaining job is upstream of this: skip
     // decideReserve's padding (see that flag's own doc comment) and give
     // bring() a precise initial scroll target instead of the general pad/
     // padB math, which doesn't reliably land a too-tall target anywhere
     // useful on the very first frame.
-    const spaceBelow = vh - (rect.top + rect.height);
-    if (spaceBelow >= coachH + 16) {
-      coachStyle = { top: rect.top + rect.height + 16, left };
-      arrowClass = 'ob-coach--up';
-    } else {
-      coachStyle = { top: Math.max(rect.top - 16 - coachH, safeTop), left };
-      arrowClass = 'ob-coach--down';
-    }
+    const layout = computeCoachLayout(rect, coachH, coachW, vw, vh);
+    coachStyle = { top: layout.top, left: layout.left };
+    arrowClass = layout.arrowClass;
   } else {
     // Target not found yet (mid-navigation). Show only the dim; the visible
     // coach appears once its target resolves, so no stale/centered flash —
@@ -976,7 +996,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // by the time the target IS found.
     return portal(<div className="ob-tour" aria-live="polite"><div className="ob-dim" />{measurer}</div>);
   }
-  const arrowX = rect ? Math.max(18, Math.min(rect.left + rect.width / 2 - (coachStyle.left || 0), coachW - 26)) : 0;
+  const arrowX = computeArrowX(rect, coachStyle.left, coachW);
 
   return portal(
     <div className="ob-tour" aria-live="polite">
@@ -990,7 +1010,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       {spotStyle && <div className={`ob-spot ${dragging ? 'is-dragging' : ''}`} ref={spotRef} style={spotStyle} />}
       {!spotStyle && !dragging && <div className="ob-dim" />}
       {!dragging && (
-        <div className={`ob-coach ${arrowClass}`} style={{ ...coachStyle, width: coachW, '--ob-ax': arrowX + 'px' }}>
+        <div className={`ob-coach ${arrowClass}`} ref={realCoachRef} style={{ ...coachStyle, width: coachW, '--ob-ax': arrowX + 'px' }}>
           <p className="ob-prog">Step {step + 1} of {total}</p>
           <h4>{cur.title}</h4>
           <p className="ob-body">{cur.body}</p>
