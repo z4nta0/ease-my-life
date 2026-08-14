@@ -101,12 +101,38 @@ const buildAppFeatureSteps = (featureId) => {
       // file's own comment on it) so this highlights "the picker window
       // and the Pick one button" together, not just the button on its
       // own. No scrollToTop/Bottom override — the default pad-based
-      // bring() already smooth-scrolls it into view.
+      // bring() already smooth-scrolls it into view. advanceWhen (not
+      // an immediate advance): Pick one kicks off a multi-second spin
+      // animation, so stay on THIS step's already-resolved coach for the
+      // whole wait — same reasoning as the page tour's own step, whose
+      // advanceWhen this copies (Step 3's own clickSel below).
       {
         sel: '.picker-run', tab: 'picker',
         title: 'Manual Generation',
         body: <>This will allow to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the Pick one button now to see how this works.</>,
+        primary: 'Next', back: true, requireClick: true,
+        advanceWhen: '.pv-act--send',
+      },
+      // Title/body copied verbatim from the Pickers page tour's own
+      // addToTodoList step. Still .picker-run, not just the Send to
+      // Today button on its own — same combined-box reasoning as Step
+      // 2, and .picker-actions (which .picker-run wraps) contains the
+      // WHOLE row (Send to Today, Re-roll, AND Done), so this highlights
+      // all three together (the picker window itself staying highlighted
+      // the whole time, same element as Step 2). clickSel narrows the
+      // actual click-guard/requireClick target down to Send to Today
+      // specifically — a click on Re-roll or Done shouldn't satisfy
+      // this step, since either discards the very pick Step 2 just made.
+      // advanceDelay: Send to Today swaps its own label to "Sent!" for
+      // a beat (see tab-picker.jsx's sendToToday) before reverting —
+      // finishing immediately would cut that confirmation off before
+      // the user ever sees it.
+      {
+        sel: '.picker-run', clickSel: '.pv-act--send', tab: 'picker',
+        title: 'Add to Todo List',
+        body: <>This will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click this button now to give it a try.</>,
         primary: 'Done', back: true, requireClick: true,
+        advanceDelay: 1600,
       },
     ];
   }
