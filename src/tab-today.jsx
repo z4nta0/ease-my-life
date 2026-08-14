@@ -10,6 +10,7 @@ import { TODAY_HELP_ITEMS } from './help-content.jsx';
 import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
 import { OB_CHECKLIST, OB_GENERATE_ITEM_ID, OB_PAGE_TOURS } from './onboarding-checklist.js';
+import { APP_FEATURES, APP_FEATURE_PAGE_LABELS } from './onboarding-app-features.jsx';
 import { OB_PICKER_CARD_TIME, OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { ReminderTour } from './onboarding-reminder-tours.jsx';
 import { PICKERS, normalizeGroupName } from './pickers.js';
@@ -829,7 +830,54 @@ function PageTourCard({ tour, state, actions, onPlayTutorial, onUncheckTutorial,
   );
 }
 
-function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStartPageTour }) {
+// An "App Features" launcher card — same shape/behavior as a Page Tours
+// card (see its own comment just above), but backed by its own
+// state.onboarding.appFeatures map instead of the checklist, and with no
+// checklistExiting celebration-exit animation to key off (App Features
+// isn't part of that "closing card" flow at all — see showAppFeatures'
+// own comment in TabToday for why).
+function AppFeatureCard({ feature, state, actions, onPlayTutorial, onUncheckAppFeature }) {
+  const done = !!(state.onboarding && state.onboarding.appFeatures && state.onboarding.appFeatures[feature.id]);
+  const onRowClick = (e) => {
+    if (e.target.closest('.today-card-actions')) return;
+    if (done) onUncheckAppFeature(feature.id);
+    else onPlayTutorial('appFeature', feature.id);
+  };
+  return (
+    <article className={`today-card today-card--tutorial ${done ? 'is-done' : ''}`}
+              onClick={onRowClick}>
+      {done ? (
+        <button type="button" className="check" aria-pressed="true"
+                aria-label={`Undo ${feature.label} tutorial`}
+                onClick={(e) => { e.stopPropagation(); onUncheckAppFeature(feature.id); }}>
+          <span className="check-ripple" aria-hidden="true" />
+          <Icon name="check" size={14} />
+        </button>
+      ) : (
+        <button type="button" className="check" aria-label={`Start the ${feature.label} tutorial`}
+                onClick={(e) => { e.stopPropagation(); onPlayTutorial('appFeature', feature.id); }}>
+          <Icon name="play" size={13} />
+        </button>
+      )}
+      <div className="today-card-body">
+        <div className="today-card-meta">
+          <span className="meta-picker">{APP_FEATURE_PAGE_LABELS[feature.page]}</span>
+        </div>
+        <div className="today-card-name">{feature.label}</div>
+      </div>
+      {!done && (
+        <div className="today-card-actions">
+          <button className="icon-btn" onClick={(e) => { e.stopPropagation(); actions.setAppFeatureItem(feature.id, { status: 'cancelled' }); }}
+                  aria-label="Cancel tutorial" title="Cancel">
+            <Icon name="x" size={15} />
+          </button>
+        </div>
+      )}
+    </article>
+  );
+}
+
+function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStartPageTour, onStartAppFeatureTour }) {
   // Help mode (see help-mode.jsx's own header comment) — local, resets to
   // off on every remount (tab switch), which is exactly the "navigating
   // away closes it, the page you land on doesn't inherit it" behavior the
@@ -903,6 +951,21 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   const mainTourEnded = state.pickers.some((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id))
     || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
   const showChecklist = mainTourEnded && !checklistDone;
+  // App Features (see onboarding-app-features.jsx) — a separate, later-stage
+  // set of tutorials shown only AFTER the user has generated their first
+  // real todo list, once resolved (Play-to-finish, X to cancel — same as
+  // any other tutorial card) never coming back on their own; the whole
+  // section just stops rendering once every one of them is resolved.
+  // Mutually exclusive with showChecklist by construction (checklistDone can
+  // only ever be true once showChecklist's own gate has already gone
+  // false), so there's no ordering conflict to resolve against Page Tours —
+  // but checklistDone itself, unlike showChecklist, never resets back to
+  // false on a Replay Tour (see onboarding.jsx), which is exactly why these
+  // need Settings' replay button to explicitly clear appFeatures back to {}
+  // to reappear, rather than reappearing automatically the way the
+  // checklist-driven cards do.
+  const appFeaturesState = (state.onboarding && state.onboarding.appFeatures) || {};
+  const showAppFeatures = checklistDone && APP_FEATURES.some((f) => !appFeaturesState[f.id]);
   // Published so reminders.jsx's startAdd can hide ANY reminder created
   // while the checklist is up — not just ones a mini-tour itself creates —
   // so a user manually clicking "+" mid-onboarding doesn't clutter the list
@@ -1290,7 +1353,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
       container.removeEventListener('scroll', onScroll);
       window.removeEventListener('scroll', onScroll);
     };
-  }, [groups.length, blockOrder]);
+  }, [groups.length, blockOrder, showAppFeatures]);
 
   const jumpToGroup = (name) => {
     const el = sectionRefs.current[name];
@@ -1796,16 +1859,21 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     return { kind: 'reminder', id: variant === 'once' ? 'tk_ob_meds' : 'tk_ob_trash' };
   });
   // Mini-tour launcher cards' Play button / row click. `kind` is 'picker',
-  // 'reminder', or 'pageTour'; `id` is the sample picker/task/page-tour id.
+  // 'reminder', 'pageTour', or 'appFeature'; `id` is the sample picker/task/
+  // page-tour/App Feature id.
   const startMiniTour = (kind, id) => {
     if (kind === 'picker') onStartPickerTour(id);
     else if (kind === 'pageTour') onStartPageTour(id);
+    else if (kind === 'appFeature') onStartAppFeatureTour(id);
     else setActiveMiniTour({ kind, id });
   };
   // Unchecks an already-resolved launcher card (skipped/cancelled/finished)
   // back to pending, so its mini-tour can be redone. Never touches the
   // sample itself — see onboarding-checklist.js.
   const uncheckTutorial = (kind, id) => actions.setChecklistItem(id, null);
+  // Same idea, for App Features — a separate map, not the checklist (see
+  // onboarding-app-features.jsx's own header comment for why).
+  const uncheckAppFeature = (id) => actions.setAppFeatureItem(id, null);
 
   // The closing "Generate a real list" card — see onboarding-checklist.js.
   // Actionable once every other checklist item is resolved AND at least one
@@ -2012,6 +2080,21 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                   </li>
                 );
               })}
+              {/* Pinned last always — not part of blockOrder/state.groupOrder,
+                  so it can't be dragged around in Edit Mode and always
+                  renders after every real group. See showAppFeatures' own
+                  comment for the render gate. */}
+              {showAppFeatures && (
+                <li key="__appFeatures">
+                  <button className={`rail-btn ${activeGroup === '__appFeatures' ? 'is-on' : ''}`}
+                          onClick={() => jumpToGroup('__appFeatures')}>
+                    <span className="rail-name">App Features</span>
+                    <span className="rail-count">
+                      <span>{APP_FEATURES.filter((f) => appFeaturesState[f.id]).length}</span><span className="rail-of">/{APP_FEATURES.length}</span>
+                    </span>
+                  </button>
+                </li>
+              )}
             </ul>
             <div className="rail-editmode">
               <button type="button"
@@ -2148,6 +2231,23 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                 </section>
               );
             })}
+            {/* Pinned last always — see showAppFeatures' own comment and the
+                matching rail entry above for why this isn't part of
+                genBlockOrder/state.groupOrder. */}
+            {showAppFeatures && (
+              <section key="__appFeatures" className="group-section"
+                       ref={(el) => { sectionRefs.current['__appFeatures'] = el; }}>
+                <GroupHeader name="App Features"
+                             doneCount={APP_FEATURES.filter((f) => appFeaturesState[f.id]).length}
+                             total={APP_FEATURES.length} editMode={false} />
+                <div className="today-list">
+                  {APP_FEATURES.map((f) => (
+                    <AppFeatureCard key={f.id} feature={f} state={state} actions={actions}
+                                    onPlayTutorial={startMiniTour} onUncheckAppFeature={uncheckAppFeature} />
+                  ))}
+                </div>
+              </section>
+            )}
             </div>
 
             {showChecklist && (

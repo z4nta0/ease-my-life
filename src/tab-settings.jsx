@@ -1366,7 +1366,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   <span className="set-data-sub">Runs the first-run walkthrough again. Including the welcome message, a guided tour of pickers, generating your day, and reminders.</span>
                 </div>
                 <Btn kind="secondary" size="sm" icon="refresh"
-                     onClick={() => { if (onHome) onHome(); actions.setOnboarding({ welcomed: false, dismissed: true }); }}>Replay tour</Btn>
+                     onClick={() => { if (onHome) onHome(); actions.setOnboarding({ welcomed: false, dismissed: true, appFeatures: {} }); }}>Replay tour</Btn>
               </div>
             </Card>
 

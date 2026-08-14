@@ -427,6 +427,15 @@ function migrate(s) {
   if (s && s.onboarding && typeof s.onboarding.activeTour === 'undefined') {
     s.onboarding.activeTour = null;
   }
+  // App Features tutorials (added later) — see onboarding-app-features.jsx.
+  // Deliberately separate from `checklist` above, not folded into the same
+  // map: these aren't tracked by the checklist "engine" at all (no doneCount/
+  // total ring or streak participation, no closing Generate-style card) —
+  // just a per-item resolved/not flag, same shape ({ status }) as `checklist`
+  // purely for consistency with setChecklistItem's own pattern.
+  if (s && s.onboarding && (!s.onboarding.appFeatures || typeof s.onboarding.appFeatures !== 'object')) {
+    s.onboarding.appFeatures = {};
+  }
   // Reminder completion log (added later). Append-only history of check-offs.
   if (s && !Array.isArray(s.reminderLog)) s.reminderLog = [];
   // Reminder skip log (added later). Append-only history of skip actions.
@@ -672,6 +681,16 @@ function useStore(opts) {
       const checklist = { ...((s.onboarding && s.onboarding.checklist) || {}) };
       if (patch) checklist[itemId] = patch; else delete checklist[itemId];
       return { ...s, onboarding: { ...(s.onboarding || {}), checklist } };
+    }),
+
+    // Same shape/reasoning as setChecklistItem above, but for App Features
+    // tutorials (see onboarding-app-features.jsx) — a deliberately separate
+    // map, not part of the checklist "engine" at all (see its own migrate()
+    // backfill comment for why).
+    setAppFeatureItem: (itemId, patch) => setState((s) => {
+      const appFeatures = { ...((s.onboarding && s.onboarding.appFeatures) || {}) };
+      if (patch) appFeatures[itemId] = patch; else delete appFeatures[itemId];
+      return { ...s, onboarding: { ...(s.onboarding || {}), appFeatures } };
     }),
 
     // Flips once the closing Generate card's flow completes — every

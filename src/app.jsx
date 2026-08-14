@@ -3,6 +3,7 @@ import { PALETTES, applyPaletteObj, resolveActiveThemeKey, resolveCustomPalette 
 import { Onboarding, useEmlTour } from './onboarding.jsx';
 import { PickerTour } from './onboarding-picker-tours.jsx';
 import { PageTour } from './onboarding-page-tours.jsx';
+import { AppFeatureTour } from './onboarding-app-features.jsx';
 import { CLEAN_STATE } from './seed.js';
 import { useStore } from './store.jsx';
 import { TabData } from './tab-data.jsx';
@@ -156,6 +157,13 @@ function App() {
     const at = state.onboarding && state.onboarding.activeTour;
     return (at && typeof at.id === 'string' && at.id.startsWith('page-')) ? at.id.slice('page-'.length) : null;
   });
+  // Same reasoning again, for App Features tutorials (see
+  // onboarding-app-features.jsx) — most of these live on Pickers/Settings,
+  // not Today, so this has to live here too rather than in TabToday.
+  const [activeAppFeatureTour, setActiveAppFeatureTour] = React.useState(() => {
+    const at = state.onboarding && state.onboarding.activeTour;
+    return (at && typeof at.id === 'string' && at.id.startsWith('appfeature-')) ? at.id.slice('appfeature-'.length) : null;
+  });
   // The Welcome Tour auto-opens/closes this same rail while it's running, so
   // a step spotlighting a nav button can actually find it there even when
   // collapsed — see onboarding.jsx's wantRailOpen publish. Only acts while a
@@ -242,7 +250,7 @@ function App() {
       )}
       {railOpen && <div className="rail-scrim" onClick={() => setRailOpen(false)} aria-hidden="true" />}
       <main className="main" ref={mainRef}>
-        {active === 'today' && <div className="tab-fade" key="today"><TabToday state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} onStartPickerTour={setActivePickerTour} onStartPageTour={setActivePageTour} /></div>}
+        {active === 'today' && <div className="tab-fade" key="today"><TabToday state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} onStartPickerTour={setActivePickerTour} onStartPageTour={setActivePageTour} onStartAppFeatureTour={setActiveAppFeatureTour} /></div>}
         {active !== 'today' && (
           <div className="main-inner tab-fade" key={active}>
             {active === 'picker'   && <TabPicker   state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} animStyle={(state.appearance && state.appearance.pickAnim) || 'reel'} />}
@@ -272,6 +280,16 @@ function App() {
           active={active}
           selectTab={selectTab}
           onClose={() => setActivePageTour(null)}
+        />
+      )}
+      {activeAppFeatureTour && (
+        <AppFeatureTour
+          featureId={activeAppFeatureTour}
+          state={state}
+          actions={actions}
+          active={active}
+          selectTab={selectTab}
+          onClose={() => setActiveAppFeatureTour(null)}
         />
       )}
 
