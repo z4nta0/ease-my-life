@@ -508,6 +508,9 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
   React.useEffect(() => () => clearTimeout(pickPreviewTimer.current), []);
   const sectionRefs = React.useRef({});
   const railRef = React.useRef(null);
+  // The mobile pill bar's own horizontal scroller — see its own comment
+  // below (near the fade-edge effect) for why this can't just be railRef.
+  const railScrollRef = React.useRef(null);
   const rootRef = React.useRef(null);
   const skipSpy = React.useRef(false);
   // While set, scroll-spy leaves this section active and skips its own
@@ -580,20 +583,30 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
   }, []);
 
   // Scroll-edge fades on the mobile rail (horizontal pill bar), same affordance
-  // as the Data/Stats filter rows.
+  // as the Data/Stats filter rows. The fade itself (.settings-rail::before/
+  // ::after, styles2.css) lives on the STICKY outer rail, not on the element
+  // that actually scrolls (railScrollRef, the inner wrapper around <ul>) —
+  // an earlier version put overflow-x AND the fade pseudo-elements on the
+  // same (outer) element, which meant the fade — a position:absolute child
+  // of that scrolling element — scrolled away WITH the pills instead of
+  // staying pinned to the visible edges (confirmed on real devices, not a
+  // Chromium-sandbox-only quirk: reproduced in both Firefox and Chrome
+  // emulation). Reading scroll state from the inner wrapper but toggling
+  // the state classes on the outer (non-scrolling) rail keeps the fade
+  // itself immobile while still tracking real scroll position.
   React.useEffect(() => {
-    const el = railRef.current;
-    if (!el) return;
+    const scrollEl = railScrollRef.current, rail = railRef.current;
+    if (!scrollEl || !rail) return;
     const update = () => {
-      const scrollable = el.scrollWidth - el.clientWidth > 1;
-      el.classList.toggle('at-start', !scrollable || el.scrollLeft <= 1);
-      el.classList.toggle('at-end', !scrollable || el.scrollLeft + el.clientWidth >= el.scrollWidth - 1);
+      const scrollable = scrollEl.scrollWidth - scrollEl.clientWidth > 1;
+      rail.classList.toggle('at-start', !scrollable || scrollEl.scrollLeft <= 1);
+      rail.classList.toggle('at-end', !scrollable || scrollEl.scrollLeft + scrollEl.clientWidth >= scrollEl.scrollWidth - 1);
     };
     update();
-    el.addEventListener('scroll', update, { passive: true });
+    scrollEl.addEventListener('scroll', update, { passive: true });
     const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => { el.removeEventListener('scroll', update); ro.disconnect(); };
+    ro.observe(scrollEl);
+    return () => { scrollEl.removeEventListener('scroll', update); ro.disconnect(); };
   }, []);
 
   const jumpTo = (id) => {
@@ -918,16 +931,20 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
       <div className="settings-layout">
         <aside className="settings-rail" aria-label="Settings sections" ref={railRef}>
           <div className="kicker rail-kicker">Sections</div>
-          <ul>
-            {SETTINGS_SECTIONS.map((s) => (
-              <li key={s.id}>
-                <button className={`rail-btn ${activeSection === s.id ? 'is-on' : ''}`}
-                        onClick={() => jumpTo(s.id)}>
-                  <span className="rail-name">{s.label}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
+          {/* Own scrolling element, separate from .settings-rail itself — see
+              the fade-edge effect's own comment for why. */}
+          <div className="settings-rail-scroll" ref={railScrollRef}>
+            <ul>
+              {SETTINGS_SECTIONS.map((s) => (
+                <li key={s.id}>
+                  <button className={`rail-btn ${activeSection === s.id ? 'is-on' : ''}`}
+                          onClick={() => jumpTo(s.id)}>
+                    <span className="rail-name">{s.label}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </aside>
 
         <div className="settings-sections">
