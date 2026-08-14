@@ -1062,7 +1062,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
           const ctlCollapsed = !!collapsedMap[pk.id + ':controls'];
           const itemsCollapsed = !!collapsedMap[pk.id + ':items'];
           return (
-            <section key={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''}`}
+            <section key={pk.id} data-picker-id={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''}`}
                      onAnimationEnd={(e) => {
                        if (e.target === e.currentTarget && removingPickerId === pk.id) {
                          actions.removePicker(pk.id); setRemovingPickerId(null);

@@ -95,8 +95,11 @@ export const APP_FEATURES = [
 // starts with, built fresh per render below), keyed by feature id — empty/
 // absent for any feature that only has Step 1 so far. Mirrors onboarding-
 // page-tours.jsx's own buildPageTourSteps (same reasoning: filled in
-// incrementally as each tutorial gets its own pass, not all at once).
-const buildAppFeatureSteps = (featureId) => {
+// incrementally as each tutorial gets its own pass, not all at once). Takes
+// `actions` (built fresh per render, like buildPageTourSteps itself) since
+// feat_edit_item's own Step 2 needs to call actions.toggleControlsCollapsed
+// directly — see that step's own run() comment for why a real click won't do.
+const buildAppFeatureSteps = (featureId, actions) => {
   if (featureId === 'feat_manual_pick') {
     return [
       // Title/body copied verbatim from the Pickers page tour's own
@@ -227,48 +230,58 @@ const buildAppFeatureSteps = (featureId) => {
         // React onClick (toggleControlsCollapsed) actually applies (see
         // onClickCapture's own comment in onboarding-tour-runner.jsx), so
         // at this exact instant the clicked picker's section hasn't
-        // actually opened yet, in state OR the DOM. Driven off the live DOM
-        // (this closure's own `state` would be just as stale by then)
-        // rather than reconstructed picker+suffix ids — finds whichever
-        // picker is now open under .data-list specifically (NOT
-        // Conditionals/Reminders above it, which share this same .rd-ctl
-        // class for their own Controls/Items — see help-content.jsx's own
-        // scoped selectors for the same distinction) and clicks its own
-        // Controls/Items headers if either is still expanded — a real
-        // click each, the same toggle the user would trigger themselves.
-        // Polled via rAF (bounded to ~20 frames) rather than a single
-        // deferred timeout: the picker's OWN outer Collapse mounts its
-        // .cat-body content (and thus these two buttons) on a SECOND
-        // render cycle after `open` first flips true (see Collapse's own
-        // render/useEffect split in ui.jsx) — a single setTimeout(0) can
-        // fire before that second render has committed, silently finding
-        // nothing to click.
+        // actually opened yet, in state OR the DOM. Polled via rAF (bounded
+        // to ~20 frames), driven off the live DOM (this closure's own
+        // `state` would be just as stale by the time it fires) — the
+        // picker's OWN outer Collapse mounts its .cat-body content (and
+        // thus these two buttons) on a SECOND render cycle after `open`
+        // first flips true (see Collapse's own render/useEffect split in
+        // ui.jsx), so a single synchronous check would too often find
+        // nothing yet. Scoped to .data-list specifically (NOT Conditionals/
+        // Reminders above it, which share this same .rd-ctl class for
+        // their own Controls/Items — see help-content.jsx's own scoped
+        // selectors for the same distinction). Calls
+        // actions.toggleControlsCollapsed directly (using the picker's own
+        // data-picker-id, added to .cat in tab-data.jsx for exactly this)
+        // rather than a real .click() on the header: Step 3 below now
+        // requires clicking that SAME Controls header to finish the
+        // tutorial, and a synthetic click fired this late (well after
+        // `step` has already advanced past this one, and after
+        // suppressGuardRef has already reset) would be indistinguishable
+        // from the user's own real click — collapsing Controls here would
+        // immediately satisfy Step 3's requireClick and finish the tour
+        // before the user ever saw it. A direct action call carries no
+        // such risk; it never touches the click-guard at all.
         run: () => {
           let tries = 0;
           const tryCollapse = () => {
             const openHeader = document.querySelector('.data-list .cat-h-l[aria-expanded="true"]');
             const cat = openHeader && openHeader.closest('.cat');
+            const pickerId = cat && cat.dataset.pickerId;
             const btns = cat ? [...cat.querySelectorAll('.rd-ctl')] : [];
-            if (btns.length < 2 && tries++ < 20) { requestAnimationFrame(tryCollapse); return; }
-            btns.forEach((btn) => { if (btn.getAttribute('aria-expanded') === 'true') btn.click(); });
+            if ((!pickerId || btns.length < 2) && tries++ < 20) { requestAnimationFrame(tryCollapse); return; }
+            if (!pickerId) return;
+            if (btns[0] && btns[0].getAttribute('aria-expanded') === 'true') actions.toggleControlsCollapsed(pickerId + ':controls');
+            if (btns[1] && btns[1].getAttribute('aria-expanded') === 'true') actions.toggleControlsCollapsed(pickerId + ':items');
           };
           requestAnimationFrame(tryCollapse);
         },
       },
-      // Highlights BOTH per-picker disclosure headers together (same
-      // selector help-content.jsx's own dataPickerControlsHeader/
-      // dataPickerItemsHeader entries use, scoped to .data-list so this
-      // can't also match Conditionals/Reminders' own same-classed headers
-      // above it) — only the picker just expanded in Step 2 has a mounted
-      // .cat-body at all (Collapse unmounts a closed section's children,
-      // see ui.jsx's own Collapse), so this naturally targets just that
-      // one picker's pair without needing to track which picker it was.
-      // No requireClick — purely narrating what these two sections are for.
+      // Highlights only the Controls header — same selector help-
+      // content.jsx's own dataPickerControlsHeader entry uses (:nth-of-
+      // type(1), Controls always renders before Items), scoped to
+      // .data-list so this can't also match Conditionals/Reminders' own
+      // same-classed header above it. Only the picker just expanded in
+      // Step 2 has a mounted .cat-body at all (Collapse unmounts a closed
+      // section's children, see ui.jsx's own Collapse), so this naturally
+      // targets just that one picker's own Controls header without needing
+      // to track which picker it was. requireClick — expanding Controls is
+      // the only way to finish this tutorial.
       {
-        sel: '.data-list > .cat .cat-body > button.rd-ctl', tab: 'data',
-        title: 'Controls and Items',
-        body: <>This is where you can view and edit a picker's <b>Controls</b> (its pick algorithm, weight, and other settings) and <b>Items</b> (the individual things it can pick from). Feel free to explore either section, then click Done when you are ready to finish this tutorial.</>,
-        primary: 'Done', back: true,
+        sel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)', tab: 'data',
+        title: 'Controls',
+        body: <>This is where you can <b>view and edit a picker's Controls</b> — its pick algorithm, weight, and other settings. Click on the Controls header now to expand it and finish this tutorial.</>,
+        primary: 'Done', back: true, requireClick: true,
       },
     ];
   }
@@ -319,7 +332,7 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
     );
   }
 
-  const extraSteps = buildAppFeatureSteps(featureId);
+  const extraSteps = buildAppFeatureSteps(featureId, actions);
   // "Edit your first item" wants a clean, all-collapsed Data page the
   // moment it lands there — any picker the user happened to leave expanded
   // from a previous visit would otherwise make Step 2's "click a header to
