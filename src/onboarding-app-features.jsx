@@ -196,6 +196,30 @@ const buildAppFeatureSteps = (featureId) => {
       },
     ];
   }
+  if (featureId === 'feat_edit_item') {
+    return [
+      // Highlights .data-list — same target as the Data page tour's own
+      // pickersManager step (DATA_PAGE_TARGETS in onboarding-page-
+      // tours.jsx) — ALL of the user's real pickers, not one specific
+      // picker, since which one they choose to edit is up to them.
+      // clickSel narrows the actual click-guard/requireClick target down
+      // to .cat-h-l (each picker's own collapsible header button) — any
+      // one of them expanding satisfies this step, matching "click on one
+      // of the pickers headers" per the user's own framing, not just a
+      // specific picker's. coachAtTop: true — .data-list can be far taller
+      // than the viewport once the user has more than a couple pickers,
+      // same "pin the coach to the top, let the list run off the bottom"
+      // treatment as the Data page tour's own equivalent step (see that
+      // step's own comment) and every other tall-target step in this app
+      // — see coachAtTop's own doc comment in onboarding-tour-runner.jsx.
+      {
+        sel: '.data-list', clickSel: '.cat-h-l', tab: 'data',
+        title: 'Your Pickers',
+        body: <>This is where you can <b>view and edit all of your pickers</b>, as well as their items. Click on any picker's header now to expand it and continue.</>,
+        primary: 'Done', back: true, requireClick: true, coachAtTop: true,
+      },
+    ];
+  }
   return [];
 };
 
@@ -244,13 +268,27 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
   }
 
   const extraSteps = buildAppFeatureSteps(featureId);
+  // "Edit your first item" wants a clean, all-collapsed Data page the
+  // moment it lands there — any picker the user happened to leave expanded
+  // from a previous visit would otherwise make Step 2's "click a header to
+  // expand" instruction confusing (that picker's already open). Runs as
+  // Step 1's own `run()`, which fires at the exact moment its real nav
+  // click transitions into Step 2 (see onPrimary's own comment in
+  // onboarding-tour-runner.jsx) — toggleControlsCollapsed only ever FLIPS,
+  // so this only touches pickers actually found expanded (=== false),
+  // rather than blindly toggling every picker and accidentally re-opening
+  // ones that were already collapsed.
+  const collapseAllPickers = () => {
+    const collapsed = (state.ui && state.ui.controlsCollapsed) || {};
+    state.pickers.forEach((p) => { if (collapsed[p.id] === false) actions.toggleControlsCollapsed(p.id, true); });
+  };
   return (
     <GuidedTour
       tourId={`appfeature-${featureId}`}
       steps={[
         // Same Step 1 every page tour uses (see its own comment) — 'Done'
         // when this is still the only step, 'Next' once extraSteps exist.
-        buildPageTourStep1(feature.page, undefined, extraSteps.length ? 'Next' : 'Done'),
+        buildPageTourStep1(feature.page, featureId === 'feat_edit_item' ? collapseAllPickers : undefined, extraSteps.length ? 'Next' : 'Done'),
         ...extraSteps,
       ]}
       resumeStep={resumable ? resumable.step : 0}
