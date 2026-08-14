@@ -216,7 +216,59 @@ const buildAppFeatureSteps = (featureId) => {
         sel: '.data-list', clickSel: '.cat-h-l', tab: 'data',
         title: 'Your Pickers',
         body: <>This is where you can <b>view and edit all of your pickers</b>, as well as their items. Click on any picker's header now to expand it and continue.</>,
-        primary: 'Done', back: true, requireClick: true, coachAtTop: true,
+        primary: 'Next', back: true, requireClick: true, coachAtTop: true,
+        // Controls/Items default OPEN the first time a picker's own section
+        // expands (absent === not-collapsed, see tab-data.jsx's own
+        // collapsedMap comment) — same "clean, uncluttered" requirement as
+        // the pickers themselves (collapseAllPickers above), one level
+        // deeper. Can't just read state/DOM synchronously here: this run()
+        // fires from the tour's own CAPTURE-phase click listener, which —
+        // being capture, not bubble — always runs BEFORE the header's own
+        // React onClick (toggleControlsCollapsed) actually applies (see
+        // onClickCapture's own comment in onboarding-tour-runner.jsx), so
+        // at this exact instant the clicked picker's section hasn't
+        // actually opened yet, in state OR the DOM. Driven off the live DOM
+        // (this closure's own `state` would be just as stale by then)
+        // rather than reconstructed picker+suffix ids — finds whichever
+        // picker is now open under .data-list specifically (NOT
+        // Conditionals/Reminders above it, which share this same .rd-ctl
+        // class for their own Controls/Items — see help-content.jsx's own
+        // scoped selectors for the same distinction) and clicks its own
+        // Controls/Items headers if either is still expanded — a real
+        // click each, the same toggle the user would trigger themselves.
+        // Polled via rAF (bounded to ~20 frames) rather than a single
+        // deferred timeout: the picker's OWN outer Collapse mounts its
+        // .cat-body content (and thus these two buttons) on a SECOND
+        // render cycle after `open` first flips true (see Collapse's own
+        // render/useEffect split in ui.jsx) — a single setTimeout(0) can
+        // fire before that second render has committed, silently finding
+        // nothing to click.
+        run: () => {
+          let tries = 0;
+          const tryCollapse = () => {
+            const openHeader = document.querySelector('.data-list .cat-h-l[aria-expanded="true"]');
+            const cat = openHeader && openHeader.closest('.cat');
+            const btns = cat ? [...cat.querySelectorAll('.rd-ctl')] : [];
+            if (btns.length < 2 && tries++ < 20) { requestAnimationFrame(tryCollapse); return; }
+            btns.forEach((btn) => { if (btn.getAttribute('aria-expanded') === 'true') btn.click(); });
+          };
+          requestAnimationFrame(tryCollapse);
+        },
+      },
+      // Highlights BOTH per-picker disclosure headers together (same
+      // selector help-content.jsx's own dataPickerControlsHeader/
+      // dataPickerItemsHeader entries use, scoped to .data-list so this
+      // can't also match Conditionals/Reminders' own same-classed headers
+      // above it) — only the picker just expanded in Step 2 has a mounted
+      // .cat-body at all (Collapse unmounts a closed section's children,
+      // see ui.jsx's own Collapse), so this naturally targets just that
+      // one picker's pair without needing to track which picker it was.
+      // No requireClick — purely narrating what these two sections are for.
+      {
+        sel: '.data-list > .cat .cat-body > button.rd-ctl', tab: 'data',
+        title: 'Controls and Items',
+        body: <>This is where you can view and edit a picker's <b>Controls</b> (its pick algorithm, weight, and other settings) and <b>Items</b> (the individual things it can pick from). Feel free to explore either section, then click Done when you are ready to finish this tutorial.</>,
+        primary: 'Done', back: true,
       },
     ];
   }
@@ -295,6 +347,24 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
       actions={actions}
       active={active}
       selectTab={selectTab}
+      // Back from Step 3 (Controls and Items, index 2) to Step 2 (Your
+      // Pickers, index 1) — undoes whichever picker section(s) got
+      // expanded, restoring the same all-collapsed slate Step 2 originally
+      // expects. Without this, expanding Picker A, reaching Step 3, going
+      // Back, then expanding Picker B (without A ever closing — clicking a
+      // DIFFERENT picker's header doesn't auto-collapse others) leaves BOTH
+      // open: Step 3's own .rd-ctl selector would then match both pickers'
+      // Controls/Items together, and its own collapse-on-entry run() (see
+      // Step 2's own comment) only ever finds the FIRST one in DOM order,
+      // silently leaving the actually-just-clicked one still expanded.
+      // Clicking each real header (not a direct store call) is the same
+      // toggle the user would trigger themselves, consistent with every
+      // other DOM-driven run()/onGoBack in this file.
+      onGoBack={featureId === 'feat_edit_item' ? (to) => {
+        if (to === 1) {
+          [...document.querySelectorAll('.data-list .cat-h-l[aria-expanded="true"]')].forEach((h) => h.click());
+        }
+      } : undefined}
       onFinish={() => closeTour('finished')}
       onSkip={() => closeTour('skipped')}
     />
