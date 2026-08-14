@@ -40,7 +40,7 @@ export const APP_FEATURES = [
     id: 'feat_manual_pick', page: 'picker', label: 'Make your first manual pick',
     title: 'Manual Picks',
     body: 'This tutorial will show you how to manually run one of your pickers and send its result straight to your todo list, without waiting for the next automatic generation.',
-    pills: ['manual pick', 'pickers page', 'run a picker'],
+    pills: ['pickers page', 'run a picker', 'manual pick'],
   },
   {
     id: 'feat_edit_item', page: 'data', label: 'Edit your first item',
@@ -86,6 +86,33 @@ export const APP_FEATURES = [
   },
 ];
 
+// Steps beyond Step 1 (the shared nav-highlight every App Feature tour
+// starts with, built fresh per render below), keyed by feature id — empty/
+// absent for any feature that only has Step 1 so far. Mirrors onboarding-
+// page-tours.jsx's own buildPageTourSteps (same reasoning: filled in
+// incrementally as each tutorial gets its own pass, not all at once).
+const buildAppFeatureSteps = (featureId) => {
+  if (featureId === 'feat_manual_pick') {
+    return [
+      // Title/body copied verbatim from the Pickers page tour's own
+      // manualGeneration step (PICKER_PAGE_TARGETS in onboarding-page-
+      // tours.jsx) — same functionality, same explanation. .picker-run
+      // wraps the picker's stage + actions as one combined box (see that
+      // file's own comment on it) so this highlights "the picker window
+      // and the Pick one button" together, not just the button on its
+      // own. No scrollToTop/Bottom override — the default pad-based
+      // bring() already smooth-scrolls it into view.
+      {
+        sel: '.picker-run', tab: 'picker',
+        title: 'Manual Generation',
+        body: <>This will allow to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the Pick one button now to see how this works.</>,
+        primary: 'Done', back: true, requireClick: true,
+      },
+    ];
+  }
+  return [];
+};
+
 function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose }) {
   const feature = APP_FEATURES.find((f) => f.id === featureId);
   // Same resumable pattern as PageTour — see its own comment.
@@ -111,13 +138,15 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
     );
   }
 
+  const extraSteps = buildAppFeatureSteps(featureId);
   return (
     <GuidedTour
       tourId={`appfeature-${featureId}`}
       steps={[
-        // Same Step 1 every page tour uses (see its own comment) — still
-        // this tour's only step, so 'Done' instead of the default 'Next'.
-        buildPageTourStep1(feature.page, undefined, 'Done'),
+        // Same Step 1 every page tour uses (see its own comment) — 'Done'
+        // when this is still the only step, 'Next' once extraSteps exist.
+        buildPageTourStep1(feature.page, undefined, extraSteps.length ? 'Next' : 'Done'),
+        ...extraSteps,
       ]}
       resumeStep={resumable ? resumable.step : 0}
       actions={actions}
