@@ -2304,9 +2304,25 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                     <Btn kind="secondary" icon="grip" className="foot-editmode" onClick={toggleEditMode} disabled={generating}>
                       Edit Mode
                     </Btn>
-                    <Btn kind="secondary" icon="refresh" className="ob-generate" onClick={() => setConfirmGen(true)} disabled={generating}>
-                      {generating ? 'Generating\u2026' : 'Regenerate'}
-                    </Btn>
+                    {showChecklist ? (
+                      // Real, not just visually disabled: every picker (sample
+                      // AND any real one already created mid-checklist \u2014 see
+                      // generateItemResolved's own comment on why those stay
+                      // hidden too) is hidden until the closing Generate card
+                      // runs, and generate()'s own picker loop skips anything
+                      // hidden \u2014 so this would always produce an empty list
+                      // while still updating today.generatedAt, misleadingly
+                      // showing a fresh "List generated on\u2026" timestamp for a
+                      // regenerate that couldn't actually draw anything.
+                      <InfoTip className="btn btn--secondary btn--md ob-generate is-disabled" action="Regenerate"
+                               label="Complete every tutorial above and generate your real list first.">
+                        <Icon name="refresh" size={16} />Regenerate
+                      </InfoTip>
+                    ) : (
+                      <Btn kind="secondary" icon="refresh" className="ob-generate" onClick={() => setConfirmGen(true)} disabled={generating}>
+                        {generating ? 'Generating\u2026' : 'Regenerate'}
+                      </Btn>
+                    )}
                   </div>
                   <div className="today-foot-sub">
                     List generated on {fmtDateLong(state.today.generatedAt)} at {fmtTime(state.today.generatedAt)}
