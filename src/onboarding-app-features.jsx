@@ -79,6 +79,9 @@ export const APP_FEATURES = [
     title: 'Celebration Animation',
     body: 'This tutorial will show you how to change the animation that plays whenever you complete your entire todo list for the day.',
     pills: ['settings page', 'appearance', 'animation'],
+    // Real, user-confirmed estimate — see feat_manual_pick's own comment
+    // on this same convention.
+    time: '< 1 min',
   },
   {
     id: 'feat_pick_anim', page: 'settings', label: 'Change your picker animation',
@@ -436,6 +439,19 @@ const buildAppFeatureSteps = (featureId, actions) => {
         sel: '.set-subsection--celebration', tab: 'settings',
         title: 'Completion Celebration',
         body: <>This is where you can <b>pick which animation plays</b> whenever you complete your entire todo list for the day. Click Done when you are ready to finish this tutorial.</>,
+        primary: 'Done', back: true, coachAtTop: true,
+      },
+    ];
+  }
+  if (featureId === 'feat_pick_anim') {
+    return [
+      // .set-subsection--pickanim — already its own modifier class in
+      // tab-settings.jsx's Appearance section, no changes needed there.
+      // Same shape as feat_celebration's own Step 2 just above.
+      {
+        sel: '.set-subsection--pickanim', tab: 'settings',
+        title: 'Picker Animation',
+        body: <>This is where you can <b>pick which animation plays</b> whenever a picker is run, either automatically or manually. Click Done when you are ready to finish this tutorial.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
