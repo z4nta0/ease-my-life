@@ -54,6 +54,24 @@ import { InfoTip, reduceMotion } from './ui.jsx';
 //              nudge when the surrounding content just changed shape (a
 //              form switching sub-steps) and the carried-over scroll
 //              position no longer means anything.
+//   revealHorizontally — true if this step's target lives in a row that
+//              scrolls HORIZONTALLY (e.g. a tab strip), rather than being
+//              reachable through the normal vertical scroll the rest of
+//              bring()'s own math handles — that math (and getScroller,
+//              which only ever looks for a vertically-overflowing ancestor)
+//              has no horizontal equivalent, so a target sitting off the
+//              end of such a row (e.g. the trailing "+ Add new picker" tab,
+//              once enough real tabs have accumulated to overflow the
+//              strip) would otherwise never actually come into view. A
+//              one-time native scrollIntoView({inline:'end'}) once the
+//              target is first found — same fix already used ad hoc by the
+//              Pickers PAGE tour's own step (see its own run(), which
+//              exists only because THAT tour's steps stay on one page the
+//              whole time, letting it prep the NEXT step's target from the
+//              CURRENT one's run() — the picker mini-tour below switches
+//              tabs on its own Step 1, so there's no earlier same-page step
+//              to prep from; this flag covers that case generically instead
+//              of needing one).
 //   coachAtTop — true if this step's target can be TALLER than the
 //              viewport itself (e.g. a highlighted region that's most of a
 //              mobile screen's height). The normal reserve-space logic
@@ -755,6 +773,11 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       if (cancelled) return;
       const els = findTargets(cur.sel);
       if (!els.length) return;
+      // See revealHorizontally's own doc comment above — a one-time native
+      // reveal for a target sitting off the end of a horizontally-
+      // scrolling row, independent of (and before) all the vertical
+      // handling below, which has no idea this axis exists at all.
+      if (cur.revealHorizontally) els[0].scrollIntoView({ inline: 'end', block: 'nearest' });
       const sc = getScroller(els[0]);
       // A step whose target starts right at the top of the page anyway
       // (e.g. a full-list review step) scrolls all the way up rather than
