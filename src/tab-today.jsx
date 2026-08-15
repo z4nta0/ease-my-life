@@ -2402,7 +2402,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                   <p className="gen-confirm-msg">This will replace any items marked as completed and these will not show up in the Stats tab. Continue?</p>
                   <div className="gen-confirm-actions">
                     <Btn kind="ghost" size="sm" onClick={() => setConfirmGen(false)}>Cancel</Btn>
-                    <Btn kind="primary" size="sm" icon="refresh" onClick={() => generate()}>Continue</Btn>
+                    <Btn kind="primary" size="sm" icon="refresh" className="gen-confirm-continue" onClick={() => generate()}>Continue</Btn>
                   </div>
                 </div>
               ) : editMode ? (

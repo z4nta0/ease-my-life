@@ -81,6 +81,17 @@ import { InfoTip, reduceMotion } from './ui.jsx';
 //              target itself — the same click-guard exemption that already
 //              lets a target's own click through now also triggers the
 //              primary action (run(), then advance) instead of a no-op.
+//   advanceOn — optional CSS selector, independent of requireClick: Next
+//              stays enabled and works as normal (this step narrates, it
+//              doesn't force the real interaction), but a real click landing
+//              on this selector is ALSO treated as clicking Next — same
+//              onPrimary() call, run() included. For a step whose body
+//              copy already tells the user "we'll do this for you, or do it
+//              yourself via the real button" — the real button's own click
+//              should count as having advanced, not leave the user still
+//              needing to also click Next afterward. Should stay within
+//              (or be a subset of) `sel`/`clickSel` so the generic guard
+//              doesn't block it as off-target.
 //   resumable — defaults to true (every Welcome Tour step qualifies, since
 //              its targets are all durable/already-rendered). Set false on
 //              a step whose target only exists because an EARLIER step's
@@ -512,6 +523,13 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       if (suppressGuardRef.current) return;
       const c = curRef.current;
       if (e.target.closest('.ob-coach')) return;
+      if (c && c.advanceOn && findTargets(c.advanceOn).some((el) => el.contains(e.target))) {
+        // See advanceOn's own doc comment above — an optional real-action
+        // shortcut, NOT a requireClick step (Next keeps working normally
+        // too): the real target's click just also counts as clicking Next.
+        onPrimaryRef.current();
+        return;
+      }
       if (c && findTargets(c.clickSel || c.sel).some((el) => el.contains(e.target))) {
         // A requireClick step's target click IS its primary action — the
         // Next button is disabled, so this is the only way forward.

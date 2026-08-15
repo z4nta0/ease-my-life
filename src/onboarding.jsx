@@ -256,6 +256,14 @@ function Onboarding({ state, actions, active, selectTab }) {
       // takes to read it and click Continue — long enough, on a real human
       // timescale, to trip the not-found watchdog and end the tour outright.
       sel: '.ob-generate, .gen-confirm', tab: 'today',
+      // Confirming the real Regenerate flow (the "do it yourself" path the
+      // body text offers) is functionally the same action Next's own run()
+      // performs below via window.__emlGenerate() — the real generate()
+      // call is reentrancy-guarded (see tab-today.jsx's generatingRef), so
+      // whichever of the two fires first "wins" and the other becomes a
+      // harmless no-op; either way exactly one reel-cycle animation plays
+      // and the tour advances, matching Next's own behavior exactly.
+      advanceOn: '.gen-confirm-continue',
       title: 'Todo list generation',
       body: <>Each morning the app will <b>automatically generate your daily todo list</b>. Since you have not created anything yet, the app will use some sample data so that you can see how it works. You can always click Regenerate if you’d rather generate the list yourself. Let’s go ahead and run that now.</>,
       primary: 'Next', back: true,
