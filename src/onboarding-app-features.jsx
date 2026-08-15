@@ -403,6 +403,22 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
       onGoBack={featureId === 'feat_edit_item' ? (to) => {
         if (to === 1) {
           [...document.querySelectorAll('.data-list .cat-h-l[aria-expanded="true"]')].forEach((h) => h.click());
+        } else if (to === 2) {
+          // Back from Step 4 (Explore Controls, index 3) to Step 3
+          // (Controls Section, index 2) — re-collapses Controls, undoing
+          // Step 3's own real click that expanded it. Restores Step 3's
+          // own expected starting state (Controls collapsed, requireClick
+          // still to satisfy) instead of landing back on a step whose
+          // target looks already-done. A real click, not a direct action
+          // call like Step 2's run() above needs — no async DOM-mount wait
+          // required here (Controls is already mounted, just needs
+          // toggling shut), and onGoBack itself runs fully synchronously
+          // before `step` advances (see goBack's own comment in
+          // onboarding-tour-runner.jsx), so there's no risk of this click
+          // landing after the click-guard has already moved on, unlike the
+          // run() case.
+          const btn = document.querySelector('.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)[aria-expanded="true"]');
+          if (btn) btn.click();
         }
       } : undefined}
       onFinish={() => closeTour('finished')}
