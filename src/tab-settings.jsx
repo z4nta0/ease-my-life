@@ -955,7 +955,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               Control the appearance of Ease My life, including colors, animations and tab placement.
             </p>
 
-            <div className="set-subsection">
+            <div className="set-subsection set-subsection--systempref">
               <Card>
                 <div className="set-data-row">
                   <div className="set-data-info">

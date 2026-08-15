@@ -395,6 +395,36 @@ const buildAppFeatureSteps = (featureId, actions) => {
       },
     ];
   }
+  if (featureId === 'feat_theme') {
+    return [
+      // .set-subsection--systempref — a new modifier class added to
+      // tab-settings.jsx for exactly this (previously bare .set-subsection,
+      // ambiguous against its own siblings: --celebration/--pickanim/
+      // --layout further down the same Appearance section). coachAtTop:
+      // true — same reasoning as every other Settings section step in
+      // this app: content can easily run taller than the viewport.
+      {
+        sel: '.set-subsection--systempref', tab: 'settings',
+        title: 'System Preferences',
+        body: <>This lets Ease My Life <b>automatically switch between your light and dark theme</b> based on your device's own system setting. Click Next when you are ready to advance this tutorial.</>,
+        primary: 'Next', back: true, coachAtTop: true,
+      },
+      // .set-subsection--theme-light — already its own modifier class in
+      // ThemeSection (tab-settings.jsx), no changes needed there.
+      {
+        sel: '.set-subsection--theme-light', tab: 'settings',
+        title: 'Light Theme',
+        body: <>This is where you can <b>pick a light based theme</b>, or create your own custom one. Click Next when you are ready to advance this tutorial.</>,
+        primary: 'Next', back: true, coachAtTop: true,
+      },
+      {
+        sel: '.set-subsection--theme-dark', tab: 'settings',
+        title: 'Dark Theme',
+        body: <>This is where you can <b>pick a dark based theme</b>, or create your own custom one. Click Done when you are ready to finish this tutorial.</>,
+        primary: 'Done', back: true, coachAtTop: true,
+      },
+    ];
+  }
   return [];
 };
 
