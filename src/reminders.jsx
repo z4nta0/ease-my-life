@@ -512,11 +512,22 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   // Mini-tour launcher cards: one per sample reminder. Kept out of `due`
   // (and its "X of Y" count) since they're not real due reminders — the
   // additive ring/rail totals for these live in tab-today.jsx. Stays
-  // visible — checked or not — until checklistDone, same as the picker
-  // cards (see onboarding-checklist.js).
+  // visible — checked or not — through the ORIGINAL first-time checklist,
+  // until checklistDone (see onboarding-checklist.js). Unlike checklistDone
+  // itself, this isn't permanently over once that happens: Settings' Replay
+  // tour button (tab-settings.jsx) resets each item's own checklist entry
+  // (never checklistDone), so a still-unresolved sample keeps offering its
+  // card afterward too — EXCLUDED if a real (non-sample) reminder has since
+  // taken its exact name, same "does this still make sense to offer" check
+  // as tab-today.jsx's own groupEntries() does for picker samples. Also,
+  // post-checklistDone, a resolved card drops out the instant it's resolved
+  // (same as tab-today.jsx's groupEntries()) rather than sticking around
+  // with an "Undo" toggle — there's no closing Generate card left to
+  // synchronize a batch disappearance against.
   const checklistDone = !!(state.onboarding && state.onboarding.checklistDone);
-  const tutorialTasks = checklistDone ? []
-    : (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
+  const tutorialTasks = (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)
+    && !(checklistDone && OB_CHECKLIST.entryFor(state, t.id))
+    && !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name));
   // The quick-add form and each saved reminder's inline editor are both gated
   // off the tab-wide `activeEditor` slot (shared with the picker item editor
   // in tab-today.jsx) so opening any one of them collapses whichever of the

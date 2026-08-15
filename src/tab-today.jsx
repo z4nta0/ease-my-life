@@ -83,16 +83,35 @@ function groupEntries(state) {
   // group like any other card. `p.hidden` gates the timing — samples stay
   // visible/real for the main Welcome Tour and only flip hidden once, at
   // that tour's last step (see onboarding.jsx), which is when these start
-  // rendering. They stay on screen — checked or not — until checklistDone,
-  // set once the closing Generate card runs (see onboarding-checklist.js).
-  if (!(state.onboarding && state.onboarding.checklistDone)) {
-    for (const p of state.pickers) {
-      if (!p.hidden || !OB_SAMPLE_PICKER_IDS.includes(p.id)) continue;
-      const g = p.group || 'Other';
-      if (!byGroup.has(g)) byGroup.set(g, { name: g, entries: [] });
-      const done = !!OB_CHECKLIST.entryFor(state, p.id);
-      byGroup.get(g).entries.push({ entry: { kind: 'tutorial', eid: 'tut_' + p.id, done }, picker: p });
-    }
+  // rendering. They stay on screen — checked or not — through the ORIGINAL
+  // first-time checklist, until checklistDone (set once the closing
+  // Generate card runs, see onboarding-checklist.js). Unlike checklistDone
+  // itself, this does NOT permanently stop once that happens: Settings'
+  // Replay tour button (tab-settings.jsx) resets each item's own checklist
+  // entry (though never checklistDone), so a still-unresolved sample keeps
+  // offering its card afterward too — EXCLUDED if a real (non-sample)
+  // picker has since taken its exact name, since re-prompting "set up a
+  // Daily Chores picker" when the user already has their own real Daily
+  // Chores picker would be redundant, not helpful (the "does this still
+  // make sense to offer" check flagged for Replay Tour early in this
+  // rebuild).
+  const checklistDone = !!(state.onboarding && state.onboarding.checklistDone);
+  for (const p of state.pickers) {
+    if (!p.hidden || !OB_SAMPLE_PICKER_IDS.includes(p.id)) continue;
+    const done = !!OB_CHECKLIST.entryFor(state, p.id);
+    // Post-checklistDone (replay continuation), a resolved card vanishes for
+    // good the moment it's resolved instead of sticking around with an
+    // "Undo" toggle — there's no closing Generate card to synchronize a
+    // batch disappearance against anymore, so each one just leaves on its
+    // own, same as visibleTours does for Page Tours. The ORIGINAL first-time
+    // checklist is unaffected: every card stays until checklistDone flips,
+    // done or not.
+    if (checklistDone && done) continue;
+    const collides = state.pickers.some((x) => !OB_SAMPLE_PICKER_IDS.includes(x.id) && x.name === p.name);
+    if (collides) continue;
+    const g = p.group || 'Other';
+    if (!byGroup.has(g)) byGroup.set(g, { name: g, entries: [] });
+    byGroup.get(g).entries.push({ entry: { kind: 'tutorial', eid: 'tut_' + p.id, done }, picker: p });
   }
   // Group order: user-defined (state.groupOrder from Edit Mode), then any group
   // not yet listed appended by first occurrence in state.pickers, Other last.
@@ -963,6 +982,19 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   const mainTourEnded = state.pickers.some((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id))
     || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
   const showChecklist = mainTourEnded && !checklistDone;
+  // Page Tours cards keep offering themselves post-checklistDone too, same
+  // "Replay tour resets each item's own entry but never checklistDone
+  // itself" reasoning as groupEntries()'s own picker-sample cards — no
+  // name-collision concept applies here (a page tour isn't named after
+  // anything the user could "already have"), just whether it's still
+  // unresolved. Kept as its own separate boolean rather than folded into
+  // showChecklist itself, since showChecklist ALSO drives the closing
+  // Generate card's entire real side-effect chain (generateItemResolved's
+  // own effect below) — reusing it here would risk resurrecting that
+  // "auto-generate a fresh list" flow, which has nothing to run against a
+  // second time (the user already has a real list).
+  const showReplayPageTours = checklistDone && mainTourEnded
+    && OB_PAGE_TOURS.some((t) => !OB_CHECKLIST.entryFor(state, t.id));
   // App Features (see onboarding-app-features.jsx) — a separate, later-stage
   // set of tutorials shown only AFTER the user has generated their first
   // real todo list, once resolved (Play-to-finish, X to cancel — same as
@@ -1008,15 +1040,37 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     const hit = existing.find((g) => g.toLowerCase() === target.toLowerCase());
     return hit ? `A group named “${hit}” already exists.` : null;
   };
-  const tutorialPickerCount = showChecklist
-    ? state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id)).length : 0;
+  // Mirrors showReplayPageTours: once checklistDone, mini-tour picker/task
+  // cards keep offering themselves (per groupEntries()' and reminders.jsx's
+  // own collision-filtered checks) even though showChecklist itself has gone
+  // false — so these ring/rail counts need to keep counting them too, or the
+  // ring and the Reminders rail pill (which reuses these) would silently
+  // stop matching what's actually rendered on screen. During that replay
+  // continuation, though, a resolved card is no longer rendered at all (see
+  // groupEntries()'s own comment) — so unlike the first-time phase, resolved
+  // ones must drop out of these counts entirely rather than counting toward
+  // "done" the way an unresolved-but-checked first-time card does.
+  const replayContinuationActive = checklistDone && mainTourEnded;
+  const tutorialPickerCount = (showChecklist || replayContinuationActive)
+    ? state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id)
+        && (showChecklist || !OB_CHECKLIST.entryFor(state, p.id))
+        && !state.pickers.some((x) => !OB_SAMPLE_PICKER_IDS.includes(x.id) && x.name === p.name)).length : 0;
   const tutorialPickerDone = showChecklist
-    ? state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id) && OB_CHECKLIST.entryFor(state, p.id)).length : 0;
-  const tutorialTaskCount = showChecklist
-    ? (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)).length : 0;
+    ? state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id) && OB_CHECKLIST.entryFor(state, p.id)
+        && !state.pickers.some((x) => !OB_SAMPLE_PICKER_IDS.includes(x.id) && x.name === p.name)).length : 0;
+  const tutorialTaskCount = (showChecklist || replayContinuationActive)
+    ? (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)
+        && (showChecklist || !OB_CHECKLIST.entryFor(state, t.id))
+        && !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name)).length : 0;
   const tutorialTaskDone = showChecklist
-    ? (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id) && OB_CHECKLIST.entryFor(state, t.id)).length : 0;
-  const pageTourCount = showChecklist ? OB_PAGE_TOURS.length : 0;
+    ? (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id) && OB_CHECKLIST.entryFor(state, t.id)
+        && !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name)).length : 0;
+  // Same replay-continuation treatment as the picker/task tutorial counts
+  // above: still counted while showReplayPageTours cards are on screen, but
+  // (matching visibleTours' own resolved-cards-vanish behavior) only the
+  // still-unresolved ones, so this stays in sync with what's rendered.
+  const pageTourCount = showChecklist ? OB_PAGE_TOURS.length
+    : showReplayPageTours ? OB_PAGE_TOURS.filter((t) => !OB_CHECKLIST.entryFor(state, t.id)).length : 0;
   const pageTourDone = showChecklist
     ? OB_PAGE_TOURS.filter((t) => OB_CHECKLIST.entryFor(state, t.id)).length : 0;
   const generateCardCount = showChecklist ? 1 : 0;
@@ -2099,7 +2153,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                   );
                 }
                 if (id === '__pageTours') {
-                  if (!showChecklist) return null;
+                  if (!showChecklist && !showReplayPageTours) return null;
                   const pDone = OB_PAGE_TOURS.filter((t) => !!OB_CHECKLIST.entryFor(state, t.id)).length;
                   return (
                     <li key="__pageTours">
@@ -2198,7 +2252,14 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                 );
               }
               if (id === '__pageTours') {
-                if (!showChecklist) return null;
+                if (!showChecklist && !showReplayPageTours) return null;
+                // Post-checklistDone (replay continuation, see
+                // showReplayPageTours' own comment), only the still-
+                // unresolved tours keep showing — the ORIGINAL first-time
+                // checklist still shows every one of them, done or not,
+                // unchanged.
+                const visibleTours = showChecklist ? OB_PAGE_TOURS
+                  : OB_PAGE_TOURS.filter((t) => !OB_CHECKLIST.entryFor(state, t.id));
                 const pDone = OB_PAGE_TOURS.filter((t) => !!OB_CHECKLIST.entryFor(state, t.id)).length;
                 return (
                   <section key="__pageTours" className="group-section pt-section"
@@ -2208,7 +2269,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                                  onRenameGroup={(newName) => actions.renamePageTours(newName)}
                                  validate={pageToursNameCollision} />
                     <div className="today-list">
-                      {OB_PAGE_TOURS.map((t) => (
+                      {visibleTours.map((t) => (
                         <PageTourCard key={t.id} tour={t} state={state} actions={actions}
                                       onPlayTutorial={startMiniTour} onUncheckTutorial={uncheckTutorial}
                                       checklistExiting={checklistExiting} />
