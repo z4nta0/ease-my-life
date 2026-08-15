@@ -147,17 +147,30 @@ import { InfoTip, reduceMotion } from './ui.jsx';
 // Shared by the reserve-space calculation and the coach's own placement.
 const OB_COACH_H = 220;
 
-// The lowest screen-y a spotlight/coach can safely sit without landing
+// The lowest screen-y a SPOTLIGHT/TARGET can safely sit without landing
 // under fixed/sticky Today-tab chrome: the sticky header, PLUS — on mobile,
 // where the groups rail flips from a side column to a horizontal pill bar
 // stacked below the header — that rail too, PLUS the Edit Mode banner
 // (present whenever editMode is on, any width — see tab-today.jsx's
 // editmode-banner, which sits sticky just below the header and, despite
 // being in normal flow, doesn't actually push .today-layout's content down
-// to clear it). Shared by the spotlight clamp, the reserve-space decision,
-// the coach's own placement, AND bring()'s own scroll-up nudge, so all four
-// agree on where "safe" starts.
-const obSafeTop = () => {
+// to clear it). A target scrolled up underneath any of these would be
+// genuinely HIDDEN (they're sticky, so they keep painting on top of
+// whatever scrolls beneath them), not just visually crowded — this floor
+// exists to stop that, and applies to the spotlight clamp and bring()'s own
+// scroll-up nudge (the ACTUAL highlighted element's own visibility).
+//
+// The COACH card is a different story: it renders inside .ob-tour, a
+// z-index 1010 overlay well above any of this chrome (header, rail, AND the
+// Edit Mode banner alike), so it can sit wherever it likes on screen without
+// ever being physically obscured by any of it — pass forCoach:true (all of
+// the coach's own placement math below does) to skip this whole exclusion
+// zone entirely. Confirmed live: on a short viewport (iPhone SE) with the
+// header+rail counted against the coach too, several steps' tooltips had
+// nowhere left to fit at all; the Edit Mode step hits the identical problem
+// once the banner is showing.
+const obSafeTop = ({ forCoach } = {}) => {
+  if (forCoach) return 0;
   const header = document.querySelector('.today-h');
   let bottom = header ? header.getBoundingClientRect().bottom : 0;
   const rail = document.querySelector('.group-rail');
@@ -189,7 +202,7 @@ const obSafeBottom = () => {
 // fallback once React catches up.
 const computeCoachLayout = (r, coachHVal, coachWVal, vw, vh) => {
   const left = Math.max(12, Math.min(r.left, vw - coachWVal - 12));
-  const safeTop = obSafeTop() + 12;
+  const safeTop = obSafeTop({ forCoach: true }) + 12;
   const spaceBelow = vh - (r.top + r.height);
   if (spaceBelow >= coachHVal + 16) return { top: r.top + r.height + 16, left, arrowClass: 'ob-coach--up' };
   return { top: Math.max(r.top - 16 - coachHVal, safeTop), left, arrowClass: 'ob-coach--down' };
@@ -774,7 +787,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       // instead of trying to fit the target's WHOLE height within the
       // normal pad/padB window below, which a too-tall target can't do.
       if (cur.coachAtTop) {
-        const desiredTop = obSafeTop() + 12 + coachHRef.current + 16;
+        const desiredTop = obSafeTop({ forCoach: true }) + 12 + coachHRef.current + 16;
         scrollByAmt(sc, er.top - desiredTop);
         return;
       }
@@ -812,7 +825,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       if (!cur.coachAtTop && !reserveDecided && predictedTop != null) {
         const vh = window.innerHeight, ch = coachHRef.current;
         const fitsBelow = vh - (predictedTop + er.height) >= ch + 16;
-        const fitsAbove = predictedTop - 16 - ch >= obSafeTop() + 12;
+        const fitsAbove = predictedTop - 16 - ch >= obSafeTop({ forCoach: true }) + 12;
         if (!fitsBelow && !fitsAbove) {
           reserveDecided = true;
           reservedAmount = ch + 40;
@@ -947,7 +960,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       // ended up overlapping the highlight's top edge anyway.
       const ch = coachHRef.current;
       if (vh - (r.top + r.height) >= ch + 16) return; // fits below — reserveTop is already 0
-      if (r.top - 16 - ch >= obSafeTop() + 12) return; // fits above — reserveTop is already 0
+      if (r.top - 16 - ch >= obSafeTop({ forCoach: true }) + 12) return; // fits above — reserveTop is already 0
       reservedAmount = ch + 40;
       setReserveTop(reservedAmount);
       // Scrolls so the target lands exactly ch+16 below safeTop — the same
@@ -970,7 +983,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
           const freshEls = findTargets(cur.sel);
           if (!freshEls.length) return;
           const freshTop = unionRect(freshEls).top;
-          const desiredTop = obSafeTop() + 12 + ch + 16;
+          const desiredTop = obSafeTop({ forCoach: true }) + 12 + ch + 16;
           scrollByAmt(sc2, freshTop - desiredTop);
         });
       }
