@@ -3676,6 +3676,19 @@ body.ob-touring .tab{padding-bottom:200px}
 }
 .help-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .help-btn.is-on{border-color:var(--accent);color:#fff;background:var(--accent)}
+/* Scaled-up standalone lookalike of .help-btn, for the "Use the highlight
+   feature" App Feature tutorial's own intro modal icon (.ob-wmark, a fixed
+   54x54 box — see onboarding-intro-modal.jsx). .ob-wmark's own `svg { width:
+   100%; height:100% }` rule only targets real SVG icons (the Icon
+   component every OTHER tutorial's icon uses), so a plain span needs its
+   own sizing here rather than inheriting that. Same look, no live
+   behavior — this one never toggles anything. */
+.ob-wmark-help{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  border:3px solid currentColor;border-radius:50%;
+  font-size:28px;font-weight:700;line-height:1;
+}
 
 .help-mode{position:fixed;inset:0;z-index:1000;pointer-events:none}
 .help-dim-svg{position:absolute;inset:0}

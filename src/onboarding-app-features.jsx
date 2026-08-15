@@ -97,6 +97,9 @@ export const APP_FEATURES = [
     title: 'Highlight Feature',
     body: 'This tutorial will show you how to use the highlight feature, which lets you tap the info icon on any page to get an on demand explanation of everything on screen.',
     pills: ['help highlights', 'on demand', 'any page'],
+    // Real, user-confirmed estimate — see feat_manual_pick's own comment
+    // on this same convention.
+    time: '< 1 min',
   },
   {
     id: 'feat_protect_data', page: 'settings', label: 'Protect your data / Install the app',
@@ -459,6 +462,31 @@ const buildAppFeatureSteps = (featureId, actions) => {
       },
     ];
   }
+  if (featureId === 'feat_highlights') {
+    // Unlike every other feature, this one does NOT use the shared
+    // buildPageTourStep1 nav-click (see AppFeatureTour's own steps prop
+    // below, which skips prepending it for this featureId specifically):
+    // the whole point is the help-highlight toggle itself (.help-btn,
+    // help-mode.jsx), which already sits in the CURRENT page's own header
+    // — there's nothing to navigate to first. Both steps target the exact
+    // same element (it never moves), so the highlight/coach position stays
+    // pinned across the Step 1 -> Step 2 transition, only the body copy
+    // changes.
+    return [
+      {
+        sel: '.help-btn', tab: 'today',
+        title: 'Highlights Feature',
+        body: <>This is the highlight button that can be found in the top right corner of every page. Click this button now to advance the tutorial.</>,
+        primary: 'Next', back: false, requireClick: true,
+      },
+      {
+        sel: '.help-btn', tab: 'today',
+        title: 'Highlights Feature',
+        body: <>Important elements on the page are highlighted, each with their own button that will bring up a tooltip with more information. Click this button again to turn the feature off and finish this tutorial.</>,
+        primary: 'Done', back: true, requireClick: true,
+      },
+    ];
+  }
   return [];
 };
 
@@ -496,7 +524,9 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
   if (phase === 'intro') {
     return (
       <TutorialIntroModal
-        icon={<Icon name={feature.page} size={54} />}
+        icon={featureId === 'feat_highlights'
+          ? <span className="ob-wmark-help">i</span>
+          : <Icon name={feature.page} size={54} />}
         title={feature.title}
         paragraphs={[feature.body]}
         pills={feature.pills}
@@ -524,7 +554,7 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
   return (
     <GuidedTour
       tourId={`appfeature-${featureId}`}
-      steps={[
+      steps={featureId === 'feat_highlights' ? extraSteps : [
         // Same Step 1 every page tour uses (see its own comment) — 'Done'
         // when this is still the only step, 'Next' once extraSteps exist.
         buildPageTourStep1(feature.page, featureId === 'feat_edit_item' ? collapseAllPickers : undefined, extraSteps.length ? 'Next' : 'Done'),
