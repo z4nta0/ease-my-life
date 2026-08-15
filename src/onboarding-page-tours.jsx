@@ -601,6 +601,13 @@ const buildPageTourSteps = (pageId, actions) => {
       },
       {
         ...STATS_PAGE_TARGETS.pickerBreakdown, tab: 'stats', primary: 'Done', back: true,
+        // .stat-breakdown-card lists every item in the picker's pool and can
+        // run well past a short viewport's height, same as the heatmap step
+        // just above — see coachAtTop's own doc comment in
+        // onboarding-tour-runner.jsx. Confirmed live: without this, the
+        // coach clipped the top of its own body text and overlapped the
+        // card on an iPhone SE-sized viewport.
+        coachAtTop: true,
         // `scope` (tab-stats.jsx's own local useState, choosing which picker
         // is active) is NOT persisted — a reload always lands back at 'all',
         // so this step's own target wouldn't exist to resume into even
