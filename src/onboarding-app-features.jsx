@@ -308,7 +308,35 @@ const buildAppFeatureSteps = (featureId, actions) => {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])', tab: 'data',
         title: 'Explore Controls',
         body: <>Feel free to <b>explore this section and make any changes you'd like</b> to the picker's name, group, type, or other settings. Click Done when you are ready to finish this tutorial.</>,
-        primary: 'Done', back: true, coachAtTop: true,
+        primary: 'Next', back: true, coachAtTop: true,
+        // Re-collapses Controls on the way to Step 5, same "clean slate"
+        // requirement as Step 2's own run() — Step 5 highlights this same
+        // picker box again and needs Controls collapsed for it to look
+        // uncluttered, same reasoning as Step 3 originally needing it
+        // collapsed. Controls is already mounted here (unlike Step 2's own
+        // case, which had to poll for it), so no async wait is needed —
+        // just a direct actions.toggleControlsCollapsed call, guarded on
+        // aria-expanded so this is a no-op if the user already collapsed
+        // it themselves while exploring.
+        run: () => {
+          const btn = document.querySelector('.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)');
+          const cat = btn && btn.closest('.cat');
+          const pickerId = cat && cat.dataset.pickerId;
+          if (pickerId && btn.getAttribute('aria-expanded') === 'true') actions.toggleControlsCollapsed(pickerId + ':controls');
+        },
+      },
+      // Same shape as Step 3 (Controls Section), mirrored for Items:
+      // clickSel narrows to the Items header specifically (:nth-of-
+      // type(2)) instead of Controls. Controls itself was just
+      // re-collapsed by Step 4's own outgoing run() above, so the
+      // highlighted box (same whole-picker sel as Steps 3/4) reads clean
+      // again rather than showing Controls still expanded alongside it.
+      {
+        sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])',
+        clickSel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)', tab: 'data',
+        title: 'Items Section',
+        body: <>This is where you can <b>view and edit a picker's Items</b>. This includes each item's name, weight, and other values. Click on the Items header now to advance this tutorial.</>,
+        primary: 'Done', back: true, requireClick: true,
       },
     ];
   }
@@ -418,6 +446,15 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
           // landing after the click-guard has already moved on, unlike the
           // run() case.
           const btn = document.querySelector('.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)[aria-expanded="true"]');
+          if (btn) btn.click();
+        } else if (to === 3) {
+          // Back from Step 5 (Items Section, index 4) to Step 4 (Explore
+          // Controls, index 3) — re-expands Controls, undoing Step 4's own
+          // outgoing run() (which collapses it on the way to Step 5) so
+          // Step 4's own "explore Controls" description matches what's on
+          // screen again, same reasoning as the to===2 case above but one
+          // section over.
+          const btn = document.querySelector('.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)[aria-expanded="false"]');
           if (btn) btn.click();
         }
       } : undefined}
