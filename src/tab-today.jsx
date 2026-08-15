@@ -1032,6 +1032,18 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   // Replay Tour (tab-settings.jsx), alongside its own appFeatures: {} reset.
   const appFeaturesSectionResolved = !!(state.onboarding && state.onboarding.appFeaturesSectionResolved);
   const showAppFeatures = checklistDone && !appFeaturesSectionResolved;
+  // Unlike appFeaturesSectionResolved, NEVER reset by Replay Tour — set once
+  // alongside it (see the same generate()-boundary effect below) and stays
+  // true forever after, same "permanent, one-way" semantics as
+  // checklistDone itself. Distinguishes "this is the user's ORIGINAL,
+  // first-ever pass through App Features" (stays true regardless — mirrors
+  // every other first-time card, batch-resolving together at the next real
+  // generation) from "this is a REPLAY of App Features" (a resolved card
+  // should vanish the instant it resolves, one at a time, same as every
+  // other replay-continuation card — see groupEntries()'s own comment) —
+  // both cases share the identical showAppFeatures/appFeaturesState shape
+  // otherwise, so without this there'd be no way to tell them apart.
+  const appFeaturesEverCompleted = !!(state.onboarding && state.onboarding.appFeaturesEverCompleted);
   // Published so reminders.jsx's startAdd can hide ANY reminder created
   // while the checklist is up — not just ones a mini-tour itself creates —
   // so a user manually clicking "+" mid-onboarding doesn't clutter the list
@@ -1815,7 +1827,10 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     // generation that happens to land after the very last tutorial
     // finishes is what actually hides it.
     if (checklistDone && APP_FEATURES.every((f) => appFeaturesState[f.id])) {
-      actions.setOnboarding({ appFeaturesSectionResolved: true });
+      // appFeaturesEverCompleted is the permanent half of this pair — see
+      // its own doc comment above for why it must never reset alongside
+      // appFeaturesSectionResolved on a Replay Tour.
+      actions.setOnboarding({ appFeaturesSectionResolved: true, appFeaturesEverCompleted: true });
     }
     setLeavingEids(new Set());
     setLeavingTaskIds(new Set());
@@ -2369,7 +2384,15 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                              doneCount={APP_FEATURES.filter((f) => appFeaturesState[f.id]).length}
                              total={APP_FEATURES.length} editMode={false} />
                 <div className="today-list">
-                  {APP_FEATURES.map((f) => (
+                  {/* During a replay (appFeaturesEverCompleted), a resolved
+                      card drops out the instant it resolves instead of
+                      sticking around with an Undo toggle — same
+                      "no closing card to synchronize a batch disappearance
+                      against anymore" reasoning as groupEntries()' own
+                      replay-continuation cards. The ORIGINAL first-time pass
+                      is unaffected: every card stays until the whole section
+                      resolves together at the next real generation. */}
+                  {APP_FEATURES.filter((f) => !(appFeaturesEverCompleted && appFeaturesState[f.id])).map((f) => (
                     <AppFeatureCard key={f.id} feature={f} state={state} actions={actions}
                                     onPlayTutorial={startMiniTour} onUncheckAppFeature={uncheckAppFeature} />
                   ))}
