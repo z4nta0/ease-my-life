@@ -3603,7 +3603,23 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .ob-btn--primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .ob-btn--ghost:hover{background:var(--hover,oklch(0 0 0/0.05))}
 
-.ob-tour{position:fixed;inset:0;z-index:1000;pointer-events:none}
+/* z-index:1010, not 1000 — a GuidedTour step can be active at the same time
+   as help-mode's own separate dim layer (.help-mode, z-index:1000) whenever
+   a step's real target IS the help-highlight toggle itself (the "Use the
+   highlight feature" App Feature tutorial's own Step 2, once its Step 1
+   click has turned help-mode on): two same-numbered z-index:1000 stacking
+   contexts fall back to DOM order, and .help-mode happens to mount later,
+   so it painted its dim + badges OVER .ob-coach and .ob-spot, only NOT
+   dimming wherever they happened to overlap a help-mode cutout hole. Same
+   fix, same reasoning as .help-btn's own z-index:1001 lift just below —
+   this needs to clear THAT too, so the tour's own spotlight/coach always
+   sit on top of literally everything else on screen while a step is
+   active, not just help-mode's dim layer. .ob-tour itself has
+   pointer-events:none (only .ob-coach opts back in), so lifting the whole
+   stacking context doesn't block clicks through to the real target
+   underneath — .ob-spot's own box-shadow trick, not an actual cutout,
+   is what "reveals" it either way. */
+.ob-tour{position:fixed;inset:0;z-index:1010;pointer-events:none}
 .ob-dim{position:absolute;inset:0;background:oklch(0.15 0.02 250/0.55)}
 .ob-spot{position:fixed;border-radius:var(--r-md);box-shadow:0 0 0 9999px oklch(0.15 0.02 250/0.6);border:2px solid oklch(from var(--accent) l c h/0.9)}
 /* Drops just the dimming shadow during a group/item drag (see GuidedTour's
