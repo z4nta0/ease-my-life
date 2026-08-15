@@ -104,8 +104,11 @@ export const APP_FEATURES = [
   {
     id: 'feat_protect_data', page: 'settings', label: 'Protect your data / Install the app',
     title: 'Protect Your Data',
-    body: 'This tutorial will show you how your data is stored, how to back it up, and how to install the app for the best experience.',
+    body: 'This tutorial will show you how to protect your data from being deleted by your browser, and to keep your data even more safe, how to install the app.',
     pills: ['settings page', 'data control', 'install app'],
+    // Real, user-confirmed estimate — see feat_manual_pick's own comment
+    // on this same convention.
+    time: '< 1 min',
   },
 ];
 
@@ -484,6 +487,35 @@ const buildAppFeatureSteps = (featureId, actions) => {
         title: 'Highlights Feature',
         body: <>Important elements on the page are highlighted, each with their own button that will bring up a tooltip with more information. Click this button again to turn the feature off and finish this tutorial.</>,
         primary: 'Done', back: true, requireClick: true,
+      },
+    ];
+  }
+  if (featureId === 'feat_protect_data') {
+    return [
+      // .set-protect-btn — new modifier class on the "Protect data" Btn in
+      // tab-settings.jsx (only rendered while !stor.persisted — same
+      // condition already gating the real button).
+      {
+        sel: '.set-protect-btn', tab: 'settings',
+        title: 'Protect Your Data',
+        body: <>This button helps <b>protect your data from being cleared by your browser's own storage cleanup</b>. Click it now to advance this tutorial.</>,
+        primary: 'Next', back: true, requireClick: true, coachAtTop: true,
+      },
+      // Comma-separated fallback (see findTargets' own comma-splitting in
+      // onboarding-tour-runner.jsx) — .set-install-btn (new modifier class,
+      // only rendered when canInstall) is tried first; if this browser
+      // can't offer a real install prompt, falls back to .set-store-ios
+      // (shared by all of tab-settings.jsx's own browser-specific
+      // instructional blocks — iOS, Mac, or the generic "not available
+      // here" note — exactly one of which renders at a time), so this
+      // targets whichever one actually applies without needing to know
+      // which browser it's running in. No requireClick — Done is enabled
+      // outright, last step of this tutorial.
+      {
+        sel: '.set-install-btn, .set-store-ios', tab: 'settings',
+        title: 'Install the App',
+        body: <>Installing the app to your device is <b>the best way to protect your data</b>, and gives you a more native, app-like experience. If a direct install isn't available in your browser, instructions for how to install it are shown here instead. Click Done when you are ready to finish this tutorial.</>,
+        primary: 'Done', back: true, coachAtTop: true,
       },
     ];
   }

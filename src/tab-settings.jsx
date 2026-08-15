@@ -1156,12 +1156,12 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   )}
                 </div>
                 <div className="set-store-actions">
-                  {canInstall && <Btn kind="primary" size="sm" icon="download" onClick={onInstall}>Install app</Btn>}
+                  {canInstall && <Btn kind="primary" size="sm" icon="download" className="set-install-btn" onClick={onInstall}>Install app</Btn>}
                   {installState === 'pending' && (
                     <Btn kind="secondary" size="sm" icon="download" disabled>Install app</Btn>
                   )}
                   {!(stor && stor.persisted) && (
-                    <Btn kind="secondary" size="sm" onClick={onPersist}>Protect data</Btn>
+                    <Btn kind="secondary" size="sm" className="set-protect-btn" onClick={onPersist}>Protect data</Btn>
                   )}
                 </div>
               </div>
