@@ -1021,29 +1021,37 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   // to reappear, rather than reappearing automatically the way the
   // checklist-driven cards do.
   const appFeaturesState = (state.onboarding && state.onboarding.appFeatures) || {};
-  // Deliberately NOT a live `.some()` over appFeaturesState — finishing the
-  // last of the 8 tutorials used to yank the whole section out from under
-  // the user the instant it happened, mid-session, with no natural
-  // boundary. appFeaturesSectionResolved is a persisted snapshot instead,
-  // only ever flipped true inside generate() itself (see its own comment
-  // near markGenerated()) — so the section stays visible, fully checked,
-  // until the user's NEXT real generation (manual Regenerate or the Daily
-  // Generator), whichever comes first. Reset back to false by Settings'
-  // Replay Tour (tab-settings.jsx), alongside its own appFeatures: {} reset.
+  // appFeaturesSectionResolved is a persisted snapshot, only ever flipped
+  // true inside generate() itself (see its own comment near
+  // markGenerated()) — deliberately NOT a live check during the user's
+  // ORIGINAL, first-ever pass, so finishing the last of the 8 tutorials
+  // doesn't yank the whole section out from under them mid-session with no
+  // natural boundary; it stays visible, fully checked, until their NEXT
+  // real generation (manual Regenerate or the Daily Generator).
   const appFeaturesSectionResolved = !!(state.onboarding && state.onboarding.appFeaturesSectionResolved);
-  const showAppFeatures = checklistDone && !appFeaturesSectionResolved;
   // Unlike appFeaturesSectionResolved, NEVER reset by Replay Tour — set once
   // alongside it (see the same generate()-boundary effect below) and stays
   // true forever after, same "permanent, one-way" semantics as
   // checklistDone itself. Distinguishes "this is the user's ORIGINAL,
-  // first-ever pass through App Features" (stays true regardless — mirrors
-  // every other first-time card, batch-resolving together at the next real
-  // generation) from "this is a REPLAY of App Features" (a resolved card
-  // should vanish the instant it resolves, one at a time, same as every
-  // other replay-continuation card — see groupEntries()'s own comment) —
-  // both cases share the identical showAppFeatures/appFeaturesState shape
+  // first-ever pass through App Features" from "this is a REPLAY of App
+  // Features" — both cases share the identical appFeaturesState shape
   // otherwise, so without this there'd be no way to tell them apart.
   const appFeaturesEverCompleted = !!(state.onboarding && state.onboarding.appFeaturesEverCompleted);
+  // The section (and its rail nav entry, gated on this same boolean below)
+  // needs a DIFFERENT disappearance rule depending on which of those two
+  // phases this is. First-time: the snapshot above — stays up, fully
+  // checked, until the next real generation, so the user gets to see it
+  // "all done" rather than have it vanish out from under them mid-click.
+  // Replay: a resolved card already vanishes from the LIST the instant it
+  // resolves (see the map() filter below), one at a time, same as every
+  // other replay-continuation card — so the section/nav-button itself
+  // should follow the exact same live rule (some still unresolved), not
+  // wait for a snapshot that (unlike first-time) has no real "next
+  // generation" moment to hang off of during a replay. Mirrors
+  // showReplayPageTours' own live "some still unresolved" check above.
+  const showAppFeatures = checklistDone && (appFeaturesEverCompleted
+    ? APP_FEATURES.some((f) => !appFeaturesState[f.id])
+    : !appFeaturesSectionResolved);
   // Published so reminders.jsx's startAdd can hide ANY reminder created
   // while the checklist is up — not just ones a mini-tour itself creates —
   // so a user manually clicking "+" mid-onboarding doesn't clutter the list
