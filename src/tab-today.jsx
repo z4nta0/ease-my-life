@@ -977,7 +977,17 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   // to reappear, rather than reappearing automatically the way the
   // checklist-driven cards do.
   const appFeaturesState = (state.onboarding && state.onboarding.appFeatures) || {};
-  const showAppFeatures = checklistDone && APP_FEATURES.some((f) => !appFeaturesState[f.id]);
+  // Deliberately NOT a live `.some()` over appFeaturesState — finishing the
+  // last of the 8 tutorials used to yank the whole section out from under
+  // the user the instant it happened, mid-session, with no natural
+  // boundary. appFeaturesSectionResolved is a persisted snapshot instead,
+  // only ever flipped true inside generate() itself (see its own comment
+  // near markGenerated()) — so the section stays visible, fully checked,
+  // until the user's NEXT real generation (manual Regenerate or the Daily
+  // Generator), whichever comes first. Reset back to false by Settings'
+  // Replay Tour (tab-settings.jsx), alongside its own appFeatures: {} reset.
+  const appFeaturesSectionResolved = !!(state.onboarding && state.onboarding.appFeaturesSectionResolved);
+  const showAppFeatures = checklistDone && !appFeaturesSectionResolved;
   // Published so reminders.jsx's startAdd can hide ANY reminder created
   // while the checklist is up — not just ones a mini-tour itself creates —
   // so a user manually clicking "+" mid-onboarding doesn't clutter the list
@@ -1708,6 +1718,16 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
 
     actions.replaceTodayEntries(nextEntries, { resetStreak: isAuto });
     actions.markGenerated();
+    // App Features section (see showAppFeatures' own comment) is allowed
+    // to finally disappear here, at a real generation boundary — not the
+    // instant the last tutorial resolves. Checked fresh on every
+    // generate() call (both manual Regenerate and the Daily Generator
+    // funnel through this same function) rather than only once, so a
+    // generation that happens to land after the very last tutorial
+    // finishes is what actually hides it.
+    if (checklistDone && APP_FEATURES.every((f) => appFeaturesState[f.id])) {
+      actions.setOnboarding({ appFeaturesSectionResolved: true });
+    }
     setLeavingEids(new Set());
     setLeavingTaskIds(new Set());
     if (arrivingIds.length && !(reduceMotion && reduceMotion())) {
