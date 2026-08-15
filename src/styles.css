@@ -67,6 +67,19 @@ body {
   padding-left: 8px;
   border-left: 0.5px solid var(--border);
 }
+/* Below 400px the date + " | " + time no longer fit on one line without
+   awkward wrapping mid-timestamp — drop the divider (it was only ever
+   there to visually separate the two on a shared line) and let the time
+   fall to its own line instead. */
+@container app (max-width: 399px) {
+  .kicker-time {
+    display: block;
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    text-align: center;
+  }
+}
 
 /* ─── App shell ──────────────────────────────────────────────────────────── */
 
@@ -235,6 +248,20 @@ body[data-viewport="mobile"] {
   }
   .tabbar--bottom .tabbtn span { display: none; }
   .app[data-placement="bottom"] .main { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+}
+
+/* At ~430px and narrower (e.g. iPhone SE at 375px), 5 buttons at 28px
+   horizontal padding each (76px wide, 388px total incl. gaps) no longer fit
+   within the pill's own max-width: calc(100% - 24px) — the row overflows
+   its rounded container symmetrically, pushing the first (Today) button's
+   highlight/background past the pill's left edge and the last (Settings)
+   button's past its right edge. 20px keeps every button comfortably inside
+   down to the narrowest common phone width; border-radius:999px doesn't
+   need any adjustment alongside it — being larger than any realistic
+   button half-height, it already clips to a full stadium shape regardless
+   of the exact width. */
+@container app (max-width: 430px) {
+  .tabbar--bottom .tabbtn { padding-left: 20px; padding-right: 20px; }
 }
 
 /* Side placement */
@@ -487,6 +514,11 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   gap: 12px;
   min-width: 0;
 }
+/* Groups the streak indicator with the help-mode toggle (see
+   help-mode.jsx) so kicker-row's own space-between still reads as
+   "date/time on the left, everything else on the right" with the new
+   button added, rather than splitting into three evenly-spaced columns. */
+.kicker-row-r { display: flex; align-items: center; gap: 20px; flex: 0 0 auto; }
 .today-h-lead {
   display: flex;
   align-items: center;
@@ -987,6 +1019,11 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   display: flex; flex-direction: column;
   gap: 28px;
   min-width: 0;
+  /* No transition here on purpose: the Welcome Tour's dynamic top-reserve
+     (padding-top, set inline via onboarding.jsx's emlTour bus) is measured
+     back out of the target's live position every frame while a step is up
+     (see the reserve-space effect in onboarding.jsx) — an animated change
+     would read as a moving target mid-transition and fight its own math. */
 }
 
 /* Holds the reorderable Reminders + group sections. Mirrors .today-groups' own
@@ -1191,6 +1228,12 @@ button.check { cursor: pointer; }
   box-shadow: 0 0 0 3px var(--bg), inset 0 0 0 1.5px var(--bg);
 }
 .check:hover { border-color: var(--text); }
+/* Same InfoTip-trigger pattern as .icon-btn.is-disabled/.btn.is-disabled
+   above, for a blocked App Feature launcher's Play button (see
+   AppFeatureCard in tab-today.jsx) — stays focusable/tappable so the tip
+   explaining why is still reachable. */
+.check.is-disabled { opacity: 0.4; cursor: default; }
+.check.is-disabled:hover { border-color: var(--border); }
 .today-card.is-done .check {
   background: var(--accent); border-color: var(--accent); color: var(--bg);
 }
@@ -1251,6 +1294,10 @@ button.check { cursor: pointer; }
   opacity: 0.4; cursor: default;
 }
 .icon-btn.is-disabled:hover { background: none; color: var(--muted); }
+/* Same InfoTip-trigger pattern as .icon-btn.is-disabled above, for a full
+   .btn (e.g. the mini-tour checklist's blocked Generate button). */
+.btn.is-disabled { opacity: 0.4; cursor: default; }
+.btn.is-disabled:hover { background: var(--bg); color: inherit; }
 
 .today-footer {
   display: flex; flex-direction: column; align-items: center; gap: 4px;

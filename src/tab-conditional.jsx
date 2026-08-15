@@ -145,7 +145,13 @@ function ConditionalControls({ draft, onChange, nameError, variant = 'card', hid
       </Collapse>
       <Collapse open={isEase}>
         <div className="cnd-typectl pie-rows">
-          <div className="pie-row">
+          {/* cnd-ease-up-row / cnd-ease-down-row (in addition to the shared
+              pie-row) are pure selector hooks for help mode — see
+              help-content.jsx's newCondEaseUp/newCondEaseDown — split by
+              direction the same way EntryEditor's own pie-ease-up-row/
+              pie-ease-down-row are, since Soonest/Latest/Fill and Shortest/
+              Longest/Refill need entirely different tip copy. */}
+          <div className={`pie-row ${isDown ? 'cnd-ease-down-row' : 'cnd-ease-up-row'}`}>
             <div className="pie-rowlabel">
               <span className="pie-lbl-row"><span className="pie-lbl">{soonestLbl}</span></span>
               <span className="pie-sub set-sub-fade" key={soonest}>{isDown ? <>stays triggered <strong>{soonest} {soonest === 1 ? 'day' : 'days'}</strong> minimum</> : <><strong>{soonest} {soonest === 1 ? 'day' : 'days'}</strong> until it can trigger</>}</span>
@@ -155,7 +161,7 @@ function ConditionalControls({ draft, onChange, nameError, variant = 'card', hid
               <span className="np-ease-unit">{soonest === 1 ? 'day' : 'days'}</span>
             </div>
           </div>
-          <div className="pie-row">
+          <div className={`pie-row ${isDown ? 'cnd-ease-down-row' : 'cnd-ease-up-row'}`}>
             <div className="pie-rowlabel">
               <span className="pie-lbl-row"><span className="pie-lbl">{latestLbl}</span></span>
               <span className="pie-sub set-sub-fade" key={latest}>{isDown ? <>stays triggered <strong>{latest} {latest === 1 ? 'day' : 'days'}</strong> maximum</> : <><strong>{latest} {latest === 1 ? 'day' : 'days'}</strong> until it must trigger</>}</span>
@@ -165,15 +171,28 @@ function ConditionalControls({ draft, onChange, nameError, variant = 'card', hid
               <span className="np-ease-unit">{latest === 1 ? 'day' : 'days'}</span>
             </div>
           </div>
-          <div className="pie-row">
-            <div className="pie-rowlabel">
-              <span className="pie-lbl">{isDown ? 'Refill' : 'Fill'}</span>
-              <span className="pie-sub set-sub-fade" key={(draft.value ?? 0) >= threshold ? 'full' : 'part'}>{(draft.value ?? 0) >= threshold ? <>conditional is <strong>fully charged</strong></> : <>conditional at <strong>{Math.round(draft.value ?? 0)} charge</strong></>}</span>
+          {!isDown && (
+            <div className="pie-row cnd-ease-up-row">
+              <div className="pie-rowlabel">
+                <span className="pie-lbl">Fill</span>
+                <span className="pie-sub set-sub-fade" key={(draft.value ?? 0) >= threshold ? 'full' : 'part'}>{(draft.value ?? 0) >= threshold ? <>conditional is <strong>fully charged</strong></> : <>conditional at <strong>{Math.round(draft.value ?? 0)} charge</strong></>}</span>
+              </div>
+              <FillButton label="Fill"
+                   disabled={(draft.value ?? 0) >= threshold}
+                   onClick={() => set({ value: threshold, triggered: true })} />
             </div>
-            <FillButton label={isDown ? 'Refill' : 'Fill'}
-                 disabled={(draft.value ?? 0) >= threshold}
-                 onClick={() => set({ value: threshold, triggered: true })} />
-          </div>
+          )}
+          {isDown && (
+            <div className="pie-row cnd-ease-down-row">
+              <div className="pie-rowlabel">
+                <span className="pie-lbl">Refill</span>
+                <span className="pie-sub set-sub-fade" key={(draft.value ?? 0) >= threshold ? 'full' : 'part'}>{(draft.value ?? 0) >= threshold ? <>conditional is <strong>fully charged</strong></> : <>conditional at <strong>{Math.round(draft.value ?? 0)} charge</strong></>}</span>
+              </div>
+              <FillButton label="Refill"
+                   disabled={(draft.value ?? 0) >= threshold}
+                   onClick={() => set({ value: threshold, triggered: true })} />
+            </div>
+          )}
         </div>
       </Collapse>
       <div className="cnd-typectl pie-rows">

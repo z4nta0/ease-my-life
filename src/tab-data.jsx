@@ -3,11 +3,15 @@ import { CAD_OPTS } from './cadence-control.jsx';
 import { CADENCE } from './cadence.js';
 import { EASE_UP_RANGE_WARN } from './constants.js';
 import { normalizeConditionalName, normalizeGroupName } from './pickers.js';
+import { useEmlTour } from './onboarding.jsx';
 import { ReminderManager } from './reminders.jsx';
 import { MODES } from './seed.js';
 import { ConditionalControls, conditionalDraftDefault } from './tab-conditional.jsx';
 import { EntryEditor } from './tab-today.jsx';
 import { Btn, Collapse, FillButton, Icon, InfoTip, NumStepper, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { HelpButton, HelpOverlay } from './help-mode.jsx';
+import { DATA_HELP_ITEMS } from './help-content.jsx';
+import { seedHelpPickers, clearHelpPickers, seedHelpTasks, clearHelpTasks } from './help-sample-data.js';
 
 // Data tab — items grouped by their owning picker, plus weights, vacation,
 // picker deletion, and per-picker Daily-generator scheduling (weekday +
@@ -337,7 +341,11 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
         {/* Default Cadence expands/collapses when Ease-up/Ease-down is (de)selected,
             sharing the app's Collapse height animation. */}
         <Collapse open={isEase}>
-          <div className="ease-config">
+          {/* ease-config--up/--down — pure selector hook so help-mode can
+              give this section mode-specific copy (Soonest/Latest/Fill vs.
+              Shortest/Longest/Refill), same idea as EntryEditor's own
+              pie-ease-up-row/pie-ease-down-row split. */}
+          <div className={`ease-config ${isDown ? 'ease-config--down' : 'ease-config--up'}`}>
             <div className="ease-cadence-kicker">Default cadence</div>
             <div className="pie-row">
               <div className="pie-rowlabel">
@@ -554,7 +562,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
       {/* Footer — Delete (left) · Cancel + Done (right), mirroring the item
           editor. Delete morphs the footer into a confirm that reuses the
           "also delete its N items" message. */}
-      <div className="rd-ctl-group rd-ctl-group--foot">
+      <div className="rd-ctl-group rd-ctl-group--foot pk-ctl-foot">
         {confirmDel ? (
           <div className="rd-pk-del-confirm" key="confirm">
             <div className="confirm-msg">Delete the &ldquo;{pk.name}&rdquo; picker? This will also delete its {items.length} {items.length === 1 ? 'item' : 'items'}. This can&rsquo;t be undone.</div>
@@ -638,7 +646,7 @@ function ConditionalsManager({ state, actions }) {
   const [pending, setPending] = React.useState(null);
   // Row currently playing its collapse-shut animation before removal (delete).
   const [closingId, setClosingId] = React.useState(null);
-  const usingCount = (cid) => pickers.filter((p) => p.conditionalId === cid).length;
+  const usingCount = (cid) => pickers.filter((p) => p.conditionalId === cid && !p.hidden).length;
   // Section collapse — same persisted mechanism + chevron as the picker cards.
   // Defaults COLLAPSED: absent = collapsed, explicit false = expanded.
   const collapsedMap = (state.ui && state.ui.controlsCollapsed) || {};
@@ -751,6 +759,72 @@ function ConditionalsManager({ state, actions }) {
 }
 
 function TabData({ state, actions, onHome, onNavTab }) {
+  // Group Filter / Pickers Filter are disabled while their own Data page
+  // tour step is up — narrating what they do is the point; letting the user
+  // actually change statGroup/scope mid-tour would leave a LATER step's own
+  // target (Reminders, which only renders at scope 'all') unable to find
+  // anything, since nothing resets it back afterward. Same tourId+step
+  // gating pattern as tab-picker.jsx's own disableTourAddPicker.
+  const tour = useEmlTour();
+  const disableGroupFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 1;
+  const disablePickersFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 2;
+  // "Edit your first item" tour's own Step 4 (Edit Picker Settings,
+  // Controls expanded), Step 6 (Picker Items, an item row about to be
+  // clicked), and Step 7 (Edit Item Settings, an item expanded) all want
+  // the user genuinely free to explore/edit everything inside whichever
+  // section is current, but collapsing the picker's own header would pull
+  // any of these steps' own target out from under it (the highlighted box
+  // depends on this exact picker staying expanded) — guarded during all
+  // three. Expanding the OTHER top-level section (Items during Step 4,
+  // Controls during Steps 6/7) is guarded too: not strictly
+  // target-breaking the way the picker header is, but it'd let the
+  // highlighted box balloon to include content these steps were never
+  // about. Narrating that these are off-limits for their step is the
+  // point, same tourId+step gating pattern as disableGroupFilter/
+  // disablePickersFilter above.
+  const disableEditTourPickerHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 3 || tour.step === 5 || tour.step === 6);
+  const disableEditTourControlsToggle = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 5 || tour.step === 6);
+  // Items header itself is ALSO guarded during Steps 6/7 (not just
+  // blocked from expanding during Step 4) — collapsing it there would
+  // hide the item rows/Add button those two steps depend on, same
+  // target-preservation reasoning as the picker header above.
+  const disableEditTourItemsToggle = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 3 || tour.step === 5 || tour.step === 6);
+  // Step 6's own body text says outright that this button is disabled for
+  // the tutorial — narrating what it does is the point, not inviting a
+  // brand-new item mid-tutorial that would shift every item row's
+  // position out from under Step 6's own "click any of these" framing.
+  // Stays disabled through Step 7 too, for the same reason.
+  const disableEditTourAddItem = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 5 || tour.step === 6);
+  // Thin accent outline (.is-tour-target, styles2.css) on top of the tour
+  // engine's own bigger spotlight box — points at the SPECIFIC element a
+  // requireClick step wants clicked, since the spotlight alone highlights
+  // the whole picker section (header + Controls + Items together, see
+  // onboarding-app-features.jsx's own sel comment) without distinguishing
+  // which part inside it is actually actionable. Step 2 targets EVERY
+  // picker's own .cat section (clicking any one's header satisfies it) —
+  // applied to the whole card, not just its header button, so the outline
+  // reads as "this card" rather than singling out one control inside it.
+  // Plain .is-tour-target is enough there since picker cards sit with real
+  // gaps between them, no touching-siblings border-doubling risk the way
+  // item rows have. Steps 3/5 target a single header each; Step 6 targets
+  // the whole item-row group (its own CSS handles that as a set of
+  // bordered siblings, not one wrapping element).
+  const highlightEditTourPickerHeaders = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 1;
+  const highlightEditTourControlsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 2;
+  const highlightEditTourItemsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 4;
+  const highlightEditTourItemRows = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 5;
+  // Help mode (see help-mode.jsx) — needs real pickers of every mode (with a
+  // conditional-gated one) AND reminders of every recurrence kind to show a
+  // representative "view and edit" section, so both disposable seed sets
+  // are seeded together while it's on and cleared when it turns off or this
+  // tab unmounts.
+  const [helpOn, setHelpOn] = React.useState(false);
+  const helpExit = React.useCallback(() => setHelpOn(false), []);
+  React.useEffect(() => {
+    if (helpOn) { seedHelpPickers(state, actions); seedHelpTasks(state, actions); }
+    else { clearHelpPickers(actions); clearHelpTasks(actions); }
+  }, [helpOn]);
+  React.useEffect(() => () => { clearHelpPickers(actions); clearHelpTasks(actions); }, []);
   // Which picker item is expanded for editing (mirrors the Reminders list).
   const [openItemId, setOpenItemId] = React.useState(null);
   // Tracks a brand-new picker item whose edits aren't kept yet. Cancel on such
@@ -793,16 +867,17 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // narrows the picker box row below it (mirrors the Pickers + Stats tabs).
   const existingGroups = React.useMemo(() => {
     const seen = [];
-    for (const p of pickers) if (p.group && !seen.includes(p.group)) seen.push(p.group);
+    for (const p of pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
     return seen;
   }, [pickers]);
   const visiblePickers = React.useMemo(() => (
     pickers.filter((p) =>
+      !p.hidden &&
       (statGroup === 'all' || p.group === statGroup) &&
       (condFilter === 'all' || p.conditionalId === condFilter))
   ), [pickers, statGroup, condFilter]);
   const conditionals = state.conditionals || [];
-  const condPickerCount = (cid) => pickers.filter((p) => p.conditionalId === cid).length;
+  const condPickerCount = (cid) => pickers.filter((p) => p.conditionalId === cid && !p.hidden).length;
 
   // Keep scope coherent with the group filter: 'all' is always valid; a specific
   // picker scope is only valid if that picker is in the current group. When it
@@ -867,8 +942,12 @@ function TabData({ state, actions, onHome, onNavTab }) {
 
   return (
     <div className="tab tab--data">
+      <HelpOverlay active={helpOn} items={DATA_HELP_ITEMS} onExit={helpExit} />
       <header className="stat-h">
-        <div className="kicker stat-h-kicker">Data</div>
+        <div className="kicker-row">
+          <div className="kicker stat-h-kicker">Data</div>
+          <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
+        </div>
         <div className="stat-h-lead">
           <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
             {/* Same theme-wired logo as the Today + Stats headers (currentColor →
@@ -917,15 +996,17 @@ function TabData({ state, actions, onHome, onNavTab }) {
             <div className="picker-groups stat-scope-groups" ref={groupsRef} role="tablist" aria-label="Filter pickers by group">
               <button type="button" role="tab" aria-selected={statGroup === 'all'}
                       className={`picker-group-pill ${statGroup === 'all' ? 'is-on' : ''}`}
+                      disabled={disableGroupFilter}
                       onClick={() => { setStatGroup('all'); setScope('all'); }}>
                 All
-                <span className="picker-group-count">{pickers.length}</span>
+                <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
               </button>
               {existingGroups.map((g) => {
-                const n = pickers.filter((p) => p.group === g).length;
+                const n = pickers.filter((p) => p.group === g && !p.hidden).length;
                 return (
                   <button key={g} type="button" role="tab" aria-selected={statGroup === g}
                           className={`picker-group-pill ${statGroup === g ? 'is-on' : ''}`}
+                          disabled={disableGroupFilter}
                           onClick={() => setStatGroup(g)}>
                     {g}
                     <span className="picker-group-count">{n}</span>
@@ -938,9 +1019,10 @@ function TabData({ state, actions, onHome, onNavTab }) {
         {conditionals.length > 0 && (
           <div className="stat-filter-row">
             <span className="stat-filter-lbl">Conditionals</span>
-            <div className="picker-groups stat-scope-groups" ref={condRowRef} role="tablist" aria-label="Filter pickers by conditional">
+            <div className="picker-groups stat-scope-groups stat-scope-groups--cond" ref={condRowRef} role="tablist" aria-label="Filter pickers by conditional">
               <button type="button" role="tab" aria-selected={condFilter === 'all'}
                       className={`picker-group-pill ${condFilter === 'all' ? 'is-on' : ''}`}
+                      disabled={disableGroupFilter}
                       onClick={() => { setCondFilter('all'); if (scope !== 'all' && scope !== 'reminders' && scope !== 'conditionals') setScope('all'); }}>
                 All
                 <span className="picker-group-count">{pickers.length}</span>
@@ -948,6 +1030,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
               {conditionals.map((c) => (
                 <button key={c.id} type="button" role="tab" aria-selected={condFilter === c.id}
                         className={`picker-group-pill ${condFilter === c.id ? 'is-on' : ''}`}
+                        disabled={disableGroupFilter}
                         onClick={() => { setCondFilter(c.id); setScope('all'); setStatGroup('all'); }}>
                   {c.name}
                   <span className="picker-group-count">{condPickerCount(c.id)}</span>
@@ -963,6 +1046,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
               <button type="button"
                       className={`picker-tab picker-tab--enter ${scope === 'all' ? 'is-on' : ''}`}
                       style={{ animationDelay: '0ms' }}
+                      disabled={disablePickersFilter}
                       onClick={() => onSelectScope('all')}>
                 <span className="picker-tab-name">All</span>
                 <span className="picker-tab-mode">Everything</span>
@@ -972,6 +1056,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
               <button type="button"
                       className={`picker-tab picker-tab--enter ${scope === 'conditionals' ? 'is-on' : ''}`}
                       style={{ animationDelay: '40ms' }}
+                      disabled={disablePickersFilter}
                       onClick={() => onSelectScope('conditionals')}>
                 <span className="picker-tab-name">Conditionals</span>
                 <span className="picker-tab-mode">Gates</span>
@@ -981,15 +1066,17 @@ function TabData({ state, actions, onHome, onNavTab }) {
               <button type="button"
                       className={`picker-tab picker-tab--enter ${scope === 'reminders' ? 'is-on' : ''}`}
                       style={{ animationDelay: '80ms' }}
+                      disabled={disablePickersFilter}
                       onClick={() => onSelectScope('reminders')}>
                 <span className="picker-tab-name">Reminders</span>
                 <span className="picker-tab-mode">Tasks</span>
               </button>
             )}
             {visiblePickers.map((p, i) => (
-              <button key={p.id} type="button"
+              <button key={p.id} type="button" data-picker-id={p.id}
                       className={`picker-tab picker-tab--enter ${scope === p.id ? 'is-on' : ''}`}
                       style={{ animationDelay: ((statGroup === 'all' ? (conditionals.length > 0 ? 3 : 2) : 0) + i) * 40 + 'ms' }}
+                      disabled={disablePickersFilter}
                       onClick={() => onSelectScope(p.id)}>
                 <span className="picker-tab-name">{p.name}</span>
                 <span className="picker-tab-mode">{MODES[p.mode].label}</span>
@@ -1020,7 +1107,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
           const ctlCollapsed = !!collapsedMap[pk.id + ':controls'];
           const itemsCollapsed = !!collapsedMap[pk.id + ':items'];
           return (
-            <section key={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''}`}
+            <section key={pk.id} data-picker-id={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''} ${highlightEditTourPickerHeaders ? 'is-tour-target' : ''}`}
                      onAnimationEnd={(e) => {
                        if (e.target === e.currentTarget && removingPickerId === pk.id) {
                          actions.removePicker(pk.id); setRemovingPickerId(null);
@@ -1028,13 +1115,26 @@ function TabData({ state, actions, onHome, onNavTab }) {
                      }}
                      style={{ animationDelay: (pkIndex * 45) + 'ms' }}>
               <header className="cat-h"
-                      onClick={(e) => { if (!e.target.closest('button')) toggle(pk.id); }}>
+                      onClick={(e) => { if (!disableEditTourPickerHeader && !e.target.closest('button')) toggle(pk.id); }}>
                 <button type="button" className="cat-h-l" aria-expanded={open}
+                        disabled={disableEditTourPickerHeader}
                         onClick={() => toggle(pk.id)}>
                   <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
                   <h3 className="cat-name">{pk.name}</h3>
                   <span className="cat-group">{pk.group}</span>
-                  <span className="cat-count">{eligible} of {items.length}</span>
+                  {/* Each part its own element (not one text run) so a narrow
+                      viewport can stack them into 3 centered rows — see
+                      .cat-count's own @container rule in styles2.css. */}
+                  <span className="cat-count">
+                    <span className="cat-count-n">{eligible}</span>
+                    <span className="cat-count-of">of</span>
+                    <span className="cat-count-n">{items.length}</span>
+                  </span>
+                  {/* Not shown — read by help-mode's pickerRow entry via
+                      labelSel to build "{type} Picker" per-picker badge
+                      titles; the type itself isn't otherwise surfaced
+                      anywhere in the collapsed header. */}
+                  <span className="cat-mode-label" hidden>{MODES[pk.mode].label}</span>
                 </button>
                 <button className="vac-toggle" aria-pressed={!!allVac}
                         aria-label={`${allVac ? 'End vacation for' : 'Start vacation for'} all items in ${pk.name}`}
@@ -1049,7 +1149,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   {/* Controls — nested collapsible (open by default, remembered per
                       picker). Holds the pick-algorithm config moved here from
                       Settings, so all of a picker's setup lives in one place. */}
-                  <button type="button" className="rd-ctl" aria-expanded={!ctlCollapsed}
+                  <button type="button" className={`rd-ctl ${highlightEditTourControlsHeader ? 'is-tour-target' : ''}`} aria-expanded={!ctlCollapsed}
+                       disabled={disableEditTourControlsToggle}
                        onClick={() => actions.toggleControlsCollapsed(pk.id + ':controls')}>
                     <span className="rd-ctl-l">
                       <span className={`chev ${ctlCollapsed ? '' : 'is-open'}`}><Icon name="chev" size={12} /></span>
@@ -1068,7 +1169,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
 
                   {/* Items — nested collapsible (open by default, remembered per
                       picker); collapsed shows the item count. */}
-                  <button type="button" className="rd-ctl" aria-expanded={!itemsCollapsed}
+                  <button type="button" className={`rd-ctl ${highlightEditTourItemsHeader ? 'is-tour-target' : ''}`} aria-expanded={!itemsCollapsed}
+                       disabled={disableEditTourItemsToggle}
                        onClick={() => actions.toggleControlsCollapsed(pk.id + ':items')}>
                     <span className="rd-ctl-l">
                       <span className={`chev ${itemsCollapsed ? '' : 'is-open'}`}><Icon name="chev" size={12} /></span>
@@ -1078,7 +1180,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   </button>
                   <Collapse open={!itemsCollapsed}>
                     <React.Fragment>
-                      <button className="rd-add" onClick={() => {
+                      <button className="rd-add" disabled={disableEditTourAddItem} onClick={() => {
                         if (justAddedItemRef.current) return;   // guard: ignore rapid double-click
                         const id = 'it_' + Math.random().toString(36).slice(2, 8);
                         actions.addItem(pk.id, 'New item', id);
@@ -1099,7 +1201,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                           : (isEase ? `${soonest}\u2013${latest} ${CADENCE.unitWord(pk.cadence, latest)}`
                              : (usesWeight ? `Weight w${it.weight}` : 'Equal chance'));
                         return (
-                          <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''}`}
+                          <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''} ${highlightEditTourItemRows ? 'is-tour-target' : ''}`}
                                onAnimationEnd={() => { if (insertItemId === it.id) setInsertItemId(null); }}>
                             <button type="button" className="rd-row" aria-expanded={itemOpen}
                                   onClick={() => setOpenItemId(itemOpen ? null : it.id)}>
@@ -1125,6 +1227,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                             <Collapse open={itemOpen}>
                               <div className="rd-edit">
                                 <ItemEditor item={it} picker={pk} actions={actions}
+                                            isNew={justAddedItemRef.current === it.id}
                                             onClose={() => {
                                               if (justAddedItemRef.current === it.id) justAddedItemRef.current = null;
                                               // Only close OUR row — this can fire well after the user

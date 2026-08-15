@@ -8,6 +8,8 @@ import { Segmented } from './reminders.jsx';
 import { CelebrationPreviewStage, PickerAnimStage } from './settings-previews.jsx';
 import { STORAGE } from './storage.js';
 import { Btn, Card, Collapse, Icon, InfoTip, announce, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { HelpButton, HelpOverlay } from './help-mode.jsx';
+import { SETTINGS_HELP_ITEMS } from './help-content.jsx';
 
 // Settings — picker config + daily generator config + days off + reset.
 
@@ -189,10 +191,17 @@ function ContactSupportCard({ state, actions }) {
       if (!el || !container) return;
       const rect = el.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
+      // The floating bottom tab bar overlays .main rather than sitting
+      // outside it, so its own top edge — not the container's raw bottom —
+      // is the real visible boundary content can scroll up to. Other tab
+      // placements (side/top) don't occupy this edge, so .tabbar--bottom
+      // simply won't exist and containerRect.bottom is used as-is.
+      const bar = document.querySelector('.tabbar--bottom');
+      const visibleBottom = bar ? Math.min(containerRect.bottom, bar.getBoundingClientRect().top) : containerRect.bottom;
       // Bring the form's bottom into view (with a little breathing room),
       // but never scroll past its top — so the "Having problems?" row stays
       // visible too when the form is short enough to fit alongside it.
-      const overflowBelow = rect.bottom - containerRect.bottom + 24;
+      const overflowBelow = rect.bottom - visibleBottom + 24;
       if (overflowBelow > 0) {
         container.scrollTo({ top: container.scrollTop + overflowBelow, behavior: reduceMotion() ? 'auto' : 'smooth' });
       }
@@ -258,7 +267,7 @@ function ContactSupportCard({ state, actions }) {
   return (
     <React.Fragment>
       <Card>
-        <div className="set-data-row">
+        <div className="set-data-row set-contact-trigger">
           <div className="set-data-info">
             <span className="set-data-name">Having problems?</span>
             <span className="set-data-sub">Send a note and it&rsquo;ll come through with your app version and browser attached, so there&rsquo;s no back-and-forth to track those down.</span>
@@ -385,7 +394,7 @@ function ThemeSection({ state, actions }) {
 
   return (
     <React.Fragment>
-      <div className="set-subsection">
+      <div className="set-subsection set-subsection--theme-light">
         <div className="set-subsection-h">Theme &middot; Light</div>
         <p className="settings-sub">
           Pick a light based theme below or create your own. If you enable the system
@@ -407,7 +416,7 @@ function ThemeSection({ state, actions }) {
         </Card>
       </div>
 
-      <div className="set-subsection">
+      <div className="set-subsection set-subsection--theme-dark">
         <div className="set-subsection-h">Theme &middot; Dark</div>
         <p className="settings-sub">
           Pick a dark based theme below or create your own. If you enable the system
@@ -475,6 +484,11 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
   // the right pane and the sticky rail on the left tracks / drives position.
   const [activeSection, setActiveSection] = React.useState('daily');
   const [legalDoc, setLegalDoc] = React.useState(null); // 'privacy' | 'terms' | null
+  // Help mode (see help-mode.jsx) — every section here is static UI chrome,
+  // no data-dependent content, so unlike Pickers/Data/Stats no disposable
+  // sample data needs seeding.
+  const [helpOn, setHelpOn] = React.useState(false);
+  const helpExit = React.useCallback(() => setHelpOn(false), []);
   // Appearance preview stages: bumping a token replays; celebPreview/pickPreview
   // hold which style is showing (null = idle, selector visible).
   const [celebToken, setCelebToken] = React.useState(0);
@@ -494,6 +508,9 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
   React.useEffect(() => () => clearTimeout(pickPreviewTimer.current), []);
   const sectionRefs = React.useRef({});
   const railRef = React.useRef(null);
+  // The mobile pill bar's own horizontal scroller — see its own comment
+  // below (near the fade-edge effect) for why this can't just be railRef.
+  const railScrollRef = React.useRef(null);
   const rootRef = React.useRef(null);
   const skipSpy = React.useRef(false);
   // While set, scroll-spy leaves this section active and skips its own
@@ -566,20 +583,30 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
   }, []);
 
   // Scroll-edge fades on the mobile rail (horizontal pill bar), same affordance
-  // as the Data/Stats filter rows.
+  // as the Data/Stats filter rows. The fade itself (.settings-rail::before/
+  // ::after, styles2.css) lives on the STICKY outer rail, not on the element
+  // that actually scrolls (railScrollRef, the inner wrapper around <ul>) —
+  // an earlier version put overflow-x AND the fade pseudo-elements on the
+  // same (outer) element, which meant the fade — a position:absolute child
+  // of that scrolling element — scrolled away WITH the pills instead of
+  // staying pinned to the visible edges (confirmed on real devices, not a
+  // Chromium-sandbox-only quirk: reproduced in both Firefox and Chrome
+  // emulation). Reading scroll state from the inner wrapper but toggling
+  // the state classes on the outer (non-scrolling) rail keeps the fade
+  // itself immobile while still tracking real scroll position.
   React.useEffect(() => {
-    const el = railRef.current;
-    if (!el) return;
+    const scrollEl = railScrollRef.current, rail = railRef.current;
+    if (!scrollEl || !rail) return;
     const update = () => {
-      const scrollable = el.scrollWidth - el.clientWidth > 1;
-      el.classList.toggle('at-start', !scrollable || el.scrollLeft <= 1);
-      el.classList.toggle('at-end', !scrollable || el.scrollLeft + el.clientWidth >= el.scrollWidth - 1);
+      const scrollable = scrollEl.scrollWidth - scrollEl.clientWidth > 1;
+      rail.classList.toggle('at-start', !scrollable || scrollEl.scrollLeft <= 1);
+      rail.classList.toggle('at-end', !scrollable || scrollEl.scrollLeft + scrollEl.clientWidth >= scrollEl.scrollWidth - 1);
     };
     update();
-    el.addEventListener('scroll', update, { passive: true });
+    scrollEl.addEventListener('scroll', update, { passive: true });
     const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => { el.removeEventListener('scroll', update); ro.disconnect(); };
+    ro.observe(scrollEl);
+    return () => { scrollEl.removeEventListener('scroll', update); ro.disconnect(); };
   }, []);
 
   const jumpTo = (id) => {
@@ -859,8 +886,12 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
 
   return (
     <div className="tab tab--settings" ref={rootRef}>
+      <HelpOverlay active={helpOn} items={SETTINGS_HELP_ITEMS} onExit={helpExit} />
       <header className="stat-h">
-        <div className="kicker stat-h-kicker">Settings</div>
+        <div className="kicker-row">
+          <div className="kicker stat-h-kicker">Settings</div>
+          <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
+        </div>
         <div className="stat-h-lead">
           <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
             {/* Same theme-wired logo as the Today + Stats + Data headers. */}
@@ -900,27 +931,31 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
       <div className="settings-layout">
         <aside className="settings-rail" aria-label="Settings sections" ref={railRef}>
           <div className="kicker rail-kicker">Sections</div>
-          <ul>
-            {SETTINGS_SECTIONS.map((s) => (
-              <li key={s.id}>
-                <button className={`rail-btn ${activeSection === s.id ? 'is-on' : ''}`}
-                        onClick={() => jumpTo(s.id)}>
-                  <span className="rail-name">{s.label}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
+          {/* Own scrolling element, separate from .settings-rail itself — see
+              the fade-edge effect's own comment for why. */}
+          <div className="settings-rail-scroll" ref={railScrollRef}>
+            <ul>
+              {SETTINGS_SECTIONS.map((s) => (
+                <li key={s.id}>
+                  <button className={`rail-btn ${activeSection === s.id ? 'is-on' : ''}`}
+                          onClick={() => jumpTo(s.id)}>
+                    <span className="rail-name">{s.label}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </aside>
 
         <div className="settings-sections">
           {/* ── Appearance ───────────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['appearance'] = el; }}>
+          <section className="set-section set-section--appearance" ref={(el) => { sectionRefs.current['appearance'] = el; }}>
             <div className="set-section-h"><span className="kicker">Appearance</span></div>
             <p className="settings-sub">
               Control the appearance of Ease My life, including colors, animations and tab placement.
             </p>
 
-            <div className="set-subsection">
+            <div className="set-subsection set-subsection--systempref">
               <Card>
                 <div className="set-data-row">
                   <div className="set-data-info">
@@ -940,7 +975,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
 
             <ThemeSection state={state} actions={actions} />
 
-            <div className="set-subsection">
+            <div className="set-subsection set-subsection--celebration">
               <div className="set-subsection-h">Completion celebration</div>
               <p className="settings-sub">
                 Pick which animation will play when all tasks are marked as completed
@@ -961,7 +996,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               </Card>
             </div>
 
-            <div className="set-subsection">
+            <div className="set-subsection set-subsection--pickanim">
               <div className="set-subsection-h">Picker animation</div>
               <p className="settings-sub">
                 Pick which animation will play when the &ldquo;Pick one&rdquo; button is clicked
@@ -982,7 +1017,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               </Card>
             </div>
 
-            <div className="set-subsection">
+            <div className="set-subsection set-subsection--layout">
               <div className="set-subsection-h">Layout</div>
               <p className="settings-sub">
                 Pick where the app&rsquo;s main navigation links should be located.
@@ -1012,7 +1047,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           </section>
 
           {/* ── Daily generator ─────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['daily'] = el; }}>
+          <section className="set-section set-section--daily" ref={(el) => { sectionRefs.current['daily'] = el; }}>
             <div className="set-section-h"><span className="kicker">Daily generator</span></div>
             <p className="settings-sub">
               The Daily generator can always be run manually from the Today tab regardless of this setting.
@@ -1049,7 +1084,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                        aria-label="Daily generator run time" />
               </div>
               {dailyMode === 'auto' && notifPerm !== 'unsupported' && (
-                <div className="set-data-row">
+                <div className="set-data-row set-notify-row">
                   <div className="set-data-info">
                     <span className="set-data-name">Notify me when it runs</span>
                     <span className="set-data-sub">
@@ -1075,7 +1110,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           </section>
 
           {/* ── Holidays ────────────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['holidays'] = el; }}>
+          <section className="set-section set-section--holidays" ref={(el) => { sectionRefs.current['holidays'] = el; }}>
             <div className="set-section-h"><span className="kicker">Holidays</span></div>
             <p className="settings-sub">
               Any pickers that are set to &ldquo;Skip on holidays&rdquo; will not be run on the days
@@ -1088,7 +1123,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           </section>
 
           {/* ── Data control ────────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['data'] = el; }}>
+          <section className="set-section set-section--data" ref={(el) => { sectionRefs.current['data'] = el; }}>
             <div className="set-section-h"><span className="kicker">Data control</span></div>
             <p className="settings-sub">
               All of your data is stored locally, on this device - do with it as you will. Unfortunately,
@@ -1121,12 +1156,12 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   )}
                 </div>
                 <div className="set-store-actions">
-                  {canInstall && <Btn kind="primary" size="sm" icon="download" onClick={onInstall}>Install app</Btn>}
+                  {canInstall && <Btn kind="primary" size="sm" icon="download" className="set-install-btn" onClick={onInstall}>Install app</Btn>}
                   {installState === 'pending' && (
                     <Btn kind="secondary" size="sm" icon="download" disabled>Install app</Btn>
                   )}
                   {!(stor && stor.persisted) && (
-                    <Btn kind="secondary" size="sm" onClick={onPersist}>Protect data</Btn>
+                    <Btn kind="secondary" size="sm" className="set-protect-btn" onClick={onPersist}>Protect data</Btn>
                   )}
                 </div>
               </div>
@@ -1190,7 +1225,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   </div>
                 </div>
               )}
-              <div className="set-data-row">
+              <div className="set-data-row set-export-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Export a backup</span>
                   <span className="set-data-sub">Downloads a JSON file of everything &mdash; <strong>{pickerCount}</strong> pickers, <strong>{itemCount}</strong> items, <strong>{reminderCount}</strong> reminders and <strong>all app settings</strong>.</span>
@@ -1204,7 +1239,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   ? <Btn kind="secondary" size="sm" icon="download" ref={exportBtnRef} onClick={exportData}>Export</Btn>
                   : <InfoTip className="set-disabled-btn" label="There is no user data to export."><Btn kind="secondary" size="sm" icon="download" disabled>Export</Btn></InfoTip>}
               </div>
-              <div className="set-data-row">
+              <div className="set-data-row set-import-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Import a backup</span>
                   <span className="set-data-sub"><strong>Replaces all data</strong> that is currently being stored by this app with a previously exported file.</span>
@@ -1229,7 +1264,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   <Btn kind="secondary" size="sm" icon="upload" ref={importBtnRef} onClick={() => fileRef.current && fileRef.current.click()}>Import</Btn>
                 )}
               </div>
-              <div className="set-data-row set-data-row--danger">
+              <div className="set-data-row set-data-row--danger set-reset-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Reset all data</span>
                   <span className="set-data-sub" id="set-reset-confirm-msg">Wipes everything and restores the app to a clean state. <strong>This can&rsquo;t be undone.</strong></span>
@@ -1265,7 +1300,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
 
           {/* ── About ───────────────────────────────────────────────────────── */}
           {/* ── Account ─────────────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['account'] = el; }}>
+          <section className="set-section set-section--account" ref={(el) => { sectionRefs.current['account'] = el; }}>
             <div className="set-section-h"><span className="kicker">Account</span></div>
             <p className="settings-sub">
               Ease My Life runs entirely on this device &mdash; no account required. Sign in to
@@ -1283,7 +1318,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           </section>
 
           {/* ── About ───────────────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['about'] = el; }}>
+          <section className="set-section set-section--about" ref={(el) => { sectionRefs.current['about'] = el; }}>
             <div className="set-section-h"><span className="kicker">About</span></div>
             <p className="settings-sub">
               Ease My Life is a labor of love for me. I have been using a version of this app on
@@ -1315,7 +1350,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
             </Card>
 
             <Card>
-              <div className="set-data-row">
+              <div className="set-data-row set-support-project-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Support the project</span>
                   <span className="set-data-sub">Enjoying Ease My Life? Consider buying me a coffee.</span>
@@ -1325,13 +1360,13 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
             </Card>
 
             <Card>
-              <div className="set-data-row">
+              <div className="set-data-row set-replay-tour-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Replay the welcome tour</span>
                   <span className="set-data-sub">Runs the first-run walkthrough again. Including the welcome message, a guided tour of pickers, generating your day, and reminders.</span>
                 </div>
                 <Btn kind="secondary" size="sm" icon="refresh"
-                     onClick={() => { if (onHome) onHome(); actions.setOnboarding({ welcomed: false, dismissed: true }); }}>Replay tour</Btn>
+                     onClick={() => { if (onHome) onHome(); actions.setOnboarding({ welcomed: false, dismissed: true, appFeatures: {}, appFeaturesSectionResolved: false, checklist: {} }); }}>Replay tour</Btn>
               </div>
             </Card>
 
@@ -1339,13 +1374,13 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           </section>
 
           {/* ── Legal ───────────────────────────────────────────────────────── */}
-          <section className="set-section" ref={(el) => { sectionRefs.current['legal'] = el; }}>
+          <section className="set-section set-section--legal" ref={(el) => { sectionRefs.current['legal'] = el; }}>
             <div className="set-section-h"><span className="kicker">Legal</span></div>
             <p className="settings-sub">
               The documents below outline what you&rsquo;re agreeing to by using Ease My Life.
             </p>
             <Card>
-              <div className="set-data-row">
+              <div className="set-data-row set-privacy-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Privacy Policy</span>
                   <span className="set-data-sub">How your data is collected, used, and stored.</span>
@@ -1353,7 +1388,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                 <button type="button" className="btn btn--secondary btn--sm"
                    onClick={() => setLegalDoc('privacy')}>View</button>
               </div>
-              <div className="set-data-row">
+              <div className="set-data-row set-terms-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Terms of Service</span>
                   <span className="set-data-sub">The rules for using Ease My Life, including paid features.</span>

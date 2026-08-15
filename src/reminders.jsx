@@ -1,5 +1,8 @@
 import React from 'react';
 import { DayLogChip, RemindersLog } from './day-log.jsx';
+import { emlTour } from './eml-tour-bus.js';
+import { OB_CHECKLIST } from './onboarding-checklist.js';
+import { OB_REMINDER_CARD_TEXT, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { TASKS } from './tasks.js';
 import { Btn, Collapse, Icon, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
 
@@ -392,7 +395,65 @@ function ReminderInlineEdit({ task, onClose, onDelete, commit, state }) {
 // Matches EntryCard's structure: the whole row toggles done; the actions area
 // (edit / delete) is click-isolated. Schedule summary sits where a picker
 // entry shows its picker name.
-function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, onRename, onSkip, isSkipping, extraClass = '', onAnimEnd, date }) {
+function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, onRename, onSkip, isSkipping, extraClass = '', onAnimEnd, date, isTutorial, tutorialDone, onPlayTutorial, onUncheckTutorial }) {
+  // Mini-tour launcher: a sample reminder from the Welcome Tour, offered as
+  // a "try this" card. Stays on screen resolved or not — Play (or the card
+  // itself) starts the mini-tour; X marks it cancelled without touching the
+  // sample. Once resolved (any of the 3 ways — see onboarding-checklist.js)
+  // it shows checked, and — unlike a pending card, which can only be
+  // resolved via Play/X, never by clicking the checkbox directly — clicking
+  // it (or the row) then un-resolves it, same as a normal completed card
+  // toggling back off, so the tutorial can be redone.
+  if (isTutorial) {
+    const override = OB_REMINDER_CARD_TEXT[task.id] || {};
+    // No explicit kicker override → fall back to the real schedule summary
+    // (e.g. "Every Wednesday") so a recurring sample's card always matches
+    // whatever day it was actually seeded for.
+    const text = { kicker: override.kicker || TASKS.summary(task), name: override.name || task.name, time: override.time };
+    const onRowClick = (e) => {
+      if (e.target.closest('.today-card-actions')) return;
+      if (tutorialDone) onUncheckTutorial('reminder', task.id);
+      else onPlayTutorial('reminder', task.id);
+    };
+    return (
+      <article className={`today-card rem-card today-card--tutorial ${tutorialDone ? 'is-done' : ''} ${extraClass}`}
+                onClick={onRowClick}>
+        {tutorialDone ? (
+          <button type="button" className="check" aria-pressed="true"
+                  aria-label={`Undo ${text.name} tutorial`}
+                  onClick={(e) => { e.stopPropagation(); onUncheckTutorial('reminder', task.id); }}>
+            <span className="check-ripple" aria-hidden="true" />
+            <Icon name="check" size={14} />
+          </button>
+        ) : (
+          <button type="button" className="check" aria-label={`Start the ${text.name} tutorial`}
+                  onClick={(e) => { e.stopPropagation(); onPlayTutorial('reminder', task.id); }}>
+            <Icon name="play" size={13} />
+          </button>
+        )}
+        <div className="today-card-body">
+          <div className="today-card-meta rem-meta">
+            <span className="meta-picker">{text.kicker}</span>
+            {text.time && (
+              <>
+                <span className="meta-dot">·</span>
+                <span className="meta-time">{text.time}</span>
+              </>
+            )}
+          </div>
+          <div className="today-card-name">{text.name}</div>
+        </div>
+        {!tutorialDone && (
+          <div className="today-card-actions">
+            <button className="icon-btn" onClick={(e) => { e.stopPropagation(); actions.setChecklistItem(task.id, { status: 'cancelled' }); }}
+                    aria-label="Cancel tutorial" title="Cancel">
+              <Icon name="x" size={15} />
+            </button>
+          </div>
+        )}
+      </article>
+    );
+  }
   const done = TASKS.isDoneToday(task, date);
   const fresh = justChecked === task.id && done;
   const handleRowClick = (e) => {
@@ -442,12 +503,37 @@ function ReminderCard({ task, actions, justChecked, isOpen, onEdit, onToggle, on
 }
 
 // ── Today: the Reminders section (list + inline edit + quick add) ───────────
-function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, arrivingTaskIds, activeEditor, setActiveEditor }) {
+function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, arrivingTaskIds, activeEditor, setActiveEditor, onPlayTutorial, onUncheckTutorial, checklistExiting }) {
   // Pinned to the last generation, not live "now" — a reminder due on a new
   // day shouldn't appear until the generator (auto or manual Regenerate)
   // actually runs on/after that day. See TASKS.anchorDate.
   const anchor = TASKS.anchorDate(state.today && state.today.generatedAt);
   const due = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays, anchor);
+  // Mini-tour launcher cards: one per sample reminder. Kept out of `due`
+  // (and its "X of Y" count) since they're not real due reminders — the
+  // additive ring/rail totals for these live in tab-today.jsx. Stays
+  // visible — checked or not — through the ORIGINAL first-time checklist,
+  // until checklistDone (see onboarding-checklist.js). Unlike checklistDone
+  // itself, this isn't permanently over once that happens: Settings' Replay
+  // tour button (tab-settings.jsx) resets each item's own checklist entry
+  // (never checklistDone), so a still-unresolved sample keeps offering its
+  // card afterward too — EXCLUDED if a real (non-sample) reminder has since
+  // taken its exact name, same "does this still make sense to offer" check
+  // as tab-today.jsx's own groupEntries() does for picker samples — ONLY
+  // once checklistDone, though: during the ORIGINAL first-time checklist
+  // this must stay a no-op, since completing this exact tutorial creates a
+  // real reminder named IDENTICALLY to the sample (addTask's own dedup
+  // deliberately skips hidden tasks for this reason, see store.jsx) — so
+  // the collision check would otherwise immediately fire against its own
+  // result and yank the card out from under the user the instant they
+  // finish it. Also, post-checklistDone, a resolved card drops out the
+  // instant it's resolved (same as tab-today.jsx's groupEntries()) rather
+  // than sticking around with an "Undo" toggle — there's no closing
+  // Generate card left to synchronize a batch disappearance against.
+  const checklistDone = !!(state.onboarding && state.onboarding.checklistDone);
+  const tutorialTasks = (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)
+    && !(checklistDone && OB_CHECKLIST.entryFor(state, t.id))
+    && (!checklistDone || !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name)));
   // The quick-add form and each saved reminder's inline editor are both gated
   // off the tab-wide `activeEditor` slot (shared with the picker item editor
   // in tab-today.jsx) so opening any one of them collapses whichever of the
@@ -495,9 +581,29 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   // existing reminder can configure recurrence *before* it's created. The
   // editor edits via actions.updateTask; here that just mutates local draft.
   const draftActions = { updateTask: (_id, patch) => setDraftTask((d) => ({ ...d, ...patch })) };
+  // Published so a reminder mini-tour's later steps (onboarding-reminder-
+  // tours.jsx) can show copy that matches whichever schedule type is
+  // currently selected in this draft, without needing this local state
+  // lifted anywhere — the tour just re-renders off the bus like any other
+  // subscriber.
+  React.useEffect(() => {
+    emlTour.set({ draftRepeat: draftTask ? draftTask.repeat : null });
+  }, [draftTask && draftTask.repeat]);
   const startAdd = () => {
     clearTimeout(closeTimerRef.current);   // a pending forced-close discard from a moment ago shouldn't wipe this fresh draft
-    setDraftTask(TASKS.defaultTask({ repeat: 'once' }));
+    // A reminder mini-tour (onboarding-reminder-tours.jsx) publishes the
+    // sample it's walking through here so the real "+" button — which the
+    // tour has the user click themselves, not a simulated one — opens
+    // pre-filled with that sample's data instead of blank. Never touches the
+    // sample task itself, just seeds this brand-new draft.
+    const bus = emlTour.get();
+    // Any reminder created while the mini-tour checklist is up — not just
+    // ones a tour itself creates — stays out of the real list until it
+    // concludes; otherwise a real item mixed in with the still-open
+    // launcher cards reads as more tutorial clutter. Unhidden in
+    // tab-today.jsx's generateItemResolved effect once the checklist's
+    // closing Generate step runs.
+    setDraftTask(TASKS.defaultTask({ ...(bus.prefill || { repeat: 'once' }), ...(bus.showChecklist ? { hidden: true } : {}) }));
     setAddClosing(false);
     setActiveEditor('reminder-add');
   };
@@ -542,9 +648,18 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
     if (!name || committingRef.current) return;   // guard: ignore rapid double-click
     committingRef.current = true;
     selfClosingRef.current = true;
-    const newId = draftTask.id;
+    // A reminder mini-tour replayed after already finishing once should
+    // update the SAME real reminder it created before, not spawn a
+    // duplicate — mirrors tab-picker.jsx's own replaceId handling. The
+    // existing task is found via createdFromSample (see store.jsx's addTask
+    // and onboarding-reminder-tours.jsx's Step 1 run(), which tags the
+    // draft with it).
+    const existing = draftTask.createdFromSample
+      ? state.tasks.find((t) => t.createdFromSample === draftTask.createdFromSample)
+      : null;
+    const newId = existing ? existing.id : draftTask.id;
     const finish = () => {
-      actions.addTask({ ...draftTask, name });
+      actions.addTask({ ...draftTask, name, ...(existing ? { replaceId: existing.id } : {}) });
       announceAdded({ ...draftTask, name });
       setInsertId(newId);   // play the entrance on the new card
       setDraftTask(null);
@@ -563,6 +678,10 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   useEscapeCancel(visible && !addClosing, cancelAdd);
 
   const doneCount = due.filter((t) => TASKS.isDoneToday(t, anchor)).length;
+  // Mini-tour launcher cards count toward this the whole time they're on
+  // screen — resolved (any of the 3 ways) counts as done, same as any other
+  // card (see the additive ring/rail totals in tab-today.jsx).
+  const tutorialDoneCount = tutorialTasks.filter((t) => !!OB_CHECKLIST.entryFor(state, t.id)).length;
 
   return (
     <section className="group-section rem-section" ref={sectionRef}>
@@ -578,8 +697,8 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
           )}
           <h2 className="group-name">Reminders</h2>
           <span className="group-count">
-            <span className="group-done">{doneCount}</span>
-            <span className="group-of">of {due.length}</span>
+            <span className="group-done">{doneCount + tutorialDoneCount}</span>
+            <span className="group-of">of {due.length + tutorialTasks.length}</span>
           </span>
           {!editMode && onToggleLog && <DayLogChip open={logOpen} onClick={onToggleLog} />}
         </div>
@@ -618,6 +737,12 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
             </div>
           </div>
         )}
+        {tutorialTasks.map((t) => (
+          <ReminderCard key={t.id} task={t} actions={actions} isTutorial
+                        tutorialDone={!!OB_CHECKLIST.entryFor(state, t.id)}
+                        onPlayTutorial={onPlayTutorial} onUncheckTutorial={onUncheckTutorial}
+                        extraClass={checklistExiting ? 'is-removing' : ''} />
+        ))}
         {due.map((t) => (
           <React.Fragment key={t.id}>
             <ReminderCard task={t} actions={actions} justChecked={justChecked} date={anchor}
@@ -690,13 +815,6 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
             </Collapse>
           </React.Fragment>
         ))}
-
-        {due.length === 0 && !adding && (
-          <button className="rem-empty" onClick={startAdd}>
-            <Icon name="plus" size={14} />
-            <span>Add a reminder &mdash; a one-off to-do or a recurring task.</span>
-          </button>
-        )}
       </div>
     </section>
   );
@@ -781,7 +899,7 @@ function ReminderManager({ state, actions, hidden }) {
   const justAddedRef = React.useRef(null);
   // Id of a just-inserted reminder row, so it plays the slide-in entrance once.
   const [insertId, setInsertId] = React.useState(null);
-  const tasks = state.tasks || [];
+  const tasks = (state.tasks || []).filter((t) => !t.hidden);
   const opts = TASKS.normalizeOpts(state.reminderOpts);
   // Main section collapse persists (like the pickers) so it survives tab
   // switches. Reserved key '__reminders_main'; defaults COLLAPSED, so absent =

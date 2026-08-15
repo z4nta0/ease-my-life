@@ -1,6 +1,9 @@
 import React from 'react';
 import { PALETTES, applyPaletteObj, resolveActiveThemeKey, resolveCustomPalette } from './appearance.js';
-import { Onboarding } from './onboarding.jsx';
+import { Onboarding, useEmlTour } from './onboarding.jsx';
+import { PickerTour } from './onboarding-picker-tours.jsx';
+import { PageTour } from './onboarding-page-tours.jsx';
+import { AppFeatureTour } from './onboarding-app-features.jsx';
 import { CLEAN_STATE } from './seed.js';
 import { useStore } from './store.jsx';
 import { TabData } from './tab-data.jsx';
@@ -93,6 +96,7 @@ function TabBar({ active, onChange, placement, railOpen, onToggleRail, className
       {TABS.map((t) => (
         <button key={t.id}
                 className={`tabbtn ${t.id === active ? 'is-on' : ''}`}
+                data-tab={t.id}
                 onClick={() => onChange(t.id)}
                 aria-current={t.id === active ? 'page' : undefined}>
           <Icon name={t.icon} size={20} />
@@ -129,6 +133,51 @@ function App() {
   // drawer there instead of falling back to bottom tabs). Starts closed; the
   // pull handle toggles it, and selecting a tab or tapping the scrim closes it.
   const [railOpen, setRailOpen] = React.useState(false);
+  // Which sample picker's mini-tour is currently running — null when none
+  // is. Lives here rather than in TabToday (unlike the reminder mini-tours)
+  // because Step 1 navigates to the Pickers tab, which would unmount
+  // TabToday (and anything it owns) along with it; same reasoning as
+  // Onboarding itself living at this level. Seeded from a persisted
+  // activeTour on first mount (a reload) so the tour resumes instead of
+  // silently vanishing — see onboarding-picker-tours.jsx's own resume
+  // handling for the other half of this (skipping the intro modal,
+  // resuming at the right — resumable — step).
+  const [activePickerTour, setActivePickerTour] = React.useState(() => {
+    const at = state.onboarding && state.onboarding.activeTour;
+    return (at && typeof at.id === 'string' && at.id.startsWith('picker-')) ? at.id.slice('picker-'.length) : null;
+  });
+  // Same reasoning as activePickerTour just above, for the "Explore the
+  // {page}" page tours: only the Today page tour stays entirely on Today —
+  // the others (Pickers' own Step 2+, and presumably Stats/Data/Settings
+  // once built) navigate to their own tab, which would unmount TabToday
+  // (and this tour along with it) if it lived there instead. A page tour's
+  // activeTour.id is already `page-${checklist id}` (see PageTour's own
+  // tourId), which already IS the id this needs.
+  const [activePageTour, setActivePageTour] = React.useState(() => {
+    const at = state.onboarding && state.onboarding.activeTour;
+    return (at && typeof at.id === 'string' && at.id.startsWith('page-')) ? at.id.slice('page-'.length) : null;
+  });
+  // Same reasoning again, for App Features tutorials (see
+  // onboarding-app-features.jsx) — most of these live on Pickers/Settings,
+  // not Today, so this has to live here too rather than in TabToday.
+  const [activeAppFeatureTour, setActiveAppFeatureTour] = React.useState(() => {
+    const at = state.onboarding && state.onboarding.activeTour;
+    return (at && typeof at.id === 'string' && at.id.startsWith('appfeature-')) ? at.id.slice('appfeature-'.length) : null;
+  });
+  // The Welcome Tour auto-opens/closes this same rail while it's running, so
+  // a step spotlighting a nav button can actually find it there even when
+  // collapsed — see onboarding.jsx's wantRailOpen publish. Only acts while a
+  // tour is actually active, so it never fights the user's own manual
+  // toggling outside of one. Depends on obBus.step too, not just
+  // wantRailOpen's own value — two consecutive nav-button steps both want it
+  // open (true → true, no value change to react to), but selectTab (called
+  // by the outgoing step's own run()) unconditionally closes the rail on
+  // every tab switch in between. Without step in the deps, that close would
+  // never get corrected past the first pair of back-to-back nav steps.
+  const obBus = useEmlTour();
+  React.useEffect(() => {
+    if (obBus.phase === 'tour' && typeof obBus.wantRailOpen === 'boolean') setRailOpen(obBus.wantRailOpen);
+  }, [obBus.phase, obBus.wantRailOpen, obBus.step]);
   const mainRef = React.useRef(null);
   // Nav layout-switch animation: when tabPlacement changes, keep a fixed-overlay
   // GHOST of the old bar mounted to play its exit-toward-edge keyframe while the
@@ -201,7 +250,7 @@ function App() {
       )}
       {railOpen && <div className="rail-scrim" onClick={() => setRailOpen(false)} aria-hidden="true" />}
       <main className="main" ref={mainRef}>
-        {active === 'today' && <div className="tab-fade" key="today"><TabToday state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} /></div>}
+        {active === 'today' && <div className="tab-fade" key="today"><TabToday state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} onStartPickerTour={setActivePickerTour} onStartPageTour={setActivePageTour} onStartAppFeatureTour={setActiveAppFeatureTour} /></div>}
         {active !== 'today' && (
           <div className="main-inner tab-fade" key={active}>
             {active === 'picker'   && <TabPicker   state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} animStyle={(state.appearance && state.appearance.pickAnim) || 'reel'} />}
@@ -213,6 +262,36 @@ function App() {
       </main>
 
       <Onboarding state={state} actions={actions} active={active} selectTab={selectTab} />
+      {activePickerTour && (
+        <PickerTour
+          pickerId={activePickerTour}
+          state={state}
+          actions={actions}
+          active={active}
+          selectTab={selectTab}
+          onClose={() => setActivePickerTour(null)}
+        />
+      )}
+      {activePageTour && (
+        <PageTour
+          pageId={activePageTour}
+          state={state}
+          actions={actions}
+          active={active}
+          selectTab={selectTab}
+          onClose={() => setActivePageTour(null)}
+        />
+      )}
+      {activeAppFeatureTour && (
+        <AppFeatureTour
+          featureId={activeAppFeatureTour}
+          state={state}
+          actions={actions}
+          active={active}
+          selectTab={selectTab}
+          onClose={() => setActiveAppFeatureTour(null)}
+        />
+      )}
 
     </div>
   );

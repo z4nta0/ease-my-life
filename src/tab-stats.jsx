@@ -1,8 +1,12 @@
 import React from 'react';
 import { CADENCE } from './cadence.js';
+import { useEmlTour } from './onboarding.jsx';
 import { MODES } from './seed.js';
 import { TASKS } from './tasks.js';
 import { Card, Icon, Pill } from './ui.jsx';
+import { HelpButton, HelpOverlay } from './help-mode.jsx';
+import { STATS_HELP_ITEMS } from './help-content.jsx';
+import { unhideHelpStatsHistory, hideHelpStatsHistory } from './help-sample-data.js';
 
 // Stats tab — everything is derived on the fly from the per-pick log
 // (state.pickLog), so the picker + range filters apply uniformly to every
@@ -55,9 +59,9 @@ function countLevel(n) { return n <= 0 ? 0 : n >= 4 ? 4 : n; }
 
 // Stacked proportion bar + legend. Used for the pick-source split and the
 // reminder one-time/recurring split.
-function BreakdownBar({ title, total, segments, empty }) {
+function BreakdownBar({ title, total, segments, empty, className = '' }) {
   return (
-    <Card>
+    <Card className={className}>
       <div className="kicker">{title}</div>
       {total > 0 ? (
         <div className="bd">
@@ -121,7 +125,35 @@ function Pager({ page, pageSize, total, onChange, unit = 'items', alwaysShow = f
   );
 }
 
-function TabStats({ state, onHome, onNavTab }) {
+function TabStats({ state, actions, onHome, onNavTab }) {
+  // Welcome Tour: reserves top-space above the page content when its own
+  // coach card doesn't fit above/below the highlighted area — see the
+  // reserve-space effect in onboarding.jsx (same mechanism as the Pickers tab).
+  const tour = useEmlTour ? useEmlTour() : { reserveTop: 0 };
+  // Help mode (see help-mode.jsx) — nothing here is editable, so unlike
+  // Pickers/Data this doesn't seed a disposable copy: it borrows the REAL
+  // hidden sample pickers directly (same reasoning as the page tour's own
+  // unhideSampleHistory) so the heatmap/breakdown have genuine history to
+  // show, and hides them again once help mode turns off.
+  const [helpOn, setHelpOn] = React.useState(false);
+  const helpExit = React.useCallback(() => setHelpOn(false), []);
+  // Skipped while the Stats PAGE TOUR owns these same real samples (see
+  // onboarding-page-tours.jsx's unhideSampleHistory) — this effect also
+  // runs on mount (helpOn starts false), and without this guard it would
+  // immediately re-hide the samples the instant the tour navigates onto
+  // this page, right after the tour's own Step 1 just unhid them. Confirmed
+  // as the cause of the Stats page tour going dim-with-nothing-then-ending:
+  // the group filter's own `existingGroups.length > 1` never got the
+  // chance to see any unhidden pickers before this ran the samples back to
+  // hidden.
+  const statsTourActive = !!(state.onboarding && state.onboarding.activeTour
+    && state.onboarding.activeTour.id === 'page-explore_stats');
+  React.useEffect(() => {
+    if (statsTourActive) return;
+    if (helpOn) unhideHelpStatsHistory(state, actions);
+    else hideHelpStatsHistory(actions);
+  }, [helpOn, statsTourActive]);
+  React.useEffect(() => () => hideHelpStatsHistory(actions), []);
   // scope: 'all' | <pickerId> | 'reminders'
   const [scope, setScope] = React.useState('all');
   const [range, setRange] = React.useState('all');
@@ -173,6 +205,16 @@ function TabStats({ state, onHome, onNavTab }) {
 
   const log = state.pickLog || [];
   const pickers = state.pickers || [];
+  // Hidden pickers/tasks (see store.jsx's `hidden` flag) keep their history
+  // rows in pickLog/reminderLog/reminderSkipLog — nothing here is deleted —
+  // but every rollup below excludes them by id so the numbers reflect only
+  // what's currently visible, same as Today/Pickers/Data.
+  const hiddenPickerIds = React.useMemo(() => (
+    new Set(pickers.filter((p) => p.hidden).map((p) => p.id))
+  ), [pickers]);
+  const hiddenTaskIds = React.useMemo(() => (
+    new Set((state.tasks || []).filter((t) => t.hidden).map((t) => t.id))
+  ), [state.tasks]);
 
   // ── Conditionals: definitions + trigger history, summarized per conditional.
   const conditionalDefs = state.conditionals || [];
@@ -239,14 +281,15 @@ function TabStats({ state, onHome, onNavTab }) {
   // narrows the "Show" picker row below it (mirrors the Pickers tab).
   const existingGroups = React.useMemo(() => {
     const seen = [];
-    for (const p of pickers) if (p.group && !seen.includes(p.group)) seen.push(p.group);
+    for (const p of pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
     return seen;
   }, [pickers]);
   // statGroup only scopes which pickers appear in the Show row; it never filters
-  // the stats itself. 'all' also lets the All + Reminders options show.
+  // the stats itself. 'all' also lets the All + Reminders options show. Hidden
+  // pickers (see store.jsx's `hidden` flag) never appear here.
   const [statGroup, setStatGroup] = React.useState('all');
   const visiblePickers = React.useMemo(() => (
-    statGroup === 'all' ? pickers : pickers.filter((p) => p.group === statGroup)
+    pickers.filter((p) => !p.hidden && (statGroup === 'all' || p.group === statGroup))
   ), [pickers, statGroup]);
 
   // Which reminder types opt into Stats. If none, the Reminders scope is hidden.
@@ -309,9 +352,10 @@ function TabStats({ state, onHome, onNavTab }) {
     if (isReminders) return [];
     return log.filter((r) =>
       !r.outcome &&
+      !hiddenPickerIds.has(r.pickerId) &&
       (scope === 'all' || r.pickerId === scope) &&
       (!cutoffIso || r.date >= cutoffIso));
-  }, [log, scope, cutoffIso, isReminders]);
+  }, [log, scope, cutoffIso, isReminders, hiddenPickerIds]);
 
   // Per-item count of re-rolled-away (rejected) rows, range + scope aware.
   const rejectedById = React.useMemo(() => {
@@ -319,12 +363,13 @@ function TabStats({ state, onHome, onNavTab }) {
     if (isReminders) return m;
     for (const r of log) {
       if (r.outcome !== 'rejected') continue;
+      if (hiddenPickerIds.has(r.pickerId)) continue;
       if (scope !== 'all' && r.pickerId !== scope) continue;
       if (cutoffIso && r.date < cutoffIso) continue;
       m.set(r.itemId, (m.get(r.itemId) || 0) + 1);
     }
     return m;
-  }, [log, scope, cutoffIso, isReminders]);
+  }, [log, scope, cutoffIso, isReminders, hiddenPickerIds]);
 
   // Per-item count of skipped rows, range + scope aware.
   const skippedById = React.useMemo(() => {
@@ -332,19 +377,21 @@ function TabStats({ state, onHome, onNavTab }) {
     if (isReminders) return m;
     for (const r of log) {
       if (r.outcome !== 'skipped') continue;
+      if (hiddenPickerIds.has(r.pickerId)) continue;
       if (scope !== 'all' && r.pickerId !== scope) continue;
       if (cutoffIso && r.date < cutoffIso) continue;
       m.set(r.itemId, (m.get(r.itemId) || 0) + 1);
     }
     return m;
-  }, [log, scope, cutoffIso, isReminders]);
+  }, [log, scope, cutoffIso, isReminders, hiddenPickerIds]);
 
   // ── Reminder rows for the active range ────────────────────────────────────
   const remRows = React.useMemo(() => (
     (state.reminderLog || [])
       .filter((r) => enabledTypes.includes(r.type))
+      .filter((r) => !hiddenTaskIds.has(r.taskId))
       .filter((r) => !cutoffIso || statIso(new Date(r.completedAt)) >= cutoffIso)
-  ), [state.reminderLog, enabledTypes.join(','), cutoffIso]);
+  ), [state.reminderLog, enabledTypes.join(','), cutoffIso, hiddenTaskIds]);
 
   // Per-day aggregation. Picks → { done, total, items:[{name,done}] };
   // reminders → { done:count, total:count, items:[names] }.
@@ -448,12 +495,12 @@ function TabStats({ state, onHome, onNavTab }) {
 
   const cold = React.useMemo(() => {
     const items = (state.items || []).filter((it) =>
-      (scope === 'all' || it.pickerId === scope) && !it.vacation);
+      !hiddenPickerIds.has(it.pickerId) && (scope === 'all' || it.pickerId === scope) && !it.vacation);
     return items
       .map((it) => ({ name: it.name, n: (countById.get(it.id) || {}).n || 0 }))
       .sort((a, b) => a.n - b.n || a.name.localeCompare(b.name))
       .slice(0, 5);
-  }, [state.items, scope, countById]);
+  }, [state.items, scope, countById, hiddenPickerIds]);
 
   // Single-picker breakdown — EVERY item in the picker (incl. zero-pick and
   // vacation), with all per-item metrics on one object. The "Pick breakdown"
@@ -791,6 +838,7 @@ function TabStats({ state, onHome, onNavTab }) {
     const m = new Map();
     for (const r of (state.reminderSkipLog || [])) {
       if (!enabledTypes.includes(r.type)) continue;
+      if (hiddenTaskIds.has(r.taskId)) continue;
       if (cutoffIso && statIso(new Date(r.skippedAt)) < cutoffIso) continue;
       const e = m.get(r.taskId) || { name: r.name, type: r.type, n: 0 };
       e.n++; e.name = r.name; e.type = r.type;
@@ -798,7 +846,7 @@ function TabStats({ state, onHome, onNavTab }) {
     }
     const dir = remBdSort === 'desc' ? -1 : 1;
     return [...m.values()].sort((a, b) => dir * (a.n - b.n) || a.name.localeCompare(b.name));
-  }, [isReminders, state.reminderSkipLog, enabledTypes.join(','), cutoffIso, remBdSort]);
+  }, [isReminders, state.reminderSkipLog, enabledTypes.join(','), cutoffIso, remBdSort, hiddenTaskIds]);
 
   // Active list for the card + paging. pageSize 10 like Gmail.
   const REM_PAGE_SIZE = 10;
@@ -825,8 +873,12 @@ function TabStats({ state, onHome, onNavTab }) {
 
   return (
     <div className="tab tab--stats">
+      <HelpOverlay active={helpOn} items={STATS_HELP_ITEMS} onExit={helpExit} />
       <header className="stat-h">
-        <div className="kicker stat-h-kicker">Stats</div>
+        <div className="kicker-row">
+          <div className="kicker stat-h-kicker">Stats</div>
+          <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
+        </div>
         <div className="stat-h-lead">
           <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
             {/* Same theme-wired logo as the Today header (currentColor → accent,
@@ -861,11 +913,12 @@ function TabStats({ state, onHome, onNavTab }) {
             <h1 className="section-title">Your <span className="stat-title-accent">eased</span> life, according to the numbers.</h1>
           </div>
         </div>
+        <p className="section-sub stat-h-sub">Filter by group, conditionals, reminders, pickers, and time below. This tab is best used in conjunction with the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>, so that you can view the statistics here in order to see if your created items' numbers line up with your expectations and then tweak them in the Data tab if they do not.</p>
       </header>
 
+      <div className="stat-body-wrap" style={tour.reserveTop ? { paddingTop: tour.reserveTop } : undefined}>
       {/* ── Filters ── */}
-      <div className="stat-filters">
-        <p className="section-sub stat-filters-sub">Filter by group, conditionals, reminders, pickers, and time below. This tab is best used in conjunction with the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>, so that you can view the statistics here in order to see if your created items' numbers line up with your expectations and then tweak them in the Data tab if they do not.</p>
+      <div className="stat-filters ob-stat-content">
         {existingGroups.length > 1 && (
           <div className="stat-filter-row">
             <span className="stat-filter-lbl">Group</span>
@@ -874,10 +927,10 @@ function TabStats({ state, onHome, onNavTab }) {
                       className={`picker-group-pill ${statGroup === 'all' ? 'is-on' : ''}`}
                       onClick={() => { setStatGroup('all'); setScope('all'); }}>
                 All
-                <span className="picker-group-count">{pickers.length}</span>
+                <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
               </button>
               {existingGroups.map((g) => {
-                const n = pickers.filter((p) => p.group === g).length;
+                const n = pickers.filter((p) => p.group === g && !p.hidden).length;
                 return (
                   <button key={g} type="button" role="tab" aria-selected={statGroup === g}
                           className={`picker-group-pill ${statGroup === g ? 'is-on' : ''}`}
@@ -921,7 +974,7 @@ function TabStats({ state, onHome, onNavTab }) {
               </button>
             )}
             {visiblePickers.map((p, i) => (
-              <button key={p.id} type="button"
+              <button key={p.id} type="button" data-picker-id={p.id}
                       className={`picker-tab picker-tab--enter ${scope === p.id ? 'is-on' : ''}`}
                       style={{ animationDelay: ((statGroup === 'all' ? (1 + (hasConditionals ? 1 : 0) + (remEnabled ? 1 : 0)) : 0) + i) * 40 + 'ms' }}
                       onClick={() => setScope(p.id)}>
@@ -945,7 +998,7 @@ function TabStats({ state, onHome, onNavTab }) {
         </div>
       </div>
 
-      <div className="tab-fade stat-body" key={scope + '|' + range}>
+      <div className="tab-fade stat-body ob-stat-content" key={scope + '|' + range}>
       {/* ── Picker identity (single-picker scope) — mirrors the Pickers tab
           header: "Picker" + colored mode pill, then name, then the mode's
           description. ── */}
@@ -969,24 +1022,24 @@ function TabStats({ state, onHome, onNavTab }) {
         return (
           <>
             <div className="stat-row">
-              <Card className="stat-card">
+              <Card className="stat-card stat-mk-condfired">
                 <div className="stat-num">{condTotals.fired}</div>
                 <div className="stat-lbl">triggered</div>
               </Card>
-              <Card className="stat-card">
+              <Card className="stat-card stat-mk-condcycles">
                 <div className="stat-num">{condTotals.total}</div>
                 <div className="stat-lbl">cycles</div>
               </Card>
-              <Card className="stat-card">
+              <Card className="stat-card stat-mk-condrate">
                 <div className="stat-num">{condTotals.rate}%</div>
                 <div className="stat-lbl">fire rate</div>
               </Card>
-              <Card className="stat-card">
+              <Card className="stat-card stat-mk-condlast">
                 <div className="stat-num">{condTotals.lastFired ? fmtCondDate(condTotals.lastFired) : '—'}</div>
                 <div className="stat-lbl">last fired</div>
               </Card>
             </div>
-            <Card>
+            <Card className="stat-mk-condbreakdown">
               <div className="rank-head">
                 <div className="kicker">Conditionals breakdown</div>
                 <button type="button" className="rank-sort"
@@ -1075,41 +1128,49 @@ function TabStats({ state, onHome, onNavTab }) {
       {/* ── Headline numbers ── */}
       {!isConditionals && (
       <div className="stat-row">
+        {/* stat-mk-* — dedicated, zero-styling selector hooks for help mode
+            (same idea as day-log.jsx's dl-mk-* classes), since every
+            headline card here shares the plain .stat-card class with no
+            other way to address one specifically. */}
         {isReminders ? (
           <>
-            <Card className="stat-card">
+            <Card className="stat-card stat-mk-remdone">
               <div className="stat-num">{totalDone}</div>
               <div className="stat-lbl">completed</div>
             </Card>
-            <Card className="stat-card">
+            <Card className="stat-card stat-mk-remweek">
               <div className="stat-num">{remWeek}</div>
               <div className="stat-lbl">this week</div>
             </Card>
-            <Card className="stat-card">
+            <Card className="stat-card stat-mk-remactive">
               <div className="stat-num">{activeDays}</div>
               <div className="stat-lbl">active days</div>
             </Card>
-            <Card className="stat-card">
+            <Card className="stat-card stat-mk-rembusiest">
               <div className="stat-num">{busiest}</div>
               <div className="stat-lbl">busiest day</div>
             </Card>
           </>
         ) : (
           <>
-            <Card className="stat-card">
+            {/* stat-mk-scope-{all,picker} — All and a specific picker both
+                fall into this branch and share the exact same stat-mk-*
+                classes above, so help mode needs an extra hook to give the
+                two scopes their own separate tooltip copy. */}
+            <Card className={`stat-card stat-mk-streak ${isPicker ? 'stat-mk-scope-picker' : 'stat-mk-scope-all'}`}>
               <div className="stat-num">{streak}</div>
               <div className="stat-lbl">day streak</div>
               <Icon name="flame" size={16} />
             </Card>
-            <Card className="stat-card">
+            <Card className={`stat-card stat-mk-fulldays ${isPicker ? 'stat-mk-scope-picker' : 'stat-mk-scope-all'}`}>
               <div className="stat-num">{fullDays}</div>
               <div className="stat-lbl">full days · {activeDays}</div>
             </Card>
-            <Card className="stat-card">
+            <Card className={`stat-card stat-mk-done ${isPicker ? 'stat-mk-scope-picker' : 'stat-mk-scope-all'}`}>
               <div className="stat-num">{totalDone}</div>
               <div className="stat-lbl">items done</div>
             </Card>
-            <Card className="stat-card">
+            <Card className={`stat-card stat-mk-rate ${isPicker ? 'stat-mk-scope-picker' : 'stat-mk-scope-all'}`}>
               <div className="stat-num">{rate}%</div>
               <div className="stat-lbl">completion</div>
             </Card>
@@ -1120,7 +1181,7 @@ function TabStats({ state, onHome, onNavTab }) {
 
       {/* ── Heatmap ── */}
       {!isConditionals && (
-      <Card>
+      <Card className="stat-heatmap-card">
         <div className="heat-h">
           <div className="kicker">{rangeKicker}{isReminders ? ' · reminders' : ''}</div>
           <HeatLegend />
@@ -1243,8 +1304,8 @@ function TabStats({ state, onHome, onNavTab }) {
       {isReminders && (
         <>
           <BreakdownBar title="By reminder type" total={totalDone} segments={typeSegments}
-                        empty={`No reminders completed in ${rangeNoun} yet.`} />
-          <Card>
+                        empty={`No reminders completed in ${rangeNoun} yet.`} className="stat-mk-remtype" />
+          <Card className="stat-mk-rembreakdown">
             <div className="rank-head">
               <div className="kicker">Reminders breakdown</div>
               <button type="button" className="rank-sort"
@@ -1329,13 +1390,13 @@ function TabStats({ state, onHome, onNavTab }) {
       {/* ── Source split (picks) — All view shows it last; picker scope too ── */}
       {!isReminders && !isConditionals && (
         <BreakdownBar title="How picks were chosen" total={totalPossible} segments={sourceSegments}
-                      empty={`Nothing picked in ${rangeNoun} yet.`} />
+                      empty={`Nothing picked in ${rangeNoun} yet.`} className="stat-mk-source" />
       )}
 
       {/* ── Rankings (picks) ── */}
       {scope === 'all' && (
         <div className="stat-row stat-row--2">
-          <Card>
+          <Card className="stat-mk-mostpicked">
             <div className="kicker">Most picked</div>
             {top.length ? (
               <ul className="rank">
@@ -1348,7 +1409,7 @@ function TabStats({ state, onHome, onNavTab }) {
               </ul>
             ) : <div className="stat-empty">Nothing picked in {rangeNoun} yet.</div>}
           </Card>
-          <Card>
+          <Card className="stat-mk-coldest">
             <div className="kicker">Coldest items</div>
             {cold.length ? (
               <ul className="rank rank--cold">
@@ -1366,7 +1427,7 @@ function TabStats({ state, onHome, onNavTab }) {
 
       {/* ── Single-picker Pick breakdown: one card, metric switcher ── */}
       {isPicker && (
-        <Card>
+        <Card className="stat-breakdown-card">
           <div className="rank-head">
             <div className="kicker">Pick breakdown</div>
             <button type="button" className="rank-sort"
@@ -1492,6 +1553,7 @@ function TabStats({ state, onHome, onNavTab }) {
           ) : <div className="stat-empty">This picker has no items yet.</div>}
         </Card>
       )}
+      </div>
       </div>
     </div>
   );

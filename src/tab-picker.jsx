@@ -7,6 +7,9 @@ import { PICKERS, normalizeConditionalName, normalizeGroupName } from './pickers
 import { MODES } from './seed.js';
 import { ConditionalControls, conditionalDraftDefault } from './tab-conditional.jsx';
 import { Btn, Collapse, Icon, InfoTip, Pill, ProgressBar, WeekdayChips, reduceMotion } from './ui.jsx';
+import { HelpButton, HelpOverlay } from './help-mode.jsx';
+import { PICKER_HELP_ITEMS } from './help-content.jsx';
+import { seedHelpPickers, clearHelpPickers } from './help-sample-data.js';
 
 // PickerView — the heart of the app. Choose a saved picker, hit "Pick",
 // watch the cycle animation, and apply the result. Three animation styles
@@ -44,6 +47,22 @@ function PickerStrip({ candidates, picked, style, onDone, forceMotion }) {
   const reduce = !forceMotion && !!(reduceMotion && reduceMotion());
   const [phase, setPhase] = React.useState(reduce ? 'settled' : 'cycling'); // cycling | settled
   const wrapRef = React.useRef(null);
+  // Mirrors styles2.css's own `@media (max-height: 750px)` — .picker-stage's
+  // min-height drops there (see its own comment), but that alone can't help
+  // the 'reel' style below: its height is a fixed inline style (ROW *
+  // visible, JS-computed), not CSS, so nothing in the stylesheet can shrink
+  // it. Without also reducing the row count here, the reel's own real
+  // content stayed exactly as tall as before, growing .picker-stage right
+  // back past its reduced min-height as soon as a pick starts running.
+  const [shortViewport, setShortViewport] = React.useState(
+    () => typeof matchMedia === 'function' && matchMedia('(max-height: 750px)').matches);
+  React.useEffect(() => {
+    if (typeof matchMedia !== 'function') return;
+    const mq = matchMedia('(max-height: 750px)');
+    const onChange = (e) => setShortViewport(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   React.useEffect(() => {
     if (!len || !picked) return;
@@ -94,7 +113,7 @@ function PickerStrip({ candidates, picked, style, onDone, forceMotion }) {
   // ── Reel: vertical strip, shifts up
   if (style === 'reel') {
     const ROW = 56;
-    const visible = 5; // odd, so picked sits in center
+    const visible = shortViewport ? 3 : 5; // odd, so picked sits in center
     const top = -(idx * ROW) + (Math.floor(visible / 2) * ROW);
     // Render enough rows (each mapped back to a candidate by modulo) to cover
     // the full monotonic travel plus the visible window above the landing.
@@ -148,9 +167,68 @@ function PickerStrip({ candidates, picked, style, onDone, forceMotion }) {
 export { PickerStrip };
 
 function PickerView({ picker, state, actions, animStyle }) {
+  // The Pickers page tour's own "Add to Todo List" step wants the real
+  // Send to Today → Sent! animation to play (so the user sees what the
+  // button actually does) but explicitly does NOT want a real entry
+  // landing on Today from it — this is a tutorial pick on a disposable
+  // sample picker, not something the user meant to act on. Same
+  // tourId+step gating as tab-picker.jsx's own disableTourAddPicker.
+  const tour = useEmlTour();
+  const tourInterceptSend = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 5;
+  // Done needs the same visual + functional disabling during App Features'
+  // own "Make your first manual pick" tour's equivalent step (onboarding-
+  // app-features.jsx's buildAppFeatureSteps, feat_manual_pick's Step 4 —
+  // index 3: Step 1 is the shared nav-click, Step 2 is Picker Selection,
+  // Step 3 is Manual Generation) — leaving would discard the very pick that
+  // tour just walked the user through making, and would also make the
+  // step's own target (this whole done/sent view) vanish, reverting to the
+  // pre-pick "Pick one" button Step 3 already moved past. Re-roll is
+  // deliberately NOT included here —
+  // unlike the page tour (tourInterceptSend, above), App Features wants
+  // Re-roll to stay genuinely usable (a real re-roll, its own animation)
+  // without counting as this step's own advancing click; see
+  // onboarding-app-features.jsx's own clickPassThroughSel for how that's
+  // kept from also satisfying requireClick. Deliberately a SEPARATE flag
+  // from tourInterceptSend, not folded into it: that one also skips the
+  // real actions.addTodayEntry call in sendToToday below, which is correct
+  // for the page tour's disposable sample pick but wrong here — App
+  // Features tours operate on the user's own real data, so Send to Today
+  // should genuinely land the entry.
+  const tourDisableDone = tourInterceptSend
+    || (tour.phase === 'tour' && tour.tourId === 'appfeature-feat_manual_pick' && tour.step === 3);
+  // Step 7 ("Picker Items") highlights the pool's per-item Send to Today/
+  // Edit/Delete buttons but explicitly doesn't want any of them actually
+  // usable from there — narrating what they do is the point, not inviting
+  // the user to act on a disposable tutorial picker's real items.
+  const disablePoolItemButtons = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 6;
+  // App Features' own "Make your first manual pick" tour reaches this same
+  // pool at its own Step 5 (index 4) — but unlike the page tour above, Send
+  // to Today should stay genuinely usable there (real data, a second valid
+  // way to land a pick besides Manual Generation), only Edit/Delete stay
+  // narrated-not-usable. Deliberately only gates pool-edit/pool-del below,
+  // NOT pool-send's own disabled prop (still disablePoolItemButtons alone,
+  // so it's naturally unaffected/enabled during this tour).
+  const disablePoolEditDelete = disablePoolItemButtons
+    || (tour.phase === 'tour' && tour.tourId === 'appfeature-feat_manual_pick' && tour.step === 4);
+  // Step 8 ("Add Picker Item") highlights "+ Add item" but explicitly
+  // doesn't want the user opening the real create-item form from a
+  // disposable tutorial picker.
+  const disableAddItemButton = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 7;
   const [busy, setBusy] = React.useState(false);
   const [result, setResult] = React.useState(null);
   const [phase, setPhase] = React.useState('idle'); // idle | running | done | sent | empty
+  // Reset back to idle whenever the Pickers page tour's own onGoBack bumps
+  // this nonce (see its own comment in onboarding-page-tours.jsx) — a Back
+  // from its "Add to Todo List" step to "Manual Generation" needs Pick one
+  // showing again, not whatever real Send to Today/Re-roll/Done state a
+  // completed pick left behind. Guarded on truthiness (not just present in
+  // the deps array) so the unset/0 starting value doesn't also reset on
+  // every fresh mount — only a genuine bump does anything.
+  React.useEffect(() => {
+    if (!tour.pickerTourResetNonce) return;
+    setBusy(false); setResult(null); setPhase('idle');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tour.pickerTourResetNonce]);
   // Drives the exit animation on Re-roll / Done: hold the buttons mounted with
   // an out-animation for a beat, then run the real transition.
   const [leaving, setLeaving] = React.useState(false);
@@ -212,11 +290,54 @@ function PickerView({ picker, state, actions, animStyle }) {
     setInsertSavedId(draft.id);
   };
   const addNewItem = () => {
-    if (newDraft) return;   // one draft at a time
+    if (newDraft || editingItemId) return;   // one editor at a time
     const id = 'it_' + Math.random().toString(36).slice(2, 8);
     setNewDraft({ id, name: 'New item', weight: 1, easeMin: 7, easeMax: 14,
       value: picker.mode === 'ease-down' ? (picker.threshold ?? 100) : 0, vacation: false });
     // Bring the just-opened creation UI fully into view.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const el = addWrapRef.current;
+      const sc = el && el.closest('.main');
+      if (!el || !sc) return;
+      const overflowBelow = el.getBoundingClientRect().bottom - sc.getBoundingClientRect().bottom + 96;
+      if (overflowBelow > 0) sc.scrollTo({ top: sc.scrollTop + overflowBelow, behavior: reduceMotion() ? 'auto' : 'smooth' });
+    }));
+  };
+  // Edit an EXISTING pool item — reuses the exact same visual slot/interface
+  // as "+ Add item" (.pv-additem-wrap, below the pool list), just populated
+  // from a real item and wired to the REAL actions instead of a draft. This
+  // is deliberately NOT the same draft-until-Save pattern the new-item flow
+  // above uses: that pattern exists specifically because a brand-new item
+  // doesn't exist yet and shouldn't touch real state before an intentional
+  // save. An existing item already does exist, so EntryEditor's own
+  // built-in behavior (live actions.updateItem calls as fields change, and
+  // — since no onCancel is passed here, unlike the new-item flow — a
+  // revert-via-actions.replaceItem back to the pre-edit snapshot on Cancel/
+  // Escape) already gives correct semantics with no extra bookkeeping here.
+  const [editingItemId, setEditingItemId] = React.useState(null);
+  const [editingItemClosing, setEditingItemClosing] = React.useState(false);
+  const [editingName, setEditingName] = React.useState('');
+  // Deleted out from under the open editor (the row's own trash icon stays
+  // reachable while editing — see the render's own null-guard below). That
+  // guard alone only stops THIS render from crashing; without also clearing
+  // the id here, it would stay set forever, permanently tripping
+  // startEditItem's own "one editor at a time" guard against ever opening
+  // another.
+  React.useEffect(() => {
+    if (editingItemId && !state.items.some((x) => x.id === editingItemId)) {
+      setEditingItemId(null);
+      setEditingItemClosing(false);
+    }
+  }, [editingItemId, state.items]);
+  const startEditItem = (id) => {
+    if (newDraft || editingItemId) return;   // one editor at a time
+    const it = state.items.find((x) => x.id === id);
+    if (!it) return;
+    setEditingItemId(id);
+    setEditingName(it.name);
+    // Same reveal as addNewItem's own — the editor renders in the same
+    // below-the-list slot, which can be well out of view from wherever in
+    // a long pool the Edit button that opened it was.
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const el = addWrapRef.current;
       const sc = el && el.closest('.main');
@@ -260,6 +381,24 @@ function PickerView({ picker, state, actions, animStyle }) {
     // value/weight changes are staged and applied only when the resulting Today
     // entry is marked done (see sendToToday → addTodayEntry pending).
   };
+  // Whenever the Pickers page tour's own onGoBack bumps this nonce (Back
+  // from its "Picker Items" step to "Add to Todo List" — see its own
+  // comment in onboarding-page-tours.jsx), synthesize a fresh 'done' result
+  // directly instead of going through runPick's own animated 'running'
+  // phase — Step 6's target (.pv-act--send) needs phase to genuinely be
+  // 'done'/'sent', not 'idle', and by the time this fires the earlier real
+  // pick has already run its full course and reverted. Skipping the spin
+  // is deliberate: this is a revisit, the user already watched it play out
+  // once going forward.
+  React.useEffect(() => {
+    if (!tour.pickerTourRedoNonce) return;
+    const res = PICKERS.pick(picker, state.items, { forceNew: true, excludeIds: onTodayIds });
+    if (!res.picked) { setResult(res); setPhase('empty'); return; }
+    setResult(res);
+    setBusy(false);
+    setPhase('done');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tour.pickerTourRedoNonce]);
 
   const reroll = () => {
     setPhase('idle');
@@ -270,9 +409,14 @@ function PickerView({ picker, state, actions, animStyle }) {
   const sendToToday = () => {
     if (phase !== 'done' || !result || !result.picked) return;
     // Stage the spin's computed mutation on the entry; it applies on done.
-    actions.addTodayEntry(picker.id, result.picked.id, {
-      updates: result.updates, pickerPatch: result.pickerPatch,
-      depletedEnd: result.depletedEnd, pickedId: result.picked.id, bumpPick: true });
+    // Skipped during the tour's own "Add to Todo List" step — see
+    // tourInterceptSend's own comment above — so the Sent! animation still
+    // plays but nothing lands on the real Today list.
+    if (!tourInterceptSend) {
+      actions.addTodayEntry(picker.id, result.picked.id, {
+        updates: result.updates, pickerPatch: result.pickerPatch,
+        depletedEnd: result.depletedEnd, pickedId: result.picked.id, bumpPick: true });
+    }
     // Confirmation beat: the stage swaps to a “Added to Today” checkmark and
     // the button morphs to “Sent!”, then the picker resets to idle so it’s
     // ready for the next pick.
@@ -294,6 +438,7 @@ function PickerView({ picker, state, actions, animStyle }) {
         : <p className="picker-hint">{mode.hint}</p>}
       <p className="picker-hint">Please note that any items in this picker's pool that are already included in the Today tab will be excluded from being selected.</p>
 
+      <div className="picker-run">
       <div className="picker-stage">
         {phase === 'idle' && (
           <div className="stage-idle">
@@ -338,15 +483,22 @@ function PickerView({ picker, state, actions, animStyle }) {
         {(phase === 'done' || phase === 'sent') ? (
           <>
             <Btn kind="primary" icon="check" onClick={sendToToday}
-                 className={`pv-act ${phase === 'sent' ? 'is-sent' : ''}`} style={{ animationDelay: '0ms' }}>
+                 className={`pv-act pv-act--send ${phase === 'sent' ? 'is-sent' : ''}`} style={{ animationDelay: '0ms' }}>
               <span className="pv-send-label set-sub-fade" key={phase === 'sent' ? 'sent' : 'send'}>
                 {phase === 'sent' ? 'Sent!' : 'Send to Today'}
               </span>
             </Btn>
-            <Btn kind="ghost" icon="refresh" onClick={() => afterExit(reroll)}
-                 className={`pv-act ${(leaving || phase === 'sent') ? 'is-leaving' : ''}`} style={{ animationDelay: '60ms' }}>Re-roll</Btn>
-            <Btn kind="ghost" size="sm" onClick={() => afterExit(() => { setPhase('idle'); setResult(null); })}
-                 className={`pv-act ${(leaving || phase === 'sent') ? 'is-leaving' : ''}`} style={{ animationDelay: '120ms' }}>Done</Btn>
+            {/* pv-act--reroll: lets App Features' own manual-pick tour
+                target this specific button (clickPassThroughSel, see
+                onboarding-app-features.jsx) without also matching Send to
+                Today or Done — disabled/is-tour-disabled here still only
+                ever check tourInterceptSend (the ORIGINAL Pickers page
+                tour), unchanged; App Features leaves Re-roll fully usable
+                on purpose, see tourDisableDone's own comment above. */}
+            <Btn kind="ghost" icon="refresh" onClick={() => afterExit(reroll)} disabled={tourInterceptSend}
+                 className={`pv-act pv-act--reroll ${(leaving || phase === 'sent') ? 'is-leaving' : ''} ${tourInterceptSend ? 'is-tour-disabled' : ''}`} style={{ animationDelay: '60ms' }}>Re-roll</Btn>
+            <Btn kind="ghost" size="sm" onClick={() => afterExit(() => { setPhase('idle'); setResult(null); })} disabled={tourDisableDone}
+                 className={`pv-act ${(leaving || phase === 'sent') ? 'is-leaving' : ''} ${tourDisableDone ? 'is-tour-disabled' : ''}`} style={{ animationDelay: '120ms' }}>Done</Btn>
           </>
         ) : (
           <Btn kind="primary" icon="play" onClick={runPick} disabled={busy} className="pv-act">
@@ -354,8 +506,15 @@ function PickerView({ picker, state, actions, animStyle }) {
           </Btn>
         )}
       </div>
+      </div>
 
       <div className="picker-pool">
+        {/* Purely structural — lets the Pickers page tour highlight the
+            header + item list as one combined box without also catching
+            "+ Add item" below (a step of its own — see .pv-additem-wrap
+            further down). Mirrors .picker-pool's own flex/gap so wrapping
+            these two doesn't change their spacing. */}
+        <div className="pool-items">
         <div className="pool-h">
           <span className="kicker">Pool · {eligibleItems.filter((it) => !onTodayIds.has(it.id) && PICKERS.modeEligible(it, picker)).length} of {pickerItems.length} eligible</span>
           {(picker.mode !== 'random' && picker.mode !== 'weighted') && (
@@ -433,11 +592,18 @@ function PickerView({ picker, state, actions, animStyle }) {
                     ) : (
                       <button type="button" className="pool-send"
                               aria-label={`Send ${it.name} to Today`}
-                              title="Send to Today" onClick={() => sendToday(it.id)}>
+                              title="Send to Today" disabled={disablePoolItemButtons}
+                              onClick={() => sendToday(it.id)}>
                         <Icon name="calendar" size={15} />
                       </button>
                     )}
+                    <button type="button" className="pool-edit" aria-label={`Edit ${it.name}`}
+                            title="Edit" disabled={disablePoolEditDelete}
+                            onClick={() => startEditItem(it.id)}>
+                      <Icon name="edit" size={15} />
+                    </button>
                     <button type="button" className="pool-del" aria-label={`Delete ${it.name}`}
+                            disabled={disablePoolEditDelete}
                             onClick={() => setConfirmDelId(it.id)}>
                       <Icon name="trash" size={15} />
                     </button>
@@ -447,11 +613,53 @@ function PickerView({ picker, state, actions, animStyle }) {
             );
           })}
         </div>
+        </div>
         <div className="pv-additem-wrap" ref={addWrapRef}>
           {(() => {
+            if (editingItemId) {
+              // Looked up live (not snapshotted) so weight/ease stepper
+              // clicks inside EntryEditor — which call the REAL
+              // actions.updateItem/setItemWeight directly — are reflected
+              // here immediately, same as the pool row itself.
+              const editItem = state.items.find((x) => x.id === editingItemId);
+              // The item vanished out from under the open editor (deleted
+              // via the row's own trash icon while this was open) —
+              // nothing left to show; that confirm flow already owns
+              // closing this out.
+              if (!editItem) return null;
+              return (
+                <div className={`pv-newitem rd-item is-editing ${editingItemClosing ? 'is-closing' : ''}`}
+                     onAnimationEnd={(e) => {
+                       if (!editingItemClosing || e.target !== e.currentTarget) return;
+                       setEditingItemClosing(false);
+                       setEditingItemId(null);
+                     }}>
+                  <div className="rd-row" onClick={(e) => e.stopPropagation()}>
+                    <span className="rd-main">
+                      <input className="rd-name-input" type="text" value={editingName} maxLength={60}
+                             placeholder="Item name" aria-label="Item name" autoFocus
+                             onChange={(e) => setEditingName(e.target.value)}
+                             onBlur={(e) => { const n = e.target.value.trim(); if (n) actions.renameItem(editItem.id, n); }}
+                             onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
+                    </span>
+                  </div>
+                  <div className="rd-edit">
+                    {/* No onDelete: EntryEditor's own footer Delete button is
+                        already hidden by the existing .pv-newitem CSS rule
+                        (".rd-edit-foot > .btn--danger { display: none }"),
+                        same as the new-item flow below — deleting an
+                        existing item stays solely the row's own trash icon
+                        + confirm flow, one delete affordance per item
+                        instead of two that could disagree with each other. */}
+                    <EntryEditor item={editItem} picker={picker} actions={actions}
+                                 onClose={() => setEditingItemClosing(true)} />
+                  </div>
+                </div>
+              );
+            }
             const newItem = newDraft;
             if (!newItem) return (
-              <button type="button" className="pv-additem-btn" onClick={addNewItem}>
+              <button type="button" className="pv-additem-btn" disabled={disableAddItemButton} onClick={addNewItem}>
                 <Icon name="plus" size={14} /> Add item
               </button>
             );
@@ -499,7 +707,12 @@ function PickerView({ picker, state, actions, animStyle }) {
 //
 // Every field carries plain-language helper copy: the goal is that someone
 // who has never seen a "picker" before can fill this in without guessing.
-function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCancel, onCreate, initial }) {
+function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCancel, onCreate, initial, openedByTour }) {
+  // Whether a guided tour (of any kind — Welcome Tour or a mini-tour) is
+  // currently driving the page, per the shared onboarding bus. Read here
+  // specifically so goToStep2 can skip its own scroll-to-top when a picker
+  // mini-tour is mid-flight — see its own comment for why.
+  const obTour = useEmlTour();
   const [step, setStep] = React.useState((initial && initial.step) || 1);
   const [name, setName] = React.useState((initial && initial.name) || '');
   // Focus the name input on mount when arriving from Today's empty-state card.
@@ -534,8 +747,9 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     return () => clearTimeout(t);
   }, [includeInDaily]);
   // When included, an optional schedule: which weekdays it may run, and whether
-  // it sits out public holidays. Defaults match "runs every day".
-  const [daysOfWeek, setDaysOfWeek] = React.useState([0, 1, 2, 3, 4, 5, 6]);
+  // it sits out public holidays. Defaults match "runs every day", unless a
+  // prefill (e.g. a picker mini-tour's sample data) specifies otherwise.
+  const [daysOfWeek, setDaysOfWeek] = React.useState((initial && initial.daysOfWeek) || [0, 1, 2, 3, 4, 5, 6]);
   const [skipHolidays, setSkipHolidays] = React.useState(false);
   // Picker Cadence: how often it surfaces + the anchor. Defaults to daily.
   const [cad, setCad] = React.useState(() => CADENCE.normalize({}));
@@ -591,9 +805,14 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
 
   // Advancing to step 2 from the bottom-of-form button leaves the user scrolled
   // down; pull the form's scroll container back to the top so the add-item
-  // field is in view without a manual scroll.
+  // field is in view without a manual scroll. Skipped while a guided tour is
+  // active — a picker mini-tour's own next step highlights something further
+  // down this same Items sub-step (the "+ Add item" button), and this
+  // scroll-to-top fought that positioning, landing the highlight below the
+  // fold instead of where the tour was trying to bring it into view.
   const goToStep2 = () => {
     setStep(2);
+    if (obTour.phase === 'tour') return;
     requestAnimationFrame(() => {
       let el = formRef.current;
       while (el && el !== document.body) {
@@ -672,12 +891,37 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     if (newDraftId) return;
     setDraftClosing(false);   // clear any stale closing state from a prior editor
     const id = 'draft_' + Math.random().toString(36).slice(2, 8);
-    let base = 'New item', nm = base, n = 1;
-    const names = new Set(items.map((x) => x.name.toLowerCase()));
-    while (names.has(nm.toLowerCase())) { n++; nm = `${base} ${n}`; }
+    // The tour stages a specific name for its own walkthrough item (see
+    // buildPickerTourStep7's run()) rather than falling back to "New item".
+    const inTour = obTour.phase === 'tour' && obTour.itemPrefill;
+    let nm;
+    if (inTour) {
+      nm = obTour.itemPrefill;
+    } else {
+      const base = 'New item';
+      let n = 1;
+      nm = base;
+      const names = new Set(items.map((x) => x.name.toLowerCase()));
+      while (names.has(nm.toLowerCase())) { n++; nm = `${base} ${n}`; }
+    }
     // Ease-down items start fully charged (mirrors addPicker's initialValue) —
     // otherwise the editor shows a spent item needing a Refill it never needed.
-    setItems((xs) => [...xs, { id, name: nm, weight: 1, value: mode === 'ease-down' ? THRESHOLD : 0, ...DEFAULT_EASE }]);
+    // The tour's own Ease-up item is also given a full charge — like the rest
+    // of the sample pool (see onboarding-seed-data.js's OB_EXAMPLE, every
+    // item value:100) — so the later generation demo step actually has
+    // something eligible to pick. Doesn't apply to Weighted/Dynamic/Random
+    // tour samples: those modes have no eligibility gate at all (value there
+    // is a weight boost, not a charge), so forcing 100 would just unfairly
+    // skew the new item's odds against its siblings for no reason.
+    const fullCharge = mode === 'ease-down' || (inTour && mode === 'ease-up');
+    // A tour can override the generic 7/14-day DEFAULT_EASE for its own
+    // added item (see buildPickerTourStep7's run() in
+    // onboarding-picker-tours.jsx) — e.g. a monthly-cadence sample's own
+    // item shouldn't look like a daily one.
+    const ease = (inTour && obTour.itemEaseMin != null && obTour.itemEaseMax != null)
+      ? { easeMin: obTour.itemEaseMin, easeMax: obTour.itemEaseMax }
+      : DEFAULT_EASE;
+    setItems((xs) => [...xs, { id, name: nm, weight: 1, value: fullCharge ? THRESHOLD : 0, ...ease }]);
     setNewDraftId(id);
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const el = addWrapRef.current, sc = el && el.closest('.main');
@@ -760,7 +1004,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       </header>
 
       <div className="np-steps">
-        <button type="button" className={`np-step ${step === 1 ? 'is-on' : 'is-done'}`}
+        <button type="button" className={`np-step ob-picker-details ${step === 1 ? 'is-on' : 'is-done'}`}
                 onClick={() => setStep(1)}>
           <span className="np-step-num">{step > 1 ? <Icon name="check" size={12} /> : '1'}</span>
           <span className="np-step-lbl">Details</span>
@@ -833,7 +1077,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
           </p>
           <div className="mode-radio">
             {Object.entries(MODES).map(([key, m]) => (
-              <label key={key} className={`mode-opt ${mode === key ? 'is-on' : ''}`}>
+              <label key={key} data-mode={key} className={`mode-opt ${mode === key ? 'is-on' : ''}`}>
                 <input type="radio" name="np-mode" checked={mode === key}
                        onChange={() => setMode(key)} />
                 <div>
@@ -1033,7 +1277,11 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         </p>
       )}
 
-      {initial && (
+      {/* The guided tour now walks through the Details sub-step normally (where
+          the real name input already lives) before reaching Items, so this
+          redundant field is only needed for the OTHER initial-prefill path —
+          Today's "no pickers yet" quick-start card, which jumps straight here. */}
+      {initial && !openedByTour && (
         <div className="np-field np-tour-name">
           <label className="np-label" htmlFor="np-tour-name">Picker name</label>
           <input id="np-tour-name" className="np-input" type="text" maxLength={40}
@@ -1145,17 +1393,47 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
 }
 
 export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
-  const [activeId, setActiveId] = React.useState(state.pickers[0]?.id);
+  const [activeId, setActiveId] = React.useState(state.pickers.find((p) => !p.hidden)?.id);
   const [creating, setCreating] = React.useState(false);
   const [groupFilter, setGroupFilter] = React.useState('all');
   const active = state.pickers.find((p) => p.id === activeId);
+  // Help mode (see help-mode.jsx) — needs real pickers of every mode plus a
+  // conditional-gated one to point at, so a disposable copy set is seeded
+  // the moment it turns on and torn down the moment it turns off (see
+  // help-sample-data.js's own header comment for why this is a SEPARATE
+  // disposable namespace from the page tour's own `pt_`-prefixed copies).
+  const [helpOn, setHelpOn] = React.useState(false);
+  const helpExit = React.useCallback(() => setHelpOn(false), []);
+  React.useEffect(() => {
+    if (helpOn) seedHelpPickers(state, actions);
+    else clearHelpPickers(actions);
+  }, [helpOn]);
+  // Unmount (tab switch) with help mode still on — the effect above's own
+  // cleanup only fires on a DEPENDENCY change, not unmount, so this is the
+  // unmount-specific counterpart. Unconditional and harmless if nothing was
+  // ever seeded (clearHelpPickers's own removePicker/removeConditional
+  // calls are no-ops against ids that don't exist).
+  React.useEffect(() => () => clearHelpPickers(actions), []);
   // Onboarding tour: when it stages a prefill, open the create form for it.
   const tour = useEmlTour ? useEmlTour() : { prefill: null, startCreate: null };
+  // The Pickers page tour's own Step 4 highlights "Add new picker" but
+  // explicitly doesn't want the user opening the real create form from it —
+  // that flow is what the separate picker mini-tours already cover. Gated
+  // on tourId, not just step index alone: some OTHER tour could just as
+  // easily be sitting on step index 3 for its own unrelated reason.
+  const disableTourAddPicker = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 3;
   const [openedByTour, setOpenedByTour] = React.useState(false);
   // Prefill staged by Today's empty-state card (name focus + "Chores"), held
   // locally so it survives clearing the bus signal.
   const [emptyInitial, setEmptyInitial] = React.useState(null);
-  React.useEffect(() => { if (tour.prefill && !creating) { setCreating(true); setOpenedByTour(true); } }, [tour.prefill]);
+  // suppressAutoOpen: set by the Picker mini-tour's Step 2 (see
+  // onboarding-picker-tours.jsx) — that tour always opens this form via a
+  // real click on the button below, which sets `creating` itself; without
+  // this flag, that same click's prefill can reach this effect on an
+  // earlier render than the one where `creating` turns true (the bus's
+  // subscriber callback isn't part of the click's own React batch), making
+  // this effect wrongly claim credit and flip openedByTour to true.
+  React.useEffect(() => { if (tour.prefill && !creating && !tour.suppressAutoOpen) { setCreating(true); setOpenedByTour(true); } }, [tour.prefill]);
   // Empty-state entry (Today's "no pickers" card): open the create form with the
   // staged prefill, but WITHOUT openedByTour — this isn't the tour, so creating
   // the picker must not fire the tour's advance callback. Consume once, then clear.
@@ -1177,15 +1455,14 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   // and as the group filter bar above the picker strip.
   const existingGroups = React.useMemo(() => {
     const seen = [];
-    for (const p of state.pickers) if (p.group && !seen.includes(p.group)) seen.push(p.group);
+    for (const p of state.pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
     return seen;
   }, [state.pickers]);
 
   // The picker strip is scoped to the selected group ("all" shows everything).
+  // Hidden pickers (see store.jsx's `hidden` flag) never appear here.
   const visiblePickers = React.useMemo(() => (
-    groupFilter === 'all'
-      ? state.pickers
-      : state.pickers.filter((p) => p.group === groupFilter)
+    state.pickers.filter((p) => !p.hidden && (groupFilter === 'all' || p.group === groupFilter))
   ), [state.pickers, groupFilter]);
 
   // Keep the selection coherent with the filter: if the active picker falls
@@ -1234,8 +1511,12 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
 
   return (
     <div className="tab tab--picker">
+      <HelpOverlay active={helpOn} items={PICKER_HELP_ITEMS} onExit={helpExit} />
       <header className="picker-h-head">
-        <div className="kicker">Pickers</div>
+        <div className="kicker-row">
+          <div className="kicker">Pickers</div>
+          <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
+        </div>
         <div className="picker-h-lead">
           <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
             {/* Same theme-wired logo as the Today + Stats headers so the tabs
@@ -1272,19 +1553,20 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
         </div>
         <p className="section-sub picker-h-sub">Each picker has its own rule for how it chooses. Run a picker for a random item or just select a item manually and then push it to the Today tab. You can also create an entirely new picker here, along with new picker items but editing existing pickers and their items' settings must be done in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>.</p>
       </header>
-      <div className="stat-filters">
+      <div className="picker-body" style={tour.reserveTop ? { paddingTop: tour.reserveTop } : undefined}>
+      <div className="stat-filters ob-picker-content">
       {existingGroups.length > 1 && (
         <div className="stat-filter-row">
           <span className="stat-filter-lbl">Group</span>
           <div className="picker-groups" ref={groupsRef} role="tablist" aria-label="Filter pickers by group">
             <button type="button" role="tab" aria-selected={groupFilter === 'all'}
                     className={`picker-group-pill ${groupFilter === 'all' ? 'is-on' : ''}`}
-                    onClick={() => { setGroupFilter('all'); setCreating(false); setActiveId(state.pickers[0]?.id); }}>
+                    onClick={() => { setGroupFilter('all'); setCreating(false); setActiveId(state.pickers.find((p) => !p.hidden)?.id); }}>
               All
-              <span className="picker-group-count">{state.pickers.length}</span>
+              <span className="picker-group-count">{state.pickers.filter((p) => !p.hidden).length}</span>
             </button>
             {existingGroups.map((g) => {
-              const n = state.pickers.filter((p) => p.group === g).length;
+              const n = state.pickers.filter((p) => p.group === g && !p.hidden).length;
               return (
                 <button key={g} type="button" role="tab" aria-selected={groupFilter === g}
                         className={`picker-group-pill ${groupFilter === g ? 'is-on' : ''}`}
@@ -1312,6 +1594,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
         <button type="button"
                 className={`picker-tab picker-tab--add picker-tab--enter ${creating ? 'is-on' : ''}`}
                 style={{ animationDelay: (visiblePickers.length * 40) + 'ms' }}
+                disabled={disableTourAddPicker}
                 onClick={() => setCreating(true)}>
           <span className="picker-tab-add-icon" aria-hidden="true"><Icon name="plus" size={16} /></span>
           <span className="picker-tab-name">Add new picker</span>
@@ -1319,24 +1602,52 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
         </div>
       </div>
       </div>
-      <div className="tab-fade" key={creating ? '__new' : (activeId || '__none')}>
+      <div className="tab-fade ob-picker-content" key={creating ? '__new' : (activeId || '__none')}>
       {creating
         ? <NewPickerForm existingGroups={existingGroups}
                          initialGroup={groupFilter === 'all' ? '' : groupFilter}
                          conditionals={state.conditionals || []}
                          initial={tour.prefill || emptyInitial || null}
+                         openedByTour={openedByTour}
                          onCancel={() => { setOpenedByTour(false); setEmptyInitial(null); cancelCreate(); }}
                          onCreate={(payload) => {
                            // During onboarding, never create a second copy of
                            // the example picker on a revisit — dedupe by name and
-                           // just advance the tour instead.
-                           if (openedByTour && state.pickers.some((p) => p.name === payload.name)) {
+                           // just advance the tour instead. Skipped when
+                           // existingPickerId is set: that's an INTENTIONAL
+                           // replay of an already-finished tutorial (see
+                           // onboarding-picker-tours.jsx's Step 2 run()), where
+                           // payload.name matching the prior picker is expected,
+                           // not a same-session double-fire to guard against.
+                           if (openedByTour && !tour.existingPickerId && state.pickers.some((p) => p.name === payload.name)) {
                              setOpenedByTour(false);
                              cancelCreate();
                              if (window.__emlPickerCreated) window.__emlPickerCreated();
                              return;
                            }
-                           const id = actions.addPicker(payload);
+                           // A replay updates the SAME picker in place (via
+                           // replaceId) instead of creating a duplicate — see
+                           // store.jsx's addPicker. createdFromSample tags
+                           // this run's picker either way, so a LATER replay
+                           // can find it too. Gated on tour.prefill, not
+                           // openedByTour — this tour walks the form via a
+                           // real click (openedByTour only ever gets set by
+                           // the OTHER, dormant-auto-open prefill entry
+                           // point, see NewPickerForm's own comment above),
+                           // so openedByTour is always false here.
+                           // hidden: while the mini-tour checklist is up, ANY
+                           // picker created here — via a tutorial's own walk-
+                           // through OR the user just clicking this same real
+                           // button themselves — stays out of the real list
+                           // until the closing Generate step (mirrors
+                           // reminders.jsx's own startAdd; see addPicker's
+                           // own comment).
+                           const id = actions.addPicker({
+                             ...payload,
+                             hidden: !!tour.showChecklist,
+                             ...(tour.prefill ? { createdFromSample: tour.createdFromSample } : {}),
+                             ...(tour.existingPickerId ? { replaceId: tour.existingPickerId } : {}),
+                           });
                            if (openedByTour) { setOpenedByTour(false); if (window.__emlPickerCreated) window.__emlPickerCreated(); }
                            setEmptyInitial(null);
                            const finish = () => { setCreating(false); setActiveId(id); };
@@ -1345,6 +1656,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
                            setTimeout(finish, 240);
                          }} />
         : (active && <PickerView picker={active} state={state} actions={actions} animStyle={animStyle} />)}
+      </div>
       </div>
     </div>
   );

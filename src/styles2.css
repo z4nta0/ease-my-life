@@ -39,6 +39,22 @@
   gap: 28px;
 }
 
+/* Wraps everything below the page header (group filters, picker strip, and
+   the active picker's detail view / create form) as a single unit — mirrors
+   .tab--picker's own flex/gap so wrapping these two previously-direct
+   children doesn't change spacing. Exists specifically so the Welcome Tour
+   has a container to reserve top-space on (see onboarding.jsx's reserve-space
+   effect) without pushing the page header itself down too. The tour's own
+   highlight target is `.ob-picker-content` on this element's two children,
+   NOT this element — highlighting .picker-body itself would include its own
+   reserved padding as empty space at the top of the spotlight. */
+.picker-body {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
 .picker-tabs {
   display: flex; gap: 8px;
   overflow-x: auto;
@@ -245,6 +261,11 @@
 }
 
 .picker-view { display: flex; flex-direction: column; gap: 18px; }
+/* Purely structural — lets the Pickers page tour highlight the stage +
+   action buttons as one combined box without also catching the header/pool
+   above and below. Mirrors .picker-view's own flex/gap so wrapping these
+   two doesn't change their spacing. */
+.picker-run { display: flex; flex-direction: column; gap: 18px; }
 
 /* Picker header — kicker, then logo + centered title (mirrors Today + Stats).
    The sub sits on its own line below; its larger top margin pulls it visually
@@ -292,6 +313,16 @@
   border: 0.5px solid var(--border);
   border-radius: var(--r-xl);
   overflow: hidden;
+}
+/* On a short viewport, 344px alone can push the action buttons below it (the
+   Pickers page tour's own "Manual Generation" step surfaced this: the coach
+   tooltip, this stage, AND the Pick one button below it don't all fit above
+   ~750px of height) — clipping the reel a bit is the better tradeoff than
+   the actual controls sitting below the fold, unreachable without knowing to
+   scroll. App-wide, not scoped to the tour: any short-viewport visit to the
+   Pickers page hits the same problem regardless of whether a tour is up. */
+@media (max-height: 750px) {
+  .picker-stage { min-height: 260px; }
 }
 
 .stage-idle, .stage-empty {
@@ -436,6 +467,12 @@
   width: 100%; max-width: 380px;
   max-height: 360px; overflow: hidden;
 }
+/* Same short-viewport squeeze as .picker-stage's own (see its comment) —
+   this cap is pure CSS (unlike the 'reel' style's fixed inline height, so
+   nothing extra is needed in tab-picker.jsx to make it responsive here). */
+@media (max-height: 750px) {
+  .spot { max-height: 200px; }
+}
 .spot-row {
   padding: 8px 14px;
   border-radius: 8px;
@@ -460,6 +497,10 @@
 
 /* Pool list */
 .picker-pool { display: flex; flex-direction: column; gap: 10px; }
+/* Purely structural — see its own comment in tab-picker.jsx. Mirrors
+   .picker-pool's own flex/gap so wrapping .pool-h + .pool-list doesn't
+   change their spacing. */
+.pool-items { display: flex; flex-direction: column; gap: 10px; }
 .pool-h { display: flex; align-items: center; justify-content: space-between; }
 .ghost-link {
   display: inline-flex; align-items: center; gap: 5px;
@@ -524,11 +565,14 @@
 @media (prefers-reduced-motion: reduce) { .pv-newitem.is-closing { animation-duration: .01ms; } }
 .pool-row {
   display: grid;
-  grid-template-columns: 1fr auto auto auto;
+  grid-template-columns: 1fr auto auto auto auto;
   align-items: center;
   gap: 16px;
   padding: 18px 16px;
   border-bottom: 0.5px solid var(--border);
+}
+@container app (max-width: 399px) {
+  .pool-row { gap: 10px; }
 }
 .pool-row:last-child { border-bottom: 0; }
 .pool-row.is-vac { opacity: 0.45; }
@@ -536,6 +580,7 @@
 .pool-row--confirm { grid-template-columns: 1fr; }
 .pool-send {
   display: inline-flex; align-items: center; justify-content: center;
+  justify-self: end;
   width: 30px; height: 30px; padding: 0;
   background: transparent; color: var(--muted);
   border: 0.5px solid var(--border); border-radius: var(--r-sm);
@@ -549,8 +594,18 @@
 @media (prefers-reduced-motion: reduce) { .pool-send.is-sent svg { animation-duration: .01ms; } }
 .pool-send.is-disabled { opacity: 0.4; cursor: default; }
 .pool-send.is-disabled:hover { color: var(--muted); border-color: var(--border); background: none; }
+.pool-edit {
+  display: inline-flex; align-items: center; justify-content: center;
+  justify-self: end;
+  width: 30px; height: 30px; padding: 0;
+  background: transparent; color: var(--muted);
+  border: 0.5px solid var(--border); border-radius: var(--r-sm);
+  cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.pool-edit:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
 .pool-del {
   display: inline-flex; align-items: center; justify-content: center;
+  justify-self: end;
   width: 30px; height: 30px; padding: 0;
   background: transparent; color: var(--muted);
   border: 0.5px solid var(--border); border-radius: var(--r-sm);
@@ -566,7 +621,8 @@
   text-wrap: pretty;
 }
 .pool-meta {
-  display: flex; align-items: center; gap: 12px;
+  display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+  justify-self: end;
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--muted);
@@ -574,6 +630,13 @@
 .pool-prog {
   display: flex; align-items: center; gap: 8px;
   min-width: 100px;
+}
+/* On a narrow (mobile) row, 100px + the three 30px action button columns +
+   their gaps left too little of the row's own width for the 1fr name
+   column, wrapping names awkwardly — desktop has room to spare, so this is
+   scoped to mobile only. */
+@media (max-width: 640px) {
+  .pool-prog { min-width: 70px; }
 }
 .pool-val {
   font-variant-numeric: tabular-nums;
@@ -639,9 +702,24 @@
 /* ─── Tab: Stats ─────────────────────────────────────────────────────────── */
 
 .tab--stats { display: flex; flex-direction: column; gap: 28px; }
+
+/* Wraps everything below the page header (filters and the stat-body grid) as
+   a single unit — mirrors .picker-body's role for the Pickers tab. Exists so
+   the Welcome Tour has a container to reserve top-space on (see onboarding.jsx's
+   reserve-space effect) without pushing the page header itself down too. The
+   tour's own highlight target is `.ob-stat-content` on this element's two
+   children, NOT this element — highlighting .stat-body-wrap itself would
+   include its own reserved padding as empty space at the top of the spotlight. */
+.stat-body-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
 /* Cards now live inside the .tab-fade wrapper, so the flex gap above can't reach
    them — lay the wrapper out as a full-width grid with its own row gap. */
-.stat-body { display: grid; grid-template-columns: 1fr; grid-auto-rows: auto; gap: 28px; }
+.stat-body { display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: auto; gap: 28px; }
 
 /* Stats header — kicker on its own line, then logo + title (mirroring the
    Today tab's date/time-above-logo/title layout). "eased" picks up the same
@@ -652,7 +730,7 @@
 .stat-h .section-h { flex: 1 1 auto; min-width: 0; justify-content: center; }
 .stat-h .brand-mark { height: 68px; width: 68px; aspect-ratio: auto; align-self: center; }
 .stat-title-accent { color: var(--accent); }
-.stat-filters-sub { margin: 0 0 2px; }
+.stat-h-sub { margin: 18px 0 0; }
 @media (max-width: 640px) {
   .stat-h-lead { gap: 12px; }
   .stat-h .brand-mark { height: 56px; width: 56px; }
@@ -1203,6 +1281,50 @@ button.cat-h-l {
   font-size: 11px;
   color: var(--muted);
   letter-spacing: 0.03em;
+  /* Own elements (not one text run — see tab-data.jsx) so the narrow-
+     viewport rule below can stack them into 3 rows; row+baseline here
+     keeps the current "6 of 6" look on every other width. */
+  display: flex; align-items: baseline; gap: 3px;
+}
+/* Each picker's own header row (name / group pill / eligible count) —
+   scoped to .data-list so Conditionals'/Reminders' OWN section headers
+   (outside .data-list, sharing the same .cat-name/.cat-count classes for
+   a "Conditionals"/"Reminders" title + a plain count with no group pill)
+   aren't affected; they never had this crowding problem since they have
+   far fewer things competing for the row's width.
+   On narrow viewports .cat-h-l had nowhere near enough room for a full
+   name + a group pill + "N of N", so the browser fell back to wrapping
+   each one's own text — ragged, uneven heights, and a long group name
+   could run into its neighbor entirely. Give each a defined, predictable
+   footprint instead: the name truncates with an ellipsis rather than
+   wrapping to a second line (keeping the row a single height), the group
+   pill gets a fixed max-width + ellipsis (so an especially long group
+   name truncates instead of overlapping), and the count restacks into 3
+   centered rows (its own column) instead of wrapping mid-fraction. */
+@container app (max-width: 400px) {
+  /* Own gap (rather than relying on .cat-h-l's flex-grow to naturally
+     leave room) — otherwise .cat-h-l fills every last px up to
+     .vac-toggle's own edge, butting the count's last digit right up
+     against it. */
+  .data-list > .cat > .cat-h { gap: 8px; }
+  .data-list > .cat > .cat-h .chev { flex: 0 0 auto; }
+  .data-list > .cat > .cat-h .cat-name {
+    flex: 1 1 0%; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  /* Fixed (not max-) width so every collapsed picker's pill lines up at
+     the same edge regardless of its own group name's length, with the
+     (possibly truncated) text centered in that fixed box rather than
+     hugging its left edge. */
+  .data-list > .cat > .cat-h .cat-group {
+    flex: 0 0 auto; width: 72px; text-align: center;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .data-list > .cat > .cat-h .cat-count {
+    flex: 0 0 auto;
+    flex-direction: column; align-items: center; gap: 0;
+    text-align: center;
+  }
 }
 
 .vac-toggle {
@@ -1641,14 +1763,63 @@ button.cat-h-l {
   .tab--settings .settings-layout { grid-template-columns: 1fr; gap: 16px; }
   .settings-rail {
     position: sticky; top: 0; z-index: 18;
-    max-height: none; overflow-x: auto; overflow-y: hidden;
+    max-height: none;
+    /* Undo the desktop rule's overflow-y: auto — with overflow-x left
+       untouched otherwise, the browser force-pairs it to overflow-x: auto
+       too (CSS overflow spec), turning .settings-rail into a SECOND,
+       invisible scroll/clip container even with nothing to scroll
+       (scrollWidth === clientWidth). That silently clipped ::after's
+       right-edge fade despite its computed styles looking correct.
+       min-width: 0 replaces overflow as the fix for the OTHER thing that
+       overflow-y: auto was incidentally doing: as a grid item (see
+       .settings-layout), .settings-rail's default min-width:auto is
+       content-based, so without an explicit min-width it balloons to fit
+       .settings-rail-scroll's full unscrolled content width (628px)
+       instead of respecting the 1fr grid track. */
+    overflow: visible;
+    min-width: 0;
     padding: 14px 20px;
     background: var(--bg);
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-l, 16px), #000 calc(100% - var(--fade-r, 16px)), transparent 100%);
-            mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-l, 16px), #000 calc(100% - var(--fade-r, 16px)), transparent 100%);
   }
-  .settings-rail.at-start { --fade-l: 0px; }
-  .settings-rail.at-end   { --fade-r: 0px; }
+  /* The actual horizontal scroller — deliberately NOT .settings-rail itself.
+     Fade as an opaque gradient OVERLAY, not a mask — two reasons neither
+     mask placement worked: masking .settings-rail itself faded its own
+     background too, letting page content scrolled underneath the sticky
+     rail show through; masking the inner <ul> instead positioned the
+     fade relative to the ul's own full scrollable width (~628px, the
+     width of every pill combined) rather than the rail's visible ~335px
+     viewport, putting the fade zone hundreds of px off-screen.
+     A THIRD bug (confirmed on real devices, both Firefox and Chrome —
+     not a rendering quirk): the fade pseudo-elements are position:absolute,
+     and putting them on the SAME element as overflow-x:auto made them
+     scroll away WITH the pills — the fade would visibly "attach" to
+     whichever pill happened to be under it and drift off with it, instead
+     of staying pinned to the visible edge. Splitting the scrolling element
+     (.settings-rail-scroll, wraps just the <ul>) from the fade-hosting
+     element (.settings-rail, sticky, never itself scrolls) fixes all
+     three: the rail's own background stays opaque, the fade tracks the
+     rail's real visible width, and the fade itself never moves. */
+  .settings-rail-scroll {
+    overflow-x: auto; overflow-y: hidden;
+    scrollbar-width: none;
+  }
+  .settings-rail-scroll::-webkit-scrollbar { display: none; }
+  .settings-rail::before, .settings-rail::after {
+    content: ''; position: absolute; top: 0; bottom: 0; width: 24px;
+    pointer-events: none; z-index: 1;
+  }
+  /* left/right: 20px, not 0 — 0 would sit flush with .settings-rail's own
+     padding edge (padding: 14px 20px), but .settings-rail-scroll's actual
+     visible content edge is inset 20px further in than that. A fade at
+     the padding edge overlaps almost entirely with the empty padding
+     gutter, which is already var(--bg) — a bg-to-transparent gradient
+     painted over bg-colored padding is visually a no-op, so the fade
+     appeared to not render at all. Insetting by the padding amount
+     aligns the fade with where the pills actually get cut off. */
+  .settings-rail::before { left: 20px; background: linear-gradient(to right, var(--bg), transparent); }
+  .settings-rail::after { right: 20px; background: linear-gradient(to left, var(--bg), transparent); }
+  .settings-rail.at-start::before { opacity: 0; }
+  .settings-rail.at-end::after { opacity: 0; }
   .settings-rail .rail-kicker { display: none; }
   .settings-rail ul {
     flex-direction: row; flex-wrap: nowrap; gap: 6px; width: max-content;
@@ -1817,7 +1988,7 @@ button.cat-h-l {
 .picker-tab--add .picker-tab-name { font-size: 13px; color: inherit; }
 .picker-tab--add .picker-tab-add-icon { display: inline-flex; }
 
-.np-fields { display: flex; flex-direction: column; gap: 24px; }
+.np-fields { display: flex; flex-direction: column; gap: 24px; margin-top: 16px; }
 .np-field { display: flex; flex-direction: column; gap: 8px; }
 .np-field--toggle {
   display: flex;
@@ -2253,17 +2424,6 @@ button.cat-h-l {
 .rem-quickadd .np-input { flex: 1; max-width: none; margin-top: 0; }
 .rem-quickadd .btn { flex: 0 0 auto; }
 
-.rem-empty {
-  display: flex; align-items: center; gap: 8px;
-  width: 100%; padding: 16px;
-  border: 1px dashed var(--border); border-radius: var(--r-md);
-  background: oklch(from var(--surface) l c h / 0.5);
-  color: var(--muted); font-size: 13.5px; text-align: left;
-  cursor: pointer;
-  transition: border-color .12s, color .12s;
-}
-.rem-empty:hover { border-color: var(--accent); color: var(--accent); }
-
 /* Inline editor shown under a Today card when its pencil is toggled. */
 .rem-inline-editor {
   margin: -4px 0 4px;
@@ -2380,6 +2540,35 @@ button.cat-h-l {
   border: 0.5px solid var(--border); border-radius: 20px;
   position: relative;
 }
+/* Repeat (5 options) is the only segmented control long enough to wrap on
+   narrow viewports — flex-wrap's space-between spread the wrapped row's
+   fewer items across the full width (e.g. Monthly/Yearly landing at
+   opposite edges with a big gap), and each wrapped row justified
+   independently with no relation to the row above it. Grid's auto-fit
+   gives every row the SAME column template, so wrapped rows line up
+   under the row above (Monthly under Once, Yearly under Every N days)
+   instead of re-justifying on their own. When everything fits on one
+   line this renders identically to the flex version above (no slack
+   width for start-vs-space-between to differ on) — only the wrapped
+   case looks different. */
+.seg[aria-label="Repeat"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, max-content));
+  justify-content: start;
+}
+/* In the Data-tab reminder editor (.rd-edit .rem-editor .rem-field is a
+   wrapping flex ROW — label left, control right; see that rule further
+   down), whether this control ends up alongside the label on the same
+   line or wraps to its own line depends on the browser's computed
+   hypothetical/intrinsic width for it as a flex item. That computation
+   isn't reliable for a grid-display item across browsers — it can come
+   out small enough to fit next to the label, which then also starves
+   the grid's own column count down to one. Forcing its own full-width
+   line explicitly removes that ambiguity; every browser we could test
+   already rendered it on its own line anyway (the label's explanation
+   sentence alone is wide enough), so this doesn't change anything
+   visible, just makes it deterministic. */
+.rd-edit .rem-editor .rem-field .seg[aria-label="Repeat"] { flex-basis: 100%; }
 .seg-thumb {
   position: absolute; top: 0; left: 0; width: 0; height: 0;
   background: var(--accent); border-radius: 999px;
@@ -2506,6 +2695,45 @@ button.cat-h-l {
 
 .rd-item { border-bottom: 0.5px solid var(--border); }
 .rd-item:last-child { border-bottom: 0; }
+/* Tour-driven "click here" emphasis (App Features' own Edit Item tour) —
+   a thin accent outline on top of the tour engine's own bigger spotlight
+   box, pointing at the SPECIFIC element inside it the step wants clicked.
+   outline (not border) so it doesn't touch layout/spacing — safe on a
+   single element like a section header. */
+.is-tour-target { outline: 2px solid var(--accent); outline-offset: -2px; }
+/* .rd-item rows can't use the same outline: outline has no per-side
+   variant, and every highlighted row would draw its own full outline,
+   doubling into a thick line wherever two highlighted rows touch (see
+   .rd-item's own hairline-border comment above — same touching-siblings
+   shape, just with a much more visible width/color this time). Borders
+   ARE per-side, so build the same "one box around the whole group" look
+   from borders instead: every row gets left/right/bottom, but only the
+   FIRST row also gets top — the row above's own bottom border already is
+   the shared line between two adjacent highlighted rows, so giving the
+   next row its own top border too would just stack a second one on the
+   exact same pixel, reading as thicker/blurrier there than everywhere else
+   on the outline. */
+.rd-item.is-tour-target {
+  outline: none;
+  border-left: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
+/* :first-of-type/:last-of-type, not :first-child/:last-child — the Items
+   section's own "+ Add" button (.rd-add, a <button>) is always the actual
+   first CHILD, sitting right before the item rows begin (see tab-data.jsx),
+   so :first-child would never match any .rd-item at all. :first-of-type
+   matches by tag name (the first <div> among siblings, ignoring .rd-add's
+   own <button> tag), which is exactly the first real item row. */
+.rd-item.is-tour-target:first-of-type {
+  border-top: 2px solid var(--accent);
+  border-top-left-radius: var(--r-md);
+  border-top-right-radius: var(--r-md);
+}
+.rd-item.is-tour-target:last-of-type {
+  border-bottom-left-radius: var(--r-md);
+  border-bottom-right-radius: var(--r-md);
+}
 /* Real <button> (conditional rows + picker item rows) — they were divs with a
    click handler and no tabindex, so keyboard users couldn't open an editor. The
    reset strips UA chrome only; layout, padding and hover stay owned here. */
@@ -2838,6 +3066,15 @@ button.cat-h-l {
 .picker-actions .pv-act { animation: pvActIn .22s cubic-bezier(.34,1.2,.5,1) both; }
 .picker-actions .pv-act.is-leaving { animation: pvActOut .18s ease both; }
 .pv-send-label { display: inline-block; }
+/* Re-roll/Done during the Pickers page tour's "Add to Todo List" step: the
+   native `disabled` attribute alone renders no differently on a .btn (no
+   :disabled rule exists for it anywhere), which would leave these looking
+   fully clickable while silently doing nothing — confusing specifically
+   because Send to Today right next to them IS meant to be clicked for
+   real. Applied only while that exact tour step is up (see
+   tab-picker.jsx's own tourInterceptSend), so it disappears again the
+   moment the step ends. */
+.pv-act.is-tour-disabled { opacity: 0.4; cursor: default; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) {
   .picker-actions .pv-act, .picker-actions .pv-act.is-leaving { animation-duration: .01ms; }
 }
@@ -3185,6 +3422,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   from { opacity: 0; transform: translateX(-5px); }
   to   { opacity: 1; transform: none; }
 }
+.group-name-input.is-invalid { border-color: var(--warm); }
 .group-name-input.is-closing { animation: groupNameOut .15s cubic-bezier(0.4, 0, 0.2, 1) both; }
 @keyframes groupNameOut {
   from { opacity: 1; transform: none; }
@@ -3209,6 +3447,15 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   to   { opacity: 1; transform: none; }
 }
 @media (prefers-reduced-motion: reduce) { .group-merge-confirm { animation: none; } }
+
+/* Blocked rename (Page Tours colliding with an existing group name) — same
+   bar, warm/warning treatment instead of accent since there's nothing to
+   confirm, just an error to fix. */
+.group-name-conflict {
+  background: oklch(from var(--warm) l c h / 0.08);
+  border-color: oklch(from var(--warm) l c h / 0.35);
+}
+.group-name-conflict .confirm-msg { color: oklch(0.45 0.13 50); }
 
 
 
@@ -3330,13 +3577,25 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 /* ── Onboarding ──────────────────────────────────────────────────────────
    Welcome modal, get-started checklist, first-picker CTA, and the spotlight
    tour (dim + cut-out + coach card). Uses app tokens throughout. */
-.ob-scrim{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;background:oklch(0.15 0.02 250/0.5);animation:obFade .22s ease both}
-.ob-welcome{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-lg);width:100%;max-width:400px;padding:28px 24px 22px;text-align:center;box-shadow:0 24px 60px -20px oklch(0 0 0/0.5)}
+/* flex-direction:column + overflow-y:auto + margin:auto on .ob-welcome
+   (instead of align-items/justify-content:center) so a modal taller than
+   a short viewport (e.g. iPhone SE at 667px) becomes scrollable instead of
+   clipping symmetrically top and bottom — align-items/justify-content:
+   center have no graceful-overflow behavior (the centered item just
+   overflows equally past both edges with no way to scroll to the clipped
+   part), but flex auto-margins do: they only ever consume positive free
+   space, collapsing to 0 (i.e. top-aligned, normal document flow) once the
+   content no longer fits, which is what actually makes overflow-y:auto able
+   to reach the rest of it. Covers every onboarding intro modal at once
+   (Welcome Tour + every mini-tour) since they all share this one class. */
+.ob-scrim{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;overflow-y:auto;padding:24px;background:oklch(0.15 0.02 250/0.5);animation:obFade .22s ease both}
+.ob-welcome{margin:auto;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-lg);width:100%;max-width:400px;padding:28px 24px 22px;text-align:left;box-shadow:0 24px 60px -20px oklch(0 0 0/0.5)}
 .ob-welcome.ob-in{animation:obRise .26s cubic-bezier(.2,.8,.3,1) both}
 .ob-wmark{width:54px;height:54px;margin:0 auto 14px;color:var(--accent)}
 .ob-wmark svg{width:100%;height:100%}
-.ob-welcome h2{font-size:21px;font-weight:600;letter-spacing:-0.02em;margin:0 0 8px}
+.ob-welcome h2{font-size:21px;font-weight:600;letter-spacing:-0.02em;margin:0 0 8px;text-align:center}
 .ob-welcome>p{font-size:13.5px;line-height:1.55;color:var(--muted);margin:0 6px}
+.ob-welcome>p+p{margin-top:10px}
 .ob-chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0 4px}
 .ob-chips span{font-family:var(--font-mono);font-size:11px;padding:5px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);border:none;outline:none}
 .ob-wact{display:flex;flex-direction:column;gap:9px;margin-top:20px}
@@ -3344,9 +3603,30 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .ob-btn--primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .ob-btn--ghost:hover{background:var(--hover,oklch(0 0 0/0.05))}
 
-.ob-tour{position:fixed;inset:0;z-index:1000;pointer-events:none}
+/* z-index:1010, not 1000 — a GuidedTour step can be active at the same time
+   as help-mode's own separate dim layer (.help-mode, z-index:1000) whenever
+   a step's real target IS the help-highlight toggle itself (the "Use the
+   highlight feature" App Feature tutorial's own Step 2, once its Step 1
+   click has turned help-mode on): two same-numbered z-index:1000 stacking
+   contexts fall back to DOM order, and .help-mode happens to mount later,
+   so it painted its dim + badges OVER .ob-coach and .ob-spot, only NOT
+   dimming wherever they happened to overlap a help-mode cutout hole. Same
+   fix, same reasoning as .help-btn's own z-index:1001 lift just below —
+   this needs to clear THAT too, so the tour's own spotlight/coach always
+   sit on top of literally everything else on screen while a step is
+   active, not just help-mode's dim layer. .ob-tour itself has
+   pointer-events:none (only .ob-coach opts back in), so lifting the whole
+   stacking context doesn't block clicks through to the real target
+   underneath — .ob-spot's own box-shadow trick, not an actual cutout,
+   is what "reveals" it either way. */
+.ob-tour{position:fixed;inset:0;z-index:1010;pointer-events:none}
 .ob-dim{position:absolute;inset:0;background:oklch(0.15 0.02 250/0.55)}
 .ob-spot{position:fixed;border-radius:var(--r-md);box-shadow:0 0 0 9999px oklch(0.15 0.02 250/0.6);border:2px solid oklch(from var(--accent) l c h/0.9)}
+/* Drops just the dimming shadow during a group/item drag (see GuidedTour's
+   own dragging state) — the border stays so the section being dragged is
+   still marked, but the rest of the page is no longer darkened, so it's
+   easy to see exactly where it's landing. */
+.ob-spot.is-dragging{box-shadow:none}
 .ob-coach{position:fixed;pointer-events:auto;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);box-shadow:0 16px 40px -14px oklch(0 0 0/0.45);padding:14px 15px;animation:obFade .18s ease both}
 .ob-coach .ob-prog{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;color:var(--accent);margin:0 0 5px}
 .ob-coach h4{font-size:15px;font-weight:600;margin:0 0 5px}
@@ -3357,45 +3637,117 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .ob-back{font-size:12px;font-weight:500;color:var(--accent);background:0;border:0;font-family:inherit;cursor:pointer;padding:4px 2px}
 .ob-next{font-size:12.5px;font-weight:600;border-radius:999px;padding:8px 15px;font-family:inherit;cursor:pointer;border:0.5px solid var(--accent);background:var(--accent);color:#fff}
 .ob-next:disabled{opacity:.6;cursor:default}
+/* solo step (see its own doc comment in onboarding-tour-runner.jsx) —
+   .ob-lnav is removed entirely rather than just hidden, so .ob-next is the
+   ONLY child left in the row; stretch it to fill that space instead of
+   leaving it sized to its own text and pinned to one side by
+   justify-content:space-between, which would read as off-balance for a
+   standalone closing message with nothing to pair it against. */
+.ob-crow--solo .ob-next{width:100%;text-align:center}
 .ob-coach::before{content:"";position:absolute;width:14px;height:14px;background:var(--surface);border:0.5px solid var(--border);transform:rotate(45deg);left:var(--ob-ax,28px)}
 .ob-coach--up::before{top:-8px;border-right:0;border-bottom:0}
 .ob-coach--down::before{bottom:-8px;border-left:0;border-top:0}
-.ob-coach--none::before{display:none}
 
-.ob-gsc{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);padding:14px 15px 9px;margin-bottom:16px}
-.ob-gsc.is-celebrating{transform:scale(0.99);transition:transform .16s ease}
-.ob-gsc-h b,.ob-gsc-prog{transition:color .28s ease}
-.ob-gsc.is-celebrating .ob-gsc-prog{color:oklch(0.62 0.15 155);font-size:14px;font-weight:700}
-.ob-gsc.is-celebrating .ob-gsc-h b{color:oklch(0.62 0.15 155)}
-.ob-gsc.is-collapsing{overflow:hidden;transform-origin:top center;animation:obGscOut .38s cubic-bezier(.4,0,.5,1) forwards}
-@keyframes obGscOut{from{opacity:1;max-height:240px;transform:scaleY(1);margin-bottom:16px;padding-top:14px;padding-bottom:9px}to{opacity:0;max-height:0;transform:scaleY(0.9);margin-bottom:0;padding-top:0;padding-bottom:0;border-width:0}}
-@media (prefers-reduced-motion:reduce){.ob-gsc.is-celebrating{transform:none;transition:none}.ob-gsc.is-collapsing{animation:none;opacity:0;max-height:0;margin-bottom:0;padding:0;border-width:0;overflow:hidden}}
-.ob-gsc-h{display:flex;align-items:center;gap:10px;margin-bottom:6px}
-.ob-gsc-h b{font-size:14px;font-weight:600;flex:1}
-.ob-gsc-prog{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
-.ob-gsc-x{width:24px;height:24px;border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;cursor:pointer;border-radius:6px}
-.ob-gsc-x:hover{background:var(--hover,oklch(0 0 0/0.05));color:var(--text)}
-.ob-gsc-task{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:0.5px solid var(--border)}
-.ob-gsc-task[role=button]{cursor:pointer}
-.ob-gsc-task .ob-gsc-tb{width:19px;height:19px;border-radius:50%;border:1.6px solid var(--border);flex:0 0 auto;position:relative}
-.ob-gsc-task.is-done .ob-gsc-tb{background:oklch(0.62 0.15 155);border-color:oklch(0.62 0.15 155)}
-.ob-gsc-task.is-done .ob-gsc-tb::after{content:"";position:absolute;left:5.5px;top:2.5px;width:4.5px;height:8.5px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(43deg)}
-.ob-gsc-task span:not(.ob-gsc-tb):not(.ob-gsc-arr){font-size:13.5px;flex:1}
-.ob-gsc-task.is-done span{color:var(--muted);text-decoration:line-through}
-.ob-gsc-arr{color:var(--muted);font-size:16px}
 .ob-create{border:1px dashed oklch(from var(--accent) l c h/0.5);background:var(--accent-soft);border-radius:var(--r-md);padding:18px 16px;text-align:center;margin-bottom:16px;display:flex;flex-direction:column;align-items:center;gap:6px}
 .ob-create-i{width:40px;height:40px;border-radius:11px;background:var(--surface);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent)}
 .ob-create b{font-size:15px;font-weight:600}
 .ob-create p{font-size:12.5px;color:var(--muted);margin:0 0 6px;line-height:1.5;max-width:34ch}
+/* Wider than mobile's 34ch, or the line wraps awkwardly early on bigger
+   screens where .ob-create has much more room than its text needs. 760px
+   matches the Today tab's own main-content breakpoint just above. */
+@container app (min-width:600px){.ob-create p{max-width:47ch}}
+@container app (min-width:760px){.ob-create p{max-width:60ch}}
 /* Two-paragraph variant with no action button (no eligible pickers today): the
    flex gap owns the spacing, so kill the per-paragraph margin that would double
    it between them and leave a dangling gap under the last one. */
 .ob-create--norun p{margin:0;max-width:38ch}
+/* Mini-tour checklist: "needs attention" cue — visible without any tap/hover,
+   for the closing Generate card while it's blocked (see .today-card--tutorial
+   .is-needed below for its sibling on the "Create a picker" launcher cards).
+   Warm/amber rather than --danger red: this isn't an error, just unfinished. */
+.ob-create--generate.is-needed{border-color:oklch(from var(--warm) l c h/0.55);background:oklch(from var(--warm) l c h/0.07)}
+.ob-create.is-removing{animation:cardSkipOut 380ms cubic-bezier(.4,.05,.7,.4) forwards}
+@media (prefers-reduced-motion:reduce){.ob-create.is-removing{animation:none;opacity:0}}
+/* Same "needs attention" cue as .ob-create--generate.is-needed above, applied
+   to every still-open "Create a picker" launcher card while zero real
+   pickers exist yet — see OB_CHECKLIST.realPickerCount. */
+.today-card--tutorial.is-needed{border-color:oklch(from var(--warm) l c h/0.55);background:oklch(from var(--warm) l c h/0.06)}
+.today-card--tutorial.is-needed:hover{border-color:oklch(from var(--warm) l c h/0.7)}
 @keyframes obFade{from{opacity:0}to{opacity:1}}
 @keyframes obRise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.ob-scrim,.ob-welcome,.ob-coach,.ob-spot{animation:none;transition:none}}
 body.ob-touring .tab{padding-bottom:200px}
 .np-tour-name{margin:16px 0 16px}
+
+/* ─── Help mode: on-demand page annotations (src/help-mode.jsx) ──────────── */
+/* The per-page toggle. Muted by default like .pie-help's own "rarely used,
+   shouldn't compete with real controls" treatment — this one lives in a
+   page header, so it's visible far more often than a single field's own
+   (?) trigger, which is exactly why it stays this quiet until engaged.
+   position+z-index lift it above .help-mode's own z-index:1000 dim layer —
+   without that it'd read as dimmed like everything else despite staying
+   genuinely clickable the whole time, which is exactly backwards from what
+   its own state (still active, still the way out) should communicate. */
+.help-btn{
+  position:relative;z-index:1001;
+  width:26px;height:26px;flex:0 0 auto;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid var(--muted);border-radius:50%;
+  background:none;color:var(--muted);
+  font-size:13px;font-weight:700;line-height:1;
+  cursor:pointer;transition:border-color .15s ease,color .15s ease,background .15s ease;
+}
+.help-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.help-btn.is-on{border-color:var(--accent);color:#fff;background:var(--accent)}
+/* Scaled-up standalone lookalike of .help-btn, for the "Use the highlight
+   feature" App Feature tutorial's own intro modal icon (.ob-wmark, a fixed
+   54x54 box — see onboarding-intro-modal.jsx). .ob-wmark's own `svg { width:
+   100%; height:100% }` rule only targets real SVG icons (the Icon
+   component every OTHER tutorial's icon uses), so a plain span needs its
+   own sizing here rather than inheriting that. Same look, no live
+   behavior — this one never toggles anything. */
+.ob-wmark-help{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  border:3px solid currentColor;border-radius:50%;
+  font-size:28px;font-weight:700;line-height:1;
+}
+
+.help-mode{position:fixed;inset:0;z-index:1000;pointer-events:none}
+.help-dim-svg{position:absolute;inset:0}
+.help-dim-fill{fill:oklch(0.15 0.02 250/0.55)}
+/* The outlined box alone (no box-shadow spread) — the SVG mask above
+   already does the "dim everything except the holes" job that .ob-spot's
+   own box-shadow trick handles for a single target; stacking N box-shadows
+   here instead would re-darken every OTHER hole, which is the exact
+   compose failure this whole separate engine exists to avoid. border-radius
+   is set inline per target (see help-mode.jsx's own shapeFor) to roughly
+   match what it's actually outlining instead of always being a plain
+   rounded rect — this is just the fallback for whenever that isn't set. */
+.help-spot{
+  position:fixed;border-radius:var(--r-md);pointer-events:none;
+  border:2px solid oklch(from var(--accent) l c h/0.9);
+}
+.help-badge{
+  position:fixed;pointer-events:auto;
+  width:20px;height:20px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid var(--muted);border-radius:50%;
+  background:var(--surface);color:var(--muted);
+  font-size:11px;font-weight:700;line-height:1;
+  cursor:pointer;transition:border-color .15s ease,color .15s ease,background .15s ease;
+}
+.help-badge:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.help-badge.is-on{border-color:var(--accent);color:#fff;background:var(--accent)}
+/* Reuses .ob-coach itself (background/border/radius/shadow/padding/arrow)
+   for full visual consistency with the guided tour's own coach card — see
+   help-mode.jsx's own header comment. Only overrides what's actually
+   different: fixed width (matching the tour's own coachW cap) and opting
+   back into pointer-events under .help-mode's blanket pointer-events:none. */
+.help-tip{pointer-events:auto;width:280px}
+.help-tip-title{font-size:15px;font-weight:600;margin:0 0 5px}
+.help-tip .ob-body p{margin:0}
+.help-tip .ob-body p+p{margin-top:8px}
 
 /* ─── Settings: storage & installation panel ──────────────────────────────── */
 .set-store-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}

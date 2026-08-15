@@ -73,7 +73,7 @@ function pickerDayIndex(pickLog, pickerId, day) {
 }
 
 function StatusChips({ flags }) {
-  if (!flags || !flags.any) return <span className="dl-none">—</span>;
+  if (!flags || !flags.any) return <span className="dl-none dl-mk-status">—</span>;
   const chips = [];
   if (flags.auto) chips.push(['auto', 'shuffle', 'Auto-picked', 2]);
   if (flags.pushed) chips.push(['push', 'push', 'Pushed', 2.4]);
@@ -81,7 +81,7 @@ function StatusChips({ flags }) {
   if (flags.skipped) chips.push(['skip', 'x', 'Skipped', 2.6]);
   if (flags.completed) chips.push(['done', 'check', 'Completed', 3]);
   return (
-    <span className="dl-status">
+    <span className="dl-status dl-mk-status">
       {chips.map(([k, icon, title, w]) => (
         <span key={k} className={`dl-ico dl-c-${k}`} title={title}><Ico name={icon} w={w} /></span>
       ))}
@@ -142,12 +142,18 @@ function condSub(c) {
 // out of the difference — it remains the change in boost (+1 per cycle an item
 // sits out, negative when a completion resets it).
 function ValueCells({ hasValue, atGen, after, offset = 0 }) {
+  // dl-mk-* classes below (here and in TableHead) are pure selector hooks
+  // for help mode (see help-content.jsx's log-panel items) — deliberately
+  // NOT the same classes as .dl-item/.dl-delta/.dl-after/.dl-status, which
+  // carry their own font/layout rules meant for data cells; reusing those
+  // directly on a header label would visually reflow/restyle it away from
+  // the small-caps look every other header cell has.
   if (!hasValue || atGen == null) {
     return (
       <React.Fragment>
-        <span className="dl-val r"><span className="dl-na">N/A</span></span>
-        <span className="dl-delta flat r">—</span>
-        <span className="dl-val r"><span className="dl-na">N/A</span></span>
+        <span className="dl-val dl-mk-atgen r"><span className="dl-na">N/A</span></span>
+        <span className="dl-delta dl-mk-delta flat r">—</span>
+        <span className="dl-val dl-mk-after r"><span className="dl-na">N/A</span></span>
       </React.Fragment>
     );
   }
@@ -156,9 +162,9 @@ function ValueCells({ hasValue, atGen, after, offset = 0 }) {
   const txt = d === 0 ? '—' : (d > 0 ? `+${d}` : `${d}`);
   return (
     <React.Fragment>
-      <span className="dl-val r">{g}</span>
-      <span className={`dl-delta ${cls} r`}>{txt}</span>
-      <span className="dl-val dl-after r">{a}</span>
+      <span className="dl-val dl-mk-atgen r">{g}</span>
+      <span className={`dl-delta dl-mk-delta ${cls} r`}>{txt}</span>
+      <span className="dl-val dl-after dl-mk-after r">{a}</span>
     </React.Fragment>
   );
 }
@@ -171,8 +177,8 @@ const fmtTime = (iso) => {
 function TableHead({ first = 'Item' }) {
   return (
     <div className="dl-thead">
-      <span>{first}</span><span className="r">At gen</span><span className="r">Δ</span>
-      <span className="r">After</span><span className="r">Status</span>
+      <span className="dl-mk-item">{first}</span><span className="r dl-mk-atgen">At gen</span><span className="r dl-mk-delta">Δ</span>
+      <span className="r dl-mk-after">After</span><span className="r dl-mk-status">Status</span>
     </div>
   );
 }
@@ -222,14 +228,14 @@ function PickerBlock({ state, picker, day, suppressed }) {
             const hv = hasValueMode(picker.mode) && !it.vacation;
             return (
               <div key={it.id} className={`dl-trow ${done ? 'is-done' : ''} ${it.vacation ? 'is-dim' : ''}`}>
-                <span className="dl-item">
+                <span className="dl-item dl-mk-item">
                   <InfoTip className="dl-name" label={it.name}>{it.name}</InfoTip>
                   <span className="dl-sub">{itemSub(picker, it, hv ? genItems[it.id] : null)}</span>
                 </span>
                 <ValueCells hasValue={hv} atGen={genItems[it.id]} after={it.value}
                             offset={picker.mode === 'dynamic' ? (it.weight ?? 1) : 0} />
                 {it.vacation
-                  ? <span className="dl-status"><span className="dl-vac">Vacation</span></span>
+                  ? <span className="dl-status dl-mk-status"><span className="dl-vac">Vacation</span></span>
                   : <StatusChips flags={f} />}
               </div>
             );
@@ -255,7 +261,7 @@ function CondSection({ state, pickersInGroup, day }) {
       <div className="dl-table">
         <TableHead first="Conditional" />
         {conds.map((c) => {
-          const attached = state.pickers.filter((p) => p.conditionalId === c.id).map((p) => p.name);
+          const attached = state.pickers.filter((p) => p.conditionalId === c.id && !p.hidden).map((p) => p.name);
           const trig = !!(c.active !== false && c.triggered);
           const hv = CONDITIONALS.isValue(c.mode);
           const snap = genConds[c.id];
@@ -264,7 +270,7 @@ function CondSection({ state, pickersInGroup, day }) {
           return (
             <React.Fragment key={c.id}>
               <div className="dl-trow dl-cond-row">
-                <span className="dl-item">
+                <span className="dl-item dl-mk-item">
                   <span className="dl-nrow">
                     <InfoTip className="dl-name" label={c.name}>{c.name}</InfoTip>
                     <InfoTip className={`dl-mode dl-mode--cond ${neutral ? 'is-neutral' : ''}`} label={modeLabel}>{modeLabel}</InfoTip>
@@ -272,7 +278,7 @@ function CondSection({ state, pickersInGroup, day }) {
                   <span className="dl-sub">{condSub(c)}</span>
                 </span>
                 <ValueCells hasValue={hv} atGen={snap ? snap.value : (hv ? c.value : null)} after={c.value} />
-                <span className="dl-status">
+                <span className="dl-status dl-mk-status">
                   <span className={`dl-st-pill ${trig ? 'dl-st-trig' : 'dl-st-nottrig'}`}>{trig ? 'Triggered' : 'Not triggered'}</span>
                 </span>
               </div>
@@ -293,7 +299,7 @@ function CondSection({ state, pickersInGroup, day }) {
 // ── The whole group log panel (opens inline under the group header) ──
 function GroupLog({ state, group, onClose }) {
   const day = isoDay();
-  const inGroup = state.pickers.filter((p) => (p.group || 'Other') === group);
+  const inGroup = state.pickers.filter((p) => (p.group || 'Other') === group && !p.hidden);
   const order = (state.pickerOrder && state.pickerOrder[group]) || [];
   const pickers = inGroup.slice().sort((a, b) => {
     const ia = order.indexOf(a.id), ib = order.indexOf(b.id);
@@ -348,7 +354,7 @@ function RemindersLog({ state, onClose }) {
   // itself frozen to the last generate() until the next one runs.
   const anchor = TASKS.anchorDate(state.today && state.today.generatedAt);
   const day = isoDay(anchor);
-  const tasks = state.tasks || [];
+  const tasks = (state.tasks || []).filter((t) => !t.hidden);
   const visible = TASKS.visibleToday(state.tasks, state.reminderOpts, state.holidays, anchor);
   const visibleIds = new Set(visible.map((t) => t.id));
   const skippedIds = new Set((state.reminderSkipLog || [])
@@ -379,13 +385,18 @@ function RemindersLog({ state, onClose }) {
         {onClose && <button type="button" className="dl-close" aria-label="Close log" onClick={onClose}><Ico name="x" w={2} /></button>}
       </div>
       <div className="dl-body dl-body--rem">
-        <div className="dl-rt-head"><span>Reminder</span><span>When</span><span className="r">Status</span></div>
+        {/* dl-mk-r* below are pure selector hooks for help mode (see
+            help-content.jsx) — kept separate from .dl-r-name/.dl-r-when/
+            .dl-r-st, which carry their own font styling meant for data
+            rows; reusing those directly on the header would restyle it
+            away from the small-caps look every other header cell has. */}
+        <div className="dl-rt-head"><span className="dl-mk-rname">Reminder</span><span className="dl-mk-rwhen">When</span><span className="r dl-mk-rst">Status</span></div>
         {rows.length === 0 && <div className="dl-empty">No reminders yet.</div>}
         {rows.map(({ t, status, dueLabel, when }) => (
           <div key={t.id} className={`dl-rt-row ${status === 'done' ? 'is-done' : status === 'due' ? 'is-due' : status === 'notdue' ? 'is-notdue' : ''}`}>
-            <InfoTip className="dl-r-name" label={t.name}>{t.name}</InfoTip>
-            <span className="dl-r-when">{when}</span>
-            <span className="dl-r-st">
+            <InfoTip className="dl-r-name dl-mk-rname" label={t.name}>{t.name}</InfoTip>
+            <span className="dl-r-when dl-mk-rwhen">{when}</span>
+            <span className="dl-r-st dl-mk-rst">
               {status === 'done' && <><span className="dl-ico dl-c-done"><Ico name="check" w={3} /></span><span className="dl-st-pill dl-st-done">Done</span></>}
               {status === 'due' && <span className="dl-st-pill dl-st-due">Due today</span>}
               {status === 'skip' && <><span className="dl-ico dl-c-skip"><Ico name="x" w={2.6} /></span><span className="dl-st-pill dl-st-skip">Skipped</span></>}

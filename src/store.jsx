@@ -360,6 +360,14 @@ function migrate(s) {
   if (s && Array.isArray(s.tasks) && TASKS) {
     s.tasks = s.tasks.filter((t) => !TASKS.isStaleOnce(t));
   }
+  // Hidden flag (added later): lets a picker/task be kept — items, weights,
+  // and all its pickLog/reminderLog history intact — while being excluded
+  // from every list, count, and the daily generator. Used to tuck the
+  // Welcome Tour's sample pickers/reminders out of sight once the tour ends,
+  // without deleting the data future mini-tours will reuse.
+  if (s && Array.isArray(s.tasks)) {
+    s.tasks = s.tasks.map((t) => (typeof t.hidden === 'boolean' ? t : { ...t, hidden: false }));
+  }
   // Per-type reminder participation options (added later). Normalize so partial
   // or absent state gets the full default switch set.
   if (s && TASKS) s.reminderOpts = TASKS.normalizeOpts(s.reminderOpts);
@@ -392,6 +400,55 @@ function migrate(s) {
   // state that lacks the field is treated as already welcomed/dismissed. Fresh
   // clean state sets welcomed:false explicitly to trigger the first-run flow.
   if (s && !s.onboarding) s.onboarding = { welcomed: true, dismissed: true };
+  // Mini-tour checklist (added later) — see onboarding-checklist.js. `checklist`
+  // maps an item id to its resolution ({ status, createdId? }); `checklistDone`
+  // flips true once the closing Generate card's flow completes, at which
+  // point every checklist card stops rendering. An object map (not an array)
+  // so a brand-new checklist item needs no backfill of its own, just a
+  // manifest entry in onboarding-checklist.js.
+  if (s && s.onboarding && (!s.onboarding.checklist || typeof s.onboarding.checklist !== 'object')) {
+    s.onboarding.checklist = {};
+  }
+  if (s && s.onboarding && typeof s.onboarding.checklistDone !== 'boolean') {
+    s.onboarding.checklistDone = false;
+  }
+  // Page Tours group display name (Edit Mode rename, added later) — unlike a
+  // real group's name, this doesn't double as the group's identity (that's
+  // still the fixed '__pageTours' sentinel everywhere else), so renaming it
+  // is just a plain label swap with no cascading effects.
+  if (s && s.onboarding && typeof s.onboarding.pageToursName !== 'string') {
+    s.onboarding.pageToursName = 'Page Tours';
+  }
+  // Active tour progress (added later) — { id, step } | null. Lets a guided
+  // tour resume exactly where a reload interrupted it instead of losing all
+  // progress; see onboarding.jsx. Generic across tour "id"s (the main
+  // Welcome Tour today, future per-page mini-tours later) rather than
+  // welcome-tour-specific fields, since only one tour can ever be active.
+  if (s && s.onboarding && typeof s.onboarding.activeTour === 'undefined') {
+    s.onboarding.activeTour = null;
+  }
+  // App Features tutorials (added later) — see onboarding-app-features.jsx.
+  // Deliberately separate from `checklist` above, not folded into the same
+  // map: these aren't tracked by the checklist "engine" at all (no doneCount/
+  // total ring or streak participation, no closing Generate-style card) —
+  // just a per-item resolved/not flag, same shape ({ status }) as `checklist`
+  // purely for consistency with setChecklistItem's own pattern.
+  if (s && s.onboarding && (!s.onboarding.appFeatures || typeof s.onboarding.appFeatures !== 'object')) {
+    s.onboarding.appFeatures = {};
+  }
+  // "One Last Thing..." App Features intro tip (added later, see
+  // onboarding-app-features.jsx's own AppFeaturesIntroTip) — shown exactly
+  // once, right after the closing checklist's own generate() finishes,
+  // pointing at the freshly-appeared App Features section. Existing users
+  // whose checklist was ALREADY done before this existed have long since
+  // passed that moment, so backfilling them straight to "already seen"
+  // avoids ambushing a returning user with it on their next ordinary
+  // Regenerate — brand-new saves (or ones still mid-checklist) keep the
+  // real default (false), so the tip still fires naturally once they
+  // finish for the first time.
+  if (s && s.onboarding && typeof s.onboarding.appFeaturesIntroSeen !== 'boolean') {
+    s.onboarding.appFeaturesIntroSeen = !!s.onboarding.checklistDone;
+  }
   // Reminder completion log (added later). Append-only history of check-offs.
   if (s && !Array.isArray(s.reminderLog)) s.reminderLog = [];
   // Reminder skip log (added later). Append-only history of skip actions.
@@ -450,6 +507,8 @@ function migrate(s) {
       // Picker Cadence (added later): surfacing anchor + display unit. Backfill
       // to 'daily' (original behavior) with sensible default anchors.
       if (!CADENCE.isCadence(np.cadence)) Object.assign(np, CADENCE.normalize(np));
+      // Hidden flag (added later) — see the tasks backfill above for why.
+      if (typeof np.hidden !== 'boolean') np.hidden = false;
       return np;
     });
   }
@@ -482,7 +541,9 @@ function migrate(s) {
       });
       // Bring stored order structures onto the normalized names too.
       if (Array.isArray(s.groupOrder)) {
-        s.groupOrder = s.groupOrder.map((g) => g === '__reminders' ? g : (normalizeGroupName(g) || g));
+        s.groupOrder = s.groupOrder.map((g) => (
+          (g === '__reminders' || g === '__pageTours') ? g : (normalizeGroupName(g) || g)
+        ));
       }
       if (s.pickerOrder && typeof s.pickerOrder === 'object') {
         const remapped = {};
@@ -545,7 +606,11 @@ function flushState(s) {
 // streak count against whether it was already claimed (so toggling the last
 // done item back off un-claims, and never double-counts).
 function reconcileStreak(s, entries, tasks) {
-  const entriesList = entries || [];
+  // Entries belonging to a hidden picker (see the `hidden` flag backfilled
+  // in migrate()) don't count toward — or block — the streak, same as if
+  // that picker didn't exist.
+  const hiddenPickerIds = new Set((s.pickers || []).filter((p) => p.hidden).map((p) => p.id));
+  const entriesList = (entries || []).filter((e) => !e.pickerId || !hiddenPickerIds.has(e.pickerId));
   // Only reminders that are visible today AND whose type counts toward the
   // streak participate. (Skipped picker entries are already removed from the
   // entries list, so they can't block the day; re-rolled entries keep one live
@@ -612,9 +677,40 @@ function useStore(opts) {
       setState(migrate(CLEAN_STATE()));
     },
 
-    // Onboarding progress (welcome modal / get-started checklist). Merges a
+    // Onboarding progress (welcome modal / mini-tour checklist). Merges a
     // partial patch so callers can flip one flag at a time.
     setOnboarding: (patch) => setState((s) => ({ ...s, onboarding: { ...(s.onboarding || {}), ...patch } })),
+
+    // Records a completed page-exploration tour (see onboarding-checklist.js's
+    // 'pageTour' items) — the only checklist items that need explicit
+    // tracking, since (unlike a sample picker/reminder) there's no other
+    // state to derive "done" from. Idempotent.
+    // Resolves (or un-resolves) one checklist item — see onboarding-checklist.js.
+    // `patch` is `{ status: 'finished'|'skipped'|'cancelled', createdId? }` to
+    // resolve it, or `null` to uncheck it back to pending (redo). Never
+    // touches the underlying sample picker/task — resolution is tracked here
+    // only, which is exactly what makes unchecking free.
+    setChecklistItem: (itemId, patch) => setState((s) => {
+      const checklist = { ...((s.onboarding && s.onboarding.checklist) || {}) };
+      if (patch) checklist[itemId] = patch; else delete checklist[itemId];
+      return { ...s, onboarding: { ...(s.onboarding || {}), checklist } };
+    }),
+
+    // Same shape/reasoning as setChecklistItem above, but for App Features
+    // tutorials (see onboarding-app-features.jsx) — a deliberately separate
+    // map, not part of the checklist "engine" at all (see its own migrate()
+    // backfill comment for why).
+    setAppFeatureItem: (itemId, patch) => setState((s) => {
+      const appFeatures = { ...((s.onboarding && s.onboarding.appFeatures) || {}) };
+      if (patch) appFeatures[itemId] = patch; else delete appFeatures[itemId];
+      return { ...s, onboarding: { ...(s.onboarding || {}), appFeatures } };
+    }),
+
+    // Flips once the closing Generate card's flow completes — every
+    // checklist card stops rendering the instant this is true.
+    setChecklistDone: (done = true) => setState((s) => (
+      { ...s, onboarding: { ...(s.onboarding || {}), checklistDone: done } }
+    )),
 
     // Replace the whole store from an imported JSON blob (Settings → Data
     // control → Import). Runs through migrate() so older/partial exports get
@@ -649,6 +745,14 @@ function useStore(opts) {
         : s.pickers;
       return { ...s, items, pickers };
     }),
+
+    // Wipes today's picks back to empty without touching anything else about
+    // `today` (generatedAt, streakClaimed, ...) — used by the Welcome Tour
+    // when backing up to its Generate step, so it shows the same pristine
+    // "nothing generated yet" state it did the first time through rather
+    // than whatever was already on the list from having gone further before
+    // coming back.
+    clearTodayEntries: () => setState((s) => ({ ...s, today: { ...s.today, entries: [] } })),
 
     // Add a NEW today entry for `pickerId` showing `itemId`. Multiple entries
     // per picker are allowed for other modes — the Pickers tab uses this to ADD
@@ -963,7 +1067,14 @@ function useStore(opts) {
     // easeMin/easeMax is just a fallback span. Returns the new picker id.
     // Initial drift `value` depends on mode — ease-down items start "charged"
     // at the threshold; else 0.
-    addPicker: ({ name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay }) => {
+    // replaceId: update THIS existing picker in place (same id) instead of
+    // appending a new one — used when a picker mini-tour is replayed after
+    // already finishing once (see onboarding-picker-tours.jsx's Step 2
+    // run(), which looks up the prior real picker via createdFromSample).
+    // Keeping the id alive is what makes it "the same picker" rather than a
+    // renamed-on-collision duplicate — Stats history/pick log/daily
+    // generator membership all keep pointing at it.
+    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, createdFromSample, replaceId, hidden = false }) => {
       // First picker = the first data worth protecting from eviction. Ask the
       // browser for persistent storage now rather than on a cold first load,
       // where a denial would be sticky for the session.
@@ -971,12 +1082,15 @@ function useStore(opts) {
         const cur = latestRef.current;
         if (PWA && cur && (cur.pickers || []).length === 0) PWA.noteFirstPicker();
       } catch (e) {}
-      const pid = 'pkr_' + Math.random().toString(36).slice(2, 8);
+      // An explicit id (onboarding's sample pickers only, so their ids match
+      // the ones baked into the precomputed Stats history) wins; every other
+      // caller gets a fresh random one as before.
+      const pid = replaceId || id || ('pkr_' + Math.random().toString(36).slice(2, 8));
       const initialValue = mode === 'ease-down' ? 100 : 0;
       const isEase = mode === 'ease-up' || mode === 'ease-down';
       const isDown = mode === 'ease-down';
       const newItems = (items || []).map((it) => ({
-        id: 'it_' + Math.random().toString(36).slice(2, 8),
+        id: it.id || ('it_' + Math.random().toString(36).slice(2, 8)),
         name: it.name, pickerId: pid,
         // Ease-down: every item starts at fairness-weight 1 (system-managed), so
         // the first pick is uniform; user-supplied weights don't apply to it.
@@ -1014,28 +1128,69 @@ function useStore(opts) {
         ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay }),
         // Optional conditional gate (existing id, or the freshly-made one).
         conditionalId: madeCond ? madeCond.id : (conditionalId || null),
+        // Defaults false for every normal caller; tab-picker.jsx passes true
+        // while the mini-tour checklist is up (mirrors reminders.jsx's own
+        // startAdd) so a picker created during onboarding — whether by a
+        // tutorial or just the user clicking the real "+ Add new picker"
+        // button themselves — stays out of the real list alongside the
+        // still-open launcher cards, revealed at the closing Generate step
+        // (see tab-today.jsx's generateItemResolved effect).
+        hidden,
+        // Set only when created by finishing a mini-tour — links back to the
+        // sample template it was built from (see onboarding-checklist.js).
+        // Ignored everywhere else in the app.
+        ...(createdFromSample ? { createdFromSample } : {}),
       };
       setState((s) => {
-        // Tidy + de-duplicate the picker name against existing pickers (same
-        // policy as items/reminders, but scoped globally since picker names are
-        // container-style identifiers shown across every tab).
+        // Tidy + de-duplicate the picker name against existing, VISIBLE
+        // pickers (same policy as items/reminders, but scoped globally since
+        // picker names are container-style identifiers shown across every
+        // tab). Hidden ones (onboarding's sample pickers) are excluded —
+        // they're invisible reference data the user can't see or tell apart
+        // from, so they shouldn't cost a real picker an ugly " (2)" suffix
+        // for a collision with something the user doesn't know exists (seen
+        // concretely: the Picker mini-tour's own "Create picker" step
+        // recreates a sample by name, e.g. "Daily Chores"). Excludes itself
+        // too, so a replaceId update keeping the same name never collides
+        // with its own prior name.
         const finalName = uniqueName(
           normalizePickerName(name) || name,
-          s.pickers.map((p) => p.name),
+          s.pickers.filter((p) => !p.hidden && p.id !== pid).map((p) => p.name),
         );
+        const finalPicker = { ...picker, name: finalName };
+        // On a replace, the old items belonging to this picker are dropped
+        // wholesale and rebuilt from this run's payload — same "recreate,
+        // but keep the id" semantics as the picker itself, not a merge with
+        // whatever the last run (or manual edits) left behind.
+        const pickerIds = includeInDaily
+          ? (s.daily.pickerIds.includes(pid) ? s.daily.pickerIds : [...s.daily.pickerIds, pid])
+          : s.daily.pickerIds.filter((x) => x !== pid);
         return {
           ...s,
-          items: [...s.items, ...newItems],
-          pickers: [...s.pickers, { ...picker, name: finalName }],
+          items: replaceId
+            ? [...s.items.filter((it) => it.pickerId !== replaceId), ...newItems]
+            : [...s.items, ...newItems],
+          pickers: replaceId
+            ? s.pickers.map((p) => p.id === replaceId ? finalPicker : p)
+            : [...s.pickers, finalPicker],
           conditionals: madeCond ? [...(s.conditionals || []), madeCond] : (s.conditionals || []),
-          // Honour the create-form toggle; included by default like the seed pickers.
-          daily: { ...s.daily, pickerIds: includeInDaily
-            ? [...s.daily.pickerIds, pid]
-            : s.daily.pickerIds },
+          daily: { ...s.daily, pickerIds },
         };
       });
       return pid;
     },
+
+    // Merges precomputed, already-hydrated history rows into state — used
+    // only by the Welcome Tour's onboarding seeding, to backfill Stats for
+    // the sample pickers/reminders without ~1yr of rows needing to be
+    // computed live. Rows must already be full pickLog / reminderLog /
+    // reminderSkipLog row shapes (id/date/completedAt etc. filled in).
+    seedHistory: ({ pickLog, reminderLog, reminderSkipLog }) => setState((s) => ({
+      ...s,
+      pickLog: [...(pickLog || []), ...(s.pickLog || [])],
+      reminderLog: [...(reminderLog || []), ...(s.reminderLog || [])],
+      reminderSkipLog: [...(reminderSkipLog || []), ...(s.reminderSkipLog || [])],
+    })),
 
     removeItem: (id) => setState((s) => {
       const items = s.items.filter((it) => it.id !== id);
@@ -1086,9 +1241,27 @@ function useStore(opts) {
     }),
 
     // ── Manual reminders (statically-scheduled tasks shown atop Today) ──
+    // replaceId: update THIS existing task in place (same id) instead of
+    // prepending a new one — mirrors addPicker's own replaceId, used when a
+    // reminder mini-tour is replayed after already finishing once (see
+    // reminders.jsx's commit(), which looks up the prior real task via
+    // createdFromSample).
     addTask: (fields) => setState((s) => {
       const t = TASKS.defaultTask(fields);
-      return { ...s, tasks: [{ ...t, name: uniqueName(t.name, s.tasks.map((x) => x.name)) }, ...s.tasks] };
+      const pid = fields.replaceId || t.id;
+      const finalTask = { ...t, id: pid };
+      // Hidden ones (onboarding's sample reminders, plus any real reminder
+      // still hidden pending the checklist's closing Generate step — see
+      // reminders.jsx's startAdd) are excluded, same policy as addPicker's
+      // own uniqueName call — otherwise the FIRST real reminder a tutorial
+      // ever creates collides with its own still-hidden sample template and
+      // comes out named e.g. "Pick up prescription (2)".
+      const siblings = s.tasks.filter((x) => x.id !== pid && !x.hidden).map((x) => x.name);
+      const named = { ...finalTask, name: uniqueName(finalTask.name, siblings) };
+      const tasks = fields.replaceId
+        ? s.tasks.map((x) => x.id === pid ? named : x)
+        : [named, ...s.tasks];
+      return { ...s, tasks };
     }),
 
     updateTask: (id, patch) => setState((s) => ({
@@ -1304,6 +1477,15 @@ function useStore(opts) {
         delete pickerOrder[oldName];
       }
       return { ...s, pickers, groupOrder, pickerOrder };
+    }),
+
+    // Page Tours has no pickers to rewrite (unlike renameGroup) — just a
+    // label swap. Collision-with-an-existing-group blocking happens in the
+    // UI before this ever fires; this only normalizes and writes.
+    renamePageTours: (rawNew) => setState((s) => {
+      const newName = (normalizeGroupName && normalizeGroupName(rawNew)) || String(rawNew || '').trim();
+      if (!newName) return s;
+      return { ...s, onboarding: { ...(s.onboarding || {}), pageToursName: newName } };
     }),
 
     setDailyPickers: (pickerIds) => setState((s) => ({

@@ -5,8 +5,14 @@ import { CONDITIONALS } from './conditionals.js';
 import { EASE_UP_RANGE_WARN } from './constants.js';
 import { DayLogChip, GroupLog } from './day-log.jsx';
 import { HOLIDAYS } from './holidays.js';
+import { HelpButton, HelpOverlay } from './help-mode.jsx';
+import { TODAY_HELP_ITEMS } from './help-content.jsx';
 import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
+import { OB_CHECKLIST, OB_GENERATE_ITEM_ID, OB_PAGE_TOURS } from './onboarding-checklist.js';
+import { APP_FEATURES, APP_FEATURE_PAGE_LABELS, appFeatureBlockedReason, AppFeaturesIntroTip } from './onboarding-app-features.jsx';
+import { OB_PICKER_CARD_TIME, OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
+import { ReminderTour } from './onboarding-reminder-tours.jsx';
 import { PICKERS, normalizeGroupName } from './pickers.js';
 import { ReminderSection } from './reminders.jsx';
 import { REORDER } from './reorder.js';
@@ -68,10 +74,56 @@ function groupEntries(state) {
       continue;
     }
     const picker = state.pickers.find((p) => p.id === e.pickerId);
-    if (!picker) continue;
+    if (!picker || picker.hidden) continue;
     const g = picker.group || 'Other';
     if (!byGroup.has(g)) byGroup.set(g, { name: g, entries: [] });
     byGroup.get(g).entries.push({ entry: e, picker });
+  }
+  // Mini-tour launcher cards: one per sample picker, slotted into its normal
+  // group like any other card. `p.hidden` gates the timing — samples stay
+  // visible/real for the main Welcome Tour and only flip hidden once, at
+  // that tour's last step (see onboarding.jsx), which is when these start
+  // rendering. They stay on screen — checked or not — through the ORIGINAL
+  // first-time checklist, until checklistDone (set once the closing
+  // Generate card runs, see onboarding-checklist.js). Unlike checklistDone
+  // itself, this does NOT permanently stop once that happens: Settings'
+  // Replay tour button (tab-settings.jsx) resets each item's own checklist
+  // entry (though never checklistDone), so a still-unresolved sample keeps
+  // offering its card afterward too — EXCLUDED if a real (non-sample)
+  // picker has since taken its exact name, since re-prompting "set up a
+  // Daily Chores picker" when the user already has their own real Daily
+  // Chores picker would be redundant, not helpful (the "does this still
+  // make sense to offer" check flagged for Replay Tour early in this
+  // rebuild).
+  const checklistDone = !!(state.onboarding && state.onboarding.checklistDone);
+  for (const p of state.pickers) {
+    if (!p.hidden || !OB_SAMPLE_PICKER_IDS.includes(p.id)) continue;
+    const done = !!OB_CHECKLIST.entryFor(state, p.id);
+    // Post-checklistDone (replay continuation), a resolved card vanishes for
+    // good the moment it's resolved instead of sticking around with an
+    // "Undo" toggle — there's no closing Generate card to synchronize a
+    // batch disappearance against anymore, so each one just leaves on its
+    // own, same as visibleTours does for Page Tours. The ORIGINAL first-time
+    // checklist is unaffected: every card stays until checklistDone flips,
+    // done or not.
+    if (checklistDone && done) continue;
+    // Only matters post-checklistDone (replay continuation) — an UNRESOLVED
+    // sample whose name collides with a real picker the user made on their
+    // own means re-prompting "set up a Daily Chores picker" would be
+    // redundant. During the ORIGINAL first-time checklist this must NOT run
+    // at all: completing this exact tutorial creates a real picker named
+    // IDENTICALLY to the sample (addPicker's own dedup deliberately skips
+    // hidden pickers for this reason, see store.jsx) — so the very act of
+    // finishing it would immediately "collide" with its own result and yank
+    // the card (still meant to stick around, checked, until the closing
+    // Generate step) out from under the user the instant they complete it.
+    if (checklistDone) {
+      const collides = state.pickers.some((x) => !OB_SAMPLE_PICKER_IDS.includes(x.id) && x.name === p.name);
+      if (collides) continue;
+    }
+    const g = p.group || 'Other';
+    if (!byGroup.has(g)) byGroup.set(g, { name: g, entries: [] });
+    byGroup.get(g).entries.push({ entry: { kind: 'tutorial', eid: 'tut_' + p.id, done }, picker: p });
   }
   // Group order: user-defined (state.groupOrder from Edit Mode), then any group
   // not yet listed appended by first occurrence in state.pickers, Other last.
@@ -96,14 +148,14 @@ function groupEntries(state) {
     // to the top (-1), regular picks to the end (1e6).
     const posOf = (row) => {
       if (row.picker.id in idx) return idx[row.picker.id];
-      return (row.entry.kind === 'dayoff' || row.entry.kind === 'charging') ? -1 : 1e6;
+      return (row.entry.kind === 'dayoff' || row.entry.kind === 'charging' || row.entry.kind === 'tutorial') ? -1 : 1e6;
     };
     grp.entries.sort((a, b) => (posOf(a) - posOf(b)) || (a._i - b._i));
     return grp;
   });
 }
 
-function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGroup, mergePending, onConfirmMerge, onCancelMerge, logOpen, onToggleLog }) {
+function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGroup, mergePending, onConfirmMerge, onCancelMerge, logOpen, onToggleLog, validate }) {
   // Cascade: animate the dash that just turned on.
   const prev = React.useRef(doneCount);
   const [freshIdx, setFreshIdx] = React.useState(-1);
@@ -111,6 +163,12 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
   const [editing, setEditing] = React.useState(false);
   const [closing, setClosing] = React.useState(false);
   const [draft, setDraft] = React.useState(name);
+  // Only set when `validate` rejects a commit (e.g. Page Tours blocking a
+  // rename that collides with an existing group name — it has nothing to
+  // merge into, unlike renameGroup, so it blocks instead of offering a
+  // merge). Keeps the input open with the input un-committed until the user
+  // edits again or cancels.
+  const [nameError, setNameError] = React.useState('');
   const nameInputRef = React.useRef(null);
   React.useEffect(() => {
     if (doneCount > prev.current) {
@@ -122,10 +180,21 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
     }
     prev.current = doneCount;
   }, [doneCount]);
-  React.useEffect(() => { if (editing && nameInputRef.current) nameInputRef.current.select(); }, [editing]);
+  // Explicit focus (not the input's own autoFocus) so preventScroll can be
+  // passed — autoFocus's default scroll-into-view fights any guided-tour
+  // spotlight/coach already mid-positioning this same input (the tour's own
+  // scroll-to-target math runs a tick later, in a passive effect, so it
+  // sees this as a moving target and its own one-time adjustment gets
+  // overridden once the native scroll settles). Already-focused elements
+  // don't re-trigger a native scroll, so select() alone doesn't need this.
+  React.useEffect(() => {
+    if (!editing || !nameInputRef.current) return;
+    nameInputRef.current.focus({ preventScroll: true });
+    nameInputRef.current.select();
+  }, [editing]);
   // Leaving Edit Mode cancels any in-progress name edit.
   React.useEffect(() => { if (!editMode) setEditing(false); }, [editMode]);
-  const startEdit = () => { setDraft(name); setEditing(true); };
+  const startEdit = () => { setDraft(name); setNameError(''); setEditing(true); };
   // Close = play the out animation (is-closing) for ~150ms, THEN unmount the
   // input and (for a real change) commit the rename. Guarded so the blur that
   // Enter triggers can't double-fire.
@@ -141,9 +210,17 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
   const commit = () => {
     if (closing) return;
     const val = draft.trim();
-    finishClose(!!val && val !== name, draft);
+    const changed = !!val && val !== name;
+    if (changed && validate) {
+      const err = validate(val);
+      // Stays open, doesn't close. commit() runs from onBlur too (Enter blurs
+      // the input) so focus may already be gone — reclaim it so the user can
+      // just keep typing to fix the collision.
+      if (err) { setNameError(err); nameInputRef.current?.focus(); return; }
+    }
+    finishClose(changed, val);
   };
-  const cancel = () => { if (closing) return; finishClose(false); };
+  const cancel = () => { if (closing) return; setNameError(''); finishClose(false); };
   return (
     <React.Fragment>
     <header className={`group-h ${editMode ? 'is-reorderable' : ''}`}>
@@ -157,9 +234,9 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
           </span>
         )}
         {editMode && editing ? (
-          <input ref={nameInputRef} className={`group-name-input ${closing ? 'is-closing' : ''}`} type="text" value={draft} maxLength={30}
-                 aria-label="Group name" autoFocus
-                 onChange={(e) => setDraft(e.target.value)}
+          <input ref={nameInputRef} className={`group-name-input ${closing ? 'is-closing' : ''} ${nameError ? 'is-invalid' : ''}`} type="text" value={draft} maxLength={30}
+                 aria-label="Group name"
+                 onChange={(e) => { setDraft(e.target.value); if (nameError) setNameError(''); }}
                  onBlur={commit}
                  onKeyDown={(e) => {
                    if (e.key === 'Enter') e.currentTarget.blur();
@@ -196,6 +273,11 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
           <Btn kind="ghost" size="sm" onClick={onCancelMerge}>Cancel</Btn>
           <Btn kind="primary" size="sm" onClick={onConfirmMerge}>Merge</Btn>
         </div>
+      </div>
+    )}
+    {editing && nameError && (
+      <div className="group-merge-confirm group-name-conflict">
+        <span className="confirm-msg">{nameError}</span>
       </div>
     )}
     </React.Fragment>
@@ -261,7 +343,7 @@ function LoaderCard({ picker, info }) {
 // human face of its drift band) since weight is irrelevant to those modes.
 // Plus a vacation toggle and a confirm-gated delete (delete behaves exactly as
 // Data — actions.removeItem).
-function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
+function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew }) {
   const [confirmDel, setConfirmDel] = React.useState(false);
   // Snapshot the item as it was when this editor opened, so Cancel can revert
   // the live weight / cadence / vacation / name edits. Data passes onCancel to
@@ -339,8 +421,17 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
     <div className="rem-inline-editor entry-editor">
       <div className="pie-rows">
         {isEase ? (
+          // pie-ease-up-row / pie-ease-down-row (on all relevant rows below,
+          // in addition to their own pie-row) are pure selector hooks for
+          // help mode (see help-content.jsx's itemChargeRangeUp/Down) — split
+          // by direction, not just one shared pie-ease-row, since Soonest/
+          // Latest/Fill (ease-up) and Shortest/Longest/Refill (ease-down)
+          // get entirely different tip copy, not just relabeled headings.
+          // FillButton (ui.jsx) has no class of its own to distinguish it by,
+          // and it only renders for ONE direction at a time, so there's no
+          // existing class shared by exactly "this direction's ease rows".
           <React.Fragment>
-            <div className="pie-row">
+            <div className={`pie-row ${isDown ? 'pie-ease-down-row' : 'pie-ease-up-row'}`}>
               <div className="pie-rowlabel">
                 <span className="pie-lbl-row">
                   <span className="pie-lbl">{soonestLbl}</span>
@@ -356,7 +447,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
                 <span className="np-ease-unit">{uw(soonest)}</span>
               </div>
             </div>
-            <div className="pie-row">
+            <div className={`pie-row ${isDown ? 'pie-ease-down-row' : 'pie-ease-up-row'}`}>
               <div className="pie-rowlabel">
                 <span className="pie-lbl-row">
                   <span className="pie-lbl">{latestLbl}</span>
@@ -373,7 +464,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
               </div>
             </div>
             {mode === 'ease-up' && (
-              <div className="pie-row">
+              <div className="pie-row pie-ease-up-row">
                 <div className="pie-rowlabel">
                   <span className="pie-lbl">Fill</span>
                   <span className="pie-sub set-sub-fade" key={(item.value ?? 0) >= THRESHOLD ? 'full' : 'part'}>{(item.value ?? 0) >= THRESHOLD ? <>item is <strong>fully charged</strong> at {Math.round(item.value ?? 0)}</> : <>item at <strong>{Math.round(item.value ?? 0)} charge</strong></>}</span>
@@ -384,7 +475,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
               </div>
             )}
             {mode === 'ease-down' && (
-              <div className="pie-row">
+              <div className="pie-row pie-ease-down-row">
                 <div className="pie-rowlabel">
                   <span className="pie-lbl">Refill</span>
                   <span className="pie-sub set-sub-fade" key={(item.value ?? 0) >= THRESHOLD ? 'full' : 'part'}>{(item.value ?? 0) >= THRESHOLD ? <>item is <strong>fully charged</strong></> : <>item at <strong>{Math.round(item.value ?? 0)} charge</strong></>}</span>
@@ -447,10 +538,10 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
         </div>
       ) : (
         <div className="rem-inline-foot rd-edit-foot" key="foot">
-          <Btn kind="danger" size="sm" icon="trash" onClick={() => setConfirmDel(true)}>Delete</Btn>
+          {!isNew && <Btn kind="danger" size="sm" icon="trash" onClick={() => setConfirmDel(true)}>Delete</Btn>}
           <div className="rem-foot-right">
-            <Btn kind="ghost" size="sm" onClick={cancel}>Cancel</Btn>
-            <Btn kind="ghost" size="sm" onClick={saveClose}>Save</Btn>
+            <Btn kind="ghost" size="sm" className="ob-item-cancel" onClick={cancel}>Cancel</Btn>
+            <Btn kind="ghost" size="sm" className="ob-item-save" onClick={saveClose}>Save</Btn>
           </div>
         </div>
       )}
@@ -458,7 +549,66 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete }) {
   );
 }
 
-function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip, onReroll, isRemoving, isRolling, isEditing, onEdit, onRename, editMode, onGripDown }) {
+function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip, onReroll, isRemoving, isRolling, isEditing, onEdit, onRename, editMode, onGripDown, onPlayTutorial, onUncheckTutorial, checklistExiting }) {
+  // Mini-tour launcher: a sample picker from the Welcome Tour, offered as a
+  // "try this" card in its normal group. Stays on screen resolved or not —
+  // Play (or the card itself) starts the mini-tour; X marks it cancelled
+  // without touching the sample. Once resolved (any of the 3 ways — see
+  // onboarding-checklist.js) it shows checked, and — unlike a pending card,
+  // which can only be resolved via Play/X, never by clicking the checkbox
+  // directly — clicking it (or the row) then un-resolves it, same as a
+  // normal completed card toggling back off, so the tutorial can be redone.
+  if (entry.kind === 'tutorial') {
+    const done = entry.done;
+    // Only picker cards participate in the "at least one real picker" gate
+    // (see OB_CHECKLIST.realPickerCount) — flagged with a visible cue
+    // rather than requiring a tap to discover, since it blocks the closing
+    // Generate card.
+    const needsAttention = !done && OB_CHECKLIST.realPickerCount(state) === 0;
+    const onRowClick = (e) => {
+      if (e.target.closest('.today-card-actions')) return;
+      if (done) onUncheckTutorial('picker', picker.id);
+      else onPlayTutorial('picker', picker.id);
+    };
+    return (
+      <article className={`today-card today-card--tutorial ${done ? 'is-done' : ''} ${needsAttention ? 'is-needed' : ''} ${checklistExiting ? 'is-removing' : ''}`}
+                onClick={onRowClick}>
+        {done ? (
+          <button type="button" className="check" aria-pressed="true"
+                  aria-label={`Undo ${picker.name} tutorial`}
+                  onClick={(e) => { e.stopPropagation(); onUncheckTutorial('picker', picker.id); }}>
+            <span className="check-ripple" aria-hidden="true" />
+            <Icon name="check" size={14} />
+          </button>
+        ) : (
+          <button type="button" className="check" aria-label={`Start the ${picker.name} tutorial`}
+                  onClick={(e) => { e.stopPropagation(); onPlayTutorial('picker', picker.id); }}>
+            <Icon name="play" size={13} />
+          </button>
+        )}
+        <div className="today-card-body">
+          <div className="today-card-meta">
+            <span className="meta-picker">{picker.name}</span>
+            {OB_PICKER_CARD_TIME[picker.id] && (
+              <>
+                <span className="meta-dot">·</span>
+                <span className="meta-time">{OB_PICKER_CARD_TIME[picker.id]}</span>
+              </>
+            )}
+          </div>
+          <div className="today-card-name">Set up a {picker.name} picker</div>
+        </div>
+        {!done && (
+          <div className="today-card-actions">
+            <button className="icon-btn" onClick={(e) => { e.stopPropagation(); actions.setChecklistItem(picker.id, { status: 'cancelled' }); }}
+                    aria-label="Cancel tutorial" title="Cancel">
+              <Icon name="x" size={15} />
+            </button>
+          </div>
+        )}
+      </article>
+    );
+  }
   // Day-off card: a conditional is active and its dependent pickers are
   // suppressed. Renders like a completable card (drives the conditional's
   // reset/discharge) but has no item, no re-roll, and no editable name.
@@ -660,7 +810,127 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
   );
 }
 
-function TabToday({ state, actions, onHome, onNavTab }) {
+// A "Page Tours" launcher card — same shape/behavior as a picker's tutorial
+// card (persistent, checked/unchecked toggle, Play/X — see EntryCard's
+// 'tutorial' branch above), just with no sample picker/task backing it: no
+// data to finish/skip/cancel, only the checklist bookkeeping itself.
+function PageTourCard({ tour, state, actions, onPlayTutorial, onUncheckTutorial, checklistExiting }) {
+  const done = !!OB_CHECKLIST.entryFor(state, tour.id);
+  const onRowClick = (e) => {
+    if (e.target.closest('.today-card-actions')) return;
+    if (done) onUncheckTutorial('pageTour', tour.id);
+    else onPlayTutorial('pageTour', tour.id);
+  };
+  return (
+    <article className={`today-card today-card--tutorial ${done ? 'is-done' : ''} ${checklistExiting ? 'is-removing' : ''}`}
+              onClick={onRowClick}>
+      {done ? (
+        <button type="button" className="check" aria-pressed="true"
+                aria-label={`Undo ${tour.label} tour`}
+                onClick={(e) => { e.stopPropagation(); onUncheckTutorial('pageTour', tour.id); }}>
+          <span className="check-ripple" aria-hidden="true" />
+          <Icon name="check" size={14} />
+        </button>
+      ) : (
+        <button type="button" className="check" aria-label={`Start the ${tour.label} tour`}
+                onClick={(e) => { e.stopPropagation(); onPlayTutorial('pageTour', tour.id); }}>
+          <Icon name="play" size={13} />
+        </button>
+      )}
+      <div className="today-card-body">
+        <div className="today-card-meta">
+          <span className="meta-picker">{tour.label} Tour</span>
+          {tour.time && (
+            <>
+              <span className="meta-dot">·</span>
+              <span className="meta-time">{tour.time}</span>
+            </>
+          )}
+        </div>
+        <div className="today-card-name">Take a quick tour of the {tour.label} page</div>
+      </div>
+      {!done && (
+        <div className="today-card-actions">
+          <button className="icon-btn" onClick={(e) => { e.stopPropagation(); actions.setChecklistItem(tour.id, { status: 'cancelled' }); }}
+                  aria-label="Cancel tutorial" title="Cancel">
+            <Icon name="x" size={15} />
+          </button>
+        </div>
+      )}
+    </article>
+  );
+}
+
+// An "App Features" launcher card — same shape/behavior as a Page Tours
+// card (see its own comment just above), but backed by its own
+// state.onboarding.appFeatures map instead of the checklist, and with no
+// checklistExiting celebration-exit animation to key off (App Features
+// isn't part of that "closing card" flow at all — see showAppFeatures'
+// own comment in TabToday for why).
+function AppFeatureCard({ feature, state, actions, onPlayTutorial, onUncheckAppFeature }) {
+  const done = !!(state.onboarding && state.onboarding.appFeatures && state.onboarding.appFeatures[feature.id]);
+  const blockedReason = !done ? appFeatureBlockedReason(feature.id, state) : null;
+  const onRowClick = (e) => {
+    if (e.target.closest('.today-card-actions')) return;
+    if (blockedReason) return;
+    if (done) onUncheckAppFeature(feature.id);
+    else onPlayTutorial('appFeature', feature.id);
+  };
+  return (
+    <article className={`today-card today-card--tutorial ${done ? 'is-done' : ''} ${blockedReason ? 'is-needed' : ''}`}
+              onClick={onRowClick}>
+      {done ? (
+        <button type="button" className="check" aria-pressed="true"
+                aria-label={`Undo ${feature.label} tutorial`}
+                onClick={(e) => { e.stopPropagation(); onUncheckAppFeature(feature.id); }}>
+          <span className="check-ripple" aria-hidden="true" />
+          <Icon name="check" size={14} />
+        </button>
+      ) : blockedReason ? (
+        <InfoTip className="check is-disabled" action={`Start the ${feature.label} tutorial`} label={blockedReason}>
+          <Icon name="play" size={13} />
+        </InfoTip>
+      ) : (
+        <button type="button" className="check" aria-label={`Start the ${feature.label} tutorial`}
+                onClick={(e) => { e.stopPropagation(); onPlayTutorial('appFeature', feature.id); }}>
+          <Icon name="play" size={13} />
+        </button>
+      )}
+      <div className="today-card-body">
+        <div className="today-card-meta">
+          <span className="meta-picker">{APP_FEATURE_PAGE_LABELS[feature.page]}</span>
+          {feature.time && (
+            <>
+              <span className="meta-dot">·</span>
+              <span className="meta-time">{feature.time}</span>
+            </>
+          )}
+        </div>
+        <div className="today-card-name">{feature.label}</div>
+      </div>
+      {!done && (
+        <div className="today-card-actions">
+          <button className="icon-btn" onClick={(e) => { e.stopPropagation(); actions.setAppFeatureItem(feature.id, { status: 'cancelled' }); }}
+                  aria-label="Cancel tutorial" title="Cancel">
+            <Icon name="x" size={15} />
+          </button>
+        </div>
+      )}
+    </article>
+  );
+}
+
+function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStartPageTour, onStartAppFeatureTour }) {
+  // Help mode (see help-mode.jsx's own header comment) — local, resets to
+  // off on every remount (tab switch), which is exactly the "navigating
+  // away closes it, the page you land on doesn't inherit it" behavior the
+  // design called for. Content lives in help-content.jsx (TODAY_HELP_ITEMS)
+  // rather than inline here, same as every other tab — Today doesn't need
+  // any disposable sample data seeded for it (every target it points at is
+  // either always-present UI chrome or gracefully renders no badge if the
+  // user has no entries yet), unlike Pickers/Data/Stats.
+  const [helpOn, setHelpOn] = React.useState(false);
+  const helpExit = React.useCallback(() => setHelpOn(false), []);
   const groups = React.useMemo(() => groupEntries(state), [state]);
   // Unified block order: the Reminders block ('__reminders' sentinel) plus the
   // picker groups, sequenced by state.groupOrder. Drives both the rail and the
@@ -673,17 +943,28 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     const push = (id) => { if (!seen.has(id)) { seen.add(id); order.push(id); } };
     if (!go.includes('__reminders')) push('__reminders');
     for (const x of go) {
-      if (x === '__reminders') push('__reminders');
+      if (x === '__reminders' || x === '__pageTours') push(x);
       else if (names.includes(x)) push(x);
     }
     for (const n of names) push(n);
     push('__reminders');
+    // Page Tours defaults to right after Reminders the first time it shows up
+    // (e.g. state.groupOrder saved before Page Tours existed) so it doesn't
+    // need a backfill in migrate(); once the user drags it in Edit Mode, its
+    // saved position in state.groupOrder takes over like any other group.
+    if (!seen.has('__pageTours')) order.splice(order.indexOf('__reminders') + 1, 0, '__pageTours');
     return order;
   }, [state.groupOrder, groups]);
   const groupByName = React.useMemo(() => {
     const m = {}; groups.forEach((g) => { m[g.name] = g; }); return m;
   }, [groups]);
-  const entries = state.today.entries;
+  // Entries belonging to a hidden picker (see the `hidden` flag in
+  // store.jsx's migrate()) are excluded from every count here, same as
+  // groupEntries() already excludes them from the rendered groups above.
+  const entries = React.useMemo(() => {
+    const hiddenPickerIds = new Set(state.pickers.filter((p) => p.hidden).map((p) => p.id));
+    return state.today.entries.filter((e) => !e.pickerId || !hiddenPickerIds.has(e.pickerId));
+  }, [state.today.entries, state.pickers]);
   // Manual reminders due today join the picker entries in the ring + rail
   // totals (they count toward completion + streak, but never toward Stats).
   // Visibility honors each type's weekend / holiday exclusions; the ring only
@@ -698,8 +979,142 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   const remindersDoneVisible = dueReminders.filter((t) => TASKS.isDoneToday(t, remindersAnchor)).length;
   const ringReminders = dueReminders.filter((t) => TASKS.optsFor(t, state.reminderOpts).ring);
   const remindersDone = ringReminders.filter((t) => TASKS.isDoneToday(t, remindersAnchor)).length;
-  const doneCount = entries.filter((e) => e.done).length + remindersDone;
-  const total = entries.length + ringReminders.length;
+  // Mini-tour launcher cards (pickers + reminders + Page Tours + the closing
+  // Generate card) join the ring/rail totals the whole time they're on
+  // screen — see groupEntries()'s own copy of this same gate. Kept
+  // additive/separate from `entries`/`dueReminders` (rather than merged in)
+  // so streak reconciliation and Stats stay untouched by tutorial-card
+  // completion — see store.jsx's reconcileStreak, which only ever reads
+  // state.today.entries/state.tasks.
+  const checklistDone = !!(state.onboarding && state.onboarding.checklistDone);
+  // Whether the main Welcome Tour has concluded (sample pickers/tasks flip
+  // hidden exactly once, at that tour's last step) — i.e. whether the
+  // mini-tour checklist phase (launcher cards + Page Tours + the closing
+  // Generate card) should be showing at all, independent of checklistDone.
+  const mainTourEnded = state.pickers.some((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id))
+    || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
+  const showChecklist = mainTourEnded && !checklistDone;
+  // Page Tours cards keep offering themselves post-checklistDone too, same
+  // "Replay tour resets each item's own entry but never checklistDone
+  // itself" reasoning as groupEntries()'s own picker-sample cards — no
+  // name-collision concept applies here (a page tour isn't named after
+  // anything the user could "already have"), just whether it's still
+  // unresolved. Kept as its own separate boolean rather than folded into
+  // showChecklist itself, since showChecklist ALSO drives the closing
+  // Generate card's entire real side-effect chain (generateItemResolved's
+  // own effect below) — reusing it here would risk resurrecting that
+  // "auto-generate a fresh list" flow, which has nothing to run against a
+  // second time (the user already has a real list).
+  const showReplayPageTours = checklistDone && mainTourEnded
+    && OB_PAGE_TOURS.some((t) => !OB_CHECKLIST.entryFor(state, t.id));
+  // App Features (see onboarding-app-features.jsx) — a separate, later-stage
+  // set of tutorials shown only AFTER the user has generated their first
+  // real todo list, once resolved (Play-to-finish, X to cancel — same as
+  // any other tutorial card) never coming back on their own; the whole
+  // section just stops rendering once every one of them is resolved.
+  // Mutually exclusive with showChecklist by construction (checklistDone can
+  // only ever be true once showChecklist's own gate has already gone
+  // false), so there's no ordering conflict to resolve against Page Tours —
+  // but checklistDone itself, unlike showChecklist, never resets back to
+  // false on a Replay Tour (see onboarding.jsx), which is exactly why these
+  // need Settings' replay button to explicitly clear appFeatures back to {}
+  // to reappear, rather than reappearing automatically the way the
+  // checklist-driven cards do.
+  const appFeaturesState = (state.onboarding && state.onboarding.appFeatures) || {};
+  // appFeaturesSectionResolved is a persisted snapshot, only ever flipped
+  // true inside generate() itself (see its own comment near
+  // markGenerated()) — deliberately NOT a live check during the user's
+  // ORIGINAL, first-ever pass, so finishing the last of the 8 tutorials
+  // doesn't yank the whole section out from under them mid-session with no
+  // natural boundary; it stays visible, fully checked, until their NEXT
+  // real generation (manual Regenerate or the Daily Generator).
+  const appFeaturesSectionResolved = !!(state.onboarding && state.onboarding.appFeaturesSectionResolved);
+  // Unlike appFeaturesSectionResolved, NEVER reset by Replay Tour — set once
+  // alongside it (see the same generate()-boundary effect below) and stays
+  // true forever after, same "permanent, one-way" semantics as
+  // checklistDone itself. Distinguishes "this is the user's ORIGINAL,
+  // first-ever pass through App Features" from "this is a REPLAY of App
+  // Features" — both cases share the identical appFeaturesState shape
+  // otherwise, so without this there'd be no way to tell them apart.
+  const appFeaturesEverCompleted = !!(state.onboarding && state.onboarding.appFeaturesEverCompleted);
+  // The section (and its rail nav entry, gated on this same boolean below)
+  // needs a DIFFERENT disappearance rule depending on which of those two
+  // phases this is. First-time: the snapshot above — stays up, fully
+  // checked, until the next real generation, so the user gets to see it
+  // "all done" rather than have it vanish out from under them mid-click.
+  // Replay: a resolved card already vanishes from the LIST the instant it
+  // resolves (see the map() filter below), one at a time, same as every
+  // other replay-continuation card — so the section/nav-button itself
+  // should follow the exact same live rule (some still unresolved), not
+  // wait for a snapshot that (unlike first-time) has no real "next
+  // generation" moment to hang off of during a replay. Mirrors
+  // showReplayPageTours' own live "some still unresolved" check above.
+  const showAppFeatures = checklistDone && (appFeaturesEverCompleted
+    ? APP_FEATURES.some((f) => !appFeaturesState[f.id])
+    : !appFeaturesSectionResolved);
+  // Published so reminders.jsx's startAdd can hide ANY reminder created
+  // while the checklist is up — not just ones a mini-tour itself creates —
+  // so a user manually clicking "+" mid-onboarding doesn't clutter the list
+  // alongside the still-open launcher cards either. See the unhide side in
+  // the generateItemResolved effect below.
+  React.useEffect(() => { emlTour.set({ showChecklist }); }, [showChecklist]);
+  const pageToursName = (state.onboarding && state.onboarding.pageToursName) || 'Page Tours';
+  // Page Tours has no pickers to merge into on a name collision (unlike
+  // renameGroup), so a collision just blocks the rename outright — checked
+  // against every real group name plus the fixed "Reminders" label, the
+  // other section header that isn't itself a real group.
+  const pageToursNameCollision = (raw) => {
+    const val = String(raw || '').trim();
+    if (!val) return null;
+    const target = normalizeGroupName(val) || val;
+    const existing = [...new Set(state.pickers.filter((p) => p.group).map((p) => p.group))];
+    existing.push('Reminders');
+    const hit = existing.find((g) => g.toLowerCase() === target.toLowerCase());
+    return hit ? `A group named “${hit}” already exists.` : null;
+  };
+  // Mirrors showReplayPageTours: once checklistDone, mini-tour picker/task
+  // cards keep offering themselves (per groupEntries()' and reminders.jsx's
+  // own collision-filtered checks) even though showChecklist itself has gone
+  // false — so these ring/rail counts need to keep counting them too, or the
+  // ring and the Reminders rail pill (which reuses these) would silently
+  // stop matching what's actually rendered on screen. During that replay
+  // continuation, though, a resolved card is no longer rendered at all (see
+  // groupEntries()'s own comment) — so unlike the first-time phase, resolved
+  // ones must drop out of these counts entirely rather than counting toward
+  // "done" the way an unresolved-but-checked first-time card does.
+  const replayContinuationActive = checklistDone && mainTourEnded;
+  // Collision filtering (see groupEntries()' own comment on why) only ever
+  // applies once checklistDone — during the first-time phase it must stay a
+  // no-op, or completing a picker/task tutorial (which deliberately creates
+  // a same-named real picker/task, see store.jsx's addPicker/addTask) would
+  // immediately "collide" with its own result and undercount the very card
+  // it just finished.
+  const tutorialPickerCount = (showChecklist || replayContinuationActive)
+    ? state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id)
+        && (showChecklist || !OB_CHECKLIST.entryFor(state, p.id))
+        && (showChecklist || !state.pickers.some((x) => !OB_SAMPLE_PICKER_IDS.includes(x.id) && x.name === p.name))).length : 0;
+  const tutorialPickerDone = showChecklist
+    ? state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id) && OB_CHECKLIST.entryFor(state, p.id)).length : 0;
+  const tutorialTaskCount = (showChecklist || replayContinuationActive)
+    ? (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)
+        && (showChecklist || !OB_CHECKLIST.entryFor(state, t.id))
+        && (showChecklist || !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name))).length : 0;
+  const tutorialTaskDone = showChecklist
+    ? (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id) && OB_CHECKLIST.entryFor(state, t.id)).length : 0;
+  // Same replay-continuation treatment as the picker/task tutorial counts
+  // above: still counted while showReplayPageTours cards are on screen, but
+  // (matching visibleTours' own resolved-cards-vanish behavior) only the
+  // still-unresolved ones, so this stays in sync with what's rendered.
+  const pageTourCount = showChecklist ? OB_PAGE_TOURS.length
+    : showReplayPageTours ? OB_PAGE_TOURS.filter((t) => !OB_CHECKLIST.entryFor(state, t.id)).length : 0;
+  const pageTourDone = showChecklist
+    ? OB_PAGE_TOURS.filter((t) => OB_CHECKLIST.entryFor(state, t.id)).length : 0;
+  const generateCardCount = showChecklist ? 1 : 0;
+  const generateCardDone = (showChecklist && OB_CHECKLIST.entryFor(state, OB_GENERATE_ITEM_ID)) ? 1 : 0;
+  const doneCount = entries.filter((e) => e.done).length + remindersDone
+    + tutorialPickerDone + tutorialTaskDone + pageTourDone + generateCardDone;
+  const total = entries.length + ringReminders.length
+    + tutorialPickerCount + tutorialTaskCount + pageTourCount + generateCardCount;
 
   // Live clock — re-render at the top of every minute so the displayed time
   // stays accurate without spamming setState every second.
@@ -1050,7 +1465,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
       container.removeEventListener('scroll', onScroll);
       window.removeEventListener('scroll', onScroll);
     };
-  }, [groups.length, blockOrder]);
+  }, [groups.length, blockOrder, showAppFeatures]);
 
   const jumpToGroup = (name) => {
     const el = sectionRefs.current[name];
@@ -1082,6 +1497,25 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   // Guarantees at least 1 second of loader time.
   const [generating, setGenerating] = React.useState(false);
   const [confirmGen, setConfirmGen] = React.useState(false);
+  // "One Last Thing..." App Features intro tip (AppFeaturesIntroTip,
+  // onboarding-app-features.jsx) — shown exactly once, the first time the
+  // App Features section is on screen with a real generation already
+  // behind it. showAppFeatures alone (gated on checklistDone) already
+  // guarantees a generation happened — the closing checklist item IS the
+  // generate() call — so no separate today.generatedAt check is needed
+  // here. Delayed a beat past `generating` flipping back to false rather
+  // than firing the instant it does: generate()'s own entrance animations
+  // (arriving reminders, etc.) are still settling for a few hundred ms
+  // after that, and starting this tip's own smooth-scroll immediately
+  // would fight them for the user's attention instead of waiting for the
+  // list to genuinely finish settling first.
+  const appFeaturesIntroSeen = !!(state.onboarding && state.onboarding.appFeaturesIntroSeen);
+  const [showAppFeaturesIntro, setShowAppFeaturesIntro] = React.useState(false);
+  React.useEffect(() => {
+    if (!showAppFeatures || appFeaturesIntroSeen || generating) { setShowAppFeaturesIntro(false); return; }
+    const t = setTimeout(() => setShowAppFeaturesIntro(true), 500);
+    return () => clearTimeout(t);
+  }, [showAppFeatures, appFeaturesIntroSeen, generating]);
   // Reorder / "Edit Mode": toggles the list into a drag-to-reorder state.
   const [editMode, setEditMode] = React.useState(false);
   // Keeps the banner mounted through its collapse-out animation after Edit Mode
@@ -1149,6 +1583,12 @@ function TabToday({ state, actions, onHome, onNavTab }) {
       handleEl: sectionEl,
       gripEl,
       scroller: mainRef.current?.closest('.main'),
+      // Hides the mini-tour coach for the gesture's duration (see Today
+      // page tour's own Movable Icon step) — its own tooltip card can sit
+      // right over the group being dragged, making it hard to see where to
+      // drop. A no-op harmless bus write when no tour is active/mounted.
+      onStart: () => emlTour.set({ dragging: true }),
+      onEnd: () => emlTour.set({ dragging: false }),
       onDrop: (order) => {
         const rendered = renderedOrderRef.current || [];
         const present = order.map((i) => rendered[i]).filter(Boolean);
@@ -1167,6 +1607,9 @@ function TabToday({ state, actions, onHome, onNavTab }) {
       handleEl: cardEl,
       gripEl,
       scroller: mainRef.current?.closest('.main'),
+      // Same reasoning as startGroupDrag's own onStart/onEnd above.
+      onStart: () => emlTour.set({ dragging: true }),
+      onEnd: () => emlTour.set({ dragging: false }),
       onDrop: (order) => {
         const present = order.map((i) => g.entries[i].picker.id);
         actions.reorderPickersInGroup(g.name, mergeOrder((state.pickerOrder || {})[g.name] || [], present));
@@ -1247,7 +1690,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     const CAD = CADENCE;
     for (const pid of state.daily.pickerIds) {
       const picker = state.pickers.find((p) => p.id === pid);
-      if (!picker) continue;
+      if (!picker || picker.hidden) continue;
       if (Array.isArray(picker.daysOfWeek) && !picker.daysOfWeek.includes(dow)) continue;
       if (picker.skipHolidays && holidayToday) continue;
       // Phase B: Picker Cadence gate (early-out). Non-daily pickers surface at
@@ -1384,6 +1827,19 @@ function TabToday({ state, actions, onHome, onNavTab }) {
 
     actions.replaceTodayEntries(nextEntries, { resetStreak: isAuto });
     actions.markGenerated();
+    // App Features section (see showAppFeatures' own comment) is allowed
+    // to finally disappear here, at a real generation boundary — not the
+    // instant the last tutorial resolves. Checked fresh on every
+    // generate() call (both manual Regenerate and the Daily Generator
+    // funnel through this same function) rather than only once, so a
+    // generation that happens to land after the very last tutorial
+    // finishes is what actually hides it.
+    if (checklistDone && APP_FEATURES.every((f) => appFeaturesState[f.id])) {
+      // appFeaturesEverCompleted is the permanent half of this pair — see
+      // its own doc comment above for why it must never reset alongside
+      // appFeaturesSectionResolved on a Replay Tour.
+      actions.setOnboarding({ appFeaturesSectionResolved: true, appFeaturesEverCompleted: true });
+    }
     setLeavingEids(new Set());
     setLeavingTaskIds(new Set());
     if (arrivingIds.length && !(reduceMotion && reduceMotion())) {
@@ -1450,8 +1906,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     return () => clearInterval(iv);
   }, [state.daily, state.today && state.today.generatedAt, state.pickers.length]);
 
-  // ── Get-started checklist + first-picker CTA (new users) ──────────────
-  const ob = state.onboarding || {};
+  // ── Empty-state CTAs for new users (no pickers / nothing runnable today) ──
   const newSlotsByGroup = React.useMemo(() => {
     if (!generating || !generatingMap) return {};
     const entries = state.today.entries || [];
@@ -1481,17 +1936,18 @@ function TabToday({ state, actions, onHome, onNavTab }) {
   }, [blockOrder, newSlotsByGroup]);
   renderedOrderRef.current = genBlockOrder;
 
-  const obPickerDone = state.pickers.length > 0;
-  const obReminderDone = (state.tasks || []).length > 0;
-  const obGenDone = (state.today.entries || []).length > 0;
-  const obCount = (obPickerDone ? 1 : 0) + (obReminderDone ? 1 : 0) + (obGenDone ? 1 : 0);
-  // Step 0 of the tour anchors on this card. On replay ob.dismissed is true (so
-  // the checklist stays hidden), which also hid the create card and stranded
-  // step 0 on a coach-less dim. Force the card while the tour is on step 0 so
-  // step 0 always has a target, regardless of dismissed / existing pickers.
   const obBus = useEmlTour ? useEmlTour() : {};
-  const obTourStep0 = obBus.phase === 'tour' && obBus.step === 0;
-  const obShowCreate = (!ob.dismissed && state.pickers.length === 0) || obTourStep0;
+  // Whether the user is still mid-onboarding at all — replaces the old
+  // onboarding.dismissed flag (which only ever got set by the now-removed
+  // "Get started" checklist, so it was permanently stuck false). Derived
+  // instead of stored: see onboarding-checklist.js for what counts as done.
+  const obChecklistComplete = OB_CHECKLIST.status(state).complete;
+  // Used to also force-show while the tour's own step 0 was up (that step
+  // anchored on this card) — see the "STASHED: create-a-picker tour content"
+  // block atop onboarding.jsx. The future "Create your first picker"
+  // mini-tour will need an equivalent force-render once it exists, keyed off
+  // its own step numbering.
+  const obShowCreate = !obChecklistComplete && state.pickers.length === 0;
   // Empty state (edge case): user has no pickers and the tour isn't running.
   // Distinct from the onboarding create card — plainer copy so it doesn't read
   // as a bug, no coach highlight. Tapping it jumps to Pickers with the create
@@ -1508,70 +1964,138 @@ function TabToday({ state, actions, onHome, onNavTab }) {
     const dow = now.getDay();
     const holiday = HOLIDAYS.holidayOn(state.holidays, now);
     return !state.pickers.some((p) => (
+      !p.hidden &&
       state.daily.pickerIds.includes(p.id) &&
       (!Array.isArray(p.daysOfWeek) || p.daysOfWeek.includes(dow)) &&
       !(p.skipHolidays && holiday)
     ));
   }, [state.pickers, state.daily.pickerIds, state.holidays]);
+  // Suppressed while the mini-tour checklist is still up (any launcher card,
+  // checked or not, until checklistDone) — the page isn't actually empty
+  // then, it's full of tutorial cards instead of real picks. Reappears
+  // normally once the checklist concludes and there's still genuinely
+  // nothing to run.
+  const hasTutorialCards = showChecklist;
   const obShowNoRun = !obShowCreate && obBus.phase !== 'tour'
-    && obNoRunToday && entries.length === 0;
+    && obNoRunToday && entries.length === 0 && !hasTutorialCards;
   const startCreatePicker = () => {
     emlTour.set({ startCreate: { name: 'Chores', step: 1, focusName: true } });
     if (onNavTab) onNavTab('picker');
   };
 
-  // Get-started card lifecycle: once all 3 complete, pop the last check, hold an
-  // "All set!" beat, then collapse the card up-and-out and auto-dismiss so it
-  // never lingers fully-checked (and never re-shows on replay).
-  const [obCeleb, setObCeleb] = React.useState(false);   // playing the beat + collapse
-  const [obCollapse, setObCollapse] = React.useState(false); // height→0 phase
-  const obComplete = obCount === 3;
-  // Only celebrate a LIVE completion — the card must have been shown incomplete
-  // first. Prevents the beat+collapse from firing when the card mounts already
-  // complete (e.g. replay re-arm), which flashed the card for a frame.
-  const obWasIncomplete = React.useRef(false);
-  if (!ob.dismissed && !obComplete) obWasIncomplete.current = true;
-  // Stay mounted continuously until dismissed — never unmount on completion.
-  // Auto-hiding at 3/3 caused two problems: it unmounted the card mid-tour when
-  // a Reminder completed the list, and on the Done render it unmounted then
-  // remounted already-celebrating (popping in green "All set!" with no visible
-  // transition). Removal is owned solely by the celebrate→collapse→dismiss
-  // timers below, so the beat animates smoothly from the live "3 of 3" card.
-  const obShowChecklist = !ob.dismissed;
-  // Runs post-paint (plain effect, not layout) so the card first paints its live
-  // "Get started / 3 of 3" state, THEN transitions into the "All set!" beat —
-  // making the text+color change a visible transition rather than an instant
-  // pre-paint snap. Safe now that the card never unmounts on completion.
+  // Which reminder mini-tour's intro modal (or walkthrough) is currently
+  // showing — null when none is. Reminder tours never leave Today, so this
+  // stays local here; picker tours AND page tours can navigate to another
+  // tab (a picker tour's Step 1 highlights the Pickers nav button; a page
+  // tour now can too, e.g. the Pickers page tour's own Step 2+), which would
+  // unmount this component along with them, so both live at the app level
+  // instead — see app.jsx's activePickerTour/activePageTour and this
+  // component's own onStartPickerTour/onStartPageTour props. Seeded from a
+  // persisted activeTour on first mount (a reload) so the tour resumes
+  // instead of silently vanishing — mirrors app.jsx's own seeding.
+  // activeTour.id only encodes the variant ('reminder-once'/
+  // 'reminder-recurring'), not the task id, so map it back via the same
+  // taskId pairing ReminderTour's own variant prop uses below.
+  const [activeMiniTour, setActiveMiniTour] = React.useState(() => {
+    const at = state.onboarding && state.onboarding.activeTour;
+    if (!at || typeof at.id !== 'string' || !at.id.startsWith('reminder-')) return null;
+    const variant = at.id.slice('reminder-'.length);
+    return { kind: 'reminder', id: variant === 'once' ? 'tk_ob_meds' : 'tk_ob_trash' };
+  });
+  // Mini-tour launcher cards' Play button / row click. `kind` is 'picker',
+  // 'reminder', 'pageTour', or 'appFeature'; `id` is the sample picker/task/
+  // page-tour/App Feature id.
+  const startMiniTour = (kind, id) => {
+    if (kind === 'picker') onStartPickerTour(id);
+    else if (kind === 'pageTour') onStartPageTour(id);
+    else if (kind === 'appFeature') onStartAppFeatureTour(id);
+    else setActiveMiniTour({ kind, id });
+  };
+  // Unchecks an already-resolved launcher card (skipped/cancelled/finished)
+  // back to pending, so its mini-tour can be redone. Never touches the
+  // sample itself — see onboarding-checklist.js.
+  const uncheckTutorial = (kind, id) => actions.setChecklistItem(id, null);
+  // Same idea, for App Features — a separate map, not the checklist (see
+  // onboarding-app-features.jsx's own header comment for why).
+  const uncheckAppFeature = (id) => actions.setAppFeatureItem(id, null);
+
+  // The closing "Generate a real list" card — see onboarding-checklist.js.
+  // Actionable once every other checklist item is resolved AND at least one
+  // picker was actually finished (readyToGenerate), so there's always
+  // something real for the generator to draw from.
+  const obReadyToGenerate = OB_CHECKLIST.readyToGenerate(state);
+  const generateItemResolved = !!OB_CHECKLIST.entryFor(state, OB_GENERATE_ITEM_ID);
+  const onGenerateCardClick = () => {
+    if (!obReadyToGenerate) return;
+    actions.setChecklistItem(OB_GENERATE_ITEM_ID, { status: 'finished' });
+  };
+  // Resolving the Generate item pushes doneCount up to equal total (every
+  // other item was already resolved), which triggers the existing
+  // completion-celebration effect above automatically — nothing extra
+  // needed to fire it. This effect only owns what happens AFTER: let the
+  // celebration play, animate every checklist card out together, then
+  // conclude the checklist and hand off to a completely normal generate().
+  const [checklistExiting, setChecklistExiting] = React.useState(false);
+  const prevGenerateResolved = React.useRef(generateItemResolved);
   React.useEffect(() => {
-    if (ob.dismissed || !obComplete || obCeleb || !obWasIncomplete.current) return;
-    // Don't play the celebrate-then-collapse while the tour is still up — step 5
-    // lets the user add a Reminder, which completes the checklist mid-tour. Defer
-    // until the tour closes (obBus.phase flips off, re-running this effect); then
-    // it plays normally. Outside the tour it fires on-demand as before.
-    if (obBus.phase === 'tour') return;
-    // Small lead-in delay before the beat starts, so after Done (or after a
-    // post-tour Reminder completes the list) the user has a moment to shift
-    // focus to the card and actually watch the "Get started" → "All set!"
-    // transition play, instead of it firing the instant the UI settles.
-    const reduced = reduceMotion && reduceMotion();
-    const leadMs = reduced ? 150 : 400;
-    const holdMs = reduced ? 700 : 1050;
-    const t0 = setTimeout(() => setObCeleb(true), leadMs);
-    const t1 = setTimeout(() => setObCollapse(true), leadMs + holdMs);
-    const t2 = setTimeout(() => actions.setOnboarding({ dismissed: true }), leadMs + holdMs + (reduced ? 0 : 380));
-    return () => { clearTimeout(t0); clearTimeout(t1); clearTimeout(t2); };
-  }, [obComplete, ob.dismissed, obBus.phase]);
+    if (generateItemResolved && !prevGenerateResolved.current) {
+      const reduced = reduceMotion && reduceMotion();
+      const celebrateMs = reduced ? 200 : 1700;
+      const exitMs = reduced ? 0 : 380;
+      const t1 = setTimeout(() => setChecklistExiting(true), celebrateMs);
+      const t2 = setTimeout(() => {
+        // Any real reminder OR picker created while the checklist was up —
+        // whether by finishing a mini-tour or just the user clicking "+"/
+        // "Add new picker" themselves (see reminders.jsx's startAdd and
+        // tab-picker.jsx's onCreate, both gated on the showChecklist bus
+        // field) — was seeded hidden so it didn't clutter the list alongside
+        // the still-open launcher cards. Surface them all now, right before
+        // generate() actually runs. Excludes the eternal samples themselves
+        // by id, which stay hidden forever.
+        state.tasks.forEach((t) => {
+          if (t.hidden && !OB_SAMPLE_TASK_IDS.includes(t.id)) actions.updateTask(t.id, { hidden: false });
+        });
+        state.pickers.forEach((p) => {
+          if (p.hidden && !OB_SAMPLE_PICKER_IDS.includes(p.id)) actions.updatePicker(p.id, { hidden: false });
+        });
+        actions.setChecklistDone(true);
+        setChecklistExiting(false);
+        // Deferred, and via the ref rather than calling generate() directly
+        // — the three actions.* calls just above are async state updates
+        // that haven't re-rendered yet at this point in the callback, so a
+        // bare generate() here would run against THIS closure's stale
+        // snapshot, where every picker/task the loop above just unhid still
+        // reads hidden:true. generate()'s own picker loop skips anything
+        // hidden, so the real (freshly un-hidden) pickers would silently
+        // produce nothing — only reminders would show, since those render
+        // live off state.tasks rather than being baked into entries by a
+        // one-time generate() run. generateRef always points at the LATEST
+        // generate closure (see its own comment above); scheduling this on
+        // a new macrotask gives React a chance to flush the batched updates
+        // from the three actions.* calls into a fresh render first, so by
+        // the time this fires, generateRef.current() sees the real state.
+        setTimeout(() => generateRef.current(), 0);
+      }, celebrateMs + exitMs);
+      prevGenerateResolved.current = generateItemResolved;
+      return () => { clearTimeout(t1); clearTimeout(t2); };
+    }
+    prevGenerateResolved.current = generateItemResolved;
+  }, [generateItemResolved]);
 
   return (
     <div className={`tab tab--today ${editMode ? 'is-editmode' : ''}`}>
+      <HelpOverlay active={helpOn} items={TODAY_HELP_ITEMS} onExit={helpExit} />
       <header className="today-h" ref={headerRef}>
         <div className="today-h-inner">
           <div className="today-h-l">
             <div className="kicker-row">
               <div className="kicker">{fmtDate(now)} <span className="kicker-time">{fmtTime(now)}</span></div>
-              <div className="streak" ref={streakRef}>
-                <Icon name="flame" size={12} />
-                <span>{state.streak}-day streak</span>
+              <div className="kicker-row-r">
+                <div className="streak" ref={streakRef}>
+                  <Icon name="flame" size={12} />
+                  <span>{state.streak}-day streak</span>
+                </div>
+                <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
               </div>
             </div>
             <div className="today-h-lead">
@@ -1661,7 +2185,22 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                               onClick={() => jumpToGroup('__reminders')}>
                         <span className="rail-name">Reminders</span>
                         <span className="rail-count">
-                          <span>{remindersDoneVisible}</span><span className="rail-of">/{dueReminders.length}</span>
+                          <span>{remindersDoneVisible + tutorialTaskDone}</span><span className="rail-of">/{dueReminders.length + tutorialTaskCount}</span>
+                        </span>
+                      </button>
+                    </li>
+                  );
+                }
+                if (id === '__pageTours') {
+                  if (!showChecklist && !showReplayPageTours) return null;
+                  const pDone = OB_PAGE_TOURS.filter((t) => !!OB_CHECKLIST.entryFor(state, t.id)).length;
+                  return (
+                    <li key="__pageTours">
+                      <button className={`rail-btn ${activeGroup === '__pageTours' ? 'is-on' : ''}`}
+                              onClick={() => jumpToGroup('__pageTours')}>
+                        <span className="rail-name">{pageToursName}</span>
+                        <span className="rail-count">
+                          <span>{pDone}</span><span className="rail-of">/{OB_PAGE_TOURS.length}</span>
                         </span>
                       </button>
                     </li>
@@ -1669,6 +2208,9 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                 }
                 const g = groupByName[id];
                 if (!g) return null;
+                // Mini-tour launcher cards count toward this the whole time
+                // they're on screen — resolved (any of the 3 ways) counts as
+                // done, same as any other card.
                 const gDone = g.entries.filter((e) => e.entry.done).length;
                 return (
                   <li key={g.name}>
@@ -1682,6 +2224,21 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                   </li>
                 );
               })}
+              {/* Pinned last always — not part of blockOrder/state.groupOrder,
+                  so it can't be dragged around in Edit Mode and always
+                  renders after every real group. See showAppFeatures' own
+                  comment for the render gate. */}
+              {showAppFeatures && (
+                <li key="__appFeatures">
+                  <button className={`rail-btn ${activeGroup === '__appFeatures' ? 'is-on' : ''}`}
+                          onClick={() => jumpToGroup('__appFeatures')}>
+                    <span className="rail-name">App Features</span>
+                    <span className="rail-count">
+                      <span>{APP_FEATURES.filter((f) => appFeaturesState[f.id]).length}</span><span className="rail-of">/{APP_FEATURES.length}</span>
+                    </span>
+                  </button>
+                </li>
+              )}
             </ul>
             <div className="rail-editmode">
               <button type="button"
@@ -1694,35 +2251,8 @@ function TabToday({ state, actions, onHome, onNavTab }) {
             </div>
           </aside>
 
-          <div className="today-groups" ref={cardsAreaRef}>
-            {obShowChecklist && (
-              <div className={`ob-gsc ${obCeleb ? 'is-celebrating' : ''} ${obCollapse ? 'is-collapsing' : ''}`}>
-                <div className="ob-gsc-h">
-                  <b>{obCeleb ? 'All set!' : 'Get started'}</b>
-                  <span className="ob-gsc-prog">{obCeleb ? '✓' : `${obCount} of 3`}</span>
-                  {!obCeleb && <button type="button" className="ob-gsc-x" aria-label="Dismiss" onClick={() => actions.setOnboarding({ dismissed: true })}>×</button>}
-                </div>
-                <div className={`ob-gsc-task ${obPickerDone ? 'is-done' : ''}`}
-                     role={obPickerDone ? undefined : 'button'}
-                     onClick={obPickerDone ? undefined : () => onNavTab && onNavTab('picker')}>
-                  <span className="ob-gsc-tb" /><span>Create your first picker</span>{!obPickerDone && <span className="ob-gsc-arr">›</span>}
-                </div>
-                <div className={`ob-gsc-task ${obReminderDone ? 'is-done' : ''}`}>
-                  <span className="ob-gsc-tb" /><span>Add a reminder</span>
-                </div>
-                <div className={`ob-gsc-task ${obGenDone ? 'is-done' : ''}`}>
-                  <span className="ob-gsc-tb" /><span>Generate your day</span>
-                </div>
-              </div>
-            )}
-            {obShowCreate && (
-              <div className="ob-create" data-tour="create-picker">
-                <div className="ob-create-i"><Icon name="plus" size={22} /></div>
-                <b>Create your first picker</b>
-                <p>A pool the app picks from each day — like your chores or workouts.</p>
-                <Btn kind="primary" size="sm" icon="plus" onClick={() => onNavTab && onNavTab('picker')}>Create a picker</Btn>
-              </div>
-            )}
+          <div className="today-groups" ref={cardsAreaRef}
+               style={obBus.reserveTop ? { paddingTop: obBus.reserveTop } : undefined}>
             {celebRect && particles.length > 0 && (completionStyle === 'confetti' || completionStyle === 'sparkle') && createPortal(
               // Portaled straight to <body> — the tab-switch fade wrapper
               // (.tab-fade) keeps a resolved (identity) transform for the
@@ -1754,13 +2284,46 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                                    onToggleLog={() => toggleLog('__reminders')}
                                    leavingTaskIds={leavingTaskIds} arrivingTaskIds={arrivingTaskIds}
                                    activeEditor={activeEditor} setActiveEditor={setActiveEditor}
+                                   onPlayTutorial={startMiniTour}
+                                   onUncheckTutorial={uncheckTutorial}
+                                   checklistExiting={checklistExiting}
                                    sectionRef={(el) => { sectionRefs.current['__reminders'] = el; }} />
+                );
+              }
+              if (id === '__pageTours') {
+                if (!showChecklist && !showReplayPageTours) return null;
+                // Post-checklistDone (replay continuation, see
+                // showReplayPageTours' own comment), only the still-
+                // unresolved tours keep showing — the ORIGINAL first-time
+                // checklist still shows every one of them, done or not,
+                // unchanged.
+                const visibleTours = showChecklist ? OB_PAGE_TOURS
+                  : OB_PAGE_TOURS.filter((t) => !OB_CHECKLIST.entryFor(state, t.id));
+                const pDone = OB_PAGE_TOURS.filter((t) => !!OB_CHECKLIST.entryFor(state, t.id)).length;
+                return (
+                  <section key="__pageTours" className="group-section pt-section"
+                           ref={(el) => { sectionRefs.current['__pageTours'] = el; }}>
+                    <GroupHeader name={pageToursName} doneCount={pDone} total={OB_PAGE_TOURS.length}
+                                 editMode={editMode} onGripDown={startGroupDrag}
+                                 onRenameGroup={(newName) => actions.renamePageTours(newName)}
+                                 validate={pageToursNameCollision} />
+                    <div className="today-list">
+                      {visibleTours.map((t) => (
+                        <PageTourCard key={t.id} tour={t} state={state} actions={actions}
+                                      onPlayTutorial={startMiniTour} onUncheckTutorial={uncheckTutorial}
+                                      checklistExiting={checklistExiting} />
+                      ))}
+                    </div>
+                  </section>
                 );
               }
               // A group with no entries yet, mounted only to host an incoming
               // loader card during generation.
               const g = groupByName[id] || (newSlotsByGroup[id] ? { name: id, entries: [] } : null);
               if (!g) return null;
+              // Mini-tour launcher cards count toward this the whole time
+              // they're on screen — resolved (any of the 3 ways) counts as
+              // done, same as any other card.
               const gDone = g.entries.filter((e) => e.entry.done).length;
               return (
                 <section key={g.name}
@@ -1796,7 +2359,10 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                                      editMode={editMode}
                                      onGripDown={(ev) => startItemDrag(ev, g)}
                                      onEdit={() => setActiveEditor((cur) => cur === `item:${entry.eid}` ? null : `item:${entry.eid}`)}
-                                     onRename={(name) => actions.renameItem(entry.itemId, name)} />
+                                     onRename={(name) => actions.renameItem(entry.itemId, name)}
+                                     onPlayTutorial={startMiniTour}
+                                     onUncheckTutorial={uncheckTutorial}
+                                     checklistExiting={checklistExiting} />
                           <Collapse open={activeEditor === `item:${entry.eid}` && !!item}>
                             {item && (
                               <div className="today-entry-editor">
@@ -1816,7 +2382,48 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                 </section>
               );
             })}
+            {/* Pinned last always — see showAppFeatures' own comment and the
+                matching rail entry above for why this isn't part of
+                genBlockOrder/state.groupOrder. */}
+            {showAppFeatures && (
+              <section key="__appFeatures" className="group-section af-section"
+                       ref={(el) => { sectionRefs.current['__appFeatures'] = el; }}>
+                <GroupHeader name="App Features"
+                             doneCount={APP_FEATURES.filter((f) => appFeaturesState[f.id]).length}
+                             total={APP_FEATURES.length} editMode={false} />
+                <div className="today-list">
+                  {/* During a replay (appFeaturesEverCompleted), a resolved
+                      card drops out the instant it resolves instead of
+                      sticking around with an Undo toggle — same
+                      "no closing card to synchronize a batch disappearance
+                      against anymore" reasoning as groupEntries()' own
+                      replay-continuation cards. The ORIGINAL first-time pass
+                      is unaffected: every card stays until the whole section
+                      resolves together at the next real generation. */}
+                  {APP_FEATURES.filter((f) => !(appFeaturesEverCompleted && appFeaturesState[f.id])).map((f) => (
+                    <AppFeatureCard key={f.id} feature={f} state={state} actions={actions}
+                                    onPlayTutorial={startMiniTour} onUncheckAppFeature={uncheckAppFeature} />
+                  ))}
+                </div>
+              </section>
+            )}
             </div>
+
+            {showChecklist && (
+              <div className={`ob-create ob-create--generate ${checklistExiting ? 'is-removing' : ''} ${!obReadyToGenerate ? 'is-needed' : ''}`}>
+                <div className="ob-create-i"><Icon name="check" size={22} /></div>
+                <b>Generate your real list</b>
+                <p>Once every tutorial is checked off, and at least one picker has been created, this replaces all of them with your own real, generated todo list.</p>
+                {obReadyToGenerate ? (
+                  <Btn kind="primary" size="sm" icon="check" onClick={onGenerateCardClick}>Generate your list</Btn>
+                ) : (
+                  <InfoTip className="btn btn--primary btn--sm is-disabled" action="Generate your list"
+                           label='Complete at least one "Create a picker" tutorial above first.'>
+                    Generate your list
+                  </InfoTip>
+                )}
+              </div>
+            )}
 
             {obShowEmpty && (
               <div className="ob-create ob-create--empty">
@@ -1842,7 +2449,7 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                   <p className="gen-confirm-msg">This will replace any items marked as completed and these will not show up in the Stats tab. Continue?</p>
                   <div className="gen-confirm-actions">
                     <Btn kind="ghost" size="sm" onClick={() => setConfirmGen(false)}>Cancel</Btn>
-                    <Btn kind="primary" size="sm" icon="refresh" onClick={() => generate()}>Continue</Btn>
+                    <Btn kind="primary" size="sm" icon="refresh" className="gen-confirm-continue" onClick={() => generate()}>Continue</Btn>
                   </div>
                 </div>
               ) : editMode ? (
@@ -1856,9 +2463,25 @@ function TabToday({ state, actions, onHome, onNavTab }) {
                     <Btn kind="secondary" icon="grip" className="foot-editmode" onClick={toggleEditMode} disabled={generating}>
                       Edit Mode
                     </Btn>
-                    <Btn kind="secondary" icon="refresh" className="ob-generate" onClick={() => setConfirmGen(true)} disabled={generating}>
-                      {generating ? 'Generating\u2026' : 'Regenerate'}
-                    </Btn>
+                    {showChecklist ? (
+                      // Real, not just visually disabled: every picker (sample
+                      // AND any real one already created mid-checklist \u2014 see
+                      // generateItemResolved's own comment on why those stay
+                      // hidden too) is hidden until the closing Generate card
+                      // runs, and generate()'s own picker loop skips anything
+                      // hidden \u2014 so this would always produce an empty list
+                      // while still updating today.generatedAt, misleadingly
+                      // showing a fresh "List generated on\u2026" timestamp for a
+                      // regenerate that couldn't actually draw anything.
+                      <InfoTip className="btn btn--secondary btn--md ob-generate is-disabled" action="Regenerate"
+                               label="Complete every tutorial above and generate your real list first.">
+                        <Icon name="refresh" size={16} />Regenerate
+                      </InfoTip>
+                    ) : (
+                      <Btn kind="secondary" icon="refresh" className="ob-generate" onClick={() => setConfirmGen(true)} disabled={generating}>
+                        {generating ? 'Generating\u2026' : 'Regenerate'}
+                      </Btn>
+                    )}
                   </div>
                   <div className="today-foot-sub">
                     List generated on {fmtDateLong(state.today.generatedAt)} at {fmtTime(state.today.generatedAt)}
@@ -1869,6 +2492,16 @@ function TabToday({ state, actions, onHome, onNavTab }) {
           </div>
         </div>
       </div>
+      {activeMiniTour && activeMiniTour.kind === 'reminder' && (
+        <ReminderTour
+          variant={activeMiniTour.id === 'tk_ob_meds' ? 'once' : 'recurring'}
+          state={state}
+          actions={actions}
+          closeReminderForm={() => setActiveEditor((cur) => cur === 'reminder-add' ? null : cur)}
+          onClose={() => setActiveMiniTour(null)}
+        />
+      )}
+      {showAppFeaturesIntro && <AppFeaturesIntroTip actions={actions} />}
     </div>
   );
 }
