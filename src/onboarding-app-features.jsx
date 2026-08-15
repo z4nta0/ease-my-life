@@ -78,7 +78,7 @@ export const APP_FEATURES = [
     id: 'feat_celebration', page: 'settings', label: 'Change your celebration animation',
     title: 'Celebration Animation',
     body: 'This tutorial will show you how to change the animation that plays whenever you complete your entire todo list for the day.',
-    pills: ['settings page', 'appearance', 'celebration'],
+    pills: ['settings page', 'appearance', 'animation'],
   },
   {
     id: 'feat_pick_anim', page: 'settings', label: 'Change your picker animation',
@@ -424,6 +424,18 @@ const buildAppFeatureSteps = (featureId, actions) => {
         sel: '.set-subsection--theme-dark', tab: 'settings',
         title: 'Dark Theme Settings',
         body: <>This is where you can <b>pick a dark based theme</b>, or create your own custom one. Click Done when you are ready to finish this tutorial.</>,
+        primary: 'Done', back: true, coachAtTop: true,
+      },
+    ];
+  }
+  if (featureId === 'feat_celebration') {
+    return [
+      // .set-subsection--celebration — already its own modifier class in
+      // tab-settings.jsx's Appearance section, no changes needed there.
+      {
+        sel: '.set-subsection--celebration', tab: 'settings',
+        title: 'Completion Celebration',
+        body: <>This is where you can <b>pick which animation plays</b> whenever you complete your entire todo list for the day. Click Done when you are ready to finish this tutorial.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
