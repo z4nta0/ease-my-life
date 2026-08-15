@@ -768,15 +768,22 @@ function TabData({ state, actions, onHome, onNavTab }) {
   const tour = useEmlTour();
   const disableGroupFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 1;
   const disablePickersFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 2;
-  // "Edit your first item" tour's own Step 4 (Controls, expanded) wants the
-  // user genuinely free to explore/edit everything inside Controls, but
-  // collapsing the picker's own header OR expanding Items would both pull
-  // this step's own target out from under it (the highlighted box, and
-  // Controls itself, depend on this exact picker staying expanded) —
-  // narrating that they're off-limits for this one step is the point,
-  // same tourId+step gating pattern as disableGroupFilter/
-  // disablePickersFilter above. Nothing else in Controls is touched.
-  const disableEditTourToggles = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 3;
+  // "Edit your first item" tour's own Step 4 (Edit Picker Settings,
+  // Controls expanded) and Step 6 (Edit Item Settings, Items expanded)
+  // both want the user genuinely free to explore/edit everything inside
+  // whichever section is current, but collapsing the picker's own header
+  // would pull either step's own target out from under it (the
+  // highlighted box depends on this exact picker staying expanded) —
+  // guarded during BOTH steps. Expanding the OTHER section (Items during
+  // Step 4, Controls during Step 6) is guarded too, one at a time: not
+  // strictly target-breaking the way the picker header is, but it'd let
+  // the highlighted box balloon to include content this step was never
+  // about. Narrating that these are off-limits for their one step is the
+  // point, same tourId+step gating pattern as disableGroupFilter/
+  // disablePickersFilter above.
+  const disableEditTourPickerHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 3 || tour.step === 5);
+  const disableEditTourControlsToggle = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 5;
+  const disableEditTourItemsToggle = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 3;
   // Help mode (see help-mode.jsx) — needs real pickers of every mode (with a
   // conditional-gated one) AND reminders of every recurrence kind to show a
   // representative "view and edit" section, so both disposable seed sets
@@ -1079,9 +1086,9 @@ function TabData({ state, actions, onHome, onNavTab }) {
                      }}
                      style={{ animationDelay: (pkIndex * 45) + 'ms' }}>
               <header className="cat-h"
-                      onClick={(e) => { if (!disableEditTourToggles && !e.target.closest('button')) toggle(pk.id); }}>
+                      onClick={(e) => { if (!disableEditTourPickerHeader && !e.target.closest('button')) toggle(pk.id); }}>
                 <button type="button" className="cat-h-l" aria-expanded={open}
-                        disabled={disableEditTourToggles}
+                        disabled={disableEditTourPickerHeader}
                         onClick={() => toggle(pk.id)}>
                   <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
                   <h3 className="cat-name">{pk.name}</h3>
@@ -1114,6 +1121,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                       picker). Holds the pick-algorithm config moved here from
                       Settings, so all of a picker's setup lives in one place. */}
                   <button type="button" className="rd-ctl" aria-expanded={!ctlCollapsed}
+                       disabled={disableEditTourControlsToggle}
                        onClick={() => actions.toggleControlsCollapsed(pk.id + ':controls')}>
                     <span className="rd-ctl-l">
                       <span className={`chev ${ctlCollapsed ? '' : 'is-open'}`}><Icon name="chev" size={12} /></span>
@@ -1133,7 +1141,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   {/* Items — nested collapsible (open by default, remembered per
                       picker); collapsed shows the item count. */}
                   <button type="button" className="rd-ctl" aria-expanded={!itemsCollapsed}
-                       disabled={disableEditTourToggles}
+                       disabled={disableEditTourItemsToggle}
                        onClick={() => actions.toggleControlsCollapsed(pk.id + ':items')}>
                     <span className="rd-ctl-l">
                       <span className={`chev ${itemsCollapsed ? '' : 'is-open'}`}><Icon name="chev" size={12} /></span>

@@ -306,8 +306,8 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // onboarding-tour-runner.jsx.
       {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])', tab: 'data',
-        title: 'Explore Controls',
-        body: <>Feel free to <b>explore this section and make any changes you'd like</b> to the picker's name, group, type, or other settings. Click Done when you are ready to finish this tutorial.</>,
+        title: 'Edit Picker Settings',
+        body: <>Feel free to <b>explore this section and make any changes you'd like</b> to the picker's name, group, type, or other settings. Click Next when you are ready to advance this tutorial.</>,
         primary: 'Next', back: true, coachAtTop: true,
         // Re-collapses Controls on the way to Step 5, same "clean slate"
         // requirement as Step 2's own run() — Step 5 highlights this same
@@ -336,7 +336,20 @@ const buildAppFeatureSteps = (featureId, actions) => {
         clickSel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)', tab: 'data',
         title: 'Items Section',
         body: <>This is where you can <b>view and edit a picker's Items</b>. This includes each item's name, weight, and other values. Click on the Items header now to advance this tutorial.</>,
-        primary: 'Done', back: true, requireClick: true,
+        primary: 'Next', back: true, requireClick: true,
+      },
+      // Same shape as Step 4 (Edit Picker Settings), mirrored for Items:
+      // free exploration, no clickSel, Items already expanded by Step 5's
+      // own real click. Last step of this tutorial — primary 'Done', no
+      // outgoing run() needed since nothing comes after it to keep clean
+      // for. coachAtTop: true — an item list can run just as tall as
+      // Controls' own field set once a picker has more than a couple
+      // items, same reasoning as Step 4's own coachAtTop.
+      {
+        sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])', tab: 'data',
+        title: 'Edit Item Settings',
+        body: <>Feel free to <b>explore this section and make any changes you'd like</b> to an item's name, weight, or other values. This will complete this tutorial.</>,
+        primary: 'Done', back: true, coachAtTop: true,
       },
     ];
   }
@@ -455,6 +468,13 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
           // screen again, same reasoning as the to===2 case above but one
           // section over.
           const btn = document.querySelector('.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)[aria-expanded="false"]');
+          if (btn) btn.click();
+        } else if (to === 4) {
+          // Back from Step 6 (Edit Item Settings, index 5) to Step 5
+          // (Items Section, index 4) — re-collapses Items, undoing Step
+          // 5's own real click that expanded it, same reasoning as the
+          // to===2 case above but for Items instead of Controls.
+          const btn = document.querySelector('.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)[aria-expanded="true"]');
           if (btn) btn.click();
         }
       } : undefined}
