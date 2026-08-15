@@ -10,7 +10,7 @@ import { TODAY_HELP_ITEMS } from './help-content.jsx';
 import { NOTIFY } from './notify.js';
 import { emlTour, useEmlTour } from './onboarding.jsx';
 import { OB_CHECKLIST, OB_GENERATE_ITEM_ID, OB_PAGE_TOURS } from './onboarding-checklist.js';
-import { APP_FEATURES, APP_FEATURE_PAGE_LABELS, appFeatureBlockedReason } from './onboarding-app-features.jsx';
+import { APP_FEATURES, APP_FEATURE_PAGE_LABELS, appFeatureBlockedReason, AppFeaturesIntroTip } from './onboarding-app-features.jsx';
 import { OB_PICKER_CARD_TIME, OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { ReminderTour } from './onboarding-reminder-tours.jsx';
 import { PICKERS, normalizeGroupName } from './pickers.js';
@@ -1407,6 +1407,25 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   // Guarantees at least 1 second of loader time.
   const [generating, setGenerating] = React.useState(false);
   const [confirmGen, setConfirmGen] = React.useState(false);
+  // "One Last Thing..." App Features intro tip (AppFeaturesIntroTip,
+  // onboarding-app-features.jsx) — shown exactly once, the first time the
+  // App Features section is on screen with a real generation already
+  // behind it. showAppFeatures alone (gated on checklistDone) already
+  // guarantees a generation happened — the closing checklist item IS the
+  // generate() call — so no separate today.generatedAt check is needed
+  // here. Delayed a beat past `generating` flipping back to false rather
+  // than firing the instant it does: generate()'s own entrance animations
+  // (arriving reminders, etc.) are still settling for a few hundred ms
+  // after that, and starting this tip's own smooth-scroll immediately
+  // would fight them for the user's attention instead of waiting for the
+  // list to genuinely finish settling first.
+  const appFeaturesIntroSeen = !!(state.onboarding && state.onboarding.appFeaturesIntroSeen);
+  const [showAppFeaturesIntro, setShowAppFeaturesIntro] = React.useState(false);
+  React.useEffect(() => {
+    if (!showAppFeatures || appFeaturesIntroSeen || generating) { setShowAppFeaturesIntro(false); return; }
+    const t = setTimeout(() => setShowAppFeaturesIntro(true), 500);
+    return () => clearTimeout(t);
+  }, [showAppFeatures, appFeaturesIntroSeen, generating]);
   // Reorder / "Edit Mode": toggles the list into a drag-to-reorder state.
   const [editMode, setEditMode] = React.useState(false);
   // Keeps the banner mounted through its collapse-out animation after Edit Mode
@@ -2267,7 +2286,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                 matching rail entry above for why this isn't part of
                 genBlockOrder/state.groupOrder. */}
             {showAppFeatures && (
-              <section key="__appFeatures" className="group-section"
+              <section key="__appFeatures" className="group-section af-section"
                        ref={(el) => { sectionRefs.current['__appFeatures'] = el; }}>
                 <GroupHeader name="App Features"
                              doneCount={APP_FEATURES.filter((f) => appFeaturesState[f.id]).length}
@@ -2374,6 +2393,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
           onClose={() => setActiveMiniTour(null)}
         />
       )}
+      {showAppFeaturesIntro && <AppFeaturesIntroTip actions={actions} />}
     </div>
   );
 }

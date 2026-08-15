@@ -436,6 +436,19 @@ function migrate(s) {
   if (s && s.onboarding && (!s.onboarding.appFeatures || typeof s.onboarding.appFeatures !== 'object')) {
     s.onboarding.appFeatures = {};
   }
+  // "One Last Thing..." App Features intro tip (added later, see
+  // onboarding-app-features.jsx's own AppFeaturesIntroTip) — shown exactly
+  // once, right after the closing checklist's own generate() finishes,
+  // pointing at the freshly-appeared App Features section. Existing users
+  // whose checklist was ALREADY done before this existed have long since
+  // passed that moment, so backfilling them straight to "already seen"
+  // avoids ambushing a returning user with it on their next ordinary
+  // Regenerate — brand-new saves (or ones still mid-checklist) keep the
+  // real default (false), so the tip still fires naturally once they
+  // finish for the first time.
+  if (s && s.onboarding && typeof s.onboarding.appFeaturesIntroSeen !== 'boolean') {
+    s.onboarding.appFeaturesIntroSeen = !!s.onboarding.checklistDone;
+  }
   // Reminder completion log (added later). Append-only history of check-offs.
   if (s && !Array.isArray(s.reminderLog)) s.reminderLog = [];
   // Reminder skip log (added later). Append-only history of skip actions.

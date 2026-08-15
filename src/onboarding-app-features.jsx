@@ -645,4 +645,37 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
   );
 }
 
-export { AppFeatureTour, appFeatureBlockedReason };
+// "One Last Thing..." — a single, standalone tip shown exactly once, right
+// after the closing checklist's own generate() call actually finishes,
+// pointing at the freshly-appeared App Features section. NOT a per-feature
+// tutorial like AppFeatureTour above (no intro modal, no per-feature id) —
+// a single `solo` GuidedTour step (see that flag's own doc comment in
+// onboarding-tour-runner.jsx: hides the step counter and Skip/Back, one
+// full-width "Dismiss" button). Mounted directly from TabToday rather than
+// lifted to app.jsx like AppFeatureTour/PageTour/PickerTour are: unlike
+// those, this never navigates to another tab (the whole point is the
+// section already on screen), so it doesn't need real cross-tab selectTab/
+// active plumbing — active="today"/a no-op selectTab is enough, the same
+// pattern PageTour itself used before Pickers/Stats/Data/Settings tours
+// needed it to actually leave Today.
+function AppFeaturesIntroTip({ actions }) {
+  return (
+    <GuidedTour
+      tourId="appfeatures-intro"
+      steps={[{
+        sel: '.af-section', tab: 'today',
+        title: 'One Last Thing...',
+        body: <>Here are some more tutorials that will let you interact with your real, live data as well adjust some of the app's settings. You are all set up and ready to go. <b>Have fun and enjoy your new eased life!</b></>,
+        primary: 'Dismiss', solo: true, coachAtTop: true,
+      }]}
+      resumeStep={0}
+      actions={actions}
+      active="today"
+      selectTab={() => {}}
+      onFinish={() => actions.setOnboarding({ appFeaturesIntroSeen: true })}
+      onSkip={() => actions.setOnboarding({ appFeaturesIntroSeen: true })}
+    />
+  );
+}
+
+export { AppFeatureTour, appFeatureBlockedReason, AppFeaturesIntroTip };

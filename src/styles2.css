@@ -3637,6 +3637,13 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .ob-back{font-size:12px;font-weight:500;color:var(--accent);background:0;border:0;font-family:inherit;cursor:pointer;padding:4px 2px}
 .ob-next{font-size:12.5px;font-weight:600;border-radius:999px;padding:8px 15px;font-family:inherit;cursor:pointer;border:0.5px solid var(--accent);background:var(--accent);color:#fff}
 .ob-next:disabled{opacity:.6;cursor:default}
+/* solo step (see its own doc comment in onboarding-tour-runner.jsx) —
+   .ob-lnav is removed entirely rather than just hidden, so .ob-next is the
+   ONLY child left in the row; stretch it to fill that space instead of
+   leaving it sized to its own text and pinned to one side by
+   justify-content:space-between, which would read as off-balance for a
+   standalone closing message with nothing to pair it against. */
+.ob-crow--solo .ob-next{width:100%;text-align:center}
 .ob-coach::before{content:"";position:absolute;width:14px;height:14px;background:var(--surface);border:0.5px solid var(--border);transform:rotate(45deg);left:var(--ob-ax,28px)}
 .ob-coach--up::before{top:-8px;border-right:0;border-bottom:0}
 .ob-coach--down::before{bottom:-8px;border-left:0;border-top:0}

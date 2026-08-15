@@ -92,6 +92,17 @@ import { InfoTip, reduceMotion } from './ui.jsx';
 //              ever advances to a resumable step, so a tour with a long
 //              non-resumable tail still resumes at its last safe step
 //              instead of being knocked all the way back to the intro.
+//   solo       — a standalone single-message tip, not a step in a sequence:
+//              hides the "Step N of N" progress line and the Skip/Back
+//              row, and stretches the one remaining button (whatever
+//              `primary` says, e.g. "Dismiss") to the full width of that
+//              row instead of pairing it against Skip/Back. Its click
+//              always finishes the tour outright regardless of the
+//              button's own label — see advance()'s own comment for why
+//              relying on primary === 'Done' wouldn't work here. Built for
+//              the App Features intro tip (onboarding-app-features.jsx),
+//              but generic — any tour can use a solo step anywhere in its
+//              sequence, not just as a single-step tour.
 //
 // Props:
 //   tourId     — this tour's slot key in state.onboarding.activeTour, e.g.
@@ -599,7 +610,12 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       cur.run();
       suppressGuardRef.current = false;
     }
-    const advance = () => { if (cur.primary === 'Done') finish(); else goToStep(step + 1); };
+    // solo steps (see their own doc comment below) always finish on their
+    // one button regardless of its label — a solo step is never actually
+    // followed by a real "next" step, so relying on primary === 'Done'
+    // (every other step's own signal) would send it past the end of the
+    // array on a step whose button reads something else, like "Dismiss".
+    const advance = () => { if (cur.primary === 'Done' || cur.solo) finish(); else goToStep(step + 1); };
     if (cur.requireClick && cur.advanceWhen) {
       // The real click just kicked off something ASYNC whose result is the
       // next step's own target — e.g. the Pickers tour's "Manual
@@ -1024,15 +1040,17 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   const measurer = (
     <div className="ob-coach" ref={coachRef} aria-hidden="true"
          style={{ position: 'fixed', top: 0, left: -9999, width: coachW, visibility: 'hidden', pointerEvents: 'none' }}>
-      <p className="ob-prog">Step {step + 1} of {total}</p>
+      {!cur.solo && <p className="ob-prog">Step {step + 1} of {total}</p>}
       <h4>{cur.title}</h4>
       <p className="ob-body">{cur.body}</p>
-      <div className="ob-crow">
-        <div className="ob-lnav">
-          <button className="ob-skip">Skip</button>
-          {cur.back && <button className="ob-back">‹ Back</button>}
-        </div>
-        <button className="ob-next" disabled={cur.requireClick}>{cur.primary}{cur.primary !== 'Done' ? ' ›' : ''}</button>
+      <div className={`ob-crow ${cur.solo ? 'ob-crow--solo' : ''}`}>
+        {!cur.solo && (
+          <div className="ob-lnav">
+            <button className="ob-skip">Skip</button>
+            {cur.back && <button className="ob-back">‹ Back</button>}
+          </div>
+        )}
+        <button className="ob-next" disabled={cur.requireClick}>{cur.primary}{(cur.primary !== 'Done' && !cur.solo) ? ' ›' : ''}</button>
       </div>
     </div>
   );
@@ -1078,23 +1096,25 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       {!spotStyle && !dragging && <div className="ob-dim" />}
       {!dragging && (
         <div className={`ob-coach ${arrowClass}`} ref={realCoachRef} style={{ ...coachStyle, width: coachW, '--ob-ax': arrowX + 'px' }}>
-          <p className="ob-prog">Step {step + 1} of {total}</p>
+          {!cur.solo && <p className="ob-prog">Step {step + 1} of {total}</p>}
           <h4>{cur.title}</h4>
           <p className="ob-body">{cur.body}</p>
-          <div className="ob-crow">
-            <div className="ob-lnav">
-              <button className="ob-skip" onClick={skip}>Skip</button>
-              {cur.back && <button className="ob-back" onClick={goBack}>‹ Back</button>}
-            </div>
+          <div className={`ob-crow ${cur.solo ? 'ob-crow--solo' : ''}`}>
+            {!cur.solo && (
+              <div className="ob-lnav">
+                <button className="ob-skip" onClick={skip}>Skip</button>
+                {cur.back && <button className="ob-back" onClick={goBack}>‹ Back</button>}
+              </div>
+            )}
             {cur.requireClick ? (
               <InfoTip label="Please click the indicated element in order to advance.">
                 <button className="ob-next" disabled>
-                  {cur.primary}{cur.primary !== 'Done' ? ' ›' : ''}
+                  {cur.primary}{(cur.primary !== 'Done' && !cur.solo) ? ' ›' : ''}
                 </button>
               </InfoTip>
             ) : (
               <button className="ob-next" onClick={onPrimary}>
-                {cur.primary}{cur.primary !== 'Done' ? ' ›' : ''}
+                {cur.primary}{(cur.primary !== 'Done' && !cur.solo) ? ' ›' : ''}
               </button>
             )}
           </div>
