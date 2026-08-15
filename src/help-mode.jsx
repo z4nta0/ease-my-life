@@ -743,13 +743,22 @@ function HelpOverlay({ active, items, onExit }) {
   // .tabbar is always exempt too — navigating away is what's SUPPOSED to
   // close this (see this file's own header comment on ownership), which
   // can't happen if the nav buttons themselves get blocked like everything
-  // else untagged. Escape closes one thing at a time: a tip first if one's
-  // open (so you can back out of what you clicked into without leaving help
-  // mode altogether), then help mode itself on a second press.
+  // else untagged. .ob-tour (a guided tour's own overlay, e.g. the
+  // "Use the highlight feature" App Feature tutorial, which walks through
+  // this exact button) is exempt too, for the same reason — its OWN
+  // click-guard in onboarding-tour-runner.jsx already governs clicks inside
+  // it, and without this exemption every click on the coach's Back/Skip
+  // buttons (anything besides the one real target help mode itself also
+  // recognizes, like .help-btn) got silently swallowed here first, before
+  // the tour's own handler ever saw it — confirmed live: Back did nothing
+  // on that tutorial's Step 2, since help mode is active by then. Escape
+  // closes one thing at a time: a tip first if one's open (so you can back
+  // out of what you clicked into without leaving help mode altogether),
+  // then help mode itself on a second press.
   React.useEffect(() => {
     if (!active) return;
     const isOnTarget = (e) => {
-      if (e.target.closest('.help-badge, .help-tip, .help-btn, .tabbar')) return true;
+      if (e.target.closest('.help-badge, .help-tip, .help-btn, .tabbar, .ob-tour')) return true;
       return allItems.some((it) => findTargets(it.sel).some((el) => el.contains(e.target)));
     };
     const onClickCapture = (e) => {

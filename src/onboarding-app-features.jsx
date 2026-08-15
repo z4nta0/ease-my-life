@@ -479,13 +479,13 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.help-btn', tab: 'today',
         title: 'Highlights Feature',
-        body: <>This is the highlight button that can be found in the top right corner of every page. Click this button now to advance the tutorial.</>,
+        body: <>This is the highlight button that <b>can be found in the top right corner of every page</b>. Click this button now to advance the tutorial.</>,
         primary: 'Next', back: false, requireClick: true,
       },
       {
         sel: '.help-btn', tab: 'today',
         title: 'Highlights Feature',
-        body: <>Important elements on the page are highlighted, each with their own button that will bring up a tooltip with more information. Click this button again to turn the feature off and finish this tutorial.</>,
+        body: <><b>Important elements on the page are highlighted</b>, each with their own button that will bring up a tooltip with more information. Click this button again to turn the feature off and finish this tutorial.</>,
         primary: 'Done', back: true, requireClick: true,
       },
     ];
