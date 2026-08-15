@@ -375,6 +375,21 @@ const buildAppFeatureSteps = (featureId, actions) => {
       },
     ];
   }
+  if (featureId === 'feat_run_time') {
+    return [
+      // Title/body copied verbatim from the Settings page tour's own
+      // daily target (SETTINGS_PAGE_TARGETS in onboarding-page-tours.jsx)
+      // — same section, same explanation. coachAtTop: true — matches
+      // every section step in that same tour, since .set-section--daily
+      // can run taller than the viewport just like the others.
+      {
+        sel: '.set-section--daily', tab: 'settings',
+        title: 'Daily Generator',
+        body: <>This is where you can <b>control the daily generator</b>: turn auto generation on or off, what time it runs, and enabling notifications for when it does.</>,
+        primary: 'Done', back: true, coachAtTop: true,
+      },
+    ];
+  }
   return [];
 };
 
