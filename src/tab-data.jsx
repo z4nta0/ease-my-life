@@ -800,9 +800,16 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // requireClick step wants clicked, since the spotlight alone highlights
   // the whole picker section (header + Controls + Items together, see
   // onboarding-app-features.jsx's own sel comment) without distinguishing
-  // which part inside it is actually actionable. Steps 3/5 target a single
-  // header each; Step 6 targets the whole item-row group (its own CSS
-  // handles that as a set of bordered siblings, not one wrapping element).
+  // which part inside it is actually actionable. Step 2 targets EVERY
+  // picker's own .cat section (clicking any one's header satisfies it) —
+  // applied to the whole card, not just its header button, so the outline
+  // reads as "this card" rather than singling out one control inside it.
+  // Plain .is-tour-target is enough there since picker cards sit with real
+  // gaps between them, no touching-siblings border-doubling risk the way
+  // item rows have. Steps 3/5 target a single header each; Step 6 targets
+  // the whole item-row group (its own CSS handles that as a set of
+  // bordered siblings, not one wrapping element).
+  const highlightEditTourPickerHeaders = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 1;
   const highlightEditTourControlsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 2;
   const highlightEditTourItemsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 4;
   const highlightEditTourItemRows = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 5;
@@ -1100,7 +1107,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
           const ctlCollapsed = !!collapsedMap[pk.id + ':controls'];
           const itemsCollapsed = !!collapsedMap[pk.id + ':items'];
           return (
-            <section key={pk.id} data-picker-id={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''}`}
+            <section key={pk.id} data-picker-id={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''} ${highlightEditTourPickerHeaders ? 'is-tour-target' : ''}`}
                      onAnimationEnd={(e) => {
                        if (e.target === e.currentTarget && removingPickerId === pk.id) {
                          actions.removePicker(pk.id); setRemovingPickerId(null);
