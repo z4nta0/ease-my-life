@@ -795,6 +795,17 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // position out from under Step 6's own "click any of these" framing.
   // Stays disabled through Step 7 too, for the same reason.
   const disableEditTourAddItem = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 5 || tour.step === 6);
+  // Thin accent outline (.is-tour-target, styles2.css) on top of the tour
+  // engine's own bigger spotlight box — points at the SPECIFIC element a
+  // requireClick step wants clicked, since the spotlight alone highlights
+  // the whole picker section (header + Controls + Items together, see
+  // onboarding-app-features.jsx's own sel comment) without distinguishing
+  // which part inside it is actually actionable. Steps 3/5 target a single
+  // header each; Step 6 targets the whole item-row group (its own CSS
+  // handles that as a set of bordered siblings, not one wrapping element).
+  const highlightEditTourControlsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 2;
+  const highlightEditTourItemsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 4;
+  const highlightEditTourItemRows = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 5;
   // Help mode (see help-mode.jsx) — needs real pickers of every mode (with a
   // conditional-gated one) AND reminders of every recurrence kind to show a
   // representative "view and edit" section, so both disposable seed sets
@@ -1131,7 +1142,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   {/* Controls — nested collapsible (open by default, remembered per
                       picker). Holds the pick-algorithm config moved here from
                       Settings, so all of a picker's setup lives in one place. */}
-                  <button type="button" className="rd-ctl" aria-expanded={!ctlCollapsed}
+                  <button type="button" className={`rd-ctl ${highlightEditTourControlsHeader ? 'is-tour-target' : ''}`} aria-expanded={!ctlCollapsed}
                        disabled={disableEditTourControlsToggle}
                        onClick={() => actions.toggleControlsCollapsed(pk.id + ':controls')}>
                     <span className="rd-ctl-l">
@@ -1151,7 +1162,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
 
                   {/* Items — nested collapsible (open by default, remembered per
                       picker); collapsed shows the item count. */}
-                  <button type="button" className="rd-ctl" aria-expanded={!itemsCollapsed}
+                  <button type="button" className={`rd-ctl ${highlightEditTourItemsHeader ? 'is-tour-target' : ''}`} aria-expanded={!itemsCollapsed}
                        disabled={disableEditTourItemsToggle}
                        onClick={() => actions.toggleControlsCollapsed(pk.id + ':items')}>
                     <span className="rd-ctl-l">
@@ -1183,7 +1194,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                           : (isEase ? `${soonest}\u2013${latest} ${CADENCE.unitWord(pk.cadence, latest)}`
                              : (usesWeight ? `Weight w${it.weight}` : 'Equal chance'));
                         return (
-                          <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''}`}
+                          <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''} ${highlightEditTourItemRows ? 'is-tour-target' : ''}`}
                                onAnimationEnd={() => { if (insertItemId === it.id) setInsertItemId(null); }}>
                             <button type="button" className="rd-row" aria-expanded={itemOpen}
                                   onClick={() => setOpenItemId(itemOpen ? null : it.id)}>

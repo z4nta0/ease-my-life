@@ -2695,6 +2695,45 @@ button.cat-h-l {
 
 .rd-item { border-bottom: 0.5px solid var(--border); }
 .rd-item:last-child { border-bottom: 0; }
+/* Tour-driven "click here" emphasis (App Features' own Edit Item tour) —
+   a thin accent outline on top of the tour engine's own bigger spotlight
+   box, pointing at the SPECIFIC element inside it the step wants clicked.
+   outline (not border) so it doesn't touch layout/spacing — safe on a
+   single element like a section header. */
+.is-tour-target { outline: 2px solid var(--accent); outline-offset: -2px; }
+/* .rd-item rows can't use the same outline: outline has no per-side
+   variant, and every highlighted row would draw its own full outline,
+   doubling into a thick line wherever two highlighted rows touch (see
+   .rd-item's own hairline-border comment above — same touching-siblings
+   shape, just with a much more visible width/color this time). Borders
+   ARE per-side, so build the same "one box around the whole group" look
+   from borders instead: every row gets left/right/bottom, but only the
+   FIRST row also gets top — the row above's own bottom border already is
+   the shared line between two adjacent highlighted rows, so giving the
+   next row its own top border too would just stack a second one on the
+   exact same pixel, reading as thicker/blurrier there than everywhere else
+   on the outline. */
+.rd-item.is-tour-target {
+  outline: none;
+  border-left: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
+/* :first-of-type/:last-of-type, not :first-child/:last-child — the Items
+   section's own "+ Add" button (.rd-add, a <button>) is always the actual
+   first CHILD, sitting right before the item rows begin (see tab-data.jsx),
+   so :first-child would never match any .rd-item at all. :first-of-type
+   matches by tag name (the first <div> among siblings, ignoring .rd-add's
+   own <button> tag), which is exactly the first real item row. */
+.rd-item.is-tour-target:first-of-type {
+  border-top: 2px solid var(--accent);
+  border-top-left-radius: var(--r-md);
+  border-top-right-radius: var(--r-md);
+}
+.rd-item.is-tour-target:last-of-type {
+  border-bottom-left-radius: var(--r-md);
+  border-bottom-right-radius: var(--r-md);
+}
 /* Real <button> (conditional rows + picker item rows) — they were divs with a
    click handler and no tabindex, so keyboard users couldn't open an editor. The
    reset strips UA chrome only; layout, padding and hover stay owned here. */
