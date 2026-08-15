@@ -107,8 +107,20 @@ function groupEntries(state) {
     // checklist is unaffected: every card stays until checklistDone flips,
     // done or not.
     if (checklistDone && done) continue;
-    const collides = state.pickers.some((x) => !OB_SAMPLE_PICKER_IDS.includes(x.id) && x.name === p.name);
-    if (collides) continue;
+    // Only matters post-checklistDone (replay continuation) — an UNRESOLVED
+    // sample whose name collides with a real picker the user made on their
+    // own means re-prompting "set up a Daily Chores picker" would be
+    // redundant. During the ORIGINAL first-time checklist this must NOT run
+    // at all: completing this exact tutorial creates a real picker named
+    // IDENTICALLY to the sample (addPicker's own dedup deliberately skips
+    // hidden pickers for this reason, see store.jsx) — so the very act of
+    // finishing it would immediately "collide" with its own result and yank
+    // the card (still meant to stick around, checked, until the closing
+    // Generate step) out from under the user the instant they complete it.
+    if (checklistDone) {
+      const collides = state.pickers.some((x) => !OB_SAMPLE_PICKER_IDS.includes(x.id) && x.name === p.name);
+      if (collides) continue;
+    }
     const g = p.group || 'Other';
     if (!byGroup.has(g)) byGroup.set(g, { name: g, entries: [] });
     byGroup.get(g).entries.push({ entry: { kind: 'tutorial', eid: 'tut_' + p.id, done }, picker: p });
@@ -1051,20 +1063,24 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   // ones must drop out of these counts entirely rather than counting toward
   // "done" the way an unresolved-but-checked first-time card does.
   const replayContinuationActive = checklistDone && mainTourEnded;
+  // Collision filtering (see groupEntries()' own comment on why) only ever
+  // applies once checklistDone — during the first-time phase it must stay a
+  // no-op, or completing a picker/task tutorial (which deliberately creates
+  // a same-named real picker/task, see store.jsx's addPicker/addTask) would
+  // immediately "collide" with its own result and undercount the very card
+  // it just finished.
   const tutorialPickerCount = (showChecklist || replayContinuationActive)
     ? state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id)
         && (showChecklist || !OB_CHECKLIST.entryFor(state, p.id))
-        && !state.pickers.some((x) => !OB_SAMPLE_PICKER_IDS.includes(x.id) && x.name === p.name)).length : 0;
+        && (showChecklist || !state.pickers.some((x) => !OB_SAMPLE_PICKER_IDS.includes(x.id) && x.name === p.name))).length : 0;
   const tutorialPickerDone = showChecklist
-    ? state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id) && OB_CHECKLIST.entryFor(state, p.id)
-        && !state.pickers.some((x) => !OB_SAMPLE_PICKER_IDS.includes(x.id) && x.name === p.name)).length : 0;
+    ? state.pickers.filter((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id) && OB_CHECKLIST.entryFor(state, p.id)).length : 0;
   const tutorialTaskCount = (showChecklist || replayContinuationActive)
     ? (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)
         && (showChecklist || !OB_CHECKLIST.entryFor(state, t.id))
-        && !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name)).length : 0;
+        && (showChecklist || !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name))).length : 0;
   const tutorialTaskDone = showChecklist
-    ? (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id) && OB_CHECKLIST.entryFor(state, t.id)
-        && !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name)).length : 0;
+    ? (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id) && OB_CHECKLIST.entryFor(state, t.id)).length : 0;
   // Same replay-continuation treatment as the picker/task tutorial counts
   // above: still counted while showReplayPageTours cards are on screen, but
   // (matching visibleTours' own resolved-cards-vanish behavior) only the

@@ -528,6 +528,14 @@ const buildPageTourSteps = (pageId, actions) => {
       },
       {
         ...PICKER_PAGE_TARGETS.manualGeneration, tab: 'picker', primary: 'Next', back: true, requireClick: true,
+        // .picker-run (stage + actions) can run taller than a short viewport
+        // on its own, before Re-roll/Done even render alongside it — same
+        // "pin the coach to the top and let the target run off the bottom"
+        // reasoning as the Data tour's own tall .data-list step — see
+        // coachAtTop's own doc comment in onboarding-tour-runner.jsx.
+        // Confirmed live: without this, the coach overlapped the real Pick
+        // one button on an iPhone SE-sized viewport.
+        coachAtTop: true,
         // Pick one kicks off the multi-second spin animation — its result
         // (Step 6's own target) isn't ready the instant the click fires.
         // Stay on THIS step's own already-resolved coach/highlight for the
@@ -541,6 +549,10 @@ const buildPageTourSteps = (pageId, actions) => {
       },
       {
         ...PICKER_PAGE_TARGETS.addToTodoList, tab: 'picker', primary: 'Next', back: true, requireClick: true,
+        // Same short-viewport reasoning as manualGeneration just above —
+        // .picker-run is taller still here (Re-roll/Done now render
+        // alongside the stage too).
+        coachAtTop: true,
         // Send to Today swaps its own label to "Sent!" for 1500ms (see
         // sendToToday's own setTimeout in tab-picker.jsx) before reverting
         // — advancing immediately would cut that confirmation off before
@@ -551,7 +563,14 @@ const buildPageTourSteps = (pageId, actions) => {
         // the DOM to poll for — the button reverts to what it already was).
         advanceDelay: 1600,
       },
-      { ...PICKER_PAGE_TARGETS.pickerItems, tab: 'picker', primary: 'Next', back: true },
+      {
+        ...PICKER_PAGE_TARGETS.pickerItems, tab: 'picker', primary: 'Next', back: true,
+        // .pool-items grows with the picker's own item count and can run
+        // WAY past a short viewport's height — same reasoning as
+        // manualGeneration above, see coachAtTop's own doc comment in
+        // onboarding-tour-runner.jsx.
+        coachAtTop: true,
+      },
       { ...PICKER_PAGE_TARGETS.addPickerItem, tab: 'picker', primary: 'Done', back: true },
     ];
   }
@@ -562,6 +581,15 @@ const buildPageTourSteps = (pageId, actions) => {
       { ...STATS_PAGE_TARGETS.rangeFilter, tab: 'stats', primary: 'Next', back: true },
       {
         ...STATS_PAGE_TARGETS.heatmap, tab: 'stats', primary: 'Next', back: true,
+        // .stat-heatmap-card renders a full year's worth of cells and can
+        // run FAR past a short viewport's height — same "pin the coach to
+        // the top and let the target run off the bottom" reasoning as the
+        // Data tour's own tall .data-list step (and this tour's own
+        // pickerBreakdown step below) — see coachAtTop's own doc comment in
+        // onboarding-tour-runner.jsx. Confirmed live: without this, the
+        // coach overlapped the top of the heatmap on an iPhone SE-sized
+        // viewport.
+        coachAtTop: true,
         // Stages the picker-breakdown step's own target — that card only
         // renders once a specific picker is the active scope, so this
         // selects the real sample picker (unhidden for this whole tour, see

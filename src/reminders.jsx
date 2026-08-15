@@ -519,15 +519,21 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   // (never checklistDone), so a still-unresolved sample keeps offering its
   // card afterward too — EXCLUDED if a real (non-sample) reminder has since
   // taken its exact name, same "does this still make sense to offer" check
-  // as tab-today.jsx's own groupEntries() does for picker samples. Also,
-  // post-checklistDone, a resolved card drops out the instant it's resolved
-  // (same as tab-today.jsx's groupEntries()) rather than sticking around
-  // with an "Undo" toggle — there's no closing Generate card left to
-  // synchronize a batch disappearance against.
+  // as tab-today.jsx's own groupEntries() does for picker samples — ONLY
+  // once checklistDone, though: during the ORIGINAL first-time checklist
+  // this must stay a no-op, since completing this exact tutorial creates a
+  // real reminder named IDENTICALLY to the sample (addTask's own dedup
+  // deliberately skips hidden tasks for this reason, see store.jsx) — so
+  // the collision check would otherwise immediately fire against its own
+  // result and yank the card out from under the user the instant they
+  // finish it. Also, post-checklistDone, a resolved card drops out the
+  // instant it's resolved (same as tab-today.jsx's groupEntries()) rather
+  // than sticking around with an "Undo" toggle — there's no closing
+  // Generate card left to synchronize a batch disappearance against.
   const checklistDone = !!(state.onboarding && state.onboarding.checklistDone);
   const tutorialTasks = (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)
     && !(checklistDone && OB_CHECKLIST.entryFor(state, t.id))
-    && !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name));
+    && (!checklistDone || !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name)));
   // The quick-add form and each saved reminder's inline editor are both gated
   // off the tab-wide `activeEditor` slot (shared with the picker item editor
   // in tab-today.jsx) so opening any one of them collapses whichever of the
