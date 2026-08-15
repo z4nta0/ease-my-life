@@ -769,21 +769,32 @@ function TabData({ state, actions, onHome, onNavTab }) {
   const disableGroupFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 1;
   const disablePickersFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 2;
   // "Edit your first item" tour's own Step 4 (Edit Picker Settings,
-  // Controls expanded) and Step 6 (Edit Item Settings, Items expanded)
-  // both want the user genuinely free to explore/edit everything inside
-  // whichever section is current, but collapsing the picker's own header
-  // would pull either step's own target out from under it (the
-  // highlighted box depends on this exact picker staying expanded) —
-  // guarded during BOTH steps. Expanding the OTHER section (Items during
-  // Step 4, Controls during Step 6) is guarded too, one at a time: not
-  // strictly target-breaking the way the picker header is, but it'd let
-  // the highlighted box balloon to include content this step was never
-  // about. Narrating that these are off-limits for their one step is the
+  // Controls expanded), Step 6 (Picker Items, an item row about to be
+  // clicked), and Step 7 (Edit Item Settings, an item expanded) all want
+  // the user genuinely free to explore/edit everything inside whichever
+  // section is current, but collapsing the picker's own header would pull
+  // any of these steps' own target out from under it (the highlighted box
+  // depends on this exact picker staying expanded) — guarded during all
+  // three. Expanding the OTHER top-level section (Items during Step 4,
+  // Controls during Steps 6/7) is guarded too: not strictly
+  // target-breaking the way the picker header is, but it'd let the
+  // highlighted box balloon to include content these steps were never
+  // about. Narrating that these are off-limits for their step is the
   // point, same tourId+step gating pattern as disableGroupFilter/
   // disablePickersFilter above.
-  const disableEditTourPickerHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 3 || tour.step === 5);
-  const disableEditTourControlsToggle = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 5;
-  const disableEditTourItemsToggle = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 3;
+  const disableEditTourPickerHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 3 || tour.step === 5 || tour.step === 6);
+  const disableEditTourControlsToggle = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 5 || tour.step === 6);
+  // Items header itself is ALSO guarded during Steps 6/7 (not just
+  // blocked from expanding during Step 4) — collapsing it there would
+  // hide the item rows/Add button those two steps depend on, same
+  // target-preservation reasoning as the picker header above.
+  const disableEditTourItemsToggle = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 3 || tour.step === 5 || tour.step === 6);
+  // Step 6's own body text says outright that this button is disabled for
+  // the tutorial — narrating what it does is the point, not inviting a
+  // brand-new item mid-tutorial that would shift every item row's
+  // position out from under Step 6's own "click any of these" framing.
+  // Stays disabled through Step 7 too, for the same reason.
+  const disableEditTourAddItem = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 5 || tour.step === 6);
   // Help mode (see help-mode.jsx) — needs real pickers of every mode (with a
   // conditional-gated one) AND reminders of every recurrence kind to show a
   // representative "view and edit" section, so both disposable seed sets
@@ -1151,7 +1162,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   </button>
                   <Collapse open={!itemsCollapsed}>
                     <React.Fragment>
-                      <button className="rd-add" onClick={() => {
+                      <button className="rd-add" disabled={disableEditTourAddItem} onClick={() => {
                         if (justAddedItemRef.current) return;   // guard: ignore rapid double-click
                         const id = 'it_' + Math.random().toString(36).slice(2, 8);
                         actions.addItem(pk.id, 'New item', id);

@@ -338,13 +338,32 @@ const buildAppFeatureSteps = (featureId, actions) => {
         body: <>This is where you can <b>view and edit a picker's Items</b>. This includes each item's name, weight, and other values. Click on the Items header now to advance this tutorial.</>,
         primary: 'Next', back: true, requireClick: true,
       },
+      // Same whole-picker sel as Steps 3-5, now with Items expanded (Step
+      // 5's own click). clickSel narrows to any item row — same selector
+      // help-content.jsx's own dataItemRow entry uses (.data-list .rd-item
+      // > .rd-row) — so clicking ANY one of them satisfies this step, not
+      // just a specific item. The "+ Add new item" button (.rd-add, same
+      // scoped selector as help-content.jsx's own dataAddItem) is
+      // disabled for this and the next step (disableEditTourAddItem in
+      // tab-data.jsx) — narrating that it exists is the point, not
+      // inviting a brand-new item mid-tutorial. coachAtTop: true — the
+      // item list's own height is unpredictable (depends how many items
+      // this picker has), same reasoning as every other "explore" step's
+      // own coachAtTop.
+      {
+        sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])',
+        clickSel: '.data-list .rd-item > .rd-row', tab: 'data',
+        title: 'Picker Items',
+        body: <>This section contains <b>all of this picker's items</b>, as well as a form for adding new items (though this is disabled for this tutorial). Click any one of the items to advance this tutorial.</>,
+        primary: 'Next', back: true, requireClick: true, coachAtTop: true,
+      },
       // Same shape as Step 4 (Edit Picker Settings), mirrored for Items:
-      // free exploration, no clickSel, Items already expanded by Step 5's
-      // own real click. Last step of this tutorial — primary 'Done', no
-      // outgoing run() needed since nothing comes after it to keep clean
-      // for. coachAtTop: true — an item list can run just as tall as
-      // Controls' own field set once a picker has more than a couple
-      // items, same reasoning as Step 4's own coachAtTop.
+      // free exploration, no clickSel, the clicked item already expanded
+      // by Step 6's own real click. Last step of this tutorial — primary
+      // 'Done', no outgoing run() needed since nothing comes after it to
+      // keep clean for. coachAtTop: true — an item list can run just as
+      // tall as Controls' own field set once a picker has more than a
+      // couple items, same reasoning as Step 4's own coachAtTop.
       {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])', tab: 'data',
         title: 'Edit Item Settings',
@@ -470,11 +489,36 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
           const btn = document.querySelector('.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)[aria-expanded="false"]');
           if (btn) btn.click();
         } else if (to === 4) {
-          // Back from Step 6 (Edit Item Settings, index 5) to Step 5
-          // (Items Section, index 4) — re-collapses Items, undoing Step
-          // 5's own real click that expanded it, same reasoning as the
-          // to===2 case above but for Items instead of Controls.
-          const btn = document.querySelector('.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)[aria-expanded="true"]');
+          // Back from Step 6 (Picker Items, index 5) to Step 5 (Items
+          // Section, index 4) — re-collapses Items, undoing Step 5's own
+          // real click that expanded it, same reasoning as the to===2
+          // case above but for Items instead of Controls. Can't use a
+          // real click here the way to===2/3 do: the Items header is
+          // itself disabled during Step 6 (disableEditTourItemsToggle in
+          // tab-data.jsx, guarding it so it can't be collapsed out from
+          // under Step 6's own item-row target) — onGoBack fires BEFORE
+          // `step` advances (see goBack's own comment in onboarding-tour-
+          // runner.jsx), so tab-data.jsx's own tour.step read from the bus
+          // is still 5 at this exact instant, meaning a native .click()
+          // on a disabled button would silently no-op. A direct action
+          // call bypasses the disabled attribute entirely — same
+          // pickerId-via-data-attribute lookup Step 2's own run() uses.
+          const cat = document.querySelector('.data-list > .cat:has(.cat-h-l[aria-expanded="true"])');
+          const pickerId = cat && cat.dataset.pickerId;
+          const itemsBtn = cat && cat.querySelector('.cat-body > button.rd-ctl:nth-of-type(2)');
+          if (pickerId && itemsBtn && itemsBtn.getAttribute('aria-expanded') === 'true') actions.toggleControlsCollapsed(pickerId + ':items');
+        } else if (to === 5) {
+          // Back from Step 7 (Edit Item Settings, index 6) to Step 6
+          // (Picker Items, index 5) — re-collapses whichever item got
+          // expanded (Step 6's own click, or the user opening a different
+          // one while freely exploring during Step 7), so Step 6's own
+          // requireClick can be satisfied again instead of landing on an
+          // item that's already open. Individual items toggle via local
+          // component state (openItemId in tab-data.jsx), not
+          // toggleControlsCollapsed — but the SAME "click it again to
+          // close it" mechanism still applies, so a real click still
+          // works here exactly like every other case in this handler.
+          const btn = document.querySelector('.data-list .rd-item > .rd-row[aria-expanded="true"]');
           if (btn) btn.click();
         }
       } : undefined}
