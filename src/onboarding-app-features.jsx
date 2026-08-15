@@ -70,6 +70,9 @@ export const APP_FEATURES = [
     title: 'App Theme',
     body: 'This tutorial will show you how to switch between light and dark mode, or customize the app’s colors to your own taste.',
     pills: ['settings page', 'appearance', 'theme'],
+    // Real, user-confirmed estimate — see feat_manual_pick's own comment
+    // on this same convention.
+    time: '< 1 min',
   },
   {
     id: 'feat_celebration', page: 'settings', label: 'Change your celebration animation',
@@ -405,7 +408,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // this app: content can easily run taller than the viewport.
       {
         sel: '.set-subsection--systempref', tab: 'settings',
-        title: 'System Preferences',
+        title: 'System Preferences Toggle',
         body: <>This lets Ease My Life <b>automatically switch between your light and dark theme</b> based on your device's own system setting. Click Next when you are ready to advance this tutorial.</>,
         primary: 'Next', back: true, coachAtTop: true,
       },
@@ -413,13 +416,13 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // ThemeSection (tab-settings.jsx), no changes needed there.
       {
         sel: '.set-subsection--theme-light', tab: 'settings',
-        title: 'Light Theme',
+        title: 'Light Theme Settings',
         body: <>This is where you can <b>pick a light based theme</b>, or create your own custom one. Click Next when you are ready to advance this tutorial.</>,
         primary: 'Next', back: true, coachAtTop: true,
       },
       {
         sel: '.set-subsection--theme-dark', tab: 'settings',
-        title: 'Dark Theme',
+        title: 'Dark Theme Settings',
         body: <>This is where you can <b>pick a dark based theme</b>, or create your own custom one. Click Done when you are ready to finish this tutorial.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
