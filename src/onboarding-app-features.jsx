@@ -52,6 +52,9 @@ export const APP_FEATURES = [
     title: 'Editing Items',
     body: 'This tutorial will show you how to edit one of your own items. You will be able to update names, weights, or other values whenever your needs change.',
     pills: ['data page', 'edit item', 'update values'],
+    // Real, user-confirmed estimate — see feat_manual_pick's own comment
+    // on this same convention.
+    time: '1 min',
   },
   {
     id: 'feat_run_time', page: 'settings', label: 'Adjust your generator run time',
