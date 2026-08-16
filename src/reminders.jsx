@@ -263,12 +263,12 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
       {rep === 'monthly' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <label className="rem-flabel">Day of the month</label>
+            <span className="rem-flabel">Day of the month</span>
             <span className="rem-flabel-sub">shows on the Today tab <strong>every {ordinalLabel(task.dayOfMonth || 1)} of the month</strong></span>
           </div>
           <div className="rem-inline">
             <span>On the</span>
-            <select className="np-input rem-sel" aria-describedby={schedNoteId} value={task.dayOfMonth || 1}
+            <select className="np-input rem-sel" aria-label="Day of the month" aria-describedby={schedNoteId} value={task.dayOfMonth || 1}
                     onChange={(e) => set({ dayOfMonth: parseInt(e.target.value) })}>
               {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
                 <option key={d} value={d}>{ordinalLabel(d)}</option>
