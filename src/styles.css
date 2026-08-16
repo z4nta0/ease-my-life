@@ -1098,6 +1098,16 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 
 /* Mobile: rail collapses, sections stack with dividers */
 @container app (max-width: 760px) {
+  /* .today-body's own 20px top padding is meant for the DESKTOP layout,
+     where .group-rail is just a normal sidebar sitting inside it. At this
+     width the rail becomes sticky and sits flush under the header instead
+     (see .group-rail's own top: var(--today-h-h) below) — that padding
+     doesn't collapse against the header's own border-bottom, since they're
+     not adjacent margins, so it was adding a visible extra gap between the
+     header and the pill rail on top of whatever spacing the rail's own
+     padding already provides. .today-layout's own 16px gap (below) still
+     covers the rail-to-content spacing beneath it. */
+  .today-body { padding-top: 0; }
   .today-layout {
     grid-template-columns: 1fr;
     gap: 16px;
