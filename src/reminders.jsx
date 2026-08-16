@@ -142,7 +142,7 @@ function RemVisibilityNote({ task, state, kind, id }) {
   if (never) {
     const why = <>Reminders items are currently set to <strong>not show on {remReasonPhrase(v) || 'weekends'}</strong></>;
     return (
-      <p className="rem-vis-note is-never" id={id}>
+      <p className="rem-vis-note is-never">
         <strong>WARNING:</strong> Because of the values that you are using and because {why}, this
         item will <strong>never</strong> show in the Today list.
       </p>
@@ -161,18 +161,21 @@ function RemVisibilityNote({ task, state, kind, id }) {
     body = <>Because of the values that you are using, this item will not show up in the list today.</>;
   }
   return (
-    <p className="rem-vis-note" id={id}>
+    <p className="rem-vis-note">
       {body}{when ? <> It will next appear on <strong>{when}</strong>.</> : null}
     </p>
   );
   })();
-  // Live region, mounted even when there is nothing to say. These notes appear
-  // and change as a direct result of the user editing a schedule control, and a
-  // region that mounts together WITH its text is announced unreliably — a
-  // stable, already-present one is not. Assertive only for the dead-config
-  // "never shows" case; a deferral is advisory and shouldn't interrupt typing.
+  // Live region, mounted even when there is nothing to say (id lives here, not
+  // on the <p> above, so aria-describedby references from the controls above
+  // always resolve to a real element — even when there's no note to show).
+  // These notes appear and change as a direct result of the user editing a
+  // schedule control, and a region that mounts together WITH its text is
+  // announced unreliably — a stable, already-present one is not. Assertive
+  // only for the dead-config "never shows" case; a deferral is advisory and
+  // shouldn't interrupt typing.
   return (
-    <div className="rem-vis-live" role="status" aria-live={never ? 'assertive' : 'polite'}>{note}</div>
+    <div className="rem-vis-live" id={id} role="status" aria-live={never ? 'assertive' : 'polite'}>{note}</div>
   );
 }
 
