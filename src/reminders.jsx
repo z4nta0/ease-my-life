@@ -311,7 +311,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
     <div className="rem-editor">
       <div className="rem-field">
         <div className="rem-flabel-wrap">
-          <label className="rem-flabel">Repeat</label>
+          <span className="rem-flabel">Repeat</span>
           <span className="rem-flabel-sub set-sub-fade" key={task.repeat}>{(REPEAT_OPTS.find((o) => o.key === task.repeat) || {}).sub}</span>
         </div>
         <Segmented options={REPEAT_OPTS} value={task.repeat}
