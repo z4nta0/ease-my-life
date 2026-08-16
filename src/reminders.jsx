@@ -230,13 +230,13 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
       {rep === 'interval' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <label className="rem-flabel">Frequency</label>
+            <span className="rem-flabel">Frequency</span>
             <span className="rem-flabel-sub">shows on the Today tab <strong>every {task.interval || 1} days</strong></span>
           </div>
           <div className="rem-inline">
             <span>Every</span>
             <input className="np-input rem-num" type="number" min="1" max="365"
-                   aria-describedby={schedNoteId}
+                   aria-label="Interval in days" aria-describedby={schedNoteId}
                    value={task.interval || 1}
                    onChange={(e) => set({ interval: Math.max(1, parseInt(e.target.value) || 1) })} />
             <span>days</span>
