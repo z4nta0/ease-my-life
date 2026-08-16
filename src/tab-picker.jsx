@@ -501,7 +501,7 @@ function PickerView({ picker, state, actions, animStyle }) {
                  className={`pv-act ${(leaving || phase === 'sent') ? 'is-leaving' : ''} ${tourDisableDone ? 'is-tour-disabled' : ''}`} style={{ animationDelay: '120ms' }}>Done</Btn>
           </>
         ) : (
-          <Btn kind="primary" icon="play" onClick={runPick} disabled={busy} className="pv-act">
+          <Btn kind="primary" icon="play" onClick={runPick} disabled={busy} className={`pv-act pv-act--pick ${busy ? 'is-busy' : ''}`}>
             {busy ? 'Picking\u2026' : 'Pick one'}
           </Btn>
         )}

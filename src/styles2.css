@@ -657,7 +657,13 @@
 }
 .infotip {
   position: fixed;
-  z-index: 1000;
+  /* Above .ob-tour's own z-index:1010 — a requireClick step's disabled Next
+     button wraps itself in one of these (see onboarding-tour-runner.jsx) to
+     explain why it's disabled, and that hint needs to actually be visible
+     over the tour's own dim + coach, not buried behind them. A tooltip is
+     always meant to be the topmost thing on screen while it's open, so this
+     is a blanket raise rather than a tour-specific override. */
+  z-index: 1020;
   max-width: 248px;
   padding: 9px 11px;
   font-family: var(--font-sans);
@@ -3632,6 +3638,18 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    still marked, but the rest of the page is no longer darkened, so it's
    easy to see exactly where it's landing. */
 .ob-spot.is-dragging{box-shadow:none}
+/* requireClick steps: a white ring pulses outward from the target's own
+   border and fades, drawing the eye to the exact element to click while
+   Next stays disabled. A separate ::after (not an .ob-spot box-shadow
+   itself) so it doesn't fight the dimming box-shadow above; white rather
+   than --accent because the accent blue reads too close to the dim
+   scrim's own near-black to register as a pulse. */
+.ob-spot.is-pulsing::after{content:"";position:absolute;inset:0;border-radius:inherit;animation:obSpotPing 1.8s ease-out infinite}
+@keyframes obSpotPing{
+  0%{box-shadow:0 0 0 0 oklch(1 0 0/0.65)}
+  70%{box-shadow:0 0 0 12px oklch(1 0 0/0)}
+  100%{box-shadow:0 0 0 12px oklch(1 0 0/0)}
+}
 .ob-coach{position:fixed;pointer-events:auto;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);box-shadow:0 16px 40px -14px oklch(0 0 0/0.45);padding:14px 15px;animation:obFade .18s ease both}
 .ob-coach .ob-prog{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;color:var(--accent);margin:0 0 5px}
 .ob-coach h4{font-size:15px;font-weight:600;margin:0 0 5px}
@@ -3680,7 +3698,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .today-card--tutorial.is-needed:hover{border-color:oklch(from var(--warm) l c h/0.7)}
 @keyframes obFade{from{opacity:0}to{opacity:1}}
 @keyframes obRise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.ob-scrim,.ob-welcome,.ob-coach,.ob-spot{animation:none;transition:none}}
+@media (prefers-reduced-motion:reduce){.ob-scrim,.ob-welcome,.ob-coach,.ob-spot,.ob-spot.is-pulsing::after{animation:none;transition:none}}
 body.ob-touring .tab{padding-bottom:200px}
 .np-tour-name{margin:16px 0 16px}
 

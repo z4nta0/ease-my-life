@@ -48,7 +48,7 @@ const buildReminderTourStep1 = (variant, state) => {
   return {
     sel: '.rem-add-btn', tab: 'today',
     title: 'Create Reminder item',
-    body: <>This button is always present on the Today page. It will <b>open the interface</b> for creating a Reminder. Go ahead and click it now.</>,
+    body: <>This "+" button is always present on the Today page. It will <b>open the interface for creating a Reminder</b>. Go ahead and click the "+" button now.</>,
     primary: 'Next', back: false, requireClick: true,
     run: () => {
       // Read off the LIVE sample task, not the static OB_TASKS template —
@@ -148,8 +148,8 @@ const buildReminderTourAddStep = (variant) => ({
   sel: '.rem-quickadd-wrap .btn--primary', tab: 'today',
   title: 'Add Reminder item',
   body: variant === 'recurring'
-    ? <>We’re all done creating this reminder item. Go ahead and click this button now to <b>add it to your todo list</b>. NOTE: if you selected a day other than today as the recurrence date, then this item will not show up in your todo list until it is due.</>
-    : <>We’re all done creating this reminder item. Go ahead and click this button now to <b>add it to your todo list</b>.</>,
+    ? <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>. NOTE: if you selected a day other than today as the recurrence date, then this item will not show up in your todo list until it is due.</>
+    : <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>.</>,
   primary: 'Done', back: true, requireClick: true, resumable: false,
 });
 

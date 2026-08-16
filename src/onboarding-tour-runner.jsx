@@ -31,6 +31,16 @@ import { InfoTip, reduceMotion } from './ui.jsx';
 //              itself) would satisfy requireClick, which is almost never
 //              what a step author actually wants from a highlight that's
 //              wider than its real target.
+//   pulseSel — optional; when set, the requireClick pulse (.ob-spot.is-
+//              pulsing) only plays while this selector currently matches —
+//              used by a `sel` with a fallback alternative (e.g. a button
+//              that widens to its whole surrounding window once clicked,
+//              see manualGeneration in onboarding-page-tours.jsx) so the
+//              pulse stops the moment there's nothing left to click, instead
+//              of continuing to ping around the now-bigger, no-longer-
+//              actionable highlight. Defaults to matching `cur.requireClick`
+//              exactly (always pulses) when unset — every other requireClick
+//              step is unaffected.
 //   title/body — coach card copy.
 //   tab      — which app tab this step's target lives on. The tour switches
 //              there automatically whenever the active tab doesn't already
@@ -893,7 +903,12 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // >= the target's bottom, clamping the highlight's top down past the
     // target's own bottom and collapsing it to an empty sliver instead of
     // leaving it alone.
-    const spotPad = 8;
+    // requireClick steps get a pulsing ring drawn tight against the target
+    // (see the .ob-spot.is-pulsing CSS) — any padding here would leave a
+    // visible gap between the target's real edge and the pulse, which reads
+    // as the highlight being for some larger, vaguer area instead of the
+    // exact element to click.
+    const spotPad = cur.requireClick ? 0 : 8;
     const clampToChrome = (r, els) => {
       if (els.some((el) => el.closest('.tabbar') || el.closest('.group-rail') || el.closest('.today-h'))) return r;
       // Clamp to the safe boundary PLUS the spot's own padding, so the
@@ -1036,6 +1051,14 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     // right back up to its usual pad-from-top position — undoing the
     // reserve and putting the coach right back on top of it.
     let lastScrollHeight = null;
+    // Tracks pulseSel's own on/off transition (see its own doc comment above)
+    // so falling back to the wider, no-longer-pulsing highlight also brings
+    // it into view — the wider box can extend well past what the tight
+    // button-only highlight needed, e.g. manualGeneration's .picker-run
+    // suddenly including the whole reel above the button once it widens.
+    // Starts true so a step that's never had a pulseSel primary target at
+    // all (pulseSel unset) never spuriously fires this on its first frame.
+    let pulseWasPrimary = true;
     const loop = () => {
       if (cancelled) return;
       const els = findTargets(cur.sel);
@@ -1046,6 +1069,11 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
           ? document.documentElement.scrollHeight : sc.scrollHeight) - reservedAmount; // exclude our own reserve-space padding — see decideReserve's comment on reservedAmount
         if (!broughtRef) { broughtRef = true; bring(); } // scroll once the target actually exists
         else if (lastScrollHeight != null && Math.abs(h - lastScrollHeight) > 40) bring();
+        else if (cur.pulseSel) {
+          const isPrimary = !!document.querySelector(cur.pulseSel);
+          if (pulseWasPrimary && !isPrimary) bring();
+          pulseWasPrimary = isPrimary;
+        }
         lastScrollHeight = h;
         decideReserve(els);
         const r = place(els);
@@ -1108,9 +1136,13 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       </div>
     </div>
   );
+  // See pulseSel's own doc comment up top — defaults to matching
+  // requireClick exactly when unset, so every other requireClick step pulses
+  // for its whole duration same as before.
+  const shouldPulse = cur.requireClick && (!cur.pulseSel || !!document.querySelector(cur.pulseSel));
   let coachStyle, arrowClass, spotStyle = null;
   if (rect) {
-    const pad = 8;
+    const pad = cur.requireClick ? 0 : 8; // see spotPad's own comment above
     hadRectRef.current = true;
     spotStyle = { top: rect.top - pad, left: rect.left - pad, width: rect.width + pad * 2, height: rect.height + pad * 2, transition: 'none' };
     // Same math place() uses to position the coach imperatively every frame
@@ -1146,7 +1178,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
           everything outside its own bounds), drops out, via the
           is-dragging CSS override. Otherwise the darkened background would
           make it hard to see exactly where the group's landing. */}
-      {spotStyle && <div className={`ob-spot ${dragging ? 'is-dragging' : ''}`} ref={spotRef} style={spotStyle} />}
+      {spotStyle && <div className={`ob-spot ${dragging ? 'is-dragging' : ''} ${shouldPulse ? 'is-pulsing' : ''}`} ref={spotRef} style={spotStyle} />}
       {!spotStyle && !dragging && <div className="ob-dim" />}
       {!dragging && (
         <div className={`ob-coach ${arrowClass}`} ref={realCoachRef} style={{ ...coachStyle, width: coachW, '--ob-ax': arrowX + 'px' }}>

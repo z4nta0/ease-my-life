@@ -53,12 +53,15 @@ const PAGE_TOUR_COPY = {
 // 'Next' (every page tour has more steps after this one) but is overridable
 // — App Features' own tours (onboarding-app-features.jsx) reuse this exact
 // step verbatim as their OWN Step 1, currently still their only step, so
-// theirs pass 'Done' instead.
-const buildPageTourStep1 = (page, run, primary = 'Next') => {
+// theirs pass 'Done' instead. `buttonLabel` names the actual nav button
+// ("Today", "Pickers", ...) in the closing sentence instead of the generic
+// "click it now" — optional and only passed where a caller has explicitly
+// asked for it, so other callers' wording is unaffected.
+const buildPageTourStep1 = (page, run, primary = 'Next', buttonLabel = null) => {
   const nav = OB_NAV_TARGETS[page];
   return {
     ...nav,
-    body: <>{nav.body} Go ahead and click it now.</>,
+    body: <>{nav.body} Go ahead and click {buttonLabel ? <>the "{buttonLabel}" page's button</> : 'it'} now.</>,
     tab: 'today',
     primary, back: false, requireClick: true,
     ...(run ? { run } : {}),
@@ -196,36 +199,62 @@ const PICKER_PAGE_TARGETS = {
     title: 'Create New Pickers',
     body: <>This is where you can <b>create new pickers</b>. We will not include this as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished. Click Next when you are ready to move on.</>,
   },
-  // .picker-run is a purely structural wrapper (tab-picker.jsx) around
-  // .picker-stage + .picker-actions — added specifically so this step can
-  // highlight both as one combined box without also catching the header/
-  // pool above and below (the two aren't adjacent-enough on their own for
-  // a single selector, and findTargets' comma syntax means "fallback", not
-  // "union" — see its own comment in onboarding-tour-runner.jsx).
+  // Two-phase highlight, both via the same fallback `sel` (findTargets tries
+  // each comma-separated selector in turn and uses the first that matches —
+  // see its own comment in onboarding-tour-runner.jsx). Before the click,
+  // .pv-act--pick:not(.is-busy) matches the idle "Pick one" button, so the
+  // pulse (.ob-spot.is-pulsing) lands tight on the actual button instead of
+  // the whole window. The button alone doesn't disappear until the pick
+  // actually lands (phase flips to 'done'/'sent' — see tab-picker.jsx) —
+  // simply falling back once it's gone would leave the highlight pinned to
+  // a "Picking…" button for the whole multi-second spin instead of framing
+  // the window it's about to affect. .is-busy (added the instant the click
+  // fires, well before the spin finishes) excludes that first selector
+  // immediately on click, so the fallback to framing .picker-run kicks in
+  // right as the spin starts, not once it ends. clickSel keeps the
+  // requireClick guard scoped to the button specifically even once the
+  // fallback is in play, same reasoning as addToTodoList's own clickSel
+  // just below. pulseSel matches the exact same primary alternative as
+  // `sel` — there's nothing left to click once the highlight has widened to
+  // frame the window, so the pulse stops there too (see pulseSel's own doc
+  // comment in onboarding-tour-runner.jsx) rather than continuing to ping
+  // around a box the user can no longer act on.
   manualGeneration: {
-    sel: '.picker-run',
+    sel: '.pv-act--pick:not(.is-busy), .picker-run',
+    clickSel: '.pv-act--pick',
+    pulseSel: '.pv-act--pick:not(.is-busy)',
     title: 'Manual Generation',
-    body: <>This will allow to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the Pick one button now to see how this works.</>,
+    body: <>The "Pick one" button will allow you to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick one" button now to see how this works.</>,
   },
-  // Highlights the whole stage+actions box (same as manualGeneration, one
-  // step back) rather than just the Send to Today button on its own, so the
-  // picker window stays visible/framed instead of the highlight shrinking
-  // down to a single button. Re-roll/Done render alongside it once phase is
-  // 'done'/'sent' but are disabled — see tourInterceptSend's own gating in
-  // tab-picker.jsx, which also drives their .is-tour-disabled look (a plain
-  // `disabled` attribute alone renders no differently here) — so clickSel
-  // narrows the click-guard/requireClick target down to Send to Today
-  // specifically; without it, a click landing anywhere else in this bigger
-  // box (the stage, or a disabled sibling button — pointer-events:none
-  // passes its click through to the container) would satisfy requireClick
-  // as if Send to Today itself had been clicked. tourInterceptSend also
-  // skips the real actions.addTodayEntry while this step is up, so the
-  // Sent! animation plays without actually landing an entry on Today.
+  // Same two-phase highlight as manualGeneration above: before the click,
+  // .pv-act--send:not(.is-sent) matches the real Send to Today button, so
+  // the pulse lands tight on it instead of the whole window. Clicking it
+  // flips phase to 'sent' SYNCHRONOUSLY (see sendToToday in tab-picker.jsx
+  // — unlike Pick one's spin, there's no separate busy/running phase to
+  // exclude), which adds .is-sent immediately, so the fallback to framing
+  // .picker-run kicks in right on click. That's deliberate, not just
+  // incidental: this step's own advanceDelay (see its call site below)
+  // holds the tour here for 1600ms after the click specifically so the
+  // "Sent!" label swap + stage checkmark can play out — the highlight
+  // needs to have already widened to frame that whole confirmation, not
+  // stay pinned to a single button mid-animation. Re-roll/Done render
+  // alongside Send to Today once phase is 'done'/'sent' but are disabled —
+  // see tourInterceptSend's own gating in tab-picker.jsx, which also drives
+  // their .is-tour-disabled look (a plain `disabled` attribute alone
+  // renders no differently here) — so clickSel narrows the click-guard/
+  // requireClick target down to Send to Today specifically; without it, a
+  // click landing anywhere else in the widened box (the stage, or a
+  // disabled sibling button — pointer-events:none passes its click through
+  // to the container) would satisfy requireClick as if Send to Today
+  // itself had been clicked. tourInterceptSend also skips the real
+  // actions.addTodayEntry while this step is up, so the Sent! animation
+  // plays without actually landing an entry on Today.
   addToTodoList: {
-    sel: '.picker-run',
+    sel: '.pv-act--send:not(.is-sent), .picker-run',
     clickSel: '.pv-act--send',
+    pulseSel: '.pv-act--send:not(.is-sent)',
     title: 'Add to Todo List',
-    body: <>This will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click this button now to give it a try.</>,
+    body: <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to give it a try.</>,
   },
   // Per-item Send to Today/Edit/Delete are disabled while this step is up
   // (tab-picker.jsx's own disablePoolItemButtons, gated on this exact
@@ -419,7 +448,7 @@ const TODAY_PAGE_TARGETS = {
   editMode: {
     sel: '.em-rail-btn, .foot-editmode',
     title: 'Edit Mode',
-    body: <>This will allow you to both <b>rearrange the positions of the groups and items, as well as rename the groups</b>. Go ahead and click it now.</>,
+    body: <>The "Edit Mode" button will allow you to both <b>rearrange the positions of the groups and items, as well as rename the groups</b>. Go ahead and click the "Edit Mode" button now.</>,
   },
   // Scoped to the Reminders section specifically (.rem-section, its own
   // distinguishing class — every OTHER group section shares plain
@@ -775,7 +804,9 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
           pageId === 'explore_data' ? () => { seedPageTourPickers(state, actions); seedPageTourTasks(state, actions); } :
           usesSampleCopies(pageId) ? () => seedPageTourPickers(state, actions) :
           pageId === 'explore_stats' ? () => unhideSampleHistory(state, actions) :
-          undefined),
+          undefined,
+          'Next',
+          (pageId === 'explore_today' || pageId === 'explore_pickers') ? tour.label : null),
         ...buildPageTourSteps(pageId, actions),
       ]}
       resumeStep={resumable ? resumable.step : 0}
@@ -802,24 +833,44 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
           if (to === 2) {
             const row = document.querySelector('.picker-tabs');
             if (row) row.scrollTo({ left: 0 });
+          } else if (to === 3) {
+            // Back from Step 5 (Manual Generation) to Step 4 (Create New
+            // Pickers) — if a pick is still spinning (busy/phase 'running')
+            // when Back is clicked, PickerView never unmounts between
+            // steps, so that animation just keeps running in the
+            // background regardless of which step the tour is on, and its
+            // eventual onAnimDone still lands phase on 'done' whenever it
+            // finishes — showing Send to Today/Re-roll/Done on Step 5 if
+            // Next brings the user back to it before that settles on its
+            // own. Same reset nonce Step 6→5's own case below uses, fired
+            // here on the way OUT of Step 5 instead: PickerStrip only
+            // renders while phase is 'running'/'done' (see PickerView's own
+            // picker-stage JSX), so bumping this unmounts it immediately —
+            // actually cancelling the in-flight animation outright, not
+            // just leaving it to finish on its own and clean up after.
+            // Harmless no-op if the pick had already settled by the time
+            // Back was clicked.
+            emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
           } else if (to === 4) {
             // Back from Step 6 (Add to Todo List) to Step 5 (Manual
             // Generation) — a pick already ran, so PickerView's own local
             // phase is still 'done'/'sent', showing Send to Today/Re-roll/
-            // Done instead of Pick one. Step 5's own requireClick target is
-            // .picker-run (the whole stage + actions box, not just the Pick
-            // one button specifically — see its own comment), so those
-            // buttons being there at all means the user can trigger them
-            // from a step that was never written to expect it: Re-roll
-            // silently re-runs the pick behind the scenes (advanceWhen just
-            // waits for it, reading as a multi-second hang) and Done clears
-            // the result with no re-run, so advanceWhen's poll never finds
-            // its target again and the tour sits stuck forever. Resetting
-            // PickerView back to its own idle state — via a bus nonce, since
-            // phase/result are local state this module has no other way to
-            // reach — means only Pick one ever shows here, matching what
-            // this step actually expects and forecloses both failure modes
-            // by construction instead of specifically patching either one.
+            // Done instead of Pick one. Step 5's own sel falls back to
+            // .picker-run only once .pv-act--pick is gone (see
+            // manualGeneration's own comment), which a leftover 'done'/
+            // 'sent' phase satisfies just as well as a genuine spin in
+            // progress would — so without this, those buttons being there
+            // at all means the user can trigger them from a step that was
+            // never written to expect it: Re-roll silently re-runs the pick
+            // behind the scenes (advanceWhen just waits for it, reading as
+            // a multi-second hang) and Done clears the result with no
+            // re-run, so advanceWhen's poll never finds its target again
+            // and the tour sits stuck forever. Resetting PickerView back to
+            // its own idle state — via a bus nonce, since phase/result are
+            // local state this module has no other way to reach — means
+            // only Pick one ever shows here, matching what this step
+            // actually expects and forecloses both failure modes by
+            // construction instead of specifically patching either one.
             emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
           } else if (to === 5) {
             // Back from Step 7 (Picker Items) to Step 6 (Add to Todo List)
