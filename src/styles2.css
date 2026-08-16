@@ -2878,6 +2878,11 @@ button.cat-h-l {
   cursor: help; transition: border-color .2s ease, color .2s ease, background .2s ease;
 }
 .pie-help:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+/* .pie-help's own 16px is sized for its usual 15px-label context (Soonest/
+   Latest, etc.) — "How often?"'s own label sits at 13.5px instead
+   (.rem-flabel / .sched-line-lbl), and the fixed-size badge reads as
+   slightly oversized/off-center next to that shorter line-box. */
+.pie-help--sm { width: 14.5px; height: 14.5px; }
 .rd-mode-hint { display: block; font-size: 12px; line-height: 1.45; color: var(--muted); text-wrap: pretty; }
 .rd-mode-hint + .rd-mode-hint { margin-top: 8px; }
 /* Two labeled subgroups inside a picker's Controls: how it picks / when it runs.

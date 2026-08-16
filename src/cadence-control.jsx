@@ -30,7 +30,7 @@ function CadenceControl({ value, onChange }) {
         <div className="rem-flabel-wrap">
           <label className="rem-flabel pie-lbl-row">How often?
             {v.cadence === 'daily' && (
-              <InfoTip className="pie-help" label={CADENCE.tipFor('daily', 'Which days?')}>?</InfoTip>
+              <InfoTip className="pie-help pie-help--sm" label={CADENCE.tipFor('daily', 'Which days?')}>?</InfoTip>
             )}
           </label>
           <span className="rem-flabel-sub set-sub-fade" key={v.cadence}>{sub}</span>

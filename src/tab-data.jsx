@@ -468,7 +468,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
             <div className="sched-line">
               <span className="sched-line-label">
                 <span className="sched-line-lbl pie-lbl-row">How often?
-                  <InfoTip className="pie-help" label={CADENCE.tipFor(pk.cadence)}>?</InfoTip>
+                  <InfoTip className="pie-help pie-help--sm" label={CADENCE.tipFor(pk.cadence)}>?</InfoTip>
                 </span>
                 <span className="sched-line-sub set-sub-fade" key={(pk.cadence || 'daily') + (pk.anchorDow ?? '') + (pk.anchorDom ?? '') + (pk.anchorMonth ?? '') + (pk.anchorDay ?? '')}>{(() => {
                   const cad = pk.cadence || 'daily';
