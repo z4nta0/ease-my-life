@@ -20,12 +20,12 @@ const OB_NAV_TARGETS = {
   today: {
     sel: '[data-tab="today"]', place: 'below',
     title: 'This is the Today page',
-    body: <>This is the <b>main page of the app</b>, and it is where your auto-generated todo list will be displayed every day.</>,
+    body: <>This is the main page of the app, and it is <b>where your auto-generated todo list will be displayed every day</b>.</>,
   },
   picker: {
     sel: '[data-tab="picker"]', place: 'below',
     title: 'This is the Pickers page',
-    body: <>Pickers are the <b>heart of the app</b> and this is where you can create new pickers and their items. You can also manually run any picker to generate a task.</>,
+    body: <>Pickers are the heart of the app and this is <b>where you can create new pickers and their items</b>. You can also manually run any picker to generate a task.</>,
   },
   stats: {
     sel: '[data-tab="stats"]', place: 'below',
