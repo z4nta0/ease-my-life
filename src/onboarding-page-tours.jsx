@@ -806,7 +806,7 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
           pageId === 'explore_stats' ? () => unhideSampleHistory(state, actions) :
           undefined,
           'Next',
-          (pageId === 'explore_today' || pageId === 'explore_pickers') ? tour.label : null),
+          tour.label),
         ...buildPageTourSteps(pageId, actions),
       ]}
       resumeStep={resumable ? resumable.step : 0}

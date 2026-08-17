@@ -82,16 +82,16 @@ const PICKER_TOUR_COPY = {
 
 // Step 1 is identical for every picker tutorial — just the Pickers nav
 // button itself, requireClick so Next stays disabled and the user has to
-// actually click the real icon to advance. Deliberately NOT the Welcome
-// Tour's OB_NAV_TARGETS.picker content (which describes the page you've
-// already arrived at) — the point here is teaching icon-only nav on mobile,
-// so the copy has to instruct the click, and the step has to stay on Today
-// (tab: 'today') rather than pre-navigating, so there's something left for
-// the user's own click to do.
+// actually click the real icon to advance. Body copy is kept in sync with
+// the Pickers page tour's own Step 1 (OB_NAV_TARGETS.picker + its
+// buildPageTourStep1 suffix) by explicit request — the step still has to
+// stay on Today (tab: 'today') rather than pre-navigating, so there's
+// something left for the user's own click to do; only the copy is shared,
+// not the step object.
 const PICKER_TOUR_STEP_1 = {
   sel: '[data-tab="picker"]', tab: 'today',
   title: 'The Pickers page',
-  body: <>Pickers are the <b>heart of the app</b> and this is where you can create new pickers and their items. You can also manually run any picker to generate a task. Go ahead and click it now.</>,
+  body: <>Pickers are the heart of the app and this is <b>where you can create new pickers and their items</b>. You can also manually run any picker to generate a task. Go ahead and click the "Pickers" page's button now.</>,
   primary: 'Next', back: false, requireClick: true,
 };
 
