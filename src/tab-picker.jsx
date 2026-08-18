@@ -891,12 +891,25 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     if (newDraftId) return;
     setDraftClosing(false);   // clear any stale closing state from a prior editor
     const id = 'draft_' + Math.random().toString(36).slice(2, 8);
-    // The tour stages a specific name for its own walkthrough item (see
-    // buildPickerTourStep7's run()) rather than falling back to "New item".
-    const inTour = obTour.phase === 'tour' && obTour.itemPrefill;
+    // Read straight off the bus (emlTour.get()), not the React-state obTour
+    // — this fires as the NATIVE bubble-phase handler of the same click
+    // whose CAPTURE-phase handling just ran Step 7's own run() (see its own
+    // doc comment in onboarding-tour-runner.jsx), which sets itemPrefill on
+    // the bus synchronously, but useEmlTour's subscriber-driven setState is
+    // batched and hasn't actually landed in this component's own render yet
+    // — obTour here is still the PREVIOUS render's snapshot, from before
+    // itemPrefill was set. Reading the bus's own synchronous getter instead
+    // (same fix reminders.jsx's own prefill already uses — see its
+    // `emlTour.get()` call) is what actually lands the tour's staged name/
+    // ease on the item it creates, instead of silently falling back to
+    // "New item" — the tour stages a specific name for its own walkthrough
+    // item (see buildPickerTourStep7's run()) rather than falling back to
+    // "New item".
+    const bus = emlTour.get();
+    const inTour = bus.phase === 'tour' && bus.itemPrefill;
     let nm;
     if (inTour) {
-      nm = obTour.itemPrefill;
+      nm = bus.itemPrefill;
     } else {
       const base = 'New item';
       let n = 1;
@@ -918,8 +931,8 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     // added item (see buildPickerTourStep7's run() in
     // onboarding-picker-tours.jsx) — e.g. a monthly-cadence sample's own
     // item shouldn't look like a daily one.
-    const ease = (inTour && obTour.itemEaseMin != null && obTour.itemEaseMax != null)
-      ? { easeMin: obTour.itemEaseMin, easeMax: obTour.itemEaseMax }
+    const ease = (inTour && bus.itemEaseMin != null && bus.itemEaseMax != null)
+      ? { easeMin: bus.itemEaseMin, easeMax: bus.itemEaseMax }
       : DEFAULT_EASE;
     setItems((xs) => [...xs, { id, name: nm, weight: 1, value: fullCharge ? THRESHOLD : 0, ...ease }]);
     setNewDraftId(id);
@@ -930,6 +943,25 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       if (overflowBelow > 0) sc.scrollTo({ top: sc.scrollTop + overflowBelow, behavior: reduceMotion() ? 'auto' : 'smooth' });
     }));
   };
+
+  // Back from the tour's own Step 12 (Create picker) to Step 11 (Save this
+  // task item) needs that item's editor open again — its own Save already
+  // committed it into the real list (there's no separate "draft" vs
+  // "committed" state once saved, just newDraftId no longer pointing at
+  // it), so Step 11's own target (.ob-item-save) is gone with nothing left
+  // to click. Reopens the SAME item — found by matching the tour's own
+  // itemPrefill name, still sitting on the bus from Step 7's run() since
+  // nothing clears it until the whole tour closes — rather than creating a
+  // fresh one, so it preserves whatever the user actually edited in Steps
+  // 8-10 instead of resetting it. See onGoBack's own comment in
+  // onboarding-picker-tours.jsx for why this needs a bus nonce at all
+  // (there's no real DOM control left to click that would reverse this).
+  React.useEffect(() => {
+    if (!obTour.pickerTourReopenItemNonce) return;
+    const match = items.find((it) => it.name === obTour.itemPrefill);
+    if (match) { setDraftClosing(false); setNewDraftId(match.id); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [obTour.pickerTourReopenItemNonce]);
 
   const goBackToStep1 = () => {
     // Discard any in-progress (unsaved) item so returning to step 2 isn't stuck

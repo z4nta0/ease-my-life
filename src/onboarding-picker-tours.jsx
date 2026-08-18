@@ -240,7 +240,7 @@ const PICKER_TOUR_STEP_6 = {
 const buildPickerTourStep7 = (pickerId) => ({
   sel: '.pv-additem-btn', tab: 'picker',
   title: 'Add a task to the picker’s pool',
-  body: <>Pickers need a <b>pool of tasks to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click this button now.</>,
+  body: <>Pickers need a <b>list of items to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click the "+ Add item" button now to add a new item to this picker's list of items.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
   run: () => {
     const copy = PICKER_TOUR_COPY[pickerId];
@@ -342,7 +342,7 @@ const PICKER_TOUR_STEP_BOOST = {
 const PICKER_TOUR_STEP_11 = {
   sel: '.ob-item-save', tab: 'picker',
   title: 'Save this task item',
-  body: <>This task item is now complete and can be <b>saved to this picker’s pool</b>. Go ahead and click this button now.</>,
+  body: <>This task item is now complete and can be <b>saved to this picker’s list</b>. Go ahead and click the "Save" button now to save this item to this picker's list of items.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
 };
 
@@ -358,7 +358,7 @@ const PICKER_TOUR_STEP_11 = {
 const PICKER_TOUR_STEP_12 = {
   sel: '.ob-picker-create', tab: 'picker',
   title: 'Create this picker',
-  body: <>You’re all set! You’ve created this picker and its pool of task items. All that’s left is to <b>click the Create picker button</b>. Go ahead and click it now.</>,
+  body: <>You’re all set! You’ve created this picker and its list of items. All that’s left is to finish creating this picker. Go ahead and <b>click the "Create picker" button now</b> to create this picker.</>,
   primary: 'Done', back: true, requireClick: true, resumable: false,
 };
 
@@ -476,6 +476,21 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
           // reasoning as the to===5 branch above.
           const cancelBtn = document.querySelector('.ob-item-cancel');
           if (cancelBtn) cancelBtn.click();
+        } else if (to === steps.length - 2) {
+          // Back from the last step (Create picker) to the second-to-last
+          // (Save this task item) — Step 11's own Save committed the item
+          // into the real list for good (see tab-picker.jsx's own comment on
+          // this), leaving .ob-item-save (Step 11's target) gone with no
+          // real DOM control anywhere that reopens it. steps.length - 2
+          // rather than a hardcoded index: how many steps come before these
+          // last two varies by picker mode (ease-up/down get 2 extra steps,
+          // plain weighted gets 1, dynamic gets 2, truly random gets 0), so
+          // Step 11's own index isn't constant across tours — it's always
+          // exactly 2 before the end though. Bus nonce, same reasoning as
+          // the reset/redo nonces the Pickers PAGE tour's own onGoBack
+          // (onboarding-page-tours.jsx) uses for its own no-real-control
+          // Back cases.
+          emlTour.set({ pickerTourReopenItemNonce: (emlTour.get().pickerTourReopenItemNonce || 0) + 1 });
         }
       }}
       // Skip (or the not-found watchdog) reads as "the user didn't finish",
