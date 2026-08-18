@@ -112,7 +112,7 @@ const buildPickerTourStep2 = (pickerId, state) => ({
   // the strip (users had trouble finding it there at all) fixed that same
   // problem for real usage too, not just this tour.
   title: 'Create a new picker',
-  body: <>This button will <b>open up the form</b> for creating a new picker. Go ahead and click it now.</>,
+  body: <>The "+ Add new picker" button will <b>open up the form for creating a new picker</b>. Go ahead and click the "+ Add new picker" button now.</>,
   primary: 'Next', back: true, requireClick: true,
   // suppressAutoOpen: tab-picker.jsx's dormant effect (`if (tour.prefill &&
   // !creating)`) is meant to stay silent for this tour — see the long
