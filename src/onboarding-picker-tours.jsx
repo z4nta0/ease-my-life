@@ -25,7 +25,7 @@ const PICKER_SAMPLES = Object.fromEntries(
 // paragraph — only the title (the picker's own name) and the second
 // paragraph differ per picker. Keyed by the sample picker id (see
 // onboarding-seed-data.js's OB_EXAMPLE/OB_EXTRA_PICKERS).
-const PICKER_TOUR_BODY_1 = 'Pickers are where the magic happens. They have rules for when and how they should pick from its pool of items. There are 5 basic types of pickers: Truly Random, Weighted, Dynamic Weighted, Ease-up and Ease-down. Don’t worry too much about the details right now, as you start to use the app it will become more clear.';
+const PICKER_TOUR_BODY_1 = 'Pickers are where the magic happens. They have rules for when and how they should pick from its list of items. There are 5 basic types of pickers: Truly Random, Weighted, Dynamic Weighted, Ease-up and Ease-down. Don’t worry too much about the details right now, as you start to use the app it will become more clear.';
 
 // itemPrefill is the name Step 7's run() stages for the tour's own added
 // item (see buildPickerTourStep7) — a new item distinct from anything
@@ -154,7 +154,7 @@ const buildPickerTourStep2 = (pickerId, state) => ({
 const PICKER_TOUR_STEP_3 = {
   sel: '.np-fields .np-field:first-child', tab: 'picker',
   title: 'Give it a name',
-  body: <>This is the <b>name of the picker</b> and should be descriptive of the types of tasks contained in its pool of items. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
+  body: <>This is the <b>name of the picker</b> and should be descriptive of the types of items contained in its list of items. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
   primary: 'Next', back: true, resumable: false,
 };
 
