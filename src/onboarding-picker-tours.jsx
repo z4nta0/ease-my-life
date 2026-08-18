@@ -201,7 +201,7 @@ const buildPickerTourStep5 = (pickerId) => ({
 const PICKER_TOUR_STEP_6 = {
   sel: '.ob-picker-next', tab: 'picker', scrollToBottom: true,
   title: 'Add items to this picker',
-  body: <>The picker options are all done, you just need to <b>add some task items for the picker to choose from</b>. Go ahead and click this button now.</>,
+  body: <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click the "Add items" button now.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
   // The click this run() accompanies swaps the form from Details to its own
   // (much shorter) Items sub-step IN PLACE, within the same scrollable
