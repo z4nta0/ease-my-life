@@ -1582,23 +1582,23 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
       <div className="stat-filter-row">
         <span className="stat-filter-lbl">Show</span>
         <div className="picker-tabs" ref={tabsRef} key={groupFilter}>
+          <button type="button"
+                  className={`picker-tab picker-tab--add picker-tab--enter ${creating ? 'is-on' : ''}`}
+                  style={{ animationDelay: '0ms' }}
+                  disabled={disableTourAddPicker}
+                  onClick={() => setCreating(true)}>
+            <span className="picker-tab-add-icon" aria-hidden="true"><Icon name="plus" size={16} /></span>
+            <span className="picker-tab-name">Add new picker</span>
+          </button>
           {visiblePickers.map((p, i) => (
             <button key={p.id}
                     className={`picker-tab picker-tab--enter ${!creating && p.id === activeId ? 'is-on' : ''}`}
-                    style={{ animationDelay: (i * 40) + 'ms' }}
+                    style={{ animationDelay: ((i + 1) * 40) + 'ms' }}
                     onClick={() => { setCreating(false); setActiveId(p.id); }}>
             <span className="picker-tab-name">{p.name}</span>
             <span className="picker-tab-mode">{MODES[p.mode].label}</span>
           </button>
         ))}
-        <button type="button"
-                className={`picker-tab picker-tab--add picker-tab--enter ${creating ? 'is-on' : ''}`}
-                style={{ animationDelay: (visiblePickers.length * 40) + 'ms' }}
-                disabled={disableTourAddPicker}
-                onClick={() => setCreating(true)}>
-          <span className="picker-tab-add-icon" aria-hidden="true"><Icon name="plus" size={16} /></span>
-          <span className="picker-tab-name">Add new picker</span>
-        </button>
         </div>
       </div>
       </div>

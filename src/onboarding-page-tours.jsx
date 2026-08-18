@@ -186,9 +186,9 @@ const PICKER_PAGE_TARGETS = {
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers. Feel free to select one now or click Next to advance to the next step.</>,
   },
-  // Excludes the trailing "Add new picker" button — Step 4 (below) covers
-  // that on its own, and this step's own copy is entirely about selecting
-  // an EXISTING picker.
+  // Excludes the "Add new picker" button (now the first tab, not the last)
+  // — Step 4 (below) covers that on its own, and this step's own copy is
+  // entirely about selecting an EXISTING picker.
   pickerSelection: {
     sel: '.picker-tabs .picker-tab:not(.picker-tab--add)',
     title: 'Picker Selection',
@@ -540,18 +540,7 @@ const buildPageTourSteps = (pageId, actions) => {
   if (pageId === 'explore_pickers') {
     return [
       { ...PICKER_PAGE_TARGETS.groupFilter, tab: 'picker', primary: 'Next', back: true },
-      {
-        ...PICKER_PAGE_TARGETS.pickerSelection, tab: 'picker', primary: 'Next', back: true,
-        // Stages Step 4's own target: .picker-tabs scrolls horizontally
-        // (the engine's own bring()/getScroller only ever handle VERTICAL
-        // scrolling, so the Add button — last in the row — needs its own
-        // reveal here), same "prepare what the NEXT step needs" timing used
-        // elsewhere in this file. Already-in-view is a harmless no-op.
-        run: () => {
-          const btn = document.querySelector('.picker-tab--add');
-          if (btn) btn.scrollIntoView({ inline: 'end', block: 'nearest' });
-        },
-      },
+      { ...PICKER_PAGE_TARGETS.pickerSelection, tab: 'picker', primary: 'Next', back: true },
       {
         ...PICKER_PAGE_TARGETS.createNewPickers, tab: 'picker', primary: 'Next', back: true,
       },

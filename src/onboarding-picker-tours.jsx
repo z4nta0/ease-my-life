@@ -104,17 +104,13 @@ const PICKER_TOUR_STEP_1 = {
 // on PickerTour below for why this specific ordering matters.
 const buildPickerTourStep2 = (pickerId, state) => ({
   sel: '.picker-tab--add', tab: 'picker', scrollToTop: true,
-  // The tab strip only ever has one or two real tabs during first-time
-  // onboarding (each picker's own sample stays hidden until its own mini-
-  // tour finishes), so "+Add" was always already in view there. Replaying
-  // this tour, though, every REAL picker from a prior completion (this
-  // tour's own, or an earlier one's) is already a real, visible tab — by
-  // the 4th/5th/6th one, the strip overflows and "+Add" sits off the end,
-  // fully obscured, with no horizontal-scroll handling anywhere to reveal
-  // it (bring()'s own vertical-only scroll math left it wherever it
-  // happened to sit) — a genuinely broken step, nothing left to click.
-  // See revealHorizontally's own doc comment in onboarding-tour-runner.jsx.
-  revealHorizontally: true,
+  // "+Add" is the FIRST tab in the strip (tab-picker.jsx), not the last —
+  // no revealHorizontally needed here. It used to sit last, which broke a
+  // Replay Tour once enough real pickers accumulated to push it off the
+  // scrollable end with no horizontal-scroll handling anywhere to reveal it
+  // (bring()'s own scroll math is vertical-only); moving it to the front of
+  // the strip (users had trouble finding it there at all) fixed that same
+  // problem for real usage too, not just this tour.
   title: 'Create a new picker',
   body: <>This button will <b>open up the form</b> for creating a new picker. Go ahead and click it now.</>,
   primary: 'Next', back: true, requireClick: true,

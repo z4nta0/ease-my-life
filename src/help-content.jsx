@@ -389,7 +389,7 @@ const PICKER_HELP_ITEMS = [
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
   {
-    // padX: 3 — the add button sits right after the last tab in the same
+    // padX: 3 — the add button sits right before the first tab in the same
     // 8px-gap scrollable row; the default 8px pad on each side would
     // overlap by 8px otherwise (same bleed as Today's Edit Mode/Regenerate).
     id: 'pickerSelection', sel: '.picker-tabs .picker-tab:not(.picker-tab--add)', title: 'Picker Selection', padX: 3,

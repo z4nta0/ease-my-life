@@ -70,18 +70,19 @@ import { InfoTip, reduceMotion } from './ui.jsx';
 //              bring()'s own math handles — that math (and getScroller,
 //              which only ever looks for a vertically-overflowing ancestor)
 //              has no horizontal equivalent, so a target sitting off the
-//              end of such a row (e.g. the trailing "+ Add new picker" tab,
-//              once enough real tabs have accumulated to overflow the
-//              strip) would otherwise never actually come into view. A
-//              one-time native scrollIntoView({inline:'end'}) once the
-//              target is first found — same fix already used ad hoc by the
-//              Pickers PAGE tour's own step (see its own run(), which
-//              exists only because THAT tour's steps stay on one page the
-//              whole time, letting it prep the NEXT step's target from the
-//              CURRENT one's run() — the picker mini-tour below switches
-//              tabs on its own Step 1, so there's no earlier same-page step
-//              to prep from; this flag covers that case generically instead
-//              of needing one).
+//              scrollable end of such a row would otherwise never actually
+//              come into view. A one-time native scrollIntoView({inline:
+//              'end'}) once the target is first found. Not currently used
+//              by any step (the picker mini-tour's own "+Add" step used to
+//              need this — see buildPickerTourStep2's own comment for why
+//              moving that tab to the FRONT of its strip retired it — but
+//              the flag itself stays generic for the next horizontally-
+//              scrolling row a step needs to reach into) — the picker
+//              mini-tour below switches tabs on its own Step 1, so a step
+//              here has no earlier same-page step to prep a reveal from the
+//              way the Pickers PAGE tour's own run()-based steps can; this
+//              flag would cover that case generically instead of needing
+//              one, whenever something next needs it.
 //   coachAtTop — true if this step's target can be TALLER than the
 //              viewport itself (e.g. a highlighted region that's most of a
 //              mobile screen's height). The normal reserve-space logic
