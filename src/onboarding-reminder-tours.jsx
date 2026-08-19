@@ -20,7 +20,7 @@ const REMINDER_TOUR_COPY = {
     taskId: 'tk_ob_meds',
     icon: 'pin',
     title: 'One-Time Reminders',
-    body2: 'One-time reminders are simple one off things that need to get done. e.g. pickup precription or pickup dry cleaning. Let’s create one of these now.',
+    body2: 'One-time reminders are simple one off things that need to get done and will never show up again once they are marked as completed in your todo list. e.g. pickup precription or pickup dry cleaning. Let’s create one of these now.',
   },
   recurring: {
     taskId: 'tk_ob_trash',
