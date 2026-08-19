@@ -19,8 +19,8 @@ import React from 'react';
 const OB_NAV_TARGETS = {
   today: {
     sel: '[data-tab="today"]', place: 'below',
-    title: 'This is the Today page',
-    body: <>This is the main page of the app, and it is <b>where your auto-generated todo list will be displayed every day</b>.</>,
+    title: 'The Today Page',
+    body: <>The Today page is the main page of the app and can be found using the calendar icon indicated here. The Today page is <b>where your auto-generated todo list will be displayed every day</b>.</>,
   },
   picker: {
     sel: '[data-tab="picker"]', place: 'below',
