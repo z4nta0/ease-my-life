@@ -16,27 +16,27 @@ import { emlTour } from './onboarding.jsx';
 const PAGE_TOUR_COPY = {
   explore_today: {
     title: 'Today Page',
-    body: 'This tutorial will take you on a quick tour of the Today page, in order to highlight important elements and functionality.',
+    body: <>This tutorial will take you on a quick tour of the Today page, in order to <b>highlight important elements and functionality</b>.</>,
     pills: ['page tour', 'today page', 'todo list'],
   },
   explore_pickers: {
     title: 'Pickers Page',
-    body: 'This tutorial will take you on a quick tour of the Pickers page, in order to highlight important elements and functionality.',
+    body: <>This tutorial will take you on a quick tour of the Pickers page, in order to <b>highlight important elements and functionality</b>.</>,
     pills: ['page tour', 'pickers page', 'new pickers'],
   },
   explore_stats: {
     title: 'Stats Page',
-    body: 'This tutorial will take you on a quick tour of the Stats page, in order to highlight important elements and functionality.',
+    body: <>This tutorial will take you on a quick tour of the Stats page, in order to <b>highlight important elements and functionality</b>.</>,
     pills: ['page tour', 'stats page', 'picker statistics'],
   },
   explore_data: {
     title: 'Data Page',
-    body: 'This tutorial will take you on a quick tour of the Data page, in order to highlight important elements and functionality.',
+    body: <>This tutorial will take you on a quick tour of the Data page, in order to <b>highlight important elements and functionality</b>.</>,
     pills: ['page tour', 'data page', 'edit pickers'],
   },
   explore_settings: {
     title: 'Settings Page',
-    body: 'This tutorial will take you on a quick tour of the Settings page, in order to highlight important elements and functionality.',
+    body: <>This tutorial will take you on a quick tour of the Settings page, in order to <b>highlight important elements and functionality</b>.</>,
     pills: ['page tour', 'settings page', 'app customization'],
   },
 };
