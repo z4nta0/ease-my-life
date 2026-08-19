@@ -146,7 +146,7 @@ const buildReminderTourStep4 = (repeat) => {
 // recurring variant gets one extra sentence about the recurrence date.
 const buildReminderTourAddStep = (variant) => ({
   sel: '.rem-quickadd-wrap .btn--primary', tab: 'today',
-  title: 'Add Reminder item',
+  title: 'Add your new Reminder',
   body: variant === 'recurring'
     ? <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>. NOTE: if you selected a day other than today as the recurrence date, then this item will not show up in your todo list until it is due.</>
     : <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>.</>,
