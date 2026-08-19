@@ -48,7 +48,7 @@ const buildReminderTourStep1 = (variant, state) => {
   return {
     sel: '.rem-add-btn', tab: 'today',
     title: 'Create Reminder item',
-    body: <>This "+" button is always present on the Today page. It will <b>open the interface for creating a Reminder</b>. Go ahead and click the "+" button now.</>,
+    body: <>The "+" button is always present on the Today page and will <b>open the interface for creating a Reminder</b>. Go ahead and click the "+" button now.</>,
     primary: 'Next', back: false, requireClick: true,
     run: () => {
       // Read off the LIVE sample task, not the static OB_TASKS template —
