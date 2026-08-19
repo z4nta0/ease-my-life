@@ -326,7 +326,7 @@ function Onboarding({ state, actions, active, selectTab }) {
     {
       sel: '.groups-dnd', tab: 'today',
       title: 'You’re all finished!',
-      body: <>That is all for the Welcome Tour. Highlighted here are a few small tutorials that will help get you set up to start using the app. Enjoy!</>,
+      body: <>That is all for the Welcome Tour. Highlighted here are <b>a few small tutorials that will help get you set up to start using the app</b>. Enjoy!</>,
       primary: 'Done', back: true,
       scrollToTop: true,
     },
