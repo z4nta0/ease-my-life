@@ -292,7 +292,7 @@ function Onboarding({ state, actions, active, selectTab }) {
     {
       sel: '.group-section', tab: 'today',
       title: 'Daily todo list',
-      body: <>This is what a <b>typical todo list</b> will look like once you’ve set up your own pickers and reminders. There will be tutorials for setting these up once this tour ends.</>,
+      body: <>This is <b>what a typical todo list will look like</b> once you’ve set up your own pickers and reminders. There will be tutorials for setting these up once this tour ends.</>,
       primary: 'Next', back: true,
       scrollToTop: true,
     },
