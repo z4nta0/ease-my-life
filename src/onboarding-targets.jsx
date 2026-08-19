@@ -24,8 +24,8 @@ const OB_NAV_TARGETS = {
   },
   picker: {
     sel: '[data-tab="picker"]', place: 'below',
-    title: 'This is the Pickers page',
-    body: <>Pickers are the heart of the app and this is <b>where you can create new pickers and their items</b>. You can also manually run any picker to generate a task.</>,
+    title: 'The Pickers Page',
+    body: <>The Pickers page is <b>where you can create new pickers</b> and can be found using the shuffle icon indicated here. You can also <b>manually run any picker, as well as send a specific item to your todo list</b>, from the Pickers page.</>,
   },
   stats: {
     sel: '[data-tab="stats"]', place: 'below',

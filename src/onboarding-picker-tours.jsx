@@ -90,8 +90,8 @@ const PICKER_TOUR_COPY = {
 // not the step object.
 const PICKER_TOUR_STEP_1 = {
   sel: '[data-tab="picker"]', tab: 'today',
-  title: 'The Pickers page',
-  body: <>Pickers are the heart of the app and this is <b>where you can create new pickers and their items</b>. You can also manually run any picker to generate a task. Go ahead and click the "Pickers" page's button now.</>,
+  title: 'The Pickers Page',
+  body: <>The Pickers page is <b>where you can create new pickers</b> and can be found using the shuffle icon indicated here. You can also <b>manually run any picker, as well as send a specific item to your todo list</b>, from the Pickers page. Go ahead and click the "Pickers" page's button now.</>,
   primary: 'Next', back: false, requireClick: true,
 };
 
