@@ -39,8 +39,8 @@ const OB_NAV_TARGETS = {
   },
   settings: {
     sel: '[data-tab="settings"]', place: 'below',
-    title: 'This is the Settings page',
-    body: <>This is where you will be able to customize various aspects of the app, adjust the daily generator, customize holiday observances, <b>install the app</b> and export/import your data.</>,
+    title: 'The Settings Page',
+    body: <>The Settings page is where you can customize various aspects of the app and can be found using the gear icon indicated here. The Settings page allows you to change the app’s theme, animations, adjust the daily generator, customize holiday observances, <b>install the app</b>, export/import your data and contact the developer.</>,
   },
 };
 
