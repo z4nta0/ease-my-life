@@ -29,8 +29,8 @@ const OB_NAV_TARGETS = {
   },
   stats: {
     sel: '[data-tab="stats"]', place: 'below',
-    title: 'This is the Stats page',
-    body: <>This is where you can find a <b>breakdown of all the statistics</b> associated with your created pickers and their items. As you continue to use the app over time, this page will become extremely useful.</>,
+    title: 'The Stats Page',
+    body: <>The Stats page is where you can find a <b>breakdown of all the statistics associated with your created data</b> and can be found using the bar graph icon indicated here. As you continue to use the app over time, this page will be extremely useful.</>,
   },
   data: {
     sel: '[data-tab="data"]', place: 'below',
