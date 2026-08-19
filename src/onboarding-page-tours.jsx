@@ -435,7 +435,7 @@ const TODAY_PAGE_TARGETS = {
     // this scoping is a no-op difference there — same highlight either way.
     sel: '.group-rail ul',
     title: 'List Navigation',
-    body: <>This is the todo list’s navigation, allowing you to <b>jump directly to a group’s section</b>. Over time your list can grow quite long and this helps to eliminate any long scrolling.</>,
+    body: <>This is the todo list’s navigation, <b>allowing you to jump directly to a group’s section</b>. Over time your list can grow quite long and this helps to quickly move between the different sections of your todo list.</>,
   },
   // .em-rail-btn (sidebar, desktop) / .foot-editmode (footer, mobile) both
   // exist in the DOM at every width — a container query just toggles which
