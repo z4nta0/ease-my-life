@@ -184,7 +184,7 @@ const PICKER_PAGE_TARGETS = {
   groupFilter: {
     sel: '.picker-groups .picker-group-pill',
     title: 'Group Filter',
-    body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
   // Excludes the "Add new picker" button (now the first tab, not the last)
   // — Step 4 (below) covers that on its own, and this step's own copy is
