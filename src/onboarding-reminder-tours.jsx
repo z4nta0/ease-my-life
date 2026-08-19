@@ -13,7 +13,7 @@ import { OB_TASKS } from './onboarding-seed-data.js';
 // variant, matching the two sample reminders seeded by the Welcome Tour
 // (onboarding-seed-data.js's OB_TASKS: tk_ob_meds is the one-time sample,
 // tk_ob_trash the recurring one).
-const REMINDER_TOUR_BODY_1 = 'Reminders can be thought of as what a normal task would be in a typical todo list app, since not all tasks can be randomly selected. Taking out the trash for pickup, as an example, since this must be done on a set day every week.';
+const REMINDER_TOUR_BODY_1 = <>Reminders can be thought of as <b>what a normal task would be in a typical todo list app</b>, since not all tasks can be randomly selected. Taking out the trash for pickup, as an example, since this must be done on a set day every week.</>;
 
 const REMINDER_TOUR_COPY = {
   once: {
