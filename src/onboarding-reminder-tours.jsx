@@ -47,7 +47,7 @@ const buildReminderTourStep1 = (variant, state) => {
   const copy = REMINDER_TOUR_COPY[variant];
   return {
     sel: '.rem-add-btn', tab: 'today',
-    title: 'Create Reminder item',
+    title: 'Create a Reminder',
     body: <>The "+" button is always present on the Today page and will <b>open the interface for creating a Reminder</b>. Go ahead and click the "+" button now.</>,
     primary: 'Next', back: false, requireClick: true,
     run: () => {
