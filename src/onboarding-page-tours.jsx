@@ -458,7 +458,7 @@ const TODAY_PAGE_TARGETS = {
   groupGrip: {
     sel: '.rem-section .group-grip',
     title: 'Movable Icon',
-    body: <>This will allow to <b>move an entire group section to a different position in the todo list</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now or click Next if you are ready to move on.</>,
+    body: <>This will <b>allow you to move an entire group section to a different position in the todo list or move item positions within a group’s section</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now. Click Next when you are ready to move on.</>,
   },
   // Reminders has no rename feature (its own header is a plain, non-
   // editable <h2> — see reminders.jsx), so this targets Page Tours instead:
