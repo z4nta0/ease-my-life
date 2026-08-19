@@ -471,7 +471,7 @@ const TODAY_PAGE_TARGETS = {
   renameGroup: {
     sel: '.pt-section .group-name-input',
     title: 'Rename Group',
-    body: <>This will allow you to <b>change a group’s name</b>. You can go ahead and try it yourself, but once you exit this tutorial the changes will be reverted. You can still change them afterwards if you’d like. This concludes the Today page tutorial, click Done when you are ready.</>,
+    body: <>This will <b>allow you to change a group’s name</b>. You can go ahead and try it yourself, but once you exit this tutorial the changes will be reverted. This concludes the Today page tutorial, click Done when you are ready.</>,
   },
 };
 
