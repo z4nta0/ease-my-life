@@ -34,8 +34,8 @@ const OB_NAV_TARGETS = {
   },
   data: {
     sel: '[data-tab="data"]', place: 'below',
-    title: 'This is the Data page',
-    body: <>This is where you can <b>view and edit all of the data</b> that you have created. That includes all of your reminders, pickers and their related items.</>,
+    title: 'The Data Page',
+    body: <>The Data page is <b>where you can view and edit all of your created data</b> and can be found using the database storage icon indicated here. The Data page content includes all of your reminders, pickers and their associated items.</>,
   },
   settings: {
     sel: '[data-tab="settings"]', place: 'below',
