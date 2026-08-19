@@ -367,7 +367,7 @@ function Onboarding({ state, actions, active, selectTab }) {
         icon={<svg viewBox="8 8 528 528" fill="none"><path d={OB_BRAND} style={{ fill: 'currentColor', stroke: 'currentColor' }} strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" /></svg>}
         title="Welcome to Ease My Life"
         paragraphs={[
-          'Decide less and add some variety to your life! Ease My Life is a todo app that generates a daily list of tasks from pools of items that you create and according to the rules that you set.',
+          <>Decide less and add some variety to your life! <b>Ease My Life is a todo app that automatically generates a daily list of tasks</b> from lists of items that you create and according to the rules that you set.</>,
           'Ease My Life requires no account to use, works completely offline, stores all data on your device and is ad free!',
           'This welcome tour will show you the layout of the app and help you understand how it works. After it finishes, there will be a few small tutorials that will guide you through setting up everything you need in order to generate your first todo list. Let’s get started!',
         ]}
