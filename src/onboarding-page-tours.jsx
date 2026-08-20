@@ -297,7 +297,7 @@ const STATS_PAGE_TARGETS = {
   groupFilter: {
     sel: '.stat-scope-groups .picker-group-pill',
     title: 'Group Filter',
-    body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
   // All/Conditionals/Reminders/individual pickers all render as tabs in the
   // same row — one combined step rather than splitting them out, since
@@ -305,7 +305,7 @@ const STATS_PAGE_TARGETS = {
   pickersFilter: {
     sel: '.stat-scope-tabs .picker-tab',
     title: 'Pickers Filter',
-    body: <>This will allow you to <b>narrow your selection to specific pickers or reminders</b>, or you can view everything all at once. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will allow you to <b>narrow your selection to specific pickers or reminders</b>, or you can view everything all at once.</>,
   },
   // The pills specifically, not their .stat-filter-pills--seg container —
   // that container stretches to the FULL width of its row (.stat-filter-row's
@@ -315,12 +315,12 @@ const STATS_PAGE_TARGETS = {
   rangeFilter: {
     sel: '.stat-filter-pills--seg .stat-pill',
     title: 'Range Filter',
-    body: <>This will allow you to further <b>narrow your selection by date range</b>, with ranges from 1 week to 1 year to all time. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will allow you to further <b>narrow your selection by date range</b>, with ranges from 1 week to 1 year to all time.</>,
   },
   heatmap: {
     sel: '.stat-heatmap-card',
     title: 'Activity Heatmap',
-    body: <>This visualizes your completed activity over time, with <b>each day shaded by how much you got done</b>. Click on any day for more details. Click Next when you are ready to advance to the next step.</>,
+    body: <>This visualizes your completed activity over time, with <b>each day shaded by how much you got done</b>. You can click on any day for more details. Click Next when you are ready to advance to the next step.</>,
   },
   // Only rendered once a specific picker is the active scope — the PREVIOUS
   // step's own run() (below) selects one before this step ever mounts, same
@@ -328,7 +328,7 @@ const STATS_PAGE_TARGETS = {
   pickerBreakdown: {
     sel: '.stat-breakdown-card',
     title: 'Picker Breakdown',
-    body: <>Once a specific picker is selected, its individual items are broken down here. You can <b>view things like pick count, pick frequency, last picked date</b> and others. This concludes the Stats page tutorial, click Done when you are ready to finish this tutorial.</>,
+    body: <>Once a specific picker is selected, its individual items are broken down here. You can <b>view things like pick count, pick frequency, last picked date</b> and others. This concludes the Stats page tutorial, click Done when you are ready.</>,
   },
 };
 
