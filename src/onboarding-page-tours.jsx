@@ -197,7 +197,7 @@ const PICKER_PAGE_TARGETS = {
   createNewPickers: {
     sel: '.picker-tab--add',
     title: 'Create New Pickers',
-    body: <>This is where you can <b>create new pickers</b>. We will not include this as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished. Click Next when you are ready to move on.</>,
+    body: <>The "Add new picker" button will <b>open up a form that allows you to create new pickers</b>. We will not include this as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished.</>,
   },
   // Two-phase highlight, both via the same fallback `sel` (findTargets tries
   // each comma-separated selector in turn and uses the first that matches —
