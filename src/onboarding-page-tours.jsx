@@ -192,7 +192,7 @@ const PICKER_PAGE_TARGETS = {
   pickerSelection: {
     sel: '.picker-tabs .picker-tab:not(.picker-tab--add)',
     title: 'Picker Selection',
-    body: <>This will allow you to <b>select a specific picker</b>, in order to initiate a manual picker generation down below as well as edit or delete its items. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will <b>allow you to select a specific picker</b>, in order to initiate a manual picker generation as well as edit or delete its items.</>,
   },
   createNewPickers: {
     sel: '.picker-tab--add',

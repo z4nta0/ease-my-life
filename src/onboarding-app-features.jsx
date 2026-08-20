@@ -129,11 +129,11 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // that's the whole reason this exists: letting the user pick a
       // different picker than whichever one happened to already be
       // active. No requireClick — same as the page tour's own step,
-      // this is purely optional ("select one now or click Next").
+      // selecting a different picker here is purely optional.
       {
         sel: '.picker-tabs .picker-tab:not(.picker-tab--add)', tab: 'picker',
         title: 'Picker Selection',
-        body: <>This will allow you to <b>select a specific picker</b>, in order to initiate a manual picker generation down below as well as edit or delete its items. Feel free to select one now or click Next to advance to the next step.</>,
+        body: <>This will <b>allow you to select a specific picker</b>, in order to initiate a manual picker generation as well as edit or delete its items.</>,
         primary: 'Next', back: true,
       },
       // Title/body copied verbatim from the Pickers page tour's own
