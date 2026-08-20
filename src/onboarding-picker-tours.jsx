@@ -35,7 +35,7 @@ const PICKER_TOUR_BODY_1 = 'Pickers are where the magic happens. They have rules
 // gets its own dedicated pass.
 const PICKER_TOUR_COPY = {
   pkr_ob_daily: {
-    body2: 'This tutorial will guide you through creating a Daily Chores picker. This type of picker is an Ease-up and is perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 week. e.g. once it picks "Do the laundry", you don’t want that task picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.',
+    body2: <>This tutorial will guide you through creating a Daily Chores picker. This type of picker is an Ease-up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Do the laundry", you don’t want that task picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>,
     itemPrefill: 'Mop the floors',
   },
   pkr_ob_monthly: {
@@ -112,7 +112,7 @@ const buildPickerTourStep2 = (pickerId, state) => ({
   // the strip (users had trouble finding it there at all) fixed that same
   // problem for real usage too, not just this tour.
   title: 'Create a new picker',
-  body: <>The "+ Add new picker" button will <b>open up the form for creating a new picker</b>. Go ahead and click the "+ Add new picker" button now.</>,
+  body: <>The "Add new picker" button will <b>open up the form for creating a new picker</b>. Go ahead and click the "Add new picker" button now.</>,
   primary: 'Next', back: true, requireClick: true,
   // suppressAutoOpen: tab-picker.jsx's dormant effect (`if (tour.prefill &&
   // !creating)`) is meant to stay silent for this tour — see the long
@@ -185,7 +185,7 @@ const PICKER_TOUR_STEP_4 = {
 const buildPickerTourStep5 = (pickerId) => ({
   sel: `.np-fields .mode-opt[data-mode="${PICKER_SAMPLES[pickerId].mode}"]`, tab: 'picker',
   title: 'Select a picker type',
-  body: <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you, so you can go ahead and click Next whenever you are ready.</>,
+  body: <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you. Click next when you are ready to move on.</>,
   primary: 'Next', back: true, resumable: false, coachAtTop: true,
 });
 
@@ -239,8 +239,8 @@ const PICKER_TOUR_STEP_6 = {
 // generic "New item" / 7-14 day defaults.
 const buildPickerTourStep7 = (pickerId) => ({
   sel: '.pv-additem-btn', tab: 'picker',
-  title: 'Add a task to the picker’s pool',
-  body: <>Pickers need a <b>list of items to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click the "+ Add item" button now to add a new item to this picker's list of items.</>,
+  title: 'Add an item to the picker’s list',
+  body: <>Pickers need a <b>list of items to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click the "Add item" button now to add a new item to this picker's list of items.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
   run: () => {
     const copy = PICKER_TOUR_COPY[pickerId];
