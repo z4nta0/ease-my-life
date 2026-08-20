@@ -2410,7 +2410,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
             </div>
 
             {showChecklist && (
-              <div className={`ob-create ob-create--generate ${checklistExiting ? 'is-removing' : ''} ${!obReadyToGenerate ? 'is-needed' : ''}`}>
+              <div className={`ob-create ob-create--generate ${checklistExiting ? 'is-removing' : ''} ${!obReadyToGenerate ? 'is-needed' : ''} ${obReadyToGenerate ? 'ob-generate-pulse' : ''}`}>
                 <div className="ob-create-i"><Icon name="check" size={22} /></div>
                 <b>Generate your real list</b>
                 <p>Once every tutorial is checked off, and at least one picker has been created, this replaces all of them with your own real, generated todo list.</p>

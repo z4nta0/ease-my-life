@@ -3650,6 +3650,22 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   70%{box-shadow:0 0 0 12px oklch(1 0 0/0)}
   100%{box-shadow:0 0 0 12px oklch(1 0 0/0)}
 }
+/* Same sonar-ping treatment as .ob-spot.is-pulsing above, applied to the
+   whole "Generate your real list" card once every prerequisite is done and
+   the button is actually clickable. Own keyframe, not obSpotPing verbatim:
+   the ring expands from the card's own edge outward onto the page
+   background, not onto .ob-create's light var(--accent-soft) fill (that's
+   what happens if the pulse is put on the inner button instead — the ring
+   is drawn over the card's own soft background and all but disappears).
+   position:relative is needed here (unlike .ob-spot, which is already
+   position:fixed) since .ob-create has no position of its own. */
+.ob-generate-pulse{position:relative}
+.ob-generate-pulse::after{content:"";position:absolute;inset:0;border-radius:inherit;animation:obGeneratePing 1.8s ease-out infinite;pointer-events:none}
+@keyframes obGeneratePing{
+  0%{box-shadow:0 0 0 0 oklch(from var(--accent) l c h/0.55)}
+  40%{box-shadow:0 0 0 10px oklch(from var(--accent) l c h/0.35)}
+  100%{box-shadow:0 0 0 20px oklch(from var(--accent) l c h/0)}
+}
 .ob-coach{position:fixed;pointer-events:auto;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);box-shadow:0 16px 40px -14px oklch(0 0 0/0.45);padding:14px 15px;animation:obFade .18s ease both}
 .ob-coach .ob-prog{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;color:var(--accent);margin:0 0 5px}
 .ob-coach h4{font-size:15px;font-weight:600;margin:0 0 5px}
@@ -3698,7 +3714,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .today-card--tutorial.is-needed:hover{border-color:oklch(from var(--warm) l c h/0.7)}
 @keyframes obFade{from{opacity:0}to{opacity:1}}
 @keyframes obRise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.ob-scrim,.ob-welcome,.ob-coach,.ob-spot,.ob-spot.is-pulsing::after{animation:none;transition:none}}
+@media (prefers-reduced-motion:reduce){.ob-scrim,.ob-welcome,.ob-coach,.ob-spot,.ob-spot.is-pulsing::after,.ob-generate-pulse::after{animation:none;transition:none}}
 body.ob-touring .tab{padding-bottom:200px}
 .np-tour-name{margin:16px 0 16px}
 
