@@ -341,7 +341,7 @@ const PICKER_TOUR_STEP_BOOST = {
 const PICKER_TOUR_STEP_11 = {
   sel: '.ob-item-save', tab: 'picker',
   title: 'Save this picker item',
-  body: <>This task item is now complete and can be <b>saved to this picker’s list</b>. Go ahead and click the "Save" button now to save this item to this picker's list of items.</>,
+  body: <>This picker item is now complete and can be <b>saved to this picker’s list</b>. Go ahead and click the "Save" button now to save this item to this picker's list of items.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
 };
 
