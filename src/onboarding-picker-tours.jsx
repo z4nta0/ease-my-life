@@ -49,7 +49,7 @@ const PICKER_TOUR_COPY = {
     step9Body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>,
   },
   pkr_ob_coffee: {
-    body2: 'This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is perfect for randomly choosing something, while also making sure that every item is eventually picked and for prioritizing certain items over others. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.',
+    body2: <>This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is <b>perfect for randomly choosing something, while also making sure that every item is eventually picked and for prioritizing certain items over others</b>. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.</>,
     itemPrefill: 'Peppermint Mocha',
   },
   pkr_ob_dinner: {
@@ -330,7 +330,7 @@ const PICKER_TOUR_STEP_WEIGHT = {
 const PICKER_TOUR_STEP_BOOST = {
   sel: '.pv-additem-wrap .pie-row:nth-child(2)', tab: 'picker',
   title: 'Boost value',
-  body: <>This is the <b>crucial piece of a Dynamic Weighted picker</b>. Every time an item does not get picked this value will increase, making it more and more likely to be picked. Then when it does get picked this value will reset, making it much less likely to be picked. Nothing to adjust here, click Next whenever you are ready.</>,
+  body: <>This is the <b>crucial piece of a Dynamic Weighted picker</b>. Every time an item does not get picked this value will increase, making it more and more likely to be picked. Then when it does get picked this value will reset, making it much less likely to be picked.</>,
   primary: 'Next', back: true, resumable: false,
 };
 
@@ -340,7 +340,7 @@ const PICKER_TOUR_STEP_BOOST = {
 // pattern as Steps 2/6/7.
 const PICKER_TOUR_STEP_11 = {
   sel: '.ob-item-save', tab: 'picker',
-  title: 'Save this task item',
+  title: 'Save this picker item',
   body: <>This task item is now complete and can be <b>saved to this picker’s list</b>. Go ahead and click the "Save" button now to save this item to this picker's list of items.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
 };
