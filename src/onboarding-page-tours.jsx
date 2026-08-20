@@ -224,7 +224,7 @@ const PICKER_PAGE_TARGETS = {
     clickSel: '.pv-act--pick',
     pulseSel: '.pv-act--pick:not(.is-busy)',
     title: 'Manual Generation',
-    body: <>The "Pick one" button will allow you to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick one" button now to see how this works.</>,
+    body: <>The "Pick one" button will <b>allow you to run a manual pick generation for your selected picker</b>, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick one" button now to see how this works.</>,
   },
   // Same two-phase highlight as manualGeneration above: before the click,
   // .pv-act--send:not(.is-sent) matches the real Send to Today button, so
@@ -254,7 +254,7 @@ const PICKER_PAGE_TARGETS = {
     clickSel: '.pv-act--send',
     pulseSel: '.pv-act--send:not(.is-sent)',
     title: 'Add to Todo List',
-    body: <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to give it a try.</>,
+    body: <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to see how this works.</>,
   },
   // Per-item Send to Today/Edit/Delete are disabled while this step is up
   // (tab-picker.jsx's own disablePoolItemButtons, gated on this exact
@@ -265,7 +265,7 @@ const PICKER_PAGE_TARGETS = {
   pickerItems: {
     sel: '.pool-items',
     title: 'Picker Items',
-    body: <>Here you can <b>view all items in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial, so click Next when you are ready to move on.</>,
+    body: <>Here you can <b>view all items in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial.</>,
   },
   // Disabled while this step is up (tab-picker.jsx's own
   // disableAddItemButton, same tourId+step gating pattern) — narrating
@@ -274,7 +274,7 @@ const PICKER_PAGE_TARGETS = {
   addPickerItem: {
     sel: '.pv-additem-btn',
     title: 'Add Picker Item',
-    body: <>This will allow you to <b>add new items to the selected picker's pool</b>. This button is disabled for this tutorial, so go ahead and click Done when you are ready to finish this tutorial.</>,
+    body: <>The "Add Item" button will <b>allow you to add new items to the selected picker's list of items</b>. This button is disabled for this tutorial. This concludes the Pickers page tutorial, click Done when you are ready.</>,
   },
 };
 
