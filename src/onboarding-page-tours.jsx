@@ -346,17 +346,17 @@ const DATA_PAGE_TARGETS = {
   groupFilter: {
     sel: '.stat-scope-groups .picker-group-pill',
     title: 'Group Filter',
-    body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers. These buttons are disabled for this tutorial, so click Next when you are ready to advance to the next step.</>,
+    body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
   pickersFilter: {
     sel: '.stat-scope-tabs .picker-tab',
     title: 'Pickers Filter',
-    body: <>This will allow you to <b>further narrow exactly what you want to view and edit</b>. These buttons are disabled for this tutorial, so click Next when you are ready to advance to the next step.</>,
+    body: <>This will allow you to <b>further narrow exactly what you want to view and edit</b>.</>,
   },
   remindersManager: {
     sel: '.cat--reminders',
     title: 'View and Edit Reminders',
-    body: <>This is where you can <b>view and edit all of your reminders, as well as create new ones</b>. Feel free to explore this section yourself or click Next when you are ready to advance to the next step.</>,
+    body: <>This is where you can <b>view and edit all of your reminders, as well as create new ones</b>. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
   },
   // Targets .data-list, not an individual .cat section — scope stays 'all'
   // for the whole Data tour (nothing narrows it to one picker anymore, see
@@ -365,7 +365,7 @@ const DATA_PAGE_TARGETS = {
   pickersManager: {
     sel: '.data-list',
     title: 'View and Edit Pickers',
-    body: <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. This concludes the Data page tutorial, click Done when you are ready to finish this tutorial.</>,
+    body: <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. This concludes the Data page tutorial, click Done when you are ready.</>,
   },
 };
 
