@@ -39,15 +39,14 @@ const PICKER_TOUR_COPY = {
     itemPrefill: 'Mop the floors',
   },
   pkr_ob_monthly: {
-    body2: 'This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease-up and is perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 month. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least 1 month but also no later than 2 months. Let’s create one of these now.',
+    body2: <>This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease-up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 month</b>. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least 1 month but also no later than 2 months. Let’s create one of these now.</>,
     itemPrefill: 'Wash the windows',
     // Overrides the generic 7/14-day DEFAULT_EASE (tab-picker.jsx) for just
     // this tour's own added item — a monthly-cadence picker's own sample
-    // item should look the part instead of a daily/weekly one. See Step 9's
-    // own step9Tail override below for the matching copy change.
+    // item should look the part instead of a daily/weekly one.
     itemSoonest: 31,
     itemLatest: 62,
-    step9Body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most monthly chores do not usually need to be done again for at least a month or so.</>,
+    step9Body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>,
   },
   pkr_ob_coffee: {
     body2: 'This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is perfect for randomly choosing something, while also making sure that every item is eventually picked and for prioritizing certain items over others. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.',
@@ -260,7 +259,7 @@ const buildPickerTourStep7 = (pickerId) => ({
 // "meal item" wording). Kept as named constants rather than inlined so the
 // per-picker fallback (`copy.stepNBody || DEFAULT_STEPN_BODY`) reads clearly.
 const DEFAULT_STEP8_BODY = <>This is the name of the task item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>;
-const DEFAULT_STEP9_BODY = <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again for at least a week or so.</>;
+const DEFAULT_STEP9_BODY = <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>;
 const DEFAULT_STEP10_BODY = <>This controls the <b>maximum number of days that a task item must wait before it should be picked again</b>. This is also useful since most chores need to be done again within a certain timeframe.</>;
 
 // Highlights the item name input inside the inline editor Step 7's click
