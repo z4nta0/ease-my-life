@@ -2032,13 +2032,23 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   // Once every other checklist item is resolved, bring the now-pulsing
   // Generate card into view on its own — it's likely below the fold by the
   // time the last tutorial finishes, since every other card is still above
-  // it in the list.
+  // it in the list. Same offset-scroll approach as jumpToGroup below
+  // (--sticky-top-h, which already accounts for the group rail stacking
+  // below the header on mobile) rather than scrollIntoView, so the card's
+  // own top lands just under the sticky header/rail on small viewports
+  // instead of scrollIntoView's block:'center' cutting it off behind them.
   const generateCardRef = React.useRef(null);
   const prevReadyToGenerate = React.useRef(obReadyToGenerate);
   React.useEffect(() => {
     if (obReadyToGenerate && !prevReadyToGenerate.current) {
-      const reduced = reduceMotion && reduceMotion();
-      generateCardRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+      const el = generateCardRef.current;
+      const main = el?.closest('.main');
+      const tab = el?.closest('.tab--today');
+      if (el && main && tab) {
+        const stickyH = parseInt(getComputedStyle(tab).getPropertyValue('--sticky-top-h')) || 140;
+        const target = el.offsetTop - stickyH - 16;
+        main.scrollTo({ top: target, behavior: reduceMotion() ? 'auto' : 'smooth' });
+      }
     }
     prevReadyToGenerate.current = obReadyToGenerate;
   }, [obReadyToGenerate]);
