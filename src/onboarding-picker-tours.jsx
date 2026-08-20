@@ -60,12 +60,12 @@ const PICKER_TOUR_COPY = {
     step10Body: <>This controls the <b>maximum number of days that a meal item must wait before it should be picked again</b>. This is also useful since you usually want a meal to be picked again within a certain timeframe.</>,
   },
   pkr_ob_workouts: {
-    body2: 'This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease-up and is perfect for something like workouts where you don’t want a workout item to be picked twice within, say, a few days. e.g. once it picks "Chest", you don’t want that workout item picked again for at least 5 days but also no later than a week. Let’s create one of these now.',
+    body2: <>This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease-up and is <b>perfect for something like workouts where you don’t want the same workout to be picked twice within, say, a few days</b>. e.g. once it picks "Chest", you don’t want that workout item picked again for at least 5 days but also no later than a week. Let’s create one of these now.</>,
     itemPrefill: 'Cardio',
     itemSoonest: 3,
     itemLatest: 6,
     step8Body: <>This is the name of the workout item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-    step9Body: <>This controls the <b>minimum number of days that a workout item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same workout to be chosen again for at least a few days or so.</>,
+    step9Body: <>This controls the <b>minimum number of days that a workout item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same workout to be chosen again within a certain timeframe.</>,
     step10Body: <>This controls the <b>maximum number of days that a workout item must wait before it should be picked again</b>. This is also useful since you usually want a workout to be picked again within a certain timeframe.</>,
   },
   pkr_ob_relax: {
