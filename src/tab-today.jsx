@@ -2029,6 +2029,19 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     if (!obReadyToGenerate) return;
     actions.setChecklistItem(OB_GENERATE_ITEM_ID, { status: 'finished' });
   };
+  // Once every other checklist item is resolved, bring the now-pulsing
+  // Generate card into view on its own — it's likely below the fold by the
+  // time the last tutorial finishes, since every other card is still above
+  // it in the list.
+  const generateCardRef = React.useRef(null);
+  const prevReadyToGenerate = React.useRef(obReadyToGenerate);
+  React.useEffect(() => {
+    if (obReadyToGenerate && !prevReadyToGenerate.current) {
+      const reduced = reduceMotion && reduceMotion();
+      generateCardRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+    }
+    prevReadyToGenerate.current = obReadyToGenerate;
+  }, [obReadyToGenerate]);
   // Resolving the Generate item pushes doneCount up to equal total (every
   // other item was already resolved), which triggers the existing
   // completion-celebration effect above automatically — nothing extra
@@ -2410,7 +2423,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
             </div>
 
             {showChecklist && (
-              <div className={`ob-create ob-create--generate ${checklistExiting ? 'is-removing' : ''} ${!obReadyToGenerate ? 'is-needed' : ''} ${obReadyToGenerate ? 'ob-generate-pulse' : ''}`}>
+              <div ref={generateCardRef} className={`ob-create ob-create--generate ${checklistExiting ? 'is-removing' : ''} ${!obReadyToGenerate ? 'is-needed' : ''} ${obReadyToGenerate ? 'ob-generate-pulse' : ''}`}>
                 <div className="ob-create-i"><Icon name="check" size={22} /></div>
                 <b>Generate your real list</b>
                 <p>Once every tutorial is checked off, and at least one picker has been created, this replaces all of them with your own real, generated todo list.</p>
