@@ -404,7 +404,7 @@ const SETTINGS_PAGE_TARGETS = {
   legal: {
     sel: '.set-section--legal',
     title: 'Legal Information',
-    body: <>This is where you can <b>view the Privacy Policy and Terms of Service</b>. This concludes the Settings page tutorial, so go ahead and click Done when you are ready to finish this tutorial.</>,
+    body: <>This is where you can <b>view the Privacy Policy and Terms of Service</b>. This concludes the Settings page tutorial, click Done when you are ready.</>,
   },
 };
 
