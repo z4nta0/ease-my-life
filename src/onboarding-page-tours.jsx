@@ -187,7 +187,7 @@ const PICKER_PAGE_TARGETS = {
     body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
   // Excludes the "Add new picker" button (now the first tab, not the last)
-  // — Step 4 (below) covers that on its own, and this step's own copy is
+  // — Step 3 (above) covers that on its own, and this step's own copy is
   // entirely about selecting an EXISTING picker.
   pickerSelection: {
     sel: '.picker-tabs .picker-tab:not(.picker-tab--add)',
@@ -540,10 +540,10 @@ const buildPageTourSteps = (pageId, actions) => {
   if (pageId === 'explore_pickers') {
     return [
       { ...PICKER_PAGE_TARGETS.groupFilter, tab: 'picker', primary: 'Next', back: true },
-      { ...PICKER_PAGE_TARGETS.pickerSelection, tab: 'picker', primary: 'Next', back: true },
       {
         ...PICKER_PAGE_TARGETS.createNewPickers, tab: 'picker', primary: 'Next', back: true,
       },
+      { ...PICKER_PAGE_TARGETS.pickerSelection, tab: 'picker', primary: 'Next', back: true },
       {
         ...PICKER_PAGE_TARGETS.manualGeneration, tab: 'picker', primary: 'Next', back: true, requireClick: true,
         // .picker-run (stage + actions) can run taller than a short viewport
@@ -813,18 +813,18 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
       // Cancel (.btn--ghost) is the equivalent control there.
       onGoBack={(to) => {
         if (pageId === 'explore_pickers') {
-          // Back from Step 4 (Create New Pickers) to Step 3 (Picker
-          // Selection) — undoes Step 3's own run(), which scrolled
-          // .picker-tabs horizontally to reveal the Add button. Left
-          // scrolled, Step 3's own target (every OTHER tab in the row,
-          // excluding Add) could include tabs now scrolled out of view on
-          // the opposite side, stretching its highlight across the gap.
+          // Back from Step 4 (Picker Selection) to Step 3 (Create New
+          // Pickers) — undoes Step 4's own scroll-into-view (its target is
+          // every OTHER tab in the row, excluding Add, which can scroll
+          // .picker-tabs rightward if there are enough pickers to overflow
+          // the row). Left scrolled, Step 3's own single target (the Add
+          // button, the FIRST tab in the row) would be scrolled out of view.
           if (to === 2) {
             const row = document.querySelector('.picker-tabs');
             if (row) row.scrollTo({ left: 0 });
           } else if (to === 3) {
-            // Back from Step 5 (Manual Generation) to Step 4 (Create New
-            // Pickers) — if a pick is still spinning (busy/phase 'running')
+            // Back from Step 5 (Manual Generation) to Step 4 (Picker
+            // Selection) — if a pick is still spinning (busy/phase 'running')
             // when Back is clicked, PickerView never unmounts between
             // steps, so that animation just keeps running in the
             // background regardless of which step the tour is on, and its

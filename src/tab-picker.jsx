@@ -1449,12 +1449,12 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   React.useEffect(() => () => clearHelpPickers(actions), []);
   // Onboarding tour: when it stages a prefill, open the create form for it.
   const tour = useEmlTour ? useEmlTour() : { prefill: null, startCreate: null };
-  // The Pickers page tour's own Step 4 highlights "Add new picker" but
+  // The Pickers page tour's own Step 3 highlights "Add new picker" but
   // explicitly doesn't want the user opening the real create form from it —
   // that flow is what the separate picker mini-tours already cover. Gated
   // on tourId, not just step index alone: some OTHER tour could just as
-  // easily be sitting on step index 3 for its own unrelated reason.
-  const disableTourAddPicker = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 3;
+  // easily be sitting on step index 2 for its own unrelated reason.
+  const disableTourAddPicker = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 2;
   // Separately, disabled anywhere from the Welcome Tour's first step through
   // the closing Generate card's flow completing — see
   // OB_CHECKLIST.tutorialsInProgress. Distinct from disableTourAddPicker
