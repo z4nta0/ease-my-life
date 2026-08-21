@@ -1177,7 +1177,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   {/* Controls — nested collapsible (open by default, remembered per
                       picker). Holds the pick-algorithm config moved here from
                       Settings, so all of a picker's setup lives in one place. */}
-                  <button type="button" className={`rd-ctl ${highlightEditTourControlsHeader ? 'is-tour-target' : ''}`} aria-expanded={!ctlCollapsed}
+                  <button type="button" className={`rd-ctl ${highlightEditTourControlsHeader ? 'is-tour-target ob-tour-pulse' : ''}`} aria-expanded={!ctlCollapsed}
                        disabled={disableEditTourControlsToggle}
                        onClick={() => actions.toggleControlsCollapsed(pk.id + ':controls')}>
                     <span className="rd-ctl-l">

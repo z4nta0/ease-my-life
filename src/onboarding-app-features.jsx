@@ -327,9 +327,13 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // target out from under the user.
       {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])',
-        clickSel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)', tab: 'data',
+        clickSel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)',
+        // Same pulse suppression as Step 2 above — the Controls header
+        // itself pulses (.ob-tour-pulse, tab-data.jsx) instead of a ring
+        // around the whole picker card.
+        pulseSel: '[data-ob-none]', tab: 'data',
         title: 'Controls Section',
-        body: <>This is where you can <b>view and edit a picker's Controls</b>. This includes its name, group, type, and other settings. Click on the Controls header now to advance this tutorial.</>,
+        body: <>This is where you can <b>view and edit a picker's Controls</b>. This includes its name, group, type, and other settings. Click on the Controls' header now to expand it and continue.</>,
         primary: 'Next', back: true, requireClick: true,
       },
       // Same sel as Step 3 — still the whole picker box, now with Controls
