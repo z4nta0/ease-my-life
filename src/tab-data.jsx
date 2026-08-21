@@ -826,9 +826,12 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // bordered siblings, not one wrapping element).
   //
   // Each of these steps ALSO gets .ob-tour-pulse (styles2.css) on the
-  // SPECIFIC clickable element itself — Step 2's own .cat-h-l header
-  // button (separate from the .is-tour-target outline just above, which
-  // stays on the whole .cat card), Steps 3/5's .rd-ctl header (its own
+  // SPECIFIC clickable element itself — Step 2's own .cat-h header (the
+  // whole row: chevron/name/group/count AND the vac-toggle button, not
+  // just the .cat-h-l disclosure button inside it, so the pulse spans the
+  // full header width instead of stopping partway across; separate from
+  // the .is-tour-target outline just above, which stays on the whole .cat
+  // card), Steps 3/5's .rd-ctl header (its own
   // .is-tour-target is dropped there — .ob-tour-pulse draws its own
   // outline now, so pairing both would just duplicate it), Step 6's
   // .rd-row per item. The step's own sel in onboarding-app-features.jsx
@@ -1145,9 +1148,9 @@ function TabData({ state, actions, onHome, onNavTab }) {
                        }
                      }}
                      style={{ animationDelay: (pkIndex * 45) + 'ms' }}>
-              <header className="cat-h"
+              <header className={`cat-h ${highlightEditTourPickerHeaders ? 'ob-tour-pulse' : ''}`}
                       onClick={(e) => { if (!disableEditTourPickerHeader && !e.target.closest('button')) toggle(pk.id); }}>
-                <button type="button" className={`cat-h-l ${highlightEditTourPickerHeaders ? 'ob-tour-pulse' : ''}`} aria-expanded={open}
+                <button type="button" className="cat-h-l" aria-expanded={open}
                         disabled={disableEditTourPickerHeader}
                         onClick={() => toggle(pk.id)}>
                   <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
