@@ -59,7 +59,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_run_time', page: 'settings', label: 'Adjust your generator run time',
     title: 'Generator Run Time',
-    body: 'This tutorial will show you how to change what time of day your todo list automatically generates, so it is ready exactly when you want it.',
+    body: <>This tutorial will show you <b>how to change what time of day your todo list automatically generates</b>, so it is ready exactly when you want it.</>,
     pills: ['settings page', 'daily generator', 'run time'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -439,7 +439,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-section--daily', tab: 'settings',
         title: 'Daily Generator Settings',
-        body: <>This is where you can <b>control the daily generator</b>: turn auto generation on or off, what time it runs, and enabling notifications for when it does. Click Done when you are ready to finish this tutorial.</>,
+        body: <>This is where you can <b>control the daily generator</b>: turn auto generation on or off, what time it runs, and enabling notifications for when it does. This concludes the Adjust your daily generator run time tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
