@@ -252,7 +252,14 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // step's own comment) and every other tall-target step in this app
       // — see coachAtTop's own doc comment in onboarding-tour-runner.jsx.
       {
-        sel: '.data-list', clickSel: '.cat-h-l', tab: 'data',
+        sel: '.data-list', clickSel: '.cat-h-l',
+        // Suppresses the tour engine's own default requireClick pulse (one
+        // ring around the whole .data-list box) — see tab-data.jsx's own
+        // highlightEditTourPickerHeaders comment for why: each individual
+        // picker header pulses on its own (.ob-tour-pulse) instead of one
+        // big ring around the entire list. pulseSel just needs to never
+        // match anything currently on screen.
+        pulseSel: '[data-ob-none]', tab: 'data',
         title: 'Your Pickers',
         body: <>This is where you can <b>view and edit all of your pickers</b>, as well as their items. Click on any picker's header now to expand it and continue.</>,
         primary: 'Next', back: true, requireClick: true, coachAtTop: true,

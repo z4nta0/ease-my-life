@@ -824,6 +824,19 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // item rows have. Steps 3/5 target a single header each; Step 6 targets
   // the whole item-row group (its own CSS handles that as a set of
   // bordered siblings, not one wrapping element).
+  //
+  // Each of these steps ALSO gets .ob-tour-pulse (styles2.css) on the
+  // SPECIFIC clickable element itself — Step 2's own .cat-h-l header
+  // button (separate from the .is-tour-target outline just above, which
+  // stays on the whole .cat card), Steps 3/5's .rd-ctl header, Step 6's
+  // .rd-row per item. The step's own sel in onboarding-app-features.jsx
+  // covers a much bigger box (the whole picker card, or every card in
+  // Step 2's case) than what's actually clickable, so the tour engine's
+  // default requireClick pulse — one ring around that whole box — reads
+  // as "pulse the entire group/section," not "click here specifically."
+  // Each of these steps sets pulseSel to something that never matches,
+  // suppressing that default pulse outright, so only this per-element
+  // ring shows.
   const highlightEditTourPickerHeaders = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 1;
   const highlightEditTourControlsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 2;
   const highlightEditTourItemsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 4;
@@ -1131,7 +1144,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                      style={{ animationDelay: (pkIndex * 45) + 'ms' }}>
               <header className="cat-h"
                       onClick={(e) => { if (!disableEditTourPickerHeader && !e.target.closest('button')) toggle(pk.id); }}>
-                <button type="button" className="cat-h-l" aria-expanded={open}
+                <button type="button" className={`cat-h-l ${highlightEditTourPickerHeaders ? 'ob-tour-pulse' : ''}`} aria-expanded={open}
                         disabled={disableEditTourPickerHeader}
                         onClick={() => toggle(pk.id)}>
                   <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
