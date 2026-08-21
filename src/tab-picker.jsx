@@ -391,7 +391,24 @@ function PickerView({ picker, state, actions, animStyle }) {
   // pick has already run its full course and reverted. Skipping the spin
   // is deliberate: this is a revisit, the user already watched it play out
   // once going forward.
+  //
+  // Unlike pickerTourResetNonce above, a plain truthiness guard isn't
+  // enough here — this bus value outlives any one PickerView instance
+  // (it's a module-level singleton, not component state), so a Back past
+  // Step 7 that bumps it once leaves it truthy for the rest of the
+  // session. If the user later goes all the way back to Step 1 (which
+  // switches tabs, unmounting PickerView) and forward again to a DIFFERENT
+  // step — Step 5, say — the fresh mount's first effect run would
+  // otherwise see this already-truthy value and synthesize a bogus 'done'
+  // result on a step that expects idle "Pick one". Tracking the last-seen
+  // value (initialized to whatever's already on the bus at mount, so a
+  // fresh mount never treats an inherited value as a new bump) makes this
+  // only fire on a genuine increment that happens while mounted — same
+  // fix shape as tab-today.jsx's prevGenerateResolved ref.
+  const seenRedoNonce = React.useRef(tour.pickerTourRedoNonce);
   React.useEffect(() => {
+    if (tour.pickerTourRedoNonce === seenRedoNonce.current) return;
+    seenRedoNonce.current = tour.pickerTourRedoNonce;
     if (!tour.pickerTourRedoNonce) return;
     const res = PICKERS.pick(picker, state.items, { forceNew: true, excludeIds: onTodayIds });
     if (!res.picked) { setResult(res); setPhase('empty'); return; }
