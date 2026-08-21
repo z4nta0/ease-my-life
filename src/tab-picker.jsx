@@ -1459,8 +1459,16 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   // the closing Generate card's flow completing — see
   // OB_CHECKLIST.tutorialsInProgress. Distinct from disableTourAddPicker
   // above (still needed on its own: a Replay of the Pickers page tour runs
-  // AFTER checklistDone, when tutorialsInProgress is always false).
-  const tutorialsInProgress = OB_CHECKLIST.tutorialsInProgress(state);
+  // AFTER checklistDone, when tutorialsInProgress is always false). Exempted
+  // while a picker mini-tour itself is running (tourId `picker-${pickerId}`,
+  // see onboarding-picker-tours.jsx) — that tour's own Step 2 wants the user
+  // to click this exact real button themselves, not a simulated click.
+  // Exempted for the tour's whole run rather than just that one step: later
+  // steps' own requireClick targets are elsewhere (the create form), so the
+  // click-guard already keeps a stray click on this button from doing
+  // anything by then anyway.
+  const pickerTourActive = tour.phase === 'tour' && typeof tour.tourId === 'string' && tour.tourId.startsWith('picker-');
+  const tutorialsInProgress = OB_CHECKLIST.tutorialsInProgress(state) && !pickerTourActive;
   const [openedByTour, setOpenedByTour] = React.useState(false);
   // Prefill staged by Today's empty-state card (name focus + "Chores"), held
   // locally so it survives clearing the bus signal.

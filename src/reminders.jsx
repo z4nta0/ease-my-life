@@ -540,7 +540,17 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   // steps, including the "Daily todo list" review step, don't dim/click-guard
   // the rest of the page at all, per onboarding-tour-runner.jsx's header
   // comment, which used to leave this button fully clickable mid-tour).
-  const tutorialsInProgress = OB_CHECKLIST.tutorialsInProgress(state);
+  // Exempted while a Reminder mini-tour itself is running (activeTour.id
+  // 'reminder-once'/'reminder-recurring', see onboarding-reminder-tours.jsx)
+  // — that tour's own Step 1 wants the user to click this exact real button
+  // themselves, not a simulated click (see startAdd's own comment on
+  // bus.prefill below). Exempted for the tour's whole run rather than just
+  // that one step: later steps' own requireClick targets are elsewhere (the
+  // draft form), so the click-guard already keeps a stray click on this
+  // button from doing anything by then anyway.
+  const activeTourId = state.onboarding && state.onboarding.activeTour && state.onboarding.activeTour.id;
+  const reminderTourActive = typeof activeTourId === 'string' && activeTourId.startsWith('reminder-');
+  const tutorialsInProgress = OB_CHECKLIST.tutorialsInProgress(state) && !reminderTourActive;
   const tutorialTasks = (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)
     && !(checklistDone && OB_CHECKLIST.entryFor(state, t.id))
     && (!checklistDone || !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name)));
