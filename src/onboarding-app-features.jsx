@@ -138,55 +138,70 @@ const buildAppFeatureSteps = (featureId, actions) => {
       },
       // Title/body copied verbatim from the Pickers page tour's own
       // manualGeneration step (PICKER_PAGE_TARGETS in onboarding-page-
-      // tours.jsx) — same functionality, same explanation. .picker-run
-      // wraps the picker's stage + actions as one combined box (see that
-      // file's own comment on it) so this highlights "the picker window
-      // and the Pick one button" together, not just the button on its
-      // own. No scrollToTop/Bottom override — the default pad-based
-      // bring() already smooth-scrolls it into view. advanceWhen (not
-      // an immediate advance): Pick one kicks off a multi-second spin
-      // animation, so stay on THIS step's already-resolved coach for the
-      // whole wait — same reasoning as the page tour's own step, whose
-      // advanceWhen this copies (Step 4's own clickSel below). coachAtTop:
-      // true — on a short viewport (iPhone SE height, 667px, or shorter)
-      // the coach can't fit above .picker-run without overlapping its top
-      // edge; pins the coach to safeTop instead, same treatment as Step 5's
-      // own fix (see that step's comment for the full reasoning).
+      // tours.jsx) — same functionality, same explanation, same two-phase
+      // highlight: before the click, .pv-act--pick:not(.is-busy) matches
+      // the idle "Pick one" button, so the pulse (.ob-spot.is-pulsing)
+      // lands tight on the actual button instead of the whole window.
+      // .is-busy (added the instant the click fires, well before the spin
+      // finishes) excludes that first selector immediately on click, so
+      // the fallback to framing .picker-run (which wraps the picker's
+      // stage + actions as one combined box) kicks in right as the spin
+      // starts, not once it ends. clickSel keeps the requireClick guard
+      // scoped to the button specifically even once the fallback is in
+      // play. pulseSel matches the exact same primary alternative as sel —
+      // there's nothing left to click once the highlight has widened to
+      // frame the window, so the pulse stops there too. No scrollToTop/
+      // Bottom override — the default pad-based bring() already smooth-
+      // scrolls it into view. advanceWhen (not an immediate advance): Pick
+      // one kicks off a multi-second spin animation, so stay on THIS
+      // step's already-resolved coach for the whole wait — same reasoning
+      // as the page tour's own step, whose advanceWhen this copies (Step
+      // 4's own clickSel below). coachAtTop: true — on a short viewport
+      // (iPhone SE height, 667px, or shorter) the coach can't fit above
+      // .picker-run without overlapping its top edge; pins the coach to
+      // safeTop instead, same treatment as Step 5's own fix (see that
+      // step's comment for the full reasoning).
       {
-        sel: '.picker-run', tab: 'picker',
+        sel: '.pv-act--pick:not(.is-busy), .picker-run', clickSel: '.pv-act--pick',
+        pulseSel: '.pv-act--pick:not(.is-busy)', tab: 'picker',
         title: 'Manual Generation',
         body: <>The "Pick one" button will allow you to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick one" button now to see how this works.</>,
         primary: 'Next', back: true, requireClick: true,
         advanceWhen: '.pv-act--send', coachAtTop: true,
       },
       // Title/body copied verbatim from the Pickers page tour's own
-      // addToTodoList step. Still .picker-run, not just the Send to
-      // Today button on its own — same combined-box reasoning as Step
-      // 3, and .picker-actions (which .picker-run wraps) contains the
-      // WHOLE row (Send to Today, Re-roll, AND Done), so this highlights
-      // all three together (the picker window itself staying highlighted
-      // the whole time, same element as Step 3). clickSel narrows the
-      // actual click-guard/requireClick target down to Send to Today
-      // specifically — only that click satisfies this step, matching the
-      // page tour's own behavior exactly. Re-roll is a deliberate
-      // exception, unlike the page tour (which disables it outright via
-      // tab-picker.jsx's tourInterceptSend): clickPassThroughSel lets it
-      // reach its own real handler — a genuine re-roll, own animation —
-      // WITHOUT also satisfying requireClick, so the user can re-roll as
-      // many times as they like before eventually sending. Done stays
-      // blocked (tab-picker.jsx's own tourDisableDone, gated on this
-      // exact tourId+step) since leaving would discard the pick AND
-      // make this step's own target — the done/sent view itself —
-      // vanish, reverting to the pre-pick "Pick one" button Step 3
-      // already moved past. advanceDelay: Send to Today swaps its own
-      // label to "Sent!" for a beat (see tab-picker.jsx's sendToToday)
-      // before reverting — finishing immediately would cut that
-      // confirmation off before the user ever sees it. coachAtTop: true —
-      // same short-viewport overlap as Step 3 (same .picker-run target,
-      // now even taller with the result + all three action buttons showing)
-      // — see that step's own comment for the full reasoning.
+      // addToTodoList step, same two-phase highlight too: before the
+      // click, .pv-act--send:not(.is-sent) matches the real Send to Today
+      // button, so the pulse lands tight on it instead of the whole
+      // window. Clicking it flips phase to 'sent' SYNCHRONOUSLY (see
+      // sendToToday in tab-picker.jsx), which adds .is-sent immediately,
+      // so the fallback to framing .picker-run (which wraps the picker's
+      // stage + actions as one combined box) kicks in right on click —
+      // needed since this step's own advanceDelay (below) holds the tour
+      // here for 1600ms after the click so the "Sent!" label swap + stage
+      // checkmark can play out, and the highlight needs to have already
+      // widened to frame that whole confirmation rather than staying
+      // pinned to a single button mid-animation. pulseSel matches the
+      // exact same primary alternative as sel, same reasoning as Step 3.
+      // clickSel narrows the actual click-guard/requireClick target down
+      // to Send to Today specifically — only that click satisfies this
+      // step, matching the page tour's own behavior exactly. Re-roll is a
+      // deliberate exception, unlike the page tour (which disables it
+      // outright via tab-picker.jsx's tourInterceptSend): clickPassThroughSel
+      // lets it reach its own real handler — a genuine re-roll, own
+      // animation — WITHOUT also satisfying requireClick, so the user can
+      // re-roll as many times as they like before eventually sending. Done
+      // stays blocked (tab-picker.jsx's own tourDisableDone, gated on this
+      // exact tourId+step) since leaving would discard the pick AND make
+      // this step's own target — the done/sent view itself — vanish,
+      // reverting to the pre-pick "Pick one" button Step 3 already moved
+      // past. coachAtTop: true — same short-viewport overlap as Step 3
+      // (same .picker-run target, now even taller with the result + all
+      // three action buttons showing) — see that step's own comment for
+      // the full reasoning.
       {
-        sel: '.picker-run', clickSel: '.pv-act--send', clickPassThroughSel: '.pv-act--reroll', tab: 'picker',
+        sel: '.pv-act--send:not(.is-sent), .picker-run', clickSel: '.pv-act--send',
+        clickPassThroughSel: '.pv-act--reroll', pulseSel: '.pv-act--send:not(.is-sent)', tab: 'picker',
         title: 'Add to Todo List',
         body: <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to give it a try.</>,
         primary: 'Next', back: true, requireClick: true,
