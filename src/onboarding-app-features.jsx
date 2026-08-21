@@ -39,7 +39,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_manual_pick', page: 'picker', label: 'Make your first manual pick',
     title: 'Manual Picks',
-    body: 'This tutorial will show you how to manually run one of your pickers and send its result straight to your todo list, without waiting for the next automatic generation.',
+    body: <>This tutorial will show you <b>how to manually run one of your pickers and send its result straight to your todo list</b>, without waiting for the next automatic generation.</>,
     pills: ['pickers page', 'run a picker', 'manual pick'],
     // Real, user-confirmed estimate (same convention as OB_PAGE_TOURS' own
     // `time` field in onboarding-checklist.js) — only this feature has real
@@ -133,7 +133,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.picker-tabs .picker-tab:not(.picker-tab--add)', tab: 'picker',
         title: 'Picker Selection',
-        body: <>This will <b>allow you to select a specific picker</b>, in order to initiate a manual picker generation as well as edit or delete its items.</>,
+        body: <>These buttons will <b>allow you to select a specific picker</b> in order to initiate a manual picker generation, as well as edit or delete its items.</>,
         primary: 'Next', back: true,
       },
       // Title/body copied verbatim from the Pickers page tour's own
@@ -155,7 +155,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.picker-run', tab: 'picker',
         title: 'Manual Generation',
-        body: <>This will allow to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the Pick one button now to see how this works.</>,
+        body: <>The "Pick one" button will allow you to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick one" button now to see how this works.</>,
         primary: 'Next', back: true, requireClick: true,
         advanceWhen: '.pv-act--send', coachAtTop: true,
       },
@@ -188,7 +188,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.picker-run', clickSel: '.pv-act--send', clickPassThroughSel: '.pv-act--reroll', tab: 'picker',
         title: 'Add to Todo List',
-        body: <>This will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click this button now to give it a try.</>,
+        body: <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to give it a try.</>,
         primary: 'Next', back: true, requireClick: true,
         advanceDelay: 1600, coachAtTop: true,
       },
@@ -215,7 +215,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.pool-items', tab: 'picker',
         title: 'Picker Items',
-        body: <>Here you can <b>view all items in this picker's pool</b>. You can see a given item's values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. Edit and Delete are disabled for this tutorial, but feel free to try Send to Today on any item now, or click Done when you are ready to finish this tutorial.</>,
+        body: <>Here you can <b>view all items in this picker's pool</b>. You can see a given item's values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. The "Edit" and "Delete" buttons are disabled for this tutorial but feel free to try the "Send to Today" button on any item now. This concludes the Make your first manual pick tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
