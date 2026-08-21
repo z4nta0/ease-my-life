@@ -354,7 +354,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])', tab: 'data',
         title: 'Edit Picker Settings',
-        body: <>Feel free to <b>explore this section and make any changes you'd like</b> to the picker's name, group, type, or other settings. Click Next when you are ready to advance this tutorial.</>,
+        body: <>Feel free to <b>explore this section and make any changes you'd like</b> to the picker's name, group, type, or other settings. Click Next when you are ready to move on.</>,
         primary: 'Next', back: true, coachAtTop: true,
         // Re-collapses Controls on the way to Step 5, same "clean slate"
         // requirement as Step 2's own run() — Step 5 highlights this same
