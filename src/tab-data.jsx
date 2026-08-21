@@ -810,29 +810,33 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // Feature tutorials are gated on it), when tutorialsInProgress is always
   // false, so the two never overlap.
   const tutorialsInProgress = OB_CHECKLIST.tutorialsInProgress(state);
-  // Fading accent outline (.ob-tour-pulse, styles2.css) on top of the tour
-  // engine's own bigger spotlight box — points at the SPECIFIC element a
-  // requireClick step wants clicked, since the spotlight alone highlights
-  // the whole picker section (header + Controls + Items together, see
-  // onboarding-app-features.jsx's own sel comment) without distinguishing
-  // which part inside it is actually actionable. Step 2 targets EVERY
-  // picker's own .cat section (clicking any one's header satisfies it) —
-  // applied to the whole card, not just its header button, so the outline
-  // reads as "this card" rather than singling out one control inside it;
-  // safe as a per-element outline (rather than the border-based approach
-  // Step 6 needs below) since picker cards sit with real gaps between
-  // them, no touching-siblings doubling risk. Steps 3/5 target a single
-  // header each; Step 6 targets each item row individually (.rd-row, not
-  // the outer .rd-item — outlining the wrapper would include its
-  // collapsed edit space too). The step's own sel in onboarding-app-
-  // features.jsx covers a much bigger box (the whole picker card, or
-  // every card in Step 2's case) than what's actually clickable, so the
-  // tour engine's default requireClick pulse — one ring around that whole
-  // box — reads as "pulse the entire group/section," not "click here
-  // specifically." Each of these steps sets pulseSel to something that
-  // never matches, suppressing that default pulse outright, so only this
-  // per-element fade shows (see .ob-tour-pulse's own comment for why it
-  // fades an outline rather than drawing an expanding ring here).
+  // Fading accent highlight (.ob-tour-pulse, styles2.css) on top of the
+  // tour engine's own bigger spotlight box — points at the SPECIFIC
+  // element a requireClick step wants clicked, since the spotlight alone
+  // highlights the whole picker section (header + Controls + Items
+  // together, see onboarding-app-features.jsx's own sel comment) without
+  // distinguishing which part inside it is actually actionable. Step 2
+  // targets EVERY picker's own .cat section (clicking any one's header
+  // satisfies it) — applied to the whole card, not just its header
+  // button, so the outline reads as "this card" rather than singling out
+  // one control inside it; safe as a per-element outline since picker
+  // cards sit with real gaps between them, no touching-siblings doubling
+  // risk. Steps 3/5 target a single header each, same outline treatment.
+  // Step 6 targets each item row's own .rd-item wrapper (not just its
+  // inner .rd-row button) — .rd-item.is-tour-target already exists for
+  // exactly this element, using per-side BORDERS rather than one outline
+  // (touching item rows can't share an outline without doubling — see
+  // that class's own comment in styles2.css), so .ob-tour-pulse pairs
+  // with it there instead of standing alone, and fades border-color
+  // instead of outline-color (see .ob-tour-pulse's own comment for the
+  // override). The step's own sel in onboarding-app-features.jsx covers a
+  // much bigger box (the whole picker card, or every card in Step 2's
+  // case) than what's actually clickable, so the tour engine's default
+  // requireClick pulse — one ring around that whole box — reads as
+  // "pulse the entire group/section," not "click here specifically."
+  // Each of these steps sets pulseSel to something that never matches,
+  // suppressing that default pulse outright, so only this per-element
+  // fade shows.
   const highlightEditTourPickerHeaders = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 1;
   const highlightEditTourControlsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 2;
   const highlightEditTourItemsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 4;
@@ -1232,9 +1236,9 @@ function TabData({ state, actions, onHome, onNavTab }) {
                           : (isEase ? `${soonest}\u2013${latest} ${CADENCE.unitWord(pk.cadence, latest)}`
                              : (usesWeight ? `Weight w${it.weight}` : 'Equal chance'));
                         return (
-                          <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''} ${highlightEditTourItemRows ? 'is-tour-target' : ''}`}
+                          <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''} ${highlightEditTourItemRows ? 'is-tour-target ob-tour-pulse' : ''}`}
                                onAnimationEnd={() => { if (insertItemId === it.id) setInsertItemId(null); }}>
-                            <button type="button" className={`rd-row ${highlightEditTourItemRows ? 'ob-tour-pulse' : ''}`} aria-expanded={itemOpen}
+                            <button type="button" className="rd-row" aria-expanded={itemOpen}
                                   onClick={() => setOpenItemId(itemOpen ? null : it.id)}>
                               <span className="rd-main">
                                 {itemOpen ? (

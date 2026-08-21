@@ -3703,15 +3703,30 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    edge or overlapped the next row's own ring. Fading a plain outline in
    and out instead needs no expansion room at all, so it reads cleanly no
    matter how many of these are on screen at once or how tightly packed
-   they are. Also self-contained (unlike the old version, which had to be
-   paired with .is-tour-target for an outline to exist at all) — it draws
-   its own outline, so it's used alone now. The step itself suppresses
+   they are. Draws its own outline by default (unlike the old version,
+   which had to be paired with .is-tour-target for an outline to exist at
+   all), so it's used alone on most targets. The step itself suppresses
    .ob-spot's own default pulse via a pulseSel that never matches (see
    that file's own comment), so only this fade shows. */
 .ob-tour-pulse{outline:2px solid var(--accent);outline-offset:-2px;animation:obTourFade 1.8s ease-in-out infinite}
 @keyframes obTourFade{
   0%,100%{outline-color:oklch(from var(--accent) l c h/1)}
   50%{outline-color:oklch(from var(--accent) l c h/0.2)}
+}
+/* .rd-item is the one exception: it's paired WITH .is-tour-target (not
+   alone), because it needs that class's own border-based highlight, not
+   this class's default outline — .rd-item.is-tour-target already sets
+   outline:none in favor of per-side borders (touching item rows can't use
+   outline, see that rule's own comment), so animating outline-color here
+   would do nothing visible. Overrides the animation to fade border-color
+   instead, which — being a real CSS animation — still wins over every one
+   of .rd-item.is-tour-target's own static border-*-color declarations
+   (including its :first-of-type/:last-of-type variants), regardless of
+   selector specificity. */
+.rd-item.ob-tour-pulse{animation:obTourFadeBorder 1.8s ease-in-out infinite}
+@keyframes obTourFadeBorder{
+  0%,100%{border-color:oklch(from var(--accent) l c h/1)}
+  50%{border-color:oklch(from var(--accent) l c h/0.2)}
 }
 .ob-coach{position:fixed;pointer-events:auto;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);box-shadow:0 16px 40px -14px oklch(0 0 0/0.45);padding:14px 15px;animation:obFade .18s ease both}
 .ob-coach .ob-prog{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;color:var(--accent);margin:0 0 5px}
@@ -3766,6 +3781,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   /* Frozen mid-fade would read as a paused animation rather than a
      deliberate static state — pin it to full color instead. */
   .ob-tour-pulse{animation:none;outline-color:var(--accent)}
+  .rd-item.ob-tour-pulse{animation:none;border-color:var(--accent)}
 }
 body.ob-touring .tab{padding-bottom:200px}
 .np-tour-name{margin:16px 0 16px}
