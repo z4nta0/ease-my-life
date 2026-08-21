@@ -380,9 +380,13 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // again rather than showing Controls still expanded alongside it.
       {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])',
-        clickSel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)', tab: 'data',
+        clickSel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)',
+        // Same pulse suppression as Steps 2/3 above — the Items header
+        // itself pulses (.ob-tour-pulse, tab-data.jsx) instead of a ring
+        // around the whole picker card.
+        pulseSel: '[data-ob-none]', tab: 'data',
         title: 'Items Section',
-        body: <>This is where you can <b>view and edit a picker's Items</b>. This includes each item's name, weight, and other values. Click on the Items header now to advance this tutorial.</>,
+        body: <>This is where you can <b>view and edit a picker's Items</b>. This includes each item's name, weight, and other values. Click on the Items' header now to expand it and continue.</>,
         primary: 'Next', back: true, requireClick: true,
       },
       // Same whole-picker sel as Steps 3-5, now with Items expanded (Step

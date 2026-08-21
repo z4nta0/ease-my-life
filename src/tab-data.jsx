@@ -1197,7 +1197,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
 
                   {/* Items — nested collapsible (open by default, remembered per
                       picker); collapsed shows the item count. */}
-                  <button type="button" className={`rd-ctl ${highlightEditTourItemsHeader ? 'is-tour-target' : ''}`} aria-expanded={!itemsCollapsed}
+                  <button type="button" className={`rd-ctl ${highlightEditTourItemsHeader ? 'is-tour-target ob-tour-pulse' : ''}`} aria-expanded={!itemsCollapsed}
                        disabled={disableEditTourItemsToggle}
                        onClick={() => actions.toggleControlsCollapsed(pk.id + ':items')}>
                     <span className="rd-ctl-l">
