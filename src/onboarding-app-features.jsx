@@ -50,7 +50,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_edit_item', page: 'data', label: 'Edit your first item',
     title: 'Editing Items',
-    body: 'This tutorial will show you how to edit one of your own items. You will be able to update names, weights, or other values whenever your needs change.',
+    body: <>This tutorial will show you <b>how to edit one of your own items</b>. You will be able to update names, weights, or other values whenever your needs change.</>,
     pills: ['data page', 'edit item', 'update values'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
