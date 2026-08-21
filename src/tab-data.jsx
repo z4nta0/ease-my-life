@@ -1238,7 +1238,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                         return (
                           <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''} ${highlightEditTourItemRows ? 'is-tour-target' : ''}`}
                                onAnimationEnd={() => { if (insertItemId === it.id) setInsertItemId(null); }}>
-                            <button type="button" className="rd-row" aria-expanded={itemOpen}
+                            <button type="button" className={`rd-row ${highlightEditTourItemRows ? 'ob-tour-pulse' : ''}`} aria-expanded={itemOpen}
                                   onClick={() => setOpenItemId(itemOpen ? null : it.id)}>
                               <span className="rd-main">
                                 {itemOpen ? (

@@ -403,9 +403,13 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // own coachAtTop.
       {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])',
-        clickSel: '.data-list .rd-item > .rd-row', tab: 'data',
+        clickSel: '.data-list .rd-item > .rd-row',
+        // Same pulse suppression as Steps 2/3/5 above — each item's own
+        // header (.ob-tour-pulse, tab-data.jsx) pulses instead of a ring
+        // around the whole picker card.
+        pulseSel: '[data-ob-none]', tab: 'data',
         title: 'Picker Items',
-        body: <>This section contains <b>all of this picker's items</b>, as well as a form for adding new items (though this is disabled for this tutorial). Click any one of the items to advance this tutorial.</>,
+        body: <>This section contains <b>all of this picker's items</b>, as well as a form for adding new items (though this is disabled for this tutorial). Click on any of the items now to expand it and continue.</>,
         primary: 'Next', back: true, requireClick: true, coachAtTop: true,
       },
       // Same shape as Step 4 (Edit Picker Settings), mirrored for Items:
