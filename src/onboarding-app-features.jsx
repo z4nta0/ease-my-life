@@ -422,7 +422,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])', tab: 'data',
         title: 'Edit Item Settings',
-        body: <>Feel free to <b>explore this section and make any changes you'd like</b> to an item's name, weight, or other values. Go ahead and click Done when you are ready to finish this tutorial.</>,
+        body: <>Feel free to <b>explore this section and make any changes you'd like</b> to an item's name, weight, or other values. This concludes the Edit your first item tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
