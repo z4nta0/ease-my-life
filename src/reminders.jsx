@@ -534,6 +534,14 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   // than sticking around with an "Undo" toggle — there's no closing
   // Generate card left to synchronize a batch disappearance against.
   const checklistDone = !!(state.onboarding && state.onboarding.checklistDone);
+  // The main Welcome Tour only dims/click-guards the rest of the page during
+  // its own requireClick steps (see onboarding-tour-runner.jsx's header
+  // comment) — every other step, including the "Daily todo list" review
+  // step, leaves this button fully clickable, letting a real reminder get
+  // created mid-tour before the sample data it's reviewing even settles.
+  // Disabled for the tour's entire run, not just that one step, since the
+  // same gap exists at every non-requireClick step.
+  const welcomeTourActive = !!(state.onboarding && state.onboarding.activeTour && state.onboarding.activeTour.id === 'welcome');
   const tutorialTasks = (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)
     && !(checklistDone && OB_CHECKLIST.entryFor(state, t.id))
     && (!checklistDone || !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name)));
@@ -706,8 +714,10 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
           {!editMode && onToggleLog && <DayLogChip open={logOpen} onClick={onToggleLog} />}
         </div>
         {!editMode && (
-          <button className="rem-add-btn" onClick={() => { adding ? cancelAdd() : startAdd(); }}
-                  aria-label="Add a reminder" title="Add a reminder">
+          <button className={`rem-add-btn ${welcomeTourActive ? 'is-tour-disabled' : ''}`}
+                  disabled={welcomeTourActive}
+                  onClick={() => { adding ? cancelAdd() : startAdd(); }}
+                  aria-label="Add a reminder" title={welcomeTourActive ? 'Available once the Welcome Tour finishes' : 'Add a reminder'}>
             <Icon name="plus" size={16} />
           </button>
         )}

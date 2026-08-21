@@ -2353,6 +2353,10 @@ button.cat-h-l {
   transition: border-color .12s, color .12s, background .12s;
 }
 .rem-add-btn:hover { border-color: var(--accent); color: var(--accent); background: oklch(from var(--accent-soft) l c h / 0.5); }
+/* Same native-disabled-renders-no-differently gap as .pv-act.is-tour-disabled
+   above — .rem-add-btn has no :disabled rule of its own either. Applied
+   while the Welcome Tour is up (see reminders.jsx's welcomeTourActive). */
+.rem-add-btn.is-tour-disabled { opacity: 0.4; cursor: default; pointer-events: none; }
 
 /* Pin icon (one-time reminders) gets the warm accent to read as "sticky". */
 .rem-card .rem-meta svg { color: var(--accent); }
