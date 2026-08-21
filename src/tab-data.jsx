@@ -828,7 +828,9 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // Each of these steps ALSO gets .ob-tour-pulse (styles2.css) on the
   // SPECIFIC clickable element itself — Step 2's own .cat-h-l header
   // button (separate from the .is-tour-target outline just above, which
-  // stays on the whole .cat card), Steps 3/5's .rd-ctl header, Step 6's
+  // stays on the whole .cat card), Steps 3/5's .rd-ctl header (its own
+  // .is-tour-target is dropped there — .ob-tour-pulse draws its own
+  // outline now, so pairing both would just duplicate it), Step 6's
   // .rd-row per item. The step's own sel in onboarding-app-features.jsx
   // covers a much bigger box (the whole picker card, or every card in
   // Step 2's case) than what's actually clickable, so the tour engine's
@@ -836,7 +838,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // as "pulse the entire group/section," not "click here specifically."
   // Each of these steps sets pulseSel to something that never matches,
   // suppressing that default pulse outright, so only this per-element
-  // ring shows.
+  // fade shows (see .ob-tour-pulse's own comment for why it fades an
+  // outline rather than drawing an expanding ring here).
   const highlightEditTourPickerHeaders = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 1;
   const highlightEditTourControlsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 2;
   const highlightEditTourItemsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 4;
@@ -1177,7 +1180,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   {/* Controls — nested collapsible (open by default, remembered per
                       picker). Holds the pick-algorithm config moved here from
                       Settings, so all of a picker's setup lives in one place. */}
-                  <button type="button" className={`rd-ctl ${highlightEditTourControlsHeader ? 'is-tour-target ob-tour-pulse' : ''}`} aria-expanded={!ctlCollapsed}
+                  <button type="button" className={`rd-ctl ${highlightEditTourControlsHeader ? 'ob-tour-pulse' : ''}`} aria-expanded={!ctlCollapsed}
                        disabled={disableEditTourControlsToggle}
                        onClick={() => actions.toggleControlsCollapsed(pk.id + ':controls')}>
                     <span className="rd-ctl-l">
@@ -1197,7 +1200,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
 
                   {/* Items — nested collapsible (open by default, remembered per
                       picker); collapsed shows the item count. */}
-                  <button type="button" className={`rd-ctl ${highlightEditTourItemsHeader ? 'is-tour-target ob-tour-pulse' : ''}`} aria-expanded={!itemsCollapsed}
+                  <button type="button" className={`rd-ctl ${highlightEditTourItemsHeader ? 'ob-tour-pulse' : ''}`} aria-expanded={!itemsCollapsed}
                        disabled={disableEditTourItemsToggle}
                        onClick={() => actions.toggleControlsCollapsed(pk.id + ':items')}>
                     <span className="rd-ctl-l">

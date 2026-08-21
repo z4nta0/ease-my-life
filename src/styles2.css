@@ -3694,15 +3694,25 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   40%{box-shadow:0 0 0 10px oklch(from var(--accent) l c h/0.35)}
   100%{box-shadow:0 0 0 20px oklch(from var(--accent) l c h/0)}
 }
-/* Generic version of .ob-generate-pulse above, for pulsing a specific REAL
-   element inside a requireClick step's bigger spotlight box (Edit Item
-   tour, onboarding-app-features.jsx) — same accent-blue ring, same reason
-   (these sit on light card backgrounds, where the .ob-spot.is-pulsing
-   white ring would disappear). The step itself suppresses .ob-spot's own
-   pulse via a pulseSel that never matches (see that file's own comment),
-   so only this per-element ring shows, not two pulses stacked. */
-.ob-tour-pulse{position:relative}
-.ob-tour-pulse::after{content:"";position:absolute;inset:0;border-radius:inherit;animation:obGeneratePing 1.8s ease-out infinite;pointer-events:none}
+/* Pulses a specific REAL element inside a requireClick step's bigger
+   spotlight box (Edit Item tour, onboarding-app-features.jsx). Started as
+   an .ob-generate-pulse-style expanding ring, but several of these targets
+   (a picker header, each item row) sit packed edge-to-edge inside a card
+   with siblings on every side — a ring needs room to expand into, which a
+   cramped list doesn't have, and it either clipped against the card's own
+   edge or overlapped the next row's own ring. Fading a plain outline in
+   and out instead needs no expansion room at all, so it reads cleanly no
+   matter how many of these are on screen at once or how tightly packed
+   they are. Also self-contained (unlike the old version, which had to be
+   paired with .is-tour-target for an outline to exist at all) — it draws
+   its own outline, so it's used alone now. The step itself suppresses
+   .ob-spot's own default pulse via a pulseSel that never matches (see
+   that file's own comment), so only this fade shows. */
+.ob-tour-pulse{outline:2px solid var(--accent);outline-offset:-2px;animation:obTourFade 1.8s ease-in-out infinite}
+@keyframes obTourFade{
+  0%,100%{outline-color:oklch(from var(--accent) l c h/1)}
+  50%{outline-color:oklch(from var(--accent) l c h/0.2)}
+}
 .ob-coach{position:fixed;pointer-events:auto;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);box-shadow:0 16px 40px -14px oklch(0 0 0/0.45);padding:14px 15px;animation:obFade .18s ease both}
 .ob-coach .ob-prog{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;color:var(--accent);margin:0 0 5px}
 .ob-coach h4{font-size:15px;font-weight:600;margin:0 0 5px}
@@ -3751,7 +3761,12 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .today-card--tutorial.is-needed:hover{border-color:oklch(from var(--warm) l c h/0.7)}
 @keyframes obFade{from{opacity:0}to{opacity:1}}
 @keyframes obRise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.ob-scrim,.ob-welcome,.ob-coach,.ob-spot,.ob-spot.is-pulsing::after,.ob-generate-pulse::after,.ob-tour-pulse::after{animation:none;transition:none}}
+@media (prefers-reduced-motion:reduce){
+  .ob-scrim,.ob-welcome,.ob-coach,.ob-spot,.ob-spot.is-pulsing::after,.ob-generate-pulse::after{animation:none;transition:none}
+  /* Frozen mid-fade would read as a paused animation rather than a
+     deliberate static state — pin it to full color instead. */
+  .ob-tour-pulse{animation:none;outline-color:var(--accent)}
+}
 body.ob-touring .tab{padding-bottom:200px}
 .np-tour-name{margin:16px 0 16px}
 
