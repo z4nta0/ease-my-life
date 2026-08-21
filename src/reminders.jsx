@@ -4,7 +4,7 @@ import { emlTour } from './eml-tour-bus.js';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { OB_REMINDER_CARD_TEXT, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { TASKS } from './tasks.js';
-import { Btn, Collapse, Icon, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { Btn, Collapse, Icon, InfoTip, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
 
 // Reminders UI — shared components for manual, statically-scheduled tasks.
 // Rendered in two places:
@@ -534,14 +534,13 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   // than sticking around with an "Undo" toggle — there's no closing
   // Generate card left to synchronize a batch disappearance against.
   const checklistDone = !!(state.onboarding && state.onboarding.checklistDone);
-  // The main Welcome Tour only dims/click-guards the rest of the page during
-  // its own requireClick steps (see onboarding-tour-runner.jsx's header
-  // comment) — every other step, including the "Daily todo list" review
-  // step, leaves this button fully clickable, letting a real reminder get
-  // created mid-tour before the sample data it's reviewing even settles.
-  // Disabled for the tour's entire run, not just that one step, since the
-  // same gap exists at every non-requireClick step.
-  const welcomeTourActive = !!(state.onboarding && state.onboarding.activeTour && state.onboarding.activeTour.id === 'welcome');
+  // Disabled anywhere from the Welcome Tour's first step through the closing
+  // Generate card's flow completing — see OB_CHECKLIST.tutorialsInProgress
+  // for why this can't just be "requireClick steps only" (most Welcome Tour
+  // steps, including the "Daily todo list" review step, don't dim/click-guard
+  // the rest of the page at all, per onboarding-tour-runner.jsx's header
+  // comment, which used to leave this button fully clickable mid-tour).
+  const tutorialsInProgress = OB_CHECKLIST.tutorialsInProgress(state);
   const tutorialTasks = (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)
     && !(checklistDone && OB_CHECKLIST.entryFor(state, t.id))
     && (!checklistDone || !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name)));
@@ -714,12 +713,17 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
           {!editMode && onToggleLog && <DayLogChip open={logOpen} onClick={onToggleLog} />}
         </div>
         {!editMode && (
-          <button className={`rem-add-btn ${welcomeTourActive ? 'is-tour-disabled' : ''}`}
-                  disabled={welcomeTourActive}
-                  onClick={() => { adding ? cancelAdd() : startAdd(); }}
-                  aria-label="Add a reminder" title={welcomeTourActive ? 'Available once the Welcome Tour finishes' : 'Add a reminder'}>
-            <Icon name="plus" size={16} />
-          </button>
+          tutorialsInProgress ? (
+            <InfoTip className="rem-add-btn is-tour-disabled" action="Add a reminder"
+                     label="This button is disabled until all tutorials are completed.">
+              <Icon name="plus" size={16} />
+            </InfoTip>
+          ) : (
+            <button className="rem-add-btn" onClick={() => { adding ? cancelAdd() : startAdd(); }}
+                    aria-label="Add a reminder" title="Add a reminder">
+              <Icon name="plus" size={16} />
+            </button>
+          )
         )}
       </header>
 
@@ -926,6 +930,10 @@ function ReminderManager({ state, actions, hidden }) {
   const collapsedMap = (state.ui && state.ui.controlsCollapsed) || {};
   const ctlCollapsed = !!collapsedMap['__reminders'];
   const itemsCollapsed = !!collapsedMap['__reminders:items'];
+  // Same reasoning as ReminderSection's own rem-add-btn above (see
+  // OB_CHECKLIST.tutorialsInProgress) — this is a second, independent path
+  // to a real reminder, reachable from the Data page's own manager.
+  const tutorialsInProgress = OB_CHECKLIST.tutorialsInProgress(state);
 
   const addAndEdit = () => {
     if (justAddedRef.current) return;   // guard: ignore rapid double-click
@@ -977,9 +985,16 @@ function ReminderManager({ state, actions, hidden }) {
           </button>
           <Collapse open={!itemsCollapsed}>
             <React.Fragment>
-              <button className="rd-add" onClick={addAndEdit}>
-                <Icon name="plus" size={13} /> New reminder
-              </button>
+              {tutorialsInProgress ? (
+                <InfoTip className="rd-add is-tour-disabled" action="New reminder"
+                         label="This button is disabled until all tutorials are completed.">
+                  <Icon name="plus" size={13} /> New reminder
+                </InfoTip>
+              ) : (
+                <button className="rd-add" onClick={addAndEdit}>
+                  <Icon name="plus" size={13} /> New reminder
+                </button>
+              )}
               {tasks.length === 0 ? (
                 <div className="rd-empty">No reminders yet. Add one to see it on Today.</div>
               ) : (

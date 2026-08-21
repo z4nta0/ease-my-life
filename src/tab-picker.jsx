@@ -3,6 +3,7 @@ import { CadenceControl } from './cadence-control.jsx';
 import { CADENCE } from './cadence.js';
 import { EntryEditor } from './tab-today.jsx';
 import { emlTour, useEmlTour } from './onboarding.jsx';
+import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { PICKERS, normalizeConditionalName, normalizeGroupName } from './pickers.js';
 import { MODES } from './seed.js';
 import { ConditionalControls, conditionalDraftDefault } from './tab-conditional.jsx';
@@ -1454,6 +1455,12 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   // on tourId, not just step index alone: some OTHER tour could just as
   // easily be sitting on step index 3 for its own unrelated reason.
   const disableTourAddPicker = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 3;
+  // Separately, disabled anywhere from the Welcome Tour's first step through
+  // the closing Generate card's flow completing — see
+  // OB_CHECKLIST.tutorialsInProgress. Distinct from disableTourAddPicker
+  // above (still needed on its own: a Replay of the Pickers page tour runs
+  // AFTER checklistDone, when tutorialsInProgress is always false).
+  const tutorialsInProgress = OB_CHECKLIST.tutorialsInProgress(state);
   const [openedByTour, setOpenedByTour] = React.useState(false);
   // Prefill staged by Today's empty-state card (name focus + "Chores"), held
   // locally so it survives clearing the bus signal.
@@ -1614,14 +1621,28 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
       <div className="stat-filter-row">
         <span className="stat-filter-lbl">Show</span>
         <div className="picker-tabs" ref={tabsRef} key={groupFilter}>
-          <button type="button"
-                  className={`picker-tab picker-tab--add picker-tab--enter ${creating ? 'is-on' : ''}`}
-                  style={{ animationDelay: '0ms' }}
-                  disabled={disableTourAddPicker}
-                  onClick={() => setCreating(true)}>
-            <span className="picker-tab-add-icon" aria-hidden="true"><Icon name="plus" size={16} /></span>
-            <span className="picker-tab-name">Add new picker</span>
-          </button>
+          {tutorialsInProgress ? (
+            // Distinct from disableTourAddPicker below: this tooltip's wording
+            // ("until all tutorials are completed") would be misleading during
+            // a Replay of the Pickers page tour, which runs AFTER checklistDone
+            // — tutorialsInProgress is always false then, so that case still
+            // falls through to the plain disabled button with no tooltip.
+            <InfoTip className={`picker-tab picker-tab--add picker-tab--enter is-tour-disabled ${creating ? 'is-on' : ''}`}
+                     action="Add new picker"
+                     label="This button is disabled until all tutorials are completed.">
+              <span className="picker-tab-add-icon" aria-hidden="true"><Icon name="plus" size={16} /></span>
+              <span className="picker-tab-name">Add new picker</span>
+            </InfoTip>
+          ) : (
+            <button type="button"
+                    className={`picker-tab picker-tab--add picker-tab--enter ${creating ? 'is-on' : ''}`}
+                    style={{ animationDelay: '0ms' }}
+                    disabled={disableTourAddPicker}
+                    onClick={() => setCreating(true)}>
+              <span className="picker-tab-add-icon" aria-hidden="true"><Icon name="plus" size={16} /></span>
+              <span className="picker-tab-name">Add new picker</span>
+            </button>
+          )}
           {visiblePickers.map((p, i) => (
             <button key={p.id}
                     className={`picker-tab picker-tab--enter ${!creating && p.id === activeId ? 'is-on' : ''}`}

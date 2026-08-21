@@ -4,6 +4,7 @@ import { CADENCE } from './cadence.js';
 import { EASE_UP_RANGE_WARN } from './constants.js';
 import { normalizeConditionalName, normalizeGroupName } from './pickers.js';
 import { useEmlTour } from './onboarding.jsx';
+import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { ReminderManager } from './reminders.jsx';
 import { MODES } from './seed.js';
 import { ConditionalControls, conditionalDraftDefault } from './tab-conditional.jsx';
@@ -697,15 +698,22 @@ function ConditionalsManager({ state, actions }) {
       </header>
       <Collapse open={open}>
       <div className="cat-body">
-        <button className="rd-add" onClick={() => {
-          if (pending) return;   // one draft at a time
-          const nd = conditionalDraftDefault('', conditionals.map((c) => c.name));
-          const id = 'cnd_' + Math.random().toString(36).slice(2, 8);
-          const obj = { ...nd, id };
-          setPending(obj); setDraft(obj); setOpenId(id);   // held locally, not in store
-        }}>
-          <Icon name="plus" size={13} /> Add a conditional
-        </button>
+        {OB_CHECKLIST.tutorialsInProgress(state) ? (
+          <InfoTip className="rd-add is-tour-disabled" action="Add a conditional"
+                   label="This button is disabled until all tutorials are completed.">
+            <Icon name="plus" size={13} /> Add a conditional
+          </InfoTip>
+        ) : (
+          <button className="rd-add" onClick={() => {
+            if (pending) return;   // one draft at a time
+            const nd = conditionalDraftDefault('', conditionals.map((c) => c.name));
+            const id = 'cnd_' + Math.random().toString(36).slice(2, 8);
+            const obj = { ...nd, id };
+            setPending(obj); setDraft(obj); setOpenId(id);   // held locally, not in store
+          }}>
+            <Icon name="plus" size={13} /> Add a conditional
+          </button>
+        )}
         {!conditionals.length && !pending && (
           <p className="rd-cnd-empty">No conditionals yet. Add one here, then attach it to any picker.</p>
         )}
@@ -795,6 +803,13 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // position out from under Step 6's own "click any of these" framing.
   // Stays disabled through Step 7 too, for the same reason.
   const disableEditTourAddItem = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 5 || tour.step === 6);
+  // Separately, disabled anywhere from the Welcome Tour's first step through
+  // the closing Generate card's flow completing — see
+  // OB_CHECKLIST.tutorialsInProgress. Distinct from disableEditTourAddItem
+  // above: that one's own tour only ever runs AFTER checklistDone (App
+  // Feature tutorials are gated on it), when tutorialsInProgress is always
+  // false, so the two never overlap.
+  const tutorialsInProgress = OB_CHECKLIST.tutorialsInProgress(state);
   // Thin accent outline (.is-tour-target, styles2.css) on top of the tour
   // engine's own bigger spotlight box — points at the SPECIFIC element a
   // requireClick step wants clicked, since the spotlight alone highlights
@@ -1180,16 +1195,23 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   </button>
                   <Collapse open={!itemsCollapsed}>
                     <React.Fragment>
-                      <button className="rd-add" disabled={disableEditTourAddItem} onClick={() => {
-                        if (justAddedItemRef.current) return;   // guard: ignore rapid double-click
-                        const id = 'it_' + Math.random().toString(36).slice(2, 8);
-                        actions.addItem(pk.id, 'New item', id);
-                        justAddedItemRef.current = id;   // Cancel discards it
-                        setInsertItemId(id);
-                        setOpenItemId(id);
-                      }}>
-                        <Icon name="plus" size={13} /> Add to {pk.name.toLowerCase()}
-                      </button>
+                      {tutorialsInProgress ? (
+                        <InfoTip className="rd-add is-tour-disabled" action={`Add to ${pk.name.toLowerCase()}`}
+                                 label="This button is disabled until all tutorials are completed.">
+                          <Icon name="plus" size={13} /> Add to {pk.name.toLowerCase()}
+                        </InfoTip>
+                      ) : (
+                        <button className="rd-add" disabled={disableEditTourAddItem} onClick={() => {
+                          if (justAddedItemRef.current) return;   // guard: ignore rapid double-click
+                          const id = 'it_' + Math.random().toString(36).slice(2, 8);
+                          actions.addItem(pk.id, 'New item', id);
+                          justAddedItemRef.current = id;   // Cancel discards it
+                          setInsertItemId(id);
+                          setOpenItemId(id);
+                        }}>
+                          <Icon name="plus" size={13} /> Add to {pk.name.toLowerCase()}
+                        </button>
+                      )}
                       {items.map((it) => {
                         const itemOpen = openItemId === it.id;
                         const eMin = it.easeMin ?? pk.easeMin ?? 10;
