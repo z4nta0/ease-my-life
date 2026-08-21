@@ -1992,11 +1992,15 @@ button.cat-h-l {
   color: var(--accent);
 }
 .picker-tab--add .picker-tab-name { font-size: 13px; color: inherit; }
-/* Same native-disabled-renders-no-differently gap as .pv-act.is-tour-disabled
-   elsewhere in this file — .picker-tab--add has no :disabled rule of its
-   own either, and this specific instance is now an InfoTip span (see
-   tab-picker.jsx), not a real <button>, whenever it's tutorialsInProgress. */
-.picker-tab--add.is-tour-disabled { opacity: 0.5; cursor: default; pointer-events: none; }
+/* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
+   pointer-events:none here — this instance is an InfoTip span (see
+   tab-picker.jsx), not a real <button>, whenever it's tutorialsInProgress,
+   and InfoTip needs real hover/tap events to reach it to show its tooltip
+   at all (see .btn.is-disabled in styles.css, the same InfoTip pattern
+   used by the Generate card, which omits it for the same reason). Nothing
+   unsafe fires either way: the real onClick isn't wired to this element in
+   the first place while disabled. */
+.picker-tab--add.is-tour-disabled { opacity: 0.5; cursor: default; }
 .picker-tab--add .picker-tab-add-icon { display: inline-flex; }
 
 .np-fields { display: flex; flex-direction: column; gap: 24px; margin-top: 16px; }
@@ -2358,10 +2362,16 @@ button.cat-h-l {
   transition: border-color .12s, color .12s, background .12s;
 }
 .rem-add-btn:hover { border-color: var(--accent); color: var(--accent); background: oklch(from var(--accent-soft) l c h / 0.5); }
-/* Same native-disabled-renders-no-differently gap as .pv-act.is-tour-disabled
-   above — .rem-add-btn has no :disabled rule of its own either. Applied
-   while the Welcome Tour is up (see reminders.jsx's welcomeTourActive). */
-.rem-add-btn.is-tour-disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+/* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
+   pointer-events:none here — this instance is an InfoTip span (see
+   reminders.jsx's tutorialsInProgress), not a real <button>, whenever
+   OB_CHECKLIST.tutorialsInProgress is true, and InfoTip needs real
+   hover/tap events reaching it to show its tooltip at all (see
+   .btn.is-disabled in styles.css, the same InfoTip pattern used by the
+   Generate card, which omits it for the same reason). Nothing unsafe
+   fires either way: the real onClick isn't wired to this element while
+   disabled. */
+.rem-add-btn.is-tour-disabled { opacity: 0.4; cursor: default; }
 
 /* Pin icon (one-time reminders) gets the warm accent to read as "sticky". */
 .rem-card .rem-meta svg { color: var(--accent); }
@@ -2706,11 +2716,15 @@ button.cat-h-l {
   font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; text-align: left;
 }
 .rd-add:hover { color: var(--accent); }
-/* Same native-disabled-renders-no-differently gap as .pv-act.is-tour-disabled
-   elsewhere in this file — .rd-add has no :disabled rule of its own either,
-   and these specific instances become InfoTip spans (not real <button>s)
-   whenever OB_CHECKLIST.tutorialsInProgress is true. */
-.rd-add.is-tour-disabled { opacity: 0.5; cursor: default; pointer-events: none; }
+/* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
+   pointer-events:none here — these instances become InfoTip spans (not
+   real <button>s) whenever OB_CHECKLIST.tutorialsInProgress is true, and
+   InfoTip needs real hover/tap events reaching it to show its tooltip at
+   all (see .btn.is-disabled in styles.css, the same InfoTip pattern used
+   by the Generate card, which omits it for the same reason). Nothing
+   unsafe fires either way: the real onClick isn't wired to these elements
+   while disabled. */
+.rd-add.is-tour-disabled { opacity: 0.5; cursor: default; }
 .rd-empty { padding: 14px 16px 18px; color: var(--muted); font-size: 13px; }
 
 .rd-item { border-bottom: 0.5px solid var(--border); }
