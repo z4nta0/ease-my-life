@@ -1,5 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
+import { Icon } from './ui.jsx';
 
 // On-demand "help mode": a per-page toggle that, once on, simultaneously
 // highlights every tagged element on the CURRENT page with a small corner
@@ -480,13 +481,26 @@ const NAV_HELP_ITEM = {
     return { rx: r, ry: r };
   },
   title: 'Navigation',
+  // One column per tab: its own real nav icon + label on their own line,
+  // its description below — reusing the exact icon name TabBar itself
+  // passes to <Icon> (app.jsx's TABS) so this never drifts from the real
+  // button's own icon. This is the 'bottom'/'top' placement shape (both
+  // read fine this way); 'side' stacks the 5 buttons in a column of its
+  // own and needs its own pass later — not accounted for here yet.
   body: (
     <>
-      <p><b>Today:</b> This is the main page of the app and contains your auto-generated daily todo list.</p>
-      <p><b>Pickers:</b> This is where you can manually run a picker to generate a task and then push it to the Today page's todo list. This is also where you can create new pickers and their items.</p>
-      <p><b>Stats:</b> This is where you can view all of the statistics for everything that you have created. That includes conditionals, reminder items, pickers and picker items. You can see how many times an item has been picked, items' pick frequency, and much more.</p>
-      <p><b>Data:</b> This is where you can view and edit everything that you have created. You can also create new conditionals, new reminders items and new picker items.</p>
-      <p><b>Settings:</b> This is where you can customize the app, adjust the daily generator, edit which holidays are observed, control your data, install the app, get app information and view legal documents.</p>
+      {[
+        { icon: 'today', label: 'Today', desc: 'This is the main page of the app and contains your auto-generated daily todo list.' },
+        { icon: 'picker', label: 'Pickers', desc: "This is where you can manually run a picker to generate a task and then push it to the Today page's todo list. This is also where you can create new pickers and their items." },
+        { icon: 'stats', label: 'Stats', desc: "This is where you can view all of the statistics for everything that you have created. That includes conditionals, reminder items, pickers and picker items. You can see how many times an item has been picked, items' pick frequency, and much more." },
+        { icon: 'data', label: 'Data', desc: 'This is where you can view and edit everything that you have created. You can also create new conditionals, new reminders items and new picker items.' },
+        { icon: 'settings', label: 'Settings', desc: 'This is where you can customize the app, adjust the daily generator, edit which holidays are observed, control your data, install the app, get app information and view legal documents.' },
+      ].map((t) => (
+        <div className="help-nav-item" key={t.icon}>
+          <div className="help-nav-label"><Icon name={t.icon} size={14} /><b>{t.label}:</b></div>
+          <p>{t.desc}</p>
+        </div>
+      ))}
     </>
   ),
 };

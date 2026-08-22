@@ -3855,6 +3855,11 @@ body.ob-touring .tab{padding-bottom:200px}
 .help-tip-title{font-size:15px;font-weight:600;margin:0 0 5px}
 .help-tip .ob-body p{margin:0}
 .help-tip .ob-body p+p{margin-top:8px}
+/* NAV_HELP_ITEM's per-tab column (help-mode.jsx): icon+label line above its
+   own description paragraph, one such block per real nav button. */
+.help-tip .help-nav-item+.help-nav-item{margin-top:10px}
+.help-tip .help-nav-label{display:flex;align-items:center;gap:6px;margin:0 0 3px}
+.help-tip .help-nav-label svg{flex:0 0 auto}
 
 /* ─── Settings: storage & installation panel ──────────────────────────────── */
 .set-store-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
