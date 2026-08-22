@@ -95,7 +95,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_highlights', page: 'today', label: 'Use the highlight feature',
     title: 'Highlight Feature',
-    body: 'This tutorial will show you how to use the highlight feature, which lets you tap the info icon on any page to get an on demand explanation of everything on screen.',
+    body: <>This tutorial will show you <b>how to use the highlight feature</b>, which lets you tap the info icon on any page to get an on demand explanation of everything on screen.</>,
     pills: ['help highlights', 'on demand', 'any page'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -513,13 +513,13 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.help-btn', tab: 'today',
         title: 'Highlights Feature',
-        body: <>This is the highlight button that <b>can be found in the top right corner of every page</b>. Click this button now to advance the tutorial.</>,
+        body: 'The “i” button can be found in the top right corner of every page. Click the “i” button now to see how this works.',
         primary: 'Next', back: false, requireClick: true,
       },
       {
         sel: '.help-btn', tab: 'today',
         title: 'Highlights Feature',
-        body: <><b>Important elements on the page are highlighted</b>, each with their own button that will bring up a tooltip with more information. Click this button again to turn the feature off and finish this tutorial.</>,
+        body: <><b>Important elements on the page are highlighted</b>, each with their own button that will bring up a tooltip with more information. Click the “i” button again to turn the feature back off and conclude the Highlight Feature tutorial.</>,
         primary: 'Done', back: true, requireClick: true,
       },
     ];
@@ -706,7 +706,20 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
         }
       } : undefined}
       onFinish={() => closeTour('finished')}
-      onSkip={() => closeTour('skipped')}
+      onSkip={() => {
+        // help mode's on/off flag is local React state inside TabToday
+        // (helpOn/setHelpOn), unreachable from here — only reachable via
+        // Step 2's own requireClick target (.help-btn), which is exactly
+        // how finishing normally turns it back off. Skipping mid-Step-2
+        // (the only step where a real click could have already turned it
+        // on) needs the same real click to leave help mode the way this
+        // tutorial found it.
+        if (featureId === 'feat_highlights') {
+          const btn = document.querySelector('.help-btn.is-on');
+          if (btn) btn.click();
+        }
+        closeTour('skipped');
+      }}
     />
   );
 }
