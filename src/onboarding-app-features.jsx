@@ -86,7 +86,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_pick_anim', page: 'settings', label: 'Change your picker animation',
     title: 'Picker Animation',
-    body: 'This tutorial will show you how to change the animation that plays on the Pickers page whenever you manually direct it to select one of its items.',
+    body: <>This tutorial will show you <b>how to change the animation that plays on the Pickers page</b> whenever you manually direct it to select one of its items.</>,
     pills: ['settings page', 'appearance', 'animation'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -494,7 +494,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-subsection--pickanim', tab: 'settings',
         title: 'Picker Animation',
-        body: <>This is where you can <b>pick which animation plays</b> whenever you manually direct a picker to select an item on the Pickers page. Click Done when you are ready to finish this tutorial.</>,
+        body: <>This is where you can <b>pick which animation plays</b> whenever you manually direct a picker to select an item on the Pickers page. This concludes the Picker Animation tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
