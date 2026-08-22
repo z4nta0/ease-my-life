@@ -2029,6 +2029,24 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     if (!obReadyToGenerate) return;
     actions.setChecklistItem(OB_GENERATE_ITEM_ID, { status: 'finished' });
   };
+  // Names exactly what's still missing, singular/plural and "and" both
+  // adjusted to whichever of the two requirements (tutorials, a real
+  // picker) is actually still outstanding — see OB_CHECKLIST.othersRemaining
+  // and realPickerCount. Once nothing is missing (obReadyToGenerate), this
+  // "still missing" framing no longer applies at all, so it's a
+  // completely separate sentence, not a 0-item case of the same template.
+  const obOthersRemaining = OB_CHECKLIST.othersRemaining(state);
+  const obNeedsPicker = OB_CHECKLIST.realPickerCount(state) < 1;
+  const obGenerateExplanation = obReadyToGenerate
+    ? 'Everything is completed! Click this button to generate your first, real todo list.'
+    : (() => {
+        const tutorialsClause = obOthersRemaining > 0
+          ? `${obOthersRemaining} more tutorial${obOthersRemaining > 1 ? 's' : ''}` : null;
+        const pickerClause = obNeedsPicker ? 'at least 1 picker' : null;
+        const clause = tutorialsClause && pickerClause ? `${tutorialsClause} and ${pickerClause}`
+          : (tutorialsClause || pickerClause);
+        return `Finish ${clause} to enable this functionality and create your first, real generated todo list.`;
+      })();
   // Once every other checklist item is resolved, bring the now-pulsing
   // Generate card into view on its own — it's likely below the fold by the
   // time the last tutorial finishes, since every other card is still above
@@ -2465,7 +2483,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
               <div ref={generateCardRef} className={`ob-create ob-create--generate ${checklistExiting ? 'is-removing' : ''} ${!obReadyToGenerate ? 'is-needed' : ''} ${obReadyToGenerate ? 'ob-generate-pulse' : ''}`}>
                 <div className="ob-create-i"><Icon name="check" size={22} /></div>
                 <b>Generate your real list</b>
-                <p>Once every tutorial is checked off, and at least one picker has been created, this replaces all of them with your own real, generated todo list.</p>
+                <p>{obGenerateExplanation}</p>
                 {obReadyToGenerate ? (
                   <Btn kind="primary" size="sm" icon="check" onClick={onGenerateCardClick}>Generate your list</Btn>
                 ) : (

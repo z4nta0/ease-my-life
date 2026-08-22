@@ -79,13 +79,18 @@ function realPickerCount(state) {
   return state.pickers.filter((p) => !OB_SAMPLE_PICKER_IDS.includes(p.id)).length;
 }
 
+// How many checklist items OTHER than the Generate card itself are still
+// unresolved — used both by readyToGenerate below and by the Generate
+// card's own dynamic explanation text (see tab-today.jsx).
+function othersRemaining(state) {
+  return CHECKLIST_ITEMS.filter((item) => item.id !== OB_GENERATE_ITEM_ID && !entryFor(state, item.id)).length;
+}
+
 // The Generate card is actionable once every OTHER item is resolved AND at
 // least one real picker exists — see realPickerCount above. It's still
 // visible before that, just blocked.
 function readyToGenerate(state) {
-  const othersRemaining = CHECKLIST_ITEMS
-    .filter((item) => item.id !== OB_GENERATE_ITEM_ID && !entryFor(state, item.id)).length;
-  return othersRemaining === 0 && realPickerCount(state) >= 1;
+  return othersRemaining(state) === 0 && realPickerCount(state) >= 1;
 }
 
 // Whether we're anywhere between the Welcome Tour's very first step and the
@@ -116,6 +121,7 @@ export const OB_CHECKLIST = {
   status: checklistStatus,
   entryFor,
   realPickerCount,
+  othersRemaining,
   readyToGenerate,
   tutorialsInProgress,
 };
