@@ -77,7 +77,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_celebration', page: 'settings', label: 'Change your celebration animation',
     title: 'Celebration Animation',
-    body: 'This tutorial will show you how to change the animation that plays whenever you complete your entire todo list for the day.',
+    body: <>This tutorial will show you <b>how to change the animation that plays whenever you complete your entire todo list</b> for the day.</>,
     pills: ['settings page', 'appearance', 'animation'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -481,7 +481,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-subsection--celebration', tab: 'settings',
         title: 'Completion Celebration',
-        body: <>This is where you can <b>pick which animation plays</b> whenever you complete your entire todo list for the day. Click Done when you are ready to finish this tutorial.</>,
+        body: <>This is where you can <b>pick which animation plays</b> whenever you complete your entire todo list for the day. This concludes the Celebration Animation tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
