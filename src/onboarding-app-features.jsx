@@ -68,7 +68,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_theme', page: 'settings', label: 'Change your app theme',
     title: 'App Theme',
-    body: 'This tutorial will show you how to switch between light and dark mode, or customize the app’s colors to your own taste.',
+    body: <>This tutorial will show you <b>how to switch between light and dark mode</b>, or customize the app’s colors to your own taste.</>,
     pills: ['settings page', 'appearance', 'theme'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -455,7 +455,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-subsection--systempref', tab: 'settings',
         title: 'System Preferences Toggle',
-        body: <>This lets Ease My Life <b>automatically switch between your light and dark theme</b> based on your device's own system setting. Click Next when you are ready to advance this tutorial.</>,
+        body: <>This lets Ease My Life <b>automatically switch between your light and dark theme</b> based on your device's own system setting.</>,
         primary: 'Next', back: true, coachAtTop: true,
       },
       // .set-subsection--theme-light — already its own modifier class in
@@ -463,13 +463,13 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-subsection--theme-light', tab: 'settings',
         title: 'Light Theme Settings',
-        body: <>This is where you can <b>pick a light based theme</b>, or create your own custom one. Click Next when you are ready to advance this tutorial.</>,
+        body: <>This is where you can <b>pick a light based theme</b>, or create your own custom one.</>,
         primary: 'Next', back: true, coachAtTop: true,
       },
       {
         sel: '.set-subsection--theme-dark', tab: 'settings',
         title: 'Dark Theme Settings',
-        body: <>This is where you can <b>pick a dark based theme</b>, or create your own custom one. Click Done when you are ready to finish this tutorial.</>,
+        body: <>This is where you can <b>pick a dark based theme</b>, or create your own custom one. This concludes the App Theme tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
