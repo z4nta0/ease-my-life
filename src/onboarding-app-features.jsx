@@ -104,7 +104,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_protect_data', page: 'settings', label: 'Protect your data / Install the app',
     title: 'Protect Your Data',
-    body: 'This tutorial will show you how to protect your data from being deleted by your browser, and to keep your data even more safe, how to install the app.',
+    body: <>This tutorial will show you <b>how to protect your data from being deleted by your browser</b>, and to keep your data even more safe, how to install the app.</>,
     pills: ['settings page', 'data control', 'install app'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -532,7 +532,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-protect-btn', tab: 'settings',
         title: 'Protect Your Data',
-        body: <>This button helps <b>protect your data from being cleared by your browser's own storage cleanup</b>. Click it now to advance this tutorial.</>,
+        body: <>The “Protect data” button helps <b>protect your data from being cleared by your browser's own storage clean up</b>. Click the “Protect data” button now to enable this.</>,
         primary: 'Next', back: true, requireClick: true, coachAtTop: true,
       },
       // Comma-separated fallback (see findTargets' own comma-splitting in
@@ -548,7 +548,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-install-btn, .set-store-ios', tab: 'settings',
         title: 'Install the App',
-        body: <>Installing the app to your device is <b>the best way to protect your data</b>, and gives you a more native, app-like experience. If a direct install isn't available in your browser, instructions for how to install it are shown here instead. Click Done when you are ready to finish this tutorial.</>,
+        body: <>Installing the app to your device is <b>the best way to protect your data</b>, and gives you a more native, app-like experience. If a direct install isn't available in your browser, instructions for how to install it are shown here instead. This concludes the Protect Your Data tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
