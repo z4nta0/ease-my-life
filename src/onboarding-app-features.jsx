@@ -704,6 +704,16 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
           const btn = document.querySelector('.data-list .rd-item > .rd-row[aria-expanded="true"]');
           if (btn) btn.click();
         }
+      } : featureId === 'feat_highlights' ? (to) => {
+        // Back from Step 2 (index 1) to Step 1 (index 0) — Step 1's own
+        // requireClick expects help mode currently off, but reaching Step 2
+        // in the first place required a real click that turned it on (see
+        // this tour's onSkip's own comment on why help mode can't be
+        // touched via a direct action call). Same real click undoes it here.
+        if (to === 0) {
+          const btn = document.querySelector('.help-btn.is-on');
+          if (btn) btn.click();
+        }
       } : undefined}
       onFinish={() => closeTour('finished')}
       onSkip={() => {
