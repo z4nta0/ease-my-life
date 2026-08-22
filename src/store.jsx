@@ -2,6 +2,7 @@ import React from 'react';
 import { CADENCE } from './cadence.js';
 import { CONDITIONALS } from './conditionals.js';
 import { HOLIDAYS } from './holidays.js';
+import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { normalizeConditionalName, normalizeGroupName, normalizePickerName } from './pickers.js';
 import { PWA } from './pwa.js';
 import { CLEAN_STATE } from './seed.js';
@@ -412,6 +413,20 @@ function migrate(s) {
   if (s && s.onboarding && typeof s.onboarding.checklistDone !== 'boolean') {
     s.onboarding.checklistDone = false;
   }
+  // One-shot signal (added later) for tab-today.jsx's own auto-scroll to the
+  // Generate card: set the instant every OTHER checklist item becomes
+  // resolved (see setChecklistItem below), consumed (and cleared back to
+  // false) the next time TabToday renders with it true. Persisted state
+  // rather than a local ref/effect, deliberately: the LAST checklist item
+  // to resolve is very often finished from a mini-tour or Page Tour running
+  // on a DIFFERENT tab (Pickers/Data/Stats/Settings), which unmounts
+  // TabToday for the whole tour — a plain "did I see false-then-true" ref
+  // would miss the transition entirely, since it only resets (matching
+  // whatever the value already is) on each fresh mount. This flag survives
+  // that gap by living in state instead of the component.
+  if (s && s.onboarding && typeof s.onboarding.generateScrollPending !== 'boolean') {
+    s.onboarding.generateScrollPending = false;
+  }
   // Page Tours group display name (Edit Mode rename, added later) — unlike a
   // real group's name, this doesn't double as the group's identity (that's
   // still the fixed '__pageTours' sentinel everywhere else), so renaming it
@@ -693,7 +708,16 @@ function useStore(opts) {
     setChecklistItem: (itemId, patch) => setState((s) => {
       const checklist = { ...((s.onboarding && s.onboarding.checklist) || {}) };
       if (patch) checklist[itemId] = patch; else delete checklist[itemId];
-      return { ...s, onboarding: { ...(s.onboarding || {}), checklist } };
+      const next = { ...s, onboarding: { ...(s.onboarding || {}), checklist } };
+      // Flags the exact moment readyToGenerate flips false->true, for
+      // tab-today.jsx's own auto-scroll — see generateScrollPending's own
+      // migrate() comment for why this has to be captured HERE (the actual
+      // mutation point) rather than as a derived-value comparison inside
+      // TabToday itself, which may not even be mounted right now.
+      if (!OB_CHECKLIST.readyToGenerate(s) && OB_CHECKLIST.readyToGenerate(next)) {
+        next.onboarding.generateScrollPending = true;
+      }
+      return next;
     }),
 
     // Same shape/reasoning as setChecklistItem above, but for App Features
