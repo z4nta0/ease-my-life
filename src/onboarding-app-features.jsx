@@ -120,7 +120,7 @@ export const APP_FEATURES = [
 // `actions` (built fresh per render, like buildPageTourSteps itself) since
 // feat_edit_item's own Step 2 needs to call actions.toggleControlsCollapsed
 // directly — see that step's own run() comment for why a real click won't do.
-const buildAppFeatureSteps = (featureId, actions) => {
+const buildAppFeatureSteps = (featureId, actions, alreadyProtected) => {
   if (featureId === 'feat_manual_pick') {
     return [
       // Title/body copied verbatim from the Pickers page tour's own
@@ -528,13 +528,20 @@ const buildAppFeatureSteps = (featureId, actions) => {
     return [
       // .set-protect-btn — new modifier class on the "Protect data" Btn in
       // tab-settings.jsx (only rendered while !stor.persisted — same
-      // condition already gating the real button).
-      {
+      // condition already gating the real button). Omitted entirely when
+      // alreadyProtected (see AppFeatureTour's own effect that computes
+      // it) — a browser that already has persisted storage never renders
+      // this button at all, so this step's requireClick target would never
+      // resolve; without this the tour would sit on a phantom "Step 2 of 3"
+      // until the generic not-found timeout gave up and cancelled the
+      // whole tutorial. Skipping the step outright instead makes this a
+      // clean "Step n of 2".
+      ...(alreadyProtected ? [] : [{
         sel: '.set-protect-btn', tab: 'settings',
         title: 'Protect Your Data',
         body: <>The “Protect data” button helps <b>protect your data from being cleared by your browser's own storage clean up</b>. Click the “Protect data” button now to enable this.</>,
         primary: 'Next', back: true, requireClick: true, coachAtTop: true,
-      },
+      }]),
       // Comma-separated fallback (see findTargets' own comma-splitting in
       // onboarding-tour-runner.jsx) — .set-install-btn (new modifier class,
       // only rendered when canInstall) is tried first; if this browser
@@ -581,6 +588,20 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
   const ob = state.onboarding || {};
   const resumable = ob.activeTour && ob.activeTour.id === `appfeature-${featureId}` ? ob.activeTour : null;
   const [phase, setPhase] = React.useState(resumable ? 'tour' : 'intro');
+  // Whether THIS browser already has persisted storage, checked once up
+  // front (not reactively) — see buildAppFeatureSteps' own comment on why
+  // feat_protect_data's first step needs to know this. Frozen at whatever
+  // it resolves to on mount: a user who actually grants persistence mid-
+  // tour (by clicking the real button that step targets) shouldn't have
+  // the step list change shape out from under them the same run.
+  const [alreadyProtected, setAlreadyProtected] = React.useState(false);
+  React.useEffect(() => {
+    if (featureId !== 'feat_protect_data') return;
+    let alive = true;
+    Promise.resolve(navigator.storage && navigator.storage.persisted ? navigator.storage.persisted() : false)
+      .then((v) => { if (alive) setAlreadyProtected(v); });
+    return () => { alive = false; };
+  }, [featureId]);
 
   const closeTour = (status) => {
     actions.setAppFeatureItem(featureId, { status });
@@ -602,7 +623,7 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
     );
   }
 
-  const extraSteps = buildAppFeatureSteps(featureId, actions);
+  const extraSteps = buildAppFeatureSteps(featureId, actions, alreadyProtected);
   // "Edit your first item" wants a clean, all-collapsed Data page the
   // moment it lands there — any picker the user happened to leave expanded
   // from a previous visit would otherwise make Step 2's "click a header to
