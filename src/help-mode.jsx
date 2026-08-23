@@ -344,12 +344,15 @@ const placeTip = (targetRect, tw, th, pinBelowY) => {
   // top edge, that produced a `top` at the viewport's very top while the
   // (still full-height, unconstrained at the moment of this decision) tip
   // extended down past the target's own bottom too, covering it entirely.
-  // Going below unconditionally and THEN capping height (maxHeight below)
-  // to whatever room is actually there is what makes scrolling work at
-  // all — but only where "below" is actually the right side to try in the
-  // first place: NOT 'bottom' tab-bar placement, whose target already
-  // sits at the very bottom of the screen with no room below it at all
-  // (there `scrollable`'s cap is a pure safety net, and the normal
+  // Same failure mode on 'top' tab-bar placement on a short viewport (e.g.
+  // iPhone SE): the target already sits at the screen's top edge, so
+  // "doesn't fit below" flips to "above" and covers the navbar the same
+  // way. Going below unconditionally and THEN capping height (maxHeight
+  // below) to whatever room is actually there is what makes scrolling
+  // work at all — but only where "below" is actually the right side to
+  // try in the first place: NOT 'bottom' tab-bar placement, whose target
+  // already sits at the very bottom of the screen with no room below it
+  // at all (there `scrollable`'s cap is a pure safety net, and the normal
   // below/above choice — which correctly flips to "above" there — still
   // applies).
   if (targetRect.alwaysBelow) {
@@ -456,11 +459,16 @@ const NAV_HELP_ITEM = {
   // no room above or below tall enough for the full 5-paragraph body no
   // matter how it's positioned; caps to whatever room placeTip found and
   // scrolls internally past that rather than overflowing the viewport.
-  // alwaysBelowSel — only 'side' placement's target spans most of the
-  // viewport's own height (see placeTip's own comment on alwaysBelow);
-  // 'bottom'/'top' keep the normal above/below choice.
+  // alwaysBelowSel — 'side' placement's target spans most of the
+  // viewport's own height; 'top' placement's target sits at the very top
+  // of the screen, where the normal "does it fit below, else flip above"
+  // choice — measured against the content's own unconstrained height —
+  // flips to "above" on a short viewport (e.g. iPhone SE) and covers the
+  // navbar entirely (see placeTip's own comment on alwaysBelow). 'bottom'
+  // keeps the normal above/below choice: its target already sits at the
+  // opposite edge, where flipping to "above" is the correct behavior.
   id: '__nav', sel: '[data-tab]', matchTargetWidth: true, matchWidthSel: '.tabbar', padY: 7, scrollable: true,
-  alwaysBelowSel: '.tabbar--side',
+  alwaysBelowSel: '.tabbar--side, .tabbar--top',
   // The tabbar is a true pill ONLY on 'bottom' placement (border-radius:
   // 999px, resolving to a circular corner of exactly half its own height
   // once CSS's overflow algorithm scales it down for a box that much wider
