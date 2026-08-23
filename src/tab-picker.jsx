@@ -211,6 +211,17 @@ function PickerView({ picker, state, actions, animStyle }) {
   // so it's naturally unaffected/enabled during this tour).
   const disablePoolEditDelete = disablePoolItemButtons
     || (tour.phase === 'tour' && tour.tourId === 'appfeature-feat_manual_pick' && tour.step === 4);
+  // Same fading-outline pulse (.ob-tour-pulse) tab-data.jsx's own Edit Item
+  // tour uses on its own per-element targets — draws the eye to the still-
+  // genuinely-usable Send to Today buttons specifically, not just the whole
+  // .pool-items box the step's own coach already frames. Plain outline-
+  // based .ob-tour-pulse is fine here (unlike .rd-item's own border variant
+  // in styles2.css) — these buttons don't touch each other edge-to-edge, so
+  // there's no doubled-outline risk between neighbors. Only ever applied to
+  // the real, enabled button below (disablePoolItemButtons is false here,
+  // and this never touches the is-sent/is-disabled branches) — an already-
+  // sent or already-on-Today item has nothing to invite a click toward.
+  const highlightManualPickSend = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_manual_pick' && tour.step === 4;
   // Step 8 ("Add Picker Item") highlights "+ Add item" but explicitly
   // doesn't want the user opening the real create-item form from a
   // disposable tutorial picker.
@@ -608,7 +619,7 @@ function PickerView({ picker, state, actions, animStyle }) {
                         <Icon name="calendar" size={15} />
                       </InfoTip>
                     ) : (
-                      <button type="button" className="pool-send"
+                      <button type="button" className={`pool-send ${highlightManualPickSend ? 'ob-tour-pulse' : ''}`}
                               aria-label={`Send ${it.name} to Today`}
                               title="Send to Today" disabled={disablePoolItemButtons}
                               onClick={() => sendToday(it.id)}>

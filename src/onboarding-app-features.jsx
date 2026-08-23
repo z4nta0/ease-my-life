@@ -226,7 +226,14 @@ const buildAppFeatureSteps = (featureId, actions, alreadyProtected) => {
       // overlapping; pins the coach to safeTop and lets the pool run off
       // the bottom instead, same tall-target treatment as the Data tour's
       // own .data-list step and every Settings section — see coachAtTop's
-      // own doc comment in onboarding-tour-runner.jsx.
+      // own doc comment in onboarding-tour-runner.jsx. Each genuinely-usable
+      // Send to Today button also gets its own fading .ob-tour-pulse
+      // (tab-picker.jsx's highlightManualPickSend) — same per-element
+      // pulse-inside-a-bigger-spotlight idea as the Edit Item tour's own
+      // .ob-tour-pulse targets, so the one real actionable button per item
+      // still stands out inside this step's whole-pool highlight. Skips an
+      // already-sent or already-on-Today item's own (disabled) button —
+      // nothing to invite a click toward there.
       {
         sel: '.pool-items', tab: 'picker',
         title: 'Picker Items',
