@@ -203,11 +203,26 @@ function Onboarding({ state, actions, active, selectTab }) {
     if (!ob.welcomed && phase === 'off') setPhase('welcome');
   }, [ob.welcomed]);
 
-  // Seed the sample pickers/reminders immediately on a fresh install —
-  // before the welcome tour even begins — so every tour step always has real
-  // content to point at and generate from. Checked once on mount only (an
-  // intentionally empty dep array): re-running on later state changes would
-  // fight a user who's since deleted every picker on purpose.
+  // Seed the sample pickers/reminders whenever `welcomed` is false and no
+  // sample already exists — so every tour step always has real content to
+  // point at and generate from. Depends on [ob.welcomed] (same "flag flips"
+  // trigger as the re-open effect right above), NOT a one-shot mount-only
+  // check: a Replay Tour flips `welcomed` back to false on an already-
+  // mounted app, and needs this to actually re-run then, not just once at
+  // initial page load.
+  //
+  // Guarded on the SAMPLES specifically existing already (any status —
+  // hidden or not), not "the user has some picker or other": a Replay Tour
+  // (or a fresh account that later imports a backup) can leave `welcomed`
+  // false while state.pickers already holds the user's own real, sample-
+  // unrelated pickers. A plain "has any picker" check reads that as
+  // "already seeded, don't duplicate" and skips seeding forever — leaving
+  // no sample for the checklist's "create a picker" tutorials to ever
+  // point at, so onboarding could never actually reach a real picker and
+  // the closing Generate step stayed permanently unreachable. Checking for
+  // the specific sample ids instead means this only ever re-seeds when
+  // they're genuinely absent, never duplicating them for a user who still
+  // has theirs (hidden or not) from an earlier pass.
   //
   // The ~1yr of matching Stats history is a ~650KB precomputed file that's
   // irrelevant to everyone past their first run, so it's dynamic-imported
@@ -217,7 +232,7 @@ function Onboarding({ state, actions, active, selectTab }) {
   // TODAY, not whenever the data was generated (see
   // scripts/build-onboarding-stats.mjs for why).
   React.useEffect(() => {
-    if (ob.welcomed || state.pickers.length > 0) return;
+    if (ob.welcomed || state.pickers.some((p) => OB_SAMPLE_PICKER_IDS.includes(p.id))) return;
     [OB_EXAMPLE, ...OB_EXTRA_PICKERS].forEach((p) => actions.addPicker(p));
     // The sample reminders themselves are seeded later, at the Generate
     // step (see that step's run() below) — unlike picker items, a reminder
@@ -228,7 +243,7 @@ function Onboarding({ state, actions, active, selectTab }) {
     import('./onboarding-stats-data.js').then(({ ONBOARDING_STATS }) => {
       actions.seedHistory(hydrateOnboardingStats(ONBOARDING_STATS));
     });
-  }, []);
+  }, [ob.welcomed]);
 
   const finish = React.useCallback(() => {
     setPhase('off');
