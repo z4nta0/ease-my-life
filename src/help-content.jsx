@@ -1021,6 +1021,17 @@ const DATA_HELP_ITEMS = [
     body: <>This controls whether one-time and recurring reminders are included in the day streak, completion ring or the Stats page. There are also controls to exclude those same types from weekends or holidays. Each type of reminder can be toggled independently.</>,
   },
   {
+    // No Delete, unlike dataPickerFoot's own Delete/Cancel/Save — these are
+    // global settings, not a single deletable picker.
+    id: 'remControlsFoot', sel: '.rd-matrix .rd-mx-foot .btn', title: 'Cancel / Save',
+    body: (
+      <>
+        <p><b>Cancel:</b> This button discards any changes and closes this section without saving.</p>
+        <p><b>Save:</b> This button saves your changes to these settings.</p>
+      </>
+    ),
+  },
+  {
     id: 'remindersItemsHeader', sel: '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(2)', title: 'Reminders Items', padY: 0,
     body: <>Tap this to expand or collapse the list of your reminders below. Collapsed, it shows how many reminders you have.</>,
   },
