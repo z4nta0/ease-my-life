@@ -3613,6 +3613,17 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   .dl-cond-row .dl-mode--cond{display:block;width:100%;text-align:center}
 }
 
+/* Below this, a picker block header's own name (.dl-block-name) crowds the
+   mode pill (.dl-mode) and item count (.dl-sum) enough that their text
+   wraps onto a second line — both are flex items, so their own box still
+   shrinks to fit rather than overflowing, but left-aligned wrapped text
+   (the default) leaves a ragged, awkward-looking gap on the shorter
+   second line's right side. */
+@container app (max-width:384px){
+  .dl-mode{text-align:center}
+  .dl-sum{text-align:center}
+}
+
 /* ── Onboarding ──────────────────────────────────────────────────────────
    Welcome modal, get-started checklist, first-picker CTA, and the spotlight
    tour (dim + cut-out + coach card). Uses app tokens throughout. */
