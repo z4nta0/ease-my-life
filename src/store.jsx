@@ -3,6 +3,7 @@ import { CADENCE } from './cadence.js';
 import { CONDITIONALS } from './conditionals.js';
 import { HOLIDAYS } from './holidays.js';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
+import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';
 import { normalizeConditionalName, normalizeGroupName, normalizePickerName } from './pickers.js';
 import { PWA } from './pwa.js';
 import { CLEAN_STATE } from './seed.js';
@@ -398,9 +399,24 @@ function migrate(s) {
     s._remStatsDefaultOn = true;
   }
   // Onboarding (added later). Existing users must NOT be re-onboarded, so any
-  // state that lacks the field is treated as already welcomed/dismissed. Fresh
-  // clean state sets welcomed:false explicitly to trigger the first-run flow.
-  if (s && !s.onboarding) s.onboarding = { welcomed: true, dismissed: true };
+  // state that lacks the field is treated as already welcomed/dismissed AND
+  // already past the mini-tour checklist (checklistDone:true) — this data
+  // predates the checklist system entirely, so it unambiguously belongs to
+  // an established account, not a first-time one. Without checklistDone set
+  // here too, the very next backfill below (which defaults it to false for
+  // ANY onboarding object still missing the field, including the one just
+  // created on this exact line) put such an account back in "first-time"
+  // mode the moment they next hit Replay Tour: the checklist's own real-
+  // picker name-collision suppression and the App Features section both
+  // require checklistDone to already be true, and the closing Generate
+  // card requires it to be false — so with it wrongly false, a Replay
+  // showed every mini-tour regardless of name collisions, hid App Features
+  // entirely, and left Generate stuck permanently visible (and permanently
+  // unreachable, since nothing tracked it as done). Fresh clean state sets
+  // welcomed:false (and, via the block below, checklistDone:false)
+  // explicitly to trigger the real first-run flow — this branch only ever
+  // fires for existing data an actual CLEAN_STATE() never produces.
+  if (s && !s.onboarding) s.onboarding = { welcomed: true, dismissed: true, checklistDone: true };
   // Mini-tour checklist (added later) — see onboarding-checklist.js. `checklist`
   // maps an item id to its resolution ({ status, createdId? }); `checklistDone`
   // flips true once the closing Generate card's flow completes, at which
@@ -1207,7 +1223,21 @@ function useStore(opts) {
         // recreates a sample by name, e.g. "Daily Chores"). Excludes itself
         // too, so a replaceId update keeping the same name never collides
         // with its own prior name.
-        const finalName = uniqueName(
+        //
+        // Skipped entirely (name kept verbatim) when THIS call is (re)
+        // seeding a sample itself — id is one of onboarding's own fixed
+        // sample ids only for that call site. A freshly (re)seeded sample
+        // starts out visible (hidden defaults false; the tour's own later
+        // step is what hides it), so if a real picker already happens to
+        // share its exact name — e.g. a Replay Tour on an account that
+        // already has a real "Daily Chores" — the dedup above would rename
+        // the SAMPLE to "Daily Chores (2)" before onboarding's own name-
+        // collision suppression (tab-today.jsx's groupEntries) ever runs,
+        // which compares against the sample's exact, canonical name. That
+        // silently defeated the suppression instead of triggering it — the
+        // renamed sample no longer matched anything, so its own "already
+        // have one" tutorial card kept offering itself.
+        const finalName = OB_SAMPLE_PICKER_IDS.includes(id) ? (normalizePickerName(name) || name) : uniqueName(
           normalizePickerName(name) || name,
           s.pickers.filter((p) => !p.hidden && p.id !== pid).map((p) => p.name),
         );
