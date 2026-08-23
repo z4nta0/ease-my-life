@@ -362,7 +362,18 @@ const placeTip = (targetRect, tw, th, pinBelowY) => {
   } else {
     const spaceBelow = vh - targetRect.bottom;
     if (spaceBelow >= th + 16) { top = targetRect.bottom + 16; arrowClass = 'ob-coach--up'; }
-    else { top = Math.max(M, targetRect.top - 16 - th); arrowClass = 'ob-coach--down'; }
+    else {
+      // badgeAnchorTop (columnGroup items only — see its own comment where
+      // it's stashed) — the corner badge sits well above targetRect.top
+      // itself (overlapping up into the highlight, same as every badge),
+      // so anchoring the FLIPPED-above tip to targetRect.top here would
+      // point its own down-arrow at empty space right where the badge
+      // already sits, overlapping it. Anchoring to the badge's own top
+      // instead leaves the same clearance above the badge that the normal
+      // "tip below, arrow up" case already has below the target.
+      const aboveAnchorTop = targetRect.badgeAnchorTop ?? targetRect.top;
+      top = Math.max(M, aboveAnchorTop - 16 - th); arrowClass = 'ob-coach--down';
+    }
   }
   const centerX = targetRect.left + targetRect.width / 2;
   const left = Math.max(M, Math.min(centerX - tw / 2, vw - tw - M));
@@ -727,6 +738,15 @@ function HelpOverlay({ active, items, onExit }) {
           nxt.left = mid;
         }
         cur.width = cur.right - cur.left;
+        // Stashed for placeTip's own "flips above" branch (see its comment
+        // on badgeAnchorTop) — a columnGroup member's badge sits centered
+        // on this same X (badgeRectFor's `center` mode) but well ABOVE
+        // cur.top itself (overlapping up into the highlight box's own top
+        // edge, same corner-marker design every badge uses). Computed here,
+        // after cur's group-adjusted top/width are both final, rather than
+        // inline in placeTip — badgeRectFor needs the padded/centered rect
+        // this loop just finished producing, not the raw pre-group one.
+        next[id].badgeAnchorTop = badgeRectFor(cur, true).top;
       });
     });
     setRectsById(next);
