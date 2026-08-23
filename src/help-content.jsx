@@ -385,6 +385,10 @@ const TODAY_HELP_ITEMS = [
 
 const PICKER_HELP_ITEMS = [
   {
+    id: 'brandMark', sel: '.picker-h-lead .brand-mark', title: 'Home',
+    body: <>You can click this logo any time to jump back to the top of your todo list.</>,
+  },
+  {
     id: 'groupFilter', sel: '.picker-groups .picker-group-pill', title: 'Group Filter',
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
@@ -660,6 +664,10 @@ const PICKER_HELP_ITEMS = [
 
 const STATS_HELP_ITEMS = [
   {
+    id: 'brandMark', sel: '.stat-h-lead .brand-mark', title: 'Home',
+    body: <>You can click this logo any time to jump back to the top of your todo list.</>,
+  },
+  {
     id: 'groupFilter', sel: '.stat-scope-groups .picker-group-pill', title: 'Group Filter',
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
@@ -811,6 +819,10 @@ const STATS_HELP_ITEMS = [
 ];
 
 const DATA_HELP_ITEMS = [
+  {
+    id: 'brandMark', sel: '.stat-h-lead .brand-mark', title: 'Home',
+    body: <>You can click this logo any time to jump back to the top of your todo list.</>,
+  },
   {
     // The Conditionals filter row below carries BOTH .stat-scope-groups
     // AND .stat-scope-groups--cond (it's an additional modifier, not a
@@ -1299,6 +1311,10 @@ const DATA_HELP_ITEMS = [
 ];
 
 const SETTINGS_HELP_ITEMS = [
+  {
+    id: 'brandMark', sel: '.stat-h-lead .brand-mark', title: 'Home',
+    body: <>You can click this logo any time to jump back to the top of your todo list.</>,
+  },
   // ── Section rail — on mobile this collapses into a horizontal sticky
   // pill bar pinned above the sections (see .settings-rail's own
   // @container rule in styles2.css); on desktop it's a vertical sidebar.
