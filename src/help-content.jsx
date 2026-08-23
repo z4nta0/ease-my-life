@@ -437,7 +437,14 @@ const PICKER_HELP_ITEMS = [
     // 10px gap to the Add Picker Item button below; the default 8px pad on
     // each side would overlap by 6px otherwise.
     id: 'pickerItems', sel: '.pool-items', title: 'Picker Items', padY: 4,
-    body: <>This lists all of the items that are in this picker's pool, including their values (if applicable). The Send to Today button will send the item to your todo list on the Today page, the Edit button will allow you to edit the item's properties and the Delete button will delete the item after asking for confirmation.</>,
+    // Inline icons (not their own line, unlike NAV_HELP_ITEM/Card Actions —
+    // this is flowing prose, not a list) — same real icon name each real
+    // button's own <Icon> uses (tab-picker.jsx's .pool-send/.pool-edit/
+    // .pool-del). vertical-align on these specifically (styles2.css) keeps
+    // them from sitting low against the surrounding text's baseline.
+    body: (
+      <>This lists all of the items that are in this picker's pool, including their values (if applicable). The <Icon name="calendar" size={13} /> Send to Today button will send the item to your todo list on the Today page, the <Icon name="edit" size={13} /> Edit button will allow you to edit the item's properties and the <Icon name="trash" size={13} /> Delete button will delete the item after asking for confirmation.</>
+    ),
   },
   {
     // padY: 4 — see pickerItems' own comment, same gap, same fix.
