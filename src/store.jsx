@@ -683,13 +683,27 @@ function useStore(opts) {
   }, [persist]);
 
   const actions = React.useMemo(() => ({
-    // Wipe persisted storage as well as in-memory state — including the
-    // pre-IDB migration snapshot, which would otherwise survive a "delete all
-    // data" as a full plaintext copy. The clean state is written back by the
-    // normal persist effect right after.
-    reset: () => {
-      try { if (STORAGE) { STORAGE.wipe(); STORAGE.logAuthoritative(); } } catch (e) {}
-      setState(migrate(CLEAN_STATE()));
+    // Wipe persisted storage, then hard-reload rather than setState-ing a
+    // clean state in place — a plain in-memory reset left stale module-level
+    // singletons behind (eml-tour-bus.js's bus, etc.), which is what made
+    // onboarding misbehave after "Reset all data". wipe() is async (an IDB
+    // clear); awaiting it before reloading matters here specifically,
+    // unlike its previous fire-and-forget call — a reload can tear down the
+    // page mid-transaction, which setState() never could. Clears the URL
+    // hash first: app.jsx's initial `active` tab reads location.hash for its
+    // #settings deep link, and a reload alone would otherwise land right
+    // back on Settings for anyone who'd arrived that way, same "onboarding
+    // anchors only exist on Today" problem the Settings button's own
+    // onNavTab('today') call exists to avoid.
+    reset: async () => {
+      try {
+        if (STORAGE) {
+          await STORAGE.wipe();
+          STORAGE.logAuthoritative();
+        }
+      } catch (e) {}
+      try { window.location.hash = ''; } catch (e) {}
+      window.location.reload();
     },
 
     // Onboarding progress (welcome modal / mini-tour checklist). Merges a
