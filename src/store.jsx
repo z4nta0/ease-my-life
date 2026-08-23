@@ -684,17 +684,30 @@ function useStore(opts) {
 
   const actions = React.useMemo(() => ({
     // Wipe persisted storage, then hard-reload rather than setState-ing a
-    // clean state in place — a plain in-memory reset left stale module-level
-    // singletons behind (eml-tour-bus.js's bus, etc.), which is what made
-    // onboarding misbehave after "Reset all data". wipe() is async (an IDB
-    // clear); awaiting it before reloading matters here specifically,
-    // unlike its previous fire-and-forget call — a reload can tear down the
-    // page mid-transaction, which setState() never could. Clears the URL
-    // hash first: app.jsx's initial `active` tab reads location.hash for its
-    // #settings deep link, and a reload alone would otherwise land right
-    // back on Settings for anyone who'd arrived that way, same "onboarding
-    // anchors only exist on Today" problem the Settings button's own
-    // onNavTab('today') call exists to avoid.
+    // clean state in place and stopping there — a plain in-memory reset left
+    // stale module-level singletons behind (eml-tour-bus.js's bus, etc.),
+    // which is what made onboarding misbehave after "Reset all data". wipe()
+    // is async (an IDB clear); awaiting it before reloading matters here
+    // specifically, unlike its previous fire-and-forget call — a reload can
+    // tear down the page mid-transaction, which setState() never could.
+    //
+    // Still has to update latestRef.current (not just call setState) before
+    // reloading, even though nothing will ever render it: window.location
+    // .reload() fires a pagehide event, and this file's own flush() (~line
+    // 678) synchronously re-persists whatever latestRef.current holds at
+    // that moment. Without this, that flush would silently re-save the
+    // STALE pre-wipe state right back into the storage this action just
+    // cleared, undoing the wipe before the reload even finishes loading —
+    // setState() alone isn't enough since React's own re-render (which is
+    // what actually updates latestRef.current, see this file's own
+    // `latestRef.current = state` render-phase line) isn't guaranteed to
+    // have committed yet by the time reload() below fires.
+    //
+    // Clears the URL hash too: app.jsx's initial `active` tab reads
+    // location.hash for its #settings deep link, and a reload alone would
+    // otherwise land right back on Settings for anyone who'd arrived that
+    // way, same "onboarding anchors only exist on Today" problem the
+    // Settings button's own onNavTab('today') call exists to avoid.
     reset: async () => {
       try {
         if (STORAGE) {
@@ -702,6 +715,9 @@ function useStore(opts) {
           STORAGE.logAuthoritative();
         }
       } catch (e) {}
+      const clean = migrate(CLEAN_STATE());
+      latestRef.current = clean;
+      setState(clean);
       try { window.location.hash = ''; } catch (e) {}
       window.location.reload();
     },
