@@ -1469,7 +1469,7 @@ const SETTINGS_HELP_ITEMS = [
   },
   {
     id: 'aboutReplayTour', sel: '.set-replay-tour-row', title: 'Replay the Welcome Tour',
-    body: <>This replays the first-run walkthrough from the very beginning, including the welcome message and the guided tutorials for pickers, generating your day, and reminders.</>,
+    body: <>This replays the first-run walkthrough from the very beginning, including the welcome message and all of the tutorials.</>,
   },
   {
     id: 'aboutContactTrigger', sel: '.set-contact-trigger', title: 'Contact Support',
