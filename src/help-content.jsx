@@ -899,7 +899,7 @@ const DATA_HELP_ITEMS = [
     id: 'conditionalRow', sel: '.cnd-manager .rd-item > .rd-row', perElement: true, padY: 0,
     labelSel: '.rd-name, .rd-name-input',
     title: (r) => `${r?.label || 'This'} Conditional`,
-    body: <>You tap this conditional expand and collapse this section. Expand it in order to view and edit its settings.</>,
+    body: <>You can tap this conditional to expand and collapse this section. Expand it in order to view and edit its settings.</>,
   },
   {
     // padY:0 — .rd-add has the same zero-gap stacking as .rd-item (a
