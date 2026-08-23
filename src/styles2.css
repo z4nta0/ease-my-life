@@ -3886,14 +3886,13 @@ body.ob-touring .tab{padding-bottom:200px}
 .help-tip .help-nav-label{display:flex;align-items:center;gap:6px;margin:0 0 3px}
 .help-tip .help-nav-label svg{flex:0 0 auto}
 /* An inline icon dropped right into a tip's own flowing prose (e.g. Picker
-   Items' "The [icon] Send to Today button...") rather than its own
-   flex-aligned line — its body isn't wrapped in a <p> (a plain fragment,
-   text as .ob-body's own direct children), so this can't be scoped through
-   one the way .help-tip .ob-body p{margin:0} above is; baseline keeps it
-   level with the surrounding text's own baseline. Harmless on
-   .help-nav-label's own icons too, despite also matching them — a flex
-   item (which those are) ignores vertical-align entirely. */
-.help-tip .ob-body svg{vertical-align:baseline}
+   Items' "The [icon] Send to Today button..."), wrapped in its own
+   .help-inline-icon span (help-content.jsx) — inline-flex + align-items
+   centers the icon within ITS OWN box, which then only needs
+   vertical-align:middle to place that whole box against the surrounding
+   text's line, rather than relying on vertical-align alone to center the
+   icon's own content against text metrics it doesn't actually match. */
+.help-tip .ob-body .help-inline-icon{display:inline-flex;align-items:center;vertical-align:middle}
 
 /* ─── Settings: storage & installation panel ──────────────────────────────── */
 .set-store-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}

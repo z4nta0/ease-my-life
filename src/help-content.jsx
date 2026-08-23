@@ -440,10 +440,13 @@ const PICKER_HELP_ITEMS = [
     // Inline icons (not their own line, unlike NAV_HELP_ITEM/Card Actions —
     // this is flowing prose, not a list) — same real icon name each real
     // button's own <Icon> uses (tab-picker.jsx's .pool-send/.pool-edit/
-    // .pool-del). vertical-align on these specifically (styles2.css) keeps
-    // them from sitting low against the surrounding text's baseline.
+    // .pool-del). Each wrapped in .help-inline-icon (styles2.css) — an
+    // inline-flex box that centers the icon within itself — rather than
+    // relying on vertical-align alone, which aligns the icon's OWN box
+    // against text metrics (x-height/baseline) that don't actually match
+    // where the icon's own content visually sits inside its box.
     body: (
-      <>This lists all of the items that are in this picker's pool, including their values (if applicable). The <Icon name="calendar" size={13} /> Send to Today button will send the item to your todo list on the Today page, the <Icon name="edit" size={13} /> Edit button will allow you to edit the item's properties and the <Icon name="trash" size={13} /> Delete button will delete the item after asking for confirmation.</>
+      <>This lists all of the items that are in this picker's pool, including their values (if applicable). The <span className="help-inline-icon"><Icon name="calendar" size={13} /></span> Send to Today button will send the item to your todo list on the Today page, the <span className="help-inline-icon"><Icon name="edit" size={13} /></span> Edit button will allow you to edit the item's properties and the <span className="help-inline-icon"><Icon name="trash" size={13} /></span> Delete button will delete the item after asking for confirmation.</>
     ),
   },
   {
