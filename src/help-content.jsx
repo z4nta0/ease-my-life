@@ -25,8 +25,8 @@ const TODAY_HELP_ITEMS = [
     body: <>This tracks your current progress of completed / total tasks for today's todo list. Once filled completely, your Day Streak will increase and the celebration animations will play.</>,
   },
   {
-    id: 'brandMark', sel: '.today-h-lead .brand-mark', title: 'Home',
-    body: <>You can click this logo any time to jump back to the top of your todo list.</>,
+    id: 'brandMark', sel: '.today-h-lead .brand-mark', title: 'Home Link',
+    body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
   },
   {
     id: 'streak', sel: '.streak', title: 'Day Streak',
@@ -385,8 +385,8 @@ const TODAY_HELP_ITEMS = [
 
 const PICKER_HELP_ITEMS = [
   {
-    id: 'brandMark', sel: '.picker-h-lead .brand-mark', title: 'Home',
-    body: <>You can click this logo any time to jump back to the top of your todo list.</>,
+    id: 'brandMark', sel: '.picker-h-lead .brand-mark', title: 'Home Link',
+    body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
   },
   {
     id: 'groupFilter', sel: '.picker-groups .picker-group-pill', title: 'Group Filter',
@@ -664,8 +664,8 @@ const PICKER_HELP_ITEMS = [
 
 const STATS_HELP_ITEMS = [
   {
-    id: 'brandMark', sel: '.stat-h-lead .brand-mark', title: 'Home',
-    body: <>You can click this logo any time to jump back to the top of your todo list.</>,
+    id: 'brandMark', sel: '.stat-h-lead .brand-mark', title: 'Home Link',
+    body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
   },
   {
     id: 'groupFilter', sel: '.stat-scope-groups .picker-group-pill', title: 'Group Filter',
@@ -820,8 +820,8 @@ const STATS_HELP_ITEMS = [
 
 const DATA_HELP_ITEMS = [
   {
-    id: 'brandMark', sel: '.stat-h-lead .brand-mark', title: 'Home',
-    body: <>You can click this logo any time to jump back to the top of your todo list.</>,
+    id: 'brandMark', sel: '.stat-h-lead .brand-mark', title: 'Home Link',
+    body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
   },
   {
     // The Conditionals filter row below carries BOTH .stat-scope-groups
@@ -1312,8 +1312,8 @@ const DATA_HELP_ITEMS = [
 
 const SETTINGS_HELP_ITEMS = [
   {
-    id: 'brandMark', sel: '.stat-h-lead .brand-mark', title: 'Home',
-    body: <>You can click this logo any time to jump back to the top of your todo list.</>,
+    id: 'brandMark', sel: '.stat-h-lead .brand-mark', title: 'Home Link',
+    body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
   },
   // ── Section rail — on mobile this collapses into a horizontal sticky
   // pill bar pinned above the sections (see .settings-rail's own
