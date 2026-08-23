@@ -426,8 +426,24 @@ function migrate(s) {
   if (s && s.onboarding && (!s.onboarding.checklist || typeof s.onboarding.checklist !== 'object')) {
     s.onboarding.checklist = {};
   }
+  // Same reasoning as the missing-onboarding branch above applies here too:
+  // an account whose onboarding object ALREADY existed (from an even older
+  // build, before checklistDone was ever added as a field) is just as
+  // established as one missing onboarding entirely — it predates the
+  // checklist system either way. Defaulting to welcomed's own value tells
+  // the two cases apart: CLEAN_STATE()'s fresh onboarding is {welcomed:false,
+  // dismissed:false} at this point (no checklistDone key yet either), so
+  // this correctly still defaults false for a genuine first-time user, but
+  // an existing account that had already dismissed the (pre-checklist-era)
+  // welcome modal — welcomed:true — gets checklistDone:true instead of the
+  // unconditional false this used to backfill. That unconditional false is
+  // exactly what silently broke Replay Tour for real, established accounts
+  // that updated through this exact version gap: it got written back into
+  // their save the very first time migrate() ran post-update, so it stayed
+  // false in every export/import from that point on, permanently defeating
+  // collision suppression / App Features / the Generate card for them.
   if (s && s.onboarding && typeof s.onboarding.checklistDone !== 'boolean') {
-    s.onboarding.checklistDone = false;
+    s.onboarding.checklistDone = !!s.onboarding.welcomed;
   }
   // One-shot signal (added later) for tab-today.jsx's own auto-scroll to the
   // Generate card: set the instant every OTHER checklist item becomes

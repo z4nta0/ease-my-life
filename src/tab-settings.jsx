@@ -3,6 +3,7 @@ import { APPEARANCE } from './appearance.js';
 import { HOLIDAYS } from './holidays.js';
 import { LegalModal } from './legal-docs.jsx';
 import { NOTIFY } from './notify.js';
+import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';
 import { PWA } from './pwa.js';
 import { Segmented } from './reminders.jsx';
 import { CelebrationPreviewStage, PickerAnimStage } from './settings-previews.jsx';
@@ -1366,7 +1367,29 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   <span className="set-data-sub">Runs the first-run walkthrough again. Including the welcome message, a guided tour of pickers, generating your day, and reminders.</span>
                 </div>
                 <Btn kind="secondary" size="sm" icon="refresh"
-                     onClick={() => { if (onHome) onHome(); actions.setOnboarding({ welcomed: false, dismissed: true, appFeatures: {}, appFeaturesSectionResolved: false, checklist: {} }); }}>Replay tour</Btn>
+                     onClick={() => {
+                       if (onHome) onHome();
+                       // Self-healing for accounts whose checklistDone got
+                       // permanently stuck false by a since-fixed migrate()
+                       // gap (real, established accounts that updated through
+                       // an old version boundary before that field existed —
+                       // see migrate()'s own comment on this in store.jsx).
+                       // That stale false silently reactivates first-time
+                       // checklist mode on replay instead of replay-
+                       // continuation mode, defeating name-collision
+                       // suppression, hiding App Features, and leaving the
+                       // closing Generate card stuck permanently visible.
+                       // Any account that already has a real (non-sample)
+                       // picker is unambiguously past onboarding regardless
+                       // of what checklistDone happens to say, so correct it
+                       // here — the one place we can be sure right before a
+                       // replay actually starts.
+                       const hasRealPickers = state.pickers.some((p) => !OB_SAMPLE_PICKER_IDS.includes(p.id));
+                       actions.setOnboarding({
+                         welcomed: false, dismissed: true, appFeatures: {}, appFeaturesSectionResolved: false, checklist: {},
+                         ...(hasRealPickers ? { checklistDone: true } : {}),
+                       });
+                     }}>Replay tour</Btn>
               </div>
             </Card>
 
