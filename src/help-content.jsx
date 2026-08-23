@@ -1027,7 +1027,7 @@ const DATA_HELP_ITEMS = [
     body: (
       <>
         <p><b>Cancel:</b> This button discards any changes and closes this section without saving.</p>
-        <p><b>Save:</b> This button saves your changes to these settings.</p>
+        <p><b>Save:</b> This button saves your changes to the Reminders controls.</p>
       </>
     ),
   },
