@@ -3745,7 +3745,16 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    justify-content:space-between, which would read as off-balance for a
    standalone closing message with nothing to pair it against. */
 .ob-crow--solo .ob-next{width:100%;text-align:center}
-.ob-coach::before{content:"";position:absolute;width:14px;height:14px;background:var(--surface);border:0.5px solid var(--border);transform:rotate(45deg);left:var(--ob-ax,28px)}
+/* translateX(-50%) first: --ob-ax is computed (both here and in the tour's
+   own coach placement) as the TARGET's center offset from the tip's own
+   left edge, but `left` alone positions this box's own left edge there,
+   not its center — the box's post-rotation visual point then sits a half-
+   width (7px) right of the intended center. Usually too small to notice
+   next to a real-size highlighted target, but glaring for the Day Log's
+   columnGroup tips, whose badge is deliberately centered on the same
+   target midpoint this arrow points at — any offset between the two reads
+   as the arrow pointing at the badge's edge instead of its middle. */
+.ob-coach::before{content:"";position:absolute;width:14px;height:14px;background:var(--surface);border:0.5px solid var(--border);transform:translateX(-50%) rotate(45deg);left:var(--ob-ax,28px)}
 .ob-coach--up::before{top:-8px;border-right:0;border-bottom:0}
 .ob-coach--down::before{bottom:-8px;border-left:0;border-top:0}
 
