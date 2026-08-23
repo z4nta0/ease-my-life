@@ -3537,7 +3537,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-block-h--static{cursor:default}
 .dl-block-name{font-size:14px;font-weight:600;letter-spacing:-0.01em}
 .dl-cond-title{color:var(--accent)}
-.dl-mode{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.dl-mode{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);text-align:center}
 .dl-mode.neutral{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
 .dl-sum{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
 .dl-dchip{display:inline-flex;align-items:center;gap:4px;color:oklch(0.5 0.11 155)}
@@ -3547,6 +3547,10 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-block.is-closed .dl-chev{transform:rotate(-90deg)}
 .dl-rest{margin-left:auto;font-family:var(--font-mono);font-size:11px;letter-spacing:0.03em;text-transform:uppercase;color:var(--accent);display:inline-flex;align-items:center;gap:6px}
 .dl-rest svg{width:13px;height:13px}
+/* The "Rested · {conditional name}" text (day-log.jsx) — its own span has
+   no class of its own to hook, so targeted structurally: .dl-rest's only
+   other child is the moon icon (an <svg>), so this can't match it too. */
+.dl-rest>span{text-align:center}
 
 /* table */
 .dl-table{padding-bottom:12px}
@@ -3614,13 +3618,14 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 }
 
 /* Below this, a picker block header's own name (.dl-block-name) crowds the
-   mode pill (.dl-mode) and item count (.dl-sum) enough that their text
-   wraps onto a second line — both are flex items, so their own box still
-   shrinks to fit rather than overflowing, but left-aligned wrapped text
-   (the default) leaves a ragged, awkward-looking gap on the shorter
-   second line's right side. */
+   item count (.dl-sum) enough that its text wraps onto a second line — it's
+   a flex item, so its own box still shrinks to fit rather than overflowing,
+   but left-aligned wrapped text (the default) leaves a ragged, awkward-
+   looking gap on the shorter second line's right side. (.dl-mode, the mode
+   pill right next to it, gets the same wrapped-text treatment unconditionally
+   — see its own rule above — since its text should always read centered,
+   wrapped or not.) */
 @container app (max-width:384px){
-  .dl-mode{text-align:center}
   .dl-sum{text-align:center}
 }
 
