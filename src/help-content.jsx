@@ -1393,7 +1393,7 @@ const SETTINGS_HELP_ITEMS = [
   },
   {
     id: 'appearancePickAnim', sel: '.set-subsection--pickanim', title: 'Picker Animation', padY: 4,
-    body: <>This is where you choose which animation plays in the Pickers tab when the "Pick one" button is pressed. Use Preview to watch any of them play out before picking one.</>,
+    body: <>This is where you choose which animation plays in the Pickers tab when the manual picker functionality is triggered via the "Pick one" button. Use Preview to watch any of them play out before picking one.</>,
   },
   {
     id: 'appearanceLayout', sel: '.set-subsection--layout', title: 'Tab Bar Placement', padY: 4,
