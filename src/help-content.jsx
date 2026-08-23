@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from './ui.jsx';
 
 // Per-page { id, sel, shape?, title, body } catalogs for the on-demand help
 // mode (see help-mode.jsx). Copy is largely forked from
@@ -70,11 +71,23 @@ const TODAY_HELP_ITEMS = [
     // be in an unusual state, or just not be near wherever the user
     // actually scrolled to.
     id: 'cardActionsPicker', sel: '.today-card:not(.rem-card):not(.today-card--tutorial):not(.today-card--dayoff):not(.today-card--charging) .today-card-actions', perElement: true, title: 'Card Actions',
+    // Icon + label column per button, same real icon name each button's
+    // own <Icon> uses (tab-today.jsx) — mirrors help-mode.jsx's own
+    // NAV_HELP_ITEM, reusing its .help-nav-item/.help-nav-label CSS.
     body: (
       <>
-        <p><b>Re-roll:</b> This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>
-        <p><b>Skip:</b> This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>
-        <p><b>Edit:</b> This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
+        <div className="help-nav-item">
+          <div className="help-nav-label"><Icon name="refresh" size={14} /><b>Re-roll:</b></div>
+          <p>This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>
+        </div>
+        <div className="help-nav-item">
+          <div className="help-nav-label"><Icon name="skip" size={14} /><b>Skip:</b></div>
+          <p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>
+        </div>
+        <div className="help-nav-item">
+          <div className="help-nav-label"><Icon name="edit" size={14} /><b>Edit:</b></div>
+          <p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
+        </div>
       </>
     ),
   },
@@ -82,8 +95,14 @@ const TODAY_HELP_ITEMS = [
     id: 'cardActionsReminder', sel: '.rem-card .today-card-actions', perElement: true, title: 'Card Actions',
     body: (
       <>
-        <p><b>Skip:</b> This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>
-        <p><b>Edit:</b> This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
+        <div className="help-nav-item">
+          <div className="help-nav-label"><Icon name="skip" size={14} /><b>Skip:</b></div>
+          <p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>
+        </div>
+        <div className="help-nav-item">
+          <div className="help-nav-label"><Icon name="edit" size={14} /><b>Edit:</b></div>
+          <p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
+        </div>
       </>
     ),
   },
