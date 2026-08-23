@@ -369,10 +369,15 @@ const placeTip = (targetRect, tw, th, pinBelowY) => {
       // so anchoring the FLIPPED-above tip to targetRect.top here would
       // point its own down-arrow at empty space right where the badge
       // already sits, overlapping it. Anchoring to the badge's own top
-      // instead leaves the same clearance above the badge that the normal
-      // "tip below, arrow up" case already has below the target.
-      const aboveAnchorTop = targetRect.badgeAnchorTop ?? targetRect.top;
-      top = Math.max(M, aboveAnchorTop - 16 - th); arrowClass = 'ob-coach--down';
+      // instead points the arrow right at it. The usual 16px gap (leaving
+      // ~8px of daylight between the arrow's own visible tip and whatever
+      // it's pointing at, same as every other tip in the app) reads as
+      // "detached" for a small round badge specifically, unlike a normal,
+      // much larger highlighted target — an 8px gap here instead sits the
+      // arrow's tip flush against the badge, touching it, no visible gap.
+      const usingBadgeAnchor = targetRect.badgeAnchorTop != null;
+      const aboveAnchorTop = usingBadgeAnchor ? targetRect.badgeAnchorTop : targetRect.top;
+      top = Math.max(M, aboveAnchorTop - (usingBadgeAnchor ? 8 : 16) - th); arrowClass = 'ob-coach--down';
     }
   }
   const centerX = targetRect.left + targetRect.width / 2;
