@@ -513,6 +513,18 @@ const NAV_HELP_ITEM = {
   ),
 };
 
+// The rail's own pull handle — only exists in the DOM (findTargets' width/
+// height check filters out anything else) on 'side' tab-bar placement's
+// narrow/drawer breakpoint (see .tabbar--side .rail-handle's own container
+// query in styles2.css), so this naturally shows up only there without
+// needing its own placement check the way NAV_HELP_ITEM's alwaysBelowSel
+// does. Its own separate item (not folded into NAV_HELP_ITEM) since it's a
+// single real button with a single description, not one of the 5 nav tabs.
+const RAIL_HANDLE_HELP_ITEM = {
+  id: '__railHandle', sel: '.rail-handle', title: 'Sidebar Toggle',
+  body: <>This button will open the app's navigation, allowing you to navigate to the app's other pages.</>,
+};
+
 // items: [{ id, sel, title, body }] — sel follows GuidedTour's own
 // comma-fallback convention, and can match several elements at once (e.g. a
 // tightly-clustered row of buttons) the same way a tour step's sel can; the
@@ -523,7 +535,7 @@ const NAV_HELP_ITEM = {
 // second Escape after one closes a tip) — the parent is the one that
 // actually flips its own `active` state back off in response.
 function HelpOverlay({ active, items, onExit }) {
-  const allItems = React.useMemo(() => [NAV_HELP_ITEM, ...items], [items]);
+  const allItems = React.useMemo(() => [NAV_HELP_ITEM, RAIL_HANDLE_HELP_ITEM, ...items], [items]);
   const [rectsById, setRectsById] = React.useState({});
   const [openId, setOpenId] = React.useState(null);
   const [toggleRect, setToggleRect] = React.useState(null);
