@@ -3889,10 +3889,10 @@ body.ob-touring .tab{padding-bottom:200px}
    Items' "The [icon] Send to Today button..."), wrapped in its own
    .help-inline-icon span (help-content.jsx) — inline-flex + align-items
    centers the icon within ITS OWN box, which then only needs
-   vertical-align:middle to place that whole box against the surrounding
+   vertical-align:center to place that whole box against the surrounding
    text's line, rather than relying on vertical-align alone to center the
    icon's own content against text metrics it doesn't actually match. */
-.help-tip .ob-body .help-inline-icon{display:inline-flex;align-items:center;vertical-align:middle}
+.help-tip .ob-body .help-inline-icon{display:inline-flex;align-items:center;vertical-align:center}
 
 /* ─── Settings: storage & installation panel ──────────────────────────────── */
 .set-store-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
