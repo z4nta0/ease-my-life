@@ -50,7 +50,12 @@ const TODAY_HELP_ITEMS = [
     // side-placement rail handle (see help-mode.jsx). perElement: every
     // group's own grip gets its own badge, since a user editing a long
     // list could be looking at any one of them, not just the first.
-    id: 'groupGrip', sel: '.group-grip', perElement: true, title: 'Reorder Group',
+    // padX: 1 — .group-grip and .group-name--editable sit only 4px apart in
+    // practice (the negative margin on .group-grip eats into .group-h-l's
+    // own 10px gap) — the default 8px pad on each side, and even editMode's
+    // own padX:4 fix above, both still overlap here. 1px each side leaves
+    // 2px of real clearance instead.
+    id: 'groupGrip', sel: '.group-grip', perElement: true, title: 'Reorder Group', padX: 1,
     body: <>While Edit Mode is on, drag this handle to change this group's position in your todo list.</>,
   },
   {
@@ -58,7 +63,7 @@ const TODAY_HELP_ITEMS = [
     body: <>While Edit Mode is on, drag this handle to change this item's position within its group.</>,
   },
   {
-    id: 'groupNameEdit', sel: '.group-name--editable', perElement: true, title: 'Rename Group',
+    id: 'groupNameEdit', sel: '.group-name--editable', perElement: true, title: 'Rename Group', padX: 1,
     body: <>While Edit Mode is on, click a group's name to rename it.</>,
   },
   {
