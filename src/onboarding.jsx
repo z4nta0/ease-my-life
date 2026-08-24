@@ -291,16 +291,27 @@ function Onboarding({ state, actions, active, selectTab }) {
         // point at while the list is still filling in.
         if (!ob.dismissed) {
           if (window.__emlGenerate) window.__emlGenerate();
-          // Sample reminders appear alongside the generated picks, not
-          // before — seeded here rather than on mount (see that effect's
-          // comment). Guarded by existence so navigating back to this step
-          // and forward again can't add them twice.
-          if (!state.tasks.some((t) => OB_SAMPLE_TASK_IDS.includes(t.id))) {
-            const today = new Date().getDay();
-            OB_TASKS.forEach((t) => actions.addTask(
-              t.repeat === 'weekly' ? { ...t, daysOfWeek: [today] } : t
-            ));
-          }
+        }
+        // Sample reminders: on a true first run they appear alongside the
+        // generated picks, not before (seeded here rather than on mount, see
+        // that effect's comment), later hidden by the Settings step's own
+        // run(). On a replay there's no such review moment to appear
+        // alongside — the visible list is the user's real one, not sample
+        // data — so they're seeded straight into `hidden` instead, same as
+        // onSkip's own handling below. Either way this used to sit inside
+        // the `!ob.dismissed` branch above, which meant a replay never
+        // created them at all: the two mini-tour launcher cards for these
+        // ("Pick up prescription"/"Take trash out for pickup") just silently
+        // stopped appearing under Reminders on any replay. Guarded by
+        // existence so navigating back to this step and forward again (or
+        // re-running a replay) can't add them twice.
+        if (!state.tasks.some((t) => OB_SAMPLE_TASK_IDS.includes(t.id))) {
+          const today = new Date().getDay();
+          OB_TASKS.forEach((t) => actions.addTask({
+            ...t,
+            ...(t.repeat === 'weekly' ? { daysOfWeek: [today] } : {}),
+            ...(ob.dismissed ? { hidden: true } : {}),
+          }));
         }
       },
     },

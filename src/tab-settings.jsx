@@ -1383,11 +1383,21 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                        // picker is unambiguously past onboarding regardless
                        // of what checklistDone happens to say, so correct it
                        // here — the one place we can be sure right before a
-                       // replay actually starts.
+                       // replay actually starts. appFeaturesIntroSeen gets
+                       // the same treatment for the same reason: it's the
+                       // one-time "One Last Thing..." tip that's meant to
+                       // ambush a user the FIRST moment App Features ever
+                       // appears for them, right after finishing a real
+                       // checklist — an established account replaying the
+                       // tour has obviously already passed that moment, so
+                       // leaving it at whatever stale false an old export
+                       // happens to carry made the checklistDone fix above
+                       // immediately re-trigger that one-time intro (scroll +
+                       // highlight) on every single replay instead.
                        const hasRealPickers = state.pickers.some((p) => !OB_SAMPLE_PICKER_IDS.includes(p.id));
                        actions.setOnboarding({
                          welcomed: false, dismissed: true, appFeatures: {}, appFeaturesSectionResolved: false, checklist: {},
-                         ...(hasRealPickers ? { checklistDone: true } : {}),
+                         ...(hasRealPickers ? { checklistDone: true, appFeaturesIntroSeen: true } : {}),
                        });
                      }}>Replay tour</Btn>
               </div>
