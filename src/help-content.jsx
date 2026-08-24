@@ -63,7 +63,16 @@ const TODAY_HELP_ITEMS = [
     body: <>While Edit Mode is on, drag this handle to change this item's position within its group.</>,
   },
   {
-    id: 'groupNameEdit', sel: '.group-name--editable', perElement: true, title: 'Rename Group', padX: 1,
+    // .group-name-slot is a shared class on BOTH the button (idle) and the
+    // input (mid-edit) — findTargets' comma syntax is fallback-only (try
+    // the first selector, only try the next if it matched NOTHING at all),
+    // not a union, so '.group-name--editable, .group-name-input' silently
+    // dropped whichever group was actively being edited the moment any
+    // OTHER group's plain button still matched. One stable class sidesteps
+    // that entirely: clicking a name to rename it used to make this exact
+    // highlight vanish and leave the now-visible input hidden behind the
+    // dimmer, right when a user is actually interacting with it.
+    id: 'groupNameEdit', sel: '.group-name-slot', perElement: true, title: 'Rename Group', padX: 1,
     body: <>While Edit Mode is on, click a group's name to rename it.</>,
   },
   {

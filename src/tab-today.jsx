@@ -234,7 +234,7 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
           </span>
         )}
         {editMode && editing ? (
-          <input ref={nameInputRef} className={`group-name-input ${closing ? 'is-closing' : ''} ${nameError ? 'is-invalid' : ''}`} type="text" value={draft} maxLength={30}
+          <input ref={nameInputRef} className={`group-name-input group-name-slot ${closing ? 'is-closing' : ''} ${nameError ? 'is-invalid' : ''}`} type="text" value={draft} maxLength={30}
                  aria-label="Group name"
                  onChange={(e) => { setDraft(e.target.value); if (nameError) setNameError(''); }}
                  onBlur={commit}
@@ -243,7 +243,7 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
                    else if (e.key === 'Escape') { e.preventDefault(); cancel(); }
                  }} />
         ) : editMode ? (
-          <button type="button" className="group-name group-name--editable" onClick={startEdit}
+          <button type="button" className="group-name group-name--editable group-name-slot" onClick={startEdit}
                   aria-label={`Rename group ${name}`}>
             {name}
             <Icon name="edit" size={13} />
