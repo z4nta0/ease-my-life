@@ -52,9 +52,9 @@ const TODAY_HELP_ITEMS = [
     // .em-rail-btn's own is-on class here correctly reflects either case
     // regardless of which of the two elements actually got matched.
     id: 'editMode', sel: '.em-rail-btn, .foot-editmode', padX: 4,
-    title: () => (document.querySelector('.em-rail-btn')?.classList.contains('is-on') ? 'Done' : 'Edit Mode'),
+    title: () => (document.querySelector('.em-rail-btn')?.classList.contains('is-on') ? 'Done Button' : 'Edit Mode'),
     body: () => (document.querySelector('.em-rail-btn')?.classList.contains('is-on')
-      ? <>Saves your reordering/renaming changes and exits Edit Mode.</>
+      ? <>This button saves any edits that you have made and exits Edit Mode.</>
       : <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</>),
   },
   {
@@ -69,11 +69,21 @@ const TODAY_HELP_ITEMS = [
     // sel either, for the same reason (both are always present together
     // while Edit Mode is on, so the first one found would always win).
     id: 'editModeBannerActions', sel: '.editmode-banner-actions', title: 'Cancel / Done',
-    body: <><b>Cancel</b> discards any reordering or renaming you did this session and exits Edit Mode. <b>Done</b> saves those changes and exits Edit Mode.</>,
+    body: (
+      <>
+        <p><b>Cancel:</b> This button discards any reordering or renaming edits that you have made and exits Edit Mode.</p>
+        <p><b>Done:</b> This button saves any edits that you have made and exits Edit Mode.</p>
+      </>
+    ),
   },
   {
     id: 'editModeFootActions', sel: '.editmode-foot-actions', title: 'Cancel / Done',
-    body: <><b>Cancel</b> discards any reordering or renaming you did this session and exits Edit Mode. <b>Done</b> saves those changes and exits Edit Mode.</>,
+    body: (
+      <>
+        <p><b>Cancel:</b> This button discards any reordering or renaming edits that you have made and exits Edit Mode.</p>
+        <p><b>Done:</b> This button saves any edits that you have made and exits Edit Mode.</p>
+      </>
+    ),
   },
   {
     // These three only exist in the DOM while Edit Mode is on — same
