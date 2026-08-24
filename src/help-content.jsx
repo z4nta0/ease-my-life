@@ -41,8 +41,39 @@ const TODAY_HELP_ITEMS = [
     // padX: 4 — .foot-editmode sits right next to .ob-generate (Regenerate)
     // with only a 10px gap between them; the default 8px pad on each side
     // would overlap by 6px.
-    id: 'editMode', sel: '.em-rail-btn, .foot-editmode', title: 'Edit Mode', padX: 4,
-    body: <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</>,
+    // title/body as functions (see help-mode.jsx's own comment on this
+    // pattern, e.g. the Charge Controls items): .em-rail-btn is the SAME
+    // button throughout, relabeled "Done" once Edit Mode is on rather than
+    // being swapped for a different element — a static "Edit Mode" tip
+    // used to keep showing even while the button (and its real behavior)
+    // had already become Done. .foot-editmode only ever matches while NOT
+    // editing (it unmounts entirely once editMode is true — see the
+    // editmode-foot-actions item below for what replaces it), so reading
+    // .em-rail-btn's own is-on class here correctly reflects either case
+    // regardless of which of the two elements actually got matched.
+    id: 'editMode', sel: '.em-rail-btn, .foot-editmode', padX: 4,
+    title: () => (document.querySelector('.em-rail-btn')?.classList.contains('is-on') ? 'Done' : 'Edit Mode'),
+    body: () => (document.querySelector('.em-rail-btn')?.classList.contains('is-on')
+      ? <>Saves your reordering/renaming changes and exits Edit Mode.</>
+      : <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</>),
+  },
+  {
+    // .editmode-banner-actions is the Cancel/Done pair in Edit Mode's own
+    // sticky banner. .editmode-foot-actions (styles2.css/tab-today.jsx) is
+    // the identical pair repeated in the footer, distinguished from the
+    // OTHER (non-editing) footer actions row that shares .today-foot-
+    // actions with it — findTargets' comma syntax is fallback-only (see
+    // groupNameEdit's own comment in this file for why that distinction
+    // matters), so this needs its own class rather than reusing the shared
+    // one, and can't be combined with editmode-banner-actions into one
+    // sel either, for the same reason (both are always present together
+    // while Edit Mode is on, so the first one found would always win).
+    id: 'editModeBannerActions', sel: '.editmode-banner-actions', title: 'Cancel / Done',
+    body: <><b>Cancel</b> discards any reordering or renaming you did this session and exits Edit Mode. <b>Done</b> saves those changes and exits Edit Mode.</>,
+  },
+  {
+    id: 'editModeFootActions', sel: '.editmode-foot-actions', title: 'Cancel / Done',
+    body: <><b>Cancel</b> discards any reordering or renaming you did this session and exits Edit Mode. <b>Done</b> saves those changes and exits Edit Mode.</>,
   },
   {
     // These three only exist in the DOM while Edit Mode is on — same

@@ -2523,7 +2523,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                   </div>
                 </div>
               ) : editMode ? (
-                <div className="today-foot-actions">
+                <div className="today-foot-actions editmode-foot-actions">
                   <Btn kind="ghost" onClick={() => exitEditMode(false)}>Cancel</Btn>
                   <Btn kind="primary" icon="check" onClick={() => exitEditMode(true)}>Done</Btn>
                 </div>
