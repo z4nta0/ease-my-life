@@ -19,28 +19,28 @@ import React from 'react';
 const OB_NAV_TARGETS = {
   today: {
     sel: '[data-tab="today"]', place: 'below',
-    title: 'This is the Today page',
-    body: <>This is the <b>main page of the app</b>, and it is where your auto-generated todo list will be displayed every day.</>,
+    title: 'The Today Page',
+    body: <>The Today page is the main page of the app and can be found using the calendar icon indicated here. The Today page is <b>where your auto-generated todo list will be displayed every day</b>.</>,
   },
   picker: {
     sel: '[data-tab="picker"]', place: 'below',
-    title: 'This is the Pickers page',
-    body: <>Pickers are the <b>heart of the app</b> and this is where you can create new pickers and their items. You can also manually run any picker to generate a task.</>,
+    title: 'The Pickers Page',
+    body: <>The Pickers page is <b>where you can create new pickers</b> and can be found using the shuffle icon indicated here. You can also <b>manually run any picker, as well as send a specific item to your todo list</b>, from the Pickers page.</>,
   },
   stats: {
     sel: '[data-tab="stats"]', place: 'below',
-    title: 'This is the Stats page',
-    body: <>This is where you can find a <b>breakdown of all the statistics</b> associated with your created pickers and their items. As you continue to use the app over time, this page will become extremely useful.</>,
+    title: 'The Stats Page',
+    body: <>The Stats page is where you can find a <b>breakdown of all the statistics associated with your created data</b> and can be found using the bar graph icon indicated here. As you continue to use the app over time, this page will be extremely useful.</>,
   },
   data: {
     sel: '[data-tab="data"]', place: 'below',
-    title: 'This is the Data page',
-    body: <>This is where you can <b>view and edit all of the data</b> that you have created. That includes all of your reminders, pickers and their related items.</>,
+    title: 'The Data Page',
+    body: <>The Data page is <b>where you can view and edit all of your created data</b> and can be found using the database storage icon indicated here. The Data page content includes all of your reminders, pickers and their associated items.</>,
   },
   settings: {
     sel: '[data-tab="settings"]', place: 'below',
-    title: 'This is the Settings page',
-    body: <>This is where you will be able to customize various aspects of the app, adjust the daily generator, customize holiday observances, <b>install the app</b> and export/import your data.</>,
+    title: 'The Settings Page',
+    body: <>The Settings page is where you can customize various aspects of the app and can be found using the gear icon indicated here. The Settings page allows you to change the app’s theme, animations, adjust the daily generator, customize holiday observances, <b>install the app</b>, export/import your data and contact the developer.</>,
   },
 };
 

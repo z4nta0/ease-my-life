@@ -2029,6 +2029,76 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     if (!obReadyToGenerate) return;
     actions.setChecklistItem(OB_GENERATE_ITEM_ID, { status: 'finished' });
   };
+  // Names exactly what's still missing, singular/plural and "and" both
+  // adjusted to whichever of the two requirements (tutorials, a real
+  // picker) is actually still outstanding — see OB_CHECKLIST.othersRemaining
+  // and realPickerCount. Once nothing is missing (obReadyToGenerate), this
+  // "still missing" framing no longer applies at all, so it's a
+  // completely separate sentence, not a 0-item case of the same template.
+  const obOthersRemaining = OB_CHECKLIST.othersRemaining(state);
+  const obNeedsPicker = OB_CHECKLIST.realPickerCount(state) < 1;
+  const obGenerateExplanation = obReadyToGenerate
+    ? 'Everything is completed! Click this button to generate your first, real todo list.'
+    : (() => {
+        const tutorialsClause = obOthersRemaining > 0
+          ? `${obOthersRemaining} more tutorial${obOthersRemaining > 1 ? 's' : ''}` : null;
+        const pickerClause = obNeedsPicker ? 'at least 1 picker' : null;
+        const clause = tutorialsClause && pickerClause ? `${tutorialsClause} and ${pickerClause}`
+          : (tutorialsClause || pickerClause);
+        return `Finish ${clause} to enable this functionality and create your first, real generated todo list.`;
+      })();
+  // Once every other checklist item is resolved, bring the now-pulsing
+  // Generate card into view on its own — it's likely below the fold by the
+  // time the last tutorial finishes, since every other card is still above
+  // it in the list. Same offset-scroll approach as jumpToGroup below
+  // (--sticky-top-h, which already accounts for the group rail stacking
+  // below the header on mobile) rather than scrollIntoView, so the card's
+  // own top lands just under the sticky header/rail on small viewports
+  // instead of scrollIntoView's block:'center' cutting it off behind them.
+  //
+  // Driven off state.onboarding.generateScrollPending (set in store.jsx's
+  // setChecklistItem the instant readyToGenerate flips false->true), NOT a
+  // local "did I see it flip" ref — the last checklist item is very often
+  // resolved from a mini-tour or Page Tour running on a DIFFERENT tab,
+  // which unmounts this whole component for the tour's duration. A ref
+  // would miss that transition entirely (it only compares against
+  // whatever obReadyToGenerate already IS on this fresh mount, never
+  // having seen the false state at all) and the scroll would silently
+  // never fire — confirmed via the user's own repro: skipping a tutorial
+  // from its OWN opening modal (still on Today, this component never
+  // unmounts) scrolled correctly, but skipping from any later step (which
+  // had already navigated away) didn't.
+  const generateCardRef = React.useRef(null);
+  const generateScrollPending = !!(state.onboarding && state.onboarding.generateScrollPending);
+  React.useEffect(() => {
+    if (!generateScrollPending) return;
+    // Double rAF, not a direct call: the last checklist item is very often
+    // resolved by a tour's own Skip/Done, and EVERY tour funnels both
+    // through onboarding-tour-runner.jsx's goToTodayTop, which forces
+    // main.scrollTop back to 0 via its OWN requestAnimationFrame — a call
+    // already queued by the time this effect runs. A single rAF here landed
+    // in the same frame and raced it (lost, depending on exact scheduling);
+    // deferring one frame further guarantees this runs strictly after that
+    // reset has already applied, so this is the scroll position that sticks
+    // — same "wait for the DOM to fully settle" idiom used elsewhere for
+    // post-commit timing (see the celebration overlay's own verification
+    // notes).
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        const el = generateCardRef.current;
+        const main = el?.closest('.main');
+        const tab = el?.closest('.tab--today');
+        if (el && main && tab) {
+          const stickyH = parseInt(getComputedStyle(tab).getPropertyValue('--sticky-top-h')) || 140;
+          const target = el.offsetTop - stickyH - 16;
+          main.scrollTo({ top: target, behavior: reduceMotion() ? 'auto' : 'smooth' });
+        }
+        actions.setOnboarding({ generateScrollPending: false });
+      });
+    });
+    return () => { cancelAnimationFrame(raf1); cancelAnimationFrame(raf2); };
+  }, [generateScrollPending]);
   // Resolving the Generate item pushes doneCount up to equal total (every
   // other item was already resolved), which triggers the existing
   // completion-celebration effect above automatically — nothing extra
@@ -2410,10 +2480,10 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
             </div>
 
             {showChecklist && (
-              <div className={`ob-create ob-create--generate ${checklistExiting ? 'is-removing' : ''} ${!obReadyToGenerate ? 'is-needed' : ''}`}>
+              <div ref={generateCardRef} className={`ob-create ob-create--generate ${checklistExiting ? 'is-removing' : ''} ${!obReadyToGenerate ? 'is-needed' : ''} ${obReadyToGenerate ? 'ob-generate-pulse' : ''}`}>
                 <div className="ob-create-i"><Icon name="check" size={22} /></div>
                 <b>Generate your real list</b>
-                <p>Once every tutorial is checked off, and at least one picker has been created, this replaces all of them with your own real, generated todo list.</p>
+                <p>{obGenerateExplanation}</p>
                 {obReadyToGenerate ? (
                   <Btn kind="primary" size="sm" icon="check" onClick={onGenerateCardClick}>Generate your list</Btn>
                 ) : (

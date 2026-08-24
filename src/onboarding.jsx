@@ -203,11 +203,26 @@ function Onboarding({ state, actions, active, selectTab }) {
     if (!ob.welcomed && phase === 'off') setPhase('welcome');
   }, [ob.welcomed]);
 
-  // Seed the sample pickers/reminders immediately on a fresh install —
-  // before the welcome tour even begins — so every tour step always has real
-  // content to point at and generate from. Checked once on mount only (an
-  // intentionally empty dep array): re-running on later state changes would
-  // fight a user who's since deleted every picker on purpose.
+  // Seed the sample pickers/reminders whenever `welcomed` is false and no
+  // sample already exists — so every tour step always has real content to
+  // point at and generate from. Depends on [ob.welcomed] (same "flag flips"
+  // trigger as the re-open effect right above), NOT a one-shot mount-only
+  // check: a Replay Tour flips `welcomed` back to false on an already-
+  // mounted app, and needs this to actually re-run then, not just once at
+  // initial page load.
+  //
+  // Guarded on the SAMPLES specifically existing already (any status —
+  // hidden or not), not "the user has some picker or other": a Replay Tour
+  // (or a fresh account that later imports a backup) can leave `welcomed`
+  // false while state.pickers already holds the user's own real, sample-
+  // unrelated pickers. A plain "has any picker" check reads that as
+  // "already seeded, don't duplicate" and skips seeding forever — leaving
+  // no sample for the checklist's "create a picker" tutorials to ever
+  // point at, so onboarding could never actually reach a real picker and
+  // the closing Generate step stayed permanently unreachable. Checking for
+  // the specific sample ids instead means this only ever re-seeds when
+  // they're genuinely absent, never duplicating them for a user who still
+  // has theirs (hidden or not) from an earlier pass.
   //
   // The ~1yr of matching Stats history is a ~650KB precomputed file that's
   // irrelevant to everyone past their first run, so it's dynamic-imported
@@ -217,7 +232,7 @@ function Onboarding({ state, actions, active, selectTab }) {
   // TODAY, not whenever the data was generated (see
   // scripts/build-onboarding-stats.mjs for why).
   React.useEffect(() => {
-    if (ob.welcomed || state.pickers.length > 0) return;
+    if (ob.welcomed || state.pickers.some((p) => OB_SAMPLE_PICKER_IDS.includes(p.id))) return;
     [OB_EXAMPLE, ...OB_EXTRA_PICKERS].forEach((p) => actions.addPicker(p));
     // The sample reminders themselves are seeded later, at the Generate
     // step (see that step's run() below) — unlike picker items, a reminder
@@ -228,7 +243,7 @@ function Onboarding({ state, actions, active, selectTab }) {
     import('./onboarding-stats-data.js').then(({ ONBOARDING_STATS }) => {
       actions.seedHistory(hydrateOnboardingStats(ONBOARDING_STATS));
     });
-  }, []);
+  }, [ob.welcomed]);
 
   const finish = React.useCallback(() => {
     setPhase('off');
@@ -276,23 +291,34 @@ function Onboarding({ state, actions, active, selectTab }) {
         // point at while the list is still filling in.
         if (!ob.dismissed) {
           if (window.__emlGenerate) window.__emlGenerate();
-          // Sample reminders appear alongside the generated picks, not
-          // before — seeded here rather than on mount (see that effect's
-          // comment). Guarded by existence so navigating back to this step
-          // and forward again can't add them twice.
-          if (!state.tasks.some((t) => OB_SAMPLE_TASK_IDS.includes(t.id))) {
-            const today = new Date().getDay();
-            OB_TASKS.forEach((t) => actions.addTask(
-              t.repeat === 'weekly' ? { ...t, daysOfWeek: [today] } : t
-            ));
-          }
+        }
+        // Sample reminders: on a true first run they appear alongside the
+        // generated picks, not before (seeded here rather than on mount, see
+        // that effect's comment), later hidden by the Settings step's own
+        // run(). On a replay there's no such review moment to appear
+        // alongside — the visible list is the user's real one, not sample
+        // data — so they're seeded straight into `hidden` instead, same as
+        // onSkip's own handling below. Either way this used to sit inside
+        // the `!ob.dismissed` branch above, which meant a replay never
+        // created them at all: the two mini-tour launcher cards for these
+        // ("Pick up prescription"/"Take trash out for pickup") just silently
+        // stopped appearing under Reminders on any replay. Guarded by
+        // existence so navigating back to this step and forward again (or
+        // re-running a replay) can't add them twice.
+        if (!state.tasks.some((t) => OB_SAMPLE_TASK_IDS.includes(t.id))) {
+          const today = new Date().getDay();
+          OB_TASKS.forEach((t) => actions.addTask({
+            ...t,
+            ...(t.repeat === 'weekly' ? { daysOfWeek: [today] } : {}),
+            ...(ob.dismissed ? { hidden: true } : {}),
+          }));
         }
       },
     },
     {
       sel: '.group-section', tab: 'today',
       title: 'Daily todo list',
-      body: <>This is what a <b>typical todo list</b> will look like once you’ve set up your own pickers and reminders. There will be tutorials for setting these up once this tour ends.</>,
+      body: <>This is <b>what a typical todo list will look like</b> once you’ve set up your own pickers and reminders. There will be tutorials for setting these up once this tour ends.</>,
       primary: 'Next', back: true,
       scrollToTop: true,
     },
@@ -326,7 +352,7 @@ function Onboarding({ state, actions, active, selectTab }) {
     {
       sel: '.groups-dnd', tab: 'today',
       title: 'You’re all finished!',
-      body: <>That is all for the Welcome Tour. Highlighted here are a few small tutorials that will help get you set up to start using the app. Enjoy!</>,
+      body: <>That is all for the Welcome Tour. Highlighted here are <b>a few small tutorials that will help get you set up to start using the app</b>. Enjoy!</>,
       primary: 'Done', back: true,
       scrollToTop: true,
     },
@@ -367,7 +393,7 @@ function Onboarding({ state, actions, active, selectTab }) {
         icon={<svg viewBox="8 8 528 528" fill="none"><path d={OB_BRAND} style={{ fill: 'currentColor', stroke: 'currentColor' }} strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" /></svg>}
         title="Welcome to Ease My Life"
         paragraphs={[
-          'Decide less and add some variety to your life! Ease My Life is a todo app that generates a daily list of tasks from pools of items that you create and according to the rules that you set.',
+          <>Decide less and add some variety to your life! <b>Ease My Life is a todo app that automatically generates a daily list of tasks</b> from lists of items that you create and according to the rules that you set.</>,
           'Ease My Life requires no account to use, works completely offline, stores all data on your device and is ad free!',
           'This welcome tour will show you the layout of the app and help you understand how it works. After it finishes, there will be a few small tutorials that will guide you through setting up everything you need in order to generate your first todo list. Let’s get started!',
         ]}

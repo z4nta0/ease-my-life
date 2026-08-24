@@ -79,13 +79,41 @@ function realPickerCount(state) {
   return state.pickers.filter((p) => !OB_SAMPLE_PICKER_IDS.includes(p.id)).length;
 }
 
+// How many checklist items OTHER than the Generate card itself are still
+// unresolved — used both by readyToGenerate below and by the Generate
+// card's own dynamic explanation text (see tab-today.jsx).
+function othersRemaining(state) {
+  return CHECKLIST_ITEMS.filter((item) => item.id !== OB_GENERATE_ITEM_ID && !entryFor(state, item.id)).length;
+}
+
 // The Generate card is actionable once every OTHER item is resolved AND at
 // least one real picker exists — see realPickerCount above. It's still
 // visible before that, just blocked.
 function readyToGenerate(state) {
-  const othersRemaining = CHECKLIST_ITEMS
-    .filter((item) => item.id !== OB_GENERATE_ITEM_ID && !entryFor(state, item.id)).length;
-  return othersRemaining === 0 && realPickerCount(state) >= 1;
+  return othersRemaining(state) === 0 && realPickerCount(state) >= 1;
+}
+
+// Whether we're anywhere between the Welcome Tour's very first step and the
+// closing Generate card's flow actually completing — used to gate every
+// "add new X" control (reminders, pickers, conditionals, picker items) that
+// would otherwise let a user create real data mid-tutorial, before the
+// sample data every step is narrating has even finished being reviewed. True
+// for the tour's ENTIRE run (checked via activeTour, since mainTourEnded
+// below doesn't flip until the tour's next-to-last step hides the samples),
+// then true again straight through the mini-tour checklist phase until
+// checklistDone. False afterward, including for a Replay (checklistDone
+// never resets, see tab-today.jsx) and false for any existing user who
+// upgraded into a build with onboarding and so never had sample data seeded
+// at all — mainTourEnded requires actual hidden samples to exist, which
+// protects that case independent of checklistDone's own backfilled-false
+// default for legacy saves (see store.jsx's migrate).
+function tutorialsInProgress(state) {
+  const ob = state.onboarding;
+  if (!ob) return false;
+  if (ob.activeTour && ob.activeTour.id === 'welcome') return true;
+  const mainTourEnded = state.pickers.some((p) => p.hidden && OB_SAMPLE_PICKER_IDS.includes(p.id))
+    || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
+  return mainTourEnded && !ob.checklistDone;
 }
 
 export const OB_CHECKLIST = {
@@ -93,5 +121,7 @@ export const OB_CHECKLIST = {
   status: checklistStatus,
   entryFor,
   realPickerCount,
+  othersRemaining,
   readyToGenerate,
+  tutorialsInProgress,
 };

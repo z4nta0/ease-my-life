@@ -657,7 +657,13 @@
 }
 .infotip {
   position: fixed;
-  z-index: 1000;
+  /* Above .ob-tour's own z-index:1010 — a requireClick step's disabled Next
+     button wraps itself in one of these (see onboarding-tour-runner.jsx) to
+     explain why it's disabled, and that hint needs to actually be visible
+     over the tour's own dim + coach, not buried behind them. A tooltip is
+     always meant to be the topmost thing on screen while it's open, so this
+     is a blanket raise rather than a tour-specific override. */
+  z-index: 1020;
   max-width: 248px;
   padding: 9px 11px;
   font-family: var(--font-sans);
@@ -1986,6 +1992,15 @@ button.cat-h-l {
   color: var(--accent);
 }
 .picker-tab--add .picker-tab-name { font-size: 13px; color: inherit; }
+/* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
+   pointer-events:none here — this instance is an InfoTip span (see
+   tab-picker.jsx), not a real <button>, whenever it's tutorialsInProgress,
+   and InfoTip needs real hover/tap events to reach it to show its tooltip
+   at all (see .btn.is-disabled in styles.css, the same InfoTip pattern
+   used by the Generate card, which omits it for the same reason). Nothing
+   unsafe fires either way: the real onClick isn't wired to this element in
+   the first place while disabled. */
+.picker-tab--add.is-tour-disabled { opacity: 0.5; cursor: default; }
 .picker-tab--add .picker-tab-add-icon { display: inline-flex; }
 
 .np-fields { display: flex; flex-direction: column; gap: 24px; margin-top: 16px; }
@@ -2347,6 +2362,16 @@ button.cat-h-l {
   transition: border-color .12s, color .12s, background .12s;
 }
 .rem-add-btn:hover { border-color: var(--accent); color: var(--accent); background: oklch(from var(--accent-soft) l c h / 0.5); }
+/* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
+   pointer-events:none here — this instance is an InfoTip span (see
+   reminders.jsx's tutorialsInProgress), not a real <button>, whenever
+   OB_CHECKLIST.tutorialsInProgress is true, and InfoTip needs real
+   hover/tap events reaching it to show its tooltip at all (see
+   .btn.is-disabled in styles.css, the same InfoTip pattern used by the
+   Generate card, which omits it for the same reason). Nothing unsafe
+   fires either way: the real onClick isn't wired to this element while
+   disabled. */
+.rem-add-btn.is-tour-disabled { opacity: 0.4; cursor: default; }
 
 /* Pin icon (one-time reminders) gets the warm accent to read as "sticky". */
 .rem-card .rem-meta svg { color: var(--accent); }
@@ -2691,6 +2716,15 @@ button.cat-h-l {
   font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; text-align: left;
 }
 .rd-add:hover { color: var(--accent); }
+/* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
+   pointer-events:none here — these instances become InfoTip spans (not
+   real <button>s) whenever OB_CHECKLIST.tutorialsInProgress is true, and
+   InfoTip needs real hover/tap events reaching it to show its tooltip at
+   all (see .btn.is-disabled in styles.css, the same InfoTip pattern used
+   by the Generate card, which omits it for the same reason). Nothing
+   unsafe fires either way: the real onClick isn't wired to these elements
+   while disabled. */
+.rd-add.is-tour-disabled { opacity: 0.5; cursor: default; }
 .rd-empty { padding: 14px 16px 18px; color: var(--muted); font-size: 13px; }
 
 .rd-item { border-bottom: 0.5px solid var(--border); }
@@ -2878,6 +2912,11 @@ button.cat-h-l {
   cursor: help; transition: border-color .2s ease, color .2s ease, background .2s ease;
 }
 .pie-help:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+/* .pie-help's own 16px is sized for its usual 15px-label context (Soonest/
+   Latest, etc.) — "How often?"'s own label sits at 13.5px instead
+   (.rem-flabel / .sched-line-lbl), and the fixed-size badge reads as
+   slightly oversized/off-center next to that shorter line-box. */
+.pie-help--sm { width: 14.5px; height: 14.5px; }
 .rd-mode-hint { display: block; font-size: 12px; line-height: 1.45; color: var(--muted); text-wrap: pretty; }
 .rd-mode-hint + .rd-mode-hint { margin-top: 8px; }
 /* Two labeled subgroups inside a picker's Controls: how it picks / when it runs.
@@ -3498,7 +3537,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-block-h--static{cursor:default}
 .dl-block-name{font-size:14px;font-weight:600;letter-spacing:-0.01em}
 .dl-cond-title{color:var(--accent)}
-.dl-mode{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.dl-mode{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);text-align:center}
 .dl-mode.neutral{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
 .dl-sum{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
 .dl-dchip{display:inline-flex;align-items:center;gap:4px;color:oklch(0.5 0.11 155)}
@@ -3508,6 +3547,10 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-block.is-closed .dl-chev{transform:rotate(-90deg)}
 .dl-rest{margin-left:auto;font-family:var(--font-mono);font-size:11px;letter-spacing:0.03em;text-transform:uppercase;color:var(--accent);display:inline-flex;align-items:center;gap:6px}
 .dl-rest svg{width:13px;height:13px}
+/* The "Rested · {conditional name}" text (day-log.jsx) — its own span has
+   no class of its own to hook, so targeted structurally: .dl-rest's only
+   other child is the moon icon (an <svg>), so this can't match it too. */
+.dl-rest>span{text-align:center}
 
 /* table */
 .dl-table{padding-bottom:12px}
@@ -3574,6 +3617,18 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   .dl-cond-row .dl-mode--cond{display:block;width:100%;text-align:center}
 }
 
+/* Below this, a picker block header's own name (.dl-block-name) crowds the
+   item count (.dl-sum) enough that its text wraps onto a second line — it's
+   a flex item, so its own box still shrinks to fit rather than overflowing,
+   but left-aligned wrapped text (the default) leaves a ragged, awkward-
+   looking gap on the shorter second line's right side. (.dl-mode, the mode
+   pill right next to it, gets the same wrapped-text treatment unconditionally
+   — see its own rule above — since its text should always read centered,
+   wrapped or not.) */
+@container app (max-width:384px){
+  .dl-sum{text-align:center}
+}
+
 /* ── Onboarding ──────────────────────────────────────────────────────────
    Welcome modal, get-started checklist, first-picker CTA, and the spotlight
    tour (dim + cut-out + coach card). Uses app tokens throughout. */
@@ -3627,6 +3682,68 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    still marked, but the rest of the page is no longer darkened, so it's
    easy to see exactly where it's landing. */
 .ob-spot.is-dragging{box-shadow:none}
+/* requireClick steps: a white ring pulses outward from the target's own
+   border and fades, drawing the eye to the exact element to click while
+   Next stays disabled. A separate ::after (not an .ob-spot box-shadow
+   itself) so it doesn't fight the dimming box-shadow above; white rather
+   than --accent because the accent blue reads too close to the dim
+   scrim's own near-black to register as a pulse. */
+.ob-spot.is-pulsing::after{content:"";position:absolute;inset:0;border-radius:inherit;animation:obSpotPing 1.8s ease-out infinite}
+@keyframes obSpotPing{
+  0%{box-shadow:0 0 0 0 oklch(1 0 0/0.65)}
+  70%{box-shadow:0 0 0 12px oklch(1 0 0/0)}
+  100%{box-shadow:0 0 0 12px oklch(1 0 0/0)}
+}
+/* Same sonar-ping treatment as .ob-spot.is-pulsing above, applied to the
+   whole "Generate your real list" card once every prerequisite is done and
+   the button is actually clickable. Own keyframe, not obSpotPing verbatim:
+   the ring expands from the card's own edge outward onto the page
+   background, not onto .ob-create's light var(--accent-soft) fill (that's
+   what happens if the pulse is put on the inner button instead — the ring
+   is drawn over the card's own soft background and all but disappears).
+   position:relative is needed here (unlike .ob-spot, which is already
+   position:fixed) since .ob-create has no position of its own. */
+.ob-generate-pulse{position:relative}
+.ob-generate-pulse::after{content:"";position:absolute;inset:0;border-radius:inherit;animation:obGeneratePing 1.8s ease-out infinite;pointer-events:none}
+@keyframes obGeneratePing{
+  0%{box-shadow:0 0 0 0 oklch(from var(--accent) l c h/0.55)}
+  40%{box-shadow:0 0 0 10px oklch(from var(--accent) l c h/0.35)}
+  100%{box-shadow:0 0 0 20px oklch(from var(--accent) l c h/0)}
+}
+/* Pulses a specific REAL element inside a requireClick step's bigger
+   spotlight box (Edit Item tour, onboarding-app-features.jsx). Started as
+   an .ob-generate-pulse-style expanding ring, but several of these targets
+   (a picker header, each item row) sit packed edge-to-edge inside a card
+   with siblings on every side — a ring needs room to expand into, which a
+   cramped list doesn't have, and it either clipped against the card's own
+   edge or overlapped the next row's own ring. Fading a plain outline in
+   and out instead needs no expansion room at all, so it reads cleanly no
+   matter how many of these are on screen at once or how tightly packed
+   they are. Draws its own outline by default (unlike the old version,
+   which had to be paired with .is-tour-target for an outline to exist at
+   all), so it's used alone on most targets. The step itself suppresses
+   .ob-spot's own default pulse via a pulseSel that never matches (see
+   that file's own comment), so only this fade shows. */
+.ob-tour-pulse{outline:2px solid var(--accent);outline-offset:-2px;animation:obTourFade 1.8s ease-in-out infinite}
+@keyframes obTourFade{
+  0%,100%{outline-color:oklch(from var(--accent) l c h/1)}
+  50%{outline-color:oklch(from var(--accent) l c h/0.2)}
+}
+/* .rd-item is the one exception: it's paired WITH .is-tour-target (not
+   alone), because it needs that class's own border-based highlight, not
+   this class's default outline — .rd-item.is-tour-target already sets
+   outline:none in favor of per-side borders (touching item rows can't use
+   outline, see that rule's own comment), so animating outline-color here
+   would do nothing visible. Overrides the animation to fade border-color
+   instead, which — being a real CSS animation — still wins over every one
+   of .rd-item.is-tour-target's own static border-*-color declarations
+   (including its :first-of-type/:last-of-type variants), regardless of
+   selector specificity. */
+.rd-item.ob-tour-pulse{animation:obTourFadeBorder 1.8s ease-in-out infinite}
+@keyframes obTourFadeBorder{
+  0%,100%{border-color:oklch(from var(--accent) l c h/1)}
+  50%{border-color:oklch(from var(--accent) l c h/0.2)}
+}
 .ob-coach{position:fixed;pointer-events:auto;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);box-shadow:0 16px 40px -14px oklch(0 0 0/0.45);padding:14px 15px;animation:obFade .18s ease both}
 .ob-coach .ob-prog{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;color:var(--accent);margin:0 0 5px}
 .ob-coach h4{font-size:15px;font-weight:600;margin:0 0 5px}
@@ -3644,7 +3761,16 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    justify-content:space-between, which would read as off-balance for a
    standalone closing message with nothing to pair it against. */
 .ob-crow--solo .ob-next{width:100%;text-align:center}
-.ob-coach::before{content:"";position:absolute;width:14px;height:14px;background:var(--surface);border:0.5px solid var(--border);transform:rotate(45deg);left:var(--ob-ax,28px)}
+/* translateX(-50%) first: --ob-ax is computed (both here and in the tour's
+   own coach placement) as the TARGET's center offset from the tip's own
+   left edge, but `left` alone positions this box's own left edge there,
+   not its center — the box's post-rotation visual point then sits a half-
+   width (7px) right of the intended center. Usually too small to notice
+   next to a real-size highlighted target, but glaring for the Day Log's
+   columnGroup tips, whose badge is deliberately centered on the same
+   target midpoint this arrow points at — any offset between the two reads
+   as the arrow pointing at the badge's edge instead of its middle. */
+.ob-coach::before{content:"";position:absolute;width:14px;height:14px;background:var(--surface);border:0.5px solid var(--border);transform:translateX(-50%) rotate(45deg);left:var(--ob-ax,28px)}
 .ob-coach--up::before{top:-8px;border-right:0;border-bottom:0}
 .ob-coach--down::before{bottom:-8px;border-left:0;border-top:0}
 
@@ -3675,7 +3801,13 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .today-card--tutorial.is-needed:hover{border-color:oklch(from var(--warm) l c h/0.7)}
 @keyframes obFade{from{opacity:0}to{opacity:1}}
 @keyframes obRise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.ob-scrim,.ob-welcome,.ob-coach,.ob-spot{animation:none;transition:none}}
+@media (prefers-reduced-motion:reduce){
+  .ob-scrim,.ob-welcome,.ob-coach,.ob-spot,.ob-spot.is-pulsing::after,.ob-generate-pulse::after{animation:none;transition:none}
+  /* Frozen mid-fade would read as a paused animation rather than a
+     deliberate static state — pin it to full color instead. */
+  .ob-tour-pulse{animation:none;outline-color:var(--accent)}
+  .rd-item.ob-tour-pulse{animation:none;border-color:var(--accent)}
+}
 body.ob-touring .tab{padding-bottom:200px}
 .np-tour-name{margin:16px 0 16px}
 
@@ -3748,6 +3880,19 @@ body.ob-touring .tab{padding-bottom:200px}
 .help-tip-title{font-size:15px;font-weight:600;margin:0 0 5px}
 .help-tip .ob-body p{margin:0}
 .help-tip .ob-body p+p{margin-top:8px}
+/* NAV_HELP_ITEM's per-tab column (help-mode.jsx): icon+label line above its
+   own description paragraph, one such block per real nav button. */
+.help-tip .help-nav-item+.help-nav-item{margin-top:10px}
+.help-tip .help-nav-label{display:flex;align-items:center;gap:6px;margin:0 0 3px}
+.help-tip .help-nav-label svg{flex:0 0 auto}
+/* An inline icon dropped right into a tip's own flowing prose (e.g. Picker
+   Items' "The [icon] Send to Today button..."), wrapped in its own
+   .help-inline-icon span (help-content.jsx) — inline-flex + align-items
+   centers the icon within ITS OWN box, which then only needs
+   vertical-align:center to place that whole box against the surrounding
+   text's line, rather than relying on vertical-align alone to center the
+   icon's own content against text metrics it doesn't actually match. */
+.help-tip .ob-body .help-inline-icon{display:inline-flex;align-items:center;vertical-align:center}
 
 /* ─── Settings: storage & installation panel ──────────────────────────────── */
 .set-store-facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}

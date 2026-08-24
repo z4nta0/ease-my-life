@@ -4,6 +4,7 @@ import { CADENCE } from './cadence.js';
 import { EASE_UP_RANGE_WARN } from './constants.js';
 import { normalizeConditionalName, normalizeGroupName } from './pickers.js';
 import { useEmlTour } from './onboarding.jsx';
+import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { ReminderManager } from './reminders.jsx';
 import { MODES } from './seed.js';
 import { ConditionalControls, conditionalDraftDefault } from './tab-conditional.jsx';
@@ -468,7 +469,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
             <div className="sched-line">
               <span className="sched-line-label">
                 <span className="sched-line-lbl pie-lbl-row">How often?
-                  <InfoTip className="pie-help" label={CADENCE.tipFor(pk.cadence)}>?</InfoTip>
+                  <InfoTip className="pie-help pie-help--sm" label={CADENCE.tipFor(pk.cadence)}>?</InfoTip>
                 </span>
                 <span className="sched-line-sub set-sub-fade" key={(pk.cadence || 'daily') + (pk.anchorDow ?? '') + (pk.anchorDom ?? '') + (pk.anchorMonth ?? '') + (pk.anchorDay ?? '')}>{(() => {
                   const cad = pk.cadence || 'daily';
@@ -697,15 +698,22 @@ function ConditionalsManager({ state, actions }) {
       </header>
       <Collapse open={open}>
       <div className="cat-body">
-        <button className="rd-add" onClick={() => {
-          if (pending) return;   // one draft at a time
-          const nd = conditionalDraftDefault('', conditionals.map((c) => c.name));
-          const id = 'cnd_' + Math.random().toString(36).slice(2, 8);
-          const obj = { ...nd, id };
-          setPending(obj); setDraft(obj); setOpenId(id);   // held locally, not in store
-        }}>
-          <Icon name="plus" size={13} /> Add a conditional
-        </button>
+        {OB_CHECKLIST.tutorialsInProgress(state) ? (
+          <InfoTip className="rd-add is-tour-disabled" action="Add a conditional"
+                   label="This button is disabled until all tutorials are completed.">
+            <Icon name="plus" size={13} /> Add a conditional
+          </InfoTip>
+        ) : (
+          <button className="rd-add" onClick={() => {
+            if (pending) return;   // one draft at a time
+            const nd = conditionalDraftDefault('', conditionals.map((c) => c.name));
+            const id = 'cnd_' + Math.random().toString(36).slice(2, 8);
+            const obj = { ...nd, id };
+            setPending(obj); setDraft(obj); setOpenId(id);   // held locally, not in store
+          }}>
+            <Icon name="plus" size={13} /> Add a conditional
+          </button>
+        )}
         {!conditionals.length && !pending && (
           <p className="rd-cnd-empty">No conditionals yet. Add one here, then attach it to any picker.</p>
         )}
@@ -795,20 +803,40 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // position out from under Step 6's own "click any of these" framing.
   // Stays disabled through Step 7 too, for the same reason.
   const disableEditTourAddItem = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && (tour.step === 5 || tour.step === 6);
-  // Thin accent outline (.is-tour-target, styles2.css) on top of the tour
-  // engine's own bigger spotlight box — points at the SPECIFIC element a
-  // requireClick step wants clicked, since the spotlight alone highlights
-  // the whole picker section (header + Controls + Items together, see
-  // onboarding-app-features.jsx's own sel comment) without distinguishing
-  // which part inside it is actually actionable. Step 2 targets EVERY
-  // picker's own .cat section (clicking any one's header satisfies it) —
-  // applied to the whole card, not just its header button, so the outline
-  // reads as "this card" rather than singling out one control inside it.
-  // Plain .is-tour-target is enough there since picker cards sit with real
-  // gaps between them, no touching-siblings border-doubling risk the way
-  // item rows have. Steps 3/5 target a single header each; Step 6 targets
-  // the whole item-row group (its own CSS handles that as a set of
-  // bordered siblings, not one wrapping element).
+  // Separately, disabled anywhere from the Welcome Tour's first step through
+  // the closing Generate card's flow completing — see
+  // OB_CHECKLIST.tutorialsInProgress. Distinct from disableEditTourAddItem
+  // above: that one's own tour only ever runs AFTER checklistDone (App
+  // Feature tutorials are gated on it), when tutorialsInProgress is always
+  // false, so the two never overlap.
+  const tutorialsInProgress = OB_CHECKLIST.tutorialsInProgress(state);
+  // Fading accent highlight (.ob-tour-pulse, styles2.css) on top of the
+  // tour engine's own bigger spotlight box — points at the SPECIFIC
+  // element a requireClick step wants clicked, since the spotlight alone
+  // highlights the whole picker section (header + Controls + Items
+  // together, see onboarding-app-features.jsx's own sel comment) without
+  // distinguishing which part inside it is actually actionable. Step 2
+  // targets EVERY picker's own .cat section (clicking any one's header
+  // satisfies it) — applied to the whole card, not just its header
+  // button, so the outline reads as "this card" rather than singling out
+  // one control inside it; safe as a per-element outline since picker
+  // cards sit with real gaps between them, no touching-siblings doubling
+  // risk. Steps 3/5 target a single header each, same outline treatment.
+  // Step 6 targets each item row's own .rd-item wrapper (not just its
+  // inner .rd-row button) — .rd-item.is-tour-target already exists for
+  // exactly this element, using per-side BORDERS rather than one outline
+  // (touching item rows can't share an outline without doubling — see
+  // that class's own comment in styles2.css), so .ob-tour-pulse pairs
+  // with it there instead of standing alone, and fades border-color
+  // instead of outline-color (see .ob-tour-pulse's own comment for the
+  // override). The step's own sel in onboarding-app-features.jsx covers a
+  // much bigger box (the whole picker card, or every card in Step 2's
+  // case) than what's actually clickable, so the tour engine's default
+  // requireClick pulse — one ring around that whole box — reads as
+  // "pulse the entire group/section," not "click here specifically."
+  // Each of these steps sets pulseSel to something that never matches,
+  // suppressing that default pulse outright, so only this per-element
+  // fade shows.
   const highlightEditTourPickerHeaders = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 1;
   const highlightEditTourControlsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 2;
   const highlightEditTourItemsHeader = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_edit_item' && tour.step === 4;
@@ -1107,7 +1135,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
           const ctlCollapsed = !!collapsedMap[pk.id + ':controls'];
           const itemsCollapsed = !!collapsedMap[pk.id + ':items'];
           return (
-            <section key={pk.id} data-picker-id={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''} ${highlightEditTourPickerHeaders ? 'is-tour-target' : ''}`}
+            <section key={pk.id} data-picker-id={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''} ${highlightEditTourPickerHeaders ? 'ob-tour-pulse' : ''}`}
                      onAnimationEnd={(e) => {
                        if (e.target === e.currentTarget && removingPickerId === pk.id) {
                          actions.removePicker(pk.id); setRemovingPickerId(null);
@@ -1149,7 +1177,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   {/* Controls — nested collapsible (open by default, remembered per
                       picker). Holds the pick-algorithm config moved here from
                       Settings, so all of a picker's setup lives in one place. */}
-                  <button type="button" className={`rd-ctl ${highlightEditTourControlsHeader ? 'is-tour-target' : ''}`} aria-expanded={!ctlCollapsed}
+                  <button type="button" className={`rd-ctl ${highlightEditTourControlsHeader ? 'ob-tour-pulse' : ''}`} aria-expanded={!ctlCollapsed}
                        disabled={disableEditTourControlsToggle}
                        onClick={() => actions.toggleControlsCollapsed(pk.id + ':controls')}>
                     <span className="rd-ctl-l">
@@ -1169,7 +1197,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
 
                   {/* Items — nested collapsible (open by default, remembered per
                       picker); collapsed shows the item count. */}
-                  <button type="button" className={`rd-ctl ${highlightEditTourItemsHeader ? 'is-tour-target' : ''}`} aria-expanded={!itemsCollapsed}
+                  <button type="button" className={`rd-ctl ${highlightEditTourItemsHeader ? 'ob-tour-pulse' : ''}`} aria-expanded={!itemsCollapsed}
                        disabled={disableEditTourItemsToggle}
                        onClick={() => actions.toggleControlsCollapsed(pk.id + ':items')}>
                     <span className="rd-ctl-l">
@@ -1180,16 +1208,23 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   </button>
                   <Collapse open={!itemsCollapsed}>
                     <React.Fragment>
-                      <button className="rd-add" disabled={disableEditTourAddItem} onClick={() => {
-                        if (justAddedItemRef.current) return;   // guard: ignore rapid double-click
-                        const id = 'it_' + Math.random().toString(36).slice(2, 8);
-                        actions.addItem(pk.id, 'New item', id);
-                        justAddedItemRef.current = id;   // Cancel discards it
-                        setInsertItemId(id);
-                        setOpenItemId(id);
-                      }}>
-                        <Icon name="plus" size={13} /> Add to {pk.name.toLowerCase()}
-                      </button>
+                      {tutorialsInProgress ? (
+                        <InfoTip className="rd-add is-tour-disabled" action={`Add to ${pk.name.toLowerCase()}`}
+                                 label="This button is disabled until all tutorials are completed.">
+                          <Icon name="plus" size={13} /> Add to {pk.name.toLowerCase()}
+                        </InfoTip>
+                      ) : (
+                        <button className="rd-add" disabled={disableEditTourAddItem} onClick={() => {
+                          if (justAddedItemRef.current) return;   // guard: ignore rapid double-click
+                          const id = 'it_' + Math.random().toString(36).slice(2, 8);
+                          actions.addItem(pk.id, 'New item', id);
+                          justAddedItemRef.current = id;   // Cancel discards it
+                          setInsertItemId(id);
+                          setOpenItemId(id);
+                        }}>
+                          <Icon name="plus" size={13} /> Add to {pk.name.toLowerCase()}
+                        </button>
+                      )}
                       {items.map((it) => {
                         const itemOpen = openItemId === it.id;
                         const eMin = it.easeMin ?? pk.easeMin ?? 10;
@@ -1201,7 +1236,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                           : (isEase ? `${soonest}\u2013${latest} ${CADENCE.unitWord(pk.cadence, latest)}`
                              : (usesWeight ? `Weight w${it.weight}` : 'Equal chance'));
                         return (
-                          <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''} ${highlightEditTourItemRows ? 'is-tour-target' : ''}`}
+                          <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''} ${highlightEditTourItemRows ? 'is-tour-target ob-tour-pulse' : ''}`}
                                onAnimationEnd={() => { if (insertItemId === it.id) setInsertItemId(null); }}>
                             <button type="button" className="rd-row" aria-expanded={itemOpen}
                                   onClick={() => setOpenItemId(itemOpen ? null : it.id)}>

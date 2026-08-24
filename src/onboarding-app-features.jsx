@@ -39,7 +39,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_manual_pick', page: 'picker', label: 'Make your first manual pick',
     title: 'Manual Picks',
-    body: 'This tutorial will show you how to manually run one of your pickers and send its result straight to your todo list, without waiting for the next automatic generation.',
+    body: <>This tutorial will show you <b>how to manually run one of your pickers and send its result straight to your todo list</b>, without waiting for the next automatic generation.</>,
     pills: ['pickers page', 'run a picker', 'manual pick'],
     // Real, user-confirmed estimate (same convention as OB_PAGE_TOURS' own
     // `time` field in onboarding-checklist.js) — only this feature has real
@@ -50,7 +50,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_edit_item', page: 'data', label: 'Edit your first item',
     title: 'Editing Items',
-    body: 'This tutorial will show you how to edit one of your own items. You will be able to update names, weights, or other values whenever your needs change.',
+    body: <>This tutorial will show you <b>how to edit one of your own items</b>. You will be able to update names, weights, or other values whenever your needs change.</>,
     pills: ['data page', 'edit item', 'update values'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -59,7 +59,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_run_time', page: 'settings', label: 'Adjust your generator run time',
     title: 'Generator Run Time',
-    body: 'This tutorial will show you how to change what time of day your todo list automatically generates, so it is ready exactly when you want it.',
+    body: <>This tutorial will show you <b>how to change what time of day your todo list automatically generates</b>, so it is ready exactly when you want it.</>,
     pills: ['settings page', 'daily generator', 'run time'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -68,7 +68,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_theme', page: 'settings', label: 'Change your app theme',
     title: 'App Theme',
-    body: 'This tutorial will show you how to switch between light and dark mode, or customize the app’s colors to your own taste.',
+    body: <>This tutorial will show you <b>how to switch between light and dark mode</b>, or customize the app’s colors to your own taste.</>,
     pills: ['settings page', 'appearance', 'theme'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -77,7 +77,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_celebration', page: 'settings', label: 'Change your celebration animation',
     title: 'Celebration Animation',
-    body: 'This tutorial will show you how to change the animation that plays whenever you complete your entire todo list for the day.',
+    body: <>This tutorial will show you <b>how to change the animation that plays whenever you complete your entire todo list</b> for the day.</>,
     pills: ['settings page', 'appearance', 'animation'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -86,7 +86,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_pick_anim', page: 'settings', label: 'Change your picker animation',
     title: 'Picker Animation',
-    body: 'This tutorial will show you how to change the animation that plays on the Pickers page whenever you manually direct it to select one of its items.',
+    body: <>This tutorial will show you <b>how to change the animation that plays on the Pickers page</b> whenever you manually direct it to select one of its items.</>,
     pills: ['settings page', 'appearance', 'animation'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -95,7 +95,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_highlights', page: 'today', label: 'Use the highlight feature',
     title: 'Highlight Feature',
-    body: 'This tutorial will show you how to use the highlight feature, which lets you tap the info icon on any page to get an on demand explanation of everything on screen.',
+    body: <>This tutorial will show you <b>how to use the highlight feature</b>, which lets you tap the info icon on any page to get an on demand explanation of everything on screen.</>,
     pills: ['help highlights', 'on demand', 'any page'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -104,7 +104,7 @@ export const APP_FEATURES = [
   {
     id: 'feat_protect_data', page: 'settings', label: 'Protect your data / Install the app',
     title: 'Protect Your Data',
-    body: 'This tutorial will show you how to protect your data from being deleted by your browser, and to keep your data even more safe, how to install the app.',
+    body: <>This tutorial will show you <b>how to protect your data from being deleted by your browser</b>, and to keep your data even more safe, how to install the app.</>,
     pills: ['settings page', 'data control', 'install app'],
     // Real, user-confirmed estimate — see feat_manual_pick's own comment
     // on this same convention.
@@ -120,7 +120,7 @@ export const APP_FEATURES = [
 // `actions` (built fresh per render, like buildPageTourSteps itself) since
 // feat_edit_item's own Step 2 needs to call actions.toggleControlsCollapsed
 // directly — see that step's own run() comment for why a real click won't do.
-const buildAppFeatureSteps = (featureId, actions) => {
+const buildAppFeatureSteps = (featureId, actions, alreadyProtected) => {
   if (featureId === 'feat_manual_pick') {
     return [
       // Title/body copied verbatim from the Pickers page tour's own
@@ -129,66 +129,81 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // that's the whole reason this exists: letting the user pick a
       // different picker than whichever one happened to already be
       // active. No requireClick — same as the page tour's own step,
-      // this is purely optional ("select one now or click Next").
+      // selecting a different picker here is purely optional.
       {
         sel: '.picker-tabs .picker-tab:not(.picker-tab--add)', tab: 'picker',
         title: 'Picker Selection',
-        body: <>This will allow you to <b>select a specific picker</b>, in order to initiate a manual picker generation down below as well as edit or delete its items. Feel free to select one now or click Next to advance to the next step.</>,
+        body: <>These buttons will <b>allow you to select a specific picker</b> in order to initiate a manual picker generation, as well as edit or delete its items.</>,
         primary: 'Next', back: true,
       },
       // Title/body copied verbatim from the Pickers page tour's own
       // manualGeneration step (PICKER_PAGE_TARGETS in onboarding-page-
-      // tours.jsx) — same functionality, same explanation. .picker-run
-      // wraps the picker's stage + actions as one combined box (see that
-      // file's own comment on it) so this highlights "the picker window
-      // and the Pick one button" together, not just the button on its
-      // own. No scrollToTop/Bottom override — the default pad-based
-      // bring() already smooth-scrolls it into view. advanceWhen (not
-      // an immediate advance): Pick one kicks off a multi-second spin
-      // animation, so stay on THIS step's already-resolved coach for the
-      // whole wait — same reasoning as the page tour's own step, whose
-      // advanceWhen this copies (Step 4's own clickSel below). coachAtTop:
-      // true — on a short viewport (iPhone SE height, 667px, or shorter)
-      // the coach can't fit above .picker-run without overlapping its top
-      // edge; pins the coach to safeTop instead, same treatment as Step 5's
-      // own fix (see that step's comment for the full reasoning).
+      // tours.jsx) — same functionality, same explanation, same two-phase
+      // highlight: before the click, .pv-act--pick:not(.is-busy) matches
+      // the idle "Pick one" button, so the pulse (.ob-spot.is-pulsing)
+      // lands tight on the actual button instead of the whole window.
+      // .is-busy (added the instant the click fires, well before the spin
+      // finishes) excludes that first selector immediately on click, so
+      // the fallback to framing .picker-run (which wraps the picker's
+      // stage + actions as one combined box) kicks in right as the spin
+      // starts, not once it ends. clickSel keeps the requireClick guard
+      // scoped to the button specifically even once the fallback is in
+      // play. pulseSel matches the exact same primary alternative as sel —
+      // there's nothing left to click once the highlight has widened to
+      // frame the window, so the pulse stops there too. No scrollToTop/
+      // Bottom override — the default pad-based bring() already smooth-
+      // scrolls it into view. advanceWhen (not an immediate advance): Pick
+      // one kicks off a multi-second spin animation, so stay on THIS
+      // step's already-resolved coach for the whole wait — same reasoning
+      // as the page tour's own step, whose advanceWhen this copies (Step
+      // 4's own clickSel below). coachAtTop: true — on a short viewport
+      // (iPhone SE height, 667px, or shorter) the coach can't fit above
+      // .picker-run without overlapping its top edge; pins the coach to
+      // safeTop instead, same treatment as Step 5's own fix (see that
+      // step's comment for the full reasoning).
       {
-        sel: '.picker-run', tab: 'picker',
+        sel: '.pv-act--pick:not(.is-busy), .picker-run', clickSel: '.pv-act--pick',
+        pulseSel: '.pv-act--pick:not(.is-busy)', tab: 'picker',
         title: 'Manual Generation',
-        body: <>This will allow to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the Pick one button now to see how this works.</>,
+        body: <>The "Pick one" button will allow you to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick one" button now to see how this works.</>,
         primary: 'Next', back: true, requireClick: true,
         advanceWhen: '.pv-act--send', coachAtTop: true,
       },
       // Title/body copied verbatim from the Pickers page tour's own
-      // addToTodoList step. Still .picker-run, not just the Send to
-      // Today button on its own — same combined-box reasoning as Step
-      // 3, and .picker-actions (which .picker-run wraps) contains the
-      // WHOLE row (Send to Today, Re-roll, AND Done), so this highlights
-      // all three together (the picker window itself staying highlighted
-      // the whole time, same element as Step 3). clickSel narrows the
-      // actual click-guard/requireClick target down to Send to Today
-      // specifically — only that click satisfies this step, matching the
-      // page tour's own behavior exactly. Re-roll is a deliberate
-      // exception, unlike the page tour (which disables it outright via
-      // tab-picker.jsx's tourInterceptSend): clickPassThroughSel lets it
-      // reach its own real handler — a genuine re-roll, own animation —
-      // WITHOUT also satisfying requireClick, so the user can re-roll as
-      // many times as they like before eventually sending. Done stays
-      // blocked (tab-picker.jsx's own tourDisableDone, gated on this
-      // exact tourId+step) since leaving would discard the pick AND
-      // make this step's own target — the done/sent view itself —
-      // vanish, reverting to the pre-pick "Pick one" button Step 3
-      // already moved past. advanceDelay: Send to Today swaps its own
-      // label to "Sent!" for a beat (see tab-picker.jsx's sendToToday)
-      // before reverting — finishing immediately would cut that
-      // confirmation off before the user ever sees it. coachAtTop: true —
-      // same short-viewport overlap as Step 3 (same .picker-run target,
-      // now even taller with the result + all three action buttons showing)
-      // — see that step's own comment for the full reasoning.
+      // addToTodoList step, same two-phase highlight too: before the
+      // click, .pv-act--send:not(.is-sent) matches the real Send to Today
+      // button, so the pulse lands tight on it instead of the whole
+      // window. Clicking it flips phase to 'sent' SYNCHRONOUSLY (see
+      // sendToToday in tab-picker.jsx), which adds .is-sent immediately,
+      // so the fallback to framing .picker-run (which wraps the picker's
+      // stage + actions as one combined box) kicks in right on click —
+      // needed since this step's own advanceDelay (below) holds the tour
+      // here for 1600ms after the click so the "Sent!" label swap + stage
+      // checkmark can play out, and the highlight needs to have already
+      // widened to frame that whole confirmation rather than staying
+      // pinned to a single button mid-animation. pulseSel matches the
+      // exact same primary alternative as sel, same reasoning as Step 3.
+      // clickSel narrows the actual click-guard/requireClick target down
+      // to Send to Today specifically — only that click satisfies this
+      // step, matching the page tour's own behavior exactly. Re-roll is a
+      // deliberate exception, unlike the page tour (which disables it
+      // outright via tab-picker.jsx's tourInterceptSend): clickPassThroughSel
+      // lets it reach its own real handler — a genuine re-roll, own
+      // animation — WITHOUT also satisfying requireClick, so the user can
+      // re-roll as many times as they like before eventually sending. Done
+      // stays blocked (tab-picker.jsx's own tourDisableDone, gated on this
+      // exact tourId+step) since leaving would discard the pick AND make
+      // this step's own target — the done/sent view itself — vanish,
+      // reverting to the pre-pick "Pick one" button Step 3 already moved
+      // past. coachAtTop: true — same short-viewport overlap as Step 3
+      // (same .picker-run target, now even taller with the result + all
+      // three action buttons showing) — see that step's own comment for
+      // the full reasoning.
       {
-        sel: '.picker-run', clickSel: '.pv-act--send', clickPassThroughSel: '.pv-act--reroll', tab: 'picker',
+        sel: '.pv-act--send:not(.is-sent), .picker-run', clickSel: '.pv-act--send',
+        clickPassThroughSel: '.pv-act--reroll', pulseSel: '.pv-act--send:not(.is-sent)', tab: 'picker',
         title: 'Add to Todo List',
-        body: <>This will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click this button now to give it a try.</>,
+        body: <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to give it a try.</>,
         primary: 'Next', back: true, requireClick: true,
         advanceDelay: 1600, coachAtTop: true,
       },
@@ -211,11 +226,18 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // overlapping; pins the coach to safeTop and lets the pool run off
       // the bottom instead, same tall-target treatment as the Data tour's
       // own .data-list step and every Settings section — see coachAtTop's
-      // own doc comment in onboarding-tour-runner.jsx.
+      // own doc comment in onboarding-tour-runner.jsx. Each genuinely-usable
+      // Send to Today button also gets its own fading .ob-tour-pulse
+      // (tab-picker.jsx's highlightManualPickSend) — same per-element
+      // pulse-inside-a-bigger-spotlight idea as the Edit Item tour's own
+      // .ob-tour-pulse targets, so the one real actionable button per item
+      // still stands out inside this step's whole-pool highlight. Skips an
+      // already-sent or already-on-Today item's own (disabled) button —
+      // nothing to invite a click toward there.
       {
         sel: '.pool-items', tab: 'picker',
         title: 'Picker Items',
-        body: <>Here you can <b>view all items in this picker's pool</b>. You can see a given item's values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. Edit and Delete are disabled for this tutorial, but feel free to try Send to Today on any item now, or click Done when you are ready to finish this tutorial.</>,
+        body: <>Here you can <b>view all items in this picker's pool</b>. You can see a given item's values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. The "Edit" and "Delete" buttons are disabled for this tutorial but feel free to try the "Send to Today" button on any item now. This concludes the Make your first manual pick tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
@@ -237,7 +259,14 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // step's own comment) and every other tall-target step in this app
       // — see coachAtTop's own doc comment in onboarding-tour-runner.jsx.
       {
-        sel: '.data-list', clickSel: '.cat-h-l', tab: 'data',
+        sel: '.data-list', clickSel: '.cat-h-l',
+        // Suppresses the tour engine's own default requireClick pulse (one
+        // ring around the whole .data-list box) — see tab-data.jsx's own
+        // highlightEditTourPickerHeaders comment for why: each individual
+        // picker header pulses on its own (.ob-tour-pulse) instead of one
+        // big ring around the entire list. pulseSel just needs to never
+        // match anything currently on screen.
+        pulseSel: '[data-ob-none]', tab: 'data',
         title: 'Your Pickers',
         body: <>This is where you can <b>view and edit all of your pickers</b>, as well as their items. Click on any picker's header now to expand it and continue.</>,
         primary: 'Next', back: true, requireClick: true, coachAtTop: true,
@@ -305,9 +334,13 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // target out from under the user.
       {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])',
-        clickSel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)', tab: 'data',
+        clickSel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(1)',
+        // Same pulse suppression as Step 2 above — the Controls header
+        // itself pulses (.ob-tour-pulse, tab-data.jsx) instead of a ring
+        // around the whole picker card.
+        pulseSel: '[data-ob-none]', tab: 'data',
         title: 'Controls Section',
-        body: <>This is where you can <b>view and edit a picker's Controls</b>. This includes its name, group, type, and other settings. Click on the Controls header now to advance this tutorial.</>,
+        body: <>This is where you can <b>view and edit a picker's Controls</b>. This includes its name, group, type, and other settings. Click on the Controls' header now to expand it and continue.</>,
         primary: 'Next', back: true, requireClick: true,
       },
       // Same sel as Step 3 — still the whole picker box, now with Controls
@@ -328,7 +361,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])', tab: 'data',
         title: 'Edit Picker Settings',
-        body: <>Feel free to <b>explore this section and make any changes you'd like</b> to the picker's name, group, type, or other settings. Click Next when you are ready to advance this tutorial.</>,
+        body: <>Feel free to <b>explore this section and make any changes you'd like</b> to the picker's name, group, type, or other settings. Click Next when you are ready to move on.</>,
         primary: 'Next', back: true, coachAtTop: true,
         // Re-collapses Controls on the way to Step 5, same "clean slate"
         // requirement as Step 2's own run() — Step 5 highlights this same
@@ -354,9 +387,13 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // again rather than showing Controls still expanded alongside it.
       {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])',
-        clickSel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)', tab: 'data',
+        clickSel: '.data-list > .cat .cat-body > button.rd-ctl:nth-of-type(2)',
+        // Same pulse suppression as Steps 2/3 above — the Items header
+        // itself pulses (.ob-tour-pulse, tab-data.jsx) instead of a ring
+        // around the whole picker card.
+        pulseSel: '[data-ob-none]', tab: 'data',
         title: 'Items Section',
-        body: <>This is where you can <b>view and edit a picker's Items</b>. This includes each item's name, weight, and other values. Click on the Items header now to advance this tutorial.</>,
+        body: <>This is where you can <b>view and edit a picker's Items</b>. This includes each item's name, weight, and other values. Click on the Items' header now to expand it and continue.</>,
         primary: 'Next', back: true, requireClick: true,
       },
       // Same whole-picker sel as Steps 3-5, now with Items expanded (Step
@@ -373,9 +410,13 @@ const buildAppFeatureSteps = (featureId, actions) => {
       // own coachAtTop.
       {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])',
-        clickSel: '.data-list .rd-item > .rd-row', tab: 'data',
+        clickSel: '.data-list .rd-item > .rd-row',
+        // Same pulse suppression as Steps 2/3/5 above — each item's own
+        // header (.ob-tour-pulse, tab-data.jsx) pulses instead of a ring
+        // around the whole picker card.
+        pulseSel: '[data-ob-none]', tab: 'data',
         title: 'Picker Items',
-        body: <>This section contains <b>all of this picker's items</b>, as well as a form for adding new items (though this is disabled for this tutorial). Click any one of the items to advance this tutorial.</>,
+        body: <>This section contains <b>all of this picker's items</b>, as well as a form for adding new items (though this is disabled for this tutorial). Click on any of the items now to expand it and continue.</>,
         primary: 'Next', back: true, requireClick: true, coachAtTop: true,
       },
       // Same shape as Step 4 (Edit Picker Settings), mirrored for Items:
@@ -388,7 +429,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.data-list > .cat:has(.cat-h-l[aria-expanded="true"])', tab: 'data',
         title: 'Edit Item Settings',
-        body: <>Feel free to <b>explore this section and make any changes you'd like</b> to an item's name, weight, or other values. Go ahead and click Done when you are ready to finish this tutorial.</>,
+        body: <>Feel free to <b>explore this section and make any changes you'd like</b> to an item's name, weight, or other values. This concludes the Edit your first item tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
@@ -405,7 +446,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-section--daily', tab: 'settings',
         title: 'Daily Generator Settings',
-        body: <>This is where you can <b>control the daily generator</b>: turn auto generation on or off, what time it runs, and enabling notifications for when it does. Click Done when you are ready to finish this tutorial.</>,
+        body: <>This is where you can <b>control the daily generator</b>: turn auto generation on or off, what time it runs, and enabling notifications for when it does. This concludes the Adjust your daily generator run time tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
@@ -421,7 +462,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-subsection--systempref', tab: 'settings',
         title: 'System Preferences Toggle',
-        body: <>This lets Ease My Life <b>automatically switch between your light and dark theme</b> based on your device's own system setting. Click Next when you are ready to advance this tutorial.</>,
+        body: <>This lets Ease My Life <b>automatically switch between your light and dark theme</b> based on your device's own system setting.</>,
         primary: 'Next', back: true, coachAtTop: true,
       },
       // .set-subsection--theme-light — already its own modifier class in
@@ -429,13 +470,13 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-subsection--theme-light', tab: 'settings',
         title: 'Light Theme Settings',
-        body: <>This is where you can <b>pick a light based theme</b>, or create your own custom one. Click Next when you are ready to advance this tutorial.</>,
+        body: <>This is where you can <b>pick a light based theme</b>, or create your own custom one.</>,
         primary: 'Next', back: true, coachAtTop: true,
       },
       {
         sel: '.set-subsection--theme-dark', tab: 'settings',
         title: 'Dark Theme Settings',
-        body: <>This is where you can <b>pick a dark based theme</b>, or create your own custom one. Click Done when you are ready to finish this tutorial.</>,
+        body: <>This is where you can <b>pick a dark based theme</b>, or create your own custom one. This concludes the App Theme tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
@@ -447,7 +488,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-subsection--celebration', tab: 'settings',
         title: 'Completion Celebration',
-        body: <>This is where you can <b>pick which animation plays</b> whenever you complete your entire todo list for the day. Click Done when you are ready to finish this tutorial.</>,
+        body: <>This is where you can <b>pick which animation plays</b> whenever you complete your entire todo list for the day. This concludes the Celebration Animation tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
@@ -460,7 +501,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-subsection--pickanim', tab: 'settings',
         title: 'Picker Animation',
-        body: <>This is where you can <b>pick which animation plays</b> whenever you manually direct a picker to select an item on the Pickers page. Click Done when you are ready to finish this tutorial.</>,
+        body: <>This is where you can <b>pick which animation plays</b> whenever you manually direct a picker to select an item on the Pickers page. This concludes the Picker Animation tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
@@ -479,13 +520,13 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.help-btn', tab: 'today',
         title: 'Highlights Feature',
-        body: <>This is the highlight button that <b>can be found in the top right corner of every page</b>. Click this button now to advance the tutorial.</>,
+        body: <>The “i” button can be <b>found in the top right corner of every page</b>. Click the “i” button now to see how this works.</>,
         primary: 'Next', back: false, requireClick: true,
       },
       {
         sel: '.help-btn', tab: 'today',
         title: 'Highlights Feature',
-        body: <><b>Important elements on the page are highlighted</b>, each with their own button that will bring up a tooltip with more information. Click this button again to turn the feature off and finish this tutorial.</>,
+        body: <><b>Important elements on the page are highlighted, each with their own button</b> that will bring up a tooltip with more information. Click the “i” button again to turn the feature back off and conclude the Highlight Feature tutorial.</>,
         primary: 'Done', back: true, requireClick: true,
       },
     ];
@@ -494,13 +535,20 @@ const buildAppFeatureSteps = (featureId, actions) => {
     return [
       // .set-protect-btn — new modifier class on the "Protect data" Btn in
       // tab-settings.jsx (only rendered while !stor.persisted — same
-      // condition already gating the real button).
-      {
+      // condition already gating the real button). Omitted entirely when
+      // alreadyProtected (see AppFeatureTour's own effect that computes
+      // it) — a browser that already has persisted storage never renders
+      // this button at all, so this step's requireClick target would never
+      // resolve; without this the tour would sit on a phantom "Step 2 of 3"
+      // until the generic not-found timeout gave up and cancelled the
+      // whole tutorial. Skipping the step outright instead makes this a
+      // clean "Step n of 2".
+      ...(alreadyProtected ? [] : [{
         sel: '.set-protect-btn', tab: 'settings',
         title: 'Protect Your Data',
-        body: <>This button helps <b>protect your data from being cleared by your browser's own storage cleanup</b>. Click it now to advance this tutorial.</>,
+        body: <>The “Protect data” button helps <b>protect your data from being cleared by your browser's own storage clean up</b>. Click the “Protect data” button now to enable this.</>,
         primary: 'Next', back: true, requireClick: true, coachAtTop: true,
-      },
+      }]),
       // Comma-separated fallback (see findTargets' own comma-splitting in
       // onboarding-tour-runner.jsx) — .set-install-btn (new modifier class,
       // only rendered when canInstall) is tried first; if this browser
@@ -514,7 +562,7 @@ const buildAppFeatureSteps = (featureId, actions) => {
       {
         sel: '.set-install-btn, .set-store-ios', tab: 'settings',
         title: 'Install the App',
-        body: <>Installing the app to your device is <b>the best way to protect your data</b>, and gives you a more native, app-like experience. If a direct install isn't available in your browser, instructions for how to install it are shown here instead. Click Done when you are ready to finish this tutorial.</>,
+        body: <>Installing the app to your device is <b>the best way to protect your data</b>, and gives you a more native, app-like experience. If a direct install isn't available in your browser, instructions for how to install it are shown here instead. This concludes the Protect Your Data tutorial, click Done when you are ready.</>,
         primary: 'Done', back: true, coachAtTop: true,
       },
     ];
@@ -547,6 +595,20 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
   const ob = state.onboarding || {};
   const resumable = ob.activeTour && ob.activeTour.id === `appfeature-${featureId}` ? ob.activeTour : null;
   const [phase, setPhase] = React.useState(resumable ? 'tour' : 'intro');
+  // Whether THIS browser already has persisted storage, checked once up
+  // front (not reactively) — see buildAppFeatureSteps' own comment on why
+  // feat_protect_data's first step needs to know this. Frozen at whatever
+  // it resolves to on mount: a user who actually grants persistence mid-
+  // tour (by clicking the real button that step targets) shouldn't have
+  // the step list change shape out from under them the same run.
+  const [alreadyProtected, setAlreadyProtected] = React.useState(false);
+  React.useEffect(() => {
+    if (featureId !== 'feat_protect_data') return;
+    let alive = true;
+    Promise.resolve(navigator.storage && navigator.storage.persisted ? navigator.storage.persisted() : false)
+      .then((v) => { if (alive) setAlreadyProtected(v); });
+    return () => { alive = false; };
+  }, [featureId]);
 
   const closeTour = (status) => {
     actions.setAppFeatureItem(featureId, { status });
@@ -568,7 +630,7 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
     );
   }
 
-  const extraSteps = buildAppFeatureSteps(featureId, actions);
+  const extraSteps = buildAppFeatureSteps(featureId, actions, alreadyProtected);
   // "Edit your first item" wants a clean, all-collapsed Data page the
   // moment it lands there — any picker the user happened to leave expanded
   // from a previous visit would otherwise make Step 2's "click a header to
@@ -670,9 +732,32 @@ function AppFeatureTour({ featureId, state, actions, active, selectTab, onClose 
           const btn = document.querySelector('.data-list .rd-item > .rd-row[aria-expanded="true"]');
           if (btn) btn.click();
         }
+      } : featureId === 'feat_highlights' ? (to) => {
+        // Back from Step 2 (index 1) to Step 1 (index 0) — Step 1's own
+        // requireClick expects help mode currently off, but reaching Step 2
+        // in the first place required a real click that turned it on (see
+        // this tour's onSkip's own comment on why help mode can't be
+        // touched via a direct action call). Same real click undoes it here.
+        if (to === 0) {
+          const btn = document.querySelector('.help-btn.is-on');
+          if (btn) btn.click();
+        }
       } : undefined}
       onFinish={() => closeTour('finished')}
-      onSkip={() => closeTour('skipped')}
+      onSkip={() => {
+        // help mode's on/off flag is local React state inside TabToday
+        // (helpOn/setHelpOn), unreachable from here — only reachable via
+        // Step 2's own requireClick target (.help-btn), which is exactly
+        // how finishing normally turns it back off. Skipping mid-Step-2
+        // (the only step where a real click could have already turned it
+        // on) needs the same real click to leave help mode the way this
+        // tutorial found it.
+        if (featureId === 'feat_highlights') {
+          const btn = document.querySelector('.help-btn.is-on');
+          if (btn) btn.click();
+        }
+        closeTour('skipped');
+      }}
     />
   );
 }

@@ -16,27 +16,27 @@ import { emlTour } from './onboarding.jsx';
 const PAGE_TOUR_COPY = {
   explore_today: {
     title: 'Today Page',
-    body: 'This tutorial will take you on a quick tour of the Today page, in order to highlight important elements and functionality.',
+    body: <>This tutorial will take you on a quick tour of the Today page, in order to <b>highlight important elements and functionality</b>.</>,
     pills: ['page tour', 'today page', 'todo list'],
   },
   explore_pickers: {
     title: 'Pickers Page',
-    body: 'This tutorial will take you on a quick tour of the Pickers page, in order to highlight important elements and functionality.',
+    body: <>This tutorial will take you on a quick tour of the Pickers page, in order to <b>highlight important elements and functionality</b>.</>,
     pills: ['page tour', 'pickers page', 'new pickers'],
   },
   explore_stats: {
     title: 'Stats Page',
-    body: 'This tutorial will take you on a quick tour of the Stats page, in order to highlight important elements and functionality.',
+    body: <>This tutorial will take you on a quick tour of the Stats page, in order to <b>highlight important elements and functionality</b>.</>,
     pills: ['page tour', 'stats page', 'picker statistics'],
   },
   explore_data: {
     title: 'Data Page',
-    body: 'This tutorial will take you on a quick tour of the Data page, in order to highlight important elements and functionality.',
+    body: <>This tutorial will take you on a quick tour of the Data page, in order to <b>highlight important elements and functionality</b>.</>,
     pills: ['page tour', 'data page', 'edit pickers'],
   },
   explore_settings: {
     title: 'Settings Page',
-    body: 'This tutorial will take you on a quick tour of the Settings page, in order to highlight important elements and functionality.',
+    body: <>This tutorial will take you on a quick tour of the Settings page, in order to <b>highlight important elements and functionality</b>.</>,
     pills: ['page tour', 'settings page', 'app customization'],
   },
 };
@@ -53,12 +53,15 @@ const PAGE_TOUR_COPY = {
 // 'Next' (every page tour has more steps after this one) but is overridable
 // — App Features' own tours (onboarding-app-features.jsx) reuse this exact
 // step verbatim as their OWN Step 1, currently still their only step, so
-// theirs pass 'Done' instead.
-const buildPageTourStep1 = (page, run, primary = 'Next') => {
+// theirs pass 'Done' instead. `buttonLabel` names the actual nav button
+// ("Today", "Pickers", ...) in the closing sentence instead of the generic
+// "click it now" — optional and only passed where a caller has explicitly
+// asked for it, so other callers' wording is unaffected.
+const buildPageTourStep1 = (page, run, primary = 'Next', buttonLabel = null) => {
   const nav = OB_NAV_TARGETS[page];
   return {
     ...nav,
-    body: <>{nav.body} Go ahead and click it now.</>,
+    body: <>{nav.body} Go ahead and click {buttonLabel ? <>the "{buttonLabel}" page's button</> : 'it'} now.</>,
     tab: 'today',
     primary, back: false, requireClick: true,
     ...(run ? { run } : {}),
@@ -181,51 +184,77 @@ const PICKER_PAGE_TARGETS = {
   groupFilter: {
     sel: '.picker-groups .picker-group-pill',
     title: 'Group Filter',
-    body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
-  // Excludes the trailing "Add new picker" button — Step 4 (below) covers
-  // that on its own, and this step's own copy is entirely about selecting
-  // an EXISTING picker.
+  // Excludes the "Add new picker" button (now the first tab, not the last)
+  // — Step 3 (above) covers that on its own, and this step's own copy is
+  // entirely about selecting an EXISTING picker.
   pickerSelection: {
     sel: '.picker-tabs .picker-tab:not(.picker-tab--add)',
     title: 'Picker Selection',
-    body: <>This will allow you to <b>select a specific picker</b>, in order to initiate a manual picker generation down below as well as edit or delete its items. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will <b>allow you to select a specific picker</b>, in order to initiate a manual picker generation as well as edit or delete its items.</>,
   },
   createNewPickers: {
     sel: '.picker-tab--add',
     title: 'Create New Pickers',
-    body: <>This is where you can <b>create new pickers</b>. We will not include this as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished. Click Next when you are ready to move on.</>,
+    body: <>The "Add new picker" button will <b>open up a form that allows you to create new pickers</b>. We will not include this as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished.</>,
   },
-  // .picker-run is a purely structural wrapper (tab-picker.jsx) around
-  // .picker-stage + .picker-actions — added specifically so this step can
-  // highlight both as one combined box without also catching the header/
-  // pool above and below (the two aren't adjacent-enough on their own for
-  // a single selector, and findTargets' comma syntax means "fallback", not
-  // "union" — see its own comment in onboarding-tour-runner.jsx).
+  // Two-phase highlight, both via the same fallback `sel` (findTargets tries
+  // each comma-separated selector in turn and uses the first that matches —
+  // see its own comment in onboarding-tour-runner.jsx). Before the click,
+  // .pv-act--pick:not(.is-busy) matches the idle "Pick one" button, so the
+  // pulse (.ob-spot.is-pulsing) lands tight on the actual button instead of
+  // the whole window. The button alone doesn't disappear until the pick
+  // actually lands (phase flips to 'done'/'sent' — see tab-picker.jsx) —
+  // simply falling back once it's gone would leave the highlight pinned to
+  // a "Picking…" button for the whole multi-second spin instead of framing
+  // the window it's about to affect. .is-busy (added the instant the click
+  // fires, well before the spin finishes) excludes that first selector
+  // immediately on click, so the fallback to framing .picker-run kicks in
+  // right as the spin starts, not once it ends. clickSel keeps the
+  // requireClick guard scoped to the button specifically even once the
+  // fallback is in play, same reasoning as addToTodoList's own clickSel
+  // just below. pulseSel matches the exact same primary alternative as
+  // `sel` — there's nothing left to click once the highlight has widened to
+  // frame the window, so the pulse stops there too (see pulseSel's own doc
+  // comment in onboarding-tour-runner.jsx) rather than continuing to ping
+  // around a box the user can no longer act on.
   manualGeneration: {
-    sel: '.picker-run',
+    sel: '.pv-act--pick:not(.is-busy), .picker-run',
+    clickSel: '.pv-act--pick',
+    pulseSel: '.pv-act--pick:not(.is-busy)',
     title: 'Manual Generation',
-    body: <>This will allow to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the Pick one button now to see how this works.</>,
+    body: <>The "Pick one" button will <b>allow you to run a manual pick generation for your selected picker</b>, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick one" button now to see how this works.</>,
   },
-  // Highlights the whole stage+actions box (same as manualGeneration, one
-  // step back) rather than just the Send to Today button on its own, so the
-  // picker window stays visible/framed instead of the highlight shrinking
-  // down to a single button. Re-roll/Done render alongside it once phase is
-  // 'done'/'sent' but are disabled — see tourInterceptSend's own gating in
-  // tab-picker.jsx, which also drives their .is-tour-disabled look (a plain
-  // `disabled` attribute alone renders no differently here) — so clickSel
-  // narrows the click-guard/requireClick target down to Send to Today
-  // specifically; without it, a click landing anywhere else in this bigger
-  // box (the stage, or a disabled sibling button — pointer-events:none
-  // passes its click through to the container) would satisfy requireClick
-  // as if Send to Today itself had been clicked. tourInterceptSend also
-  // skips the real actions.addTodayEntry while this step is up, so the
-  // Sent! animation plays without actually landing an entry on Today.
+  // Same two-phase highlight as manualGeneration above: before the click,
+  // .pv-act--send:not(.is-sent) matches the real Send to Today button, so
+  // the pulse lands tight on it instead of the whole window. Clicking it
+  // flips phase to 'sent' SYNCHRONOUSLY (see sendToToday in tab-picker.jsx
+  // — unlike Pick one's spin, there's no separate busy/running phase to
+  // exclude), which adds .is-sent immediately, so the fallback to framing
+  // .picker-run kicks in right on click. That's deliberate, not just
+  // incidental: this step's own advanceDelay (see its call site below)
+  // holds the tour here for 1600ms after the click specifically so the
+  // "Sent!" label swap + stage checkmark can play out — the highlight
+  // needs to have already widened to frame that whole confirmation, not
+  // stay pinned to a single button mid-animation. Re-roll/Done render
+  // alongside Send to Today once phase is 'done'/'sent' but are disabled —
+  // see tourInterceptSend's own gating in tab-picker.jsx, which also drives
+  // their .is-tour-disabled look (a plain `disabled` attribute alone
+  // renders no differently here) — so clickSel narrows the click-guard/
+  // requireClick target down to Send to Today specifically; without it, a
+  // click landing anywhere else in the widened box (the stage, or a
+  // disabled sibling button — pointer-events:none passes its click through
+  // to the container) would satisfy requireClick as if Send to Today
+  // itself had been clicked. tourInterceptSend also skips the real
+  // actions.addTodayEntry while this step is up, so the Sent! animation
+  // plays without actually landing an entry on Today.
   addToTodoList: {
-    sel: '.picker-run',
+    sel: '.pv-act--send:not(.is-sent), .picker-run',
     clickSel: '.pv-act--send',
+    pulseSel: '.pv-act--send:not(.is-sent)',
     title: 'Add to Todo List',
-    body: <>This will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click this button now to give it a try.</>,
+    body: <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to see how this works.</>,
   },
   // Per-item Send to Today/Edit/Delete are disabled while this step is up
   // (tab-picker.jsx's own disablePoolItemButtons, gated on this exact
@@ -236,7 +265,7 @@ const PICKER_PAGE_TARGETS = {
   pickerItems: {
     sel: '.pool-items',
     title: 'Picker Items',
-    body: <>Here you can <b>view all items in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial, so click Next when you are ready to move on.</>,
+    body: <>Here you can <b>view all items in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial.</>,
   },
   // Disabled while this step is up (tab-picker.jsx's own
   // disableAddItemButton, same tourId+step gating pattern) — narrating
@@ -245,7 +274,7 @@ const PICKER_PAGE_TARGETS = {
   addPickerItem: {
     sel: '.pv-additem-btn',
     title: 'Add Picker Item',
-    body: <>This will allow you to <b>add new items to the selected picker's pool</b>. This button is disabled for this tutorial, so go ahead and click Done when you are ready to finish this tutorial.</>,
+    body: <>The "Add Item" button will <b>allow you to add new items to the selected picker's list of items</b>. This button is disabled for this tutorial. This concludes the Pickers page tutorial, click Done when you are ready.</>,
   },
 };
 
@@ -268,7 +297,7 @@ const STATS_PAGE_TARGETS = {
   groupFilter: {
     sel: '.stat-scope-groups .picker-group-pill',
     title: 'Group Filter',
-    body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
   // All/Conditionals/Reminders/individual pickers all render as tabs in the
   // same row — one combined step rather than splitting them out, since
@@ -276,7 +305,7 @@ const STATS_PAGE_TARGETS = {
   pickersFilter: {
     sel: '.stat-scope-tabs .picker-tab',
     title: 'Pickers Filter',
-    body: <>This will allow you to <b>narrow your selection to specific pickers or reminders</b>, or you can view everything all at once. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will allow you to <b>narrow your selection to specific pickers or reminders</b>, or you can view everything all at once.</>,
   },
   // The pills specifically, not their .stat-filter-pills--seg container —
   // that container stretches to the FULL width of its row (.stat-filter-row's
@@ -286,12 +315,12 @@ const STATS_PAGE_TARGETS = {
   rangeFilter: {
     sel: '.stat-filter-pills--seg .stat-pill',
     title: 'Range Filter',
-    body: <>This will allow you to further <b>narrow your selection by date range</b>, with ranges from 1 week to 1 year to all time. Feel free to select one now or click Next to advance to the next step.</>,
+    body: <>This will allow you to further <b>narrow your selection by date range</b>, with ranges from 1 week to 1 year to all time.</>,
   },
   heatmap: {
     sel: '.stat-heatmap-card',
     title: 'Activity Heatmap',
-    body: <>This visualizes your completed activity over time, with <b>each day shaded by how much you got done</b>. Click on any day for more details. Click Next when you are ready to advance to the next step.</>,
+    body: <>This visualizes your completed activity over time, with <b>each day shaded by how much you got done</b>. You can click on any day for more details. Click Next when you are ready to advance to the next step.</>,
   },
   // Only rendered once a specific picker is the active scope — the PREVIOUS
   // step's own run() (below) selects one before this step ever mounts, same
@@ -299,7 +328,7 @@ const STATS_PAGE_TARGETS = {
   pickerBreakdown: {
     sel: '.stat-breakdown-card',
     title: 'Picker Breakdown',
-    body: <>Once a specific picker is selected, its individual items are broken down here. You can <b>view things like pick count, pick frequency, last picked date</b> and others. This concludes the Stats page tutorial, click Done when you are ready to finish this tutorial.</>,
+    body: <>Once a specific picker is selected, its individual items are broken down here. You can <b>view things like pick count, pick frequency, last picked date</b> and others. This concludes the Stats page tutorial, click Done when you are ready.</>,
   },
 };
 
@@ -317,17 +346,17 @@ const DATA_PAGE_TARGETS = {
   groupFilter: {
     sel: '.stat-scope-groups .picker-group-pill',
     title: 'Group Filter',
-    body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers. These buttons are disabled for this tutorial, so click Next when you are ready to advance to the next step.</>,
+    body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
   pickersFilter: {
     sel: '.stat-scope-tabs .picker-tab',
     title: 'Pickers Filter',
-    body: <>This will allow you to <b>further narrow exactly what you want to view and edit</b>. These buttons are disabled for this tutorial, so click Next when you are ready to advance to the next step.</>,
+    body: <>This will allow you to <b>further narrow exactly what you want to view and edit</b>.</>,
   },
   remindersManager: {
     sel: '.cat--reminders',
     title: 'View and Edit Reminders',
-    body: <>This is where you can <b>view and edit all of your reminders, as well as create new ones</b>. Feel free to explore this section yourself or click Next when you are ready to advance to the next step.</>,
+    body: <>This is where you can <b>view and edit all of your reminders, as well as create new ones</b>. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
   },
   // Targets .data-list, not an individual .cat section — scope stays 'all'
   // for the whole Data tour (nothing narrows it to one picker anymore, see
@@ -336,7 +365,7 @@ const DATA_PAGE_TARGETS = {
   pickersManager: {
     sel: '.data-list',
     title: 'View and Edit Pickers',
-    body: <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. This concludes the Data page tutorial, click Done when you are ready to finish this tutorial.</>,
+    body: <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. This concludes the Data page tutorial, click Done when you are ready.</>,
   },
 };
 
@@ -375,7 +404,7 @@ const SETTINGS_PAGE_TARGETS = {
   legal: {
     sel: '.set-section--legal',
     title: 'Legal Information',
-    body: <>This is where you can <b>view the Privacy Policy and Terms of Service</b>. This concludes the Settings page tutorial, so go ahead and click Done when you are ready to finish this tutorial.</>,
+    body: <>This is where you can <b>view the Privacy Policy and Terms of Service</b>. This concludes the Settings page tutorial, click Done when you are ready.</>,
   },
 };
 
@@ -406,7 +435,7 @@ const TODAY_PAGE_TARGETS = {
     // this scoping is a no-op difference there — same highlight either way.
     sel: '.group-rail ul',
     title: 'List Navigation',
-    body: <>This is the todo list’s navigation, allowing you to <b>jump directly to a group’s section</b>. Over time your list can grow quite long and this helps to eliminate any long scrolling.</>,
+    body: <>This is the todo list’s navigation, <b>allowing you to jump directly to a group’s section</b>. Over time your list can grow quite long and this helps to quickly move between the different sections of your todo list.</>,
   },
   // .em-rail-btn (sidebar, desktop) / .foot-editmode (footer, mobile) both
   // exist in the DOM at every width — a container query just toggles which
@@ -419,7 +448,7 @@ const TODAY_PAGE_TARGETS = {
   editMode: {
     sel: '.em-rail-btn, .foot-editmode',
     title: 'Edit Mode',
-    body: <>This will allow you to both <b>rearrange the positions of the groups and items, as well as rename the groups</b>. Go ahead and click it now.</>,
+    body: <>The "Edit Mode" button will allow you to both <b>rearrange the positions of the groups and items, as well as rename the groups</b>. Go ahead and click the "Edit Mode" button now.</>,
   },
   // Scoped to the Reminders section specifically (.rem-section, its own
   // distinguishing class — every OTHER group section shares plain
@@ -429,7 +458,7 @@ const TODAY_PAGE_TARGETS = {
   groupGrip: {
     sel: '.rem-section .group-grip',
     title: 'Movable Icon',
-    body: <>This will allow to <b>move an entire group section to a different position in the todo list</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now or click Next if you are ready to move on.</>,
+    body: <>This will <b>allow you to move an entire group section to a different position in the todo list or move item positions within a group’s section</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now. Click Next when you are ready to move on.</>,
   },
   // Reminders has no rename feature (its own header is a plain, non-
   // editable <h2> — see reminders.jsx), so this targets Page Tours instead:
@@ -442,7 +471,7 @@ const TODAY_PAGE_TARGETS = {
   renameGroup: {
     sel: '.pt-section .group-name-input',
     title: 'Rename Group',
-    body: <>This will allow you to <b>change a group’s name</b>. You can go ahead and try it yourself, but once you exit this tutorial the changes will be reverted. You can still change them afterwards if you’d like. This concludes the Today page tutorial, click Done when you are ready.</>,
+    body: <>This will <b>allow you to change a group’s name</b>. You can go ahead and try it yourself, but once you exit this tutorial the changes will be reverted. This concludes the Today page tutorial, click Done when you are ready.</>,
   },
 };
 
@@ -512,20 +541,9 @@ const buildPageTourSteps = (pageId, actions) => {
     return [
       { ...PICKER_PAGE_TARGETS.groupFilter, tab: 'picker', primary: 'Next', back: true },
       {
-        ...PICKER_PAGE_TARGETS.pickerSelection, tab: 'picker', primary: 'Next', back: true,
-        // Stages Step 4's own target: .picker-tabs scrolls horizontally
-        // (the engine's own bring()/getScroller only ever handle VERTICAL
-        // scrolling, so the Add button — last in the row — needs its own
-        // reveal here), same "prepare what the NEXT step needs" timing used
-        // elsewhere in this file. Already-in-view is a harmless no-op.
-        run: () => {
-          const btn = document.querySelector('.picker-tab--add');
-          if (btn) btn.scrollIntoView({ inline: 'end', block: 'nearest' });
-        },
-      },
-      {
         ...PICKER_PAGE_TARGETS.createNewPickers, tab: 'picker', primary: 'Next', back: true,
       },
+      { ...PICKER_PAGE_TARGETS.pickerSelection, tab: 'picker', primary: 'Next', back: true },
       {
         ...PICKER_PAGE_TARGETS.manualGeneration, tab: 'picker', primary: 'Next', back: true, requireClick: true,
         // .picker-run (stage + actions) can run taller than a short viewport
@@ -775,7 +793,9 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
           pageId === 'explore_data' ? () => { seedPageTourPickers(state, actions); seedPageTourTasks(state, actions); } :
           usesSampleCopies(pageId) ? () => seedPageTourPickers(state, actions) :
           pageId === 'explore_stats' ? () => unhideSampleHistory(state, actions) :
-          undefined),
+          undefined,
+          'Next',
+          tour.label),
         ...buildPageTourSteps(pageId, actions),
       ]}
       resumeStep={resumable ? resumable.step : 0}
@@ -793,33 +813,53 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
       // Cancel (.btn--ghost) is the equivalent control there.
       onGoBack={(to) => {
         if (pageId === 'explore_pickers') {
-          // Back from Step 4 (Create New Pickers) to Step 3 (Picker
-          // Selection) — undoes Step 3's own run(), which scrolled
-          // .picker-tabs horizontally to reveal the Add button. Left
-          // scrolled, Step 3's own target (every OTHER tab in the row,
-          // excluding Add) could include tabs now scrolled out of view on
-          // the opposite side, stretching its highlight across the gap.
+          // Back from Step 4 (Picker Selection) to Step 3 (Create New
+          // Pickers) — undoes Step 4's own scroll-into-view (its target is
+          // every OTHER tab in the row, excluding Add, which can scroll
+          // .picker-tabs rightward if there are enough pickers to overflow
+          // the row). Left scrolled, Step 3's own single target (the Add
+          // button, the FIRST tab in the row) would be scrolled out of view.
           if (to === 2) {
             const row = document.querySelector('.picker-tabs');
             if (row) row.scrollTo({ left: 0 });
+          } else if (to === 3) {
+            // Back from Step 5 (Manual Generation) to Step 4 (Picker
+            // Selection) — if a pick is still spinning (busy/phase 'running')
+            // when Back is clicked, PickerView never unmounts between
+            // steps, so that animation just keeps running in the
+            // background regardless of which step the tour is on, and its
+            // eventual onAnimDone still lands phase on 'done' whenever it
+            // finishes — showing Send to Today/Re-roll/Done on Step 5 if
+            // Next brings the user back to it before that settles on its
+            // own. Same reset nonce Step 6→5's own case below uses, fired
+            // here on the way OUT of Step 5 instead: PickerStrip only
+            // renders while phase is 'running'/'done' (see PickerView's own
+            // picker-stage JSX), so bumping this unmounts it immediately —
+            // actually cancelling the in-flight animation outright, not
+            // just leaving it to finish on its own and clean up after.
+            // Harmless no-op if the pick had already settled by the time
+            // Back was clicked.
+            emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
           } else if (to === 4) {
             // Back from Step 6 (Add to Todo List) to Step 5 (Manual
             // Generation) — a pick already ran, so PickerView's own local
             // phase is still 'done'/'sent', showing Send to Today/Re-roll/
-            // Done instead of Pick one. Step 5's own requireClick target is
-            // .picker-run (the whole stage + actions box, not just the Pick
-            // one button specifically — see its own comment), so those
-            // buttons being there at all means the user can trigger them
-            // from a step that was never written to expect it: Re-roll
-            // silently re-runs the pick behind the scenes (advanceWhen just
-            // waits for it, reading as a multi-second hang) and Done clears
-            // the result with no re-run, so advanceWhen's poll never finds
-            // its target again and the tour sits stuck forever. Resetting
-            // PickerView back to its own idle state — via a bus nonce, since
-            // phase/result are local state this module has no other way to
-            // reach — means only Pick one ever shows here, matching what
-            // this step actually expects and forecloses both failure modes
-            // by construction instead of specifically patching either one.
+            // Done instead of Pick one. Step 5's own sel falls back to
+            // .picker-run only once .pv-act--pick is gone (see
+            // manualGeneration's own comment), which a leftover 'done'/
+            // 'sent' phase satisfies just as well as a genuine spin in
+            // progress would — so without this, those buttons being there
+            // at all means the user can trigger them from a step that was
+            // never written to expect it: Re-roll silently re-runs the pick
+            // behind the scenes (advanceWhen just waits for it, reading as
+            // a multi-second hang) and Done clears the result with no
+            // re-run, so advanceWhen's poll never finds its target again
+            // and the tour sits stuck forever. Resetting PickerView back to
+            // its own idle state — via a bus nonce, since phase/result are
+            // local state this module has no other way to reach — means
+            // only Pick one ever shows here, matching what this step
+            // actually expects and forecloses both failure modes by
+            // construction instead of specifically patching either one.
             emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
           } else if (to === 5) {
             // Back from Step 7 (Picker Items) to Step 6 (Add to Todo List)

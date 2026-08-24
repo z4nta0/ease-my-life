@@ -4,7 +4,7 @@ import { emlTour } from './eml-tour-bus.js';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { OB_REMINDER_CARD_TEXT, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { TASKS } from './tasks.js';
-import { Btn, Collapse, Icon, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { Btn, Collapse, Icon, InfoTip, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
 
 // Reminders UI — shared components for manual, statically-scheduled tasks.
 // Rendered in two places:
@@ -142,7 +142,7 @@ function RemVisibilityNote({ task, state, kind, id }) {
   if (never) {
     const why = <>Reminders items are currently set to <strong>not show on {remReasonPhrase(v) || 'weekends'}</strong></>;
     return (
-      <p className="rem-vis-note is-never" id={id}>
+      <p className="rem-vis-note is-never">
         <strong>WARNING:</strong> Because of the values that you are using and because {why}, this
         item will <strong>never</strong> show in the Today list.
       </p>
@@ -161,18 +161,21 @@ function RemVisibilityNote({ task, state, kind, id }) {
     body = <>Because of the values that you are using, this item will not show up in the list today.</>;
   }
   return (
-    <p className="rem-vis-note" id={id}>
+    <p className="rem-vis-note">
       {body}{when ? <> It will next appear on <strong>{when}</strong>.</> : null}
     </p>
   );
   })();
-  // Live region, mounted even when there is nothing to say. These notes appear
-  // and change as a direct result of the user editing a schedule control, and a
-  // region that mounts together WITH its text is announced unreliably — a
-  // stable, already-present one is not. Assertive only for the dead-config
-  // "never shows" case; a deferral is advisory and shouldn't interrupt typing.
+  // Live region, mounted even when there is nothing to say (id lives here, not
+  // on the <p> above, so aria-describedby references from the controls above
+  // always resolve to a real element — even when there's no note to show).
+  // These notes appear and change as a direct result of the user editing a
+  // schedule control, and a region that mounts together WITH its text is
+  // announced unreliably — a stable, already-present one is not. Assertive
+  // only for the dead-config "never shows" case; a deferral is advisory and
+  // shouldn't interrupt typing.
   return (
-    <div className="rem-vis-live" role="status" aria-live={never ? 'assertive' : 'polite'}>{note}</div>
+    <div className="rem-vis-live" id={id} role="status" aria-live={never ? 'assertive' : 'polite'}>{note}</div>
   );
 }
 
@@ -227,13 +230,13 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
       {rep === 'interval' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <label className="rem-flabel">Frequency</label>
+            <span className="rem-flabel">Frequency</span>
             <span className="rem-flabel-sub">shows on the Today tab <strong>every {task.interval || 1} days</strong></span>
           </div>
           <div className="rem-inline">
             <span>Every</span>
             <input className="np-input rem-num" type="number" min="1" max="365"
-                   aria-describedby={schedNoteId}
+                   aria-label="Interval in days" aria-describedby={schedNoteId}
                    value={task.interval || 1}
                    onChange={(e) => set({ interval: Math.max(1, parseInt(e.target.value) || 1) })} />
             <span>days</span>
@@ -260,12 +263,12 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
       {rep === 'monthly' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <label className="rem-flabel">Day of the month</label>
+            <span className="rem-flabel">Day of the month</span>
             <span className="rem-flabel-sub">shows on the Today tab <strong>every {ordinalLabel(task.dayOfMonth || 1)} of the month</strong></span>
           </div>
           <div className="rem-inline">
             <span>On the</span>
-            <select className="np-input rem-sel" aria-describedby={schedNoteId} value={task.dayOfMonth || 1}
+            <select className="np-input rem-sel" aria-label="Day of the month" aria-describedby={schedNoteId} value={task.dayOfMonth || 1}
                     onChange={(e) => set({ dayOfMonth: parseInt(e.target.value) })}>
               {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
                 <option key={d} value={d}>{ordinalLabel(d)}</option>
@@ -308,7 +311,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
     <div className="rem-editor">
       <div className="rem-field">
         <div className="rem-flabel-wrap">
-          <label className="rem-flabel">Repeat</label>
+          <span className="rem-flabel">Repeat</span>
           <span className="rem-flabel-sub set-sub-fade" key={task.repeat}>{(REPEAT_OPTS.find((o) => o.key === task.repeat) || {}).sub}</span>
         </div>
         <Segmented options={REPEAT_OPTS} value={task.repeat}
@@ -531,6 +534,23 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   // than sticking around with an "Undo" toggle — there's no closing
   // Generate card left to synchronize a batch disappearance against.
   const checklistDone = !!(state.onboarding && state.onboarding.checklistDone);
+  // Disabled anywhere from the Welcome Tour's first step through the closing
+  // Generate card's flow completing — see OB_CHECKLIST.tutorialsInProgress
+  // for why this can't just be "requireClick steps only" (most Welcome Tour
+  // steps, including the "Daily todo list" review step, don't dim/click-guard
+  // the rest of the page at all, per onboarding-tour-runner.jsx's header
+  // comment, which used to leave this button fully clickable mid-tour).
+  // Exempted while a Reminder mini-tour itself is running (activeTour.id
+  // 'reminder-once'/'reminder-recurring', see onboarding-reminder-tours.jsx)
+  // — that tour's own Step 1 wants the user to click this exact real button
+  // themselves, not a simulated click (see startAdd's own comment on
+  // bus.prefill below). Exempted for the tour's whole run rather than just
+  // that one step: later steps' own requireClick targets are elsewhere (the
+  // draft form), so the click-guard already keeps a stray click on this
+  // button from doing anything by then anyway.
+  const activeTourId = state.onboarding && state.onboarding.activeTour && state.onboarding.activeTour.id;
+  const reminderTourActive = typeof activeTourId === 'string' && activeTourId.startsWith('reminder-');
+  const tutorialsInProgress = OB_CHECKLIST.tutorialsInProgress(state) && !reminderTourActive;
   const tutorialTasks = (state.tasks || []).filter((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id)
     && !(checklistDone && OB_CHECKLIST.entryFor(state, t.id))
     && (!checklistDone || !(state.tasks || []).some((x) => !OB_SAMPLE_TASK_IDS.includes(x.id) && x.name === t.name)));
@@ -703,10 +723,17 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
           {!editMode && onToggleLog && <DayLogChip open={logOpen} onClick={onToggleLog} />}
         </div>
         {!editMode && (
-          <button className="rem-add-btn" onClick={() => { adding ? cancelAdd() : startAdd(); }}
-                  aria-label="Add a reminder" title="Add a reminder">
-            <Icon name="plus" size={16} />
-          </button>
+          tutorialsInProgress ? (
+            <InfoTip className="rem-add-btn is-tour-disabled" action="Add a reminder"
+                     label="This button is disabled until all tutorials are completed.">
+              <Icon name="plus" size={16} />
+            </InfoTip>
+          ) : (
+            <button className="rem-add-btn" onClick={() => { adding ? cancelAdd() : startAdd(); }}
+                    aria-label="Add a reminder" title="Add a reminder">
+              <Icon name="plus" size={16} />
+            </button>
+          )
         )}
       </header>
 
@@ -913,6 +940,10 @@ function ReminderManager({ state, actions, hidden }) {
   const collapsedMap = (state.ui && state.ui.controlsCollapsed) || {};
   const ctlCollapsed = !!collapsedMap['__reminders'];
   const itemsCollapsed = !!collapsedMap['__reminders:items'];
+  // Same reasoning as ReminderSection's own rem-add-btn above (see
+  // OB_CHECKLIST.tutorialsInProgress) — this is a second, independent path
+  // to a real reminder, reachable from the Data page's own manager.
+  const tutorialsInProgress = OB_CHECKLIST.tutorialsInProgress(state);
 
   const addAndEdit = () => {
     if (justAddedRef.current) return;   // guard: ignore rapid double-click
@@ -964,9 +995,16 @@ function ReminderManager({ state, actions, hidden }) {
           </button>
           <Collapse open={!itemsCollapsed}>
             <React.Fragment>
-              <button className="rd-add" onClick={addAndEdit}>
-                <Icon name="plus" size={13} /> New reminder
-              </button>
+              {tutorialsInProgress ? (
+                <InfoTip className="rd-add is-tour-disabled" action="New reminder"
+                         label="This button is disabled until all tutorials are completed.">
+                  <Icon name="plus" size={13} /> New reminder
+                </InfoTip>
+              ) : (
+                <button className="rd-add" onClick={addAndEdit}>
+                  <Icon name="plus" size={13} /> New reminder
+                </button>
+              )}
               {tasks.length === 0 ? (
                 <div className="rd-empty">No reminders yet. Add one to see it on Today.</div>
               ) : (

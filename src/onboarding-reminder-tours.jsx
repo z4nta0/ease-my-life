@@ -13,14 +13,14 @@ import { OB_TASKS } from './onboarding-seed-data.js';
 // variant, matching the two sample reminders seeded by the Welcome Tour
 // (onboarding-seed-data.js's OB_TASKS: tk_ob_meds is the one-time sample,
 // tk_ob_trash the recurring one).
-const REMINDER_TOUR_BODY_1 = 'Reminders can be thought of as what a normal task would be in a typical todo list app, since not all tasks can be randomly selected. Taking out the trash for pickup, as an example, since this must be done on a set day every week.';
+const REMINDER_TOUR_BODY_1 = <>Reminders can be thought of as <b>what a normal task would be in a typical todo list app</b>, since not all tasks can be randomly selected. Taking out the trash for pickup, as an example, since this must be done on a set day every week.</>;
 
 const REMINDER_TOUR_COPY = {
   once: {
     taskId: 'tk_ob_meds',
     icon: 'pin',
     title: 'One-Time Reminders',
-    body2: 'One-time reminders are simple one off things that need to get done. e.g. pickup precription or pickup dry cleaning. Let’s create one of these now.',
+    body2: 'One-time reminders are simple one off things that need to get done and will never show up again once they are marked as completed in your todo list. e.g. pickup precription or pickup dry cleaning. Let’s create one of these now.',
   },
   recurring: {
     taskId: 'tk_ob_trash',
@@ -47,8 +47,8 @@ const buildReminderTourStep1 = (variant, state) => {
   const copy = REMINDER_TOUR_COPY[variant];
   return {
     sel: '.rem-add-btn', tab: 'today',
-    title: 'Create Reminder item',
-    body: <>This button is always present on the Today page. It will <b>open the interface</b> for creating a Reminder. Go ahead and click it now.</>,
+    title: 'Create a Reminder',
+    body: <>The "+" button is always present on the Today page and will <b>open the interface for creating a Reminder</b>. Go ahead and click the "+" button now.</>,
     primary: 'Next', back: false, requireClick: true,
     run: () => {
       // Read off the LIVE sample task, not the static OB_TASKS template —
@@ -146,10 +146,10 @@ const buildReminderTourStep4 = (repeat) => {
 // recurring variant gets one extra sentence about the recurrence date.
 const buildReminderTourAddStep = (variant) => ({
   sel: '.rem-quickadd-wrap .btn--primary', tab: 'today',
-  title: 'Add Reminder item',
+  title: 'Add your new Reminder',
   body: variant === 'recurring'
-    ? <>We’re all done creating this reminder item. Go ahead and click this button now to <b>add it to your todo list</b>. NOTE: if you selected a day other than today as the recurrence date, then this item will not show up in your todo list until it is due.</>
-    : <>We’re all done creating this reminder item. Go ahead and click this button now to <b>add it to your todo list</b>.</>,
+    ? <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>. NOTE: if you selected a day other than today as the recurrence date, then this item will not show up in your todo list until it is due.</>
+    : <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>.</>,
   primary: 'Done', back: true, requireClick: true, resumable: false,
 });
 

@@ -25,7 +25,7 @@ const PICKER_SAMPLES = Object.fromEntries(
 // paragraph — only the title (the picker's own name) and the second
 // paragraph differ per picker. Keyed by the sample picker id (see
 // onboarding-seed-data.js's OB_EXAMPLE/OB_EXTRA_PICKERS).
-const PICKER_TOUR_BODY_1 = 'Pickers are where the magic happens. They have rules for when and how they should pick from its pool of items. There are 5 basic types of pickers: Truly Random, Weighted, Dynamic Weighted, Ease-up and Ease-down. Don’t worry too much about the details right now, as you start to use the app it will become more clear.';
+const PICKER_TOUR_BODY_1 = 'Pickers are where the magic happens. They have rules for when and how they should pick from its list of items. There are 5 basic types of pickers: Truly Random, Weighted, Dynamic Weighted, Ease-up and Ease-down. Don’t worry too much about the details right now, as you start to use the app it will become more clear.';
 
 // itemPrefill is the name Step 7's run() stages for the tour's own added
 // item (see buildPickerTourStep7) — a new item distinct from anything
@@ -35,63 +35,62 @@ const PICKER_TOUR_BODY_1 = 'Pickers are where the magic happens. They have rules
 // gets its own dedicated pass.
 const PICKER_TOUR_COPY = {
   pkr_ob_daily: {
-    body2: 'This tutorial will guide you through creating a Daily Chores picker. This type of picker is an Ease-up and is perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 week. e.g. once it picks "Do the laundry", you don’t want that task picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.',
+    body2: <>This tutorial will guide you through creating a Daily Chores picker. This type of picker is an Ease-up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Do the laundry", you don’t want that task picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>,
     itemPrefill: 'Mop the floors',
   },
   pkr_ob_monthly: {
-    body2: 'This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease-up and is perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 month. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least 1 month but also no later than 2 months. Let’s create one of these now.',
+    body2: <>This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease-up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 month</b>. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least 1 month but also no later than 2 months. Let’s create one of these now.</>,
     itemPrefill: 'Wash the windows',
     // Overrides the generic 7/14-day DEFAULT_EASE (tab-picker.jsx) for just
     // this tour's own added item — a monthly-cadence picker's own sample
-    // item should look the part instead of a daily/weekly one. See Step 9's
-    // own step9Tail override below for the matching copy change.
+    // item should look the part instead of a daily/weekly one.
     itemSoonest: 31,
     itemLatest: 62,
-    step9Body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most monthly chores do not usually need to be done again for at least a month or so.</>,
+    step9Body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>,
   },
   pkr_ob_coffee: {
-    body2: 'This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is perfect for randomly choosing something, while also making sure that every item is eventually picked and for prioritizing certain items over others. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.',
+    body2: <>This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is <b>perfect for randomly choosing something, while also making sure that every item is eventually picked and for prioritizing certain items over others</b>. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.</>,
     itemPrefill: 'Peppermint Mocha',
   },
   pkr_ob_dinner: {
-    body2: 'This tutorial will guide you through creating a Dinner picker. This type of picker is an Ease-up and is perfect for something like meals where you don’t want an item to be picked twice within, say, 1 week. e.g. once it picks "Spaghetti and meatballs", you don’t want that meal picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.',
+    body2: <>This tutorial will guide you through creating a Dinner picker. This type of picker is an Ease-up and is <b>perfect for something like meals where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Spaghetti and meatballs", you don’t want that meal picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>,
     itemPrefill: 'Grilled salmon',
     step8Body: <>This is the name of the meal item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-    step9Body: <>This controls the <b>minimum number of days that a meal item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same meal to be chosen again for at least a week or so.</>,
+    step9Body: <>This controls the <b>minimum number of days that a meal item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same meal to be chosen again within a certain timeframe.</>,
     step10Body: <>This controls the <b>maximum number of days that a meal item must wait before it should be picked again</b>. This is also useful since you usually want a meal to be picked again within a certain timeframe.</>,
   },
   pkr_ob_workouts: {
-    body2: 'This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease-up and is perfect for something like workouts where you don’t want a workout item to be picked twice within, say, a few days. e.g. once it picks "Chest", you don’t want that workout item picked again for at least 5 days but also no later than a week. Let’s create one of these now.',
+    body2: <>This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease-up and is <b>perfect for something like workouts where you don’t want the same workout to be picked twice within, say, a few days</b>. e.g. once it picks "Chest", you don’t want that workout item picked again for at least 5 days but also no later than a week. Let’s create one of these now.</>,
     itemPrefill: 'Cardio',
     itemSoonest: 3,
     itemLatest: 6,
     step8Body: <>This is the name of the workout item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-    step9Body: <>This controls the <b>minimum number of days that a workout item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same workout to be chosen again for at least a few days or so.</>,
+    step9Body: <>This controls the <b>minimum number of days that a workout item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same workout to be chosen again within a certain timeframe.</>,
     step10Body: <>This controls the <b>maximum number of days that a workout item must wait before it should be picked again</b>. This is also useful since you usually want a workout to be picked again within a certain timeframe.</>,
   },
   pkr_ob_relax: {
-    body2: 'This tutorial will guide you through creating a Relax picker. This type of picker is an Ease-down and is perfect for activities you want to stick with for a few days at a time instead of changing every day. e.g. once it picks "Read a book", that activity will stay as the picked item for at least 5 days but no more than a week before a new activity is chosen. Let’s create one of these now.',
+    body2: <>This tutorial will guide you through creating a Relax picker. This type of picker is an Ease-down and is <b>perfect for activities you want to stick with for a few days at a time instead of changing every day</b>. e.g. once it picks "Read a book", that activity will stay as the picked item for at least 5 days but no more than a week before a new activity is chosen. Let’s create one of these now.</>,
     itemPrefill: 'Take a nap',
     itemSoonest: 3,
     itemLatest: 5,
     step8Body: <>This is the name of the activity item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-    step9Body: <>This controls the <b>minimum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is useful since most activities you want to stick with for a few days at a time instead of changing every day.</>,
+    step9Body: <>This controls the <b>minimum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is useful since most activities you want to stick with for a certain timeframe instead of changing every day.</>,
     step10Body: <>This controls the <b>maximum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is also useful since most activities you don’t want to stay picked past a certain timeframe.</>,
   },
 };
 
 // Step 1 is identical for every picker tutorial — just the Pickers nav
 // button itself, requireClick so Next stays disabled and the user has to
-// actually click the real icon to advance. Deliberately NOT the Welcome
-// Tour's OB_NAV_TARGETS.picker content (which describes the page you've
-// already arrived at) — the point here is teaching icon-only nav on mobile,
-// so the copy has to instruct the click, and the step has to stay on Today
-// (tab: 'today') rather than pre-navigating, so there's something left for
-// the user's own click to do.
+// actually click the real icon to advance. Body copy is kept in sync with
+// the Pickers page tour's own Step 1 (OB_NAV_TARGETS.picker + its
+// buildPageTourStep1 suffix) by explicit request — the step still has to
+// stay on Today (tab: 'today') rather than pre-navigating, so there's
+// something left for the user's own click to do; only the copy is shared,
+// not the step object.
 const PICKER_TOUR_STEP_1 = {
   sel: '[data-tab="picker"]', tab: 'today',
-  title: 'The Pickers page',
-  body: <>Pickers are the <b>heart of the app</b> and this is where you can create new pickers and their items. You can also manually run any picker to generate a task. Go ahead and click it now.</>,
+  title: 'The Pickers Page',
+  body: <>The Pickers page is <b>where you can create new pickers</b> and can be found using the shuffle icon indicated here. You can also <b>manually run any picker, as well as send a specific item to your todo list</b>, from the Pickers page. Go ahead and click the "Pickers" page's button now.</>,
   primary: 'Next', back: false, requireClick: true,
 };
 
@@ -104,19 +103,15 @@ const PICKER_TOUR_STEP_1 = {
 // on PickerTour below for why this specific ordering matters.
 const buildPickerTourStep2 = (pickerId, state) => ({
   sel: '.picker-tab--add', tab: 'picker', scrollToTop: true,
-  // The tab strip only ever has one or two real tabs during first-time
-  // onboarding (each picker's own sample stays hidden until its own mini-
-  // tour finishes), so "+Add" was always already in view there. Replaying
-  // this tour, though, every REAL picker from a prior completion (this
-  // tour's own, or an earlier one's) is already a real, visible tab — by
-  // the 4th/5th/6th one, the strip overflows and "+Add" sits off the end,
-  // fully obscured, with no horizontal-scroll handling anywhere to reveal
-  // it (bring()'s own vertical-only scroll math left it wherever it
-  // happened to sit) — a genuinely broken step, nothing left to click.
-  // See revealHorizontally's own doc comment in onboarding-tour-runner.jsx.
-  revealHorizontally: true,
+  // "+Add" is the FIRST tab in the strip (tab-picker.jsx), not the last —
+  // no revealHorizontally needed here. It used to sit last, which broke a
+  // Replay Tour once enough real pickers accumulated to push it off the
+  // scrollable end with no horizontal-scroll handling anywhere to reveal it
+  // (bring()'s own scroll math is vertical-only); moving it to the front of
+  // the strip (users had trouble finding it there at all) fixed that same
+  // problem for real usage too, not just this tour.
   title: 'Create a new picker',
-  body: <>This button will <b>open up the form</b> for creating a new picker. Go ahead and click it now.</>,
+  body: <>The "Add new picker" button will <b>open up the form for creating a new picker</b>. Go ahead and click the "Add new picker" button now.</>,
   primary: 'Next', back: true, requireClick: true,
   // suppressAutoOpen: tab-picker.jsx's dormant effect (`if (tour.prefill &&
   // !creating)`) is meant to stay silent for this tour — see the long
@@ -158,7 +153,7 @@ const buildPickerTourStep2 = (pickerId, state) => ({
 const PICKER_TOUR_STEP_3 = {
   sel: '.np-fields .np-field:first-child', tab: 'picker',
   title: 'Give it a name',
-  body: <>This is the <b>name of the picker</b> and should be descriptive of the types of tasks contained in its pool of items. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
+  body: <>This is the <b>name of the picker</b> and should be descriptive of the types of items contained in its list of items. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
   primary: 'Next', back: true, resumable: false,
 };
 
@@ -189,7 +184,7 @@ const PICKER_TOUR_STEP_4 = {
 const buildPickerTourStep5 = (pickerId) => ({
   sel: `.np-fields .mode-opt[data-mode="${PICKER_SAMPLES[pickerId].mode}"]`, tab: 'picker',
   title: 'Select a picker type',
-  body: <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you, so you can go ahead and click Next whenever you are ready.</>,
+  body: <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you. Click next when you are ready to move on.</>,
   primary: 'Next', back: true, resumable: false, coachAtTop: true,
 });
 
@@ -205,7 +200,7 @@ const buildPickerTourStep5 = (pickerId) => ({
 const PICKER_TOUR_STEP_6 = {
   sel: '.ob-picker-next', tab: 'picker', scrollToBottom: true,
   title: 'Add items to this picker',
-  body: <>The picker options are all done, you just need to <b>add some task items for the picker to choose from</b>. Go ahead and click this button now.</>,
+  body: <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click the "Add items" button now.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
   // The click this run() accompanies swaps the form from Details to its own
   // (much shorter) Items sub-step IN PLACE, within the same scrollable
@@ -243,8 +238,8 @@ const PICKER_TOUR_STEP_6 = {
 // generic "New item" / 7-14 day defaults.
 const buildPickerTourStep7 = (pickerId) => ({
   sel: '.pv-additem-btn', tab: 'picker',
-  title: 'Add a task to the picker’s pool',
-  body: <>Pickers need a <b>pool of tasks to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click this button now.</>,
+  title: 'Add an item to the picker’s list',
+  body: <>Pickers need a <b>list of items to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click the "Add item" button now to add a new item to this picker's list of items.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
   run: () => {
     const copy = PICKER_TOUR_COPY[pickerId];
@@ -264,7 +259,7 @@ const buildPickerTourStep7 = (pickerId) => ({
 // "meal item" wording). Kept as named constants rather than inlined so the
 // per-picker fallback (`copy.stepNBody || DEFAULT_STEPN_BODY`) reads clearly.
 const DEFAULT_STEP8_BODY = <>This is the name of the task item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>;
-const DEFAULT_STEP9_BODY = <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again for at least a week or so.</>;
+const DEFAULT_STEP9_BODY = <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>;
 const DEFAULT_STEP10_BODY = <>This controls the <b>maximum number of days that a task item must wait before it should be picked again</b>. This is also useful since most chores need to be done again within a certain timeframe.</>;
 
 // Highlights the item name input inside the inline editor Step 7's click
@@ -335,7 +330,7 @@ const PICKER_TOUR_STEP_WEIGHT = {
 const PICKER_TOUR_STEP_BOOST = {
   sel: '.pv-additem-wrap .pie-row:nth-child(2)', tab: 'picker',
   title: 'Boost value',
-  body: <>This is the <b>crucial piece of a Dynamic Weighted picker</b>. Every time an item does not get picked this value will increase, making it more and more likely to be picked. Then when it does get picked this value will reset, making it much less likely to be picked. Nothing to adjust here, click Next whenever you are ready.</>,
+  body: <>This is the <b>crucial piece of a Dynamic Weighted picker</b>. Every time an item does not get picked this value will increase, making it more and more likely to be picked. Then when it does get picked this value will reset, making it much less likely to be picked.</>,
   primary: 'Next', back: true, resumable: false,
 };
 
@@ -345,8 +340,8 @@ const PICKER_TOUR_STEP_BOOST = {
 // pattern as Steps 2/6/7.
 const PICKER_TOUR_STEP_11 = {
   sel: '.ob-item-save', tab: 'picker',
-  title: 'Save this task item',
-  body: <>This task item is now complete and can be <b>saved to this picker’s pool</b>. Go ahead and click this button now.</>,
+  title: 'Save this picker item',
+  body: <>This picker item is now complete and can be <b>saved to this picker’s list</b>. Go ahead and click the "Save" button now to save this item to this picker's list of items.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
 };
 
@@ -362,7 +357,7 @@ const PICKER_TOUR_STEP_11 = {
 const PICKER_TOUR_STEP_12 = {
   sel: '.ob-picker-create', tab: 'picker',
   title: 'Create this picker',
-  body: <>You’re all set! You’ve created this picker and its pool of task items. All that’s left is to <b>click the Create picker button</b>. Go ahead and click it now.</>,
+  body: <>You’re all set! You’ve created this picker and its list of items. All that’s left is to finish creating this picker. Go ahead and <b>click the "Create picker" button now</b> to create this picker.</>,
   primary: 'Done', back: true, requireClick: true, resumable: false,
 };
 
@@ -480,6 +475,21 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
           // reasoning as the to===5 branch above.
           const cancelBtn = document.querySelector('.ob-item-cancel');
           if (cancelBtn) cancelBtn.click();
+        } else if (to === steps.length - 2) {
+          // Back from the last step (Create picker) to the second-to-last
+          // (Save this task item) — Step 11's own Save committed the item
+          // into the real list for good (see tab-picker.jsx's own comment on
+          // this), leaving .ob-item-save (Step 11's target) gone with no
+          // real DOM control anywhere that reopens it. steps.length - 2
+          // rather than a hardcoded index: how many steps come before these
+          // last two varies by picker mode (ease-up/down get 2 extra steps,
+          // plain weighted gets 1, dynamic gets 2, truly random gets 0), so
+          // Step 11's own index isn't constant across tours — it's always
+          // exactly 2 before the end though. Bus nonce, same reasoning as
+          // the reset/redo nonces the Pickers PAGE tour's own onGoBack
+          // (onboarding-page-tours.jsx) uses for its own no-real-control
+          // Back cases.
+          emlTour.set({ pickerTourReopenItemNonce: (emlTour.get().pickerTourReopenItemNonce || 0) + 1 });
         }
       }}
       // Skip (or the not-found watchdog) reads as "the user didn't finish",

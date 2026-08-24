@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from './ui.jsx';
 
 // Per-page { id, sel, shape?, title, body } catalogs for the on-demand help
 // mode (see help-mode.jsx). Copy is largely forked from
@@ -25,8 +26,8 @@ const TODAY_HELP_ITEMS = [
     body: <>This tracks your current progress of completed / total tasks for today's todo list. Once filled completely, your Day Streak will increase and the celebration animations will play.</>,
   },
   {
-    id: 'brandMark', sel: '.today-h-lead .brand-mark', title: 'Home',
-    body: <>You can click this logo any time to jump back to the top of your todo list.</>,
+    id: 'brandMark', sel: '.today-h-lead .brand-mark', title: 'Home Link',
+    body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
   },
   {
     id: 'streak', sel: '.streak', title: 'Day Streak',
@@ -70,11 +71,23 @@ const TODAY_HELP_ITEMS = [
     // be in an unusual state, or just not be near wherever the user
     // actually scrolled to.
     id: 'cardActionsPicker', sel: '.today-card:not(.rem-card):not(.today-card--tutorial):not(.today-card--dayoff):not(.today-card--charging) .today-card-actions', perElement: true, title: 'Card Actions',
+    // Icon + label column per button, same real icon name each button's
+    // own <Icon> uses (tab-today.jsx) — mirrors help-mode.jsx's own
+    // NAV_HELP_ITEM, reusing its .help-nav-item/.help-nav-label CSS.
     body: (
       <>
-        <p><b>Re-roll:</b> This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>
-        <p><b>Skip:</b> This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>
-        <p><b>Edit:</b> This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
+        <div className="help-nav-item">
+          <div className="help-nav-label"><Icon name="refresh" size={14} /><b>Re-roll:</b></div>
+          <p>This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>
+        </div>
+        <div className="help-nav-item">
+          <div className="help-nav-label"><Icon name="skip" size={14} /><b>Skip:</b></div>
+          <p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>
+        </div>
+        <div className="help-nav-item">
+          <div className="help-nav-label"><Icon name="edit" size={14} /><b>Edit:</b></div>
+          <p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
+        </div>
       </>
     ),
   },
@@ -82,8 +95,14 @@ const TODAY_HELP_ITEMS = [
     id: 'cardActionsReminder', sel: '.rem-card .today-card-actions', perElement: true, title: 'Card Actions',
     body: (
       <>
-        <p><b>Skip:</b> This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>
-        <p><b>Edit:</b> This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
+        <div className="help-nav-item">
+          <div className="help-nav-label"><Icon name="skip" size={14} /><b>Skip:</b></div>
+          <p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>
+        </div>
+        <div className="help-nav-item">
+          <div className="help-nav-label"><Icon name="edit" size={14} /><b>Edit:</b></div>
+          <p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>
+        </div>
       </>
     ),
   },
@@ -385,11 +404,15 @@ const TODAY_HELP_ITEMS = [
 
 const PICKER_HELP_ITEMS = [
   {
+    id: 'brandMark', sel: '.picker-h-lead .brand-mark', title: 'Home Link',
+    body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
+  },
+  {
     id: 'groupFilter', sel: '.picker-groups .picker-group-pill', title: 'Group Filter',
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
   {
-    // padX: 3 — the add button sits right after the last tab in the same
+    // padX: 3 — the add button sits right before the first tab in the same
     // 8px-gap scrollable row; the default 8px pad on each side would
     // overlap by 8px otherwise (same bleed as Today's Edit Mode/Regenerate).
     id: 'pickerSelection', sel: '.picker-tabs .picker-tab:not(.picker-tab--add)', title: 'Picker Selection', padX: 3,
@@ -414,7 +437,17 @@ const PICKER_HELP_ITEMS = [
     // 10px gap to the Add Picker Item button below; the default 8px pad on
     // each side would overlap by 6px otherwise.
     id: 'pickerItems', sel: '.pool-items', title: 'Picker Items', padY: 4,
-    body: <>This lists all of the items that are in this picker's pool, including their values (if applicable). The Send to Today button will send the item to your todo list on the Today page, the Edit button will allow you to edit the item's properties and the Delete button will delete the item after asking for confirmation.</>,
+    // Inline icons (not their own line, unlike NAV_HELP_ITEM/Card Actions —
+    // this is flowing prose, not a list) — same real icon name each real
+    // button's own <Icon> uses (tab-picker.jsx's .pool-send/.pool-edit/
+    // .pool-del). Each wrapped in .help-inline-icon (styles2.css) — an
+    // inline-flex box that centers the icon within itself — rather than
+    // relying on vertical-align alone, which aligns the icon's OWN box
+    // against text metrics (x-height/baseline) that don't actually match
+    // where the icon's own content visually sits inside its box.
+    body: (
+      <>This lists all of the items that are in this picker's pool, including their values (if applicable). The <span className="help-inline-icon"><Icon name="calendar" size={13} /></span> Send to Today button will send the item to your todo list on the Today page, the <span className="help-inline-icon"><Icon name="edit" size={13} /></span> Edit button will allow you to edit the item's properties and the <span className="help-inline-icon"><Icon name="trash" size={13} /></span> Delete button will delete the item after asking for confirmation.</>
+    ),
   },
   {
     // padY: 4 — see pickerItems' own comment, same gap, same fix.
@@ -660,6 +693,10 @@ const PICKER_HELP_ITEMS = [
 
 const STATS_HELP_ITEMS = [
   {
+    id: 'brandMark', sel: '.stat-h-lead .brand-mark', title: 'Home Link',
+    body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
+  },
+  {
     id: 'groupFilter', sel: '.stat-scope-groups .picker-group-pill', title: 'Group Filter',
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
@@ -812,6 +849,10 @@ const STATS_HELP_ITEMS = [
 
 const DATA_HELP_ITEMS = [
   {
+    id: 'brandMark', sel: '.stat-h-lead .brand-mark', title: 'Home Link',
+    body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
+  },
+  {
     // The Conditionals filter row below carries BOTH .stat-scope-groups
     // AND .stat-scope-groups--cond (it's an additional modifier, not a
     // replacement — see its own conditionalsFilter entry) — unscoped, this
@@ -858,7 +899,7 @@ const DATA_HELP_ITEMS = [
     id: 'conditionalRow', sel: '.cnd-manager .rd-item > .rd-row', perElement: true, padY: 0,
     labelSel: '.rd-name, .rd-name-input',
     title: (r) => `${r?.label || 'This'} Conditional`,
-    body: <>You tap this conditional expand and collapse this section. Expand it in order to view and edit its settings.</>,
+    body: <>You can tap this conditional to expand and collapse this section. Expand it in order to view and edit its settings.</>,
   },
   {
     // padY:0 — .rd-add has the same zero-gap stacking as .rd-item (a
@@ -978,6 +1019,17 @@ const DATA_HELP_ITEMS = [
     // PickerControls), so the default pad bled 8px into both.
     id: 'remControlsMatrix', sel: '.rd-matrix', title: 'Reminders Settings', padY: 0,
     body: <>This controls whether one-time and recurring reminders are included in the day streak, completion ring or the Stats page. There are also controls to exclude those same types from weekends or holidays. Each type of reminder can be toggled independently.</>,
+  },
+  {
+    // No Delete, unlike dataPickerFoot's own Delete/Cancel/Save — these are
+    // global settings, not a single deletable picker.
+    id: 'remControlsFoot', sel: '.rd-matrix .rd-mx-foot .btn', title: 'Cancel / Save',
+    body: (
+      <>
+        <p><b>Cancel:</b> This button discards any changes and closes this section without saving.</p>
+        <p><b>Save:</b> This button saves your changes to the Reminders controls.</p>
+      </>
+    ),
   },
   {
     id: 'remindersItemsHeader', sel: '.cat--reminders .cat-body > button.rd-ctl:nth-of-type(2)', title: 'Reminders Items', padY: 0,
@@ -1299,6 +1351,10 @@ const DATA_HELP_ITEMS = [
 ];
 
 const SETTINGS_HELP_ITEMS = [
+  {
+    id: 'brandMark', sel: '.stat-h-lead .brand-mark', title: 'Home Link',
+    body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
+  },
   // ── Section rail — on mobile this collapses into a horizontal sticky
   // pill bar pinned above the sections (see .settings-rail's own
   // @container rule in styles2.css); on desktop it's a vertical sidebar.
@@ -1337,7 +1393,7 @@ const SETTINGS_HELP_ITEMS = [
   },
   {
     id: 'appearancePickAnim', sel: '.set-subsection--pickanim', title: 'Picker Animation', padY: 4,
-    body: <>This is where you choose which animation plays in the Pickers tab when the "Pick one" button is pressed. Use Preview to watch any of them play out before picking one.</>,
+    body: <>This is where you choose which animation plays in the Pickers tab when the manual picker functionality is triggered via the "Pick one" button. Use Preview to watch any of them play out before picking one.</>,
   },
   {
     id: 'appearanceLayout', sel: '.set-subsection--layout', title: 'Tab Bar Placement', padY: 4,
@@ -1413,7 +1469,7 @@ const SETTINGS_HELP_ITEMS = [
   },
   {
     id: 'aboutReplayTour', sel: '.set-replay-tour-row', title: 'Replay the Welcome Tour',
-    body: <>This replays the first-run walkthrough from the very beginning, including the welcome message and the guided tutorials for pickers, generating your day, and reminders.</>,
+    body: <>This replays the first-run walkthrough from the very beginning, including the welcome message and all of the tutorials.</>,
   },
   {
     id: 'aboutContactTrigger', sel: '.set-contact-trigger', title: 'Contact Support',

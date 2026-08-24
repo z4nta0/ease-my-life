@@ -2,6 +2,8 @@ import React from 'react';
 import { CADENCE } from './cadence.js';
 import { CONDITIONALS } from './conditionals.js';
 import { HOLIDAYS } from './holidays.js';
+import { OB_CHECKLIST } from './onboarding-checklist.js';
+import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';
 import { normalizeConditionalName, normalizeGroupName, normalizePickerName } from './pickers.js';
 import { PWA } from './pwa.js';
 import { CLEAN_STATE } from './seed.js';
@@ -397,9 +399,24 @@ function migrate(s) {
     s._remStatsDefaultOn = true;
   }
   // Onboarding (added later). Existing users must NOT be re-onboarded, so any
-  // state that lacks the field is treated as already welcomed/dismissed. Fresh
-  // clean state sets welcomed:false explicitly to trigger the first-run flow.
-  if (s && !s.onboarding) s.onboarding = { welcomed: true, dismissed: true };
+  // state that lacks the field is treated as already welcomed/dismissed AND
+  // already past the mini-tour checklist (checklistDone:true) — this data
+  // predates the checklist system entirely, so it unambiguously belongs to
+  // an established account, not a first-time one. Without checklistDone set
+  // here too, the very next backfill below (which defaults it to false for
+  // ANY onboarding object still missing the field, including the one just
+  // created on this exact line) put such an account back in "first-time"
+  // mode the moment they next hit Replay Tour: the checklist's own real-
+  // picker name-collision suppression and the App Features section both
+  // require checklistDone to already be true, and the closing Generate
+  // card requires it to be false — so with it wrongly false, a Replay
+  // showed every mini-tour regardless of name collisions, hid App Features
+  // entirely, and left Generate stuck permanently visible (and permanently
+  // unreachable, since nothing tracked it as done). Fresh clean state sets
+  // welcomed:false (and, via the block below, checklistDone:false)
+  // explicitly to trigger the real first-run flow — this branch only ever
+  // fires for existing data an actual CLEAN_STATE() never produces.
+  if (s && !s.onboarding) s.onboarding = { welcomed: true, dismissed: true, checklistDone: true };
   // Mini-tour checklist (added later) — see onboarding-checklist.js. `checklist`
   // maps an item id to its resolution ({ status, createdId? }); `checklistDone`
   // flips true once the closing Generate card's flow completes, at which
@@ -409,8 +426,38 @@ function migrate(s) {
   if (s && s.onboarding && (!s.onboarding.checklist || typeof s.onboarding.checklist !== 'object')) {
     s.onboarding.checklist = {};
   }
+  // Same reasoning as the missing-onboarding branch above applies here too:
+  // an account whose onboarding object ALREADY existed (from an even older
+  // build, before checklistDone was ever added as a field) is just as
+  // established as one missing onboarding entirely — it predates the
+  // checklist system either way. Defaulting to welcomed's own value tells
+  // the two cases apart: CLEAN_STATE()'s fresh onboarding is {welcomed:false,
+  // dismissed:false} at this point (no checklistDone key yet either), so
+  // this correctly still defaults false for a genuine first-time user, but
+  // an existing account that had already dismissed the (pre-checklist-era)
+  // welcome modal — welcomed:true — gets checklistDone:true instead of the
+  // unconditional false this used to backfill. That unconditional false is
+  // exactly what silently broke Replay Tour for real, established accounts
+  // that updated through this exact version gap: it got written back into
+  // their save the very first time migrate() ran post-update, so it stayed
+  // false in every export/import from that point on, permanently defeating
+  // collision suppression / App Features / the Generate card for them.
   if (s && s.onboarding && typeof s.onboarding.checklistDone !== 'boolean') {
-    s.onboarding.checklistDone = false;
+    s.onboarding.checklistDone = !!s.onboarding.welcomed;
+  }
+  // One-shot signal (added later) for tab-today.jsx's own auto-scroll to the
+  // Generate card: set the instant every OTHER checklist item becomes
+  // resolved (see setChecklistItem below), consumed (and cleared back to
+  // false) the next time TabToday renders with it true. Persisted state
+  // rather than a local ref/effect, deliberately: the LAST checklist item
+  // to resolve is very often finished from a mini-tour or Page Tour running
+  // on a DIFFERENT tab (Pickers/Data/Stats/Settings), which unmounts
+  // TabToday for the whole tour — a plain "did I see false-then-true" ref
+  // would miss the transition entirely, since it only resets (matching
+  // whatever the value already is) on each fresh mount. This flag survives
+  // that gap by living in state instead of the component.
+  if (s && s.onboarding && typeof s.onboarding.generateScrollPending !== 'boolean') {
+    s.onboarding.generateScrollPending = false;
   }
   // Page Tours group display name (Edit Mode rename, added later) — unlike a
   // real group's name, this doesn't double as the group's identity (that's
@@ -668,13 +715,43 @@ function useStore(opts) {
   }, [persist]);
 
   const actions = React.useMemo(() => ({
-    // Wipe persisted storage as well as in-memory state — including the
-    // pre-IDB migration snapshot, which would otherwise survive a "delete all
-    // data" as a full plaintext copy. The clean state is written back by the
-    // normal persist effect right after.
-    reset: () => {
-      try { if (STORAGE) { STORAGE.wipe(); STORAGE.logAuthoritative(); } } catch (e) {}
-      setState(migrate(CLEAN_STATE()));
+    // Wipe persisted storage, then hard-reload rather than setState-ing a
+    // clean state in place and stopping there — a plain in-memory reset left
+    // stale module-level singletons behind (eml-tour-bus.js's bus, etc.),
+    // which is what made onboarding misbehave after "Reset all data". wipe()
+    // is async (an IDB clear); awaiting it before reloading matters here
+    // specifically, unlike its previous fire-and-forget call — a reload can
+    // tear down the page mid-transaction, which setState() never could.
+    //
+    // Still has to update latestRef.current (not just call setState) before
+    // reloading, even though nothing will ever render it: window.location
+    // .reload() fires a pagehide event, and this file's own flush() (~line
+    // 678) synchronously re-persists whatever latestRef.current holds at
+    // that moment. Without this, that flush would silently re-save the
+    // STALE pre-wipe state right back into the storage this action just
+    // cleared, undoing the wipe before the reload even finishes loading —
+    // setState() alone isn't enough since React's own re-render (which is
+    // what actually updates latestRef.current, see this file's own
+    // `latestRef.current = state` render-phase line) isn't guaranteed to
+    // have committed yet by the time reload() below fires.
+    //
+    // Clears the URL hash too: app.jsx's initial `active` tab reads
+    // location.hash for its #settings deep link, and a reload alone would
+    // otherwise land right back on Settings for anyone who'd arrived that
+    // way, same "onboarding anchors only exist on Today" problem the
+    // Settings button's own onNavTab('today') call exists to avoid.
+    reset: async () => {
+      try {
+        if (STORAGE) {
+          await STORAGE.wipe();
+          STORAGE.logAuthoritative();
+        }
+      } catch (e) {}
+      const clean = migrate(CLEAN_STATE());
+      latestRef.current = clean;
+      setState(clean);
+      try { window.location.hash = ''; } catch (e) {}
+      window.location.reload();
     },
 
     // Onboarding progress (welcome modal / mini-tour checklist). Merges a
@@ -693,7 +770,16 @@ function useStore(opts) {
     setChecklistItem: (itemId, patch) => setState((s) => {
       const checklist = { ...((s.onboarding && s.onboarding.checklist) || {}) };
       if (patch) checklist[itemId] = patch; else delete checklist[itemId];
-      return { ...s, onboarding: { ...(s.onboarding || {}), checklist } };
+      const next = { ...s, onboarding: { ...(s.onboarding || {}), checklist } };
+      // Flags the exact moment readyToGenerate flips false->true, for
+      // tab-today.jsx's own auto-scroll — see generateScrollPending's own
+      // migrate() comment for why this has to be captured HERE (the actual
+      // mutation point) rather than as a derived-value comparison inside
+      // TabToday itself, which may not even be mounted right now.
+      if (!OB_CHECKLIST.readyToGenerate(s) && OB_CHECKLIST.readyToGenerate(next)) {
+        next.onboarding.generateScrollPending = true;
+      }
+      return next;
     }),
 
     // Same shape/reasoning as setChecklistItem above, but for App Features
@@ -1153,7 +1239,21 @@ function useStore(opts) {
         // recreates a sample by name, e.g. "Daily Chores"). Excludes itself
         // too, so a replaceId update keeping the same name never collides
         // with its own prior name.
-        const finalName = uniqueName(
+        //
+        // Skipped entirely (name kept verbatim) when THIS call is (re)
+        // seeding a sample itself — id is one of onboarding's own fixed
+        // sample ids only for that call site. A freshly (re)seeded sample
+        // starts out visible (hidden defaults false; the tour's own later
+        // step is what hides it), so if a real picker already happens to
+        // share its exact name — e.g. a Replay Tour on an account that
+        // already has a real "Daily Chores" — the dedup above would rename
+        // the SAMPLE to "Daily Chores (2)" before onboarding's own name-
+        // collision suppression (tab-today.jsx's groupEntries) ever runs,
+        // which compares against the sample's exact, canonical name. That
+        // silently defeated the suppression instead of triggering it — the
+        // renamed sample no longer matched anything, so its own "already
+        // have one" tutorial card kept offering itself.
+        const finalName = OB_SAMPLE_PICKER_IDS.includes(id) ? (normalizePickerName(name) || name) : uniqueName(
           normalizePickerName(name) || name,
           s.pickers.filter((p) => !p.hidden && p.id !== pid).map((p) => p.name),
         );

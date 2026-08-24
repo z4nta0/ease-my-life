@@ -1,5 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
+import { Icon } from './ui.jsx';
 
 // On-demand "help mode": a per-page toggle that, once on, simultaneously
 // highlights every tagged element on the CURRENT page with a small corner
@@ -343,12 +344,15 @@ const placeTip = (targetRect, tw, th, pinBelowY) => {
   // top edge, that produced a `top` at the viewport's very top while the
   // (still full-height, unconstrained at the moment of this decision) tip
   // extended down past the target's own bottom too, covering it entirely.
-  // Going below unconditionally and THEN capping height (maxHeight below)
-  // to whatever room is actually there is what makes scrolling work at
-  // all — but only where "below" is actually the right side to try in the
-  // first place: NOT 'bottom' tab-bar placement, whose target already
-  // sits at the very bottom of the screen with no room below it at all
-  // (there `scrollable`'s cap is a pure safety net, and the normal
+  // Same failure mode on 'top' tab-bar placement on a short viewport (e.g.
+  // iPhone SE): the target already sits at the screen's top edge, so
+  // "doesn't fit below" flips to "above" and covers the navbar the same
+  // way. Going below unconditionally and THEN capping height (maxHeight
+  // below) to whatever room is actually there is what makes scrolling
+  // work at all — but only where "below" is actually the right side to
+  // try in the first place: NOT 'bottom' tab-bar placement, whose target
+  // already sits at the very bottom of the screen with no room below it
+  // at all (there `scrollable`'s cap is a pure safety net, and the normal
   // below/above choice — which correctly flips to "above" there — still
   // applies).
   if (targetRect.alwaysBelow) {
@@ -358,7 +362,23 @@ const placeTip = (targetRect, tw, th, pinBelowY) => {
   } else {
     const spaceBelow = vh - targetRect.bottom;
     if (spaceBelow >= th + 16) { top = targetRect.bottom + 16; arrowClass = 'ob-coach--up'; }
-    else { top = Math.max(M, targetRect.top - 16 - th); arrowClass = 'ob-coach--down'; }
+    else {
+      // badgeAnchorTop (columnGroup items only — see its own comment where
+      // it's stashed) — the corner badge sits well above targetRect.top
+      // itself (overlapping up into the highlight, same as every badge),
+      // so anchoring the FLIPPED-above tip to targetRect.top here would
+      // point its own down-arrow at empty space right where the badge
+      // already sits, overlapping it. Anchoring to the badge's own top
+      // instead points the arrow right at it. The usual 16px gap (leaving
+      // ~8px of daylight between the arrow's own visible tip and whatever
+      // it's pointing at, same as every other tip in the app) reads as
+      // "detached" for a small round badge specifically, unlike a normal,
+      // much larger highlighted target — an 8px gap here instead sits the
+      // arrow's tip flush against the badge, touching it, no visible gap.
+      const usingBadgeAnchor = targetRect.badgeAnchorTop != null;
+      const aboveAnchorTop = usingBadgeAnchor ? targetRect.badgeAnchorTop : targetRect.top;
+      top = Math.max(M, aboveAnchorTop - (usingBadgeAnchor ? 8 : 16) - th); arrowClass = 'ob-coach--down';
+    }
   }
   const centerX = targetRect.left + targetRect.width / 2;
   const left = Math.max(M, Math.min(centerX - tw / 2, vw - tw - M));
@@ -455,11 +475,16 @@ const NAV_HELP_ITEM = {
   // no room above or below tall enough for the full 5-paragraph body no
   // matter how it's positioned; caps to whatever room placeTip found and
   // scrolls internally past that rather than overflowing the viewport.
-  // alwaysBelowSel — only 'side' placement's target spans most of the
-  // viewport's own height (see placeTip's own comment on alwaysBelow);
-  // 'bottom'/'top' keep the normal above/below choice.
+  // alwaysBelowSel — 'side' placement's target spans most of the
+  // viewport's own height; 'top' placement's target sits at the very top
+  // of the screen, where the normal "does it fit below, else flip above"
+  // choice — measured against the content's own unconstrained height —
+  // flips to "above" on a short viewport (e.g. iPhone SE) and covers the
+  // navbar entirely (see placeTip's own comment on alwaysBelow). 'bottom'
+  // keeps the normal above/below choice: its target already sits at the
+  // opposite edge, where flipping to "above" is the correct behavior.
   id: '__nav', sel: '[data-tab]', matchTargetWidth: true, matchWidthSel: '.tabbar', padY: 7, scrollable: true,
-  alwaysBelowSel: '.tabbar--side',
+  alwaysBelowSel: '.tabbar--side, .tabbar--top',
   // The tabbar is a true pill ONLY on 'bottom' placement (border-radius:
   // 999px, resolving to a circular corner of exactly half its own height
   // once CSS's overflow algorithm scales it down for a box that much wider
@@ -480,15 +505,40 @@ const NAV_HELP_ITEM = {
     return { rx: r, ry: r };
   },
   title: 'Navigation',
+  // One column per tab: its own real nav icon + label on their own line,
+  // its description below — reusing the exact icon name TabBar itself
+  // passes to <Icon> (app.jsx's TABS) so this never drifts from the real
+  // button's own icon. This is the 'bottom'/'top' placement shape (both
+  // read fine this way); 'side' stacks the 5 buttons in a column of its
+  // own and needs its own pass later — not accounted for here yet.
   body: (
     <>
-      <p><b>Today:</b> This is the main page of the app and contains your auto-generated daily todo list.</p>
-      <p><b>Pickers:</b> This is where you can manually run a picker to generate a task and then push it to the Today page's todo list. This is also where you can create new pickers and their items.</p>
-      <p><b>Stats:</b> This is where you can view all of the statistics for everything that you have created. That includes conditionals, reminder items, pickers and picker items. You can see how many times an item has been picked, items' pick frequency, and much more.</p>
-      <p><b>Data:</b> This is where you can view and edit everything that you have created. You can also create new conditionals, new reminders items and new picker items.</p>
-      <p><b>Settings:</b> This is where you can customize the app, adjust the daily generator, edit which holidays are observed, control your data, install the app, get app information and view legal documents.</p>
+      {[
+        { icon: 'today', label: 'Today', desc: 'This is the main page of the app and contains your auto-generated daily todo list.' },
+        { icon: 'picker', label: 'Pickers', desc: "This is where you can manually run a picker to generate a task and then push it to the Today page's todo list. This is also where you can create new pickers and their items." },
+        { icon: 'stats', label: 'Stats', desc: "This is where you can view all of the statistics for everything that you have created. That includes conditionals, reminder items, pickers and picker items. You can see how many times an item has been picked, items' pick frequency, and much more." },
+        { icon: 'data', label: 'Data', desc: 'This is where you can view and edit everything that you have created. You can also create new conditionals, new reminders items and new picker items.' },
+        { icon: 'settings', label: 'Settings', desc: 'This is where you can customize the app, adjust the daily generator, edit which holidays are observed, control your data, install the app, get app information and view legal documents.' },
+      ].map((t) => (
+        <div className="help-nav-item" key={t.icon}>
+          <div className="help-nav-label"><Icon name={t.icon} size={14} /><b>{t.label}:</b></div>
+          <p>{t.desc}</p>
+        </div>
+      ))}
     </>
   ),
+};
+
+// The rail's own pull handle — only exists in the DOM (findTargets' width/
+// height check filters out anything else) on 'side' tab-bar placement's
+// narrow/drawer breakpoint (see .tabbar--side .rail-handle's own container
+// query in styles2.css), so this naturally shows up only there without
+// needing its own placement check the way NAV_HELP_ITEM's alwaysBelowSel
+// does. Its own separate item (not folded into NAV_HELP_ITEM) since it's a
+// single real button with a single description, not one of the 5 nav tabs.
+const RAIL_HANDLE_HELP_ITEM = {
+  id: '__railHandle', sel: '.rail-handle', title: 'Sidebar Toggle',
+  body: <>This button will open the app's navigation, allowing you to navigate to the app's other pages.</>,
 };
 
 // items: [{ id, sel, title, body }] — sel follows GuidedTour's own
@@ -501,7 +551,7 @@ const NAV_HELP_ITEM = {
 // second Escape after one closes a tip) — the parent is the one that
 // actually flips its own `active` state back off in response.
 function HelpOverlay({ active, items, onExit }) {
-  const allItems = React.useMemo(() => [NAV_HELP_ITEM, ...items], [items]);
+  const allItems = React.useMemo(() => [NAV_HELP_ITEM, RAIL_HANDLE_HELP_ITEM, ...items], [items]);
   const [rectsById, setRectsById] = React.useState({});
   const [openId, setOpenId] = React.useState(null);
   const [toggleRect, setToggleRect] = React.useState(null);
@@ -693,6 +743,15 @@ function HelpOverlay({ active, items, onExit }) {
           nxt.left = mid;
         }
         cur.width = cur.right - cur.left;
+        // Stashed for placeTip's own "flips above" branch (see its comment
+        // on badgeAnchorTop) — a columnGroup member's badge sits centered
+        // on this same X (badgeRectFor's `center` mode) but well ABOVE
+        // cur.top itself (overlapping up into the highlight box's own top
+        // edge, same corner-marker design every badge uses). Computed here,
+        // after cur's group-adjusted top/width are both final, rather than
+        // inline in placeTip — badgeRectFor needs the padded/centered rect
+        // this loop just finished producing, not the raw pre-group one.
+        next[id].badgeAnchorTop = badgeRectFor(cur, true).top;
       });
     });
     setRectsById(next);
