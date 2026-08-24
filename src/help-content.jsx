@@ -45,6 +45,23 @@ const TODAY_HELP_ITEMS = [
     body: <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</>,
   },
   {
+    // These three only exist in the DOM while Edit Mode is on — same
+    // "findTargets returns nothing, item silently skipped" handling as the
+    // side-placement rail handle (see help-mode.jsx). perElement: every
+    // group's own grip gets its own badge, since a user editing a long
+    // list could be looking at any one of them, not just the first.
+    id: 'groupGrip', sel: '.group-grip', perElement: true, title: 'Reorder Group',
+    body: <>While Edit Mode is on, drag this handle to change this group's position in your todo list.</>,
+  },
+  {
+    id: 'cardGrip', sel: '.card-grip', perElement: true, title: 'Reorder Item',
+    body: <>While Edit Mode is on, drag this handle to change this item's position within its group.</>,
+  },
+  {
+    id: 'groupNameEdit', sel: '.group-name--editable', perElement: true, title: 'Rename Group',
+    body: <>While Edit Mode is on, click a group's name to rename it.</>,
+  },
+  {
     // perElement (see help-mode.jsx): every real entry card gets its own
     // badge — a user could be looking at any card on the page, not just
     // whichever one happened to be first, and the main help toggle can be
