@@ -285,15 +285,15 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
       {rep === 'annual' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <label className="rem-flabel">Date each year</label>
+            <span className="rem-flabel">Date each year</span>
             <span className="rem-flabel-sub">shows on the Today tab <strong>every {fullMonthNames[(task.month || 1) - 1]} {task.day || 1}</strong></span>
           </div>
           <div className="rem-inline">
-            <select className="np-input rem-sel" aria-describedby={schedNoteId} value={task.month || 1}
+            <select className="np-input rem-sel" aria-label="Month" aria-describedby={schedNoteId} value={task.month || 1}
                     onChange={(e) => set({ month: parseInt(e.target.value) })}>
               {monthNames.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
             </select>
-            <select className="np-input rem-sel" aria-describedby={schedNoteId} value={task.day || 1}
+            <select className="np-input rem-sel" aria-label="Day" aria-describedby={schedNoteId} value={task.day || 1}
                     onChange={(e) => set({ day: parseInt(e.target.value) })}>
               {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
                 <option key={d} value={d}>{d}</option>
