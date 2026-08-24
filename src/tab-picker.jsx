@@ -1101,7 +1101,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         </div>
 
         <div className="np-field">
-          <label className="np-label">Group</label>
+          <span className="np-label">Group</span>
           <p className="np-help">
             Pickers are clustered into groups on your Today list &mdash; like
             &ldquo;Food&rdquo; or &ldquo;Chores&rdquo; &mdash; so related picks
@@ -1124,12 +1124,12 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
           <Collapse open={addingGroup}>
             <input className="np-input np-input--sm" type="text" autoFocus maxLength={30}
                    value={newGroup} onChange={(e) => setNewGroup(e.target.value)}
-                   placeholder="Name the new group" autoComplete="off" />
+                   placeholder="Name the new group" aria-label="New group name" autoComplete="off" />
           </Collapse>
         </div>
 
-        <div className="np-field">
-          <label className="np-label">How should it choose?</label>
+        <fieldset className="np-field">
+          <legend className="np-label">How should it choose?</legend>
           <p className="np-help">
             This is the rule the picker follows each time it runs.
             &ldquo;Truly random&rdquo; is the simplest &mdash; every item has an
@@ -1150,12 +1150,12 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
               </label>
             ))}
           </div>
-        </div>
+        </fieldset>
 
         <div className="np-field np-cond">
           <div className="np-field--toggle">
             <div className="np-toggle-text">
-              <label className="np-label">Attach a conditional</label>
+              <span className="np-label">Attach a conditional</span>
               <p className="np-help">
                 Conditionals can be attached to a picker that will determine whether a picker
                 should be run on any given day during the auto generator phase for the Today tab.
@@ -1227,7 +1227,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
               <CadenceControl value={cad} onChange={(patch) => setCad((c) => CADENCE.normalize({ ...c, ...patch }))} />
             </div>
             <div className="np-sched-block">
-              <label className="np-label">Which days?</label>
+              <span className="np-label">Which days?</span>
               <p className="np-help">
                 Pick the days this picker is allowed to run on. Tap a day to turn
                 it off &mdash; handy for things like chores you&rsquo;d rather not

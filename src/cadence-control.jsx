@@ -28,11 +28,11 @@ function CadenceControl({ value, onChange }) {
     <div className="cad-ctl">
       <div className="rem-field">
         <div className="rem-flabel-wrap">
-          <label className="rem-flabel pie-lbl-row">How often?
+          <span className="rem-flabel pie-lbl-row">How often?
             {v.cadence === 'daily' && (
               <InfoTip className="pie-help pie-help--sm" label={CADENCE.tipFor('daily', 'Which days?')}>?</InfoTip>
             )}
-          </label>
+          </span>
           <span className="rem-flabel-sub set-sub-fade" key={v.cadence}>{sub}</span>
         </div>
         <Segmented options={CAD_OPTS} value={v.cadence}
@@ -44,9 +44,9 @@ function CadenceControl({ value, onChange }) {
       {v.cadence === 'weekly' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <label className="rem-flabel pie-lbl-row">On which day?
+            <span className="rem-flabel pie-lbl-row">On which day?
               <InfoTip className="pie-help" label={CADENCE.tipFor('weekly', 'Which days?')}>?</InfoTip>
-            </label>
+            </span>
             <span className="rem-flabel-sub">surfaces <strong>every {DAY_FULL[v.anchorDow]}</strong></span>
           </div>
           <div className="rem-inline">
@@ -63,9 +63,9 @@ function CadenceControl({ value, onChange }) {
       {v.cadence === 'monthly' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <label className="rem-flabel pie-lbl-row">On which day?
+            <span className="rem-flabel pie-lbl-row">On which day?
               <InfoTip className="pie-help" label={CADENCE.tipFor('monthly', 'Which days?')}>?</InfoTip>
-            </label>
+            </span>
             <span className="rem-flabel-sub">surfaces the <strong>{ord(v.anchorDom)} of every month</strong></span>
           </div>
           <div className="rem-inline">
@@ -87,9 +87,9 @@ function CadenceControl({ value, onChange }) {
       {v.cadence === 'yearly' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <label className="rem-flabel pie-lbl-row">On which date?
+            <span className="rem-flabel pie-lbl-row">On which date?
               <InfoTip className="pie-help" label={CADENCE.tipFor('yearly', 'Which days?')}>?</InfoTip>
-            </label>
+            </span>
             <span className="rem-flabel-sub">
               surfaces <strong>every {MONTHS[v.anchorMonth - 1]} {ord(Math.min(v.anchorDay, daysInMonth(v.anchorMonth)))}</strong>
             </span>
