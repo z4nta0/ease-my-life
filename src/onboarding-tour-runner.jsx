@@ -1124,7 +1124,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     <div className="ob-coach" ref={coachRef} aria-hidden="true"
          style={{ position: 'fixed', top: 0, left: -9999, width: coachW, visibility: 'hidden', pointerEvents: 'none' }}>
       {!cur.solo && <p className="ob-prog">Step {step + 1} of {total}</p>}
-      <h4>{cur.title}</h4>
+      <p className="ob-coach-title">{cur.title}</p>
       <p className="ob-body">{cur.body}</p>
       <div className={`ob-crow ${cur.solo ? 'ob-crow--solo' : ''}`}>
         {!cur.solo && (
@@ -1184,7 +1184,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
       {!dragging && (
         <div className={`ob-coach ${arrowClass}`} ref={realCoachRef} style={{ ...coachStyle, width: coachW, '--ob-ax': arrowX + 'px' }}>
           {!cur.solo && <p className="ob-prog">Step {step + 1} of {total}</p>}
-          <h4>{cur.title}</h4>
+          <p className="ob-coach-title">{cur.title}</p>
           <p className="ob-body">{cur.body}</p>
           <div className={`ob-crow ${cur.solo ? 'ob-crow--solo' : ''}`}>
             {!cur.solo && (
