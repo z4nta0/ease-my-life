@@ -215,7 +215,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
       {rep === 'weekly' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <label className="rem-flabel">On these days</label>
+            <span className="rem-flabel">On these days</span>
             <span className="rem-flabel-sub">
               {(task.daysOfWeek && task.daysOfWeek.length)
                 ? <>shows on the Today tab <strong>every {[...task.daysOfWeek].sort((a, b) => a - b).map((d) => dayAbbr[d]).join(', ')}</strong></>
