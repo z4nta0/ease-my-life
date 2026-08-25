@@ -3543,7 +3543,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-block-h--static{cursor:default}
 .dl-block-name{font-size:14px;font-weight:600;letter-spacing:-0.01em}
 .dl-cond-title{color:var(--accent)}
-.dl-mode{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);text-align:center}
+.dl-mode{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);text-align:center}
 .dl-mode.neutral{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
 .dl-sum{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
 .dl-dchip{display:inline-flex;align-items:center;gap:4px;color:oklch(0.5 0.11 155)}
@@ -3561,7 +3561,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 /* table */
 .dl-table{padding-bottom:12px}
 .dl-thead,.dl-trow{display:grid;grid-template-columns:1fr 46px 44px 46px 118px;align-items:center;gap:6px}
-.dl-thead{padding:6px 10px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
+.dl-thead{padding:6px 10px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
 .dl-thead .r,.dl-trow .r{text-align:right;justify-self:end}
 .dl-trow{padding:8px 10px;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
 .dl-trow:last-child{border-bottom:0}
@@ -3569,7 +3569,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-item{min-width:0;display:flex;flex-direction:column;gap:1px}
 .dl-nrow{display:flex;align-items:center;gap:7px;min-width:0}
 .dl-name{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dl-sub{font-family:var(--font-mono);font-size:10px;letter-spacing:0.02em;color:var(--muted)}
+.dl-sub{font-family:var(--font-mono);font-size:11px;letter-spacing:0.02em;color:var(--muted)}
 .dl-val{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:13px}
 .dl-delta{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:12px}
 .dl-delta.up{color:oklch(0.5 0.11 155)}
@@ -3591,7 +3591,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-cond-aff{display:flex;align-items:center;gap:7px;margin:0 0 8px;padding:6px 10px 6px 12px;border-radius:0 0 8px 8px;background:oklch(from var(--accent) 0.95 0.035 h);font-family:var(--font-mono);font-size:11px;letter-spacing:0.02em;color:oklch(from var(--accent) calc(l - 0.02) c h)}
 .dl-cond-aff svg{width:12px;height:12px;flex:none;opacity:0.8}
 .dl-cond-aff b{color:var(--accent);font-weight:600}
-.dl-st-pill{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.04em;text-transform:uppercase;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.dl-st-pill{font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .dl-st-trig{background:var(--accent);color:var(--bg)}
 .dl-st-nottrig{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
 .dl-mode--cond{background:var(--bg);color:var(--accent);border:0.5px solid oklch(from var(--accent) l c h/0.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -3600,7 +3600,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 
 /* reminders log */
 .dl-rt-head,.dl-rt-row{display:grid;grid-template-columns:1fr 150px 130px;align-items:center;gap:8px}
-.dl-rt-head{padding:6px 10px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
+.dl-rt-head{padding:6px 10px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
 .dl-rt-head .r,.dl-rt-row .r{text-align:right;justify-self:end}
 .dl-rt-row{padding:9px 10px;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
 .dl-rt-row:last-child{border-bottom:0}
@@ -3613,7 +3613,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-st-done{background:oklch(0.95 0.035 155);color:oklch(0.5 0.11 155)}
 .dl-st-due{background:var(--accent-soft);color:var(--accent)}
 .dl-st-skip{background:oklch(0.955 0.02 25);color:oklch(0.53 0.16 25)}
-.dl-st-not{color:oklch(from var(--muted) l c h/0.75);font-family:var(--font-mono);font-size:10px;letter-spacing:0.04em;text-transform:uppercase;text-align:right}
+.dl-st-not{color:oklch(from var(--muted) l c h/0.75);font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;text-align:right}
 
 @container app (max-width:560px){
   .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 106px;gap:4px}
