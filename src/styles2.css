@@ -3591,7 +3591,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-cond-aff{display:flex;align-items:center;gap:7px;margin:0 0 8px;padding:6px 10px 6px 12px;border-radius:0 0 8px 8px;background:oklch(from var(--accent) 0.95 0.035 h);font-family:var(--font-mono);font-size:11px;letter-spacing:0.02em;color:oklch(from var(--accent) calc(l - 0.02) c h)}
 .dl-cond-aff svg{width:12px;height:12px;flex:none;opacity:0.8}
 .dl-cond-aff b{color:var(--accent);font-weight:600}
-.dl-st-pill{font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.dl-st-pill{font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;padding:2px 0;border-radius:999px;white-space:nowrap}
 .dl-st-trig{background:var(--accent);color:var(--bg)}
 .dl-st-nottrig{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
 .dl-mode--cond{background:var(--bg);color:var(--accent);border:0.5px solid oklch(from var(--accent) l c h/0.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -3600,10 +3600,10 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 
 /* reminders log */
 .dl-rt-head,.dl-rt-row{display:grid;grid-template-columns:1fr 150px 130px;align-items:center;gap:8px}
-.dl-rt-head{padding:6px 0;font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
+.dl-rt-head{padding:6px 10px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
 .dl-rt-head .r,.dl-rt-row .r{text-align:right;justify-self:end}
 .dl-rt-head .dl-mk-rwhen{text-align:center}
-.dl-rt-row{padding:9px 0;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
+.dl-rt-row{padding:9px 10px;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
 .dl-rt-row:last-child{border-bottom:0}
 .dl-rt-row.is-done{background:oklch(0.95 0.035 155)}
 .dl-rt-row.is-due{background:var(--accent-soft)}
