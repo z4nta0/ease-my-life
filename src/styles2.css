@@ -3600,15 +3600,16 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 
 /* reminders log */
 .dl-rt-head,.dl-rt-row{display:grid;grid-template-columns:1fr 150px 130px;align-items:center;gap:8px}
-.dl-rt-head{padding:6px 10px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
+.dl-rt-head{padding:6px 0;font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
 .dl-rt-head .r,.dl-rt-row .r{text-align:right;justify-self:end}
-.dl-rt-row{padding:9px 10px;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
+.dl-rt-head .dl-mk-rwhen{text-align:center}
+.dl-rt-row{padding:9px 0;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
 .dl-rt-row:last-child{border-bottom:0}
 .dl-rt-row.is-done{background:oklch(0.95 0.035 155)}
 .dl-rt-row.is-due{background:var(--accent-soft)}
 .dl-r-name{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .dl-rt-row.is-notdue .dl-r-name{color:var(--muted)}
-.dl-r-when{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.dl-r-when{font-family:var(--font-mono);font-size:11px;color:var(--muted);text-align:center}
 .dl-r-st{justify-self:end;text-align:right;display:inline-flex;align-items:center;justify-content:flex-end;gap:6px}
 .dl-st-done{background:oklch(0.95 0.035 155);color:oklch(0.5 0.11 155)}
 .dl-st-due{background:var(--accent-soft);color:var(--accent)}
