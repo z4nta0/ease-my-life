@@ -3565,7 +3565,10 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 
 /* table */
 .dl-table{padding-bottom:12px}
-.dl-thead,.dl-trow{display:grid;grid-template-columns:1fr 46px 44px 46px 118px;align-items:center;gap:6px}
+/* Status column: 126px (was 118px) — the smallest width its icon set
+   (Auto-picked/Pushed/Rolled off/Skipped) actually fits on one row without
+   wrapping. */
+.dl-thead,.dl-trow{display:grid;grid-template-columns:1fr 46px 44px 46px 126px;align-items:center;gap:6px}
 .dl-thead{padding:6px 10px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
 .dl-thead .r,.dl-trow .r{text-align:right;justify-self:end}
 .dl-trow{padding:8px 10px;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
@@ -3622,11 +3625,18 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-st-not{color:oklch(from var(--muted) l c h/0.75);font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;text-align:right}
 
 @container app (max-width:560px){
-  .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 106px;gap:4px}
+  .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 126px;gap:4px}
   .dl-rt-head,.dl-rt-row{grid-template-columns:1fr 104px 104px;gap:6px}
   .dl-cond-row .dl-nrow{flex-wrap:wrap;gap:4px}
   .dl-cond-row .dl-name{flex:0 0 100%;width:100%}
   .dl-cond-row .dl-mode--cond{display:block;width:100%;text-align:center}
+}
+/* Status needs its full 126px to fit every icon on one row (see the base
+   rule's own comment) at any width down to here — but below this, giving
+   it up lets the item-name column (1fr) breathe more on a genuinely
+   narrow screen, so it halves instead. */
+@container app (max-width:450px){
+  .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 63px}
 }
 
 /* Below this, a picker block header's own name (.dl-block-name) crowds the
