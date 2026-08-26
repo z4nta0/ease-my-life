@@ -3559,12 +3559,13 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    wrapping onto 2 lines whenever a long name wrapped its own row taller —
    its column width is no longer squeezed by flex-shrink competition with
    the name. */
-/* count column: 96px, not 90px — a plain 90px left it right at the edge of
-   .dl-block-h's own 2px right padding, thin enough that Firefox's own text
-   metrics for "items"/"done" (very slightly wider there than Chromium's)
-   bled a character past it. The extra 6px comes out of the flexible 1fr
-   name column, not felt anywhere. */
-.dl-block-h{display:grid;grid-template-columns:20px 1fr 120px 96px;align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
+/* count column: minmax(0,90px), not a bare 90px — a fixed-length track still
+   lets its content's automatic minimum size push it wider than the declared
+   90px in Firefox specifically, bleeding a character past .dl-block-h's own
+   2px right padding. minmax(0,90px) pins the track's own minimum to 0 so the
+   90px max actually holds (same class of bug as .dl-sum's own min-width:0
+   fix above, but at the track level instead of the item level). */
+.dl-block-h{display:grid;grid-template-columns:20px 1fr 120px minmax(0,90px);align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
 .dl-block-h--static{cursor:default}
 .dl-block-h .dl-chev{grid-column:1}
 .dl-block-h .dl-block-name{grid-column:2}
