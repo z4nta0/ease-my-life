@@ -3544,26 +3544,41 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 /* picker sub-block */
 .dl-block{border-top:0.5px solid var(--border)}
 .dl-block:first-child{border-top:0}
-.dl-block-h{display:flex;align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
-/* Grid, not flex, for the real per-picker header row (chev+name+mode+count)
-   specifically — same "1fr name column + fixed-width side columns" pattern
-   as .dl-thead/.dl-trow's own item grid, so the mode pill and item count
-   land at the SAME x-position across every picker block in the panel
-   instead of each row's flex layout sizing them off that row's own name
-   length. Also fixes the mode pill wrapping onto 2 lines whenever a long
-   name wrapped its own row taller — its column width is no longer being
-   squeezed by flex-shrink competition with the name. Left off the static
-   variants (Conditionals section title, Rested row) — those have a
-   different, smaller set of children (no chev, sometimes no count/rest
-   column either) that this 4-column template isn't shaped for.
-   Nowhere else than the header does this apply, so :not() is safe. */
-.dl-block-h:not(.dl-block-h--static){display:grid;grid-template-columns:20px 1fr 150px 90px}
+/* Grid, not flex, for EVERY .dl-block-h variant — the real per-picker header
+   (chev+name+mode+count), the Conditionals section title (name+count,
+   no chev), and the Rested row (name+mode+rest text, no chev) all share
+   this one template now, each child pinned to its own column below via
+   grid-column (NOT relying on source-order auto-placement, since the
+   static variants are missing the chev and/or the count/rest column) —
+   same "1fr name column + fixed-width side columns" pattern as .dl-thead/
+   .dl-trow's own item grid. This is what makes the name column (and thus
+   the mode pill/count after it) start at the SAME x-position whether or
+   not a given row happens to render a chevron: the chev's own 20px track
+   stays reserved and empty on the variants that don't render one, rather
+   than the next real child sliding left into it. Also fixes the mode pill
+   wrapping onto 2 lines whenever a long name wrapped its own row taller —
+   its column width is no longer squeezed by flex-shrink competition with
+   the name. */
+.dl-block-h{display:grid;grid-template-columns:20px 1fr 120px 90px;align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
 .dl-block-h--static{cursor:default}
+.dl-block-h .dl-chev{grid-column:1}
+.dl-block-h .dl-block-name{grid-column:2}
+/* min-width:0 — a grid item's default min-width:auto keeps it from
+   shrinking below its own (nowrap) content's min-content size, so a long
+   label like "Dynamic Weighted" was bleeding past this column's 120px
+   into the count column next to it despite the column itself being
+   correctly sized. Truncates instead. */
+.dl-block-h .dl-mode{grid-column:3;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.dl-block-h .dl-sum,.dl-block-h .dl-rest{grid-column:4}
 .dl-block-name{font-size:14px;font-weight:600;letter-spacing:-0.01em}
 .dl-cond-title{color:var(--accent)}
 .dl-mode{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);text-align:center;white-space:nowrap}
 .dl-mode.neutral{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
-.dl-sum{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+/* flex-wrap:wrap — preferred over truncating/widening the mode column
+   further: at the narrowest widths, the "N items"/"X done" pair wraps
+   onto its own second line within this column's fixed 90px instead of
+   demanding extra horizontal room. */
+.dl-sum{margin-left:auto;display:inline-flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
 .dl-dchip{display:inline-flex;align-items:center;gap:4px;color:oklch(0.5 0.11 155)}
 .dl-dchip svg{width:12px;height:12px}
 .dl-chev{color:var(--muted);display:inline-flex;transition:transform .2s}
