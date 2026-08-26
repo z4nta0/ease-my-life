@@ -3659,6 +3659,17 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    Conditionals table (.dl-cond-row rows still carry the shared .dl-trow
    class), but not the Reminders table, which has no Δ column at all. */
 .dl-thead .dl-mk-delta,.dl-trow .dl-mk-delta{text-align:center;justify-self:center}
+/* Visually hidden, not display:none — screen readers still read it. Gives
+   At gen/Δ/After's icon-only header labels a real accessible name instead
+   of relying on a screen reader happening to announce the raw glyph via
+   its Unicode character name. */
+.dl-vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* ○ (open circle) reads visibly bigger than ● (filled circle) at the same
+   font-size in most fonts — an outlined glyph's stroke sits at the edge of
+   its shape while a filled glyph's solid fill reads more compact, so the
+   two rarely look optically matched even at an identical em size. Scale
+   just this one down until it reads the same weight/size as ●. */
+.dl-th-ic--open{display:inline-block;transform:scale(0.9)}
 .dl-trow{padding:8px 10px;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
 .dl-trow:last-child{border-bottom:0}
 .dl-trow.is-done{background:oklch(0.95 0.035 155)}

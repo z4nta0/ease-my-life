@@ -177,8 +177,11 @@ const fmtTime = (iso) => {
 function TableHead({ first = 'Item' }) {
   return (
     <div className="dl-thead">
-      <span className="dl-mk-item">{first}</span><span className="r dl-mk-atgen">At gen</span><span className="r dl-mk-delta">Δ</span>
-      <span className="r dl-mk-after">After</span><span className="r dl-mk-status">Status</span>
+      <span className="dl-mk-item">{first}</span>
+      <span className="r dl-mk-atgen"><span aria-hidden="true" className="dl-th-ic dl-th-ic--open">○</span><span className="dl-vh">At generation</span></span>
+      <span className="r dl-mk-delta"><span aria-hidden="true">Δ</span><span className="dl-vh">Change</span></span>
+      <span className="r dl-mk-after"><span aria-hidden="true" className="dl-th-ic">●</span><span className="dl-vh">After</span></span>
+      <span className="r dl-mk-status">Status</span>
     </div>
   );
 }
