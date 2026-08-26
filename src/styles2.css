@@ -3659,6 +3659,11 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    Conditionals table (.dl-cond-row rows still carry the shared .dl-trow
    class), but not the Reminders table, which has no Δ column at all. */
 .dl-thead .dl-mk-delta,.dl-trow .dl-mk-delta{text-align:center;justify-self:center}
+/* After overrides the general .r (right-align) rule the same way Δ does
+   above — moves its column's content to the start (left) edge of its own
+   track instead of the end (right). Covers both the header ● and every
+   row's value cell. */
+.dl-thead .dl-mk-after,.dl-trow .dl-mk-after{justify-self:start}
 /* Visually hidden, not display:none — screen readers still read it. Gives
    At gen/Δ/After's icon-only header labels a real accessible name instead
    of relying on a screen reader happening to announce the raw glyph via
