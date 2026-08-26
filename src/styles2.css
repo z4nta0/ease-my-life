@@ -3542,76 +3542,60 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-ki b{color:var(--text);font-weight:500}
 
 /* picker sub-block */
-/* .dl-body is the REAL grid now — every .dl-block-h across every picker in
-   the panel is a subgrid row of this one grid, not an independent grid of
-   its own. That's what lets the name and mode columns be
-   minmax(0,max-content): max-content sizes a track to the widest
-   max-content contribution of every item placed in it, and subgrid is what
-   makes "every item placed in it" mean every picker's name (or pill) at
-   once instead of just one row's — so each column comes out exactly as
-   wide as its longest entry among sibling pickers, and EVERY row's pill
-   lines up at that shared boundary, whether that row's own name is long or
-   short. A short name just leaves its own row's leftover space between its
-   text and the pill — bounded by the longest sibling name, not by the
-   viewport, so it doesn't grow as the window widens the way the old 1fr
-   column did. The minmax(0,...) wrapper (rather than a bare max-content,
-   which is what this shipped with initially) is required, not cosmetic:
-   a bare max-content track can't shrink below its resolved size AT ALL, so
-   on a viewport too narrow to fit the widest name at full width the whole
-   row overflowed instead of the name wrapping — same class of fix as the
-   count column's own minmax(0,90px) below, just rediscovered the hard way.
-   (Plain `auto` looks like the obvious choice here but is wrong: unlike
-   `max-content`, a bare `auto` track also gets stretched to fill any
-   leftover space in the "Expand Stretched auto Tracks" step of track
-   sizing — reproducing the exact 1fr-style drift this rework exists to
-   avoid. `max-content` isn't subject to that step. A flex row hugging name
-   +pill together — tried before this — packs tight within ONE row but,
-   for the same reason, packs to a DIFFERENT x per row depending on that
-   row's own name length, so pills didn't line up across pickers. And a
-   non-subgrid max-content/auto on each row's own independent grid — tried
-   before that — can only size to that one row's own content for the same
-   reason.) */
-.dl-body{display:grid;grid-template-columns:20px minmax(0,max-content) minmax(0,max-content) minmax(0,90px);column-gap:9px}
-/* Each .dl-block (one per picker, plus the Conditionals section) spans all
-   4 subgridded columns as its own row, then re-exposes them via its own
-   subgrid so its children — the header button and, below it, the item
-   table / rested text — can place into them in turn. */
-.dl-block{grid-column:1/-1;display:grid;grid-template-columns:subgrid;column-gap:9px;border-top:0.5px solid var(--border)}
+.dl-block{border-top:0.5px solid var(--border)}
 .dl-block:first-child{border-top:0}
-/* The item table (or Collapse's wrapper around it) and the static Rested
-   row's own content don't participate in the 4-column split — each just
-   spans the full row as one cell. */
-.dl-block > .collapse,.dl-block > .dl-table{grid-column:1/-1}
-/* Subgrid again, for the SAME reason .dl-block is one: this is what lets
-   the header button's own chev/name/mode/count children land in the real,
-   shared columns above rather than sizing a grid of their own. Applies to
-   EVERY .dl-block-h variant — the real per-picker header (chev+name+mode+
-   count), the Conditionals section title (name+mode-as-count, no chev),
-   and the Rested row (name+mode+rest text, no chev) — each child pinned to
-   its column via grid-column (NOT source-order auto-placement, since the
+/* Grid, not flex, for EVERY .dl-block-h variant — the real per-picker header
+   (chev+name/mode+count), the Conditionals section title (name/mode-as-
+   count, no chev), and the Rested row (name/mode+rest text, no chev) all
+   share this one template now, each child pinned to its own column below
+   via grid-column (NOT relying on source-order auto-placement, since the
    static variants are missing the chev and/or the count/rest column). This
    is what makes the name column start at the SAME x-position whether or
    not a given row happens to render a chevron: the chev's own 20px track
    stays reserved and empty on the variants that don't render one, rather
    than the next real child sliding left into it. */
+/* name+mode column: 1fr, but the pill living right next to the name (not
+   drifting away as the row gets wider) is handled INSIDE that column, not
+   by the grid — .dl-name-mode wraps both in a plain flex row (see below).
+   Neither a fixed nor an auto grid track for the mode column alone could
+   pull this off: whatever's left over after the name always has to land
+   in some track, and any track sized off to the side of the name (rather
+   than sharing a box with it) ends up positioned by the TRACK boundary,
+   not by where the name text actually ends. Flexbox doesn't have that
+   problem — a flex item with no flex-grow just sits at its own content
+   size, so the pill packs against the name and the unused space in this
+   column falls after the pill instead of before it. */
 /* count column: minmax(0,90px), not a bare 90px — a fixed-length track still
    lets its content's automatic minimum size push it wider than the declared
    90px in Firefox specifically, bleeding a character past .dl-block-h's own
    2px right padding. minmax(0,90px) pins the track's own minimum to 0 so the
-   90px max actually holds (same class of bug as .dl-mode's own min-width:0
-   below, but at the track level instead of the item level). */
-.dl-block-h{grid-column:1/-1;display:grid;grid-template-columns:subgrid;align-items:center;column-gap:9px;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
+   90px max actually holds (same class of bug as .dl-name-mode's own
+   min-width:0 below, but at the track level instead of the item level). */
+.dl-block-h{display:grid;grid-template-columns:20px 1fr minmax(0,90px);align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
 .dl-block-h--static{cursor:default}
 .dl-block-h .dl-chev{grid-column:1}
 /* min-width:0 — a grid item's default min-width:auto keeps it from
-   shrinking below its own (nowrap) content's min-content size, so a long
-   name could bleed past the mode column instead of wrapping. */
-.dl-block-h .dl-block-name{grid-column:2;min-width:0}
-/* min-width:0 — same reasoning, for the pill itself: without it a long
-   mode label like "Dynamic Weighted" won't shrink/truncate at narrow
-   widths, forcing the row wider instead. */
-.dl-block-h .dl-mode{grid-column:3;min-width:0;overflow:hidden;text-overflow:ellipsis}
-.dl-block-h .dl-sum,.dl-block-h .dl-rest{grid-column:4}
+   shrinking below its own (nowrap) content's min-content size; without
+   this a long name+pill pair could bleed past the count column instead of
+   the name wrapping/the row narrowing. */
+.dl-block-h .dl-name-mode{grid-column:2;min-width:0}
+.dl-block-h .dl-sum,.dl-block-h .dl-rest{grid-column:3}
+/* Plain flex row, not grid — see the column-2 comment above for why. The
+   name is a normal (non-growing) flex item so it wraps/shrinks at its own
+   content size instead of stretching to fill the 1fr column; the pill
+   packs right up against it via `gap`, and whatever's left in the column
+   falls empty after the pill. */
+.dl-name-mode{display:flex;align-items:center;gap:9px;min-width:0}
+.dl-name-mode .dl-block-name{min-width:0}
+/* min-width:0 — same reasoning as .dl-name-mode's own min-width:0 above,
+   but for the pill itself: without it, a long mode label like "Dynamic
+   Weighted" won't shrink/truncate at narrow widths, forcing the row wider
+   instead. Left at the default flex-shrink (not 0): the name (which can
+   wrap instead of shrinking-in-place) gives up its own space first, so in
+   practice this only truncates the pill as a last resort when the row is
+   too narrow to fit it even after the name has wrapped down to its
+   longest single word. */
+.dl-name-mode .dl-mode{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .dl-block-name{font-size:14px;font-weight:600;letter-spacing:-0.01em}
 .dl-cond-title{color:var(--accent)}
 .dl-mode{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);text-align:center;white-space:nowrap}
