@@ -3565,6 +3565,15 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    problem — a flex item with no flex-grow just sits at its own content
    size, so the pill packs against the name and the unused space in this
    column falls after the pill instead of before it. */
+/* .dl-block-name's own fixed 140px flex-basis (below) is what makes the
+   pill line up across DIFFERENT pickers in the same panel, not this
+   column: every row uses the identical literal 140px, so every row's pill
+   starts at the same offset from the row's own left edge — the same trick
+   .dl-thead/.dl-trow already use for their own fixed columns. A subgrid
+   sized to the actual widest sibling name was tried instead of a literal
+   constant; visually it just moved the goalposts (the gap for a shorter
+   name got as big as the panel's longest name happened to be that day,
+   which still looked wrong), so a plain constant it is. */
 /* count column: minmax(0,90px), not a bare 90px — a fixed-length track still
    lets its content's automatic minimum size push it wider than the declared
    90px in Firefox specifically, bleeding a character past .dl-block-h's own
@@ -3586,7 +3595,13 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    packs right up against it via `gap`, and whatever's left in the column
    falls empty after the pill. */
 .dl-name-mode{display:flex;align-items:center;gap:9px;min-width:0}
-.dl-name-mode .dl-block-name{min-width:0}
+/* flex:0 1 140px — a fixed flex-basis, not 1fr/auto/max-content: every row
+   sharing the exact same literal number is what lines the pill up across
+   pickers (see the column-2 comment above). Not flex:0 0 (rigid) though —
+   it can still shrink (with min-width:0, all the way to 0, i.e. wrapping)
+   under real space pressure on a narrow viewport, it just won't be forced
+   below 140px by ordinary column stretching the way the old 1fr was. */
+.dl-name-mode .dl-block-name{flex:0 1 140px;min-width:0}
 /* min-width:0 — same reasoning as .dl-name-mode's own min-width:0 above,
    but for the pill itself: without it, a long mode label like "Dynamic
    Weighted" won't shrink/truncate at narrow widths, forcing the row wider
