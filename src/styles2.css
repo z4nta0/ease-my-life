@@ -3651,6 +3651,14 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-thead,.dl-trow{display:grid;grid-template-columns:1fr 46px 44px 46px 126px;align-items:center;gap:6px}
 .dl-thead{padding:6px 10px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
 .dl-thead .r,.dl-trow .r{text-align:right;justify-self:end}
+/* Δ overrides the general .r (right-align) rule above for just this one
+   column — same specificity, declared after, so it wins — since it reads
+   better centered under its own narrow column than pinned to the right
+   edge like At gen/After. Covers both the header label and every row's
+   value cell (.dl-mk-delta is on both), and both the item table and the
+   Conditionals table (.dl-cond-row rows still carry the shared .dl-trow
+   class), but not the Reminders table, which has no Δ column at all. */
+.dl-thead .dl-mk-delta,.dl-trow .dl-mk-delta{text-align:center;justify-self:center}
 .dl-trow{padding:8px 10px;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
 .dl-trow:last-child{border-bottom:0}
 .dl-trow.is-done{background:oklch(0.95 0.035 155)}
