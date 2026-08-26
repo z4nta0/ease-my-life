@@ -3574,13 +3574,18 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    constant; visually it just moved the goalposts (the gap for a shorter
    name got as big as the panel's longest name happened to be that day,
    which still looked wrong), so a plain constant it is. */
-/* count column: minmax(0,90px), not a bare 90px — a fixed-length track still
-   lets its content's automatic minimum size push it wider than the declared
-   90px in Firefox specifically, bleeding a character past .dl-block-h's own
-   2px right padding. minmax(0,90px) pins the track's own minimum to 0 so the
-   90px max actually holds (same class of bug as .dl-name-mode's own
-   min-width:0 below, but at the track level instead of the item level). */
-.dl-block-h{display:grid;grid-template-columns:20px 1fr minmax(0,90px);align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
+/* count column: minmax(0,200px), not a bare 200px — a fixed-length track
+   still lets its content's automatic minimum size push it wider than the
+   declared max in Firefox specifically, bleeding a character past
+   .dl-block-h's own 2px right padding (same class of bug as .dl-name-mode's
+   own min-width:0 below, but at the track level instead of the item
+   level). 200px, not 90px: with the Rested row's own two-line content
+   below (icon+"Rested" then the conditional's name, which can itself wrap
+   to multiple lines), 90px was forcing a wrap on nearly every conditional
+   name — 200px comfortably fits most on one line. Narrower again
+   (minmax(0,100px)) below the 500px breakpoint, where 200px would eat too
+   much of the row's own name column on a genuinely narrow screen. */
+.dl-block-h{display:grid;grid-template-columns:20px 1fr minmax(0,200px);align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
 .dl-block-h--static{cursor:default}
 /* The Conditionals section title isn't a picker row wearing the same
    costume — it's just a label and a count, and neither needs to line up
@@ -3640,7 +3645,14 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-chev{color:var(--muted);display:inline-flex;transition:transform .2s}
 .dl-chev svg{width:15px;height:15px;display:block}
 .dl-block.is-closed .dl-chev{transform:rotate(-90deg)}
-.dl-rest{margin-left:auto;font-family:var(--font-mono);font-size:11px;letter-spacing:0.03em;text-transform:uppercase;color:var(--accent);display:inline-flex;align-items:center;gap:6px}
+/* Two lines, not one run of "Rested · {conditional}" text — the icon+
+   "Rested" line stays put on one line, and the conditional's own name
+   (which can be considerably longer, and unlike "Rested" has no reason to
+   stay unbroken) gets its own line below, free to wrap across several
+   lines on its own without dragging the icon down with it. */
+.dl-rest{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.03em;text-transform:uppercase;color:var(--accent)}
+.dl-rest-l1{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.dl-rest-cond{text-align:right}
 .dl-rest svg{width:13px;height:13px}
 /* The "Rested · {conditional name}" text (day-log.jsx) — its own span has
    no class of its own to hook, so targeted structurally: .dl-rest's only
@@ -3785,6 +3797,13 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 @container app (max-width:560px){
   .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 126px;gap:4px}
   .dl-rt-head,.dl-rt-row{grid-template-columns:1fr 104px 104px;gap:6px}
+}
+/* Below this, 200px is too much to give up from the row's own name column
+   on a genuinely narrow screen — the Rested row's own content (icon+
+   "Rested" plus the conditional's name, both able to wrap onto their own
+   lines now) can afford to give some of that width back. */
+@container app (max-width:500px){
+  .dl-block-h{grid-template-columns:20px 1fr minmax(0,100px)}
 }
 /* Status needs its full 126px to fit every icon on one row (see the base
    rule's own comment) at any width down to here — but below this, giving

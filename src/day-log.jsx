@@ -206,7 +206,10 @@ function PickerBlock({ state, picker, day, suppressed }) {
             <span className="dl-block-name">{picker.name}</span>
             <InfoTip className={`dl-mode ${neutral ? 'neutral' : ''}`} label={modeLabel}>{modeLabel}</InfoTip>
           </span>
-          <span className="dl-rest"><Ico name="moon" /><span>Rested{cond ? ` · ${cond.name}` : ''}</span></span>
+          <span className="dl-rest">
+            <span className="dl-rest-l1"><Ico name="moon" />Rested</span>
+            {cond && <span className="dl-rest-cond">{cond.name}</span>}
+          </span>
         </div>
       </div>
     );
