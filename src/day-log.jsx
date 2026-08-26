@@ -199,8 +199,10 @@ function PickerBlock({ state, picker, day, suppressed }) {
     return (
       <div className="dl-block">
         <div className="dl-block-h dl-block-h--static">
-          <span className="dl-block-name">{picker.name}</span>
-          <span className={`dl-mode ${neutral ? 'neutral' : ''}`}>{modeLabel}</span>
+          <span className="dl-name-mode">
+            <span className="dl-block-name">{picker.name}</span>
+            <span className={`dl-mode ${neutral ? 'neutral' : ''}`}>{modeLabel}</span>
+          </span>
           <span className="dl-rest"><Ico name="moon" /><span>Rested{cond ? ` · ${cond.name}` : ''}</span></span>
         </div>
       </div>
@@ -212,8 +214,10 @@ function PickerBlock({ state, picker, day, suppressed }) {
     <div className={`dl-block ${open ? '' : 'is-closed'}`}>
       <button type="button" className="dl-block-h" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
         <span className="dl-chev"><Ico name="chevron" /></span>
-        <span className="dl-block-name">{picker.name}</span>
-        <span className={`dl-mode ${neutral ? 'neutral' : ''}`}>{modeLabel}</span>
+        <span className="dl-name-mode">
+          <span className="dl-block-name">{picker.name}</span>
+          <span className={`dl-mode ${neutral ? 'neutral' : ''}`}>{modeLabel}</span>
+        </span>
         <span className="dl-sum"><span>{items.length} item{items.length === 1 ? '' : 's'}</span>
           {doneCount > 0 && <span className="dl-dchip"><Ico name="check" w={3} /><span>{doneCount} done</span></span>}
         </span>
@@ -255,8 +259,10 @@ function CondSection({ state, pickersInGroup, day }) {
   return (
     <div className="dl-block dl-cond-sec">
       <div className="dl-block-h dl-block-h--static">
-        <span className="dl-block-name dl-cond-title">Conditionals</span>
-        <span className="dl-mode">{conds.length}</span>
+        <span className="dl-name-mode">
+          <span className="dl-block-name dl-cond-title">Conditionals</span>
+          <span className="dl-mode">{conds.length}</span>
+        </span>
       </div>
       <div className="dl-table">
         <TableHead first="Conditional" />
