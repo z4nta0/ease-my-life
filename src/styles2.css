@@ -3629,7 +3629,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   .dl-rt-head,.dl-rt-row{grid-template-columns:1fr 104px 104px;gap:6px}
   .dl-cond-row .dl-nrow{flex-wrap:wrap;gap:4px}
   .dl-cond-row .dl-name{flex:0 0 100%;width:100%}
-  .dl-cond-row .dl-mode--cond{display:block;width:100%;max-width:140px;padding:2px 0;text-align:center}
+  .dl-cond-row .dl-mode--cond{display:block;width:100%;max-width:140px;text-align:center}
 }
 /* Status needs its full 126px to fit every icon on one row (see the base
    rule's own comment) at any width down to here — but below this, giving
