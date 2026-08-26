@@ -105,7 +105,7 @@
 }
 .picker-tab.is-on .picker-tab-name { color: var(--accent); }
 .picker-tab-name { font-weight: 500; font-size: 14px; letter-spacing: -0.01em; }
-.picker-tab-mode { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.picker-tab-mode { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
 
 /* Group filter bar — scrollable pills above the picker strip that scope it to
    one group (or All). Lighter weight than the picker tabs so the hierarchy
