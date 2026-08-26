@@ -3609,15 +3609,19 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    under real space pressure on a narrow viewport, it just won't be forced
    below 140px by ordinary column stretching the way the old 1fr was. */
 .dl-name-mode .dl-block-name{flex:0 1 140px;min-width:0}
-/* min-width:0 — same reasoning as .dl-name-mode's own min-width:0 above,
-   but for the pill itself: without it, a long mode label like "Dynamic
-   Weighted" won't shrink/truncate at narrow widths, forcing the row wider
-   instead. Left at the default flex-shrink (not 0): the name (which can
-   wrap instead of shrinking-in-place) gives up its own space first, so in
-   practice this only truncates the pill as a last resort when the row is
-   too narrow to fit it even after the name has wrapped down to its
-   longest single word. */
-.dl-name-mode .dl-mode{min-width:0;overflow:hidden;text-overflow:ellipsis}
+/* width:140px — a fixed size for the pill itself (not just its column),
+   same 140px as the name next to it and as the wrap-breakpoint's own
+   max-width below, so every pill is an identical, evenly-sized chip
+   regardless of its own label's length — comfortably fits the longest
+   label in use ("Dynamic Weighted", ~131px) with .dl-mode's own
+   text-align:center centering shorter ones within it.
+   min-width:0 — without it, a long mode label won't shrink/truncate at
+   narrow widths, forcing the row wider instead. Left at the default
+   flex-shrink (not 0): the name (which can wrap instead of shrinking-in-
+   place) gives up its own space first, so in practice this only shrinks/
+   truncates the pill as a last resort when the row is too narrow to fit
+   it even after the name has wrapped down to its longest single word. */
+.dl-name-mode .dl-mode{width:140px;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .dl-block-name{font-size:14px;font-weight:600;letter-spacing:-0.01em}
 .dl-cond-title{color:var(--accent)}
 .dl-mode{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);text-align:center;white-space:nowrap}
@@ -3711,7 +3715,12 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    padding was dropped to 0 — put the 8px sides back for these two only. */
 .dl-st-trig{background:var(--accent);color:var(--bg);padding:2px 8px}
 .dl-st-nottrig{background:var(--surface);color:var(--muted);border:0.5px solid var(--border);padding:2px 8px}
-.dl-mode--cond{background:var(--bg);color:var(--accent);border:0.5px solid oklch(from var(--accent) l c h/0.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+/* width:140px — same reasoning as .dl-name-mode .dl-mode's own comment
+   elsewhere in this file: a fixed size for the pill itself, not just its
+   column, so every conditional's pill is an identical, evenly-sized chip
+   regardless of its own label's length (text-align:center comes from the
+   shared .dl-mode class already). */
+.dl-mode--cond{width:140px;background:var(--bg);color:var(--accent);border:0.5px solid oklch(from var(--accent) l c h/0.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 /* flex:0 0 140px — RIGID, not 0 1 140px (shrinkable): this row's outer
    1fr "item" column doesn't shrink smoothly as the viewport narrows — the
    other, fixed-width columns in this same .dl-trow/.dl-cond-row grid snap
