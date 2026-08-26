@@ -3761,12 +3761,21 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
   .dl-cond-row .dl-name{flex:0 0 100%;width:100%}
   .dl-cond-row .dl-mode--cond{display:block;width:100%;max-width:140px;text-align:center}
 }
-@container app (max-width:560px){
-  .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 126px;gap:4px}
-  .dl-rt-head,.dl-rt-row{grid-template-columns:1fr 104px 104px;gap:6px}
+/* 600px, not 560px like .dl-thead/.dl-trow's own breakpoint just below —
+   this is a SEPARATE block specifically so the pill-wrap threshold can
+   move on its own without dragging those unrelated column-width rules
+   along with it. The pill was still getting uncomfortably squeezed in the
+   560-600px sliver (the same "outer columns pinching the item column
+   narrower" effect as the 761-843px block above), so wrap starts here
+   instead of at 560. */
+@container app (max-width:600px){
   .dl-cond-row .dl-nrow{flex-wrap:wrap;gap:4px}
   .dl-cond-row .dl-name{flex:0 0 100%;width:100%}
   .dl-cond-row .dl-mode--cond{display:block;width:100%;max-width:140px;text-align:center}
+}
+@container app (max-width:560px){
+  .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 126px;gap:4px}
+  .dl-rt-head,.dl-rt-row{grid-template-columns:1fr 104px 104px;gap:6px}
 }
 /* Status needs its full 126px to fit every icon on one row (see the base
    rule's own comment) at any width down to here — but below this, giving
