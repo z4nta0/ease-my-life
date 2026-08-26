@@ -3654,10 +3654,6 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-rest-l1{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .dl-rest-cond{text-align:right}
 .dl-rest svg{width:13px;height:13px}
-/* The "Rested · {conditional name}" text (day-log.jsx) — its own span has
-   no class of its own to hook, so targeted structurally: .dl-rest's only
-   other child is the moon icon (an <svg>), so this can't match it too. */
-.dl-rest>span{text-align:center}
 
 /* table */
 .dl-table{padding-bottom:12px}
