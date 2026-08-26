@@ -3559,7 +3559,12 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    wrapping onto 2 lines whenever a long name wrapped its own row taller —
    its column width is no longer squeezed by flex-shrink competition with
    the name. */
-.dl-block-h{display:grid;grid-template-columns:20px 1fr 120px 90px;align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
+/* count column: 96px, not 90px — a plain 90px left it right at the edge of
+   .dl-block-h's own 2px right padding, thin enough that Firefox's own text
+   metrics for "items"/"done" (very slightly wider there than Chromium's)
+   bled a character past it. The extra 6px comes out of the flexible 1fr
+   name column, not felt anywhere. */
+.dl-block-h{display:grid;grid-template-columns:20px 1fr 120px 96px;align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
 .dl-block-h--static{cursor:default}
 .dl-block-h .dl-chev{grid-column:1}
 .dl-block-h .dl-block-name{grid-column:2}
