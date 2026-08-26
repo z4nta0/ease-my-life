@@ -3748,6 +3748,19 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-st-skip{background:oklch(0.955 0.02 25);color:oklch(0.53 0.16 25)}
 .dl-st-not{color:oklch(from var(--muted) l c h/0.75);font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;text-align:right}
 
+/* This range doesn't correspond to any breakpoint of .dl-trow/.dl-cond-row's
+   own — it's the sidebar's own breakpoint elsewhere in the app shell
+   pinching .main (and so this row's container-query width) narrower right
+   before the sidebar collapses and gives that width back. The rigid
+   140px name (above) no longer loses alignment there, but with nowhere
+   else to give, the mode pill was shrinking down uncomfortably small
+   instead. Same fix as the ≤560px block below: wrap the pill onto its own
+   line rather than let it keep shrinking. */
+@container app (min-width:761px) and (max-width:843px){
+  .dl-cond-row .dl-nrow{flex-wrap:wrap;gap:4px}
+  .dl-cond-row .dl-name{flex:0 0 100%;width:100%}
+  .dl-cond-row .dl-mode--cond{display:block;width:100%;max-width:140px;text-align:center}
+}
 @container app (max-width:560px){
   .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 126px;gap:4px}
   .dl-rt-head,.dl-rt-row{grid-template-columns:1fr 104px 104px;gap:6px}
