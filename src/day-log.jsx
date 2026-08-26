@@ -201,7 +201,7 @@ function PickerBlock({ state, picker, day, suppressed }) {
         <div className="dl-block-h dl-block-h--static">
           <span className="dl-name-mode">
             <span className="dl-block-name">{picker.name}</span>
-            <span className={`dl-mode ${neutral ? 'neutral' : ''}`}>{modeLabel}</span>
+            <InfoTip className={`dl-mode ${neutral ? 'neutral' : ''}`} label={modeLabel}>{modeLabel}</InfoTip>
           </span>
           <span className="dl-rest"><Ico name="moon" /><span>Rested{cond ? ` · ${cond.name}` : ''}</span></span>
         </div>
@@ -216,7 +216,7 @@ function PickerBlock({ state, picker, day, suppressed }) {
         <span className="dl-chev"><Ico name="chevron" /></span>
         <span className="dl-name-mode">
           <span className="dl-block-name">{picker.name}</span>
-          <span className={`dl-mode ${neutral ? 'neutral' : ''}`}>{modeLabel}</span>
+          <InfoTip className={`dl-mode ${neutral ? 'neutral' : ''}`} label={modeLabel}>{modeLabel}</InfoTip>
         </span>
         <span className="dl-sum"><span>{items.length} item{items.length === 1 ? '' : 's'}</span>
           {doneCount > 0 && <span className="dl-dchip"><Ico name="check" w={3} /><span>{doneCount} done</span></span>}
