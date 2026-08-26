@@ -3591,7 +3591,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-na{font-family:var(--font-mono);font-size:11px;color:oklch(from var(--muted) l c h/0.55)}
 .dl-status{display:flex;gap:4px;justify-self:end;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .dl-none{color:oklch(from var(--muted) l c h/0.4);font-family:var(--font-mono);font-size:13px;text-align:right}
-.dl-vac{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.04em;text-transform:uppercase;color:oklch(from var(--muted) l c h/0.7)}
+.dl-vac{font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:oklch(from var(--muted) l c h/0.7)}
 .dl-trow.is-dim .dl-name{color:var(--muted)}
 
 /* conditionals section */
@@ -3600,8 +3600,13 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-cond-aff svg{width:12px;height:12px;flex:none;opacity:0.8}
 .dl-cond-aff b{color:var(--accent);font-weight:600}
 .dl-st-pill{font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;padding:2px 0;border-radius:999px;white-space:nowrap}
-.dl-st-trig{background:var(--accent);color:var(--bg)}
-.dl-st-nottrig{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
+/* padding: 2px 8px — unlike the reminder status pills (Done/Due/Skipped),
+   which sit flush against the Status column's own right edge with room to
+   spare, Triggered/Not triggered's own text was found to brush right up
+   against the pill's rounded edges once .dl-st-pill's base horizontal
+   padding was dropped to 0 — put the 8px sides back for these two only. */
+.dl-st-trig{background:var(--accent);color:var(--bg);padding:2px 8px}
+.dl-st-nottrig{background:var(--surface);color:var(--muted);border:0.5px solid var(--border);padding:2px 8px}
 .dl-mode--cond{background:var(--bg);color:var(--accent);border:0.5px solid oklch(from var(--accent) l c h/0.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .dl-nrow .dl-name{min-width:0}
 .dl-mode--cond.is-neutral{background:var(--bg);color:var(--muted);border-color:var(--border)}
