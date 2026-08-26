@@ -3545,10 +3545,23 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-block{border-top:0.5px solid var(--border)}
 .dl-block:first-child{border-top:0}
 .dl-block-h{display:flex;align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
+/* Grid, not flex, for the real per-picker header row (chev+name+mode+count)
+   specifically — same "1fr name column + fixed-width side columns" pattern
+   as .dl-thead/.dl-trow's own item grid, so the mode pill and item count
+   land at the SAME x-position across every picker block in the panel
+   instead of each row's flex layout sizing them off that row's own name
+   length. Also fixes the mode pill wrapping onto 2 lines whenever a long
+   name wrapped its own row taller — its column width is no longer being
+   squeezed by flex-shrink competition with the name. Left off the static
+   variants (Conditionals section title, Rested row) — those have a
+   different, smaller set of children (no chev, sometimes no count/rest
+   column either) that this 4-column template isn't shaped for.
+   Nowhere else than the header does this apply, so :not() is safe. */
+.dl-block-h:not(.dl-block-h--static){display:grid;grid-template-columns:20px 1fr 150px 90px}
 .dl-block-h--static{cursor:default}
 .dl-block-name{font-size:14px;font-weight:600;letter-spacing:-0.01em}
 .dl-cond-title{color:var(--accent)}
-.dl-mode{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);text-align:center}
+.dl-mode{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);text-align:center;white-space:nowrap}
 .dl-mode.neutral{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
 .dl-sum{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
 .dl-dchip{display:inline-flex;align-items:center;gap:4px;color:oklch(0.5 0.11 155)}
