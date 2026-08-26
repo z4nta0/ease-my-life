@@ -3578,7 +3578,11 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    further: at the narrowest widths, the "N items"/"X done" pair wraps
    onto its own second line within this column's fixed 90px instead of
    demanding extra horizontal room. */
-.dl-sum{margin-left:auto;display:inline-flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+/* min-width:0 — same fix as .dl-mode's own comment above: as a grid item,
+   .dl-sum's default min-width:auto let it ignore its own 90px column and
+   grow to fit its children's combined width instead, so flex-wrap never
+   had anything to actually wrap AGAINST (no overflow ever occurred). */
+.dl-sum{margin-left:auto;display:inline-flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted);min-width:0}
 .dl-dchip{display:inline-flex;align-items:center;gap:4px;color:oklch(0.5 0.11 155)}
 .dl-dchip svg{width:12px;height:12px}
 .dl-chev{color:var(--muted);display:inline-flex;transition:transform .2s}
