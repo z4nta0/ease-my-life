@@ -259,10 +259,8 @@ function CondSection({ state, pickersInGroup, day }) {
   return (
     <div className="dl-block dl-cond-sec">
       <div className="dl-block-h dl-block-h--static">
-        <span className="dl-name-mode">
-          <span className="dl-block-name dl-cond-title">Conditionals</span>
-          <span className="dl-mode">{conds.length}</span>
-        </span>
+        <span className="dl-block-name dl-cond-title">Conditionals</span>
+        <span className="dl-mode">{conds.length}</span>
       </div>
       <div className="dl-table">
         <TableHead first="Conditional" />

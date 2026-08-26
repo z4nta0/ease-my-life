@@ -3582,6 +3582,13 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    min-width:0 below, but at the track level instead of the item level). */
 .dl-block-h{display:grid;grid-template-columns:20px 1fr minmax(0,90px);align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
 .dl-block-h--static{cursor:default}
+/* The Conditionals section title isn't a picker row wearing the same
+   costume — it's just a label and a count, and neither needs to line up
+   with anything else in the panel (there's only ever one of this row, and
+   it has no chevron/count-or-rest column to begin with). Plain flex,
+   hugging its own content, instead of inheriting the picker rows' 3-column
+   grid template. */
+.dl-cond-sec .dl-block-h{display:flex;gap:9px}
 .dl-block-h .dl-chev{grid-column:1}
 /* min-width:0 — a grid item's default min-width:auto keeps it from
    shrinking below its own (nowrap) content's min-content size; without
