@@ -3642,6 +3642,11 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    narrow screen, so it halves instead. */
 @container app (max-width:450px){
   .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 63px}
+  /* Conditional rows need more than the other rows' 63px here — Triggered/
+     Not triggered's own pill text (plus its restored 8px side padding, see
+     .dl-st-trig/.dl-st-nottrig's own comment) bled into the After column
+     at that width. */
+  .dl-cond-row{grid-template-columns:1fr 40px 35px 35px 110px}
 }
 
 /* Below this, a picker block header's own name (.dl-block-name) crowds the
