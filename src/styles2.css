@@ -3549,30 +3549,23 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
    no chev), and the Rested row (name+mode+rest text, no chev) all share
    this one template now, each child pinned to its own column below via
    grid-column (NOT relying on source-order auto-placement, since the
-   static variants are missing the chev and/or the count/rest column).
-   This is what makes the name column (and thus the mode pill/count after
-   it) start at the SAME x-position whether or not a given row happens to
-   render a chevron: the chev's own 20px track stays reserved and empty on
-   the variants that don't render one, rather than the next real child
-   sliding left into it. Also fixes the mode pill wrapping onto 2 lines
-   whenever a long name wrapped its own row taller — its column width is
-   no longer squeezed by flex-shrink competition with the name. */
-/* name column: minmax(0,220px), not 1fr — 1fr claims ALL leftover row
-   width, which on a wide desktop viewport (this row has no width cap of
-   its own) dragged the mode pill/count columns far away from the (short,
-   left-aligned) name text since they sit past that ballooning column.
-   Capped so they stay right next to the name regardless of viewport width;
-   still minmax(0,...) so it shrinks fine on narrow viewports and a very
-   long name can still wrap onto 2 lines past the cap. The trailing 1fr
-   track (no child occupies it) absorbs whatever width is left over instead
-   of the name column doing so. */
+   static variants are missing the chev and/or the count/rest column) —
+   same "1fr name column + fixed-width side columns" pattern as .dl-thead/
+   .dl-trow's own item grid. This is what makes the name column (and thus
+   the mode pill/count after it) start at the SAME x-position whether or
+   not a given row happens to render a chevron: the chev's own 20px track
+   stays reserved and empty on the variants that don't render one, rather
+   than the next real child sliding left into it. Also fixes the mode pill
+   wrapping onto 2 lines whenever a long name wrapped its own row taller —
+   its column width is no longer squeezed by flex-shrink competition with
+   the name. */
 /* count column: minmax(0,90px), not a bare 90px — a fixed-length track still
    lets its content's automatic minimum size push it wider than the declared
    90px in Firefox specifically, bleeding a character past .dl-block-h's own
    2px right padding. minmax(0,90px) pins the track's own minimum to 0 so the
    90px max actually holds (same class of bug as .dl-sum's own min-width:0
    fix above, but at the track level instead of the item level). */
-.dl-block-h{display:grid;grid-template-columns:20px minmax(0,220px) 120px minmax(0,90px) 1fr;align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
+.dl-block-h{display:grid;grid-template-columns:20px 1fr 120px minmax(0,90px);align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
 .dl-block-h--static{cursor:default}
 .dl-block-h .dl-chev{grid-column:1}
 .dl-block-h .dl-block-name{grid-column:2}
