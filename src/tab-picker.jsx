@@ -593,7 +593,7 @@ function PickerView({ picker, state, actions, animStyle }) {
                 ) : (
                   <React.Fragment>
                     <div className="pool-name">
-                      {it.name}
+                      <span className="pool-item-name">{it.name}</span>
                       {it.vacation && <Pill tone="muted">vacation</Pill>}
                       {!eligibleHere && !it.vacation && <Pill tone="muted">{picker.mode === 'ease-up' ? 'not yet' : 'spent'}</Pill>}
                     </div>

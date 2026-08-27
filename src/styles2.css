@@ -615,21 +615,29 @@
 .pool-confirm { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .pool-confirm-msg { font-size: 14px; text-wrap: pretty; }
 .pool-confirm-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+/* justify-content: space-between — sticks the status pill to the row's own
+   right edge when it's on the same line as the name (rather than sitting
+   wherever the name's own length happens to end), lining up its column
+   across rows. */
 .pool-name {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
   font-size: 14px;
   text-wrap: pretty;
 }
-/* The vacation/not-yet/spent status pill next to an item's name — centered
-   regardless of viewport. Its box is normally tight around the text (no
-   visible effect there), but becomes a full-width second line below
-   480px (see the media query below), where centering actually matters. */
-.pool-name .pill { text-align: center; }
-/* Push the status pill to its own line under the name rather than
-   competing with it for width on a narrow row. */
+/* width: 80px — a fixed size for the pill itself, not just a max, so its
+   own text ("not yet" / "spent" / "vacation") never wraps onto a second
+   line inside it; text-align: center holds regardless of viewport. */
+.pool-name .pill { width: 80px; flex: 0 0 80px; text-align: center; }
+/* Below 480px, push the pill onto its own line under the name instead of
+   competing with it for width on a narrow row. Forcing .pool-item-name to
+   flex-basis: 100% (rather than giving the pill itself width: 100%, which
+   stretched it uncomfortably wide across the whole row) leaves the pill at
+   its own normal fixed 80px, just wrapped down a line by flex-wrap — name
+   claims the entire first line, so nothing of the second is left for it to
+   share. */
 @media (max-width: 480px) {
   .pool-name { flex-wrap: wrap; }
-  .pool-name .pill { flex: 0 0 100%; width: 100%; }
+  .pool-name .pool-item-name { flex: 1 1 100%; }
 }
 .pool-meta {
   display: flex; align-items: center; justify-content: flex-end; gap: 12px;
