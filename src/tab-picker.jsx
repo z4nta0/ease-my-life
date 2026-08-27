@@ -255,6 +255,11 @@ function PickerView({ picker, state, actions, animStyle }) {
   // new-picker create flow. `newDraft` is the editing item; a synthetic actions
   // object edits it; on Save it's committed via the real store actions.
   const [newDraft, setNewDraft] = React.useState(null);
+  // Set by startEditItem when it has to close an in-progress new-item draft
+  // out of the way first (see there) — picked back up once that draft's own
+  // closing animation ends, so the edit opens right after instead of being
+  // silently dropped.
+  const pendingEditIdRef = React.useRef(null);
   const [insertSavedId, setInsertSavedId] = React.useState(null);
   const [confirmDelId, setConfirmDelId] = React.useState(null);
   const [confirmLeaveId, setConfirmLeaveId] = React.useState(null);
@@ -341,8 +346,7 @@ function PickerView({ picker, state, actions, animStyle }) {
       setEditingItemClosing(false);
     }
   }, [editingItemId, state.items]);
-  const startEditItem = (id) => {
-    if (newDraft || editingItemId) return;   // one editor at a time
+  const openEditItem = (id) => {
     const it = state.items.find((x) => x.id === id);
     if (!it) return;
     setEditingItemId(id);
@@ -357,6 +361,21 @@ function PickerView({ picker, state, actions, animStyle }) {
       const overflowBelow = el.getBoundingClientRect().bottom - sc.getBoundingClientRect().bottom + 96;
       if (overflowBelow > 0) sc.scrollTo({ top: sc.scrollTop + overflowBelow, behavior: reduceMotion() ? 'auto' : 'smooth' });
     }));
+  };
+  const startEditItem = (id) => {
+    if (editingItemId) return;   // one editor at a time
+    // A new-item draft is in progress — close it (without saving) instead
+    // of silently no-oping, then pick this edit back up once that draft's
+    // own closing animation finishes (see the .pv-newitem onAnimationEnd
+    // handler below). The reverse never needs this: the "+ Add item"
+    // button that starts a new draft isn't rendered while an existing
+    // item's edit form is open.
+    if (newDraft) {
+      pendingEditIdRef.current = id;
+      setNewItemClosing('cancel');
+      return;
+    }
+    openEditItem(id);
   };
 
   const pickerItems = state.items.filter((it) => it.pickerId === picker.id);
@@ -699,6 +718,11 @@ function PickerView({ picker, state, actions, animStyle }) {
                      if (newItemClosing === 'save') commitDraft(newItem);
                      setNewItemClosing(false);
                      setNewDraft(null);
+                     if (pendingEditIdRef.current) {
+                       const id = pendingEditIdRef.current;
+                       pendingEditIdRef.current = null;
+                       openEditItem(id);
+                     }
                    }}>
                 <div className="rd-row" onClick={(e) => e.stopPropagation()}>
                   <span className="rd-main">
