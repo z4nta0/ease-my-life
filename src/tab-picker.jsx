@@ -256,10 +256,22 @@ function PickerView({ picker, state, actions, animStyle }) {
   // object edits it; on Save it's committed via the real store actions.
   const [newDraft, setNewDraft] = React.useState(null);
   // Set by startEditItem when it has to close an in-progress new-item draft
-  // out of the way first (see there) — picked back up once that draft's own
-  // closing animation ends, so the edit opens right after instead of being
-  // silently dropped.
+  // OR another item's open editor out of the way first (see there) — picked
+  // back up once that draft's/editor's own closing animation ends, so the
+  // edit opens right after instead of being silently dropped.
   const pendingEditIdRef = React.useRef(null);
+  // A snapshot of whatever item openEditItem last opened, taken at that exact
+  // moment — used ONLY by startEditItem to explicitly revert live edits when
+  // jumping straight from one item's editor to a different item's, bypassing
+  // EntryEditor's own internal revert-on-unmount. That mechanism alone isn't
+  // enough here: it arms window.__editGuard's revert via a 0ms setTimeout on
+  // unmount, but the very next EntryEditor's mount effect unconditionally
+  // disarms it (by design, so a stale pending revert can't clobber an
+  // unrelated fresh edit session) — and both the unmount and the next mount
+  // happen in the same synchronous effect-flush, well before that timeout
+  // would ever get to fire. So the disarm always wins and nothing reverts
+  // unless this does it directly instead.
+  const editingItemSnapshotRef = React.useRef(null);
   const [insertSavedId, setInsertSavedId] = React.useState(null);
   const [confirmDelId, setConfirmDelId] = React.useState(null);
   const [confirmLeaveId, setConfirmLeaveId] = React.useState(null);
@@ -349,6 +361,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   const openEditItem = (id) => {
     const it = state.items.find((x) => x.id === id);
     if (!it) return;
+    editingItemSnapshotRef.current = { ...it };
     setEditingItemId(id);
     setEditingName(it.name);
     // Same reveal as addNewItem's own — the editor renders in the same
@@ -363,7 +376,18 @@ function PickerView({ picker, state, actions, animStyle }) {
     }));
   };
   const startEditItem = (id) => {
-    if (editingItemId) return;   // one editor at a time
+    if (editingItemId === id) return;   // already open on this exact item
+    // Another item's editor is already open — revert it back to its
+    // pre-edit snapshot (see editingItemSnapshotRef's own comment for why
+    // this can't just rely on EntryEditor's usual unmount-triggered revert
+    // here) and close it, then pick this edit back up once its closing
+    // animation finishes (see the editor's onAnimationEnd handler below).
+    if (editingItemId) {
+      if (editingItemSnapshotRef.current) actions.replaceItem(editingItemId, editingItemSnapshotRef.current);
+      pendingEditIdRef.current = id;
+      setEditingItemClosing(true);
+      return;
+    }
     // A new-item draft is in progress — close it (without saving) instead
     // of silently no-oping, then pick this edit back up once that draft's
     // own closing animation finishes (see the .pv-newitem onAnimationEnd
@@ -681,6 +705,11 @@ function PickerView({ picker, state, actions, animStyle }) {
                        if (!editingItemClosing || e.target !== e.currentTarget) return;
                        setEditingItemClosing(false);
                        setEditingItemId(null);
+                       if (pendingEditIdRef.current) {
+                         const id = pendingEditIdRef.current;
+                         pendingEditIdRef.current = null;
+                         openEditItem(id);
+                       }
                      }}>
                   <div className="rd-row" onClick={(e) => e.stopPropagation()}>
                     <span className="rd-main">
@@ -699,7 +728,19 @@ function PickerView({ picker, state, actions, animStyle }) {
                         existing item stays solely the row's own trash icon
                         + confirm flow, one delete affordance per item
                         instead of two that could disagree with each other. */}
-                    <EntryEditor item={editItem} picker={picker} actions={actions}
+                    {/* key={editItem.id} — without it, switching editingItemId
+                        straight from one item to another (see startEditItem)
+                        can commit in a single React batch with no intervening
+                        null render, so this stays the SAME EntryEditor
+                        instance across the switch: its internal `orig`
+                        snapshot ref (captured once, on mount) would keep
+                        pointing at the FIRST item, and its unmount effect —
+                        which is what discards live edits via
+                        window.__editGuard when a close wasn't an explicit
+                        Save/Cancel — would never run at all. The key forces
+                        React to unmount the old instance and mount a fresh
+                        one whenever the id changes, even within one commit. */}
+                    <EntryEditor key={editItem.id} item={editItem} picker={picker} actions={actions}
                                  onClose={() => setEditingItemClosing(true)} />
                   </div>
                 </div>
