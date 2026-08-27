@@ -3837,10 +3837,12 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
      center left the pill's short text floating in the middle of this
      up-to-140px-wide box, far from the conditional name above it (the
      name's own box, also full-width here, starts flush at the row's left
-     edge). margin-left:-8px then cancels .dl-mode's own 8px left padding,
-     same "pull left by the exact padding amount" fix as the Pickers
-     page's wrapped status pill. */
-  .dl-cond-row .dl-mode--cond{display:block;width:100%;max-width:140px;text-align:left;margin-left:-8px}
+     edge). margin-left:-4px — HALF of .dl-mode's own 8px left padding,
+     not the full amount — pulls it most of the way toward the name
+     without putting the pill's own border right up against the row's
+     left edge; doesn't land pixel-perfect with the name's text but reads
+     better than the cramped full -8px. */
+  .dl-cond-row .dl-mode--cond{display:block;width:100%;max-width:140px;text-align:left;margin-left:-4px}
 }
 /* 600px, not 560px like .dl-thead/.dl-trow's own breakpoint just below —
    this is a SEPARATE block specifically so the pill-wrap threshold can
@@ -3856,10 +3858,12 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
      center left the pill's short text floating in the middle of this
      up-to-140px-wide box, far from the conditional name above it (the
      name's own box, also full-width here, starts flush at the row's left
-     edge). margin-left:-8px then cancels .dl-mode's own 8px left padding,
-     same "pull left by the exact padding amount" fix as the Pickers
-     page's wrapped status pill. */
-  .dl-cond-row .dl-mode--cond{display:block;width:100%;max-width:140px;text-align:left;margin-left:-8px}
+     edge). margin-left:-4px — HALF of .dl-mode's own 8px left padding,
+     not the full amount — pulls it most of the way toward the name
+     without putting the pill's own border right up against the row's
+     left edge; doesn't land pixel-perfect with the name's text but reads
+     better than the cramped full -8px. */
+  .dl-cond-row .dl-mode--cond{display:block;width:100%;max-width:140px;text-align:left;margin-left:-4px}
 }
 @container app (max-width:560px){
   .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 126px;gap:4px}
