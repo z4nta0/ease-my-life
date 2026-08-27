@@ -3891,6 +3891,13 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
      .dl-st-trig/.dl-st-nottrig's own comment) bled into the After column
      at that width. */
   .dl-cond-row{grid-template-columns:1fr 40px 35px 35px 110px}
+  /* The Conditionals section's own header needs the same wider 110px as
+     its body rows above, not the generic .dl-thead rule's 63px — a plain
+     grid's 1fr column resolves to whatever's left AFTER its fixed
+     columns, so with a narrower last column the header's 1fr claimed 47px
+     more than the rows' own did, throwing every column after it (At gen/
+     Δ/After) out of alignment with the values underneath. */
+  .dl-cond-sec .dl-thead{grid-template-columns:1fr 40px 35px 35px 110px}
 }
 
 /* Below this, a picker block header's own name (.dl-block-name) crowds the
