@@ -626,8 +626,11 @@
 }
 /* width: 80px — a fixed size for the pill itself, not just a max, so its
    own text ("not yet" / "spent" / "vacation") never wraps onto a second
-   line inside it; text-align: center holds regardless of viewport. */
-.pool-name .pill { width: 80px; flex: 0 0 80px; text-align: center; }
+   line inside it. justify-content: center, not text-align: center — .pill
+   is display:inline-flex (ui.jsx), so its text is a flex item rather than
+   plain inline content; text-align has no effect on a flex item's position
+   along the main axis, justify-content does. Holds regardless of viewport. */
+.pool-name .pill { width: 80px; flex: 0 0 80px; justify-content: center; }
 /* Below 480px, push the pill onto its own line under the name instead of
    competing with it for width on a narrow row. Forcing .pool-item-name to
    flex-basis: 100% (rather than giving the pill itself width: 100%, which
