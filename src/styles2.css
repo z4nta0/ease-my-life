@@ -620,15 +620,16 @@
   font-size: 14px;
   text-wrap: pretty;
 }
-/* flex: 0 1 200px — a fixed width for the name itself (not the row's own
+/* flex: 0 1 160px — a fixed width for the name itself (not the row's own
    space-between, tried first: at a wide viewport that stuck the pill to
    the row's far right edge, way past the end of a typically much shorter
-   name). Every row using the identical literal 200px is what lines the
+   name). Every row using the identical literal 160px is what lines the
    pill up in one column across items — same trick already used for the
-   Day Log's picker names and conditional names. 200px comfortably fits
-   real item names on one line (measured 93-161px on this data); min-width:
-   0 lets it shrink/wrap instead of overflowing on a genuinely narrow row. */
-.pool-item-name { flex: 0 1 200px; min-width: 0; }
+   Day Log's picker names and conditional names. min-width: 0 lets it
+   shrink/wrap instead of overflowing on a genuinely narrow row — and lets
+   a real name a little over 160px just wrap onto a second line rather
+   than widening the column for everyone else. */
+.pool-item-name { flex: 0 1 160px; min-width: 0; }
 /* width: 80px — a fixed size for the pill itself, not just a max, so its
    own text ("not yet" / "spent" / "vacation") never wraps onto a second
    line inside it. justify-content: center, not text-align: center — .pill
