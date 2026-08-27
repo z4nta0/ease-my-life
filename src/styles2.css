@@ -620,6 +620,17 @@
   font-size: 14px;
   text-wrap: pretty;
 }
+/* The vacation/not-yet/spent status pill next to an item's name — centered
+   regardless of viewport. Its box is normally tight around the text (no
+   visible effect there), but becomes a full-width second line below
+   480px (see the media query below), where centering actually matters. */
+.pool-name .pill { text-align: center; }
+/* Push the status pill to its own line under the name rather than
+   competing with it for width on a narrow row. */
+@media (max-width: 480px) {
+  .pool-name { flex-wrap: wrap; }
+  .pool-name .pill { flex: 0 0 100%; width: 100%; }
+}
 .pool-meta {
   display: flex; align-items: center; justify-content: flex-end; gap: 12px;
   justify-self: end;
