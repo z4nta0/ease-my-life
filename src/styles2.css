@@ -615,8 +615,21 @@
 .pool-confirm { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .pool-confirm-msg { font-size: 14px; text-wrap: pretty; }
 .pool-confirm-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+/* min-width: 0 — .pool-name is the grid item sitting in .pool-row's own
+   1fr column; without this, a grid item's default min-width:auto keeps
+   the column from shrinking below its content's min-content size (the
+   widest unbreakable word in the name, since the name itself can wrap).
+   A weighted/dynamic row's .pool-meta is wider than an ease-up row's (it
+   adds a wN pill alongside the progress bar — see .pool-meta below), so
+   on a narrow phone (iPhone SE width) it was this column that tipped the
+   row's total required width over the available space, overflowing the
+   row and pushing .pool-del off its right edge — worse for a name with
+   one especially long word (e.g. "Butterscotch...") than for one made of
+   several short, breakable words, since only the former was actually
+   hitting its min-content floor. */
 .pool-name {
   display: flex; align-items: center; gap: 8px;
+  min-width: 0;
   font-size: 14px;
   text-wrap: pretty;
 }
