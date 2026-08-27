@@ -3833,16 +3833,18 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 @container app (min-width:761px) and (max-width:843px){
   .dl-cond-row .dl-nrow{flex-wrap:wrap;gap:4px}
   .dl-cond-row .dl-name{flex:0 0 100%;width:100%}
-  /* text-align:left, not center (the base .dl-mode class' own default) —
-     center left the pill's short text floating in the middle of this
-     up-to-140px-wide box, far from the conditional name above it (the
-     name's own box, also full-width here, starts flush at the row's left
-     edge). margin-left:-4px — HALF of .dl-mode's own 8px left padding,
-     not the full amount — pulls it most of the way toward the name
-     without putting the pill's own border right up against the row's
-     left edge; doesn't land pixel-perfect with the name's text but reads
-     better than the cramped full -8px. */
-  .dl-cond-row .dl-mode--cond{display:block;width:100%;max-width:140px;text-align:left;margin-left:-4px}
+  /* width:auto, not 100% — with text-align:left (not center), a
+     full-width box left a lot of empty space between the pill's own
+     text and its right edge; auto lets the pill hug its own content
+     instead, matching how it looks unwrapped. max-width:140px stays as a
+     safety cap for an unusually long label (paired with the base rule's
+     own overflow:hidden/ellipsis). margin-left:-4px — HALF of .dl-mode's
+     own 8px left padding, not the full amount — pulls it most of the way
+     toward the conditional name above without putting the pill's own
+     border right up against the row's left edge; doesn't land
+     pixel-perfect with the name's text but reads better than the cramped
+     full -8px. */
+  .dl-cond-row .dl-mode--cond{display:block;width:auto;max-width:140px;text-align:left;margin-left:-4px}
 }
 /* 600px, not 560px like .dl-thead/.dl-trow's own breakpoint just below —
    this is a SEPARATE block specifically so the pill-wrap threshold can
@@ -3854,16 +3856,18 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 @container app (max-width:600px){
   .dl-cond-row .dl-nrow{flex-wrap:wrap;gap:4px}
   .dl-cond-row .dl-name{flex:0 0 100%;width:100%}
-  /* text-align:left, not center (the base .dl-mode class' own default) —
-     center left the pill's short text floating in the middle of this
-     up-to-140px-wide box, far from the conditional name above it (the
-     name's own box, also full-width here, starts flush at the row's left
-     edge). margin-left:-4px — HALF of .dl-mode's own 8px left padding,
-     not the full amount — pulls it most of the way toward the name
-     without putting the pill's own border right up against the row's
-     left edge; doesn't land pixel-perfect with the name's text but reads
-     better than the cramped full -8px. */
-  .dl-cond-row .dl-mode--cond{display:block;width:100%;max-width:140px;text-align:left;margin-left:-4px}
+  /* width:auto, not 100% — with text-align:left (not center), a
+     full-width box left a lot of empty space between the pill's own
+     text and its right edge; auto lets the pill hug its own content
+     instead, matching how it looks unwrapped. max-width:140px stays as a
+     safety cap for an unusually long label (paired with the base rule's
+     own overflow:hidden/ellipsis). margin-left:-4px — HALF of .dl-mode's
+     own 8px left padding, not the full amount — pulls it most of the way
+     toward the conditional name above without putting the pill's own
+     border right up against the row's left edge; doesn't land
+     pixel-perfect with the name's text but reads better than the cramped
+     full -8px. */
+  .dl-cond-row .dl-mode--cond{display:block;width:auto;max-width:140px;text-align:left;margin-left:-4px}
 }
 @container app (max-width:560px){
   .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 126px;gap:4px}
