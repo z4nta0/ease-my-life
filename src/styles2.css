@@ -615,15 +615,20 @@
 .pool-confirm { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .pool-confirm-msg { font-size: 14px; text-wrap: pretty; }
 .pool-confirm-actions { display: flex; gap: 8px; flex: 0 0 auto; }
-/* justify-content: space-between — sticks the status pill to the row's own
-   right edge when it's on the same line as the name (rather than sitting
-   wherever the name's own length happens to end), lining up its column
-   across rows. */
 .pool-name {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  display: flex; align-items: center; gap: 8px;
   font-size: 14px;
   text-wrap: pretty;
 }
+/* flex: 0 1 200px — a fixed width for the name itself (not the row's own
+   space-between, tried first: at a wide viewport that stuck the pill to
+   the row's far right edge, way past the end of a typically much shorter
+   name). Every row using the identical literal 200px is what lines the
+   pill up in one column across items — same trick already used for the
+   Day Log's picker names and conditional names. 200px comfortably fits
+   real item names on one line (measured 93-161px on this data); min-width:
+   0 lets it shrink/wrap instead of overflowing on a genuinely narrow row. */
+.pool-item-name { flex: 0 1 200px; min-width: 0; }
 /* width: 80px — a fixed size for the pill itself, not just a max, so its
    own text ("not yet" / "spent" / "vacation") never wraps onto a second
    line inside it. justify-content: center, not text-align: center — .pill
