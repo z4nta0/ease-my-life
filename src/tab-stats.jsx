@@ -1520,7 +1520,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                     <span className="rank-bd-vals">
                       {!it.deleted && it.vacation && <span className="rank-tag">vacation</span>}
                       {!it.deleted && effMetric === 'last' && !it.vacation && it.wasOnVac && (
-                        <span className="rank-tag rank-tag--was">was on vacation</span>
+                        <span className="rank-tag rank-tag--was">was vacation</span>
                       )}
                       {effMetric === 'count' && (() => {
                         const denom = countMode === 'eligible' ? it.eligDenom : totalPossible;
