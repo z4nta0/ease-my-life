@@ -1084,7 +1084,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                           // Ease modes store drift; day band = 100 / drift.
                           const soonest = Math.max(1, Math.round(100 / (o.easeMax || 1)));
                           const latest = Math.max(1, Math.round(100 / (o.easeMin || 1)));
-                          return `target ~${soonest}–${latest}d`;
+                          return `target ${soonest}–${latest}d`;
                         })();
                     return (
                     <li key={o.id} className={o.deleted ? 'is-deleted' : ''}>
