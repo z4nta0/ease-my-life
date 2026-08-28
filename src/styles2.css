@@ -3385,6 +3385,14 @@ legend.np-label { padding: 0; float: none; width: 100%; }
    width. */
 .cnd-bd-vals { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
 .cnd-bd-vals .rem-log-type { flex: 0 0 auto; width: 82px; text-align: center; }
+/* width, not min-width — same fix as .cnd-sum-frac: this row's own flex
+   layout isn't shared with its siblings, so a wider fraction/count here
+   grows only THIS row's .cnd-bd-vals wider, shifting the pill before it
+   out of alignment. 66px/40px match .cnd-sum-frac's own 3-digit/3-digit
+   sizing (rank-frac uses a smaller font than cnd-sum-frac, hence the
+   narrower value here still fitting the same digit count). */
+.cnd-bd-vals .rank-frac { width: 66px; }
+.cnd-bd-vals .rank-metric-n { width: 40px; }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
 
