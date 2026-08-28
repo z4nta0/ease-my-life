@@ -1208,6 +1208,10 @@ button.heat-cell.is-sel {
   background: oklch(0.55 0.16 25 / 0.08);
 }
 .rank-vals { display: flex; align-items: baseline; gap: 10px; flex: 0 0 auto; }
+/* Items breakdown: vacation/was-on-vacation status sits with the row's value
+   on the right, same as Conditionals' .cnd-bd-vals and Reminders' own meta
+   grouping, rather than crowding the name on the left. */
+.rank-bd-vals { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
 .rank-pct {
   font-family: var(--font-mono); font-variant-numeric: tabular-nums;
   font-size: 14px; color: var(--text);

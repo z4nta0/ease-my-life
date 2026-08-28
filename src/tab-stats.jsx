@@ -1514,40 +1514,42 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                       <span className="rank-name-row">
                         <span className="rank-name-text">{it.name}</span>
                         {it.deleted && <span className="rank-tag rank-tag--deleted">deleted</span>}
-                        {!it.deleted && it.vacation && <span className="rank-tag">vacation</span>}
-                        {!it.deleted && effMetric === 'last' && !it.vacation && it.wasOnVac && (
-                          <span className="rank-tag rank-tag--was">was on vacation</span>
-                        )}
                       </span>
                       {suffix && <span className="rank-meta">{suffix}</span>}
                     </span>
-                    {effMetric === 'count' && (() => {
-                      const denom = countMode === 'eligible' ? it.eligDenom : totalPossible;
-                      return (
-                        <span className="rank-vals">
-                          <span className="rank-pct">{denom ? Math.round((it.n / denom) * 100) : 0}%</span>
-                          <span className="rank-frac">{it.n} / {denom}</span>
-                        </span>
-                      );
-                    })()}
-                    {effMetric === 'freq' && (
-                      it.avgGap != null
-                        ? (() => { const d = cadDisplay(it.avgGap, freqMode, fmtGap(it.avgGap)); return <span className="rank-freq-val">every {d.num} {d.word}</span>; })()
-                        : <span className="rank-freq-val is-dim">{it.freqCount === 1 ? 'Picked once' : 'Not picked'}</span>
-                    )}
-                    {effMetric === 'spent' && (
-                      it.spent != null
-                        ? (() => { const d = cadDisplay(it.spent, spentMode, Math.round(it.spent)); return <span className="rank-freq-val">≈ {d.num} {d.word}</span>; })()
-                        : <span className="rank-freq-val is-dim">No full cycle yet</span>
-                    )}
-                    {effMetric === 'last' && (
-                      it.lastDays != null
-                        ? <span className="rank-freq-val">{fmtLast(it.lastDays, lastMode)}</span>
-                        : <span className="rank-freq-val is-dim">Not picked</span>
-                    )}
-                    {(effMetric === 'auto' || effMetric === 'manual' || effMetric === 'rejected' || effMetric === 'skipped') && (
-                      <span className="rank-metric-n">{it[effMetric]}</span>
-                    )}
+                    <span className="rank-bd-vals">
+                      {!it.deleted && it.vacation && <span className="rank-tag">vacation</span>}
+                      {!it.deleted && effMetric === 'last' && !it.vacation && it.wasOnVac && (
+                        <span className="rank-tag rank-tag--was">was on vacation</span>
+                      )}
+                      {effMetric === 'count' && (() => {
+                        const denom = countMode === 'eligible' ? it.eligDenom : totalPossible;
+                        return (
+                          <span className="rank-vals">
+                            <span className="rank-pct">{denom ? Math.round((it.n / denom) * 100) : 0}%</span>
+                            <span className="rank-frac">{it.n} / {denom}</span>
+                          </span>
+                        );
+                      })()}
+                      {effMetric === 'freq' && (
+                        it.avgGap != null
+                          ? (() => { const d = cadDisplay(it.avgGap, freqMode, fmtGap(it.avgGap)); return <span className="rank-freq-val">every {d.num} {d.word}</span>; })()
+                          : <span className="rank-freq-val is-dim">{it.freqCount === 1 ? 'Picked once' : 'Not picked'}</span>
+                      )}
+                      {effMetric === 'spent' && (
+                        it.spent != null
+                          ? (() => { const d = cadDisplay(it.spent, spentMode, Math.round(it.spent)); return <span className="rank-freq-val">≈ {d.num} {d.word}</span>; })()
+                          : <span className="rank-freq-val is-dim">No full cycle yet</span>
+                      )}
+                      {effMetric === 'last' && (
+                        it.lastDays != null
+                          ? <span className="rank-freq-val">{fmtLast(it.lastDays, lastMode)}</span>
+                          : <span className="rank-freq-val is-dim">Not picked</span>
+                      )}
+                      {(effMetric === 'auto' || effMetric === 'manual' || effMetric === 'rejected' || effMetric === 'skipped') && (
+                        <span className="rank-metric-n">{it[effMetric]}</span>
+                      )}
+                    </span>
                   </li>
                 );
               })}
