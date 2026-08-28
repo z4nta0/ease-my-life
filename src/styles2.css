@@ -3353,7 +3353,15 @@ legend.np-label { padding: 0; float: none; width: 100%; }
    one's a pill, not a number column. 82px comfortably fits the longest
    label, "ease-down" (measured ~81px). */
 .cnd-sum-meta .rem-log-type { width: 82px; text-align: center; }
-.cnd-sum-frac { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 54px; text-align: right; }
+/* width, not min-width — each conditional's row is its own independent
+   flex layout (not a shared grid), so a wider fraction here ("150 / 200"
+   vs "18 / 21") was growing THIS row's .cnd-sum-meta group wider than its
+   siblings', shifting the mode pill before it out of alignment (it's
+   pinned to the row's right edge via .cnd-sum-list li's own
+   justify-content: space-between). 66px comfortably fits 3-digit/3-digit
+   values (measured "999 / 999" at 65px); a 4-digit count is unlikely
+   enough in practice not to guard against here. */
+.cnd-sum-frac { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; width: 66px; text-align: right; }
 .cnd-sum-rate { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); min-width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
 /* Dedicated scope: per-conditional rows with a fire-rate bar */
 .cnd-stat-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
