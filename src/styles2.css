@@ -1108,8 +1108,13 @@ button.heat-cell.is-sel {
 .rank-head {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
+/* min-width:0 lets the kicker shrink and wrap onto a second line when its own
+   title is long (e.g. "Reminders breakdown") without that shrink pressure
+   reaching .rank-sort next to it. */
+.rank-head .kicker { min-width: 0; }
 .rank-sort {
   display: inline-flex; align-items: center; gap: 5px;
+  flex: 0 0 auto; white-space: nowrap;
   padding: 5px 10px;
   background: transparent;
   border: 0.5px solid var(--border);
