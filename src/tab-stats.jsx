@@ -1094,29 +1094,29 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                           {o.deleted && <span className="rank-tag rank-tag--deleted">deleted</span>}
                           {!o.deleted && o.active === false && <span className="rank-tag">vacation</span>}
                         </span>
-                        <span className="cnd-bd-meta">
-                          <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
-                          {target && <span className="rank-meta">{target}</span>}
-                        </span>
+                        {target && <span className="rank-meta">{target}</span>}
                       </span>
-                      {condMetric === 'rate' && (
-                        <span className="rank-vals">
-                          <span className="rank-pct">{o.rate == null ? '—' : o.rate + '%'}</span>
-                          <span className="rank-frac">{o.fired} / {o.total}</span>
-                        </span>
-                      )}
-                      {condMetric === 'triggers' && <span className="rank-metric-n">{o.fired}</span>}
-                      {condMetric === 'cycles' && <span className="rank-metric-n">{o.total}</span>}
-                      {condMetric === 'interval' && (
-                        o.avgInterval != null
-                          ? <span className="rank-freq-val">every {o.avgInterval} {o.avgInterval === 1 ? 'day' : 'days'}</span>
-                          : <span className="rank-freq-val is-dim">{o.fired <= 1 ? 'Fired once' : 'Not fired'}</span>
-                      )}
-                      {condMetric === 'last' && (
-                        o.lastFired
-                          ? <span className="rank-freq-val">{fmtCondDate(o.lastFired)}</span>
-                          : <span className="rank-freq-val is-dim">Never</span>
-                      )}
+                      <span className="cnd-bd-vals">
+                        <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
+                        {condMetric === 'rate' && (
+                          <span className="rank-vals">
+                            <span className="rank-pct">{o.rate == null ? '—' : o.rate + '%'}</span>
+                            <span className="rank-frac">{o.fired} / {o.total}</span>
+                          </span>
+                        )}
+                        {condMetric === 'triggers' && <span className="rank-metric-n">{o.fired}</span>}
+                        {condMetric === 'cycles' && <span className="rank-metric-n">{o.total}</span>}
+                        {condMetric === 'interval' && (
+                          o.avgInterval != null
+                            ? <span className="rank-freq-val">every {o.avgInterval} {o.avgInterval === 1 ? 'day' : 'days'}</span>
+                            : <span className="rank-freq-val is-dim">{o.fired <= 1 ? 'Fired once' : 'Not fired'}</span>
+                        )}
+                        {condMetric === 'last' && (
+                          o.lastFired
+                            ? <span className="rank-freq-val">{fmtCondDate(o.lastFired)}</span>
+                            : <span className="rank-freq-val is-dim">Never</span>
+                        )}
+                      </span>
                     </li>
                     );
                   })}

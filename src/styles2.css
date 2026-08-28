@@ -3377,10 +3377,14 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .cnd-stat-rate { flex: 0 0 auto; font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); min-width: 42px; text-align: right; }
 .cnd-stat-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); }
 .cnd-stat-meta strong { color: var(--text); font-weight: 600; }
-/* Conditionals breakdown: mode pill + configured-target suffix under the name */
-.cnd-bd-meta { display: flex; align-items: center; gap: 8px; margin-top: 3px; }
-.cnd-bd-meta .rem-log-type { flex: 0 0 auto; }
-.cnd-bd-meta .rank-meta { white-space: nowrap; }
+/* Conditionals breakdown: mode pill sits with the row's value column on the
+   right, same grouping as the Everything view's .cnd-sum-meta (pill next to
+   the frac/rate) and Reminders' .rem-log-meta (pill next to the date) —
+   not under the name. Fixed pill width (matching those two) keeps it
+   aligned across sibling rows regardless of the active metric's own value
+   width. */
+.cnd-bd-vals { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+.cnd-bd-vals .rem-log-type { flex: 0 0 auto; width: 82px; text-align: center; }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
 
