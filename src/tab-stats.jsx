@@ -1071,7 +1071,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                   : 'When each conditional last fired.'}
               </p>
               {condBreakdown.length ? (
-                <ul className={`rank rank--breakdown rank--cond bd-list-fade ${(condMetric === 'interval' || condMetric === 'last') ? 'rank--freq' : ''}`} key={condMetric + condSort}>
+                <ul className={`rank rank--breakdown bd-list-fade ${(condMetric === 'interval' || condMetric === 'last') ? 'rank--freq' : ''}`} key={condMetric + condSort}>
                   {condBreakdown.map((o) => {
                     // Mode-intrinsic "target" (what you configured), shown as a
                     // suffix under the name like the Pickers breakdown does.
@@ -1091,11 +1091,13 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                       <span className="rank-name">
                         <span className="rank-name-row">
                           <span className="rank-name-text">{o.name}</span>
-                          <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
                           {o.deleted && <span className="rank-tag rank-tag--deleted">deleted</span>}
                           {!o.deleted && o.active === false && <span className="rank-tag">vacation</span>}
                         </span>
-                        {target && <span className="rank-meta">{target}</span>}
+                        <span className="cnd-bd-meta">
+                          <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
+                          {target && <span className="rank-meta">{target}</span>}
+                        </span>
                       </span>
                       {condMetric === 'rate' && (
                         <span className="rank-vals">

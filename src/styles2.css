@@ -3377,18 +3377,10 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .cnd-stat-rate { flex: 0 0 auto; font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); min-width: 42px; text-align: right; }
 .cnd-stat-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); }
 .cnd-stat-meta strong { color: var(--text); font-weight: 600; }
-/* Conditionals breakdown: mode pill sits on the name's own line (not a second
-   line under it) so it can align with every sibling row's pill. Same fix as
-   Day Log's .dl-nrow/.dl-name-mode: .rank-name-text gets a rigid (not
-   shrinkable) width so it stops absorbing the row's slack, and the pill gets
-   a fixed width of its own — between the two, the pill lands in the same
-   horizontal spot on every row regardless of name length. Name still wraps
-   (not truncates) within that fixed width, matching this page's other
-   name columns (.rem-log-name, .cnd-sum-name) — only the column width is
-   fixed, not the text-overflow behavior. Scoped to .rank--cond specifically;
-   the Items breakdown reuses .rank-name-text too but has no pill to align. */
-.rank--cond .rank-name-text { flex: 0 0 140px; }
-.rank--cond .rank-name-row .rem-log-type { flex: 0 0 auto; width: 82px; text-align: center; }
+/* Conditionals breakdown: mode pill + configured-target suffix under the name */
+.cnd-bd-meta { display: flex; align-items: center; gap: 8px; margin-top: 3px; }
+.cnd-bd-meta .rem-log-type { flex: 0 0 auto; }
+.cnd-bd-meta .rank-meta { white-space: nowrap; }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
 
