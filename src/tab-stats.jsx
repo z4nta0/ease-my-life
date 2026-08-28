@@ -1108,13 +1108,13 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                         {condMetric === 'cycles' && <span className="rank-metric-n">{o.total}</span>}
                         {condMetric === 'interval' && (
                           o.avgInterval != null
-                            ? <span className="rank-freq-val">every {o.avgInterval} {o.avgInterval === 1 ? 'day' : 'days'}</span>
-                            : <span className="rank-freq-val is-dim">{o.fired <= 1 ? 'Fired once' : 'Not fired'}</span>
+                            ? <span className="rank-freq-val cnd-bd-freq--interval">every {o.avgInterval} {o.avgInterval === 1 ? 'day' : 'days'}</span>
+                            : <span className="rank-freq-val cnd-bd-freq--interval is-dim">{o.fired <= 1 ? 'Fired once' : 'Not fired'}</span>
                         )}
                         {condMetric === 'last' && (
                           o.lastFired
-                            ? <span className="rank-freq-val">{fmtCondDate(o.lastFired)}</span>
-                            : <span className="rank-freq-val is-dim">Never</span>
+                            ? <span className="rank-freq-val cnd-bd-freq--last">{fmtCondDate(o.lastFired)}</span>
+                            : <span className="rank-freq-val cnd-bd-freq--last is-dim">Never</span>
                         )}
                       </span>
                     </li>

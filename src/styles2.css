@@ -3393,6 +3393,13 @@ legend.np-label { padding: 0; float: none; width: 100%; }
    narrower value here still fitting the same digit count). */
 .cnd-bd-vals .rank-frac { width: 66px; }
 .cnd-bd-vals .rank-metric-n { width: 40px; }
+/* Same fix, applied per metric since the two .rank-freq-val users here have
+   very different value lengths ("every 100 days" vs "Aug 23") — a single
+   shared width would either clip the longer one or leave the shorter one
+   comically padded. 112px fits "every 100 days" (measured ~108px); 50px
+   fits "Aug 23" (measured ~46px). */
+.cnd-bd-freq--interval { width: 112px; text-align: right; }
+.cnd-bd-freq--last { width: 50px; text-align: right; }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
 
