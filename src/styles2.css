@@ -1212,6 +1212,12 @@ button.heat-cell.is-sel {
    on the right, same as Conditionals' .cnd-bd-vals and Reminders' own meta
    grouping, rather than crowding the name on the left. */
 .rank-bd-vals { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+/* width, not min-width — same fix as .cnd-bd-vals: the Count metric's percent
+   sits before its own row's fraction, so a wider fraction ("150 / 200") grew
+   just that row's box and shifted its percent out of alignment with
+   siblings. */
+.rank-bd-vals .rank-frac { width: 66px; }
+.rank-bd-vals .rank-metric-n { width: 40px; }
 .rank-pct {
   font-family: var(--font-mono); font-variant-numeric: tabular-nums;
   font-size: 14px; color: var(--text);
