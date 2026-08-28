@@ -3328,6 +3328,13 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .cnd-sum-list li:first-child { border-top: 0; }
 .cnd-sum-name { display: flex; align-items: center; gap: 8px; font-size: 14px; min-width: 0; }
 .cnd-sum-meta { display: flex; align-items: baseline; gap: 12px; flex: 0 0 auto; }
+/* Fixed width (not auto) so every conditional's mode pill is the same size
+   regardless of its own label's length ("ease-down" is wider than "random")
+   — same "fixed size + centered text" treatment as .cnd-sum-frac/.cnd-sum-
+   rate's own min-width, just centered rather than right-aligned since this
+   one's a pill, not a number column. 82px comfortably fits the longest
+   label, "ease-down" (measured ~81px). */
+.cnd-sum-meta .rem-log-type { width: 82px; text-align: center; }
 .cnd-sum-frac { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 54px; text-align: right; }
 .cnd-sum-rate { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); min-width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
 /* Dedicated scope: per-conditional rows with a fire-rate bar */
