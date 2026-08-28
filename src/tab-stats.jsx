@@ -744,11 +744,11 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   // Human label for "last picked", in the active unit.
   const fmtLast = (d, mode) => {
     if (mode === 'eligible') {
-      if (d === 0) return 'Most recent pick';
+      if (d === 0) return 'Most recent';
       if (cadenced) return `${(Math.round(d * 10) / 10).toFixed(1)} ${CADENCE.unitWord(statCadence, d)} ago`;
       return `${d} ${unitFor('eligible', d)} ago`;
     }
-    if (d === 0) return 'Most recent pick';
+    if (d === 0) return 'Most recent';
     if (cadenced) { const p = d / per; return `${(Math.round(p * 10) / 10).toFixed(1)} ${CADENCE.unitWord(statCadence, p)} ago`; }
     return d === 1 ? 'Yesterday' : `${d} days ago`;
   };
