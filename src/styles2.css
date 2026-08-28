@@ -3295,6 +3295,13 @@ legend.np-label { padding: 0; float: none; width: 100%; }
   flex-wrap: wrap; margin-bottom: 12px;
 }
 .rem-stats-nums { display: flex; gap: 18px; }
+/* Forces the Conditionals card's own stats onto their own line, same as the
+   Reminders completed card's own header already does — that one only wraps
+   because "Reminders completed" + its two stats are long enough to actually
+   need it; "Conditionals" + "triggered"/"fire rate" happen to be short
+   enough to fit on one line otherwise. Not structural, just text length,
+   but forcing it keeps the two headers looking consistent regardless. */
+.cnd-sum-card .rem-stats-head .rem-stats-nums { flex-basis: 100%; }
 .rem-stat { font-size: 13px; color: var(--muted); }
 .rem-stat strong {
   font-family: var(--font-mono); font-variant-numeric: tabular-nums;
@@ -3306,7 +3313,11 @@ legend.np-label { padding: 0; float: none; width: 100%; }
   padding: 13px 0; border-bottom: 0.5px solid var(--border);
 }
 .rem-log li:last-child { border-bottom: 0; }
-.rem-log-name { font-size: 14px; font-weight: 450; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Wraps, not truncates — matches .rank-name-text/.cnd-sum-name elsewhere on
+   this page, neither of which truncate either. min-width:0 (already here)
+   is what actually lets it shrink below its own content width to wrap in
+   the first place, as a flex item next to .rem-log-meta's fixed width. */
+.rem-log-name { font-size: 14px; font-weight: 450; min-width: 0; }
 .rem-log-meta { display: inline-flex; align-items: center; gap: 10px; flex: 0 0 auto; }
 /* Fixed width (not auto) so "one-time" and "recurring" are the same size —
    same treatment as the Conditionals card's own .cnd-sum-meta .rem-log-type,
