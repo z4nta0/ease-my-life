@@ -3308,6 +3308,13 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-log li:last-child { border-bottom: 0; }
 .rem-log-name { font-size: 14px; font-weight: 450; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rem-log-meta { display: inline-flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+/* Fixed width (not auto) so "one-time" and "recurring" are the same size —
+   same treatment as the Conditionals card's own .cnd-sum-meta .rem-log-type,
+   just a hair wider since "recurring" (measured ~81px) is slightly longer
+   than "ease-down" was. Covers both places .rem-log-meta wraps this pill
+   (the Reminders Completed card and the Reminders Breakdown card behind
+   it — same markup, same misalignment either way). */
+.rem-log-meta .rem-log-type { width: 82px; text-align: center; }
 .rem-log-type {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; padding: 2px 7px; border-radius: 999px;

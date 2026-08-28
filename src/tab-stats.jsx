@@ -21,13 +21,15 @@ function statIso(d) {
   return x.toISOString().slice(0, 10);
 }
 
-// Relative label for a completion timestamp.
+// Relative label for a completion timestamp. Today intentionally gets no
+// special "Today · {time}" case of its own — that was a longer, differently
+// shaped string than every other row's "{weekday}, {month} {day}", which
+// misaligned the column it sits in; today just falls through to the same
+// format as any other day.
 function relWhen(iso) {
   const d = new Date(iso);
   const day = TASKS.isoOf(d);
-  const today = TASKS.isoToday();
   const yest = TASKS.isoOf(new Date(Date.now() - 86400000));
-  if (day === today) return 'Today · ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
   if (day === yest) return 'Yesterday';
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
