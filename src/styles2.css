@@ -1090,7 +1090,7 @@ button.heat-cell.is-sel {
   margin-top: 8px;
 }
 .rank li {
-  display: flex; justify-content: space-between; align-items: baseline;
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
   padding: 13px 0;
   border-bottom: 0.5px solid var(--border);
   font-size: 14px;
