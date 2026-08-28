@@ -1092,11 +1092,11 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                         <span className="rank-name-row">
                           <span className="rank-name-text">{o.name}</span>
                           {o.deleted && <span className="rank-tag rank-tag--deleted">deleted</span>}
-                          {!o.deleted && o.active === false && <span className="rank-tag">vacation</span>}
                         </span>
                         {target && <span className="rank-meta">{target}</span>}
                       </span>
                       <span className="cnd-bd-vals">
+                        {!o.deleted && o.active === false && <span className="rank-tag">vacation</span>}
                         <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
                         {condMetric === 'rate' && (
                           <span className="rank-vals">
