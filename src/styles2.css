@@ -949,7 +949,7 @@
 .heat-legend {
   display: flex; align-items: center; gap: 5px;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -3309,7 +3309,7 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-log-name { font-size: 14px; font-weight: 450; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rem-log-meta { display: inline-flex; align-items: center; gap: 10px; flex: 0 0 auto; }
 .rem-log-type {
-  font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.05em;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; padding: 2px 7px; border-radius: 999px;
   border: 0.5px solid var(--border); color: var(--muted);
 }
