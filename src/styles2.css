@@ -1221,10 +1221,10 @@ button.heat-cell.is-sel {
 /* Same fix again, for the Frequency/Spent and Last picked tabs: "every 12.5
    weeks" vs "Picked once" (or a long "eligible" last-picked phrase vs
    "Not picked") differ enough in width to shift the vacation/was-on-vacation
-   tag before them. Widths measured against this app's longest realistic
-   strings for each tab (134px covers "No full cycle yet"; 176px covers
-   "1.5 eligible weeks ago"). */
-.rank-bd-freq--freq { width: 136px; text-align: right; }
+   tag before them. 112px matches the width used for Conditionals' own
+   Interval tab (.cnd-bd-freq--interval); 176px covers this tab's longest
+   realistic string, "1.5 eligible weeks ago". */
+.rank-bd-freq--freq { width: 112px; text-align: right; }
 .rank-bd-freq--last { width: 176px; text-align: right; }
 .rank-pct {
   font-family: var(--font-mono); font-variant-numeric: tabular-nums;
