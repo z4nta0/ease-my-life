@@ -1533,18 +1533,18 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                       })()}
                       {effMetric === 'freq' && (
                         it.avgGap != null
-                          ? (() => { const d = cadDisplay(it.avgGap, freqMode, fmtGap(it.avgGap)); return <span className="rank-freq-val">every {d.num} {d.word}</span>; })()
-                          : <span className="rank-freq-val is-dim">{it.freqCount === 1 ? 'Picked once' : 'Not picked'}</span>
+                          ? (() => { const d = cadDisplay(it.avgGap, freqMode, fmtGap(it.avgGap)); return <span className="rank-freq-val rank-bd-freq--freq">every {d.num} {d.word}</span>; })()
+                          : <span className="rank-freq-val rank-bd-freq--freq is-dim">{it.freqCount === 1 ? 'Picked once' : 'Not picked'}</span>
                       )}
                       {effMetric === 'spent' && (
                         it.spent != null
-                          ? (() => { const d = cadDisplay(it.spent, spentMode, Math.round(it.spent)); return <span className="rank-freq-val">≈ {d.num} {d.word}</span>; })()
-                          : <span className="rank-freq-val is-dim">No full cycle yet</span>
+                          ? (() => { const d = cadDisplay(it.spent, spentMode, Math.round(it.spent)); return <span className="rank-freq-val rank-bd-freq--freq">≈ {d.num} {d.word}</span>; })()
+                          : <span className="rank-freq-val rank-bd-freq--freq is-dim">No full cycle yet</span>
                       )}
                       {effMetric === 'last' && (
                         it.lastDays != null
-                          ? <span className="rank-freq-val">{fmtLast(it.lastDays, lastMode)}</span>
-                          : <span className="rank-freq-val is-dim">Not picked</span>
+                          ? <span className="rank-freq-val rank-bd-freq--last">{fmtLast(it.lastDays, lastMode)}</span>
+                          : <span className="rank-freq-val rank-bd-freq--last is-dim">Not picked</span>
                       )}
                       {(effMetric === 'auto' || effMetric === 'manual' || effMetric === 'rejected' || effMetric === 'skipped') && (
                         <span className="rank-metric-n">{it[effMetric]}</span>
