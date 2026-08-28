@@ -3,7 +3,7 @@ import { CADENCE } from './cadence.js';
 import { useEmlTour } from './onboarding.jsx';
 import { MODES } from './seed.js';
 import { TASKS } from './tasks.js';
-import { Card, Icon, Pill } from './ui.jsx';
+import { Card, Icon, InfoTip, Pill } from './ui.jsx';
 import { HelpButton, HelpOverlay } from './help-mode.jsx';
 import { STATS_HELP_ITEMS } from './help-content.jsx';
 import { unhideHelpStatsHistory, hideHelpStatsHistory } from './help-sample-data.js';
@@ -1539,7 +1539,11 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                       {effMetric === 'spent' && (
                         it.spent != null
                           ? (() => { const d = cadDisplay(it.spent, spentMode, Math.round(it.spent)); return <span className="rank-freq-val rank-bd-freq--freq">≈ {d.num} {d.word}</span>; })()
-                          : <span className="rank-freq-val rank-bd-freq--freq is-dim">No full cycle yet</span>
+                          : (
+                            <span className="rank-freq-val rank-bd-freq--freq is-dim">
+                              N/A <InfoTip className="pie-help pie-help--sm" label="No full cycle has been completed yet">?</InfoTip>
+                            </span>
+                          )
                       )}
                       {effMetric === 'last' && (
                         it.lastDays != null
