@@ -1090,7 +1090,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                         <span className="rank-name-row">
                           <span className="rank-name-text">{o.name}</span>
                           {o.deleted && <span className="rank-tag rank-tag--deleted">deleted</span>}
-                          {!o.deleted && o.active === false && <span className="rank-tag">on vacation</span>}
+                          {!o.deleted && o.active === false && <span className="rank-tag">vacation</span>}
                         </span>
                         <span className="cnd-bd-meta">
                           <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
@@ -1286,7 +1286,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                   <span className="cnd-sum-name">
                     {o.name}
                     {o.deleted && <span className="rank-tag rank-tag--deleted">deleted</span>}
-                    {!o.deleted && o.active === false && <span className="rank-tag">on vacation</span>}
+                    {!o.deleted && o.active === false && <span className="rank-tag">vacation</span>}
                   </span>
                   <span className="cnd-sum-meta">
                     <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
@@ -1512,7 +1512,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                       <span className="rank-name-row">
                         <span className="rank-name-text">{it.name}</span>
                         {it.deleted && <span className="rank-tag rank-tag--deleted">deleted</span>}
-                        {!it.deleted && it.vacation && <span className="rank-tag">on vacation</span>}
+                        {!it.deleted && it.vacation && <span className="rank-tag">vacation</span>}
                         {!it.deleted && effMetric === 'last' && !it.vacation && it.wasOnVac && (
                           <span className="rank-tag rank-tag--was">was on vacation</span>
                         )}
