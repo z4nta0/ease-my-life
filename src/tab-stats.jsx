@@ -3,7 +3,7 @@ import { CADENCE } from './cadence.js';
 import { useEmlTour } from './onboarding.jsx';
 import { MODES } from './seed.js';
 import { TASKS } from './tasks.js';
-import { Card, Icon, InfoTip, Pill } from './ui.jsx';
+import { Card, Icon, Pill } from './ui.jsx';
 import { HelpButton, HelpOverlay } from './help-mode.jsx';
 import { STATS_HELP_ITEMS } from './help-content.jsx';
 import { unhideHelpStatsHistory, hideHelpStatsHistory } from './help-sample-data.js';
@@ -1339,7 +1339,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                 <ul className="rem-log bd-list-fade" key={remBdMetric + remBdSort + remSafePage}>
                   {remPageItems.map((r, i) => (
                     <li key={remBdMetric === 'recent' ? r.rowId : i}>
-                      <InfoTip className="rem-log-name" label={r.name}>{r.name}</InfoTip>
+                      <span className="rem-log-name">{r.name}</span>
                       <span className="rem-log-meta">
                         <span className={`rem-log-type rem-log-type--${r.type}`}>{r.type === 'once' ? 'one-time' : 'recurring'}</span>
                         {remBdMetric === 'recent'
@@ -1375,7 +1375,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
             <ul className="rem-log">
               {remLog.slice(0, 8).map((r) => (
                 <li key={r.rowId}>
-                  <InfoTip className="rem-log-name" label={r.name}>{r.name}</InfoTip>
+                  <span className="rem-log-name">{r.name}</span>
                   <span className="rem-log-meta">
                     <span className={`rem-log-type rem-log-type--${r.type}`}>{r.type === 'once' ? 'one-time' : 'recurring'}</span>
                     <span className="rem-log-when">{relWhen(r.completedAt)}</span>
