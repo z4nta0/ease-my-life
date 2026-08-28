@@ -745,8 +745,8 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   const fmtLast = (d, mode) => {
     if (mode === 'eligible') {
       if (d === 0) return 'Most recent pick';
-      if (cadenced) return `${(Math.round(d * 10) / 10).toFixed(1)} eligible ${CADENCE.unitWord(statCadence, d)} ago`;
-      return `${d} eligible ${unitFor('eligible', d)} ago`;
+      if (cadenced) return `${(Math.round(d * 10) / 10).toFixed(1)} ${CADENCE.unitWord(statCadence, d)} ago`;
+      return `${d} ${unitFor('eligible', d)} ago`;
     }
     if (d === 0) return 'Most recent pick';
     if (cadenced) { const p = d / per; return `${(Math.round(p * 10) / 10).toFixed(1)} ${CADENCE.unitWord(statCadence, p)} ago`; }
