@@ -1177,7 +1177,7 @@ button.heat-cell.is-sel {
 .rank-tag {
   flex: 0 0 auto;
   font-family: var(--font-mono);
-  font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase;
+  font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
   color: var(--muted);
   border: 0.5px solid var(--border); border-radius: 999px;
   padding: 1px 6px;
