@@ -3039,7 +3039,14 @@ button.rd-chev {
    the mode-list → "When it runs" separator. Top padding gives the subhead room. */
 .rd-ctl-group--picks {
   margin: 0 -16px; padding: 0; gap: 0; min-width: 0;
-  border: 0; border-top: 0.5px solid var(--border);
+  border: 0;
+  /* box-shadow, not border-top — now that this is a <fieldset>, an actual
+     border interacts with its <legend> (the browser "carves out" a gap in
+     the border exactly where the legend sits, then resumes it right after
+     the legend's own text), leaving a stray line trailing off after "How it
+     picks" instead of the intended full-bleed separator. An inset shadow
+     paints the same 0.5px hairline without going through that carving. */
+  box-shadow: inset 0 0.5px 0 0 var(--border);
 }
 .rd-ctl-group--picks .rd-ctl-subhead { padding: 14px 16px 8px; }
 .rd-ctl-group--picks .rd-mode-radio { margin: 0; }
