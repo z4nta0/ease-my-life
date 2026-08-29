@@ -288,12 +288,17 @@ function ContactSupportCard({ state, actions }) {
               <input className="np-input" type="text" value={subject}
                      onChange={(e) => setSubject(e.target.value)} placeholder="What's going on?" />
             </label>
-            <label className="support-field">
-              <span className="support-flabel">Message</span>
-              <textarea className="np-input support-textarea" value={message} rows={5}
+            <div className="support-field">
+              {/* id is "support-message-input", not "support-message" — that id
+                  is already taken by index.html's hidden static Netlify form
+                  (see its own comment above the <form name="support">), and
+                  duplicate ids on the page confused the browser's label
+                  matching (both labels applied, announcing "Message Message"). */}
+              <label className="support-flabel" htmlFor="support-message-input">Message</label>
+              <textarea id="support-message-input" className="np-input support-textarea" value={message} rows={5}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder="The more detail, the better." />
-            </label>
+            </div>
             <div className="support-diag">
               <div className="support-diag-field">
                 <span className="support-flabel">App version</span>

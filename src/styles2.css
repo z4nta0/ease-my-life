@@ -1806,7 +1806,7 @@ button.cat-h-l {
 .support-form-intro { padding-top: 8px; }
 .support-field { display: flex; flex-direction: column; gap: 6px; }
 .support-flabel {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; color: var(--muted);
 }
 .support-textarea { resize: vertical; min-height: 90px; font-family: inherit; line-height: 1.5; }
