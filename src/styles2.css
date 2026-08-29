@@ -1358,7 +1358,7 @@ button.cat-h-l {
 }
 .cat-name { margin: 0; font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
 .cat-group {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; color: var(--muted);
   padding: 2px 8px; border: 0.5px solid var(--border); border-radius: 999px;
 }
