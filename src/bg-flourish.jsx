@@ -12,13 +12,16 @@ import React from 'react';
 
 const FLOURISH_SYMBOLS = ['✓', '⁓', '←', '→', '△', '∑', '√', '∛', '∳', '≤', '≥', '±', '∞', '≈', '∅'];
 
-const PER_SIDE = 7;
-// 2 columns × 4 rows = 8 cells per side, one glyph per cell (7 used, 1 spare
-// dropped at random) — this is what keeps any two glyphs on the same side
-// at least a grid cell apart in both x and y, instead of independent random
-// coordinates that could cluster or land right on top of each other.
-const GRID_COLS = 2;
-const GRID_ROWS = 4;
+const PER_SIDE = 14;
+// Y gets one exclusive row-band per glyph (14 — height is ample, so this is
+// easy). X can't: a glyph's own width (up to 72px) means only a handful of
+// column-bands actually fit across the gutter's real width, so 14 glyphs
+// can't each get a fully exclusive column the way they do a row — 4 columns
+// is what .bg-flourish's own width comfortably fits, so most columns end up
+// shared by 3-4 glyphs (spread across very different rows, so they don't
+// read as a stacked pair even though they share an x-band).
+const GRID_COLS = 4;
+const GRID_ROWS = PER_SIDE;
 
 function shuffle(arr) {
   const a = arr.slice();
@@ -39,39 +42,58 @@ function uniqueSpread(min, max, n) {
   return shuffle(Array.from({ length: n }, (_, i) => min + step * i));
 }
 
-function gridCells(cols, rows) {
-  const cells = [];
-  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) cells.push({ c, r });
-  return shuffle(cells);
+// Round-robins through the column indices enough times to cover n items
+// (each column used as evenly as possible — floor(n/cols) or one more),
+// then shuffles the result so which specific row lands in which column
+// isn't a fixed repeating pattern.
+function shuffledColumns(cols, n) {
+  const seq = [];
+  for (let i = 0; i < n; i++) seq.push(i % cols);
+  return shuffle(seq);
+}
+
+// A symbol pool sized to n: each symbol is used at most twice (not once —
+// with 28 total glyphs and only 15 symbols, every symbol repeating at least
+// once is unavoidable) by concatenating two independently-shuffled passes
+// over the full list and trimming to n, rather than n independent random
+// picks that could let one symbol repeat 3+ times while another never
+// appears at all.
+function symbolPool(n) {
+  const laps = Math.ceil(n / FLOURISH_SYMBOLS.length);
+  let pool = [];
+  for (let i = 0; i < laps; i++) pool = pool.concat(shuffle(FLOURISH_SYMBOLS));
+  return pool.slice(0, n);
 }
 
 // One shuffled grid position, rotation, and size per item, all drawn from
-// a single generation so nothing repeats across the whole set (symbols,
-// rotations, and sizes are each a shuffled list of already-distinct values,
-// not independent random picks per item).
+// a single generation so nothing repeats more than the minimum unavoidable
+// amount across the whole set (rotations and sizes are each a shuffled list
+// of already-distinct values — no physical limit on how many distinct
+// rotations/sizes exist, unlike symbols or x-position).
 function generateFlourishes() {
   const total = PER_SIDE * 2;
-  const symbols = shuffle(FLOURISH_SYMBOLS).slice(0, total);
-  const rotations = uniqueSpread(-24, 24, total);
-  const sizes = uniqueSpread(46, 92, total);
+  const symbols = symbolPool(total);
+  const rotations = uniqueSpread(-28, 28, total);
+  const sizes = uniqueSpread(36, 72, total);
 
   const items = [];
   let idx = 0;
   for (const side of ['left', 'right']) {
-    const cells = gridCells(GRID_COLS, GRID_ROWS).slice(0, PER_SIDE);
-    for (const cell of cells) {
+    const cols = shuffledColumns(GRID_COLS, PER_SIDE);
+    const rows = shuffle(Array.from({ length: GRID_ROWS }, (_, i) => i));
+    for (let i = 0; i < PER_SIDE; i++) {
       const colW = 100 / GRID_COLS;
       const rowH = 100 / GRID_ROWS;
       // Jitter within the cell's own band, staying off the cell's outer
-      // edges so a large glyph (up to 92px) doesn't crowd its neighbor.
-      const insetJitter = colW * 0.2 + Math.random() * (colW * 0.6);
+      // edges so a large glyph (up to 72px) doesn't crowd its neighbor.
+      const insetJitter = colW * 0.15 + Math.random() * (colW * 0.7);
       const topJitter = rowH * 0.15 + Math.random() * (rowH * 0.7);
       items.push({
         id: `${side}-${idx}`,
         side,
         symbol: symbols[idx],
-        top: cell.r * rowH + topJitter,
-        inset: cell.c * colW + insetJitter,
+        top: rows[i] * rowH + topJitter,
+        inset: cols[i] * colW + insetJitter,
         size: sizes[idx],
         opacity: 0.08 + Math.random() * 0.1,
         rotate: rotations[idx],

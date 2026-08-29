@@ -161,7 +161,7 @@ body[data-viewport="mobile"] {
    capped at one screen's worth. flex items are removed from the flex flow
    once absolutely positioned, so this doesn't disturb .main-inner's own
    flex/gap layout for the real content. */
-.bg-flourish { display: none; position: absolute; top: 0; bottom: 0; width: 280px; pointer-events: none; z-index: 0; }
+.bg-flourish { display: none; position: absolute; top: 0; bottom: 0; width: 340px; pointer-events: none; z-index: 0; }
 .bg-flourish--left { right: 100%; margin-right: 28px; }
 .bg-flourish--right { left: 100%; margin-left: 28px; }
 .bg-flourish-item {
@@ -173,7 +173,7 @@ body[data-viewport="mobile"] {
   position: absolute; font-family: var(--font-mono); color: var(--flourish-color);
   user-select: none; line-height: 1;
 }
-@container app (min-width: 1360px) {
+@container app (min-width: 1750px) {
   .bg-flourish { display: block; }
 }
 .tab--today { max-width: none; }
