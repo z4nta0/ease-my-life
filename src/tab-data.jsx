@@ -723,27 +723,36 @@ function ConditionalsManager({ state, actions }) {
           const uses = usingCount(c.id);
           return (
             <div key={c.id} className={`rd-item ${isOpen ? 'is-editing' : ''}`}>
-              <button type="button" className="rd-row" aria-expanded={isOpen}
-                   onClick={() => { if (isOpen) closeEditor(); else openEditor(c); }}>
-                <span className="rd-main">
-                  {isOpen && draft ? (
+              {isOpen && draft ? (
+                // Plain div, not a button, while editing — a <button> can't
+                // legally contain the <input> below it (interactive-in-
+                // interactive), which was also why it had no accessible name
+                // of its own (browsers exclude a focusable descendant's value
+                // from the parent's name computation). No click-to-collapse
+                // affordance is lost: the input is independently focusable
+                // and Cancel/Save below handle closing.
+                <div className="rd-row">
+                  <span className="rd-main">
                     <input className={`rd-name-input ${nameError ? 'is-error' : ''}`} type="text" value={draft.name} maxLength={40}
                            placeholder="Conditional name" aria-label="Conditional name" aria-invalid={!!nameError} autoFocus
-                           onClick={(e) => e.stopPropagation()}
                            onChange={(e) => setDraft({ ...draft, name: e.target.value })}
                            onBlur={() => { if (tidyName) setDraft({ ...draft, name: tidyName }); }}
                            onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
-                  ) : (
-                    <React.Fragment>
-                      <span className="rd-name">{c.name}</span>
-                      <span className="rd-sched">{(MODES[c.mode] || {}).label || c.mode}
-                        {' · '}{uses} {uses === 1 ? 'picker' : 'pickers'}
-                        {c.active === false ? ' · on vacation' : ''}</span>
-                    </React.Fragment>
-                  )}
-                </span>
-                <span className="rd-chev"><span className={`chev ${isOpen ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span></span>
-              </button>
+                  </span>
+                  <span className="rd-chev"><span className="chev is-open"><Icon name="chev" size={14} /></span></span>
+                </div>
+              ) : (
+                <button type="button" className="rd-row" aria-expanded={isOpen}
+                     onClick={() => { if (isOpen) closeEditor(); else openEditor(c); }}>
+                  <span className="rd-main">
+                    <span className="rd-name">{c.name}</span>
+                    <span className="rd-sched">{(MODES[c.mode] || {}).label || c.mode}
+                      {' · '}{uses} {uses === 1 ? 'picker' : 'pickers'}
+                      {c.active === false ? ' · on vacation' : ''}</span>
+                  </span>
+                  <span className="rd-chev"><span className={`chev ${isOpen ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span></span>
+                </button>
+              )}
               <Collapse open={isOpen}>
                 {draft && (isOpen || isPending || closingId === c.id) && (
                   <ConditionalEditor cond={c} draft={draft} setDraft={setDraft} actions={actions}
@@ -1238,27 +1247,36 @@ function TabData({ state, actions, onHome, onNavTab }) {
                         return (
                           <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''} ${highlightEditTourItemRows ? 'is-tour-target ob-tour-pulse' : ''}`}
                                onAnimationEnd={() => { if (insertItemId === it.id) setInsertItemId(null); }}>
-                            <button type="button" className="rd-row" aria-expanded={itemOpen}
-                                  onClick={() => setOpenItemId(itemOpen ? null : it.id)}>
-                              <span className="rd-main">
-                                {itemOpen ? (
+                            {itemOpen ? (
+                              // Plain div, not a button, while editing — see the
+                              // matching Conditionals row above for why (a
+                              // <button> can't legally contain the <input>
+                              // below it, and loses its own accessible name
+                              // as a result).
+                              <div className="rd-row">
+                                <span className="rd-main">
                                   <input className="rd-name-input" type="text" value={it.name} maxLength={60}
                                          placeholder="Item name" aria-label="Item name" autoFocus
-                                         onClick={(e) => e.stopPropagation()}
                                          onChange={(e) => actions.updateItem(it.id, { name: e.target.value })}
                                          onBlur={(e) => { const n = e.target.value.trim(); if (n) actions.renameItem(it.id, n); }}
                                          onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
-                                ) : (
-                                  <React.Fragment>
-                                    <span className="rd-name">{it.name}</span>
-                                    <span className="rd-sched">{meta}</span>
-                                  </React.Fragment>
-                                )}
-                              </span>
-                              <span className={`rd-chev chev ${itemOpen ? 'is-open' : ''}`} aria-hidden="true">
-                                <Icon name="chev" size={16} />
-                              </span>
-                            </button>
+                                </span>
+                                <span className="rd-chev chev is-open" aria-hidden="true">
+                                  <Icon name="chev" size={16} />
+                                </span>
+                              </div>
+                            ) : (
+                              <button type="button" className="rd-row" aria-expanded={itemOpen}
+                                    onClick={() => setOpenItemId(itemOpen ? null : it.id)}>
+                                <span className="rd-main">
+                                  <span className="rd-name">{it.name}</span>
+                                  <span className="rd-sched">{meta}</span>
+                                </span>
+                                <span className="rd-chev chev" aria-hidden="true">
+                                  <Icon name="chev" size={16} />
+                                </span>
+                              </button>
+                            )}
                             <Collapse open={itemOpen}>
                               <div className="rd-edit">
                                 <ItemEditor item={it} picker={pk} actions={actions}
