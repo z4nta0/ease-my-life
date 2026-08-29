@@ -2,13 +2,13 @@ import React from 'react';
 
 // Subtle decorative math/randomness glyphs sprinkled in the empty side
 // margins around the main content column — never behind actual content,
-// purely in the gutters .main-inner leaves open at wider viewports (see
-// .bg-flourish's own CSS for how it's hidden below that width). Chosen once
-// per real page load: the data lives in App's own state (src/app.jsx), which
-// mounts once and outlives tab switches, so the same glyphs/positions stay
-// put for the whole session instead of reshuffling every time the active
-// tab changes. Today's tab doesn't use .main-inner's centered-column layout
-// (see its own comment in styles.css) so it isn't covered by this yet.
+// purely in the gutters .main-inner (or Today's own .today-body, which
+// shares the same centered-column shape) leaves open at wider viewports
+// (see .bg-flourish's own CSS for how it's hidden below that width). Chosen
+// once per real page load: the data lives in App's own state (src/app.jsx),
+// which mounts once and outlives tab switches, so the same glyphs/positions
+// stay put for the whole session instead of reshuffling every time the
+// active tab changes.
 
 const FLOURISH_SYMBOLS = ['✓', '⁓', '←', '→', '△', '∑', '√', '∛', '∳', '≤', '≥', '±', '∞', '≈', '∅'];
 
@@ -33,7 +33,7 @@ function generateFlourishes() {
         symbol: pick(FLOURISH_SYMBOLS),
         top: Math.min(97, Math.max(1, slot + (Math.random() * 8 - 4))),
         inset: 8 + Math.random() * 60,
-        size: 14 + Math.random() * 15,
+        size: 24 + Math.random() * 22,
         opacity: 0.08 + Math.random() * 0.1,
         rotate: Math.random() * 36 - 18,
       });

@@ -254,7 +254,7 @@ function App() {
       )}
       {railOpen && <div className="rail-scrim" onClick={() => setRailOpen(false)} aria-hidden="true" />}
       <main className="main" ref={mainRef}>
-        {active === 'today' && <div className="tab-fade" key="today"><TabToday state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} onStartPickerTour={setActivePickerTour} onStartPageTour={setActivePageTour} onStartAppFeatureTour={setActiveAppFeatureTour} /></div>}
+        {active === 'today' && <div className="tab-fade" key="today"><TabToday state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} onStartPickerTour={setActivePickerTour} onStartPageTour={setActivePageTour} onStartAppFeatureTour={setActiveAppFeatureTour} flourishes={flourishes} /></div>}
         {active !== 'today' && (
           <div className="main-inner tab-fade" key={active}>
             <BgFlourish items={flourishes} />

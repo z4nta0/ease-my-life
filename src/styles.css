@@ -165,7 +165,12 @@ body[data-viewport="mobile"] {
 .bg-flourish--left { right: 100%; margin-right: 28px; }
 .bg-flourish--right { left: 100%; margin-left: 28px; }
 .bg-flourish-item {
-  position: absolute; font-family: var(--font-mono); color: var(--muted);
+  /* A paler tint of the accent, not the accent itself — a solid light-blue
+     at these sizes read as too loud for a background decoration. Lightness
+     bump (not alpha) so the per-item random opacity (bg-flourish.jsx) stays
+     the only thing controlling how faint each glyph is. */
+  --flourish-color: oklch(from var(--accent) calc(l + 0.3) c h);
+  position: absolute; font-family: var(--font-mono); color: var(--flourish-color);
   user-select: none; line-height: 1;
 }
 @container app (min-width: 1040px) {
@@ -568,6 +573,7 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   .today-h-lead { gap: 12px; }
 }
 .today-body {
+  position: relative;
   max-width: 960px;
   margin: 0 auto;
   padding: 20px 20px 0;

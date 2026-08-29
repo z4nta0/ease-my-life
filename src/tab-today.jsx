@@ -1,5 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
+import { BgFlourish } from './bg-flourish.jsx';
 import { CADENCE } from './cadence.js';
 import { CONDITIONALS } from './conditionals.js';
 import { EASE_UP_RANGE_WARN } from './constants.js';
@@ -920,7 +921,7 @@ function AppFeatureCard({ feature, state, actions, onPlayTutorial, onUncheckAppF
   );
 }
 
-function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStartPageTour, onStartAppFeatureTour }) {
+function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStartPageTour, onStartAppFeatureTour, flourishes }) {
   // Help mode (see help-mode.jsx's own header comment) — local, resets to
   // off on every remount (tab switch), which is exactly the "navigating
   // away closes it, the page you land on doesn't inherit it" behavior the
@@ -2231,6 +2232,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
       </header>
 
       <div className="today-body">
+        <BgFlourish items={flourishes} />
         {(editMode || bannerClosing) && (
           <div className={`editmode-banner ${bannerClosing ? 'is-closing' : ''}`} role="status">
             <span className="editmode-banner-msg">
