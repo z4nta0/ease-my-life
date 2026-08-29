@@ -692,7 +692,7 @@ function ConditionalsManager({ state, actions }) {
         <button type="button" className="cat-h-l" aria-expanded={open}
                 onClick={() => actions.toggleControlsCollapsed('__conditionals', true)}>
           <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
-          <h3 className="cat-name">Conditionals</h3>
+          <h2 className="cat-name">Conditionals</h2>
           <span className="cat-count">{conditionals.filter((c) => c.active !== false).length} of {conditionals.length}</span>
         </button>
       </header>
@@ -1148,7 +1148,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                         disabled={disableEditTourPickerHeader}
                         onClick={() => toggle(pk.id)}>
                   <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
-                  <h3 className="cat-name">{pk.name}</h3>
+                  <h2 className="cat-name">{pk.name}</h2>
                   <span className="cat-group">{pk.group}</span>
                   {/* Each part its own element (not one text run) so a narrow
                       viewport can stack them into 3 centered rows — see

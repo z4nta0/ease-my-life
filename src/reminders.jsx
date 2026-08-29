@@ -960,7 +960,7 @@ function ReminderManager({ state, actions, hidden }) {
       <header className="cat-h">
         <button type="button" className="cat-h-l" aria-expanded={open} onClick={setOpen}>
           <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
-          <h3 className="cat-name">Reminders</h3>
+          <h2 className="cat-name">Reminders</h2>
           <span className="cat-count">{tasks.length}</span>
         </button>
       </header>
