@@ -2919,6 +2919,10 @@ button.rd-chev {
    overflow:hidden (see style-radio-card) so the option list can bleed edge-
    to-edge without a padding gap top/bottom — the radio list's own -16px
    horizontal bleed isn't needed there since there's no padding to eat into. */
+/* Wraps StyleRadioList's own .rd-mode-radio div for an accessible group name
+   (see that component's own comment) — strips the UA fieldset chrome so it
+   stays visually invisible, same idea as .np-field's fieldset variant. */
+.style-radio-fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .style-radio-card { overflow: hidden; }
 .style-radio-card .rd-mode-radio { margin: 0; border-top: 0; }
 .rd-mode-opt {

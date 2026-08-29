@@ -447,34 +447,44 @@ function ThemeSection({ state, actions }) {
 // selector uses (dot + name + hint that expands only on the selected row),
 // so Appearance's style pickers look and behave consistently with the rest
 // of the app rather than introducing a new control pattern.
-function StyleRadioList({ groupName, options, value, onChange, onPreview, previewDisabled }) {
+function StyleRadioList({ groupName, groupLabel, options, value, onChange, onPreview, previewDisabled }) {
   return (
-    <div className="rd-mode-radio">
-      {options.map((o) => {
-        const on = o.value === value;
-        return (
-          <label key={o.value} className={`rd-mode-opt ${on ? 'is-on' : ''}`}>
-            <input type="radio" name={groupName} checked={on} onChange={() => onChange(o.value)} />
-            <span className="rd-mode-dot" aria-hidden="true"></span>
-            <span className="rd-mode-text">
-              <span className="rd-mode-name">{o.label}</span>
-              {/* Always-mounted collapse (not <Collapse>, which unmounts the hint
-                  on deselect — a freshly-inserted node can't transition its
-                  grid-template-rows, so the height snapped). Keeping it mounted
-                  lets the 0fr↔1fr glide run every time. */}
-              <div className={`collapse ${on ? 'is-open' : ''}`}>
-                <div className="collapse-inner"><span className="rd-mode-hint">{o.hint}</span></div>
-              </div>
-            </span>
-            {onPreview && (
-              <button type="button" className="style-preview-btn"
-                      disabled={previewDisabled}
-                      onClick={(e) => { e.preventDefault(); onPreview(o.value); }}>Preview</button>
-            )}
-          </label>
-        );
-      })}
-    </div>
+    // A dedicated wrapper fieldset (rather than making .rd-mode-radio itself
+    // a fieldset) since that class is shared with the Data tab's picker-mode
+    // list, which renders it as a plain div nested inside its own fieldset —
+    // reset here is scoped to just this usage. Named via aria-label rather
+    // than a <legend> since the section's own visible heading (just above,
+    // outside this Card) already serves as the label; adding a <legend>
+    // would either duplicate that text or need a border/legend interaction
+    // fix like the Data tab's own "How it picks" fieldset needed.
+    <fieldset className="style-radio-fieldset" aria-label={groupLabel}>
+      <div className="rd-mode-radio">
+        {options.map((o) => {
+          const on = o.value === value;
+          return (
+            <label key={o.value} className={`rd-mode-opt ${on ? 'is-on' : ''}`}>
+              <input type="radio" name={groupName} checked={on} onChange={() => onChange(o.value)} />
+              <span className="rd-mode-dot" aria-hidden="true"></span>
+              <span className="rd-mode-text">
+                <span className="rd-mode-name">{o.label}</span>
+                {/* Always-mounted collapse (not <Collapse>, which unmounts the hint
+                    on deselect — a freshly-inserted node can't transition its
+                    grid-template-rows, so the height snapped). Keeping it mounted
+                    lets the 0fr↔1fr glide run every time. */}
+                <div className={`collapse ${on ? 'is-open' : ''}`}>
+                  <div className="collapse-inner"><span className="rd-mode-hint">{o.hint}</span></div>
+                </div>
+              </span>
+              {onPreview && (
+                <button type="button" className="style-preview-btn"
+                        disabled={previewDisabled}
+                        onClick={(e) => { e.preventDefault(); onPreview(o.value); }}>Preview</button>
+              )}
+            </label>
+          );
+        })}
+      </div>
+    </fieldset>
   );
 }
 
@@ -984,7 +994,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               </p>
               {reduceMotionNote('celebrations')}
               <Card padded={false} className="style-radio-card">
-                <StyleRadioList groupName="completionStyle" value={(state.appearance && state.appearance.completionStyle) || 'confetti'}
+                <StyleRadioList groupName="completionStyle" groupLabel="Completion celebration" value={(state.appearance && state.appearance.completionStyle) || 'confetti'}
                                 onChange={actions.setCompletionStyle}
                                 onPreview={playCeleb}
                                 previewDisabled={false}
@@ -1005,7 +1015,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               </p>
               {reduceMotionNote('this animation')}
               <Card padded={false} className="style-radio-card">
-                <StyleRadioList groupName="pickAnim" value={(state.appearance && state.appearance.pickAnim) || 'reel'}
+                <StyleRadioList groupName="pickAnim" groupLabel="Picker animation" value={(state.appearance && state.appearance.pickAnim) || 'reel'}
                                 onChange={(v) => { setPickPreview(null); actions.setPickAnim(v); }}
                                 onPreview={playPick}
                                 previewDisabled={false}
@@ -1253,7 +1263,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                     <span className={`set-import-msg ${importMsg.ok ? 'is-ok' : 'is-err'}`}>{importMsg.text}</span>
                   )}
                 </div>
-                <input ref={fileRef} type="file" accept="application/json,.json"
+                <input ref={fileRef} type="file" accept="application/json,.json" aria-label="Import a backup file"
                        onChange={onImportFile} style={{ display: 'none' }} />
                 {pendingImport ? (
                   <div className={`set-reset-confirm ${importLeaving ? 'is-leaving' : ''}`}>
