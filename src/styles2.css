@@ -2016,11 +2016,12 @@ button.cat-h-l {
 .rd-ctl-body .ease-config .pie-sub { font-size: 11px; color: var(--muted); }
 .rd-ctl-body .ease-config .pie-ctl { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .rd-ctl-body .ease-config .pie-ctl .np-ease-unit { font-size: 12px; }
-/* Kicker labelling the picker's default cadence rows (vs a per-item override). */
-.rd-ctl-body .ease-config .ease-cadence-kicker {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
-  text-transform: uppercase; color: var(--muted); padding: 12px 16px 8px;
-}
+/* Labels the picker's default cadence rows (vs a per-item override) — font
+   styling now comes from the shared .rd-ctl-subhead class (see its own JSX
+   className); this rule is just the padding this nested context needs,
+   which the other three .rd-ctl-subhead contexts set on themselves too
+   (.rd-ctl-group--basics/--picks/--sched, each scoped to their own parent). */
+.rd-ctl-body .ease-config .ease-cadence-kicker { padding: 12px 16px 8px; }
 /* Separator between the kicker and its controls, matching the mode list's
    border-top under the "How it picks" kicker. */
 .rd-ctl-body .ease-config .ease-cadence-kicker + .pie-row { border-top: 0.5px solid var(--border); }
@@ -3037,8 +3038,8 @@ button.rd-chev {
    Details' bottom border (double hairline, no gap — body gap is 0), mirroring
    the mode-list → "When it runs" separator. Top padding gives the subhead room. */
 .rd-ctl-group--picks {
-  margin: 0 -16px; padding: 0; gap: 0;
-  border-top: 0.5px solid var(--border);
+  margin: 0 -16px; padding: 0; gap: 0; min-width: 0;
+  border: 0; border-top: 0.5px solid var(--border);
 }
 .rd-ctl-group--picks .rd-ctl-subhead { padding: 14px 16px 8px; }
 .rd-ctl-group--picks .rd-mode-radio { margin: 0; }
@@ -3091,7 +3092,7 @@ button.rd-chev {
 .rd-ctl-group--foot { padding-bottom: 0; }
 .rd-ctl-group--sched { border-bottom: 0.5px solid var(--border); }
 .rd-ctl-subhead {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; color: var(--muted);
 }
 /* Group selector — single-select pills + inline "New group" create. Reuses the

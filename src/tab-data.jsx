@@ -314,8 +314,8 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
           </div>
         </div>
       </div>
-      <div className="rd-ctl-group rd-ctl-group--picks">
-        <div className="rd-ctl-subhead">How it picks</div>
+      <fieldset className="rd-ctl-group rd-ctl-group--picks">
+        <legend className="rd-ctl-subhead">How it picks</legend>
         <div className="rd-mode-radio">
           {Object.entries(MODES).map(([key, m]) => {
             const on = pk.mode === key;
@@ -347,7 +347,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
               Shortest/Longest/Refill), same idea as EntryEditor's own
               pie-ease-up-row/pie-ease-down-row split. */}
           <div className={`ease-config ${isDown ? 'ease-config--down' : 'ease-config--up'}`}>
-            <div className="ease-cadence-kicker">Default cadence</div>
+            <div className="rd-ctl-subhead ease-cadence-kicker">Default cadence</div>
             <div className="pie-row">
               <div className="pie-rowlabel">
                 <span className="pie-lbl-row">
@@ -404,7 +404,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
             )}
           </div>
         </Collapse>
-      </div>
+      </fieldset>
 
       {/* When it runs — Daily-generator membership + weekday / holiday gates. */}
       <div className="rd-ctl-group rd-ctl-group--sched">
