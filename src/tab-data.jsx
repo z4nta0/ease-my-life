@@ -728,9 +728,10 @@ function ConditionalsManager({ state, actions }) {
                 // legally contain the <input> below it (interactive-in-
                 // interactive), which was also why it had no accessible name
                 // of its own (browsers exclude a focusable descendant's value
-                // from the parent's name computation). No click-to-collapse
-                // affordance is lost: the input is independently focusable
-                // and Cancel/Save below handle closing.
+                // from the parent's name computation). The chevron is its own
+                // real button instead (same collapse behavior the row button
+                // used to provide), rather than a leftover decoration that
+                // looks clickable but does nothing.
                 <div className="rd-row">
                   <span className="rd-main">
                     <input className={`rd-name-input ${nameError ? 'is-error' : ''}`} type="text" value={draft.name} maxLength={40}
@@ -739,7 +740,9 @@ function ConditionalsManager({ state, actions }) {
                            onBlur={() => { if (tidyName) setDraft({ ...draft, name: tidyName }); }}
                            onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
                   </span>
-                  <span className="rd-chev"><span className="chev is-open"><Icon name="chev" size={14} /></span></span>
+                  <button type="button" className="rd-chev" aria-label="Collapse" onClick={closeEditor}>
+                    <span className="chev is-open"><Icon name="chev" size={14} /></span>
+                  </button>
                 </div>
               ) : (
                 <button type="button" className="rd-row" aria-expanded={isOpen}
@@ -1252,7 +1255,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
                               // matching Conditionals row above for why (a
                               // <button> can't legally contain the <input>
                               // below it, and loses its own accessible name
-                              // as a result).
+                              // as a result). The chevron is its own real
+                              // button instead of a leftover decoration.
                               <div className="rd-row">
                                 <span className="rd-main">
                                   <input className="rd-name-input" type="text" value={it.name} maxLength={60}
@@ -1261,9 +1265,10 @@ function TabData({ state, actions, onHome, onNavTab }) {
                                          onBlur={(e) => { const n = e.target.value.trim(); if (n) actions.renameItem(it.id, n); }}
                                          onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
                                 </span>
-                                <span className="rd-chev chev is-open" aria-hidden="true">
+                                <button type="button" className="rd-chev chev is-open" aria-label="Collapse"
+                                        onClick={() => setOpenItemId(null)}>
                                   <Icon name="chev" size={16} />
-                                </span>
+                                </button>
                               </div>
                             ) : (
                               <button type="button" className="rd-row" aria-expanded={itemOpen}
