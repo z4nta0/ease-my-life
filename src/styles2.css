@@ -2870,7 +2870,7 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rd-ico.is-once { background: oklch(from var(--warm) calc(l + 0.28) c h); color: var(--warm); }
 .rd-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .rd-name { font-size: 14px; font-weight: 500; letter-spacing: -0.005em; }
-.rd-sched { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.rd-sched { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
 .rd-name-input {
   border: 0; background: transparent; font: inherit;
   font-size: 14px; font-weight: 500; letter-spacing: -0.005em;
