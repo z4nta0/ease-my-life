@@ -13,15 +13,14 @@ import React from 'react';
 const FLOURISH_SYMBOLS = ['✓', '⁓', '←', '→', '△', '∑', '√', '∛', '∳', '≤', '≥', '±', '∞', '≈', '∅'];
 
 const PER_SIDE = 14;
-// Y gets one exclusive row-band per glyph (14 — height is ample, so this is
-// easy). X can't: a glyph's own width (up to 72px) means only a handful of
-// column-bands actually fit across the gutter's real width, so 14 glyphs
-// can't each get a fully exclusive column the way they do a row — 4 columns
-// is what .bg-flourish's own width comfortably fits, so most columns end up
-// shared by 3-4 glyphs (spread across very different rows, so they don't
-// read as a stacked pair even though they share an x-band).
+// A glyph's own width (up to 72px) means only a handful of column-bands
+// actually fit across the gutter's real width, so 14 glyphs can't each get
+// a fully exclusive column — 4 is what .bg-flourish's own width comfortably
+// fits, so most columns end up shared by 3-4 glyphs. Height has no
+// comparable limit, so within any one column its own members still get
+// spread across the FULL page height (see spreadBands), never landing near
+// each other vertically just because they happen to share a column.
 const GRID_COLS = 4;
-const GRID_ROWS = PER_SIDE;
 
 function shuffle(arr) {
   const a = arr.slice();
@@ -52,6 +51,23 @@ function shuffledColumns(cols, n) {
   return shuffle(seq);
 }
 
+// n evenly-spaced-then-jittered percentages across the FULL 0-100 range,
+// in random order. Used per-column (not once globally) — sharing a column
+// with 3-4 others is already unavoidable at this glyph count (see
+// GRID_COLS's own comment), but two glyphs sharing a column must still
+// land far apart vertically, or they'd read as a stacked pair even though
+// they're technically in "different rows." Spacing each column's own
+// members independently across the whole height guarantees that,
+// regardless of how many other glyphs (in other columns) occupy the same
+// vertical stretch.
+function spreadBands(n) {
+  const bandH = 100 / n;
+  return shuffle(Array.from({ length: n }, (_, i) => {
+    const jitter = bandH * 0.15 + Math.random() * (bandH * 0.7);
+    return i * bandH + jitter;
+  }));
+}
+
 // A symbol pool sized to n: each symbol is used at most twice (not once —
 // with 28 total glyphs and only 15 symbols, every symbol repeating at least
 // once is unavoidable) by concatenating two independently-shuffled passes
@@ -79,21 +95,31 @@ function generateFlourishes() {
   const items = [];
   let idx = 0;
   for (const side of ['left', 'right']) {
-    const cols = shuffledColumns(GRID_COLS, PER_SIDE);
-    const rows = shuffle(Array.from({ length: GRID_ROWS }, (_, i) => i));
-    for (let i = 0; i < PER_SIDE; i++) {
-      const colW = 100 / GRID_COLS;
-      const rowH = 100 / GRID_ROWS;
-      // Jitter within the cell's own band, staying off the cell's outer
-      // edges so a large glyph (up to 72px) doesn't crowd its neighbor.
+    const colOf = shuffledColumns(GRID_COLS, PER_SIDE);
+    // Group this side's glyphs by which column they landed in, so each
+    // column's own members can be spread down the full height independent
+    // of every other column (see spreadBands's own comment).
+    const bySlotInCol = Array.from({ length: GRID_COLS }, () => []);
+    colOf.forEach((c, slot) => bySlotInCol[c].push(slot));
+
+    const topOf = new Array(PER_SIDE);
+    for (const slots of bySlotInCol) {
+      if (!slots.length) continue;
+      const bands = spreadBands(slots.length);
+      slots.forEach((slot, i) => { topOf[slot] = bands[i]; });
+    }
+
+    const colW = 100 / GRID_COLS;
+    for (let slot = 0; slot < PER_SIDE; slot++) {
+      // Jitter within the column's own band, staying off its outer edges
+      // so a large glyph (up to 72px) doesn't crowd its neighbor column.
       const insetJitter = colW * 0.15 + Math.random() * (colW * 0.7);
-      const topJitter = rowH * 0.15 + Math.random() * (rowH * 0.7);
       items.push({
         id: `${side}-${idx}`,
         side,
         symbol: symbols[idx],
-        top: rows[i] * rowH + topJitter,
-        inset: cols[i] * colW + insetJitter,
+        top: topOf[slot],
+        inset: colOf[slot] * colW + insetJitter,
         size: sizes[idx],
         opacity: 0.08 + Math.random() * 0.1,
         rotate: rotations[idx],
