@@ -2919,10 +2919,14 @@ button.rd-chev {
    overflow:hidden (see style-radio-card) so the option list can bleed edge-
    to-edge without a padding gap top/bottom — the radio list's own -16px
    horizontal bleed isn't needed there since there's no padding to eat into. */
-/* Wraps StyleRadioList's own .rd-mode-radio div for an accessible group name
+/* Wraps StyleRadioList's own .rd-mode-radio div so it has a real <legend>
    (see that component's own comment) — strips the UA fieldset chrome so it
    stays visually invisible, same idea as .np-field's fieldset variant. */
 .style-radio-fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+/* Screen-reader-only text — same clipping technique as .sr-live, for content
+   that needs to exist in the accessibility tree (a fieldset's required
+   <legend>, here) without a visible on-screen presence. */
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .style-radio-card { overflow: hidden; }
 .style-radio-card .rd-mode-radio { margin: 0; border-top: 0; }
 .rd-mode-opt {

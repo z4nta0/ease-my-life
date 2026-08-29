@@ -452,12 +452,12 @@ function StyleRadioList({ groupName, groupLabel, options, value, onChange, onPre
     // A dedicated wrapper fieldset (rather than making .rd-mode-radio itself
     // a fieldset) since that class is shared with the Data tab's picker-mode
     // list, which renders it as a plain div nested inside its own fieldset —
-    // reset here is scoped to just this usage. Named via aria-label rather
-    // than a <legend> since the section's own visible heading (just above,
-    // outside this Card) already serves as the label; adding a <legend>
-    // would either duplicate that text or need a border/legend interaction
-    // fix like the Data tab's own "How it picks" fieldset needed.
-    <fieldset className="style-radio-fieldset" aria-label={groupLabel}>
+    // reset here is scoped to just this usage. The legend is visually
+    // hidden — the section's own visible heading (just above, outside this
+    // Card) already shows this same text, so a visible legend would just
+    // duplicate it right above the radio rows.
+    <fieldset className="style-radio-fieldset">
+      <legend className="visually-hidden">{groupLabel}</legend>
       <div className="rd-mode-radio">
         {options.map((o) => {
           const on = o.value === value;
