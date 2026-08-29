@@ -290,7 +290,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
             {newGroupMode ? (
               <span className="rd-group-new">
                 <input ref={newGroupRef} type="text" className="rd-group-new-input"
-                       value={newGroupName} placeholder="Group name" maxLength={30}
+                       value={newGroupName} placeholder="Group name" aria-label="Group name" maxLength={30}
                        onChange={(e) => setNewGroupName(e.target.value)}
                        onKeyDown={(e) => {
                          if (e.key === 'Enter') commitNewGroup();
