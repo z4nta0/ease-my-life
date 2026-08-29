@@ -1014,30 +1014,47 @@ function ReminderManager({ state, actions, hidden }) {
               return (
                 <div key={t.id} className={`rd-item ${cardOpen ? 'is-editing' : ''} ${insertId === t.id ? 'rd-item--insert' : ''}`}
                      onAnimationEnd={() => { if (insertId === t.id) setInsertId(null); }}>
-                  <button type="button" className="rd-row" aria-expanded={cardOpen}
-                       onClick={() => setOpenId(cardOpen ? null : t.id)}>
-                    <span className={`rd-ico ${once ? 'is-once' : ''}`}>
-                      <Icon name={once ? 'pin' : 'calendar'} size={15} />
-                    </span>
-                    <span className="rd-main">
-                      {cardOpen ? (
+                  {cardOpen ? (
+                    // Plain div, not a button, while editing — a <button> can't
+                    // legally contain the <input> below it (interactive-in-
+                    // interactive), which was also why it had no accessible
+                    // name of its own (browsers exclude a focusable
+                    // descendant's value from the parent's name computation).
+                    // The chevron is its own real button instead of a
+                    // leftover decoration that looks clickable but does
+                    // nothing — see tab-data.jsx's matching conditional/item
+                    // row fix for the full reasoning.
+                    <div className="rd-row">
+                      <span className={`rd-ico ${once ? 'is-once' : ''}`}>
+                        <Icon name={once ? 'pin' : 'calendar'} size={15} />
+                      </span>
+                      <span className="rd-main">
                         <input className="rd-name-input" type="text" value={t.name} maxLength={60}
                                placeholder="Reminder name" aria-label="Reminder name" autoFocus
-                               onClick={(e) => e.stopPropagation()}
                                onChange={(e) => actions.updateTask(t.id, { name: e.target.value })}
                                onBlur={(e) => { const n = e.target.value.trim(); if (n) actions.renameTask(t.id, n); }}
                                onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
-                      ) : (
-                        <React.Fragment>
-                          <span className="rd-name">{t.name}</span>
-                          <span className="rd-sched">{TASKS.summary(t)}</span>
-                        </React.Fragment>
-                      )}
-                    </span>
-                    <span className={`rd-chev chev ${cardOpen ? 'is-open' : ''}`} aria-hidden="true">
-                      <Icon name="chev" size={16} />
-                    </span>
-                  </button>
+                      </span>
+                      <button type="button" className="rd-chev chev is-open" aria-label="Collapse"
+                              onClick={() => setOpenId(null)}>
+                        <Icon name="chev" size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button type="button" className="rd-row" aria-expanded={cardOpen}
+                         onClick={() => setOpenId(cardOpen ? null : t.id)}>
+                      <span className={`rd-ico ${once ? 'is-once' : ''}`}>
+                        <Icon name={once ? 'pin' : 'calendar'} size={15} />
+                      </span>
+                      <span className="rd-main">
+                        <span className="rd-name">{t.name}</span>
+                        <span className="rd-sched">{TASKS.summary(t)}</span>
+                      </span>
+                      <span className="rd-chev chev" aria-hidden="true">
+                        <Icon name="chev" size={16} />
+                      </span>
+                    </button>
+                  )}
                   <Collapse open={cardOpen}>
                     <div className="rd-edit">
                       <div className="rem-inline-editor">
