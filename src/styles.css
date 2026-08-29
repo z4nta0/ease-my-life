@@ -142,12 +142,34 @@ body[data-viewport="mobile"] {
   .tabbar--entering.tabbar--bottom, .tabbar--entering.tabbar--top, .tabbar--entering.tabbar--side { animation: none; }
 }
 .main-inner {
+  position: relative;
   max-width: 720px;
   margin: 0 auto;
   padding-top: 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+/* Decorative background glyphs (src/bg-flourish.jsx) — sit in the open
+   margin .main-inner leaves on either side once the viewport is wide enough
+   to actually have one; hidden below that so they never crowd the content
+   column. Positioned with top:0 + bottom:0 (not an explicit height) so each
+   column's own height resolves to match .main-inner's real content height —
+   auto/content-driven though that is — which in turn is what lets each
+   glyph's own top:N% (see bg-flourish.jsx) land proportionally through
+   however tall the current tab's content actually is, rather than being
+   capped at one screen's worth. flex items are removed from the flex flow
+   once absolutely positioned, so this doesn't disturb .main-inner's own
+   flex/gap layout for the real content. */
+.bg-flourish { display: none; position: absolute; top: 0; bottom: 0; width: 140px; pointer-events: none; z-index: 0; }
+.bg-flourish--left { right: 100%; margin-right: 28px; }
+.bg-flourish--right { left: 100%; margin-left: 28px; }
+.bg-flourish-item {
+  position: absolute; font-family: var(--font-mono); color: var(--muted);
+  user-select: none; line-height: 1;
+}
+@container app (min-width: 1040px) {
+  .bg-flourish { display: block; }
 }
 .tab--today { max-width: none; }
 .main:has(.tab--today) .main-inner { padding-top: 0; }

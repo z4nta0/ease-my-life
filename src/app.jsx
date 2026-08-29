@@ -12,6 +12,7 @@ import { TabSettings } from './tab-settings.jsx';
 import { TabStats } from './tab-stats.jsx';
 import { TabToday } from './tab-today.jsx';
 import { Icon, reduceMotion } from './ui.jsx';
+import { BgFlourish, generateFlourishes } from './bg-flourish.jsx';
 
 // App shell. Tab bar (bottom / side / top) + main content area.
 
@@ -128,6 +129,9 @@ function App() {
   const [active, setActive] = React.useState(() => (
     location.hash === '#settings' ? 'settings' : 'today'
   ));
+  // Decorative background glyphs (see bg-flourish.jsx) — generated once per
+  // real page load, not per tab switch, since App itself only mounts once.
+  const [flourishes] = React.useState(() => generateFlourishes());
 
   // Collapsible side rail (small screens only — the rail becomes an off-canvas
   // drawer there instead of falling back to bottom tabs). Starts closed; the
@@ -253,6 +257,7 @@ function App() {
         {active === 'today' && <div className="tab-fade" key="today"><TabToday state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} onStartPickerTour={setActivePickerTour} onStartPageTour={setActivePageTour} onStartAppFeatureTour={setActiveAppFeatureTour} /></div>}
         {active !== 'today' && (
           <div className="main-inner tab-fade" key={active}>
+            <BgFlourish items={flourishes} />
             {active === 'picker'   && <TabPicker   state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} animStyle={(state.appearance && state.appearance.pickAnim) || 'reel'} />}
             {active === 'stats'    && <TabStats    state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} />}
             {active === 'data'     && <TabData     state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} />}
