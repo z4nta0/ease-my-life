@@ -2782,7 +2782,7 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 }
 .rd-mx-head, .rd-mx-row { display: grid; grid-template-columns: 1fr 76px 76px; align-items: center; }
 .rd-mx-head { padding: 8px 16px; }
-.rd-mx-col { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-align: center; }
+.rd-mx-col { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-align: center; }
 .rd-mx-row { padding: 11px 16px; border-bottom: 0.5px solid var(--border); }
 .rd-mx-row:last-child { border-bottom: 0; }
 /* Reminders Controls footer — Cancel + Save, right-aligned, above the matrix's
