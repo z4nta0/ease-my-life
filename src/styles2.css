@@ -2766,7 +2766,7 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rd-ctl-l { display: flex; align-items: center; gap: 9px; }
 .rd-ctl-l .chev { color: var(--muted); }
 .rd-ctl-l .kicker { line-height: 1; }
-.rd-ctl-sum { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.03em; color: var(--muted); }
+.rd-ctl-sum { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.03em; color: var(--muted); }
 /* Boundary between the Controls section and the Items section: the second
    disclosure header (Items) gets a top border that doubles against the bottom
    border of whatever precedes it — the Controls body when expanded, or the
