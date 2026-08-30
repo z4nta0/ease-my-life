@@ -940,7 +940,7 @@ function useStore(opts) {
         ...(e.periodKey ? { periodKey: e.periodKey } : {}),
         // Day-off card entries carry a kind + conditional link + display text and
         // have no itemId; they never write to the pick log (excluded from stats).
-        ...(e.kind ? { kind: e.kind, conditionalId: e.conditionalId || null, cardText: e.cardText || '', group: e.group || 'Other' } : {}) }));
+        ...(e.kind ? { kind: e.kind, conditionalId: e.conditionalId || null, cardText: e.cardText || '', group: e.group || 'Other', pickerName: e.pickerName || '' } : {}) }));
       const entries = [...carried, ...fresh];
       // The generator owns today: drop any of today's existing log rows (auto
       // OR manual) EXCEPT carried entries' rows, and write fresh 'auto' rows for
