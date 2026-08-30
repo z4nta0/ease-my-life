@@ -204,7 +204,7 @@ function PickerBlock({ state, picker, day, suppressed }) {
         <div className="dl-block-h dl-block-h--static">
           <span className="dl-name-mode">
             <span className="dl-block-name">{picker.name}</span>
-            <InfoTip className={`dl-mode ${neutral ? 'neutral' : ''}`} label={modeLabel}>{modeLabel}</InfoTip>
+            <InfoTip className={`dl-mode ${neutral ? 'neutral' : ''}`} label={modeLabel} truncationOnly>{modeLabel}</InfoTip>
           </span>
           <span className="dl-rest">
             <span className="dl-rest-l1"><Ico name="moon" />Rested</span>
@@ -222,7 +222,7 @@ function PickerBlock({ state, picker, day, suppressed }) {
         <span className="dl-chev"><Ico name="chevron" /></span>
         <span className="dl-name-mode">
           <span className="dl-block-name">{picker.name}</span>
-          <InfoTip className={`dl-mode ${neutral ? 'neutral' : ''}`} label={modeLabel}>{modeLabel}</InfoTip>
+          <InfoTip className={`dl-mode ${neutral ? 'neutral' : ''}`} label={modeLabel} truncationOnly>{modeLabel}</InfoTip>
         </span>
         <span className="dl-sum"><span>{items.length} item{items.length === 1 ? '' : 's'}</span>
           {doneCount > 0 && <span className="dl-dchip"><Ico name="check" w={3} /><span>{doneCount} done</span></span>}
@@ -239,7 +239,7 @@ function PickerBlock({ state, picker, day, suppressed }) {
             return (
               <div key={it.id} className={`dl-trow ${done ? 'is-done' : ''} ${it.vacation ? 'is-dim' : ''}`}>
                 <span className="dl-item dl-mk-item">
-                  <InfoTip className="dl-name" label={it.name}>{it.name}</InfoTip>
+                  <InfoTip className="dl-name" label={it.name} truncationOnly>{it.name}</InfoTip>
                   <span className="dl-sub">{itemSub(picker, it, hv ? genItems[it.id] : null)}</span>
                 </span>
                 <ValueCells hasValue={hv} atGen={genItems[it.id]} after={it.value}
@@ -282,8 +282,8 @@ function CondSection({ state, pickersInGroup, day }) {
               <div className="dl-trow dl-cond-row">
                 <span className="dl-item dl-mk-item">
                   <span className="dl-nrow">
-                    <InfoTip className="dl-name" label={c.name}>{c.name}</InfoTip>
-                    <InfoTip className={`dl-mode dl-mode--cond ${neutral ? 'is-neutral' : ''}`} label={modeLabel}>{modeLabel}</InfoTip>
+                    <InfoTip className="dl-name" label={c.name} truncationOnly>{c.name}</InfoTip>
+                    <InfoTip className={`dl-mode dl-mode--cond ${neutral ? 'is-neutral' : ''}`} label={modeLabel} truncationOnly>{modeLabel}</InfoTip>
                   </span>
                   <span className="dl-sub">{condSub(c)}</span>
                 </span>
@@ -404,7 +404,7 @@ function RemindersLog({ state, onClose }) {
         {rows.length === 0 && <div className="dl-empty">No reminders yet.</div>}
         {rows.map(({ t, status, dueLabel, when }) => (
           <div key={t.id} className={`dl-rt-row ${status === 'done' ? 'is-done' : status === 'due' ? 'is-due' : status === 'notdue' ? 'is-notdue' : ''}`}>
-            <InfoTip className="dl-r-name dl-mk-rname" label={t.name}>{t.name}</InfoTip>
+            <InfoTip className="dl-r-name dl-mk-rname" label={t.name} truncationOnly>{t.name}</InfoTip>
             <span className="dl-r-when dl-mk-rwhen">{when}</span>
             <span className="dl-r-st dl-mk-rst">
               {status === 'done' && <><span className="dl-ico dl-c-done"><Ico name="check" w={3} /></span><span className="dl-st-pill dl-st-done">Done</span></>}

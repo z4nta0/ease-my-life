@@ -641,7 +641,7 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
         )}
         <div className="today-card-body">
           <div className="today-card-meta today-card-meta--dayoff">
-            <InfoTip className="meta-picker meta-dayoff-title" label={dayoffTitle}>
+            <InfoTip className="meta-picker meta-dayoff-title" label={dayoffTitle} truncationOnly>
               {entry.pickerName ? <>{entry.pickerName} — <strong>{entry.condName || 'Day off'}</strong></> : 'Day off'}
             </InfoTip>
           </div>
