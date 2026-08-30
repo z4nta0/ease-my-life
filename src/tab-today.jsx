@@ -641,7 +641,7 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
         <div className="today-card-body">
           <div className="today-card-meta today-card-meta--dayoff">
             <span className="meta-picker meta-dayoff-title">
-              {entry.pickerName ? <>{entry.pickerName} — Day off</> : 'Day off'}
+              {entry.pickerName ? <>{entry.pickerName} — <strong>{entry.condName || 'Day off'}</strong></> : 'Day off'}
             </span>
           </div>
           <div className="today-card-name">{entry.cardText || 'Enjoy your day off'}</div>
@@ -1725,7 +1725,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
           cardShown.add(cond.id);
           const cardText = cond.cardText || cond.name;
           dayOffCards.push({ kind: 'dayoff', conditionalId: cond.id, cardText, group: picker.group || 'Other',
-            pickerName: picker.name,
+            pickerName: picker.name, condName: cond.name,
             ...(cadence !== 'daily' ? { periodKey: CAD.periodKey(picker, now) } : {}) });
           orderedSlots.push({ pickerId: pid, info: { kind: 'dayoff', candidates: [], cardText, conditionalId: cond.id } });
         }
