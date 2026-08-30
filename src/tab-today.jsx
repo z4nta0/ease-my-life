@@ -344,8 +344,13 @@ function LoaderCard({ picker, info }) {
 // human face of its drift band) since weight is irrelevant to those modes.
 // Plus a vacation toggle and a confirm-gated delete (delete behaves exactly as
 // Data — actions.removeItem).
-function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew }) {
+function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew, itemCount }) {
   const [confirmDel, setConfirmDel] = React.useState(false);
+  // A picker needs at least 2 items for a pick to be a real choice — refuse to
+  // let this one go below that. itemCount is the picker's CURRENT total
+  // (including this item); undefined (a caller that hasn't wired it up) means
+  // "unknown" and is treated as unrestricted rather than silently blocking.
+  const atMinItems = itemCount != null && itemCount <= 2;
   // Snapshot the item as it was when this editor opened, so Cancel can revert
   // the live weight / cadence / vacation / name edits. Data passes onCancel to
   // discard a brand-new item instead of reverting it.
@@ -539,7 +544,19 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew
         </div>
       ) : (
         <div className="rem-inline-foot rd-edit-foot" key="foot">
-          {!isNew && <Btn kind="danger" size="sm" icon="trash" onClick={() => setConfirmDel(true)}>Delete</Btn>}
+          {/* The Pickers tab hides this Delete button entirely via
+              `.pv-newitem .rd-edit-foot > .btn--danger` (a direct-child
+              selector) and enforces the 2-item minimum on its own row-level
+              trash icon instead — so it never passes itemCount here, keeping
+              atMinItems false and this branch's extra InfoTip wrapper out of
+              the way of that selector. */}
+          {!isNew && (atMinItems ? (
+            <InfoTip className="rd-del-disabled-tip" label="A picker needs at least 2 items — delete another item first, or delete the whole picker instead.">
+              <Btn kind="danger" size="sm" icon="trash" disabled>Delete</Btn>
+            </InfoTip>
+          ) : (
+            <Btn kind="danger" size="sm" icon="trash" onClick={() => setConfirmDel(true)}>Delete</Btn>
+          ))}
           <div className="rem-foot-right">
             <Btn kind="ghost" size="sm" className="ob-item-cancel" onClick={cancel}>Cancel</Btn>
             <Btn kind="ghost" size="sm" className="ob-item-save" onClick={saveClose}>Save</Btn>
@@ -2444,6 +2461,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                             {item && (
                               <div className="today-entry-editor">
                                 <EntryEditor item={item} picker={picker} actions={actions}
+                                             itemCount={state.items.filter((it) => it.pickerId === picker.id).length}
                                              onClose={() => setActiveEditor((cur) => cur === `item:${entry.eid}` ? null : cur)}
                                              onDelete={() => handleDeleteItem(entry.eid, item.id)} />
                               </div>

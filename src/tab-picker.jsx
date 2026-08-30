@@ -674,11 +674,18 @@ function PickerView({ picker, state, actions, animStyle }) {
                             onClick={() => startEditItem(it.id)}>
                       <Icon name="edit" size={15} />
                     </button>
-                    <button type="button" className="pool-del" aria-label={`Delete ${it.name}`}
-                            disabled={disablePoolEditDelete}
-                            onClick={() => setConfirmDelId(it.id)}>
-                      <Icon name="trash" size={15} />
-                    </button>
+                    {pickerItems.length <= 2 ? (
+                      <InfoTip className="pool-del is-disabled" action="Delete"
+                               label="A picker needs at least 2 items — delete another item first, or delete the whole picker instead.">
+                        <Icon name="trash" size={15} />
+                      </InfoTip>
+                    ) : (
+                      <button type="button" className="pool-del" aria-label={`Delete ${it.name}`}
+                              disabled={disablePoolEditDelete}
+                              onClick={() => setConfirmDelId(it.id)}>
+                        <Icon name="trash" size={15} />
+                      </button>
+                    )}
                   </React.Fragment>
                 )}
               </div>
@@ -1496,10 +1503,17 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                               title="Edit" onClick={() => startEditDraftItem(it.id)}>
                         <Icon name="edit" size={15} />
                       </button>
-                      <button type="button" className="pool-del" aria-label={`Delete ${it.name}`}
-                              onClick={() => setConfirmDelDraftId(it.id)}>
-                        <Icon name="trash" size={15} />
-                      </button>
+                      {items.filter((x) => x.id !== newDraftId).length <= 2 ? (
+                        <InfoTip className="pool-del is-disabled" action="Delete"
+                                 label="A picker needs at least 2 items — delete another item first, or delete the whole picker instead.">
+                          <Icon name="trash" size={15} />
+                        </InfoTip>
+                      ) : (
+                        <button type="button" className="pool-del" aria-label={`Delete ${it.name}`}
+                                onClick={() => setConfirmDelDraftId(it.id)}>
+                          <Icon name="trash" size={15} />
+                        </button>
+                      )}
                     </React.Fragment>
                   )}
                 </div>

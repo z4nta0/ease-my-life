@@ -612,6 +612,10 @@
   cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 .pool-del:hover { color: var(--danger, #d24545); border-color: var(--danger, #d24545); background: color-mix(in srgb, var(--danger, #d24545) 8%, transparent); }
+/* Delete blocked at the 2-item minimum — same InfoTip-trigger pattern as
+   .pool-send.is-disabled above, rendered so the explanatory tip still shows. */
+.pool-del.is-disabled { opacity: 0.4; cursor: default; }
+.pool-del.is-disabled:hover { color: var(--muted); border-color: var(--border); background: none; }
 .pool-confirm { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .pool-confirm-msg { font-size: 14px; text-wrap: pretty; }
 .pool-confirm-actions { display: flex; gap: 8px; flex: 0 0 auto; }
@@ -3241,6 +3245,10 @@ button.rd-chev {
 @media (prefers-reduced-motion: reduce) { .heat-slide-next, .heat-slide-prev { animation: none; } }
 
 .rd-edit-foot { justify-content: space-between; }
+/* InfoTip wraps the disabled Delete button in a plain span (see EntryEditor's
+   atMinItems branch, tab-today.jsx) — match the Btn it replaces so the footer's
+   space-between layout doesn't shift. */
+.rd-del-disabled-tip { display: inline-flex; }
 /* Footer ↔ delete-confirm swap: whichever row appears fades + slides in (the
    ternary branches carry distinct keys so React remounts them to replay this).
    Covers every editor footer — picker item, reminder, picker settings, conditional. */

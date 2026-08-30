@@ -1286,6 +1286,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                               <div className="rd-edit">
                                 <ItemEditor item={it} picker={pk} actions={actions}
                                             isNew={justAddedItemRef.current === it.id}
+                                            itemCount={items.length}
                                             onClose={() => {
                                               if (justAddedItemRef.current === it.id) justAddedItemRef.current = null;
                                               // Only close OUR row — this can fire well after the user
