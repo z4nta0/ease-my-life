@@ -11,7 +11,11 @@
 @media (prefers-reduced-motion: reduce) {
   .theme-animating, .theme-animating * { transition: none !important; }
 }
-html, body { margin: 0; padding: 0; height: 100%; }
+/* overflow-x:hidden exists specifically so the background flourish's
+   outermost glyphs (src/bg-flourish.jsx) can be deliberately pushed half
+   past the edge of the gutter and get clipped flush at the actual viewport
+   edge, rather than causing a horizontal scrollbar. */
+html, body { margin: 0; padding: 0; height: 100%; overflow-x: hidden; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 ul, ol { margin: 0; padding: 0; list-style: none; }
 input { font: inherit; color: inherit; }
@@ -151,19 +155,17 @@ body[data-viewport="mobile"] {
   gap: 24px;
 }
 /* Decorative background glyphs (src/bg-flourish.jsx) — sit in the open
-   margin .main-inner leaves on either side once the viewport is wide enough
-   to actually have one; hidden below that so they never crowd the content
-   column. Positioned with top:0 + bottom:0 (not an explicit height) so each
-   column's own height resolves to match .main-inner's real content height —
-   auto/content-driven though that is — which in turn is what lets each
-   glyph's own top:N% (see bg-flourish.jsx) land proportionally through
-   however tall the current tab's content actually is, rather than being
-   capped at one screen's worth. flex items are removed from the flex flow
-   once absolutely positioned, so this doesn't disturb .main-inner's own
-   flex/gap layout for the real content. */
-.bg-flourish { display: none; position: absolute; top: 0; bottom: 0; width: 340px; pointer-events: none; z-index: 0; }
-.bg-flourish--left { right: 100%; margin-right: 28px; }
-.bg-flourish--right { left: 100%; margin-left: 28px; }
+   margin .main-inner leaves on either side, once there's enough of one to
+   fit a real grid column or two (that check, and whether to render at all,
+   is JS's call now — see MIN_FULL_COLS there — since it depends on the
+   gutter's actual measured width, which differs by tab). Glyphs position
+   themselves with real pixel top/left/right values (a real grid, not
+   percentages), so this container itself doesn't need a height at all —
+   unlike the previous percentage-based version, nothing here needs to
+   resolve against .main-inner's own auto/content-driven height. */
+.bg-flourish { position: absolute; top: 0; width: 0; pointer-events: none; z-index: 0; }
+.bg-flourish--left { right: 100%; margin-right: 16px; }
+.bg-flourish--right { left: 100%; margin-left: 16px; }
 .bg-flourish-item {
   /* A paler tint of the accent, not the accent itself — a solid light-blue
      at these sizes read as too loud for a background decoration. Lightness
@@ -172,9 +174,6 @@ body[data-viewport="mobile"] {
   --flourish-color: oklch(from var(--accent) calc(l + 0.3) c h);
   position: absolute; font-family: var(--font-mono); color: var(--flourish-color);
   user-select: none; line-height: 1;
-}
-@container app (min-width: 1750px) {
-  .bg-flourish { display: block; }
 }
 .tab--today { max-width: none; }
 .main:has(.tab--today) .main-inner { padding-top: 0; }

@@ -921,7 +921,11 @@ function AppFeatureCard({ feature, state, actions, onPlayTutorial, onUncheckAppF
   );
 }
 
-function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStartPageTour, onStartAppFeatureTour, flourishes }) {
+function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStartPageTour, onStartAppFeatureTour }) {
+  // Today doesn't share app.jsx's .main-inner (see .today-body's own comment
+  // below), so it measures/caches its own flourish instance rather than
+  // reusing a ref threaded down from there.
+  const todayBodyRef = React.useRef(null);
   // Help mode (see help-mode.jsx's own header comment) — local, resets to
   // off on every remount (tab switch), which is exactly the "navigating
   // away closes it, the page you land on doesn't inherit it" behavior the
@@ -2231,8 +2235,8 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
         </div>
       </header>
 
-      <div className="today-body">
-        <BgFlourish items={flourishes} />
+      <div className="today-body" ref={todayBodyRef}>
+        <BgFlourish tabId="today" measureRef={todayBodyRef} />
         {(editMode || bannerClosing) && (
           <div className={`editmode-banner ${bannerClosing ? 'is-closing' : ''}`} role="status">
             <span className="editmode-banner-msg">
