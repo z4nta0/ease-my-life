@@ -616,6 +616,7 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
   if (entry.kind === 'dayoff') {
     const dofresh = justChecked === entry.eid && entry.done;
     const disabledTip = 'This action is disabled for this type of item.';
+    const dayoffTitle = entry.pickerName ? `${entry.pickerName} — ${entry.condName || 'Day off'}` : 'Day off';
     const onRowClick = (e) => {
       if (editMode || isRemoving) return;
       if (e.target.closest('.today-card-actions')) return;
@@ -640,9 +641,9 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
         )}
         <div className="today-card-body">
           <div className="today-card-meta today-card-meta--dayoff">
-            <span className="meta-picker meta-dayoff-title">
+            <InfoTip className="meta-picker meta-dayoff-title" label={dayoffTitle}>
               {entry.pickerName ? <>{entry.pickerName} — <strong>{entry.condName || 'Day off'}</strong></> : 'Day off'}
-            </span>
+            </InfoTip>
           </div>
           <div className="today-card-name">{entry.cardText || 'Enjoy your day off'}</div>
         </div>
