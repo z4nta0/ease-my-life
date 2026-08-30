@@ -27,17 +27,16 @@ import React from 'react';
 
 const FLOURISH_SYMBOLS = ['✓', '⁓', '←', '→', '△', '∑', '√', '∛', '∳', '≤', '≥', '±', '∞', '≈', '∅'];
 
-// Calibrated against a 1920px-wide viewport on a tab using the WIDER of the
-// app's two content max-widths (Today's own .today-body, 960px — the
-// tighter case, since it leaves less gutter than the other tabs' 720px at
-// the same viewport width): (1920 - 40 padding - 960) / 2 = 460px of
-// gutter, meant to fit 6 full columns + 1 half column (6.5 "column units").
-// Column width itself is then just a fixed constant derived from that —
-// how many columns actually fit at any OTHER width/tab falls out of the
-// real measured gutter width divided by this, rather than needing a
-// separate viewport-width lookup table.
-const COLUMN_WIDTH = 71;
-const ROW_HEIGHT = 60;
+// Originally calibrated against a 1920px-wide viewport on a tab using the
+// wider of the app's two content max-widths (Today's own .today-body,
+// 960px — the tighter case, leaving less gutter than the other tabs' 720px
+// at the same viewport width): (1920 - 40 padding - 960) / 2 = 460px of
+// gutter, for 6 full columns + 1 half column. Sized down from that once
+// (71->60, 60->48) for more density — how many columns/rows actually fit
+// at any width/tab still just falls out of the real measured gutter width
+// and content height divided by these, no separate lookup table needed.
+const COLUMN_WIDTH = 60;
+const ROW_HEIGHT = 48;
 // Below this many full columns there's not enough room to bother — no
 // point placing glyphs into a sliver of margin.
 const MIN_FULL_COLS = 2;
