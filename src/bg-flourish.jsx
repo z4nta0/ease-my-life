@@ -129,7 +129,7 @@ function generateSide(gutterWidth, contentHeight) {
   const nextSymbol = makeCycler(() => shuffle(FLOURISH_SYMBOLS));
   const nextRotation = makeCycler(() => shuffle(evenlySpaced(-28, 28, 11)));
   const nextSize = makeCycler(() => shuffle(evenlySpaced(24, 48, 9)));
-  const nextBigSize = makeCycler(() => shuffle(evenlySpaced(64, 76, 5)));
+  const nextBigSize = makeCycler(() => shuffle(evenlySpaced(64, 66, 5)));
 
   return placeGrid(cols, rows).map(({ row, col, big }, i) => {
     const isOuter = col === cols - 1;
