@@ -676,7 +676,7 @@ function PickerView({ picker, state, actions, animStyle }) {
                     </button>
                     {pickerItems.length <= 2 ? (
                       <InfoTip className="pool-del is-disabled" action="Delete"
-                               label="A picker needs at least 2 items — delete another item first, or delete the whole picker instead.">
+                               label="Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.">
                         <Icon name="trash" size={15} />
                       </InfoTip>
                     ) : (
@@ -1505,7 +1505,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                       </button>
                       {items.filter((x) => x.id !== newDraftId).length <= 2 ? (
                         <InfoTip className="pool-del is-disabled" action="Delete"
-                                 label="A picker needs at least 2 items — delete another item first, or delete the whole picker instead.">
+                                 label="Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.">
                           <Icon name="trash" size={15} />
                         </InfoTip>
                       ) : (

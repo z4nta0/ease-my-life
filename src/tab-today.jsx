@@ -551,7 +551,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew
               atMinItems false and this branch's extra InfoTip wrapper out of
               the way of that selector. */}
           {!isNew && (atMinItems ? (
-            <InfoTip className="rd-del-disabled-tip" label="A picker needs at least 2 items — delete another item first, or delete the whole picker instead.">
+            <InfoTip className="rd-del-disabled-tip" label="Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.">
               <Btn kind="danger" size="sm" icon="trash" disabled>Delete</Btn>
             </InfoTip>
           ) : (
