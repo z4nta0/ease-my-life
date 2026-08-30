@@ -31,12 +31,13 @@ const FLOURISH_SYMBOLS = ['✓', '⁓', '←', '→', '△', '∑', '√', '∛'
 // wider of the app's two content max-widths (Today's own .today-body,
 // 960px — the tighter case, leaving less gutter than the other tabs' 720px
 // at the same viewport width): (1920 - 40 padding - 960) / 2 = 460px of
-// gutter, for 6 full columns + 1 half column. Sized down from that once
-// (71->60, 60->48) for more density — how many columns/rows actually fit
-// at any width/tab still just falls out of the real measured gutter width
-// and content height divided by these, no separate lookup table needed.
-const COLUMN_WIDTH = 60;
-const ROW_HEIGHT = 48;
+// gutter, for 6 full columns + 1 half column. Sized down twice since
+// (71->60->50, 60->48->40) for more density each time — how many
+// columns/rows actually fit at any width/tab still just falls out of the
+// real measured gutter width and content height divided by these, no
+// separate lookup table needed.
+const COLUMN_WIDTH = 50;
+const ROW_HEIGHT = 40;
 // Below this many full columns there's not enough room to bother — no
 // point placing glyphs into a sliver of margin.
 const MIN_FULL_COLS = 2;

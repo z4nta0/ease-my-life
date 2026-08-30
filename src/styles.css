@@ -119,6 +119,13 @@ body[data-viewport="mobile"] {
   padding-right: var(--main-pad-x, 20px);
   padding-bottom: 96px;
   overflow-y: auto;
+  /* Explicit, not left to default — setting overflow-y alone makes the
+     browser compute overflow-x as auto too (rather than visible), which
+     gave .main its own independent horizontal scroll/overflow completely
+     unaffected by body's own overflow-x:hidden below. That's exactly the
+     boundary the background flourish's edge-bleed glyphs (src/bg-
+     flourish.jsx) are supposed to be clipped by. */
+  overflow-x: hidden;
   transition: padding 0.42s cubic-bezier(.4, 0, .2, 1);
 }
 /* Nav layout-switch animation. The old bar exits toward its own edge as a
