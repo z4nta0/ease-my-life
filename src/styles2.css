@@ -2445,6 +2445,11 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-meta { text-transform: none; letter-spacing: 0.02em; }
 .rem-meta .meta-picker { color: var(--muted); }
 
+/* Reminders' header has a group-progress bar AND an add button sharing the
+   header's right-hand flex slot (`.group-h`'s own space-between only expects
+   two children) — wrap both together so the header stays a simple 2-child
+   row like every other group's. */
+.rem-h-r { display: flex; align-items: center; gap: 10px; }
 .rem-add-btn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 30px; height: 30px; flex: 0 0 auto;

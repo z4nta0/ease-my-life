@@ -702,6 +702,23 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   // screen — resolved (any of the 3 ways) counts as done, same as any other
   // card (see the additive ring/rail totals in tab-today.jsx).
   const tutorialDoneCount = tutorialTasks.filter((t) => !!OB_CHECKLIST.entryFor(state, t.id)).length;
+  const remTotal = due.length + tutorialTasks.length;
+  const remDone = doneCount + tutorialDoneCount;
+  // Cascade: animate the dash that just turned on — mirrors GroupHeader's own
+  // freshIdx (tab-today.jsx) exactly, since this section gets the same
+  // group-progress bar but isn't rendered by that shared component.
+  const remPrevDone = React.useRef(remDone);
+  const [remFreshIdx, setRemFreshIdx] = React.useState(-1);
+  React.useEffect(() => {
+    if (remDone > remPrevDone.current) {
+      const idx = remDone - 1;
+      setRemFreshIdx(idx);
+      const t = setTimeout(() => setRemFreshIdx((v) => (v === idx ? -1 : v)), 520);
+      remPrevDone.current = remDone;
+      return () => clearTimeout(t);
+    }
+    remPrevDone.current = remDone;
+  }, [remDone]);
 
   return (
     <section className="group-section rem-section" ref={sectionRef}>
@@ -717,24 +734,31 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
           )}
           <h2 className="group-name">Reminders</h2>
           <span className="group-count">
-            <span className="group-done">{doneCount + tutorialDoneCount}</span>
-            <span className="group-of">of {due.length + tutorialTasks.length}</span>
+            <span className="group-done">{remDone}</span>
+            <span className="group-of">of {remTotal}</span>
           </span>
           {!editMode && onToggleLog && <DayLogChip open={logOpen} onClick={onToggleLog} />}
         </div>
-        {!editMode && (
-          tutorialsInProgress ? (
-            <InfoTip className="rem-add-btn is-tour-disabled" action="Add a reminder"
-                     label="This button is disabled until all tutorials are completed.">
-              <Icon name="plus" size={16} />
-            </InfoTip>
-          ) : (
-            <button className="rem-add-btn" onClick={() => { adding ? cancelAdd() : startAdd(); }}
-                    aria-label="Add a reminder" title="Add a reminder">
-              <Icon name="plus" size={16} />
-            </button>
-          )
-        )}
+        <div className="rem-h-r">
+          <div className="group-progress">
+            {Array(remTotal).fill(0).map((_, i) => (
+              <i key={i} className={`${i < remDone ? 'is-done' : ''} ${i === remFreshIdx ? 'is-fresh' : ''}`} />
+            ))}
+          </div>
+          {!editMode && (
+            tutorialsInProgress ? (
+              <InfoTip className="rem-add-btn is-tour-disabled" action="Add a reminder"
+                       label="This button is disabled until all tutorials are completed.">
+                <Icon name="plus" size={16} />
+              </InfoTip>
+            ) : (
+              <button className="rem-add-btn" onClick={() => { adding ? cancelAdd() : startAdd(); }}
+                      aria-label="Add a reminder" title="Add a reminder">
+                <Icon name="plus" size={16} />
+              </button>
+            )
+          )}
+        </div>
       </header>
 
       {!editMode && (
