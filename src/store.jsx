@@ -203,12 +203,12 @@ function applyConditionalToggle(s, newEntries, toggled, nowDone) {
       if (nowDone) {
         const patch = C.cardComplete(c);
         if (!patch) return c; // probability modes: informational only
-        return { ...c, _cardPrev: { value: c.value, triggered: c.triggered }, ...patch };
+        return { ...c, _cardPrev: { value: c.value, triggered: c.triggered, chargeStep: c.chargeStep }, ...patch };
       }
       const prev = c._cardPrev;
       if (!prev) return c;
       const { _cardPrev, ...rest } = c;
-      return { ...rest, value: prev.value, triggered: prev.triggered };
+      return { ...rest, value: prev.value, triggered: prev.triggered, chargeStep: prev.chargeStep };
     });
   }
   // Dependent picker entry toggle.
@@ -226,12 +226,12 @@ function applyConditionalToggle(s, newEntries, toggled, nowDone) {
     if (nowDone && depDone === 1 && !c.chargedToday) {
       const patch = C.advanceOnCompletion(c);
       if (!patch) return c;
-      return { ...c, _chargePrev: { value: c.value, triggered: c.triggered, chargedToday: c.chargedToday }, ...patch };
+      return { ...c, _chargePrev: { value: c.value, triggered: c.triggered, chargedToday: c.chargedToday, chargeStep: c.chargeStep }, ...patch };
     }
     if (!nowDone && depDone === 0 && c._chargePrev) {
       const prev = c._chargePrev;
       const { _chargePrev, ...rest } = c;
-      return { ...rest, value: prev.value, triggered: prev.triggered, chargedToday: prev.chargedToday };
+      return { ...rest, value: prev.value, triggered: prev.triggered, chargedToday: prev.chargedToday, chargeStep: prev.chargeStep };
     }
     return c;
   });
@@ -940,7 +940,7 @@ function useStore(opts) {
         ...(e.periodKey ? { periodKey: e.periodKey } : {}),
         // Day-off card entries carry a kind + conditional link + display text and
         // have no itemId; they never write to the pick log (excluded from stats).
-        ...(e.kind ? { kind: e.kind, conditionalId: e.conditionalId || null, cardText: e.cardText || '', group: e.group || 'Other' } : {}) }));
+        ...(e.kind ? { kind: e.kind, conditionalId: e.conditionalId || null, cardText: e.cardText || '', group: e.group || 'Other', pickerName: e.pickerName || '', condName: e.condName || '' } : {}) }));
       const entries = [...carried, ...fresh];
       // The generator owns today: drop any of today's existing log rows (auto
       // OR manual) EXCEPT carried entries' rows, and write fresh 'auto' rows for

@@ -41,8 +41,80 @@ const TODAY_HELP_ITEMS = [
     // padX: 4 — .foot-editmode sits right next to .ob-generate (Regenerate)
     // with only a 10px gap between them; the default 8px pad on each side
     // would overlap by 6px.
-    id: 'editMode', sel: '.em-rail-btn, .foot-editmode', title: 'Edit Mode', padX: 4,
-    body: <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</>,
+    // title/body as functions (see help-mode.jsx's own comment on this
+    // pattern, e.g. the Charge Controls items): .em-rail-btn is the SAME
+    // button throughout, relabeled "Done" once Edit Mode is on rather than
+    // being swapped for a different element — a static "Edit Mode" tip
+    // used to keep showing even while the button (and its real behavior)
+    // had already become Done. .foot-editmode only ever matches while NOT
+    // editing (it unmounts entirely once editMode is true — see the
+    // editmode-foot-actions item below for what replaces it), so reading
+    // .em-rail-btn's own is-on class here correctly reflects either case
+    // regardless of which of the two elements actually got matched.
+    id: 'editMode', sel: '.em-rail-btn, .foot-editmode', padX: 4,
+    title: () => (document.querySelector('.em-rail-btn')?.classList.contains('is-on') ? 'Done Button' : 'Edit Mode'),
+    body: () => (document.querySelector('.em-rail-btn')?.classList.contains('is-on')
+      ? <>This button saves any edits that you have made and exits Edit Mode.</>
+      : <>This lets you rearrange the positions of the groups and items, as well as rename the groups.</>),
+  },
+  {
+    // .editmode-banner-actions is the Cancel/Done pair in Edit Mode's own
+    // sticky banner. .editmode-foot-actions (styles2.css/tab-today.jsx) is
+    // the identical pair repeated in the footer, distinguished from the
+    // OTHER (non-editing) footer actions row that shares .today-foot-
+    // actions with it — findTargets' comma syntax is fallback-only (see
+    // groupNameEdit's own comment in this file for why that distinction
+    // matters), so this needs its own class rather than reusing the shared
+    // one, and can't be combined with editmode-banner-actions into one
+    // sel either, for the same reason (both are always present together
+    // while Edit Mode is on, so the first one found would always win).
+    id: 'editModeBannerActions', sel: '.editmode-banner-actions', title: 'Cancel / Done',
+    body: (
+      <>
+        <p><b>Cancel:</b> This button discards any reordering or renaming edits that you have made and exits Edit Mode.</p>
+        <p><b>Done:</b> This button saves any edits that you have made and exits Edit Mode.</p>
+      </>
+    ),
+  },
+  {
+    id: 'editModeFootActions', sel: '.editmode-foot-actions', title: 'Cancel / Done',
+    body: (
+      <>
+        <p><b>Cancel:</b> This button discards any reordering or renaming edits that you have made and exits Edit Mode.</p>
+        <p><b>Done:</b> This button saves any edits that you have made and exits Edit Mode.</p>
+      </>
+    ),
+  },
+  {
+    // These three only exist in the DOM while Edit Mode is on — same
+    // "findTargets returns nothing, item silently skipped" handling as the
+    // side-placement rail handle (see help-mode.jsx). perElement: every
+    // group's own grip gets its own badge, since a user editing a long
+    // list could be looking at any one of them, not just the first.
+    // padX: 1 — .group-grip and .group-name--editable sit only 4px apart in
+    // practice (the negative margin on .group-grip eats into .group-h-l's
+    // own 10px gap) — the default 8px pad on each side, and even editMode's
+    // own padX:4 fix above, both still overlap here. 1px each side leaves
+    // 2px of real clearance instead.
+    id: 'groupGrip', sel: '.group-grip', perElement: true, title: 'Reorder Group', padX: 1,
+    body: <>While Edit Mode is on, drag this handle to change this group's position in your todo list.</>,
+  },
+  {
+    id: 'cardGrip', sel: '.card-grip', perElement: true, title: 'Reorder Item',
+    body: <>While Edit Mode is on, drag this handle to change this item's position within its group.</>,
+  },
+  {
+    // .group-name-slot is a shared class on BOTH the button (idle) and the
+    // input (mid-edit) — findTargets' comma syntax is fallback-only (try
+    // the first selector, only try the next if it matched NOTHING at all),
+    // not a union, so '.group-name--editable, .group-name-input' silently
+    // dropped whichever group was actively being edited the moment any
+    // OTHER group's plain button still matched. One stable class sidesteps
+    // that entirely: clicking a name to rename it used to make this exact
+    // highlight vanish and leave the now-visible input hidden behind the
+    // dimmer, right when a user is actually interacting with it.
+    id: 'groupNameEdit', sel: '.group-name-slot', perElement: true, title: 'Rename Group', padX: 1,
+    body: <>While Edit Mode is on, click a group's name to rename it.</>,
   },
   {
     // perElement (see help-mode.jsx): every real entry card gets its own

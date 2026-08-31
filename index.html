@@ -100,38 +100,11 @@
   <div id="boot-splash" role="status" aria-label="Loading">
     <div class="bl"><span class="tk op" style="--i:0">(</span><span class="tk" style="--i:1">7</span><span class="tk op" style="--i:2">×</span><span class="tk" style="--i:3">3</span><span class="tk op" style="--i:4">)</span><span class="tk op" style="--i:5">−</span><span class="tk" style="--i:6">√9</span><span class="tk op" style="--i:7">+</span><span class="tk" style="--i:8">2<sup>2</sup></span><span class="tk eq" style="--i:9">=</span><span class="tk chk" style="--i:10"><svg viewBox="0 0 26 26"><path d="M5 13 l5 5 l11 -12"/></svg></span></div>
   </div>
-  <script>
-    (function(){
-      var el=document.getElementById('boot-splash'); if(!el) return;
-      var dismissed=false;
-      // The splash must never vanish mid-assembly. Two conditions gate the
-      // fade: the app has booted, AND the equation has finished assembling.
-      // "Assembled" = the last token (the checkmark, --i:10) has appeared and
-      // its pop has settled: delay (--i * .12s) + 16% of the 3.4s loop ≈ 1.74s.
-      // Deliberately NOT the checkmark's full animationiteration (4.6s) — each
-      // loop holds the finished equation static from 7% to 82%, so waiting for
-      // a whole iteration would sit on ~2.8s of dead hold and read as two
-      // cycles. Derived from the CSS below rather than hard-coded so retiming
-      // the loop keeps this in sync.
-      var TOK_STAGGER=0.12, LOOP=3.4, POP_SETTLED=0.16, LAST_I=10;
-      var ASSEMBLED_MS=(LAST_I*TOK_STAGGER + LOOP*POP_SETTLED)*1000;
-      var booted=false, cycled=false;
-      // Pure-CSS animation; JS only fades it out once the app mounts — the
-      // .42s opacity transition smooths whatever frame the loop is on.
-      function hide(){ if(dismissed) return; dismissed=true; el.classList.add('bl-hide'); setTimeout(function(){ el.remove(); }, 460); }
-      function maybeHide(){ if(booted && cycled) hide(); }
-      // Reduced motion renders the equation already assembled, so there is
-      // nothing to wait for.
-      if(window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches){
-        cycled=true;
-      } else {
-        setTimeout(function(){ cycled=true; maybeHide(); }, ASSEMBLED_MS);
-      }
-      window.__dismissBootSplash=function(){ booted=true; maybeHide(); };
-      // Safety net: never trap the user if boot never signals.
-      setTimeout(hide, 6000);
-    })();
-  </script>
+  <!-- Dismiss logic lives in its own file (not inline) so the page has no
+       inline <script> — keeps the Content-Security-Policy's script-src
+       locked to 'self' with no hash/'unsafe-inline' needed (see
+       public/_headers). -->
+  <script src="/boot-splash.js"></script>
   <noscript>
     <div style="max-width:38rem;margin:12vh auto;padding:0 1.5rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1c2230">
       <h1 style="font-size:1.6rem;letter-spacing:-0.02em">Ease My Life</h1>

@@ -213,12 +213,40 @@ function NumStepper({ value, min = 1, max = 99, onSet, ariaLabel }) {
 // tip's explanation is still read out. (These triggers are deliberately
 // focusable: focus + Enter is the only way a keyboard user can learn WHY the
 // action is unavailable.)
-const InfoTip = ({ children, label, className = '', action = null }) => {
+// `truncationOnly`: for the "reveal a CSS-ellipsis-truncated name" use case
+// (as opposed to an always-relevant explanation like a disabled-action reason
+// or a "?" help icon). When set, the trigger measures its own
+// scrollWidth vs. clientWidth and behaves as a totally inert, non-focusable
+// span — no tooltip, no cursor affordance — whenever the text isn't actually
+// truncated, since there's nothing extra to reveal. Watched via ResizeObserver
+// on the trigger itself rather than a window resize listener: a column can
+// narrow (or a name can stop fitting) for reasons that never fire `resize` —
+// e.g. a sibling row's Collapse animation later adding a scrollbar that
+// shaves a few px off every row's width — and only observing the element's
+// own box catches all of those, not just an outer-viewport size change.
+const InfoTip = ({ children, label, className = '', action = null, truncationOnly = false }) => {
   const [open, setOpen] = React.useState(false);
   const [pos, setPos] = React.useState({ left: 0, top: 0, placement: 'top' });
+  const [truncated, setTruncated] = React.useState(false);
   const triggerRef = React.useRef(null);
   const tipRef = React.useRef(null);
   const lastPointer = React.useRef('mouse');
+  const active = truncationOnly ? truncated : true;
+
+  React.useLayoutEffect(() => {
+    if (!truncationOnly) return;
+    const el = triggerRef.current;
+    if (!el) return;
+    const check = () => setTruncated(el.scrollWidth > el.clientWidth);
+    check();
+    if (typeof ResizeObserver === 'function') {
+      const ro = new ResizeObserver(check);
+      ro.observe(el);
+      return () => ro.disconnect();
+    }
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, [truncationOnly, label]);
 
   const place = React.useCallback(() => {
     const trg = triggerRef.current, tip = tipRef.current;
@@ -265,6 +293,16 @@ const InfoTip = ({ children, label, className = '', action = null }) => {
     };
   }, [open]);
 
+  // Safety net: if a resize un-truncates the text while its tip is open
+  // (truncationOnly only), close it rather than leave a tooltip open on what
+  // just became an inert span.
+  React.useEffect(() => { if (!active) setOpen(false); }, [active]);
+
+  // Ref stays attached even while inactive so the truncation check above has
+  // something to measure — this is the only state that can flip `active` on.
+  if (!active) {
+    return <span ref={triggerRef} className={className}>{children}</span>;
+  }
   return (
     <span ref={triggerRef}
           className={`infotip-trigger ${className}`}

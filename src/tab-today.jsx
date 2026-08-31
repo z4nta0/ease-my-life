@@ -1,5 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
+import { BgFlourish } from './bg-flourish.jsx';
 import { CADENCE } from './cadence.js';
 import { CONDITIONALS } from './conditionals.js';
 import { EASE_UP_RANGE_WARN } from './constants.js';
@@ -234,7 +235,7 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
           </span>
         )}
         {editMode && editing ? (
-          <input ref={nameInputRef} className={`group-name-input ${closing ? 'is-closing' : ''} ${nameError ? 'is-invalid' : ''}`} type="text" value={draft} maxLength={30}
+          <input ref={nameInputRef} className={`group-name-input group-name-slot ${closing ? 'is-closing' : ''} ${nameError ? 'is-invalid' : ''}`} type="text" value={draft} maxLength={30}
                  aria-label="Group name"
                  onChange={(e) => { setDraft(e.target.value); if (nameError) setNameError(''); }}
                  onBlur={commit}
@@ -243,7 +244,7 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
                    else if (e.key === 'Escape') { e.preventDefault(); cancel(); }
                  }} />
         ) : editMode ? (
-          <button type="button" className="group-name group-name--editable" onClick={startEdit}
+          <button type="button" className="group-name group-name--editable group-name-slot" onClick={startEdit}
                   aria-label={`Rename group ${name}`}>
             {name}
             <Icon name="edit" size={13} />
@@ -343,8 +344,13 @@ function LoaderCard({ picker, info }) {
 // human face of its drift band) since weight is irrelevant to those modes.
 // Plus a vacation toggle and a confirm-gated delete (delete behaves exactly as
 // Data — actions.removeItem).
-function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew }) {
+function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew, itemCount }) {
   const [confirmDel, setConfirmDel] = React.useState(false);
+  // A picker needs at least 2 items for a pick to be a real choice — refuse to
+  // let this one go below that. itemCount is the picker's CURRENT total
+  // (including this item); undefined (a caller that hasn't wired it up) means
+  // "unknown" and is treated as unrestricted rather than silently blocking.
+  const atMinItems = itemCount != null && itemCount <= 2;
   // Snapshot the item as it was when this editor opened, so Cancel can revert
   // the live weight / cadence / vacation / name edits. Data passes onCancel to
   // discard a brand-new item instead of reverting it.
@@ -538,7 +544,19 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew
         </div>
       ) : (
         <div className="rem-inline-foot rd-edit-foot" key="foot">
-          {!isNew && <Btn kind="danger" size="sm" icon="trash" onClick={() => setConfirmDel(true)}>Delete</Btn>}
+          {/* The Pickers tab hides this Delete button entirely via
+              `.pv-newitem .rd-edit-foot > .btn--danger` (a direct-child
+              selector) and enforces the 2-item minimum on its own row-level
+              trash icon instead — so it never passes itemCount here, keeping
+              atMinItems false and this branch's extra InfoTip wrapper out of
+              the way of that selector. */}
+          {!isNew && (atMinItems ? (
+            <InfoTip className="rd-del-disabled-tip" label="Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.">
+              <Btn kind="danger" size="sm" icon="trash" disabled>Delete</Btn>
+            </InfoTip>
+          ) : (
+            <Btn kind="danger" size="sm" icon="trash" onClick={() => setConfirmDel(true)}>Delete</Btn>
+          ))}
           <div className="rem-foot-right">
             <Btn kind="ghost" size="sm" className="ob-item-cancel" onClick={cancel}>Cancel</Btn>
             <Btn kind="ghost" size="sm" className="ob-item-save" onClick={saveClose}>Save</Btn>
@@ -615,6 +633,7 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
   if (entry.kind === 'dayoff') {
     const dofresh = justChecked === entry.eid && entry.done;
     const disabledTip = 'This action is disabled for this type of item.';
+    const dayoffTitle = entry.pickerName ? `${entry.pickerName} — ${entry.condName || 'Day off'}` : 'Day off';
     const onRowClick = (e) => {
       if (editMode || isRemoving) return;
       if (e.target.closest('.today-card-actions')) return;
@@ -639,9 +658,9 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
         )}
         <div className="today-card-body">
           <div className="today-card-meta today-card-meta--dayoff">
-            <span className="meta-picker meta-dayoff-title">
+            <InfoTip className="meta-picker meta-dayoff-title" label={dayoffTitle} truncationOnly>
               {entry.pickerName ? <>{entry.pickerName} — <strong>{entry.condName || 'Day off'}</strong></> : 'Day off'}
-            </span>
+            </InfoTip>
           </div>
           <div className="today-card-name">{entry.cardText || 'Enjoy your day off'}</div>
         </div>
@@ -921,6 +940,10 @@ function AppFeatureCard({ feature, state, actions, onPlayTutorial, onUncheckAppF
 }
 
 function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStartPageTour, onStartAppFeatureTour }) {
+  // Today doesn't share app.jsx's .main-inner (see .today-body's own comment
+  // below), so it measures/caches its own flourish instance rather than
+  // reusing a ref threaded down from there.
+  const todayBodyRef = React.useRef(null);
   // Help mode (see help-mode.jsx's own header comment) — local, resets to
   // off on every remount (tab switch), which is exactly the "navigating
   // away closes it, the page you land on doesn't inherit it" behavior the
@@ -2230,7 +2253,8 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
         </div>
       </header>
 
-      <div className="today-body">
+      <div className="today-body" ref={todayBodyRef}>
+        <BgFlourish tabId="today" measureRef={todayBodyRef} />
         {(editMode || bannerClosing) && (
           <div className={`editmode-banner ${bannerClosing ? 'is-closing' : ''}`} role="status">
             <span className="editmode-banner-msg">
@@ -2437,6 +2461,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                             {item && (
                               <div className="today-entry-editor">
                                 <EntryEditor item={item} picker={picker} actions={actions}
+                                             itemCount={state.items.filter((it) => it.pickerId === picker.id).length}
                                              onClose={() => setActiveEditor((cur) => cur === `item:${entry.eid}` ? null : cur)}
                                              onDelete={() => handleDeleteItem(entry.eid, item.id)} />
                               </div>
@@ -2523,7 +2548,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                   </div>
                 </div>
               ) : editMode ? (
-                <div className="today-foot-actions">
+                <div className="today-foot-actions editmode-foot-actions">
                   <Btn kind="ghost" onClick={() => exitEditMode(false)}>Cancel</Btn>
                   <Btn kind="primary" icon="check" onClick={() => exitEditMode(true)}>Done</Btn>
                 </div>

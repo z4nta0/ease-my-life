@@ -11,7 +11,11 @@
 @media (prefers-reduced-motion: reduce) {
   .theme-animating, .theme-animating * { transition: none !important; }
 }
-html, body { margin: 0; padding: 0; height: 100%; }
+/* overflow-x:hidden exists specifically so the background flourish's
+   outermost glyphs (src/bg-flourish.jsx) can be deliberately pushed half
+   past the edge of the gutter and get clipped flush at the actual viewport
+   edge, rather than causing a horizontal scrollbar. */
+html, body { margin: 0; padding: 0; height: 100%; overflow-x: hidden; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 ul, ol { margin: 0; padding: 0; list-style: none; }
 input { font: inherit; color: inherit; }
@@ -115,6 +119,13 @@ body[data-viewport="mobile"] {
   padding-right: var(--main-pad-x, 20px);
   padding-bottom: 96px;
   overflow-y: auto;
+  /* Explicit, not left to default — setting overflow-y alone makes the
+     browser compute overflow-x as auto too (rather than visible), which
+     gave .main its own independent horizontal scroll/overflow completely
+     unaffected by body's own overflow-x:hidden below. That's exactly the
+     boundary the background flourish's edge-bleed glyphs (src/bg-
+     flourish.jsx) are supposed to be clipped by. */
+  overflow-x: hidden;
   transition: padding 0.42s cubic-bezier(.4, 0, .2, 1);
 }
 /* Nav layout-switch animation. The old bar exits toward its own edge as a
@@ -142,12 +153,34 @@ body[data-viewport="mobile"] {
   .tabbar--entering.tabbar--bottom, .tabbar--entering.tabbar--top, .tabbar--entering.tabbar--side { animation: none; }
 }
 .main-inner {
+  position: relative;
   max-width: 720px;
   margin: 0 auto;
   padding-top: 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+/* Decorative background glyphs (src/bg-flourish.jsx) — sit in the open
+   margin .main-inner leaves on either side, once there's enough of one to
+   fit a real grid column or two (that check, and whether to render at all,
+   is JS's call now — see MIN_FULL_COLS there — since it depends on the
+   gutter's actual measured width, which differs by tab). Glyphs position
+   themselves with real pixel top/left/right values (a real grid, not
+   percentages), so this container itself doesn't need a height at all —
+   unlike the previous percentage-based version, nothing here needs to
+   resolve against .main-inner's own auto/content-driven height. */
+.bg-flourish { position: absolute; top: 0; width: 0; pointer-events: none; z-index: 0; }
+.bg-flourish--left { right: 100%; margin-right: 16px; }
+.bg-flourish--right { left: 100%; margin-left: 16px; }
+.bg-flourish-item {
+  /* A paler tint of the accent, not the accent itself — a solid light-blue
+     at these sizes read as too loud for a background decoration. Lightness
+     bump (not alpha) so the per-item random opacity (bg-flourish.jsx) stays
+     the only thing controlling how faint each glyph is. */
+  --flourish-color: oklch(from var(--accent) calc(l + 0.3) c h);
+  position: absolute; font-family: var(--font-mono); color: var(--flourish-color);
+  user-select: none; line-height: 1;
 }
 .tab--today { max-width: none; }
 .main:has(.tab--today) .main-inner { padding-top: 0; }
@@ -463,7 +496,7 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
 }
 .pill--default { background: var(--surface); color: var(--muted); border: 0.5px solid var(--border); }
 .pill--mode    { background: var(--accent-soft); color: var(--accent); }
-.pill--muted   { background: transparent; color: var(--muted); border: 0.5px solid var(--border); padding: 1px 7px; font-size: 9.5px; }
+.pill--muted   { background: transparent; color: var(--muted); border: 0.5px solid var(--border); padding: 1px 7px; font-size: 11px; }
 
 .section-h { display: flex; flex-direction: column; gap: 18px; }
 .section-title {
@@ -546,6 +579,7 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   .today-h-lead { gap: 12px; }
 }
 .today-body {
+  position: relative;
   max-width: 960px;
   margin: 0 auto;
   padding: 20px 20px 0;

@@ -215,7 +215,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
       {rep === 'weekly' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <label className="rem-flabel">On these days</label>
+            <span className="rem-flabel">On these days</span>
             <span className="rem-flabel-sub">
               {(task.daysOfWeek && task.daysOfWeek.length)
                 ? <>shows on the Today tab <strong>every {[...task.daysOfWeek].sort((a, b) => a - b).map((d) => dayAbbr[d]).join(', ')}</strong></>
@@ -285,15 +285,15 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
       {rep === 'annual' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <label className="rem-flabel">Date each year</label>
+            <span className="rem-flabel">Date each year</span>
             <span className="rem-flabel-sub">shows on the Today tab <strong>every {fullMonthNames[(task.month || 1) - 1]} {task.day || 1}</strong></span>
           </div>
           <div className="rem-inline">
-            <select className="np-input rem-sel" aria-describedby={schedNoteId} value={task.month || 1}
+            <select className="np-input rem-sel" aria-label="Month" aria-describedby={schedNoteId} value={task.month || 1}
                     onChange={(e) => set({ month: parseInt(e.target.value) })}>
               {monthNames.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
             </select>
-            <select className="np-input rem-sel" aria-describedby={schedNoteId} value={task.day || 1}
+            <select className="np-input rem-sel" aria-label="Day" aria-describedby={schedNoteId} value={task.day || 1}
                     onChange={(e) => set({ day: parseInt(e.target.value) })}>
               {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
                 <option key={d} value={d}>{d}</option>
@@ -702,6 +702,23 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   // screen — resolved (any of the 3 ways) counts as done, same as any other
   // card (see the additive ring/rail totals in tab-today.jsx).
   const tutorialDoneCount = tutorialTasks.filter((t) => !!OB_CHECKLIST.entryFor(state, t.id)).length;
+  const remTotal = due.length + tutorialTasks.length;
+  const remDone = doneCount + tutorialDoneCount;
+  // Cascade: animate the dash that just turned on — mirrors GroupHeader's own
+  // freshIdx (tab-today.jsx) exactly, since this section gets the same
+  // group-progress bar but isn't rendered by that shared component.
+  const remPrevDone = React.useRef(remDone);
+  const [remFreshIdx, setRemFreshIdx] = React.useState(-1);
+  React.useEffect(() => {
+    if (remDone > remPrevDone.current) {
+      const idx = remDone - 1;
+      setRemFreshIdx(idx);
+      const t = setTimeout(() => setRemFreshIdx((v) => (v === idx ? -1 : v)), 520);
+      remPrevDone.current = remDone;
+      return () => clearTimeout(t);
+    }
+    remPrevDone.current = remDone;
+  }, [remDone]);
 
   return (
     <section className="group-section rem-section" ref={sectionRef}>
@@ -717,24 +734,31 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
           )}
           <h2 className="group-name">Reminders</h2>
           <span className="group-count">
-            <span className="group-done">{doneCount + tutorialDoneCount}</span>
-            <span className="group-of">of {due.length + tutorialTasks.length}</span>
+            <span className="group-done">{remDone}</span>
+            <span className="group-of">of {remTotal}</span>
           </span>
           {!editMode && onToggleLog && <DayLogChip open={logOpen} onClick={onToggleLog} />}
         </div>
-        {!editMode && (
-          tutorialsInProgress ? (
-            <InfoTip className="rem-add-btn is-tour-disabled" action="Add a reminder"
-                     label="This button is disabled until all tutorials are completed.">
-              <Icon name="plus" size={16} />
-            </InfoTip>
-          ) : (
-            <button className="rem-add-btn" onClick={() => { adding ? cancelAdd() : startAdd(); }}
-                    aria-label="Add a reminder" title="Add a reminder">
-              <Icon name="plus" size={16} />
-            </button>
-          )
-        )}
+        <div className="rem-h-r">
+          <div className="group-progress">
+            {Array(remTotal).fill(0).map((_, i) => (
+              <i key={i} className={`${i < remDone ? 'is-done' : ''} ${i === remFreshIdx ? 'is-fresh' : ''}`} />
+            ))}
+          </div>
+          {!editMode && (
+            tutorialsInProgress ? (
+              <InfoTip className="rem-add-btn is-tour-disabled" action="Add a reminder"
+                       label="This button is disabled until all tutorials are completed.">
+                <Icon name="plus" size={16} />
+              </InfoTip>
+            ) : (
+              <button className="rem-add-btn" onClick={() => { adding ? cancelAdd() : startAdd(); }}
+                      aria-label="Add a reminder" title="Add a reminder">
+                <Icon name="plus" size={16} />
+              </button>
+            )
+          )}
+        </div>
       </header>
 
       {!editMode && (
@@ -751,7 +775,7 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
           <div className={`rem-quickadd-wrap ${addClosing ? 'is-closing' : ''}`}>
             <div className="rem-quickadd">
               <input ref={inputRef} className="np-input" type="text" value={draftTask.name} maxLength={60}
-                     placeholder="Add a reminder, e.g. Call the dentist"
+                     placeholder="Add a reminder, e.g. Call the dentist" aria-label="Reminder name"
                      onChange={(e) => setDraftTask((d) => ({ ...d, name: e.target.value }))}
                      onKeyDown={(e) => { if (e.key === 'Enter') commit(); }} />
             </div>
@@ -960,7 +984,7 @@ function ReminderManager({ state, actions, hidden }) {
       <header className="cat-h">
         <button type="button" className="cat-h-l" aria-expanded={open} onClick={setOpen}>
           <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
-          <h3 className="cat-name">Reminders</h3>
+          <h2 className="cat-name">Reminders</h2>
           <span className="cat-count">{tasks.length}</span>
         </button>
       </header>
@@ -1014,30 +1038,47 @@ function ReminderManager({ state, actions, hidden }) {
               return (
                 <div key={t.id} className={`rd-item ${cardOpen ? 'is-editing' : ''} ${insertId === t.id ? 'rd-item--insert' : ''}`}
                      onAnimationEnd={() => { if (insertId === t.id) setInsertId(null); }}>
-                  <button type="button" className="rd-row" aria-expanded={cardOpen}
-                       onClick={() => setOpenId(cardOpen ? null : t.id)}>
-                    <span className={`rd-ico ${once ? 'is-once' : ''}`}>
-                      <Icon name={once ? 'pin' : 'calendar'} size={15} />
-                    </span>
-                    <span className="rd-main">
-                      {cardOpen ? (
+                  {cardOpen ? (
+                    // Plain div, not a button, while editing — a <button> can't
+                    // legally contain the <input> below it (interactive-in-
+                    // interactive), which was also why it had no accessible
+                    // name of its own (browsers exclude a focusable
+                    // descendant's value from the parent's name computation).
+                    // The chevron is its own real button instead of a
+                    // leftover decoration that looks clickable but does
+                    // nothing — see tab-data.jsx's matching conditional/item
+                    // row fix for the full reasoning.
+                    <div className="rd-row">
+                      <span className={`rd-ico ${once ? 'is-once' : ''}`}>
+                        <Icon name={once ? 'pin' : 'calendar'} size={15} />
+                      </span>
+                      <span className="rd-main">
                         <input className="rd-name-input" type="text" value={t.name} maxLength={60}
                                placeholder="Reminder name" aria-label="Reminder name" autoFocus
-                               onClick={(e) => e.stopPropagation()}
                                onChange={(e) => actions.updateTask(t.id, { name: e.target.value })}
                                onBlur={(e) => { const n = e.target.value.trim(); if (n) actions.renameTask(t.id, n); }}
                                onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
-                      ) : (
-                        <React.Fragment>
-                          <span className="rd-name">{t.name}</span>
-                          <span className="rd-sched">{TASKS.summary(t)}</span>
-                        </React.Fragment>
-                      )}
-                    </span>
-                    <span className={`rd-chev chev ${cardOpen ? 'is-open' : ''}`} aria-hidden="true">
-                      <Icon name="chev" size={16} />
-                    </span>
-                  </button>
+                      </span>
+                      <button type="button" className="rd-chev chev is-open" aria-label="Collapse"
+                              onClick={() => setOpenId(null)}>
+                        <Icon name="chev" size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button type="button" className="rd-row" aria-expanded={cardOpen}
+                         onClick={() => setOpenId(cardOpen ? null : t.id)}>
+                      <span className={`rd-ico ${once ? 'is-once' : ''}`}>
+                        <Icon name={once ? 'pin' : 'calendar'} size={15} />
+                      </span>
+                      <span className="rd-main">
+                        <span className="rd-name">{t.name}</span>
+                        <span className="rd-sched">{TASKS.summary(t)}</span>
+                      </span>
+                      <span className="rd-chev chev" aria-hidden="true">
+                        <Icon name="chev" size={16} />
+                      </span>
+                    </button>
+                  )}
                   <Collapse open={cardOpen}>
                     <div className="rd-edit">
                       <div className="rem-inline-editor">

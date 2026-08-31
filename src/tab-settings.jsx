@@ -288,12 +288,17 @@ function ContactSupportCard({ state, actions }) {
               <input className="np-input" type="text" value={subject}
                      onChange={(e) => setSubject(e.target.value)} placeholder="What's going on?" />
             </label>
-            <label className="support-field">
-              <span className="support-flabel">Message</span>
-              <textarea className="np-input support-textarea" value={message} rows={5}
+            <div className="support-field">
+              {/* id is "support-message-input", not "support-message" — that id
+                  is already taken by index.html's hidden static Netlify form
+                  (see its own comment above the <form name="support">), and
+                  duplicate ids on the page confused the browser's label
+                  matching (both labels applied, announcing "Message Message"). */}
+              <label className="support-flabel" htmlFor="support-message-input">Message</label>
+              <textarea id="support-message-input" className="np-input support-textarea" value={message} rows={5}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder="The more detail, the better." />
-            </label>
+            </div>
             <div className="support-diag">
               <div className="support-diag-field">
                 <span className="support-flabel">App version</span>
@@ -447,34 +452,44 @@ function ThemeSection({ state, actions }) {
 // selector uses (dot + name + hint that expands only on the selected row),
 // so Appearance's style pickers look and behave consistently with the rest
 // of the app rather than introducing a new control pattern.
-function StyleRadioList({ groupName, options, value, onChange, onPreview, previewDisabled }) {
+function StyleRadioList({ groupName, groupLabel, options, value, onChange, onPreview, previewDisabled }) {
   return (
-    <div className="rd-mode-radio">
-      {options.map((o) => {
-        const on = o.value === value;
-        return (
-          <label key={o.value} className={`rd-mode-opt ${on ? 'is-on' : ''}`}>
-            <input type="radio" name={groupName} checked={on} onChange={() => onChange(o.value)} />
-            <span className="rd-mode-dot" aria-hidden="true"></span>
-            <span className="rd-mode-text">
-              <span className="rd-mode-name">{o.label}</span>
-              {/* Always-mounted collapse (not <Collapse>, which unmounts the hint
-                  on deselect — a freshly-inserted node can't transition its
-                  grid-template-rows, so the height snapped). Keeping it mounted
-                  lets the 0fr↔1fr glide run every time. */}
-              <div className={`collapse ${on ? 'is-open' : ''}`}>
-                <div className="collapse-inner"><span className="rd-mode-hint">{o.hint}</span></div>
-              </div>
-            </span>
-            {onPreview && (
-              <button type="button" className="style-preview-btn"
-                      disabled={previewDisabled}
-                      onClick={(e) => { e.preventDefault(); onPreview(o.value); }}>Preview</button>
-            )}
-          </label>
-        );
-      })}
-    </div>
+    // A dedicated wrapper fieldset (rather than making .rd-mode-radio itself
+    // a fieldset) since that class is shared with the Data tab's picker-mode
+    // list, which renders it as a plain div nested inside its own fieldset —
+    // reset here is scoped to just this usage. The legend is visually
+    // hidden — the section's own visible heading (just above, outside this
+    // Card) already shows this same text, so a visible legend would just
+    // duplicate it right above the radio rows.
+    <fieldset className="style-radio-fieldset">
+      <legend className="visually-hidden">{groupLabel}</legend>
+      <div className="rd-mode-radio">
+        {options.map((o) => {
+          const on = o.value === value;
+          return (
+            <label key={o.value} className={`rd-mode-opt ${on ? 'is-on' : ''}`}>
+              <input type="radio" name={groupName} checked={on} onChange={() => onChange(o.value)} />
+              <span className="rd-mode-dot" aria-hidden="true"></span>
+              <span className="rd-mode-text">
+                <span className="rd-mode-name">{o.label}</span>
+                {/* Always-mounted collapse (not <Collapse>, which unmounts the hint
+                    on deselect — a freshly-inserted node can't transition its
+                    grid-template-rows, so the height snapped). Keeping it mounted
+                    lets the 0fr↔1fr glide run every time. */}
+                <div className={`collapse ${on ? 'is-open' : ''}`}>
+                  <div className="collapse-inner"><span className="rd-mode-hint">{o.hint}</span></div>
+                </div>
+              </span>
+              {onPreview && (
+                <button type="button" className="style-preview-btn"
+                        disabled={previewDisabled}
+                        onClick={(e) => { e.preventDefault(); onPreview(o.value); }}>Preview</button>
+              )}
+            </label>
+          );
+        })}
+      </div>
+    </fieldset>
   );
 }
 
@@ -984,7 +999,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               </p>
               {reduceMotionNote('celebrations')}
               <Card padded={false} className="style-radio-card">
-                <StyleRadioList groupName="completionStyle" value={(state.appearance && state.appearance.completionStyle) || 'confetti'}
+                <StyleRadioList groupName="completionStyle" groupLabel="Completion celebration" value={(state.appearance && state.appearance.completionStyle) || 'confetti'}
                                 onChange={actions.setCompletionStyle}
                                 onPreview={playCeleb}
                                 previewDisabled={false}
@@ -1005,7 +1020,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               </p>
               {reduceMotionNote('this animation')}
               <Card padded={false} className="style-radio-card">
-                <StyleRadioList groupName="pickAnim" value={(state.appearance && state.appearance.pickAnim) || 'reel'}
+                <StyleRadioList groupName="pickAnim" groupLabel="Picker animation" value={(state.appearance && state.appearance.pickAnim) || 'reel'}
                                 onChange={(v) => { setPickPreview(null); actions.setPickAnim(v); }}
                                 onPreview={playPick}
                                 previewDisabled={false}
@@ -1253,7 +1268,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                     <span className={`set-import-msg ${importMsg.ok ? 'is-ok' : 'is-err'}`}>{importMsg.text}</span>
                   )}
                 </div>
-                <input ref={fileRef} type="file" accept="application/json,.json"
+                <input ref={fileRef} type="file" accept="application/json,.json" aria-label="Import a backup file"
                        onChange={onImportFile} style={{ display: 'none' }} />
                 {pendingImport ? (
                   <div className={`set-reset-confirm ${importLeaving ? 'is-leaving' : ''}`}>

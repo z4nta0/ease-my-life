@@ -255,6 +255,23 @@ function PickerView({ picker, state, actions, animStyle }) {
   // new-picker create flow. `newDraft` is the editing item; a synthetic actions
   // object edits it; on Save it's committed via the real store actions.
   const [newDraft, setNewDraft] = React.useState(null);
+  // Set by startEditItem when it has to close an in-progress new-item draft
+  // OR another item's open editor out of the way first (see there) — picked
+  // back up once that draft's/editor's own closing animation ends, so the
+  // edit opens right after instead of being silently dropped.
+  const pendingEditIdRef = React.useRef(null);
+  // A snapshot of whatever item openEditItem last opened, taken at that exact
+  // moment — used ONLY by startEditItem to explicitly revert live edits when
+  // jumping straight from one item's editor to a different item's, bypassing
+  // EntryEditor's own internal revert-on-unmount. That mechanism alone isn't
+  // enough here: it arms window.__editGuard's revert via a 0ms setTimeout on
+  // unmount, but the very next EntryEditor's mount effect unconditionally
+  // disarms it (by design, so a stale pending revert can't clobber an
+  // unrelated fresh edit session) — and both the unmount and the next mount
+  // happen in the same synchronous effect-flush, well before that timeout
+  // would ever get to fire. So the disarm always wins and nothing reverts
+  // unless this does it directly instead.
+  const editingItemSnapshotRef = React.useRef(null);
   const [insertSavedId, setInsertSavedId] = React.useState(null);
   const [confirmDelId, setConfirmDelId] = React.useState(null);
   const [confirmLeaveId, setConfirmLeaveId] = React.useState(null);
@@ -341,10 +358,10 @@ function PickerView({ picker, state, actions, animStyle }) {
       setEditingItemClosing(false);
     }
   }, [editingItemId, state.items]);
-  const startEditItem = (id) => {
-    if (newDraft || editingItemId) return;   // one editor at a time
+  const openEditItem = (id) => {
     const it = state.items.find((x) => x.id === id);
     if (!it) return;
+    editingItemSnapshotRef.current = { ...it };
     setEditingItemId(id);
     setEditingName(it.name);
     // Same reveal as addNewItem's own — the editor renders in the same
@@ -357,6 +374,32 @@ function PickerView({ picker, state, actions, animStyle }) {
       const overflowBelow = el.getBoundingClientRect().bottom - sc.getBoundingClientRect().bottom + 96;
       if (overflowBelow > 0) sc.scrollTo({ top: sc.scrollTop + overflowBelow, behavior: reduceMotion() ? 'auto' : 'smooth' });
     }));
+  };
+  const startEditItem = (id) => {
+    if (editingItemId === id) return;   // already open on this exact item
+    // Another item's editor is already open — revert it back to its
+    // pre-edit snapshot (see editingItemSnapshotRef's own comment for why
+    // this can't just rely on EntryEditor's usual unmount-triggered revert
+    // here) and close it, then pick this edit back up once its closing
+    // animation finishes (see the editor's onAnimationEnd handler below).
+    if (editingItemId) {
+      if (editingItemSnapshotRef.current) actions.replaceItem(editingItemId, editingItemSnapshotRef.current);
+      pendingEditIdRef.current = id;
+      setEditingItemClosing(true);
+      return;
+    }
+    // A new-item draft is in progress — close it (without saving) instead
+    // of silently no-oping, then pick this edit back up once that draft's
+    // own closing animation finishes (see the .pv-newitem onAnimationEnd
+    // handler below). The reverse never needs this: the "+ Add item"
+    // button that starts a new draft isn't rendered while an existing
+    // item's edit form is open.
+    if (newDraft) {
+      pendingEditIdRef.current = id;
+      setNewItemClosing('cancel');
+      return;
+    }
+    openEditItem(id);
   };
 
   const pickerItems = state.items.filter((it) => it.pickerId === picker.id);
@@ -593,7 +636,7 @@ function PickerView({ picker, state, actions, animStyle }) {
                 ) : (
                   <React.Fragment>
                     <div className="pool-name">
-                      {it.name}
+                      <span className="pool-item-name">{it.name}</span>
                       {it.vacation && <Pill tone="muted">vacation</Pill>}
                       {!eligibleHere && !it.vacation && <Pill tone="muted">{picker.mode === 'ease-up' ? 'not yet' : 'spent'}</Pill>}
                     </div>
@@ -631,11 +674,18 @@ function PickerView({ picker, state, actions, animStyle }) {
                             onClick={() => startEditItem(it.id)}>
                       <Icon name="edit" size={15} />
                     </button>
-                    <button type="button" className="pool-del" aria-label={`Delete ${it.name}`}
-                            disabled={disablePoolEditDelete}
-                            onClick={() => setConfirmDelId(it.id)}>
-                      <Icon name="trash" size={15} />
-                    </button>
+                    {pickerItems.length <= 2 ? (
+                      <InfoTip className="pool-del is-disabled" action="Delete"
+                               label="Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.">
+                        <Icon name="trash" size={15} />
+                      </InfoTip>
+                    ) : (
+                      <button type="button" className="pool-del" aria-label={`Delete ${it.name}`}
+                              disabled={disablePoolEditDelete}
+                              onClick={() => setConfirmDelId(it.id)}>
+                        <Icon name="trash" size={15} />
+                      </button>
+                    )}
                   </React.Fragment>
                 )}
               </div>
@@ -662,6 +712,11 @@ function PickerView({ picker, state, actions, animStyle }) {
                        if (!editingItemClosing || e.target !== e.currentTarget) return;
                        setEditingItemClosing(false);
                        setEditingItemId(null);
+                       if (pendingEditIdRef.current) {
+                         const id = pendingEditIdRef.current;
+                         pendingEditIdRef.current = null;
+                         openEditItem(id);
+                       }
                      }}>
                   <div className="rd-row" onClick={(e) => e.stopPropagation()}>
                     <span className="rd-main">
@@ -680,7 +735,19 @@ function PickerView({ picker, state, actions, animStyle }) {
                         existing item stays solely the row's own trash icon
                         + confirm flow, one delete affordance per item
                         instead of two that could disagree with each other. */}
-                    <EntryEditor item={editItem} picker={picker} actions={actions}
+                    {/* key={editItem.id} — without it, switching editingItemId
+                        straight from one item to another (see startEditItem)
+                        can commit in a single React batch with no intervening
+                        null render, so this stays the SAME EntryEditor
+                        instance across the switch: its internal `orig`
+                        snapshot ref (captured once, on mount) would keep
+                        pointing at the FIRST item, and its unmount effect —
+                        which is what discards live edits via
+                        window.__editGuard when a close wasn't an explicit
+                        Save/Cancel — would never run at all. The key forces
+                        React to unmount the old instance and mount a fresh
+                        one whenever the id changes, even within one commit. */}
+                    <EntryEditor key={editItem.id} item={editItem} picker={picker} actions={actions}
                                  onClose={() => setEditingItemClosing(true)} />
                   </div>
                 </div>
@@ -699,6 +766,11 @@ function PickerView({ picker, state, actions, animStyle }) {
                      if (newItemClosing === 'save') commitDraft(newItem);
                      setNewItemClosing(false);
                      setNewDraft(null);
+                     if (pendingEditIdRef.current) {
+                       const id = pendingEditIdRef.current;
+                       pendingEditIdRef.current = null;
+                       openEditItem(id);
+                     }
                    }}>
                 <div className="rd-row" onClick={(e) => e.stopPropagation()}>
                   <span className="rd-main">
@@ -901,6 +973,20 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   };
   const [removingDraftId, setRemovingDraftId] = React.useState(null);
   const addWrapRef = React.useRef(null);
+  // Editing an already-added draft item — mirrors the live Pickers tab's own
+  // editingItemId/openEditItem/startEditItem exactly (see tab-picker.jsx's
+  // PickerCard, above), just bound to the draft array + draftActions instead
+  // of the real store. Same reasons for each piece: pendingEditDraftIdRef so
+  // switching from the new-item form (or a different item's editor)
+  // straight into this one isn't silently dropped, and
+  // editingDraftItemSnapshotRef so that switch explicitly reverts the item
+  // being left instead of relying on EntryEditor's own unmount-triggered
+  // revert (which the very next EntryEditor's mount effect would disarm
+  // before it ever fires).
+  const [editingDraftItemId, setEditingDraftItemId] = React.useState(null);
+  const [editingDraftItemClosing, setEditingDraftItemClosing] = React.useState(false);
+  const pendingEditDraftIdRef = React.useRef(null);
+  const editingDraftItemSnapshotRef = React.useRef(null);
   // Count only COMMITTED items — exclude the row currently being edited (its
   // Save hasn't landed yet), so the count + Create button don't react early.
   // MUST be after newDraftId's declaration:  (now removed since the project is using Vite) hoists it as a var, so reading
@@ -917,7 +1003,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   };
   const draftPicker = { mode, threshold: THRESHOLD, cadence: cad.cadence, easeMin: 10, easeMax: 20 };
   const addNewDraft = () => {
-    if (newDraftId) return;
+    if (newDraftId || editingDraftItemId) return;
     setDraftClosing(false);   // clear any stale closing state from a prior editor
     const id = 'draft_' + Math.random().toString(36).slice(2, 8);
     // Read straight off the bus (emlTour.get()), not the React-state obTour
@@ -971,6 +1057,34 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       const overflowBelow = el.getBoundingClientRect().bottom - sc.getBoundingClientRect().bottom + 96;
       if (overflowBelow > 0) sc.scrollTo({ top: sc.scrollTop + overflowBelow, behavior: reduceMotion() ? 'auto' : 'smooth' });
     }));
+  };
+
+  const openEditDraftItem = (id) => {
+    const it = items.find((x) => x.id === id);
+    if (!it) return;
+    editingDraftItemSnapshotRef.current = { ...it };
+    setEditingDraftItemId(id);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const el = addWrapRef.current, sc = el && el.closest('.main');
+      if (!el || !sc) return;
+      const overflowBelow = el.getBoundingClientRect().bottom - sc.getBoundingClientRect().bottom + 96;
+      if (overflowBelow > 0) sc.scrollTo({ top: sc.scrollTop + overflowBelow, behavior: reduceMotion() ? 'auto' : 'smooth' });
+    }));
+  };
+  const startEditDraftItem = (id) => {
+    if (editingDraftItemId === id) return;   // already open on this exact item
+    if (editingDraftItemId) {
+      if (editingDraftItemSnapshotRef.current) draftActions.replaceItem(editingDraftItemId, editingDraftItemSnapshotRef.current);
+      pendingEditDraftIdRef.current = id;
+      setEditingDraftItemClosing(true);
+      return;
+    }
+    if (newDraftId) {
+      pendingEditDraftIdRef.current = id;
+      setDraftClosing('cancel');
+      return;
+    }
+    openEditDraftItem(id);
   };
 
   // Back from the tour's own Step 12 (Create picker) to Step 11 (Save this
@@ -1101,7 +1215,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         </div>
 
         <div className="np-field">
-          <label className="np-label">Group</label>
+          <span className="np-label">Group</span>
           <p className="np-help">
             Pickers are clustered into groups on your Today list &mdash; like
             &ldquo;Food&rdquo; or &ldquo;Chores&rdquo; &mdash; so related picks
@@ -1124,12 +1238,12 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
           <Collapse open={addingGroup}>
             <input className="np-input np-input--sm" type="text" autoFocus maxLength={30}
                    value={newGroup} onChange={(e) => setNewGroup(e.target.value)}
-                   placeholder="Name the new group" autoComplete="off" />
+                   placeholder="Name the new group" aria-label="New group name" autoComplete="off" />
           </Collapse>
         </div>
 
-        <div className="np-field">
-          <label className="np-label">How should it choose?</label>
+        <fieldset className="np-field">
+          <legend className="np-label">How should it choose?</legend>
           <p className="np-help">
             This is the rule the picker follows each time it runs.
             &ldquo;Truly random&rdquo; is the simplest &mdash; every item has an
@@ -1150,12 +1264,12 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
               </label>
             ))}
           </div>
-        </div>
+        </fieldset>
 
         <div className="np-field np-cond">
           <div className="np-field--toggle">
             <div className="np-toggle-text">
-              <label className="np-label">Attach a conditional</label>
+              <span className="np-label">Attach a conditional</span>
               <p className="np-help">
                 Conditionals can be attached to a picker that will determine whether a picker
                 should be run on any given day during the auto generator phase for the Today tab.
@@ -1227,7 +1341,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
               <CadenceControl value={cad} onChange={(patch) => setCad((c) => CADENCE.normalize({ ...c, ...patch }))} />
             </div>
             <div className="np-sched-block">
-              <label className="np-label">Which days?</label>
+              <span className="np-label">Which days?</span>
               <p className="np-help">
                 Pick the days this picker is allowed to run on. Tap a day to turn
                 it off &mdash; handy for things like chores you&rsquo;d rather not
@@ -1385,10 +1499,21 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                         {showWeights && <span className="pool-weight">w{it.weight}</span>}
                       </div>
                       <div aria-hidden="true" />
-                      <button type="button" className="pool-del" aria-label={`Delete ${it.name}`}
-                              onClick={() => setConfirmDelDraftId(it.id)}>
-                        <Icon name="trash" size={15} />
+                      <button type="button" className="pool-edit" aria-label={`Edit ${it.name}`}
+                              title="Edit" onClick={() => startEditDraftItem(it.id)}>
+                        <Icon name="edit" size={15} />
                       </button>
+                      {items.filter((x) => x.id !== newDraftId).length <= 2 ? (
+                        <InfoTip className="pool-del is-disabled" action="Delete"
+                                 label="Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.">
+                          <Icon name="trash" size={15} />
+                        </InfoTip>
+                      ) : (
+                        <button type="button" className="pool-del" aria-label={`Delete ${it.name}`}
+                                onClick={() => setConfirmDelDraftId(it.id)}>
+                          <Icon name="trash" size={15} />
+                        </button>
+                      )}
                     </React.Fragment>
                   )}
                 </div>
@@ -1398,6 +1523,45 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         )}
         <div className="pv-additem-wrap" ref={addWrapRef}>
           {(() => {
+            if (editingDraftItemId) {
+              const editItem = items.find((x) => x.id === editingDraftItemId);
+              if (!editItem) return null;
+              return (
+                <div className={`pv-newitem rd-item is-editing ${editingDraftItemClosing ? 'is-closing' : ''}`}
+                     onAnimationEnd={(e) => {
+                       if (!editingDraftItemClosing || e.target !== e.currentTarget) return;
+                       setEditingDraftItemClosing(false);
+                       setEditingDraftItemId(null);
+                       if (pendingEditDraftIdRef.current) {
+                         const id = pendingEditDraftIdRef.current;
+                         pendingEditDraftIdRef.current = null;
+                         openEditDraftItem(id);
+                       }
+                     }}>
+                  <div className="rd-row" onClick={(e) => e.stopPropagation()}>
+                    <span className="rd-main">
+                      <input className="rd-name-input" type="text" value={editItem.name} maxLength={60}
+                             placeholder="Item name" aria-label="Item name" autoFocus
+                             onChange={(e) => draftActions.updateItem(editItem.id, { name: e.target.value })}
+                             onBlur={(e) => { const n = e.target.value.trim(); if (n) draftActions.renameItem(editItem.id, n); }}
+                             onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
+                    </span>
+                  </div>
+                  <div className="rd-edit">
+                    {/* key={editItem.id} — see the live Pickers tab's own
+                        EntryEditor for why this matters when switching
+                        directly between two existing items' editors.
+                        No onCancel, matching the live tab too: this item
+                        already exists, so EntryEditor's own internal
+                        Cancel/Escape handling (revert via
+                        actions.replaceItem, then close) is correct as-is
+                        with no extra bookkeeping needed here. */}
+                    <EntryEditor key={editItem.id} item={editItem} picker={draftPicker} actions={draftActions}
+                                 onClose={() => setEditingDraftItemClosing(true)} />
+                  </div>
+                </div>
+              );
+            }
             const newItem = items.find((it) => it.id === newDraftId);
             if (!newItem) return (
               <button type="button" className="pv-additem-btn" onClick={addNewDraft}>
@@ -1413,6 +1577,11 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                      else draftActions.removeItem(rid);
                      setDraftClosing(false);
                      setNewDraftId(null);
+                     if (pendingEditDraftIdRef.current) {
+                       const id = pendingEditDraftIdRef.current;
+                       pendingEditDraftIdRef.current = null;
+                       openEditDraftItem(id);
+                     }
                    }}>
                 <div className="rd-row" onClick={(e) => e.stopPropagation()}>
                   <span className="rd-main">

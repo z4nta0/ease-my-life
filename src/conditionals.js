@@ -38,10 +38,6 @@
 //                 roll; card done → reset (value 0, active false).
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-const rng = (min, max) => {
-  const a = Math.max(1, min | 0), b = Math.max(a, max | 0);
-  return a + Math.floor(Math.random() * (b - a + 1));
-};
 const isProbability = (mode) => mode === 'random' || mode === 'weighted';
 const isValue = (mode) => mode === 'ease-up' || mode === 'ease-down' || mode === 'dynamic';
 
@@ -86,6 +82,24 @@ function resolveForDay(conditionals) {
 // `triggered`.
 function suppresses(cond) { return !!(cond && cond.active !== false && cond.triggered); }
 
+// Ease modes roll a TARGET number of cycles uniformly in the conditional's
+// [soonest, latest] day range (derived from easeMin/easeMax the same way the
+// picker editor's own Soonest/Latest labels do — threshold/easeMax and
+// threshold/easeMin), then charge/discharge by a FIXED step (threshold/N) so
+// it resolves in exactly N cycles — giving every duration in the range equal
+// odds. Mirrors pickers.js's own `rollStep` exactly (see its comment for why
+// a fresh random step each cycle, the previous approach here, is biased:
+// duration = threshold/step, so a uniform step does NOT give a uniform
+// duration). `chargeStep` persists the rolled plan across cycles; legacy
+// conditionals with none lazily roll one.
+function rollStep(cond, threshold) {
+  const so = Math.max(1, Math.round(threshold / (cond.easeMax ?? 14)));
+  const la = Math.max(so, Math.round(threshold / (cond.easeMin ?? 7)));
+  const N = so + Math.floor(Math.random() * (la - so + 1));
+  return threshold / N;
+}
+const stepFor = (cond, threshold) => (cond.chargeStep && cond.chargeStep > 0 ? cond.chargeStep : rollStep(cond, threshold));
+
 // First-dependent-completion charge step (value modes only). Advances value
 // once per day. Returns a patch (may set `triggered`) or null if nothing
 // changes. Handles ease-down's one-shot refill after it has emptied.
@@ -94,8 +108,9 @@ function advanceOnCompletion(cond) {
   if (cond.chargedToday) return null;
   const thr = cond.threshold ?? 100;
   if (cond.mode === 'ease-up') {
-    const v = clamp((cond.value || 0) + rng(cond.easeMin ?? 7, cond.easeMax ?? 14), 0, thr);
-    return { value: v, triggered: v >= thr, chargedToday: true };
+    const step = stepFor(cond, thr);
+    const v = clamp((cond.value || 0) + step, 0, thr);
+    return { value: v, triggered: v >= thr, chargedToday: true, chargeStep: step };
   }
   if (cond.mode === 'dynamic') {
     // Miss accrual: +10 percentage points so tomorrow's roll is likelier.
@@ -103,7 +118,9 @@ function advanceOnCompletion(cond) {
   }
   if (cond.mode === 'ease-down') {
     // One-shot refill: only re-arms when currently emptied (not triggered).
-    if (!cond.triggered) return { value: thr, triggered: true, chargedToday: true };
+    // A new streak starts here, so roll a fresh plan (mirrors pickers.js
+    // choosing a new active item and rolling its own decay plan).
+    if (!cond.triggered) return { value: thr, triggered: true, chargedToday: true, chargeStep: rollStep(cond, thr) };
     return { chargedToday: true };
   }
   return null;
@@ -114,18 +131,29 @@ function advanceOnCompletion(cond) {
 function cardComplete(cond) {
   if (!cond) return null;
   const thr = cond.threshold ?? 100;
-  if (cond.mode === 'ease-up' || cond.mode === 'dynamic') {
+  if (cond.mode === 'ease-up') {
+    // Resets AND rolls a fresh plan for its next charge cycle (mirrors
+    // pickers.js's own reset-on-pick).
+    return { value: 0, triggered: false, chargeStep: rollStep(cond, thr) };
+  }
+  if (cond.mode === 'dynamic') {
     return { value: 0, triggered: false };
   }
   if (cond.mode === 'ease-down') {
-    const decay = rng(cond.easeMin ?? 7, cond.easeMax ?? 14);
-    const v = clamp((cond.value ?? thr) - decay, 0, thr);
-    return { value: v, triggered: v > 0 }; // ≤0 → not triggered (one-shot ends)
+    // Continues the current streak's discharge on its already-rolled plan —
+    // no new roll here (that happens at refill, in advanceOnCompletion).
+    // Still persist `step` back via chargeStep: a legacy conditional with none
+    // lazily rolls one via stepFor, and without writing it back here that roll
+    // would be discarded, re-rolling a fresh (biased) step every discharge
+    // instead of committing to one plan for the rest of the streak.
+    const step = stepFor(cond, thr);
+    const v = clamp((cond.value ?? thr) - step, 0, thr);
+    return { value: v, triggered: v > 0, chargeStep: step }; // ≤0 → not triggered (one-shot ends)
   }
   return null; // random / weighted
 }
 
 export const CONDITIONALS = {
   isProbability, isValue, trueOdds, resolveForDay,
-  suppresses, advanceOnCompletion, cardComplete, rng, clamp,
+  suppresses, advanceOnCompletion, cardComplete, clamp,
 };

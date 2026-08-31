@@ -1,3 +1,4 @@
+import React from 'react';
 import { normalizeConditionalName } from './pickers.js';
 import { MODES } from './seed.js';
 import { BoostReset, Btn, Collapse, FillButton, Icon, InfoTip, NumStepper } from './ui.jsx';
@@ -24,6 +25,10 @@ const CND_HINTS = {
 const RANDOM_NOTE = 'Truly random conditionals have no options and function like a coin flip. e.g. it is 50/50 whether it gets triggered or not.';
 
 function ConditionalControls({ draft, onChange, nameError, variant = 'card', hideName = false }) {
+  // Unique per instance (this is reused — see the header comment) so its
+  // field ids/the mode radio's name never collide if more than one ever
+  // renders at once.
+  const uid = React.useId();
   const set = (patch) => onChange({ ...draft, ...patch });
   const mode = draft.mode || 'random';
   const isEase = mode === 'ease-up' || mode === 'ease-down';
@@ -56,8 +61,8 @@ function ConditionalControls({ draft, onChange, nameError, variant = 'card', hid
     <div className={`cnd-controls ${inline ? 'cnd-controls--inline' : ''}`}>
       {!hideName && (
       <div className="np-field">
-        <label className="np-label">Conditional name</label>
-        <input className={`np-input ${nameError ? 'is-error' : ''}`} type="text" value={draft.name} maxLength={40}
+        <label className="np-label" htmlFor={`${uid}-name`}>Conditional name</label>
+        <input id={`${uid}-name`} className={`np-input ${nameError ? 'is-error' : ''}`} type="text" value={draft.name} maxLength={40}
                placeholder="Conditional name" aria-invalid={!!nameError}
                onChange={(e) => set({ name: e.target.value })}
                onBlur={(e) => { const n = normalizeConditionalName(e.target.value); if (n) set({ name: n }); }}
@@ -67,24 +72,24 @@ function ConditionalControls({ draft, onChange, nameError, variant = 'card', hid
       )}
       <div className="np-field np-field--cardtext">
         <div className="np-cardtext-text">
-          <label className="np-label">Replacement card text</label>
+          <label className="np-label" htmlFor={`${uid}-cardtext`}>Replacement card text</label>
           <p className="np-help">Shown on the card that appears in Today when this conditional suppresses its picker.</p>
         </div>
-        <input className="np-input" type="text" value={draft.cardText} maxLength={60}
+        <input id={`${uid}-cardtext`} className="np-input" type="text" value={draft.cardText} maxLength={60}
                placeholder="Picker suppressed for today"
                onChange={(e) => set({ cardText: e.target.value })} />
       </div>
 
       <div className="cnd-type-group">
-      <div className="np-field">
-        <label className="np-label">How should it decide?</label>
+      <fieldset className="np-field">
+        <legend className="np-label">How should it decide?</legend>
         <div className={inline ? '' : 'cnd-mode-card style-radio-card'}>
           <div className="rd-mode-radio">
             {Object.entries(MODES).map(([key, m]) => {
               const on = mode === key;
               return (
                 <label key={key} className={`rd-mode-opt ${on ? 'is-on' : ''}`}>
-                  <input type="radio" name="cnd-mode" checked={on}
+                  <input type="radio" name={`${uid}-cnd-mode`} checked={on}
                          onChange={() => set({ mode: key,
                            value: key === 'ease-down' ? threshold : 0,
                            triggered: key === 'ease-down' })} />
@@ -104,7 +109,7 @@ function ConditionalControls({ draft, onChange, nameError, variant = 'card', hid
             })}
           </div>
         </div>
-      </div>
+      </fieldset>
 
       <Collapse open={mode === 'random'}>
         <div className="cnd-typectl pie-rows">

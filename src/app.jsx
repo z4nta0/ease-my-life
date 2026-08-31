@@ -12,6 +12,7 @@ import { TabSettings } from './tab-settings.jsx';
 import { TabStats } from './tab-stats.jsx';
 import { TabToday } from './tab-today.jsx';
 import { Icon, reduceMotion } from './ui.jsx';
+import { BgFlourish } from './bg-flourish.jsx';
 
 // App shell. Tab bar (bottom / side / top) + main content area.
 
@@ -128,6 +129,12 @@ function App() {
   const [active, setActive] = React.useState(() => (
     location.hash === '#settings' ? 'settings' : 'today'
   ));
+  // Decorative background glyphs (see bg-flourish.jsx) — .main-inner is
+  // shared by every non-Today tab (one at a time, remounted per switch via
+  // its own key={active} below), so one ref reused across all of them is
+  // enough; Today has its own .today-body and manages its own ref/ instance
+  // internally instead (see tab-today.jsx).
+  const mainInnerRef = React.useRef(null);
 
   // Collapsible side rail (small screens only — the rail becomes an off-canvas
   // drawer there instead of falling back to bottom tabs). Starts closed; the
@@ -252,7 +259,8 @@ function App() {
       <main className="main" ref={mainRef}>
         {active === 'today' && <div className="tab-fade" key="today"><TabToday state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} onStartPickerTour={setActivePickerTour} onStartPageTour={setActivePageTour} onStartAppFeatureTour={setActiveAppFeatureTour} /></div>}
         {active !== 'today' && (
-          <div className="main-inner tab-fade" key={active}>
+          <div className="main-inner tab-fade" key={active} ref={mainInnerRef}>
+            <BgFlourish tabId={active} measureRef={mainInnerRef} />
             {active === 'picker'   && <TabPicker   state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} animStyle={(state.appearance && state.appearance.pickAnim) || 'reel'} />}
             {active === 'stats'    && <TabStats    state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} />}
             {active === 'data'     && <TabData     state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} />}

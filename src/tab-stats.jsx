@@ -3,7 +3,7 @@ import { CADENCE } from './cadence.js';
 import { useEmlTour } from './onboarding.jsx';
 import { MODES } from './seed.js';
 import { TASKS } from './tasks.js';
-import { Card, Icon, Pill } from './ui.jsx';
+import { Card, Icon, InfoTip, Pill } from './ui.jsx';
 import { HelpButton, HelpOverlay } from './help-mode.jsx';
 import { STATS_HELP_ITEMS } from './help-content.jsx';
 import { unhideHelpStatsHistory, hideHelpStatsHistory } from './help-sample-data.js';
@@ -21,13 +21,15 @@ function statIso(d) {
   return x.toISOString().slice(0, 10);
 }
 
-// Relative label for a completion timestamp.
+// Relative label for a completion timestamp. Today intentionally gets no
+// special "Today · {time}" case of its own — that was a longer, differently
+// shaped string than every other row's "{weekday}, {month} {day}", which
+// misaligned the column it sits in; today just falls through to the same
+// format as any other day.
 function relWhen(iso) {
   const d = new Date(iso);
   const day = TASKS.isoOf(d);
-  const today = TASKS.isoToday();
   const yest = TASKS.isoOf(new Date(Date.now() - 86400000));
-  if (day === today) return 'Today · ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
   if (day === yest) return 'Yesterday';
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
@@ -742,11 +744,11 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   // Human label for "last picked", in the active unit.
   const fmtLast = (d, mode) => {
     if (mode === 'eligible') {
-      if (d === 0) return 'Most recent pick';
-      if (cadenced) return `${(Math.round(d * 10) / 10).toFixed(1)} eligible ${CADENCE.unitWord(statCadence, d)} ago`;
-      return `${d} eligible ${unitFor('eligible', d)} ago`;
+      if (d === 0) return 'Most recent';
+      if (cadenced) return `${(Math.round(d * 10) / 10).toFixed(1)} ${CADENCE.unitWord(statCadence, d)} ago`;
+      return `${d} ${unitFor('eligible', d)} ago`;
     }
-    if (d === 0) return 'Most recent pick';
+    if (d === 0) return 'Most recent';
     if (cadenced) { const p = d / per; return `${(Math.round(p * 10) / 10).toFixed(1)} ${CADENCE.unitWord(statCadence, p)} ago`; }
     return d === 1 ? 'Yesterday' : `${d} days ago`;
   };
@@ -1082,7 +1084,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                           // Ease modes store drift; day band = 100 / drift.
                           const soonest = Math.max(1, Math.round(100 / (o.easeMax || 1)));
                           const latest = Math.max(1, Math.round(100 / (o.easeMin || 1)));
-                          return `target ~${soonest}–${latest}d`;
+                          return `target ${soonest}–${latest}d`;
                         })();
                     return (
                     <li key={o.id} className={o.deleted ? 'is-deleted' : ''}>
@@ -1090,31 +1092,31 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                         <span className="rank-name-row">
                           <span className="rank-name-text">{o.name}</span>
                           {o.deleted && <span className="rank-tag rank-tag--deleted">deleted</span>}
-                          {!o.deleted && o.active === false && <span className="rank-tag">on vacation</span>}
                         </span>
-                        <span className="cnd-bd-meta">
-                          <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
-                          {target && <span className="rank-meta">{target}</span>}
-                        </span>
+                        {target && <span className="rank-meta">{target}</span>}
                       </span>
-                      {condMetric === 'rate' && (
-                        <span className="rank-vals">
-                          <span className="rank-pct">{o.rate == null ? '—' : o.rate + '%'}</span>
-                          <span className="rank-frac">{o.fired} / {o.total}</span>
-                        </span>
-                      )}
-                      {condMetric === 'triggers' && <span className="rank-metric-n">{o.fired}</span>}
-                      {condMetric === 'cycles' && <span className="rank-metric-n">{o.total}</span>}
-                      {condMetric === 'interval' && (
-                        o.avgInterval != null
-                          ? <span className="rank-freq-val">every {o.avgInterval} {o.avgInterval === 1 ? 'day' : 'days'}</span>
-                          : <span className="rank-freq-val is-dim">{o.fired <= 1 ? 'Fired once' : 'Not fired'}</span>
-                      )}
-                      {condMetric === 'last' && (
-                        o.lastFired
-                          ? <span className="rank-freq-val">{fmtCondDate(o.lastFired)}</span>
-                          : <span className="rank-freq-val is-dim">Never</span>
-                      )}
+                      <span className="cnd-bd-vals">
+                        {!o.deleted && o.active === false && <span className="rank-tag">vacation</span>}
+                        <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
+                        {condMetric === 'rate' && (
+                          <span className="rank-vals">
+                            <span className="rank-pct">{o.rate == null ? '—' : o.rate + '%'}</span>
+                            <span className="rank-frac">{o.fired} / {o.total}</span>
+                          </span>
+                        )}
+                        {condMetric === 'triggers' && <span className="rank-metric-n">{o.fired}</span>}
+                        {condMetric === 'cycles' && <span className="rank-metric-n">{o.total}</span>}
+                        {condMetric === 'interval' && (
+                          o.avgInterval != null
+                            ? <span className="rank-freq-val cnd-bd-freq--interval">every {o.avgInterval} {o.avgInterval === 1 ? 'day' : 'days'}</span>
+                            : <span className="rank-freq-val cnd-bd-freq--interval is-dim">{o.fired <= 1 ? 'Fired once' : 'Not fired'}</span>
+                        )}
+                        {condMetric === 'last' && (
+                          o.lastFired
+                            ? <span className="rank-freq-val cnd-bd-freq--last">{fmtCondDate(o.lastFired)}</span>
+                            : <span className="rank-freq-val cnd-bd-freq--last is-dim">Never</span>
+                        )}
+                      </span>
                     </li>
                     );
                   })}
@@ -1286,7 +1288,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                   <span className="cnd-sum-name">
                     {o.name}
                     {o.deleted && <span className="rank-tag rank-tag--deleted">deleted</span>}
-                    {!o.deleted && o.active === false && <span className="rank-tag">on vacation</span>}
+                    {!o.deleted && o.active === false && <span className="rank-tag">vacation</span>}
                   </span>
                   <span className="cnd-sum-meta">
                     <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
@@ -1512,40 +1514,46 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                       <span className="rank-name-row">
                         <span className="rank-name-text">{it.name}</span>
                         {it.deleted && <span className="rank-tag rank-tag--deleted">deleted</span>}
-                        {!it.deleted && it.vacation && <span className="rank-tag">on vacation</span>}
-                        {!it.deleted && effMetric === 'last' && !it.vacation && it.wasOnVac && (
-                          <span className="rank-tag rank-tag--was">was on vacation</span>
-                        )}
                       </span>
                       {suffix && <span className="rank-meta">{suffix}</span>}
                     </span>
-                    {effMetric === 'count' && (() => {
-                      const denom = countMode === 'eligible' ? it.eligDenom : totalPossible;
-                      return (
-                        <span className="rank-vals">
-                          <span className="rank-pct">{denom ? Math.round((it.n / denom) * 100) : 0}%</span>
-                          <span className="rank-frac">{it.n} / {denom}</span>
-                        </span>
-                      );
-                    })()}
-                    {effMetric === 'freq' && (
-                      it.avgGap != null
-                        ? (() => { const d = cadDisplay(it.avgGap, freqMode, fmtGap(it.avgGap)); return <span className="rank-freq-val">every {d.num} {d.word}</span>; })()
-                        : <span className="rank-freq-val is-dim">{it.freqCount === 1 ? 'Picked once' : 'Not picked'}</span>
-                    )}
-                    {effMetric === 'spent' && (
-                      it.spent != null
-                        ? (() => { const d = cadDisplay(it.spent, spentMode, Math.round(it.spent)); return <span className="rank-freq-val">≈ {d.num} {d.word}</span>; })()
-                        : <span className="rank-freq-val is-dim">No full cycle yet</span>
-                    )}
-                    {effMetric === 'last' && (
-                      it.lastDays != null
-                        ? <span className="rank-freq-val">{fmtLast(it.lastDays, lastMode)}</span>
-                        : <span className="rank-freq-val is-dim">Not picked</span>
-                    )}
-                    {(effMetric === 'auto' || effMetric === 'manual' || effMetric === 'rejected' || effMetric === 'skipped') && (
-                      <span className="rank-metric-n">{it[effMetric]}</span>
-                    )}
+                    <span className="rank-bd-vals">
+                      {!it.deleted && it.vacation && <span className="rank-tag">vacation</span>}
+                      {!it.deleted && effMetric === 'last' && !it.vacation && it.wasOnVac && (
+                        <span className="rank-tag rank-tag--was">was vacation</span>
+                      )}
+                      {effMetric === 'count' && (() => {
+                        const denom = countMode === 'eligible' ? it.eligDenom : totalPossible;
+                        return (
+                          <span className="rank-vals">
+                            <span className="rank-pct">{denom ? Math.round((it.n / denom) * 100) : 0}%</span>
+                            <span className="rank-frac">{it.n} / {denom}</span>
+                          </span>
+                        );
+                      })()}
+                      {effMetric === 'freq' && (
+                        it.avgGap != null
+                          ? (() => { const d = cadDisplay(it.avgGap, freqMode, fmtGap(it.avgGap)); return <span className="rank-freq-val rank-bd-freq--freq">every {d.num} {d.word}</span>; })()
+                          : <span className="rank-freq-val rank-bd-freq--freq is-dim">{it.freqCount === 1 ? 'Picked once' : 'Not picked'}</span>
+                      )}
+                      {effMetric === 'spent' && (
+                        it.spent != null
+                          ? (() => { const d = cadDisplay(it.spent, spentMode, Math.round(it.spent)); return <span className="rank-freq-val rank-bd-freq--freq">≈ {d.num} {d.word}</span>; })()
+                          : (
+                            <span className="rank-freq-val rank-bd-freq--freq is-dim">
+                              N/A <InfoTip className="pie-help pie-help--sm" label="No full cycle has been completed yet">?</InfoTip>
+                            </span>
+                          )
+                      )}
+                      {effMetric === 'last' && (
+                        it.lastDays != null
+                          ? <span className="rank-freq-val rank-bd-freq--last">{fmtLast(it.lastDays, lastMode)}</span>
+                          : <span className="rank-freq-val rank-bd-freq--last is-dim">Not picked</span>
+                      )}
+                      {(effMetric === 'auto' || effMetric === 'manual' || effMetric === 'rejected' || effMetric === 'skipped') && (
+                        <span className="rank-metric-n">{it[effMetric]}</span>
+                      )}
+                    </span>
                   </li>
                 );
               })}

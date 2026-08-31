@@ -105,7 +105,7 @@
 }
 .picker-tab.is-on .picker-tab-name { color: var(--accent); }
 .picker-tab-name { font-weight: 500; font-size: 14px; letter-spacing: -0.01em; }
-.picker-tab-mode { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.picker-tab-mode { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
 
 /* Group filter bar — scrollable pills above the picker strip that scope it to
    one group (or All). Lighter weight than the picker tabs so the hierarchy
@@ -612,13 +612,74 @@
   cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 .pool-del:hover { color: var(--danger, #d24545); border-color: var(--danger, #d24545); background: color-mix(in srgb, var(--danger, #d24545) 8%, transparent); }
+/* Delete blocked at the 2-item minimum — same InfoTip-trigger pattern as
+   .pool-send.is-disabled above, rendered so the explanatory tip still shows. */
+.pool-del.is-disabled { opacity: 0.4; cursor: default; }
+.pool-del.is-disabled:hover { color: var(--muted); border-color: var(--border); background: none; }
 .pool-confirm { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .pool-confirm-msg { font-size: 14px; text-wrap: pretty; }
 .pool-confirm-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+/* min-width: 0 — .pool-name is the grid item sitting in .pool-row's own
+   1fr column; without this, a grid item's default min-width:auto keeps
+   the column from shrinking below its content's min-content size (the
+   widest unbreakable word in the name, since the name itself can wrap).
+   A weighted/dynamic row's .pool-meta is wider than an ease-up row's (it
+   adds a wN pill alongside the progress bar — see .pool-meta below), so
+   on a narrow phone (iPhone SE width) it was this column that tipped the
+   row's total required width over the available space, overflowing the
+   row and pushing .pool-del off its right edge — worse for a name with
+   one especially long word (e.g. "Butterscotch...") than for one made of
+   several short, breakable words, since only the former was actually
+   hitting its min-content floor. */
 .pool-name {
   display: flex; align-items: center; gap: 8px;
+  min-width: 0;
   font-size: 14px;
   text-wrap: pretty;
+}
+/* flex: 0 1 160px — a fixed width for the name itself (not the row's own
+   space-between, tried first: at a wide viewport that stuck the pill to
+   the row's far right edge, way past the end of a typically much shorter
+   name). Every row using the identical literal 160px is what lines the
+   pill up in one column across items — same trick already used for the
+   Day Log's picker names and conditional names. min-width: 0 lets it
+   shrink/wrap instead of overflowing on a genuinely narrow row — and lets
+   a real name a little over 160px just wrap onto a second line rather
+   than widening the column for everyone else. */
+.pool-item-name { flex: 0 1 160px; min-width: 0; }
+/* width: 80px — a fixed size for the pill itself, not just a max, so its
+   own text ("not yet" / "spent" / "vacation") never wraps onto a second
+   line inside it. justify-content: center, not text-align: center — .pill
+   is display:inline-flex (ui.jsx), so its text is a flex item rather than
+   plain inline content; text-align has no effect on a flex item's position
+   along the main axis, justify-content does. Holds regardless of viewport. */
+.pool-name .pill { width: 80px; flex: 0 0 80px; justify-content: center; }
+/* Below 480px, push the pill onto its own line under the name instead of
+   competing with it for width on a narrow row. Forcing .pool-item-name to
+   flex-basis: 100% (rather than giving the pill itself width: 100%, which
+   stretched it uncomfortably wide across the whole row) leaves the pill at
+   its own normal fixed 80px, just wrapped down a line by flex-wrap — name
+   claims the entire first line, so nothing of the second is left for it to
+   share. */
+@media (max-width: 480px) {
+  .pool-name { flex-wrap: wrap; }
+  .pool-name .pool-item-name { flex: 1 1 100%; }
+  /* Undo the base rule's fixed 80px + centered text for the wrapped case
+     specifically — back to auto width, content hugging its own left edge
+     (flex-start). Centering was for aligning same-line pills into one
+     column at wider viewports; once wrapped onto its own line, there's no
+     sibling to align WITH, and margin-left below needs the text flush
+     against the pill's own left edge (not centered, which shifts by a
+     different amount per label's own width) to reliably cancel out. */
+  .pool-name .pill { width: auto; flex: 0 0 auto; justify-content: flex-start; }
+  /* -7px, not +7px — the goal is to pull the pill LEFT so its own text
+     lines up with the name text above it, cancelling out .pill--muted's
+     own 7px left padding (which otherwise indents the pill's visible text
+     7px to the right of the name's). Only wanted once the pill has
+     wrapped onto its own second line — inline, at wider viewports, it
+     sits right after the name via .pool-name's own `gap` and needs no
+     correction. */
+  .pool-name .pill { margin-left: -7px; }
 }
 .pool-meta {
   display: flex; align-items: center; justify-content: flex-end; gap: 12px;
@@ -892,7 +953,7 @@
 .heat-legend {
   display: flex; align-items: center; gap: 5px;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1033,7 +1094,7 @@ button.heat-cell.is-sel {
   margin-top: 8px;
 }
 .rank li {
-  display: flex; justify-content: space-between; align-items: baseline;
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
   padding: 13px 0;
   border-bottom: 0.5px solid var(--border);
   font-size: 14px;
@@ -1051,8 +1112,13 @@ button.heat-cell.is-sel {
 .rank-head {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
+/* min-width:0 lets the kicker shrink and wrap onto a second line when its own
+   title is long (e.g. "Reminders breakdown") without that shrink pressure
+   reaching .rank-sort next to it. */
+.rank-head .kicker { min-width: 0; }
 .rank-sort {
   display: inline-flex; align-items: center; gap: 5px;
+  flex: 0 0 auto; white-space: nowrap;
   padding: 5px 10px;
   background: transparent;
   border: 0.5px solid var(--border);
@@ -1120,7 +1186,7 @@ button.heat-cell.is-sel {
 .rank-tag {
   flex: 0 0 auto;
   font-family: var(--font-mono);
-  font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase;
+  font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
   color: var(--muted);
   border: 0.5px solid var(--border); border-radius: 999px;
   padding: 1px 6px;
@@ -1146,6 +1212,24 @@ button.heat-cell.is-sel {
   background: oklch(0.55 0.16 25 / 0.08);
 }
 .rank-vals { display: flex; align-items: baseline; gap: 10px; flex: 0 0 auto; }
+/* Items breakdown: vacation/was-on-vacation status sits with the row's value
+   on the right, same as Conditionals' .cnd-bd-vals and Reminders' own meta
+   grouping, rather than crowding the name on the left. */
+.rank-bd-vals { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+/* width, not min-width — same fix as .cnd-bd-vals: the Count metric's percent
+   sits before its own row's fraction, so a wider fraction ("150 / 200") grew
+   just that row's box and shifted its percent out of alignment with
+   siblings. */
+.rank-bd-vals .rank-frac { width: 66px; }
+.rank-bd-vals .rank-metric-n { width: 40px; }
+/* Same fix again, for the Frequency/Spent and Last picked tabs: "every 12.5
+   weeks" vs "Picked once" (or "N days ago" vs "Yesterday") differ enough in
+   width to shift the vacation/was-on-vacation tag before them. 112px matches
+   the width used for Conditionals' own Interval tab (.cnd-bd-freq--interval)
+   — a longer "eligible" last-picked phrase is rare enough not to reserve
+   full width for; it just wraps rather than pushing the tag out further. */
+.rank-bd-freq--freq { width: 112px; text-align: right; }
+.rank-bd-freq--last { width: 112px; text-align: right; }
 .rank-pct {
   font-family: var(--font-mono); font-variant-numeric: tabular-nums;
   font-size: 14px; color: var(--text);
@@ -1278,7 +1362,7 @@ button.cat-h-l {
 }
 .cat-name { margin: 0; font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
 .cat-group {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; color: var(--muted);
   padding: 2px 8px; border: 0.5px solid var(--border); border-radius: 999px;
 }
@@ -1726,7 +1810,7 @@ button.cat-h-l {
 .support-form-intro { padding-top: 8px; }
 .support-field { display: flex; flex-direction: column; gap: 6px; }
 .support-flabel {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; color: var(--muted);
 }
 .support-textarea { resize: vertical; min-height: 90px; font-family: inherit; line-height: 1.5; }
@@ -1936,11 +2020,12 @@ button.cat-h-l {
 .rd-ctl-body .ease-config .pie-sub { font-size: 11px; color: var(--muted); }
 .rd-ctl-body .ease-config .pie-ctl { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .rd-ctl-body .ease-config .pie-ctl .np-ease-unit { font-size: 12px; }
-/* Kicker labelling the picker's default cadence rows (vs a per-item override). */
-.rd-ctl-body .ease-config .ease-cadence-kicker {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
-  text-transform: uppercase; color: var(--muted); padding: 12px 16px 8px;
-}
+/* Labels the picker's default cadence rows (vs a per-item override) — font
+   styling now comes from the shared .rd-ctl-subhead class (see its own JSX
+   className); this rule is just the padding this nested context needs,
+   which the other three .rd-ctl-subhead contexts set on themselves too
+   (.rd-ctl-group--basics/--picks/--sched, each scoped to their own parent). */
+.rd-ctl-body .ease-config .ease-cadence-kicker { padding: 12px 16px 8px; }
 /* Separator between the kicker and its controls, matching the mode list's
    border-top under the "How it picks" kicker. */
 .rd-ctl-body .ease-config .ease-cadence-kicker + .pie-row { border-top: 0.5px solid var(--border); }
@@ -2005,6 +2090,12 @@ button.cat-h-l {
 
 .np-fields { display: flex; flex-direction: column; gap: 24px; margin-top: 16px; }
 .np-field { display: flex; flex-direction: column; gap: 8px; }
+/* .np-field also renders as a <fieldset> (the picker-mode radio group, for a
+   real group-level accessible name via <legend> instead of an orphaned
+   <label>) — reset the browser's default fieldset border/padding/min-width
+   so it matches every plain-div .np-field exactly. */
+fieldset.np-field { border: 0; margin: 0; padding: 0; min-width: 0; }
+legend.np-label { padding: 0; float: none; width: 100%; }
 .np-field--toggle {
   display: flex;
   flex-direction: row; align-items: flex-start; justify-content: space-between;
@@ -2354,6 +2445,11 @@ button.cat-h-l {
 .rem-meta { text-transform: none; letter-spacing: 0.02em; }
 .rem-meta .meta-picker { color: var(--muted); }
 
+/* Reminders' header has a group-progress bar AND an add button sharing the
+   header's right-hand flex slot (`.group-h`'s own space-between only expects
+   two children) — wrap both together so the header stays a simple 2-child
+   row like every other group's. */
+.rem-h-r { display: flex; align-items: center; gap: 10px; }
 .rem-add-btn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 30px; height: 30px; flex: 0 0 auto;
@@ -2680,7 +2776,7 @@ button.cat-h-l {
 .rd-ctl-l { display: flex; align-items: center; gap: 9px; }
 .rd-ctl-l .chev { color: var(--muted); }
 .rd-ctl-l .kicker { line-height: 1; }
-.rd-ctl-sum { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.03em; color: var(--muted); }
+.rd-ctl-sum { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.03em; color: var(--muted); }
 /* Boundary between the Controls section and the Items section: the second
    disclosure header (Items) gets a top border that doubles against the bottom
    border of whatever precedes it — the Controls body when expanded, or the
@@ -2696,7 +2792,7 @@ button.cat-h-l {
 }
 .rd-mx-head, .rd-mx-row { display: grid; grid-template-columns: 1fr 76px 76px; align-items: center; }
 .rd-mx-head { padding: 8px 16px; }
-.rd-mx-col { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-align: center; }
+.rd-mx-col { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-align: center; }
 .rd-mx-row { padding: 11px 16px; border-bottom: 0.5px solid var(--border); }
 .rd-mx-row:last-child { border-bottom: 0; }
 /* Reminders Controls footer — Cancel + Save, right-aligned, above the matrix's
@@ -2776,6 +2872,10 @@ button.cat-h-l {
   font: inherit; color: inherit; width: 100%; text-align: left; }
 .rd-row:hover { background: oklch(from var(--surface) calc(l - 0.008) c h); }
 .rd-item.is-editing > .rd-row:hover { background: transparent; }
+/* The editing-state row is a plain div (see tab-data.jsx's own comment) —
+   only its .rd-chev button is actually clickable now, so the row itself
+   shouldn't still look clickable everywhere via the shared .rd-row cursor. */
+.rd-item.is-editing > .rd-row { cursor: default; }
 .rd-ico {
   flex: 0 0 auto; width: 30px; height: 30px; border-radius: 9px;
   display: inline-flex; align-items: center; justify-content: center;
@@ -2784,7 +2884,7 @@ button.cat-h-l {
 .rd-ico.is-once { background: oklch(from var(--warm) calc(l + 0.28) c h); color: var(--warm); }
 .rd-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .rd-name { font-size: 14px; font-weight: 500; letter-spacing: -0.005em; }
-.rd-sched { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.rd-sched { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
 .rd-name-input {
   border: 0; background: transparent; font: inherit;
   font-size: 14px; font-weight: 500; letter-spacing: -0.005em;
@@ -2796,6 +2896,13 @@ button.cat-h-l {
 .rd-name-input::placeholder { color: var(--muted); opacity: 0.7; }
 .rd-chev { flex: 0 0 auto; color: var(--muted); }
 .rd-item.is-editing .rd-chev { color: var(--accent); }
+/* When it's a real <button> (the editing-state collapse control) rather
+   than the decorative span the collapsed row uses. */
+button.rd-chev {
+  appearance: none; -webkit-appearance: none; border: 0; background: none;
+  padding: 4px; margin: -4px; font: inherit; color: inherit; cursor: pointer;
+  display: inline-flex; align-items: center;
+}
 .rd-edit { padding: 2px 16px 14px; }
 /* Picker Controls body — the pick-algorithm config, on the same recessed tint
    as the Reminders matrix so both sections' Controls read identically. */
@@ -2821,6 +2928,14 @@ button.cat-h-l {
    overflow:hidden (see style-radio-card) so the option list can bleed edge-
    to-edge without a padding gap top/bottom — the radio list's own -16px
    horizontal bleed isn't needed there since there's no padding to eat into. */
+/* Wraps StyleRadioList's own .rd-mode-radio div so it has a real <legend>
+   (see that component's own comment) — strips the UA fieldset chrome so it
+   stays visually invisible, same idea as .np-field's fieldset variant. */
+.style-radio-fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+/* Screen-reader-only text — same clipping technique as .sr-live, for content
+   that needs to exist in the accessibility tree (a fieldset's required
+   <legend>, here) without a visible on-screen presence. */
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .style-radio-card { overflow: hidden; }
 .style-radio-card .rd-mode-radio { margin: 0; border-top: 0; }
 .rd-mode-opt {
@@ -2940,8 +3055,15 @@ button.cat-h-l {
    Details' bottom border (double hairline, no gap — body gap is 0), mirroring
    the mode-list → "When it runs" separator. Top padding gives the subhead room. */
 .rd-ctl-group--picks {
-  margin: 0 -16px; padding: 0; gap: 0;
-  border-top: 0.5px solid var(--border);
+  margin: 0 -16px; padding: 0; gap: 0; min-width: 0;
+  border: 0;
+  /* box-shadow, not border-top — now that this is a <fieldset>, an actual
+     border interacts with its <legend> (the browser "carves out" a gap in
+     the border exactly where the legend sits, then resumes it right after
+     the legend's own text), leaving a stray line trailing off after "How it
+     picks" instead of the intended full-bleed separator. An inset shadow
+     paints the same 0.5px hairline without going through that carving. */
+  box-shadow: inset 0 0.5px 0 0 var(--border);
 }
 .rd-ctl-group--picks .rd-ctl-subhead { padding: 14px 16px 8px; }
 .rd-ctl-group--picks .rd-mode-radio { margin: 0; }
@@ -2994,7 +3116,7 @@ button.cat-h-l {
 .rd-ctl-group--foot { padding-bottom: 0; }
 .rd-ctl-group--sched { border-bottom: 0.5px solid var(--border); }
 .rd-ctl-subhead {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; color: var(--muted);
 }
 /* Group selector — single-select pills + inline "New group" create. Reuses the
@@ -3128,6 +3250,10 @@ button.cat-h-l {
 @media (prefers-reduced-motion: reduce) { .heat-slide-next, .heat-slide-prev { animation: none; } }
 
 .rd-edit-foot { justify-content: space-between; }
+/* InfoTip wraps the disabled Delete button in a plain span (see EntryEditor's
+   atMinItems branch, tab-today.jsx) — match the Btn it replaces so the footer's
+   space-between layout doesn't shift. */
+.rd-del-disabled-tip { display: inline-flex; }
 /* Footer ↔ delete-confirm swap: whichever row appears fades + slides in (the
    ternary branches carry distinct keys so React remounts them to replay this).
    Covers every editor footer — picker item, reminder, picker settings, conditional. */
@@ -3232,6 +3358,13 @@ button.cat-h-l {
   flex-wrap: wrap; margin-bottom: 12px;
 }
 .rem-stats-nums { display: flex; gap: 18px; }
+/* Forces the Conditionals card's own stats onto their own line, same as the
+   Reminders completed card's own header already does — that one only wraps
+   because "Reminders completed" + its two stats are long enough to actually
+   need it; "Conditionals" + "triggered"/"fire rate" happen to be short
+   enough to fit on one line otherwise. Not structural, just text length,
+   but forcing it keeps the two headers looking consistent regardless. */
+.cnd-sum-card .rem-stats-head .rem-stats-nums { flex-basis: 100%; }
 .rem-stat { font-size: 13px; color: var(--muted); }
 .rem-stat strong {
   font-family: var(--font-mono); font-variant-numeric: tabular-nums;
@@ -3243,10 +3376,21 @@ button.cat-h-l {
   padding: 13px 0; border-bottom: 0.5px solid var(--border);
 }
 .rem-log li:last-child { border-bottom: 0; }
-.rem-log-name { font-size: 14px; font-weight: 450; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Wraps, not truncates — matches .rank-name-text/.cnd-sum-name elsewhere on
+   this page, neither of which truncate either. min-width:0 (already here)
+   is what actually lets it shrink below its own content width to wrap in
+   the first place, as a flex item next to .rem-log-meta's fixed width. */
+.rem-log-name { font-size: 14px; font-weight: 450; min-width: 0; }
 .rem-log-meta { display: inline-flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+/* Fixed width (not auto) so "one-time" and "recurring" are the same size —
+   same treatment as the Conditionals card's own .cnd-sum-meta .rem-log-type,
+   just a hair wider since "recurring" (measured ~81px) is slightly longer
+   than "ease-down" was. Covers both places .rem-log-meta wraps this pill
+   (the Reminders Completed card and the Reminders Breakdown card behind
+   it — same markup, same misalignment either way). */
+.rem-log-meta .rem-log-type { width: 82px; text-align: center; }
 .rem-log-type {
-  font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.05em;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; padding: 2px 7px; border-radius: 999px;
   border: 0.5px solid var(--border); color: var(--muted);
 }
@@ -3265,7 +3409,22 @@ button.cat-h-l {
 .cnd-sum-list li:first-child { border-top: 0; }
 .cnd-sum-name { display: flex; align-items: center; gap: 8px; font-size: 14px; min-width: 0; }
 .cnd-sum-meta { display: flex; align-items: baseline; gap: 12px; flex: 0 0 auto; }
-.cnd-sum-frac { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 54px; text-align: right; }
+/* Fixed width (not auto) so every conditional's mode pill is the same size
+   regardless of its own label's length ("ease-down" is wider than "random")
+   — same "fixed size + centered text" treatment as .cnd-sum-frac/.cnd-sum-
+   rate's own min-width, just centered rather than right-aligned since this
+   one's a pill, not a number column. 82px comfortably fits the longest
+   label, "ease-down" (measured ~81px). */
+.cnd-sum-meta .rem-log-type { width: 82px; text-align: center; }
+/* width, not min-width — each conditional's row is its own independent
+   flex layout (not a shared grid), so a wider fraction here ("150 / 200"
+   vs "18 / 21") was growing THIS row's .cnd-sum-meta group wider than its
+   siblings', shifting the mode pill before it out of alignment (it's
+   pinned to the row's right edge via .cnd-sum-list li's own
+   justify-content: space-between). 66px comfortably fits 3-digit/3-digit
+   values (measured "999 / 999" at 65px); a 4-digit count is unlikely
+   enough in practice not to guard against here. */
+.cnd-sum-frac { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; width: 66px; text-align: right; }
 .cnd-sum-rate { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); min-width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
 /* Dedicated scope: per-conditional rows with a fire-rate bar */
 .cnd-stat-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
@@ -3281,10 +3440,29 @@ button.cat-h-l {
 .cnd-stat-rate { flex: 0 0 auto; font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); min-width: 42px; text-align: right; }
 .cnd-stat-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); }
 .cnd-stat-meta strong { color: var(--text); font-weight: 600; }
-/* Conditionals breakdown: mode pill + configured-target suffix under the name */
-.cnd-bd-meta { display: flex; align-items: center; gap: 8px; margin-top: 3px; }
-.cnd-bd-meta .rem-log-type { flex: 0 0 auto; }
-.cnd-bd-meta .rank-meta { white-space: nowrap; }
+/* Conditionals breakdown: mode pill sits with the row's value column on the
+   right, same grouping as the Everything view's .cnd-sum-meta (pill next to
+   the frac/rate) and Reminders' .rem-log-meta (pill next to the date) —
+   not under the name. Fixed pill width (matching those two) keeps it
+   aligned across sibling rows regardless of the active metric's own value
+   width. */
+.cnd-bd-vals { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+.cnd-bd-vals .rem-log-type { flex: 0 0 auto; width: 82px; text-align: center; }
+/* width, not min-width — same fix as .cnd-sum-frac: this row's own flex
+   layout isn't shared with its siblings, so a wider fraction/count here
+   grows only THIS row's .cnd-bd-vals wider, shifting the pill before it
+   out of alignment. 66px/40px match .cnd-sum-frac's own 3-digit/3-digit
+   sizing (rank-frac uses a smaller font than cnd-sum-frac, hence the
+   narrower value here still fitting the same digit count). */
+.cnd-bd-vals .rank-frac { width: 66px; }
+.cnd-bd-vals .rank-metric-n { width: 40px; }
+/* Same fix, applied per metric since the two .rank-freq-val users here have
+   very different value lengths ("every 100 days" vs "Aug 23") — a single
+   shared width would either clip the longer one or leave the shorter one
+   comically padded. 112px fits "every 100 days" (measured ~108px); 50px
+   fits "Aug 23" (measured ~46px). */
+.cnd-bd-freq--interval { width: 112px; text-align: right; }
+.cnd-bd-freq--last { width: 50px; text-align: right; }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
 
@@ -3526,44 +3704,168 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 
 /* key band */
 .dl-key{display:flex;flex-wrap:nowrap;align-items:baseline;gap:16px;padding:11px 14px;background:oklch(from var(--surface) calc(l + 0.006) c h);border-bottom:0.5px solid var(--border)}
-.dl-key-items{display:flex;flex-wrap:wrap;align-items:center;gap:9px 16px;min-width:0}
+/* Grid with auto-fit columns instead of flex-wrap, same fix/reasoning as
+   the Reminders Repeat control (see .seg[aria-label="Repeat"]'s own
+   comment) — a wrapped row of these 5 items otherwise packs left-to-right
+   at its own natural widths with no relation to the row above it, instead
+   of lining up under it column-for-column. */
+.dl-key-items{display:grid;grid-template-columns:repeat(auto-fit, minmax(90px, max-content));justify-content:start;align-items:center;gap:9px 16px;flex:1;min-width:0}
 .dl-ki{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
 .dl-ki b{color:var(--text);font-weight:500}
 
 /* picker sub-block */
 .dl-block{border-top:0.5px solid var(--border)}
 .dl-block:first-child{border-top:0}
-.dl-block-h{display:flex;align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
+/* Grid, not flex, for EVERY .dl-block-h variant — the real per-picker header
+   (chev+name/mode+count), the Conditionals section title (name/mode-as-
+   count, no chev), and the Rested row (name/mode+rest text, no chev) all
+   share this one template now, each child pinned to its own column below
+   via grid-column (NOT relying on source-order auto-placement, since the
+   static variants are missing the chev and/or the count/rest column). This
+   is what makes the name column start at the SAME x-position whether or
+   not a given row happens to render a chevron: the chev's own 20px track
+   stays reserved and empty on the variants that don't render one, rather
+   than the next real child sliding left into it. */
+/* name+mode column: 1fr, but the pill living right next to the name (not
+   drifting away as the row gets wider) is handled INSIDE that column, not
+   by the grid — .dl-name-mode wraps both in a plain flex row (see below).
+   Neither a fixed nor an auto grid track for the mode column alone could
+   pull this off: whatever's left over after the name always has to land
+   in some track, and any track sized off to the side of the name (rather
+   than sharing a box with it) ends up positioned by the TRACK boundary,
+   not by where the name text actually ends. Flexbox doesn't have that
+   problem — a flex item with no flex-grow just sits at its own content
+   size, so the pill packs against the name and the unused space in this
+   column falls after the pill instead of before it. */
+/* .dl-block-name's own fixed 140px flex-basis (below) is what makes the
+   pill line up across DIFFERENT pickers in the same panel, not this
+   column: every row uses the identical literal 140px, so every row's pill
+   starts at the same offset from the row's own left edge — the same trick
+   .dl-thead/.dl-trow already use for their own fixed columns. A subgrid
+   sized to the actual widest sibling name was tried instead of a literal
+   constant; visually it just moved the goalposts (the gap for a shorter
+   name got as big as the panel's longest name happened to be that day,
+   which still looked wrong), so a plain constant it is. */
+/* count column: minmax(0,200px), not a bare 200px — a fixed-length track
+   still lets its content's automatic minimum size push it wider than the
+   declared max in Firefox specifically, bleeding a character past
+   .dl-block-h's own 2px right padding (same class of bug as .dl-name-mode's
+   own min-width:0 below, but at the track level instead of the item
+   level). 200px, not 90px: with the Rested row's own two-line content
+   below (icon+"Rested" then the conditional's name, which can itself wrap
+   to multiple lines), 90px was forcing a wrap on nearly every conditional
+   name — 200px comfortably fits most on one line. Narrower again
+   (minmax(0,100px)) below the 500px breakpoint, where 200px would eat too
+   much of the row's own name column on a genuinely narrow screen. */
+.dl-block-h{display:grid;grid-template-columns:20px 1fr minmax(0,200px);align-items:center;gap:9px;width:100%;padding:13px 2px;background:none;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
 .dl-block-h--static{cursor:default}
+/* The Conditionals section title isn't a picker row wearing the same
+   costume — it's just a label and a count, and neither needs to line up
+   with anything else in the panel (there's only ever one of this row, and
+   it has no chevron/count-or-rest column to begin with). Plain flex,
+   hugging its own content, instead of inheriting the picker rows' 3-column
+   grid template. */
+.dl-cond-sec .dl-block-h{display:flex;gap:9px}
+.dl-block-h .dl-chev{grid-column:1}
+/* min-width:0 — a grid item's default min-width:auto keeps it from
+   shrinking below its own (nowrap) content's min-content size; without
+   this a long name+pill pair could bleed past the count column instead of
+   the name wrapping/the row narrowing. */
+.dl-block-h .dl-name-mode{grid-column:2;min-width:0}
+.dl-block-h .dl-sum,.dl-block-h .dl-rest{grid-column:3}
+/* Plain flex row, not grid — see the column-2 comment above for why. The
+   name is a normal (non-growing) flex item so it wraps/shrinks at its own
+   content size instead of stretching to fill the 1fr column; the pill
+   packs right up against it via `gap`, and whatever's left in the column
+   falls empty after the pill. */
+.dl-name-mode{display:flex;align-items:center;gap:9px;min-width:0}
+/* flex:0 1 140px — a fixed flex-basis, not 1fr/auto/max-content: every row
+   sharing the exact same literal number is what lines the pill up across
+   pickers (see the column-2 comment above). Not flex:0 0 (rigid) though —
+   it can still shrink (with min-width:0, all the way to 0, i.e. wrapping)
+   under real space pressure on a narrow viewport, it just won't be forced
+   below 140px by ordinary column stretching the way the old 1fr was. */
+.dl-name-mode .dl-block-name{flex:0 1 140px;min-width:0}
+/* width:140px — a fixed size for the pill itself (not just its column),
+   same 140px as the name next to it and as the wrap-breakpoint's own
+   max-width below, so every pill is an identical, evenly-sized chip
+   regardless of its own label's length — comfortably fits the longest
+   label in use ("Dynamic Weighted", ~131px) with .dl-mode's own
+   text-align:center centering shorter ones within it.
+   min-width:0 — without it, a long mode label won't shrink/truncate at
+   narrow widths, forcing the row wider instead. Left at the default
+   flex-shrink (not 0): the name (which can wrap instead of shrinking-in-
+   place) gives up its own space first, so in practice this only shrinks/
+   truncates the pill as a last resort when the row is too narrow to fit
+   it even after the name has wrapped down to its longest single word. */
+.dl-name-mode .dl-mode{width:140px;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .dl-block-name{font-size:14px;font-weight:600;letter-spacing:-0.01em}
 .dl-cond-title{color:var(--accent)}
-.dl-mode{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);text-align:center}
+.dl-mode{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);text-align:center;white-space:nowrap}
 .dl-mode.neutral{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
-.dl-sum{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+/* flex-wrap:wrap — preferred over truncating/widening the mode column
+   further: at the narrowest widths, the "N items"/"X done" pair wraps
+   onto its own second line within this column's fixed 90px instead of
+   demanding extra horizontal room. */
+/* min-width:0 — same fix as .dl-mode's own comment above: as a grid item,
+   .dl-sum's default min-width:auto let it ignore its own 90px column and
+   grow to fit its children's combined width instead, so flex-wrap never
+   had anything to actually wrap AGAINST (no overflow ever occurred). */
+.dl-sum{margin-left:auto;display:inline-flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted);min-width:0}
 .dl-dchip{display:inline-flex;align-items:center;gap:4px;color:oklch(0.5 0.11 155)}
 .dl-dchip svg{width:12px;height:12px}
 .dl-chev{color:var(--muted);display:inline-flex;transition:transform .2s}
 .dl-chev svg{width:15px;height:15px;display:block}
 .dl-block.is-closed .dl-chev{transform:rotate(-90deg)}
-.dl-rest{margin-left:auto;font-family:var(--font-mono);font-size:11px;letter-spacing:0.03em;text-transform:uppercase;color:var(--accent);display:inline-flex;align-items:center;gap:6px}
+/* Two lines, not one run of "Rested · {conditional}" text — the icon+
+   "Rested" line stays put on one line, and the conditional's own name
+   (which can be considerably longer, and unlike "Rested" has no reason to
+   stay unbroken) gets its own line below, free to wrap across several
+   lines on its own without dragging the icon down with it. */
+.dl-rest{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.03em;text-transform:uppercase;color:var(--accent)}
+.dl-rest-l1{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.dl-rest-cond{text-align:right}
 .dl-rest svg{width:13px;height:13px}
-/* The "Rested · {conditional name}" text (day-log.jsx) — its own span has
-   no class of its own to hook, so targeted structurally: .dl-rest's only
-   other child is the moon icon (an <svg>), so this can't match it too. */
-.dl-rest>span{text-align:center}
 
 /* table */
 .dl-table{padding-bottom:12px}
-.dl-thead,.dl-trow{display:grid;grid-template-columns:1fr 46px 44px 46px 118px;align-items:center;gap:6px}
-.dl-thead{padding:6px 10px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
+/* Status column: 126px (was 118px) — the smallest width its icon set
+   (Auto-picked/Pushed/Rolled off/Skipped) actually fits on one row without
+   wrapping. */
+.dl-thead,.dl-trow{display:grid;grid-template-columns:1fr 46px 44px 46px 126px;align-items:center;gap:6px}
+.dl-thead{padding:6px 10px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
 .dl-thead .r,.dl-trow .r{text-align:right;justify-self:end}
+/* Δ overrides the general .r (right-align) rule above for just this one
+   column — same specificity, declared after, so it wins — since it reads
+   better centered under its own narrow column than pinned to the right
+   edge like At gen/After. Covers both the header label and every row's
+   value cell (.dl-mk-delta is on both), and both the item table and the
+   Conditionals table (.dl-cond-row rows still carry the shared .dl-trow
+   class), but not the Reminders table, which has no Δ column at all. */
+.dl-thead .dl-mk-delta,.dl-trow .dl-mk-delta{text-align:center;justify-self:center}
+/* After overrides the general .r (right-align) rule the same way Δ does
+   above — moves its column's content to the start (left) edge of its own
+   track instead of the end (right). Covers both the header ● and every
+   row's value cell. */
+.dl-thead .dl-mk-after,.dl-trow .dl-mk-after{justify-self:start}
+/* Visually hidden, not display:none — screen readers still read it. Gives
+   At gen/Δ/After's icon-only header labels a real accessible name instead
+   of relying on a screen reader happening to announce the raw glyph via
+   its Unicode character name. */
+.dl-vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* ○ (open circle) reads visibly bigger than ● (filled circle) at the same
+   font-size in most fonts — an outlined glyph's stroke sits at the edge of
+   its shape while a filled glyph's solid fill reads more compact, so the
+   two rarely look optically matched even at an identical em size. Scale
+   just this one down until it reads the same weight/size as ●. */
+.dl-th-ic--open{display:inline-block;transform:scale(0.9)}
 .dl-trow{padding:8px 10px;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
 .dl-trow:last-child{border-bottom:0}
 .dl-trow.is-done{background:oklch(0.95 0.035 155)}
 .dl-item{min-width:0;display:flex;flex-direction:column;gap:1px}
 .dl-nrow{display:flex;align-items:center;gap:7px;min-width:0}
 .dl-name{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dl-sub{font-family:var(--font-mono);font-size:10px;letter-spacing:0.02em;color:var(--muted)}
+.dl-sub{font-family:var(--font-mono);font-size:11px;letter-spacing:0.02em;color:var(--muted)}
 .dl-val{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:13px}
 .dl-delta{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:12px}
 .dl-delta.up{color:oklch(0.5 0.11 155)}
@@ -3577,7 +3879,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-na{font-family:var(--font-mono);font-size:11px;color:oklch(from var(--muted) l c h/0.55)}
 .dl-status{display:flex;gap:4px;justify-self:end;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .dl-none{color:oklch(from var(--muted) l c h/0.4);font-family:var(--font-mono);font-size:13px;text-align:right}
-.dl-vac{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.04em;text-transform:uppercase;color:oklch(from var(--muted) l c h/0.7)}
+.dl-vac{font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:oklch(from var(--muted) l c h/0.7)}
 .dl-trow.is-dim .dl-name{color:var(--muted)}
 
 /* conditionals section */
@@ -3585,36 +3887,132 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 .dl-cond-aff{display:flex;align-items:center;gap:7px;margin:0 0 8px;padding:6px 10px 6px 12px;border-radius:0 0 8px 8px;background:oklch(from var(--accent) 0.95 0.035 h);font-family:var(--font-mono);font-size:11px;letter-spacing:0.02em;color:oklch(from var(--accent) calc(l - 0.02) c h)}
 .dl-cond-aff svg{width:12px;height:12px;flex:none;opacity:0.8}
 .dl-cond-aff b{color:var(--accent);font-weight:600}
-.dl-st-pill{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.04em;text-transform:uppercase;padding:2px 9px;border-radius:999px;white-space:nowrap}
-.dl-st-trig{background:var(--accent);color:var(--bg)}
-.dl-st-nottrig{background:var(--surface);color:var(--muted);border:0.5px solid var(--border)}
-.dl-mode--cond{background:var(--bg);color:var(--accent);border:0.5px solid oklch(from var(--accent) l c h/0.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.dl-nrow .dl-name{min-width:0}
+.dl-st-pill{font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;padding:2px 0;border-radius:999px;white-space:nowrap}
+/* padding: 2px 8px — unlike the reminder status pills (Done/Due/Skipped),
+   which sit flush against the Status column's own right edge with room to
+   spare, Triggered/Not triggered's own text was found to brush right up
+   against the pill's rounded edges once .dl-st-pill's base horizontal
+   padding was dropped to 0 — put the 8px sides back for these two only. */
+.dl-st-trig{background:var(--accent);color:var(--bg);padding:2px 8px}
+.dl-st-nottrig{background:var(--surface);color:var(--muted);border:0.5px solid var(--border);padding:2px 8px}
+/* width:140px — same reasoning as .dl-name-mode .dl-mode's own comment
+   elsewhere in this file: a fixed size for the pill itself, not just its
+   column, so every conditional's pill is an identical, evenly-sized chip
+   regardless of its own label's length (text-align:center comes from the
+   shared .dl-mode class already). */
+.dl-mode--cond{width:140px;background:var(--bg);color:var(--accent);border:0.5px solid oklch(from var(--accent) l c h/0.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+/* flex:0 0 140px — RIGID, not 0 1 140px (shrinkable): this row's outer
+   1fr "item" column doesn't shrink smoothly as the viewport narrows — the
+   other, fixed-width columns in this same .dl-trow/.dl-cond-row grid snap
+   to smaller values at their own breakpoints (560px, 450px, ...), so the
+   item column's actual resolved width has a sawtooth shape, briefly
+   dipping narrower right before each snap than it is on either side of
+   it. A shrinkable name kept shrinking at exactly those dips (observed
+   around 760-840px and 560-600px), losing the exact 140px every row
+   relies on for alignment. Rigid means the name never moves; when a dip
+   leaves less than 140px+gap+pill of room, .dl-mode--cond's own
+   min-width:0 + ellipsis (below) absorbs the squeeze instead — same
+   "name holds, pill gives" division of labor as the picker header's own
+   fixed-width name. Scoped to .dl-nrow specifically — plain .dl-name is
+   also used, unwrapped, for regular item rows in the picker table, which
+   don't have a pill next to them and shouldn't be capped the same way. */
+.dl-nrow .dl-name{flex:0 0 140px;min-width:0}
 .dl-mode--cond.is-neutral{background:var(--bg);color:var(--muted);border-color:var(--border)}
 
 /* reminders log */
 .dl-rt-head,.dl-rt-row{display:grid;grid-template-columns:1fr 150px 130px;align-items:center;gap:8px}
-.dl-rt-head{padding:6px 10px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
+.dl-rt-head{padding:6px 10px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--border)}
 .dl-rt-head .r,.dl-rt-row .r{text-align:right;justify-self:end}
+.dl-rt-head .dl-mk-rwhen{text-align:center}
 .dl-rt-row{padding:9px 10px;border-bottom:0.5px solid oklch(from var(--border) l c h/0.55);border-radius:8px}
 .dl-rt-row:last-child{border-bottom:0}
 .dl-rt-row.is-done{background:oklch(0.95 0.035 155)}
 .dl-rt-row.is-due{background:var(--accent-soft)}
 .dl-r-name{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .dl-rt-row.is-notdue .dl-r-name{color:var(--muted)}
-.dl-r-when{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.dl-r-when{font-family:var(--font-mono);font-size:11px;color:var(--muted);text-align:center}
 .dl-r-st{justify-self:end;text-align:right;display:inline-flex;align-items:center;justify-content:flex-end;gap:6px}
 .dl-st-done{background:oklch(0.95 0.035 155);color:oklch(0.5 0.11 155)}
 .dl-st-due{background:var(--accent-soft);color:var(--accent)}
 .dl-st-skip{background:oklch(0.955 0.02 25);color:oklch(0.53 0.16 25)}
-.dl-st-not{color:oklch(from var(--muted) l c h/0.75);font-family:var(--font-mono);font-size:10px;letter-spacing:0.04em;text-transform:uppercase;text-align:right}
+.dl-st-not{color:oklch(from var(--muted) l c h/0.75);font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;text-align:right}
 
-@container app (max-width:560px){
-  .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 106px;gap:4px}
-  .dl-rt-head,.dl-rt-row{grid-template-columns:1fr 104px 104px;gap:6px}
+/* This range doesn't correspond to any breakpoint of .dl-trow/.dl-cond-row's
+   own — it's the sidebar's own breakpoint elsewhere in the app shell
+   pinching .main (and so this row's container-query width) narrower right
+   before the sidebar collapses and gives that width back. The rigid
+   140px name (above) no longer loses alignment there, but with nowhere
+   else to give, the mode pill was shrinking down uncomfortably small
+   instead. Same fix as the ≤560px block below: wrap the pill onto its own
+   line rather than let it keep shrinking. */
+@container app (min-width:761px) and (max-width:843px){
   .dl-cond-row .dl-nrow{flex-wrap:wrap;gap:4px}
   .dl-cond-row .dl-name{flex:0 0 100%;width:100%}
-  .dl-cond-row .dl-mode--cond{display:block;width:100%;text-align:center}
+  /* width:auto, not 100% — with text-align:left (not center), a
+     full-width box left a lot of empty space between the pill's own
+     text and its right edge; auto lets the pill hug its own content
+     instead, matching how it looks unwrapped. max-width:140px stays as a
+     safety cap for an unusually long label (paired with the base rule's
+     own overflow:hidden/ellipsis). margin-left:-4px — HALF of .dl-mode's
+     own 8px left padding, not the full amount — pulls it most of the way
+     toward the conditional name above without putting the pill's own
+     border right up against the row's left edge; doesn't land
+     pixel-perfect with the name's text but reads better than the cramped
+     full -8px. */
+  .dl-cond-row .dl-mode--cond{display:block;width:auto;max-width:140px;text-align:left;margin-left:-4px}
+}
+/* 600px, not 560px like .dl-thead/.dl-trow's own breakpoint just below —
+   this is a SEPARATE block specifically so the pill-wrap threshold can
+   move on its own without dragging those unrelated column-width rules
+   along with it. The pill was still getting uncomfortably squeezed in the
+   560-600px sliver (the same "outer columns pinching the item column
+   narrower" effect as the 761-843px block above), so wrap starts here
+   instead of at 560. */
+@container app (max-width:600px){
+  .dl-cond-row .dl-nrow{flex-wrap:wrap;gap:4px}
+  .dl-cond-row .dl-name{flex:0 0 100%;width:100%}
+  /* width:auto, not 100% — with text-align:left (not center), a
+     full-width box left a lot of empty space between the pill's own
+     text and its right edge; auto lets the pill hug its own content
+     instead, matching how it looks unwrapped. max-width:140px stays as a
+     safety cap for an unusually long label (paired with the base rule's
+     own overflow:hidden/ellipsis). margin-left:-4px — HALF of .dl-mode's
+     own 8px left padding, not the full amount — pulls it most of the way
+     toward the conditional name above without putting the pill's own
+     border right up against the row's left edge; doesn't land
+     pixel-perfect with the name's text but reads better than the cramped
+     full -8px. */
+  .dl-cond-row .dl-mode--cond{display:block;width:auto;max-width:140px;text-align:left;margin-left:-4px}
+}
+@container app (max-width:560px){
+  .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 126px;gap:4px}
+  .dl-rt-head,.dl-rt-row{grid-template-columns:1fr 104px 104px;gap:6px}
+}
+/* Below this, 200px is too much to give up from the row's own name column
+   on a genuinely narrow screen — the Rested row's own content (icon+
+   "Rested" plus the conditional's name, both able to wrap onto their own
+   lines now) can afford to give some of that width back. */
+@container app (max-width:500px){
+  .dl-block-h{grid-template-columns:20px 1fr minmax(0,100px)}
+}
+/* Status needs its full 126px to fit every icon on one row (see the base
+   rule's own comment) at any width down to here — but below this, giving
+   it up lets the item-name column (1fr) breathe more on a genuinely
+   narrow screen, so it halves instead. */
+@container app (max-width:450px){
+  .dl-thead,.dl-trow{grid-template-columns:1fr 40px 35px 35px 63px}
+  /* Conditional rows need more than the other rows' 63px here — Triggered/
+     Not triggered's own pill text (plus its restored 8px side padding, see
+     .dl-st-trig/.dl-st-nottrig's own comment) bled into the After column
+     at that width. */
+  .dl-cond-row{grid-template-columns:1fr 40px 35px 35px 110px}
+  /* The Conditionals section's own header needs the same wider 110px as
+     its body rows above, not the generic .dl-thead rule's 63px — a plain
+     grid's 1fr column resolves to whatever's left AFTER its fixed
+     columns, so with a narrower last column the header's 1fr claimed 47px
+     more than the rows' own did, throwing every column after it (At gen/
+     Δ/After) out of alignment with the values underneath. */
+  .dl-cond-sec .dl-thead{grid-template-columns:1fr 40px 35px 35px 110px}
 }
 
 /* Below this, a picker block header's own name (.dl-block-name) crowds the
@@ -3746,7 +4144,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 }
 .ob-coach{position:fixed;pointer-events:auto;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r-md);box-shadow:0 16px 40px -14px oklch(0 0 0/0.45);padding:14px 15px;animation:obFade .18s ease both}
 .ob-coach .ob-prog{font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;color:var(--accent);margin:0 0 5px}
-.ob-coach h4{font-size:15px;font-weight:600;margin:0 0 5px}
+.ob-coach-title{font-size:15px;font-weight:600;margin:0 0 5px}
 .ob-coach .ob-body{font-size:12.5px;line-height:1.5;color:var(--muted);margin:0}
 .ob-crow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:13px}
 .ob-lnav{display:flex;align-items:center;gap:12px}
