@@ -4,3 +4,33 @@
 # tolerates but Firefox and some install paths reject. Force the correct type.
 /manifest.webmanifest
   Content-Type: application/manifest+json
+
+# Security hardening headers, applied to every response.
+#
+# This app is entirely client-only (no backend/API/accounts — see root
+# CLAUDE.md) and loads nothing from a third party: every script, style,
+# font, and icon is self-hosted, and the only "network" write is the
+# Netlify Forms POST from the support form (tab-settings.jsx), which goes
+# to this same origin. That lets the CSP below be genuinely strict rather
+# than needing broad allowances.
+#
+# default-src 'self' is the fallback every other unlisted directive
+# inherits, so img-src/font-src/connect-src/manifest-src/worker-src don't
+# need their own lines — they're all satisfied by 'self' already. The ones
+# listed explicitly below either need a DIFFERENT value than 'self'
+# (style-src, object-src, frame-src), or are never covered by default-src
+# at all (frame-ancestors, form-action), or are just being explicit about
+# matching default-src for clarity (script-src, base-uri).
+#
+# style-src needs 'unsafe-inline': the boot splash's critical-path CSS in
+# index.html is inline on purpose (an external stylesheet would reintroduce
+# a network round-trip before it can paint), and React itself renders many
+# components' dynamic positioning/sizing via inline style="" attributes
+# (e.g. src/bg-flourish.jsx) — both are covered by style-src, not script-src,
+# so this doesn't weaken protection against inline JS. The boot splash's
+# dismiss script is NOT inline (see public/boot-splash.js) specifically so
+# script-src doesn't need the same allowance.
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; frame-src 'none'; frame-ancestors 'none'; form-action 'self'
