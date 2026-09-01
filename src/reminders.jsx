@@ -242,7 +242,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         <div className="rem-field">
           <div className="rem-flabel-wrap">
             <span className="rem-flabel">On these days</span>
-            <span className="rem-flabel-sub">
+            <span className="rem-flabel-sub set-sub-fade" key={task.interval || 1}>
               {(task.daysOfWeek && task.daysOfWeek.length)
                 ? <>shows on the Today tab <strong>every {(task.interval || 1) > 1 ? `${task.interval} weeks on ` : ''}{[...task.daysOfWeek].sort((a, b) => a - b).map((d) => dayAbbr[d]).join(', ')}</strong></>
                 : 'pick at least one day'}
@@ -257,7 +257,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
             <span>{(task.interval || 1) === 1 ? 'week on' : 'weeks on'}</span>
           </div>
           <WeekdayChips value={task.daysOfWeek || []} onChange={(d) => set({ daysOfWeek: d })} describedBy={schedNoteId} />
-          {(task.interval || 1) > 1 && anchorHint}
+          <Collapse open={(task.interval || 1) > 1}><div className="cad-anchor-fade">{anchorHint}</div></Collapse>
         {state && <RemVisibilityNote task={task} state={state} kind="schedule" id={schedNoteId} />}
         </div>
       )}
@@ -285,7 +285,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         <div className="rem-field">
           <div className="rem-flabel-wrap">
             <span className="rem-flabel">Frequency</span>
-            <span className="rem-flabel-sub">shows on the Today tab <strong>every {(task.interval || 1) > 1 ? `${task.interval} months` : 'month'}</strong></span>
+            <span className="rem-flabel-sub set-sub-fade" key={task.interval || 1}>shows on the Today tab <strong>every {(task.interval || 1) > 1 ? `${task.interval} months` : 'month'}</strong></span>
           </div>
           <div className="rem-inline">
             <span>Every</span>
@@ -295,14 +295,14 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
                    onChange={(e) => set({ interval: Math.max(1, parseInt(e.target.value) || 1) })} />
             <span>{(task.interval || 1) === 1 ? 'month' : 'months'}</span>
           </div>
-          {(task.interval || 1) > 1 && anchorHint}
+          <Collapse open={(task.interval || 1) > 1}><div className="cad-anchor-fade">{anchorHint}</div></Collapse>
         </div>
       )}
       {rep === 'monthly' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
             <span className="rem-flabel">Day of the month</span>
-            <span className="rem-flabel-sub">
+            <span className="rem-flabel-sub set-sub-fade" key={task.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date'}>
               shows on the Today tab <strong>{task.dateMode === 'nthWeekday'
                 ? <>on the {ordinalLabel(task.nthOrdinal || 1)} {dayFull[task.nthWeekday ?? 0]}</>
                 : <>every {ordinalLabel(task.dayOfMonth || 1)}</>} of the month</strong>
@@ -344,7 +344,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         <div className="rem-field">
           <div className="rem-flabel-wrap">
             <span className="rem-flabel">Frequency</span>
-            <span className="rem-flabel-sub">shows on the Today tab <strong>every {(task.interval || 1) > 1 ? `${task.interval} years` : 'year'}</strong></span>
+            <span className="rem-flabel-sub set-sub-fade" key={task.interval || 1}>shows on the Today tab <strong>every {(task.interval || 1) > 1 ? `${task.interval} years` : 'year'}</strong></span>
           </div>
           <div className="rem-inline">
             <span>Every</span>
@@ -354,14 +354,14 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
                    onChange={(e) => set({ interval: Math.max(1, parseInt(e.target.value) || 1) })} />
             <span>{(task.interval || 1) === 1 ? 'year' : 'years'}</span>
           </div>
-          {(task.interval || 1) > 1 && anchorHint}
+          <Collapse open={(task.interval || 1) > 1}><div className="cad-anchor-fade">{anchorHint}</div></Collapse>
         </div>
       )}
       {rep === 'annual' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
             <span className="rem-flabel">Date each year</span>
-            <span className="rem-flabel-sub">
+            <span className="rem-flabel-sub set-sub-fade" key={task.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date'}>
               shows on the Today tab <strong>{task.dateMode === 'nthWeekday'
                 ? <>the {ordinalLabel(task.nthOrdinal || 1)} {dayFull[task.nthWeekday ?? 0]} of {fullMonthNames[(task.month || 1) - 1]}</>
                 : <>{fullMonthNames[(task.month || 1) - 1]} {task.day || 1}</>}</strong>
