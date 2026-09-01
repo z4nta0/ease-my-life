@@ -726,8 +726,15 @@ const PICKER_HELP_ITEMS = [
     body: <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off, or use the Every day/Weekdays/Weekends presets to quickly set a common pattern.</>,
   },
   {
-    id: 'newPickerSkipHolidays', sel: '.np-sched-toggle', title: 'Picker Holidays Toggle',
+    // :has(#np-skiphol) distinguishes this from the OTHER .np-sched-toggle
+    // just below it (Picker Duplicate Items Toggle) — both share the same
+    // bare class.
+    id: 'newPickerSkipHolidays', sel: '.np-sched-toggle:has(#np-skiphol)', title: 'Picker Holidays Toggle',
     body: <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
+  },
+  {
+    id: 'newPickerAvoidDuplicates', sel: '.np-sched-toggle:has(#np-avoiddupes)', title: 'Picker Duplicate Items Toggle',
+    body: <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
   },
   {
     // .np-footer--step1 scopes this to Step 1 specifically — Step 2's own
@@ -1301,9 +1308,15 @@ const DATA_HELP_ITEMS = [
   },
   {
     // padY:0 — same .sched-line zero-gap stacking, touching Picker Day
-    // Selection above.
+    // Selection above and Picker Duplicate Items Toggle below.
     id: 'dataPickerSkipHolidays', sel: '.sched-line:has(button[aria-label="Skip on holidays"])', title: 'Picker Holidays Toggle', padY: 0,
     body: <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
+  },
+  {
+    // padY:0 — same .sched-line zero-gap stacking, touching Picker
+    // Holidays Toggle above.
+    id: 'dataPickerAvoidDuplicates', sel: '.sched-line:has(button[aria-label="Avoid duplicate items"])', title: 'Picker Duplicate Items Toggle', padY: 0,
+    body: <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
   },
   {
     id: 'dataPickerFoot', sel: '.pk-ctl-foot .btn', title: 'Delete / Cancel / Save',

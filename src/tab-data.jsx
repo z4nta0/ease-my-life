@@ -558,8 +558,8 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                 <span className="sched-line-lbl">Avoid duplicate items</span>
                 <span className="sched-line-sub set-sub-fade" key={pk.avoidDuplicates ? 'on' : 'off'}>
                   {pk.avoidDuplicates
-                    ? <><strong>won't pick</strong> an item whose name is already on today's list</>
-                    : <><strong>may pick</strong> an item even if its name is already on today's list</>}
+                    ? <><strong>won't pick</strong> an item whose name is already on today's todo list</>
+                    : <><strong>may pick</strong> an item even if its name is already on today's todo list</>}
                 </span>
               </span>
               <button className={`switch ${pk.avoidDuplicates ? 'is-on' : ''}`} aria-pressed={!!pk.avoidDuplicates}

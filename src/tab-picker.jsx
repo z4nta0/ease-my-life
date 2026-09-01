@@ -1388,8 +1388,8 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                 <label className="np-label" htmlFor="np-avoiddupes">Avoid duplicate items</label>
                 <p className="np-help set-sub-fade" key={avoidDuplicates ? 'on' : 'off'}>
                   {avoidDuplicates
-                    ? <>This picker <strong>won't pick</strong> an item whose name is already on today's list.</>
-                    : <>This picker <strong>may pick</strong> an item even if its name is already on today's list.</>}
+                    ? <>This picker <strong>won't pick</strong> an item whose name is already on today's todo list.</>
+                    : <>This picker <strong>may pick</strong> an item even if its name is already on today's todo list.</>}
                 </p>
               </div>
               <button id="np-avoiddupes" type="button"
