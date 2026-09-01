@@ -191,6 +191,11 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const fullMonthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const dayAbbr = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const DATE_MODE_OPTS = [
+    { key: 'date', label: 'Date' },
+    { key: 'nthWeekday', label: 'Weekday' },
+  ];
   // Interval reminders count from a start date (`anchor`); the user can amend
   // it if they got it wrong. The link toggles an inline native date picker.
   const [editAnchor, setEditAnchor] = React.useState(false);
@@ -208,6 +213,27 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
   const schedNoteId = `rem-vis-sched-${task.id}`;
   const setNoteId = `rem-vis-set-${task.id}`;
 
+  // Shared "Counted from {anchor}" hint — only shown once N > 1, since at N=1
+  // (the old, only-ever-possible behavior) every week/month/year already
+  // qualifies and the anchor is never actually consulted.
+  const anchorHint = (
+    <p className="rem-hint">
+      Counted from{' '}
+      {editAnchor ? (
+        <input className="rem-date-inline" type="date" value={anchorIso} autoFocus
+               onChange={(e) => { if (e.target.value) set({ anchor: e.target.value }); }}
+               onBlur={() => setEditAnchor(false)}
+               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); setEditAnchor(false); } }} />
+      ) : (
+        <>
+          <button type="button" className="rem-date-link" aria-describedby={schedNoteId} onClick={() => setEditAnchor(true)}>
+            {anchorLabel}
+          </button>.
+        </>
+      )}
+    </p>
+  );
+
   const extraFields = (() => {
   const rep = task.repeat === 'once' ? lastExtraRepeat.current : task.repeat;
   return (
@@ -218,11 +244,20 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
             <span className="rem-flabel">On these days</span>
             <span className="rem-flabel-sub">
               {(task.daysOfWeek && task.daysOfWeek.length)
-                ? <>shows on the Today tab <strong>every {[...task.daysOfWeek].sort((a, b) => a - b).map((d) => dayAbbr[d]).join(', ')}</strong></>
+                ? <>shows on the Today tab <strong>every {(task.interval || 1) > 1 ? `${task.interval} weeks on ` : ''}{[...task.daysOfWeek].sort((a, b) => a - b).map((d) => dayAbbr[d]).join(', ')}</strong></>
                 : 'pick at least one day'}
             </span>
           </div>
+          <div className="rem-inline">
+            <span>Every</span>
+            <input className="np-input rem-num" type="number" min="1" max="52"
+                   aria-label="Interval in weeks" aria-describedby={schedNoteId}
+                   value={task.interval || 1}
+                   onChange={(e) => set({ interval: Math.max(1, parseInt(e.target.value) || 1) })} />
+            <span>{(task.interval || 1) === 1 ? 'week on' : 'weeks on'}</span>
+          </div>
           <WeekdayChips value={task.daysOfWeek || []} onChange={(d) => set({ daysOfWeek: d })} describedBy={schedNoteId} />
+          {(task.interval || 1) > 1 && anchorHint}
         {state && <RemVisibilityNote task={task} state={state} kind="schedule" id={schedNoteId} />}
         </div>
       )}
@@ -241,21 +276,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
                    onChange={(e) => set({ interval: Math.max(1, parseInt(e.target.value) || 1) })} />
             <span>days</span>
           </div>
-          <p className="rem-hint">
-            Counted from{' '}
-            {editAnchor ? (
-              <input className="rem-date-inline" type="date" value={anchorIso} autoFocus
-                     onChange={(e) => { if (e.target.value) set({ anchor: e.target.value }); }}
-                     onBlur={() => setEditAnchor(false)}
-                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); setEditAnchor(false); } }} />
-            ) : (
-              <>
-                <button type="button" className="rem-date-link" aria-describedby={schedNoteId} onClick={() => setEditAnchor(true)}>
-                  {anchorLabel}
-                </button>.
-              </>
-            )}
-          </p>
+          {anchorHint}
         {state && <RemVisibilityNote task={task} state={state} kind="schedule" id={schedNoteId} />}
         </div>
       )}
@@ -263,21 +284,58 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
       {rep === 'monthly' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <span className="rem-flabel">Day of the month</span>
-            <span className="rem-flabel-sub">shows on the Today tab <strong>every {ordinalLabel(task.dayOfMonth || 1)} of the month</strong></span>
+            <span className="rem-flabel">Frequency</span>
+            <span className="rem-flabel-sub">shows on the Today tab <strong>every {(task.interval || 1) > 1 ? `${task.interval} months` : 'month'}</strong></span>
           </div>
           <div className="rem-inline">
-            <span>On the</span>
-            <select className="np-input rem-sel" aria-label="Day of the month" aria-describedby={schedNoteId} value={task.dayOfMonth || 1}
-                    onChange={(e) => set({ dayOfMonth: parseInt(e.target.value) })}>
-              {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
-                <option key={d} value={d}>{ordinalLabel(d)}</option>
-              ))}
-            </select>
+            <span>Every</span>
+            <input className="np-input rem-num" type="number" min="1" max="60"
+                   aria-label="Interval in months" aria-describedby={schedNoteId}
+                   value={task.interval || 1}
+                   onChange={(e) => set({ interval: Math.max(1, parseInt(e.target.value) || 1) })} />
+            <span>{(task.interval || 1) === 1 ? 'month' : 'months'}</span>
           </div>
-          {(task.dayOfMonth || 1) > 28 && (
-            <p className="rem-hint">In shorter months this falls on the last day.</p>
+          {(task.interval || 1) > 1 && anchorHint}
+        </div>
+      )}
+      {rep === 'monthly' && (
+        <div className="rem-field">
+          <div className="rem-flabel-wrap">
+            <span className="rem-flabel">Day of the month</span>
+            <span className="rem-flabel-sub">
+              shows on the Today tab <strong>{task.dateMode === 'nthWeekday'
+                ? <>on the {ordinalLabel(task.nthOrdinal || 1)} {dayFull[task.nthWeekday ?? 0]}</>
+                : <>every {ordinalLabel(task.dayOfMonth || 1)}</>} of the month</strong>
+            </span>
+          </div>
+          <Segmented options={DATE_MODE_OPTS} value={task.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date'}
+                     onChange={(key) => set({ dateMode: key })} ariaLabel="Day selection" describedBy={schedNoteId} />
+          {task.dateMode === 'nthWeekday' ? (
+            <div className="rem-inline">
+              <span>On the</span>
+              <select className="np-input rem-sel" aria-label="Week of the month" aria-describedby={schedNoteId} value={task.nthOrdinal || 1}
+                      onChange={(e) => set({ nthOrdinal: parseInt(e.target.value) })}>
+                {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{ordinalLabel(n)}</option>)}
+              </select>
+              <select className="np-input rem-sel" aria-label="Weekday" aria-describedby={schedNoteId} value={task.nthWeekday ?? 0}
+                      onChange={(e) => set({ nthWeekday: parseInt(e.target.value) })}>
+                {dayFull.map((d, i) => <option key={d} value={i}>{d}</option>)}
+              </select>
+            </div>
+          ) : (
+            <div className="rem-inline">
+              <span>On the</span>
+              <select className="np-input rem-sel" aria-label="Day of the month" aria-describedby={schedNoteId} value={task.dayOfMonth || 1}
+                      onChange={(e) => set({ dayOfMonth: parseInt(e.target.value) })}>
+                {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                  <option key={d} value={d}>{ordinalLabel(d)}</option>
+                ))}
+              </select>
+            </div>
           )}
+          {task.dateMode === 'nthWeekday'
+            ? (task.nthOrdinal || 1) === 5 && <p className="rem-hint">In months without a 5th, this falls on the 4th instead.</p>
+            : (task.dayOfMonth || 1) > 28 && <p className="rem-hint">In shorter months this falls on the last day.</p>}
         {state && <RemVisibilityNote task={task} state={state} kind="schedule" id={schedNoteId} />}
         </div>
       )}
@@ -285,21 +343,65 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
       {rep === 'annual' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <span className="rem-flabel">Date each year</span>
-            <span className="rem-flabel-sub">shows on the Today tab <strong>every {fullMonthNames[(task.month || 1) - 1]} {task.day || 1}</strong></span>
+            <span className="rem-flabel">Frequency</span>
+            <span className="rem-flabel-sub">shows on the Today tab <strong>every {(task.interval || 1) > 1 ? `${task.interval} years` : 'year'}</strong></span>
           </div>
           <div className="rem-inline">
-            <select className="np-input rem-sel" aria-label="Month" aria-describedby={schedNoteId} value={task.month || 1}
-                    onChange={(e) => set({ month: parseInt(e.target.value) })}>
-              {monthNames.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
-            </select>
-            <select className="np-input rem-sel" aria-label="Day" aria-describedby={schedNoteId} value={task.day || 1}
-                    onChange={(e) => set({ day: parseInt(e.target.value) })}>
-              {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
-                <option key={d} value={d}>{d}</option>
-              ))}
-            </select>
+            <span>Every</span>
+            <input className="np-input rem-num" type="number" min="1" max="50"
+                   aria-label="Interval in years" aria-describedby={schedNoteId}
+                   value={task.interval || 1}
+                   onChange={(e) => set({ interval: Math.max(1, parseInt(e.target.value) || 1) })} />
+            <span>{(task.interval || 1) === 1 ? 'year' : 'years'}</span>
           </div>
+          {(task.interval || 1) > 1 && anchorHint}
+        </div>
+      )}
+      {rep === 'annual' && (
+        <div className="rem-field">
+          <div className="rem-flabel-wrap">
+            <span className="rem-flabel">Date each year</span>
+            <span className="rem-flabel-sub">
+              shows on the Today tab <strong>{task.dateMode === 'nthWeekday'
+                ? <>the {ordinalLabel(task.nthOrdinal || 1)} {dayFull[task.nthWeekday ?? 0]} of {fullMonthNames[(task.month || 1) - 1]}</>
+                : <>{fullMonthNames[(task.month || 1) - 1]} {task.day || 1}</>}</strong>
+            </span>
+          </div>
+          <Segmented options={DATE_MODE_OPTS} value={task.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date'}
+                     onChange={(key) => set({ dateMode: key })} ariaLabel="Day selection" describedBy={schedNoteId} />
+          {task.dateMode === 'nthWeekday' ? (
+            <div className="rem-inline">
+              <select className="np-input rem-sel" aria-label="Week of the month" aria-describedby={schedNoteId} value={task.nthOrdinal || 1}
+                      onChange={(e) => set({ nthOrdinal: parseInt(e.target.value) })}>
+                {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{ordinalLabel(n)}</option>)}
+              </select>
+              <select className="np-input rem-sel" aria-label="Weekday" aria-describedby={schedNoteId} value={task.nthWeekday ?? 0}
+                      onChange={(e) => set({ nthWeekday: parseInt(e.target.value) })}>
+                {dayFull.map((d, i) => <option key={d} value={i}>{d}</option>)}
+              </select>
+              <span>of</span>
+              <select className="np-input rem-sel" aria-label="Month" aria-describedby={schedNoteId} value={task.month || 1}
+                      onChange={(e) => set({ month: parseInt(e.target.value) })}>
+                {monthNames.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
+              </select>
+            </div>
+          ) : (
+            <div className="rem-inline">
+              <select className="np-input rem-sel" aria-label="Month" aria-describedby={schedNoteId} value={task.month || 1}
+                      onChange={(e) => set({ month: parseInt(e.target.value) })}>
+                {monthNames.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
+              </select>
+              <select className="np-input rem-sel" aria-label="Day" aria-describedby={schedNoteId} value={task.day || 1}
+                      onChange={(e) => set({ day: parseInt(e.target.value) })}>
+                {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
+            </div>
+          )}
+          {task.dateMode === 'nthWeekday' && (task.nthOrdinal || 1) === 5 && (
+            <p className="rem-hint">In years where that month has no 5th, this falls on the 4th instead.</p>
+          )}
         {state && <RemVisibilityNote task={task} state={state} kind="schedule" id={schedNoteId} />}
         </div>
       )}
@@ -315,7 +417,13 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
           <span className="rem-flabel-sub set-sub-fade" key={task.repeat}>{(REPEAT_OPTS.find((o) => o.key === task.repeat) || {}).sub}</span>
         </div>
         <Segmented options={REPEAT_OPTS} value={task.repeat}
-                   onChange={(key) => set({ repeat: key })} ariaLabel="Repeat" describedBy={setNoteId} />
+                   // `interval` is shared across interval/weekly/monthly/annual
+                   // (each is its own "every N ___"), so switching kind resets
+                   // it to that kind's own sensible default instead of
+                   // carrying over a number that meant something else a
+                   // moment ago (e.g. "every 5" days becoming "every 5"
+                   // months unintentionally).
+                   onChange={(key) => set({ repeat: key, interval: key === 'interval' ? 2 : 1 })} ariaLabel="Repeat" describedBy={setNoteId} />
         {state && <RemVisibilityNote task={task} state={state} kind="settings" id={setNoteId} />}
       </div>
 

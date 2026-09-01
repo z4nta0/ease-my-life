@@ -370,6 +370,30 @@ function migrate(s) {
   if (s && Array.isArray(s.tasks)) {
     s.tasks = s.tasks.map((t) => (typeof t.hidden === 'boolean' ? t : { ...t, hidden: false }));
   }
+  // Every-N-weeks/months/years + "Nth weekday" scheduling (added later).
+  // dateMode/nthOrdinal/nthWeekday are new fields the UI reads directly, so
+  // they're backfilled explicitly.
+  if (s && Array.isArray(s.tasks)) {
+    s.tasks = s.tasks.map((t) => {
+      if (t.dateMode === 'date' || t.dateMode === 'nthWeekday') return t;
+      const now = new Date();
+      return { ...t, dateMode: 'date', nthOrdinal: t.nthOrdinal || 1, nthWeekday: t.nthWeekday ?? now.getDay() };
+    });
+  }
+  // `interval` is reused for weekly/monthly/annual's own "every N ___", but
+  // defaultTask has ALWAYS unconditionally set `interval: 2` on every new
+  // task regardless of repeat kind (a leftover default from when only the
+  // 'interval' repeat used it) — so every pre-existing weekly/monthly/annual
+  // reminder already has a real `interval: 2` sitting on it, completely
+  // unused until now. Without this reset, every one of them would silently
+  // start meaning "every 2 weeks/months/years" the moment this shipped. This
+  // must run only ONCE — after a user deliberately sets an interval via the
+  // new controls, this reset must never fire again and clobber it.
+  if (s && !s._taskIntervalReset && Array.isArray(s.tasks)) {
+    s.tasks = s.tasks.map((t) =>
+      (t.repeat === 'weekly' || t.repeat === 'monthly' || t.repeat === 'annual') ? { ...t, interval: 1 } : t);
+    s._taskIntervalReset = true;
+  }
   // Per-type reminder participation options (added later). Normalize so partial
   // or absent state gets the full default switch set.
   if (s && TASKS) s.reminderOpts = TASKS.normalizeOpts(s.reminderOpts);
