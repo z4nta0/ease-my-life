@@ -2690,6 +2690,17 @@ legend.np-label { padding: 0; float: none; width: 100%; }
    sentence alone is wide enough), so this doesn't change anything
    visible, just makes it deterministic. */
 .rd-edit .rem-editor .rem-field .seg[aria-label="Repeat"] { flex-basis: 100%; }
+/* Day selection (Date/Weekday, Monthly+Yearly) is only ever 2 short options —
+   unlike Repeat, it never needs to wrap, so it doesn't need Repeat's grid
+   treatment. It DOES need its own fix for the same root cause though: .seg's
+   base justify-content:space-between only reads as "spread out" once the
+   container is wider than its content, and .rem-field is a column flex
+   container, so .seg stretches to that column's full width by default
+   (align-self:stretch) — pushing Date/Weekday to opposite edges with a big
+   empty gap between them. align-self:flex-start keeps it shrink-to-content
+   width instead; justify-content:flex-start keeps the two buttons snug
+   against each other even if something ever does widen the container. */
+.seg[aria-label="Day selection"] { justify-content: flex-start; align-self: flex-start; }
 .seg-thumb {
   position: absolute; top: 0; left: 0; width: 0; height: 0;
   background: var(--accent); border-radius: 999px;
