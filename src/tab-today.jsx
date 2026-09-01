@@ -1710,6 +1710,13 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     // occupies during the loader.
     const orderedSlots = [];
     const carriedEntries = [];    // cadence picks persisting from a prior day
+    // Item names already committed to today's list so far (lowercased) — fed
+    // to any `avoidDuplicates` picker below so it won't re-surface an item
+    // another picker already put on today's list. Seeded with carried-over
+    // cadence picks (still "on the list" today, just not freshly picked),
+    // then grown as each fresh pick lands, in encounter order — matching
+    // "as it is being built" rather than checking against the final list.
+    const pickedNames = new Set();
     const CAD = CADENCE;
     for (const pid of state.daily.pickerIds) {
       const picker = state.pickers.find((p) => p.id === pid);
@@ -1727,6 +1734,8 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
         if (existing && existing.periodKey === periodK) {
           if (existing.done) continue;                 // period satisfied → nothing
           carriedEntries.push({ _carry: true, entry: existing });
+          const carriedItem = state.items.find((it) => it.id === existing.itemId);
+          if (carriedItem) pickedNames.add(carriedItem.name.toLowerCase());
           continue;                                     // persist the locked card
         }
         // No current-period card yet; a completed pick logged this period also
@@ -1750,8 +1759,9 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
         continue;
       }
       const periodKey = cadence !== 'daily' ? CAD.periodKey(picker, now) : null;
-      const res = PICKERS.pick(picker, state.items);
+      const res = PICKERS.pick(picker, state.items, { excludeNames: pickedNames });
       if (res.picked) {
+        pickedNames.add(res.picked.name.toLowerCase());
         newPicks.push({
           pickerId: pid, res,
           candidates: res.cycleCandidates || [],

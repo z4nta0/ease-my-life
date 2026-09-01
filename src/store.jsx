@@ -551,6 +551,8 @@ function migrate(s) {
       // saved before this rule existed).
       if (CADENCE) np.daysOfWeek = CADENCE.enforceWeeklyDay(np);
       if (typeof np.skipHolidays !== 'boolean') np.skipHolidays = false;
+      // Avoid-duplicate-item-names flag (added later).
+      if (typeof np.avoidDuplicates !== 'boolean') np.avoidDuplicates = false;
       // Picker Cadence (added later): surfacing anchor + display unit. Backfill
       // to 'daily' (original behavior) with sensible default anchors.
       if (!CADENCE.isCadence(np.cadence)) Object.assign(np, CADENCE.normalize(np));
@@ -1160,7 +1162,7 @@ function useStore(opts) {
     // Keeping the id alive is what makes it "the same picker" rather than a
     // renamed-on-collision duplicate — Stats history/pick log/daily
     // generator membership all keep pointing at it.
-    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, createdFromSample, replaceId, hidden = false }) => {
+    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, avoidDuplicates = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, createdFromSample, replaceId, hidden = false }) => {
       // First picker = the first data worth protecting from eviction. Ask the
       // browser for persistent storage now rather than on a cold first load,
       // where a denial would be sticky for the session.
@@ -1210,6 +1212,10 @@ function useStore(opts) {
           daysOfWeek: Array.isArray(daysOfWeek) && daysOfWeek.length ? daysOfWeek : [0, 1, 2, 3, 4, 5, 6],
         }),
         skipHolidays: !!skipHolidays,
+        // Excludes an item from this picker's pool for the day if its name
+        // (case-insensitive) is already present elsewhere on today's list —
+        // see pickers.js's `pick()` for how this is applied.
+        avoidDuplicates: !!avoidDuplicates,
         // Picker Cadence: surfacing anchor + display unit (normalized/defaulted).
         ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay }),
         // Optional conditional gate (existing id, or the freshly-made one).

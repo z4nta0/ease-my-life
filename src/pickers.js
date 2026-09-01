@@ -70,6 +70,19 @@ function pick(picker, items, opts) {
   if (excludeIds && excludeIds.size && !(opts && opts.forceItemId)) {
     pool = pool.filter((it) => !excludeIds.has(it.id));
   }
+  // `excludeNames` (a Set of lowercased names) drops items whose name
+  // case-insensitively matches something already on today's list — opt-in
+  // per picker via `avoidDuplicates`, for pickers that intentionally share
+  // items with another picker (e.g. two meal pickers with an overlapping
+  // pool) and don't want the same item to surface twice in one day. Falls
+  // back to the FULL pool if this would leave nothing eligible, rather than
+  // ever leaving the picker with no pick at all — duplication is preferred
+  // over an empty result.
+  const excludeNames = opts && opts.excludeNames;
+  if (picker.avoidDuplicates && excludeNames && excludeNames.size && !(opts && opts.forceItemId)) {
+    const deduped = pool.filter((it) => !excludeNames.has(it.name.toLowerCase()));
+    if (deduped.length) pool = deduped;
+  }
   if (!pool.length) return { picked: null, updates: [], cycleCandidates: [] };
 
   switch (picker.mode) {

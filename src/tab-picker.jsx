@@ -852,6 +852,12 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   // prefill (e.g. a picker mini-tour's sample data) specifies otherwise.
   const [daysOfWeek, setDaysOfWeek] = React.useState((initial && initial.daysOfWeek) || [0, 1, 2, 3, 4, 5, 6]);
   const [skipHolidays, setSkipHolidays] = React.useState(false);
+  // Excludes an item from this picker's own pool for the day if its name
+  // (case-insensitive) is already present elsewhere on today's list — for
+  // pickers that intentionally share items with another picker and don't
+  // want the same one to surface twice. Off by default: most pickers don't
+  // share a pool with anything else, so this should stay opt-in.
+  const [avoidDuplicates, setAvoidDuplicates] = React.useState(false);
   // Picker Cadence: how often it surfaces + the anchor. Defaults to daily.
   const [cad, setCad] = React.useState(() => CADENCE.normalize({}));
   // Weekly cadence pins its anchor day ON in the Days control (and blocks the
@@ -1153,7 +1159,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     if (!detailsReady || !enoughItems) return;
     if (condOn && condSel === 'new' && condNameCollides) { setCondNameTouched(true); return; }
     const payload = { name: cap(name.trim()), group: effectiveGroup, mode, items, includeInDaily,
-                      daysOfWeek, skipHolidays, ...cad };
+                      daysOfWeek, skipHolidays, avoidDuplicates, ...cad };
     // Attach a conditional: an existing one (condSel = id) or a fresh inline one.
     // Create-new names are unique by validation above, so no silent reuse here.
     if (condOn && condSel === 'new') {
@@ -1373,6 +1379,24 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                       role="switch" aria-checked={skipHolidays}
                       aria-label="Skip on holidays"
                       onClick={() => setSkipHolidays((v) => !v)}>
+                <i />
+              </button>
+            </div>
+
+            <div className="np-sched-toggle">
+              <div className="np-toggle-text">
+                <label className="np-label" htmlFor="np-avoiddupes">Avoid duplicate items</label>
+                <p className="np-help set-sub-fade" key={avoidDuplicates ? 'on' : 'off'}>
+                  {avoidDuplicates
+                    ? <>This picker <strong>won't pick</strong> an item whose name is already on today's list.</>
+                    : <>This picker <strong>may pick</strong> an item even if its name is already on today's list.</>}
+                </p>
+              </div>
+              <button id="np-avoiddupes" type="button"
+                      className={`switch ${avoidDuplicates ? 'is-on' : ''}`}
+                      role="switch" aria-checked={avoidDuplicates}
+                      aria-label="Avoid duplicate items"
+                      onClick={() => setAvoidDuplicates((v) => !v)}>
                 <i />
               </button>
             </div>

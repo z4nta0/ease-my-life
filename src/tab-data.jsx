@@ -553,6 +553,19 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                       aria-label="Skip on holidays"
                       onClick={() => actions.updatePicker(pk.id, { skipHolidays: !pk.skipHolidays })}><i /></button>
             </div>
+            <div className="sched-line">
+              <span className="sched-line-label">
+                <span className="sched-line-lbl">Avoid duplicate items</span>
+                <span className="sched-line-sub set-sub-fade" key={pk.avoidDuplicates ? 'on' : 'off'}>
+                  {pk.avoidDuplicates
+                    ? <><strong>won't pick</strong> an item whose name is already on today's list</>
+                    : <><strong>may pick</strong> an item even if its name is already on today's list</>}
+                </span>
+              </span>
+              <button className={`switch ${pk.avoidDuplicates ? 'is-on' : ''}`} aria-pressed={!!pk.avoidDuplicates}
+                      aria-label="Avoid duplicate items"
+                      onClick={() => actions.updatePicker(pk.id, { avoidDuplicates: !pk.avoidDuplicates })}><i /></button>
+            </div>
           </React.Fragment>
         </Collapse>
         <Collapse open={!inDaily}>
