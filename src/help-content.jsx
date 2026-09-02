@@ -284,22 +284,12 @@ const TODAY_HELP_ITEMS = [
     // itself, so the tip's normal "below the target" placement already
     // tracks its own bottom edge as it grows/shrinks with the selection,
     // without needing to pin to some other, unrelated element.
-    // scrollable + alwaysBelowSel (same selector as `sel` — this tip's
-    // target always exists whenever the tip itself can show, so it's
-    // unconditionally "always below") — same combo as NAV_HELP_ITEM, and for
-    // the same reason: the body now covers 5 schedule kinds including the
-    // every-N/weekday recurrence wording, tall enough that "does the full,
-    // unconstrained height fit below, else flip above" (placeTip's normal
-    // choice) flips to "above" on a shorter viewport, gets clamped near the
-    // top of the screen, and then overflows right back down through the
-    // Repeat control/highlight it was trying to avoid. Forcing "below" and
-    // letting `scrollable` cap+scroll to the room actually available there
-    // is what actually prevents the overlap — `scrollable` alone doesn't:
-    // its cap is room-below-the-CHOSEN-top, which in the "flipped above,
-    // clamped to viewport top" case is still nearly the full viewport, so
-    // nothing was ever triggering the cap.
+    // scrollable: true — the body now covers 5 schedule kinds including the
+    // every-N/weekday recurrence wording, tall enough to overlap the
+    // Repeat control/highlight on a short viewport without it; caps to
+    // whichever side (above/below) placeTip finds more room and scrolls
+    // internally there instead of overflowing into the target either way.
     id: 'addReminderRepeat', sel: '.rem-quickadd-wrap .rem-editor', title: 'Reminder Schedule', scrollable: true,
-    alwaysBelowSel: '.rem-quickadd-wrap .rem-editor',
     body: (
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
@@ -345,9 +335,8 @@ const TODAY_HELP_ITEMS = [
     // "Reminder Schedule" badges at once whenever the Add Reminder form was
     // open (found via live testing — addReminderRepeat's own comment above
     // claiming this was "already covered, doesn't conflict" was wrong).
-    // scrollable + alwaysBelowSel — same reasoning as addReminderRepeat above.
+    // scrollable — same reasoning as addReminderRepeat above.
     id: 'editReminderRepeat', sel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor', title: 'Reminder Schedule', scrollable: true,
-    alwaysBelowSel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor',
     body: (
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
@@ -1163,9 +1152,8 @@ const DATA_HELP_ITEMS = [
     // padY:0 — unlike Today's card-based editor, this tab's .rd-edit wrapper
     // overrides .rem-inline-foot's margin-top to 0 (see .rd-edit .rd-edit-foot
     // in styles2.css), so .rem-editor touches the footer row with zero gap.
-    // scrollable + alwaysBelowSel — same reasoning as Today's addReminderRepeat.
+    // scrollable — same reasoning as Today's addReminderRepeat.
     id: 'dataReminderRepeat', sel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor', title: 'Reminder Schedule', padY: 0, scrollable: true,
-    alwaysBelowSel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor',
     body: (
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
