@@ -486,13 +486,16 @@ function FillButton({ label, onClick, disabled }) {
 // pool items, conditionals, reminders) — each list builds its own array of
 // { name, type, group, count, range, isActive } rows (fields that don't
 // apply to a given row are `null`) and sorts them with this one comparator,
-// keyed by e.g. 'name-asc' or 'count-desc'. `group`/`range`/`isActive` are
-// N/A (null) for anything that doesn't have a meaningful single value for
-// that field (the Conditionals/Reminders section as a whole, a non-ease
-// picker item, a non-ease conditional, or an item type with no such concept)
-// — those sort to the top for the forward direction and the bottom for the
-// reverse, rather than being forced into a fake value. Ties always fall back
-// to name (A–Z); a reverse sort only flips the primary field's comparison,
+// keyed by e.g. 'name-asc' or 'count-desc'. `group`/`isActive` are N/A
+// (null) for anything that doesn't have a meaningful single value for that
+// field (the Conditionals/Reminders section as a whole, or an item type with
+// no such concept) — those sort to the top for the forward direction and the
+// bottom for the reverse, rather than being forced into a fake value. `range`
+// is N/A for a conditional whose mode isn't ease-up/ease-down (mixed into the
+// same list as ones that are) and instead always sorts to the bottom in
+// EITHER direction, since it's simply irrelevant to that row rather than a
+// missing value to place relative to a direction. Ties always fall back to
+// name (A–Z); a reverse sort only flips the primary field's comparison,
 // never that tie-break.
 function compareSortEntries(a, b, sortKey) {
   const [field, dir] = sortKey.split('-');
@@ -505,6 +508,16 @@ function compareSortEntries(a, b, sortKey) {
     if (aNA && bNA) return byName();
     if (aNA) return reverse ? 1 : -1;
     if (bNA) return reverse ? -1 : 1;
+    return null;
+  };
+  // Same idea, but for fields that are irrelevant to a row rather than a
+  // missing value on an otherwise-comparable row — always last, regardless
+  // of sort direction (e.g. Range for a non-ease conditional).
+  const withNAAlwaysLast = (av, bv) => {
+    const aNA = av == null, bNA = bv == null;
+    if (aNA && bNA) return byName();
+    if (aNA) return 1;
+    if (bNA) return -1;
     return null;
   };
   switch (field) {
@@ -525,7 +538,7 @@ function compareSortEntries(a, b, sortKey) {
       return (reverse ? -primary : primary) || byName();
     }
     case 'range': {
-      const na = withNA(a.range, b.range);
+      const na = withNAAlwaysLast(a.range, b.range);
       if (na != null) return na;
       const primary = a.range - b.range;
       return (reverse ? -primary : primary) || byName();

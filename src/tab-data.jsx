@@ -36,10 +36,13 @@ const SECTION_SORT_OPTIONS = [
 // (sub-)Item Count have no meaning for a single item, so neither is offered
 // at this level, unlike the section list above. Range (the ease band's
 // soonest/shortest end — see conditionalRange) is only meaningful for
-// ease-up/ease-down conditionals; it's N/A (and sorts accordingly) for
-// random/weighted/dynamic ones mixed into the same list, so its label stays
-// generic here rather than switching to "Soonest"/"Shortest" the way a
-// single-mode picker's own item list can (see pickerItemSortOptions).
+// ease-up/ease-down conditionals; it's irrelevant (not just missing) for
+// random/weighted/dynamic ones mixed into the same list, so those always
+// sort to the bottom regardless of direction (see compareSortEntries'
+// withNAAlwaysLast) rather than flipping to the top on Range (High to Low)
+// the way a genuinely-missing value would. Its label also stays generic
+// here rather than switching to "Soonest"/"Shortest" the way a single-mode
+// picker's own item list can (see pickerItemSortOptions).
 const CONDITIONAL_ITEM_SORT_OPTIONS = [
   { key: 'name-asc', label: 'Name (A–Z)' },
   { key: 'name-desc', label: 'Name (Z–A)' },
