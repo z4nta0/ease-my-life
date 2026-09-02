@@ -3406,9 +3406,15 @@ button.rd-chev {
   border: 0.5px solid var(--border); color: var(--muted);
 }
 .rem-log-type--recurring { color: var(--accent); border-color: oklch(from var(--accent) l c h / 0.4); background: oklch(from var(--accent-soft) l c h / 0.5); }
+/* width, not min-width — same fix as .cnd-sum-frac (below) for the identical
+   problem: a 1-digit day ("Aug 3") is narrower than a 2-digit one ("Aug 31"),
+   which was shrinking .rem-log-meta's own content width and shifting the
+   type pill before it out of alignment (it's pinned to the row's right edge
+   via .rem-log li's own justify-content: space-between). 76px comfortably
+   fits the longest case, "Wed, Sep 30" (measured ~75px). */
 .rem-log-when {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.02em;
-  color: var(--muted); white-space: nowrap;
+  color: var(--muted); white-space: nowrap; width: 76px; text-align: right;
 }
 .rem-log-empty { font-size: 13px; color: var(--muted); padding: 6px 0; }
 
