@@ -207,6 +207,8 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
   })();
   // A one-time reminder's optional future start date. Defaults to tomorrow
   // when first turned on — "future date" wouldn't mean anything for today.
+  // Same click-to-edit link/inline-date-input swap as the anchor above.
+  const [editOnceDate, setEditOnceDate] = React.useState(false);
   const tomorrowIso = (() => {
     const d = new Date(); d.setDate(d.getDate() + 1); return TASKS.isoOf(d);
   })();
@@ -257,15 +259,25 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         </span>
       </div>
       {task.onceDate ? (
-        <div className="rem-inline">
-          <input className="rem-date-inline" type="date" value={task.onceDate} min={tomorrowIso}
-                 aria-label="Start date" aria-describedby={schedNoteId}
-                 onChange={(e) => { if (e.target.value) set({ onceDate: e.target.value }); }} />
-          <button type="button" className="rem-date-link" aria-describedby={schedNoteId}
-                  onClick={() => set({ onceDate: null })}>
-            Remove
-          </button>
-        </div>
+        <p className="rem-hint">
+          Starting on{' '}
+          {editOnceDate ? (
+            <input className="rem-date-inline" type="date" value={task.onceDate} min={tomorrowIso} autoFocus
+                   onChange={(e) => { if (e.target.value) set({ onceDate: e.target.value }); }}
+                   onBlur={() => setEditOnceDate(false)}
+                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); setEditOnceDate(false); } }} />
+          ) : (
+            <>
+              <button type="button" className="rem-date-link" aria-describedby={schedNoteId} onClick={() => setEditOnceDate(true)}>
+                {onceDateLabel}
+              </button>.{' '}
+              <button type="button" className="rem-date-link" aria-describedby={schedNoteId}
+                      onClick={() => set({ onceDate: null })}>
+                Remove
+              </button>
+            </>
+          )}
+        </p>
       ) : (
         <button type="button" className="rem-date-link" aria-describedby={schedNoteId}
                 onClick={() => set({ onceDate: tomorrowIso })}>
