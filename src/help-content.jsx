@@ -289,9 +289,9 @@ const TODAY_HELP_ITEMS = [
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
         <p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>
-        <p><b>Weekly:</b> This reminder will show up on your todo list every week on the days that you select below.</p>
-        <p><b>Monthly:</b> This reminder will show up on your todo list every month on the day that you select below.</p>
-        <p><b>Yearly:</b> This reminder will show up on your todo list every year on the date that you select below.</p>
+        <p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p>
+        <p><b>Monthly:</b> This reminder will show up on your todo list every N month(s) on the day or weekday that you select below.</p>
+        <p><b>Yearly:</b> This reminder will show up on your todo list every N year(s) on the date or weekday that you select below.</p>
       </>
     ),
   },
@@ -335,9 +335,9 @@ const TODAY_HELP_ITEMS = [
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
         <p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>
-        <p><b>Weekly:</b> This reminder will show up on your todo list every week on the days that you select below.</p>
-        <p><b>Monthly:</b> This reminder will show up on your todo list every month on the day that you select below.</p>
-        <p><b>Yearly:</b> This reminder will show up on your todo list every year on the date that you select below.</p>
+        <p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p>
+        <p><b>Monthly:</b> This reminder will show up on your todo list every N month(s) on the day or weekday that you select below.</p>
+        <p><b>Yearly:</b> This reminder will show up on your todo list every N year(s) on the date or weekday that you select below.</p>
       </>
     ),
   },
@@ -1151,9 +1151,9 @@ const DATA_HELP_ITEMS = [
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
         <p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>
-        <p><b>Weekly:</b> This reminder will show up on your todo list every week on the days that you select below.</p>
-        <p><b>Monthly:</b> This reminder will show up on your todo list every month on the day that you select below.</p>
-        <p><b>Yearly:</b> This reminder will show up on your todo list every year on the date that you select below.</p>
+        <p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p>
+        <p><b>Monthly:</b> This reminder will show up on your todo list every N month(s) on the day or weekday that you select below.</p>
+        <p><b>Yearly:</b> This reminder will show up on your todo list every N year(s) on the date or weekday that you select below.</p>
       </>
     ),
   },
