@@ -344,7 +344,7 @@ function LoaderCard({ picker, info }) {
 // human face of its drift band) since weight is irrelevant to those modes.
 // Plus a vacation toggle and a confirm-gated delete (delete behaves exactly as
 // Data — actions.removeItem).
-function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew, itemCount, items }) {
+const EntryEditor = React.forwardRef(function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew, itemCount, items }, ref) {
   const [confirmDel, setConfirmDel] = React.useState(false);
   // A picker needs at least 2 items for a pick to be a real choice — refuse to
   // let this one go below that. itemCount is the picker's CURRENT total
@@ -356,8 +356,13 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew
   // discard a brand-new item instead of reverting it.
   const orig = React.useRef(item);
   // 'saved' | 'cancel' once closed explicitly; null = still open → an implicit
-  // close (tab-switch / reload) should discard the unsaved live edits.
+  // close (tab-switch / reload) should discard the unsaved live edits. A
+  // caller that offers its OWN close affordance outside this component (e.g.
+  // the Data tab row's own collapse chevron, which sits in the row header
+  // above where this editor renders) can call the exposed `keep()` first, so
+  // that affordance reads as "done, keep this" rather than an implicit close.
   const doneRef = React.useRef(null);
+  React.useImperativeHandle(ref, () => ({ keep: () => { doneRef.current = 'saved'; } }));
   const revertState = () => {
     if (onCancel) onCancel(orig.current);
     else actions.replaceItem(orig.current.id, orig.current);
@@ -569,7 +574,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew
       )}
     </div>
   );
-}
+});
 
 function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip, onReroll, isRemoving, isRolling, isEditing, onEdit, onRename, editMode, onGripDown, onPlayTutorial, onUncheckTutorial, checklistExiting }) {
   // Mini-tour launcher: a sample picker from the Welcome Tour, offered as a

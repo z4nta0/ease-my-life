@@ -941,6 +941,13 @@ function TabData({ state, actions, onHome, onNavTab }) {
   const justAddedItemRef = React.useRef(null);
   // Id of a just-inserted row, so it plays the slide-in entrance once.
   const [insertItemId, setInsertItemId] = React.useState(null);
+  // The currently-open item's EntryEditor instance, so the row's own collapse
+  // chevron (outside EntryEditor, in the row header) can call .keep() before
+  // closing — otherwise EntryEditor treats that close as implicit and reverts
+  // the item (or discards it, if new) via window.__editGuard the same as an
+  // accidental tab-switch/reload would. One ref shared across every picker's
+  // item list, same reasoning as frozenItemIndexRef below.
+  const openEditorRef = React.useRef(null);
   // Frozen render-position for whichever item is open — see freezeEditedRow.
   // One ref shared across every picker's item list (only one item can be
   // open at a time, and the helper no-ops for any list that doesn't hold it).
@@ -1282,6 +1289,16 @@ function TabData({ state, actions, onHome, onNavTab }) {
           };
           const sortedItems = [...items].sort((a, b) => compareSortEntries(itemSortEntry(a), itemSortEntry(b), itemSort));
           const displayItems = freezeEditedRow(sortedItems, openItemId, justAddedItemRef.current, frozenItemIndexRef);
+          // Shared by the row's own collapse chevron AND ItemEditor's Save —
+          // both mean "keep this, I'm done", so both need the exact same
+          // cleanup (clear the new-item flag, close only if we're still the
+          // open row). Keeping this in one place means the chevron can't
+          // drift out of sync with what Save already does.
+          const keepAndCloseItem = (id) => {
+            openEditorRef.current?.keep();
+            if (justAddedItemRef.current === id) justAddedItemRef.current = null;
+            setOpenItemId((cur) => cur === id ? null : cur);
+          };
           return (
             <section key={pk.id} data-picker-id={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''} ${highlightEditTourPickerHeaders ? 'ob-tour-pulse' : ''}`}
                      onAnimationEnd={(e) => {
@@ -1410,7 +1427,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                                          onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
                                 </span>
                                 <button type="button" className="rd-chev chev is-open" aria-label="Collapse"
-                                        onClick={() => setOpenItemId(null)}>
+                                        onClick={() => keepAndCloseItem(it.id)}>
                                   <Icon name="chev" size={16} />
                                 </button>
                               </div>
@@ -1428,18 +1445,11 @@ function TabData({ state, actions, onHome, onNavTab }) {
                             )}
                             <Collapse open={itemOpen}>
                               <div className="rd-edit">
-                                <ItemEditor item={it} picker={pk} actions={actions} items={items}
+                                <ItemEditor ref={itemOpen ? openEditorRef : undefined}
+                                            item={it} picker={pk} actions={actions} items={items}
                                             isNew={justAddedItemRef.current === it.id}
                                             itemCount={items.length}
-                                            onClose={() => {
-                                              if (justAddedItemRef.current === it.id) justAddedItemRef.current = null;
-                                              // Only close OUR row — this can fire well after the user
-                                              // has already switched to a different item's editor (this
-                                              // callback is invoked from a deferred implicit-close), so a
-                                              // bare setOpenItemId(null) would clobber whichever item is
-                                              // now open.
-                                              setOpenItemId((cur) => cur === it.id ? null : cur);
-                                            }}
+                                            onClose={() => keepAndCloseItem(it.id)}
                                             onCancel={(snap) => {
                                               if (justAddedItemRef.current === it.id) {
                                                 // Discard a brand-new item, but let the editor play

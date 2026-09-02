@@ -492,14 +492,19 @@ function ordinalLabel(n) {
 // the schedule editor above intact (so a tall editor doesn't collapse). Cancel
 // reverts to a snapshot taken when the editor opened; Done keeps the changes.
 // Kept in one place so both tabs stay exact copies.
-function ReminderEditFoot({ task, onDelete, onDone, onCancel, isNew }) {
+const ReminderEditFoot = React.forwardRef(function ReminderEditFoot({ task, onDelete, onDone, onCancel, isNew }, ref) {
   // Snapshot the task as it was when the editor opened (this footer mounts with
   // the editor), so Cancel can restore it after live edits.
   const orig = React.useRef(task);
   const [confirm, setConfirm] = React.useState(false);
   // Set the instant Save/Cancel/Delete explicitly runs, so the implicit-close
   // effect below doesn't ALSO fire for an action that already handled itself.
+  // A caller with its OWN close affordance outside this component (e.g. the
+  // row's own collapse chevron, which sits in the row header above where
+  // this footer renders) can call the exposed `keep()` first, so that
+  // affordance reads as "done, keep this" rather than an implicit close.
   const doneRef = React.useRef(false);
+  React.useImperativeHandle(ref, () => ({ keep: () => { doneRef.current = true; } }));
   const cancelNow = () => { doneRef.current = true; onCancel(orig.current); };
   const doneNow = () => { doneRef.current = true; onDone(); };
   const deleteNow = () => { doneRef.current = true; onDelete(); };
@@ -531,7 +536,7 @@ function ReminderEditFoot({ task, onDelete, onDone, onCancel, isNew }) {
       </div>
     </div>
   );
-}
+});
 
 // Today inline editor for a SAVED reminder. Edits a LOCAL draft (never the store)
 // so changing the schedule — e.g. moving a weekly reminder off today — doesn't
@@ -1119,6 +1124,12 @@ function ReminderManager({ state, actions, hidden }) {
   const justAddedRef = React.useRef(null);
   // Id of a just-inserted reminder row, so it plays the slide-in entrance once.
   const [insertId, setInsertId] = React.useState(null);
+  // The currently-open reminder's ReminderEditFoot instance, so the row's own
+  // collapse chevron (outside the footer, in the row header) can call
+  // .keep() before closing — otherwise a brand-new reminder gets silently
+  // discarded, the same implicit-close reasoning tab-data.jsx's picker items
+  // fix documents on openEditorRef there.
+  const openEditorRef = React.useRef(null);
   // Frozen render-position for whichever reminder is open — see
   // freezeEditedRow (tab-data.jsx's picker items use the same helper).
   const frozenTaskIndexRef = React.useRef(null);
@@ -1142,6 +1153,16 @@ function ReminderManager({ state, actions, hidden }) {
     itemSort,
   ));
   const displayTasks = freezeEditedRow(sortedTasks, openId, justAddedRef.current, frozenTaskIndexRef);
+  // Shared by the row's own collapse chevron AND ReminderEditFoot's Save —
+  // both mean "keep this, I'm done", so both need the exact same cleanup
+  // (clear the new-item flag, close only if we're still the open row).
+  // Keeping this in one place means the chevron can't drift out of sync
+  // with what Save already does.
+  const keepAndCloseTask = (id) => {
+    openEditorRef.current?.keep();
+    if (justAddedRef.current === id) justAddedRef.current = null;
+    setOpenId((cur) => cur === id ? null : cur);
+  };
   // Main section collapse persists (like the pickers) so it survives tab
   // switches. Reserved key '__reminders_main'; defaults COLLAPSED, so absent =
   // collapsed and explicit false = expanded.
@@ -1255,7 +1276,7 @@ function ReminderManager({ state, actions, hidden }) {
                                onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
                       </span>
                       <button type="button" className="rd-chev chev is-open" aria-label="Collapse"
-                              onClick={() => setOpenId(null)}>
+                              onClick={() => keepAndCloseTask(t.id)}>
                         <Icon name="chev" size={16} />
                       </button>
                     </div>
@@ -1278,7 +1299,8 @@ function ReminderManager({ state, actions, hidden }) {
                     <div className="rd-edit">
                       <div className="rem-inline-editor">
                         <ReminderEditor task={t} actions={actions} animateExtra state={state} />
-                        <ReminderEditFoot task={t} isNew={justAddedRef.current === t.id}
+                        <ReminderEditFoot ref={cardOpen ? openEditorRef : undefined}
+                          task={t} isNew={justAddedRef.current === t.id}
                           onDelete={() => {
                             if (justAddedRef.current === t.id) justAddedRef.current = null;
                             const rid = t.id;
@@ -1303,10 +1325,7 @@ function ReminderManager({ state, actions, hidden }) {
                               setOpenId((cur) => cur === t.id ? null : cur);
                             }
                           }}
-                          onDone={() => {
-                            if (justAddedRef.current === t.id) justAddedRef.current = null;
-                            setOpenId((cur) => cur === t.id ? null : cur);
-                          }} />
+                          onDone={() => keepAndCloseTask(t.id)} />
                       </div>
                     </div>
                   </Collapse>
