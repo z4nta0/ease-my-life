@@ -4,7 +4,7 @@ import { CONDITIONALS } from './conditionals.js';
 import { HOLIDAYS } from './holidays.js';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';
-import { normalizeConditionalName, normalizeGroupName, normalizePickerName } from './pickers.js';
+import { PICKERS, normalizeConditionalName, normalizeGroupName, normalizePickerName } from './pickers.js';
 import { PWA } from './pwa.js';
 import { CLEAN_STATE } from './seed.js';
 import { STORAGE } from './storage.js';
@@ -1152,6 +1152,7 @@ function useStore(opts) {
       const siblings = s.items.filter((it) => it.pickerId === pickerId);
       const pk = s.pickers.find((p) => p.id === pickerId);
       const isDown = pk && pk.mode === 'ease-down';
+      const isEase = pk && (pk.mode === 'ease-up' || pk.mode === 'ease-down');
       // Ease-down items start fully charged and join the fairness rotation at the
       // AVERAGE weight of existing items (excluding the weight-0 active item, so a
       // fresh streak's zero can't drag the newcomer down), rounded, floored at 1
@@ -1168,6 +1169,13 @@ function useStore(opts) {
         id: id || ('it_' + Math.random().toString(36).slice(2, 8)),
         name: uniqueName(name, siblings.map((x) => x.name)), pickerId,
         weight, value, vacation: false, picks: 0, lastPicked: null,
+        // Stamped immediately, same reasoning as the weight average above —
+        // a new ease-mode item starts at this picker's own current average
+        // drift band. Picker-level easeMin/easeMax (set once at picker
+        // creation) is no longer read by anything — pick(), the Data tab,
+        // and the item editor all compute this same average live instead
+        // (see PICKERS.avgEase) — so this is the only place that matters.
+        ...(isEase ? PICKERS.avgEase(siblings, pickerId) : {}),
       };
       return { ...s, items: [it, ...s.items] };
     }),

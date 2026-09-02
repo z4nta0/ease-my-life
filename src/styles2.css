@@ -2020,15 +2020,6 @@ button.cat-h-l {
 .rd-ctl-body .ease-config .pie-sub { font-size: 11px; color: var(--muted); }
 .rd-ctl-body .ease-config .pie-ctl { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .rd-ctl-body .ease-config .pie-ctl .np-ease-unit { font-size: 12px; }
-/* Labels the picker's default cadence rows (vs a per-item override) — font
-   styling now comes from the shared .rd-ctl-subhead class (see its own JSX
-   className); this rule is just the padding this nested context needs,
-   which the other three .rd-ctl-subhead contexts set on themselves too
-   (.rd-ctl-group--basics/--picks/--sched, each scoped to their own parent). */
-.rd-ctl-body .ease-config .ease-cadence-kicker { padding: 12px 16px 8px; }
-/* Separator between the kicker and its controls, matching the mode list's
-   border-top under the "How it picks" kicker. */
-.rd-ctl-body .ease-config .ease-cadence-kicker + .pie-row { border-top: 0.5px solid var(--border); }
 
 .daily-list { display: flex; flex-direction: column; }
 .daily-list li {

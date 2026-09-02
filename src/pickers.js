@@ -120,9 +120,10 @@ function pick(picker, items, opts) {
       // items we pick the MOST overdue (highest value); ties break on oldest
       // lastPicked. Weight is deliberately NOT used (ease-up is a cadence system).
       const threshold = picker.threshold ?? 100;
+      const fallbackEase = avgEase(pool, picker.id);
       const rollStep = (it) => {
-        const so = Math.max(1, Math.round(threshold / (it.easeMax ?? picker.easeMax)));
-        const la = Math.max(so, Math.round(threshold / (it.easeMin ?? picker.easeMin)));
+        const so = Math.max(1, Math.round(threshold / (it.easeMax ?? fallbackEase.easeMax)));
+        const la = Math.max(so, Math.round(threshold / (it.easeMin ?? fallbackEase.easeMin)));
         const N = so + Math.floor(Math.random() * (la - so + 1));
         return threshold / N;
       };
@@ -189,9 +190,10 @@ function pick(picker, items, opts) {
       // uniformly in its [shortest, longest] range and decays by a FIXED step
       // (100/N), emptying in exactly N cycles. `chargeStep` persists that plan
       // across the streak; legacy items lazily roll one.
+      const fallbackEase = avgEase(pool, picker.id);
       const rollStep = (it) => {
-        const so = Math.max(1, Math.round(threshold / (it.easeMax ?? picker.easeMax)));
-        const la = Math.max(so, Math.round(threshold / (it.easeMin ?? picker.easeMin)));
+        const so = Math.max(1, Math.round(threshold / (it.easeMax ?? fallbackEase.easeMax)));
+        const la = Math.max(so, Math.round(threshold / (it.easeMin ?? fallbackEase.easeMin)));
         const N = so + Math.floor(Math.random() * (la - so + 1));
         return threshold / N;
       };
@@ -273,6 +275,23 @@ function readiness(item, mode, threshold = 100) {
   return null;
 }
 
+// Fallback drift band for an ease-up/ease-down item with no easeMin/easeMax
+// of its own — averages the OTHER items already on this picker (each falling
+// back to DEFAULT_EASE itself, so one bare item can't skew this into NaN),
+// rather than a separate per-picker default kept in sync by hand. A brand
+// new picker with no items yet (or an ease-mode switch before any item has
+// its own band) gets the flat DEFAULT_EASE. Used both to stamp a freshly
+// added item's own easeMin/easeMax immediately (store.jsx's addItem) and, for
+// any item that still doesn't have its own values (older data), as the same
+// safety-net fallback the picking engine itself uses below.
+const DEFAULT_EASE = { easeMin: 7, easeMax: 14 };
+function avgEase(items, pickerId) {
+  const siblings = (items || []).filter((it) => it.pickerId === pickerId);
+  if (!siblings.length) return { ...DEFAULT_EASE };
+  const avg = (key) => siblings.reduce((sum, it) => sum + (it[key] ?? DEFAULT_EASE[key]), 0) / siblings.length;
+  return { easeMin: Math.max(1, Math.round(avg('easeMin'))), easeMax: Math.max(1, Math.round(avg('easeMax'))) };
+}
+
 // Ease-up eligibility, in ONE place. The half-unit tolerance matters: a
 // threshold/N charge step (100/3, say) can land a hair under the threshold on
 // the very cycle it was planned to become eligible. The engine has always used
@@ -292,4 +311,4 @@ const modeEligible = (item, picker) => {
   return true;
 };
 
-export const PICKERS = { pick, readiness, easeEligible, modeEligible, EASE_TOL };
+export const PICKERS = { pick, readiness, easeEligible, modeEligible, EASE_TOL, avgEase, DEFAULT_EASE };

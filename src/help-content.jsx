@@ -1244,39 +1244,26 @@ const DATA_HELP_ITEMS = [
     // Scoped to PickerControls' own "How it picks" group — ConditionalEditor
     // has its own separate .rd-mode-radio inside .cnd-controls, which
     // doesn't live under .rd-ctl-group--picks. padY:0 — .rd-ctl-group--picks
-    // (this group's own wrapper) touches .ease-config (Default Charge
-    // Controls) below with zero gap.
+    // (this group's own wrapper) touches .ease-config (Fill/Refill) below
+    // with zero gap.
     id: 'dataPickerType', sel: '.rd-ctl-group--picks .rd-mode-radio', title: 'Picker Type', padY: 0,
     body: <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
   },
   {
-    // New content — this picker-level default charge range (Ease-up/down
-    // only) has no equivalent on the Pickers-page create flow, which only
-    // sets charge ranges per item, not a picker-wide default. Prefills new
-    // items added to this picker; Fill/Refill here acts on every item at
-    // once (actions.refillPicker), not just one. padY:0 — touches Picker
-    // Type above with zero gap (see that entry's own comment). Split by
-    // mode (ease-config--up/--down, tab-data.jsx) rather than one combined
-    // Soonest/Shortest-Latest/Longest-Fill/Refill entry, same idea as
-    // itemChargeRangeUp/Down below.
-    id: 'dataPickerDefaultCadenceUp', sel: '.ease-config.ease-config--up', title: 'Default Charge Controls', padY: 0,
-    body: (
-      <>
-        <p><b>Soonest:</b> This sets the picker's own default minimum, used to prefill new items you add to this picker.</p>
-        <p><b>Latest:</b> This sets the picker's own default maximum, used to prefill new items you add to this picker.</p>
-        <p><b>Fill:</b> This fills the charge of every item in this picker at once.</p>
-      </>
-    ),
+    // Fill/Refill acts on every item in this picker at once
+    // (actions.refillPicker), not just one. padY:0 — touches Picker Type
+    // above with zero gap (see that entry's own comment). Split by mode
+    // (ease-config--up/--down, tab-data.jsx) rather than one combined
+    // Fill/Refill entry, same idea as itemChargeRangeUp/Down below (the
+    // per-item equivalent, which also covers each item's own Soonest/Latest
+    // controls — this picker level no longer has any of its own to prefill
+    // new items with; see PICKERS.avgEase in pickers.js).
+    id: 'dataPickerFillUp', sel: '.ease-config.ease-config--up', title: 'Fill All', padY: 0,
+    body: <>This fills the charge of every item in this picker at once.</>,
   },
   {
-    id: 'dataPickerDefaultCadenceDown', sel: '.ease-config.ease-config--down', title: 'Default Charge Controls', padY: 0,
-    body: (
-      <>
-        <p><b>Shortest:</b> This sets the picker's own default minimum, used to prefill new items you add to this picker.</p>
-        <p><b>Longest:</b> This sets the picker's own default maximum, used to prefill new items you add to this picker.</p>
-        <p><b>Refill:</b> This refills the charge of every item in this picker at once.</p>
-      </>
-    ),
+    id: 'dataPickerFillDown', sel: '.ease-config.ease-config--down', title: 'Refill All', padY: 0,
+    body: <>This refills the charge of every item in this picker at once.</>,
   },
   {
     // padY:0 — .sched-line rows stack with zero gap (same pattern as

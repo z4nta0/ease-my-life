@@ -1,15 +1,14 @@
 import React from 'react';
 import { CAD_OPTS } from './cadence-control.jsx';
 import { CADENCE } from './cadence.js';
-import { EASE_UP_RANGE_WARN } from './constants.js';
-import { normalizeConditionalName, normalizeGroupName } from './pickers.js';
+import { PICKERS, normalizeConditionalName, normalizeGroupName } from './pickers.js';
 import { useEmlTour } from './onboarding.jsx';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { ReminderManager } from './reminders.jsx';
 import { MODES } from './seed.js';
 import { ConditionalControls, conditionalDraftDefault } from './tab-conditional.jsx';
 import { EntryEditor } from './tab-today.jsx';
-import { Btn, Collapse, FillButton, Icon, InfoTip, NumStepper, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { Btn, Collapse, FillButton, Icon, InfoTip, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
 import { HelpButton, HelpOverlay } from './help-mode.jsx';
 import { DATA_HELP_ITEMS } from './help-content.jsx';
 import { seedHelpPickers, clearHelpPickers, seedHelpTasks, clearHelpTasks } from './help-sample-data.js';
@@ -29,30 +28,7 @@ import { seedHelpPickers, clearHelpPickers, seedHelpTasks, clearHelpTasks } from
 function PickerControls({ picker, items, inDaily, dailyIds, allGroups, conditionals = [], actions, onCollapse, onRequestDelete }) {
   const pk = picker;
   const isEase = pk.mode === 'ease-up' || pk.mode === 'ease-down';
-  // Same drift↔days conversion the item editor uses, so the picker's DEFAULT
-  // cadence reads in the exact same units (and rows) as a per-item override.
-  const THRESHOLD = 100;
-  const soonest = Math.max(1, Math.round(THRESHOLD / (pk.easeMax || 1)));
-  const latest = Math.max(1, Math.round(THRESHOLD / (pk.easeMin || 1)));
-  const daysToDrift = (d) => THRESHOLD / Math.max(1, d);
-  const setSoonest = (days) => {
-    const easeMax = daysToDrift(Math.max(1, Math.min(60, days)));
-    actions.updatePicker(pk.id, { easeMax, easeMin: Math.min(pk.easeMin, easeMax) });
-  };
-  const setLatest = (days) => {
-    const easeMin = daysToDrift(Math.max(1, Math.min(90, days)));
-    actions.updatePicker(pk.id, { easeMin, easeMax: Math.max(pk.easeMax, easeMin) });
-  };
   const isDown = pk.mode === 'ease-down';
-  const soonestLbl = isDown ? 'Shortest' : 'Soonest';
-  const latestLbl = isDown ? 'Longest' : 'Latest';
-  const uw = (n) => CADENCE.unitWord(pk.cadence, n);
-  const soonestSub = isDown
-    ? <>stays picked <strong>{soonest} {uw(soonest)}</strong> minimum</>
-    : <><strong>{soonest} {uw(soonest)}</strong> until pickable again</>;
-  const latestSub = isDown
-    ? <>stays picked <strong>{latest} {uw(latest)}</strong> maximum</>
-    : <><strong>{latest} {uw(latest)}</strong> until pick is mandatory</>;
   const notFull = items.filter((it) => (it.value ?? 0) < (pk.threshold ?? 100)).length;
   const fillSub = notFull === 0
     ? <><strong>all items</strong> are fully charged</>
@@ -339,47 +315,14 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
             );
           })}
         </div>
-        {/* Default Cadence expands/collapses when Ease-up/Ease-down is (de)selected,
+        {/* Fill/Refill expands/collapses when Ease-up/Ease-down is (de)selected,
             sharing the app's Collapse height animation. */}
         <Collapse open={isEase}>
           {/* ease-config--up/--down — pure selector hook so help-mode can
-              give this section mode-specific copy (Soonest/Latest/Fill vs.
-              Shortest/Longest/Refill), same idea as EntryEditor's own
-              pie-ease-up-row/pie-ease-down-row split. */}
+              give this section mode-specific copy (Fill vs. Refill), same
+              idea as EntryEditor's own pie-ease-up-row/pie-ease-down-row
+              split. */}
           <div className={`ease-config ${isDown ? 'ease-config--down' : 'ease-config--up'}`}>
-            <div className="rd-ctl-subhead ease-cadence-kicker">Default cadence</div>
-            <div className="pie-row">
-              <div className="pie-rowlabel">
-                <span className="pie-lbl-row">
-                  <span className="pie-lbl">{soonestLbl}</span>
-                  {pk.mode === 'ease-up' && (
-                    <InfoTip className="pie-help" label={EASE_UP_RANGE_WARN}>?</InfoTip>
-                  )}
-                </span>
-                <span className="pie-sub">{soonestSub}</span>
-              </div>
-              <div className="pie-ctl">
-                <NumStepper value={soonest} min={1} max={60} onSet={setSoonest}
-                            ariaLabel={`Default ${soonestLbl.toLowerCase()}`} />
-                <span className="np-ease-unit">{uw(soonest)}</span>
-              </div>
-            </div>
-            <div className="pie-row">
-              <div className="pie-rowlabel">
-                <span className="pie-lbl-row">
-                  <span className="pie-lbl">{latestLbl}</span>
-                  {pk.mode === 'ease-up' && (
-                    <InfoTip className="pie-help" label={EASE_UP_RANGE_WARN}>?</InfoTip>
-                  )}
-                </span>
-                <span className="pie-sub">{latestSub}</span>
-              </div>
-              <div className="pie-ctl">
-                <NumStepper value={latest} min={1} max={90} onSet={setLatest}
-                            ariaLabel={`Default ${latestLbl.toLowerCase()}`} />
-                <span className="np-ease-unit">{uw(latest)}</span>
-              </div>
-            </div>
             {pk.mode === 'ease-up' && (
               <div className="pie-row">
                 <div className="pie-rowlabel">
@@ -1252,8 +1195,13 @@ function TabData({ state, actions, onHome, onNavTab }) {
                       )}
                       {items.map((it) => {
                         const itemOpen = openItemId === it.id;
-                        const eMin = it.easeMin ?? pk.easeMin ?? 10;
-                        const eMax = it.easeMax ?? pk.easeMax ?? 20;
+                        // Same fallback the picking engine itself uses for an
+                        // item with no ease band of its own (see
+                        // PICKERS.avgEase) — recomputed per item since it's
+                        // cheap and each item's own values (once set) shift it.
+                        const fallbackEase = isEase ? PICKERS.avgEase(items, pk.id) : null;
+                        const eMin = it.easeMin ?? fallbackEase?.easeMin ?? 10;
+                        const eMax = it.easeMax ?? fallbackEase?.easeMax ?? 20;
                         const soonest = Math.max(1, Math.round(100 / (eMax || 1)));
                         const latest = Math.max(1, Math.round(100 / (eMin || 1)));
                         const meta = it.vacation
@@ -1297,7 +1245,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                             )}
                             <Collapse open={itemOpen}>
                               <div className="rd-edit">
-                                <ItemEditor item={it} picker={pk} actions={actions}
+                                <ItemEditor item={it} picker={pk} actions={actions} items={items}
                                             isNew={justAddedItemRef.current === it.id}
                                             itemCount={items.length}
                                             onClose={() => {

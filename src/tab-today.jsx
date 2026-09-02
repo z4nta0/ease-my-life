@@ -344,7 +344,7 @@ function LoaderCard({ picker, info }) {
 // human face of its drift band) since weight is irrelevant to those modes.
 // Plus a vacation toggle and a confirm-gated delete (delete behaves exactly as
 // Data — actions.removeItem).
-function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew, itemCount }) {
+function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew, itemCount, items }) {
   const [confirmDel, setConfirmDel] = React.useState(false);
   // A picker needs at least 2 items for a pick to be a real choice — refuse to
   // let this one go below that. itemCount is the picker's CURRENT total
@@ -400,8 +400,12 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew
   const driftToSoonest = (easeMax) => Math.max(1, Math.round(THRESHOLD / (easeMax || 1)));
   const driftToLatest = (easeMin) => Math.max(1, Math.round(THRESHOLD / (easeMin || 1)));
   const daysToDrift = (days) => THRESHOLD / Math.max(1, days);
-  const eMin = item.easeMin ?? (picker && picker.easeMin) ?? 10;
-  const eMax = item.easeMax ?? (picker && picker.easeMax) ?? 20;
+  // Same fallback the picking engine itself uses for an item with no ease
+  // band of its own (see PICKERS.avgEase) — e.g. one added before per-item
+  // stamping existed, or from an old imported backup.
+  const fallbackEase = picker ? PICKERS.avgEase(items, picker.id) : null;
+  const eMin = item.easeMin ?? fallbackEase?.easeMin ?? 10;
+  const eMax = item.easeMax ?? fallbackEase?.easeMax ?? 20;
   const soonest = driftToSoonest(eMax);
   const latest = driftToLatest(eMin);
   const setSoonest = (days) => {
@@ -2470,7 +2474,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                           <Collapse open={activeEditor === `item:${entry.eid}` && !!item}>
                             {item && (
                               <div className="today-entry-editor">
-                                <EntryEditor item={item} picker={picker} actions={actions}
+                                <EntryEditor item={item} picker={picker} actions={actions} items={state.items}
                                              itemCount={state.items.filter((it) => it.pickerId === picker.id).length}
                                              onClose={() => setActiveEditor((cur) => cur === `item:${entry.eid}` ? null : cur)}
                                              onDelete={() => handleDeleteItem(entry.eid, item.id)} />
