@@ -484,15 +484,16 @@ function FillButton({ label, onClick, disabled }) {
 // Shared sort vocabulary for the Data tab's section list (Conditionals /
 // Reminders / each picker card) and, per section, its own item list (picker
 // pool items, conditionals, reminders) — each list builds its own array of
-// { name, type, group, count, isActive } rows (fields that don't apply to a
-// given row are `null`) and sorts them with this one comparator, keyed by
-// e.g. 'name-asc' or 'count-desc'. `group`/`isActive` are N/A (null) for
-// anything that doesn't have a meaningful single value for that field (the
-// Conditionals/Reminders section as a whole, or an item type with no such
-// concept) — those sort to the top for the forward direction and the bottom
-// for the reverse, rather than being forced into a fake value. Ties fall
-// back to name (A–Z), and a reverse sort flips that tie-break too, not just
-// the primary field.
+// { name, type, group, count, range, isActive } rows (fields that don't
+// apply to a given row are `null`) and sorts them with this one comparator,
+// keyed by e.g. 'name-asc' or 'count-desc'. `group`/`range`/`isActive` are
+// N/A (null) for anything that doesn't have a meaningful single value for
+// that field (the Conditionals/Reminders section as a whole, a non-ease
+// picker item, a non-ease conditional, or an item type with no such concept)
+// — those sort to the top for the forward direction and the bottom for the
+// reverse, rather than being forced into a fake value. Ties always fall back
+// to name (A–Z); a reverse sort only flips the primary field's comparison,
+// never that tie-break.
 function compareSortEntries(a, b, sortKey) {
   const [field, dir] = sortKey.split('-');
   const reverse = dir === 'desc';
@@ -521,6 +522,12 @@ function compareSortEntries(a, b, sortKey) {
     }
     case 'count': {
       const primary = a.count - b.count;
+      return (reverse ? -primary : primary) || byName();
+    }
+    case 'range': {
+      const na = withNA(a.range, b.range);
+      if (na != null) return na;
+      const primary = a.range - b.range;
       return (reverse ? -primary : primary) || byName();
     }
     case 'active': {

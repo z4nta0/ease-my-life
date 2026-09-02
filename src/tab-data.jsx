@@ -32,38 +32,42 @@ const SECTION_SORT_OPTIONS = [
 ];
 
 // Item-list sort options — extrapolated from SECTION_SORT_OPTIONS' own
-// vocabulary, adapted to what an individual item actually has. None of these
-// contexts have a meaningful Group or (sub-)Item Count for a single item, so
-// neither option is offered at this level, unlike the section list above.
+// vocabulary, adapted to what an individual item actually has. Group and
+// (sub-)Item Count have no meaning for a single item, so neither is offered
+// at this level, unlike the section list above. Range (the ease band's
+// soonest/shortest end — see conditionalRange) is only meaningful for
+// ease-up/ease-down conditionals; it's N/A (and sorts accordingly) for
+// random/weighted/dynamic ones mixed into the same list, so its label stays
+// generic here rather than switching to "Soonest"/"Shortest" the way a
+// single-mode picker's own item list can (see pickerItemSortOptions).
 const CONDITIONAL_ITEM_SORT_OPTIONS = [
   { key: 'name-asc', label: 'Name (A–Z)' },
   { key: 'name-desc', label: 'Name (Z–A)' },
   { key: 'type-asc', label: 'Type (A–Z)' },
   { key: 'type-desc', label: 'Type (Z–A)' },
+  { key: 'range-asc', label: 'Range (Low to High)' },
+  { key: 'range-desc', label: 'Range (High to Low)' },
   { key: 'active-asc', label: 'Active to Inactive' },
   { key: 'active-desc', label: 'Inactive to Active' },
-];
-// Reminders have no per-item Active/Inactive concept (no enabled/disabled
-// toggle — only a schedule and a today's-completion state, which isn't the
-// same thing), so only Name and Type (One-time vs Recurring) apply.
-const REMINDER_ITEM_SORT_OPTIONS = [
-  { key: 'name-asc', label: 'Name (A–Z)' },
-  { key: 'name-desc', label: 'Name (Z–A)' },
-  { key: 'type-asc', label: 'Type (A–Z)' },
-  { key: 'type-desc', label: 'Type (Z–A)' },
 ];
 // A picker's own items have no per-item Type (every item in one picker's
 // pool is the same kind) — instead, ease/weighted/dynamic modes get a
 // mode-specific numeric field (reusing the generic `count` comparator field)
-// in its place: charge for ease-up/down, weight for weighted/dynamic.
-// Truly random has neither a type nor a numeric field, only Name/Active.
+// in its place: charge for ease-up/down, weight for weighted/dynamic. Ease
+// modes also get Range — the item's own soonest-to-latest day band collapsed
+// to its near end, labeled "Soonest" for ease-up and "Shortest" for ease-down
+// to match the wording already used for that same value elsewhere (e.g. the
+// item editor's own Soonest/Shortest stepper). Truly random has none of
+// these, only Name/Active.
 function pickerItemSortOptions(mode) {
   const opts = [
     { key: 'name-asc', label: 'Name (A–Z)' },
     { key: 'name-desc', label: 'Name (Z–A)' },
   ];
   if (mode === 'ease-up' || mode === 'ease-down') {
+    const rangeLbl = mode === 'ease-down' ? 'Shortest' : 'Soonest';
     opts.push({ key: 'count-asc', label: 'Charge (Low to High)' }, { key: 'count-desc', label: 'Charge (High to Low)' });
+    opts.push({ key: 'range-asc', label: `${rangeLbl} (Low to High)` }, { key: 'range-desc', label: `${rangeLbl} (High to Low)` });
   } else if (mode === 'weighted' || mode === 'dynamic') {
     opts.push({ key: 'count-asc', label: 'Weight (Low to High)' }, { key: 'count-desc', label: 'Weight (High to Low)' });
   }
@@ -676,11 +680,17 @@ function ConditionalsManager({ state, actions }) {
   // Item sort — each conditional has its own mode (Type) and active/on-
   // vacation state, same concepts as a picker card's own Type/Active fields
   // at the section level; Group and Item Count don't apply to a single
-  // conditional, so those options aren't offered here.
+  // conditional, so those options aren't offered here. Ease-up/ease-down
+  // conditionals also get a Range value — same soonest/latest-band math the
+  // conditional's own editor uses (see tab-conditional.jsx), collapsed to its
+  // near end; other modes have no such band, so it's N/A (null) for them.
+  const conditionalRange = (c) => (c.mode === 'ease-up' || c.mode === 'ease-down')
+    ? Math.max(1, Math.round((c.threshold ?? 100) / (c.easeMax ?? 14)))
+    : null;
   const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort.conditionals) || 'name-asc';
   const sortedConditionals = [...conditionals].sort((a, b) => compareSortEntries(
-    { name: a.name, type: (MODES[a.mode] || {}).label || a.mode, group: null, count: null, isActive: a.active !== false },
-    { name: b.name, type: (MODES[b.mode] || {}).label || b.mode, group: null, count: null, isActive: b.active !== false },
+    { name: a.name, type: (MODES[a.mode] || {}).label || a.mode, group: null, count: null, range: conditionalRange(a), isActive: a.active !== false },
+    { name: b.name, type: (MODES[b.mode] || {}).label || b.mode, group: null, count: null, range: conditionalRange(b), isActive: b.active !== false },
     itemSort,
   ));
   const openEditor = (c) => { setPending(null); setDraft({ ...c }); setOpenId(c.id); };
@@ -1217,13 +1227,21 @@ function TabData({ state, actions, onHome, onNavTab }) {
           // Item sort — see pickerItemSortOptions for why the available
           // options vary by mode (a mode-specific numeric field standing in
           // for the generic 'count' comparator field: charge for ease modes,
-          // weight for weighted/dynamic; truly random has neither).
+          // weight for weighted/dynamic; truly random has neither). Ease
+          // modes also get Range, from the same soonest/latest band math the
+          // item rows below render (hoisted here so both share one
+          // PICKERS.avgEase call instead of computing it per item twice).
           const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort[pk.id]) || 'name-asc';
-          const itemSortEntry = (it) => ({
-            name: it.name, type: null, group: null,
-            count: isEase ? (it.value ?? 0) : (usesWeight ? (it.weight ?? 1) : null),
-            isActive: !it.vacation,
-          });
+          const fallbackEase = isEase ? PICKERS.avgEase(items, pk.id) : null;
+          const itemSortEntry = (it) => {
+            const eMax = it.easeMax ?? fallbackEase?.easeMax ?? 20;
+            return {
+              name: it.name, type: null, group: null,
+              count: isEase ? (it.value ?? 0) : (usesWeight ? (it.weight ?? 1) : null),
+              range: isEase ? Math.max(1, Math.round(100 / (eMax || 1))) : null,
+              isActive: !it.vacation,
+            };
+          };
           const sortedItems = [...items].sort((a, b) => compareSortEntries(itemSortEntry(a), itemSortEntry(b), itemSort));
           return (
             <section key={pk.id} data-picker-id={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''} ${highlightEditTourPickerHeaders ? 'ob-tour-pulse' : ''}`}
@@ -1324,9 +1342,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
                         const itemOpen = openItemId === it.id;
                         // Same fallback the picking engine itself uses for an
                         // item with no ease band of its own (see
-                        // PICKERS.avgEase) — recomputed per item since it's
-                        // cheap and each item's own values (once set) shift it.
-                        const fallbackEase = isEase ? PICKERS.avgEase(items, pk.id) : null;
+                        // PICKERS.avgEase) — hoisted above (with itemSortEntry)
+                        // rather than recomputed per item here.
                         const eMin = it.easeMin ?? fallbackEase?.easeMin ?? 10;
                         const eMax = it.easeMax ?? fallbackEase?.easeMax ?? 20;
                         const soonest = Math.max(1, Math.round(100 / (eMax || 1)));
