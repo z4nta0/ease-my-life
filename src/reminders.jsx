@@ -261,7 +261,10 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         Starting on{' '}
         {editOnceDate ? (
           <input className="rem-date-inline" type="date" value={onceDateIso} min={TASKS.isoToday()} autoFocus
-                 onChange={(e) => { if (e.target.value) set({ onceDate: e.target.value }); }}
+                 // `min` only disables the picker UI's own earlier dates —
+                 // typing a date by hand bypasses it entirely in every
+                 // browser, so a past pick still has to be clamped here.
+                 onChange={(e) => { if (e.target.value) set({ onceDate: e.target.value < TASKS.isoToday() ? TASKS.isoToday() : e.target.value }); }}
                  onBlur={() => setEditOnceDate(false)}
                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); setEditOnceDate(false); } }} />
         ) : (
