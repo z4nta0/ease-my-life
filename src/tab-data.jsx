@@ -749,6 +749,39 @@ function ConditionalsManager({ state, actions }) {
     : draft && conditionals.some((c) => c.id !== openId && (c.name || '').toLowerCase() === tidyName.toLowerCase())
     ? `A conditional named \u201C${tidyName}\u201D already exists. Choose a different name.`
     : null;
+  // The row's own collapse chevron is a deliberate close, not an accidental
+  // one \u2014 closeEditor alone (used by Escape and this used to use) just drops
+  // the local draft, discarding a brand-new conditional or reverting an
+  // edited existing one back to its pre-edit values, the same "implicit
+  // close \u2260 discard" problem tab-data.jsx's picker items and reminders.jsx
+  // fix documents on their own keepAndClose helpers. Falls back to a plain
+  // close (discarding) only when there's nothing valid to keep \u2014 an empty
+  // or colliding name can't be committed.
+  const keepAndCloseEditor = () => {
+    if (nameError) { closeEditor(); return; }
+    if (pending) { saveNewAnimated(tidyName); return; }
+    actions.updateConditional(openId, { ...draft, name: tidyName });
+    closeEditor();
+  };
+  // DOM node for whichever conditional's row is open, so a brand-new
+  // conditional's "+ Add a conditional" click can scroll the resulting form
+  // into view \u2014 same reasoning as tab-data.jsx's picker items / reminders.jsx.
+  const openRowRef = React.useRef(null);
+  React.useEffect(() => {
+    if (!openId || !pending || !openRowRef.current) return;
+    const el = openRowRef.current;
+    if (reduceMotion()) { el.scrollIntoView({ behavior: 'auto', block: 'nearest' }); return; }
+    // Wait for the Collapse open animation (.26s, see .collapse in
+    // styles2.css) to finish growing the editor below the row header before
+    // scrolling.
+    const t = setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 300);
+    return () => clearTimeout(t);
+  }, [openId]);
+  // The name input focuses itself via a ref callback below instead of the
+  // plain `autoFocus` attribute \u2014 see the picker items' own focusedInputRef
+  // above for why (suppresses the browser's own instant/unsmoothed
+  // focus-scroll so it doesn't fight the deliberate smooth scroll above).
+  const focusedInputRef = React.useRef(null);
 
   return (
     <section className="cat cat--enter cnd-manager">
@@ -790,7 +823,7 @@ function ConditionalsManager({ state, actions }) {
           const isOpen = openId === c.id;
           const uses = usingCount(c.id);
           return (
-            <div key={c.id} className={`rd-item ${isOpen ? 'is-editing' : ''}`}>
+            <div key={c.id} ref={isOpen ? openRowRef : undefined} className={`rd-item ${isOpen ? 'is-editing' : ''}`}>
               {isOpen && draft ? (
                 // Plain div, not a button, while editing — a <button> can't
                 // legally contain the <input> below it (interactive-in-
@@ -803,12 +836,13 @@ function ConditionalsManager({ state, actions }) {
                 <div className="rd-row">
                   <span className="rd-main">
                     <input className={`rd-name-input ${nameError ? 'is-error' : ''}`} type="text" value={draft.name} maxLength={40}
-                           placeholder="Conditional name" aria-label="Conditional name" aria-invalid={!!nameError} autoFocus
+                           placeholder="Conditional name" aria-label="Conditional name" aria-invalid={!!nameError}
+                           ref={(el) => { if (el && focusedInputRef.current !== el) { el.focus({ preventScroll: true }); focusedInputRef.current = el; } }}
                            onChange={(e) => setDraft({ ...draft, name: e.target.value })}
                            onBlur={() => { if (tidyName) setDraft({ ...draft, name: tidyName }); }}
                            onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
                   </span>
-                  <button type="button" className="rd-chev" aria-label="Collapse" onClick={closeEditor}>
+                  <button type="button" className="rd-chev" aria-label="Collapse" onClick={keepAndCloseEditor}>
                     <span className="chev is-open"><Icon name="chev" size={14} /></span>
                   </button>
                 </div>
@@ -972,15 +1006,21 @@ function TabData({ state, actions, onHome, onNavTab }) {
   React.useEffect(() => {
     if (!openItemId || justAddedItemRef.current !== openItemId || !openRowRef.current) return;
     const el = openRowRef.current;
-    const opts = { behavior: reduceMotion() ? 'auto' : 'smooth', block: 'nearest' };
-    el.scrollIntoView(opts);
-    // The Collapse open animation (.26s, see .collapse in styles2.css) grows
-    // the editor below the row header after this fires, so the first
-    // scroll's target is too short to include it — scroll again once it's
-    // had time to settle.
-    const t = setTimeout(() => el.scrollIntoView(opts), 300);
+    if (reduceMotion()) { el.scrollIntoView({ behavior: 'auto', block: 'nearest' }); return; }
+    // Wait for the Collapse open animation (.26s, see .collapse in
+    // styles2.css) to finish growing the editor below the row header before
+    // scrolling.
+    const t = setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 300);
     return () => clearTimeout(t);
   }, [openItemId]);
+  // The name input focuses itself via a ref callback below instead of the
+  // plain `autoFocus` attribute, specifically so we can pass
+  // `preventScroll: true` — a browser's own focus-triggered scroll-into-view
+  // is instant/unsmoothed and fires the moment the input mounts, competing
+  // with (and often preempting, jump instead of glide) the deliberate smooth
+  // scroll above. Guarded by node identity so a later re-render of the SAME
+  // input (e.g. every keystroke) doesn't refocus it repeatedly.
+  const focusedInputRef = React.useRef(null);
   // Inline delete confirmation, shared by items and pickers:
   //   { kind: 'item' | 'picker', id }
   const [confirmDel, setConfirmDel] = React.useState(null);
@@ -1440,7 +1480,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
                               <div className="rd-row">
                                 <span className="rd-main">
                                   <input className="rd-name-input" type="text" value={it.name} maxLength={60}
-                                         placeholder="Item name" aria-label="Item name" autoFocus
+                                         placeholder="Item name" aria-label="Item name"
+                                         ref={(el) => { if (el && focusedInputRef.current !== el) { el.focus({ preventScroll: true }); focusedInputRef.current = el; } }}
                                          onChange={(e) => actions.updateItem(it.id, { name: e.target.value })}
                                          onBlur={(e) => { const n = e.target.value.trim(); if (n) actions.renameItem(it.id, n); }}
                                          onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />

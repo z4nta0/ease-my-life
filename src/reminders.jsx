@@ -1154,15 +1154,19 @@ function ReminderManager({ state, actions, hidden }) {
   React.useEffect(() => {
     if (!openId || justAddedRef.current !== openId || !openRowRef.current) return;
     const el = openRowRef.current;
-    const opts = { behavior: reduceMotion() ? 'auto' : 'smooth', block: 'nearest' };
-    el.scrollIntoView(opts);
-    // The Collapse open animation (.26s, see .collapse in styles2.css) grows
-    // the editor below the row header after this fires, so the first
-    // scroll's target is too short to include it — scroll again once it's
-    // had time to settle.
-    const t = setTimeout(() => el.scrollIntoView(opts), 300);
+    if (reduceMotion()) { el.scrollIntoView({ behavior: 'auto', block: 'nearest' }); return; }
+    // Wait for the Collapse open animation (.26s, see .collapse in
+    // styles2.css) to finish growing the editor below the row header before
+    // scrolling.
+    const t = setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 300);
     return () => clearTimeout(t);
   }, [openId]);
+  // The name input focuses itself via a ref callback below instead of the
+  // plain `autoFocus` attribute — see tab-data.jsx's picker items' own
+  // focusedInputRef for why (suppresses the browser's own instant/
+  // unsmoothed focus-scroll so it doesn't fight the deliberate smooth scroll
+  // above).
+  const focusedInputRef = React.useRef(null);
   const tasks = (state.tasks || []).filter((t) => !t.hidden);
   const opts = TASKS.normalizeOpts(state.reminderOpts);
   const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort.reminders) || 'name-asc';
@@ -1290,7 +1294,8 @@ function ReminderManager({ state, actions, hidden }) {
                       </span>
                       <span className="rd-main">
                         <input className="rd-name-input" type="text" value={t.name} maxLength={60}
-                               placeholder="Reminder name" aria-label="Reminder name" autoFocus
+                               placeholder="Reminder name" aria-label="Reminder name"
+                               ref={(el) => { if (el && focusedInputRef.current !== el) { el.focus({ preventScroll: true }); focusedInputRef.current = el; } }}
                                onChange={(e) => actions.updateTask(t.id, { name: e.target.value })}
                                onBlur={(e) => { const n = e.target.value.trim(); if (n) actions.renameTask(t.id, n); }}
                                onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
