@@ -1108,12 +1108,23 @@ function ReminderControls({ opts, actions, onCollapse }) {
 // compareSortEntries in ui.jsx). Reminders have no per-item Active/Inactive
 // concept (no enabled/disabled toggle — only a schedule and a today's-
 // completion state, which isn't the same thing) and no Group, so only Name
-// and Type (One-time vs Recurring) apply.
+// and Type (One-time vs Recurring) apply besides Date — the reminder's next
+// eligible occurrence (TASKS.nextEligible), same date a Skip confirm already
+// computes elsewhere in this file. Labeled Soonest/Latest rather than "Low
+// to High"/"High to Low" like the numeric sorts elsewhere, matching the
+// app's own wording for date proximity (e.g. the ease editor's Soonest/
+// Latest). A reminder with no next occurrence at all (rare — effectively
+// stale, normally purged before it'd ever be seen here) is a genuinely
+// missing value, not an irrelevant field the way Range/Odds/Boost are for a
+// conditional whose mode doesn't use them, so it uses compareSortEntries'
+// ordinary top/bottom-by-direction N/A placement rather than always-last.
 const REMINDER_ITEM_SORT_OPTIONS = [
   { key: 'name-asc', label: 'Name (A–Z)' },
   { key: 'name-desc', label: 'Name (Z–A)' },
   { key: 'type-asc', label: 'Type (A–Z)' },
   { key: 'type-desc', label: 'Type (Z–A)' },
+  { key: 'date-asc', label: 'Soonest' },
+  { key: 'date-desc', label: 'Latest' },
 ];
 
 function ReminderManager({ state, actions, hidden }) {
@@ -1170,9 +1181,17 @@ function ReminderManager({ state, actions, hidden }) {
   const tasks = (state.tasks || []).filter((t) => !t.hidden);
   const opts = TASKS.normalizeOpts(state.reminderOpts);
   const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort.reminders) || 'name-asc';
+  // Each task's next-occurrence date, computed once up front rather than
+  // inside the comparator below — TASKS.nextEligible can walk up to ~3 years
+  // of days per call, and the comparator runs it on every comparison
+  // otherwise.
+  const taskDates = new Map(tasks.map((t) => {
+    const next = TASKS.nextEligible(t, state.reminderOpts, state.holidays);
+    return [t.id, next ? next.getTime() : null];
+  }));
   const sortedTasks = [...tasks].sort((a, b) => compareSortEntries(
-    { name: a.name, type: TASKS.isRecurring(a) ? 'Recurring' : 'One-time', group: null, count: null, isActive: null },
-    { name: b.name, type: TASKS.isRecurring(b) ? 'Recurring' : 'One-time', group: null, count: null, isActive: null },
+    { name: a.name, type: TASKS.isRecurring(a) ? 'Recurring' : 'One-time', group: null, count: null, date: taskDates.get(a.id), isActive: null },
+    { name: b.name, type: TASKS.isRecurring(b) ? 'Recurring' : 'One-time', group: null, count: null, date: taskDates.get(b.id), isActive: null },
     itemSort,
   ));
   const displayTasks = freezeEditedRow(sortedTasks, openId, justAddedRef.current, frozenTaskIndexRef);

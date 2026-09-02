@@ -484,16 +484,17 @@ function FillButton({ label, onClick, disabled }) {
 // Shared sort vocabulary for the Data tab's section list (Conditionals /
 // Reminders / each picker card) and, per section, its own item list (picker
 // pool items, conditionals, reminders) — each list builds its own array of
-// { name, type, group, count, range, odds, boost, isActive } rows (fields
-// that don't apply to a given row are `null`) and sorts them with this one
-// comparator, keyed by e.g. 'name-asc' or 'count-desc'. `group`/`isActive`
-// are N/A (null) for anything that doesn't have a meaningful single value
-// for that field (the Conditionals/Reminders section as a whole, or an item
-// type with no such concept) — those sort to the top for the forward
-// direction and the bottom for the reverse, rather than being forced into a
-// fake value. `range`/`odds`/`boost` are different: null on a row means the
-// field is irrelevant to that row's own mode (mixed into the same list as
-// rows it does apply to — e.g. Odds/Boost only mean something for a
+// { name, type, group, count, range, odds, boost, date, isActive } rows
+// (fields that don't apply to a given row are `null`) and sorts them with
+// this one comparator, keyed by e.g. 'name-asc' or 'count-desc'.
+// `group`/`date`/`isActive` are N/A (null) for anything that doesn't have a
+// meaningful single value for that field (the Conditionals/Reminders section
+// as a whole, an item type with no such concept, or — for `date` — a
+// reminder with no next occurrence at all) — those sort to the top for the
+// forward direction and the bottom for the reverse, rather than being forced
+// into a fake value. `range`/`odds`/`boost` are different: null on a row
+// means the field is irrelevant to that row's own mode (mixed into the same
+// list as rows it does apply to — e.g. Odds/Boost only mean something for a
 // weighted/dynamic conditional, Range only for an ease-up/ease-down one), so
 // those always sort to the bottom in EITHER direction, rather than flipping
 // to the top on a reverse sort the way a genuinely missing value would. Ties
@@ -544,6 +545,12 @@ function compareSortEntries(a, b, sortKey) {
     }
     case 'count': {
       const primary = a.count - b.count;
+      return (reverse ? -primary : primary) || byName();
+    }
+    case 'date': {
+      const na = withNA(a.date, b.date);
+      if (na != null) return na;
+      const primary = a.date - b.date;
       return (reverse ? -primary : primary) || byName();
     }
     case 'range':
