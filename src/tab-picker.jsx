@@ -1730,12 +1730,13 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
     }
   }, [tour.startCreate]);
 
-  // Distinct group names, in first-seen order — offered as chips in the form
-  // and as the group filter bar above the picker strip.
+  // Distinct group names, alphabetical — offered as chips in the form and
+  // as the group filter bar above the picker strip ("All" itself is a
+  // separate, always-first pill rendered outside this list).
   const existingGroups = React.useMemo(() => {
     const seen = [];
     for (const p of state.pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
-    return seen;
+    return seen.sort((a, b) => a.localeCompare(b));
   }, [state.pickers]);
 
   // The picker strip is scoped to the selected group ("all" shows everything).
@@ -1883,7 +1884,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
               <span className="picker-tab-name">Add new picker</span>
             </button>
           )}
-          {visiblePickers.map((p, i) => (
+          {[...visiblePickers].sort((a, b) => a.name.localeCompare(b.name)).map((p, i) => (
             <button key={p.id}
                     className={`picker-tab picker-tab--enter ${!creating && p.id === activeId ? 'is-on' : ''}`}
                     style={{ animationDelay: ((i + 1) * 40) + 'ms' }}

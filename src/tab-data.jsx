@@ -870,12 +870,13 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // Items disclosures ('<pickerId>:controls' / ':items') default open.
   const collapsedMap = (state.ui && state.ui.controlsCollapsed) || {};
 
-  // Distinct group names in first-seen order — drive the group selector that
-  // narrows the picker box row below it (mirrors the Pickers + Stats tabs).
+  // Distinct group names, alphabetical — drive the group selector that
+  // narrows the picker box row below it (mirrors the Pickers + Stats tabs;
+  // "All" itself is a separate, always-first pill rendered outside this list).
   const existingGroups = React.useMemo(() => {
     const seen = [];
     for (const p of pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
-    return seen;
+    return seen.sort((a, b) => a.localeCompare(b));
   }, [pickers]);
   const visiblePickers = React.useMemo(() => (
     pickers.filter((p) =>
@@ -1034,7 +1035,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                 All
                 <span className="picker-group-count">{pickers.length}</span>
               </button>
-              {conditionals.map((c) => (
+              {[...conditionals].sort((a, b) => a.name.localeCompare(b.name)).map((c) => (
                 <button key={c.id} type="button" role="tab" aria-selected={condFilter === c.id}
                         className={`picker-group-pill ${condFilter === c.id ? 'is-on' : ''}`}
                         disabled={disableGroupFilter}
@@ -1059,36 +1060,30 @@ function TabData({ state, actions, onHome, onNavTab }) {
                 <span className="picker-tab-mode">Everything</span>
               </button>
             )}
-            {statGroup === 'all' && conditionals.length > 0 && (
-              <button type="button"
-                      className={`picker-tab picker-tab--enter ${scope === 'conditionals' ? 'is-on' : ''}`}
-                      style={{ animationDelay: '40ms' }}
-                      disabled={disablePickersFilter}
-                      onClick={() => onSelectScope('conditionals')}>
-                <span className="picker-tab-name">Conditionals</span>
-                <span className="picker-tab-mode">Gates</span>
-              </button>
-            )}
-            {statGroup === 'all' && (
-              <button type="button"
-                      className={`picker-tab picker-tab--enter ${scope === 'reminders' ? 'is-on' : ''}`}
-                      style={{ animationDelay: '80ms' }}
-                      disabled={disablePickersFilter}
-                      onClick={() => onSelectScope('reminders')}>
-                <span className="picker-tab-name">Reminders</span>
-                <span className="picker-tab-mode">Tasks</span>
-              </button>
-            )}
-            {visiblePickers.map((p, i) => (
-              <button key={p.id} type="button" data-picker-id={p.id}
-                      className={`picker-tab picker-tab--enter ${scope === p.id ? 'is-on' : ''}`}
-                      style={{ animationDelay: ((statGroup === 'all' ? (conditionals.length > 0 ? 3 : 2) : 0) + i) * 40 + 'ms' }}
-                      disabled={disablePickersFilter}
-                      onClick={() => onSelectScope(p.id)}>
-                <span className="picker-tab-name">{p.name}</span>
-                <span className="picker-tab-mode">{MODES[p.mode].label}</span>
-              </button>
-            ))}
+            {/* Everything after "All" — Conditionals, Reminders, and every
+                visible picker — sorts together alphabetically by its own
+                displayed name, rather than Conditionals/Reminders being
+                pinned right after All. */}
+            {[
+              ...(statGroup === 'all' && conditionals.length > 0
+                ? [{ key: 'conditionals', name: 'Conditionals', modeLabel: 'Gates', isOn: scope === 'conditionals', onClick: () => onSelectScope('conditionals') }]
+                : []),
+              ...(statGroup === 'all'
+                ? [{ key: 'reminders', name: 'Reminders', modeLabel: 'Tasks', isOn: scope === 'reminders', onClick: () => onSelectScope('reminders') }]
+                : []),
+              ...visiblePickers.map((p) => ({ key: p.id, name: p.name, modeLabel: MODES[p.mode].label, isOn: scope === p.id, onClick: () => onSelectScope(p.id), pickerId: p.id })),
+            ]
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((entry, i) => (
+                <button key={entry.key} type="button" data-picker-id={entry.pickerId}
+                        className={`picker-tab picker-tab--enter ${entry.isOn ? 'is-on' : ''}`}
+                        style={{ animationDelay: (i + 1) * 40 + 'ms' }}
+                        disabled={disablePickersFilter}
+                        onClick={entry.onClick}>
+                  <span className="picker-tab-name">{entry.name}</span>
+                  <span className="picker-tab-mode">{entry.modeLabel}</span>
+                </button>
+              ))}
           </div>
         </div>
       </div>
