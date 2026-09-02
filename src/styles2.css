@@ -829,6 +829,16 @@
   width: auto; max-width: none; margin-top: 0;
   padding: 6px 10px; font-size: 13px; cursor: pointer;
 }
+/* Item-list sort (Conditionals/Reminders/each picker's own items) sits
+   inside the section's .cat-body, between the "+ Add …" row above and the
+   first item below — its own padding matches those rows (.rd-add/.rd-row),
+   and the first item gets a top border of its own since it no longer
+   shares .rd-add's bottom border as its top edge now that this sits
+   between them. The sibling combinator means this is a no-op when the
+   sort control isn't rendered at all (1 item or fewer) — the first item's
+   border-bottom-only styling is unaffected then. */
+.cat-body .data-sort-row { padding: 13px 16px; }
+.data-sort-row + .rd-item { border-top: 0.5px solid var(--border); }
 /* Data tab has a longer "Conditionals" label — widen its filter labels (which
    narrows the pill/card rows accordingly, since the row is flex). */
 .data-empty { padding: 40px 4px; text-align: center; }
