@@ -111,7 +111,7 @@ const REPEAT_STEP_COPY = {
   },
   weekly: {
     title: 'Select day of the week',
-    lead: 'which day(s) of the week a recurring reminder will show up in your todo list',
+    lead: 'how often and which day(s) of the week a recurring reminder will show up in your todo list',
     tail: ' (multiple days may be selected).',
   },
   monthly: {
