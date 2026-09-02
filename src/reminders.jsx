@@ -205,6 +205,16 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
     const dt = (y && m && d) ? new Date(y, m - 1, d) : new Date();
     return dt.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
   })();
+  // A one-time reminder's optional future start date. Defaults to tomorrow
+  // when first turned on — "future date" wouldn't mean anything for today.
+  const tomorrowIso = (() => {
+    const d = new Date(); d.setDate(d.getDate() + 1); return TASKS.isoOf(d);
+  })();
+  const onceDateLabel = (() => {
+    if (!task.onceDate) return null;
+    const [y, m, d] = task.onceDate.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+  })();
 
   // Ids so the advisory can double as the accessible DESCRIPTION of the control
   // that caused it: a live region alone is silent when the editor opens with the
@@ -232,6 +242,38 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         </>
       )}
     </p>
+  );
+
+  // A one-time reminder is due immediately by default; this opts it into a
+  // future start date instead — still one-time, just deferred until then.
+  const onceFields = (
+    <div className="rem-field">
+      <div className="rem-flabel-wrap">
+        <span className="rem-flabel">Start date</span>
+        <span className="rem-flabel-sub set-sub-fade" key={task.onceDate ? 'future' : 'now'}>
+          {task.onceDate
+            ? <>won't show on the Today tab until <strong>{onceDateLabel}</strong></>
+            : <>shows on the Today tab <strong>right away</strong></>}
+        </span>
+      </div>
+      {task.onceDate ? (
+        <div className="rem-inline">
+          <input className="rem-date-inline" type="date" value={task.onceDate} min={tomorrowIso}
+                 aria-label="Start date" aria-describedby={schedNoteId}
+                 onChange={(e) => { if (e.target.value) set({ onceDate: e.target.value }); }} />
+          <button type="button" className="rem-date-link" aria-describedby={schedNoteId}
+                  onClick={() => set({ onceDate: null })}>
+            Remove
+          </button>
+        </div>
+      ) : (
+        <button type="button" className="rem-date-link" aria-describedby={schedNoteId}
+                onClick={() => set({ onceDate: tomorrowIso })}>
+          Add a future date
+        </button>
+      )}
+      {state && <RemVisibilityNote task={task} state={state} kind="schedule" id={schedNoteId} />}
+    </div>
   );
 
   const extraFields = (() => {
@@ -427,6 +469,9 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         {state && <RemVisibilityNote task={task} state={state} kind="settings" id={setNoteId} />}
       </div>
 
+      {animateExtra
+        ? <Collapse open={task.repeat === 'once'}><div className="rem-extra-fade">{onceFields}</div></Collapse>
+        : (task.repeat === 'once' && onceFields)}
       {animateExtra
         ? <Collapse open={task.repeat !== 'once'}><div className="rem-extra-fade" key={task.repeat === 'once' ? lastExtraRepeat.current : task.repeat}>{extraFields}</div></Collapse>
         : extraFields}

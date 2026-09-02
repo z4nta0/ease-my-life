@@ -10,7 +10,9 @@ import { HOLIDAYS } from './holidays.js';
 // the next day).
 //
 // Schedule kinds (`repeat`):
-//   once     — no schedule; due every day until completed, then gone
+//   once     — no schedule; due every day until completed, then gone. An
+//              optional `onceDate` ('YYYY-MM-DD') defers that "due every
+//              day" window to start on a future date instead of immediately.
 //   weekly   — due on the chosen weekdays (daysOfWeek: [0=Sun … 6=Sat]),
 //              every `interval` weeks (default 1), counted from `anchor`
 //   interval — due every N days, counted from `anchor`
@@ -29,7 +31,7 @@ import { HOLIDAYS } from './holidays.js';
 //
 // Shape (lives at state.tasks, an array of):
 //   { id, name, repeat, daysOfWeek, interval, anchor, dateMode, dayOfMonth,
-//     nthOrdinal, nthWeekday, month, day, lastDone, createdAt }
+//     nthOrdinal, nthWeekday, month, day, onceDate, lastDone, createdAt }
 
 const pad = (n) => String(n).padStart(2, '0');
 const isoOf = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -104,6 +106,7 @@ function defaultTask(p = {}) {
     nthWeekday: p.nthWeekday ?? now.getDay(),
     month: p.month || now.getMonth() + 1,
     day: p.day || now.getDate(),
+    onceDate: p.onceDate || null,
     lastDone: p.lastDone ?? null,
     skipUntil: p.skipUntil ?? null,
     createdAt: p.createdAt || isoToday(),
@@ -121,6 +124,9 @@ function isDueToday(task, date = new Date()) {
   switch (task.repeat) {
     case 'once':
       // Due until completed; the day it's completed it still shows (checked).
+      // An optional onceDate defers that window to start on a future date —
+      // string comparison is safe here since both sides are 'YYYY-MM-DD'.
+      if (task.onceDate && today < task.onceDate) return false;
       return !task.lastDone || task.lastDone === today;
     case 'weekly': {
       if (!(task.daysOfWeek || []).includes(date.getDay())) return false;
@@ -188,8 +194,12 @@ const ordinal = (n) => {
 // Short human label for a reminder's schedule.
 function summary(task) {
   switch (task.repeat) {
-    case 'once':
-      return 'One-time';
+    case 'once': {
+      if (!task.onceDate) return 'One-time';
+      const [y, m, d] = task.onceDate.split('-').map(Number);
+      const dateLabel = new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return `One-time · starts ${dateLabel}`;
+    }
     case 'weekly': {
       const d = [...(task.daysOfWeek || [])].sort((a, b) => a - b);
       const n = Math.max(1, task.interval || 1);
@@ -351,9 +361,14 @@ function nextEligible(task, opts, holidayState, from = new Date(), respectSkipUn
   // but not a large "every N weeks/months/years" — scale the horizon up so a
   // sparse schedule doesn't fail to find its own next occurrence.
   const n = Math.max(1, task.interval || 1);
+  // A one-time reminder's onceDate has no upper bound (a plain date picker),
+  // so a far-future pick needs its own horizon or nextEligible falsely comes
+  // back null — which the caller reads as "this will never show" and shows a
+  // scary warning for a perfectly valid future reminder.
   const horizonDays = task.repeat === 'annual' ? n * 366 + 366
     : task.repeat === 'monthly' ? n * 31 + 31
     : task.repeat === 'weekly' ? n * 7 + 7
+    : (task.repeat === 'once' && task.onceDate) ? Math.round((fromIso(task.onceDate) - base) / 86400000) + 30
     : 1100;
   const horizon = Math.max(1100, horizonDays);
   for (let i = 1; i <= horizon; i++) {
