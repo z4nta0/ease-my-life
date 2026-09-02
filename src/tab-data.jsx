@@ -963,6 +963,24 @@ function TabData({ state, actions, onHome, onNavTab }) {
     if (prev != null && prev !== openItemId) setInsertItemId(prev);
     prevOpenItemIdRef.current = openItemId;
   }, [openItemId]);
+  // DOM node for whichever item's row is open, so a brand-new item's "+ Add"
+  // click can scroll the resulting form into view. It opens pinned right
+  // below the sort control (freezeEditedRow) rather than right below the Add
+  // button itself, so on a short viewport it's no longer guaranteed to
+  // already be on-screen the way a plain top-of-list append used to be.
+  const openRowRef = React.useRef(null);
+  React.useEffect(() => {
+    if (!openItemId || justAddedItemRef.current !== openItemId || !openRowRef.current) return;
+    const el = openRowRef.current;
+    const opts = { behavior: reduceMotion() ? 'auto' : 'smooth', block: 'nearest' };
+    el.scrollIntoView(opts);
+    // The Collapse open animation (.26s, see .collapse in styles2.css) grows
+    // the editor below the row header after this fires, so the first
+    // scroll's target is too short to include it — scroll again once it's
+    // had time to settle.
+    const t = setTimeout(() => el.scrollIntoView(opts), 300);
+    return () => clearTimeout(t);
+  }, [openItemId]);
   // Inline delete confirmation, shared by items and pickers:
   //   { kind: 'item' | 'picker', id }
   const [confirmDel, setConfirmDel] = React.useState(null);
@@ -1409,7 +1427,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
                           : (isEase ? `${soonest}\u2013${latest} ${CADENCE.unitWord(pk.cadence, latest)}`
                              : (usesWeight ? `Weight w${it.weight}` : 'Equal chance'));
                         return (
-                          <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''} ${highlightEditTourItemRows ? 'is-tour-target ob-tour-pulse' : ''}`}
+                          <div key={it.id} ref={itemOpen ? openRowRef : undefined}
+                               className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''} ${highlightEditTourItemRows ? 'is-tour-target ob-tour-pulse' : ''}`}
                                onAnimationEnd={() => { if (insertItemId === it.id) setInsertItemId(null); }}>
                             {itemOpen ? (
                               // Plain div, not a button, while editing — see the

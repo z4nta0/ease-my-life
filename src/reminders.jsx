@@ -1144,6 +1144,25 @@ function ReminderManager({ state, actions, hidden }) {
     if (prev != null && prev !== openId) setInsertId(prev);
     prevOpenIdRef.current = openId;
   }, [openId]);
+  // DOM node for whichever reminder's row is open, so a brand-new
+  // reminder's "+ New reminder" click can scroll the resulting form into
+  // view. It opens pinned right below the sort control (freezeEditedRow)
+  // rather than right below the Add button itself, so on a short viewport
+  // it's no longer guaranteed to already be on-screen the way a plain
+  // top-of-list append used to be.
+  const openRowRef = React.useRef(null);
+  React.useEffect(() => {
+    if (!openId || justAddedRef.current !== openId || !openRowRef.current) return;
+    const el = openRowRef.current;
+    const opts = { behavior: reduceMotion() ? 'auto' : 'smooth', block: 'nearest' };
+    el.scrollIntoView(opts);
+    // The Collapse open animation (.26s, see .collapse in styles2.css) grows
+    // the editor below the row header after this fires, so the first
+    // scroll's target is too short to include it — scroll again once it's
+    // had time to settle.
+    const t = setTimeout(() => el.scrollIntoView(opts), 300);
+    return () => clearTimeout(t);
+  }, [openId]);
   const tasks = (state.tasks || []).filter((t) => !t.hidden);
   const opts = TASKS.normalizeOpts(state.reminderOpts);
   const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort.reminders) || 'name-asc';
@@ -1252,7 +1271,8 @@ function ReminderManager({ state, actions, hidden }) {
               const cardOpen = openId === t.id;
               const once = t.repeat === 'once';
               return (
-                <div key={t.id} className={`rd-item ${cardOpen ? 'is-editing' : ''} ${insertId === t.id ? 'rd-item--insert' : ''}`}
+                <div key={t.id} ref={cardOpen ? openRowRef : undefined}
+                     className={`rd-item ${cardOpen ? 'is-editing' : ''} ${insertId === t.id ? 'rd-item--insert' : ''}`}
                      onAnimationEnd={() => { if (insertId === t.id) setInsertId(null); }}>
                   {cardOpen ? (
                     // Plain div, not a button, while editing — a <button> can't
