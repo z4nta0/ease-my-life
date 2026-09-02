@@ -1007,7 +1007,14 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     renameItem: (id, name) => setItems((xs) => xs.map((it) => it.id === id ? { ...it, name } : it)),
     toggleVacation: (id) => setItems((xs) => xs.map((it) => it.id === id ? { ...it, vacation: !it.vacation } : it)),
   };
-  const draftPicker = { mode, threshold: THRESHOLD, cadence: cad.cadence, easeMin: 10, easeMax: 20 };
+  // No `id` — deliberately, since the real picker doesn't exist yet. Draft
+  // items carry no `pickerId` either (both undefined), so EntryEditor's own
+  // PICKERS.avgEase(items, picker.id) fallback still matches every draft
+  // item against this pseudo-picker's undefined id and averages them
+  // correctly — not a coincidence to "fix" by inventing IDs here. No
+  // easeMin/easeMax here either — EntryEditor no longer reads those off the
+  // picker directly (see avgEase above).
+  const draftPicker = { mode, threshold: THRESHOLD, cadence: cad.cadence };
   const addNewDraft = () => {
     if (newDraftId || editingDraftItemId) return;
     setDraftClosing(false);   // clear any stale closing state from a prior editor
@@ -1168,7 +1175,11 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       payload.conditionalId = condSel;
     }
     if (isEase) {
-      // Picker-level span is just a fallback/summary; per-item bands drive the engine.
+      // Legacy field: nothing reads picker.easeMin/easeMax anymore (pick(),
+      // the Data tab, and the item editor all compute a live per-picker
+      // average from the items themselves instead — see PICKERS.avgEase).
+      // Kept only so store.jsx's addPicker still has a value to accept;
+      // harmless dead data on the created picker otherwise.
       payload.easeMin = Math.min(...items.map((it) => it.easeMin ?? DEFAULT_EASE.easeMin));
       payload.easeMax = Math.max(...items.map((it) => it.easeMax ?? DEFAULT_EASE.easeMax));
     }
@@ -1580,7 +1591,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                         Cancel/Escape handling (revert via
                         actions.replaceItem, then close) is correct as-is
                         with no extra bookkeeping needed here. */}
-                    <EntryEditor key={editItem.id} item={editItem} picker={draftPicker} actions={draftActions}
+                    <EntryEditor key={editItem.id} item={editItem} picker={draftPicker} actions={draftActions} items={items}
                                  onClose={() => setEditingDraftItemClosing(true)} />
                   </div>
                 </div>
@@ -1617,7 +1628,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                   </span>
                 </div>
                 <div className="rd-edit">
-                  <EntryEditor item={newItem} picker={draftPicker} actions={draftActions}
+                  <EntryEditor item={newItem} picker={draftPicker} actions={draftActions} items={items}
                                onClose={() => setDraftClosing('save')}
                                onCancel={() => setDraftClosing('cancel')} />
                 </div>
