@@ -315,38 +315,6 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
             );
           })}
         </div>
-        {/* Fill/Refill expands/collapses when Ease-up/Ease-down is (de)selected,
-            sharing the app's Collapse height animation. */}
-        <Collapse open={isEase}>
-          {/* ease-config--up/--down — pure selector hook so help-mode can
-              give this section mode-specific copy (Fill vs. Refill), same
-              idea as EntryEditor's own pie-ease-up-row/pie-ease-down-row
-              split. */}
-          <div className={`ease-config ${isDown ? 'ease-config--down' : 'ease-config--up'}`}>
-            {pk.mode === 'ease-up' && (
-              <div className="pie-row">
-                <div className="pie-rowlabel">
-                  <span className="pie-lbl">Fill</span>
-                  <span className="pie-sub">{fillSub}</span>
-                </div>
-                <FillButton label="Fill all"
-                     disabled={items.length > 0 && items.every((it) => (it.value ?? 0) >= (pk.threshold ?? 100))}
-                     onClick={() => actions.refillPicker(pk.id)} />
-              </div>
-            )}
-            {pk.mode === 'ease-down' && (
-              <div className="pie-row">
-                <div className="pie-rowlabel">
-                  <span className="pie-lbl">Refill</span>
-                  <span className="pie-sub">{fillSub}</span>
-                </div>
-                <FillButton label="Refill all"
-                     disabled={items.length > 0 && items.every((it) => (it.value ?? 0) >= (pk.threshold ?? 100))}
-                     onClick={() => actions.refillPicker(pk.id)} />
-              </div>
-            )}
-          </div>
-        </Collapse>
       </fieldset>
 
       {/* When it runs — Daily-generator membership + weekday / holiday gates. */}
@@ -496,23 +464,66 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                       aria-label="Skip on holidays"
                       onClick={() => actions.updatePicker(pk.id, { skipHolidays: !pk.skipHolidays })}><i /></button>
             </div>
-            <div className="sched-line">
-              <span className="sched-line-label">
-                <span className="sched-line-lbl">Avoid duplicate items</span>
-                <span className="sched-line-sub set-sub-fade" key={pk.avoidDuplicates ? 'on' : 'off'}>
-                  {pk.avoidDuplicates
-                    ? <><strong>won't pick</strong> an item whose name is already on today's todo list</>
-                    : <><strong>may pick</strong> an item even if its name is already on today's todo list</>}
-                </span>
-              </span>
-              <button className={`switch ${pk.avoidDuplicates ? 'is-on' : ''}`} aria-pressed={!!pk.avoidDuplicates}
-                      aria-label="Avoid duplicate items"
-                      onClick={() => actions.updatePicker(pk.id, { avoidDuplicates: !pk.avoidDuplicates })}><i /></button>
-            </div>
           </React.Fragment>
         </Collapse>
         <Collapse open={!inDaily}>
           <div className="sched-off-note">Runs on demand only &mdash; not in the Daily generator.</div>
+        </Collapse>
+      </div>
+
+      {/* Item Controls — things that act on this picker's ITEMS rather than
+          the picker's own type/schedule: avoiding duplicate names across
+          today's whole list, and (ease modes only) manually filling every
+          item's charge at once. Neither belongs under "How it picks" (that's
+          about the ruleset itself) or "When it runs" (that's about the
+          Daily generator/schedule) — this is its own thing, placed last
+          since it's the one section that isn't really a "picker control". */}
+      <div className="rd-ctl-group rd-ctl-group--items">
+        <div className="rd-ctl-subhead">Item Controls</div>
+        <div className="sched-line">
+          <span className="sched-line-label">
+            <span className="sched-line-lbl">Avoid duplicate items</span>
+            <span className="sched-line-sub set-sub-fade" key={pk.avoidDuplicates ? 'on' : 'off'}>
+              {pk.avoidDuplicates
+                ? <><strong>won't pick</strong> an item whose name is already on today's todo list</>
+                : <><strong>may pick</strong> an item even if its name is already on today's todo list</>}
+            </span>
+          </span>
+          <button className={`switch ${pk.avoidDuplicates ? 'is-on' : ''}`} aria-pressed={!!pk.avoidDuplicates}
+                  aria-label="Avoid duplicate items"
+                  onClick={() => actions.updatePicker(pk.id, { avoidDuplicates: !pk.avoidDuplicates })}><i /></button>
+        </div>
+        {/* Fill/Refill expands/collapses when Ease-up/Ease-down is (de)selected,
+            sharing the app's Collapse height animation. */}
+        <Collapse open={isEase}>
+          {/* ease-config--up/--down — pure selector hook so help-mode can
+              give this section mode-specific copy (Fill vs. Refill), same
+              idea as EntryEditor's own pie-ease-up-row/pie-ease-down-row
+              split. */}
+          <div className={`ease-config ${isDown ? 'ease-config--down' : 'ease-config--up'}`}>
+            {pk.mode === 'ease-up' && (
+              <div className="pie-row">
+                <div className="pie-rowlabel">
+                  <span className="pie-lbl">Fill</span>
+                  <span className="pie-sub">{fillSub}</span>
+                </div>
+                <FillButton label="Fill all"
+                     disabled={items.length > 0 && items.every((it) => (it.value ?? 0) >= (pk.threshold ?? 100))}
+                     onClick={() => actions.refillPicker(pk.id)} />
+              </div>
+            )}
+            {pk.mode === 'ease-down' && (
+              <div className="pie-row">
+                <div className="pie-rowlabel">
+                  <span className="pie-lbl">Refill</span>
+                  <span className="pie-sub">{fillSub}</span>
+                </div>
+                <FillButton label="Refill all"
+                     disabled={items.length > 0 && items.every((it) => (it.value ?? 0) >= (pk.threshold ?? 100))}
+                     onClick={() => actions.refillPicker(pk.id)} />
+              </div>
+            )}
+          </div>
         </Collapse>
       </div>
 

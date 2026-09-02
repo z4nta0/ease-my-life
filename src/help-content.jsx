@@ -1244,26 +1244,9 @@ const DATA_HELP_ITEMS = [
     // Scoped to PickerControls' own "How it picks" group — ConditionalEditor
     // has its own separate .rd-mode-radio inside .cnd-controls, which
     // doesn't live under .rd-ctl-group--picks. padY:0 — .rd-ctl-group--picks
-    // (this group's own wrapper) touches .ease-config (Fill/Refill) below
-    // with zero gap.
+    // (this group's own wrapper) touches "When it runs" below with zero gap.
     id: 'dataPickerType', sel: '.rd-ctl-group--picks .rd-mode-radio', title: 'Picker Type', padY: 0,
     body: <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
-  },
-  {
-    // Fill/Refill acts on every item in this picker at once
-    // (actions.refillPicker), not just one. padY:0 — touches Picker Type
-    // above with zero gap (see that entry's own comment). Split by mode
-    // (ease-config--up/--down, tab-data.jsx) rather than one combined
-    // Fill/Refill entry, same idea as itemChargeRangeUp/Down below (the
-    // per-item equivalent, which also covers each item's own Soonest/Latest
-    // controls — this picker level no longer has any of its own to prefill
-    // new items with; see PICKERS.avgEase in pickers.js).
-    id: 'dataPickerFillUp', sel: '.ease-config.ease-config--up', title: 'Fill All', padY: 0,
-    body: <>This fills the charge of every item in this picker at once.</>,
-  },
-  {
-    id: 'dataPickerFillDown', sel: '.ease-config.ease-config--down', title: 'Refill All', padY: 0,
-    body: <>This refills the charge of every item in this picker at once.</>,
   },
   {
     // padY:0 — .sched-line rows stack with zero gap (same pattern as
@@ -1302,15 +1285,39 @@ const DATA_HELP_ITEMS = [
   },
   {
     // padY:0 — same .sched-line zero-gap stacking, touching Picker Day
-    // Selection above and Picker Duplicate Items Toggle below.
+    // Selection above. This is the LAST "When it runs" row now — Avoid
+    // Duplicate Items moved out to its own "Item Controls" section below
+    // (see that entry's own comment), so nothing follows this one here.
     id: 'dataPickerSkipHolidays', sel: '.sched-line:has(button[aria-label="Skip on holidays"])', title: 'Picker Holidays Toggle', padY: 0,
     body: <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
   },
   {
-    // padY:0 — same .sched-line zero-gap stacking, touching Picker
-    // Holidays Toggle above.
+    // Moved out of "When it runs" into its own "Item Controls" section
+    // (alongside Fill/Refill below) — avoiding duplicate item names has
+    // nothing to do with the Daily generator/schedule that section is
+    // about. padY:0 — .rd-ctl-group--items (this group's own wrapper)
+    // touches "Item Controls" kicker above with zero gap.
     id: 'dataPickerAvoidDuplicates', sel: '.sched-line:has(button[aria-label="Avoid duplicate items"])', title: 'Picker Duplicate Items Toggle', padY: 0,
     body: <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
+  },
+  {
+    // Fill/Refill acts on every item in this picker at once
+    // (actions.refillPicker), not just one. Moved out of "How it picks"
+    // into "Item Controls" alongside Avoid Duplicate Items above (see that
+    // entry's own comment) — filling every item's charge is an items
+    // operation, not part of the picker's own ruleset. padY:0 — touches
+    // Picker Duplicate Items Toggle above with zero gap. Split by mode
+    // (ease-config--up/--down, tab-data.jsx) rather than one combined
+    // Fill/Refill entry, same idea as itemChargeRangeUp/Down below (the
+    // per-item equivalent, which also covers each item's own Soonest/Latest
+    // controls — this picker level no longer has any of its own to prefill
+    // new items with; see PICKERS.avgEase in pickers.js).
+    id: 'dataPickerFillUp', sel: '.ease-config.ease-config--up', title: 'Fill All', padY: 0,
+    body: <>This fills the charge of every item in this picker at once.</>,
+  },
+  {
+    id: 'dataPickerFillDown', sel: '.ease-config.ease-config--down', title: 'Refill All', padY: 0,
+    body: <>This refills the charge of every item in this picker at once.</>,
   },
   {
     id: 'dataPickerFoot', sel: '.pk-ctl-foot .btn', title: 'Delete / Cancel / Save',
