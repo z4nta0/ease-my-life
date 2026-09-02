@@ -205,16 +205,15 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
     const dt = (y && m && d) ? new Date(y, m - 1, d) : new Date();
     return dt.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
   })();
-  // A one-time reminder's optional future start date. Defaults to tomorrow
-  // when first turned on — "future date" wouldn't mean anything for today.
-  // Same click-to-edit link/inline-date-input swap as the anchor above.
+  // A one-time reminder's start date — defaults to today (defaultTask), so
+  // it's due right away same as before this control existed; picking a
+  // later date defers that. Same click-to-edit link/inline-date-input swap
+  // as the anchor above.
   const [editOnceDate, setEditOnceDate] = React.useState(false);
-  const tomorrowIso = (() => {
-    const d = new Date(); d.setDate(d.getDate() + 1); return TASKS.isoOf(d);
-  })();
+  const onceDateIso = task.onceDate || TASKS.isoToday();
+  const onceIsFuture = onceDateIso > TASKS.isoToday();
   const onceDateLabel = (() => {
-    if (!task.onceDate) return null;
-    const [y, m, d] = task.onceDate.split('-').map(Number);
+    const [y, m, d] = onceDateIso.split('-').map(Number);
     return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
   })();
 
@@ -246,44 +245,33 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
     </p>
   );
 
-  // A one-time reminder is due immediately by default; this opts it into a
-  // future start date instead — still one-time, just deferred until then.
+  // A one-time reminder is due immediately by default (onceDate = today);
+  // picking a later date here defers that — still one-time, just deferred.
   const onceFields = (
     <div className="rem-field">
       <div className="rem-flabel-wrap">
         <span className="rem-flabel">Start date</span>
-        <span className="rem-flabel-sub set-sub-fade" key={task.onceDate ? 'future' : 'now'}>
-          {task.onceDate
+        <span className="rem-flabel-sub set-sub-fade" key={onceIsFuture ? 'future' : 'now'}>
+          {onceIsFuture
             ? <>won't show on the Today tab until <strong>{onceDateLabel}</strong></>
             : <>shows on the Today tab <strong>right away</strong></>}
         </span>
       </div>
-      {task.onceDate ? (
-        <p className="rem-hint">
-          Starting on{' '}
-          {editOnceDate ? (
-            <input className="rem-date-inline" type="date" value={task.onceDate} min={tomorrowIso} autoFocus
-                   onChange={(e) => { if (e.target.value) set({ onceDate: e.target.value }); }}
-                   onBlur={() => setEditOnceDate(false)}
-                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); setEditOnceDate(false); } }} />
-          ) : (
-            <>
-              <button type="button" className="rem-date-link" aria-describedby={schedNoteId} onClick={() => setEditOnceDate(true)}>
-                {onceDateLabel}
-              </button>.{' '}
-              <button type="button" className="rem-date-link" aria-describedby={schedNoteId}
-                      onClick={() => set({ onceDate: null })}>
-                Remove
-              </button>
-            </>
-          )}
-        </p>
-      ) : (
-        <button type="button" className="rem-date-link" aria-describedby={schedNoteId}
-                onClick={() => set({ onceDate: tomorrowIso })}>
-          Add a future date
-        </button>
-      )}
+      <p className="rem-hint">
+        Starting on{' '}
+        {editOnceDate ? (
+          <input className="rem-date-inline" type="date" value={onceDateIso} min={TASKS.isoToday()} autoFocus
+                 onChange={(e) => { if (e.target.value) set({ onceDate: e.target.value }); }}
+                 onBlur={() => setEditOnceDate(false)}
+                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); setEditOnceDate(false); } }} />
+        ) : (
+          <>
+            <button type="button" className="rem-date-link" aria-describedby={schedNoteId} onClick={() => setEditOnceDate(true)}>
+              {onceDateLabel}
+            </button>.
+          </>
+        )}
+      </p>
       {state && <RemVisibilityNote task={task} state={state} kind="schedule" id={schedNoteId} />}
     </div>
   );

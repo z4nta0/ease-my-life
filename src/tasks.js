@@ -10,9 +10,10 @@ import { HOLIDAYS } from './holidays.js';
 // the next day).
 //
 // Schedule kinds (`repeat`):
-//   once     — no schedule; due every day until completed, then gone. An
-//              optional `onceDate` ('YYYY-MM-DD') defers that "due every
-//              day" window to start on a future date instead of immediately.
+//   once     — no schedule; due every day (starting `onceDate`,
+//              'YYYY-MM-DD', which defaults to today) until completed,
+//              then gone. Set onceDate in the future to defer that window
+//              instead of starting it immediately.
 //   weekly   — due on the chosen weekdays (daysOfWeek: [0=Sun … 6=Sat]),
 //              every `interval` weeks (default 1), counted from `anchor`
 //   interval — due every N days, counted from `anchor`
@@ -106,7 +107,7 @@ function defaultTask(p = {}) {
     nthWeekday: p.nthWeekday ?? now.getDay(),
     month: p.month || now.getMonth() + 1,
     day: p.day || now.getDate(),
-    onceDate: p.onceDate || null,
+    onceDate: p.onceDate || isoToday(),
     lastDone: p.lastDone ?? null,
     skipUntil: p.skipUntil ?? null,
     createdAt: p.createdAt || isoToday(),
@@ -195,7 +196,10 @@ const ordinal = (n) => {
 function summary(task) {
   switch (task.repeat) {
     case 'once': {
-      if (!task.onceDate) return 'One-time';
+      // onceDate defaults to today (defaultTask), so only a genuinely
+      // future date changes the label — today-or-past reads as plain
+      // "One-time", same as before this control existed.
+      if (!task.onceDate || task.onceDate <= isoToday()) return 'One-time';
       const [y, m, d] = task.onceDate.split('-').map(Number);
       const dateLabel = new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       return `One-time · starts ${dateLabel}`;
