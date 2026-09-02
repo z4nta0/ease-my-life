@@ -8,7 +8,7 @@ import { ReminderManager } from './reminders.jsx';
 import { MODES } from './seed.js';
 import { ConditionalControls, conditionalDraftDefault } from './tab-conditional.jsx';
 import { EntryEditor } from './tab-today.jsx';
-import { Btn, Collapse, compareSortEntries, FillButton, Icon, InfoTip, SortSelect, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { Btn, Collapse, compareSortEntries, FillButton, freezeEditedRow, Icon, InfoTip, SortSelect, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
 import { HelpButton, HelpOverlay } from './help-mode.jsx';
 import { DATA_HELP_ITEMS } from './help-content.jsx';
 import { seedHelpPickers, clearHelpPickers, seedHelpTasks, clearHelpTasks } from './help-sample-data.js';
@@ -941,6 +941,21 @@ function TabData({ state, actions, onHome, onNavTab }) {
   const justAddedItemRef = React.useRef(null);
   // Id of a just-inserted row, so it plays the slide-in entrance once.
   const [insertItemId, setInsertItemId] = React.useState(null);
+  // Frozen render-position for whichever item is open — see freezeEditedRow.
+  // One ref shared across every picker's item list (only one item can be
+  // open at a time, and the helper no-ops for any list that doesn't hold it).
+  const frozenItemIndexRef = React.useRef(null);
+  // Replays the insert entrance animation once an item's editor closes, so it
+  // settles into its (possibly new, now-unfrozen) sorted position with the
+  // same visual treatment a freshly-created row gets, instead of silently
+  // snapping there. Fires on ANY close (Done, Cancel-revert, delete, or the
+  // row's own collapse chevron) since they all just change openItemId.
+  const prevOpenItemIdRef = React.useRef(null);
+  React.useEffect(() => {
+    const prev = prevOpenItemIdRef.current;
+    if (prev != null && prev !== openItemId) setInsertItemId(prev);
+    prevOpenItemIdRef.current = openItemId;
+  }, [openItemId]);
   // Inline delete confirmation, shared by items and pickers:
   //   { kind: 'item' | 'picker', id }
   const [confirmDel, setConfirmDel] = React.useState(null);
@@ -1266,6 +1281,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
             };
           };
           const sortedItems = [...items].sort((a, b) => compareSortEntries(itemSortEntry(a), itemSortEntry(b), itemSort));
+          const displayItems = freezeEditedRow(sortedItems, openItemId, justAddedItemRef.current, frozenItemIndexRef);
           return (
             <section key={pk.id} data-picker-id={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''} ${highlightEditTourPickerHeaders ? 'ob-tour-pulse' : ''}`}
                      onAnimationEnd={(e) => {
@@ -1361,7 +1377,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                         <SortSelect id={`item-sort-${pk.id}`} label="Sort" options={pickerItemSortOptions(pk.mode)}
                                     value={itemSort} onChange={(key) => actions.setDataSort(pk.id, key)} />
                       )}
-                      {sortedItems.map((it) => {
+                      {displayItems.map((it) => {
                         const itemOpen = openItemId === it.id;
                         // Same fallback the picking engine itself uses for an
                         // item with no ease band of its own (see

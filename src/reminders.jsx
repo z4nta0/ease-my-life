@@ -4,7 +4,7 @@ import { emlTour } from './eml-tour-bus.js';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { OB_REMINDER_CARD_TEXT, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { TASKS } from './tasks.js';
-import { Btn, Collapse, compareSortEntries, Icon, InfoTip, SortSelect, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { Btn, Collapse, compareSortEntries, freezeEditedRow, Icon, InfoTip, SortSelect, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
 
 // Reminders UI — shared components for manual, statically-scheduled tasks.
 // Rendered in two places:
@@ -1119,6 +1119,20 @@ function ReminderManager({ state, actions, hidden }) {
   const justAddedRef = React.useRef(null);
   // Id of a just-inserted reminder row, so it plays the slide-in entrance once.
   const [insertId, setInsertId] = React.useState(null);
+  // Frozen render-position for whichever reminder is open — see
+  // freezeEditedRow (tab-data.jsx's picker items use the same helper).
+  const frozenTaskIndexRef = React.useRef(null);
+  // Replays the insert entrance animation once a reminder's editor closes, so
+  // it settles into its (possibly new, now-unfrozen) sorted position with the
+  // same visual treatment a freshly-created row gets, instead of silently
+  // snapping there. Fires on ANY close (Done, Cancel-revert, delete, or the
+  // row's own collapse chevron) since they all just change openId.
+  const prevOpenIdRef = React.useRef(null);
+  React.useEffect(() => {
+    const prev = prevOpenIdRef.current;
+    if (prev != null && prev !== openId) setInsertId(prev);
+    prevOpenIdRef.current = openId;
+  }, [openId]);
   const tasks = (state.tasks || []).filter((t) => !t.hidden);
   const opts = TASKS.normalizeOpts(state.reminderOpts);
   const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort.reminders) || 'name-asc';
@@ -1127,6 +1141,7 @@ function ReminderManager({ state, actions, hidden }) {
     { name: b.name, type: TASKS.isRecurring(b) ? 'Recurring' : 'One-time', group: null, count: null, isActive: null },
     itemSort,
   ));
+  const displayTasks = freezeEditedRow(sortedTasks, openId, justAddedRef.current, frozenTaskIndexRef);
   // Main section collapse persists (like the pickers) so it survives tab
   // switches. Reserved key '__reminders_main'; defaults COLLAPSED, so absent =
   // collapsed and explicit false = expanded.
@@ -1212,7 +1227,7 @@ function ReminderManager({ state, actions, hidden }) {
                     <SortSelect id="rem-item-sort" label="Sort" options={REMINDER_ITEM_SORT_OPTIONS}
                                 value={itemSort} onChange={(key) => actions.setDataSort('reminders', key)} />
                   )}
-                  {sortedTasks.map((t) => {
+                  {displayTasks.map((t) => {
               const cardOpen = openId === t.id;
               const once = t.repeat === 'once';
               return (

@@ -580,4 +580,31 @@ function SortSelect({ id, label, options, value, onChange }) {
   );
 }
 
-export { Icon, Btn, Card, Collapse, Pill, ProgressBar, NumStepper, InfoTip, WeekdayChips, BoostReset, FillButton, fmtDate, fmtDateLong, fmtTime, compareSortEntries, SortSelect };
+// Keeps whichever row is currently open for editing from jumping around a
+// live sort (picker items and reminders both write each keystroke straight
+// to the store, so their sort key can change mid-edit): a brand-new row
+// (still being named for the first time, id === justCreatedId) pins to the
+// very top, matching where its own "+ Add" button sits, rather than wherever
+// its still-default values would otherwise sort it; an existing row being
+// edited freezes at whatever index it already occupied when editing began,
+// instead of chasing its live-typed values through the sort in real time.
+// `frozenRef` is a plain useRef({}) owned by the caller, persisted across
+// renders for as long as openId stays the same — the caller is responsible
+// for replaying the row's entrance animation once its editor actually closes
+// (openId changes away), so it settles into its now-current live position
+// with the same visual treatment a freshly-created row already gets, rather
+// than silently snapping there.
+function freezeEditedRow(sortedList, openId, justCreatedId, frozenRef) {
+  if (openId == null) { frozenRef.current = null; return sortedList; }
+  const liveIndex = sortedList.findIndex((x) => x.id === openId);
+  if (liveIndex === -1) return sortedList;   // this list doesn't hold the open row
+  if (!frozenRef.current || frozenRef.current.id !== openId) {
+    frozenRef.current = { id: openId, index: openId === justCreatedId ? 0 : liveIndex };
+  }
+  const openRow = sortedList[liveIndex];
+  const rest = sortedList.filter((x) => x.id !== openId);
+  const index = Math.min(frozenRef.current.index, rest.length);
+  return [...rest.slice(0, index), openRow, ...rest.slice(index)];
+}
+
+export { Icon, Btn, Card, Collapse, Pill, ProgressBar, NumStepper, InfoTip, WeekdayChips, BoostReset, FillButton, fmtDate, fmtDateLong, fmtTime, compareSortEntries, SortSelect, freezeEditedRow };
