@@ -122,12 +122,12 @@ const REPEAT_STEP_COPY = {
   },
   monthly: {
     title: 'Select day of the month',
-    lead: 'how often and which day of the month a recurring reminder will show up in your todo list',
+    lead: 'how often and which day or weekday of the month a recurring reminder will show up in your todo list',
     tail: '.',
   },
   annual: {
     title: 'Select day of the year',
-    lead: 'how often and which day of the year a recurring reminder will show up in your todo list',
+    lead: 'how often and which day or weekday of the year a recurring reminder will show up in your todo list',
     tail: '.',
   },
 };
