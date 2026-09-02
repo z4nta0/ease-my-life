@@ -32,12 +32,12 @@ function relWhen(iso) {
 }
 
 const STAT_RANGES = [
-  { key: 'week',  label: 'Week',     days: 7   },
-  { key: 'month', label: 'Month',    days: 30  },
-  { key: '3m',    label: '3 months', days: 90  },
-  { key: '6m',    label: '6 months', days: 182 },
-  { key: 'year',  label: '1 year',   days: 365 },
   { key: 'all',   label: 'All time', days: Infinity },
+  { key: 'year',  label: '1 year',   days: 365 },
+  { key: '6m',    label: '6 months', days: 182 },
+  { key: '3m',    label: '3 months', days: 90  },
+  { key: 'month', label: 'Month',    days: 30  },
+  { key: 'week',  label: 'Week',     days: 7   },
 ];
 
 // How each Today pick came to be — kept on-palette (accent + warm) so the bar
@@ -190,7 +190,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   // slide in from the matching side. Cleared to '' on any non-paging change.
   const [heatDir, setHeatDir] = React.useState('');
 
-  const rangeDef = STAT_RANGES.find((r) => r.key === range) || STAT_RANGES[5];
+  const rangeDef = STAT_RANGES.find((r) => r.key === range) || STAT_RANGES[0];
   const rangeNoun = range === 'all' ? 'all time' : `the last ${rangeDef.label.toLowerCase()}`;
   const rangeKicker = range === 'all' ? 'All time' : `Last ${rangeDef.label.toLowerCase()}`;
 
