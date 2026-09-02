@@ -815,6 +815,20 @@
   font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--muted);
 }
+/* Data tab's section-list sort — top right, below the filter rows, above the
+   section list itself. Reused as-is (see SortSelect) for each section's own
+   item-list sort control too. */
+.data-sort-bar { display: flex; justify-content: flex-end; margin: -2px 0 4px; }
+.data-sort-row { display: flex; align-items: center; gap: 8px; }
+.data-sort-lbl {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted);
+}
+.data-sort-sel {
+  width: auto; max-width: none; margin-top: 0;
+  padding: 6px 10px; font-size: 13px; cursor: pointer;
+}
 /* Data tab has a longer "Conditionals" label — widen its filter labels (which
    narrows the pill/card rows accordingly, since the row is flex). */
 .data-empty { padding: 40px 4px; text-align: center; }

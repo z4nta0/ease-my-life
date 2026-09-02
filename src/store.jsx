@@ -1695,6 +1695,13 @@ function useStore(opts) {
       const next = { ...cur, [id]: !now };
       return { ...s, ui: { ...(s.ui || {}), controlsCollapsed: next } };
     }),
+
+    // Persisted sort preference for the Data tab. `scope` is 'sections' (the
+    // top-level Conditionals/Reminders/picker card order) or a picker id /
+    // 'conditionals' / 'reminders' (that section's own item-list order).
+    setDataSort: (scope, key) => setState((s) => ({
+      ...s, ui: { ...(s.ui || {}), dataSort: { ...((s.ui && s.ui.dataSort) || {}), [scope]: key } },
+    })),
   }), []);
 
   return [state, actions];

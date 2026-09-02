@@ -17,6 +17,89 @@ import { seedHelpPickers, clearHelpPickers, seedHelpTasks, clearHelpTasks } from
 // picker deletion, and per-picker Daily-generator scheduling (weekday +
 // skip-holiday gates). The global "days off" holiday list lives in Settings.
 
+// Shared sort vocabulary for the Data tab's section list (Conditionals /
+// Reminders / each picker card) and, per section, its own item list — each
+// list builds its own array of { name, type, group, count, isActive } rows
+// (fields that don't apply to a given row are `null`) and sorts them with
+// this one comparator, keyed by e.g. 'name-asc' or 'count-desc'.
+// `group`/`isActive` are N/A (null) for anything that doesn't have a
+// meaningful single value for that field (the Conditionals/Reminders
+// section as a whole, or an item type with no such concept) — those sort to
+// the top for the forward direction and the bottom for the reverse, rather
+// than being forced into a fake value. Ties fall back to name (A–Z), and a
+// reverse sort flips that tie-break too, not just the primary field.
+function compareSortEntries(a, b, sortKey) {
+  const [field, dir] = sortKey.split('-');
+  const reverse = dir === 'desc';
+  const byName = () => a.name.localeCompare(b.name);
+  // Returns a real comparison result if either side is N/A, or null to mean
+  // "both are real values — caller does the actual field comparison".
+  const withNA = (av, bv) => {
+    const aNA = av == null, bNA = bv == null;
+    if (aNA && bNA) return byName();
+    if (aNA) return reverse ? 1 : -1;
+    if (bNA) return reverse ? -1 : 1;
+    return null;
+  };
+  switch (field) {
+    case 'name':
+      return reverse ? -byName() : byName();
+    case 'type': {
+      const primary = a.type.localeCompare(b.type);
+      return (reverse ? -primary : primary) || byName();
+    }
+    case 'group': {
+      const na = withNA(a.group, b.group);
+      if (na != null) return na;
+      const primary = a.group.localeCompare(b.group);
+      return (reverse ? -primary : primary) || byName();
+    }
+    case 'count': {
+      const primary = a.count - b.count;
+      return (reverse ? -primary : primary) || byName();
+    }
+    case 'active': {
+      const na = withNA(a.isActive, b.isActive);
+      if (na != null) return na;
+      if (a.isActive !== b.isActive) {
+        const primary = a.isActive ? -1 : 1;
+        return reverse ? -primary : primary;
+      }
+      return byName();
+    }
+    default:
+      return byName();
+  }
+}
+
+// Section-list sort options (Conditionals / Reminders / each picker card).
+const SECTION_SORT_OPTIONS = [
+  { key: 'name-asc', label: 'Name (A–Z)' },
+  { key: 'name-desc', label: 'Name (Z–A)' },
+  { key: 'type-asc', label: 'Type (A–Z)' },
+  { key: 'type-desc', label: 'Type (Z–A)' },
+  { key: 'group-asc', label: 'Group (A–Z)' },
+  { key: 'group-desc', label: 'Group (Z–A)' },
+  { key: 'count-asc', label: 'Item Count (Low to High)' },
+  { key: 'count-desc', label: 'Item Count (High to Low)' },
+  { key: 'active-asc', label: 'Active to Inactive' },
+  { key: 'active-desc', label: 'Inactive to Active' },
+];
+
+// A small labeled <select> reused for both the section-list sort and each
+// section's own item-list sort.
+function SortSelect({ id, label, options, value, onChange }) {
+  return (
+    <div className="data-sort-row">
+      <label className="data-sort-lbl" htmlFor={id}>{label}</label>
+      <select id={id} className="np-input data-sort-sel" value={value}
+              onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
+      </select>
+    </div>
+  );
+}
+
 // Shown in the (?) tip beside an ease-up picker's Soonest / Latest controls —
 // warns that with many items the per-item range is a tendency, not a guarantee.
 
@@ -948,6 +1031,35 @@ function TabData({ state, actions, onHome, onNavTab }) {
     ? []
     : (scope === 'all' ? visiblePickers : visiblePickers.filter((p) => p.id === scope));
 
+  // Section sort — orders the top-level Conditionals / Reminders / picker
+  // cards. "Type" for Conditionals/Reminders is just their own section name
+  // (there's only ever one of each); a picker's is its mode label. Group and
+  // Active/Inactive have no meaning for Conditionals/Reminders as a WHOLE
+  // section (individual conditionals/reminders have their own states, but
+  // the section itself doesn't) — those sort as "N/A", always at the top for
+  // the forward sort and the bottom for its reverse, per instruction, rather
+  // than being force-fit into a fake group/active value.
+  const remindersCount = (state.tasks || []).filter((t) => !t.hidden).length;
+  const pickerSectionMeta = React.useMemo(() => {
+    const m = new Map();
+    for (const p of shownPickers) {
+      const its = state.items.filter((i) => i.pickerId === p.id);
+      m.set(p.id, { count: its.length, isActive: !(its.length > 0 && its.every((i) => i.vacation)) });
+    }
+    return m;
+  }, [shownPickers, state.items]);
+  const sectionSort = (state.ui && state.ui.dataSort && state.ui.dataSort.sections) || 'name-asc';
+  const sectionEntries = React.useMemo(() => {
+    const entries = [];
+    if (showConditionals) entries.push({ kind: 'conditionals', name: 'Conditionals', type: 'Conditionals', group: null, count: conditionals.length, isActive: null });
+    if (showReminders) entries.push({ kind: 'reminders', name: 'Reminders', type: 'Reminders', group: null, count: remindersCount, isActive: null });
+    for (const p of shownPickers) {
+      const meta = pickerSectionMeta.get(p.id) || { count: 0, isActive: true };
+      entries.push({ kind: 'picker', pk: p, name: p.name, type: MODES[p.mode].label, group: p.group || null, count: meta.count, isActive: meta.isActive });
+    }
+    return entries.sort((a, b) => compareSortEntries(a, b, sectionSort));
+  }, [showConditionals, showReminders, shownPickers, pickerSectionMeta, conditionals.length, remindersCount, sectionSort]);
+
   return (
     <div className="tab tab--data">
       <HelpOverlay active={helpOn} items={DATA_HELP_ITEMS} onExit={helpExit} />
@@ -1088,8 +1200,14 @@ function TabData({ state, actions, onHome, onNavTab }) {
         </div>
       </div>
 
-      {showConditionals && <ConditionalsManager state={state} actions={actions} key="cnd-shown" />}
-      {showReminders && <ReminderManager state={state} actions={actions} key="rem-shown" />}
+      {/* Section sort — orders Conditionals / Reminders / each picker card
+          below. Only meaningful with more than one section in view, but
+          left visible either way rather than popping in/out as filters
+          change. */}
+      <div className="data-sort-bar">
+        <SortSelect id="data-section-sort" label="Sort" options={SECTION_SORT_OPTIONS}
+                    value={sectionSort} onChange={(key) => actions.setDataSort('sections', key)} />
+      </div>
 
       <div className="data-list" key={statGroup + '::' + scope + '::' + condFilter}>
         {!showConditionals && !showReminders && shownPickers.length === 0 && (
@@ -1098,7 +1216,10 @@ function TabData({ state, actions, onHome, onNavTab }) {
             <p className="data-empty-sub">No items match the current Group, Conditionals, and Show selections. Try widening a filter to “All”.</p>
           </div>
         )}
-        {shownPickers.map((pk, pkIndex) => {
+        {sectionEntries.map((entry, pkIndex) => {
+          if (entry.kind === 'conditionals') return <ConditionalsManager state={state} actions={actions} key="cnd-shown" />;
+          if (entry.kind === 'reminders') return <ReminderManager state={state} actions={actions} key="rem-shown" />;
+          const pk = entry.pk;
           const items = state.items.filter((i) => i.pickerId === pk.id);
           const eligible = items.filter((i) => !i.vacation).length;
           const allVac = items.length > 0 && items.every((i) => i.vacation);
