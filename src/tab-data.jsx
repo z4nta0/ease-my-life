@@ -8,7 +8,7 @@ import { ReminderManager } from './reminders.jsx';
 import { MODES } from './seed.js';
 import { ConditionalControls, conditionalDraftDefault } from './tab-conditional.jsx';
 import { EntryEditor } from './tab-today.jsx';
-import { Btn, Collapse, FillButton, Icon, InfoTip, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { Btn, Collapse, compareSortEntries, FillButton, Icon, InfoTip, SortSelect, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
 import { HelpButton, HelpOverlay } from './help-mode.jsx';
 import { DATA_HELP_ITEMS } from './help-content.jsx';
 import { seedHelpPickers, clearHelpPickers, seedHelpTasks, clearHelpTasks } from './help-sample-data.js';
@@ -16,61 +16,6 @@ import { seedHelpPickers, clearHelpPickers, seedHelpTasks, clearHelpTasks } from
 // Data tab — items grouped by their owning picker, plus weights, vacation,
 // picker deletion, and per-picker Daily-generator scheduling (weekday +
 // skip-holiday gates). The global "days off" holiday list lives in Settings.
-
-// Shared sort vocabulary for the Data tab's section list (Conditionals /
-// Reminders / each picker card) and, per section, its own item list — each
-// list builds its own array of { name, type, group, count, isActive } rows
-// (fields that don't apply to a given row are `null`) and sorts them with
-// this one comparator, keyed by e.g. 'name-asc' or 'count-desc'.
-// `group`/`isActive` are N/A (null) for anything that doesn't have a
-// meaningful single value for that field (the Conditionals/Reminders
-// section as a whole, or an item type with no such concept) — those sort to
-// the top for the forward direction and the bottom for the reverse, rather
-// than being forced into a fake value. Ties fall back to name (A–Z), and a
-// reverse sort flips that tie-break too, not just the primary field.
-function compareSortEntries(a, b, sortKey) {
-  const [field, dir] = sortKey.split('-');
-  const reverse = dir === 'desc';
-  const byName = () => a.name.localeCompare(b.name);
-  // Returns a real comparison result if either side is N/A, or null to mean
-  // "both are real values — caller does the actual field comparison".
-  const withNA = (av, bv) => {
-    const aNA = av == null, bNA = bv == null;
-    if (aNA && bNA) return byName();
-    if (aNA) return reverse ? 1 : -1;
-    if (bNA) return reverse ? -1 : 1;
-    return null;
-  };
-  switch (field) {
-    case 'name':
-      return reverse ? -byName() : byName();
-    case 'type': {
-      const primary = a.type.localeCompare(b.type);
-      return (reverse ? -primary : primary) || byName();
-    }
-    case 'group': {
-      const na = withNA(a.group, b.group);
-      if (na != null) return na;
-      const primary = a.group.localeCompare(b.group);
-      return (reverse ? -primary : primary) || byName();
-    }
-    case 'count': {
-      const primary = a.count - b.count;
-      return (reverse ? -primary : primary) || byName();
-    }
-    case 'active': {
-      const na = withNA(a.isActive, b.isActive);
-      if (na != null) return na;
-      if (a.isActive !== b.isActive) {
-        const primary = a.isActive ? -1 : 1;
-        return reverse ? -primary : primary;
-      }
-      return byName();
-    }
-    default:
-      return byName();
-  }
-}
 
 // Section-list sort options (Conditionals / Reminders / each picker card).
 const SECTION_SORT_OPTIONS = [
@@ -86,18 +31,44 @@ const SECTION_SORT_OPTIONS = [
   { key: 'active-desc', label: 'Inactive to Active' },
 ];
 
-// A small labeled <select> reused for both the section-list sort and each
-// section's own item-list sort.
-function SortSelect({ id, label, options, value, onChange }) {
-  return (
-    <div className="data-sort-row">
-      <label className="data-sort-lbl" htmlFor={id}>{label}</label>
-      <select id={id} className="np-input data-sort-sel" value={value}
-              onChange={(e) => onChange(e.target.value)}>
-        {options.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
-      </select>
-    </div>
-  );
+// Item-list sort options — extrapolated from SECTION_SORT_OPTIONS' own
+// vocabulary, adapted to what an individual item actually has. None of these
+// contexts have a meaningful Group or (sub-)Item Count for a single item, so
+// neither option is offered at this level, unlike the section list above.
+const CONDITIONAL_ITEM_SORT_OPTIONS = [
+  { key: 'name-asc', label: 'Name (A–Z)' },
+  { key: 'name-desc', label: 'Name (Z–A)' },
+  { key: 'type-asc', label: 'Type (A–Z)' },
+  { key: 'type-desc', label: 'Type (Z–A)' },
+  { key: 'active-asc', label: 'Active to Inactive' },
+  { key: 'active-desc', label: 'Inactive to Active' },
+];
+// Reminders have no per-item Active/Inactive concept (no enabled/disabled
+// toggle — only a schedule and a today's-completion state, which isn't the
+// same thing), so only Name and Type (One-time vs Recurring) apply.
+const REMINDER_ITEM_SORT_OPTIONS = [
+  { key: 'name-asc', label: 'Name (A–Z)' },
+  { key: 'name-desc', label: 'Name (Z–A)' },
+  { key: 'type-asc', label: 'Type (A–Z)' },
+  { key: 'type-desc', label: 'Type (Z–A)' },
+];
+// A picker's own items have no per-item Type (every item in one picker's
+// pool is the same kind) — instead, ease/weighted/dynamic modes get a
+// mode-specific numeric field (reusing the generic `count` comparator field)
+// in its place: charge for ease-up/down, weight for weighted/dynamic.
+// Truly random has neither a type nor a numeric field, only Name/Active.
+function pickerItemSortOptions(mode) {
+  const opts = [
+    { key: 'name-asc', label: 'Name (A–Z)' },
+    { key: 'name-desc', label: 'Name (Z–A)' },
+  ];
+  if (mode === 'ease-up' || mode === 'ease-down') {
+    opts.push({ key: 'count-asc', label: 'Charge (Low to High)' }, { key: 'count-desc', label: 'Charge (High to Low)' });
+  } else if (mode === 'weighted' || mode === 'dynamic') {
+    opts.push({ key: 'count-asc', label: 'Weight (Low to High)' }, { key: 'count-desc', label: 'Weight (High to Low)' });
+  }
+  opts.push({ key: 'active-asc', label: 'Active to Inactive' }, { key: 'active-desc', label: 'Inactive to Active' });
+  return opts;
 }
 
 // Shown in the (?) tip beside an ease-up picker's Soonest / Latest controls —
@@ -702,6 +673,16 @@ function ConditionalsManager({ state, actions }) {
   // Defaults COLLAPSED: absent = collapsed, explicit false = expanded.
   const collapsedMap = (state.ui && state.ui.controlsCollapsed) || {};
   const open = collapsedMap['__conditionals'] === false;
+  // Item sort — each conditional has its own mode (Type) and active/on-
+  // vacation state, same concepts as a picker card's own Type/Active fields
+  // at the section level; Group and Item Count don't apply to a single
+  // conditional, so those options aren't offered here.
+  const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort.conditionals) || 'name-asc';
+  const sortedConditionals = [...conditionals].sort((a, b) => compareSortEntries(
+    { name: a.name, type: (MODES[a.mode] || {}).label || a.mode, group: null, count: null, isActive: a.active !== false },
+    { name: b.name, type: (MODES[b.mode] || {}).label || b.mode, group: null, count: null, isActive: b.active !== false },
+    itemSort,
+  ));
   const openEditor = (c) => { setPending(null); setDraft({ ...c }); setOpenId(c.id); };
   const closeEditor = () => { setPending(null); setDraft(null); setOpenId(null); };
   // Cancelling a brand-new conditional: collapse the row first (so it animates
@@ -767,7 +748,11 @@ function ConditionalsManager({ state, actions }) {
         {!conditionals.length && !pending && (
           <p className="rd-cnd-empty">No conditionals yet. Add one here, then attach it to any picker.</p>
         )}
-        {(pending ? [pending, ...conditionals] : conditionals).map((c) => {
+        {conditionals.length > 1 && (
+          <SortSelect id="cnd-item-sort" label="Sort" options={CONDITIONAL_ITEM_SORT_OPTIONS}
+                      value={itemSort} onChange={(key) => actions.setDataSort('conditionals', key)} />
+        )}
+        {(pending ? [pending, ...sortedConditionals] : sortedConditionals).map((c) => {
           const isPending = !!pending && c.id === pending.id;
           const isOpen = openId === c.id;
           const uses = usingCount(c.id);
@@ -1229,6 +1214,17 @@ function TabData({ state, actions, onHome, onNavTab }) {
           const inDaily = state.daily.pickerIds.includes(pk.id);
           const ctlCollapsed = !!collapsedMap[pk.id + ':controls'];
           const itemsCollapsed = !!collapsedMap[pk.id + ':items'];
+          // Item sort — see pickerItemSortOptions for why the available
+          // options vary by mode (a mode-specific numeric field standing in
+          // for the generic 'count' comparator field: charge for ease modes,
+          // weight for weighted/dynamic; truly random has neither).
+          const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort[pk.id]) || 'name-asc';
+          const itemSortEntry = (it) => ({
+            name: it.name, type: null, group: null,
+            count: isEase ? (it.value ?? 0) : (usesWeight ? (it.weight ?? 1) : null),
+            isActive: !it.vacation,
+          });
+          const sortedItems = [...items].sort((a, b) => compareSortEntries(itemSortEntry(a), itemSortEntry(b), itemSort));
           return (
             <section key={pk.id} data-picker-id={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''} ${highlightEditTourPickerHeaders ? 'ob-tour-pulse' : ''}`}
                      onAnimationEnd={(e) => {
@@ -1320,7 +1316,11 @@ function TabData({ state, actions, onHome, onNavTab }) {
                           <Icon name="plus" size={13} /> Add to {pk.name.toLowerCase()}
                         </button>
                       )}
-                      {items.map((it) => {
+                      {items.length > 1 && (
+                        <SortSelect id={`item-sort-${pk.id}`} label="Sort" options={pickerItemSortOptions(pk.mode)}
+                                    value={itemSort} onChange={(key) => actions.setDataSort(pk.id, key)} />
+                      )}
+                      {sortedItems.map((it) => {
                         const itemOpen = openItemId === it.id;
                         // Same fallback the picking engine itself uses for an
                         // item with no ease band of its own (see

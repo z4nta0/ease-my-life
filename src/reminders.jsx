@@ -4,7 +4,7 @@ import { emlTour } from './eml-tour-bus.js';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { OB_REMINDER_CARD_TEXT, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { TASKS } from './tasks.js';
-import { Btn, Collapse, Icon, InfoTip, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { Btn, Collapse, compareSortEntries, Icon, InfoTip, SortSelect, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
 
 // Reminders UI — shared components for manual, statically-scheduled tasks.
 // Rendered in two places:
@@ -1098,6 +1098,19 @@ function ReminderControls({ opts, actions, onCollapse }) {
   );
 }
 
+// Item-list sort options for the Data tab's Reminders section — extrapolated
+// from the same vocabulary as the Data tab's own section/item sorts (see
+// compareSortEntries in ui.jsx). Reminders have no per-item Active/Inactive
+// concept (no enabled/disabled toggle — only a schedule and a today's-
+// completion state, which isn't the same thing) and no Group, so only Name
+// and Type (One-time vs Recurring) apply.
+const REMINDER_ITEM_SORT_OPTIONS = [
+  { key: 'name-asc', label: 'Name (A–Z)' },
+  { key: 'name-desc', label: 'Name (Z–A)' },
+  { key: 'type-asc', label: 'Type (A–Z)' },
+  { key: 'type-desc', label: 'Type (Z–A)' },
+];
+
 function ReminderManager({ state, actions, hidden }) {
   const [openId, setOpenId] = React.useState(null);
   // Tracks a reminder that was just created via “New reminder” and hasn't been
@@ -1108,6 +1121,12 @@ function ReminderManager({ state, actions, hidden }) {
   const [insertId, setInsertId] = React.useState(null);
   const tasks = (state.tasks || []).filter((t) => !t.hidden);
   const opts = TASKS.normalizeOpts(state.reminderOpts);
+  const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort.reminders) || 'name-asc';
+  const sortedTasks = [...tasks].sort((a, b) => compareSortEntries(
+    { name: a.name, type: TASKS.isRecurring(a) ? 'Recurring' : 'One-time', group: null, count: null, isActive: null },
+    { name: b.name, type: TASKS.isRecurring(b) ? 'Recurring' : 'One-time', group: null, count: null, isActive: null },
+    itemSort,
+  ));
   // Main section collapse persists (like the pickers) so it survives tab
   // switches. Reserved key '__reminders_main'; defaults COLLAPSED, so absent =
   // collapsed and explicit false = expanded.
@@ -1188,7 +1207,12 @@ function ReminderManager({ state, actions, hidden }) {
               {tasks.length === 0 ? (
                 <div className="rd-empty">No reminders yet. Add one to see it on Today.</div>
               ) : (
-                tasks.map((t) => {
+                <>
+                  {tasks.length > 1 && (
+                    <SortSelect id="rem-item-sort" label="Sort" options={REMINDER_ITEM_SORT_OPTIONS}
+                                value={itemSort} onChange={(key) => actions.setDataSort('reminders', key)} />
+                  )}
+                  {sortedTasks.map((t) => {
               const cardOpen = openId === t.id;
               const once = t.repeat === 'once';
               return (
@@ -1273,8 +1297,9 @@ function ReminderManager({ state, actions, hidden }) {
                   </Collapse>
                 </div>
               );
-            })
-          )}
+                  })}
+                </>
+              )}
             </React.Fragment>
           </Collapse>
         </div>

@@ -481,4 +481,74 @@ function FillButton({ label, onClick, disabled }) {
   );
 }
 
-export { Icon, Btn, Card, Collapse, Pill, ProgressBar, NumStepper, InfoTip, WeekdayChips, BoostReset, FillButton, fmtDate, fmtDateLong, fmtTime };
+// Shared sort vocabulary for the Data tab's section list (Conditionals /
+// Reminders / each picker card) and, per section, its own item list (picker
+// pool items, conditionals, reminders) — each list builds its own array of
+// { name, type, group, count, isActive } rows (fields that don't apply to a
+// given row are `null`) and sorts them with this one comparator, keyed by
+// e.g. 'name-asc' or 'count-desc'. `group`/`isActive` are N/A (null) for
+// anything that doesn't have a meaningful single value for that field (the
+// Conditionals/Reminders section as a whole, or an item type with no such
+// concept) — those sort to the top for the forward direction and the bottom
+// for the reverse, rather than being forced into a fake value. Ties fall
+// back to name (A–Z), and a reverse sort flips that tie-break too, not just
+// the primary field.
+function compareSortEntries(a, b, sortKey) {
+  const [field, dir] = sortKey.split('-');
+  const reverse = dir === 'desc';
+  const byName = () => a.name.localeCompare(b.name);
+  // Returns a real comparison result if either side is N/A, or null to mean
+  // "both are real values — caller does the actual field comparison".
+  const withNA = (av, bv) => {
+    const aNA = av == null, bNA = bv == null;
+    if (aNA && bNA) return byName();
+    if (aNA) return reverse ? 1 : -1;
+    if (bNA) return reverse ? -1 : 1;
+    return null;
+  };
+  switch (field) {
+    case 'name':
+      return reverse ? -byName() : byName();
+    case 'type': {
+      const primary = a.type.localeCompare(b.type);
+      return (reverse ? -primary : primary) || byName();
+    }
+    case 'group': {
+      const na = withNA(a.group, b.group);
+      if (na != null) return na;
+      const primary = a.group.localeCompare(b.group);
+      return (reverse ? -primary : primary) || byName();
+    }
+    case 'count': {
+      const primary = a.count - b.count;
+      return (reverse ? -primary : primary) || byName();
+    }
+    case 'active': {
+      const na = withNA(a.isActive, b.isActive);
+      if (na != null) return na;
+      if (a.isActive !== b.isActive) {
+        const primary = a.isActive ? -1 : 1;
+        return reverse ? -primary : primary;
+      }
+      return byName();
+    }
+    default:
+      return byName();
+  }
+}
+
+// A small labeled <select> reused for every sort control on the Data tab —
+// the section-list sort and each section's own item-list sort.
+function SortSelect({ id, label, options, value, onChange }) {
+  return (
+    <div className="data-sort-row">
+      <label className="data-sort-lbl" htmlFor={id}>{label}</label>
+      <select id={id} className="np-input data-sort-sel" value={value}
+              onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
+      </select>
+    </div>
+  );
+}
+
+export { Icon, Btn, Card, Collapse, Pill, ProgressBar, NumStepper, InfoTip, WeekdayChips, BoostReset, FillButton, fmtDate, fmtDateLong, fmtTime, compareSortEntries, SortSelect };
