@@ -34,20 +34,29 @@ const SECTION_SORT_OPTIONS = [
 // Item-list sort options — extrapolated from SECTION_SORT_OPTIONS' own
 // vocabulary, adapted to what an individual item actually has. Group and
 // (sub-)Item Count have no meaning for a single item, so neither is offered
-// at this level, unlike the section list above. Range (the ease band's
-// soonest/shortest end — see conditionalRange) is only meaningful for
-// ease-up/ease-down conditionals; it's irrelevant (not just missing) for
-// random/weighted/dynamic ones mixed into the same list, so those always
-// sort to the bottom regardless of direction (see compareSortEntries'
-// withNAAlwaysLast) rather than flipping to the top on Range (High to Low)
-// the way a genuinely-missing value would. Its label also stays generic
-// here rather than switching to "Soonest"/"Shortest" the way a single-mode
-// picker's own item list can (see pickerItemSortOptions).
+// at this level, unlike the section list above. Odds (weighted/dynamic),
+// Boost (dynamic only), and Range (the ease band's soonest/shortest end —
+// see conditionalRange) are each meaningful for only some conditional modes,
+// mixed into the same list as ones they don't apply to; on those other rows
+// they're irrelevant (not just missing), so they always sort to the bottom
+// regardless of direction (see compareSortEntries' numericAlwaysLast) rather
+// than flipping to the top on a "High to Low" sort the way a genuinely
+// missing value would. Their labels also stay generic here rather than
+// switching wording per mode the way a single-mode picker's own item list
+// can (see pickerItemSortOptions, e.g. Range's Soonest/Shortest). Odds (not
+// "Weight", despite the picker-item-sort analog being called that) because
+// a conditional's `weight` field is vestigial — its actual weighted/dynamic
+// trigger-likelihood knob is `oddsPct`, which its own editor calls Odds (see
+// conditionalOdds and conditionals.js' trueOdds).
 const CONDITIONAL_ITEM_SORT_OPTIONS = [
   { key: 'name-asc', label: 'Name (A–Z)' },
   { key: 'name-desc', label: 'Name (Z–A)' },
   { key: 'type-asc', label: 'Type (A–Z)' },
   { key: 'type-desc', label: 'Type (Z–A)' },
+  { key: 'odds-asc', label: 'Odds (Low to High)' },
+  { key: 'odds-desc', label: 'Odds (High to Low)' },
+  { key: 'boost-asc', label: 'Boost (Low to High)' },
+  { key: 'boost-desc', label: 'Boost (High to Low)' },
   { key: 'range-asc', label: 'Range (Low to High)' },
   { key: 'range-desc', label: 'Range (High to Low)' },
   { key: 'active-asc', label: 'Active to Inactive' },
@@ -683,17 +692,28 @@ function ConditionalsManager({ state, actions }) {
   // Item sort — each conditional has its own mode (Type) and active/on-
   // vacation state, same concepts as a picker card's own Type/Active fields
   // at the section level; Group and Item Count don't apply to a single
-  // conditional, so those options aren't offered here. Ease-up/ease-down
-  // conditionals also get a Range value — same soonest/latest-band math the
-  // conditional's own editor uses (see tab-conditional.jsx), collapsed to its
-  // near end; other modes have no such band, so it's N/A (null) for them.
+  // conditional, so those options aren't offered here. Weighted/dynamic
+  // conditionals get an Odds value — `oddsPct`, the actual trigger-likelihood
+  // knob those modes use (see conditionals.js' trueOdds); the conditional's
+  // own `weight` field is never read anywhere and always sits at its default,
+  // so it isn't a meaningful sort key the way a picker item's real `weight`
+  // is. Dynamic ones also get a Boost value (the same `value` field ease
+  // modes reuse for Range/charge — its meaning depends entirely on mode,
+  // hence the separate descriptor fields), and ease-up/ease-down
+  // conditionals get a Range value — same soonest/latest-band math the
+  // conditional's own editor uses (see tab-conditional.jsx), collapsed to
+  // its near end. Any mode a given field doesn't apply to gets null for it.
   const conditionalRange = (c) => (c.mode === 'ease-up' || c.mode === 'ease-down')
     ? Math.max(1, Math.round((c.threshold ?? 100) / (c.easeMax ?? 14)))
     : null;
+  const conditionalOdds = (c) => (c.mode === 'weighted' || c.mode === 'dynamic') ? (c.oddsPct ?? 50) : null;
+  const conditionalBoost = (c) => (c.mode === 'dynamic') ? (c.value ?? 0) : null;
   const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort.conditionals) || 'name-asc';
   const sortedConditionals = [...conditionals].sort((a, b) => compareSortEntries(
-    { name: a.name, type: (MODES[a.mode] || {}).label || a.mode, group: null, count: null, range: conditionalRange(a), isActive: a.active !== false },
-    { name: b.name, type: (MODES[b.mode] || {}).label || b.mode, group: null, count: null, range: conditionalRange(b), isActive: b.active !== false },
+    { name: a.name, type: (MODES[a.mode] || {}).label || a.mode, group: null, count: null,
+      range: conditionalRange(a), odds: conditionalOdds(a), boost: conditionalBoost(a), isActive: a.active !== false },
+    { name: b.name, type: (MODES[b.mode] || {}).label || b.mode, group: null, count: null,
+      range: conditionalRange(b), odds: conditionalOdds(b), boost: conditionalBoost(b), isActive: b.active !== false },
     itemSort,
   ));
   const openEditor = (c) => { setPending(null); setDraft({ ...c }); setOpenId(c.id); };

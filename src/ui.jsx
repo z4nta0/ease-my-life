@@ -484,19 +484,21 @@ function FillButton({ label, onClick, disabled }) {
 // Shared sort vocabulary for the Data tab's section list (Conditionals /
 // Reminders / each picker card) and, per section, its own item list (picker
 // pool items, conditionals, reminders) — each list builds its own array of
-// { name, type, group, count, range, isActive } rows (fields that don't
-// apply to a given row are `null`) and sorts them with this one comparator,
-// keyed by e.g. 'name-asc' or 'count-desc'. `group`/`isActive` are N/A
-// (null) for anything that doesn't have a meaningful single value for that
-// field (the Conditionals/Reminders section as a whole, or an item type with
-// no such concept) — those sort to the top for the forward direction and the
-// bottom for the reverse, rather than being forced into a fake value. `range`
-// is N/A for a conditional whose mode isn't ease-up/ease-down (mixed into the
-// same list as ones that are) and instead always sorts to the bottom in
-// EITHER direction, since it's simply irrelevant to that row rather than a
-// missing value to place relative to a direction. Ties always fall back to
-// name (A–Z); a reverse sort only flips the primary field's comparison,
-// never that tie-break.
+// { name, type, group, count, range, odds, boost, isActive } rows (fields
+// that don't apply to a given row are `null`) and sorts them with this one
+// comparator, keyed by e.g. 'name-asc' or 'count-desc'. `group`/`isActive`
+// are N/A (null) for anything that doesn't have a meaningful single value
+// for that field (the Conditionals/Reminders section as a whole, or an item
+// type with no such concept) — those sort to the top for the forward
+// direction and the bottom for the reverse, rather than being forced into a
+// fake value. `range`/`odds`/`boost` are different: null on a row means the
+// field is irrelevant to that row's own mode (mixed into the same list as
+// rows it does apply to — e.g. Odds/Boost only mean something for a
+// weighted/dynamic conditional, Range only for an ease-up/ease-down one), so
+// those always sort to the bottom in EITHER direction, rather than flipping
+// to the top on a reverse sort the way a genuinely missing value would. Ties
+// always fall back to name (A–Z); a reverse sort only flips the primary
+// field's comparison, never that tie-break.
 function compareSortEntries(a, b, sortKey) {
   const [field, dir] = sortKey.split('-');
   const reverse = dir === 'desc';
@@ -520,6 +522,13 @@ function compareSortEntries(a, b, sortKey) {
     if (bNA) return -1;
     return null;
   };
+  // A numeric field using the "irrelevant, not missing" N/A rule above.
+  const numericAlwaysLast = (av, bv) => {
+    const na = withNAAlwaysLast(av, bv);
+    if (na != null) return na;
+    const primary = av - bv;
+    return (reverse ? -primary : primary) || byName();
+  };
   switch (field) {
     case 'name':
       return reverse ? -byName() : byName();
@@ -537,12 +546,12 @@ function compareSortEntries(a, b, sortKey) {
       const primary = a.count - b.count;
       return (reverse ? -primary : primary) || byName();
     }
-    case 'range': {
-      const na = withNAAlwaysLast(a.range, b.range);
-      if (na != null) return na;
-      const primary = a.range - b.range;
-      return (reverse ? -primary : primary) || byName();
-    }
+    case 'range':
+      return numericAlwaysLast(a.range, b.range);
+    case 'odds':
+      return numericAlwaysLast(a.odds, b.odds);
+    case 'boost':
+      return numericAlwaysLast(a.boost, b.boost);
     case 'active': {
       const na = withNA(a.isActive, b.isActive);
       if (na != null) return na;
