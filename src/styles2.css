@@ -2745,10 +2745,22 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .seg-btn.is-on:hover { color: var(--bg); }
 
 .rem-inline { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
+/* On an iPhone SE-width viewport, the Pickers create form's Yearly nth-weekday
+   row (Ordinal + Weekday + Month selects, 3 wide) clips the Month select's
+   right edge at the default 8px gap — shave it down just enough to fit. */
+@container app (max-width: 400px) {
+  .rem-inline { gap: 6.5px; }
+}
 .rem-num { width: 72px; max-width: 72px; margin-top: 0; text-align: center; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 .rem-sel { width: auto; max-width: none; margin-top: 0; cursor: pointer; }
-/* Data-tab cadence row: cadence + anchor selects, right-aligned, wrap on narrow. */
-.sched-cad-ctls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+/* Data-tab cadence row: cadence + anchor selects, wrap on narrow. flex-start
+   (not flex-end) so a wrapped second line (Monthly/Yearly nth-weekday, or
+   Yearly date mode, both wide enough to wrap before Weekly ever does) starts
+   flush with the first line instead of hugging the right edge on its own —
+   consistent with how an unwrapped row (Weekly, or Monthly's plain date
+   select) already reads as left-aligned once its own slack space is this
+   short. */
+.sched-cad-ctls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-start; }
 .rd-cad-sel { width: auto; max-width: none; margin-top: 0; cursor: pointer; font-size: 13px; }
 
 /* Editable interval start date: a link-styled toggle that swaps to a native
