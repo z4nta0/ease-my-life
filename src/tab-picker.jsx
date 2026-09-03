@@ -1658,7 +1658,14 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
 }
 
 export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
-  const [activeId, setActiveId] = React.useState(state.pickers.find((p) => !p.hidden)?.id);
+  // Defaults to the first picker the Show row itself will display (see
+  // sortedVisiblePickers below) — alphabetical, not pickers' own storage-array
+  // order, which the row's own render is sorted by too. Can't reuse that memo
+  // here directly (it isn't declared yet at this point in the component), so
+  // this duplicates its filter+sort inline for just the initial value.
+  const [activeId, setActiveId] = React.useState(() => (
+    [...state.pickers].filter((p) => !p.hidden).sort((a, b) => a.name.localeCompare(b.name))[0]?.id
+  ));
   const [creating, setCreating] = React.useState(false);
   const [groupFilter, setGroupFilter] = React.useState('all');
   const active = state.pickers.find((p) => p.id === activeId);
@@ -1744,15 +1751,31 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   const visiblePickers = React.useMemo(() => (
     state.pickers.filter((p) => !p.hidden && (groupFilter === 'all' || p.group === groupFilter))
   ), [state.pickers, groupFilter]);
+  // Same alphabetical order the Show row itself renders in (below) — reused
+  // so "jump to the first card" always agrees with what's actually shown
+  // first, not visiblePickers' own storage-array order.
+  const sortedVisiblePickers = React.useMemo(() => (
+    [...visiblePickers].sort((a, b) => a.name.localeCompare(b.name))
+  ), [visiblePickers]);
 
-  // Keep the selection coherent with the filter: if the active picker falls
-  // outside the chosen group, jump to the first picker that's in view.
+  // Keep the selection coherent with the filter. Two reasons this can fire:
+  // the group filter itself just changed — always land on the first card in
+  // the new Show row, matching it exactly rather than only reacting once the
+  // OLD selection happens to fall out of view (e.g. switching from a wide
+  // group to a narrower one that still happens to contain the same active
+  // picker used to leave it stranded, not jumped to the new first card) — or
+  // the picker list changed for some unrelated reason (e.g. the active
+  // picker got deleted), in which case only jump when the current selection
+  // actually became invalid.
+  const prevGroupFilterRef = React.useRef(groupFilter);
   React.useEffect(() => {
     if (creating) return;
-    if (!visiblePickers.some((p) => p.id === activeId)) {
-      setActiveId(visiblePickers[0]?.id);
+    const groupChanged = prevGroupFilterRef.current !== groupFilter;
+    prevGroupFilterRef.current = groupFilter;
+    if (groupChanged || !visiblePickers.some((p) => p.id === activeId)) {
+      setActiveId(sortedVisiblePickers[0]?.id);
     }
-  }, [groupFilter, visiblePickers, activeId, creating]);
+  }, [groupFilter, visiblePickers, sortedVisiblePickers, activeId, creating]);
 
   // Scroll-aware edge fades on the tab strip: toggle .at-start / .at-end
   // so the mask gradient only fades the side that has more content.
@@ -1884,7 +1907,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
               <span className="picker-tab-name">Add new picker</span>
             </button>
           )}
-          {[...visiblePickers].sort((a, b) => a.name.localeCompare(b.name)).map((p, i) => (
+          {sortedVisiblePickers.map((p, i) => (
             <button key={p.id}
                     className={`picker-tab picker-tab--enter ${!creating && p.id === activeId ? 'is-on' : ''}`}
                     style={{ animationDelay: ((i + 1) * 40) + 'ms' }}

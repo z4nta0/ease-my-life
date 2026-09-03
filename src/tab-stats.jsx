@@ -306,15 +306,30 @@ function TabStats({ state, actions, onHome, onNavTab }) {
     if (scope === 'conditionals' && !hasConditionals) setScope('all');
   }, [scope, hasConditionals]);
 
+  // Same alphabetical order the Show row itself renders its pickers in
+  // (below) — reused so "jump to the first card" always agrees with what's
+  // actually shown first, not visiblePickers' own storage-array order.
+  const sortedVisiblePickers = React.useMemo(() => (
+    [...visiblePickers].sort((a, b) => a.name.localeCompare(b.name))
+  ), [visiblePickers]);
+
   // Keep scope coherent with the group filter: within a specific group, All /
-  // Reminders aren't offered, so if the current scope isn't one of the group's
-  // pickers, fall back to the first picker in the list.
+  // Reminders aren't offered, so if the current scope isn't one of the
+  // group's pickers, fall back to the first one — alphabetically, matching
+  // the Show row. Also jumps whenever the group filter itself just changed,
+  // not only once the OLD scope happens to fall out of view (e.g. switching
+  // between two groups that both happen to contain the same picker used to
+  // leave it stranded there instead of jumping to the new group's own first
+  // card).
+  const prevStatGroupRef = React.useRef(statGroup);
   React.useEffect(() => {
+    const groupChanged = prevStatGroupRef.current !== statGroup;
+    prevStatGroupRef.current = statGroup;
     if (statGroup === 'all') return;
-    if (!visiblePickers.some((p) => p.id === scope)) {
-      setScope(visiblePickers[0] ? visiblePickers[0].id : 'all');
+    if (groupChanged || !visiblePickers.some((p) => p.id === scope)) {
+      setScope(sortedVisiblePickers[0] ? sortedVisiblePickers[0].id : 'all');
     }
-  }, [statGroup, visiblePickers, scope]);
+  }, [statGroup, visiblePickers, sortedVisiblePickers, scope]);
 
   const isReminders = scope === 'reminders';
 

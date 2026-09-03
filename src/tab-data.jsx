@@ -1074,19 +1074,35 @@ function TabData({ state, actions, onHome, onNavTab }) {
   const conditionals = state.conditionals || [];
   const condPickerCount = (cid) => pickers.filter((p) => p.conditionalId === cid && !p.hidden).length;
 
-  // Keep scope coherent with the group filter: 'all' is always valid; a specific
-  // picker scope is only valid if that picker is in the current group. When it
-  // isn't (e.g. the group just changed), fall back to 'all' so the group shows
-  // all of its pickers by default. 'reminders' is only valid in the "All" group.
+  // The Show row's actual entries in the order it renders them — "All"
+  // pinned first whenever statGroup is 'all' (see the render below, gated
+  // only on statGroup, not condFilter — a conditional filter alone never
+  // drops "All" out of the row), Conditionals/Reminders/every visible picker
+  // sorted alphabetically together after it. Reused so "jump to the first
+  // card" always agrees with what the row actually shows first, instead of
+  // scattering separate assumptions across each filter pill's own handler.
+  const sortedShowEntries = React.useMemo(() => {
+    const rest = [
+      ...(statGroup === 'all' && conditionals.length > 0 ? [{ scope: 'conditionals', name: 'Conditionals' }] : []),
+      ...(statGroup === 'all' ? [{ scope: 'reminders', name: 'Reminders' }] : []),
+      ...visiblePickers.map((p) => ({ scope: p.id, name: p.name })),
+    ].sort((a, b) => a.name.localeCompare(b.name));
+    return statGroup === 'all' ? [{ scope: 'all', name: 'All' }, ...rest] : rest;
+  }, [statGroup, conditionals.length, visiblePickers]);
+
+  // Keep scope coherent with the filters, and always land on the Show row's
+  // own first card whenever either filter changes — not only once the OLD
+  // scope happens to fall out of view (e.g. switching between two
+  // conditional filters that both still leave the same picker in view used
+  // to leave it stranded there instead of jumping to the new first card).
+  const prevFiltersRef = React.useRef({ statGroup, condFilter });
   React.useEffect(() => {
-    if (statGroup === 'all') {
-      // 'all', 'reminders', 'conditionals', or any picker are all valid here.
-      if (scope !== 'all' && scope !== 'reminders' && scope !== 'conditionals' && !visiblePickers.some((p) => p.id === scope)) setScope('all');
-    } else if (!visiblePickers.some((p) => p.id === scope)) {
-      // Within a group there's no All/Reminders box — default to the first picker.
-      setScope(visiblePickers[0] ? visiblePickers[0].id : 'all');
+    const filtersChanged = prevFiltersRef.current.statGroup !== statGroup || prevFiltersRef.current.condFilter !== condFilter;
+    prevFiltersRef.current = { statGroup, condFilter };
+    if (filtersChanged || !sortedShowEntries.some((e) => e.scope === scope)) {
+      setScope(sortedShowEntries[0] ? sortedShowEntries[0].scope : 'all');
     }
-  }, [statGroup, visiblePickers, scope]);
+  }, [statGroup, condFilter, sortedShowEntries, scope]);
 
   // Stub click handler for the boxes — selection state updates, functionality
   // to be attached later.
@@ -1221,7 +1237,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
               <button type="button" role="tab" aria-selected={statGroup === 'all'}
                       className={`picker-group-pill ${statGroup === 'all' ? 'is-on' : ''}`}
                       disabled={disableGroupFilter}
-                      onClick={() => { setStatGroup('all'); setScope('all'); }}>
+                      onClick={() => setStatGroup('all')}>
                 All
                 <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
               </button>
@@ -1247,7 +1263,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
               <button type="button" role="tab" aria-selected={condFilter === 'all'}
                       className={`picker-group-pill ${condFilter === 'all' ? 'is-on' : ''}`}
                       disabled={disableGroupFilter}
-                      onClick={() => { setCondFilter('all'); if (scope !== 'all' && scope !== 'reminders' && scope !== 'conditionals') setScope('all'); }}>
+                      onClick={() => setCondFilter('all')}>
                 All
                 <span className="picker-group-count">{pickers.length}</span>
               </button>
@@ -1255,7 +1271,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                 <button key={c.id} type="button" role="tab" aria-selected={condFilter === c.id}
                         className={`picker-group-pill ${condFilter === c.id ? 'is-on' : ''}`}
                         disabled={disableGroupFilter}
-                        onClick={() => { setCondFilter(c.id); setScope('all'); setStatGroup('all'); }}>
+                        onClick={() => { setCondFilter(c.id); setStatGroup('all'); }}>
                   {c.name}
                   <span className="picker-group-count">{condPickerCount(c.id)}</span>
                 </button>
