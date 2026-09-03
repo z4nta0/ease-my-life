@@ -143,7 +143,7 @@ function buildPickers() {
   ].map((p) => ({
     daysOfWeek: (sched[p.id] || {}).daysOfWeek || [0, 1, 2, 3, 4, 5, 6],
     skipHolidays: !!(sched[p.id] || {}).skipHolidays,
-    // Ease-down: id of the item currently being worked down (null = none).
+    // Ease Down: id of the item currently being worked down (null = none).
     activeItemId: null,
     // Optional conditional gate (suppresses this picker when active).
     conditionalId: p.id === 'pkr_chore_w' ? 'cnd_chorefree' : null,
@@ -270,7 +270,7 @@ function buildPickLog(items, pickers, onVac, days = 365) {
     }
   }
 
-  // Ease-down pickers: an item, once chosen, stays picked every run and decays
+  // Ease Down pickers: an item, once chosen, stays picked every run and decays
   // until its charge hits 0 (a completed depletion streak → depletedEnd), then
   // a new item is chosen. A few streaks are abandoned early (no depletedEnd) to
   // prove Stats' "Spent" counts only completed cycles. Returns per-picker final
@@ -422,7 +422,7 @@ function buildSeed() {
     }
   }
 
-  // Today's picks. Ease-down pickers continue their active item as an 'auto'
+  // Today's picks. Ease Down pickers continue their active item as an 'auto'
   // daily pick (so today's list matches the in-progress streak).
   const playActive = (() => {
     const id = (easeState['pkr_play'] || {}).activeItemId;
@@ -581,9 +581,9 @@ function buildClean() {
 }
 export const CLEAN_STATE = buildClean;
 export const MODES = {
-  'random':    { label: 'Truly random',     hint: ['Ruleset: This picker\u2019s ruleset makes it so that all of its items have an equally likely chance of being picked.', 'Explanation: This is a good choice for being truly random, but it also has some drawbacks. e.g. it can pick the exact same item multiple times in a row or an item can go a long time without being picked.'] },
-  'weighted':  { label: 'Weighted',         hint: ['Ruleset: This picker\u2019s ruleset uses adjustable, weighted per-item values that can make them more (or less) likely to be picked.', 'Explanation: This is a good choice for mitigating some of the Truly random drawbacks by tuning individual items\u2019 % chance to make them more (or less) likely to be picked. e.g. it can still pick the exact same item multiple times in a row or an item can go a long time without being picked, although it is less likely to do so.'] },
-  'dynamic':   { label: 'Dynamic weighted', hint: ['Ruleset: This picker\u2019s ruleset is exactly the same as the Weighted picker, but it also adds a second per-item value that increments the weighted value every time an item is not picked and then resets its value every time that it is.', 'Explanation: This is a good choice for mitigating almost all of the Truly random drawbacks by tuning individual items\u2019 % chance to make them more (or less) likely to be picked. Furthermore, by adding a dynamic per-item value it makes it increasingly likely to be picked when it isn\u2019t and less likely when it is. e.g. it can still pick the exact same item multiple times in a row or an item can go a long time without being picked, although it is much less likely to do so.'] },
-  'ease-up':   { label: 'Ease-up',          hint: ['Ruleset: This picker\u2019s ruleset makes it so that all items are ineligible to be picked until their individual values reach 100, at which point they are put into a pool of eligible items to be picked. Said values will start at 0 and are incremented every cycle by a random amount within a user defined range.', 'Explanation: This is a good choice for ensuring that picker items can only be picked once every X days and can never be picked multiple times in a row. e.g. an item can only be picked at most once a week and must be picked at least once every two weeks.'] },
-  'ease-down': { label: 'Ease-down',        hint: ['Ruleset: This picker\u2019s ruleset is the opposite of the Ease-up picker. It makes it so that all items are eligible to be picked and once an item is picked it will stay picked until its value reaches 0, at which point a new item is picked. Said value will start at 100 and is decremented every cycle by a random amount within a user defined range.', 'Explanation: This is a good choice for ensuring that an item stays picked for at least X days and then is not picked again for at least one cycle afterwards. e.g. it must remain picked for at least a week and must not remain picked for more than two weeks.'] },
+  'random':    { label: 'Truly Random',     hint: ['Ruleset: This picker\u2019s ruleset makes it so that all of its items have an equally likely chance of being picked.', 'Explanation: This is a good choice for being truly random, but it also has some drawbacks. e.g. it can pick the exact same item multiple times in a row or an item can go a long time without being picked.'] },
+  'weighted':  { label: 'Weighted',         hint: ['Ruleset: This picker\u2019s ruleset uses adjustable, weighted per-item values that can make them more (or less) likely to be picked.', 'Explanation: This is a good choice for mitigating some of the Truly Random drawbacks by tuning individual items\u2019 % chance to make them more (or less) likely to be picked. e.g. it can still pick the exact same item multiple times in a row or an item can go a long time without being picked, although it is less likely to do so.'] },
+  'dynamic':   { label: 'Dynamic Weighted', hint: ['Ruleset: This picker\u2019s ruleset is exactly the same as the Weighted picker, but it also adds a second per-item value that increments the weighted value every time an item is not picked and then resets its value every time that it is.', 'Explanation: This is a good choice for mitigating almost all of the Truly Random drawbacks by tuning individual items\u2019 % chance to make them more (or less) likely to be picked. Furthermore, by adding a dynamic per-item value it makes it increasingly likely to be picked when it isn\u2019t and less likely when it is. e.g. it can still pick the exact same item multiple times in a row or an item can go a long time without being picked, although it is much less likely to do so.'] },
+  'ease-up':   { label: 'Ease Up',          hint: ['Ruleset: This picker\u2019s ruleset makes it so that all items are ineligible to be picked until their individual values reach 100, at which point they are put into a pool of eligible items to be picked. Said values will start at 0 and are incremented every cycle by a random amount within a user defined range.', 'Explanation: This is a good choice for ensuring that picker items can only be picked once every X days and can never be picked multiple times in a row. e.g. an item can only be picked at most once a week and must be picked at least once every two weeks.'] },
+  'ease-down': { label: 'Ease Down',        hint: ['Ruleset: This picker\u2019s ruleset is the opposite of the Ease Up picker. It makes it so that all items are eligible to be picked and once an item is picked it will stay picked until its value reaches 0, at which point a new item is picked. Said value will start at 100 and is decremented every cycle by a random amount within a user defined range.', 'Explanation: This is a good choice for ensuring that an item stays picked for at least X days and then is not picked again for at least one cycle afterwards. e.g. it must remain picked for at least a week and must not remain picked for more than two weeks.'] },
 };

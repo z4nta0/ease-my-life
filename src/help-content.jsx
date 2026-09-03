@@ -125,7 +125,7 @@ const TODAY_HELP_ITEMS = [
     body: (
       <>
         <p>When you click this circle, it marks the item as completed and updates the progress ring's completed count. When all items are completed, your Day Streak increases and the celebration animations will play.</p>
-        <p>For items that belong to a picker with updatable values, marking as complete will also apply updates to all of the pickers' items. Dynamic Weighted items wil have their boost value increased or reset to 0. Ease-up and Ease-down items will have their charge values increased or decreased, respectively.</p>
+        <p>For items that belong to a picker with updatable values, marking as complete will also apply updates to all of the pickers' items. Dynamic Weighted items wil have their boost value increased or reset to 0. Ease Up and Ease Down items will have their charge values increased or decreased, respectively.</p>
       </>
     ),
   },
@@ -440,15 +440,15 @@ const TODAY_HELP_ITEMS = [
   },
   {
     id: 'logPickerItem', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-item', columnGroup: 'pickerLogCols', title: 'Item Column',
-    body: <>This lists every item in this picker's pool. It also shows its weight (Weighted), weight + boost (Dynamic Weighted) or eligible range (Ease-up or Ease-down), depending on the picker's mode.</>,
+    body: <>This lists every item in this picker's pool. It also shows its weight (Weighted), weight + boost (Dynamic Weighted) or eligible range (Ease Up or Ease Down), depending on the picker's mode.</>,
   },
   {
     id: 'logPickerAtGen', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-atgen', columnGroup: 'pickerLogCols', title: 'At Gen Column',
-    body: <>This lists the item's value at the moment your todo list was generated. This only applies to Dynamic Weighted, Ease-up and Ease-down picker items, it shows N/A otherwise.</>,
+    body: <>This lists the item's value at the moment your todo list was generated. This only applies to Dynamic Weighted, Ease Up and Ease Down picker items, it shows N/A otherwise.</>,
   },
   {
     id: 'logPickerDelta', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-delta', columnGroup: 'pickerLogCols', title: 'Δ Column',
-    body: <>This shows how much this item's value changed since your todo list was generated. This only applies to Dynamic Weighted, Ease-up and Ease-down picker items.</>,
+    body: <>This shows how much this item's value changed since your todo list was generated. This only applies to Dynamic Weighted, Ease Up and Ease Down picker items.</>,
   },
   {
     id: 'logPickerAfter', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-after', columnGroup: 'pickerLogCols', title: 'After Column',
@@ -464,11 +464,11 @@ const TODAY_HELP_ITEMS = [
   },
   {
     id: 'logCondAtGen', sel: '.dl-cond-sec .dl-mk-atgen', columnGroup: 'condLogCols', title: 'At Gen Column',
-    body: <>This lists the conditional's value at the moment your todo list was generated. This only applies to Dynamic Weighted, Ease-up and Ease-down conditionals, it shows N/A otherwise.</>,
+    body: <>This lists the conditional's value at the moment your todo list was generated. This only applies to Dynamic Weighted, Ease Up and Ease Down conditionals, it shows N/A otherwise.</>,
   },
   {
     id: 'logCondDelta', sel: '.dl-cond-sec .dl-mk-delta', columnGroup: 'condLogCols', title: 'Δ Column',
-    body: <>This shows how much this conditional's value changed since your todo list was generated. This only applies to Dynamic Weighted, Ease-up and Ease-down conditionals.</>,
+    body: <>This shows how much this conditional's value changed since your todo list was generated. This only applies to Dynamic Weighted, Ease Up and Ease Down conditionals.</>,
   },
   {
     id: 'logCondAfter', sel: '.dl-cond-sec .dl-mk-after', columnGroup: 'condLogCols', title: 'After Column',
@@ -663,7 +663,7 @@ const PICKER_HELP_ITEMS = [
   },
   {
     id: 'newCondRandom', sel: '.cnd-typectl:has(.pie-noweight)', title: 'Conditional Weight', padY: 0,
-    body: <>Truly random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
+    body: <>Truly Random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
   },
   {
     id: 'newCondOdds', sel: '.cnd-typectl .pie-row:has(.weight-stepper)', title: 'Conditional Trigger Odds', padY: 0,
@@ -1022,7 +1022,7 @@ const DATA_HELP_ITEMS = [
   },
   {
     id: 'dataCondRandom', sel: '.cnd-typectl:has(.pie-noweight)', title: 'Conditional Weight', padY: 0,
-    body: <>Truly random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
+    body: <>Truly Random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
   },
   {
     id: 'dataCondOdds', sel: '.cnd-typectl .pie-row:has(.weight-stepper)', title: 'Conditional Trigger Odds', padY: 0,
@@ -1376,7 +1376,7 @@ const DATA_HELP_ITEMS = [
   // tab-today.jsx but reused here — see .entry-editor's own doc comment
   // there). Which of these actually renders depends on the OWNING
   // PICKER's mode, so most items below only ever show up for some modes:
-  // Charge Range (Ease-up/Ease-down only), Weight (Weighted/Dynamic
+  // Charge Range (Ease Up/Ease Down only), Weight (Weighted/Dynamic
   // Weighted), Boost (Dynamic Weighted only). Active and the footer
   // always render regardless of mode.
   {

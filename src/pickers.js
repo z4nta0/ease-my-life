@@ -292,7 +292,7 @@ function avgEase(items, pickerId) {
   return { easeMin: Math.max(1, Math.round(avg('easeMin'))), easeMax: Math.max(1, Math.round(avg('easeMax'))) };
 }
 
-// Ease-up eligibility, in ONE place. The half-unit tolerance matters: a
+// Ease Up eligibility, in ONE place. The half-unit tolerance matters: a
 // threshold/N charge step (100/3, say) can land a hair under the threshold on
 // the very cycle it was planned to become eligible. The engine has always used
 // it; Today's re-roll did not, so an item at 99.7 could be picked by the

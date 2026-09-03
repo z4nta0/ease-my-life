@@ -70,10 +70,10 @@ const CONDITIONAL_ITEM_SORT_OPTIONS = [
 // modes also get Range — the item's own soonest-to-latest day band collapsed
 // to its near end, labeled "Soonest" for ease-up and "Shortest" for ease-down
 // to match the wording already used for that same value elsewhere (e.g. the
-// item editor's own Soonest/Shortest stepper). Dynamic weighted also gets
+// item editor's own Soonest/Shortest stepper). Dynamic Weighted also gets
 // Boost — the same `value` field ease modes reuse for charge, here meaning
 // the item's current weight bonus instead (see BoostReset in tab-today.jsx);
-// plain weighted has a fixed weight only, no boost concept. Truly random has
+// plain weighted has a fixed weight only, no boost concept. Truly Random has
 // none of these, only Name/Active.
 function pickerItemSortOptions(mode) {
   const opts = [
@@ -621,7 +621,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                   aria-label="Avoid duplicate items"
                   onClick={() => actions.updatePicker(pk.id, { avoidDuplicates: !pk.avoidDuplicates })}><i /></button>
         </div>
-        {/* Fill/Refill expands/collapses when Ease-up/Ease-down is (de)selected,
+        {/* Fill/Refill expands/collapses when Ease Up/Ease Down is (de)selected,
             sharing the app's Collapse height animation. */}
         <Collapse open={isEase}>
           {/* ease-config--up/--down — pure selector hook so help-mode can
@@ -1408,7 +1408,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
           // modes also get Range, from the same soonest/latest band math the
           // item rows below render (hoisted here so both share one
           // PICKERS.avgEase call instead of computing it per item twice).
-          // Dynamic weighted also gets Boost — the same `value` field ease
+          // Dynamic Weighted also gets Boost — the same `value` field ease
           // modes use for Range/charge, repurposed per mode exactly like the
           // Conditionals section's own range/odds/boost fields.
           const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort[pk.id]) || 'name-asc';

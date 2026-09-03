@@ -25,7 +25,7 @@ const PICKER_SAMPLES = Object.fromEntries(
 // paragraph — only the title (the picker's own name) and the second
 // paragraph differ per picker. Keyed by the sample picker id (see
 // onboarding-seed-data.js's OB_EXAMPLE/OB_EXTRA_PICKERS).
-const PICKER_TOUR_BODY_1 = 'Pickers are where the magic happens. They have rules for when and how they should pick from its list of items. There are 5 basic types of pickers: Truly Random, Weighted, Dynamic Weighted, Ease-up and Ease-down. Don’t worry too much about the details right now, as you start to use the app it will become more clear.';
+const PICKER_TOUR_BODY_1 = 'Pickers are where the magic happens. They have rules for when and how they should pick from its list of items. There are 5 basic types of pickers: Truly Random, Weighted, Dynamic Weighted, Ease Up and Ease Down. Don’t worry too much about the details right now, as you start to use the app it will become more clear.';
 
 // itemPrefill is the name Step 7's run() stages for the tour's own added
 // item (see buildPickerTourStep7) — a new item distinct from anything
@@ -35,11 +35,11 @@ const PICKER_TOUR_BODY_1 = 'Pickers are where the magic happens. They have rules
 // gets its own dedicated pass.
 const PICKER_TOUR_COPY = {
   pkr_ob_daily: {
-    body2: <>This tutorial will guide you through creating a Daily Chores picker. This type of picker is an Ease-up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Do the laundry", you don’t want that task picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>,
+    body2: <>This tutorial will guide you through creating a Daily Chores picker. This type of picker is an Ease Up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Do the laundry", you don’t want that task picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>,
     itemPrefill: 'Mop the floors',
   },
   pkr_ob_monthly: {
-    body2: <>This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease-up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 month</b>. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least 1 month but also no later than 2 months. Let’s create one of these now.</>,
+    body2: <>This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease Up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 month</b>. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least 1 month but also no later than 2 months. Let’s create one of these now.</>,
     itemPrefill: 'Wash the windows',
     // Overrides the generic 7/14-day DEFAULT_EASE (tab-picker.jsx) for just
     // this tour's own added item — a monthly-cadence picker's own sample
@@ -53,14 +53,14 @@ const PICKER_TOUR_COPY = {
     itemPrefill: 'Peppermint Mocha',
   },
   pkr_ob_dinner: {
-    body2: <>This tutorial will guide you through creating a Dinner picker. This type of picker is an Ease-up and is <b>perfect for something like meals where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Spaghetti and meatballs", you don’t want that meal picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>,
+    body2: <>This tutorial will guide you through creating a Dinner picker. This type of picker is an Ease Up and is <b>perfect for something like meals where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Spaghetti and meatballs", you don’t want that meal picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>,
     itemPrefill: 'Grilled salmon',
     step8Body: <>This is the name of the meal item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
     step9Body: <>This controls the <b>minimum number of days that a meal item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same meal to be chosen again within a certain timeframe.</>,
     step10Body: <>This controls the <b>maximum number of days that a meal item must wait before it should be picked again</b>. This is also useful since you usually want a meal to be picked again within a certain timeframe.</>,
   },
   pkr_ob_workouts: {
-    body2: <>This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease-up and is <b>perfect for something like workouts where you don’t want the same workout to be picked twice within, say, a few days</b>. e.g. once it picks "Chest", you don’t want that workout item picked again for at least 5 days but also no later than a week. Let’s create one of these now.</>,
+    body2: <>This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease Up and is <b>perfect for something like workouts where you don’t want the same workout to be picked twice within, say, a few days</b>. e.g. once it picks "Chest", you don’t want that workout item picked again for at least 5 days but also no later than a week. Let’s create one of these now.</>,
     itemPrefill: 'Cardio',
     itemSoonest: 3,
     itemLatest: 6,
@@ -69,7 +69,7 @@ const PICKER_TOUR_COPY = {
     step10Body: <>This controls the <b>maximum number of days that a workout item must wait before it should be picked again</b>. This is also useful since you usually want a workout to be picked again within a certain timeframe.</>,
   },
   pkr_ob_relax: {
-    body2: <>This tutorial will guide you through creating a Relax picker. This type of picker is an Ease-down and is <b>perfect for activities you want to stick with for a few days at a time instead of changing every day</b>. e.g. once it picks "Read a book", that activity will stay as the picked item for at least 5 days but no more than a week before a new activity is chosen. Let’s create one of these now.</>,
+    body2: <>This tutorial will guide you through creating a Relax picker. This type of picker is an Ease Down and is <b>perfect for activities you want to stick with for a few days at a time instead of changing every day</b>. e.g. once it picks "Read a book", that activity will stay as the picked item for at least 5 days but no more than a week before a new activity is chosen. Let’s create one of these now.</>,
     itemPrefill: 'Take a nap',
     itemSoonest: 3,
     itemLatest: 5,
@@ -274,13 +274,13 @@ const buildPickerTourStep8 = (pickerId) => ({
 });
 
 // Highlights the Soonest/Shortest row — the first .pie-row in the editor's
-// isEase branch. Only meaningful for Ease-up/Ease-down samples (the row
+// isEase branch. Only meaningful for Ease Up/Ease Down samples (the row
 // doesn't exist at all for Weighted/Dynamic/Random modes, where this same
 // .pie-row position is a Weight stepper instead) — PickerTour only includes
 // this step when the sample's own mode is one of the ease modes. The whole
 // body is per-picker (PICKER_TOUR_COPY[pickerId].step9Body), defaulting to
-// the original Ease-up/"task item"/"week" wording — Daily Chores is the
-// only sample this has been manually verified against so far; Ease-down
+// the original Ease Up/"task item"/"week" wording — Daily Chores is the
+// only sample this has been manually verified against so far; Ease Down
 // samples (Relax) reuse the default as a first pass, not yet touched up for
 // the "Shortest" label or ease-down's reversed stays-picked-until-
 // discharged semantics. No new one-way DOM transition happens between Step
@@ -294,7 +294,7 @@ const buildPickerTourStep9 = (pickerId) => ({
 });
 
 // Highlights the Latest/Longest row — the second .pie-row in the editor's
-// isEase branch, right after Soonest/Shortest. Same mode gating, Ease-down
+// isEase branch, right after Soonest/Shortest. Same mode gating, Ease Down
 // caveat, and per-picker step10Body override as Step 9 above. Same
 // reasoning as Step 9: the editor stays open, so no new DOM transition to
 // revert on Back.
@@ -429,7 +429,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     );
   }
 
-  // Steps 9/10 (Soonest/Latest) only apply to Ease-up/Ease-down samples —
+  // Steps 9/10 (Soonest/Latest) only apply to Ease Up/Ease Down samples —
   // every other mode's item editor doesn't have those rows at all (see the
   // steps' own comments), so including them there would highlight nothing
   // and trip the not-found watchdog. The Weight step is the mirror image:

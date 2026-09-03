@@ -584,7 +584,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
     return m;
   }, [isPicker, isEaseDown, rows, activeDates, vac]);
 
-  // Ease-down "Spent" — measured from ACTUAL history: the average length of a
+  // Ease Down "Spent" — measured from ACTUAL history: the average length of a
   // completed depletion streak (consecutive runs of the same active item that
   // ended when its charge hit 0, flagged depletedEnd). Abandoned streaks (re-
   // roll / inactive / manual) never reach 0, so they're excluded — which is why

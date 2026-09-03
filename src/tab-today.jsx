@@ -1378,7 +1378,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     // upside-down) — same direction continues, so the new content rolls in.
     setTimeout(() => {
       if (picker.mode === 'ease-up') {
-        // Ease-up re-roll = manual cycle through eligible (charged ≥ threshold)
+        // Ease Up re-roll = manual cycle through eligible (charged ≥ threshold)
         // items, highest→lowest value, wrapping back to the highest. Deterministic
         // order: value desc, then oldest lastPicked, then id (stable because
         // done-gating freezes values between rolls). Fewer than 2 eligible → the
@@ -1780,7 +1780,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
         });
         orderedSlots.push({ pickerId: pid, info: { kind: 'pick', candidates: res.cycleCandidates || [], pickedId: res.picked.id } });
       } else if (picker.mode === 'ease-up' && res.updates && res.updates.length) {
-        // Ease-up with nothing charged to threshold: surface a "charging" card so
+        // Ease Up with nothing charged to threshold: surface a "charging" card so
         // the day's drift (res.updates) is applied only when the user checks it —
         // consistent with done-gating. Without this the drift would be dropped and
         // the picker could never climb to eligibility.

@@ -554,7 +554,7 @@ function migrate(s) {
   // Conditional history log (added later). Append-only; one row per conditional
   // per completed cycle. Backfill empty for old state.
   if (s && !Array.isArray(s.conditionalLog)) s.conditionalLog = [];
-  // Ease-down fair-rotation weights (added later). Older state carried arbitrary
+  // Ease Down fair-rotation weights (added later). Older state carried arbitrary
   // static per-item weights; normalize each ease-down picker to the invariant:
   // its active item sits at weight 0 (barred from immediate re-pick) and every
   // other item at weight 1, so the fair rotation starts from a clean footing.
@@ -869,7 +869,7 @@ function useStore(opts) {
     // Add a NEW today entry for `pickerId` showing `itemId`. Multiple entries
     // per picker are allowed for other modes — the Pickers tab uses this to ADD
     // a choice; the user prunes any they don't want with each entry's own Skip
-    // button. Ease-down is the one exception: since it's a single ongoing
+    // button. Ease Down is the one exception: since it's a single ongoing
     // "active item", sending a new pick REPLACES today's existing entry for
     // that picker rather than stacking a second one.
     addTodayEntry: (pickerId, itemId, pendingArg) => setState((s) => {
@@ -897,7 +897,7 @@ function useStore(opts) {
       }
       const entry = { eid, pickerId, itemId, done: false, skipped: false, pending, revert: null };
       const row = logRow(s, { eid, pickerId, itemId, source: 'manual' });
-      // Ease-down keeps a single entry per picker — a manual push normally
+      // Ease Down keeps a single entry per picker — a manual push normally
       // replaces it. EXCEPTION: if the picker was suppressed and its conditional's
       // day-off card is showing, ADD an extra card instead (leave the day-off
       // card intact) so the override sits alongside it.
@@ -1154,7 +1154,7 @@ function useStore(opts) {
       const pk = s.pickers.find((p) => p.id === pickerId);
       const isDown = pk && pk.mode === 'ease-down';
       const isEase = pk && (pk.mode === 'ease-up' || pk.mode === 'ease-down');
-      // Ease-down items start fully charged and join the fairness rotation at the
+      // Ease Down items start fully charged and join the fairness rotation at the
       // AVERAGE weight of existing items (excluding the weight-0 active item, so a
       // fresh streak's zero can't drag the newcomer down), rounded, floored at 1
       // so it's never a second weight-0. No peers yet → weight 1.
@@ -1213,7 +1213,7 @@ function useStore(opts) {
       const newItems = (items || []).map((it) => ({
         id: it.id || ('it_' + Math.random().toString(36).slice(2, 8)),
         name: it.name, pickerId: pid,
-        // Ease-down: every item starts at fairness-weight 1 (system-managed), so
+        // Ease Down: every item starts at fairness-weight 1 (system-managed), so
         // the first pick is uniform; user-supplied weights don't apply to it.
         weight: isDown ? 1 : (it.weight || 1),
         // Honor a value the create form already set (e.g. Fill/Refill charging an
@@ -1366,11 +1366,11 @@ function useStore(opts) {
       const threshold = p.threshold ?? 100;
       return {
         ...s,
-        // Fill RAISES to the threshold; it must never pull a value down. Ease-up
+        // Fill RAISES to the threshold; it must never pull a value down. Ease Up
         // items keep charging past the threshold while they wait, and that
         // overshoot is what orders them — highest value is picked first, and
         // re-roll cycles highest→lowest. Assigning the threshold flat-out erased
-        // that ordering and reset every waiting item to a tie. (Ease-down values
+        // that ordering and reset every waiting item to a tie. (Ease Down values
         // only ever decay from the threshold, so max() is a no-op there.)
         items: s.items.map((it) =>
           it.pickerId === pickerId ? { ...it, value: Math.max(it.value ?? 0, threshold) } : it),

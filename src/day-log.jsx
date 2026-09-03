@@ -193,7 +193,7 @@ function PickerBlock({ state, picker, day, suppressed }) {
   const idx = pickerDayIndex(state.pickLog, picker.id, day);
   const genItems = (state.today.genLog && state.today.genLog.items) || {};
   const hasRows = idx.size > 0;
-  const modeLabel = { 'ease-up': 'Ease-up', 'ease-down': 'Ease-down', dynamic: 'Dynamic Weighted', weighted: 'Weighted', random: 'Truly Random' }[picker.mode] || picker.mode;
+  const modeLabel = { 'ease-up': 'Ease Up', 'ease-down': 'Ease Down', dynamic: 'Dynamic Weighted', weighted: 'Weighted', random: 'Truly Random' }[picker.mode] || picker.mode;
   const neutral = picker.mode === 'weighted' || picker.mode === 'random';
 
   // Suppressed today (conditional fired) and no manual override → rest row.
@@ -276,7 +276,7 @@ function CondSection({ state, pickersInGroup, day }) {
           const hv = CONDITIONALS.isValue(c.mode);
           const snap = genConds[c.id];
           const neutral = c.mode === 'weighted' || c.mode === 'random';
-          const modeLabel = { 'ease-up': 'Ease-up', 'ease-down': 'Ease-down', dynamic: 'Dynamic Weighted', weighted: 'Weighted', random: 'Truly Random' }[c.mode] || c.mode;
+          const modeLabel = { 'ease-up': 'Ease Up', 'ease-down': 'Ease Down', dynamic: 'Dynamic Weighted', weighted: 'Weighted', random: 'Truly Random' }[c.mode] || c.mode;
           return (
             <React.Fragment key={c.id}>
               <div className="dl-trow dl-cond-row">

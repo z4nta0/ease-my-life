@@ -285,7 +285,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   const sendToday = (id) => {
     // Full parity with "Pick one" → Send: run the engine forcing this item, then
     // stage the identical pending mutation (drift/weight + bumpPick) so marking
-    // it done has the same consequence as a natural pick. Ease-down replaces the
+    // it done has the same consequence as a natural pick. Ease Down replaces the
     // picker's single entry; other modes add one (handled in addTodayEntry).
     const res = PICKERS.pick(picker, state.items, { forceItemId: id });
     if (!res || !res.picked) return;
@@ -1045,9 +1045,9 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       const names = new Set(items.map((x) => x.name.toLowerCase()));
       while (names.has(nm.toLowerCase())) { n++; nm = `${base} ${n}`; }
     }
-    // Ease-down items start fully charged (mirrors addPicker's initialValue) —
+    // Ease Down items start fully charged (mirrors addPicker's initialValue) —
     // otherwise the editor shows a spent item needing a Refill it never needed.
-    // The tour's own Ease-up item is also given a full charge — like the rest
+    // The tour's own Ease Up item is also given a full charge — like the rest
     // of the sample pool (see onboarding-seed-data.js's OB_EXAMPLE, every
     // item value:100) — so the later generation demo step actually has
     // something eligible to pick. Doesn't apply to Weighted/Dynamic/Random
@@ -1263,7 +1263,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
           <legend className="np-label">How should it choose?</legend>
           <p className="np-help">
             This is the rule the picker follows each time it runs.
-            &ldquo;Truly random&rdquo; is the simplest &mdash; every item has an
+            &ldquo;Truly Random&rdquo; is the simplest &mdash; every item has an
             equal chance. The others nudge the odds in different ways. Not sure?
             Start random &mdash; you can change it at any time.
           </p>
@@ -1291,7 +1291,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                 Conditionals can be attached to a picker that will determine whether a picker
                 should be run on any given day during the auto generator phase for the Today tab.
                 Run eligibility can be determined using the same rules that the pickers use &mdash;
-                Truly random, Weighted, Dynamic weighted, Ease-up and Ease-down &mdash; each with
+                Truly Random, Weighted, Dynamic Weighted, Ease Up and Ease Down &mdash; each with
                 their own pros and cons.
               </p>
               <p className="np-help">
@@ -1446,7 +1446,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       </p>
       {mode === 'random' && (
         <p className="picker-hint np-weight-note">
-          Because you chose &ldquo;Truly random&rdquo;, there are no extra controls
+          Because you chose &ldquo;Truly Random&rdquo;, there are no extra controls
           to tweak for items since they all have an equal chance of being picked.
         </p>
       )}
@@ -1470,7 +1470,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       )}
       {mode === 'ease-up' && (
         <p className="picker-hint np-weight-note">
-          Because you chose &ldquo;Ease-up&rdquo;, each item gets its
+          Because you chose &ldquo;Ease Up&rdquo;, each item gets its
           own <strong>cadence</strong> &mdash; set per item below, since each might
           need a different timeout period. For each one you will need to pick a
           {' '}<strong>soonest</strong> and a <strong>latest</strong> value, which will be
@@ -1479,7 +1479,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       )}
       {mode === 'ease-down' && (
         <p className="picker-hint np-weight-note">
-          Because you chose &ldquo;Ease-down&rdquo;, each item gets its
+          Because you chose &ldquo;Ease Down&rdquo;, each item gets its
           own <strong>cadence</strong> &mdash; set per item below, since each might
           need a different selection period. For each one you will need to pick a
           {' '}<strong>soonest</strong> and a <strong>latest</strong> value, which will be
