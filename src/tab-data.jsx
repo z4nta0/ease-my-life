@@ -69,8 +69,11 @@ const CONDITIONAL_ITEM_SORT_OPTIONS = [
 // modes also get Range — the item's own soonest-to-latest day band collapsed
 // to its near end, labeled "Soonest" for ease-up and "Shortest" for ease-down
 // to match the wording already used for that same value elsewhere (e.g. the
-// item editor's own Soonest/Shortest stepper). Truly random has none of
-// these, only Name/Active.
+// item editor's own Soonest/Shortest stepper). Dynamic weighted also gets
+// Boost — the same `value` field ease modes reuse for charge, here meaning
+// the item's current weight bonus instead (see BoostReset in tab-today.jsx);
+// plain weighted has a fixed weight only, no boost concept. Truly random has
+// none of these, only Name/Active.
 function pickerItemSortOptions(mode) {
   const opts = [
     { key: 'name-asc', label: 'Name (A–Z)' },
@@ -82,6 +85,9 @@ function pickerItemSortOptions(mode) {
     opts.push({ key: 'range-asc', label: `${rangeLbl} (Low to High)` }, { key: 'range-desc', label: `${rangeLbl} (High to Low)` });
   } else if (mode === 'weighted' || mode === 'dynamic') {
     opts.push({ key: 'count-asc', label: 'Weight (Low to High)' }, { key: 'count-desc', label: 'Weight (High to Low)' });
+    if (mode === 'dynamic') {
+      opts.push({ key: 'boost-asc', label: 'Boost (Low to High)' }, { key: 'boost-desc', label: 'Boost (High to Low)' });
+    }
   }
   opts.push({ key: 'active-asc', label: 'Active to Inactive' }, { key: 'active-desc', label: 'Inactive to Active' });
   return opts;
@@ -1334,6 +1340,9 @@ function TabData({ state, actions, onHome, onNavTab }) {
           // modes also get Range, from the same soonest/latest band math the
           // item rows below render (hoisted here so both share one
           // PICKERS.avgEase call instead of computing it per item twice).
+          // Dynamic weighted also gets Boost — the same `value` field ease
+          // modes use for Range/charge, repurposed per mode exactly like the
+          // Conditionals section's own range/odds/boost fields.
           const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort[pk.id]) || 'name-asc';
           const fallbackEase = isEase ? PICKERS.avgEase(items, pk.id) : null;
           const itemSortEntry = (it) => {
@@ -1342,6 +1351,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
               name: it.name, type: null, group: null,
               count: isEase ? (it.value ?? 0) : (usesWeight ? (it.weight ?? 1) : null),
               range: isEase ? Math.max(1, Math.round(100 / (eMax || 1))) : null,
+              boost: pk.mode === 'dynamic' ? (it.value ?? 0) : null,
               isActive: !it.vacation,
             };
           };
