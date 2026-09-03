@@ -203,12 +203,12 @@ function ConditionalControls({ draft, onChange, nameError, variant = 'card', hid
       <div className="cnd-typectl pie-rows">
         <div className="pie-row">
           <div className="pie-rowlabel">
-            <span className="pie-lbl">Active</span>
+            <span className="pie-lbl set-sub-fade" key={draft.active !== false ? 'active' : 'inactive'}>{draft.active !== false ? 'Active' : 'Inactive'}</span>
             <span className="pie-sub set-sub-fade" key={draft.active !== false ? (isDown ? 'on-down' : 'on') : 'off'}>{draft.active !== false
               ? (isDown
                   ? <>conditional <strong>is active</strong>, picker will not run until conditional fully discharges</>
                   : <>conditional <strong>is active</strong>, if triggered picker will not run for one cycle</>)
-              : <>conditional is <strong>not active</strong>, picker will always run</>}</span>
+              : <>conditional is <strong>inactive</strong>, picker will always run</>}</span>
           </div>
           <button type="button" className={`switch ${draft.active !== false ? 'is-on' : ''}`}
                   role="switch" aria-checked={draft.active !== false} aria-label="Active"

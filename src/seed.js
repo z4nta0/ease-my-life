@@ -36,7 +36,7 @@ const ITEMS = [
 
   // Weekly chores
   ['Clean the bathroom',       'pkr_chore_w', 2, 30],
-  ['Vacuum living room',       'pkr_chore_w', 2, 0,  true],  // vacation
+  ['Vacuum living room',       'pkr_chore_w', 2, 0,  true],  // inactive
   ['Mop the kitchen',          'pkr_chore_w', 1, 52],
   ['Change the bed sheets',    'pkr_chore_w', 1, 80],
   ['Fridge wipe-down',         'pkr_chore_w', 1, 18],
@@ -166,12 +166,12 @@ function weightedPick(pool) {
   return pool[pool.length - 1];
 }
 
-// Seeded vacation event log — a few on/off transitions so Stats can exclude
-// days an item wasn't eligible. Three scenarios worth demonstrating:
-//   • currently on vacation (open interval) — Vacuum living room
-//   • past closed vacation, picked since (no label) — Mop the kitchen
-//   • past vacation, NOT picked since returning ("Was on vacation" label) —
-//     Fridge wipe-down
+// Seeded inactive-state event log — a few on/off transitions so Stats can
+// exclude days an item wasn't eligible. Three scenarios worth demonstrating:
+//   • currently inactive (open interval) — Vacuum living room
+//   • past closed inactive stretch, picked since (no label) — Mop the kitchen
+//   • past inactive stretch, NOT picked since returning ("Was Inactive"
+//     label) — Fridge wipe-down
 function buildVacationLog(items) {
   const byName = (n) => items.find((it) => it.name === n);
   const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -179,7 +179,7 @@ function buildVacationLog(items) {
   const rows = [];
   let seq = 0;
   const mk = (item, back, on) => { if (item) rows.push({ rowId: 'vac_' + (seq++).toString(36), itemId: item.id, date: at(back), on }); };
-  mk(byName('Vacuum living room'), 24, true);            // still on vacation
+  mk(byName('Vacuum living room'), 24, true);            // still inactive
   mk(byName('Mop the kitchen'), 180, true);
   mk(byName('Mop the kitchen'), 150, false);             // returned long ago, picked since
   mk(byName('Fridge wipe-down'), 20, true);
@@ -187,7 +187,7 @@ function buildVacationLog(items) {
   return rows;
 }
 
-// Build an onVac(itemId, iso) predicate by replaying vacation events.
+// Build an onVac(itemId, iso) predicate by replaying inactive-state events.
 function makeOnVac(vacRows) {
   const byItem = new Map();
   for (const r of vacRows) {
@@ -242,8 +242,9 @@ function buildPickLog(items, pickers, onVac, days = 365) {
       if (pk.mode === 'ease-down') continue; // handled statefully below
       if (Array.isArray(pk.daysOfWeek) && !pk.daysOfWeek.includes(dow)) continue;
       const dIso = seedIsoDay(d);
-      // Eligible pool = items not on vacation THAT day (per the vacation log),
-      // so historical picks stop while an item is away and resume on return.
+      // Eligible pool = items not inactive THAT day (per the inactive-state
+      // log), so historical picks stop while an item is inactive and resume
+      // on return.
       const pool = (byPicker[pk.id] || []).filter((it) => !onVac(it.id, dIso));
       if (!pool.length) continue;
       const it = weightedPick(pool);
@@ -287,7 +288,7 @@ function buildPickLog(items, pickers, onVac, days = 365) {
       const dIso = seedIsoDay(d);
       const pool = (byPicker[pk.id] || []).filter((it) => !onVac(it.id, dIso));
       if (!pool.length) { active = null; continue; }
-      if (active && onVac(active.id, dIso)) active = null;          // vacation abandons
+      if (active && onVac(active.id, dIso)) active = null;          // inactive abandons
       if (active && Math.random() < 0.05) active = null;            // ~5% re-roll/manual abandon
       if (!active) { active = weightedPick(pool); charge = threshold; }
       const decay = rnd(active.easeMin ?? pk.easeMin ?? 20, active.easeMax ?? pk.easeMax ?? 34);
@@ -400,7 +401,7 @@ function buildSeed() {
   let _e = 0;
   const mkEid = () => 'eseed_' + (_e++).toString(36);
 
-  // Vacation history + the pick log that honors it. buildPickLog also returns
+  // Inactive-state history + the pick log that honors it. buildPickLog also returns
   // per-picker ease-down end state (which item is mid-depletion + its charge).
   const vacationLog = buildVacationLog(items);
   const onVac = makeOnVac(vacationLog);
@@ -505,8 +506,8 @@ function buildSeed() {
         eid: p.eid, pickerId: p.pickerId, itemId: p.itemId, done: p.done, skipped: false })),
     },
     // Per-pick history (~1yr) + today's rows. The Stats tab derives everything
-    // from this; there is no separate aggregate `history` anymore. Vacation days
-    // are honored (no picks while an item was away).
+    // from this; there is no separate aggregate `history` anymore. Inactive
+    // days are honored (no picks while an item was inactive).
     pickLog: pickLog,
     vacationLog: vacationLog,
     // Conditional trigger history (~1yr) for the demo gate. One row per

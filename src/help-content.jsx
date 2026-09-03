@@ -243,7 +243,7 @@ const TODAY_HELP_ITEMS = [
   },
   {
     id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Item Active Toggle',
-    body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
+    body: <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
   },
   {
     // sel targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot
@@ -587,7 +587,7 @@ const PICKER_HELP_ITEMS = [
   },
   {
     id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Item Active Toggle',
-    body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
+    body: <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
   },
   {
     // Unlike Today/Data, the Delete button is CSS-hidden here
@@ -905,7 +905,7 @@ const STATS_HELP_ITEMS = [
   },
   {
     id: 'statColdest', sel: '.stat-mk-coldest', title: 'Picker Items Least Picked', padX: 4, padY: 4,
-    body: <>This lists the 5 picker items that have been picked the least for your selected range. This excludes any picker items that are currently on vacation.</>,
+    body: <>This lists the 5 picker items that have been picked the least for your selected range. This excludes any picker items that are currently inactive.</>,
   },
   // ── Conditionals scope only ─────────────────────────────────────────────
   {
@@ -1427,7 +1427,7 @@ const DATA_HELP_ITEMS = [
   },
   {
     id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Item Active Toggle',
-    body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
+    body: <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
   },
   {
     // sel targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot

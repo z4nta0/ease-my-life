@@ -659,7 +659,7 @@
    than widening the column for everyone else. */
 .pool-item-name { flex: 0 1 160px; min-width: 0; }
 /* width: 80px — a fixed size for the pill itself, not just a max, so its
-   own text ("not yet" / "spent" / "vacation") never wraps onto a second
+   own text ("not yet" / "spent" / "inactive") never wraps onto a second
    line inside it. justify-content: center, not text-align: center — .pill
    is display:inline-flex (ui.jsx), so its text is a flex item rather than
    plain inline content; text-align has no effect on a flex item's position
@@ -1226,8 +1226,8 @@ button.heat-cell.is-sel {
   border: 0.5px solid var(--border); border-radius: 999px;
   padding: 1px 6px;
 }
-/* "Was on vacation" — item returned but not picked since. Uses the accent tint
-   (not the muted grey of currently-on-vacation) and its row stays un-dimmed. */
+/* "Was Inactive" — item returned but not picked since. Uses the accent tint
+   (not the muted grey of currently-inactive) and its row stays un-dimmed. */
 .rank-tag--was {
   color: var(--accent);
   border-color: oklch(from var(--accent) l c h / 0.4);
@@ -1247,7 +1247,7 @@ button.heat-cell.is-sel {
   background: oklch(0.55 0.16 25 / 0.08);
 }
 .rank-vals { display: flex; align-items: baseline; gap: 10px; flex: 0 0 auto; }
-/* Items breakdown: vacation/was-on-vacation status sits with the row's value
+/* Items breakdown: inactive/was-inactive status sits with the row's value
    on the right, same as Conditionals' .cnd-bd-vals and Reminders' own meta
    grouping, rather than crowding the name on the left. */
 .rank-bd-vals { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
@@ -1259,7 +1259,7 @@ button.heat-cell.is-sel {
 .rank-bd-vals .rank-metric-n { width: 40px; }
 /* Same fix again, for the Frequency/Spent and Last picked tabs: "every 12.5
    weeks" vs "Picked once" (or "N days ago" vs "Yesterday") differ enough in
-   width to shift the vacation/was-on-vacation tag before them. 112px matches
+   width to shift the inactive/was-inactive tag before them. 112px matches
    the width used for Conditionals' own Interval tab (.cnd-bd-freq--interval)
    — a longer "eligible" last-picked phrase is rare enough not to reserve
    full width for; it just wraps rather than pushing the tag out further. */
@@ -2513,7 +2513,7 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-card.is-editing { cursor: default; }
 
 /* Today picker entry: edit affordance — name turns into a direct-edit input and
-   a controls box (weight / vacation / delete) opens beneath, mirroring Data. */
+   a controls box (weight / active / delete) opens beneath, mirroring Data. */
 .entry-card-name-input {
   width: 100%; margin: 0; padding: 1px 0;
   border: none; background: none;
@@ -2553,7 +2553,7 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 }
 .entry-editor .pie-reset:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
 .entry-editor .pie-reset:disabled { opacity: 0.4; cursor: default; }
-/* Data picker items: dim a vacationed item's name in the resting row. */
+/* Data picker items: dim an inactive item's name in the resting row. */
 .rd-item.is-vac .rd-name { color: var(--muted); }
 .entry-edit-foot {
   display: flex; align-items: center; justify-content: flex-end; gap: 8px;

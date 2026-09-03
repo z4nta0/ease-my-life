@@ -243,7 +243,7 @@ function applyConditionalToggle(s, newEntries, toggled, nowDone) {
 //     configured-vs-observed numerator; probability cards log too).
 //   • FIRST dependent completion of an UNtriggered cycle → triggered:false
 //     (the "evaluated but didn't fire" denominator).
-// Vacationed conditionals (active:false) log nothing — no logic runs for them.
+// Inactive conditionals (active:false) log nothing — no logic runs for them.
 // Undo removes the cycle's row once the confirming completion is gone. Rows
 // denormalize name + mode so the log survives edits/deletes.
 function applyConditionalLog(s, newEntries, toggled, nowDone) {
@@ -259,7 +259,7 @@ function applyConditionalLog(s, newEntries, toggled, nowDone) {
   }
   if (!condId) return log;
   const cond = conds.find((c) => c.id === condId);
-  if (!cond || cond.active === false) return log; // vacationed → no logging
+  if (!cond || cond.active === false) return log; // inactive → no logging
   const day = isoDay();
   const existing = log.find((r) => r.condId === condId && r.date === day);
   const depDoneCount = () => newEntries.filter((e) => {
@@ -524,14 +524,14 @@ function migrate(s) {
   if (s && !Array.isArray(s.reminderLog)) s.reminderLog = [];
   // Reminder skip log (added later). Append-only history of skip actions.
   if (s && !Array.isArray(s.reminderSkipLog)) s.reminderSkipLog = [];
-  // Vacation event log (added later). Append-only on/off transitions per item so
-  // Stats can exclude days an item wasn't eligible. Empty for old state (past
-  // treated as always-eligible); the live `item.vacation` bool is current truth.
+  // Inactive-state event log (added later). Append-only on/off transitions per
+  // item so Stats can exclude days an item wasn't eligible. Empty for old state
+  // (past treated as always-eligible); the live `item.vacation` bool is current truth.
   if (s && !Array.isArray(s.vacationLog)) s.vacationLog = [];
   // Conditionals (per-day picker gates, added later). Backfill empty; ensure
   // every picker has a conditionalId slot so gating code can read it uniformly.
   if (s && !Array.isArray(s.conditionals)) s.conditionals = [];
-  // Split the old single `active` field into `active` (enabled/not-vacation) and
+  // Split the old single `active` field into `active` (enabled/not-inactive) and
   // `triggered` (currently firing). Old `active` was the trigger, so migrate it.
   if (s && Array.isArray(s.conditionals)) {
     s.conditionals = s.conditionals.map((c) => {
@@ -1006,7 +1006,7 @@ function useStore(opts) {
         name: cond.name || 'Conditional', mode: cond.mode || 'ease-up',
         cardText: cond.cardText || 'Day off', value: cond.mode === 'ease-down' ? (cond.threshold ?? 100) : 0,
         weight: cond.weight ?? 1, oddsPct: cond.oddsPct ?? 50,
-        // `active` = enabled (not on vacation); `triggered` = currently firing.
+        // `active` = enabled (not inactive); `triggered` = currently firing.
         active: cond.active !== undefined ? cond.active : true,
         triggered: cond.triggered !== undefined ? cond.triggered : (cond.mode === 'ease-down'),
         easeMin: cond.easeMin ?? 7, easeMax: cond.easeMax ?? 14,
@@ -1076,9 +1076,10 @@ function useStore(opts) {
 
     toggleVacation: (id, kind) => setState((s) => {
       const day = isoDay();
-      // When an item that is a picker's active ease-down item goes ON vacation,
-      // abandon it: null the picker's activeItemId and recharge the item to full
-      // (an abandoned streak never reached 0, so it won't count toward Spent).
+      // When a picker's in-progress ease-down item (its activeItemId) is
+      // marked inactive, abandon it: null the picker's activeItemId and
+      // recharge the item to full (an abandoned streak never reached 0, so
+      // it won't count toward Spent).
       const abandonIfActive = (pickers, items, itemIds) => {
         let nextP = pickers, nextI = items;
         for (const itemId of itemIds) {

@@ -245,7 +245,7 @@ function PickerBlock({ state, picker, day, suppressed }) {
                 <ValueCells hasValue={hv} atGen={genItems[it.id]} after={it.value}
                             offset={picker.mode === 'dynamic' ? (it.weight ?? 1) : 0} />
                 {it.vacation
-                  ? <span className="dl-status dl-mk-status"><span className="dl-vac">Vacation</span></span>
+                  ? <span className="dl-status dl-mk-status"><span className="dl-vac">Inactive</span></span>
                   : <StatusChips flags={f} />}
               </div>
             );

@@ -170,7 +170,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   // And for the ease-down "Spent" metric.
   const [spentMode, setSpentMode] = React.useState('eligible');
   // Count denominator mode: 'total' (share of all picks, sums 100%) vs
-  // 'eligible' (share of picks while the item was not on vacation).
+  // 'eligible' (share of picks while the item was active).
   const [countMode, setCountMode] = React.useState('total');
   // Reminders "Reminders breakdown" card: which metric (completions | skipped),
   // sort direction, and current pager page (0-indexed).
@@ -518,7 +518,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   }, [state.items, scope, countById, hiddenPickerIds]);
 
   // Single-picker breakdown — EVERY item in the picker (incl. zero-pick and
-  // vacation), with all per-item metrics on one object. The "Pick breakdown"
+  // inactive), with all per-item metrics on one object. The "Pick breakdown"
   // card pivots on `metric` to choose which value to show + sort by.
   const isPicker = scope !== 'all' && !isReminders && !isConditionals;
   const pickerObj = pickers.find((p) => p.id === scope);
@@ -527,8 +527,9 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   const usesWeight = isPicker && pickerObj && (pickerObj.mode === 'weighted' || pickerObj.mode === 'dynamic');
   const THRESHOLD = 100;
 
-  // Vacation replay from the event log: onAt(item, date) = was it on vacation
-  // that day; onAfter(item, date) = did an 'on' transition happen after `date`.
+  // Inactive-state replay from the event log: onAt(item, date) = was it
+  // inactive that day; onAfter(item, date) = did an 'on' transition happen
+  // after `date`.
   const vac = React.useMemo(() => {
     const byItem = new Map();
     for (const r of (state.vacationLog || [])) {
@@ -554,7 +555,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   const activeDates = React.useMemo(() => [...new Set(rows.map((r) => r.date))].sort(), [rows]);
 
   // Eligible-day gap per item (used by the Frequency metric). The eligible index
-  // is per-item: picker run days MINUS that item's vacation days, so a vacation
+  // is per-item: picker run days MINUS that item's inactive days, so an inactive
   // stretch can't inflate the gap. Calendar gap stays literal wall-clock time.
   const freqById = React.useMemo(() => {
     const m = new Map();
@@ -586,7 +587,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   // Ease-down "Spent" — measured from ACTUAL history: the average length of a
   // completed depletion streak (consecutive runs of the same active item that
   // ended when its charge hit 0, flagged depletedEnd). Abandoned streaks (re-
-  // roll / vacation / manual) never reach 0, so they're excluded — which is why
+  // roll / inactive / manual) never reach 0, so they're excluded — which is why
   // recharging an abandoned item can't skew this. elig = runs; cal = calendar
   // days spanned. null when the item has no completed cycle in range.
   const spentById = React.useMemo(() => {
@@ -656,7 +657,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
       const avgGap = freqMode === 'calendar' ? f.avgGapCal : f.avgGapElig;
       const lastIso = lastById.get(it.id) || null;
       // Calendar days ago vs eligible days ago; eligible excludes days the
-      // picker didn't run AND days this item was on vacation.
+      // picker didn't run AND days this item was inactive.
       const lastCal = lastIso ? Math.round((new Date(todayIso) - new Date(lastIso)) / 86400000) : null;
       const eligDates = activeDates.filter((d) => !vac.onAt(it.id, d));
       const eligIdx = eligDates.indexOf(lastIso);
@@ -664,7 +665,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
       const lastDays = lastMode === 'eligible' ? lastElig : lastCal;
       // Count denominator: total picks vs picks made while this item was eligible.
       const eligDenom = rows.reduce((a, r) => a + (vac.onAt(it.id, r.date) ? 0 : 1), 0);
-      // Label: not currently on vacation, but went on vacation after its last
+      // Label: not currently inactive, but went inactive after its last
       // pick and hasn't been picked since returning. (Never for deleted items.)
       const wasOnVac = !it.__deleted && !it.vacation && vac.onAfter(it.id, lastIso || '');
       return {
@@ -1105,7 +1106,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                         {target && <span className="rank-meta">{target}</span>}
                       </span>
                       <span className="cnd-bd-vals">
-                        {!o.deleted && o.active === false && <span className="rank-tag">vacation</span>}
+                        {!o.deleted && o.active === false && <span className="rank-tag">inactive</span>}
                         <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
                         {condMetric === 'rate' && (
                           <span className="rank-vals">
@@ -1297,7 +1298,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                   <span className="cnd-sum-name">
                     {o.name}
                     {o.deleted && <span className="rank-tag rank-tag--deleted">deleted</span>}
-                    {!o.deleted && o.active === false && <span className="rank-tag">vacation</span>}
+                    {!o.deleted && o.active === false && <span className="rank-tag">inactive</span>}
                   </span>
                   <span className="cnd-sum-meta">
                     <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
@@ -1465,7 +1466,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
               {' '}or only{' '}
               <button type="button" className={`note-link ${countMode === 'eligible' ? 'is-on' : ''}`}
                       onClick={() => setCountMode('eligible')}>eligible picks</button>
-              {' '}when an item was not on vacation.
+              {' '}when an item was active.
             </p>
           )}
           {effMetric === 'freq' && (
@@ -1527,9 +1528,9 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                       {suffix && <span className="rank-meta">{suffix}</span>}
                     </span>
                     <span className="rank-bd-vals">
-                      {!it.deleted && it.vacation && <span className="rank-tag">vacation</span>}
+                      {!it.deleted && it.vacation && <span className="rank-tag">inactive</span>}
                       {!it.deleted && effMetric === 'last' && !it.vacation && it.wasOnVac && (
-                        <span className="rank-tag rank-tag--was">was vacation</span>
+                        <span className="rank-tag rank-tag--was">was inactive</span>
                       )}
                       {effMetric === 'count' && (() => {
                         const denom = countMode === 'eligible' ? it.eligDenom : totalPossible;

@@ -13,9 +13,10 @@ import { HelpButton, HelpOverlay } from './help-mode.jsx';
 import { DATA_HELP_ITEMS } from './help-content.jsx';
 import { seedHelpPickers, clearHelpPickers, seedHelpTasks, clearHelpTasks } from './help-sample-data.js';
 
-// Data tab — items grouped by their owning picker, plus weights, vacation,
-// picker deletion, and per-picker Daily-generator scheduling (weekday +
-// skip-holiday gates). The global "days off" holiday list lives in Settings.
+// Data tab — items grouped by their owning picker, plus weights, active/
+// inactive status, picker deletion, and per-picker Daily-generator
+// scheduling (weekday + skip-holiday gates). The global "days off" holiday
+// list lives in Settings.
 
 // Section-list sort options (Conditionals / Reminders / each picker card).
 const SECTION_SORT_OPTIONS = [
@@ -746,8 +747,8 @@ function ConditionalsManager({ state, actions }) {
   // Defaults COLLAPSED: absent = collapsed, explicit false = expanded.
   const collapsedMap = (state.ui && state.ui.controlsCollapsed) || {};
   const open = collapsedMap['__conditionals'] === false;
-  // Item sort — each conditional has its own mode (Type) and active/on-
-  // vacation state, same concepts as a picker card's own Type/Active fields
+  // Item sort — each conditional has its own mode (Type) and active/inactive
+  // state, same concepts as a picker card's own Type/Active fields
   // at the section level; Group and Item Count don't apply to a single
   // conditional, so those options aren't offered here. Weighted/dynamic
   // conditionals get an Odds value — `oddsPct`, the actual trigger-likelihood
@@ -910,7 +911,7 @@ function ConditionalsManager({ state, actions }) {
                     <span className="rd-name">{c.name}</span>
                     <span className="rd-sched">{(MODES[c.mode] || {}).label || c.mode}
                       {' · '}{uses} {uses === 1 ? 'picker' : 'pickers'}
-                      {c.active === false ? ' · on vacation' : ''}</span>
+                      {c.active === false ? ' · inactive' : ''}</span>
                   </span>
                   <span className="rd-chev"><span className={`chev ${isOpen ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span></span>
                 </button>
@@ -1465,11 +1466,11 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   <span className="cat-mode-label" hidden>{MODES[pk.mode].label}</span>
                 </button>
                 <button className="vac-toggle" aria-pressed={!!allVac}
-                        aria-label={`${allVac ? 'End vacation for' : 'Start vacation for'} all items in ${pk.name}`}
+                        aria-label={`${allVac ? 'Activate' : 'Deactivate'} all items in ${pk.name}`}
                         onClick={(e) => { e.stopPropagation(); actions.toggleVacation(pk.id, 'picker'); }}
-                        title="Vacation for all items in this picker">
+                        title="Active toggle for all items in this picker">
                   <Icon name={allVac ? 'moon' : 'sparkle'} size={14} />
-                  <span>{allVac ? 'On vacation' : 'Active'}</span>
+                  <span className="set-sub-fade" key={allVac ? 'inactive' : 'active'}>{allVac ? 'Inactive' : 'Active'}</span>
                 </button>
               </header>
               <Collapse open={open}>
@@ -1540,7 +1541,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                         const soonest = Math.max(1, Math.round(100 / (eMax || 1)));
                         const latest = Math.max(1, Math.round(100 / (eMin || 1)));
                         const meta = it.vacation
-                          ? 'On vacation'
+                          ? 'Inactive'
                           : (isEase ? `${soonest}\u2013${latest} ${CADENCE.unitWord(pk.cadence, latest)}`
                              : (usesWeight ? `Weight w${it.weight}` : 'Equal chance'));
                         return (

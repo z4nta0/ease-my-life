@@ -342,7 +342,7 @@ function LoaderCard({ picker, info }) {
 // the Pickers-tab per-item controls: for weighted/dynamic pickers a weight
 // stepper; for ease-up/ease-down the item's cadence range (soonest/latest, the
 // human face of its drift band) since weight is irrelevant to those modes.
-// Plus a vacation toggle and a confirm-gated delete (delete behaves exactly as
+// Plus an Active/Inactive toggle and a confirm-gated delete (delete behaves exactly as
 // Data — actions.removeItem).
 const EntryEditor = React.forwardRef(function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew, itemCount, items }, ref) {
   const [confirmDel, setConfirmDel] = React.useState(false);
@@ -535,11 +535,11 @@ const EntryEditor = React.forwardRef(function EntryEditor({ item, picker, action
         )}
         <div className="pie-row">
           <div className="pie-rowlabel">
-            <span className="pie-lbl">Active</span>
-            <span className="pie-sub set-sub-fade" key={String(!!item.vacation)}>{item.vacation ? <><strong>not eligible</strong> to be picked</> : <><strong>eligible</strong> to be picked</>}</span>
+            <span className="pie-lbl set-sub-fade" key={`lbl-${!!item.vacation}`}>{item.vacation ? 'Inactive' : 'Active'}</span>
+            <span className="pie-sub set-sub-fade" key={`sub-${!!item.vacation}`}>{item.vacation ? <><strong>not eligible</strong> to be picked</> : <><strong>eligible</strong> to be picked</>}</span>
           </div>
           <button className={`switch ${!item.vacation ? 'is-on' : ''}`} aria-pressed={!item.vacation}
-                  aria-label={item.vacation ? 'Bring back into rotation' : 'Send on vacation'}
+                  aria-label={item.vacation ? 'Activate' : 'Deactivate'}
                   onClick={() => actions.toggleVacation(item.id, 'item')}><i /></button>
         </div>
       </div>
@@ -746,7 +746,7 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
   // Re-roll needs at least two candidates to land on a DIFFERENT item; with only
   // one the button is disabled and shows a tip (hover on desktop, tap on mobile).
   // What counts as a candidate is per-mode: ease-up cycles items charged to the
-  // threshold; every other mode draws from the picker's non-vacation items.
+  // threshold; every other mode draws from the picker's active (non-inactive) items.
   const rerollPool = state.items.filter((it) => it.pickerId === picker.id && !it.vacation);
   const eligCount = picker.mode === 'ease-up'
     ? rerollPool.filter((it) => PICKERS.easeEligible(it, picker.threshold)).length
@@ -1650,7 +1650,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   };
   const [generatingMap, setGeneratingMap] = React.useState(null);
   // Entries a regenerate is about to drop entirely (their picker produced no new
-  // pick — e.g. its last eligible item just went on vacation). They get no loader
+  // pick — e.g. its last eligible item just went inactive). They get no loader
   // card, so without this they sat untouched through the whole generation and
   // then blinked out. Marked here so they play the normal removal animation.
   const [leavingEids, setLeavingEids] = React.useState(() => new Set());

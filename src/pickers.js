@@ -301,9 +301,9 @@ function avgEase(items, pickerId) {
 const EASE_TOL = 0.5;
 const easeEligible = (item, threshold) => (item.value ?? 0) >= ((threshold ?? 100) - EASE_TOL);
 
-// Whether an item could be picked RIGHT NOW under its picker's mode. Vacation
-// is deliberately not considered here — callers that care combine it, and the
-// Pickers pool shows vacation as its own row state.
+// Whether an item could be picked RIGHT NOW under its picker's mode. Active/
+// inactive is deliberately not considered here — callers that care combine
+// it, and the Pickers pool shows inactive as its own row state.
 const modeEligible = (item, picker) => {
   if (!picker) return true;
   if (picker.mode === 'ease-up') return easeEligible(item, picker.threshold);
