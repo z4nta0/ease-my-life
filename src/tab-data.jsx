@@ -458,16 +458,23 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                 <span className="sched-line-lbl pie-lbl-row">How often?
                   <InfoTip className="pie-help pie-help--sm" label={CADENCE.tipFor(pk.cadence)}>?</InfoTip>
                 </span>
-                <span className="sched-line-sub set-sub-fade" key={(pk.cadence || 'daily') + (pk.anchorDow ?? '') + (pk.anchorDom ?? '') + (pk.anchorMonth ?? '') + (pk.anchorDay ?? '')}>{(() => {
+                <span className="sched-line-sub set-sub-fade" key={(pk.cadence || 'daily') + (pk.anchorDow ?? '') + (pk.anchorDom ?? '') + (pk.anchorMonth ?? '') + (pk.anchorDay ?? '') + (pk.dateMode ?? '') + (pk.nthOrdinal ?? '') + (pk.nthWeekday ?? '')}>{(() => {
                   const cad = pk.cadence || 'daily';
                   if (cad === 'daily') return (CAD_OPTS.find((o) => o.key === 'daily') || {}).sub;
                   const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                   const ord = (n) => { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
+                  const isNthWeekday = pk.dateMode === 'nthWeekday';
                   const tail = ' — pick will persist until marked as completed';
                   if (cad === 'weekly') return <>surfaces once a week, <strong>every {DAYS[pk.anchorDow ?? 0]}</strong>{tail}</>;
-                  if (cad === 'monthly') return <>surfaces once a month, <strong>on the {ord(pk.anchorDom ?? 1)}</strong>{tail}</>;
-                  return <>surfaces once a year, <strong>on {MONTHS[(pk.anchorMonth ?? 1) - 1]} {ord(pk.anchorDay ?? 1)}</strong>{tail}</>;
+                  if (cad === 'monthly') {
+                    return isNthWeekday
+                      ? <>surfaces once a month, <strong>on the {ord(pk.nthOrdinal ?? 1)} {DAYS[pk.nthWeekday ?? 0]}</strong>{tail}</>
+                      : <>surfaces once a month, <strong>on the {ord(pk.anchorDom ?? 1)}</strong>{tail}</>;
+                  }
+                  return isNthWeekday
+                    ? <>surfaces once a year, <strong>on the {ord(pk.nthOrdinal ?? 1)} {DAYS[pk.nthWeekday ?? 0]} of {MONTHS[(pk.anchorMonth ?? 1) - 1]}</strong>{tail}</>
+                    : <>surfaces once a year, <strong>on {MONTHS[(pk.anchorMonth ?? 1) - 1]} {ord(pk.anchorDay ?? 1)}</strong>{tail}</>;
                 })()}</span>
               </span>
               <div className="sched-cad-ctls">
@@ -487,15 +494,59 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                     ))}
                   </select>
                 )}
-                {pk.cadence === 'monthly' && (
+                {(pk.cadence === 'monthly' || pk.cadence === 'yearly') && (
+                  <select className="np-input rd-cad-sel" value={pk.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date'}
+                          aria-label="Day selection"
+                          onChange={(e) => actions.updatePicker(pk.id, { dateMode: e.target.value })}>
+                    <option value="date">Date</option>
+                    <option value="nthWeekday">Weekday</option>
+                  </select>
+                )}
+                {pk.cadence === 'monthly' && (pk.dateMode === 'nthWeekday' ? (
+                  <React.Fragment>
+                    <select className="np-input rd-cad-sel" value={pk.nthOrdinal ?? 1} aria-label="Week of the month"
+                            onChange={(e) => actions.updatePicker(pk.id, { nthOrdinal: parseInt(e.target.value) })}>
+                      {[1, 2, 3, 4, 5].map((n) => (
+                        <option key={n} value={n}>{CADENCE.summary({ cadence: 'monthly', anchorDom: n }).split('· ')[1]}</option>
+                      ))}
+                    </select>
+                    <select className="np-input rd-cad-sel" value={pk.nthWeekday ?? 0} aria-label="Weekday"
+                            onChange={(e) => actions.updatePicker(pk.id, { nthWeekday: parseInt(e.target.value) })}>
+                      {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((d, i) => (
+                        <option key={i} value={i}>{d}</option>
+                      ))}
+                    </select>
+                  </React.Fragment>
+                ) : (
                   <select className="np-input rd-cad-sel" value={pk.anchorDom ?? 1} aria-label="Anchor day of month"
                           onChange={(e) => actions.updatePicker(pk.id, { anchorDom: parseInt(e.target.value) })}>
                     {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
                       <option key={d} value={d}>{CADENCE.summary({ cadence: 'monthly', anchorDom: d }).split('· ')[1]}</option>
                     ))}
                   </select>
-                )}
-                {pk.cadence === 'yearly' && (
+                ))}
+                {pk.cadence === 'yearly' && (pk.dateMode === 'nthWeekday' ? (
+                  <React.Fragment>
+                    <select className="np-input rd-cad-sel" value={pk.nthOrdinal ?? 1} aria-label="Week of the month"
+                            onChange={(e) => actions.updatePicker(pk.id, { nthOrdinal: parseInt(e.target.value) })}>
+                      {[1, 2, 3, 4, 5].map((n) => (
+                        <option key={n} value={n}>{CADENCE.summary({ cadence: 'monthly', anchorDom: n }).split('· ')[1]}</option>
+                      ))}
+                    </select>
+                    <select className="np-input rd-cad-sel" value={pk.nthWeekday ?? 0} aria-label="Weekday"
+                            onChange={(e) => actions.updatePicker(pk.id, { nthWeekday: parseInt(e.target.value) })}>
+                      {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((d, i) => (
+                        <option key={i} value={i}>{d}</option>
+                      ))}
+                    </select>
+                    <select className="np-input rd-cad-sel" value={pk.anchorMonth ?? 1} aria-label="Anchor month"
+                            onChange={(e) => actions.updatePicker(pk.id, { anchorMonth: parseInt(e.target.value) })}>
+                      {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m, i) => (
+                        <option key={i} value={i + 1}>{m}</option>
+                      ))}
+                    </select>
+                  </React.Fragment>
+                ) : (
                   <React.Fragment>
                     <select className="np-input rd-cad-sel" value={pk.anchorMonth ?? 1} aria-label="Anchor month"
                             onChange={(e) => actions.updatePicker(pk.id, { anchorMonth: parseInt(e.target.value) })}>
@@ -510,7 +561,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                       ))}
                     </select>
                   </React.Fragment>
-                )}
+                ))}
               </div>
             </div>
             <div className="sched-line">

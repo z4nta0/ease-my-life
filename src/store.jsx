@@ -1194,7 +1194,7 @@ function useStore(opts) {
     // Keeping the id alive is what makes it "the same picker" rather than a
     // renamed-on-collision duplicate — Stats history/pick log/daily
     // generator membership all keep pointing at it.
-    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, avoidDuplicates = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, createdFromSample, replaceId, hidden = false }) => {
+    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, avoidDuplicates = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday, createdFromSample, replaceId, hidden = false }) => {
       // First picker = the first data worth protecting from eviction. Ask the
       // browser for persistent storage now rather than on a cold first load,
       // where a denial would be sticky for the session.
@@ -1240,7 +1240,7 @@ function useStore(opts) {
         // Daily-generator schedule: which weekdays it may run on, and whether
         // it sits out public holidays.
         daysOfWeek: CADENCE.enforceWeeklyDay({
-          ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay }),
+          ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday }),
           daysOfWeek: Array.isArray(daysOfWeek) && daysOfWeek.length ? daysOfWeek : [0, 1, 2, 3, 4, 5, 6],
         }),
         skipHolidays: !!skipHolidays,
@@ -1249,7 +1249,7 @@ function useStore(opts) {
         // see pickers.js's `pick()` for how this is applied.
         avoidDuplicates: !!avoidDuplicates,
         // Picker Cadence: surfacing anchor + display unit (normalized/defaulted).
-        ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay }),
+        ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday }),
         // Optional conditional gate (existing id, or the freshly-made one).
         conditionalId: madeCond ? madeCond.id : (conditionalId || null),
         // Defaults false for every normal caller; tab-picker.jsx passes true
