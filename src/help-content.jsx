@@ -957,6 +957,10 @@ const DATA_HELP_ITEMS = [
     id: 'conditionalsFilter', sel: '.stat-scope-groups--cond .picker-group-pill', title: 'Conditionals Filter',
     body: <>This filters the pickers list below by conditional, showing only pickers gated by the conditional you select.</>,
   },
+  {
+    id: 'dataSectionSort', sel: '.data-sort-bar .data-sort-sel', title: 'Section Sort',
+    body: <>This changes the order that Conditionals, Reminders and your pickers are listed in below.</>,
+  },
   // ── Conditionals manager — each conditional gets its own highlight/
   // tooltip, not just the section as a whole. The per-type controls
   // (Type/Weight/Odds/Boost/Charge Controls/Active) reuse the EXACT same
@@ -1337,6 +1341,16 @@ const DATA_HELP_ITEMS = [
     // below it.
     id: 'dataAddItem', sel: '.data-list .rd-add', title: 'Create New Picker Item', padY: 0,
     body: <>This adds a new item to this picker's pool.</>,
+  },
+  {
+    // Unscoped (unlike dataAddItem/dataItemRow above) so this single entry
+    // also covers the Conditionals and Reminders sections' own item sorts,
+    // not just each picker's — all three render the exact same SortSelect
+    // markup (ui.jsx) inside their own .cat-body. perElement — every
+    // expanded section's own sort control gets its own badge, since more
+    // than one can be visible (and set to a different order) at once.
+    id: 'dataItemSort', sel: '.cat-body .data-sort-sel', perElement: true, title: 'Item Sort',
+    body: <>This changes the order that the items in this section are listed in below.</>,
   },
   {
     // perElement — every item in every expanded picker gets its own badge.
