@@ -936,7 +936,7 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
           <div className={`rem-quickadd-wrap ${addClosing ? 'is-closing' : ''}`}>
             <div className="rem-quickadd">
               <input ref={inputRef} className="np-input" type="text" value={draftTask.name} maxLength={60}
-                     placeholder="Add a reminder, e.g. Call the dentist" aria-label="Reminder name"
+                     placeholder="Add a reminder, e.g. Take out the trash" aria-label="Reminder name"
                      onChange={(e) => setDraftTask((d) => ({ ...d, name: e.target.value }))}
                      onKeyDown={(e) => { if (e.key === 'Enter') commit(); }} />
             </div>

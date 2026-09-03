@@ -2278,7 +2278,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
           <div className={`editmode-banner ${bannerClosing ? 'is-closing' : ''}`} role="status">
             <span className="editmode-banner-msg">
               <Icon name="grip" size={15} />
-              Edit Mode — drag groups and items to rearrange or click group names to edit them
+              Edit Mode allows you to drag groups and items to rearrange them or to click group names to edit them.
             </span>
             <span className="editmode-banner-actions">
               <Btn kind="ghost" size="sm" onClick={() => exitEditMode(false)}>Cancel</Btn>

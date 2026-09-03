@@ -10,9 +10,9 @@ import { Collapse, InfoTip } from './ui.jsx';
 // Reuses the Segmented control + the Reminders scheduling styles (rem-*).
 const CAD_OPTS = [
   { key: 'daily',   label: 'Daily',   sub: <>surfaces <strong>every day</strong> it runs (the standard behavior)</> },
-  { key: 'weekly',  label: 'Weekly',  sub: <>surfaces <strong>once a week</strong>, on the weekday you choose below — pick will persist until marked as completed</> },
-  { key: 'monthly', label: 'Monthly', sub: <>surfaces <strong>once a month</strong>, on the day you choose below — pick will persist until marked as completed</> },
-  { key: 'yearly',  label: 'Yearly',  sub: <>surfaces <strong>once a year</strong>, on the date you choose below — pick will persist until marked as completed</> },
+  { key: 'weekly',  label: 'Weekly',  sub: <>surfaces <strong>once a week</strong>, on the weekday you choose below, after which the pick will persist until marked as completed</> },
+  { key: 'monthly', label: 'Monthly', sub: <>surfaces <strong>once a month</strong>, on the day you choose below, after which the pick will persist until marked as completed</> },
+  { key: 'yearly',  label: 'Yearly',  sub: <>surfaces <strong>once a year</strong>, on the date you choose below, after which the pick will persist until marked as completed</> },
 ];
 // Monthly/yearly only — same Date-vs-Weekday choice as reminders.jsx' own
 // monthly/annual editors (dateMode: 'date' | 'nthWeekday').

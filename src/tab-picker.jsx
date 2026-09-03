@@ -1212,31 +1212,32 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       {step === 1 ? (
       <div className="tab-fade" key="np-step1">
       <p className="picker-hint">
-        A picker is a small machine that chooses one thing for you from a pool —
-        a chore to do, a meal to make, a way to wind down. Give it a name and a
-        group, then choose how it should pick. You&rsquo;ll fill its pool in the
-        next step.
+        Pickers are the heart of the Ease My Life app. They are small machines
+        that chooses one item for you from a list, e.g. a chore to do, a meal
+        to make, a way to wind down. Give it a name, attach a group, choose
+        how it should pick and when it should run. You&rsquo;ll fill its list
+        of items in the next step.
       </p>
 
       <div className="np-fields">
         <div className="np-field">
           <label className="np-label" htmlFor="np-name">Name</label>
           <p className="np-help">
-            What you&rsquo;ll see on the picker bar above and on your Today list.
-            Short and plain works best &mdash; &ldquo;Dinner&rdquo;,
-            &ldquo;Weekly chore&rdquo;, &ldquo;Wind Down&rdquo;.
+            What you&rsquo;ll see on the picker bar above and on your todo list
+            cards. Short and plain works best, e.g. &ldquo;Daily Chore&rdquo;,
+            &ldquo;Dinner&rdquo;, &ldquo;Coffee Creamer&rdquo;.
           </p>
           <input id="np-name" className="np-input" type="text" maxLength={40} ref={nameRef}
                  value={name} onChange={(e) => setName(e.target.value)}
-                 placeholder="e.g. Dinner" autoComplete="off" />
+                 placeholder="e.g. Daily Chore" autoComplete="off" />
         </div>
 
         <div className="np-field">
           <span className="np-label">Group</span>
           <p className="np-help">
-            Pickers are clustered into groups on your Today list &mdash; like
-            &ldquo;Food&rdquo; or &ldquo;Chores&rdquo; &mdash; so related picks
-            sit together. Choose an existing group, or start a new one.
+            Pickers are clustered into groups on your todo list, like
+            &ldquo;Chores&rdquo; or &ldquo;Food&rdquo;, so that related picks
+            sit together. You may choose an existing group or create a new one.
           </p>
           <div className="np-groups">
             {existingGroups.map((g) => (
@@ -1262,10 +1263,11 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         <fieldset className="np-field">
           <legend className="np-label">How should it choose?</legend>
           <p className="np-help">
-            This is the rule the picker follows each time it runs.
-            &ldquo;Truly Random&rdquo; is the simplest &mdash; every item has an
-            equal chance. The others nudge the odds in different ways. Not sure?
-            Start random &mdash; you can change it at any time.
+            This is the ruleset that the picker follows each time it runs.
+            &ldquo;Truly Random&rdquo; is the simplest where every item has an
+            equal chance. The others nudge the odds in different ways. Not
+            sure? We recommend the Dynamic Weighted type but you can change a
+            picker&rsquo;s type at any time.
           </p>
           <div className="mode-radio">
             {Object.entries(MODES).map(([key, m]) => (
@@ -1289,15 +1291,14 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
               <span className="np-label">Attach a conditional</span>
               <p className="np-help">
                 Conditionals can be attached to a picker that will determine whether a picker
-                should be run on any given day during the auto generator phase for the Today tab.
-                Run eligibility can be determined using the same rules that the pickers use &mdash;
-                Truly Random, Weighted, Dynamic Weighted, Ease Up and Ease Down &mdash; each with
-                their own pros and cons.
+                should be run on any given day during the auto generator phase for the Today page.
+                Run eligibility can be determined using the same rules that the pickers use, e.g.
+                Truly Random, Weighted, Dynamic Weighted, Ease Up and Ease Down.
               </p>
               <p className="np-help">
-                Example: you have a Chores picker that you attach a Weighted conditional to in order
-                to determine whether a Day Off should should be triggered and therefore no Chores
-                should be chosen.
+                Example: You have a Daily Chore picker that you attach a Weighted conditional to in
+                order to determine whether a Day Off should should be triggered and therefore no
+                chores should be chosen for that day.
               </p>
             </div>
             <button type="button"
@@ -1360,9 +1361,9 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
             <div className="np-sched-block">
               <span className="np-label">Which days?</span>
               <p className="np-help">
-                Pick the days this picker is allowed to run on. Tap a day to turn
-                it off &mdash; handy for things like chores you&rsquo;d rather not
-                see on weekends.
+                Pick the days that this picker is allowed to run on. Tap a day
+                to turn it off. This is handy for things like chores, that
+                you&rsquo;d rather not see on weekends.
               </p>
               <div className="np-sched-row">
                 <WeekdayChips value={daysOfWeek} onChange={setDaysOfWeek}
@@ -1381,7 +1382,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                 <label className="np-label" htmlFor="np-skiphol">Skip on holidays</label>
                 <p className="np-help set-sub-fade" key={skipHolidays ? 'on' : 'off'}>
                   {skipHolidays
-                    ? <>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays — and add your own — in Settings.</>
+                    ? <>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays, or even add your own, on the Settings page.</>
                     : <>This picker <strong>will always run</strong>, even on major U.S. holidays.</>}
                 </p>
               </div>
@@ -1421,10 +1422,10 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
           {(() => {
             const needName = !name.trim();
             const needGroup = !effectiveGroup;
-            if (needName && needGroup) return 'A picker name and group are both required before advancing to the next step to create items for the picker’s pool.';
-            if (needName) return 'A picker name is required before advancing to the next step to create items for the picker’s pool.';
-            if (needGroup) return 'A group name is required before advancing to the next step to create items for the picker’s pool.';
-            return <>Up next &mdash; create items to be included in this picker&rsquo;s pool.</>;
+            if (needName && needGroup) return 'A picker name and group are both required before advancing to the next step to create items for the picker’s list.';
+            if (needName) return 'A picker name is required before advancing to the next step to create items for the picker’s list.';
+            if (needGroup) return 'A group name is required before advancing to the next step to create items for the picker’s list.';
+            return <>Up next, create items to be included in this picker&rsquo;s list.</>;
           })()}
         </div>
         <div className="np-footer-actions">
@@ -1437,53 +1438,51 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       ) : (
       <div className="tab-fade" key="np-step2">
       <p className="picker-hint">
-        This is the <strong>pool</strong> &mdash; the set of items
-        {' '}{name.trim() ? `“${name.trim()}”` : 'this picker'} chooses from.
-        Each time it runs it picks <strong>one</strong> of these, following the
-        {' '}&ldquo;{MODES[mode].label}&rdquo; rule you chose. Add items
-        one at a time &mdash; there are no wrong answers, and you can always add,
-        remove or edit items later.
+        This is the list of items that your
+        {' '}{name.trim() ? `“${name.trim()}”` : 'this picker'} picker chooses from.
+        Each time it runs it picks one of these items, following the
+        {' '}&ldquo;{MODES[mode].label}&rdquo; rule that you chose. You will need
+        to add at least 2 items before you can finish creating this picker. You
+        can always add, edit or remove items later.
       </p>
       {mode === 'random' && (
         <p className="picker-hint np-weight-note">
           Because you chose &ldquo;Truly Random&rdquo;, there are no extra controls
-          to tweak for items since they all have an equal chance of being picked.
+          to tweak for these items since they all have an equal chance of being picked.
         </p>
       )}
       {mode === 'weighted' && (
         <p className="picker-hint np-weight-note">
-          Because you chose &ldquo;Weighted&rdquo;, each item also
-          has a <strong>weight</strong> &mdash; a higher weight means a higher
-          chance of being picked. A <strong>w2</strong> item is picked about twice as often
-          as a <strong>w1</strong>. Leave them all at <strong>w1</strong> for an even start as you can
-          always change these later.
+          Because you chose &ldquo;Weighted&rdquo;, each item also has a weight.
+          A higher weight means an item has a higher chance of being picked.
+          e.g. a w2 item will be picked about twice as often as a w1. Leave them
+          all at w1 for an even start, you can always change these later.
         </p>
       )}
       {mode === 'dynamic' && (
         <p className="picker-hint np-weight-note">
-          Because you chose &ldquo;{MODES[mode].label}&rdquo;, each item also
-          has a <strong>weight</strong> &mdash; a higher weight means a higher
-          chance of being picked. A <strong>w2</strong> item is picked about twice as often
-          as a <strong>w1</strong>. Leave them all at <strong>w1</strong> for an even start as you can
-          always change these later.
+          Because you chose &ldquo;{MODES[mode].label}&rdquo;, each item also has a weight.
+          A higher weight means an item has a higher chance of being picked.
+          e.g. a w2 item will be picked about twice as often as a w1. Leave them
+          all at w1 for an even start, you can always change these later.
         </p>
       )}
       {mode === 'ease-up' && (
         <p className="picker-hint np-weight-note">
-          Because you chose &ldquo;Ease Up&rdquo;, each item gets its
-          own <strong>cadence</strong> &mdash; set per item below, since each might
-          need a different timeout period. For each one you will need to pick a
-          {' '}<strong>soonest</strong> and a <strong>latest</strong> value, which will be
-          used to determine its new value as it charges towards being eligible again.
+          Because you chose &ldquo;Ease Up&rdquo;, each item gets its own cadence.
+          This is set per item below, since each item might need a different
+          timeout period. For each one you will need to pick a soonest and a
+          latest value, which will be used to determine its new value as it
+          charges towards becoming eligible again.
         </p>
       )}
       {mode === 'ease-down' && (
         <p className="picker-hint np-weight-note">
-          Because you chose &ldquo;Ease Down&rdquo;, each item gets its
-          own <strong>cadence</strong> &mdash; set per item below, since each might
-          need a different selection period. For each one you will need to pick a
-          {' '}<strong>soonest</strong> and a <strong>latest</strong> value, which will be
-          used to determine its new value as it discharges towards deselection.
+          Because you chose &ldquo;Ease Down&rdquo;, each item gets its own cadence.
+          This is set per item below, since each item might need a different
+          selection period. For each one you will need to pick a soonest and a
+          latest value, which will be used to determine its new value as it
+          discharges towards deselection.
         </p>
       )}
 
@@ -1502,8 +1501,8 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       <div className="np-pool">
         {items.filter((it) => it.id !== newDraftId).length === 0 && !newDraftId && (
           <div className="np-pool-empty">
-            Nothing here yet. Add a few things this picker can choose between &mdash;
-            two or more so there&rsquo;s a real choice to make.
+            Nothing here yet. Add at least 2 items that this picker can choose
+            between, so that there&rsquo;s a real choice to make.
           </div>
         )}
         {items.filter((it) => it.id !== newDraftId).length > 0 && (
@@ -1644,7 +1643,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
             ? (showWeights
                 ? 'Looks good — set each item’s weight above, or leave them even.'
                 : `Minimum number of items added (${committedCount} so far) — you can always add more items later.`)
-            : `Add at least 2 items to create the picker${committedCount === 1 ? ' (1 so far)' : ''}.`}
+            : `Add at least 2 items to create this picker${committedCount === 1 ? ' (1 so far)' : ''}.`}
         </div>
         <div className="np-footer-actions">
           <Btn kind="ghost" onClick={goBackToStep1}>Back</Btn>
@@ -1854,7 +1853,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
             <h1 className="section-title"><span className="picker-title-accent">Easing</span> your life, one pick at a time.</h1>
           </div>
         </div>
-        <p className="section-sub picker-h-sub">Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, along with new picker items but editing existing pickers and their items' settings must be done in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>.</p>
+        <p className="section-sub picker-h-sub">Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, along with new picker items but editing existing pickers' settings must be done in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>.</p>
       </header>
       <div className="picker-body" style={tour.reserveTop ? { paddingTop: tour.reserveTop } : undefined}>
       <div className="stat-filters ob-picker-content">
