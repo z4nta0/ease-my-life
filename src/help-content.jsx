@@ -1343,13 +1343,26 @@ const DATA_HELP_ITEMS = [
     body: <>This adds a new item to this picker's pool.</>,
   },
   {
-    // Unscoped (unlike dataAddItem/dataItemRow above) so this single entry
-    // also covers the Conditionals and Reminders sections' own item sorts,
-    // not just each picker's — all three render the exact same SortSelect
-    // markup (ui.jsx) inside their own .cat-body. perElement — every
+    // Split by section type (three separate entries, each named for its own
+    // context) rather than one shared "Item Sort" — Conditionals/Reminders/
+    // pickers all render the exact same SortSelect markup (ui.jsx) inside
+    // their own .cat-body, so the selectors below key off each section's own
+    // distinguishing class/attribute instead: .cnd-manager (Conditionals),
+    // .cat--reminders (Reminders), and a picker section's own data-picker-id
+    // (set only there, unlike a plain className check, which would need
+    // :not() exclusions against the other two instead). perElement — every
     // expanded section's own sort control gets its own badge, since more
-    // than one can be visible (and set to a different order) at once.
-    id: 'dataItemSort', sel: '.cat-body .data-sort-sel', perElement: true, title: 'Item Sort',
+    // than one can be visible (and set to a different order) at once —
+    // matters most for pickers, where several can be expanded together.
+    id: 'dataCondItemSort', sel: '.cnd-manager .data-sort-sel', perElement: true, title: 'Conditional Items Sort',
+    body: <>This changes the order that the items in this section are listed in below.</>,
+  },
+  {
+    id: 'dataRemItemSort', sel: '.cat--reminders .data-sort-sel', perElement: true, title: 'Reminder Items Sort',
+    body: <>This changes the order that the items in this section are listed in below.</>,
+  },
+  {
+    id: 'dataPickerItemSort', sel: '.data-list .cat[data-picker-id] .data-sort-sel', perElement: true, title: 'Picker Items Sort',
     body: <>This changes the order that the items in this section are listed in below.</>,
   },
   {
