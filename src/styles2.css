@@ -1433,23 +1433,18 @@ button.cat-h-l {
      the "6 of 6" look. */
   display: flex; align-items: baseline; gap: 3px;
 }
-/* Below 500px there's no longer room for the name next to a 3-pill cluster
-   without squeezing it to almost nothing. Rather than let the cluster wrap
-   mid-group (ragged, inconsistent break point) or the name shrink away,
-   drop .cat-h-right to its own full-width row below the name — deterministic
-   regardless of how long any given picker's name/group/type text is. */
+/* Below 500px there's no longer room for the name next to a 3-pill row
+   without squeezing it to almost nothing. Rather than move the whole
+   cluster to its own row below the name (tried — cost too much vertical
+   space for not enough width relief) or let it wrap unpredictably, stack
+   all 3 pills into one narrow column, still in their original spot on the
+   header's right side, same row as the name — now only as wide as a
+   single pill (94px) instead of three plus gaps. */
 @container app (max-width: 500px) {
-  .data-list > .cat > .cat-h {
+  .data-list > .cat > .cat-h .cat-h-right,
+  .data-list > .cat > .cat-h .cat-h-tags {
     flex-direction: column;
-    align-items: stretch;
-  }
-  .data-list > .cat > .cat-h .cat-h-right {
-    justify-content: space-between;
-    /* Safety net below ~340px: the card itself isn't wide enough for all 3
-       fixed-width pills on one row even with the name out of the way, so
-       let the toggle wrap to a second line rather than clip off-screen. */
-    flex-wrap: wrap;
-    row-gap: 8px;
+    gap: 6px;
   }
 }
 

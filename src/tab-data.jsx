@@ -1502,8 +1502,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
                     at this width — same pattern as day-log.jsx's dl-name/
                     dl-mode. */}
                 {/* Wraps the tags + toggle as one group so a narrow viewport
-                    can drop them to their own full-width row below the name,
-                    rather than either wrapping mid-cluster or squeezing the
+                    can stack all 3 into a single narrow column here in place
+                    (freeing up width for the name) instead of squeezing the
                     name down to nothing — see the @container rule below. */}
                 <span className="cat-h-right">
                   <span className="cat-h-tags">
