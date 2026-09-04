@@ -183,7 +183,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   // Step 3 is Manual Generation) — leaving would discard the very pick that
   // tour just walked the user through making, and would also make the
   // step's own target (this whole done/sent view) vanish, reverting to the
-  // pre-pick "Pick one" button Step 3 already moved past. Re-roll is
+  // pre-pick "Pick One" button Step 3 already moved past. Re-roll is
   // deliberately NOT included here —
   // unlike the page tour (tourInterceptSend, above), App Features wants
   // Re-roll to stay genuinely usable (a real re-roll, its own animation)
@@ -222,7 +222,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   // and this never touches the is-sent/is-disabled branches) — an already-
   // sent or already-on-Today item has nothing to invite a click toward.
   const highlightManualPickSend = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_manual_pick' && tour.step === 4;
-  // Step 8 ("Add Picker Item") highlights "+ Add item" but explicitly
+  // Step 8 ("Add Picker Item") highlights "+ Add Item" but explicitly
   // doesn't want the user opening the real create-item form from a
   // disposable tutorial picker.
   const disableAddItemButton = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 7;
@@ -231,8 +231,8 @@ function PickerView({ picker, state, actions, animStyle }) {
   const [phase, setPhase] = React.useState('idle'); // idle | running | done | sent | empty
   // Reset back to idle whenever the Pickers page tour's own onGoBack bumps
   // this nonce (see its own comment in onboarding-page-tours.jsx) — a Back
-  // from its "Add to Todo List" step to "Manual Generation" needs Pick one
-  // showing again, not whatever real Send to Today/Re-roll/Done state a
+  // from its "Add to Todo List" step to "Manual Generation" needs Pick One
+  // showing again, not whatever real Send to Today/Re-Roll/Done state a
   // completed pick left behind. Guarded on truthiness (not just present in
   // the deps array) so the unset/0 starting value doesn't also reset on
   // every fresh mount — only a genuine bump does anything.
@@ -283,7 +283,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   const [removingId, setRemovingId] = React.useState(null);
   const [sentId, setSentId] = React.useState(null);
   const sendToday = (id) => {
-    // Full parity with "Pick one" → Send: run the engine forcing this item, then
+    // Full parity with "Pick One" → Send: run the engine forcing this item, then
     // stage the identical pending mutation (drift/weight + bumpPick) so marking
     // it done has the same consequence as a natural pick. Ease Down replaces the
     // picker's single entry; other modes add one (handled in addTodayEntry).
@@ -333,7 +333,7 @@ function PickerView({ picker, state, actions, animStyle }) {
     }));
   };
   // Edit an EXISTING pool item — reuses the exact same visual slot/interface
-  // as "+ Add item" (.pv-additem-wrap, below the pool list), just populated
+  // as "+ Add Item" (.pv-additem-wrap, below the pool list), just populated
   // from a real item and wired to the REAL actions instead of a draft. This
   // is deliberately NOT the same draft-until-Save pattern the new-item flow
   // above uses: that pattern exists specifically because a brand-new item
@@ -391,7 +391,7 @@ function PickerView({ picker, state, actions, animStyle }) {
     // A new-item draft is in progress — close it (without saving) instead
     // of silently no-oping, then pick this edit back up once that draft's
     // own closing animation finishes (see the .pv-newitem onAnimationEnd
-    // handler below). The reverse never needs this: the "+ Add item"
+    // handler below). The reverse never needs this: the "+ Add Item"
     // button that starts a new draft isn't rendered while an existing
     // item's edit form is open.
     if (newDraft) {
@@ -405,7 +405,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   const pickerItems = state.items.filter((it) => it.pickerId === picker.id);
   const eligibleItems = pickerItems.filter((it) => !it.vacation);
   // Item ids already live on Today — used to disable per-item Send and to keep
-  // the "Pick one" spin from landing on a duplicate.
+  // the "Pick One" spin from landing on a duplicate.
   const onTodayIds = React.useMemo(
     () => new Set((state.today.entries || []).filter((e) => e.itemId).map((e) => e.itemId)),
     [state.today.entries]);
@@ -454,7 +454,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   // switches tabs, unmounting PickerView) and forward again to a DIFFERENT
   // step — Step 5, say — the fresh mount's first effect run would
   // otherwise see this already-truthy value and synthesize a bogus 'done'
-  // result on a step that expects idle "Pick one". Tracking the last-seen
+  // result on a step that expects idle "Pick One". Tracking the last-seen
   // value (initialized to whatever's already on the bus at mount, so a
   // fresh mount never treats an inherited value as a new bump) makes this
   // only fire on a genuine increment that happens while mounted — same
@@ -565,16 +565,16 @@ function PickerView({ picker, state, actions, animStyle }) {
                 onboarding-app-features.jsx) without also matching Send to
                 Today or Done — disabled/is-tour-disabled here still only
                 ever check tourInterceptSend (the ORIGINAL Pickers page
-                tour), unchanged; App Features leaves Re-roll fully usable
+                tour), unchanged; App Features leaves Re-Roll fully usable
                 on purpose, see tourDisableDone's own comment above. */}
             <Btn kind="ghost" icon="refresh" onClick={() => afterExit(reroll)} disabled={tourInterceptSend}
-                 className={`pv-act pv-act--reroll ${(leaving || phase === 'sent') ? 'is-leaving' : ''} ${tourInterceptSend ? 'is-tour-disabled' : ''}`} style={{ animationDelay: '60ms' }}>Re-roll</Btn>
+                 className={`pv-act pv-act--reroll ${(leaving || phase === 'sent') ? 'is-leaving' : ''} ${tourInterceptSend ? 'is-tour-disabled' : ''}`} style={{ animationDelay: '60ms' }}>Re-Roll</Btn>
             <Btn kind="ghost" size="sm" onClick={() => afterExit(() => { setPhase('idle'); setResult(null); })} disabled={tourDisableDone}
                  className={`pv-act ${(leaving || phase === 'sent') ? 'is-leaving' : ''} ${tourDisableDone ? 'is-tour-disabled' : ''}`} style={{ animationDelay: '120ms' }}>Done</Btn>
           </>
         ) : (
           <Btn kind="primary" icon="play" onClick={runPick} disabled={busy} className={`pv-act pv-act--pick ${busy ? 'is-busy' : ''}`}>
-            {busy ? 'Picking\u2026' : 'Pick one'}
+            {busy ? 'Picking\u2026' : 'Pick One'}
           </Btn>
         )}
       </div>
@@ -583,7 +583,7 @@ function PickerView({ picker, state, actions, animStyle }) {
       <div className="picker-pool">
         {/* Purely structural — lets the Pickers page tour highlight the
             header + item list as one combined box without also catching
-            "+ Add item" below (a step of its own — see .pv-additem-wrap
+            "+ Add Item" below (a step of its own — see .pv-additem-wrap
             further down). Mirrors .picker-pool's own flex/gap so wrapping
             these two doesn't change their spacing. */}
         <div className="pool-items">
@@ -756,7 +756,7 @@ function PickerView({ picker, state, actions, animStyle }) {
             const newItem = newDraft;
             if (!newItem) return (
               <button type="button" className="pv-additem-btn" disabled={disableAddItemButton} onClick={addNewItem}>
-                <Icon name="plus" size={14} /> Add item
+                <Icon name="plus" size={14} /> Add Item
               </button>
             );
             return (
@@ -914,7 +914,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   // down; pull the form's scroll container back to the top so the add-item
   // field is in view without a manual scroll. Skipped while a guided tour is
   // active — a picker mini-tour's own next step highlights something further
-  // down this same Items sub-step (the "+ Add item" button), and this
+  // down this same Items sub-step (the "+ Add Item" button), and this
   // scroll-to-top fought that positioning, landing the highlight below the
   // fold instead of where the tour was trying to bring it into view.
   const goToStep2 = () => {
@@ -1431,7 +1431,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         <div className="np-footer-actions">
           <Btn kind="ghost" onClick={onCancel}>Cancel</Btn>
           <Btn kind="primary" icon="chev" className="ob-picker-next" disabled={!detailsReady || condNameCollides}
-               onClick={goToStep2}>Add items</Btn>
+               onClick={goToStep2}>Add Items</Btn>
         </div>
       </div>
       </div>
@@ -1599,7 +1599,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
             const newItem = items.find((it) => it.id === newDraftId);
             if (!newItem) return (
               <button type="button" className="pv-additem-btn" onClick={addNewDraft}>
-                <Icon name="plus" size={14} /> Add item
+                <Icon name="plus" size={14} /> Add Item
               </button>
             );
             return (

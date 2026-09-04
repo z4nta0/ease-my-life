@@ -32,7 +32,7 @@ function relWhen(iso) {
 }
 
 const STAT_RANGES = [
-  { key: 'all',   label: 'All time', days: Infinity },
+  { key: 'all',   label: 'All Time', days: Infinity },
   { key: 'year',  label: '1 year',   days: 365 },
   { key: '6m',    label: '6 months', days: 182 },
   { key: '3m',    label: '3 months', days: 90  },
@@ -43,13 +43,13 @@ const STAT_RANGES = [
 // How each Today pick came to be — kept on-palette (accent + warm) so the bar
 // reads as one family rather than a random spectrum.
 const SOURCE_META = [
-  { key: 'auto',   label: 'Auto-generated', color: 'var(--accent)' },
+  { key: 'auto',   label: 'Auto-Generated', color: 'var(--accent)' },
   { key: 'reroll', label: 'Re-rolled',      color: 'oklch(from var(--accent) calc(l + 0.22) calc(c - 0.05) h)' },
-  { key: 'manual', label: 'Hand-picked',    color: 'var(--warm)' },
+  { key: 'manual', label: 'Hand-Picked',    color: 'var(--warm)' },
 ];
 const TYPE_META = [
   { key: 'recurring', label: 'Recurring', color: 'var(--accent)' },
-  { key: 'once',      label: 'One-time',  color: 'var(--warm)' },
+  { key: 'once',      label: 'One-Time',  color: 'var(--warm)' },
 ];
 
 // Count → heat level for reminder days (no "possible" denominator like picks,
@@ -771,7 +771,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   //   • Count    → weight suffix (weighted / dynamic)
   //   • Freq/Spent → range suffix (ease modes), days from the drift band
   //     (soonest = 100/easeMax, latest = 100/easeMin)
-  //   • Auto / Hand-picked / Re-rolled away → no suffix ("{name} {count}")
+  //   • Auto / Hand-Picked / Re-Rolled Away → no suffix ("{name} {count}")
   const weightSuffix = React.useCallback((it) => {
     if (!it || !usesWeight) return null;
     return `weight ${it.weight ?? 1}`;
@@ -808,10 +808,10 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   const metricPills = [
     { key: 'count', label: 'Count' },
     isEaseDown ? { key: 'spent', label: 'Spent' } : { key: 'freq', label: 'Frequency' },
-    { key: 'last', label: 'Last picked' },
+    { key: 'last', label: 'Last Picked' },
     { key: 'auto', label: 'Auto' },
-    { key: 'manual', label: 'Hand-picked' },
-    { key: 'rejected', label: 'Re-rolled away' },
+    { key: 'manual', label: 'Hand-Picked' },
+    { key: 'rejected', label: 'Re-Rolled Away' },
     { key: 'skipped', label: 'Skipped' },
   ];
 
@@ -1061,7 +1061,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                 </button>
               </div>
               <div className="bd-metrics" ref={condMetricsRef}>
-                {[['rate', 'Fire rate'], ['triggers', 'Triggers'], ['cycles', 'Cycles'], ['interval', 'Interval'], ['last', 'Last fired']].map(([key, label]) => (
+                {[['rate', 'Fire Rate'], ['triggers', 'Triggers'], ['cycles', 'Cycles'], ['interval', 'Interval'], ['last', 'Last Fired']].map(([key, label]) => (
                   <button key={key} type="button"
                           className={`bd-metric ${condMetric === key ? 'is-on' : ''}`}
                           onClick={() => setCondMetric(key)}>
@@ -1119,7 +1119,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                         {condMetric === 'interval' && (
                           o.avgInterval != null
                             ? <span className="rank-freq-val cnd-bd-freq--interval">every {o.avgInterval} {o.avgInterval === 1 ? 'day' : 'days'}</span>
-                            : <span className="rank-freq-val cnd-bd-freq--interval is-dim">{o.fired <= 1 ? 'Fired once' : 'Not fired'}</span>
+                            : <span className="rank-freq-val cnd-bd-freq--interval is-dim">{o.fired <= 1 ? 'Fired Once' : 'Not Fired'}</span>
                         )}
                         {condMetric === 'last' && (
                           o.lastFired
@@ -1339,10 +1339,10 @@ function TabStats({ state, actions, onHome, onNavTab }) {
             </div>
             <p className="rank-note">
               {remBdMetric === 'recent'
-                ? 'Every Reminders completion, most recent first — check one off in the Today tab and it lands here.'
+                ? 'Every Reminder that has been completed. Once you check one off on the Today page, it will show up here.'
                 : remBdMetric === 'completions'
-                ? 'Total count for the number of times that a Reminders item was completed using the check-off in the Today tab.'
-                : 'Total count for the number of times that a Reminders item was skipped using the skip button in the Today tab.'}
+                ? 'Total count for the number of times that a Reminders item was completed on the Today page.'
+                : 'Total count for the number of times that a Reminders item was skipped using the skip button on the Today page.'}
             </p>
             {remBdList.length ? (
               <>
@@ -1495,13 +1495,13 @@ function TabStats({ state, actions, onHome, onNavTab }) {
             <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was picked using the auto generator.</p>
           )}
           {effMetric === 'manual' && (
-            <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was picked manually using the Pickers tab.</p>
+            <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was picked manually using the Pick One button on the Pickers page.</p>
           )}
           {effMetric === 'rejected' && (
-            <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was rejected using the re-roll button in the Today tab.</p>
+            <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was rejected using the re-roll button on the Today page.</p>
           )}
           {effMetric === 'skipped' && (
-            <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was skipped using the skip button in the Today tab.</p>
+            <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was skipped using the skip button on the Today page.</p>
           )}
           {effMetric === 'last' && (
             <p className="rank-note">
@@ -1544,7 +1544,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                       {effMetric === 'freq' && (
                         it.avgGap != null
                           ? (() => { const d = cadDisplay(it.avgGap, freqMode, fmtGap(it.avgGap)); return <span className="rank-freq-val rank-bd-freq--freq">every {d.num} {d.word}</span>; })()
-                          : <span className="rank-freq-val rank-bd-freq--freq is-dim">{it.freqCount === 1 ? 'Picked once' : 'Not picked'}</span>
+                          : <span className="rank-freq-val rank-bd-freq--freq is-dim">{it.freqCount === 1 ? 'Picked Once' : 'Not Picked'}</span>
                       )}
                       {effMetric === 'spent' && (
                         it.spent != null
@@ -1558,7 +1558,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                       {effMetric === 'last' && (
                         it.lastDays != null
                           ? <span className="rank-freq-val rank-bd-freq--last">{fmtLast(it.lastDays, lastMode)}</span>
-                          : <span className="rank-freq-val rank-bd-freq--last is-dim">Not picked</span>
+                          : <span className="rank-freq-val rank-bd-freq--last is-dim">Not Picked</span>
                       )}
                       {(effMetric === 'auto' || effMetric === 'manual' || effMetric === 'rejected' || effMetric === 'skipped') && (
                         <span className="rank-metric-n">{it[effMetric]}</span>

@@ -13,7 +13,7 @@ import { Icon } from './ui.jsx';
 // shared import) was the intended plan once real content rollout began.
 //
 // One item per DISTINCT piece of functionality, not one per DOM element —
-// e.g. a card's Re-roll/Skip/Edit icons share one tip (a numbered list)
+// e.g. a card's Re-Roll/Skip/Edit icons share one tip (a numbered list)
 // rather than three, and a group of filter pills gets one tip explaining
 // what the whole row does rather than one per pill. Kept in its own module
 // (rather than inline per-tab like the original 2-item Today test case) so
@@ -131,11 +131,11 @@ const TODAY_HELP_ITEMS = [
   },
   {
     // Reminders and picker-generated entries share the same .today-card-
-    // actions markup but not the same buttons (reminders have no Re-roll —
+    // actions markup but not the same buttons (reminders have no Re-Roll —
     // there's nothing to re-roll TO, it's a fixed task, not a random pick),
     // so this needs two separate items rather than one shared description.
     // Also excludes day-off and charging cards — both render a
-    // .today-card-actions row too, but with Re-roll and/or Edit genuinely
+    // .today-card-actions row too, but with Re-Roll and/or Edit genuinely
     // disabled (the app's own InfoTip there says "This action is disabled
     // for this type of item"), which this tip's copy doesn't describe.
     // perElement (see help-mode.jsx) so every OTHER card gets its own badge
@@ -149,7 +149,7 @@ const TODAY_HELP_ITEMS = [
     body: (
       <>
         <div className="help-nav-item">
-          <div className="help-nav-label"><Icon name="refresh" size={14} /><b>Re-roll:</b></div>
+          <div className="help-nav-label"><Icon name="refresh" size={14} /><b>Re-Roll:</b></div>
           <p>This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>
         </div>
         <div className="help-nav-item">
@@ -181,15 +181,15 @@ const TODAY_HELP_ITEMS = [
   {
     // A day-off card (a conditional's triggered "rest" state) is excluded
     // from cardActionsPicker above since it doesn't have the normal 3-
-    // button set — but unlike a charging card (where Re-roll/Skip/Edit are
+    // button set — but unlike a charging card (where Re-Roll/Skip/Edit are
     // ALL genuinely disabled, nothing real to highlight), a day-off card's
-    // own Skip IS a real, working button — only Re-roll and Edit are
+    // own Skip IS a real, working button — only Re-Roll and Edit are
     // disabled there. `button` (not .icon-btn generally) specifically
-    // targets that one real button — the disabled Re-roll/Edit are
+    // targets that one real button — the disabled Re-Roll/Edit are
     // InfoTip's own <span> root, not a <button>, so this selector can't
     // accidentally catch them.
     id: 'cardActionsDayOff', sel: '.today-card--dayoff .today-card-actions button', perElement: true, title: 'Skip',
-    body: <>This button removes this day off from your todo list without completing it and updates the progress ring's total count accordingly. Re-roll and Edit are disabled for this type of card.</>,
+    body: <>This button removes this day off from your todo list without completing it and updates the progress ring's total count accordingly. Re-Roll and Edit are disabled for this type of card.</>,
   },
   // ── Editing a picker item's full settings (EntryEditor) — reachable from
   // Today's own Edit button too, not just the Data tab (DATA_HELP_ITEMS has
@@ -432,7 +432,7 @@ const TODAY_HELP_ITEMS = [
         <p>This explains the icons that are used in the Status column below.</p>
         <p><b>Auto-picked:</b> This indicates that an item was chosen automatically by the daily generator.</p>
         <p><b>Pushed:</b> This indicates that an item was pushed onto your todo list manually from the Pickers page.</p>
-        <p><b>Rolled off:</b> This indicates that an item was on your todo list but was then replaced by another item via the Re-roll button.</p>
+        <p><b>Rolled off:</b> This indicates that an item was on your todo list but was then replaced by another item via the Re-Roll button.</p>
         <p><b>Skipped:</b> This indicates that an item was on your todo list but was then removed via the Skip button.</p>
         <p><b>Completed:</b> This indicates that the item is on your todo list and has been marked as completed.</p>
       </>
@@ -505,8 +505,8 @@ const PICKER_HELP_ITEMS = [
     id: 'manualGeneration', sel: '.picker-run', title: 'Manual Generation',
     body: (
       <>
-        <p>The Pick one button runs a manual pick generation for the selected picker, so that you don't have to completely rely on your todo list's auto generation.</p>
-        <p>Once it resolves and generates a pick it is replaced by the Send to Today button, which will add the selected pick to your todo list. The Re-roll button will run the process again and the Done button will end the process without doing anything.</p>
+        <p>The Pick One button runs a manual pick generation for the selected picker, so that you don't have to completely rely on your todo list's auto generation.</p>
+        <p>Once it resolves and generates a pick it is replaced by the Send to Today button, which will add the selected pick to your todo list. The Re-Roll button will run the process again and the Done button will end the process without doing anything.</p>
       </>
     ),
   },
@@ -1506,7 +1506,7 @@ const SETTINGS_HELP_ITEMS = [
   },
   {
     id: 'appearancePickAnim', sel: '.set-subsection--pickanim', title: 'Picker Animation', padY: 4,
-    body: <>This is where you choose which animation plays in the Pickers tab when the manual picker functionality is triggered via the "Pick one" button. Use Preview to watch any of them play out before picking one.</>,
+    body: <>This is where you choose which animation plays in the Pickers tab when the manual picker functionality is triggered via the "Pick One" button. Use Preview to watch any of them play out before picking one.</>,
   },
   {
     id: 'appearanceLayout', sel: '.set-subsection--layout', title: 'Tab Bar Placement', padY: 4,

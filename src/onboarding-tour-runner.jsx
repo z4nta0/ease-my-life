@@ -510,7 +510,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   const onPrimaryRef = React.useRef(() => {});
   // Lets onGoBack's own side effects click through the guard below — e.g. a
   // picker mini-tour's onGoBack simulates a click on the create-form's own
-  // "Details" step tab to undo a later step's "Add items" click. That
+  // "Details" step tab to undo a later step's "Add Items" click. That
   // synthetic click isn't the step's own target (curRef still points at the
   // step being left, since onGoBack runs before goToStep actually changes
   // it), so without this the guard would block onGoBack from doing anything
@@ -679,7 +679,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     if (cur.requireClick && cur.advanceWhen) {
       // The real click just kicked off something ASYNC whose result is the
       // next step's own target — e.g. the Pickers tour's "Manual
-      // Generation" step: clicking Pick one starts a multi-second spin
+      // Generation" step: clicking Pick One starts a multi-second spin
       // animation, and the Send to Today button (the next step's target)
       // doesn't exist until it resolves. Advancing on the usual immediate
       // timer would move the step index forward before that target exists,

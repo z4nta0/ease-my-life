@@ -140,7 +140,7 @@ const buildAppFeatureSteps = (featureId, actions, alreadyProtected) => {
       // manualGeneration step (PICKER_PAGE_TARGETS in onboarding-page-
       // tours.jsx) — same functionality, same explanation, same two-phase
       // highlight: before the click, .pv-act--pick:not(.is-busy) matches
-      // the idle "Pick one" button, so the pulse (.ob-spot.is-pulsing)
+      // the idle "Pick One" button, so the pulse (.ob-spot.is-pulsing)
       // lands tight on the actual button instead of the whole window.
       // .is-busy (added the instant the click fires, well before the spin
       // finishes) excludes that first selector immediately on click, so
@@ -165,7 +165,7 @@ const buildAppFeatureSteps = (featureId, actions, alreadyProtected) => {
         sel: '.pv-act--pick:not(.is-busy), .picker-run', clickSel: '.pv-act--pick',
         pulseSel: '.pv-act--pick:not(.is-busy)', tab: 'picker',
         title: 'Manual Generation',
-        body: <>The "Pick one" button will allow you to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick one" button now to see how this works.</>,
+        body: <>The "Pick One" button will allow you to <b>run a manual pick generation</b> for any given picker, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick One" button now to see how this works.</>,
         primary: 'Next', back: true, requireClick: true,
         advanceWhen: '.pv-act--send', coachAtTop: true,
       },
@@ -194,7 +194,7 @@ const buildAppFeatureSteps = (featureId, actions, alreadyProtected) => {
       // stays blocked (tab-picker.jsx's own tourDisableDone, gated on this
       // exact tourId+step) since leaving would discard the pick AND make
       // this step's own target — the done/sent view itself — vanish,
-      // reverting to the pre-pick "Pick one" button Step 3 already moved
+      // reverting to the pre-pick "Pick One" button Step 3 already moved
       // past. coachAtTop: true — same short-viewport overlap as Step 3
       // (same .picker-run target, now even taller with the result + all
       // three action buttons showing) — see that step's own comment for

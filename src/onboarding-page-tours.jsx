@@ -202,7 +202,7 @@ const PICKER_PAGE_TARGETS = {
   // Two-phase highlight, both via the same fallback `sel` (findTargets tries
   // each comma-separated selector in turn and uses the first that matches —
   // see its own comment in onboarding-tour-runner.jsx). Before the click,
-  // .pv-act--pick:not(.is-busy) matches the idle "Pick one" button, so the
+  // .pv-act--pick:not(.is-busy) matches the idle "Pick One" button, so the
   // pulse (.ob-spot.is-pulsing) lands tight on the actual button instead of
   // the whole window. The button alone doesn't disappear until the pick
   // actually lands (phase flips to 'done'/'sent' — see tab-picker.jsx) —
@@ -224,13 +224,13 @@ const PICKER_PAGE_TARGETS = {
     clickSel: '.pv-act--pick',
     pulseSel: '.pv-act--pick:not(.is-busy)',
     title: 'Manual Generation',
-    body: <>The "Pick one" button will <b>allow you to run a manual pick generation for your selected picker</b>, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick one" button now to see how this works.</>,
+    body: <>The "Pick One" button will <b>allow you to run a manual pick generation for your selected picker</b>, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick One" button now to see how this works.</>,
   },
   // Same two-phase highlight as manualGeneration above: before the click,
   // .pv-act--send:not(.is-sent) matches the real Send to Today button, so
   // the pulse lands tight on it instead of the whole window. Clicking it
   // flips phase to 'sent' SYNCHRONOUSLY (see sendToToday in tab-picker.jsx
-  // — unlike Pick one's spin, there's no separate busy/running phase to
+  // — unlike Pick One's spin, there's no separate busy/running phase to
   // exclude), which adds .is-sent immediately, so the fallback to framing
   // .picker-run kicks in right on click. That's deliberate, not just
   // incidental: this step's own advanceDelay (see its call site below)
@@ -554,7 +554,7 @@ const buildPageTourSteps = (pageId, actions) => {
         // Confirmed live: without this, the coach overlapped the real Pick
         // one button on an iPhone SE-sized viewport.
         coachAtTop: true,
-        // Pick one kicks off the multi-second spin animation — its result
+        // Pick One kicks off the multi-second spin animation — its result
         // (Step 6's own target) isn't ready the instant the click fires.
         // Stay on THIS step's own already-resolved coach/highlight for the
         // whole wait instead of advancing into a blank "not found yet" dim
@@ -844,7 +844,7 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
             // Back from Step 6 (Add to Todo List) to Step 5 (Manual
             // Generation) — a pick already ran, so PickerView's own local
             // phase is still 'done'/'sent', showing Send to Today/Re-roll/
-            // Done instead of Pick one. Step 5's own sel falls back to
+            // Done instead of Pick One. Step 5's own sel falls back to
             // .picker-run only once .pv-act--pick is gone (see
             // manualGeneration's own comment), which a leftover 'done'/
             // 'sent' phase satisfies just as well as a genuine spin in
@@ -857,7 +857,7 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
             // and the tour sits stuck forever. Resetting PickerView back to
             // its own idle state — via a bus nonce, since phase/result are
             // local state this module has no other way to reach — means
-            // only Pick one ever shows here, matching what this step
+            // only Pick One ever shows here, matching what this step
             // actually expects and forecloses both failure modes by
             // construction instead of specifically patching either one.
             emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
@@ -867,7 +867,7 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
             // while phase is 'done'/'sent'. By the time this fires, Step
             // 6's own advanceDelay wait (see its own comment) has already
             // let phase run all the way through 'sent' and back to 'idle'
-            // (Send to Today reverted to Pick one), so that target is gone
+            // (Send to Today reverted to Pick One), so that target is gone
             // — the exact "different state than when Step 6 finished"
             // mismatch that made this crash. Unlike Step 5→4's reset
             // above, this can't just drop back to idle — Step 6 NEEDS a

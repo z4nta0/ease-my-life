@@ -198,11 +198,11 @@ function summary(task) {
     case 'once': {
       // onceDate defaults to today (defaultTask), so only a genuinely
       // future date changes the label — today-or-past reads as plain
-      // "One-time", same as before this control existed.
-      if (!task.onceDate || task.onceDate <= isoToday()) return 'One-time';
+      // "One-Time", same as before this control existed.
+      if (!task.onceDate || task.onceDate <= isoToday()) return 'One-Time';
       const [y, m, d] = task.onceDate.split('-').map(Number);
       const dateLabel = new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      return `One-time · starts ${dateLabel}`;
+      return `One-Time · starts ${dateLabel}`;
     }
     case 'weekly': {
       const d = [...(task.daysOfWeek || [])].sort((a, b) => a - b);

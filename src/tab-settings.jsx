@@ -1015,7 +1015,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
             <div className="set-subsection set-subsection--pickanim">
               <div className="set-subsection-h">Picker animation</div>
               <p className="settings-sub">
-                Pick which animation will play when the &ldquo;Pick one&rdquo; button is clicked
+                Pick which animation will play when the &ldquo;Pick One&rdquo; button is clicked
                 inside of the Pickers tab.
               </p>
               {reduceMotionNote('this animation')}

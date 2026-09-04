@@ -675,7 +675,7 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
         </div>
         {!editMode && (
           <div className="today-card-actions">
-            <InfoTip className="icon-btn is-disabled" label={disabledTip} action="Re-roll">
+            <InfoTip className="icon-btn is-disabled" label={disabledTip} action="Re-Roll">
               <Icon name="refresh" size={14} />
             </InfoTip>
             <button className="icon-btn" onClick={(e) => { e.stopPropagation(); onSkip(entry.eid); }}
@@ -726,7 +726,7 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
         </div>
         {!editMode && (
           <div className="today-card-actions">
-            <InfoTip className="icon-btn is-disabled" label={disabledTip} action="Re-roll">
+            <InfoTip className="icon-btn is-disabled" label={disabledTip} action="Re-Roll">
               <Icon name="refresh" size={14} />
             </InfoTip>
             <InfoTip className="icon-btn is-disabled" label={disabledTip} action="Skip">
@@ -809,11 +809,11 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
           {canReroll ? (
             <button className={`icon-btn ${isRolling ? 'is-spinning' : ''}`}
                     onClick={(e) => { e.stopPropagation(); onReroll(entry, picker); }}
-                    aria-label="Re-roll" title="Re-roll">
+                    aria-label="Re-Roll" title="Re-Roll">
               <Icon name="refresh" size={14} />
             </button>
           ) : (
-            <InfoTip className="icon-btn is-disabled" label={activeRerollTip} action="Re-roll">
+            <InfoTip className="icon-btn is-disabled" label={activeRerollTip} action="Re-Roll">
               <Icon name="refresh" size={14} />
             </InfoTip>
           )}

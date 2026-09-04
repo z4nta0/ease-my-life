@@ -64,7 +64,7 @@ function eligible(items) {
 function pick(picker, items, opts) {
   let pool = eligible(items.filter((it) => it.pickerId === picker.id));
   // `excludeIds` (a Set) drops items that are already live on Today, so a
-  // manual "Pick one" spin can't land on a duplicate. A direct `forceItemId`
+  // manual "Pick One" spin can't land on a duplicate. A direct `forceItemId`
   // send bypasses this (its button is disabled in the UI when on Today).
   const excludeIds = opts && opts.excludeIds;
   if (excludeIds && excludeIds.size && !(opts && opts.forceItemId)) {

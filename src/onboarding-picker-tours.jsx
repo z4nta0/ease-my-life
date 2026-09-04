@@ -188,7 +188,7 @@ const buildPickerTourStep5 = (pickerId) => ({
   primary: 'Next', back: true, resumable: false, coachAtTop: true,
 });
 
-// Highlights the "Add items" button that advances the form from its Details
+// Highlights the "Add Items" button that advances the form from its Details
 // sub-step to its Items sub-step — .ob-picker-next, a class name left over
 // from the original stashed create-a-picker tour design, reused here as-is
 // since it already targets exactly this button. scrollToBottom since it's
@@ -200,7 +200,7 @@ const buildPickerTourStep5 = (pickerId) => ({
 const PICKER_TOUR_STEP_6 = {
   sel: '.ob-picker-next', tab: 'picker', scrollToBottom: true,
   title: 'Add items to this picker',
-  body: <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click the "Add items" button now.</>,
+  body: <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click the "Add Items" button now.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
   // The click this run() accompanies swaps the form from Details to its own
   // (much shorter) Items sub-step IN PLACE, within the same scrollable
@@ -239,7 +239,7 @@ const PICKER_TOUR_STEP_6 = {
 const buildPickerTourStep7 = (pickerId) => ({
   sel: '.pv-additem-btn', tab: 'picker',
   title: 'Add an item to the picker’s list',
-  body: <>Pickers need a <b>list of items to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click the "Add item" button now to add a new item to this picker's list of items.</>,
+  body: <>Pickers need a <b>list of items to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click the "Add Item" button now to add a new item to this picker's list of items.</>,
   primary: 'Next', back: true, requireClick: true, resumable: false,
   run: () => {
     const copy = PICKER_TOUR_COPY[pickerId];
@@ -456,7 +456,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
       active={active}
       selectTab={selectTab}
       // Back from Step 7 (index 6, the Items sub-step's "+ Add item"
-      // button) to Step 6 (index 5, "Add items") needs the form pushed back
+      // button) to Step 6 (index 5, "Add Items") needs the form pushed back
       // to its Details sub-step first — unlike the Reminders tours' "+"
       // button, .ob-picker-next's click is a one-way step change inside
       // NewPickerForm, not a toggle, so without this Step 6's own target
