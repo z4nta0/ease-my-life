@@ -358,7 +358,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
       return () => { el.removeEventListener('scroll', update); ro.disconnect(); };
     });
     return () => cleanups.forEach((c) => c());
-  }, [pickers.length, remEnabled, scope, metric, remBdMetric, condMetric, isConditionals, isReminders, statGroup, visiblePickers.length]);
+  }, [pickers.length, remEnabled, scope, range, metric, remBdMetric, condMetric, isConditionals, isReminders, statGroup, visiblePickers.length]);
 
   // ── Pick rows for the active scope ('all' or a single picker) ─────────────
   // Active picks only — rejected (re-rolled-away) and skipped rows are excluded
@@ -1071,7 +1071,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
               </div>
               <p className="rank-note">
                 {condMetric === 'rate'
-                  ? `How often each conditional fired versus the cycles it was actually evaluated over ${rangeNoun} — a cycle only counts once a dependent item or the replacement card is completed.`
+                  ? `How often each conditional fired versus the cycles it was actually evaluated over ${rangeNoun}. A cycle only counts once a dependent item or the replacement card is completed.`
                   : condMetric === 'triggers'
                   ? `Number of cycles each conditional fired (suppressed its picker) over ${rangeNoun}.`
                   : condMetric === 'cycles'
