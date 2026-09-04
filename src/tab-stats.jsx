@@ -325,7 +325,11 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   React.useEffect(() => {
     const groupChanged = prevStatGroupRef.current !== statGroup;
     prevStatGroupRef.current = statGroup;
-    if (statGroup === 'all') return;
+    // 'conditionals'/'reminders' are the Group rail's own sentinel values (their
+    // pill sets scope directly), not a real picker group to auto-pick a first
+    // card from — visiblePickers is empty for both, so falling through below
+    // would immediately reset scope back to 'all' right after it's set.
+    if (statGroup === 'all' || statGroup === 'conditionals' || statGroup === 'reminders') return;
     if (groupChanged || !visiblePickers.some((p) => p.id === scope)) {
       setScope(sortedVisiblePickers[0] ? sortedVisiblePickers[0].id : 'all');
     }
@@ -939,17 +943,20 @@ function TabStats({ state, actions, onHome, onNavTab }) {
           <div className="stat-filter-row">
             <span className="stat-filter-lbl">Group</span>
             <div className="picker-groups stat-scope-groups" ref={groupsRef} role="tablist" aria-label="Filter pickers by group">
-              <button type="button" role="tab" aria-selected={statGroup === 'all' && !isConditionals && !isReminders}
-                      className={`picker-group-pill ${statGroup === 'all' && !isConditionals && !isReminders ? 'is-on' : ''}`}
+              <button type="button" role="tab" aria-selected={statGroup === 'all'}
+                      className={`picker-group-pill ${statGroup === 'all' ? 'is-on' : ''}`}
                       onClick={() => { setStatGroup('all'); setScope('all'); }}>
                 All
                 <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
               </button>
               {/* Conditionals/Reminders sort in alphabetically alongside the real
                   groups, rather than being pinned, so they're easy to find now
-                  that both this rail and the Show rail below sort that way. They
-                  jump straight to their Show-rail entry (also resetting statGroup
-                  to 'all', since that's the only group scope they render under). */}
+                  that both this rail and the Show rail below sort that way.
+                  statGroup doubles as their own scope value ('conditionals' /
+                  'reminders', not a real picker group) so the Show row below can
+                  narrow to just that one card instead of the full "All" list —
+                  visiblePickers' own group match naturally excludes every real
+                  picker under either value, same as any other empty group. */}
               {[
                 ...existingGroups.map((g) => ({
                   key: g, name: g,
@@ -959,13 +966,13 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                 })),
                 ...(hasConditionals ? [{
                   key: 'conditionals', name: 'Conditionals', count: conditionalDefs.length,
-                  isOn: isConditionals,
-                  onClick: () => { setStatGroup('all'); setScope('conditionals'); },
+                  isOn: statGroup === 'conditionals',
+                  onClick: () => { setStatGroup('conditionals'); setScope('conditionals'); },
                 }] : []),
                 ...(remEnabled ? [{
                   key: 'reminders', name: 'Reminders', count: (state.tasks || []).filter((t) => !t.hidden).length,
-                  isOn: isReminders,
-                  onClick: () => { setStatGroup('all'); setScope('reminders'); },
+                  isOn: statGroup === 'reminders',
+                  onClick: () => { setStatGroup('reminders'); setScope('reminders'); },
                 }] : []),
               ]
                 .sort((a, b) => a.name.localeCompare(b.name))
@@ -995,12 +1002,14 @@ function TabStats({ state, actions, onHome, onNavTab }) {
             {/* Everything after "All" — Conditionals, Reminders, and every
                 visible picker — sorts together alphabetically by its own
                 displayed name, rather than Conditionals/Reminders being
-                pinned right after All. */}
+                pinned right after All. statGroup 'conditionals'/'reminders'
+                (set by their own Group-rail pill) narrows this down to just
+                that one card, same as any real group narrows to its pickers. */}
             {[
-              ...(statGroup === 'all' && hasConditionals
+              ...((statGroup === 'all' || statGroup === 'conditionals') && hasConditionals
                 ? [{ key: 'conditionals', name: 'Conditionals', modeLabel: 'Gates', isOn: isConditionals, onClick: () => setScope('conditionals') }]
                 : []),
-              ...(statGroup === 'all' && remEnabled
+              ...((statGroup === 'all' || statGroup === 'reminders') && remEnabled
                 ? [{ key: 'reminders', name: 'Reminders', modeLabel: 'Tasks', isOn: isReminders, onClick: () => setScope('reminders') }]
                 : []),
               ...visiblePickers.map((p) => ({ key: p.id, name: p.name, modeLabel: MODES[p.mode].label, isOn: scope === p.id, onClick: () => setScope(p.id), pickerId: p.id })),

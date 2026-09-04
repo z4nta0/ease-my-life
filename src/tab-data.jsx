@@ -1135,8 +1135,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // scattering separate assumptions across each filter pill's own handler.
   const sortedShowEntries = React.useMemo(() => {
     const rest = [
-      ...(statGroup === 'all' && conditionals.length > 0 ? [{ scope: 'conditionals', name: 'Conditionals' }] : []),
-      ...(statGroup === 'all' ? [{ scope: 'reminders', name: 'Reminders' }] : []),
+      ...((statGroup === 'all' || statGroup === 'conditionals') && conditionals.length > 0 ? [{ scope: 'conditionals', name: 'Conditionals' }] : []),
+      ...(statGroup === 'all' || statGroup === 'reminders' ? [{ scope: 'reminders', name: 'Reminders' }] : []),
       ...visiblePickers.map((p) => ({ scope: p.id, name: p.name })),
     ].sort((a, b) => a.name.localeCompare(b.name));
     return statGroup === 'all' ? [{ scope: 'all', name: 'All' }, ...rest] : rest;
@@ -1192,12 +1192,12 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // and the scope is All or Reminders. Pickers are group-filtered (visiblePickers)
   // then narrowed by scope: All → every visible picker, Reminders → none, or a
   // single picker id → just that one.
-  const showReminders = statGroup === 'all' && condFilter === 'all' && (scope === 'all' || scope === 'reminders');
+  const showReminders = (statGroup === 'all' || statGroup === 'reminders') && condFilter === 'all' && (scope === 'all' || scope === 'reminders');
   // Conditionals manager shows above Reminders when unfiltered by group/cond, at
   // scope All or the dedicated Conditionals box. Shown even with none created —
   // it's the only place to create one, so gating on existence made it
   // unreachable from a clean state.
-  const showConditionals = statGroup === 'all' && condFilter === 'all'
+  const showConditionals = (statGroup === 'all' || statGroup === 'conditionals') && condFilter === 'all'
     && (scope === 'all' || scope === 'conditionals');
   const shownPickers = (scope === 'reminders' || scope === 'conditionals')
     ? []
@@ -1286,8 +1286,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
           <div className="stat-filter-row">
             <span className="stat-filter-lbl">Group</span>
             <div className="picker-groups stat-scope-groups" ref={groupsRef} role="tablist" aria-label="Filter pickers by group">
-              <button type="button" role="tab" aria-selected={statGroup === 'all' && scope !== 'conditionals' && scope !== 'reminders'}
-                      className={`picker-group-pill ${statGroup === 'all' && scope !== 'conditionals' && scope !== 'reminders' ? 'is-on' : ''}`}
+              <button type="button" role="tab" aria-selected={statGroup === 'all'}
+                      className={`picker-group-pill ${statGroup === 'all' ? 'is-on' : ''}`}
                       disabled={disableGroupFilter}
                       onClick={() => setStatGroup('all')}>
                 All
@@ -1295,9 +1295,12 @@ function TabData({ state, actions, onHome, onNavTab }) {
               </button>
               {/* Conditionals/Reminders sort in alphabetically alongside the real
                   groups, rather than being pinned, so they're easy to find now
-                  that both this rail and the Show rail below sort that way. They
-                  jump straight to their Show-rail entry (also resetting statGroup
-                  to 'all', since that's the only group scope they render under). */}
+                  that both this rail and the Show rail below sort that way.
+                  statGroup doubles as their own scope value ('conditionals' /
+                  'reminders', not a real picker group) so the Show row below can
+                  narrow to just that one card instead of the full "All" list —
+                  visiblePickers' own group match naturally excludes every real
+                  picker under either value, same as any other empty group. */}
               {[
                 ...existingGroups.map((g) => ({
                   key: g, name: g,
@@ -1307,13 +1310,13 @@ function TabData({ state, actions, onHome, onNavTab }) {
                 })),
                 ...(conditionals.length > 0 ? [{
                   key: 'conditionals', name: 'Conditionals', count: conditionals.length,
-                  isOn: scope === 'conditionals',
-                  onClick: () => { setStatGroup('all'); onSelectScope('conditionals'); },
+                  isOn: statGroup === 'conditionals',
+                  onClick: () => { setStatGroup('conditionals'); onSelectScope('conditionals'); },
                 }] : []),
                 {
                   key: 'reminders', name: 'Reminders', count: (state.tasks || []).filter((t) => !t.hidden).length,
-                  isOn: scope === 'reminders',
-                  onClick: () => { setStatGroup('all'); onSelectScope('reminders'); },
+                  isOn: statGroup === 'reminders',
+                  onClick: () => { setStatGroup('reminders'); onSelectScope('reminders'); },
                 },
               ]
                 .sort((a, b) => a.name.localeCompare(b.name))
@@ -1368,12 +1371,15 @@ function TabData({ state, actions, onHome, onNavTab }) {
             {/* Everything after "All" — Conditionals, Reminders, and every
                 visible picker — sorts together alphabetically by its own
                 displayed name, rather than Conditionals/Reminders being
-                pinned right after All. */}
+                pinned right after All. statGroup 'conditionals'/'reminders'
+                (set by their own Group-rail pill) narrows this down to just
+                that one card, same as any real group narrows to its pickers.
+                Must stay in sync with sortedShowEntries above. */}
             {[
-              ...(statGroup === 'all' && conditionals.length > 0
+              ...((statGroup === 'all' || statGroup === 'conditionals') && conditionals.length > 0
                 ? [{ key: 'conditionals', name: 'Conditionals', modeLabel: 'Gates', isOn: scope === 'conditionals', onClick: () => onSelectScope('conditionals') }]
                 : []),
-              ...(statGroup === 'all'
+              ...(statGroup === 'all' || statGroup === 'reminders'
                 ? [{ key: 'reminders', name: 'Reminders', modeLabel: 'Tasks', isOn: scope === 'reminders', onClick: () => onSelectScope('reminders') }]
                 : []),
               ...visiblePickers.map((p) => ({ key: p.id, name: p.name, modeLabel: MODES[p.mode].label, isOn: scope === p.id, onClick: () => onSelectScope(p.id), pickerId: p.id })),
