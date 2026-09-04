@@ -1282,29 +1282,50 @@ function TabData({ state, actions, onHome, onNavTab }) {
           tabs). Both default to "All"; the box row also carries a Reminders box
           when the group filter is "All". Click behavior is stubbed for now. ── */}
       <div className="stat-filters">
-        {existingGroups.length > 1 && (
+        {(existingGroups.length > 1 || conditionals.length > 0) && (
           <div className="stat-filter-row">
             <span className="stat-filter-lbl">Group</span>
             <div className="picker-groups stat-scope-groups" ref={groupsRef} role="tablist" aria-label="Filter pickers by group">
-              <button type="button" role="tab" aria-selected={statGroup === 'all'}
-                      className={`picker-group-pill ${statGroup === 'all' ? 'is-on' : ''}`}
+              <button type="button" role="tab" aria-selected={statGroup === 'all' && scope !== 'conditionals' && scope !== 'reminders'}
+                      className={`picker-group-pill ${statGroup === 'all' && scope !== 'conditionals' && scope !== 'reminders' ? 'is-on' : ''}`}
                       disabled={disableGroupFilter}
                       onClick={() => setStatGroup('all')}>
                 All
                 <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
               </button>
-              {existingGroups.map((g) => {
-                const n = pickers.filter((p) => p.group === g && !p.hidden).length;
-                return (
-                  <button key={g} type="button" role="tab" aria-selected={statGroup === g}
-                          className={`picker-group-pill ${statGroup === g ? 'is-on' : ''}`}
+              {/* Conditionals/Reminders sort in alphabetically alongside the real
+                  groups, rather than being pinned, so they're easy to find now
+                  that both this rail and the Show rail below sort that way. They
+                  jump straight to their Show-rail entry (also resetting statGroup
+                  to 'all', since that's the only group scope they render under). */}
+              {[
+                ...existingGroups.map((g) => ({
+                  key: g, name: g,
+                  count: pickers.filter((p) => p.group === g && !p.hidden).length,
+                  isOn: statGroup === g,
+                  onClick: () => setStatGroup(g),
+                })),
+                ...(conditionals.length > 0 ? [{
+                  key: 'conditionals', name: 'Conditionals', count: conditionals.length,
+                  isOn: scope === 'conditionals',
+                  onClick: () => { setStatGroup('all'); onSelectScope('conditionals'); },
+                }] : []),
+                {
+                  key: 'reminders', name: 'Reminders', count: (state.tasks || []).filter((t) => !t.hidden).length,
+                  isOn: scope === 'reminders',
+                  onClick: () => { setStatGroup('all'); onSelectScope('reminders'); },
+                },
+              ]
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((entry) => (
+                  <button key={entry.key} type="button" role="tab" aria-selected={entry.isOn}
+                          className={`picker-group-pill ${entry.isOn ? 'is-on' : ''}`}
                           disabled={disableGroupFilter}
-                          onClick={() => setStatGroup(g)}>
-                    {g}
-                    <span className="picker-group-count">{n}</span>
+                          onClick={entry.onClick}>
+                    {entry.name}
+                    <span className="picker-group-count">{entry.count}</span>
                   </button>
-                );
-              })}
+                ))}
             </div>
           </div>
         )}
