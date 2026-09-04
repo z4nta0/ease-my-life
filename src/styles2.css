@@ -1361,6 +1361,7 @@ button.heat-cell.is-sel {
 
 .cat-h {
   display: flex; justify-content: space-between; align-items: center;
+  gap: 10px;
   padding: 14px 16px;
   cursor: pointer;
   user-select: none;
@@ -1395,62 +1396,38 @@ button.cat-h-l {
 @media (prefers-reduced-motion: reduce) {
   .collapse, .collapse-inner { transition: none; }
 }
-.cat-name { margin: 0; font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
-.cat-group {
+/* Name + eligible count stack into their own two-row block (see tab-data.jsx)
+   so the name's length never pushes the group/type pills around — those live
+   in their own .cat-h-tags cluster instead, each a fixed width so they line
+   up across every picker card regardless of what any single card's name or
+   group text is (same fixed-column trick as Stats' rank-bd-vals). */
+.cat-h-main { display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0; }
+.cat-name {
+  margin: 0; font-size: 16px; font-weight: 500; letter-spacing: -0.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cat-h-tags { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.cat-group, .cat-mode-label {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; color: var(--muted);
   padding: 2px 8px; border: 0.5px solid var(--border); border-radius: 999px;
+  flex: 0 0 auto; text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.cat-group { width: 90px; }
+.cat-mode-label { width: 145px; }
 .cat-count {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--muted);
   letter-spacing: 0.03em;
-  /* Own elements (not one text run — see tab-data.jsx) so the narrow-
-     viewport rule below can stack them into 3 rows; row+baseline here
-     keeps the current "6 of 6" look on every other width. */
+  /* Own elements (not one text run — see tab-data.jsx); row+baseline gives
+     the "6 of 6" look. */
   display: flex; align-items: baseline; gap: 3px;
 }
-/* Each picker's own header row (name / group pill / eligible count) —
-   scoped to .data-list so Conditionals'/Reminders' OWN section headers
-   (outside .data-list, sharing the same .cat-name/.cat-count classes for
-   a "Conditionals"/"Reminders" title + a plain count with no group pill)
-   aren't affected; they never had this crowding problem since they have
-   far fewer things competing for the row's width.
-   On narrow viewports .cat-h-l had nowhere near enough room for a full
-   name + a group pill + "N of N", so the browser fell back to wrapping
-   each one's own text — ragged, uneven heights, and a long group name
-   could run into its neighbor entirely. Give each a defined, predictable
-   footprint instead: the name truncates with an ellipsis rather than
-   wrapping to a second line (keeping the row a single height), the group
-   pill gets a fixed max-width + ellipsis (so an especially long group
-   name truncates instead of overlapping), and the count restacks into 3
-   centered rows (its own column) instead of wrapping mid-fraction. */
-@container app (max-width: 400px) {
-  /* Own gap (rather than relying on .cat-h-l's flex-grow to naturally
-     leave room) — otherwise .cat-h-l fills every last px up to
-     .vac-toggle's own edge, butting the count's last digit right up
-     against it. */
-  .data-list > .cat > .cat-h { gap: 8px; }
-  .data-list > .cat > .cat-h .chev { flex: 0 0 auto; }
-  .data-list > .cat > .cat-h .cat-name {
-    flex: 1 1 0%; min-width: 0;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  /* Fixed (not max-) width so every collapsed picker's pill lines up at
-     the same edge regardless of its own group name's length, with the
-     (possibly truncated) text centered in that fixed box rather than
-     hugging its left edge. */
-  .data-list > .cat > .cat-h .cat-group {
-    flex: 0 0 auto; width: 72px; text-align: center;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .data-list > .cat > .cat-h .cat-count {
-    flex: 0 0 auto;
-    flex-direction: column; align-items: center; gap: 0;
-    text-align: center;
-  }
-}
+/* TODO: narrow-viewport behavior for the header (name/count block vs. the
+   group/type/active cluster) hasn't been revisited since the two-row/
+   fixed-column redesign above — deliberately deferred, tackle separately. */
 
 .vac-toggle {
   display: inline-flex; align-items: center; gap: 5px;

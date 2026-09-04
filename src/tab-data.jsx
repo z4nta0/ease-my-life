@@ -1476,22 +1476,27 @@ function TabData({ state, actions, onHome, onNavTab }) {
                         disabled={disableEditTourPickerHeader}
                         onClick={() => toggle(pk.id)}>
                   <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
-                  <h2 className="cat-name">{pk.name}</h2>
-                  <span className="cat-group">{pk.group}</span>
-                  {/* Each part its own element (not one text run) so a narrow
-                      viewport can stack them into 3 centered rows — see
-                      .cat-count's own @container rule in styles2.css. */}
-                  <span className="cat-count">
-                    <span className="cat-count-n">{eligible}</span>
-                    <span className="cat-count-of">of</span>
-                    <span className="cat-count-n">{items.length}</span>
+                  <span className="cat-h-main">
+                    <h2 className="cat-name">{pk.name}</h2>
+                    {/* Each part its own element, not one text run (see
+                        .cat-count in styles2.css for the row+baseline look). */}
+                    <span className="cat-count">
+                      <span className="cat-count-n">{eligible}</span>
+                      <span className="cat-count-of">of</span>
+                      <span className="cat-count-n">{items.length}</span>
+                    </span>
                   </span>
-                  {/* Not shown — read by help-mode's pickerRow entry via
-                      labelSel to build "{type} Picker" per-picker badge
-                      titles; the type itself isn't otherwise surfaced
-                      anywhere in the collapsed header. */}
-                  <span className="cat-mode-label" hidden>{MODES[pk.mode].label}</span>
                 </button>
+                {/* Group + type pills — their own fixed-width columns (not
+                    inline with the name) so they line up across every picker
+                    card regardless of how long the name or group text is,
+                    same fixed-column trick used for Stats' rank-bd-vals. */}
+                <span className="cat-h-tags">
+                  <span className="cat-group">{pk.group}</span>
+                  {/* Read by help-mode's pickerRow entry via labelSel to build
+                      "{type} Picker" per-picker badge titles. */}
+                  <span className="cat-mode-label">{MODES[pk.mode].label}</span>
+                </span>
                 <button className="vac-toggle" aria-pressed={!!allVac}
                         aria-label={`${allVac ? 'Activate' : 'Deactivate'} all items in ${pk.name}`}
                         onClick={(e) => { e.stopPropagation(); actions.toggleVacation(pk.id, 'picker'); }}

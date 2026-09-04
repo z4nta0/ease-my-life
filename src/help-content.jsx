@@ -1211,9 +1211,8 @@ const DATA_HELP_ITEMS = [
     // padY:0 — same .cat-h/.cat-body zero-gap stacking as conditionalsManager;
     // matters once a picker is expanded and .cat-body renders beneath it.
     // title is dynamic by TYPE, not name (unlike conditionalRow/pickerRow's
-    // own precedent) — labelSel reads the hidden .cat-mode-label marker
-    // (tab-data.jsx), since the picker's mode isn't otherwise shown
-    // anywhere in the collapsed header.
+    // own precedent) — labelSel reads the visible .cat-mode-label pill
+    // (tab-data.jsx) in the header's cat-h-tags cluster.
     id: 'pickerRow', sel: '.data-list > .cat > .cat-h', perElement: true, padY: 0,
     labelSel: '.cat-mode-label',
     title: (r) => r?.label ? `${r.label} Picker` : 'Picker',
