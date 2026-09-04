@@ -885,11 +885,18 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   const condNameError = condNameCollides
     ? `A conditional named \u201C${condTidyName}\u201D already exists. Choose a different name, or select it from the list above to reuse it.`
     : null;
-  const condRailRef = React.useRef(null);
   // Edge-fade cue on the conditional rail (matches the other horizontal rails).
-  React.useEffect(() => {
-    const el = condRailRef.current;
-    if (!el || !condOn) return;
+  // Collapse (below) mounts this rail one render AFTER `condOn` flips true (it
+  // stages its own `render` state first), so a plain useEffect keyed on condOn
+  // fires while the ref is still null and never gets another chance to run once
+  // the rail actually appears. A callback ref — which fires exactly when the
+  // DOM node attaches — plus a ResizeObserver — which re-fires whenever
+  // conditionals are added/removed and the rail's content width changes —
+  // sidesteps that race entirely.
+  const condRailCleanup = React.useRef(null);
+  const condRailRef = React.useCallback((el) => {
+    if (condRailCleanup.current) { condRailCleanup.current(); condRailCleanup.current = null; }
+    if (!el) return;
     const update = () => {
       const scrollable = el.scrollWidth - el.clientWidth > 1;
       el.classList.toggle('at-start', !scrollable || el.scrollLeft <= 1);
@@ -897,9 +904,10 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     };
     update();
     el.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    return () => { el.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
-  }, [condOn, conditionals.length]);
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    condRailCleanup.current = () => { el.removeEventListener('scroll', update); ro.disconnect(); };
+  }, []);
 
   // Step 2 — the pool. Each item is { name, weight }; weight only matters for
   // weighted/dynamic modes (and is editable inline only then). A fresh pool
