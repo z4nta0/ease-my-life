@@ -1237,8 +1237,18 @@ function ReminderManager({ state, actions, hidden }) {
       <header className="cat-h">
         <button type="button" className="cat-h-l" aria-expanded={open} onClick={setOpen}>
           <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
-          <h2 className="cat-name">Reminders</h2>
-          <span className="cat-count">{tasks.length}</span>
+          <span className="cat-h-main">
+            <h2 className="cat-name">Reminders</h2>
+            {/* Reminders have no active/inactive concept yet (unlike pickers'
+                eligible-of-total and Conditionals' active-of-total), so both
+                numbers are the same for now — kept in this "N of N" shape
+                for visual consistency and in case that changes later. */}
+            <span className="cat-count">
+              <span className="cat-count-n">{tasks.length}</span>
+              <span className="cat-count-of">of</span>
+              <span className="cat-count-n">{tasks.length}</span>
+            </span>
+          </span>
         </button>
       </header>
       <Collapse open={open}>

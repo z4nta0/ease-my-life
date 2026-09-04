@@ -847,8 +847,14 @@ function ConditionalsManager({ state, actions }) {
         <button type="button" className="cat-h-l" aria-expanded={open}
                 onClick={() => actions.toggleControlsCollapsed('__conditionals', true)}>
           <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
-          <h2 className="cat-name">Conditionals</h2>
-          <span className="cat-count">{conditionals.filter((c) => c.active !== false).length} of {conditionals.length}</span>
+          <span className="cat-h-main">
+            <h2 className="cat-name">Conditionals</h2>
+            <span className="cat-count">
+              <span className="cat-count-n">{conditionals.filter((c) => c.active !== false).length}</span>
+              <span className="cat-count-of">of</span>
+              <span className="cat-count-n">{conditionals.length}</span>
+            </span>
+          </span>
         </button>
       </header>
       <Collapse open={open}>
