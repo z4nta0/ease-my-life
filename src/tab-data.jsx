@@ -1487,15 +1487,21 @@ function TabData({ state, actions, onHome, onNavTab }) {
                     </span>
                   </span>
                 </button>
-                {/* Group + type pills — their own fixed-width columns (not
+                {/* Type + group pills — their own fixed-width columns (not
                     inline with the name) so they line up across every picker
-                    card regardless of how long the name or group text is,
-                    same fixed-column trick used for Stats' rank-bd-vals. */}
+                    card regardless of how long the name, group, or type text
+                    is, same fixed-column trick used for Stats' rank-bd-vals.
+                    Each is click-to-reveal (InfoTip truncationOnly) since a
+                    long group name or "Dynamic Weighted" can still truncate
+                    at this width — same pattern as day-log.jsx's dl-name/
+                    dl-mode. */}
                 <span className="cat-h-tags">
-                  <span className="cat-group">{pk.group}</span>
                   {/* Read by help-mode's pickerRow entry via labelSel to build
                       "{type} Picker" per-picker badge titles. */}
-                  <span className="cat-mode-label">{MODES[pk.mode].label}</span>
+                  <InfoTip className="cat-mode-label" label={MODES[pk.mode].label} truncationOnly>
+                    {MODES[pk.mode].label}
+                  </InfoTip>
+                  <InfoTip className="cat-group" label={pk.group} truncationOnly>{pk.group}</InfoTip>
                 </span>
                 <button className="vac-toggle" aria-pressed={!!allVac}
                         aria-label={`${allVac ? 'Activate' : 'Deactivate'} all items in ${pk.name}`}

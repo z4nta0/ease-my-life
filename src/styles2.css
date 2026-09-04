@@ -1414,8 +1414,11 @@ button.cat-h-l {
   flex: 0 0 auto; text-align: center;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.cat-group { width: 90px; }
-.cat-mode-label { width: 145px; }
+/* 94px matches .vac-toggle's own natural width at its longer "Inactive"
+   state (icon + text + padding) — chosen as the common width for all 3
+   pills, per instruction, rather than sizing each to its own longest
+   possible label. */
+.cat-group, .cat-mode-label { width: 94px; }
 .cat-count {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -1430,8 +1433,9 @@ button.cat-h-l {
    fixed-column redesign above — deliberately deferred, tackle separately. */
 
 .vac-toggle {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 5px 10px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 2px 8px;
+  width: 94px;
   border-radius: 999px;
   border: 0.5px solid var(--border);
   font-family: var(--font-mono);
