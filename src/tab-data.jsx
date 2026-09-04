@@ -1501,21 +1501,27 @@ function TabData({ state, actions, onHome, onNavTab }) {
                     long group name or "Dynamic Weighted" can still truncate
                     at this width — same pattern as day-log.jsx's dl-name/
                     dl-mode. */}
-                <span className="cat-h-tags">
-                  {/* Read by help-mode's pickerRow entry via labelSel to build
-                      "{type} Picker" per-picker badge titles. */}
-                  <InfoTip className="cat-mode-label" label={MODES[pk.mode].label} truncationOnly>
-                    {MODES[pk.mode].label}
-                  </InfoTip>
-                  <InfoTip className="cat-group" label={pk.group} truncationOnly>{pk.group}</InfoTip>
+                {/* Wraps the tags + toggle as one group so a narrow viewport
+                    can drop them to their own full-width row below the name,
+                    rather than either wrapping mid-cluster or squeezing the
+                    name down to nothing — see the @container rule below. */}
+                <span className="cat-h-right">
+                  <span className="cat-h-tags">
+                    {/* Read by help-mode's pickerRow entry via labelSel to
+                        build "{type} Picker" per-picker badge titles. */}
+                    <InfoTip className="cat-mode-label" label={MODES[pk.mode].label} truncationOnly>
+                      {MODES[pk.mode].label}
+                    </InfoTip>
+                    <InfoTip className="cat-group" label={pk.group} truncationOnly>{pk.group}</InfoTip>
+                  </span>
+                  <button className="vac-toggle" aria-pressed={!!allVac}
+                          aria-label={`${allVac ? 'Activate' : 'Deactivate'} all items in ${pk.name}`}
+                          onClick={(e) => { e.stopPropagation(); actions.toggleVacation(pk.id, 'picker'); }}
+                          title="Active toggle for all items in this picker">
+                    <Icon name={allVac ? 'moon' : 'sparkle'} size={14} />
+                    <span className="set-sub-fade" key={allVac ? 'inactive' : 'active'}>{allVac ? 'Inactive' : 'Active'}</span>
+                  </button>
                 </span>
-                <button className="vac-toggle" aria-pressed={!!allVac}
-                        aria-label={`${allVac ? 'Activate' : 'Deactivate'} all items in ${pk.name}`}
-                        onClick={(e) => { e.stopPropagation(); actions.toggleVacation(pk.id, 'picker'); }}
-                        title="Active toggle for all items in this picker">
-                  <Icon name={allVac ? 'moon' : 'sparkle'} size={14} />
-                  <span className="set-sub-fade" key={allVac ? 'inactive' : 'active'}>{allVac ? 'Inactive' : 'Active'}</span>
-                </button>
               </header>
               <Collapse open={open}>
                 <div className="cat-body">
