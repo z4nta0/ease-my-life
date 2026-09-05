@@ -94,7 +94,7 @@ function HolidayEditor({ state, actions }) {
                aria-label="Name of the day off to add"
                onChange={(e) => setName(e.target.value)}
                onKeyDown={(e) => { if (e.key === 'Enter') addCustom(); else if (e.key === 'Escape') e.currentTarget.blur(); }}
-               placeholder="Add a day off, e.g. Family day" autoComplete="off" />
+               placeholder="Add a holiday, e.g. Birthday" autoComplete="off" />
         <input className="np-input np-input--sm holiday-date-input" type="date" value={date}
                onKeyDown={(e) => { if (e.key === 'Escape') e.currentTarget.blur(); }}
                onChange={(e) => setDate(e.target.value)} aria-label="Date" />
