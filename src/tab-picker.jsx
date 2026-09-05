@@ -1279,7 +1279,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         </div>
 
         <fieldset className="np-field">
-          <legend className="np-label">How should it choose?</legend>
+          <legend className="np-label">Picker type</legend>
           <p className="np-help">
             This is the ruleset that the picker follows each time it runs.
             &ldquo;Truly Random&rdquo; is the simplest where every item has an
@@ -1362,7 +1362,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         <div className="np-field np-daily-group">
           <div className="np-field--toggle">
             <div className="np-toggle-text">
-              <label className="np-label" htmlFor="np-daily">Include in the Daily generator</label>
+              <label className="np-label" htmlFor="np-daily">Include in the daily generator</label>
               <p className="np-help set-sub-fade" key={includeInDaily ? 'on' : 'off'}>
                 {includeInDaily
                   ? <>This picker <strong>will run</strong> automatically as part of your daily list or whenever you tap Regenerate in the Today tab.</>
@@ -1372,7 +1372,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
             <button id="np-daily" type="button"
                     className={`switch ${includeInDaily ? 'is-on' : ''}`}
                     role="switch" aria-checked={includeInDaily}
-                    aria-label="Include in the Daily generator"
+                    aria-label="Include in the daily generator"
                     onClick={() => { dailyUserToggled.current = true; setIncludeInDaily((v) => !v); }}>
               <i />
             </button>
