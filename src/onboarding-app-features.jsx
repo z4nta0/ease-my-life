@@ -533,7 +533,7 @@ const buildAppFeatureSteps = (featureId, actions, alreadyProtected) => {
   }
   if (featureId === 'feat_protect_data') {
     return [
-      // .set-protect-btn — new modifier class on the "Protect data" Btn in
+      // .set-protect-btn — new modifier class on the "Protect Data" Btn in
       // tab-settings.jsx (only rendered while !stor.persisted — same
       // condition already gating the real button). Omitted entirely when
       // alreadyProtected (see AppFeatureTour's own effect that computes
@@ -546,7 +546,7 @@ const buildAppFeatureSteps = (featureId, actions, alreadyProtected) => {
       ...(alreadyProtected ? [] : [{
         sel: '.set-protect-btn', tab: 'settings',
         title: 'Protect Your Data',
-        body: <>The “Protect data” button helps <b>protect your data from being cleared by your browser's own storage clean up</b>. Click the “Protect data” button now to enable this.</>,
+        body: <>The “Protect Data” button helps <b>protect your data from being cleared by your browser's own storage clean up</b>. Click the “Protect Data” button now to enable this.</>,
         primary: 'Next', back: true, requireClick: true, coachAtTop: true,
       }]),
       // Comma-separated fallback (see findTargets' own comma-splitting in
