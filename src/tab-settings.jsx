@@ -1350,7 +1350,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               allow anyone to freely fork and modify the project&rsquo;s source code, provided that
               attribution is included in your project and that you will not be selling the software
               or making money off it in any way. Please be responsible with the source code, because
-              I am just one person maintaining the project in their free time just trying to
+              I am just one person maintaining the project in their free time trying to
               make a living. This is not some big company with vast resources trying to
               extract every dollar that they can.
             </p>
