@@ -138,6 +138,35 @@ function logRow(s, { eid = null, pickerId, itemId, source, date, depletedEnd = f
 // keeps resurfacing. The staged mutation rides on the entry as `entry.pending`;
 // applying it records an `entry.revert` snapshot so unchecking restores exactly.
 //   pending = { updates:[{id,value?,weight?}], pickerPatch?, depletedEnd?, pickedId?, bumpPick? }
+
+// A direct edit to an item's value — Fill/Refill/Reset boost, all three of
+// which live on tab-today.jsx's EntryEditor and patch via updateItem — is
+// meant to win immediately; it deliberately bypasses pending staging. But
+// ease-up/dynamic pick()s stash an `updates` row for EVERY pool item on each
+// NOT-YET-DONE entry's `pending`, not just the one actually picked (see
+// pick()'s ease-up/dynamic cases in pickers.js), snapshotted from value at
+// generation time. Left alone, later completing a SIBLING entry for the same
+// picker would silently overwrite the fresh direct edit with that stale
+// snapshot via applyEntryPending — this is the actual bug (items looked like
+// they "lost" a manual Fill/Refill/Reset). Strip the touched item's own stale
+// row from every OTHER entry's pending; an item's OWN entry (entry.itemId ===
+// the touched id) is left alone on purpose — its completion is still supposed
+// to perform its designed effect (e.g. ease-up's picked item resetting to 0)
+// regardless of an interim Fill.
+function dropStalePendingUpdates(entries, itemIds) {
+  const ids = new Set(itemIds);
+  if (!ids.size) return entries;
+  let changed = false;
+  const next = entries.map((e) => {
+    if (e.done || !e.pending || !e.pending.updates || !e.pending.updates.length) return e;
+    if (ids.has(e.itemId)) return e;
+    const updates = e.pending.updates.filter((u) => !ids.has(u.id));
+    if (updates.length === e.pending.updates.length) return e;
+    changed = true;
+    return { ...e, pending: { ...e.pending, updates } };
+  });
+  return changed ? next : entries;
+}
 function applyEntryPending(s, entry) {
   const p = entry.pending;
   if (!p) return { items: s.items, pickers: s.pickers, pickLog: s.pickLog || [], revert: null };
@@ -1123,6 +1152,9 @@ function useStore(opts) {
     updateItem: (id, patch) => setState((s) => ({
       ...s,
       items: s.items.map((it) => it.id === id ? { ...it, ...patch } : it),
+      // A direct `value` edit (Fill/Refill/Reset boost) must win over any stale
+      // pending mutation still riding a sibling entry — see dropStalePendingUpdates.
+      ...('value' in patch ? { today: { ...s.today, entries: dropStalePendingUpdates(s.today.entries, [id]) } } : {}),
     })),
 
     // Move an item to the end of the global items array (Pickers-tab add flow
