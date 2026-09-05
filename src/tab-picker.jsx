@@ -894,8 +894,10 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   // conditionals are added/removed and the rail's content width changes —
   // sidesteps that race entirely.
   const condRailCleanup = React.useRef(null);
+  const condRailNode = React.useRef(null);
   const condRailRef = React.useCallback((el) => {
     if (condRailCleanup.current) { condRailCleanup.current(); condRailCleanup.current = null; }
+    condRailNode.current = el;
     if (!el) return;
     const update = () => {
       const scrollable = el.scrollWidth - el.clientWidth > 1;
@@ -908,6 +910,14 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     ro.observe(el);
     condRailCleanup.current = () => { el.removeEventListener('scroll', update); ro.disconnect(); };
   }, []);
+  // Selecting a conditional pins it to the front of the rail (see the sort
+  // below), so scroll the rail back to the start to bring it into view --
+  // same idea as the Data tab's own attached-conditional pin.
+  React.useEffect(() => {
+    const el = condRailNode.current;
+    if (!el || condSel == null || condSel === 'new') return;
+    if (el.scrollLeft > 1) el.scrollTo({ left: 0, behavior: reduceMotion() ? 'auto' : 'smooth' });
+  }, [condSel]);
 
   // Step 2 — the pool. Each item is { name, weight }; weight only matters for
   // weighted/dynamic modes (and is editable inline only then). A fresh pool
