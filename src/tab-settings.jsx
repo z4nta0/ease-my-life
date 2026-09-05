@@ -183,7 +183,7 @@ function ContactSupportCard({ state, actions }) {
   const openForm = () => {
     setOpen(true);
     // Scroll the form into view once it's expanded — otherwise it renders
-    // below the fold and clicking "Contact support" looks like it did nothing.
+    // below the fold and clicking "Contact Support" looks like it did nothing.
     // Wait past Collapse's own expand animation so we scroll to its final
     // height, not a mid-animation one.
     setTimeout(() => {
@@ -276,7 +276,7 @@ function ContactSupportCard({ state, actions }) {
               <span className="set-import-msg is-ok" role="status" key={sentMsg}>Message sent &mdash; thanks! I&rsquo;ll be in touch.</span>
             )}
           </div>
-          <Btn kind="secondary" size="sm" onClick={openForm}>Contact support</Btn>
+          <Btn kind="secondary" size="sm" onClick={openForm}>Contact Support</Btn>
         </div>
       </Card>
 
@@ -1328,7 +1328,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   <span className="set-data-name">Sync across devices</span>
                   <span className="set-data-sub">This feature will keep all of your Ease My Life data synced across every device that you sign in to.</span>
                 </div>
-                <Btn kind="secondary" size="sm" disabled>Coming soon</Btn>
+                <Btn kind="secondary" size="sm" disabled>Coming Soon</Btn>
               </div>
             </Card>
           </section>
@@ -1371,7 +1371,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   <span className="set-data-name">Support the project</span>
                   <span className="set-data-sub">Enjoying Ease My Life? Consider buying me a coffee.</span>
                 </div>
-                <Btn kind="secondary" size="sm" disabled>Buy me a coffee</Btn>
+                <Btn kind="secondary" size="sm" disabled>Buy Me a Coffee</Btn>
               </div>
             </Card>
 
@@ -1414,7 +1414,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                          welcomed: false, dismissed: true, appFeatures: {}, appFeaturesSectionResolved: false, checklist: {},
                          ...(hasRealPickers ? { checklistDone: true, appFeaturesIntroSeen: true } : {}),
                        });
-                     }}>Replay tour</Btn>
+                     }}>Replay Tour</Btn>
               </div>
             </Card>
 

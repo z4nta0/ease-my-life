@@ -88,7 +88,7 @@ function groupEntries(state) {
   // first-time checklist, until checklistDone (set once the closing
   // Generate card runs, see onboarding-checklist.js). Unlike checklistDone
   // itself, this does NOT permanently stop once that happens: Settings'
-  // Replay tour button (tab-settings.jsx) resets each item's own checklist
+  // Replay Tour button (tab-settings.jsx) resets each item's own checklist
   // entry (though never checklistDone), so a still-unresolved sample keeps
   // offering its card afterward too — EXCLUDED if a real (non-sample)
   // picker has since taken its exact name, since re-prompting "set up a
@@ -1027,7 +1027,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
   const showChecklist = mainTourEnded && !checklistDone;
   // Page Tours cards keep offering themselves post-checklistDone too, same
-  // "Replay tour resets each item's own entry but never checklistDone
+  // "Replay Tour resets each item's own entry but never checklistDone
   // itself" reasoning as groupEntries()'s own picker-sample cards — no
   // name-collision concept applies here (a page tour isn't named after
   // anything the user could "already have"), just whether it's still
