@@ -43,9 +43,9 @@ const STAT_RANGES = [
 // How each Today pick came to be — kept on-palette (accent + warm) so the bar
 // reads as one family rather than a random spectrum.
 const SOURCE_META = [
-  { key: 'auto',   label: 'Auto-Generated', color: 'var(--accent)' },
-  { key: 'reroll', label: 'Re-rolled',      color: 'oklch(from var(--accent) calc(l + 0.22) calc(c - 0.05) h)' },
-  { key: 'manual', label: 'Hand-Picked',    color: 'var(--warm)' },
+  { key: 'auto',   label: 'Auto Generated', color: 'var(--accent)' },
+  { key: 'reroll', label: 'Re-Rolled',      color: 'oklch(from var(--accent) calc(l + 0.22) calc(c - 0.05) h)' },
+  { key: 'manual', label: 'Hand Picked',    color: 'var(--warm)' },
 ];
 const TYPE_META = [
   { key: 'recurring', label: 'Recurring', color: 'var(--accent)' },
@@ -775,7 +775,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   //   • Count    → weight suffix (weighted / dynamic)
   //   • Freq/Spent → range suffix (ease modes), days from the drift band
   //     (soonest = 100/easeMax, latest = 100/easeMin)
-  //   • Auto / Hand-Picked / Re-Rolled Away → no suffix ("{name} {count}")
+  //   • Auto / Hand Picked / Re-Rolled Away → no suffix ("{name} {count}")
   const weightSuffix = React.useCallback((it) => {
     if (!it || !usesWeight) return null;
     return `weight ${it.weight ?? 1}`;
@@ -814,7 +814,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
     isEaseDown ? { key: 'spent', label: 'Spent' } : { key: 'freq', label: 'Frequency' },
     { key: 'last', label: 'Last Picked' },
     { key: 'auto', label: 'Auto' },
-    { key: 'manual', label: 'Hand-Picked' },
+    { key: 'manual', label: 'Hand Picked' },
     { key: 'rejected', label: 'Re-Rolled Away' },
     { key: 'skipped', label: 'Skipped' },
   ];
