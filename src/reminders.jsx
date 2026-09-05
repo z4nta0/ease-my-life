@@ -908,13 +908,13 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
           </div>
           {!editMode && (
             tutorialsInProgress ? (
-              <InfoTip className="rem-add-btn is-tour-disabled" action="Add a reminder"
+              <InfoTip className="rem-add-btn is-tour-disabled" action="Add a Reminder"
                        label="This button is disabled until all tutorials are completed.">
                 <Icon name="plus" size={16} />
               </InfoTip>
             ) : (
               <button className="rem-add-btn" onClick={() => { adding ? cancelAdd() : startAdd(); }}
-                      aria-label="Add a reminder" title="Add a reminder">
+                      aria-label="Add a Reminder" title="Add a Reminder">
                 <Icon name="plus" size={16} />
               </button>
             )
