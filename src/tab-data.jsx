@@ -176,7 +176,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
     // rail back to the left so it's visible.
     if (el.scrollLeft > 1) el.scrollTo({ left: 0, behavior: reduceMotion() ? 'auto' : 'smooth' });
   }, [pk.conditionalId, condOn, conditionals.length]);
-  // "+ New group" inline-create state for the Group selector.
+  // "+ New Group" inline-create state for the Group selector.
   const [newGroupMode, setNewGroupMode] = React.useState(false);
   const [pillReturning, setPillReturning] = React.useState(false);
   const [newGroupName, setNewGroupName] = React.useState('');
@@ -255,7 +255,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
     return set.sort((a, b) => (b === pk.group ? 1 : 0) - (a === pk.group ? 1 : 0));
   }, [allGroups, pk.group]);
   // Close symmetrically to open: the input unmounts immediately and the
-  // returning "+ New group" pill animates IN (same as opening, where the pill
+  // returning "+ New Group" pill animates IN (same as opening, where the pill
   // vanishes at once and the input animates in). Both commit and cancel route
   // through here.
   const closeNewGroup = () => {
@@ -361,7 +361,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
             ) : (
               <button type="button" className={`picker-group-pill picker-group-pill--new ${pillReturning ? 'is-returning' : ''}`}
                       onClick={() => setNewGroupMode(true)}>
-                <Icon name="plus" size={13} /> New group
+                <Icon name="plus" size={13} /> New Group
               </button>
             )}
           </div>

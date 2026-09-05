@@ -1258,7 +1258,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
             <button type="button"
                     className={`np-chip np-chip--new ${addingGroup ? 'is-on' : ''}`}
                     onClick={() => setAddingGroup(true)}>
-              <Icon name="plus" size={13} /> New group
+              <Icon name="plus" size={13} /> New Group
             </button>
           </div>
           <Collapse open={addingGroup}>
