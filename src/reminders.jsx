@@ -144,7 +144,7 @@ function RemVisibilityNote({ task, state, kind, id }) {
     return (
       <p className="rem-vis-note is-never">
         <strong>WARNING:</strong> Because of the values that you are using and because {why}, this
-        item will <strong>never</strong> show in your todo list.
+        item will <strong>never</strong> show up in your todo list.
       </p>
     );
   }
