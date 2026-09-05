@@ -1187,7 +1187,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                     <span className="set-data-name">Already installed on this device</span>
                     <span className="set-data-sub">
                       You&rsquo;re viewing Ease My Life in a browser tab. Open the installed app from your
-                      home screen or app list instead &mdash; it&rsquo;s the same data, and the installed copy is
+                      home screen or app list instead. It&rsquo;s the same data, and the installed copy is
                       the one protected from browser cleanup.
                     </span>
                   </div>
@@ -1213,7 +1213,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                     <span className="set-data-name">Add to your Home Screen</span>
                     <span className="set-data-sub">
                       On iPhone and iPad, tap <strong>Share</strong> then <strong>Add to Home Screen</strong>. Do this and
-                      Safari stops clearing your data when the app sits unused &mdash; without it, everything here can be
+                      Safari stops clearing your data when the app sits unused. Without it, everything here can be
                       wiped after a period of not opening the app.
                     </span>
                     <span className="set-data-sub">
@@ -1230,7 +1230,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                     <span className="set-data-name">Add to your Dock</span>
                     <span className="set-data-sub">
                       On Mac, open Safari&rsquo;s <strong>File</strong> menu and choose <strong>Add to Dock</strong>. Do this
-                      and Safari stops clearing your data when the app sits unused &mdash; without it, everything here can be
+                      and Safari stops clearing your data when the app sits unused. Without it, everything here can be
                       wiped after a period of not opening the app.
                     </span>
                     <span className="set-data-sub">
