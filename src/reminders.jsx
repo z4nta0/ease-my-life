@@ -15,11 +15,11 @@ import { Btn, Collapse, compareSortEntries, freezeEditedRow, Icon, InfoTip, Sort
 // + small local form state only.
 
 const REPEAT_OPTS = [
-  { key: 'once',     label: 'Once',        sub: <>included in the Today tab <strong>until marked as completed</strong></> },
-  { key: 'interval', label: 'Every N days', sub: <>included in the Today tab <strong>as often as specified below</strong></> },
-  { key: 'weekly',   label: 'Weekly',      sub: <>included in the Today tab <strong>on the days specified below</strong></> },
-  { key: 'monthly',  label: 'Monthly',     sub: <>included in the Today tab <strong>every month as specified below</strong></> },
-  { key: 'annual',   label: 'Yearly',      sub: <>included in the Today tab <strong>every year as specified below</strong></> },
+  { key: 'once',     label: 'Once',        sub: <>included in the Today page <strong>until marked as completed</strong></> },
+  { key: 'interval', label: 'Every N days', sub: <>included in the Today page <strong>as often as specified below</strong></> },
+  { key: 'weekly',   label: 'Weekly',      sub: <>included in the Today page <strong>on the days specified below</strong></> },
+  { key: 'monthly',  label: 'Monthly',     sub: <>included in the Today page <strong>every month as specified below</strong></> },
+  { key: 'annual',   label: 'Yearly',      sub: <>included in the Today page <strong>every year as specified below</strong></> },
 ];
 
 // Animated segmented control: a single accent "thumb" slides between options.
@@ -253,8 +253,8 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         <span className="rem-flabel">Start date</span>
         <span className="rem-flabel-sub set-sub-fade" key={onceIsFuture ? 'future' : 'now'}>
           {onceIsFuture
-            ? <>won't show on the Today tab until <strong>{onceDateLabel}</strong></>
-            : <>shows on the Today tab <strong>right away</strong></>}
+            ? <>won't show on the Today page until <strong>{onceDateLabel}</strong></>
+            : <>shows on the Today page <strong>right away</strong></>}
         </span>
       </div>
       <p className="rem-hint">
@@ -289,7 +289,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
             <span className="rem-flabel">On these days</span>
             <span className="rem-flabel-sub set-sub-fade" key={task.interval || 1}>
               {(task.daysOfWeek && task.daysOfWeek.length)
-                ? <>shows on the Today tab <strong>every {(task.interval || 1) > 1 ? `${task.interval} weeks on ` : ''}{[...task.daysOfWeek].sort((a, b) => a - b).map((d) => dayAbbr[d]).join(', ')}</strong></>
+                ? <>shows on the Today page <strong>every {(task.interval || 1) > 1 ? `${task.interval} weeks on ` : ''}{[...task.daysOfWeek].sort((a, b) => a - b).map((d) => dayAbbr[d]).join(', ')}</strong></>
                 : 'pick at least one day'}
             </span>
           </div>
@@ -311,7 +311,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         <div className="rem-field">
           <div className="rem-flabel-wrap">
             <span className="rem-flabel">Frequency</span>
-            <span className="rem-flabel-sub">shows on the Today tab <strong>every {task.interval || 1} days</strong></span>
+            <span className="rem-flabel-sub">shows on the Today page <strong>every {task.interval || 1} days</strong></span>
           </div>
           <div className="rem-inline">
             <span>Every</span>
@@ -330,7 +330,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         <div className="rem-field">
           <div className="rem-flabel-wrap">
             <span className="rem-flabel">Frequency</span>
-            <span className="rem-flabel-sub set-sub-fade" key={task.interval || 1}>shows on the Today tab <strong>every {(task.interval || 1) > 1 ? `${task.interval} months` : 'month'}</strong></span>
+            <span className="rem-flabel-sub set-sub-fade" key={task.interval || 1}>shows on the Today page <strong>every {(task.interval || 1) > 1 ? `${task.interval} months` : 'month'}</strong></span>
           </div>
           <div className="rem-inline">
             <span>Every</span>
@@ -348,7 +348,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
           <div className="rem-flabel-wrap">
             <span className="rem-flabel">Day of the month</span>
             <span className="rem-flabel-sub set-sub-fade" key={task.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date'}>
-              shows on the Today tab <strong>{task.dateMode === 'nthWeekday'
+              shows on the Today page <strong>{task.dateMode === 'nthWeekday'
                 ? <>on the {ordinalLabel(task.nthOrdinal || 1)} {dayFull[task.nthWeekday ?? 0]}</>
                 : <>every {ordinalLabel(task.dayOfMonth || 1)}</>} of the month</strong>
             </span>
@@ -389,7 +389,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         <div className="rem-field">
           <div className="rem-flabel-wrap">
             <span className="rem-flabel">Frequency</span>
-            <span className="rem-flabel-sub set-sub-fade" key={task.interval || 1}>shows on the Today tab <strong>every {(task.interval || 1) > 1 ? `${task.interval} years` : 'year'}</strong></span>
+            <span className="rem-flabel-sub set-sub-fade" key={task.interval || 1}>shows on the Today page <strong>every {(task.interval || 1) > 1 ? `${task.interval} years` : 'year'}</strong></span>
           </div>
           <div className="rem-inline">
             <span>Every</span>
@@ -407,7 +407,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
           <div className="rem-flabel-wrap">
             <span className="rem-flabel">Date each year</span>
             <span className="rem-flabel-sub set-sub-fade" key={task.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date'}>
-              shows on the Today tab <strong>{task.dateMode === 'nthWeekday'
+              shows on the Today page <strong>{task.dateMode === 'nthWeekday'
                 ? <>the {ordinalLabel(task.nthOrdinal || 1)} {dayFull[task.nthWeekday ?? 0]} of {fullMonthNames[(task.month || 1) - 1]}</>
                 : <>{fullMonthNames[(task.month || 1) - 1]} {task.day || 1}</>}</strong>
             </span>
@@ -511,7 +511,7 @@ const ReminderEditFoot = React.forwardRef(function ReminderEditFoot({ task, onDe
   // A brand-new, not-yet-kept reminder (isNew) should be discarded if its
   // editor closes ANY other way — switching to a different reminder, the
   // Items list collapsing, navigating to another tab, ... — not just an
-  // explicit Cancel. Mirrors the Today tab's "provisional until Save" editors.
+  // explicit Cancel. Mirrors the Today page's "provisional until Save" editors.
   React.useEffect(() => () => { if (isNew && !doneRef.current) onCancel(orig.current); }, []);
   // Escape = Cancel (discards live edits), except while the delete confirm is up,
   // where it just backs out of the confirm.
@@ -1044,15 +1044,15 @@ const remPairSub = (verb, neitherConj = 'and') => (once, recur) =>
   : <><strong>neither</strong> one-time {neitherConj} recurring items will {verb}</>;
 
 const REMINDER_OPT_DEFS = [
-  { key: 'streak', label: 'Counts toward day streak', dyn: remPairSub('trigger the day streak in the Today tab', 'nor') },
-  { key: 'ring', label: 'Include in completion ring', dyn: remPairSub('trigger the completion ring in the Today tab', 'nor') },
-  { key: 'excludeWeekends', label: 'Exclude on weekends', dyn: remPairSub('show in the Today tab on weekends', 'nor') },
-  { key: 'excludeHolidays', label: 'Exclude on holidays', dyn: remPairSub('show in the Today tab on holidays', 'nor') },
+  { key: 'streak', label: 'Counts toward day streak', dyn: remPairSub('trigger the day streak in the Today page', 'nor') },
+  { key: 'ring', label: 'Include in completion ring', dyn: remPairSub('trigger the completion ring in the Today page', 'nor') },
+  { key: 'excludeWeekends', label: 'Exclude on weekends', dyn: remPairSub('show in the Today page on weekends', 'nor') },
+  { key: 'excludeHolidays', label: 'Exclude on holidays', dyn: remPairSub('show in the Today page on holidays', 'nor') },
   { key: 'stats', label: 'Include in Stats', dyn: (once, recur) =>
-    once && recur ? <><strong>both</strong> one-time and recurring item statistics will be shown in the Stats tab</>
-    : once ? <><strong>only</strong> one-time item statistics will be shown in the Stats tab</>
-    : recur ? <><strong>only</strong> recurring item statistics will be shown in the Stats tab</>
-    : <><strong>neither</strong> one-time nor recurring item statistics will be shown in the Stats tab</> },
+    once && recur ? <><strong>both</strong> one-time and recurring item statistics will be shown in the Stats page</>
+    : once ? <><strong>only</strong> one-time item statistics will be shown in the Stats page</>
+    : recur ? <><strong>only</strong> recurring item statistics will be shown in the Stats page</>
+    : <><strong>neither</strong> one-time nor recurring item statistics will be shown in the Stats page</> },
 ];
 const REMINDER_TYPE_DEFS = [
   { type: 'once', label: 'One-time', icon: 'pin', blurb: 'A single to-do that sits on Today until done.' },
