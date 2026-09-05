@@ -441,15 +441,15 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
         </Collapse>
         <div className="sched-line">
           <span className="sched-line-label">
-            <span className="sched-line-lbl">In the Daily generator</span>
+            <span className="sched-line-lbl">In the daily generator</span>
             <span className="sched-line-sub set-sub-fade" key={inDaily ? 'on' : 'off'}>
               {inDaily
-                ? <>will run <strong>every time</strong> the Today tab's Daily generator is run</>
+                ? <>will run <strong>every time</strong> the Today page's daily generator is run</>
                 : <>can only be <strong>run manually</strong> in the Pickers tab</>}
             </span>
           </span>
           <button className={`switch ${inDaily ? 'is-on' : ''}`} aria-pressed={inDaily}
-                  aria-label={`${inDaily ? 'Remove from' : 'Add to'} the Daily generator`}
+                  aria-label={`${inDaily ? 'Remove from' : 'Add to'} the daily generator`}
                   onClick={() => {
                     const ids = inDaily
                       ? dailyIds.filter((x) => x !== pk.id)
@@ -575,7 +575,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                 <span className="sched-line-lbl">Days</span>
                 <span className="sched-line-sub set-sub-fade" key={(pk.daysOfWeek || []).join(',')}>
                   {(pk.daysOfWeek && pk.daysOfWeek.length)
-                    ? <>runs in the Daily generator every <strong>{[...pk.daysOfWeek].sort((a, b) => a - b).map((d) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}</strong></>
+                    ? <>runs in the daily generator every <strong>{[...pk.daysOfWeek].sort((a, b) => a - b).map((d) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}</strong></>
                     : 'pick at least one day'}
                 </span>
               </span>
@@ -589,8 +589,8 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                 <span className="sched-line-lbl">Skip on holidays</span>
                 <span className="sched-line-sub set-sub-fade" key={pk.skipHolidays ? 'on' : 'off'}>
                   {pk.skipHolidays
-                    ? <><strong>will not run</strong> in the Daily generator on holidays</>
-                    : <><strong>will run</strong> in the Daily generator on holidays</>}
+                    ? <><strong>will not run</strong> in the daily generator on holidays</>
+                    : <><strong>will run</strong> in the daily generator on holidays</>}
                 </span>
               </span>
               <button className={`switch ${pk.skipHolidays ? 'is-on' : ''}`} aria-pressed={!!pk.skipHolidays}
@@ -600,7 +600,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
           </React.Fragment>
         </Collapse>
         <Collapse open={!inDaily}>
-          <div className="sched-off-note">Runs on demand only &mdash; not in the Daily generator.</div>
+          <div className="sched-off-note">Runs on demand only &mdash; not in the daily generator.</div>
         </Collapse>
       </div>
 
