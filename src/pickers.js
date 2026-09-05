@@ -161,8 +161,13 @@ function pick(picker, items, opts) {
       // at the threshold and the rest keep their relative order. Sub-threshold
       // charging items are untouched, so each item's time-to-eligible (its
       // cadence) is preserved exactly; only the unbounded slack is removed.
+      // Needs at least 2 overshooting items to mean anything — with only one,
+      // "compress relative to the smallest" degenerates into subtracting the
+      // item's own overshoot from itself, unconditionally clamping any lone
+      // waiter back to exactly the threshold every cycle it isn't picked
+      // (the actual bug: items looked like they could never exceed 100).
       const overshoots = updates.filter((u) => u.value > threshold).map((u) => u.value - threshold);
-      if (overshoots.length) {
+      if (overshoots.length > 1) {
         const minOver = Math.min(...overshoots);
         if (minOver > 0) {
           for (const u of updates) if (u.value > threshold) u.value -= minOver;
