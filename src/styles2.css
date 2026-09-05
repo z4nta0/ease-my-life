@@ -2568,9 +2568,14 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-quickadd .np-input { flex: 1; max-width: none; margin-top: 0; }
 .rem-quickadd .btn { flex: 0 0 auto; }
 
-/* Inline editor shown under a Today card when its pencil is toggled. */
+/* Inline editor shown under a Today card when its pencil is toggled. This
+   sits inside a <Collapse> (ui.jsx), whose .collapse-inner has a permanent
+   overflow: hidden — a negative top margin here pulls the border above that
+   boundary and gets clipped, cutting off the top border. Every other
+   consumer (.rd-edit, .rem-quickadd-wrap) already resets margin-top to 0 for
+   its own context, so 0 here too rather than -4px. */
 .rem-inline-editor {
-  margin: -4px 0 4px;
+  margin: 0 0 4px;
   padding: 16px;
   background: oklch(from var(--surface) calc(l - 0.006) c h);
   border: 0.5px solid var(--border); border-radius: var(--r-md);
