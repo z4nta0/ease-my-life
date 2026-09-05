@@ -803,7 +803,7 @@ function PickerView({ picker, state, actions, animStyle }) {
 // slot a selected picker's PickerView would, so creating reuses the mental
 //   1. Details — Name, Group, Mode.
 //   2. Items   — build a fresh pool by typing item names (Option B).
-// On "Create picker" it commits through actions.addPicker, which also spins up
+// On "Create Picker" it commits through actions.addPicker, which also spins up
 // a category to hold the new items so the Data tab stays coherent.
 //
 // Every field carries plain-language helper copy: the goal is that someone
@@ -1118,7 +1118,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     openEditDraftItem(id);
   };
 
-  // Back from the tour's own Step 12 (Create picker) to Step 11 (Save this
+  // Back from the tour's own Step 12 (Create Picker) to Step 11 (Save this
   // task item) needs that item's editor open again — its own Save already
   // committed it into the real list (there's no separate "draft" vs
   // "committed" state once saved, just newDraftId no longer pointing at
@@ -1139,7 +1139,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
 
   const goBackToStep1 = () => {
     // Discard any in-progress (unsaved) item so returning to step 2 isn't stuck
-    // with a stale newDraftId (which would make + Add item a no-op). Disarm the
+    // with a stale newDraftId (which would make + Add Item a no-op). Disarm the
     // EntryEditor's deferred revert too, else it fires on the next macrotask and
     // re-sets draftClosing='cancel' — which would auto-close the NEXT added item.
     window.__editGuard.disarm();
@@ -1672,7 +1672,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         </div>
         <div className="np-footer-actions">
           <Btn kind="ghost" onClick={goBackToStep1}>Back</Btn>
-          <Btn kind="primary" icon="check" className="ob-picker-create" disabled={!enoughItems || condNameCollides} onClick={submit}>Create picker</Btn>
+          <Btn kind="primary" icon="check" className="ob-picker-create" disabled={!enoughItems || condNameCollides} onClick={submit}>Create Picker</Btn>
         </div>
       </div>
       </div>

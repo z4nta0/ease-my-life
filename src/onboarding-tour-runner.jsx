@@ -649,7 +649,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // 'Done' step's finish() calls selectTab away and unmounts this tour,
   // and doing that synchronously here can remove the target from the DOM
   // before its own bubble-phase handler ever fires — observed concretely on
-  // the Picker tour's "Create picker" step, where the real submit() got
+  // the Picker tour's "Create Picker" step, where the real submit() got
   // skipped entirely because finish() tore down the page mid-click. Deferring
   // the advance/finish by a tick lets the browser finish dispatching the
   // native click (including the target's own handler) first; a requireClick

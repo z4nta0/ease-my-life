@@ -211,7 +211,7 @@ const PICKER_TOUR_STEP_6 = {
   // unanimatably, before Step 7's own tour effect ever runs (confirmed live
   // — .main.scrollTop dropped from ~2960 to ~1060 within 50ms of the click,
   // with zero scroll calls of ours in between). By the time Step 7's own
-  // bring() checks, the "+ Add item" target is usually already sitting
+  // bring() checks, the "+ Add Item" target is usually already sitting
   // wherever that clamp landed, so no scroll fires and the whole transition
   // reads as an unexplained jump instead of the tour visibly navigating
   // there. Resetting to the top HERE — before the native click's own
@@ -228,7 +228,7 @@ const PICKER_TOUR_STEP_6 = {
   },
 };
 
-// Highlights the "+ Add item" button on the now-showing Items sub-step
+// Highlights the "+ Add Item" button on the now-showing Items sub-step
 // (reached via Step 6's click) — .pv-additem-btn. run() stages the item's
 // name (and, if this sample overrides them, its Soonest/Latest days too —
 // see pkr_ob_monthly's itemSoonest/itemLatest) on the bus (same timing trick
@@ -345,7 +345,7 @@ const PICKER_TOUR_STEP_11 = {
   primary: 'Next', back: true, requireClick: true, resumable: false,
 };
 
-// Highlights the form's real "Create picker" button — .ob-picker-create
+// Highlights the form's real "Create Picker" button — .ob-picker-create
 // (see tab-picker.jsx's np-footer). requireClick + primary:'Done': this is
 // the ONE step where the real target's native click handler (submit, which
 // actually calls actions.addPicker) has to survive finish()'s own side
@@ -357,7 +357,7 @@ const PICKER_TOUR_STEP_11 = {
 const PICKER_TOUR_STEP_12 = {
   sel: '.ob-picker-create', tab: 'picker',
   title: 'Create this picker',
-  body: <>You’re all set! You’ve created this picker and its list of items. All that’s left is to finish creating this picker. Go ahead and <b>click the "Create picker" button now</b> to create this picker.</>,
+  body: <>You’re all set! You’ve created this picker and its list of items. All that’s left is to finish creating this picker. Go ahead and <b>click the "Create Picker" button now</b> to create this picker.</>,
   primary: 'Done', back: true, requireClick: true, resumable: false,
 };
 
@@ -455,7 +455,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
       actions={actions}
       active={active}
       selectTab={selectTab}
-      // Back from Step 7 (index 6, the Items sub-step's "+ Add item"
+      // Back from Step 7 (index 6, the Items sub-step's "+ Add Item"
       // button) to Step 6 (index 5, "Add Items") needs the form pushed back
       // to its Details sub-step first — unlike the Reminders tours' "+"
       // button, .ob-picker-next's click is a one-way step change inside
@@ -476,7 +476,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
           const cancelBtn = document.querySelector('.ob-item-cancel');
           if (cancelBtn) cancelBtn.click();
         } else if (to === steps.length - 2) {
-          // Back from the last step (Create picker) to the second-to-last
+          // Back from the last step (Create Picker) to the second-to-last
           // (Save this task item) — Step 11's own Save committed the item
           // into the real list for good (see tab-picker.jsx's own comment on
           // this), leaving .ob-item-save (Step 11's target) gone with no

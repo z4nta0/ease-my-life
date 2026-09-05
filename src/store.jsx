@@ -1274,7 +1274,7 @@ function useStore(opts) {
         // they're invisible reference data the user can't see or tell apart
         // from, so they shouldn't cost a real picker an ugly " (2)" suffix
         // for a collision with something the user doesn't know exists (seen
-        // concretely: the Picker mini-tour's own "Create picker" step
+        // concretely: the Picker mini-tour's own "Create Picker" step
         // recreates a sample by name, e.g. "Daily Chores"). Excludes itself
         // too, so a replaceId update keeping the same name never collides
         // with its own prior name.

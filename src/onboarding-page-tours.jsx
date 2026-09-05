@@ -260,7 +260,7 @@ const PICKER_PAGE_TARGETS = {
   // (tab-picker.jsx's own disablePoolItemButtons, gated on this exact
   // tourId+step) — narrating what they do is the point, not inviting the
   // user to act on a disposable tutorial picker's real items. Excludes
-  // "+ Add item" below (.pool-items, not .picker-pool) — that gets its own
+  // "+ Add Item" below (.pool-items, not .picker-pool) — that gets its own
   // step next.
   pickerItems: {
     sel: '.pool-items',
