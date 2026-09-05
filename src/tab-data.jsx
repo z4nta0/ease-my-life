@@ -418,9 +418,14 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
           <div className="rd-cnd-rail-row">
             {conditionals.length ? (
               <div className="cnd-rail picker-groups" ref={condRailRef}>
-                {[...conditionals].sort((a, b) =>
-                  (b.id === pk.conditionalId ? 1 : 0) - (a.id === pk.conditionalId ? 1 : 0)
-                ).map((c) => (
+                {/* Alphabetical, except the attached conditional pins to the
+                    front (see condFlipFirst above for the reorder animation
+                    that plays when it changes). */}
+                {[...conditionals].sort((a, b) => {
+                  if (a.id === pk.conditionalId) return -1;
+                  if (b.id === pk.conditionalId) return 1;
+                  return a.name.localeCompare(b.name);
+                }).map((c) => (
                   <button key={c.id} type="button" data-cid={c.id}
                           className={`cnd-pill ${pk.conditionalId === c.id ? 'is-on' : ''}`}
                           onClick={() => actions.updatePicker(pk.id, { conditionalId: c.id })}>

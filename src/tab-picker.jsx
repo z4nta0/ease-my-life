@@ -1320,7 +1320,14 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
           <Collapse open={condOn}>
             <div className="cnd-attach">
               <div className="cnd-rail picker-groups at-start at-end" ref={condRailRef}>
-                {conditionals.map((c) => (
+                {/* Alphabetical, except the currently-selected conditional (once
+                    the user has picked one) pins to the front — same "selected
+                    stays first" convention as the Data tab's own rail. */}
+                {[...conditionals].sort((a, b) => {
+                  if (a.id === condSel) return -1;
+                  if (b.id === condSel) return 1;
+                  return a.name.localeCompare(b.name);
+                }).map((c) => (
                   <button key={c.id} type="button"
                           className={`cnd-pill ${condSel === c.id ? 'is-on' : ''}`}
                           onClick={() => setCondSel(c.id)}>
@@ -1332,7 +1339,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                         className={`cnd-pill cnd-pill--new ${condSel === 'new' ? 'is-on' : ''}`}
                         onClick={() => { setCondSel('new'); setCondDraft(conditionalDraftDefault(name.trim(), conditionals.map((c) => c.name))); }}>
                   <Icon name="plus" size={16} />
-                  <span className="cnd-pill-name">Add new conditional</span>
+                  <span className="cnd-pill-name">Add New Conditional</span>
                 </button>
               </div>
               <Collapse open={condSel === 'new'}>

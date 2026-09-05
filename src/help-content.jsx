@@ -635,9 +635,9 @@ const PICKER_HELP_ITEMS = [
     // is a Collapse) — findTargets naturally won't match anything while
     // it's closed, no visibility check needed here.
     id: 'newPickerConditionalRail', sel: '.cnd-rail', title: 'Select a Conditional',
-    body: <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, or want to create another, use the Add new conditional button to build one inline.</>,
+    body: <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, or want to create another, use the Add New Conditional button to build one inline.</>,
   },
-  // ── Add new conditional (ConditionalControls, inline in the create flow) ──
+  // ── Add New Conditional (ConditionalControls, inline in the create flow) ──
   {
     id: 'newCondName', sel: '.cnd-controls .np-field:has(input[placeholder="Conditional name"])', title: 'Conditional Name',
     body: <>This is the name field for your new conditional, and it should have a short, descriptive name.</>,
