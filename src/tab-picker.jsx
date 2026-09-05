@@ -1695,7 +1695,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   React.useEffect(() => () => clearHelpPickers(actions), []);
   // Onboarding tour: when it stages a prefill, open the create form for it.
   const tour = useEmlTour ? useEmlTour() : { prefill: null, startCreate: null };
-  // The Pickers page tour's own Step 3 highlights "Add new picker" but
+  // The Pickers page tour's own Step 3 highlights "Add New Picker" but
   // explicitly doesn't want the user opening the real create form from it —
   // that flow is what the separate picker mini-tours already cover. Gated
   // on tourId, not just step index alone: some OTHER tour could just as
@@ -1899,10 +1899,10 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
             // — tutorialsInProgress is always false then, so that case still
             // falls through to the plain disabled button with no tooltip.
             <InfoTip className={`picker-tab picker-tab--add picker-tab--enter is-tour-disabled ${creating ? 'is-on' : ''}`}
-                     action="Add new picker"
+                     action="Add New Picker"
                      label="This button is disabled until all tutorials are completed.">
               <span className="picker-tab-add-icon" aria-hidden="true"><Icon name="plus" size={16} /></span>
-              <span className="picker-tab-name">Add new picker</span>
+              <span className="picker-tab-name">Add New Picker</span>
             </InfoTip>
           ) : (
             <button type="button"
@@ -1911,7 +1911,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
                     disabled={disableTourAddPicker}
                     onClick={() => setCreating(true)}>
               <span className="picker-tab-add-icon" aria-hidden="true"><Icon name="plus" size={16} /></span>
-              <span className="picker-tab-name">Add new picker</span>
+              <span className="picker-tab-name">Add New Picker</span>
             </button>
           )}
           {sortedVisiblePickers.map((p, i) => (

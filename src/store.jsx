@@ -1256,7 +1256,7 @@ function useStore(opts) {
         // Defaults false for every normal caller; tab-picker.jsx passes true
         // while the mini-tour checklist is up (mirrors reminders.jsx's own
         // startAdd) so a picker created during onboarding — whether by a
-        // tutorial or just the user clicking the real "+ Add new picker"
+        // tutorial or just the user clicking the real "+ Add New Picker"
         // button themselves — stays out of the real list alongside the
         // still-open launcher cards, revealed at the closing Generate step
         // (see tab-today.jsx's generateItemResolved effect).

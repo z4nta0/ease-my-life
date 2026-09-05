@@ -186,7 +186,7 @@ const PICKER_PAGE_TARGETS = {
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
-  // Excludes the "Add new picker" button (now the first tab, not the last)
+  // Excludes the "Add New Picker" button (now the first tab, not the last)
   // — Step 3 (above) covers that on its own, and this step's own copy is
   // entirely about selecting an EXISTING picker.
   pickerSelection: {
@@ -197,7 +197,7 @@ const PICKER_PAGE_TARGETS = {
   createNewPickers: {
     sel: '.picker-tab--add',
     title: 'Create New Pickers',
-    body: <>The "Add new picker" button will <b>open up a form that allows you to create new pickers</b>. We will not include this as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished.</>,
+    body: <>The "Add New Picker" button will <b>open up a form that allows you to create new pickers</b>. We will not include this as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished.</>,
   },
   // Two-phase highlight, both via the same fallback `sel` (findTargets tries
   // each comma-separated selector in turn and uses the first that matches —

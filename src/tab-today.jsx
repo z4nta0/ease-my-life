@@ -2158,7 +2158,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
       const t2 = setTimeout(() => {
         // Any real reminder OR picker created while the checklist was up —
         // whether by finishing a mini-tour or just the user clicking "+"/
-        // "Add new picker" themselves (see reminders.jsx's startAdd and
+        // "Add New Picker" themselves (see reminders.jsx's startAdd and
         // tab-picker.jsx's onCreate, both gated on the showChecklist bus
         // field) — was seeded hidden so it didn't clutter the list alongside
         // the still-open launcher cards. Surface them all now, right before

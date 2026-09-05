@@ -95,7 +95,7 @@ const PICKER_TOUR_STEP_1 = {
 };
 
 // Lands at the top of the Pickers page (scrollToTop) and highlights the real
-// "+ Add new picker" tab — requireClick again, same teaching-the-real-
+// "+ Add New Picker" tab — requireClick again, same teaching-the-real-
 // interface pattern as the Reminders tours' "+" step. run() publishes the
 // sample's data as the emlTour bus's prefill, timed so the real click (which
 // natively opens the form via the button's own onClick, not this run()) ends
@@ -111,7 +111,7 @@ const buildPickerTourStep2 = (pickerId, state) => ({
   // the strip (users had trouble finding it there at all) fixed that same
   // problem for real usage too, not just this tour.
   title: 'Create a new picker',
-  body: <>The "Add new picker" button will <b>open up the form for creating a new picker</b>. Go ahead and click the "Add new picker" button now.</>,
+  body: <>The "Add New Picker" button will <b>open up the form for creating a new picker</b>. Go ahead and click the "Add New Picker" button now.</>,
   primary: 'Next', back: true, requireClick: true,
   // suppressAutoOpen: tab-picker.jsx's dormant effect (`if (tour.prefill &&
   // !creating)`) is meant to stay silent for this tour — see the long
@@ -368,7 +368,7 @@ const PICKER_TOUR_STEP_12 = {
 // auto-opens the form the instant prefill appears. Publishing any earlier
 // (tour start, or even Step 1) would trigger that the moment TabPicker
 // mounts, skipping Step 2 entirely (the form would already be open before
-// the user ever sees "+ Add new picker" highlighted). run() fires in the
+// the user ever sees "+ Add New Picker" highlighted). run() fires in the
 // click-guard's CAPTURE-phase handling of the same click whose native
 // bubble-phase handler is the button's own `onClick={() => setCreating(true)}`
 // — that ordering (not, as an earlier version of this comment assumed, both

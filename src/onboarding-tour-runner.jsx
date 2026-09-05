@@ -315,7 +315,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   React.useEffect(() => { emlTour.set({ step }); }, [step]);
   // Lets a consumer that needs to act only during a SPECIFIC tour's specific
   // step (not just "some tour is up", like phase/step alone give you) tell
-  // them apart — e.g. tab-picker.jsx disabling its own "Add new picker"
+  // them apart — e.g. tab-picker.jsx disabling its own "Add New Picker"
   // button only during the Pickers page tour's own Step 4, not any other
   // tour that happens to pass through step index 3. Never cleared on
   // unmount (like `step` itself isn't) — consumers already have to gate on
