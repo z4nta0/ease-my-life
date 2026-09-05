@@ -144,7 +144,7 @@ function RemVisibilityNote({ task, state, kind, id }) {
     return (
       <p className="rem-vis-note is-never">
         <strong>WARNING:</strong> Because of the values that you are using and because {why}, this
-        item will <strong>never</strong> show in the Today list.
+        item will <strong>never</strong> show in your todo list.
       </p>
     );
   }
@@ -154,11 +154,11 @@ function RemVisibilityNote({ task, state, kind, id }) {
   const phrase = remReasonPhrase(v);
   if (phrase) {
     // Covers weekends, holidays, or both — "…on weekends and Christmas Day".
-    body = <>Because Reminders are set to <strong>not show {kindWord} items on {phrase}</strong>, this item will not show up in the list today.</>;
+    body = <>Because Reminders are set to <strong>not show {kindWord} items on {phrase}</strong>, this item will not show up in your todo list today.</>;
   } else if (v.cause === 'skipUntil') {
-    body = <>This item is <strong>skipped</strong> until a later date, so it will not show up in the list today.</>;
+    body = <>This item is <strong>skipped</strong> until a later date, so it will not show up in your todo list today.</>;
   } else {
-    body = <>Because of the values that you are using, this item will not show up in the list today.</>;
+    body = <>Because of the values that you are using, this item will not show up in your todo list today.</>;
   }
   return (
     <p className="rem-vis-note">
