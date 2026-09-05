@@ -82,7 +82,7 @@ function ConditionalControls({ draft, onChange, nameError, variant = 'card', hid
 
       <div className="cnd-type-group">
       <fieldset className="np-field">
-        <legend className="np-label">How should it decide?</legend>
+        <legend className="np-label">Conditional type</legend>
         <div className={inline ? '' : 'cnd-mode-card style-radio-card'}>
           <div className="rd-mode-radio">
             {Object.entries(MODES).map(([key, m]) => {
