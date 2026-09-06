@@ -917,7 +917,10 @@
    kicker/name/pill stacking order) as the Pickers page header. */
 .stat-picker-id { display: flex; flex-direction: column; gap: 2px; }
 .stat-picker-id .picker-title { margin: 6px 0 0; }
-.stat-picker-id > .pill { margin-top: 4px; }
+/* align-self: flex-start — .stat-picker-id is a column flex container, whose
+   default align-items: stretch otherwise stretches the pill (normally
+   inline-flex, sized to its own content) to the container's full width. */
+.stat-picker-id > .pill { margin-top: 4px; align-self: flex-start; }
 .stat-picker-id .picker-hint { margin: 8px 0 0; }
 
 /* Breakdown: stacked proportion bar + legend (pick source, reminder type). */
