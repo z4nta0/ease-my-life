@@ -1386,8 +1386,9 @@ button.heat-cell.is-sel {
   color: var(--muted);
   font-size: 14px; font-weight: 500;
   cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.cat-create-btn:hover { color: var(--accent); border-color: var(--accent-soft); }
+.cat-create-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
 
 .cat-h {
   display: flex; justify-content: space-between; align-items: center;
