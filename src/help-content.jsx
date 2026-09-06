@@ -1386,6 +1386,10 @@ const DATA_HELP_ITEMS = [
     ),
   },
   {
+    id: 'dataCreatePicker', sel: '.cat-create-btn', title: 'Create New Picker',
+    body: <>This creates a new picker directly from this list, using the same form the Pickers page's own New Picker button opens. Fill in its name and group, then use Add Items to start adding at least two items — once it has them, Save adds it to the list below like any other picker.</>,
+  },
+  {
     // Scoped to .data-list so this doesn't also match the Conditionals/
     // Reminders managers' own "Add" buttons, which share the plain .rd-add
     // class but render outside .data-list entirely. padY:0 — .rd-add has
