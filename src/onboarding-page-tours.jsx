@@ -309,6 +309,11 @@ const STATS_PAGE_TARGETS = {
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
+  typeFilter: {
+    sel: '.stat-scope-groups--type .picker-group-pill',
+    title: 'Type Filter',
+    body: <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
+  },
   // All/Conditionals/Reminders/individual pickers all render as tabs in the
   // same row — one combined step rather than splitting them out, since
   // they're really one "what am I looking at" choice.
@@ -609,6 +614,7 @@ const buildPageTourSteps = (pageId, actions) => {
   if (pageId === 'explore_stats') {
     return [
       { ...STATS_PAGE_TARGETS.groupFilter, tab: 'stats', primary: 'Next', back: true },
+      { ...STATS_PAGE_TARGETS.typeFilter, tab: 'stats', primary: 'Next', back: true },
       { ...STATS_PAGE_TARGETS.pickersFilter, tab: 'stats', primary: 'Next', back: true },
       { ...STATS_PAGE_TARGETS.rangeFilter, tab: 'stats', primary: 'Next', back: true },
       {
