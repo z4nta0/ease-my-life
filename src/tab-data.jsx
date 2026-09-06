@@ -102,7 +102,7 @@ function pickerItemSortOptions(mode) {
 // on mount — letting Cancel revert every change (type, ease band, weekdays,
 // holiday skip, daily-generator membership, and any item values touched by a
 // Refill) the way the item editor's Cancel does. Done keeps the changes.
-function PickerControls({ picker, items, inDaily, dailyIds, allGroups, conditionals = [], actions, onCollapse, onRequestDelete, isNewDraft, itemsSectionOpen, onOpenItemsSection, onSaveNew, onCancelNew }) {
+function PickerControls({ picker, items, inDaily, dailyIds, allGroups, conditionals = [], actions, onCollapse, onRequestDelete, isNewDraft, itemsSectionOpen, hasOpenNewItem, onOpenItemsSection, onSaveNew, onCancelNew }) {
   const pk = picker;
   const isEase = pk.mode === 'ease-up' || pk.mode === 'ease-down';
   const isDown = pk.mode === 'ease-down';
@@ -112,21 +112,27 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
     : <><strong>{notFull} {notFull === 1 ? 'item' : 'items'}</strong> {notFull === 1 ? 'is' : 'are'} not at full charge</>;
   const [confirmDel, setConfirmDel] = React.useState(false);
   // isNewDraft's own footer button — "Add Items" until the Items section is
-  // opened AND has 2+ items, then "Save". Disabled (with a tooltip
-  // explaining why, in place of the create flow's own status text) at every
-  // stage short of that: missing name/group first, then — once the Items
-  // section is open — however many items short of 2 it still is. Once
-  // everything's satisfied the tooltip just confirms it, matching the
-  // create-flow's own "Everything looks good" convention.
+  // opened, has 2+ items, AND none of them is still a brand-new one whose
+  // editor hasn't been saved/kept yet (hasOpenNewItem — items.length counts
+  // a just-created item the instant its editor opens, well before the user
+  // has actually saved it, so checking length alone would flip to "Save"
+  // while the 2nd item's form is still sitting open mid-edit). Disabled
+  // (with a tooltip explaining why, in place of the create flow's own status
+  // text) at every stage short of that: missing name/group first, then —
+  // once the Items section is open — however many items short of 2 it still
+  // is, then the still-open new item. Once everything's satisfied the
+  // tooltip just confirms it, matching the create-flow's own "Everything
+  // looks good" convention.
   const newDraftNeedName = !pk.name.trim();
   const newDraftNeedGroup = !pk.group;
-  const newDraftShowingSave = isNewDraft && itemsSectionOpen && items.length >= 2;
+  const newDraftShowingSave = isNewDraft && itemsSectionOpen && items.length >= 2 && !hasOpenNewItem;
   const newDraftLabel = newDraftShowingSave ? 'Save' : 'Add Items';
   const newDraftDisabled = newDraftShowingSave ? false : (newDraftNeedName || newDraftNeedGroup || itemsSectionOpen);
   const newDraftTip = newDraftNeedName && newDraftNeedGroup ? 'A picker name and group are both required.'
     : newDraftNeedName ? 'A picker name is required.'
     : newDraftNeedGroup ? 'A group name is required.'
     : (itemsSectionOpen && items.length < 2) ? `${2 - items.length} more ${2 - items.length === 1 ? 'item' : 'items'} needed.`
+    : (itemsSectionOpen && hasOpenNewItem) ? 'Finish saving this item first.'
     : newDraftShowingSave ? 'Everything looks good, click Save to create this picker.'
     : 'Everything looks good, click Add Items to continue.';
   const newDraftAction = newDraftShowingSave ? onSaveNew : onOpenItemsSection;
@@ -1762,6 +1768,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                                     onRequestDelete={() => deletePickerAnimated(pk.id)}
                                     isNewDraft={isDraft}
                                     itemsSectionOpen={draftItemsOpen}
+                                    hasOpenNewItem={openItemId != null && justAddedItemRef.current === openItemId && items.some((it) => it.id === openItemId)}
                                     onOpenItemsSection={() => { setDraftItemsOpen(true); setPendingAutoAddItem(true); }}
                                     onSaveNew={saveNewPicker}
                                     onCancelNew={cancelNewPicker} />

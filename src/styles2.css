@@ -726,6 +726,13 @@
 
 /* Custom tooltip — styled, viewport-clamped, tap-friendly (see InfoTip). */
 .infotip-trigger { cursor: help; }
+/* A disabled native <button> doesn't dispatch pointer/touch events to
+   itself OR let them bubble to an ancestor — on mobile that silently
+   swallows the tap before it ever reaches this wrapping trigger's own
+   handlers, so its tooltip never opens. Routing pointer-events through to
+   the trigger fixes hover/click for mouse too, but only touch actually
+   depended on it (mouse already worked via the trigger's own hover). */
+.infotip-trigger button:disabled { pointer-events: none; }
 .infotip-trigger:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
