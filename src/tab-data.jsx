@@ -1099,6 +1099,11 @@ function TabData({ state, actions, onHome, onNavTab }) {
   //   scope:     the active box ('all' | 'reminders' | <pickerId>)
   // Click behavior is stubbed for now (onSelectScope) — ready to wire up later.
   const [statGroup, setStatGroup] = React.useState('all');
+  // Type filter — narrows by picker mode, and also carries the Conditionals/
+  // Reminders sentinel scope values (moved here from statGroup — see
+  // sortedShowEntries below). Independent of statGroup/condFilter; all three
+  // apply together.
+  const [typeFilter, setTypeFilter] = React.useState('all');
   const [scope, setScope] = React.useState('all');
   // Conditionals filter — narrows pickers to those gated by a chosen conditional
   // (or 'all'). Independent of the group filter; both apply together.
@@ -1128,47 +1133,59 @@ function TabData({ state, actions, onHome, onNavTab }) {
     for (const p of pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
     return seen.sort((a, b) => a.localeCompare(b));
   }, [pickers]);
+  // Distinct modes actually in use, alphabetical by their own display label —
+  // the Type filter bar's own picker-mode pills ("All" pinned first, same as
+  // Group).
+  const existingModes = React.useMemo(() => {
+    const seen = new Set();
+    for (const p of pickers) if (!p.hidden) seen.add(p.mode);
+    return [...seen].sort((a, b) => MODES[a].label.localeCompare(MODES[b].label));
+  }, [pickers]);
   const visiblePickers = React.useMemo(() => (
     pickers.filter((p) =>
       !p.hidden &&
       (statGroup === 'all' || p.group === statGroup) &&
-      (condFilter === 'all' || p.conditionalId === condFilter))
-  ), [pickers, statGroup, condFilter]);
+      (condFilter === 'all' || p.conditionalId === condFilter) &&
+      (typeFilter === 'all' || p.mode === typeFilter))
+  ), [pickers, statGroup, condFilter, typeFilter]);
   const conditionals = state.conditionals || [];
   const condPickerCount = (cid) => pickers.filter((p) => p.conditionalId === cid && !p.hidden).length;
 
   // The Show row's actual entries in the order it renders them — "All"
-  // pinned first whenever statGroup is 'all', OR (see the render below, same
-  // condition) whenever a real group filter still leaves at least 2 entries
-  // in view — a lone entry makes "All" a redundant duplicate of that one
-  // card, but 2+ still benefits from a quick "everything in this filtered
-  // view" option. Conditionals/Reminders/every visible picker sorted
-  // alphabetically together after it. Reused so "jump to the first card"
-  // always agrees with what the row actually shows first, instead of
-  // scattering separate assumptions across each filter pill's own handler.
+  // pinned first whenever BOTH statGroup and typeFilter are 'all', OR (see
+  // the render below, same condition) whenever a real filter still leaves at
+  // least 2 entries in view — a lone entry makes "All" a redundant duplicate
+  // of that one card, but 2+ still benefits from a quick "everything in this
+  // filtered view" option. Conditionals/Reminders/every visible picker
+  // sorted alphabetically together after it. typeFilter (not statGroup)
+  // carries the Conditionals/Reminders sentinel scope values. Reused so
+  // "jump to the first card" always agrees with what the row actually shows
+  // first, instead of scattering separate assumptions across each filter
+  // pill's own handler.
   const sortedShowEntries = React.useMemo(() => {
     const rest = [
-      ...((statGroup === 'all' || statGroup === 'conditionals') && conditionals.length > 0 ? [{ scope: 'conditionals', name: 'Conditionals' }] : []),
-      ...(statGroup === 'all' || statGroup === 'reminders' ? [{ scope: 'reminders', name: 'Reminders' }] : []),
+      ...((typeFilter === 'all' || typeFilter === 'conditionals') && conditionals.length > 0 ? [{ scope: 'conditionals', name: 'Conditionals' }] : []),
+      ...(typeFilter === 'all' || typeFilter === 'reminders' ? [{ scope: 'reminders', name: 'Reminders' }] : []),
       ...visiblePickers.map((p) => ({ scope: p.id, name: p.name })),
     ].sort((a, b) => a.name.localeCompare(b.name));
-    return (statGroup === 'all' || rest.length >= 2) ? [{ scope: 'all', name: 'All' }, ...rest] : rest;
-  }, [statGroup, conditionals.length, visiblePickers]);
+    const allFiltersDefault = statGroup === 'all' && typeFilter === 'all';
+    return (allFiltersDefault || rest.length >= 2) ? [{ scope: 'all', name: 'All' }, ...rest] : rest;
+  }, [statGroup, typeFilter, conditionals.length, visiblePickers]);
   const showAllCard = sortedShowEntries.some((e) => e.scope === 'all');
 
   // Keep scope coherent with the filters, and always land on the Show row's
-  // own first card whenever either filter changes — not only once the OLD
+  // own first card whenever any filter changes — not only once the OLD
   // scope happens to fall out of view (e.g. switching between two
   // conditional filters that both still leave the same picker in view used
   // to leave it stranded there instead of jumping to the new first card).
-  const prevFiltersRef = React.useRef({ statGroup, condFilter });
+  const prevFiltersRef = React.useRef({ statGroup, condFilter, typeFilter });
   React.useEffect(() => {
-    const filtersChanged = prevFiltersRef.current.statGroup !== statGroup || prevFiltersRef.current.condFilter !== condFilter;
-    prevFiltersRef.current = { statGroup, condFilter };
+    const filtersChanged = prevFiltersRef.current.statGroup !== statGroup || prevFiltersRef.current.condFilter !== condFilter || prevFiltersRef.current.typeFilter !== typeFilter;
+    prevFiltersRef.current = { statGroup, condFilter, typeFilter };
     if (filtersChanged || !sortedShowEntries.some((e) => e.scope === scope)) {
       setScope(sortedShowEntries[0] ? sortedShowEntries[0].scope : 'all');
     }
-  }, [statGroup, condFilter, sortedShowEntries, scope]);
+  }, [statGroup, condFilter, typeFilter, sortedShowEntries, scope]);
 
   // Stub click handler for the boxes — selection state updates, functionality
   // to be attached later.
@@ -1177,10 +1194,11 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // Scroll-edge fades on the group + box rows — same affordance as the Stats
   // tab: a mask gradient that only fades the side with more content.
   const groupsRef = React.useRef(null);
+  const typesRef = React.useRef(null);
   const scopeRef = React.useRef(null);
   const condRowRef = React.useRef(null);
   React.useEffect(() => {
-    const els = [groupsRef.current, scopeRef.current, condRowRef.current].filter(Boolean);
+    const els = [groupsRef.current, typesRef.current, scopeRef.current, condRowRef.current].filter(Boolean);
     const cleanups = els.map((el) => {
       const update = () => {
         const scrollable = el.scrollWidth - el.clientWidth > 1;
@@ -1196,22 +1214,22 @@ function TabData({ state, actions, onHome, onNavTab }) {
       return () => { el.removeEventListener('scroll', update); ro.disconnect(); };
     });
     return () => cleanups.forEach((c) => c());
-  }, [pickers.length, statGroup, visiblePickers.length, scope, conditionals.length, condFilter]);
+  }, [pickers.length, statGroup, typeFilter, existingModes.length, visiblePickers.length, scope, conditionals.length, condFilter]);
 
   // Picker-card toggle — cards default collapsed, hence defaultCollapsed=true.
   const toggle = (id) => actions.toggleControlsCollapsed(id, true);
 
-  // Apply the two filters to what renders. Reminders is its own scope and isn't
-  // part of any picker group, so it only appears when the group filter is "All"
-  // and the scope is All or Reminders. Pickers are group-filtered (visiblePickers)
-  // then narrowed by scope: All → every visible picker, Reminders → none, or a
-  // single picker id → just that one.
-  const showReminders = (statGroup === 'all' || statGroup === 'reminders') && condFilter === 'all' && (scope === 'all' || scope === 'reminders');
-  // Conditionals manager shows above Reminders when unfiltered by group/cond, at
+  // Apply the filters to what renders. Reminders is its own scope and isn't
+  // part of any picker group/mode, so it only appears when the type filter is
+  // "All" and the scope is All or Reminders. Pickers are group/type-filtered
+  // (visiblePickers) then narrowed by scope: All → every visible picker,
+  // Reminders → none, or a single picker id → just that one.
+  const showReminders = (typeFilter === 'all' || typeFilter === 'reminders') && condFilter === 'all' && (scope === 'all' || scope === 'reminders');
+  // Conditionals manager shows above Reminders when unfiltered by type/cond, at
   // scope All or the dedicated Conditionals box. Shown even with none created —
   // it's the only place to create one, so gating on existence made it
   // unreachable from a clean state.
-  const showConditionals = (statGroup === 'all' || statGroup === 'conditionals') && condFilter === 'all'
+  const showConditionals = (typeFilter === 'all' || typeFilter === 'conditionals') && condFilter === 'all'
     && (scope === 'all' || scope === 'conditionals');
   const shownPickers = (scope === 'reminders' || scope === 'conditionals')
     ? []
@@ -1292,11 +1310,12 @@ function TabData({ state, actions, onHome, onNavTab }) {
         <p className="section-sub"><strong>WARNING:</strong> Manually changing any of these values will affect the Stats tab's accuracy. Minor or infrequent changes will have an almost negligible effect but major or frequent changes will definitely skew the Stats tab's accuracy.</p>
       </header>
 
-      {/* ── Filters: group pills + picker boxes (mirrors the Pickers + Stats
-          tabs). Both default to "All"; the box row also carries a Reminders box
-          when the group filter is "All". Click behavior is stubbed for now. ── */}
+      {/* ── Filters: group + type pills + picker boxes (mirrors the Pickers +
+          Stats tabs). All default to "All"; the box row also carries a
+          Reminders box when the type filter is "All". Click behavior is
+          stubbed for now. ── */}
       <div className="stat-filters">
-        {(existingGroups.length > 1 || conditionals.length > 0) && (
+        {existingGroups.length > 1 && (
           <div className="stat-filter-row">
             <span className="stat-filter-lbl">Group</span>
             <div className="picker-groups stat-scope-groups" ref={groupsRef} role="tablist" aria-label="Filter pickers by group">
@@ -1307,30 +1326,53 @@ function TabData({ state, actions, onHome, onNavTab }) {
                 All
                 <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
               </button>
+              {existingGroups.map((g) => (
+                <button key={g} type="button" role="tab" aria-selected={statGroup === g}
+                        className={`picker-group-pill ${statGroup === g ? 'is-on' : ''}`}
+                        disabled={disableGroupFilter}
+                        onClick={() => setStatGroup(g)}>
+                  {g}
+                  <span className="picker-group-count">{pickers.filter((p) => p.group === g && !p.hidden).length}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        {(existingModes.length > 1 || conditionals.length > 0) && (
+          <div className="stat-filter-row">
+            <span className="stat-filter-lbl">Type</span>
+            <div className="picker-groups stat-scope-groups" ref={typesRef} role="tablist" aria-label="Filter pickers by type">
+              <button type="button" role="tab" aria-selected={typeFilter === 'all'}
+                      className={`picker-group-pill ${typeFilter === 'all' ? 'is-on' : ''}`}
+                      disabled={disableGroupFilter}
+                      onClick={() => setTypeFilter('all')}>
+                All
+                <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
+              </button>
               {/* Conditionals/Reminders sort in alphabetically alongside the real
-                  groups, rather than being pinned, so they're easy to find now
+                  modes, rather than being pinned, so they're easy to find now
                   that both this rail and the Show rail below sort that way.
-                  statGroup doubles as their own scope value ('conditionals' /
-                  'reminders', not a real picker group) so the Show row below can
+                  typeFilter doubles as their own scope value ('conditionals' /
+                  'reminders', not a real picker mode) so the Show row below can
                   narrow to just that one card instead of the full "All" list —
-                  visiblePickers' own group match naturally excludes every real
-                  picker under either value, same as any other empty group. */}
+                  visiblePickers' own mode match naturally excludes every real
+                  picker under either value, same as any other empty mode. */}
               {[
-                ...existingGroups.map((g) => ({
-                  key: g, name: g,
-                  count: pickers.filter((p) => p.group === g && !p.hidden).length,
-                  isOn: statGroup === g,
-                  onClick: () => setStatGroup(g),
+                ...existingModes.map((m) => ({
+                  key: m, name: MODES[m].label,
+                  count: pickers.filter((p) => p.mode === m && !p.hidden).length,
+                  isOn: typeFilter === m,
+                  onClick: () => setTypeFilter(m),
                 })),
                 ...(conditionals.length > 0 ? [{
                   key: 'conditionals', name: 'Conditionals', count: conditionals.length,
-                  isOn: statGroup === 'conditionals',
-                  onClick: () => { setStatGroup('conditionals'); onSelectScope('conditionals'); },
+                  isOn: typeFilter === 'conditionals',
+                  onClick: () => { setTypeFilter('conditionals'); onSelectScope('conditionals'); },
                 }] : []),
                 {
                   key: 'reminders', name: 'Reminders', count: (state.tasks || []).filter((t) => !t.hidden).length,
-                  isOn: statGroup === 'reminders',
-                  onClick: () => { setStatGroup('reminders'); onSelectScope('reminders'); },
+                  isOn: typeFilter === 'reminders',
+                  onClick: () => { setTypeFilter('reminders'); onSelectScope('reminders'); },
                 },
               ]
                 .sort((a, b) => a.name.localeCompare(b.name))
@@ -1361,7 +1403,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                 <button key={c.id} type="button" role="tab" aria-selected={condFilter === c.id}
                         className={`picker-group-pill ${condFilter === c.id ? 'is-on' : ''}`}
                         disabled={disableGroupFilter}
-                        onClick={() => { setCondFilter(c.id); setStatGroup('all'); }}>
+                        onClick={() => { setCondFilter(c.id); setStatGroup('all'); setTypeFilter('all'); }}>
                   {c.name}
                   <span className="picker-group-count">{condPickerCount(c.id)}</span>
                 </button>
@@ -1371,7 +1413,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
         )}
         <div className="stat-filter-row">
           <span className="stat-filter-lbl">Show</span>
-          <div className="picker-tabs stat-scope-tabs" ref={scopeRef} key={statGroup}>
+          <div className="picker-tabs stat-scope-tabs" ref={scopeRef} key={statGroup + '|' + typeFilter}>
             {showAllCard && (
               <button type="button"
                       className={`picker-tab picker-tab--enter ${scope === 'all' ? 'is-on' : ''}`}
@@ -1385,18 +1427,18 @@ function TabData({ state, actions, onHome, onNavTab }) {
             {/* Everything after "All" — Conditionals, Reminders, and every
                 visible picker — sorts together alphabetically by its own
                 displayed name, rather than Conditionals/Reminders being
-                pinned right after All. statGroup 'conditionals'/'reminders'
-                (set by their own Group-rail pill) narrows this down to just
-                that one card, same as any real group narrows to its pickers.
-                showAllCard (derived from sortedShowEntries above, so the two
-                always agree) also pins "All" first for a real group filter
+                pinned right after All. typeFilter 'conditionals'/'reminders'
+                (set by their own Type-rail pill) narrows this down to just
+                that one card, same as any real group/type narrows to its
+                pickers. showAllCard (derived from sortedShowEntries above, so
+                the two always agree) also pins "All" first for a real filter
                 that still leaves 2+ entries in view — a lone entry would
                 make "All" a redundant duplicate of that one card. */}
             {[
-              ...((statGroup === 'all' || statGroup === 'conditionals') && conditionals.length > 0
+              ...((typeFilter === 'all' || typeFilter === 'conditionals') && conditionals.length > 0
                 ? [{ key: 'conditionals', name: 'Conditionals', modeLabel: 'Gates', isOn: scope === 'conditionals', onClick: () => onSelectScope('conditionals') }]
                 : []),
-              ...(statGroup === 'all' || statGroup === 'reminders'
+              ...(typeFilter === 'all' || typeFilter === 'reminders'
                 ? [{ key: 'reminders', name: 'Reminders', modeLabel: 'Tasks', isOn: scope === 'reminders', onClick: () => onSelectScope('reminders') }]
                 : []),
               ...visiblePickers.map((p) => ({ key: p.id, name: p.name, modeLabel: MODES[p.mode].label, isOn: scope === p.id, onClick: () => onSelectScope(p.id), pickerId: p.id })),
