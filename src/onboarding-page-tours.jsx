@@ -188,8 +188,13 @@ const PICKER_PAGE_TARGETS = {
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
+  typeFilter: {
+    sel: '.picker-groups--type .picker-group-pill',
+    title: 'Type Filter',
+    body: <>This will allow you to <b>further filter the pickers row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
+  },
   // Excludes the "Add New Picker" button (now the first tab, not the last)
-  // — Step 3 (above) covers that on its own, and this step's own copy is
+  // — Step 4 (above) covers that on its own, and this step's own copy is
   // entirely about selecting an EXISTING picker.
   pickerSelection: {
     sel: '.picker-tabs .picker-tab:not(.picker-tab--add)',
@@ -548,6 +553,7 @@ const buildPageTourSteps = (pageId, actions) => {
   if (pageId === 'explore_pickers') {
     return [
       { ...PICKER_PAGE_TARGETS.groupFilter, tab: 'picker', primary: 'Next', back: true },
+      { ...PICKER_PAGE_TARGETS.typeFilter, tab: 'picker', primary: 'Next', back: true },
       {
         ...PICKER_PAGE_TARGETS.createNewPickers, tab: 'picker', primary: 'Next', back: true,
       },
@@ -821,26 +827,26 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
       // Cancel (.btn--ghost) is the equivalent control there.
       onGoBack={(to) => {
         if (pageId === 'explore_pickers') {
-          // Back from Step 4 (Picker Selection) to Step 3 (Create New
-          // Pickers) — undoes Step 4's own scroll-into-view (its target is
+          // Back from Step 5 (Picker Selection) to Step 4 (Create New
+          // Pickers) — undoes Step 5's own scroll-into-view (its target is
           // every OTHER tab in the row, excluding Add, which can scroll
           // .picker-tabs rightward if there are enough pickers to overflow
-          // the row). Left scrolled, Step 3's own single target (the Add
+          // the row). Left scrolled, Step 4's own single target (the Add
           // button, the FIRST tab in the row) would be scrolled out of view.
-          if (to === 2) {
+          if (to === 3) {
             const row = document.querySelector('.picker-tabs');
             if (row) row.scrollTo({ left: 0 });
-          } else if (to === 3) {
-            // Back from Step 5 (Manual Generation) to Step 4 (Picker
+          } else if (to === 4) {
+            // Back from Step 6 (Manual Generation) to Step 5 (Picker
             // Selection) — if a pick is still spinning (busy/phase 'running')
             // when Back is clicked, PickerView never unmounts between
             // steps, so that animation just keeps running in the
             // background regardless of which step the tour is on, and its
             // eventual onAnimDone still lands phase on 'done' whenever it
-            // finishes — showing Send to Today/Re-roll/Done on Step 5 if
+            // finishes — showing Send to Today/Re-roll/Done on Step 6 if
             // Next brings the user back to it before that settles on its
-            // own. Same reset nonce Step 6→5's own case below uses, fired
-            // here on the way OUT of Step 5 instead: PickerStrip only
+            // own. Same reset nonce Step 7→6's own case below uses, fired
+            // here on the way OUT of Step 6 instead: PickerStrip only
             // renders while phase is 'running'/'done' (see PickerView's own
             // picker-stage JSX), so bumping this unmounts it immediately —
             // actually cancelling the in-flight animation outright, not
@@ -848,11 +854,11 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
             // Harmless no-op if the pick had already settled by the time
             // Back was clicked.
             emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
-          } else if (to === 4) {
-            // Back from Step 6 (Add to Todo List) to Step 5 (Manual
+          } else if (to === 5) {
+            // Back from Step 7 (Add to Todo List) to Step 6 (Manual
             // Generation) — a pick already ran, so PickerView's own local
             // phase is still 'done'/'sent', showing Send to Today/Re-roll/
-            // Done instead of Pick One. Step 5's own sel falls back to
+            // Done instead of Pick One. Step 6's own sel falls back to
             // .picker-run only once .pv-act--pick is gone (see
             // manualGeneration's own comment), which a leftover 'done'/
             // 'sent' phase satisfies just as well as a genuine spin in
@@ -869,16 +875,16 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
             // actually expects and forecloses both failure modes by
             // construction instead of specifically patching either one.
             emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
-          } else if (to === 5) {
-            // Back from Step 7 (Picker Items) to Step 6 (Add to Todo List)
-            // — Step 6's own target is .pv-act--send, which only exists
+          } else if (to === 6) {
+            // Back from Step 8 (Picker Items) to Step 7 (Add to Todo List)
+            // — Step 7's own target is .pv-act--send, which only exists
             // while phase is 'done'/'sent'. By the time this fires, Step
-            // 6's own advanceDelay wait (see its own comment) has already
+            // 7's own advanceDelay wait (see its own comment) has already
             // let phase run all the way through 'sent' and back to 'idle'
             // (Send to Today reverted to Pick One), so that target is gone
-            // — the exact "different state than when Step 6 finished"
-            // mismatch that made this crash. Unlike Step 5→4's reset
-            // above, this can't just drop back to idle — Step 6 NEEDS a
+            // — the exact "different state than when Step 7 finished"
+            // mismatch that made this crash. Unlike Step 6→5's reset
+            // above, this can't just drop back to idle — Step 7 NEEDS a
             // real 'done' result to show Send to Today at all — so this
             // fires a SEPARATE bus nonce telling PickerView to synthesize
             // one directly (skipping the spin animation, since this is a
