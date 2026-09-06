@@ -510,11 +510,16 @@ const PICKER_HELP_ITEMS = [
     // .picker-title header — same name, different element, only ever one
     // or the other on screen at once, but the selector still needs to be
     // unambiguous for whichever is actually showing.
-    id: 'pickerName', sel: '.picker-view:not(.np-form) .picker-title', title: 'Picker Name',
+    // padY: 2 — the mode pill sits directly below with only a 6px margin-
+    // top (see styles2.css's .picker-h > div > .pill rule); the default 8px
+    // pad on each side would overlap by 10px otherwise, bleeding into the
+    // pill's own highlight.
+    id: 'pickerName', sel: '.picker-view:not(.np-form) .picker-title', title: 'Picker Name', padY: 2,
     body: <>This is the name of the currently selected picker.</>,
   },
   {
-    id: 'pickerTypePill', sel: '.picker-view:not(.np-form) .pill--mode', title: 'Picker Type',
+    // padY: 2 — see pickerName's own comment, same 6px gap, same fix.
+    id: 'pickerTypePill', sel: '.picker-view:not(.np-form) .pill--mode', title: 'Picker Type', padY: 2,
     body: <>This shows the currently selected picker's type (Truly Random, Weighted, Dynamic Weighted, Ease Up, or Ease Down).</>,
   },
   {
