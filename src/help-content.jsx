@@ -486,8 +486,12 @@ const PICKER_HELP_ITEMS = [
     body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
   },
   {
-    id: 'groupFilter', sel: '.picker-groups .picker-group-pill', title: 'Group Filter',
+    id: 'groupFilter', sel: '.picker-groups:not(.picker-groups--type) .picker-group-pill', title: 'Group Filter',
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
+  },
+  {
+    id: 'typeFilter', sel: '.picker-groups--type .picker-group-pill', title: 'Type Filter',
+    body: <>This filters the pickers row below by picker type (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), independent of the Group filter above — both narrow the row together.</>,
   },
   {
     // padX: 3 — the add button sits right before the first tab in the same
@@ -782,12 +786,16 @@ const STATS_HELP_ITEMS = [
     body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
   },
   {
-    id: 'groupFilter', sel: '.stat-scope-groups .picker-group-pill', title: 'Group Filter',
+    id: 'groupFilter', sel: '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', title: 'Group Filter',
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
   {
-    id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Type Filter',
-    body: <>This further narrows your selection to conditionals, reminders or specific pickers, or you can view everything all at once.</>,
+    id: 'typeFilter', sel: '.stat-scope-groups--type .picker-group-pill', title: 'Type Filter',
+    body: <>This filters the pickers row below by type — picker mode (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), or Conditionals/Reminders — independent of the Group filter above.</>,
+  },
+  {
+    id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Show Selector',
+    body: <>This selects what the rest of the page shows: conditionals, reminders, a specific picker, or everything all at once.</>,
   },
   {
     id: 'rangeFilter', sel: '.stat-filter-pills--seg .stat-pill', title: 'Range Filter',
@@ -939,20 +947,25 @@ const DATA_HELP_ITEMS = [
   },
   {
     // The Conditionals filter row below carries BOTH .stat-scope-groups
-    // AND .stat-scope-groups--cond (it's an additional modifier, not a
-    // replacement — see its own conditionalsFilter entry) — unscoped, this
-    // selector matched that row's pills too, unioning the highlight all
-    // the way down through the Conditionals row.
-    id: 'groupFilter', sel: '.stat-scope-groups:not(.stat-scope-groups--cond) .picker-group-pill', title: 'Group Filter',
+    // AND .stat-scope-groups--cond, and the Type row carries BOTH
+    // .stat-scope-groups AND .stat-scope-groups--type (each an additional
+    // modifier, not a replacement — see their own conditionalsFilter/
+    // typeFilter entries) — unscoped, this selector matched both of those
+    // rows' pills too, unioning the highlight all the way down through them.
+    id: 'groupFilter', sel: '.stat-scope-groups:not(.stat-scope-groups--cond):not(.stat-scope-groups--type) .picker-group-pill', title: 'Group Filter',
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
   {
-    id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Type Filter',
-    body: <>This further narrows your selection to conditionals, reminders or specific pickers, or you can view everything all at once.</>,
+    id: 'typeFilter', sel: '.stat-scope-groups--type .picker-group-pill', title: 'Type Filter',
+    body: <>This filters the pickers row below by type — picker mode (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), or Conditionals/Reminders — independent of the Group filter above.</>,
   },
   {
-    // Only rendered once at least one conditional exists — a second filter
-    // row alongside Group, narrowing the pickers list to whichever
+    id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Show Selector',
+    body: <>This selects what the rest of the page shows: conditionals, reminders, a specific picker, or everything all at once.</>,
+  },
+  {
+    // Only rendered once at least one conditional exists — a third filter
+    // row alongside Group and Type, narrowing the pickers list to whichever
     // conditional gates them.
     id: 'conditionalsFilter', sel: '.stat-scope-groups--cond .picker-group-pill', title: 'Conditionals Filter',
     body: <>This filters the pickers list below by conditional, showing only pickers gated by the conditional you select.</>,

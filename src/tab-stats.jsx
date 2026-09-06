@@ -979,7 +979,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
         {(existingModes.length > 1 || hasConditionals || remEnabled) && (
           <div className="stat-filter-row">
             <span className="stat-filter-lbl">Type</span>
-            <div className="picker-groups stat-scope-groups" ref={typesRef} role="tablist" aria-label="Filter pickers by type">
+            <div className="picker-groups stat-scope-groups stat-scope-groups--type" ref={typesRef} role="tablist" aria-label="Filter pickers by type">
               <button type="button" role="tab" aria-selected={typeFilter === 'all'}
                       className={`picker-group-pill ${typeFilter === 'all' ? 'is-on' : ''}`}
                       onClick={() => { setTypeFilter('all'); setScope('all'); }}>

@@ -180,9 +180,11 @@ const PICKER_PAGE_TARGETS = {
   // container stretches to the FULL width of its row (.stat-filter-row's
   // own align-items: stretch), well past the pills' own content width, so
   // highlighting it left a big undimmed gap of empty background after the
-  // last visible pill.
+  // last visible pill. Excludes the new Type filter row (.picker-groups--type
+  // — same base class, its own separate row), which would otherwise widen
+  // this step's highlight down through it too.
   groupFilter: {
-    sel: '.picker-groups .picker-group-pill',
+    sel: '.picker-groups:not(.picker-groups--type) .picker-group-pill',
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
@@ -294,8 +296,11 @@ const STATS_TOUR_PRESELECT_PICKER_ID = OB_EXAMPLE.id;
 // only the "main sections" per instruction — not every filter/card gets its
 // own step yet.
 const STATS_PAGE_TARGETS = {
+  // Excludes the Type filter row (.stat-scope-groups--type — same base
+  // class, its own separate row), which would otherwise widen this step's
+  // highlight down through it too.
   groupFilter: {
-    sel: '.stat-scope-groups .picker-group-pill',
+    sel: '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill',
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
@@ -343,8 +348,11 @@ const STATS_PAGE_TARGETS = {
 // LATER step's own target (e.g. Reminders, which only shows at scope 'all')
 // unable to find anything, since nothing here resets it back afterward.
 const DATA_PAGE_TARGETS = {
+  // Excludes the Type filter row (.stat-scope-groups--type — same base
+  // class, its own separate row), which would otherwise widen this step's
+  // highlight down through it too.
   groupFilter: {
-    sel: '.stat-scope-groups .picker-group-pill',
+    sel: '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill',
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },

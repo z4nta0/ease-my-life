@@ -1341,7 +1341,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
         {(existingModes.length > 1 || conditionals.length > 0) && (
           <div className="stat-filter-row">
             <span className="stat-filter-lbl">Type</span>
-            <div className="picker-groups stat-scope-groups" ref={typesRef} role="tablist" aria-label="Filter pickers by type">
+            <div className="picker-groups stat-scope-groups stat-scope-groups--type" ref={typesRef} role="tablist" aria-label="Filter pickers by type">
               <button type="button" role="tab" aria-selected={typeFilter === 'all'}
                       className={`picker-group-pill ${typeFilter === 'all' ? 'is-on' : ''}`}
                       disabled={disableGroupFilter}
