@@ -1138,11 +1138,13 @@ function TabData({ state, actions, onHome, onNavTab }) {
   const condPickerCount = (cid) => pickers.filter((p) => p.conditionalId === cid && !p.hidden).length;
 
   // The Show row's actual entries in the order it renders them — "All"
-  // pinned first whenever statGroup is 'all' (see the render below, gated
-  // only on statGroup, not condFilter — a conditional filter alone never
-  // drops "All" out of the row), Conditionals/Reminders/every visible picker
-  // sorted alphabetically together after it. Reused so "jump to the first
-  // card" always agrees with what the row actually shows first, instead of
+  // pinned first whenever statGroup is 'all', OR (see the render below, same
+  // condition) whenever a real group filter still leaves at least 2 entries
+  // in view — a lone entry makes "All" a redundant duplicate of that one
+  // card, but 2+ still benefits from a quick "everything in this filtered
+  // view" option. Conditionals/Reminders/every visible picker sorted
+  // alphabetically together after it. Reused so "jump to the first card"
+  // always agrees with what the row actually shows first, instead of
   // scattering separate assumptions across each filter pill's own handler.
   const sortedShowEntries = React.useMemo(() => {
     const rest = [
@@ -1150,8 +1152,9 @@ function TabData({ state, actions, onHome, onNavTab }) {
       ...(statGroup === 'all' || statGroup === 'reminders' ? [{ scope: 'reminders', name: 'Reminders' }] : []),
       ...visiblePickers.map((p) => ({ scope: p.id, name: p.name })),
     ].sort((a, b) => a.name.localeCompare(b.name));
-    return statGroup === 'all' ? [{ scope: 'all', name: 'All' }, ...rest] : rest;
+    return (statGroup === 'all' || rest.length >= 2) ? [{ scope: 'all', name: 'All' }, ...rest] : rest;
   }, [statGroup, conditionals.length, visiblePickers]);
+  const showAllCard = sortedShowEntries.some((e) => e.scope === 'all');
 
   // Keep scope coherent with the filters, and always land on the Show row's
   // own first card whenever either filter changes — not only once the OLD
@@ -1369,7 +1372,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
         <div className="stat-filter-row">
           <span className="stat-filter-lbl">Show</span>
           <div className="picker-tabs stat-scope-tabs" ref={scopeRef} key={statGroup}>
-            {statGroup === 'all' && (
+            {showAllCard && (
               <button type="button"
                       className={`picker-tab picker-tab--enter ${scope === 'all' ? 'is-on' : ''}`}
                       style={{ animationDelay: '0ms' }}
@@ -1385,7 +1388,10 @@ function TabData({ state, actions, onHome, onNavTab }) {
                 pinned right after All. statGroup 'conditionals'/'reminders'
                 (set by their own Group-rail pill) narrows this down to just
                 that one card, same as any real group narrows to its pickers.
-                Must stay in sync with sortedShowEntries above. */}
+                showAllCard (derived from sortedShowEntries above, so the two
+                always agree) also pins "All" first for a real group filter
+                that still leaves 2+ entries in view — a lone entry would
+                make "All" a redundant duplicate of that one card. */}
             {[
               ...((statGroup === 'all' || statGroup === 'conditionals') && conditionals.length > 0
                 ? [{ key: 'conditionals', name: 'Conditionals', modeLabel: 'Gates', isOn: scope === 'conditionals', onClick: () => onSelectScope('conditionals') }]
