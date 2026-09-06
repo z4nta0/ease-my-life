@@ -524,7 +524,7 @@ const PICKER_HELP_ITEMS = [
   },
   {
     id: 'editPicker', sel: '.picker-edit-btn', title: 'Edit Picker',
-    body: <>This opens the same form used to create a picker, pre-filled with this picker's current settings, so you can adjust its name, group, type, daily generator schedule, or conditional attachment. Its items aren&rsquo;t edited here — use the Data tab or this picker's own item list below for that.</>,
+    body: <>This opens the same form used to create a picker, pre-filled with this picker's current settings. You can adjust its name, group, type, daily generator schedule, or conditional attachment. Its items aren&rsquo;t edited here, but you can use this picker's own item list below or the Data tab for that.</>,
   },
   {
     id: 'pickerExplanation', sel: '.picker-view:not(.np-form) .picker-hint', title: 'Picker Explanation',
