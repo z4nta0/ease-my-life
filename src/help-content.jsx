@@ -528,7 +528,7 @@ const PICKER_HELP_ITEMS = [
   },
   {
     id: 'pickerExplanation', sel: '.picker-view:not(.np-form) .picker-hint', title: 'Picker Explanation',
-    body: <>This explains the currently selected picker's ruleset — how it chooses an item and why you might pick this type over another.</>,
+    body: <>This explains the currently selected picker's ruleset, including how it chooses an item and why you might pick this type over another.</>,
   },
   {
     id: 'manualGeneration', sel: '.picker-run', title: 'Manual Generation',
