@@ -1317,7 +1317,7 @@ const DATA_HELP_ITEMS = [
   {
     // padY:0 — same .sched-line zero-gap stacking, touching Picker Cadence
     // below.
-    id: 'dataPickerDailyToggle', sel: '.sched-line:has(button[aria-label*="Daily generator"])', title: 'Daily Generator Toggle', padY: 0,
+    id: 'dataPickerDailyToggle', sel: '.sched-line:has(button[aria-label*="daily generator"])', title: 'Daily Generator Toggle', padY: 0,
     body: <>This determines whether the picker will be included in the app's daily auto-generator. When on, this picker's items will be automatically added to your todo list. When off, the picker won't run automatically, but you can still generate a pick manually from the Pickers tab.</>,
   },
   {
