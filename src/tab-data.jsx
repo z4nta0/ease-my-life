@@ -1177,6 +1177,28 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // the footer's "Add Items" button or the Items section's own header, same
   // as a real picker's Items disclosure already allows.
   const [draftItemsOpen, setDraftItemsOpen] = React.useState(false);
+  // One-shot flag: the footer's "Add Items" button wants its very first click
+  // to ALSO land straight in a ready-to-type new-item form, not just reveal
+  // the (now-empty) Items section. Deferred to an effect rather than done
+  // inline in that click — the Items section's own <Collapse> only starts
+  // mounting its children on the render AFTER `draftItemsOpen` flips true (see
+  // ui.jsx's Collapse: `render` state lags the `open` prop by one render), so
+  // creating+opening the item in the SAME click would set openItemId before
+  // its row even exists in the DOM, and the item's own scroll-into-view
+  // effect (keyed on openItemId, further below) would find its ref still null
+  // and silently skip the scroll. Waiting one effect tick lets both updates
+  // land in the same next render instead.
+  const [pendingAutoAddItem, setPendingAutoAddItem] = React.useState(false);
+  React.useEffect(() => {
+    if (!pendingAutoAddItem) return;
+    setPendingAutoAddItem(false);
+    if (!newDraftId || justAddedItemRef.current) return;
+    const id = 'it_' + Math.random().toString(36).slice(2, 8);
+    actions.addItem(newDraftId, 'New item', id);
+    justAddedItemRef.current = id;
+    setInsertItemId(id);
+    setOpenItemId(id);
+  }, [pendingAutoAddItem]);
   const startNewPicker = () => {
     const realMode = !!MODES[typeFilter];
     const id = actions.addPicker({
@@ -1740,7 +1762,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                                     onRequestDelete={() => deletePickerAnimated(pk.id)}
                                     isNewDraft={isDraft}
                                     itemsSectionOpen={draftItemsOpen}
-                                    onOpenItemsSection={() => { setDraftItemsOpen(true); startAddItem(); }}
+                                    onOpenItemsSection={() => { setDraftItemsOpen(true); setPendingAutoAddItem(true); }}
                                     onSaveNew={saveNewPicker}
                                     onCancelNew={cancelNewPicker} />
                   </Collapse>
