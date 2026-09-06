@@ -491,7 +491,7 @@ const PICKER_HELP_ITEMS = [
   },
   {
     id: 'typeFilter', sel: '.picker-groups--type .picker-group-pill', title: 'Type Filter',
-    body: <>This filters the pickers row below by picker type (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), independent of the Group filter above — both narrow the row together.</>,
+    body: <>This filters the pickers row below by picker type (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), independent of the Group filter above with both narrowing the row together.</>,
   },
   {
     // padX: 3 — the add button sits right before the first tab in the same
