@@ -506,6 +506,26 @@ const PICKER_HELP_ITEMS = [
     body: <>This is where you can create new pickers. This button will open up a full page form with 2 parts, picker settings and picker items.</>,
   },
   {
+    // :not(.np-form) excludes the Edit/Create-picker form's own reused
+    // .picker-title header — same name, different element, only ever one
+    // or the other on screen at once, but the selector still needs to be
+    // unambiguous for whichever is actually showing.
+    id: 'pickerName', sel: '.picker-view:not(.np-form) .picker-title', title: 'Picker Name',
+    body: <>This is the name of the currently selected picker.</>,
+  },
+  {
+    id: 'pickerTypePill', sel: '.picker-view:not(.np-form) .pill--mode', title: 'Picker Type',
+    body: <>This shows the currently selected picker's type (Truly Random, Weighted, Dynamic Weighted, Ease Up, or Ease Down).</>,
+  },
+  {
+    id: 'editPicker', sel: '.picker-edit-btn', title: 'Edit Picker',
+    body: <>This opens the same form used to create a picker, pre-filled with this picker's current settings, so you can adjust its name, group, type, daily generator schedule, or conditional attachment. Its items aren&rsquo;t edited here — use the Data tab or this picker's own item list below for that.</>,
+  },
+  {
+    id: 'pickerExplanation', sel: '.picker-view:not(.np-form) .picker-hint', title: 'Picker Explanation',
+    body: <>This explains the currently selected picker's ruleset — how it chooses an item and why you might pick this type over another.</>,
+  },
+  {
     id: 'manualGeneration', sel: '.picker-run', title: 'Manual Generation',
     body: (
       <>

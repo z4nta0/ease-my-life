@@ -546,7 +546,7 @@ function PickerView({ picker, state, actions, animStyle }) {
           <h2 className="picker-title">{picker.name}</h2>
           <Pill tone="mode">{mode.label}</Pill>
         </div>
-        <Btn kind="secondary" size="sm" icon="edit" onClick={() => setEditing(true)}>Edit</Btn>
+        <Btn kind="secondary" size="sm" icon="edit" className="picker-edit-btn" onClick={() => setEditing(true)}>Edit</Btn>
       </header>
       {Array.isArray(mode.hint)
         ? mode.hint.map((para, pi) => <p key={pi} className="picker-hint">{para}</p>)
