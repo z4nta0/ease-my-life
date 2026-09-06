@@ -1632,6 +1632,19 @@ function TabData({ state, actions, onHome, onNavTab }) {
           };
           const sortedItems = [...items].sort((a, b) => compareSortEntries(itemSortEntry(a), itemSortEntry(b), itemSort));
           const displayItems = freezeEditedRow(sortedItems, openItemId, justAddedItemRef.current, frozenItemIndexRef);
+          // Creates a fresh item and opens its editor — the "+ Add to X" button's
+          // own action, factored out so the new draft's "Add Items" footer button
+          // (below) can trigger the exact same first-item flow the instant it
+          // reveals the Items section, instead of leaving the user to find and
+          // click "+ Add to X" themselves right after.
+          const startAddItem = () => {
+            if (justAddedItemRef.current) return;   // guard: ignore rapid double-click
+            const id = 'it_' + Math.random().toString(36).slice(2, 8);
+            actions.addItem(pk.id, 'New item', id);
+            justAddedItemRef.current = id;   // Cancel discards it
+            setInsertItemId(id);
+            setOpenItemId(id);
+          };
           // Shared by the row's own collapse chevron AND ItemEditor's Save —
           // both mean "keep this, I'm done", so both need the exact same
           // cleanup (clear the new-item flag, close only if we're still the
@@ -1727,7 +1740,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                                     onRequestDelete={() => deletePickerAnimated(pk.id)}
                                     isNewDraft={isDraft}
                                     itemsSectionOpen={draftItemsOpen}
-                                    onOpenItemsSection={() => setDraftItemsOpen(true)}
+                                    onOpenItemsSection={() => { setDraftItemsOpen(true); startAddItem(); }}
                                     onSaveNew={saveNewPicker}
                                     onCancelNew={cancelNewPicker} />
                   </Collapse>
@@ -1752,14 +1765,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                           <Icon name="plus" size={13} /> Add to {pk.name.toLowerCase()}
                         </InfoTip>
                       ) : (
-                        <button className="rd-add" disabled={disableEditTourAddItem} onClick={() => {
-                          if (justAddedItemRef.current) return;   // guard: ignore rapid double-click
-                          const id = 'it_' + Math.random().toString(36).slice(2, 8);
-                          actions.addItem(pk.id, 'New item', id);
-                          justAddedItemRef.current = id;   // Cancel discards it
-                          setInsertItemId(id);
-                          setOpenItemId(id);
-                        }}>
+                        <button className="rd-add" disabled={disableEditTourAddItem} onClick={startAddItem}>
                           <Icon name="plus" size={13} /> Add to {pk.name.toLowerCase()}
                         </button>
                       )}
