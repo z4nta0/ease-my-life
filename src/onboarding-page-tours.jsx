@@ -373,7 +373,7 @@ const DATA_PAGE_TARGETS = {
   },
   pickersFilter: {
     sel: '.stat-scope-tabs .picker-tab',
-    title: 'Pickers Filter',
+    title: 'Show Filter',
     body: <>This will allow you to <b>further narrow exactly what you want to view and edit</b>.</>,
   },
   remindersManager: {
