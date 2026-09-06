@@ -175,7 +175,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   // sample picker, not something the user meant to act on. Same
   // tourId+step gating as tab-picker.jsx's own disableTourAddPicker.
   const tour = useEmlTour();
-  const tourInterceptSend = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 6;
+  const tourInterceptSend = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 7;
   // Done needs the same visual + functional disabling during App Features'
   // own "Make your first manual pick" tour's equivalent step (onboarding-
   // app-features.jsx's buildAppFeatureSteps, feat_manual_pick's Step 4 —
@@ -197,11 +197,11 @@ function PickerView({ picker, state, actions, animStyle }) {
   // should genuinely land the entry.
   const tourDisableDone = tourInterceptSend
     || (tour.phase === 'tour' && tour.tourId === 'appfeature-feat_manual_pick' && tour.step === 3);
-  // Step 8 ("Picker Items") highlights the pool's per-item Send to Today/
+  // Step 9 ("Picker Items") highlights the pool's per-item Send to Today/
   // Edit/Delete buttons but explicitly doesn't want any of them actually
   // usable from there — narrating what they do is the point, not inviting
   // the user to act on a disposable tutorial picker's real items.
-  const disablePoolItemButtons = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 7;
+  const disablePoolItemButtons = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 8;
   // App Features' own "Make your first manual pick" tour reaches this same
   // pool at its own Step 5 (index 4) — but unlike the page tour above, Send
   // to Today should stay genuinely usable there (real data, a second valid
@@ -222,10 +222,10 @@ function PickerView({ picker, state, actions, animStyle }) {
   // and this never touches the is-sent/is-disabled branches) — an already-
   // sent or already-on-Today item has nothing to invite a click toward.
   const highlightManualPickSend = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_manual_pick' && tour.step === 4;
-  // Step 9 ("Add Picker Item") highlights "+ Add Item" but explicitly
+  // Step 10 ("Add Picker Item") highlights "+ Add Item" but explicitly
   // doesn't want the user opening the real create-item form from a
   // disposable tutorial picker.
-  const disableAddItemButton = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 8;
+  const disableAddItemButton = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 9;
   const [busy, setBusy] = React.useState(false);
   const [result, setResult] = React.useState(null);
   const [phase, setPhase] = React.useState('idle'); // idle | running | done | sent | empty
@@ -473,7 +473,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   // from its "Picker Items" step to "Add to Todo List" — see its own
   // comment in onboarding-page-tours.jsx), synthesize a fresh 'done' result
   // directly instead of going through runPick's own animated 'running'
-  // phase — Step 7's target (.pv-act--send) needs phase to genuinely be
+  // phase — Step 8's target (.pv-act--send) needs phase to genuinely be
   // 'done'/'sent', not 'idle', and by the time this fires the earlier real
   // pick has already run its full course and reverted. Skipping the spin
   // is deliberate: this is a revisit, the user already watched it play out
@@ -482,10 +482,10 @@ function PickerView({ picker, state, actions, animStyle }) {
   // Unlike pickerTourResetNonce above, a plain truthiness guard isn't
   // enough here — this bus value outlives any one PickerView instance
   // (it's a module-level singleton, not component state), so a Back past
-  // Step 8 that bumps it once leaves it truthy for the rest of the
+  // Step 9 that bumps it once leaves it truthy for the rest of the
   // session. If the user later goes all the way back to Step 1 (which
   // switches tabs, unmounting PickerView) and forward again to a DIFFERENT
-  // step — Step 6, say — the fresh mount's first effect run would
+  // step — Step 7, say — the fresh mount's first effect run would
   // otherwise see this already-truthy value and synthesize a bogus 'done'
   // result on a step that expects idle "Pick One". Tracking the last-seen
   // value (initialized to whatever's already on the bus at mount, so a
