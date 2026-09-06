@@ -401,7 +401,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                   {/* Hint expands/collapses on selection change — the old row's
                       hint folds away while the new one grows, one synchronized
                       reflow (shares the app's Collapse height mechanism). */}
-                  <Collapse open={on}>
+                  <Collapse open={on} instant={isNewDraft}>
                     {Array.isArray(m.hint)
                       ? m.hint.map((para, pi) => <span key={pi} className="rd-mode-hint">{para}</span>)
                       : <span className="rd-mode-hint">{m.hint}</span>}
@@ -1634,7 +1634,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                          actions.removePicker(pk.id); setRemovingPickerId(null);
                        }
                      }}
-                     style={{ animationDelay: (pkIndex * 45) + 'ms' }}>
+                     style={{ animationDelay: (isDraft ? 0 : pkIndex * 45) + 'ms' }}>
               <header className="cat-h"
                       onClick={(e) => { if (!isDraft && !disableEditTourPickerHeader && !e.target.closest('button')) toggle(pk.id); }}>
                 <button type="button" className="cat-h-l" aria-expanded={open}
@@ -1682,7 +1682,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                   </button>
                 </span>
               </header>
-              <Collapse open={open}>
+              <Collapse open={open} instant={isDraft}>
                 <div className="cat-body">
                   {/* Controls — nested collapsible (open by default, remembered per
                       picker). Holds the pick-algorithm config moved here from
@@ -1696,7 +1696,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
                     </span>
                     {ctlCollapsed && <span className="rd-ctl-sum">{Object.keys(MODES).length} options</span>}
                   </button>
-                  <Collapse open={!ctlCollapsed}>
+                  <Collapse open={!ctlCollapsed} instant={isDraft}>
                     <PickerControls picker={pk} items={items} inDaily={inDaily}
                                     allGroups={existingGroups}
                                     conditionals={state.conditionals || []}

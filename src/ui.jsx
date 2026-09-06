@@ -64,11 +64,15 @@ const Card = ({ children, padded = true, className = '', ...rest }) => (
 // a fade+slide on the inner content. Crucially it UNMOUNTS children after the
 // close animation and remounts them on open — which preserves the snapshot-on-
 // open behaviour that the Controls panels and item editors rely on for Cancel.
-function Collapse({ open, children, className = '' }) {
+function Collapse({ open, children, className = '', instant = false }) {
   const [render, setRender] = React.useState(open);   // is the child mounted?
-  const [expanded, setExpanded] = React.useState(false); // drives 0fr/1fr — starts
-  // collapsed even when open, so a fresh mount-while-open still animates open
-  // (the effect's rAF flips it) instead of snapping to the expanded state.
+  // Drives 0fr/1fr — starts collapsed even when open, so a fresh mount-while-
+  // open still animates open (the effect's rAF flips it) instead of snapping
+  // to the expanded state. `instant` opts a specific mount out of that (e.g. a
+  // freshly-created draft picker's Controls section, forced open the instant
+  // it's created rather than by any click a user made on its own header —
+  // animating that reveal just reads as the button having lagged).
+  const [expanded, setExpanded] = React.useState(instant && open);
   React.useEffect(() => {
     if (open) { setRender(true); return; }   // mount first; expand handled below
     setExpanded(false);   // animate closed; unmount happens on transitionend
@@ -79,9 +83,10 @@ function Collapse({ open, children, className = '' }) {
   // Flip to expanded only AFTER the child is mounted (render true) and committed,
   // so the collapsed 0fr state has painted first — otherwise a fresh open-from-
   // unmounted races the mount paint and snaps open. Depends on `render` so it
-  // re-runs on the mount commit, not just the open change.
+  // re-runs on the mount commit, not just the open change. Skipped when already
+  // expanded (the `instant` mount case above) — nothing to animate.
   React.useEffect(() => {
-    if (!open || !render) return;
+    if (!open || !render || expanded) return;
     const r1 = requestAnimationFrame(() => {
       const r2 = requestAnimationFrame(() => setExpanded(true));
       return () => cancelAnimationFrame(r2);
