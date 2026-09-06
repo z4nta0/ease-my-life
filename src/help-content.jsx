@@ -1387,7 +1387,7 @@ const DATA_HELP_ITEMS = [
   },
   {
     id: 'dataCreatePicker', sel: '.cat-create-btn', title: 'Create New Picker',
-    body: <>This creates a new picker directly from this list, using the same form the Pickers page's own New Picker button opens. Fill in its name and group, then use Add Items to start adding at least two items — once it has them, Save adds it to the list below like any other picker.</>,
+    body: <>This creates a new picker directly from this list, respecting the group, type and conditional filters if they are used. Fill in its name and group, then use the Add Items button to add at least two items. Once it has them, the Save button adds it to the list with all other pickers.</>,
   },
   {
     // Scoped to .data-list so this doesn't also match the Conditionals/
