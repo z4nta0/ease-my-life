@@ -1367,6 +1367,28 @@ button.heat-cell.is-sel {
 }
 .cat.is-vac { opacity: 0.7; }
 
+/* "Create Picker" trigger (Data tab) — same footprint as a collapsed .cat
+   section (.cat-h's own 14px/16px padding, .cat's own border-radius), but a
+   dashed muted-gray outline instead of .cat's solid border + solid surface,
+   so it reads as "add a new one" rather than "an existing, collapsed card". */
+.cat-create-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  /* Vertical padding is taller than .cat-h's own 14px — its two-line name +
+     count stack (.cat-h-main) makes a collapsed card taller than this
+     button's single line of text would be at the same padding, so this
+     makes up the difference to match its real rendered height instead of
+     just copying its padding value literally. */
+  padding: 24px 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--r-md);
+  background: none;
+  color: var(--muted);
+  font-size: 14px; font-weight: 500;
+  cursor: pointer;
+}
+.cat-create-btn:hover { color: var(--accent); border-color: var(--accent-soft); }
+
 .cat-h {
   display: flex; justify-content: space-between; align-items: center;
   gap: 10px;
@@ -3276,6 +3298,10 @@ button.rd-chev {
 /* Delete-picker control lives in the Controls footer now. */
 .rd-ctl-group--danger { align-items: flex-start; }
 .rd-ctl-foot-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+/* The "Create Picker" draft's own footer has no Delete button on the left —
+   .rd-ctl-foot-row's own space-between would otherwise leave its one
+   remaining child (.rem-foot-right) flush left instead of right. */
+.rd-ctl-foot-row--new { justify-content: flex-end; }
 /* Picker card delete: collapse height + fade out before removal. */
 .cat--removing { animation: catRemove .3s ease forwards; overflow: hidden; }
 @keyframes catRemove { from { opacity: 1; max-height: 800px; } to { opacity: 0; max-height: 0; margin: 0; padding-top: 0; padding-bottom: 0; transform: translateY(-4px); } }

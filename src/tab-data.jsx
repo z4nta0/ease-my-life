@@ -102,7 +102,7 @@ function pickerItemSortOptions(mode) {
 // on mount — letting Cancel revert every change (type, ease band, weekdays,
 // holiday skip, daily-generator membership, and any item values touched by a
 // Refill) the way the item editor's Cancel does. Done keeps the changes.
-function PickerControls({ picker, items, inDaily, dailyIds, allGroups, conditionals = [], actions, onCollapse, onRequestDelete }) {
+function PickerControls({ picker, items, inDaily, dailyIds, allGroups, conditionals = [], actions, onCollapse, onRequestDelete, isNewDraft, itemsSectionOpen, onOpenItemsSection, onSaveNew, onCancelNew }) {
   const pk = picker;
   const isEase = pk.mode === 'ease-up' || pk.mode === 'ease-down';
   const isDown = pk.mode === 'ease-down';
@@ -111,6 +111,25 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
     ? <><strong>all items</strong> are fully charged</>
     : <><strong>{notFull} {notFull === 1 ? 'item' : 'items'}</strong> {notFull === 1 ? 'is' : 'are'} not at full charge</>;
   const [confirmDel, setConfirmDel] = React.useState(false);
+  // isNewDraft's own footer button — "Add Items" until the Items section is
+  // opened AND has 2+ items, then "Save". Disabled (with a tooltip
+  // explaining why, in place of the create flow's own status text) at every
+  // stage short of that: missing name/group first, then — once the Items
+  // section is open — however many items short of 2 it still is. Once
+  // everything's satisfied the tooltip just confirms it, matching the
+  // create-flow's own "Everything looks good" convention.
+  const newDraftNeedName = !pk.name.trim();
+  const newDraftNeedGroup = !pk.group;
+  const newDraftShowingSave = isNewDraft && itemsSectionOpen && items.length >= 2;
+  const newDraftLabel = newDraftShowingSave ? 'Save' : 'Add Items';
+  const newDraftDisabled = newDraftShowingSave ? false : (newDraftNeedName || newDraftNeedGroup || itemsSectionOpen);
+  const newDraftTip = newDraftNeedName && newDraftNeedGroup ? 'A picker name and group are both required.'
+    : newDraftNeedName ? 'A picker name is required.'
+    : newDraftNeedGroup ? 'A group name is required.'
+    : (itemsSectionOpen && items.length < 2) ? `${2 - items.length} more ${2 - items.length === 1 ? 'item' : 'items'} needed.`
+    : newDraftShowingSave ? 'Everything looks good, click Save to create this picker.'
+    : 'Everything looks good, click Add Items to continue.';
+  const newDraftAction = newDraftShowingSave ? onSaveNew : onOpenItemsSection;
   // Attach-a-conditional (ported from the Pickers create-flow). Toggle reflects
   // whether a conditional is currently attached; selecting a pill sets it, and
   // turning the toggle off detaches. No "+ create new" here — that lives in the
@@ -662,7 +681,10 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
 
       {/* Footer — Delete (left) · Cancel + Done (right), mirroring the item
           editor. Delete morphs the footer into a confirm that reuses the
-          "also delete its N items" message. */}
+          "also delete its N items" message. isNewDraft (the Data page's own
+          "Create Picker" flow, see its own comment in TabData) swaps this
+          whole thing for a no-Delete Cancel/Add-Items-then-Save footer
+          instead — see newDraftLabel/newDraftDisabled/newDraftTip above. */}
       <div className="rd-ctl-group rd-ctl-group--foot pk-ctl-foot">
         {confirmDel ? (
           <div className="rd-pk-del-confirm" key="confirm">
@@ -670,6 +692,23 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
             <div className="rem-del-actions">
               <Btn kind="ghost" size="sm" onClick={() => setConfirmDel(false)}>Cancel</Btn>
               <Btn kind="danger" size="sm" onClick={() => (onRequestDelete ? onRequestDelete() : actions.removePicker(pk.id))}>Delete</Btn>
+            </div>
+          </div>
+        ) : isNewDraft ? (
+          <div className="rd-ctl-foot-row rd-ctl-foot-row--new" key="foot-new">
+            <div className="rem-foot-right">
+              {/* Both buttons unmount this whole card immediately (the parent
+                  clears newDraftId), so mark doneRef first — otherwise the
+                  implicit-close guard above (mount effect's cleanup) treats
+                  the unmount as an abandoned edit and silently reverts the
+                  picker back to its blank/hidden snapshot, stomping the
+                  name/group/hidden edits Save (or the delete Cancel performs
+                  via onCancelNew) just made. */}
+              <Btn kind="ghost" size="sm" onClick={() => { doneRef.current = 'cancel'; onCancelNew(); }}>Cancel</Btn>
+              <InfoTip label={newDraftTip}>
+                <Btn kind="primary" size="sm" disabled={newDraftDisabled}
+                     onClick={newDraftDisabled ? undefined : () => { doneRef.current = 'saved'; newDraftAction(); }}>{newDraftLabel}</Btn>
+              </InfoTip>
             </div>
           </div>
         ) : (
@@ -1116,6 +1155,54 @@ function TabData({ state, actions, onHome, onNavTab }) {
     if (reduceMotion()) { actions.removePicker(id); return; }
     setRemovingPickerId(id);
   };
+
+  // "Create Picker" — the trigger button at the bottom of the list creates a
+  // REAL picker immediately (hidden: true, so it's invisible everywhere else
+  // — Pickers/Stats/Today, and this page's own group/type filter counts —
+  // until Save), pre-filled from whichever Group/Type/Conditional filter is
+  // currently active, same as the Pickers page's own group-filter prefill.
+  // Held as a plain id (not the whole object) — the card below always reads
+  // the LIVE picker from state.pickers, same as every other card, so typing
+  // into its own Name/Group fields (real actions.updatePicker calls, same as
+  // any other picker) reflects immediately without a second copy to keep in
+  // sync.
+  const [newDraftId, setNewDraftId] = React.useState(null);
+  // Whether the draft's Items section is revealed — starts closed (unlike a
+  // real picker's own Items disclosure, which defaults open) since there's
+  // nothing to add to yet until Name/Group are filled in. Toggled either by
+  // the footer's "Add Items" button or the Items section's own header, same
+  // as a real picker's Items disclosure already allows.
+  const [draftItemsOpen, setDraftItemsOpen] = React.useState(false);
+  const startNewPicker = () => {
+    const realMode = !!MODES[typeFilter];
+    const id = actions.addPicker({
+      name: '', group: statGroup !== 'all' ? statGroup : '',
+      mode: realMode ? typeFilter : 'random',
+      conditionalId: condFilter !== 'all' ? condFilter : null,
+      items: [], hidden: true,
+    });
+    setNewDraftId(id);
+    setDraftItemsOpen(false);
+  };
+  // Cancel discards the whole draft — removePicker already cascades to its
+  // items and daily-generator membership, so there's nothing else to clean
+  // up (same "nothing committed until Save" contract as the Conditionals
+  // manager's own brand-new-row flow, just backed by a real hidden picker
+  // instead of local-only state, since PickerControls' own fields all write
+  // straight to the store already).
+  const cancelNewPicker = () => {
+    if (newDraftId) actions.removePicker(newDraftId);
+    setNewDraftId(null);
+    setDraftItemsOpen(false);
+  };
+  // Save reveals the picker everywhere else by clearing `hidden` — nothing
+  // else needs to change, since every field was already committed live via
+  // the same actions.updatePicker calls a real picker's own Controls uses.
+  const saveNewPicker = () => {
+    if (newDraftId) actions.updatePicker(newDraftId, { hidden: false });
+    setNewDraftId(null);
+    setDraftItemsOpen(false);
+  };
   // Shared picker-item editor (defined in tab-today, reused here so Today and
   // Data stay exact copies — same pattern as the Reminders editor).
   const ItemEditor = EntryEditor;
@@ -1263,6 +1350,19 @@ function TabData({ state, actions, onHome, onNavTab }) {
     }
     return entries.sort((a, b) => compareSortEntries(a, b, sectionSort));
   }, [showConditionals, showReminders, shownPickers, pickerSectionMeta, conditionals.length, remindersCount, sectionSort]);
+
+  // The in-progress "Create Picker" draft — a REAL (but hidden, so it's
+  // invisible everywhere else: Pickers/Stats/Today, and this page's own
+  // group/type counts) picker created the instant the trigger button is
+  // clicked. Deliberately NOT part of sectionEntries/its sort — appended
+  // after, so it always renders last regardless of sort order, and never
+  // shows up while some OTHER group/type/conditional filter would hide a
+  // real picker with these same field values (this card bypasses those
+  // filters entirely, same reasoning as showConditionals never gating on
+  // existence — it's the only place to create one).
+  const draftPicker = newDraftId ? pickers.find((p) => p.id === newDraftId) : null;
+  const draftEntry = draftPicker ? { kind: 'picker', pk: draftPicker, isDraft: true } : null;
+  const renderedEntries = draftEntry ? [...sectionEntries, draftEntry] : sectionEntries;
 
   return (
     <div className="tab tab--data">
@@ -1474,19 +1574,25 @@ function TabData({ state, actions, onHome, onNavTab }) {
             <p className="data-empty-sub">No items match the current Group, Conditionals, and Show selections. Try widening a filter to “All”.</p>
           </div>
         )}
-        {sectionEntries.map((entry, pkIndex) => {
+        {renderedEntries.map((entry, pkIndex) => {
           if (entry.kind === 'conditionals') return <ConditionalsManager state={state} actions={actions} key="cnd-shown" />;
           if (entry.kind === 'reminders') return <ReminderManager state={state} actions={actions} key="rem-shown" />;
           const pk = entry.pk;
+          const isDraft = !!entry.isDraft;
           const items = state.items.filter((i) => i.pickerId === pk.id);
           const eligible = items.filter((i) => !i.vacation).length;
           const allVac = items.length > 0 && items.every((i) => i.vacation);
-          const open = collapsedMap[pk.id] === false;
+          // A draft's own card is always expanded (no collapse toggle — see
+          // the header button's disabled prop below) and its Items section
+          // starts closed instead of the usual default-open, revealed by
+          // either the footer's "Add Items" button or its own header (see
+          // draftItemsOpen).
+          const open = isDraft || collapsedMap[pk.id] === false;
           const isEase = pk.mode === 'ease-up' || pk.mode === 'ease-down';
           const usesWeight = pk.mode === 'weighted' || pk.mode === 'dynamic';
           const inDaily = state.daily.pickerIds.includes(pk.id);
           const ctlCollapsed = !!collapsedMap[pk.id + ':controls'];
-          const itemsCollapsed = !!collapsedMap[pk.id + ':items'];
+          const itemsCollapsed = isDraft ? !draftItemsOpen : !!collapsedMap[pk.id + ':items'];
           // Item sort — see pickerItemSortOptions for why the available
           // options vary by mode (a mode-specific numeric field standing in
           // for the generic 'count' comparator field: charge for ease modes,
@@ -1530,9 +1636,9 @@ function TabData({ state, actions, onHome, onNavTab }) {
                      }}
                      style={{ animationDelay: (pkIndex * 45) + 'ms' }}>
               <header className="cat-h"
-                      onClick={(e) => { if (!disableEditTourPickerHeader && !e.target.closest('button')) toggle(pk.id); }}>
+                      onClick={(e) => { if (!isDraft && !disableEditTourPickerHeader && !e.target.closest('button')) toggle(pk.id); }}>
                 <button type="button" className="cat-h-l" aria-expanded={open}
-                        disabled={disableEditTourPickerHeader}
+                        disabled={isDraft || disableEditTourPickerHeader}
                         onClick={() => toggle(pk.id)}>
                   <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
                   <span className="cat-h-main">
@@ -1596,14 +1702,20 @@ function TabData({ state, actions, onHome, onNavTab }) {
                                     conditionals={state.conditionals || []}
                                     dailyIds={state.daily.pickerIds} actions={actions}
                                     onCollapse={() => actions.toggleControlsCollapsed(pk.id + ':controls')}
-                                    onRequestDelete={() => deletePickerAnimated(pk.id)} />
+                                    onRequestDelete={() => deletePickerAnimated(pk.id)}
+                                    isNewDraft={isDraft}
+                                    itemsSectionOpen={draftItemsOpen}
+                                    onOpenItemsSection={() => setDraftItemsOpen(true)}
+                                    onSaveNew={saveNewPicker}
+                                    onCancelNew={cancelNewPicker} />
                   </Collapse>
 
                   {/* Items — nested collapsible (open by default, remembered per
-                      picker); collapsed shows the item count. */}
+                      picker, except a fresh draft — see draftItemsOpen); collapsed
+                      shows the item count. */}
                   <button type="button" className={`rd-ctl ${highlightEditTourItemsHeader ? 'ob-tour-pulse' : ''}`} aria-expanded={!itemsCollapsed}
                        disabled={disableEditTourItemsToggle}
-                       onClick={() => actions.toggleControlsCollapsed(pk.id + ':items')}>
+                       onClick={() => isDraft ? setDraftItemsOpen((o) => !o) : actions.toggleControlsCollapsed(pk.id + ':items')}>
                     <span className="rd-ctl-l">
                       <span className={`chev ${itemsCollapsed ? '' : 'is-open'}`}><Icon name="chev" size={12} /></span>
                       <span className="kicker">Items</span>
@@ -1724,6 +1836,16 @@ function TabData({ state, actions, onHome, onNavTab }) {
             </section>
           );
         })}
+        {/* "Create Picker" — hidden while Type is filtered to Conditionals/
+            Reminders (there'd be nothing here for a new PICKER to belong to
+            in that view) or while a draft is already in progress (one at a
+            time, same as the Conditionals manager's own "one draft at a
+            time" guard). */}
+        {!newDraftId && typeFilter !== 'conditionals' && typeFilter !== 'reminders' && (
+          <button type="button" className="cat-create-btn" onClick={startNewPicker}>
+            <Icon name="plus" size={14} /> Create Picker
+          </button>
+        )}
       </div>
     </div>
   );
