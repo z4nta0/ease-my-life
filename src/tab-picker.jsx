@@ -412,6 +412,39 @@ function PickerView({ picker, state, actions, animStyle }) {
 
   const mode = MODES[picker.mode];
 
+  // Edit reuses NewPickerForm's own Details step, pre-filled from this
+  // picker's current settings — see the header's Edit button below and
+  // store.jsx's commitPickerEdit (which this form's Save routes to).
+  // NOT an early return: every hook below still needs to run every render
+  // regardless of `editing`, so the branch happens only at the very end,
+  // where this component actually returns its JSX.
+  const [editing, setEditing] = React.useState(false);
+  // Same distinct-groups memo as the Pickers-tab parent (existingGroups) —
+  // duplicated here rather than threaded down as a prop, since it's only
+  // needed while this one picker's own edit form is open.
+  const editExistingGroups = React.useMemo(() => {
+    const seen = [];
+    for (const p of state.pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
+    return seen.sort((a, b) => a.localeCompare(b));
+  }, [state.pickers]);
+  const editInitial = {
+    name: picker.name, mode: picker.mode,
+    includeInDaily: ((state.daily && state.daily.pickerIds) || []).includes(picker.id),
+    daysOfWeek: picker.daysOfWeek, skipHolidays: picker.skipHolidays, avoidDuplicates: picker.avoidDuplicates,
+    conditionalId: picker.conditionalId || null,
+    cadence: picker.cadence, anchorDow: picker.anchorDow, anchorDom: picker.anchorDom,
+    anchorMonth: picker.anchorMonth, anchorDay: picker.anchorDay, dateMode: picker.dateMode,
+    nthOrdinal: picker.nthOrdinal, nthWeekday: picker.nthWeekday,
+    // Deliberately NOT `group` — that field means "prefill the inline
+    // ADD-A-NEW-GROUP sub-form" (see NewPickerForm's own addingGroup/
+    // newGroup state), which would be wrong here: this picker's group
+    // already exists (it's necessarily in editExistingGroups, since that
+    // list is derived from state.pickers including this picker itself), so
+    // it should land on that EXISTING pill instead — initialGroup (passed
+    // below, at the return) is the prop that does that, same as the create
+    // flow's own group-filter prefill.
+  };
+
   const runPick = () => {
     if (busy) return;
     const snapshot = state.items;
@@ -496,14 +529,24 @@ function PickerView({ picker, state, actions, animStyle }) {
     setTimeout(() => { setPhase('idle'); setResult(null); }, 1500);
   };
 
+  if (editing) {
+    return (
+      <NewPickerForm isEdit existingGroups={editExistingGroups} initialGroup={picker.group}
+                     conditionals={state.conditionals || []} initial={editInitial}
+                     onCancel={() => setEditing(false)}
+                     onSave={(payload) => { actions.commitPickerEdit(picker.id, payload); setEditing(false); }} />
+    );
+  }
+
   return (
     <div className="picker-view">
       <header className="picker-h">
         <div>
           <div className="kicker">Picker</div>
           <h2 className="picker-title">{picker.name}</h2>
+          <Pill tone="mode">{mode.label}</Pill>
         </div>
-        <Pill tone="mode">{mode.label}</Pill>
+        <Btn kind="secondary" size="sm" icon="edit" onClick={() => setEditing(true)}>Edit</Btn>
       </header>
       {Array.isArray(mode.hint)
         ? mode.hint.map((para, pi) => <p key={pi} className="picker-hint">{para}</p>)
@@ -808,7 +851,7 @@ function PickerView({ picker, state, actions, animStyle }) {
 //
 // Every field carries plain-language helper copy: the goal is that someone
 // who has never seen a "picker" before can fill this in without guessing.
-function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCancel, onCreate, initial, openedByTour }) {
+function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCancel, onCreate, onSave, initial, openedByTour, isEdit }) {
   // Whether a guided tour (of any kind — Welcome Tour or a mini-tour) is
   // currently driving the page, per the shared onboarding bus. Read here
   // specifically so goToStep2 can skip its own scroll-to-top when a picker
@@ -829,8 +872,9 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   const [newGroup, setNewGroup] = React.useState((initial && initial.group) || '');
   const [mode, setMode] = React.useState((initial && initial.mode) || 'random');
   // Whether this picker is included when the user taps Regenerate on Today.
-  // Defaults on — same as the existing behaviour for newly-created pickers.
-  const [includeInDaily, setIncludeInDaily] = React.useState(true);
+  // Defaults on — same as the existing behaviour for newly-created pickers —
+  // unless editing an existing one, which prefills its own current membership.
+  const [includeInDaily, setIncludeInDaily] = React.useState((initial && 'includeInDaily' in initial) ? initial.includeInDaily : true);
   const schedRef = React.useRef(null);
   const dailyUserToggled = React.useRef(false);
   // When the user re-enables the Daily section, bring the newly-revealed block
@@ -851,15 +895,21 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   // it sits out public holidays. Defaults match "runs every day", unless a
   // prefill (e.g. a picker mini-tour's sample data) specifies otherwise.
   const [daysOfWeek, setDaysOfWeek] = React.useState((initial && initial.daysOfWeek) || [0, 1, 2, 3, 4, 5, 6]);
-  const [skipHolidays, setSkipHolidays] = React.useState(false);
+  const [skipHolidays, setSkipHolidays] = React.useState((initial && initial.skipHolidays) || false);
   // Excludes an item from this picker's own pool for the day if its name
   // (case-insensitive) is already present elsewhere on today's list — for
   // pickers that intentionally share items with another picker and don't
   // want the same one to surface twice. Off by default: most pickers don't
   // share a pool with anything else, so this should stay opt-in.
-  const [avoidDuplicates, setAvoidDuplicates] = React.useState(false);
-  // Picker Cadence: how often it surfaces + the anchor. Defaults to daily.
-  const [cad, setCad] = React.useState(() => CADENCE.normalize({}));
+  const [avoidDuplicates, setAvoidDuplicates] = React.useState((initial && initial.avoidDuplicates) || false);
+  // Picker Cadence: how often it surfaces + the anchor. Defaults to daily,
+  // unless editing an existing picker, which prefills its current cadence —
+  // CADENCE.normalize's accepted shape (cadence/anchorDow/anchorDom/
+  // anchorMonth/anchorDay/dateMode/nthOrdinal/nthWeekday) matches the same
+  // fields addPicker/commitPickerEdit read off `initial` here, so passing
+  // `initial` straight through picks up any of them that are present and
+  // falls back to daily defaults for the rest.
+  const [cad, setCad] = React.useState(() => CADENCE.normalize(initial || {}));
   // Weekly cadence pins its anchor day ON in the Days control (and blocks the
   // presets from dropping it), so the two controls can't contradict each other.
   const lockedDow = cad.cadence === 'weekly' ? cad.anchorDow : null;
@@ -871,9 +921,10 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     });
   }, [cad.cadence, cad.anchorDow]);
   // Optional conditional gate. Off by default; when on, the user attaches an
-  // existing conditional or creates a new inline one (condSel = id | 'new').
-  const [condOn, setCondOn] = React.useState(false);
-  const [condSel, setCondSel] = React.useState(null);
+  // existing conditional or creates a new inline one (condSel = id | 'new') —
+  // unless editing an existing picker, which prefills its current attachment.
+  const [condOn, setCondOn] = React.useState(!!(initial && initial.conditionalId));
+  const [condSel, setCondSel] = React.useState((initial && initial.conditionalId) || null);
   const [condDraft, setCondDraft] = React.useState(() => conditionalDraftDefault(''));
   const [condNameTouched, setCondNameTouched] = React.useState(false);
   // Create-new requires a UNIQUE name. Normalize first, then compare against
@@ -1181,38 +1232,51 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   }));
 
   const submit = () => {
-    if (!detailsReady || !enoughItems) return;
+    if (!detailsReady || (!isEdit && !enoughItems)) return;
     if (condOn && condSel === 'new' && condNameCollides) { setCondNameTouched(true); return; }
-    const payload = { name: cap(name.trim()), group: effectiveGroup, mode, items, includeInDaily,
+    const payload = { name: cap(name.trim()), group: effectiveGroup, mode, includeInDaily,
                       daysOfWeek, skipHolidays, avoidDuplicates, ...cad };
+    if (!isEdit) payload.items = items;
     // Attach a conditional: an existing one (condSel = id) or a fresh inline one.
     // Create-new names are unique by validation above, so no silent reuse here.
+    // Edit explicitly clears it (conditionalId: null) when turned off — unlike
+    // a fresh create, this can also DETACH one the picker already had, so
+    // there's no bare "just omit the field" default to fall back on.
     if (condOn && condSel === 'new') {
       payload.newConditional = { ...condDraft, name: condTidyName || 'Conditional' };
     } else if (condOn && condSel) {
       payload.conditionalId = condSel;
+    } else if (isEdit) {
+      payload.conditionalId = null;
     }
-    if (isEase) {
+    if (isEase && !isEdit) {
       // Legacy field: nothing reads picker.easeMin/easeMax anymore (pick(),
       // the Data tab, and the item editor all compute a live per-picker
       // average from the items themselves instead — see PICKERS.avgEase).
       // Kept only so store.jsx's addPicker still has a value to accept;
-      // harmless dead data on the created picker otherwise.
+      // harmless dead data on the created picker otherwise. Skipped for
+      // Edit — there's no `items` here to compute a fresh average from, and
+      // the field is inert anyway, so the picker's existing stored value is
+      // just left alone.
       payload.easeMin = Math.min(...items.map((it) => it.easeMin ?? DEFAULT_EASE.easeMin));
       payload.easeMax = Math.max(...items.map((it) => it.easeMax ?? DEFAULT_EASE.easeMax));
     }
-    onCreate(payload);
+    if (isEdit) onSave(payload); else onCreate(payload);
   };
 
   return (
     <div className="picker-view np-form" ref={formRef}>
       <header className="picker-h">
         <div>
-          <div className="kicker">New picker</div>
-          <h2 className="picker-title">Create a picker</h2>
+          <div className="kicker">{isEdit ? 'Editing' : 'New picker'}</div>
+          <h2 className="picker-title">{isEdit ? (name.trim() || 'Editing picker') : 'Create a picker'}</h2>
         </div>
       </header>
 
+      {/* Edit reuses only the Details step — this picker's items already
+          exist and are edited via the Data tab or the live Pickers-tab pool
+          instead, so there's no Items step to switch to here. */}
+      {!isEdit && (
       <div className="np-steps">
         <button type="button" className={`np-step ob-picker-details ${step === 1 ? 'is-on' : 'is-done'}`}
                 onClick={() => setStep(1)}>
@@ -1226,15 +1290,22 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
           <span className="np-step-lbl">Items</span>
         </button>
       </div>
+      )}
 
       {step === 1 ? (
       <div className="tab-fade" key="np-step1">
       <p className="picker-hint">
-        Pickers are the heart of the Ease My Life app. They are small machines
-        that chooses one item for you from a list, e.g. a chore to do, a meal
-        to make, a way to wind down. Give it a name, attach a group, choose
-        how it should pick and when it should run. You&rsquo;ll fill its list
-        of items in the next step.
+        {isEdit
+          ? <>Pickers are the heart of the Ease My Life app. They are small
+              machines that chooses one item for you from a list, e.g. a
+              chore to do, a meal to make, a way to wind down. Adjust its
+              name, group, how it should pick and when it should run below.</>
+          : <>Pickers are the heart of the Ease My Life app. They are small
+              machines that chooses one item for you from a list, e.g. a
+              chore to do, a meal to make, a way to wind down. Give it a
+              name, attach a group, choose how it should pick and when it
+              should run. You&rsquo;ll fill its list of items in the next
+              step.</>}
       </p>
 
       <div className="np-fields">
@@ -1447,6 +1518,15 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
           {(() => {
             const needName = !name.trim();
             const needGroup = !effectiveGroup;
+            if (isEdit) {
+              // Ordinarily unreachable — an existing picker already has a
+              // name and group — but the user could still clear either one
+              // while editing, so the same guidance still needs to cover it.
+              if (needName && needGroup) return 'A picker name and group are both required.';
+              if (needName) return 'A picker name is required.';
+              if (needGroup) return 'A group name is required.';
+              return 'Everything looks good, click Save to save this picker’s new settings.';
+            }
             if (needName && needGroup) return 'A picker name and group are both required before advancing to the next step to create items for the picker’s list.';
             if (needName) return 'A picker name is required before advancing to the next step to create items for the picker’s list.';
             if (needGroup) return 'A group name is required before advancing to the next step to create items for the picker’s list.';
@@ -1455,8 +1535,11 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         </div>
         <div className="np-footer-actions">
           <Btn kind="ghost" onClick={onCancel}>Cancel</Btn>
-          <Btn kind="primary" icon="chev" className="ob-picker-next" disabled={!detailsReady || condNameCollides}
-               onClick={goToStep2}>Add Items</Btn>
+          {isEdit
+            ? <Btn kind="primary" icon="check" disabled={!detailsReady || condNameCollides}
+                   onClick={submit}>Save</Btn>
+            : <Btn kind="primary" icon="chev" className="ob-picker-next" disabled={!detailsReady || condNameCollides}
+                   onClick={goToStep2}>Add Items</Btn>}
         </div>
       </div>
       </div>
@@ -1894,7 +1977,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
             <h1 className="section-title"><span className="picker-title-accent">Easing</span> your life, one pick at a time.</h1>
           </div>
         </div>
-        <p className="section-sub picker-h-sub">Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, along with new picker items but editing existing pickers' settings must be done in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>.</p>
+        <p className="section-sub picker-h-sub">Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, add to its list of items, or edit an existing one's settings. Conditionals and reminders are managed in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>.</p>
       </header>
       <div className="picker-body" style={tour.reserveTop ? { paddingTop: tour.reserveTop } : undefined}>
       <div className="stat-filters ob-picker-content">

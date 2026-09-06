@@ -1351,6 +1351,76 @@ function useStore(opts) {
       return pid;
     },
 
+    // Commits an edit made via the Pickers page's "Edit" button, which reuses
+    // NewPickerForm's Details step (items aren't touched by this flow — those
+    // are edited via the Data tab or the live Pickers-tab pool instead).
+    // Mirrors addPicker's own field normalization (name dedup, cadence/days,
+    // conditional attach) but as an in-place UPDATE, and — the one thing this
+    // flow can change that Data tab's own mode radio doesn't attempt to
+    // reconcile — resets every one of this picker's items to fresh defaults
+    // for the NEW mode whenever mode actually changes, since an item's
+    // weight/value/easeMin/easeMax from the OLD mode has no meaningful
+    // translation to the new one (e.g. a Weighted item's weight doesn't mean
+    // anything as an Ease Up drift band). Deliberately resets rather than
+    // tries to preserve old values — the user can revisit the item list
+    // after saving to tune them for the new mode.
+    commitPickerEdit: (pickerId, { name, group, mode, includeInDaily, daysOfWeek, skipHolidays, avoidDuplicates, conditionalId, newConditional, cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday }) => setState((s) => {
+      const pk = s.pickers.find((p) => p.id === pickerId);
+      if (!pk) return s;
+      const modeChanged = mode !== pk.mode;
+      const finalName = uniqueName(
+        normalizePickerName(name) || name,
+        s.pickers.filter((p) => !p.hidden && p.id !== pickerId).map((p) => p.name),
+      );
+      // A brand-new inline conditional gets a fresh id here so we can attach it —
+      // same shape as addPicker's own madeCond.
+      const madeCond = newConditional ? {
+        id: 'cnd_' + Math.random().toString(36).slice(2, 8),
+        name: normalizeConditionalName(newConditional.name) || newConditional.name || 'Conditional', mode: newConditional.mode || 'random',
+        cardText: newConditional.cardText || 'Day off',
+        value: newConditional.mode === 'ease-down' ? (newConditional.threshold ?? 100) : (newConditional.value ?? 0),
+        weight: newConditional.weight ?? 1, oddsPct: newConditional.oddsPct ?? 50,
+        active: newConditional.active !== undefined ? newConditional.active : true,
+        triggered: newConditional.triggered !== undefined ? newConditional.triggered : (newConditional.mode === 'ease-down'),
+        easeMin: newConditional.easeMin ?? 7, easeMax: newConditional.easeMax ?? 14,
+        threshold: newConditional.threshold ?? 100, chargedToday: false,
+      } : null;
+      const finalPicker = {
+        ...pk, name: finalName, group, mode,
+        daysOfWeek: CADENCE.enforceWeeklyDay({
+          ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday }),
+          daysOfWeek: Array.isArray(daysOfWeek) && daysOfWeek.length ? daysOfWeek : [0, 1, 2, 3, 4, 5, 6],
+        }),
+        skipHolidays: !!skipHolidays,
+        avoidDuplicates: !!avoidDuplicates,
+        ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday }),
+        // Existing id, a freshly-made one, or explicitly cleared (null) —
+        // unlike addPicker's create-only flow, this can also DETACH a
+        // conditional the picker already had, so there's no bare default to
+        // fall back on here.
+        conditionalId: madeCond ? madeCond.id : (conditionalId || null),
+      };
+      const threshold = pk.threshold ?? 100;
+      const modeDefaults = mode === 'ease-down'
+        ? { weight: 1, value: threshold, easeMin: PICKERS.DEFAULT_EASE.easeMin, easeMax: PICKERS.DEFAULT_EASE.easeMax }
+        : mode === 'ease-up'
+        ? { weight: 1, value: 0, easeMin: PICKERS.DEFAULT_EASE.easeMin, easeMax: PICKERS.DEFAULT_EASE.easeMax }
+        : { weight: 1, value: 0 };
+      const items = modeChanged
+        ? s.items.map((it) => it.pickerId === pickerId ? { ...it, ...modeDefaults } : it)
+        : s.items;
+      const pickerIds = includeInDaily
+        ? (s.daily.pickerIds.includes(pickerId) ? s.daily.pickerIds : [...s.daily.pickerIds, pickerId])
+        : s.daily.pickerIds.filter((x) => x !== pickerId);
+      return {
+        ...s,
+        items,
+        pickers: s.pickers.map((p) => p.id === pickerId ? finalPicker : p),
+        conditionals: madeCond ? [...(s.conditionals || []), madeCond] : (s.conditionals || []),
+        daily: { ...s.daily, pickerIds },
+      };
+    }),
+
     // Merges precomputed, already-hydrated history rows into state — used
     // only by the Welcome Tour's onboarding seeding, to backfill Stats for
     // the sample pickers/reminders without ~1yr of rows needing to be

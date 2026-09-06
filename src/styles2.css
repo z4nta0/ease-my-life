@@ -296,6 +296,10 @@
   display: flex; justify-content: space-between; align-items: flex-start;
   gap: 16px;
 }
+/* The mode pill now sits below the name (Edit button took its old spot on
+   the right) — .pill's own inline-flex already puts it on its own line
+   after the block-level .picker-title, this just adds breathing room. */
+.picker-h > div > .pill { margin-top: 6px; }
 .picker-title {
   font-size: 28px; font-weight: 500;
   letter-spacing: -0.025em;
