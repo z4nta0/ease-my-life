@@ -954,10 +954,25 @@ const STATS_HELP_ITEMS = [
     id: 'statRemBreakdown', sel: '.stat-mk-rembreakdown', title: 'Reminders Breakdown',
     body: <>This breaks down every reminder for your selected range individually. You can switch between recent completions, total completions and skips to see each reminder from a different angle.</>,
   },
-  // ── Single-picker scope only ────────────────────────────────────────────
+  // ── Single-picker scope only — same 3-way split as the Pickers page's own
+  // Picker Name/Picker Type/Picker Explanation (see those entries' own
+  // comments), not a single combined highlight — Conditionals/Reminders
+  // scope has no equivalent block, so there's nothing to split there. ──
   {
-    id: 'pickerIdentity', sel: '.stat-picker-id', title: 'Picker Identity',
-    body: <>This shows which picker you're currently viewing stats for, along with its type and a short explanation of how it chooses.</>,
+    // padY: 2 — same 6px gap to the pill below as the Pickers page (see
+    // .stat-picker-id > .pill's own margin-top in styles2.css); the default
+    // 8px pad on each side would overlap by 10px otherwise.
+    id: 'pickerName', sel: '.stat-picker-id .picker-title', title: 'Picker Name', padY: 2,
+    body: <>This is the name of the currently selected picker.</>,
+  },
+  {
+    // padY: 2 — see pickerName's own comment, same 6px gap, same fix.
+    id: 'pickerTypePill', sel: '.stat-picker-id .pill--mode', title: 'Picker Type', padY: 2,
+    body: <>This shows the currently selected picker's type (Truly Random, Weighted, Dynamic Weighted, Ease Up, or Ease Down).</>,
+  },
+  {
+    id: 'pickerExplanation', sel: '.stat-picker-id .picker-hint', title: 'Picker Explanation',
+    body: <>This explains the currently selected picker's ruleset, including how it chooses an item and why you might pick this type over another.</>,
   },
   {
     id: 'pickerBreakdown', sel: '.stat-breakdown-card', title: 'Picker Breakdown',
