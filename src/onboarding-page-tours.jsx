@@ -366,6 +366,11 @@ const DATA_PAGE_TARGETS = {
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
+  typeFilter: {
+    sel: '.stat-scope-groups--type .picker-group-pill',
+    title: 'Type Filter',
+    body: <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the group filter and is extremely useful if you have created a lot of pickers.</>,
+  },
   pickersFilter: {
     sel: '.stat-scope-tabs .picker-tab',
     title: 'Pickers Filter',
@@ -662,6 +667,7 @@ const buildPageTourSteps = (pageId, actions) => {
   if (pageId === 'explore_data') {
     return [
       { ...DATA_PAGE_TARGETS.groupFilter, tab: 'data', primary: 'Next', back: true },
+      { ...DATA_PAGE_TARGETS.typeFilter, tab: 'data', primary: 'Next', back: true },
       { ...DATA_PAGE_TARGETS.pickersFilter, tab: 'data', primary: 'Next', back: true },
       { ...DATA_PAGE_TARGETS.remindersManager, tab: 'data', primary: 'Next', back: true },
       {

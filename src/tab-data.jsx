@@ -958,7 +958,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // gating pattern as tab-picker.jsx's own disableTourAddPicker.
   const tour = useEmlTour();
   const disableGroupFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 1;
-  const disablePickersFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 2;
+  const disablePickersFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 3;
   // "Edit your first item" tour's own Step 4 (Edit Picker Settings,
   // Controls expanded), Step 6 (Picker Items, an item row about to be
   // clicked), and Step 7 (Edit Item Settings, an item expanded) all want
