@@ -386,14 +386,25 @@ const DATA_PAGE_TARGETS = {
     title: 'View and Edit Reminders',
     body: <>This is where you can <b>view and edit all of your reminders, as well as create new ones</b>. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
   },
-  // Targets .data-list, not an individual .cat section — scope stays 'all'
-  // for the whole Data tour (nothing narrows it to one picker anymore, see
-  // this catalog's own header comment), so every picker card renders here,
-  // same as the Welcome Tour's own whole-list highlight on Today.
+  // Targets every .cat section (each picker/Conditionals/Reminders card),
+  // not the whole .data-list container — excludes the trailing "Create
+  // Picker" button (a plain .cat-create-btn sibling, not a .cat section),
+  // which gets its own createPicker step below instead. The union of every
+  // matched card's rect still reads as one continuous highlight spanning
+  // the whole list, same as the single-selector version did, just stopping
+  // short of the button beneath it. Scope stays 'all' for the whole Data
+  // tour (nothing narrows it to one picker anymore, see this catalog's own
+  // header comment), so every picker card renders here, same as the Welcome
+  // Tour's own whole-list highlight on Today.
   pickersManager: {
-    sel: '.data-list',
+    sel: '.data-list > .cat',
     title: 'View and Edit Pickers',
-    body: <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. This concludes the Data page tutorial, click Done when you are ready.</>,
+    body: <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
+  },
+  createPicker: {
+    sel: '.cat-create-btn',
+    title: 'Create New Picker',
+    body: <>This creates a new picker directly from this list, respecting the group, type and conditional filters if they are used. Fill in its name and group, then use the Add Items button to add at least two items. Once it has them, the Save button adds it to the list with all other pickers.</>,
   },
 };
 
@@ -677,16 +688,17 @@ const buildPageTourSteps = (pageId, actions) => {
       { ...DATA_PAGE_TARGETS.pickersFilter, tab: 'data', primary: 'Next', back: true },
       { ...DATA_PAGE_TARGETS.remindersManager, tab: 'data', primary: 'Next', back: true },
       {
-        ...DATA_PAGE_TARGETS.pickersManager, tab: 'data', primary: 'Done', back: true,
-        // .data-list can be much taller than the viewport once every picker
-        // card renders (6 real disposable copies plus whatever the user has
-        // of their own) — the normal reserve-space padding would push the
-        // target's own bottom edge further past the fold instead of
-        // helping, exactly backwards. Pins the coach to the top and lets
-        // the target run off the bottom instead — see coachAtTop's own doc
-        // comment in onboarding-tour-runner.jsx.
+        ...DATA_PAGE_TARGETS.pickersManager, tab: 'data', primary: 'Next', back: true,
+        // .data-list > .cat can still union to a rect much taller than the
+        // viewport once every picker card renders (6 real disposable copies
+        // plus whatever the user has of their own) — the normal reserve-
+        // space padding would push the target's own bottom edge further
+        // past the fold instead of helping, exactly backwards. Pins the
+        // coach to the top and lets the target run off the bottom instead —
+        // see coachAtTop's own doc comment in onboarding-tour-runner.jsx.
         coachAtTop: true,
       },
+      { ...DATA_PAGE_TARGETS.createPicker, tab: 'data', primary: 'Done', back: true },
     ];
   }
   if (pageId === 'explore_settings') {
