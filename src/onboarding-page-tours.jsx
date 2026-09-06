@@ -404,7 +404,7 @@ const DATA_PAGE_TARGETS = {
   createPicker: {
     sel: '.cat-create-btn',
     title: 'Create New Picker',
-    body: <>This creates a new picker directly from this list, respecting the group, type and conditional filters if they are used. Fill in its name and group, then use the Add Items button to add at least two items. Once it has them, the Save button adds it to the list with all other pickers.</>,
+    body: <>This creates a new picker directly from this list, respecting the group, type and conditional filters if they are used. This concludes the Data page tutorial, click Done when you are ready.</>,
   },
 };
 
