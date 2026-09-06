@@ -225,6 +225,10 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
     const next = new Map();
     pills.forEach((p) => next.set(p.dataset.g, p.offsetLeft));
     groupFlipFirst.current = next;
+    // Same pin-to-front reorder as the conditional rail above — the selected
+    // group is now the leftmost pill, so glide the rail back to the start so
+    // it's visible instead of leaving it scrolled to wherever it was.
+    if (el.scrollLeft > 1) el.scrollTo({ left: 0, behavior: reduceMotion() ? 'auto' : 'smooth' });
   }, [pk.group]);
   // Scroll-edge fade on the group pills (only visible when they scroll on small
   // screens) — toggles .at-start/.at-end like the filter-bar pill rails.
