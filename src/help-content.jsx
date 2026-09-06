@@ -957,7 +957,7 @@ const DATA_HELP_ITEMS = [
   },
   {
     id: 'typeFilter', sel: '.stat-scope-groups--type .picker-group-pill', title: 'Type Filter',
-    body: <>This filters the pickers row below by type — picker mode (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), or Conditionals/Reminders — independent of the Group filter above.</>,
+    body: <>This filters the pickers row below by type. You can select picker mode (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), Conditionals or Reminders, independent of the Group and Conditional filters with all three narrowing the row together.</>,
   },
   {
     id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Show Selector',
