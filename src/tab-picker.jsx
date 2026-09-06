@@ -1977,7 +1977,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
             <h1 className="section-title"><span className="picker-title-accent">Easing</span> your life, one pick at a time.</h1>
           </div>
         </div>
-        <p className="section-sub picker-h-sub">Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, add to its list of items, or edit an existing one's settings. Conditionals and reminders are managed in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>.</p>
+        <p className="section-sub picker-h-sub">Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, add to its list of items, or edit an existing picker and its items' settings. Conditionals and reminders can be managed in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data page</button>.</p>
       </header>
       <div className="picker-body" style={tour.reserveTop ? { paddingTop: tour.reserveTop } : undefined}>
       <div className="stat-filters ob-picker-content">

@@ -941,7 +941,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
             <h1 className="section-title">Behind the scenes, of your <span className="stat-title-accent">eased</span> life.</h1>
           </div>
         </div>
-        <p className="section-sub">All app-wide settings can be found here relating to the app's appearance, the Daily generator, holiday preferences, app data import, export, and deletion, user account, about and legal. All conditionals, reminders, pickers and their items' settings can found in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>.</p>
+        <p className="section-sub">All app-wide settings can be found here relating to the app's appearance, the Daily generator, holiday preferences, app data import, export, and deletion, user account, about and legal. All conditionals, reminders, pickers and their items' settings can found in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data page</button>.</p>
       </header>
 
       <div className="settings-layout">

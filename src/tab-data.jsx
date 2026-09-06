@@ -1306,8 +1306,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
             <h1 className="section-title">The knobs and levers, that <span className="stat-title-accent">ease</span> your life.</h1>
           </div>
         </div>
-        <p className="section-sub">All your created items can be edited here, including conditionals, reminders, pickers and all of their items. You can use the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('stats')}>Stats tab</button> to view how they are performing and then adjust their numbers here to get them exactly where you want them.</p>
-        <p className="section-sub"><strong>WARNING:</strong> Manually changing any of these values will affect the Stats tab's accuracy. Minor or infrequent changes will have an almost negligible effect but major or frequent changes will definitely skew the Stats tab's accuracy.</p>
+        <p className="section-sub">All your created items can be edited here, including conditionals, reminders, pickers and all of their items. You can use the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('stats')}>Stats page</button> to view how they are performing and then adjust their numbers here to get them exactly where you want them.</p>
+        <p className="section-sub"><strong>WARNING:</strong> Manually changing any of these values will affect the Stats page's accuracy. Minor or infrequent changes will have an almost negligible effect but major or frequent changes will definitely skew the Stats page's accuracy.</p>
       </header>
 
       {/* ── Filters: group + type pills + picker boxes (mirrors the Pickers +
