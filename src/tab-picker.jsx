@@ -1692,6 +1692,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   ));
   const [creating, setCreating] = React.useState(false);
   const [groupFilter, setGroupFilter] = React.useState('all');
+  const [typeFilter, setTypeFilter] = React.useState('all');
   const active = state.pickers.find((p) => p.id === activeId);
   // Help mode (see help-mode.jsx) — needs real pickers of every mode plus a
   // conditional-gated one to point at, so a disposable copy set is seeded
@@ -1770,11 +1771,25 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
     return seen.sort((a, b) => a.localeCompare(b));
   }, [state.pickers]);
 
-  // The picker strip is scoped to the selected group ("all" shows everything).
-  // Hidden pickers (see store.jsx's `hidden` flag) never appear here.
+  // Distinct modes actually in use, alphabetical by their own display label —
+  // the Type filter bar's own pills ("All" is pinned first, same as Group).
+  // No Conditionals/Reminders pills here — unlike Stats/Data, this page has
+  // no management section for either, so Type here is purely a picker-mode
+  // filter.
+  const existingModes = React.useMemo(() => {
+    const seen = new Set();
+    for (const p of state.pickers) if (!p.hidden) seen.add(p.mode);
+    return [...seen].sort((a, b) => MODES[a].label.localeCompare(MODES[b].label));
+  }, [state.pickers]);
+
+  // The picker strip is scoped to the selected group AND type (independent
+  // filters — "all" on either leaves that axis unfiltered). Hidden pickers
+  // (see store.jsx's `hidden` flag) never appear here.
   const visiblePickers = React.useMemo(() => (
-    state.pickers.filter((p) => !p.hidden && (groupFilter === 'all' || p.group === groupFilter))
-  ), [state.pickers, groupFilter]);
+    state.pickers.filter((p) => !p.hidden
+      && (groupFilter === 'all' || p.group === groupFilter)
+      && (typeFilter === 'all' || p.mode === typeFilter))
+  ), [state.pickers, groupFilter, typeFilter]);
   // Same alphabetical order the Show row itself renders in (below) — reused
   // so "jump to the first card" always agrees with what's actually shown
   // first, not visiblePickers' own storage-array order.
@@ -1782,31 +1797,32 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
     [...visiblePickers].sort((a, b) => a.name.localeCompare(b.name))
   ), [visiblePickers]);
 
-  // Keep the selection coherent with the filter. Two reasons this can fire:
-  // the group filter itself just changed — always land on the first card in
-  // the new Show row, matching it exactly rather than only reacting once the
-  // OLD selection happens to fall out of view (e.g. switching from a wide
-  // group to a narrower one that still happens to contain the same active
-  // picker used to leave it stranded, not jumped to the new first card) — or
-  // the picker list changed for some unrelated reason (e.g. the active
-  // picker got deleted), in which case only jump when the current selection
-  // actually became invalid.
-  const prevGroupFilterRef = React.useRef(groupFilter);
+  // Keep the selection coherent with the filters. Reasons this can fire:
+  // either filter itself just changed — always land on the first card in the
+  // new Show row, matching it exactly rather than only reacting once the OLD
+  // selection happens to fall out of view (e.g. switching from a wide group
+  // to a narrower one that still happens to contain the same active picker
+  // used to leave it stranded, not jumped to the new first card) — or the
+  // picker list changed for some unrelated reason (e.g. the active picker got
+  // deleted), in which case only jump when the current selection actually
+  // became invalid.
+  const prevFiltersRef = React.useRef({ groupFilter, typeFilter });
   React.useEffect(() => {
     if (creating) return;
-    const groupChanged = prevGroupFilterRef.current !== groupFilter;
-    prevGroupFilterRef.current = groupFilter;
-    if (groupChanged || !visiblePickers.some((p) => p.id === activeId)) {
+    const filtersChanged = prevFiltersRef.current.groupFilter !== groupFilter || prevFiltersRef.current.typeFilter !== typeFilter;
+    prevFiltersRef.current = { groupFilter, typeFilter };
+    if (filtersChanged || !visiblePickers.some((p) => p.id === activeId)) {
       setActiveId(sortedVisiblePickers[0]?.id);
     }
-  }, [groupFilter, visiblePickers, sortedVisiblePickers, activeId, creating]);
+  }, [groupFilter, typeFilter, visiblePickers, sortedVisiblePickers, activeId, creating]);
 
   // Scroll-aware edge fades on the tab strip: toggle .at-start / .at-end
   // so the mask gradient only fades the side that has more content.
   const tabsRef = React.useRef(null);
   const groupsRef = React.useRef(null);
+  const typesRef = React.useRef(null);
   React.useEffect(() => {
-    const els = [tabsRef.current, groupsRef.current].filter(Boolean);
+    const els = [tabsRef.current, groupsRef.current, typesRef.current].filter(Boolean);
     const cleanups = els.map((el) => {
       const update = () => {
         const scrollable = el.scrollWidth - el.clientWidth > 1;
@@ -1822,7 +1838,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
       return () => { el.removeEventListener('scroll', update); ro.disconnect(); };
     });
     return () => cleanups.forEach((c) => c());
-  }, [state.pickers.length, existingGroups.length, groupFilter, visiblePickers.length]);
+  }, [state.pickers.length, existingGroups.length, existingModes.length, groupFilter, typeFilter, visiblePickers.length]);
 
   const scrollTop = () => {
     const sc = document.querySelector('.main');
@@ -1906,9 +1922,33 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
           </div>
         </div>
       )}
+      {existingModes.length > 1 && (
+        <div className="stat-filter-row">
+          <span className="stat-filter-lbl">Type</span>
+          <div className="picker-groups" ref={typesRef} role="tablist" aria-label="Filter pickers by type">
+            <button type="button" role="tab" aria-selected={typeFilter === 'all'}
+                    className={`picker-group-pill ${typeFilter === 'all' ? 'is-on' : ''}`}
+                    onClick={() => { setTypeFilter('all'); setCreating(false); setActiveId(state.pickers.find((p) => !p.hidden)?.id); }}>
+              All
+              <span className="picker-group-count">{state.pickers.filter((p) => !p.hidden).length}</span>
+            </button>
+            {existingModes.map((m) => {
+              const n = state.pickers.filter((p) => p.mode === m && !p.hidden).length;
+              return (
+                <button key={m} type="button" role="tab" aria-selected={typeFilter === m}
+                        className={`picker-group-pill ${typeFilter === m ? 'is-on' : ''}`}
+                        onClick={() => setTypeFilter(m)}>
+                  {MODES[m].label}
+                  <span className="picker-group-count">{n}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
       <div className="stat-filter-row">
         <span className="stat-filter-lbl">Show</span>
-        <div className="picker-tabs" ref={tabsRef} key={groupFilter}>
+        <div className="picker-tabs" ref={tabsRef} key={groupFilter + '|' + typeFilter}>
           {tutorialsInProgress ? (
             // Distinct from disableTourAddPicker below: this tooltip's wording
             // ("until all tutorials are completed") would be misleading during
