@@ -319,8 +319,8 @@ const STATS_PAGE_TARGETS = {
   // they're really one "what am I looking at" choice.
   pickersFilter: {
     sel: '.stat-scope-tabs .picker-tab',
-    title: 'Pickers Filter',
-    body: <>This will allow you to <b>narrow your selection to specific pickers or reminders</b>, or you can view everything all at once.</>,
+    title: 'Show Filter',
+    body: <>This will allow you to <b>narrow your selection to specific pickers, reminders or conditionals</b>, or you can view everything all at once.</>,
   },
   // The pills specifically, not their .stat-filter-pills--seg container —
   // that container stretches to the FULL width of its row (.stat-filter-row's
