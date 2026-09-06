@@ -1646,7 +1646,13 @@ function TabData({ state, actions, onHome, onNavTab }) {
                          actions.removePicker(pk.id); setRemovingPickerId(null);
                        }
                      }}
-                     style={{ animationDelay: (isDraft ? 0 : pkIndex * 45) + 'ms' }}>
+                     style={{
+                       animationDelay: (isDraft ? 0 : pkIndex * 45) + 'ms',
+                       // Leaves the same gap the .data-list itself uses between
+                       // sections above the scroll-to-top below, instead of
+                       // butting flush against the viewport's edge.
+                       ...(isDraft ? { scrollMarginTop: 14 } : {}),
+                     }}>
               <header className="cat-h"
                       onClick={(e) => { if (!isDraft && !disableEditTourPickerHeader && !e.target.closest('button')) toggle(pk.id); }}>
                 <button type="button" className="cat-h-l" aria-expanded={open}
