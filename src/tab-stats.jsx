@@ -1079,16 +1079,14 @@ function TabStats({ state, actions, onHome, onNavTab }) {
       </div>
 
       <div className="tab-fade stat-body ob-stat-content" key={scope + '|' + range}>
-      {/* ── Picker identity (single-picker scope) — mirrors the Pickers tab
-          header: "Picker" + colored mode pill, then name, then the mode's
-          description. ── */}
+      {/* ── Picker identity (single-picker scope) — mirrors the Pickers page
+          header: "Picker" kicker, then name, then the mode pill below it,
+          then the mode's description. ── */}
       {isPicker && pickerObj && (
         <div className="stat-picker-id">
-          <div className="stat-picker-id-top">
-            <span className="kicker">Picker</span>
-            <Pill tone="mode">{(MODES[pickerObj.mode] || {}).label || pickerObj.mode}</Pill>
-          </div>
+          <span className="kicker">Picker</span>
           <h2 className="picker-title">{pickerObj.name}</h2>
+          <Pill tone="mode">{(MODES[pickerObj.mode] || {}).label || pickerObj.mode}</Pill>
           {(() => { const h = (MODES[pickerObj.mode] || {}).hint; return Array.isArray(h)
             ? h.map((para, pi) => <p key={pi} className="picker-hint">{para}</p>)
             : <p className="picker-hint">{h}</p>; })()}

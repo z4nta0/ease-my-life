@@ -913,10 +913,11 @@
   padding: 14px 2px;
 }
 
-/* Single-picker identity block — same vocabulary as the Pickers tab header. */
+/* Single-picker identity block — same vocabulary (and now the same
+   kicker/name/pill stacking order) as the Pickers page header. */
 .stat-picker-id { display: flex; flex-direction: column; gap: 2px; }
-.stat-picker-id-top { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
 .stat-picker-id .picker-title { margin: 6px 0 0; }
+.stat-picker-id > .pill { margin-top: 4px; }
 .stat-picker-id .picker-hint { margin: 8px 0 0; }
 
 /* Breakdown: stacked proportion bar + legend (pick source, reminder type). */
