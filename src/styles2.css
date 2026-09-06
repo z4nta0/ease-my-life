@@ -1396,6 +1396,12 @@ button.heat-cell.is-sel {
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 .cat-create-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+/* Its own color/border/background all override the browser's default
+   disabled dimming, so without this a disabled state (the Data tour's own
+   Step 7, see tab-data.jsx's disableCreatePicker) looked identical to a
+   clickable one. pointer-events:none also blocks :hover from reacting while
+   disabled, on top of the disabled attribute already blocking the click. */
+.cat-create-btn:disabled { opacity: 0.5; cursor: default; pointer-events: none; }
 
 .cat-h {
   display: flex; justify-content: space-between; align-items: center;

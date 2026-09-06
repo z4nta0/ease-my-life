@@ -1008,6 +1008,10 @@ function TabData({ state, actions, onHome, onNavTab }) {
   const tour = useEmlTour();
   const disableGroupFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 1;
   const disablePickersFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 3;
+  // Step 7 (Create Picker) only points at the button — actually clicking it
+  // opens a whole new draft form outside anything this tour knows about or
+  // ever cleans up, which crashes the tour rather than just derailing it.
+  const disableCreatePicker = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 6;
   // "Edit your first item" tour's own Step 4 (Edit Picker Settings,
   // Controls expanded), Step 6 (Picker Items, an item row about to be
   // clicked), and Step 7 (Edit Item Settings, an item expanded) all want
@@ -1899,7 +1903,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
             time, same as the Conditionals manager's own "one draft at a
             time" guard). */}
         {!newDraftId && typeFilter !== 'conditionals' && typeFilter !== 'reminders' && (
-          <button type="button" className="cat-create-btn" onClick={startNewPicker}>
+          <button type="button" className="cat-create-btn" disabled={disableCreatePicker} onClick={startNewPicker}>
             <Icon name="plus" size={14} /> Create Picker
           </button>
         )}
