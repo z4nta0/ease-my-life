@@ -1203,6 +1203,17 @@ function TabData({ state, actions, onHome, onNavTab }) {
     setNewDraftId(null);
     setDraftItemsOpen(false);
   };
+  // Scrolls the freshly-created draft card to the top of the viewport — its
+  // form is tall enough that "nearest" (as the reminder/conditional editors
+  // use below their own row) would still leave most of it below the fold.
+  // No animation to wait for first: the draft's own Collapses are forced
+  // `instant` (see PickerControls/ui.jsx), so its final layout height is
+  // already correct by the time this effect runs post-commit.
+  const draftCardRef = React.useRef(null);
+  React.useEffect(() => {
+    if (!newDraftId || !draftCardRef.current) return;
+    draftCardRef.current.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
+  }, [newDraftId]);
   // Shared picker-item editor (defined in tab-today, reused here so Today and
   // Data stay exact copies — same pattern as the Reminders editor).
   const ItemEditor = EntryEditor;
@@ -1628,7 +1639,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
             setOpenItemId((cur) => cur === id ? null : cur);
           };
           return (
-            <section key={pk.id} data-picker-id={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''} ${highlightEditTourPickerHeaders ? 'ob-tour-pulse' : ''}`}
+            <section key={pk.id} data-picker-id={pk.id} ref={isDraft ? draftCardRef : undefined}
+                     className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''} ${highlightEditTourPickerHeaders ? 'ob-tour-pulse' : ''}`}
                      onAnimationEnd={(e) => {
                        if (e.target === e.currentTarget && removingPickerId === pk.id) {
                          actions.removePicker(pk.id); setRemovingPickerId(null);
