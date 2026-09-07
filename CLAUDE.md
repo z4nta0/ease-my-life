@@ -163,6 +163,160 @@ outside the normal React import graph.
   timed to the animation's own keyframe durations — see the comment block
   there before changing the animation timing.
 
+## Code formatting rules
+
+Blank-line conventions for JS/JSX in this repo, being rolled out gradually
+(started with `src/app.jsx` as the reference implementation — consult it for
+worked examples of every rule below before guessing). "N blank lines" always
+means N visually-empty rows, i.e. N+1 newline characters between two lines
+of content — not N newline characters.
+
+### File boundaries
+- Every file starts with exactly 3 blank lines before its first real line,
+  and ends with exactly 3 blank lines after its last real line.
+
+### Top-level (module scope)
+- Between any two distinct top-level declarations (a comment block, a
+  `const`, a `function`, an `export` statement, ...) always use 3 blank
+  lines — regardless of how related they seem (e.g. a component and a
+  constant it reads from still get 3, not fewer, purely because they're
+  both top-level).
+- Import statements are the one exception within top-level scope: no blank
+  lines between individual `import` lines — they're one tight block. The
+  gap between that whole block and whatever follows it is still 3.
+
+### Comments
+- A comment sits glued (0 blank lines) to the specific line/block it
+  describes — never insert a blank line between a comment and its target.
+- If a comment's own target is genuinely ambiguous (unclear what it's
+  actually describing), don't guess a glue point — treat it as its own
+  freestanding unit, with whatever blank-line count applies on both sides
+  given its surroundings (3 if it sits between top-level declarations).
+
+### Arrays and objects
+- No blank lines between entries within the same array/object literal
+  (e.g. the rows of a plain config array) — but directly after the opening
+  `[`/`{` and directly before the closing `]`/`}`, use 2 blank lines, same
+  as a function body (below). This only applies when the literal already
+  spans multiple lines — a single-line literal (e.g. one inline `{ id, label }`
+  passed as a prop) needs no padding.
+
+### Functions
+This means ANY function that isn't a one-line declaration — named
+functions, arrow functions, and inline callbacks passed to hooks like
+`useEffect`/`useState`'s lazy initializer/`useCallback`/`useMemo`, no matter
+how short the body is.
+- Directly after the opening `{` — or the opening `(` for an implicit-return
+  arrow like `() => ( expr )`, which counts as a function body too — insert
+  2 blank lines before the first line inside. Directly before the closing
+  `}`/`)`, insert 2 blank lines after the last line inside.
+- A function that fits entirely on one line (e.g.
+  `const onChange = (e) => setSystemDark(e.matches);`, or a one-line cleanup
+  `return () => { ro.disconnect(); };`) is exempt — there's nothing to pad.
+
+### if/else and while statements
+- Same padding as functions — 2 blank lines after the opening `{` and 2
+  before the closing `}` — but only when the block actually spans multiple
+  lines. A one-line body (`if (!nav) return;`, or even
+  `if (!btn) { setInd(null); return; }` written on one line) is exempt and
+  stays exactly as compact as it already is.
+- A short "declare a value, then immediately guard-check it and return
+  early" pair (e.g. `const prev = x.current; if (prev === next) return;`)
+  counts as one small isolated unit: 1 blank line between the two lines
+  internally, but 3 blank lines on both sides separating that whole pair
+  from whatever comes before/after it — even if a neighboring pair looks
+  structurally identical (e.g. a second `declare + guard` pair checking a
+  completely different, independent condition right after it also gets 3
+  before it, not folded into the same unit).
+
+### Return statements
+- A `return` that occupies its own line (not a `return;`/`return x;` fused
+  into a compact one-line guard clause like `if (!x) return;`) always gets
+  3 blank lines directly before it, regardless of whether the returned
+  value itself is one line or many. This is the one case where "3" shows up
+  inside a function body, not just between top-level declarations.
+- If the enclosing function/block's own closing brace comes right after the
+  return statement, put 2 blank lines between the return's own close and
+  that enclosing `}`.
+- A multi-line/parenthesized return (most commonly a JSX return,
+  `return (\n  <div>...</div>\n);`) additionally follows the function
+  padding rule for its own content: 2 blank lines after the opening `(` and
+  2 before the closing `)`.
+- Single-line early-return guards (`if (!btn) { setInd(null); return; }`)
+  are exempt from the "3 before" rule entirely — they're not a standalone
+  return statement, just an inline guard, so they follow the ordinary
+  relatedness tiering below instead.
+
+### JSX
+- Treat a JSX element that has actual children spanning multiple lines the
+  same as a function/array/object: 2 blank lines directly after its opening
+  tag and 2 directly before its closing tag. This includes a
+  `{condition && (\n  <Foo />\n)}` multi-line conditional wrapper — the `(`
+  and `)` count as an opening/closing pair too.
+  - Exception: a self-closing element whose only multi-line aspect is its
+    own wrapped attributes (no children at all, e.g.
+    `<button className="x"\n        onClick={...}>`) needs no padding
+    between its attribute lines — there's no "inside" to pad.
+- Between sibling JSX children, apply the same related/somewhat-related/
+  unrelated tiering as regular code (see below). One common case: a run of
+  visually-repetitive sibling elements of the exact same kind (e.g. the
+  several `<path>` elements making up one SVG icon, or a handful of mutually
+  exclusive `{active === 'x' && <TabX />}` branches selecting a page) is
+  usually "related" (1), not the 3-blank-line default reserved for
+  genuinely different elements.
+
+### Variable declarations
+- Every variable gets its own `const`/`let` on its own row — a single
+  `const a = foo(), b = bar();` combining multiple declarations must be
+  split into separate statements, each on its own line (this is a real,
+  intentional code change, not just whitespace — verify nothing depends on
+  the original combined-statement ordering/scoping before splitting).
+  Space the resulting lines using the normal relatedness tiering below
+  (typically 1, "related," when one was born from the same combined
+  statement as the other).
+
+### General relatedness tiering
+Used for spacing between statements inside a function/block body, and
+between JSX siblings. Three tiers:
+- **Related (1 blank line)**: tightly, directly connected — a value used on
+  the very next line; two lines that are literally the same *kind* of code
+  working toward the same immediate step (e.g. two plain `const`
+  declarations where the second directly consumes the first; two sibling
+  `useState` calls backing the same visual feature; parallel/mutually-
+  exclusive branches of one conditional).
+- **Somewhat related (2 blank lines)**: connected, but via a different
+  specific mechanism or a different *kind* of code, even when the
+  underlying data is identical. Two recurring shapes:
+  - Different mechanism, same overarching goal — e.g. a `ResizeObserver`
+    call and a `window.addEventListener('resize', ...)` call right after
+    it both exist to trigger the same re-measurement, but they're
+    different specific tools, so 2, not 1.
+  - Same data, different *kind* of code construct — a plain variable/state
+    declaration (or a function's own definition) immediately followed by a
+    function/effect/if-block/function-call that operates on that exact
+    same data (or the function itself being invoked) is 2, not 1, purely
+    because a plain declaration and a function/block/call are inherently
+    different *kinds* of code. This applies in both directions (declare →
+    block, or block → declare) and also to "define a function, then call
+    it" pairs. Only two instances of the *same kind* of code (e.g. two
+    plain declarations, or two sibling effects) can be "1".
+  - The same logic applies to two `useEffect`s specifically: 1 if they
+    handle the exact same data, 2 if they operate on different (even if
+    related/sibling) data while doing a similar kind of action, 3 otherwise.
+- **Unrelated (3 blank lines)**: no real shared data and no real shared
+  purpose — including cases that only *look* structurally parallel. Two
+  independent "declare + guard clause" pairs that happen to share the same
+  shape but check entirely unrelated conditions (e.g. one checking that a
+  DOM ref exists, the next checking that a *different* DOM ref exists) are
+  still 3 apart, not 1 or 2, because what they actually check is unrelated.
+  When judging this, check for real data/behavior overlap (e.g. "does the
+  effect after this ref actually reference it in its own body or dependency
+  array?") rather than assuming a topical-sounding comment means they're
+  related — several calls in this file were revised from 2 down to 3 after
+  actually checking for shared data and finding none.
+
+
+
 ## Known repo quirk
 
 There is a stray duplicate `store.jsx` at the repo root (identical to
