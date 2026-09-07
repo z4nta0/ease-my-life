@@ -180,29 +180,41 @@ const PICKER_PAGE_TARGETS = {
   // container stretches to the FULL width of its row (.stat-filter-row's
   // own align-items: stretch), well past the pills' own content width, so
   // highlighting it left a big undimmed gap of empty background after the
-  // last visible pill.
+  // last visible pill. Excludes the new Type filter row (.picker-groups--type
+  // — same base class, its own separate row), which would otherwise widen
+  // this step's highlight down through it too.
   groupFilter: {
-    sel: '.picker-groups .picker-group-pill',
+    sel: '.picker-groups:not(.picker-groups--type) .picker-group-pill',
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
-  // Excludes the "Add new picker" button (now the first tab, not the last)
-  // — Step 3 (above) covers that on its own, and this step's own copy is
+  typeFilter: {
+    sel: '.picker-groups--type .picker-group-pill',
+    title: 'Type Filter',
+    body: <>This will allow you to <b>further filter the pickers row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
+  },
+  // Excludes the "Add New Picker" button (now the first tab, not the last)
+  // — Step 4 (above) covers that on its own, and this step's own copy is
   // entirely about selecting an EXISTING picker.
   pickerSelection: {
     sel: '.picker-tabs .picker-tab:not(.picker-tab--add)',
     title: 'Picker Selection',
     body: <>This will <b>allow you to select a specific picker</b>, in order to initiate a manual picker generation as well as edit or delete its items.</>,
   },
+  editPicker: {
+    sel: '.picker-edit-btn',
+    title: 'Edit Picker',
+    body: <>This opens the same form used to create a picker, pre-filled with this picker's current settings. You can <b>adjust its name, group, type, daily generator schedule, or conditional attachment</b>. Its items aren&rsquo;t edited here, but you can use this picker's own item list below or the Data tab for that.</>,
+  },
   createNewPickers: {
     sel: '.picker-tab--add',
     title: 'Create New Pickers',
-    body: <>The "Add new picker" button will <b>open up a form that allows you to create new pickers</b>. We will not include this as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished.</>,
+    body: <>The "Add New Picker" button will <b>open up a form that allows you to create new pickers</b>. This will not be included as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished.</>,
   },
   // Two-phase highlight, both via the same fallback `sel` (findTargets tries
   // each comma-separated selector in turn and uses the first that matches —
   // see its own comment in onboarding-tour-runner.jsx). Before the click,
-  // .pv-act--pick:not(.is-busy) matches the idle "Pick one" button, so the
+  // .pv-act--pick:not(.is-busy) matches the idle "Pick One" button, so the
   // pulse (.ob-spot.is-pulsing) lands tight on the actual button instead of
   // the whole window. The button alone doesn't disappear until the pick
   // actually lands (phase flips to 'done'/'sent' — see tab-picker.jsx) —
@@ -224,13 +236,13 @@ const PICKER_PAGE_TARGETS = {
     clickSel: '.pv-act--pick',
     pulseSel: '.pv-act--pick:not(.is-busy)',
     title: 'Manual Generation',
-    body: <>The "Pick one" button will <b>allow you to run a manual pick generation for your selected picker</b>, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick one" button now to see how this works.</>,
+    body: <>The "Pick One" button will <b>allow you to run a manual pick generation for your selected picker</b>, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick One" button now to see how this works.</>,
   },
   // Same two-phase highlight as manualGeneration above: before the click,
   // .pv-act--send:not(.is-sent) matches the real Send to Today button, so
   // the pulse lands tight on it instead of the whole window. Clicking it
   // flips phase to 'sent' SYNCHRONOUSLY (see sendToToday in tab-picker.jsx
-  // — unlike Pick one's spin, there's no separate busy/running phase to
+  // — unlike Pick One's spin, there's no separate busy/running phase to
   // exclude), which adds .is-sent immediately, so the fallback to framing
   // .picker-run kicks in right on click. That's deliberate, not just
   // incidental: this step's own advanceDelay (see its call site below)
@@ -260,7 +272,7 @@ const PICKER_PAGE_TARGETS = {
   // (tab-picker.jsx's own disablePoolItemButtons, gated on this exact
   // tourId+step) — narrating what they do is the point, not inviting the
   // user to act on a disposable tutorial picker's real items. Excludes
-  // "+ Add item" below (.pool-items, not .picker-pool) — that gets its own
+  // "+ Add Item" below (.pool-items, not .picker-pool) — that gets its own
   // step next.
   pickerItems: {
     sel: '.pool-items',
@@ -294,18 +306,26 @@ const STATS_TOUR_PRESELECT_PICKER_ID = OB_EXAMPLE.id;
 // only the "main sections" per instruction — not every filter/card gets its
 // own step yet.
 const STATS_PAGE_TARGETS = {
+  // Excludes the Type filter row (.stat-scope-groups--type — same base
+  // class, its own separate row), which would otherwise widen this step's
+  // highlight down through it too.
   groupFilter: {
-    sel: '.stat-scope-groups .picker-group-pill',
+    sel: '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill',
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
+  },
+  typeFilter: {
+    sel: '.stat-scope-groups--type .picker-group-pill',
+    title: 'Type Filter',
+    body: <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
   },
   // All/Conditionals/Reminders/individual pickers all render as tabs in the
   // same row — one combined step rather than splitting them out, since
   // they're really one "what am I looking at" choice.
   pickersFilter: {
     sel: '.stat-scope-tabs .picker-tab',
-    title: 'Pickers Filter',
-    body: <>This will allow you to <b>narrow your selection to specific pickers or reminders</b>, or you can view everything all at once.</>,
+    title: 'Show Filter',
+    body: <>This will allow you to <b>narrow your selection to specific pickers, reminders or conditionals</b>, or you can view everything all at once.</>,
   },
   // The pills specifically, not their .stat-filter-pills--seg container —
   // that container stretches to the FULL width of its row (.stat-filter-row's
@@ -343,14 +363,22 @@ const STATS_PAGE_TARGETS = {
 // LATER step's own target (e.g. Reminders, which only shows at scope 'all')
 // unable to find anything, since nothing here resets it back afterward.
 const DATA_PAGE_TARGETS = {
+  // Excludes the Type filter row (.stat-scope-groups--type — same base
+  // class, its own separate row), which would otherwise widen this step's
+  // highlight down through it too.
   groupFilter: {
-    sel: '.stat-scope-groups .picker-group-pill',
+    sel: '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill',
     title: 'Group Filter',
     body: <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
   },
+  typeFilter: {
+    sel: '.stat-scope-groups--type .picker-group-pill',
+    title: 'Type Filter',
+    body: <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the group filter and is extremely useful if you have created a lot of pickers.</>,
+  },
   pickersFilter: {
     sel: '.stat-scope-tabs .picker-tab',
-    title: 'Pickers Filter',
+    title: 'Show Filter',
     body: <>This will allow you to <b>further narrow exactly what you want to view and edit</b>.</>,
   },
   remindersManager: {
@@ -358,14 +386,25 @@ const DATA_PAGE_TARGETS = {
     title: 'View and Edit Reminders',
     body: <>This is where you can <b>view and edit all of your reminders, as well as create new ones</b>. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
   },
-  // Targets .data-list, not an individual .cat section — scope stays 'all'
-  // for the whole Data tour (nothing narrows it to one picker anymore, see
-  // this catalog's own header comment), so every picker card renders here,
-  // same as the Welcome Tour's own whole-list highlight on Today.
+  // Targets every .cat section (each picker/Conditionals/Reminders card),
+  // not the whole .data-list container — excludes the trailing "Create
+  // Picker" button (a plain .cat-create-btn sibling, not a .cat section),
+  // which gets its own createPicker step below instead. The union of every
+  // matched card's rect still reads as one continuous highlight spanning
+  // the whole list, same as the single-selector version did, just stopping
+  // short of the button beneath it. Scope stays 'all' for the whole Data
+  // tour (nothing narrows it to one picker anymore, see this catalog's own
+  // header comment), so every picker card renders here, same as the Welcome
+  // Tour's own whole-list highlight on Today.
   pickersManager: {
-    sel: '.data-list',
+    sel: '.data-list > .cat',
     title: 'View and Edit Pickers',
-    body: <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. This concludes the Data page tutorial, click Done when you are ready.</>,
+    body: <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
+  },
+  createPicker: {
+    sel: '.cat-create-btn',
+    title: 'Create New Picker',
+    body: <>This creates a new picker directly from this list, respecting the group, type and conditional filters if they are used. This concludes the Data page tutorial, click Done when you are ready.</>,
   },
 };
 
@@ -540,10 +579,12 @@ const buildPageTourSteps = (pageId, actions) => {
   if (pageId === 'explore_pickers') {
     return [
       { ...PICKER_PAGE_TARGETS.groupFilter, tab: 'picker', primary: 'Next', back: true },
+      { ...PICKER_PAGE_TARGETS.typeFilter, tab: 'picker', primary: 'Next', back: true },
       {
         ...PICKER_PAGE_TARGETS.createNewPickers, tab: 'picker', primary: 'Next', back: true,
       },
       { ...PICKER_PAGE_TARGETS.pickerSelection, tab: 'picker', primary: 'Next', back: true },
+      { ...PICKER_PAGE_TARGETS.editPicker, tab: 'picker', primary: 'Next', back: true },
       {
         ...PICKER_PAGE_TARGETS.manualGeneration, tab: 'picker', primary: 'Next', back: true, requireClick: true,
         // .picker-run (stage + actions) can run taller than a short viewport
@@ -554,7 +595,7 @@ const buildPageTourSteps = (pageId, actions) => {
         // Confirmed live: without this, the coach overlapped the real Pick
         // one button on an iPhone SE-sized viewport.
         coachAtTop: true,
-        // Pick one kicks off the multi-second spin animation — its result
+        // Pick One kicks off the multi-second spin animation — its result
         // (Step 6's own target) isn't ready the instant the click fires.
         // Stay on THIS step's own already-resolved coach/highlight for the
         // whole wait instead of advancing into a blank "not found yet" dim
@@ -595,6 +636,7 @@ const buildPageTourSteps = (pageId, actions) => {
   if (pageId === 'explore_stats') {
     return [
       { ...STATS_PAGE_TARGETS.groupFilter, tab: 'stats', primary: 'Next', back: true },
+      { ...STATS_PAGE_TARGETS.typeFilter, tab: 'stats', primary: 'Next', back: true },
       { ...STATS_PAGE_TARGETS.pickersFilter, tab: 'stats', primary: 'Next', back: true },
       { ...STATS_PAGE_TARGETS.rangeFilter, tab: 'stats', primary: 'Next', back: true },
       {
@@ -642,19 +684,21 @@ const buildPageTourSteps = (pageId, actions) => {
   if (pageId === 'explore_data') {
     return [
       { ...DATA_PAGE_TARGETS.groupFilter, tab: 'data', primary: 'Next', back: true },
+      { ...DATA_PAGE_TARGETS.typeFilter, tab: 'data', primary: 'Next', back: true },
       { ...DATA_PAGE_TARGETS.pickersFilter, tab: 'data', primary: 'Next', back: true },
       { ...DATA_PAGE_TARGETS.remindersManager, tab: 'data', primary: 'Next', back: true },
       {
-        ...DATA_PAGE_TARGETS.pickersManager, tab: 'data', primary: 'Done', back: true,
-        // .data-list can be much taller than the viewport once every picker
-        // card renders (6 real disposable copies plus whatever the user has
-        // of their own) — the normal reserve-space padding would push the
-        // target's own bottom edge further past the fold instead of
-        // helping, exactly backwards. Pins the coach to the top and lets
-        // the target run off the bottom instead — see coachAtTop's own doc
-        // comment in onboarding-tour-runner.jsx.
+        ...DATA_PAGE_TARGETS.pickersManager, tab: 'data', primary: 'Next', back: true,
+        // .data-list > .cat can still union to a rect much taller than the
+        // viewport once every picker card renders (6 real disposable copies
+        // plus whatever the user has of their own) — the normal reserve-
+        // space padding would push the target's own bottom edge further
+        // past the fold instead of helping, exactly backwards. Pins the
+        // coach to the top and lets the target run off the bottom instead —
+        // see coachAtTop's own doc comment in onboarding-tour-runner.jsx.
         coachAtTop: true,
       },
+      { ...DATA_PAGE_TARGETS.createPicker, tab: 'data', primary: 'Done', back: true },
     ];
   }
   if (pageId === 'explore_settings') {
@@ -813,38 +857,41 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
       // Cancel (.btn--ghost) is the equivalent control there.
       onGoBack={(to) => {
         if (pageId === 'explore_pickers') {
-          // Back from Step 4 (Picker Selection) to Step 3 (Create New
-          // Pickers) — undoes Step 4's own scroll-into-view (its target is
+          // Back from Step 5 (Picker Selection) to Step 4 (Create New
+          // Pickers) — undoes Step 5's own scroll-into-view (its target is
           // every OTHER tab in the row, excluding Add, which can scroll
           // .picker-tabs rightward if there are enough pickers to overflow
-          // the row). Left scrolled, Step 3's own single target (the Add
+          // the row). Left scrolled, Step 4's own single target (the Add
           // button, the FIRST tab in the row) would be scrolled out of view.
-          if (to === 2) {
+          if (to === 3) {
             const row = document.querySelector('.picker-tabs');
             if (row) row.scrollTo({ left: 0 });
-          } else if (to === 3) {
-            // Back from Step 5 (Manual Generation) to Step 4 (Picker
-            // Selection) — if a pick is still spinning (busy/phase 'running')
-            // when Back is clicked, PickerView never unmounts between
-            // steps, so that animation just keeps running in the
-            // background regardless of which step the tour is on, and its
-            // eventual onAnimDone still lands phase on 'done' whenever it
-            // finishes — showing Send to Today/Re-roll/Done on Step 5 if
-            // Next brings the user back to it before that settles on its
-            // own. Same reset nonce Step 6→5's own case below uses, fired
-            // here on the way OUT of Step 5 instead: PickerStrip only
-            // renders while phase is 'running'/'done' (see PickerView's own
-            // picker-stage JSX), so bumping this unmounts it immediately —
-            // actually cancelling the in-flight animation outright, not
-            // just leaving it to finish on its own and clean up after.
-            // Harmless no-op if the pick had already settled by the time
-            // Back was clicked.
+          }
+          // to === 4 (Picker Selection) is reached ONLY by backing out of
+          // Step 6 (Edit Picker), which has no pick-animation state of its
+          // own to clean up — nothing to do here, unlike every case below.
+          else if (to === 5) {
+            // Back from Step 7 (Manual Generation) to Step 6 (Edit Picker)
+            // — if a pick is still spinning (busy/phase 'running') when
+            // Back is clicked, PickerView never unmounts between steps, so
+            // that animation just keeps running in the background
+            // regardless of which step the tour is on, and its eventual
+            // onAnimDone still lands phase on 'done' whenever it finishes —
+            // showing Send to Today/Re-roll/Done on Step 7 if Next brings
+            // the user back to it before that settles on its own. Same
+            // reset nonce Step 8→7's own case below uses, fired here on the
+            // way OUT of Step 7 instead: PickerStrip only renders while
+            // phase is 'running'/'done' (see PickerView's own picker-stage
+            // JSX), so bumping this unmounts it immediately — actually
+            // cancelling the in-flight animation outright, not just leaving
+            // it to finish on its own and clean up after. Harmless no-op if
+            // the pick had already settled by the time Back was clicked.
             emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
-          } else if (to === 4) {
-            // Back from Step 6 (Add to Todo List) to Step 5 (Manual
+          } else if (to === 6) {
+            // Back from Step 8 (Add to Todo List) to Step 7 (Manual
             // Generation) — a pick already ran, so PickerView's own local
             // phase is still 'done'/'sent', showing Send to Today/Re-roll/
-            // Done instead of Pick one. Step 5's own sel falls back to
+            // Done instead of Pick One. Step 7's own sel falls back to
             // .picker-run only once .pv-act--pick is gone (see
             // manualGeneration's own comment), which a leftover 'done'/
             // 'sent' phase satisfies just as well as a genuine spin in
@@ -857,20 +904,20 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
             // and the tour sits stuck forever. Resetting PickerView back to
             // its own idle state — via a bus nonce, since phase/result are
             // local state this module has no other way to reach — means
-            // only Pick one ever shows here, matching what this step
+            // only Pick One ever shows here, matching what this step
             // actually expects and forecloses both failure modes by
             // construction instead of specifically patching either one.
             emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
-          } else if (to === 5) {
-            // Back from Step 7 (Picker Items) to Step 6 (Add to Todo List)
-            // — Step 6's own target is .pv-act--send, which only exists
+          } else if (to === 7) {
+            // Back from Step 9 (Picker Items) to Step 8 (Add to Todo List)
+            // — Step 8's own target is .pv-act--send, which only exists
             // while phase is 'done'/'sent'. By the time this fires, Step
-            // 6's own advanceDelay wait (see its own comment) has already
+            // 8's own advanceDelay wait (see its own comment) has already
             // let phase run all the way through 'sent' and back to 'idle'
-            // (Send to Today reverted to Pick one), so that target is gone
-            // — the exact "different state than when Step 6 finished"
-            // mismatch that made this crash. Unlike Step 5→4's reset
-            // above, this can't just drop back to idle — Step 6 NEEDS a
+            // (Send to Today reverted to Pick One), so that target is gone
+            // — the exact "different state than when Step 8 finished"
+            // mismatch that made this crash. Unlike Step 7→6's reset
+            // above, this can't just drop back to idle — Step 8 NEEDS a
             // real 'done' result to show Send to Today at all — so this
             // fires a SEPARATE bus nonce telling PickerView to synthesize
             // one directly (skipping the spin animation, since this is a

@@ -175,7 +175,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   // sample picker, not something the user meant to act on. Same
   // tourId+step gating as tab-picker.jsx's own disableTourAddPicker.
   const tour = useEmlTour();
-  const tourInterceptSend = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 5;
+  const tourInterceptSend = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 7;
   // Done needs the same visual + functional disabling during App Features'
   // own "Make your first manual pick" tour's equivalent step (onboarding-
   // app-features.jsx's buildAppFeatureSteps, feat_manual_pick's Step 4 —
@@ -183,7 +183,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   // Step 3 is Manual Generation) — leaving would discard the very pick that
   // tour just walked the user through making, and would also make the
   // step's own target (this whole done/sent view) vanish, reverting to the
-  // pre-pick "Pick one" button Step 3 already moved past. Re-roll is
+  // pre-pick "Pick One" button Step 3 already moved past. Re-roll is
   // deliberately NOT included here —
   // unlike the page tour (tourInterceptSend, above), App Features wants
   // Re-roll to stay genuinely usable (a real re-roll, its own animation)
@@ -197,11 +197,11 @@ function PickerView({ picker, state, actions, animStyle }) {
   // should genuinely land the entry.
   const tourDisableDone = tourInterceptSend
     || (tour.phase === 'tour' && tour.tourId === 'appfeature-feat_manual_pick' && tour.step === 3);
-  // Step 7 ("Picker Items") highlights the pool's per-item Send to Today/
+  // Step 9 ("Picker Items") highlights the pool's per-item Send to Today/
   // Edit/Delete buttons but explicitly doesn't want any of them actually
   // usable from there — narrating what they do is the point, not inviting
   // the user to act on a disposable tutorial picker's real items.
-  const disablePoolItemButtons = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 6;
+  const disablePoolItemButtons = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 8;
   // App Features' own "Make your first manual pick" tour reaches this same
   // pool at its own Step 5 (index 4) — but unlike the page tour above, Send
   // to Today should stay genuinely usable there (real data, a second valid
@@ -222,17 +222,17 @@ function PickerView({ picker, state, actions, animStyle }) {
   // and this never touches the is-sent/is-disabled branches) — an already-
   // sent or already-on-Today item has nothing to invite a click toward.
   const highlightManualPickSend = tour.phase === 'tour' && tour.tourId === 'appfeature-feat_manual_pick' && tour.step === 4;
-  // Step 8 ("Add Picker Item") highlights "+ Add item" but explicitly
+  // Step 10 ("Add Picker Item") highlights "+ Add Item" but explicitly
   // doesn't want the user opening the real create-item form from a
   // disposable tutorial picker.
-  const disableAddItemButton = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 7;
+  const disableAddItemButton = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 9;
   const [busy, setBusy] = React.useState(false);
   const [result, setResult] = React.useState(null);
   const [phase, setPhase] = React.useState('idle'); // idle | running | done | sent | empty
   // Reset back to idle whenever the Pickers page tour's own onGoBack bumps
   // this nonce (see its own comment in onboarding-page-tours.jsx) — a Back
-  // from its "Add to Todo List" step to "Manual Generation" needs Pick one
-  // showing again, not whatever real Send to Today/Re-roll/Done state a
+  // from its "Add to Todo List" step to "Manual Generation" needs Pick One
+  // showing again, not whatever real Send to Today/Re-Roll/Done state a
   // completed pick left behind. Guarded on truthiness (not just present in
   // the deps array) so the unset/0 starting value doesn't also reset on
   // every fresh mount — only a genuine bump does anything.
@@ -283,9 +283,9 @@ function PickerView({ picker, state, actions, animStyle }) {
   const [removingId, setRemovingId] = React.useState(null);
   const [sentId, setSentId] = React.useState(null);
   const sendToday = (id) => {
-    // Full parity with "Pick one" → Send: run the engine forcing this item, then
+    // Full parity with "Pick One" → Send: run the engine forcing this item, then
     // stage the identical pending mutation (drift/weight + bumpPick) so marking
-    // it done has the same consequence as a natural pick. Ease-down replaces the
+    // it done has the same consequence as a natural pick. Ease Down replaces the
     // picker's single entry; other modes add one (handled in addTodayEntry).
     const res = PICKERS.pick(picker, state.items, { forceItemId: id });
     if (!res || !res.picked) return;
@@ -333,7 +333,7 @@ function PickerView({ picker, state, actions, animStyle }) {
     }));
   };
   // Edit an EXISTING pool item — reuses the exact same visual slot/interface
-  // as "+ Add item" (.pv-additem-wrap, below the pool list), just populated
+  // as "+ Add Item" (.pv-additem-wrap, below the pool list), just populated
   // from a real item and wired to the REAL actions instead of a draft. This
   // is deliberately NOT the same draft-until-Save pattern the new-item flow
   // above uses: that pattern exists specifically because a brand-new item
@@ -391,7 +391,7 @@ function PickerView({ picker, state, actions, animStyle }) {
     // A new-item draft is in progress — close it (without saving) instead
     // of silently no-oping, then pick this edit back up once that draft's
     // own closing animation finishes (see the .pv-newitem onAnimationEnd
-    // handler below). The reverse never needs this: the "+ Add item"
+    // handler below). The reverse never needs this: the "+ Add Item"
     // button that starts a new draft isn't rendered while an existing
     // item's edit form is open.
     if (newDraft) {
@@ -405,12 +405,45 @@ function PickerView({ picker, state, actions, animStyle }) {
   const pickerItems = state.items.filter((it) => it.pickerId === picker.id);
   const eligibleItems = pickerItems.filter((it) => !it.vacation);
   // Item ids already live on Today — used to disable per-item Send and to keep
-  // the "Pick one" spin from landing on a duplicate.
+  // the "Pick One" spin from landing on a duplicate.
   const onTodayIds = React.useMemo(
     () => new Set((state.today.entries || []).filter((e) => e.itemId).map((e) => e.itemId)),
     [state.today.entries]);
 
   const mode = MODES[picker.mode];
+
+  // Edit reuses NewPickerForm's own Details step, pre-filled from this
+  // picker's current settings — see the header's Edit button below and
+  // store.jsx's commitPickerEdit (which this form's Save routes to).
+  // NOT an early return: every hook below still needs to run every render
+  // regardless of `editing`, so the branch happens only at the very end,
+  // where this component actually returns its JSX.
+  const [editing, setEditing] = React.useState(false);
+  // Same distinct-groups memo as the Pickers-tab parent (existingGroups) —
+  // duplicated here rather than threaded down as a prop, since it's only
+  // needed while this one picker's own edit form is open.
+  const editExistingGroups = React.useMemo(() => {
+    const seen = [];
+    for (const p of state.pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
+    return seen.sort((a, b) => a.localeCompare(b));
+  }, [state.pickers]);
+  const editInitial = {
+    name: picker.name, mode: picker.mode,
+    includeInDaily: ((state.daily && state.daily.pickerIds) || []).includes(picker.id),
+    daysOfWeek: picker.daysOfWeek, skipHolidays: picker.skipHolidays, avoidDuplicates: picker.avoidDuplicates,
+    conditionalId: picker.conditionalId || null,
+    cadence: picker.cadence, anchorDow: picker.anchorDow, anchorDom: picker.anchorDom,
+    anchorMonth: picker.anchorMonth, anchorDay: picker.anchorDay, dateMode: picker.dateMode,
+    nthOrdinal: picker.nthOrdinal, nthWeekday: picker.nthWeekday,
+    // Deliberately NOT `group` — that field means "prefill the inline
+    // ADD-A-NEW-GROUP sub-form" (see NewPickerForm's own addingGroup/
+    // newGroup state), which would be wrong here: this picker's group
+    // already exists (it's necessarily in editExistingGroups, since that
+    // list is derived from state.pickers including this picker itself), so
+    // it should land on that EXISTING pill instead — initialGroup (passed
+    // below, at the return) is the prop that does that, same as the create
+    // flow's own group-filter prefill.
+  };
 
   const runPick = () => {
     if (busy) return;
@@ -440,7 +473,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   // from its "Picker Items" step to "Add to Todo List" — see its own
   // comment in onboarding-page-tours.jsx), synthesize a fresh 'done' result
   // directly instead of going through runPick's own animated 'running'
-  // phase — Step 6's target (.pv-act--send) needs phase to genuinely be
+  // phase — Step 8's target (.pv-act--send) needs phase to genuinely be
   // 'done'/'sent', not 'idle', and by the time this fires the earlier real
   // pick has already run its full course and reverted. Skipping the spin
   // is deliberate: this is a revisit, the user already watched it play out
@@ -449,12 +482,12 @@ function PickerView({ picker, state, actions, animStyle }) {
   // Unlike pickerTourResetNonce above, a plain truthiness guard isn't
   // enough here — this bus value outlives any one PickerView instance
   // (it's a module-level singleton, not component state), so a Back past
-  // Step 7 that bumps it once leaves it truthy for the rest of the
+  // Step 9 that bumps it once leaves it truthy for the rest of the
   // session. If the user later goes all the way back to Step 1 (which
   // switches tabs, unmounting PickerView) and forward again to a DIFFERENT
-  // step — Step 5, say — the fresh mount's first effect run would
+  // step — Step 7, say — the fresh mount's first effect run would
   // otherwise see this already-truthy value and synthesize a bogus 'done'
-  // result on a step that expects idle "Pick one". Tracking the last-seen
+  // result on a step that expects idle "Pick One". Tracking the last-seen
   // value (initialized to whatever's already on the bus at mount, so a
   // fresh mount never treats an inherited value as a new bump) makes this
   // only fire on a genuine increment that happens while mounted — same
@@ -496,14 +529,24 @@ function PickerView({ picker, state, actions, animStyle }) {
     setTimeout(() => { setPhase('idle'); setResult(null); }, 1500);
   };
 
+  if (editing) {
+    return (
+      <NewPickerForm isEdit existingGroups={editExistingGroups} initialGroup={picker.group}
+                     conditionals={state.conditionals || []} initial={editInitial}
+                     onCancel={() => setEditing(false)}
+                     onSave={(payload) => { actions.commitPickerEdit(picker.id, payload); setEditing(false); }} />
+    );
+  }
+
   return (
     <div className="picker-view">
       <header className="picker-h">
         <div>
           <div className="kicker">Picker</div>
           <h2 className="picker-title">{picker.name}</h2>
+          <Pill tone="mode">{mode.label}</Pill>
         </div>
-        <Pill tone="mode">{mode.label}</Pill>
+        <Btn kind="secondary" size="sm" icon="edit" className="picker-edit-btn" onClick={() => setEditing(true)}>Edit</Btn>
       </header>
       {Array.isArray(mode.hint)
         ? mode.hint.map((para, pi) => <p key={pi} className="picker-hint">{para}</p>)
@@ -565,16 +608,16 @@ function PickerView({ picker, state, actions, animStyle }) {
                 onboarding-app-features.jsx) without also matching Send to
                 Today or Done — disabled/is-tour-disabled here still only
                 ever check tourInterceptSend (the ORIGINAL Pickers page
-                tour), unchanged; App Features leaves Re-roll fully usable
+                tour), unchanged; App Features leaves Re-Roll fully usable
                 on purpose, see tourDisableDone's own comment above. */}
             <Btn kind="ghost" icon="refresh" onClick={() => afterExit(reroll)} disabled={tourInterceptSend}
-                 className={`pv-act pv-act--reroll ${(leaving || phase === 'sent') ? 'is-leaving' : ''} ${tourInterceptSend ? 'is-tour-disabled' : ''}`} style={{ animationDelay: '60ms' }}>Re-roll</Btn>
+                 className={`pv-act pv-act--reroll ${(leaving || phase === 'sent') ? 'is-leaving' : ''} ${tourInterceptSend ? 'is-tour-disabled' : ''}`} style={{ animationDelay: '60ms' }}>Re-Roll</Btn>
             <Btn kind="ghost" size="sm" onClick={() => afterExit(() => { setPhase('idle'); setResult(null); })} disabled={tourDisableDone}
                  className={`pv-act ${(leaving || phase === 'sent') ? 'is-leaving' : ''} ${tourDisableDone ? 'is-tour-disabled' : ''}`} style={{ animationDelay: '120ms' }}>Done</Btn>
           </>
         ) : (
           <Btn kind="primary" icon="play" onClick={runPick} disabled={busy} className={`pv-act pv-act--pick ${busy ? 'is-busy' : ''}`}>
-            {busy ? 'Picking\u2026' : 'Pick one'}
+            {busy ? 'Picking\u2026' : 'Pick One'}
           </Btn>
         )}
       </div>
@@ -583,7 +626,7 @@ function PickerView({ picker, state, actions, animStyle }) {
       <div className="picker-pool">
         {/* Purely structural — lets the Pickers page tour highlight the
             header + item list as one combined box without also catching
-            "+ Add item" below (a step of its own — see .pv-additem-wrap
+            "+ Add Item" below (a step of its own — see .pv-additem-wrap
             further down). Mirrors .picker-pool's own flex/gap so wrapping
             these two doesn't change their spacing. */}
         <div className="pool-items">
@@ -637,7 +680,7 @@ function PickerView({ picker, state, actions, animStyle }) {
                   <React.Fragment>
                     <div className="pool-name">
                       <span className="pool-item-name">{it.name}</span>
-                      {it.vacation && <Pill tone="muted">vacation</Pill>}
+                      {it.vacation && <Pill tone="muted">inactive</Pill>}
                       {!eligibleHere && !it.vacation && <Pill tone="muted">{picker.mode === 'ease-up' ? 'not yet' : 'spent'}</Pill>}
                     </div>
                     <div className="pool-meta">
@@ -756,7 +799,7 @@ function PickerView({ picker, state, actions, animStyle }) {
             const newItem = newDraft;
             if (!newItem) return (
               <button type="button" className="pv-additem-btn" disabled={disableAddItemButton} onClick={addNewItem}>
-                <Icon name="plus" size={14} /> Add item
+                <Icon name="plus" size={14} /> Add Item
               </button>
             );
             return (
@@ -803,12 +846,12 @@ function PickerView({ picker, state, actions, animStyle }) {
 // slot a selected picker's PickerView would, so creating reuses the mental
 //   1. Details — Name, Group, Mode.
 //   2. Items   — build a fresh pool by typing item names (Option B).
-// On "Create picker" it commits through actions.addPicker, which also spins up
+// On "Create Picker" it commits through actions.addPicker, which also spins up
 // a category to hold the new items so the Data tab stays coherent.
 //
 // Every field carries plain-language helper copy: the goal is that someone
 // who has never seen a "picker" before can fill this in without guessing.
-function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCancel, onCreate, initial, openedByTour }) {
+function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCancel, onCreate, onSave, initial, openedByTour, isEdit }) {
   // Whether a guided tour (of any kind — Welcome Tour or a mini-tour) is
   // currently driving the page, per the shared onboarding bus. Read here
   // specifically so goToStep2 can skip its own scroll-to-top when a picker
@@ -829,8 +872,9 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   const [newGroup, setNewGroup] = React.useState((initial && initial.group) || '');
   const [mode, setMode] = React.useState((initial && initial.mode) || 'random');
   // Whether this picker is included when the user taps Regenerate on Today.
-  // Defaults on — same as the existing behaviour for newly-created pickers.
-  const [includeInDaily, setIncludeInDaily] = React.useState(true);
+  // Defaults on — same as the existing behaviour for newly-created pickers —
+  // unless editing an existing one, which prefills its own current membership.
+  const [includeInDaily, setIncludeInDaily] = React.useState((initial && 'includeInDaily' in initial) ? initial.includeInDaily : true);
   const schedRef = React.useRef(null);
   const dailyUserToggled = React.useRef(false);
   // When the user re-enables the Daily section, bring the newly-revealed block
@@ -851,9 +895,21 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   // it sits out public holidays. Defaults match "runs every day", unless a
   // prefill (e.g. a picker mini-tour's sample data) specifies otherwise.
   const [daysOfWeek, setDaysOfWeek] = React.useState((initial && initial.daysOfWeek) || [0, 1, 2, 3, 4, 5, 6]);
-  const [skipHolidays, setSkipHolidays] = React.useState(false);
-  // Picker Cadence: how often it surfaces + the anchor. Defaults to daily.
-  const [cad, setCad] = React.useState(() => CADENCE.normalize({}));
+  const [skipHolidays, setSkipHolidays] = React.useState((initial && initial.skipHolidays) || false);
+  // Excludes an item from this picker's own pool for the day if its name
+  // (case-insensitive) is already present elsewhere on today's list — for
+  // pickers that intentionally share items with another picker and don't
+  // want the same one to surface twice. Off by default: most pickers don't
+  // share a pool with anything else, so this should stay opt-in.
+  const [avoidDuplicates, setAvoidDuplicates] = React.useState((initial && initial.avoidDuplicates) || false);
+  // Picker Cadence: how often it surfaces + the anchor. Defaults to daily,
+  // unless editing an existing picker, which prefills its current cadence —
+  // CADENCE.normalize's accepted shape (cadence/anchorDow/anchorDom/
+  // anchorMonth/anchorDay/dateMode/nthOrdinal/nthWeekday) matches the same
+  // fields addPicker/commitPickerEdit read off `initial` here, so passing
+  // `initial` straight through picks up any of them that are present and
+  // falls back to daily defaults for the rest.
+  const [cad, setCad] = React.useState(() => CADENCE.normalize(initial || {}));
   // Weekly cadence pins its anchor day ON in the Days control (and blocks the
   // presets from dropping it), so the two controls can't contradict each other.
   const lockedDow = cad.cadence === 'weekly' ? cad.anchorDow : null;
@@ -865,9 +921,10 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     });
   }, [cad.cadence, cad.anchorDow]);
   // Optional conditional gate. Off by default; when on, the user attaches an
-  // existing conditional or creates a new inline one (condSel = id | 'new').
-  const [condOn, setCondOn] = React.useState(false);
-  const [condSel, setCondSel] = React.useState(null);
+  // existing conditional or creates a new inline one (condSel = id | 'new') —
+  // unless editing an existing picker, which prefills its current attachment.
+  const [condOn, setCondOn] = React.useState(!!(initial && initial.conditionalId));
+  const [condSel, setCondSel] = React.useState((initial && initial.conditionalId) || null);
   const [condDraft, setCondDraft] = React.useState(() => conditionalDraftDefault(''));
   const [condNameTouched, setCondNameTouched] = React.useState(false);
   // Create-new requires a UNIQUE name. Normalize first, then compare against
@@ -879,11 +936,20 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   const condNameError = condNameCollides
     ? `A conditional named \u201C${condTidyName}\u201D already exists. Choose a different name, or select it from the list above to reuse it.`
     : null;
-  const condRailRef = React.useRef(null);
   // Edge-fade cue on the conditional rail (matches the other horizontal rails).
-  React.useEffect(() => {
-    const el = condRailRef.current;
-    if (!el || !condOn) return;
+  // Collapse (below) mounts this rail one render AFTER `condOn` flips true (it
+  // stages its own `render` state first), so a plain useEffect keyed on condOn
+  // fires while the ref is still null and never gets another chance to run once
+  // the rail actually appears. A callback ref — which fires exactly when the
+  // DOM node attaches — plus a ResizeObserver — which re-fires whenever
+  // conditionals are added/removed and the rail's content width changes —
+  // sidesteps that race entirely.
+  const condRailCleanup = React.useRef(null);
+  const condRailNode = React.useRef(null);
+  const condRailRef = React.useCallback((el) => {
+    if (condRailCleanup.current) { condRailCleanup.current(); condRailCleanup.current = null; }
+    condRailNode.current = el;
+    if (!el) return;
     const update = () => {
       const scrollable = el.scrollWidth - el.clientWidth > 1;
       el.classList.toggle('at-start', !scrollable || el.scrollLeft <= 1);
@@ -891,9 +957,18 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     };
     update();
     el.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    return () => { el.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
-  }, [condOn, conditionals.length]);
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    condRailCleanup.current = () => { el.removeEventListener('scroll', update); ro.disconnect(); };
+  }, []);
+  // Selecting a conditional pins it to the front of the rail (see the sort
+  // below), so scroll the rail back to the start to bring it into view --
+  // same idea as the Data tab's own attached-conditional pin.
+  React.useEffect(() => {
+    const el = condRailNode.current;
+    if (!el || condSel == null || condSel === 'new') return;
+    if (el.scrollLeft > 1) el.scrollTo({ left: 0, behavior: reduceMotion() ? 'auto' : 'smooth' });
+  }, [condSel]);
 
   // Step 2 — the pool. Each item is { name, weight }; weight only matters for
   // weighted/dynamic modes (and is editable inline only then). A fresh pool
@@ -908,7 +983,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   // down; pull the form's scroll container back to the top so the add-item
   // field is in view without a manual scroll. Skipped while a guided tour is
   // active — a picker mini-tour's own next step highlights something further
-  // down this same Items sub-step (the "+ Add item" button), and this
+  // down this same Items sub-step (the "+ Add Item" button), and this
   // scroll-to-top fought that positioning, landing the highlight below the
   // fold instead of where the tour was trying to bring it into view.
   const goToStep2 = () => {
@@ -1001,7 +1076,14 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     renameItem: (id, name) => setItems((xs) => xs.map((it) => it.id === id ? { ...it, name } : it)),
     toggleVacation: (id) => setItems((xs) => xs.map((it) => it.id === id ? { ...it, vacation: !it.vacation } : it)),
   };
-  const draftPicker = { mode, threshold: THRESHOLD, cadence: cad.cadence, easeMin: 10, easeMax: 20 };
+  // No `id` — deliberately, since the real picker doesn't exist yet. Draft
+  // items carry no `pickerId` either (both undefined), so EntryEditor's own
+  // PICKERS.avgEase(items, picker.id) fallback still matches every draft
+  // item against this pseudo-picker's undefined id and averages them
+  // correctly — not a coincidence to "fix" by inventing IDs here. No
+  // easeMin/easeMax here either — EntryEditor no longer reads those off the
+  // picker directly (see avgEase above).
+  const draftPicker = { mode, threshold: THRESHOLD, cadence: cad.cadence };
   const addNewDraft = () => {
     if (newDraftId || editingDraftItemId) return;
     setDraftClosing(false);   // clear any stale closing state from a prior editor
@@ -1032,9 +1114,9 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       const names = new Set(items.map((x) => x.name.toLowerCase()));
       while (names.has(nm.toLowerCase())) { n++; nm = `${base} ${n}`; }
     }
-    // Ease-down items start fully charged (mirrors addPicker's initialValue) —
+    // Ease Down items start fully charged (mirrors addPicker's initialValue) —
     // otherwise the editor shows a spent item needing a Refill it never needed.
-    // The tour's own Ease-up item is also given a full charge — like the rest
+    // The tour's own Ease Up item is also given a full charge — like the rest
     // of the sample pool (see onboarding-seed-data.js's OB_EXAMPLE, every
     // item value:100) — so the later generation demo step actually has
     // something eligible to pick. Doesn't apply to Weighted/Dynamic/Random
@@ -1087,7 +1169,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     openEditDraftItem(id);
   };
 
-  // Back from the tour's own Step 12 (Create picker) to Step 11 (Save this
+  // Back from the tour's own Step 12 (Create Picker) to Step 11 (Save this
   // task item) needs that item's editor open again — its own Save already
   // committed it into the real list (there's no separate "draft" vs
   // "committed" state once saved, just newDraftId no longer pointing at
@@ -1108,7 +1190,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
 
   const goBackToStep1 = () => {
     // Discard any in-progress (unsaved) item so returning to step 2 isn't stuck
-    // with a stale newDraftId (which would make + Add item a no-op). Disarm the
+    // with a stale newDraftId (which would make + Add Item a no-op). Disarm the
     // EntryEditor's deferred revert too, else it fires on the next macrotask and
     // re-sets draftClosing='cancel' — which would auto-close the NEXT added item.
     window.__editGuard.disarm();
@@ -1150,34 +1232,51 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   }));
 
   const submit = () => {
-    if (!detailsReady || !enoughItems) return;
+    if (!detailsReady || (!isEdit && !enoughItems)) return;
     if (condOn && condSel === 'new' && condNameCollides) { setCondNameTouched(true); return; }
-    const payload = { name: cap(name.trim()), group: effectiveGroup, mode, items, includeInDaily,
-                      daysOfWeek, skipHolidays, ...cad };
+    const payload = { name: cap(name.trim()), group: effectiveGroup, mode, includeInDaily,
+                      daysOfWeek, skipHolidays, avoidDuplicates, ...cad };
+    if (!isEdit) payload.items = items;
     // Attach a conditional: an existing one (condSel = id) or a fresh inline one.
     // Create-new names are unique by validation above, so no silent reuse here.
+    // Edit explicitly clears it (conditionalId: null) when turned off — unlike
+    // a fresh create, this can also DETACH one the picker already had, so
+    // there's no bare "just omit the field" default to fall back on.
     if (condOn && condSel === 'new') {
       payload.newConditional = { ...condDraft, name: condTidyName || 'Conditional' };
     } else if (condOn && condSel) {
       payload.conditionalId = condSel;
+    } else if (isEdit) {
+      payload.conditionalId = null;
     }
-    if (isEase) {
-      // Picker-level span is just a fallback/summary; per-item bands drive the engine.
+    if (isEase && !isEdit) {
+      // Legacy field: nothing reads picker.easeMin/easeMax anymore (pick(),
+      // the Data tab, and the item editor all compute a live per-picker
+      // average from the items themselves instead — see PICKERS.avgEase).
+      // Kept only so store.jsx's addPicker still has a value to accept;
+      // harmless dead data on the created picker otherwise. Skipped for
+      // Edit — there's no `items` here to compute a fresh average from, and
+      // the field is inert anyway, so the picker's existing stored value is
+      // just left alone.
       payload.easeMin = Math.min(...items.map((it) => it.easeMin ?? DEFAULT_EASE.easeMin));
       payload.easeMax = Math.max(...items.map((it) => it.easeMax ?? DEFAULT_EASE.easeMax));
     }
-    onCreate(payload);
+    if (isEdit) onSave(payload); else onCreate(payload);
   };
 
   return (
     <div className="picker-view np-form" ref={formRef}>
       <header className="picker-h">
         <div>
-          <div className="kicker">New picker</div>
-          <h2 className="picker-title">Create a picker</h2>
+          <div className="kicker">{isEdit ? 'Editing' : 'New picker'}</div>
+          <h2 className="picker-title">{isEdit ? (name.trim() || 'Editing picker') : 'Create a picker'}</h2>
         </div>
       </header>
 
+      {/* Edit reuses only the Details step — this picker's items already
+          exist and are edited via the Data tab or the live Pickers-tab pool
+          instead, so there's no Items step to switch to here. */}
+      {!isEdit && (
       <div className="np-steps">
         <button type="button" className={`np-step ob-picker-details ${step === 1 ? 'is-on' : 'is-done'}`}
                 onClick={() => setStep(1)}>
@@ -1191,35 +1290,43 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
           <span className="np-step-lbl">Items</span>
         </button>
       </div>
+      )}
 
       {step === 1 ? (
       <div className="tab-fade" key="np-step1">
       <p className="picker-hint">
-        A picker is a small machine that chooses one thing for you from a pool —
-        a chore to do, a meal to make, a way to wind down. Give it a name and a
-        group, then choose how it should pick. You&rsquo;ll fill its pool in the
-        next step.
+        {isEdit
+          ? <>Pickers are the heart of the Ease My Life app. They are small
+              machines that chooses one item for you from a list, e.g. a
+              chore to do, a meal to make, a way to wind down. Adjust its
+              name, group, how it should pick and when it should run below.</>
+          : <>Pickers are the heart of the Ease My Life app. They are small
+              machines that chooses one item for you from a list, e.g. a
+              chore to do, a meal to make, a way to wind down. Give it a
+              name, attach a group, choose how it should pick and when it
+              should run. You&rsquo;ll fill its list of items in the next
+              step.</>}
       </p>
 
       <div className="np-fields">
         <div className="np-field">
           <label className="np-label" htmlFor="np-name">Name</label>
           <p className="np-help">
-            What you&rsquo;ll see on the picker bar above and on your Today list.
-            Short and plain works best &mdash; &ldquo;Dinner&rdquo;,
-            &ldquo;Weekly chore&rdquo;, &ldquo;Wind Down&rdquo;.
+            What you&rsquo;ll see on the picker bar above and on your todo list
+            cards. Short and plain works best, e.g. &ldquo;Daily Chore&rdquo;,
+            &ldquo;Dinner&rdquo;, &ldquo;Coffee Creamer&rdquo;.
           </p>
           <input id="np-name" className="np-input" type="text" maxLength={40} ref={nameRef}
                  value={name} onChange={(e) => setName(e.target.value)}
-                 placeholder="e.g. Dinner" autoComplete="off" />
+                 placeholder="e.g. Daily Chore" autoComplete="off" />
         </div>
 
         <div className="np-field">
           <span className="np-label">Group</span>
           <p className="np-help">
-            Pickers are clustered into groups on your Today list &mdash; like
-            &ldquo;Food&rdquo; or &ldquo;Chores&rdquo; &mdash; so related picks
-            sit together. Choose an existing group, or start a new one.
+            Pickers are clustered into groups on your todo list, like
+            &ldquo;Chores&rdquo; or &ldquo;Food&rdquo;, so that related picks
+            sit together. You may choose an existing group or create a new one.
           </p>
           <div className="np-groups">
             {existingGroups.map((g) => (
@@ -1232,7 +1339,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
             <button type="button"
                     className={`np-chip np-chip--new ${addingGroup ? 'is-on' : ''}`}
                     onClick={() => setAddingGroup(true)}>
-              <Icon name="plus" size={13} /> New group
+              <Icon name="plus" size={13} /> New Group
             </button>
           </div>
           <Collapse open={addingGroup}>
@@ -1243,12 +1350,13 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         </div>
 
         <fieldset className="np-field">
-          <legend className="np-label">How should it choose?</legend>
+          <legend className="np-label">Picker type</legend>
           <p className="np-help">
-            This is the rule the picker follows each time it runs.
-            &ldquo;Truly random&rdquo; is the simplest &mdash; every item has an
-            equal chance. The others nudge the odds in different ways. Not sure?
-            Start random &mdash; you can change it at any time.
+            This is the ruleset that the picker follows each time it runs.
+            &ldquo;Truly Random&rdquo; is the simplest where every item has an
+            equal chance. The others nudge the odds in different ways. Not
+            sure? We recommend the Dynamic Weighted type but you can change a
+            picker&rsquo;s type at any time.
           </p>
           <div className="mode-radio">
             {Object.entries(MODES).map(([key, m]) => (
@@ -1272,15 +1380,14 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
               <span className="np-label">Attach a conditional</span>
               <p className="np-help">
                 Conditionals can be attached to a picker that will determine whether a picker
-                should be run on any given day during the auto generator phase for the Today tab.
-                Run eligibility can be determined using the same rules that the pickers use &mdash;
-                Truly random, Weighted, Dynamic weighted, Ease-up and Ease-down &mdash; each with
-                their own pros and cons.
+                should be run on any given day during the auto generator phase for the Today page.
+                Run eligibility can be determined using the same rules that the pickers use, e.g.
+                Truly Random, Weighted, Dynamic Weighted, Ease Up and Ease Down.
               </p>
               <p className="np-help">
-                Example: you have a Chores picker that you attach a Weighted conditional to in order
-                to determine whether a Day Off should should be triggered and therefore no Chores
-                should be chosen.
+                Example: You have a Daily Chore picker that you attach a Weighted conditional to in
+                order to determine whether a Day Off should should be triggered and therefore no
+                chores should be chosen for that day.
               </p>
             </div>
             <button type="button"
@@ -1294,7 +1401,14 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
           <Collapse open={condOn}>
             <div className="cnd-attach">
               <div className="cnd-rail picker-groups at-start at-end" ref={condRailRef}>
-                {conditionals.map((c) => (
+                {/* Alphabetical, except the currently-selected conditional (once
+                    the user has picked one) pins to the front — same "selected
+                    stays first" convention as the Data tab's own rail. */}
+                {[...conditionals].sort((a, b) => {
+                  if (a.id === condSel) return -1;
+                  if (b.id === condSel) return 1;
+                  return a.name.localeCompare(b.name);
+                }).map((c) => (
                   <button key={c.id} type="button"
                           className={`cnd-pill ${condSel === c.id ? 'is-on' : ''}`}
                           onClick={() => setCondSel(c.id)}>
@@ -1306,7 +1420,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                         className={`cnd-pill cnd-pill--new ${condSel === 'new' ? 'is-on' : ''}`}
                         onClick={() => { setCondSel('new'); setCondDraft(conditionalDraftDefault(name.trim(), conditionals.map((c) => c.name))); }}>
                   <Icon name="plus" size={16} />
-                  <span className="cnd-pill-name">Add new conditional</span>
+                  <span className="cnd-pill-name">Add New Conditional</span>
                 </button>
               </div>
               <Collapse open={condSel === 'new'}>
@@ -1319,7 +1433,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         <div className="np-field np-daily-group">
           <div className="np-field--toggle">
             <div className="np-toggle-text">
-              <label className="np-label" htmlFor="np-daily">Include in the Daily generator</label>
+              <label className="np-label" htmlFor="np-daily">Include in the daily generator</label>
               <p className="np-help set-sub-fade" key={includeInDaily ? 'on' : 'off'}>
                 {includeInDaily
                   ? <>This picker <strong>will run</strong> automatically as part of your daily list or whenever you tap Regenerate in the Today tab.</>
@@ -1329,7 +1443,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
             <button id="np-daily" type="button"
                     className={`switch ${includeInDaily ? 'is-on' : ''}`}
                     role="switch" aria-checked={includeInDaily}
-                    aria-label="Include in the Daily generator"
+                    aria-label="Include in the daily generator"
                     onClick={() => { dailyUserToggled.current = true; setIncludeInDaily((v) => !v); }}>
               <i />
             </button>
@@ -1343,9 +1457,9 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
             <div className="np-sched-block">
               <span className="np-label">Which days?</span>
               <p className="np-help">
-                Pick the days this picker is allowed to run on. Tap a day to turn
-                it off &mdash; handy for things like chores you&rsquo;d rather not
-                see on weekends.
+                Pick the days that this picker is allowed to run on. Tap a day
+                to turn it off. This is handy for things like chores, that
+                you&rsquo;d rather not see on weekends.
               </p>
               <div className="np-sched-row">
                 <WeekdayChips value={daysOfWeek} onChange={setDaysOfWeek}
@@ -1364,7 +1478,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                 <label className="np-label" htmlFor="np-skiphol">Skip on holidays</label>
                 <p className="np-help set-sub-fade" key={skipHolidays ? 'on' : 'off'}>
                   {skipHolidays
-                    ? <>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays — and add your own — in Settings.</>
+                    ? <>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays, or even add your own, on the Settings page.</>
                     : <>This picker <strong>will always run</strong>, even on major U.S. holidays.</>}
                 </p>
               </div>
@@ -1373,6 +1487,24 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                       role="switch" aria-checked={skipHolidays}
                       aria-label="Skip on holidays"
                       onClick={() => setSkipHolidays((v) => !v)}>
+                <i />
+              </button>
+            </div>
+
+            <div className="np-sched-toggle">
+              <div className="np-toggle-text">
+                <label className="np-label" htmlFor="np-avoiddupes">Avoid duplicate items</label>
+                <p className="np-help set-sub-fade" key={avoidDuplicates ? 'on' : 'off'}>
+                  {avoidDuplicates
+                    ? <>This picker <strong>won't pick</strong> an item whose name is already on today's todo list.</>
+                    : <>This picker <strong>may pick</strong> an item even if its name is already on today's todo list.</>}
+                </p>
+              </div>
+              <button id="np-avoiddupes" type="button"
+                      className={`switch ${avoidDuplicates ? 'is-on' : ''}`}
+                      role="switch" aria-checked={avoidDuplicates}
+                      aria-label="Avoid duplicate items"
+                      onClick={() => setAvoidDuplicates((v) => !v)}>
                 <i />
               </button>
             </div>
@@ -1386,69 +1518,79 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
           {(() => {
             const needName = !name.trim();
             const needGroup = !effectiveGroup;
-            if (needName && needGroup) return 'A picker name and group are both required before advancing to the next step to create items for the picker’s pool.';
-            if (needName) return 'A picker name is required before advancing to the next step to create items for the picker’s pool.';
-            if (needGroup) return 'A group name is required before advancing to the next step to create items for the picker’s pool.';
-            return <>Up next &mdash; create items to be included in this picker&rsquo;s pool.</>;
+            if (isEdit) {
+              // Ordinarily unreachable — an existing picker already has a
+              // name and group — but the user could still clear either one
+              // while editing, so the same guidance still needs to cover it.
+              if (needName && needGroup) return 'A picker name and group are both required.';
+              if (needName) return 'A picker name is required.';
+              if (needGroup) return 'A group name is required.';
+              return 'Everything looks good, click Save to save this picker’s new settings.';
+            }
+            if (needName && needGroup) return 'A picker name and group are both required before advancing to the next step to create items for the picker’s list.';
+            if (needName) return 'A picker name is required before advancing to the next step to create items for the picker’s list.';
+            if (needGroup) return 'A group name is required before advancing to the next step to create items for the picker’s list.';
+            return <>Up next, create items to be included in this picker&rsquo;s list.</>;
           })()}
         </div>
         <div className="np-footer-actions">
           <Btn kind="ghost" onClick={onCancel}>Cancel</Btn>
-          <Btn kind="primary" icon="chev" className="ob-picker-next" disabled={!detailsReady || condNameCollides}
-               onClick={goToStep2}>Add items</Btn>
+          {isEdit
+            ? <Btn kind="primary" icon="check" disabled={!detailsReady || condNameCollides}
+                   onClick={submit}>Save</Btn>
+            : <Btn kind="primary" icon="chev" className="ob-picker-next" disabled={!detailsReady || condNameCollides}
+                   onClick={goToStep2}>Add Items</Btn>}
         </div>
       </div>
       </div>
       ) : (
       <div className="tab-fade" key="np-step2">
       <p className="picker-hint">
-        This is the <strong>pool</strong> &mdash; the set of items
-        {' '}{name.trim() ? `“${name.trim()}”` : 'this picker'} chooses from.
-        Each time it runs it picks <strong>one</strong> of these, following the
-        {' '}&ldquo;{MODES[mode].label}&rdquo; rule you chose. Add items
-        one at a time &mdash; there are no wrong answers, and you can always add,
-        remove or edit items later.
+        This is the list of items that your
+        {' '}{name.trim() ? `“${name.trim()}”` : 'this picker'} picker chooses from.
+        Each time it runs it picks one of these items, following the
+        {' '}&ldquo;{MODES[mode].label}&rdquo; rule that you chose. You will need
+        to add at least 2 items before you can finish creating this picker. You
+        can always add, edit or remove items later.
       </p>
       {mode === 'random' && (
         <p className="picker-hint np-weight-note">
-          Because you chose &ldquo;Truly random&rdquo;, there are no extra controls
-          to tweak for items since they all have an equal chance of being picked.
+          Because you chose &ldquo;Truly Random&rdquo;, there are no extra controls
+          to tweak for these items since they all have an equal chance of being picked.
         </p>
       )}
       {mode === 'weighted' && (
         <p className="picker-hint np-weight-note">
-          Because you chose &ldquo;Weighted&rdquo;, each item also
-          has a <strong>weight</strong> &mdash; a higher weight means a higher
-          chance of being picked. A <strong>w2</strong> item is picked about twice as often
-          as a <strong>w1</strong>. Leave them all at <strong>w1</strong> for an even start as you can
-          always change these later.
+          Because you chose &ldquo;Weighted&rdquo;, each item also has a weight.
+          A higher weight means an item has a higher chance of being picked.
+          e.g. a w2 item will be picked about twice as often as a w1. Leave them
+          all at w1 for an even start, you can always change these later.
         </p>
       )}
       {mode === 'dynamic' && (
         <p className="picker-hint np-weight-note">
-          Because you chose &ldquo;{MODES[mode].label}&rdquo;, each item also
-          has a <strong>weight</strong> &mdash; a higher weight means a higher
-          chance of being picked. A <strong>w2</strong> item is picked about twice as often
-          as a <strong>w1</strong>. Leave them all at <strong>w1</strong> for an even start as you can
-          always change these later.
+          Because you chose &ldquo;{MODES[mode].label}&rdquo;, each item also has a weight.
+          A higher weight means an item has a higher chance of being picked.
+          e.g. a w2 item will be picked about twice as often as a w1. Leave them
+          all at w1 for an even start, you can always change these later.
         </p>
       )}
       {mode === 'ease-up' && (
         <p className="picker-hint np-weight-note">
-          Because you chose &ldquo;Ease-up&rdquo;, each item gets its
-          own <strong>cadence</strong> &mdash; set per item below, since each might
-          need a different timeout period. For each one you will need to pick a
-          {' '}<strong>soonest</strong> and a <strong>latest</strong> value, which will be
-          used to determine its new value as it charges towards being eligible again.
+          Because you chose &ldquo;Ease Up&rdquo;, each item gets its own cadence.
+          This is set per item below, since each item might need a different
+          timeout period. For each one you will need to pick a soonest and a
+          latest value, which will be used to determine its new value as it
+          charges towards becoming eligible again.
         </p>
       )}
       {mode === 'ease-down' && (
         <p className="picker-hint np-weight-note">
-          Because you chose &ldquo;Ease-down&rdquo;, each item gets its
-          own <strong>cadence</strong> &mdash; set per item below, since each might
-          need a different selection period. For each one you will need to pick a
-          {' '}<strong>soonest</strong> and a <strong>latest</strong> value, which will be
-          used to determine its new value as it discharges towards deselection.
+          Because you chose &ldquo;Ease Down&rdquo;, each item gets its own cadence.
+          This is set per item below, since each item might need a different
+          selection period. For each one you will need to pick a soonest and a
+          latest value, which will be used to determine its new value as it
+          discharges towards deselection.
         </p>
       )}
 
@@ -1467,8 +1609,8 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
       <div className="np-pool">
         {items.filter((it) => it.id !== newDraftId).length === 0 && !newDraftId && (
           <div className="np-pool-empty">
-            Nothing here yet. Add a few things this picker can choose between &mdash;
-            two or more so there&rsquo;s a real choice to make.
+            Nothing here yet. Add at least 2 items that this picker can choose
+            between, so that there&rsquo;s a real choice to make.
           </div>
         )}
         {items.filter((it) => it.id !== newDraftId).length > 0 && (
@@ -1556,7 +1698,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                         Cancel/Escape handling (revert via
                         actions.replaceItem, then close) is correct as-is
                         with no extra bookkeeping needed here. */}
-                    <EntryEditor key={editItem.id} item={editItem} picker={draftPicker} actions={draftActions}
+                    <EntryEditor key={editItem.id} item={editItem} picker={draftPicker} actions={draftActions} items={items}
                                  onClose={() => setEditingDraftItemClosing(true)} />
                   </div>
                 </div>
@@ -1565,7 +1707,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
             const newItem = items.find((it) => it.id === newDraftId);
             if (!newItem) return (
               <button type="button" className="pv-additem-btn" onClick={addNewDraft}>
-                <Icon name="plus" size={14} /> Add item
+                <Icon name="plus" size={14} /> Add Item
               </button>
             );
             return (
@@ -1593,7 +1735,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
                   </span>
                 </div>
                 <div className="rd-edit">
-                  <EntryEditor item={newItem} picker={draftPicker} actions={draftActions}
+                  <EntryEditor item={newItem} picker={draftPicker} actions={draftActions} items={items}
                                onClose={() => setDraftClosing('save')}
                                onCancel={() => setDraftClosing('cancel')} />
                 </div>
@@ -1609,11 +1751,11 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
             ? (showWeights
                 ? 'Looks good — set each item’s weight above, or leave them even.'
                 : `Minimum number of items added (${committedCount} so far) — you can always add more items later.`)
-            : `Add at least 2 items to create the picker${committedCount === 1 ? ' (1 so far)' : ''}.`}
+            : `Add at least 2 items to create this picker${committedCount === 1 ? ' (1 so far)' : ''}.`}
         </div>
         <div className="np-footer-actions">
           <Btn kind="ghost" onClick={goBackToStep1}>Back</Btn>
-          <Btn kind="primary" icon="check" className="ob-picker-create" disabled={!enoughItems || condNameCollides} onClick={submit}>Create picker</Btn>
+          <Btn kind="primary" icon="check" className="ob-picker-create" disabled={!enoughItems || condNameCollides} onClick={submit}>Create Picker</Btn>
         </div>
       </div>
       </div>
@@ -1623,9 +1765,17 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
 }
 
 export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
-  const [activeId, setActiveId] = React.useState(state.pickers.find((p) => !p.hidden)?.id);
+  // Defaults to the first picker the Show row itself will display (see
+  // sortedVisiblePickers below) — alphabetical, not pickers' own storage-array
+  // order, which the row's own render is sorted by too. Can't reuse that memo
+  // here directly (it isn't declared yet at this point in the component), so
+  // this duplicates its filter+sort inline for just the initial value.
+  const [activeId, setActiveId] = React.useState(() => (
+    [...state.pickers].filter((p) => !p.hidden).sort((a, b) => a.name.localeCompare(b.name))[0]?.id
+  ));
   const [creating, setCreating] = React.useState(false);
   const [groupFilter, setGroupFilter] = React.useState('all');
+  const [typeFilter, setTypeFilter] = React.useState('all');
   const active = state.pickers.find((p) => p.id === activeId);
   // Help mode (see help-mode.jsx) — needs real pickers of every mode plus a
   // conditional-gated one to point at, so a disposable copy set is seeded
@@ -1646,12 +1796,12 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   React.useEffect(() => () => clearHelpPickers(actions), []);
   // Onboarding tour: when it stages a prefill, open the create form for it.
   const tour = useEmlTour ? useEmlTour() : { prefill: null, startCreate: null };
-  // The Pickers page tour's own Step 3 highlights "Add new picker" but
+  // The Pickers page tour's own Step 4 highlights "Add New Picker" but
   // explicitly doesn't want the user opening the real create form from it —
   // that flow is what the separate picker mini-tours already cover. Gated
   // on tourId, not just step index alone: some OTHER tour could just as
-  // easily be sitting on step index 2 for its own unrelated reason.
-  const disableTourAddPicker = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 2;
+  // easily be sitting on step index 3 for its own unrelated reason.
+  const disableTourAddPicker = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 3;
   // Separately, disabled anywhere from the Welcome Tour's first step through
   // the closing Generate card's flow completing — see
   // OB_CHECKLIST.tutorialsInProgress. Distinct from disableTourAddPicker
@@ -1695,35 +1845,67 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
     }
   }, [tour.startCreate]);
 
-  // Distinct group names, in first-seen order — offered as chips in the form
-  // and as the group filter bar above the picker strip.
+  // Distinct group names, alphabetical — offered as chips in the form and
+  // as the group filter bar above the picker strip ("All" itself is a
+  // separate, always-first pill rendered outside this list).
   const existingGroups = React.useMemo(() => {
     const seen = [];
     for (const p of state.pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
-    return seen;
+    return seen.sort((a, b) => a.localeCompare(b));
   }, [state.pickers]);
 
-  // The picker strip is scoped to the selected group ("all" shows everything).
-  // Hidden pickers (see store.jsx's `hidden` flag) never appear here.
-  const visiblePickers = React.useMemo(() => (
-    state.pickers.filter((p) => !p.hidden && (groupFilter === 'all' || p.group === groupFilter))
-  ), [state.pickers, groupFilter]);
+  // Distinct modes actually in use, alphabetical by their own display label —
+  // the Type filter bar's own pills ("All" is pinned first, same as Group).
+  // No Conditionals/Reminders pills here — unlike Stats/Data, this page has
+  // no management section for either, so Type here is purely a picker-mode
+  // filter.
+  const existingModes = React.useMemo(() => {
+    const seen = new Set();
+    for (const p of state.pickers) if (!p.hidden) seen.add(p.mode);
+    return [...seen].sort((a, b) => MODES[a].label.localeCompare(MODES[b].label));
+  }, [state.pickers]);
 
-  // Keep the selection coherent with the filter: if the active picker falls
-  // outside the chosen group, jump to the first picker that's in view.
+  // The picker strip is scoped to the selected group AND type (independent
+  // filters — "all" on either leaves that axis unfiltered). Hidden pickers
+  // (see store.jsx's `hidden` flag) never appear here.
+  const visiblePickers = React.useMemo(() => (
+    state.pickers.filter((p) => !p.hidden
+      && (groupFilter === 'all' || p.group === groupFilter)
+      && (typeFilter === 'all' || p.mode === typeFilter))
+  ), [state.pickers, groupFilter, typeFilter]);
+  // Same alphabetical order the Show row itself renders in (below) — reused
+  // so "jump to the first card" always agrees with what's actually shown
+  // first, not visiblePickers' own storage-array order.
+  const sortedVisiblePickers = React.useMemo(() => (
+    [...visiblePickers].sort((a, b) => a.name.localeCompare(b.name))
+  ), [visiblePickers]);
+
+  // Keep the selection coherent with the filters. Reasons this can fire:
+  // either filter itself just changed — always land on the first card in the
+  // new Show row, matching it exactly rather than only reacting once the OLD
+  // selection happens to fall out of view (e.g. switching from a wide group
+  // to a narrower one that still happens to contain the same active picker
+  // used to leave it stranded, not jumped to the new first card) — or the
+  // picker list changed for some unrelated reason (e.g. the active picker got
+  // deleted), in which case only jump when the current selection actually
+  // became invalid.
+  const prevFiltersRef = React.useRef({ groupFilter, typeFilter });
   React.useEffect(() => {
     if (creating) return;
-    if (!visiblePickers.some((p) => p.id === activeId)) {
-      setActiveId(visiblePickers[0]?.id);
+    const filtersChanged = prevFiltersRef.current.groupFilter !== groupFilter || prevFiltersRef.current.typeFilter !== typeFilter;
+    prevFiltersRef.current = { groupFilter, typeFilter };
+    if (filtersChanged || !visiblePickers.some((p) => p.id === activeId)) {
+      setActiveId(sortedVisiblePickers[0]?.id);
     }
-  }, [groupFilter, visiblePickers, activeId, creating]);
+  }, [groupFilter, typeFilter, visiblePickers, sortedVisiblePickers, activeId, creating]);
 
   // Scroll-aware edge fades on the tab strip: toggle .at-start / .at-end
   // so the mask gradient only fades the side that has more content.
   const tabsRef = React.useRef(null);
   const groupsRef = React.useRef(null);
+  const typesRef = React.useRef(null);
   React.useEffect(() => {
-    const els = [tabsRef.current, groupsRef.current].filter(Boolean);
+    const els = [tabsRef.current, groupsRef.current, typesRef.current].filter(Boolean);
     const cleanups = els.map((el) => {
       const update = () => {
         const scrollable = el.scrollWidth - el.clientWidth > 1;
@@ -1739,7 +1921,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
       return () => { el.removeEventListener('scroll', update); ro.disconnect(); };
     });
     return () => cleanups.forEach((c) => c());
-  }, [state.pickers.length, existingGroups.length, groupFilter, visiblePickers.length]);
+  }, [state.pickers.length, existingGroups.length, existingModes.length, groupFilter, typeFilter, visiblePickers.length]);
 
   const scrollTop = () => {
     const sc = document.querySelector('.main');
@@ -1795,7 +1977,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
             <h1 className="section-title"><span className="picker-title-accent">Easing</span> your life, one pick at a time.</h1>
           </div>
         </div>
-        <p className="section-sub picker-h-sub">Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, along with new picker items but editing existing pickers and their items' settings must be done in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>.</p>
+        <p className="section-sub picker-h-sub">Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, add to its list of items, or edit an existing picker and its items' settings. Conditionals and reminders can be managed in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data page</button>.</p>
       </header>
       <div className="picker-body" style={tour.reserveTop ? { paddingTop: tour.reserveTop } : undefined}>
       <div className="stat-filters ob-picker-content">
@@ -1823,9 +2005,33 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
           </div>
         </div>
       )}
+      {existingModes.length > 1 && (
+        <div className="stat-filter-row">
+          <span className="stat-filter-lbl">Type</span>
+          <div className="picker-groups picker-groups--type" ref={typesRef} role="tablist" aria-label="Filter pickers by type">
+            <button type="button" role="tab" aria-selected={typeFilter === 'all'}
+                    className={`picker-group-pill ${typeFilter === 'all' ? 'is-on' : ''}`}
+                    onClick={() => { setTypeFilter('all'); setCreating(false); setActiveId(state.pickers.find((p) => !p.hidden)?.id); }}>
+              All
+              <span className="picker-group-count">{state.pickers.filter((p) => !p.hidden).length}</span>
+            </button>
+            {existingModes.map((m) => {
+              const n = state.pickers.filter((p) => p.mode === m && !p.hidden).length;
+              return (
+                <button key={m} type="button" role="tab" aria-selected={typeFilter === m}
+                        className={`picker-group-pill ${typeFilter === m ? 'is-on' : ''}`}
+                        onClick={() => setTypeFilter(m)}>
+                  {MODES[m].label}
+                  <span className="picker-group-count">{n}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
       <div className="stat-filter-row">
         <span className="stat-filter-lbl">Show</span>
-        <div className="picker-tabs" ref={tabsRef} key={groupFilter}>
+        <div className="picker-tabs" ref={tabsRef} key={groupFilter + '|' + typeFilter}>
           {tutorialsInProgress ? (
             // Distinct from disableTourAddPicker below: this tooltip's wording
             // ("until all tutorials are completed") would be misleading during
@@ -1833,10 +2039,10 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
             // — tutorialsInProgress is always false then, so that case still
             // falls through to the plain disabled button with no tooltip.
             <InfoTip className={`picker-tab picker-tab--add picker-tab--enter is-tour-disabled ${creating ? 'is-on' : ''}`}
-                     action="Add new picker"
+                     action="Add New Picker"
                      label="This button is disabled until all tutorials are completed.">
               <span className="picker-tab-add-icon" aria-hidden="true"><Icon name="plus" size={16} /></span>
-              <span className="picker-tab-name">Add new picker</span>
+              <span className="picker-tab-name">Add New Picker</span>
             </InfoTip>
           ) : (
             <button type="button"
@@ -1845,10 +2051,10 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
                     disabled={disableTourAddPicker}
                     onClick={() => setCreating(true)}>
               <span className="picker-tab-add-icon" aria-hidden="true"><Icon name="plus" size={16} /></span>
-              <span className="picker-tab-name">Add new picker</span>
+              <span className="picker-tab-name">Add New Picker</span>
             </button>
           )}
-          {visiblePickers.map((p, i) => (
+          {sortedVisiblePickers.map((p, i) => (
             <button key={p.id}
                     className={`picker-tab picker-tab--enter ${!creating && p.id === activeId ? 'is-on' : ''}`}
                     style={{ animationDelay: ((i + 1) * 40) + 'ms' }}

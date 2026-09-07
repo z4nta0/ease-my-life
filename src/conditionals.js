@@ -61,11 +61,11 @@ function trueOdds(cond) {
 // Probability modes roll now; dynamic rolls now (odds include value); ease-up
 // and ease-down carry their persisted `triggered` (set by completion, effect
 // deferred to this next generate). Also clears the per-day charge guard.
-// `active` (enabled / not-on-vacation) is separate and never changes here.
+// `active` (enabled / not inactive) is separate and never changes here.
 function resolveForDay(conditionals) {
   const patch = {};
   for (const c of conditionals || []) {
-    // Vacationed (active:false) → frozen: no roll, no state change at all.
+    // Inactive (active:false) → frozen: no roll, no state change at all.
     if (c.active === false) { patch[c.id] = { chargedToday: false }; continue; }
     let triggered = c.triggered;
     if (c.mode === 'random' || c.mode === 'weighted' || c.mode === 'dynamic') {
@@ -78,7 +78,7 @@ function resolveForDay(conditionals) {
 }
 
 // A dependent picker is suppressed today iff its conditional is ENABLED
-// (`active` — off means "on vacation", so it never suppresses) AND currently
+// (`active` — off means inactive, so it never suppresses) AND currently
 // `triggered`.
 function suppresses(cond) { return !!(cond && cond.active !== false && cond.triggered); }
 

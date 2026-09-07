@@ -338,61 +338,76 @@ const badgeRectFor = (targetRect, center) => {
 // regardless of which option is selected or how tall its fields are.
 const placeTip = (targetRect, tw, th, pinBelowY) => {
   const vw = window.innerWidth, vh = window.innerHeight, M = 8;
-  let top, arrowClass;
+  let top, arrowClass, maxHeight;
   // `alwaysBelow` (see alwaysBelowSel in the rAF loop above) skips the
-  // "does the FULL natural height fit below, else flip above" choice —
-  // that choice is measured against `th`, the content's own UNCONSTRAINED
-  // height, which defeats the purpose of scrolling: for the nav tip on
-  // 'side' placement, `th` (5 paragraphs) is almost always taller than
-  // "below" has room for, so the normal logic always flipped to "above" —
-  // clamped against a target whose own top sits close to the viewport's
-  // top edge, that produced a `top` at the viewport's very top while the
-  // (still full-height, unconstrained at the moment of this decision) tip
-  // extended down past the target's own bottom too, covering it entirely.
-  // Same failure mode on 'top' tab-bar placement on a short viewport (e.g.
-  // iPhone SE): the target already sits at the screen's top edge, so
-  // "doesn't fit below" flips to "above" and covers the navbar the same
-  // way. Going below unconditionally and THEN capping height (maxHeight
-  // below) to whatever room is actually there is what makes scrolling
-  // work at all — but only where "below" is actually the right side to
-  // try in the first place: NOT 'bottom' tab-bar placement, whose target
-  // already sits at the very bottom of the screen with no room below it
-  // at all (there `scrollable`'s cap is a pure safety net, and the normal
-  // below/above choice — which correctly flips to "above" there — still
-  // applies).
+  // below/above choice entirely — for a target that spans nearly the whole
+  // viewport itself (the nav tip's 'side'/'top' placements), "above" has
+  // essentially zero room no matter what, so there's nothing to compare.
   if (targetRect.alwaysBelow) {
     top = targetRect.bottom + 16; arrowClass = 'ob-coach--up';
+    maxHeight = vh - top - M;
   } else if (pinBelowY != null) {
     top = pinBelowY + 16; arrowClass = 'ob-coach--up';
+    maxHeight = vh - top - M;
   } else {
-    const spaceBelow = vh - targetRect.bottom;
-    if (spaceBelow >= th + 16) { top = targetRect.bottom + 16; arrowClass = 'ob-coach--up'; }
-    else {
-      // badgeAnchorTop (columnGroup items only — see its own comment where
-      // it's stashed) — the corner badge sits well above targetRect.top
-      // itself (overlapping up into the highlight, same as every badge),
-      // so anchoring the FLIPPED-above tip to targetRect.top here would
-      // point its own down-arrow at empty space right where the badge
-      // already sits, overlapping it. Anchoring to the badge's own top
-      // instead points the arrow right at it. The usual 16px gap (leaving
-      // ~8px of daylight between the arrow's own visible tip and whatever
-      // it's pointing at, same as every other tip in the app) reads as
-      // "detached" for a small round badge specifically, unlike a normal,
-      // much larger highlighted target — an 8px gap here instead sits the
-      // arrow's tip flush against the badge, touching it, no visible gap.
-      const usingBadgeAnchor = targetRect.badgeAnchorTop != null;
-      const aboveAnchorTop = usingBadgeAnchor ? targetRect.badgeAnchorTop : targetRect.top;
-      top = Math.max(M, aboveAnchorTop - (usingBadgeAnchor ? 8 : 16) - th); arrowClass = 'ob-coach--down';
+    // badgeAnchorTop (columnGroup items only — see its own comment where
+    // it's stashed) — the corner badge sits well above targetRect.top
+    // itself (overlapping up into the highlight, same as every badge), so
+    // anchoring an above-placed tip to targetRect.top here would point its
+    // own down-arrow at empty space right where the badge already sits,
+    // overlapping it. Anchoring to the badge's own top instead points the
+    // arrow right at it. The usual 16px gap (leaving ~8px of daylight
+    // between the arrow's own visible tip and whatever it's pointing at,
+    // same as every other tip in the app) reads as "detached" for a small
+    // round badge specifically, unlike a normal, much larger highlighted
+    // target — an 8px gap here instead sits the arrow's tip flush against
+    // the badge, touching it, no visible gap.
+    const usingBadgeAnchor = targetRect.badgeAnchorTop != null;
+    const aboveAnchorTop = usingBadgeAnchor ? targetRect.badgeAnchorTop : targetRect.top;
+    const gapAbove = usingBadgeAnchor ? 8 : 16;
+    // Both already net out the same 16/gapAbove-px breathing room a placed
+    // tip keeps clear of the target, so either can be compared directly
+    // against `th` (the content's own unconstrained height) or against
+    // each other.
+    const spaceBelow = vh - targetRect.bottom - 16;
+    const spaceAbove = aboveAnchorTop - gapAbove - M;
+    // Prefer below when the FULL content fits there (the common case,
+    // unchanged from before). Otherwise prefer above only when above
+    // actually has more room than below — not unconditionally, and not by
+    // whether above alone happens to fit. A hardcoded preference either way
+    // was the actual bug here: forcing "above" clamped against a target
+    // near the viewport's own top edge (or a 'top' tab bar) and the
+    // unconstrained-height content spilled back down through the target on
+    // its way out; forcing "below" starves the tip's scrollable window to
+    // near-nothing when the target sits low on a long page instead (a
+    // reminder's schedule editor, opened far down its list, on a short
+    // phone viewport) — visible as just a title bar with no readable body.
+    // Picking whichever side has more room, THEN capping+scrolling
+    // (`scrollable`, see HelpTip) to fit there, maximizes the tip's own
+    // legible window either way instead of a coin flip.
+    if (spaceBelow >= th || spaceBelow >= spaceAbove) {
+      top = targetRect.bottom + 16; arrowClass = 'ob-coach--up';
+      maxHeight = vh - top - M;
+    } else {
+      top = Math.max(M, aboveAnchorTop - gapAbove - th); arrowClass = 'ob-coach--down';
+      // Bounded by the target's own top edge (spaceAbove), NOT `vh - top -
+      // M` (room down to the viewport's bottom) — that's the "below"
+      // formula, and reusing it here for an above-placed tip is exactly
+      // what let a clamped, near-viewport-top `top` overflow back down
+      // through the target: "room below top" stayed huge (nearly the full
+      // viewport) even though the tip's actual ceiling is the target
+      // itself, sitting well above the viewport's bottom edge.
+      maxHeight = spaceAbove;
     }
   }
   const centerX = targetRect.left + targetRect.width / 2;
   const left = Math.max(M, Math.min(centerX - tw / 2, vw - tw - M));
   const arrowX = Math.max(18, Math.min(centerX - left, tw - 26));
-  // Whatever vertical room is actually left below the chosen `top`, given
-  // the viewport's own height — only consumed by `scrollable` items (see
-  // HelpTip), which cap themselves to this and scroll internally rather
-  // than overflow past the viewport. Harmless to compute unconditionally.
-  const maxHeight = vh - top - M;
+  // `maxHeight` — whatever vertical room the chosen placement actually has
+  // before it would overflow the viewport (below) or run back into the
+  // target (above) — only consumed by `scrollable` items (see HelpTip),
+  // which cap themselves to this and scroll internally instead. Harmless
+  // to compute unconditionally.
   return { top, left, arrowClass, arrowX, maxHeight };
 };
 

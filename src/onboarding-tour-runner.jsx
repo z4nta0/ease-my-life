@@ -315,7 +315,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   React.useEffect(() => { emlTour.set({ step }); }, [step]);
   // Lets a consumer that needs to act only during a SPECIFIC tour's specific
   // step (not just "some tour is up", like phase/step alone give you) tell
-  // them apart — e.g. tab-picker.jsx disabling its own "Add new picker"
+  // them apart — e.g. tab-picker.jsx disabling its own "Add New Picker"
   // button only during the Pickers page tour's own Step 4, not any other
   // tour that happens to pass through step index 3. Never cleared on
   // unmount (like `step` itself isn't) — consumers already have to gate on
@@ -510,7 +510,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   const onPrimaryRef = React.useRef(() => {});
   // Lets onGoBack's own side effects click through the guard below — e.g. a
   // picker mini-tour's onGoBack simulates a click on the create-form's own
-  // "Details" step tab to undo a later step's "Add items" click. That
+  // "Details" step tab to undo a later step's "Add Items" click. That
   // synthetic click isn't the step's own target (curRef still points at the
   // step being left, since onGoBack runs before goToStep actually changes
   // it), so without this the guard would block onGoBack from doing anything
@@ -649,7 +649,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // 'Done' step's finish() calls selectTab away and unmounts this tour,
   // and doing that synchronously here can remove the target from the DOM
   // before its own bubble-phase handler ever fires — observed concretely on
-  // the Picker tour's "Create picker" step, where the real submit() got
+  // the Picker tour's "Create Picker" step, where the real submit() got
   // skipped entirely because finish() tore down the page mid-click. Deferring
   // the advance/finish by a tick lets the browser finish dispatching the
   // native click (including the target's own handler) first; a requireClick
@@ -679,7 +679,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
     if (cur.requireClick && cur.advanceWhen) {
       // The real click just kicked off something ASYNC whose result is the
       // next step's own target — e.g. the Pickers tour's "Manual
-      // Generation" step: clicking Pick one starts a multi-second spin
+      // Generation" step: clicking Pick One starts a multi-second spin
       // animation, and the Send to Today button (the next step's target)
       // doesn't exist until it resolves. Advancing on the usual immediate
       // timer would move the step index forward before that target exists,

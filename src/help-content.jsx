@@ -13,7 +13,7 @@ import { Icon } from './ui.jsx';
 // shared import) was the intended plan once real content rollout began.
 //
 // One item per DISTINCT piece of functionality, not one per DOM element —
-// e.g. a card's Re-roll/Skip/Edit icons share one tip (a numbered list)
+// e.g. a card's Re-Roll/Skip/Edit icons share one tip (a numbered list)
 // rather than three, and a group of filter pills gets one tip explaining
 // what the whole row does rather than one per pill. Kept in its own module
 // (rather than inline per-tab like the original 2-item Today test case) so
@@ -125,17 +125,17 @@ const TODAY_HELP_ITEMS = [
     body: (
       <>
         <p>When you click this circle, it marks the item as completed and updates the progress ring's completed count. When all items are completed, your Day Streak increases and the celebration animations will play.</p>
-        <p>For items that belong to a picker with updatable values, marking as complete will also apply updates to all of the pickers' items. Dynamic Weighted items wil have their boost value increased or reset to 0. Ease-up and Ease-down items will have their charge values increased or decreased, respectively.</p>
+        <p>For items that belong to a picker with updatable values, marking as complete will also apply updates to all of the pickers' items. Dynamic Weighted items wil have their boost value increased or reset to 0. Ease Up and Ease Down items will have their charge values increased or decreased, respectively.</p>
       </>
     ),
   },
   {
     // Reminders and picker-generated entries share the same .today-card-
-    // actions markup but not the same buttons (reminders have no Re-roll —
+    // actions markup but not the same buttons (reminders have no Re-Roll —
     // there's nothing to re-roll TO, it's a fixed task, not a random pick),
     // so this needs two separate items rather than one shared description.
     // Also excludes day-off and charging cards — both render a
-    // .today-card-actions row too, but with Re-roll and/or Edit genuinely
+    // .today-card-actions row too, but with Re-Roll and/or Edit genuinely
     // disabled (the app's own InfoTip there says "This action is disabled
     // for this type of item"), which this tip's copy doesn't describe.
     // perElement (see help-mode.jsx) so every OTHER card gets its own badge
@@ -149,7 +149,7 @@ const TODAY_HELP_ITEMS = [
     body: (
       <>
         <div className="help-nav-item">
-          <div className="help-nav-label"><Icon name="refresh" size={14} /><b>Re-roll:</b></div>
+          <div className="help-nav-label"><Icon name="refresh" size={14} /><b>Re-Roll:</b></div>
           <p>This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>
         </div>
         <div className="help-nav-item">
@@ -181,15 +181,15 @@ const TODAY_HELP_ITEMS = [
   {
     // A day-off card (a conditional's triggered "rest" state) is excluded
     // from cardActionsPicker above since it doesn't have the normal 3-
-    // button set — but unlike a charging card (where Re-roll/Skip/Edit are
+    // button set — but unlike a charging card (where Re-Roll/Skip/Edit are
     // ALL genuinely disabled, nothing real to highlight), a day-off card's
-    // own Skip IS a real, working button — only Re-roll and Edit are
+    // own Skip IS a real, working button — only Re-Roll and Edit are
     // disabled there. `button` (not .icon-btn generally) specifically
-    // targets that one real button — the disabled Re-roll/Edit are
+    // targets that one real button — the disabled Re-Roll/Edit are
     // InfoTip's own <span> root, not a <button>, so this selector can't
     // accidentally catch them.
     id: 'cardActionsDayOff', sel: '.today-card--dayoff .today-card-actions button', perElement: true, title: 'Skip',
-    body: <>This button removes this day off from your todo list without completing it and updates the progress ring's total count accordingly. Re-roll and Edit are disabled for this type of card.</>,
+    body: <>This button removes this day off from your todo list without completing it and updates the progress ring's total count accordingly. Re-Roll and Edit are disabled for this type of card.</>,
   },
   // ── Editing a picker item's full settings (EntryEditor) — reachable from
   // Today's own Edit button too, not just the Data tab (DATA_HELP_ITEMS has
@@ -243,7 +243,7 @@ const TODAY_HELP_ITEMS = [
   },
   {
     id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Item Active Toggle',
-    body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
+    body: <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
   },
   {
     // sel targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot
@@ -284,14 +284,19 @@ const TODAY_HELP_ITEMS = [
     // itself, so the tip's normal "below the target" placement already
     // tracks its own bottom edge as it grows/shrinks with the selection,
     // without needing to pin to some other, unrelated element.
-    id: 'addReminderRepeat', sel: '.rem-quickadd-wrap .rem-editor', title: 'Reminder Schedule',
+    // scrollable: true — the body now covers 5 schedule kinds including the
+    // every-N/weekday recurrence wording, tall enough to overlap the
+    // Repeat control/highlight on a short viewport without it; caps to
+    // whichever side (above/below) placeTip finds more room and scrolls
+    // internally there instead of overflowing into the target either way.
+    id: 'addReminderRepeat', sel: '.rem-quickadd-wrap .rem-editor', title: 'Reminder Schedule', scrollable: true,
     body: (
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
         <p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>
-        <p><b>Weekly:</b> This reminder will show up on your todo list every week on the days that you select below.</p>
-        <p><b>Monthly:</b> This reminder will show up on your todo list every month on the day that you select below.</p>
-        <p><b>Yearly:</b> This reminder will show up on your todo list every year on the date that you select below.</p>
+        <p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p>
+        <p><b>Monthly:</b> This reminder will show up on your todo list every N month(s) on the day or weekday that you select below.</p>
+        <p><b>Yearly:</b> This reminder will show up on your todo list every N year(s) on the date or weekday that you select below.</p>
       </>
     ),
   },
@@ -330,14 +335,15 @@ const TODAY_HELP_ITEMS = [
     // "Reminder Schedule" badges at once whenever the Add Reminder form was
     // open (found via live testing — addReminderRepeat's own comment above
     // claiming this was "already covered, doesn't conflict" was wrong).
-    id: 'editReminderRepeat', sel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor', title: 'Reminder Schedule',
+    // scrollable — same reasoning as addReminderRepeat above.
+    id: 'editReminderRepeat', sel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor', title: 'Reminder Schedule', scrollable: true,
     body: (
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
         <p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>
-        <p><b>Weekly:</b> This reminder will show up on your todo list every week on the days that you select below.</p>
-        <p><b>Monthly:</b> This reminder will show up on your todo list every month on the day that you select below.</p>
-        <p><b>Yearly:</b> This reminder will show up on your todo list every year on the date that you select below.</p>
+        <p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p>
+        <p><b>Monthly:</b> This reminder will show up on your todo list every N month(s) on the day or weekday that you select below.</p>
+        <p><b>Yearly:</b> This reminder will show up on your todo list every N year(s) on the date or weekday that you select below.</p>
       </>
     ),
   },
@@ -426,7 +432,7 @@ const TODAY_HELP_ITEMS = [
         <p>This explains the icons that are used in the Status column below.</p>
         <p><b>Auto-picked:</b> This indicates that an item was chosen automatically by the daily generator.</p>
         <p><b>Pushed:</b> This indicates that an item was pushed onto your todo list manually from the Pickers page.</p>
-        <p><b>Rolled off:</b> This indicates that an item was on your todo list but was then replaced by another item via the Re-roll button.</p>
+        <p><b>Rolled off:</b> This indicates that an item was on your todo list but was then replaced by another item via the Re-Roll button.</p>
         <p><b>Skipped:</b> This indicates that an item was on your todo list but was then removed via the Skip button.</p>
         <p><b>Completed:</b> This indicates that the item is on your todo list and has been marked as completed.</p>
       </>
@@ -434,15 +440,15 @@ const TODAY_HELP_ITEMS = [
   },
   {
     id: 'logPickerItem', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-item', columnGroup: 'pickerLogCols', title: 'Item Column',
-    body: <>This lists every item in this picker's pool. It also shows its weight (Weighted), weight + boost (Dynamic Weighted) or eligible range (Ease-up or Ease-down), depending on the picker's mode.</>,
+    body: <>This lists every item in this picker's pool. It also shows its weight (Weighted), weight + boost (Dynamic Weighted) or eligible range (Ease Up or Ease Down), depending on the picker's mode.</>,
   },
   {
     id: 'logPickerAtGen', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-atgen', columnGroup: 'pickerLogCols', title: 'At Gen Column',
-    body: <>This lists the item's value at the moment your todo list was generated. This only applies to Dynamic Weighted, Ease-up and Ease-down picker items, it shows N/A otherwise.</>,
+    body: <>This lists the item's value at the moment your todo list was generated. This only applies to Dynamic Weighted, Ease Up and Ease Down picker items, it shows N/A otherwise.</>,
   },
   {
     id: 'logPickerDelta', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-delta', columnGroup: 'pickerLogCols', title: 'Δ Column',
-    body: <>This shows how much this item's value changed since your todo list was generated. This only applies to Dynamic Weighted, Ease-up and Ease-down picker items.</>,
+    body: <>This shows how much this item's value changed since your todo list was generated. This only applies to Dynamic Weighted, Ease Up and Ease Down picker items.</>,
   },
   {
     id: 'logPickerAfter', sel: '.dl-block:not(.dl-cond-sec) .dl-mk-after', columnGroup: 'pickerLogCols', title: 'After Column',
@@ -458,11 +464,11 @@ const TODAY_HELP_ITEMS = [
   },
   {
     id: 'logCondAtGen', sel: '.dl-cond-sec .dl-mk-atgen', columnGroup: 'condLogCols', title: 'At Gen Column',
-    body: <>This lists the conditional's value at the moment your todo list was generated. This only applies to Dynamic Weighted, Ease-up and Ease-down conditionals, it shows N/A otherwise.</>,
+    body: <>This lists the conditional's value at the moment your todo list was generated. This only applies to Dynamic Weighted, Ease Up and Ease Down conditionals, it shows N/A otherwise.</>,
   },
   {
     id: 'logCondDelta', sel: '.dl-cond-sec .dl-mk-delta', columnGroup: 'condLogCols', title: 'Δ Column',
-    body: <>This shows how much this conditional's value changed since your todo list was generated. This only applies to Dynamic Weighted, Ease-up and Ease-down conditionals.</>,
+    body: <>This shows how much this conditional's value changed since your todo list was generated. This only applies to Dynamic Weighted, Ease Up and Ease Down conditionals.</>,
   },
   {
     id: 'logCondAfter', sel: '.dl-cond-sec .dl-mk-after', columnGroup: 'condLogCols', title: 'After Column',
@@ -480,8 +486,12 @@ const PICKER_HELP_ITEMS = [
     body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
   },
   {
-    id: 'groupFilter', sel: '.picker-groups .picker-group-pill', title: 'Group Filter',
+    id: 'groupFilter', sel: '.picker-groups:not(.picker-groups--type) .picker-group-pill', title: 'Group Filter',
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
+  },
+  {
+    id: 'typeFilter', sel: '.picker-groups--type .picker-group-pill', title: 'Type Filter',
+    body: <>This filters the pickers row below by picker type (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), independent of the Group filter above with both narrowing the row together.</>,
   },
   {
     // padX: 3 — the add button sits right before the first tab in the same
@@ -496,11 +506,36 @@ const PICKER_HELP_ITEMS = [
     body: <>This is where you can create new pickers. This button will open up a full page form with 2 parts, picker settings and picker items.</>,
   },
   {
+    // :not(.np-form) excludes the Edit/Create-picker form's own reused
+    // .picker-title header — same name, different element, only ever one
+    // or the other on screen at once, but the selector still needs to be
+    // unambiguous for whichever is actually showing.
+    // padY: 2 — the mode pill sits directly below with only a 6px margin-
+    // top (see styles2.css's .picker-h > div > .pill rule); the default 8px
+    // pad on each side would overlap by 10px otherwise, bleeding into the
+    // pill's own highlight.
+    id: 'pickerName', sel: '.picker-view:not(.np-form) .picker-title', title: 'Picker Name', padY: 2,
+    body: <>This is the name of the currently selected picker.</>,
+  },
+  {
+    // padY: 2 — see pickerName's own comment, same 6px gap, same fix.
+    id: 'pickerTypePill', sel: '.picker-view:not(.np-form) .pill--mode', title: 'Picker Type', padY: 2,
+    body: <>This shows the currently selected picker's type (Truly Random, Weighted, Dynamic Weighted, Ease Up, or Ease Down).</>,
+  },
+  {
+    id: 'editPicker', sel: '.picker-edit-btn', title: 'Edit Picker',
+    body: <>This opens the same form used to create a picker, pre-filled with this picker's current settings. You can adjust its name, group, type, daily generator schedule, or conditional attachment. Its items aren&rsquo;t edited here, but you can use this picker's own item list below or the Data tab for that.</>,
+  },
+  {
+    id: 'pickerExplanation', sel: '.picker-view:not(.np-form) .picker-hint', title: 'Picker Explanation',
+    body: <>This explains the currently selected picker's ruleset, including how it chooses an item and why you might pick this type over another.</>,
+  },
+  {
     id: 'manualGeneration', sel: '.picker-run', title: 'Manual Generation',
     body: (
       <>
-        <p>The Pick one button runs a manual pick generation for the selected picker, so that you don't have to completely rely on your todo list's auto generation.</p>
-        <p>Once it resolves and generates a pick it is replaced by the Send to Today button, which will add the selected pick to your todo list. The Re-roll button will run the process again and the Done button will end the process without doing anything.</p>
+        <p>The Pick One button runs a manual pick generation for the selected picker, so that you don't have to completely rely on your todo list's auto generation.</p>
+        <p>Once it resolves and generates a pick it is replaced by the Send to Today button, which will add the selected pick to your todo list. The Re-Roll button will run the process again and the Done button will end the process without doing anything.</p>
       </>
     ),
   },
@@ -581,7 +616,7 @@ const PICKER_HELP_ITEMS = [
   },
   {
     id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Item Active Toggle',
-    body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
+    body: <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
   },
   {
     // Unlike Today/Data, the Delete button is CSS-hidden here
@@ -629,9 +664,9 @@ const PICKER_HELP_ITEMS = [
     // is a Collapse) — findTargets naturally won't match anything while
     // it's closed, no visibility check needed here.
     id: 'newPickerConditionalRail', sel: '.cnd-rail', title: 'Select a Conditional',
-    body: <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, or want to create another, use the Add new conditional button to build one inline.</>,
+    body: <>This lets you select an existing conditional to attach to this picker. If you don't have one yet, or want to create another, use the Add New Conditional button to build one inline.</>,
   },
-  // ── Add new conditional (ConditionalControls, inline in the create flow) ──
+  // ── Add New Conditional (ConditionalControls, inline in the create flow) ──
   {
     id: 'newCondName', sel: '.cnd-controls .np-field:has(input[placeholder="Conditional name"])', title: 'Conditional Name',
     body: <>This is the name field for your new conditional, and it should have a short, descriptive name.</>,
@@ -657,7 +692,7 @@ const PICKER_HELP_ITEMS = [
   },
   {
     id: 'newCondRandom', sel: '.cnd-typectl:has(.pie-noweight)', title: 'Conditional Weight', padY: 0,
-    body: <>Truly random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
+    body: <>Truly Random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
   },
   {
     id: 'newCondOdds', sel: '.cnd-typectl .pie-row:has(.weight-stepper)', title: 'Conditional Trigger Odds', padY: 0,
@@ -726,8 +761,15 @@ const PICKER_HELP_ITEMS = [
     body: <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off, or use the Every day/Weekdays/Weekends presets to quickly set a common pattern.</>,
   },
   {
-    id: 'newPickerSkipHolidays', sel: '.np-sched-toggle', title: 'Picker Holidays Toggle',
+    // :has(#np-skiphol) distinguishes this from the OTHER .np-sched-toggle
+    // just below it (Picker Duplicate Items Toggle) — both share the same
+    // bare class.
+    id: 'newPickerSkipHolidays', sel: '.np-sched-toggle:has(#np-skiphol)', title: 'Picker Holidays Toggle',
     body: <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
+  },
+  {
+    id: 'newPickerAvoidDuplicates', sel: '.np-sched-toggle:has(#np-avoiddupes)', title: 'Picker Duplicate Items Toggle',
+    body: <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
   },
   {
     // .np-footer--step1 scopes this to Step 1 specifically — Step 2's own
@@ -769,12 +811,16 @@ const STATS_HELP_ITEMS = [
     body: <>You can click this logo at any time to navigate back to the home page of the app, the Today page.</>,
   },
   {
-    id: 'groupFilter', sel: '.stat-scope-groups .picker-group-pill', title: 'Group Filter',
+    id: 'groupFilter', sel: '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', title: 'Group Filter',
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
   {
-    id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Type Filter',
-    body: <>This further narrows your selection to conditionals, reminders or specific pickers, or you can view everything all at once.</>,
+    id: 'typeFilter', sel: '.stat-scope-groups--type .picker-group-pill', title: 'Type Filter',
+    body: <>This filters the pickers row below by type. You can select picker mode (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), Conditionals or Reminders, independent of the Group filter above with both narrowing the row together.</>,
+  },
+  {
+    id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Show Selector',
+    body: <>This selects what the rest of the page shows: conditionals, reminders, a specific picker, or everything all at once.</>,
   },
   {
     id: 'rangeFilter', sel: '.stat-filter-pills--seg .stat-pill', title: 'Range Filter',
@@ -892,7 +938,7 @@ const STATS_HELP_ITEMS = [
   },
   {
     id: 'statColdest', sel: '.stat-mk-coldest', title: 'Picker Items Least Picked', padX: 4, padY: 4,
-    body: <>This lists the 5 picker items that have been picked the least for your selected range. This excludes any picker items that are currently on vacation.</>,
+    body: <>This lists the 5 picker items that have been picked the least for your selected range. This excludes any picker items that are currently inactive.</>,
   },
   // ── Conditionals scope only ─────────────────────────────────────────────
   {
@@ -908,10 +954,25 @@ const STATS_HELP_ITEMS = [
     id: 'statRemBreakdown', sel: '.stat-mk-rembreakdown', title: 'Reminders Breakdown',
     body: <>This breaks down every reminder for your selected range individually. You can switch between recent completions, total completions and skips to see each reminder from a different angle.</>,
   },
-  // ── Single-picker scope only ────────────────────────────────────────────
+  // ── Single-picker scope only — same 3-way split as the Pickers page's own
+  // Picker Name/Picker Type/Picker Explanation (see those entries' own
+  // comments), not a single combined highlight — Conditionals/Reminders
+  // scope has no equivalent block, so there's nothing to split there. ──
   {
-    id: 'pickerIdentity', sel: '.stat-picker-id', title: 'Picker Identity',
-    body: <>This shows which picker you're currently viewing stats for, along with its type and a short explanation of how it chooses.</>,
+    // padY: 2 — same 6px gap to the pill below as the Pickers page (see
+    // .stat-picker-id > .pill's own margin-top in styles2.css); the default
+    // 8px pad on each side would overlap by 10px otherwise.
+    id: 'pickerName', sel: '.stat-picker-id .picker-title', title: 'Picker Name', padY: 2,
+    body: <>This is the name of the currently selected picker.</>,
+  },
+  {
+    // padY: 2 — see pickerName's own comment, same 6px gap, same fix.
+    id: 'pickerTypePill', sel: '.stat-picker-id .pill--mode', title: 'Picker Type', padY: 2,
+    body: <>This shows the currently selected picker's type (Truly Random, Weighted, Dynamic Weighted, Ease Up, or Ease Down).</>,
+  },
+  {
+    id: 'pickerExplanation', sel: '.stat-picker-id .picker-hint', title: 'Picker Explanation',
+    body: <>This explains the currently selected picker's ruleset, including how it chooses an item and why you might pick this type over another.</>,
   },
   {
     id: 'pickerBreakdown', sel: '.stat-breakdown-card', title: 'Picker Breakdown',
@@ -926,23 +987,32 @@ const DATA_HELP_ITEMS = [
   },
   {
     // The Conditionals filter row below carries BOTH .stat-scope-groups
-    // AND .stat-scope-groups--cond (it's an additional modifier, not a
-    // replacement — see its own conditionalsFilter entry) — unscoped, this
-    // selector matched that row's pills too, unioning the highlight all
-    // the way down through the Conditionals row.
-    id: 'groupFilter', sel: '.stat-scope-groups:not(.stat-scope-groups--cond) .picker-group-pill', title: 'Group Filter',
+    // AND .stat-scope-groups--cond, and the Type row carries BOTH
+    // .stat-scope-groups AND .stat-scope-groups--type (each an additional
+    // modifier, not a replacement — see their own conditionalsFilter/
+    // typeFilter entries) — unscoped, this selector matched both of those
+    // rows' pills too, unioning the highlight all the way down through them.
+    id: 'groupFilter', sel: '.stat-scope-groups:not(.stat-scope-groups--cond):not(.stat-scope-groups--type) .picker-group-pill', title: 'Group Filter',
     body: <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
   },
   {
-    id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Type Filter',
-    body: <>This further narrows your selection to conditionals, reminders or specific pickers, or you can view everything all at once.</>,
+    id: 'typeFilter', sel: '.stat-scope-groups--type .picker-group-pill', title: 'Type Filter',
+    body: <>This filters the pickers row below by type. You can select picker mode (Truly Random, Weighted, Dynamic Weighted, Ease Up, Ease Down), Conditionals or Reminders, independent of the Group and Conditional filters with all three narrowing the row together.</>,
   },
   {
-    // Only rendered once at least one conditional exists — a second filter
-    // row alongside Group, narrowing the pickers list to whichever
+    id: 'pickersFilter', sel: '.stat-scope-tabs .picker-tab', title: 'Show Selector',
+    body: <>This selects what the rest of the page shows: conditionals, reminders, a specific picker, or everything all at once.</>,
+  },
+  {
+    // Only rendered once at least one conditional exists — a third filter
+    // row alongside Group and Type, narrowing the pickers list to whichever
     // conditional gates them.
     id: 'conditionalsFilter', sel: '.stat-scope-groups--cond .picker-group-pill', title: 'Conditionals Filter',
     body: <>This filters the pickers list below by conditional, showing only pickers gated by the conditional you select.</>,
+  },
+  {
+    id: 'dataSectionSort', sel: '.data-sort-bar .data-sort-sel', title: 'Section Sort',
+    body: <>This changes the order that Conditionals, Reminders and your pickers are listed in below.</>,
   },
   // ── Conditionals manager — each conditional gets its own highlight/
   // tooltip, not just the section as a whole. The per-type controls
@@ -1005,7 +1075,7 @@ const DATA_HELP_ITEMS = [
   },
   {
     id: 'dataCondRandom', sel: '.cnd-typectl:has(.pie-noweight)', title: 'Conditional Weight', padY: 0,
-    body: <>Truly random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
+    body: <>Truly Random conditionals have no adjustable settings. Every time this conditional runs, it has an equal 50/50 chance to trigger.</>,
   },
   {
     id: 'dataCondOdds', sel: '.cnd-typectl .pie-row:has(.weight-stepper)', title: 'Conditional Trigger Odds', padY: 0,
@@ -1139,14 +1209,15 @@ const DATA_HELP_ITEMS = [
     // padY:0 — unlike Today's card-based editor, this tab's .rd-edit wrapper
     // overrides .rem-inline-foot's margin-top to 0 (see .rd-edit .rd-edit-foot
     // in styles2.css), so .rem-editor touches the footer row with zero gap.
-    id: 'dataReminderRepeat', sel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor', title: 'Reminder Schedule', padY: 0,
+    // scrollable — same reasoning as Today's addReminderRepeat.
+    id: 'dataReminderRepeat', sel: '.rem-inline-editor:not(.entry-editor):not(.rem-quickadd-wrap *) .rem-editor', title: 'Reminder Schedule', padY: 0, scrollable: true,
     body: (
       <>
         <p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>
         <p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>
-        <p><b>Weekly:</b> This reminder will show up on your todo list every week on the days that you select below.</p>
-        <p><b>Monthly:</b> This reminder will show up on your todo list every month on the day that you select below.</p>
-        <p><b>Yearly:</b> This reminder will show up on your todo list every year on the date that you select below.</p>
+        <p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p>
+        <p><b>Monthly:</b> This reminder will show up on your todo list every N month(s) on the day or weekday that you select below.</p>
+        <p><b>Yearly:</b> This reminder will show up on your todo list every N year(s) on the date or weekday that you select below.</p>
       </>
     ),
   },
@@ -1193,9 +1264,8 @@ const DATA_HELP_ITEMS = [
     // padY:0 — same .cat-h/.cat-body zero-gap stacking as conditionalsManager;
     // matters once a picker is expanded and .cat-body renders beneath it.
     // title is dynamic by TYPE, not name (unlike conditionalRow/pickerRow's
-    // own precedent) — labelSel reads the hidden .cat-mode-label marker
-    // (tab-data.jsx), since the picker's mode isn't otherwise shown
-    // anywhere in the collapsed header.
+    // own precedent) — labelSel reads the visible .cat-mode-label pill
+    // (tab-data.jsx) in the header's cat-h-tags cluster.
     id: 'pickerRow', sel: '.data-list > .cat > .cat-h', perElement: true, padY: 0,
     labelSel: '.cat-mode-label',
     title: (r) => r?.label ? `${r.label} Picker` : 'Picker',
@@ -1230,39 +1300,9 @@ const DATA_HELP_ITEMS = [
     // Scoped to PickerControls' own "How it picks" group — ConditionalEditor
     // has its own separate .rd-mode-radio inside .cnd-controls, which
     // doesn't live under .rd-ctl-group--picks. padY:0 — .rd-ctl-group--picks
-    // (this group's own wrapper) touches .ease-config (Default Charge
-    // Controls) below with zero gap.
+    // (this group's own wrapper) touches "When it runs" below with zero gap.
     id: 'dataPickerType', sel: '.rd-ctl-group--picks .rd-mode-radio', title: 'Picker Type', padY: 0,
     body: <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
-  },
-  {
-    // New content — this picker-level default charge range (Ease-up/down
-    // only) has no equivalent on the Pickers-page create flow, which only
-    // sets charge ranges per item, not a picker-wide default. Prefills new
-    // items added to this picker; Fill/Refill here acts on every item at
-    // once (actions.refillPicker), not just one. padY:0 — touches Picker
-    // Type above with zero gap (see that entry's own comment). Split by
-    // mode (ease-config--up/--down, tab-data.jsx) rather than one combined
-    // Soonest/Shortest-Latest/Longest-Fill/Refill entry, same idea as
-    // itemChargeRangeUp/Down below.
-    id: 'dataPickerDefaultCadenceUp', sel: '.ease-config.ease-config--up', title: 'Default Charge Controls', padY: 0,
-    body: (
-      <>
-        <p><b>Soonest:</b> This sets the picker's own default minimum, used to prefill new items you add to this picker.</p>
-        <p><b>Latest:</b> This sets the picker's own default maximum, used to prefill new items you add to this picker.</p>
-        <p><b>Fill:</b> This fills the charge of every item in this picker at once.</p>
-      </>
-    ),
-  },
-  {
-    id: 'dataPickerDefaultCadenceDown', sel: '.ease-config.ease-config--down', title: 'Default Charge Controls', padY: 0,
-    body: (
-      <>
-        <p><b>Shortest:</b> This sets the picker's own default minimum, used to prefill new items you add to this picker.</p>
-        <p><b>Longest:</b> This sets the picker's own default maximum, used to prefill new items you add to this picker.</p>
-        <p><b>Refill:</b> This refills the charge of every item in this picker at once.</p>
-      </>
-    ),
   },
   {
     // padY:0 — .sched-line rows stack with zero gap (same pattern as
@@ -1277,7 +1317,7 @@ const DATA_HELP_ITEMS = [
   {
     // padY:0 — same .sched-line zero-gap stacking, touching Picker Cadence
     // below.
-    id: 'dataPickerDailyToggle', sel: '.sched-line:has(button[aria-label*="Daily generator"])', title: 'Daily Generator Toggle', padY: 0,
+    id: 'dataPickerDailyToggle', sel: '.sched-line:has(button[aria-label*="daily generator"])', title: 'Daily Generator Toggle', padY: 0,
     body: <>This determines whether the picker will be included in the app's daily auto-generator. When on, this picker's items will be automatically added to your todo list. When off, the picker won't run automatically, but you can still generate a pick manually from the Pickers tab.</>,
   },
   {
@@ -1301,9 +1341,39 @@ const DATA_HELP_ITEMS = [
   },
   {
     // padY:0 — same .sched-line zero-gap stacking, touching Picker Day
-    // Selection above.
+    // Selection above. This is the LAST "When it runs" row now — Avoid
+    // Duplicate Items moved out to its own "Item Controls" section below
+    // (see that entry's own comment), so nothing follows this one here.
     id: 'dataPickerSkipHolidays', sel: '.sched-line:has(button[aria-label="Skip on holidays"])', title: 'Picker Holidays Toggle', padY: 0,
     body: <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
+  },
+  {
+    // Moved out of "When it runs" into its own "Item Controls" section
+    // (alongside Fill/Refill below) — avoiding duplicate item names has
+    // nothing to do with the Daily generator/schedule that section is
+    // about. padY:0 — .rd-ctl-group--items (this group's own wrapper)
+    // touches "Item Controls" kicker above with zero gap.
+    id: 'dataPickerAvoidDuplicates', sel: '.sched-line:has(button[aria-label="Avoid duplicate items"])', title: 'Picker Duplicate Items Toggle', padY: 0,
+    body: <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
+  },
+  {
+    // Fill/Refill acts on every item in this picker at once
+    // (actions.refillPicker), not just one. Moved out of "How it picks"
+    // into "Item Controls" alongside Avoid Duplicate Items above (see that
+    // entry's own comment) — filling every item's charge is an items
+    // operation, not part of the picker's own ruleset. padY:0 — touches
+    // Picker Duplicate Items Toggle above with zero gap. Split by mode
+    // (ease-config--up/--down, tab-data.jsx) rather than one combined
+    // Fill/Refill entry, same idea as itemChargeRangeUp/Down below (the
+    // per-item equivalent, which also covers each item's own Soonest/Latest
+    // controls — this picker level no longer has any of its own to prefill
+    // new items with; see PICKERS.avgEase in pickers.js).
+    id: 'dataPickerFillUp', sel: '.ease-config.ease-config--up', title: 'Fill All', padY: 0,
+    body: <>This fills the charge of every item in this picker at once.</>,
+  },
+  {
+    id: 'dataPickerFillDown', sel: '.ease-config.ease-config--down', title: 'Refill All', padY: 0,
+    body: <>This refills the charge of every item in this picker at once.</>,
   },
   {
     id: 'dataPickerFoot', sel: '.pk-ctl-foot .btn', title: 'Delete / Cancel / Save',
@@ -1316,6 +1386,10 @@ const DATA_HELP_ITEMS = [
     ),
   },
   {
+    id: 'dataCreatePicker', sel: '.cat-create-btn', title: 'Create New Picker',
+    body: <>This creates a new picker directly from this list, respecting the group, type and conditional filters if they are used. Fill in its name and group, then use the Add Items button to add at least two items. Once it has them, the Save button adds it to the list with all other pickers.</>,
+  },
+  {
     // Scoped to .data-list so this doesn't also match the Conditionals/
     // Reminders managers' own "Add" buttons, which share the plain .rd-add
     // class but render outside .data-list entirely. padY:0 — .rd-add has
@@ -1323,6 +1397,29 @@ const DATA_HELP_ITEMS = [
     // below it.
     id: 'dataAddItem', sel: '.data-list .rd-add', title: 'Create New Picker Item', padY: 0,
     body: <>This adds a new item to this picker's pool.</>,
+  },
+  {
+    // Split by section type (three separate entries, each named for its own
+    // context) rather than one shared "Item Sort" — Conditionals/Reminders/
+    // pickers all render the exact same SortSelect markup (ui.jsx) inside
+    // their own .cat-body, so the selectors below key off each section's own
+    // distinguishing class/attribute instead: .cnd-manager (Conditionals),
+    // .cat--reminders (Reminders), and a picker section's own data-picker-id
+    // (set only there, unlike a plain className check, which would need
+    // :not() exclusions against the other two instead). perElement — every
+    // expanded section's own sort control gets its own badge, since more
+    // than one can be visible (and set to a different order) at once —
+    // matters most for pickers, where several can be expanded together.
+    id: 'dataCondItemSort', sel: '.cnd-manager .data-sort-sel', perElement: true, title: 'Conditional Items Sort',
+    body: <>This changes the order that the items in this section are listed in below.</>,
+  },
+  {
+    id: 'dataRemItemSort', sel: '.cat--reminders .data-sort-sel', perElement: true, title: 'Reminder Items Sort',
+    body: <>This changes the order that the items in this section are listed in below.</>,
+  },
+  {
+    id: 'dataPickerItemSort', sel: '.data-list .cat[data-picker-id] .data-sort-sel', perElement: true, title: 'Picker Items Sort',
+    body: <>This changes the order that the items in this section are listed in below.</>,
   },
   {
     // perElement — every item in every expanded picker gets its own badge.
@@ -1335,7 +1432,7 @@ const DATA_HELP_ITEMS = [
   // tab-today.jsx but reused here — see .entry-editor's own doc comment
   // there). Which of these actually renders depends on the OWNING
   // PICKER's mode, so most items below only ever show up for some modes:
-  // Charge Range (Ease-up/Ease-down only), Weight (Weighted/Dynamic
+  // Charge Range (Ease Up/Ease Down only), Weight (Weighted/Dynamic
   // Weighted), Boost (Dynamic Weighted only). Active and the footer
   // always render regardless of mode.
   {
@@ -1386,7 +1483,7 @@ const DATA_HELP_ITEMS = [
   },
   {
     id: 'itemActive', sel: '.entry-editor .pie-row:has(.switch)', padY: 0, title: 'Item Active Toggle',
-    body: <>This toggles whether this item is eligible to be picked. Turning it off sends the item on vacation, removing it from the picker's pool until it's turned back on.</>,
+    body: <>This toggles whether this item is eligible to be picked. Turning it off marks the item inactive, removing it from the picker's pool until it's turned back on.</>,
   },
   {
     // sel targets .rem-inline-foot (the shared wrapper), not .rd-edit-foot
@@ -1465,7 +1562,7 @@ const SETTINGS_HELP_ITEMS = [
   },
   {
     id: 'appearancePickAnim', sel: '.set-subsection--pickanim', title: 'Picker Animation', padY: 4,
-    body: <>This is where you choose which animation plays in the Pickers tab when the manual picker functionality is triggered via the "Pick one" button. Use Preview to watch any of them play out before picking one.</>,
+    body: <>This is where you choose which animation plays in the Pickers tab when the manual picker functionality is triggered via the "Pick One" button. Use Preview to watch any of them play out before picking one.</>,
   },
   {
     id: 'appearanceLayout', sel: '.set-subsection--layout', title: 'Tab Bar Placement', padY: 4,

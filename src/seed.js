@@ -36,7 +36,7 @@ const ITEMS = [
 
   // Weekly chores
   ['Clean the bathroom',       'pkr_chore_w', 2, 30],
-  ['Vacuum living room',       'pkr_chore_w', 2, 0,  true],  // vacation
+  ['Vacuum living room',       'pkr_chore_w', 2, 0,  true],  // inactive
   ['Mop the kitchen',          'pkr_chore_w', 1, 52],
   ['Change the bed sheets',    'pkr_chore_w', 1, 80],
   ['Fridge wipe-down',         'pkr_chore_w', 1, 18],
@@ -143,7 +143,7 @@ function buildPickers() {
   ].map((p) => ({
     daysOfWeek: (sched[p.id] || {}).daysOfWeek || [0, 1, 2, 3, 4, 5, 6],
     skipHolidays: !!(sched[p.id] || {}).skipHolidays,
-    // Ease-down: id of the item currently being worked down (null = none).
+    // Ease Down: id of the item currently being worked down (null = none).
     activeItemId: null,
     // Optional conditional gate (suppresses this picker when active).
     conditionalId: p.id === 'pkr_chore_w' ? 'cnd_chorefree' : null,
@@ -166,12 +166,12 @@ function weightedPick(pool) {
   return pool[pool.length - 1];
 }
 
-// Seeded vacation event log — a few on/off transitions so Stats can exclude
-// days an item wasn't eligible. Three scenarios worth demonstrating:
-//   • currently on vacation (open interval) — Vacuum living room
-//   • past closed vacation, picked since (no label) — Mop the kitchen
-//   • past vacation, NOT picked since returning ("Was on vacation" label) —
-//     Fridge wipe-down
+// Seeded inactive-state event log — a few on/off transitions so Stats can
+// exclude days an item wasn't eligible. Three scenarios worth demonstrating:
+//   • currently inactive (open interval) — Vacuum living room
+//   • past closed inactive stretch, picked since (no label) — Mop the kitchen
+//   • past inactive stretch, NOT picked since returning ("Was Inactive"
+//     label) — Fridge wipe-down
 function buildVacationLog(items) {
   const byName = (n) => items.find((it) => it.name === n);
   const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -179,7 +179,7 @@ function buildVacationLog(items) {
   const rows = [];
   let seq = 0;
   const mk = (item, back, on) => { if (item) rows.push({ rowId: 'vac_' + (seq++).toString(36), itemId: item.id, date: at(back), on }); };
-  mk(byName('Vacuum living room'), 24, true);            // still on vacation
+  mk(byName('Vacuum living room'), 24, true);            // still inactive
   mk(byName('Mop the kitchen'), 180, true);
   mk(byName('Mop the kitchen'), 150, false);             // returned long ago, picked since
   mk(byName('Fridge wipe-down'), 20, true);
@@ -187,7 +187,7 @@ function buildVacationLog(items) {
   return rows;
 }
 
-// Build an onVac(itemId, iso) predicate by replaying vacation events.
+// Build an onVac(itemId, iso) predicate by replaying inactive-state events.
 function makeOnVac(vacRows) {
   const byItem = new Map();
   for (const r of vacRows) {
@@ -242,8 +242,9 @@ function buildPickLog(items, pickers, onVac, days = 365) {
       if (pk.mode === 'ease-down') continue; // handled statefully below
       if (Array.isArray(pk.daysOfWeek) && !pk.daysOfWeek.includes(dow)) continue;
       const dIso = seedIsoDay(d);
-      // Eligible pool = items not on vacation THAT day (per the vacation log),
-      // so historical picks stop while an item is away and resume on return.
+      // Eligible pool = items not inactive THAT day (per the inactive-state
+      // log), so historical picks stop while an item is inactive and resume
+      // on return.
       const pool = (byPicker[pk.id] || []).filter((it) => !onVac(it.id, dIso));
       if (!pool.length) continue;
       const it = weightedPick(pool);
@@ -269,7 +270,7 @@ function buildPickLog(items, pickers, onVac, days = 365) {
     }
   }
 
-  // Ease-down pickers: an item, once chosen, stays picked every run and decays
+  // Ease Down pickers: an item, once chosen, stays picked every run and decays
   // until its charge hits 0 (a completed depletion streak → depletedEnd), then
   // a new item is chosen. A few streaks are abandoned early (no depletedEnd) to
   // prove Stats' "Spent" counts only completed cycles. Returns per-picker final
@@ -287,7 +288,7 @@ function buildPickLog(items, pickers, onVac, days = 365) {
       const dIso = seedIsoDay(d);
       const pool = (byPicker[pk.id] || []).filter((it) => !onVac(it.id, dIso));
       if (!pool.length) { active = null; continue; }
-      if (active && onVac(active.id, dIso)) active = null;          // vacation abandons
+      if (active && onVac(active.id, dIso)) active = null;          // inactive abandons
       if (active && Math.random() < 0.05) active = null;            // ~5% re-roll/manual abandon
       if (!active) { active = weightedPick(pool); charge = threshold; }
       const decay = rnd(active.easeMin ?? pk.easeMin ?? 20, active.easeMax ?? pk.easeMax ?? 34);
@@ -400,7 +401,7 @@ function buildSeed() {
   let _e = 0;
   const mkEid = () => 'eseed_' + (_e++).toString(36);
 
-  // Vacation history + the pick log that honors it. buildPickLog also returns
+  // Inactive-state history + the pick log that honors it. buildPickLog also returns
   // per-picker ease-down end state (which item is mid-depletion + its charge).
   const vacationLog = buildVacationLog(items);
   const onVac = makeOnVac(vacationLog);
@@ -421,7 +422,7 @@ function buildSeed() {
     }
   }
 
-  // Today's picks. Ease-down pickers continue their active item as an 'auto'
+  // Today's picks. Ease Down pickers continue their active item as an 'auto'
   // daily pick (so today's list matches the in-progress streak).
   const playActive = (() => {
     const id = (easeState['pkr_play'] || {}).activeItemId;
@@ -505,8 +506,8 @@ function buildSeed() {
         eid: p.eid, pickerId: p.pickerId, itemId: p.itemId, done: p.done, skipped: false })),
     },
     // Per-pick history (~1yr) + today's rows. The Stats tab derives everything
-    // from this; there is no separate aggregate `history` anymore. Vacation days
-    // are honored (no picks while an item was away).
+    // from this; there is no separate aggregate `history` anymore. Inactive
+    // days are honored (no picks while an item was inactive).
     pickLog: pickLog,
     vacationLog: vacationLog,
     // Conditional trigger history (~1yr) for the demo gate. One row per
@@ -580,9 +581,9 @@ function buildClean() {
 }
 export const CLEAN_STATE = buildClean;
 export const MODES = {
-  'random':    { label: 'Truly random',     hint: ['Ruleset: This picker\u2019s ruleset makes it so that all of its items have an equally likely chance of being picked.', 'Explanation: This is a good choice for being truly random, but it also has some drawbacks. e.g. it can pick the exact same item multiple times in a row or an item can go a long time without being picked.'] },
-  'weighted':  { label: 'Weighted',         hint: ['Ruleset: This picker\u2019s ruleset uses adjustable, weighted per-item values that can make them more (or less) likely to be picked.', 'Explanation: This is a good choice for mitigating some of the Truly random drawbacks by tuning individual items\u2019 % chance to make them more (or less) likely to be picked. e.g. it can still pick the exact same item multiple times in a row or an item can go a long time without being picked, although it is less likely to do so.'] },
-  'dynamic':   { label: 'Dynamic weighted', hint: ['Ruleset: This picker\u2019s ruleset is exactly the same as the Weighted picker, but it also adds a second per-item value that increments the weighted value every time an item is not picked and then resets its value every time that it is.', 'Explanation: This is a good choice for mitigating almost all of the Truly random drawbacks by tuning individual items\u2019 % chance to make them more (or less) likely to be picked. Furthermore, by adding a dynamic per-item value it makes it increasingly likely to be picked when it isn\u2019t and less likely when it is. e.g. it can still pick the exact same item multiple times in a row or an item can go a long time without being picked, although it is much less likely to do so.'] },
-  'ease-up':   { label: 'Ease-up',          hint: ['Ruleset: This picker\u2019s ruleset makes it so that all items are ineligible to be picked until their individual values reach 100, at which point they are put into a pool of eligible items to be picked. Said values will start at 0 and are incremented every cycle by a random amount within a user defined range.', 'Explanation: This is a good choice for ensuring that picker items can only be picked once every X days and can never be picked multiple times in a row. e.g. an item can only be picked at most once a week and must be picked at least once every two weeks.'] },
-  'ease-down': { label: 'Ease-down',        hint: ['Ruleset: This picker\u2019s ruleset is the opposite of the Ease-up picker. It makes it so that all items are eligible to be picked and once an item is picked it will stay picked until its value reaches 0, at which point a new item is picked. Said value will start at 100 and is decremented every cycle by a random amount within a user defined range.', 'Explanation: This is a good choice for ensuring that an item stays picked for at least X days and then is not picked again for at least one cycle afterwards. e.g. it must remain picked for at least a week and must not remain picked for more than two weeks.'] },
+  'random':    { label: 'Truly Random',     hint: ['Ruleset: This picker\u2019s ruleset makes it so that all of its items have an equally likely chance of being picked.', 'Explanation: This is a good choice for being truly random, but it also has some drawbacks. e.g. it can pick the exact same item multiple times in a row or an item can go a long time without being picked.'] },
+  'weighted':  { label: 'Weighted',         hint: ['Ruleset: This picker\u2019s ruleset uses adjustable, weighted per-item values that can make them more (or less) likely to be picked.', 'Explanation: This is a good choice for mitigating some of the Truly Random drawbacks by tuning individual items\u2019 % chance to make them more (or less) likely to be picked. e.g. it can still pick the exact same item multiple times in a row or an item can go a long time without being picked, although it is less likely to do so.'] },
+  'dynamic':   { label: 'Dynamic Weighted', hint: ['Ruleset: This picker\u2019s ruleset is exactly the same as the Weighted picker, but it also adds a second per-item value that increments the weighted value every time an item is not picked and then resets its value every time that it is.', 'Explanation: This is a good choice for mitigating almost all of the Truly Random drawbacks by tuning individual items\u2019 % chance to make them more (or less) likely to be picked. Furthermore, by adding a dynamic per-item value it makes it increasingly likely to be picked when it isn\u2019t and less likely when it is. e.g. it can still pick the exact same item multiple times in a row or an item can go a long time without being picked, although it is much less likely to do so.'] },
+  'ease-up':   { label: 'Ease Up',          hint: ['Ruleset: This picker\u2019s ruleset makes it so that all items are ineligible to be picked until their individual values reach 100, at which point they are put into a list of eligible items to be picked. Said values will start at 0 and are incremented every cycle by a random amount within a user defined range.', 'Explanation: This is a good choice for ensuring that picker items can only be picked once every N days and can never be picked multiple times in a row. e.g. an item can only be picked at most once a week and must be picked at least once every two weeks.'] },
+  'ease-down': { label: 'Ease Down',        hint: ['Ruleset: This picker\u2019s ruleset is the opposite of the Ease Up picker. It makes it so that all items are eligible to be picked and once an item is picked it will stay picked until its value reaches 0, at which point a new item is picked. Said value will start at 100 and is decremented every cycle by a random amount within a user defined range.', 'Explanation: This is a good choice for ensuring that an item stays picked for at least N days and then is not picked again for at least one cycle afterwards. e.g. it must remain picked for at least a week and must not remain picked for more than two weeks.'] },
 };

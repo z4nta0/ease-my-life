@@ -1,22 +1,98 @@
 import React from 'react';
 import { CAD_OPTS } from './cadence-control.jsx';
 import { CADENCE } from './cadence.js';
-import { EASE_UP_RANGE_WARN } from './constants.js';
-import { normalizeConditionalName, normalizeGroupName } from './pickers.js';
+import { PICKERS, normalizeConditionalName, normalizeGroupName } from './pickers.js';
 import { useEmlTour } from './onboarding.jsx';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { ReminderManager } from './reminders.jsx';
 import { MODES } from './seed.js';
 import { ConditionalControls, conditionalDraftDefault } from './tab-conditional.jsx';
 import { EntryEditor } from './tab-today.jsx';
-import { Btn, Collapse, FillButton, Icon, InfoTip, NumStepper, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { Btn, Collapse, compareSortEntries, FillButton, freezeEditedRow, Icon, InfoTip, SortSelect, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
 import { HelpButton, HelpOverlay } from './help-mode.jsx';
 import { DATA_HELP_ITEMS } from './help-content.jsx';
 import { seedHelpPickers, clearHelpPickers, seedHelpTasks, clearHelpTasks } from './help-sample-data.js';
 
-// Data tab — items grouped by their owning picker, plus weights, vacation,
-// picker deletion, and per-picker Daily-generator scheduling (weekday +
-// skip-holiday gates). The global "days off" holiday list lives in Settings.
+// Data tab — items grouped by their owning picker, plus weights, active/
+// inactive status, picker deletion, and per-picker Daily-generator
+// scheduling (weekday + skip-holiday gates). The global "days off" holiday
+// list lives in Settings.
+
+// Section-list sort options (Conditionals / Reminders / each picker card).
+const SECTION_SORT_OPTIONS = [
+  { key: 'name-asc', label: 'Name (A–Z)' },
+  { key: 'name-desc', label: 'Name (Z–A)' },
+  { key: 'type-asc', label: 'Type (A–Z)' },
+  { key: 'type-desc', label: 'Type (Z–A)' },
+  { key: 'group-asc', label: 'Group (A–Z)' },
+  { key: 'group-desc', label: 'Group (Z–A)' },
+  { key: 'count-asc', label: 'Item Count (Low to High)' },
+  { key: 'count-desc', label: 'Item Count (High to Low)' },
+  { key: 'active-asc', label: 'Active to Inactive' },
+  { key: 'active-desc', label: 'Inactive to Active' },
+];
+
+// Item-list sort options — extrapolated from SECTION_SORT_OPTIONS' own
+// vocabulary, adapted to what an individual item actually has. Group and
+// (sub-)Item Count have no meaning for a single item, so neither is offered
+// at this level, unlike the section list above. Odds (weighted/dynamic),
+// Boost (dynamic only), and Range (the ease band's soonest/shortest end —
+// see conditionalRange) are each meaningful for only some conditional modes,
+// mixed into the same list as ones they don't apply to; on those other rows
+// they're irrelevant (not just missing), so they always sort to the bottom
+// regardless of direction (see compareSortEntries' numericAlwaysLast) rather
+// than flipping to the top on a "High to Low" sort the way a genuinely
+// missing value would. Their labels also stay generic here rather than
+// switching wording per mode the way a single-mode picker's own item list
+// can (see pickerItemSortOptions, e.g. Range's Soonest/Shortest). Odds (not
+// "Weight", despite the picker-item-sort analog being called that) because
+// a conditional's `weight` field is vestigial — its actual weighted/dynamic
+// trigger-likelihood knob is `oddsPct`, which its own editor calls Odds (see
+// conditionalOdds and conditionals.js' trueOdds).
+const CONDITIONAL_ITEM_SORT_OPTIONS = [
+  { key: 'name-asc', label: 'Name (A–Z)' },
+  { key: 'name-desc', label: 'Name (Z–A)' },
+  { key: 'type-asc', label: 'Type (A–Z)' },
+  { key: 'type-desc', label: 'Type (Z–A)' },
+  { key: 'odds-asc', label: 'Odds (Low to High)' },
+  { key: 'odds-desc', label: 'Odds (High to Low)' },
+  { key: 'boost-asc', label: 'Boost (Low to High)' },
+  { key: 'boost-desc', label: 'Boost (High to Low)' },
+  { key: 'range-asc', label: 'Range (Low to High)' },
+  { key: 'range-desc', label: 'Range (High to Low)' },
+  { key: 'active-asc', label: 'Active to Inactive' },
+  { key: 'active-desc', label: 'Inactive to Active' },
+];
+// A picker's own items have no per-item Type (every item in one picker's
+// pool is the same kind) — instead, ease/weighted/dynamic modes get a
+// mode-specific numeric field (reusing the generic `count` comparator field)
+// in its place: charge for ease-up/down, weight for weighted/dynamic. Ease
+// modes also get Range — the item's own soonest-to-latest day band collapsed
+// to its near end, labeled "Soonest" for ease-up and "Shortest" for ease-down
+// to match the wording already used for that same value elsewhere (e.g. the
+// item editor's own Soonest/Shortest stepper). Dynamic Weighted also gets
+// Boost — the same `value` field ease modes reuse for charge, here meaning
+// the item's current weight bonus instead (see BoostReset in tab-today.jsx);
+// plain weighted has a fixed weight only, no boost concept. Truly Random has
+// none of these, only Name/Active.
+function pickerItemSortOptions(mode) {
+  const opts = [
+    { key: 'name-asc', label: 'Name (A–Z)' },
+    { key: 'name-desc', label: 'Name (Z–A)' },
+  ];
+  if (mode === 'ease-up' || mode === 'ease-down') {
+    const rangeLbl = mode === 'ease-down' ? 'Shortest' : 'Soonest';
+    opts.push({ key: 'count-asc', label: 'Charge (Low to High)' }, { key: 'count-desc', label: 'Charge (High to Low)' });
+    opts.push({ key: 'range-asc', label: `${rangeLbl} (Low to High)` }, { key: 'range-desc', label: `${rangeLbl} (High to Low)` });
+  } else if (mode === 'weighted' || mode === 'dynamic') {
+    opts.push({ key: 'count-asc', label: 'Weight (Low to High)' }, { key: 'count-desc', label: 'Weight (High to Low)' });
+    if (mode === 'dynamic') {
+      opts.push({ key: 'boost-asc', label: 'Boost (Low to High)' }, { key: 'boost-desc', label: 'Boost (High to Low)' });
+    }
+  }
+  opts.push({ key: 'active-asc', label: 'Active to Inactive' }, { key: 'active-desc', label: 'Inactive to Active' });
+  return opts;
+}
 
 // Shown in the (?) tip beside an ease-up picker's Soonest / Latest controls —
 // warns that with many items the per-item range is a tendency, not a guarantee.
@@ -26,38 +102,40 @@ import { seedHelpPickers, clearHelpPickers, seedHelpTasks, clearHelpTasks } from
 // on mount — letting Cancel revert every change (type, ease band, weekdays,
 // holiday skip, daily-generator membership, and any item values touched by a
 // Refill) the way the item editor's Cancel does. Done keeps the changes.
-function PickerControls({ picker, items, inDaily, dailyIds, allGroups, conditionals = [], actions, onCollapse, onRequestDelete }) {
+function PickerControls({ picker, items, inDaily, dailyIds, allGroups, conditionals = [], actions, onCollapse, onRequestDelete, isNewDraft, itemsSectionOpen, hasOpenNewItem, onOpenItemsSection, onSaveNew, onCancelNew }) {
   const pk = picker;
   const isEase = pk.mode === 'ease-up' || pk.mode === 'ease-down';
-  // Same drift↔days conversion the item editor uses, so the picker's DEFAULT
-  // cadence reads in the exact same units (and rows) as a per-item override.
-  const THRESHOLD = 100;
-  const soonest = Math.max(1, Math.round(THRESHOLD / (pk.easeMax || 1)));
-  const latest = Math.max(1, Math.round(THRESHOLD / (pk.easeMin || 1)));
-  const daysToDrift = (d) => THRESHOLD / Math.max(1, d);
-  const setSoonest = (days) => {
-    const easeMax = daysToDrift(Math.max(1, Math.min(60, days)));
-    actions.updatePicker(pk.id, { easeMax, easeMin: Math.min(pk.easeMin, easeMax) });
-  };
-  const setLatest = (days) => {
-    const easeMin = daysToDrift(Math.max(1, Math.min(90, days)));
-    actions.updatePicker(pk.id, { easeMin, easeMax: Math.max(pk.easeMax, easeMin) });
-  };
   const isDown = pk.mode === 'ease-down';
-  const soonestLbl = isDown ? 'Shortest' : 'Soonest';
-  const latestLbl = isDown ? 'Longest' : 'Latest';
-  const uw = (n) => CADENCE.unitWord(pk.cadence, n);
-  const soonestSub = isDown
-    ? <>stays picked <strong>{soonest} {uw(soonest)}</strong> minimum</>
-    : <><strong>{soonest} {uw(soonest)}</strong> until pickable again</>;
-  const latestSub = isDown
-    ? <>stays picked <strong>{latest} {uw(latest)}</strong> maximum</>
-    : <><strong>{latest} {uw(latest)}</strong> until pick is mandatory</>;
   const notFull = items.filter((it) => (it.value ?? 0) < (pk.threshold ?? 100)).length;
   const fillSub = notFull === 0
     ? <><strong>all items</strong> are fully charged</>
     : <><strong>{notFull} {notFull === 1 ? 'item' : 'items'}</strong> {notFull === 1 ? 'is' : 'are'} not at full charge</>;
   const [confirmDel, setConfirmDel] = React.useState(false);
+  // isNewDraft's own footer button — "Add Items" until the Items section is
+  // opened, has 2+ items, AND none of them is still a brand-new one whose
+  // editor hasn't been saved/kept yet (hasOpenNewItem — items.length counts
+  // a just-created item the instant its editor opens, well before the user
+  // has actually saved it, so checking length alone would flip to "Save"
+  // while the 2nd item's form is still sitting open mid-edit). Disabled
+  // (with a tooltip explaining why, in place of the create flow's own status
+  // text) at every stage short of that: missing name/group first, then —
+  // once the Items section is open — however many items short of 2 it still
+  // is, then the still-open new item. Once everything's satisfied the
+  // tooltip just confirms it, matching the create-flow's own "Everything
+  // looks good" convention.
+  const newDraftNeedName = !pk.name.trim();
+  const newDraftNeedGroup = !pk.group;
+  const newDraftShowingSave = isNewDraft && itemsSectionOpen && items.length >= 2 && !hasOpenNewItem;
+  const newDraftLabel = newDraftShowingSave ? 'Save' : 'Add Items';
+  const newDraftDisabled = newDraftShowingSave ? false : (newDraftNeedName || newDraftNeedGroup || itemsSectionOpen);
+  const newDraftTip = newDraftNeedName && newDraftNeedGroup ? 'A picker name and group are both required.'
+    : newDraftNeedName ? 'A picker name is required.'
+    : newDraftNeedGroup ? 'A group name is required.'
+    : (itemsSectionOpen && items.length < 2) ? `${2 - items.length} more ${2 - items.length === 1 ? 'item' : 'items'} needed.`
+    : (itemsSectionOpen && hasOpenNewItem) ? 'Finish saving this item first.'
+    : newDraftShowingSave ? 'Everything looks good, click Save to create this picker.'
+    : 'Everything looks good, click Add Items to continue.';
+  const newDraftAction = newDraftShowingSave ? onSaveNew : onOpenItemsSection;
   // Attach-a-conditional (ported from the Pickers create-flow). Toggle reflects
   // whether a conditional is currently attached; selecting a pill sets it, and
   // turning the toggle off detaches. No "+ create new" here — that lives in the
@@ -123,7 +201,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
     // rail back to the left so it's visible.
     if (el.scrollLeft > 1) el.scrollTo({ left: 0, behavior: reduceMotion() ? 'auto' : 'smooth' });
   }, [pk.conditionalId, condOn, conditionals.length]);
-  // "+ New group" inline-create state for the Group selector.
+  // "+ New Group" inline-create state for the Group selector.
   const [newGroupMode, setNewGroupMode] = React.useState(false);
   const [pillReturning, setPillReturning] = React.useState(false);
   const [newGroupName, setNewGroupName] = React.useState('');
@@ -153,6 +231,10 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
     const next = new Map();
     pills.forEach((p) => next.set(p.dataset.g, p.offsetLeft));
     groupFlipFirst.current = next;
+    // Same pin-to-front reorder as the conditional rail above — the selected
+    // group is now the leftmost pill, so glide the rail back to the start so
+    // it's visible instead of leaving it scrolled to wherever it was.
+    if (el.scrollLeft > 1) el.scrollTo({ left: 0, behavior: reduceMotion() ? 'auto' : 'smooth' });
   }, [pk.group]);
   // Scroll-edge fade on the group pills (only visible when they scroll on small
   // screens) — toggles .at-start/.at-end like the filter-bar pill rails.
@@ -202,7 +284,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
     return set.sort((a, b) => (b === pk.group ? 1 : 0) - (a === pk.group ? 1 : 0));
   }, [allGroups, pk.group]);
   // Close symmetrically to open: the input unmounts immediately and the
-  // returning "+ New group" pill animates IN (same as opening, where the pill
+  // returning "+ New Group" pill animates IN (same as opening, where the pill
   // vanishes at once and the input animates in). Both commit and cancel route
   // through here.
   const closeNewGroup = () => {
@@ -308,7 +390,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
             ) : (
               <button type="button" className={`picker-group-pill picker-group-pill--new ${pillReturning ? 'is-returning' : ''}`}
                       onClick={() => setNewGroupMode(true)}>
-                <Icon name="plus" size={13} /> New group
+                <Icon name="plus" size={13} /> New Group
               </button>
             )}
           </div>
@@ -329,7 +411,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                   {/* Hint expands/collapses on selection change — the old row's
                       hint folds away while the new one grows, one synchronized
                       reflow (shares the app's Collapse height mechanism). */}
-                  <Collapse open={on}>
+                  <Collapse open={on} instant={isNewDraft}>
                     {Array.isArray(m.hint)
                       ? m.hint.map((para, pi) => <span key={pi} className="rd-mode-hint">{para}</span>)
                       : <span className="rd-mode-hint">{m.hint}</span>}
@@ -339,71 +421,6 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
             );
           })}
         </div>
-        {/* Default Cadence expands/collapses when Ease-up/Ease-down is (de)selected,
-            sharing the app's Collapse height animation. */}
-        <Collapse open={isEase}>
-          {/* ease-config--up/--down — pure selector hook so help-mode can
-              give this section mode-specific copy (Soonest/Latest/Fill vs.
-              Shortest/Longest/Refill), same idea as EntryEditor's own
-              pie-ease-up-row/pie-ease-down-row split. */}
-          <div className={`ease-config ${isDown ? 'ease-config--down' : 'ease-config--up'}`}>
-            <div className="rd-ctl-subhead ease-cadence-kicker">Default cadence</div>
-            <div className="pie-row">
-              <div className="pie-rowlabel">
-                <span className="pie-lbl-row">
-                  <span className="pie-lbl">{soonestLbl}</span>
-                  {pk.mode === 'ease-up' && (
-                    <InfoTip className="pie-help" label={EASE_UP_RANGE_WARN}>?</InfoTip>
-                  )}
-                </span>
-                <span className="pie-sub">{soonestSub}</span>
-              </div>
-              <div className="pie-ctl">
-                <NumStepper value={soonest} min={1} max={60} onSet={setSoonest}
-                            ariaLabel={`Default ${soonestLbl.toLowerCase()}`} />
-                <span className="np-ease-unit">{uw(soonest)}</span>
-              </div>
-            </div>
-            <div className="pie-row">
-              <div className="pie-rowlabel">
-                <span className="pie-lbl-row">
-                  <span className="pie-lbl">{latestLbl}</span>
-                  {pk.mode === 'ease-up' && (
-                    <InfoTip className="pie-help" label={EASE_UP_RANGE_WARN}>?</InfoTip>
-                  )}
-                </span>
-                <span className="pie-sub">{latestSub}</span>
-              </div>
-              <div className="pie-ctl">
-                <NumStepper value={latest} min={1} max={90} onSet={setLatest}
-                            ariaLabel={`Default ${latestLbl.toLowerCase()}`} />
-                <span className="np-ease-unit">{uw(latest)}</span>
-              </div>
-            </div>
-            {pk.mode === 'ease-up' && (
-              <div className="pie-row">
-                <div className="pie-rowlabel">
-                  <span className="pie-lbl">Fill</span>
-                  <span className="pie-sub">{fillSub}</span>
-                </div>
-                <FillButton label="Fill all"
-                     disabled={items.length > 0 && items.every((it) => (it.value ?? 0) >= (pk.threshold ?? 100))}
-                     onClick={() => actions.refillPicker(pk.id)} />
-              </div>
-            )}
-            {pk.mode === 'ease-down' && (
-              <div className="pie-row">
-                <div className="pie-rowlabel">
-                  <span className="pie-lbl">Refill</span>
-                  <span className="pie-sub">{fillSub}</span>
-                </div>
-                <FillButton label="Refill all"
-                     disabled={items.length > 0 && items.every((it) => (it.value ?? 0) >= (pk.threshold ?? 100))}
-                     onClick={() => actions.refillPicker(pk.id)} />
-              </div>
-            )}
-          </div>
-        </Collapse>
       </fieldset>
 
       {/* When it runs — Daily-generator membership + weekday / holiday gates. */}
@@ -430,9 +447,14 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
           <div className="rd-cnd-rail-row">
             {conditionals.length ? (
               <div className="cnd-rail picker-groups" ref={condRailRef}>
-                {[...conditionals].sort((a, b) =>
-                  (b.id === pk.conditionalId ? 1 : 0) - (a.id === pk.conditionalId ? 1 : 0)
-                ).map((c) => (
+                {/* Alphabetical, except the attached conditional pins to the
+                    front (see condFlipFirst above for the reorder animation
+                    that plays when it changes). */}
+                {[...conditionals].sort((a, b) => {
+                  if (a.id === pk.conditionalId) return -1;
+                  if (b.id === pk.conditionalId) return 1;
+                  return a.name.localeCompare(b.name);
+                }).map((c) => (
                   <button key={c.id} type="button" data-cid={c.id}
                           className={`cnd-pill ${pk.conditionalId === c.id ? 'is-on' : ''}`}
                           onClick={() => actions.updatePicker(pk.id, { conditionalId: c.id })}>
@@ -448,15 +470,15 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
         </Collapse>
         <div className="sched-line">
           <span className="sched-line-label">
-            <span className="sched-line-lbl">In the Daily generator</span>
+            <span className="sched-line-lbl">In the daily generator</span>
             <span className="sched-line-sub set-sub-fade" key={inDaily ? 'on' : 'off'}>
               {inDaily
-                ? <>will run <strong>every time</strong> the Today tab's Daily generator is run</>
+                ? <>will run <strong>every time</strong> the Today page's daily generator is run</>
                 : <>can only be <strong>run manually</strong> in the Pickers tab</>}
             </span>
           </span>
           <button className={`switch ${inDaily ? 'is-on' : ''}`} aria-pressed={inDaily}
-                  aria-label={`${inDaily ? 'Remove from' : 'Add to'} the Daily generator`}
+                  aria-label={`${inDaily ? 'Remove from' : 'Add to'} the daily generator`}
                   onClick={() => {
                     const ids = inDaily
                       ? dailyIds.filter((x) => x !== pk.id)
@@ -471,16 +493,23 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                 <span className="sched-line-lbl pie-lbl-row">How often?
                   <InfoTip className="pie-help pie-help--sm" label={CADENCE.tipFor(pk.cadence)}>?</InfoTip>
                 </span>
-                <span className="sched-line-sub set-sub-fade" key={(pk.cadence || 'daily') + (pk.anchorDow ?? '') + (pk.anchorDom ?? '') + (pk.anchorMonth ?? '') + (pk.anchorDay ?? '')}>{(() => {
+                <span className="sched-line-sub set-sub-fade" key={(pk.cadence || 'daily') + (pk.anchorDow ?? '') + (pk.anchorDom ?? '') + (pk.anchorMonth ?? '') + (pk.anchorDay ?? '') + (pk.dateMode ?? '') + (pk.nthOrdinal ?? '') + (pk.nthWeekday ?? '')}>{(() => {
                   const cad = pk.cadence || 'daily';
                   if (cad === 'daily') return (CAD_OPTS.find((o) => o.key === 'daily') || {}).sub;
                   const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                   const ord = (n) => { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
+                  const isNthWeekday = pk.dateMode === 'nthWeekday';
                   const tail = ' — pick will persist until marked as completed';
                   if (cad === 'weekly') return <>surfaces once a week, <strong>every {DAYS[pk.anchorDow ?? 0]}</strong>{tail}</>;
-                  if (cad === 'monthly') return <>surfaces once a month, <strong>on the {ord(pk.anchorDom ?? 1)}</strong>{tail}</>;
-                  return <>surfaces once a year, <strong>on {MONTHS[(pk.anchorMonth ?? 1) - 1]} {ord(pk.anchorDay ?? 1)}</strong>{tail}</>;
+                  if (cad === 'monthly') {
+                    return isNthWeekday
+                      ? <>surfaces once a month, <strong>on the {ord(pk.nthOrdinal ?? 1)} {DAYS[pk.nthWeekday ?? 0]}</strong>{tail}</>
+                      : <>surfaces once a month, <strong>on the {ord(pk.anchorDom ?? 1)}</strong>{tail}</>;
+                  }
+                  return isNthWeekday
+                    ? <>surfaces once a year, <strong>on the {ord(pk.nthOrdinal ?? 1)} {DAYS[pk.nthWeekday ?? 0]} of {MONTHS[(pk.anchorMonth ?? 1) - 1]}</strong>{tail}</>
+                    : <>surfaces once a year, <strong>on {MONTHS[(pk.anchorMonth ?? 1) - 1]} {ord(pk.anchorDay ?? 1)}</strong>{tail}</>;
                 })()}</span>
               </span>
               <div className="sched-cad-ctls">
@@ -500,15 +529,59 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                     ))}
                   </select>
                 )}
-                {pk.cadence === 'monthly' && (
+                {(pk.cadence === 'monthly' || pk.cadence === 'yearly') && (
+                  <select className="np-input rd-cad-sel" value={pk.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date'}
+                          aria-label="Day selection"
+                          onChange={(e) => actions.updatePicker(pk.id, { dateMode: e.target.value })}>
+                    <option value="date">Date</option>
+                    <option value="nthWeekday">Weekday</option>
+                  </select>
+                )}
+                {pk.cadence === 'monthly' && (pk.dateMode === 'nthWeekday' ? (
+                  <React.Fragment>
+                    <select className="np-input rd-cad-sel" value={pk.nthOrdinal ?? 1} aria-label="Week of the month"
+                            onChange={(e) => actions.updatePicker(pk.id, { nthOrdinal: parseInt(e.target.value) })}>
+                      {[1, 2, 3, 4, 5].map((n) => (
+                        <option key={n} value={n}>{CADENCE.summary({ cadence: 'monthly', anchorDom: n }).split('· ')[1]}</option>
+                      ))}
+                    </select>
+                    <select className="np-input rd-cad-sel" value={pk.nthWeekday ?? 0} aria-label="Weekday"
+                            onChange={(e) => actions.updatePicker(pk.id, { nthWeekday: parseInt(e.target.value) })}>
+                      {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((d, i) => (
+                        <option key={i} value={i}>{d}</option>
+                      ))}
+                    </select>
+                  </React.Fragment>
+                ) : (
                   <select className="np-input rd-cad-sel" value={pk.anchorDom ?? 1} aria-label="Anchor day of month"
                           onChange={(e) => actions.updatePicker(pk.id, { anchorDom: parseInt(e.target.value) })}>
                     {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
                       <option key={d} value={d}>{CADENCE.summary({ cadence: 'monthly', anchorDom: d }).split('· ')[1]}</option>
                     ))}
                   </select>
-                )}
-                {pk.cadence === 'yearly' && (
+                ))}
+                {pk.cadence === 'yearly' && (pk.dateMode === 'nthWeekday' ? (
+                  <React.Fragment>
+                    <select className="np-input rd-cad-sel" value={pk.nthOrdinal ?? 1} aria-label="Week of the month"
+                            onChange={(e) => actions.updatePicker(pk.id, { nthOrdinal: parseInt(e.target.value) })}>
+                      {[1, 2, 3, 4, 5].map((n) => (
+                        <option key={n} value={n}>{CADENCE.summary({ cadence: 'monthly', anchorDom: n }).split('· ')[1]}</option>
+                      ))}
+                    </select>
+                    <select className="np-input rd-cad-sel" value={pk.nthWeekday ?? 0} aria-label="Weekday"
+                            onChange={(e) => actions.updatePicker(pk.id, { nthWeekday: parseInt(e.target.value) })}>
+                      {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((d, i) => (
+                        <option key={i} value={i}>{d}</option>
+                      ))}
+                    </select>
+                    <select className="np-input rd-cad-sel" value={pk.anchorMonth ?? 1} aria-label="Anchor month"
+                            onChange={(e) => actions.updatePicker(pk.id, { anchorMonth: parseInt(e.target.value) })}>
+                      {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m, i) => (
+                        <option key={i} value={i + 1}>{m}</option>
+                      ))}
+                    </select>
+                  </React.Fragment>
+                ) : (
                   <React.Fragment>
                     <select className="np-input rd-cad-sel" value={pk.anchorMonth ?? 1} aria-label="Anchor month"
                             onChange={(e) => actions.updatePicker(pk.id, { anchorMonth: parseInt(e.target.value) })}>
@@ -523,7 +596,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                       ))}
                     </select>
                   </React.Fragment>
-                )}
+                ))}
               </div>
             </div>
             <div className="sched-line">
@@ -531,7 +604,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                 <span className="sched-line-lbl">Days</span>
                 <span className="sched-line-sub set-sub-fade" key={(pk.daysOfWeek || []).join(',')}>
                   {(pk.daysOfWeek && pk.daysOfWeek.length)
-                    ? <>runs in the Daily generator every <strong>{[...pk.daysOfWeek].sort((a, b) => a - b).map((d) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}</strong></>
+                    ? <>runs in the daily generator every <strong>{[...pk.daysOfWeek].sort((a, b) => a - b).map((d) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}</strong></>
                     : 'pick at least one day'}
                 </span>
               </span>
@@ -545,8 +618,8 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                 <span className="sched-line-lbl">Skip on holidays</span>
                 <span className="sched-line-sub set-sub-fade" key={pk.skipHolidays ? 'on' : 'off'}>
                   {pk.skipHolidays
-                    ? <><strong>will not run</strong> in the Daily generator on holidays</>
-                    : <><strong>will run</strong> in the Daily generator on holidays</>}
+                    ? <><strong>will not run</strong> in the daily generator on holidays</>
+                    : <><strong>will run</strong> in the daily generator on holidays</>}
                 </span>
               </span>
               <button className={`switch ${pk.skipHolidays ? 'is-on' : ''}`} aria-pressed={!!pk.skipHolidays}
@@ -556,13 +629,72 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
           </React.Fragment>
         </Collapse>
         <Collapse open={!inDaily}>
-          <div className="sched-off-note">Runs on demand only &mdash; not in the Daily generator.</div>
+          <div className="sched-off-note">Runs on demand only &mdash; not in the daily generator.</div>
+        </Collapse>
+      </div>
+
+      {/* Item Controls — things that act on this picker's ITEMS rather than
+          the picker's own type/schedule: avoiding duplicate names across
+          today's whole list, and (ease modes only) manually filling every
+          item's charge at once. Neither belongs under "How it picks" (that's
+          about the ruleset itself) or "When it runs" (that's about the
+          Daily generator/schedule) — this is its own thing, placed last
+          since it's the one section that isn't really a "picker control". */}
+      <div className="rd-ctl-group rd-ctl-group--items">
+        <div className="rd-ctl-subhead">Item Controls</div>
+        <div className="sched-line">
+          <span className="sched-line-label">
+            <span className="sched-line-lbl">Avoid duplicate items</span>
+            <span className="sched-line-sub set-sub-fade" key={pk.avoidDuplicates ? 'on' : 'off'}>
+              {pk.avoidDuplicates
+                ? <><strong>won't pick</strong> an item whose name is already on today's todo list</>
+                : <><strong>may pick</strong> an item even if its name is already on today's todo list</>}
+            </span>
+          </span>
+          <button className={`switch ${pk.avoidDuplicates ? 'is-on' : ''}`} aria-pressed={!!pk.avoidDuplicates}
+                  aria-label="Avoid duplicate items"
+                  onClick={() => actions.updatePicker(pk.id, { avoidDuplicates: !pk.avoidDuplicates })}><i /></button>
+        </div>
+        {/* Fill/Refill expands/collapses when Ease Up/Ease Down is (de)selected,
+            sharing the app's Collapse height animation. */}
+        <Collapse open={isEase}>
+          {/* ease-config--up/--down — pure selector hook so help-mode can
+              give this section mode-specific copy (Fill vs. Refill), same
+              idea as EntryEditor's own pie-ease-up-row/pie-ease-down-row
+              split. */}
+          <div className={`ease-config ${isDown ? 'ease-config--down' : 'ease-config--up'}`}>
+            {pk.mode === 'ease-up' && (
+              <div className="pie-row">
+                <div className="pie-rowlabel">
+                  <span className="pie-lbl">Fill</span>
+                  <span className="pie-sub">{fillSub}</span>
+                </div>
+                <FillButton label="Fill all"
+                     disabled={items.length > 0 && items.every((it) => (it.value ?? 0) >= (pk.threshold ?? 100))}
+                     onClick={() => actions.refillPicker(pk.id)} />
+              </div>
+            )}
+            {pk.mode === 'ease-down' && (
+              <div className="pie-row">
+                <div className="pie-rowlabel">
+                  <span className="pie-lbl">Refill</span>
+                  <span className="pie-sub">{fillSub}</span>
+                </div>
+                <FillButton label="Refill all"
+                     disabled={items.length > 0 && items.every((it) => (it.value ?? 0) >= (pk.threshold ?? 100))}
+                     onClick={() => actions.refillPicker(pk.id)} />
+              </div>
+            )}
+          </div>
         </Collapse>
       </div>
 
       {/* Footer — Delete (left) · Cancel + Done (right), mirroring the item
           editor. Delete morphs the footer into a confirm that reuses the
-          "also delete its N items" message. */}
+          "also delete its N items" message. isNewDraft (the Data page's own
+          "Create Picker" flow, see its own comment in TabData) swaps this
+          whole thing for a no-Delete Cancel/Add-Items-then-Save footer
+          instead — see newDraftLabel/newDraftDisabled/newDraftTip above. */}
       <div className="rd-ctl-group rd-ctl-group--foot pk-ctl-foot">
         {confirmDel ? (
           <div className="rd-pk-del-confirm" key="confirm">
@@ -570,6 +702,23 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
             <div className="rem-del-actions">
               <Btn kind="ghost" size="sm" onClick={() => setConfirmDel(false)}>Cancel</Btn>
               <Btn kind="danger" size="sm" onClick={() => (onRequestDelete ? onRequestDelete() : actions.removePicker(pk.id))}>Delete</Btn>
+            </div>
+          </div>
+        ) : isNewDraft ? (
+          <div className="rd-ctl-foot-row rd-ctl-foot-row--new" key="foot-new">
+            <div className="rem-foot-right">
+              {/* Both buttons unmount this whole card immediately (the parent
+                  clears newDraftId), so mark doneRef first — otherwise the
+                  implicit-close guard above (mount effect's cleanup) treats
+                  the unmount as an abandoned edit and silently reverts the
+                  picker back to its blank/hidden snapshot, stomping the
+                  name/group/hidden edits Save (or the delete Cancel performs
+                  via onCancelNew) just made. */}
+              <Btn kind="ghost" size="sm" onClick={() => { doneRef.current = 'cancel'; onCancelNew(); }}>Cancel</Btn>
+              <InfoTip label={newDraftTip}>
+                <Btn kind="primary" size="sm" disabled={newDraftDisabled}
+                     onClick={newDraftDisabled ? undefined : () => { doneRef.current = 'saved'; newDraftAction(); }}>{newDraftLabel}</Btn>
+              </InfoTip>
             </div>
           </div>
         ) : (
@@ -652,6 +801,33 @@ function ConditionalsManager({ state, actions }) {
   // Defaults COLLAPSED: absent = collapsed, explicit false = expanded.
   const collapsedMap = (state.ui && state.ui.controlsCollapsed) || {};
   const open = collapsedMap['__conditionals'] === false;
+  // Item sort — each conditional has its own mode (Type) and active/inactive
+  // state, same concepts as a picker card's own Type/Active fields
+  // at the section level; Group and Item Count don't apply to a single
+  // conditional, so those options aren't offered here. Weighted/dynamic
+  // conditionals get an Odds value — `oddsPct`, the actual trigger-likelihood
+  // knob those modes use (see conditionals.js' trueOdds); the conditional's
+  // own `weight` field is never read anywhere and always sits at its default,
+  // so it isn't a meaningful sort key the way a picker item's real `weight`
+  // is. Dynamic ones also get a Boost value (the same `value` field ease
+  // modes reuse for Range/charge — its meaning depends entirely on mode,
+  // hence the separate descriptor fields), and ease-up/ease-down
+  // conditionals get a Range value — same soonest/latest-band math the
+  // conditional's own editor uses (see tab-conditional.jsx), collapsed to
+  // its near end. Any mode a given field doesn't apply to gets null for it.
+  const conditionalRange = (c) => (c.mode === 'ease-up' || c.mode === 'ease-down')
+    ? Math.max(1, Math.round((c.threshold ?? 100) / (c.easeMax ?? 14)))
+    : null;
+  const conditionalOdds = (c) => (c.mode === 'weighted' || c.mode === 'dynamic') ? (c.oddsPct ?? 50) : null;
+  const conditionalBoost = (c) => (c.mode === 'dynamic') ? (c.value ?? 0) : null;
+  const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort.conditionals) || 'name-asc';
+  const sortedConditionals = [...conditionals].sort((a, b) => compareSortEntries(
+    { name: a.name, type: (MODES[a.mode] || {}).label || a.mode, group: null, count: null,
+      range: conditionalRange(a), odds: conditionalOdds(a), boost: conditionalBoost(a), isActive: a.active !== false },
+    { name: b.name, type: (MODES[b.mode] || {}).label || b.mode, group: null, count: null,
+      range: conditionalRange(b), odds: conditionalOdds(b), boost: conditionalBoost(b), isActive: b.active !== false },
+    itemSort,
+  ));
   const openEditor = (c) => { setPending(null); setDraft({ ...c }); setOpenId(c.id); };
   const closeEditor = () => { setPending(null); setDraft(null); setOpenId(null); };
   // Cancelling a brand-new conditional: collapse the row first (so it animates
@@ -685,6 +861,39 @@ function ConditionalsManager({ state, actions }) {
     : draft && conditionals.some((c) => c.id !== openId && (c.name || '').toLowerCase() === tidyName.toLowerCase())
     ? `A conditional named \u201C${tidyName}\u201D already exists. Choose a different name.`
     : null;
+  // The row's own collapse chevron is a deliberate close, not an accidental
+  // one \u2014 closeEditor alone (used by Escape and this used to use) just drops
+  // the local draft, discarding a brand-new conditional or reverting an
+  // edited existing one back to its pre-edit values, the same "implicit
+  // close \u2260 discard" problem tab-data.jsx's picker items and reminders.jsx
+  // fix documents on their own keepAndClose helpers. Falls back to a plain
+  // close (discarding) only when there's nothing valid to keep \u2014 an empty
+  // or colliding name can't be committed.
+  const keepAndCloseEditor = () => {
+    if (nameError) { closeEditor(); return; }
+    if (pending) { saveNewAnimated(tidyName); return; }
+    actions.updateConditional(openId, { ...draft, name: tidyName });
+    closeEditor();
+  };
+  // DOM node for whichever conditional's row is open, so a brand-new
+  // conditional's "+ Add a conditional" click can scroll the resulting form
+  // into view \u2014 same reasoning as tab-data.jsx's picker items / reminders.jsx.
+  const openRowRef = React.useRef(null);
+  React.useEffect(() => {
+    if (!openId || !pending || !openRowRef.current) return;
+    const el = openRowRef.current;
+    if (reduceMotion()) { el.scrollIntoView({ behavior: 'auto', block: 'nearest' }); return; }
+    // Wait for the Collapse open animation (.26s, see .collapse in
+    // styles2.css) to finish growing the editor below the row header before
+    // scrolling.
+    const t = setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 300);
+    return () => clearTimeout(t);
+  }, [openId]);
+  // The name input focuses itself via a ref callback below instead of the
+  // plain `autoFocus` attribute \u2014 see the picker items' own focusedInputRef
+  // above for why (suppresses the browser's own instant/unsmoothed
+  // focus-scroll so it doesn't fight the deliberate smooth scroll above).
+  const focusedInputRef = React.useRef(null);
 
   return (
     <section className="cat cat--enter cnd-manager">
@@ -692,8 +901,14 @@ function ConditionalsManager({ state, actions }) {
         <button type="button" className="cat-h-l" aria-expanded={open}
                 onClick={() => actions.toggleControlsCollapsed('__conditionals', true)}>
           <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
-          <h2 className="cat-name">Conditionals</h2>
-          <span className="cat-count">{conditionals.filter((c) => c.active !== false).length} of {conditionals.length}</span>
+          <span className="cat-h-main">
+            <h2 className="cat-name">Conditionals</h2>
+            <span className="cat-count">
+              <span className="cat-count-n">{conditionals.filter((c) => c.active !== false).length}</span>
+              <span className="cat-count-of">of</span>
+              <span className="cat-count-n">{conditionals.length}</span>
+            </span>
+          </span>
         </button>
       </header>
       <Collapse open={open}>
@@ -717,12 +932,16 @@ function ConditionalsManager({ state, actions }) {
         {!conditionals.length && !pending && (
           <p className="rd-cnd-empty">No conditionals yet. Add one here, then attach it to any picker.</p>
         )}
-        {(pending ? [pending, ...conditionals] : conditionals).map((c) => {
+        {conditionals.length > 1 && (
+          <SortSelect id="cnd-item-sort" label="Sort" options={CONDITIONAL_ITEM_SORT_OPTIONS}
+                      value={itemSort} onChange={(key) => actions.setDataSort('conditionals', key)} />
+        )}
+        {(pending ? [pending, ...sortedConditionals] : sortedConditionals).map((c) => {
           const isPending = !!pending && c.id === pending.id;
           const isOpen = openId === c.id;
           const uses = usingCount(c.id);
           return (
-            <div key={c.id} className={`rd-item ${isOpen ? 'is-editing' : ''}`}>
+            <div key={c.id} ref={isOpen ? openRowRef : undefined} className={`rd-item ${isOpen ? 'is-editing' : ''}`}>
               {isOpen && draft ? (
                 // Plain div, not a button, while editing — a <button> can't
                 // legally contain the <input> below it (interactive-in-
@@ -735,12 +954,13 @@ function ConditionalsManager({ state, actions }) {
                 <div className="rd-row">
                   <span className="rd-main">
                     <input className={`rd-name-input ${nameError ? 'is-error' : ''}`} type="text" value={draft.name} maxLength={40}
-                           placeholder="Conditional name" aria-label="Conditional name" aria-invalid={!!nameError} autoFocus
+                           placeholder="Conditional name" aria-label="Conditional name" aria-invalid={!!nameError}
+                           ref={(el) => { if (el && focusedInputRef.current !== el) { el.focus({ preventScroll: true }); focusedInputRef.current = el; } }}
                            onChange={(e) => setDraft({ ...draft, name: e.target.value })}
                            onBlur={() => { if (tidyName) setDraft({ ...draft, name: tidyName }); }}
                            onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
                   </span>
-                  <button type="button" className="rd-chev" aria-label="Collapse" onClick={closeEditor}>
+                  <button type="button" className="rd-chev" aria-label="Collapse" onClick={keepAndCloseEditor}>
                     <span className="chev is-open"><Icon name="chev" size={14} /></span>
                   </button>
                 </div>
@@ -751,7 +971,7 @@ function ConditionalsManager({ state, actions }) {
                     <span className="rd-name">{c.name}</span>
                     <span className="rd-sched">{(MODES[c.mode] || {}).label || c.mode}
                       {' · '}{uses} {uses === 1 ? 'picker' : 'pickers'}
-                      {c.active === false ? ' · on vacation' : ''}</span>
+                      {c.active === false ? ' · inactive' : ''}</span>
                   </span>
                   <span className="rd-chev"><span className={`chev ${isOpen ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span></span>
                 </button>
@@ -787,7 +1007,11 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // gating pattern as tab-picker.jsx's own disableTourAddPicker.
   const tour = useEmlTour();
   const disableGroupFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 1;
-  const disablePickersFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 2;
+  const disablePickersFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 3;
+  // Step 7 (Create Picker) only points at the button — actually clicking it
+  // opens a whole new draft form outside anything this tour knows about or
+  // ever cleans up, which crashes the tour rather than just derailing it.
+  const disableCreatePicker = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 6;
   // "Edit your first item" tour's own Step 4 (Edit Picker Settings,
   // Controls expanded), Step 6 (Picker Items, an item row about to be
   // clicked), and Step 7 (Edit Item Settings, an item expanded) all want
@@ -873,6 +1097,52 @@ function TabData({ state, actions, onHome, onNavTab }) {
   const justAddedItemRef = React.useRef(null);
   // Id of a just-inserted row, so it plays the slide-in entrance once.
   const [insertItemId, setInsertItemId] = React.useState(null);
+  // The currently-open item's EntryEditor instance, so the row's own collapse
+  // chevron (outside EntryEditor, in the row header) can call .keep() before
+  // closing — otherwise EntryEditor treats that close as implicit and reverts
+  // the item (or discards it, if new) via window.__editGuard the same as an
+  // accidental tab-switch/reload would. One ref shared across every picker's
+  // item list, same reasoning as frozenItemIndexRef below.
+  const openEditorRef = React.useRef(null);
+  // Frozen render-position for whichever item is open — see freezeEditedRow.
+  // One ref shared across every picker's item list (only one item can be
+  // open at a time, and the helper no-ops for any list that doesn't hold it).
+  const frozenItemIndexRef = React.useRef(null);
+  // Replays the insert entrance animation once an item's editor closes, so it
+  // settles into its (possibly new, now-unfrozen) sorted position with the
+  // same visual treatment a freshly-created row gets, instead of silently
+  // snapping there. Fires on ANY close (Done, Cancel-revert, delete, or the
+  // row's own collapse chevron) since they all just change openItemId.
+  const prevOpenItemIdRef = React.useRef(null);
+  React.useEffect(() => {
+    const prev = prevOpenItemIdRef.current;
+    if (prev != null && prev !== openItemId) setInsertItemId(prev);
+    prevOpenItemIdRef.current = openItemId;
+  }, [openItemId]);
+  // DOM node for whichever item's row is open, so a brand-new item's "+ Add"
+  // click can scroll the resulting form into view. It opens pinned right
+  // below the sort control (freezeEditedRow) rather than right below the Add
+  // button itself, so on a short viewport it's no longer guaranteed to
+  // already be on-screen the way a plain top-of-list append used to be.
+  const openRowRef = React.useRef(null);
+  React.useEffect(() => {
+    if (!openItemId || justAddedItemRef.current !== openItemId || !openRowRef.current) return;
+    const el = openRowRef.current;
+    if (reduceMotion()) { el.scrollIntoView({ behavior: 'auto', block: 'nearest' }); return; }
+    // Wait for the Collapse open animation (.26s, see .collapse in
+    // styles2.css) to finish growing the editor below the row header before
+    // scrolling.
+    const t = setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 300);
+    return () => clearTimeout(t);
+  }, [openItemId]);
+  // The name input focuses itself via a ref callback below instead of the
+  // plain `autoFocus` attribute, specifically so we can pass
+  // `preventScroll: true` — a browser's own focus-triggered scroll-into-view
+  // is instant/unsmoothed and fires the moment the input mounts, competing
+  // with (and often preempting, jump instead of glide) the deliberate smooth
+  // scroll above. Guarded by node identity so a later re-render of the SAME
+  // input (e.g. every keystroke) doesn't refocus it repeatedly.
+  const focusedInputRef = React.useRef(null);
   // Inline delete confirmation, shared by items and pickers:
   //   { kind: 'item' | 'picker', id }
   const [confirmDel, setConfirmDel] = React.useState(null);
@@ -882,6 +1152,11 @@ function TabData({ state, actions, onHome, onNavTab }) {
   //   scope:     the active box ('all' | 'reminders' | <pickerId>)
   // Click behavior is stubbed for now (onSelectScope) — ready to wire up later.
   const [statGroup, setStatGroup] = React.useState('all');
+  // Type filter — narrows by picker mode, and also carries the Conditionals/
+  // Reminders sentinel scope values (moved here from statGroup — see
+  // sortedShowEntries below). Independent of statGroup/condFilter; all three
+  // apply together.
+  const [typeFilter, setTypeFilter] = React.useState('all');
   const [scope, setScope] = React.useState('all');
   // Conditionals filter — narrows pickers to those gated by a chosen conditional
   // (or 'all'). Independent of the group filter; both apply together.
@@ -894,6 +1169,87 @@ function TabData({ state, actions, onHome, onNavTab }) {
     if (reduceMotion()) { actions.removePicker(id); return; }
     setRemovingPickerId(id);
   };
+
+  // "Create Picker" — the trigger button at the bottom of the list creates a
+  // REAL picker immediately (hidden: true, so it's invisible everywhere else
+  // — Pickers/Stats/Today, and this page's own group/type filter counts —
+  // until Save), pre-filled from whichever Group/Type/Conditional filter is
+  // currently active, same as the Pickers page's own group-filter prefill.
+  // Held as a plain id (not the whole object) — the card below always reads
+  // the LIVE picker from state.pickers, same as every other card, so typing
+  // into its own Name/Group fields (real actions.updatePicker calls, same as
+  // any other picker) reflects immediately without a second copy to keep in
+  // sync.
+  const [newDraftId, setNewDraftId] = React.useState(null);
+  // Whether the draft's Items section is revealed — starts closed (unlike a
+  // real picker's own Items disclosure, which defaults open) since there's
+  // nothing to add to yet until Name/Group are filled in. Toggled either by
+  // the footer's "Add Items" button or the Items section's own header, same
+  // as a real picker's Items disclosure already allows.
+  const [draftItemsOpen, setDraftItemsOpen] = React.useState(false);
+  // One-shot flag: the footer's "Add Items" button wants its very first click
+  // to ALSO land straight in a ready-to-type new-item form, not just reveal
+  // the (now-empty) Items section. Deferred to an effect rather than done
+  // inline in that click — the Items section's own <Collapse> only starts
+  // mounting its children on the render AFTER `draftItemsOpen` flips true (see
+  // ui.jsx's Collapse: `render` state lags the `open` prop by one render), so
+  // creating+opening the item in the SAME click would set openItemId before
+  // its row even exists in the DOM, and the item's own scroll-into-view
+  // effect (keyed on openItemId, further below) would find its ref still null
+  // and silently skip the scroll. Waiting one effect tick lets both updates
+  // land in the same next render instead.
+  const [pendingAutoAddItem, setPendingAutoAddItem] = React.useState(false);
+  React.useEffect(() => {
+    if (!pendingAutoAddItem) return;
+    setPendingAutoAddItem(false);
+    if (!newDraftId || justAddedItemRef.current) return;
+    const id = 'it_' + Math.random().toString(36).slice(2, 8);
+    actions.addItem(newDraftId, 'New item', id);
+    justAddedItemRef.current = id;
+    setInsertItemId(id);
+    setOpenItemId(id);
+  }, [pendingAutoAddItem]);
+  const startNewPicker = () => {
+    const realMode = !!MODES[typeFilter];
+    const id = actions.addPicker({
+      name: '', group: statGroup !== 'all' ? statGroup : '',
+      mode: realMode ? typeFilter : 'random',
+      conditionalId: condFilter !== 'all' ? condFilter : null,
+      items: [], hidden: true,
+    });
+    setNewDraftId(id);
+    setDraftItemsOpen(false);
+  };
+  // Cancel discards the whole draft — removePicker already cascades to its
+  // items and daily-generator membership, so there's nothing else to clean
+  // up (same "nothing committed until Save" contract as the Conditionals
+  // manager's own brand-new-row flow, just backed by a real hidden picker
+  // instead of local-only state, since PickerControls' own fields all write
+  // straight to the store already).
+  const cancelNewPicker = () => {
+    if (newDraftId) actions.removePicker(newDraftId);
+    setNewDraftId(null);
+    setDraftItemsOpen(false);
+  };
+  // Save reveals the picker everywhere else by clearing `hidden` — nothing
+  // else needs to change, since every field was already committed live via
+  // the same actions.updatePicker calls a real picker's own Controls uses.
+  const saveNewPicker = () => {
+    if (newDraftId) actions.updatePicker(newDraftId, { hidden: false });
+    setNewDraftId(null);
+    setDraftItemsOpen(false);
+  };
+  // Scrolls the freshly-created draft card to the top of the viewport — its
+  // form is tall enough that "nearest" (as the reminder/conditional editors
+  // use below their own row) would still leave most of it below the fold.
+  // No animation to wait for first: the draft's own Collapses are forced
+  // `instant` (see PickerControls/ui.jsx), so its final layout height is
+  // already correct by the time this effect runs post-commit.
+  const draftCardRef = React.useRef(null);
+  React.useEffect(() => {
+    if (!newDraftId || !draftCardRef.current) return;
+    draftCardRef.current.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
+  }, [newDraftId]);
   // Shared picker-item editor (defined in tab-today, reused here so Today and
   // Data stay exact copies — same pattern as the Reminders editor).
   const ItemEditor = EntryEditor;
@@ -903,35 +1259,67 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // Items disclosures ('<pickerId>:controls' / ':items') default open.
   const collapsedMap = (state.ui && state.ui.controlsCollapsed) || {};
 
-  // Distinct group names in first-seen order — drive the group selector that
-  // narrows the picker box row below it (mirrors the Pickers + Stats tabs).
+  // Distinct group names, alphabetical — drive the group selector that
+  // narrows the picker box row below it (mirrors the Pickers + Stats tabs;
+  // "All" itself is a separate, always-first pill rendered outside this list).
   const existingGroups = React.useMemo(() => {
     const seen = [];
     for (const p of pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
-    return seen;
+    return seen.sort((a, b) => a.localeCompare(b));
+  }, [pickers]);
+  // Distinct modes actually in use, alphabetical by their own display label —
+  // the Type filter bar's own picker-mode pills ("All" pinned first, same as
+  // Group).
+  const existingModes = React.useMemo(() => {
+    const seen = new Set();
+    for (const p of pickers) if (!p.hidden) seen.add(p.mode);
+    return [...seen].sort((a, b) => MODES[a].label.localeCompare(MODES[b].label));
   }, [pickers]);
   const visiblePickers = React.useMemo(() => (
     pickers.filter((p) =>
       !p.hidden &&
       (statGroup === 'all' || p.group === statGroup) &&
-      (condFilter === 'all' || p.conditionalId === condFilter))
-  ), [pickers, statGroup, condFilter]);
+      (condFilter === 'all' || p.conditionalId === condFilter) &&
+      (typeFilter === 'all' || p.mode === typeFilter))
+  ), [pickers, statGroup, condFilter, typeFilter]);
   const conditionals = state.conditionals || [];
   const condPickerCount = (cid) => pickers.filter((p) => p.conditionalId === cid && !p.hidden).length;
 
-  // Keep scope coherent with the group filter: 'all' is always valid; a specific
-  // picker scope is only valid if that picker is in the current group. When it
-  // isn't (e.g. the group just changed), fall back to 'all' so the group shows
-  // all of its pickers by default. 'reminders' is only valid in the "All" group.
+  // The Show row's actual entries in the order it renders them — "All"
+  // pinned first whenever BOTH statGroup and typeFilter are 'all', OR (see
+  // the render below, same condition) whenever a real filter still leaves at
+  // least 2 entries in view — a lone entry makes "All" a redundant duplicate
+  // of that one card, but 2+ still benefits from a quick "everything in this
+  // filtered view" option. Conditionals/Reminders/every visible picker
+  // sorted alphabetically together after it. typeFilter (not statGroup)
+  // carries the Conditionals/Reminders sentinel scope values. Reused so
+  // "jump to the first card" always agrees with what the row actually shows
+  // first, instead of scattering separate assumptions across each filter
+  // pill's own handler.
+  const sortedShowEntries = React.useMemo(() => {
+    const rest = [
+      ...((typeFilter === 'all' || typeFilter === 'conditionals') && conditionals.length > 0 ? [{ scope: 'conditionals', name: 'Conditionals' }] : []),
+      ...(typeFilter === 'all' || typeFilter === 'reminders' ? [{ scope: 'reminders', name: 'Reminders' }] : []),
+      ...visiblePickers.map((p) => ({ scope: p.id, name: p.name })),
+    ].sort((a, b) => a.name.localeCompare(b.name));
+    const allFiltersDefault = statGroup === 'all' && typeFilter === 'all';
+    return (allFiltersDefault || rest.length >= 2) ? [{ scope: 'all', name: 'All' }, ...rest] : rest;
+  }, [statGroup, typeFilter, conditionals.length, visiblePickers]);
+  const showAllCard = sortedShowEntries.some((e) => e.scope === 'all');
+
+  // Keep scope coherent with the filters, and always land on the Show row's
+  // own first card whenever any filter changes — not only once the OLD
+  // scope happens to fall out of view (e.g. switching between two
+  // conditional filters that both still leave the same picker in view used
+  // to leave it stranded there instead of jumping to the new first card).
+  const prevFiltersRef = React.useRef({ statGroup, condFilter, typeFilter });
   React.useEffect(() => {
-    if (statGroup === 'all') {
-      // 'all', 'reminders', 'conditionals', or any picker are all valid here.
-      if (scope !== 'all' && scope !== 'reminders' && scope !== 'conditionals' && !visiblePickers.some((p) => p.id === scope)) setScope('all');
-    } else if (!visiblePickers.some((p) => p.id === scope)) {
-      // Within a group there's no All/Reminders box — default to the first picker.
-      setScope(visiblePickers[0] ? visiblePickers[0].id : 'all');
+    const filtersChanged = prevFiltersRef.current.statGroup !== statGroup || prevFiltersRef.current.condFilter !== condFilter || prevFiltersRef.current.typeFilter !== typeFilter;
+    prevFiltersRef.current = { statGroup, condFilter, typeFilter };
+    if (filtersChanged || !sortedShowEntries.some((e) => e.scope === scope)) {
+      setScope(sortedShowEntries[0] ? sortedShowEntries[0].scope : 'all');
     }
-  }, [statGroup, visiblePickers, scope]);
+  }, [statGroup, condFilter, typeFilter, sortedShowEntries, scope]);
 
   // Stub click handler for the boxes — selection state updates, functionality
   // to be attached later.
@@ -940,10 +1328,11 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // Scroll-edge fades on the group + box rows — same affordance as the Stats
   // tab: a mask gradient that only fades the side with more content.
   const groupsRef = React.useRef(null);
+  const typesRef = React.useRef(null);
   const scopeRef = React.useRef(null);
   const condRowRef = React.useRef(null);
   React.useEffect(() => {
-    const els = [groupsRef.current, scopeRef.current, condRowRef.current].filter(Boolean);
+    const els = [groupsRef.current, typesRef.current, scopeRef.current, condRowRef.current].filter(Boolean);
     const cleanups = els.map((el) => {
       const update = () => {
         const scrollable = el.scrollWidth - el.clientWidth > 1;
@@ -959,26 +1348,68 @@ function TabData({ state, actions, onHome, onNavTab }) {
       return () => { el.removeEventListener('scroll', update); ro.disconnect(); };
     });
     return () => cleanups.forEach((c) => c());
-  }, [pickers.length, statGroup, visiblePickers.length, scope, conditionals.length, condFilter]);
+  }, [pickers.length, statGroup, typeFilter, existingModes.length, visiblePickers.length, scope, conditionals.length, condFilter]);
 
   // Picker-card toggle — cards default collapsed, hence defaultCollapsed=true.
   const toggle = (id) => actions.toggleControlsCollapsed(id, true);
 
-  // Apply the two filters to what renders. Reminders is its own scope and isn't
-  // part of any picker group, so it only appears when the group filter is "All"
-  // and the scope is All or Reminders. Pickers are group-filtered (visiblePickers)
-  // then narrowed by scope: All → every visible picker, Reminders → none, or a
-  // single picker id → just that one.
-  const showReminders = statGroup === 'all' && condFilter === 'all' && (scope === 'all' || scope === 'reminders');
-  // Conditionals manager shows above Reminders when unfiltered by group/cond, at
+  // Apply the filters to what renders. Reminders is its own scope and isn't
+  // part of any picker group/mode, so it only appears when the type filter is
+  // "All" and the scope is All or Reminders. Pickers are group/type-filtered
+  // (visiblePickers) then narrowed by scope: All → every visible picker,
+  // Reminders → none, or a single picker id → just that one.
+  const showReminders = (typeFilter === 'all' || typeFilter === 'reminders') && condFilter === 'all' && (scope === 'all' || scope === 'reminders');
+  // Conditionals manager shows above Reminders when unfiltered by type/cond, at
   // scope All or the dedicated Conditionals box. Shown even with none created —
   // it's the only place to create one, so gating on existence made it
   // unreachable from a clean state.
-  const showConditionals = statGroup === 'all' && condFilter === 'all'
+  const showConditionals = (typeFilter === 'all' || typeFilter === 'conditionals') && condFilter === 'all'
     && (scope === 'all' || scope === 'conditionals');
   const shownPickers = (scope === 'reminders' || scope === 'conditionals')
     ? []
     : (scope === 'all' ? visiblePickers : visiblePickers.filter((p) => p.id === scope));
+
+  // Section sort — orders the top-level Conditionals / Reminders / picker
+  // cards. "Type" for Conditionals/Reminders is just their own section name
+  // (there's only ever one of each); a picker's is its mode label. Group and
+  // Active/Inactive have no meaning for Conditionals/Reminders as a WHOLE
+  // section (individual conditionals/reminders have their own states, but
+  // the section itself doesn't) — those sort as "N/A", always at the top for
+  // the forward sort and the bottom for its reverse, per instruction, rather
+  // than being force-fit into a fake group/active value.
+  const remindersCount = (state.tasks || []).filter((t) => !t.hidden).length;
+  const pickerSectionMeta = React.useMemo(() => {
+    const m = new Map();
+    for (const p of shownPickers) {
+      const its = state.items.filter((i) => i.pickerId === p.id);
+      m.set(p.id, { count: its.length, isActive: !(its.length > 0 && its.every((i) => i.vacation)) });
+    }
+    return m;
+  }, [shownPickers, state.items]);
+  const sectionSort = (state.ui && state.ui.dataSort && state.ui.dataSort.sections) || 'name-asc';
+  const sectionEntries = React.useMemo(() => {
+    const entries = [];
+    if (showConditionals) entries.push({ kind: 'conditionals', name: 'Conditionals', type: 'Conditionals', group: null, count: conditionals.length, isActive: null });
+    if (showReminders) entries.push({ kind: 'reminders', name: 'Reminders', type: 'Reminders', group: null, count: remindersCount, isActive: null });
+    for (const p of shownPickers) {
+      const meta = pickerSectionMeta.get(p.id) || { count: 0, isActive: true };
+      entries.push({ kind: 'picker', pk: p, name: p.name, type: MODES[p.mode].label, group: p.group || null, count: meta.count, isActive: meta.isActive });
+    }
+    return entries.sort((a, b) => compareSortEntries(a, b, sectionSort));
+  }, [showConditionals, showReminders, shownPickers, pickerSectionMeta, conditionals.length, remindersCount, sectionSort]);
+
+  // The in-progress "Create Picker" draft — a REAL (but hidden, so it's
+  // invisible everywhere else: Pickers/Stats/Today, and this page's own
+  // group/type counts) picker created the instant the trigger button is
+  // clicked. Deliberately NOT part of sectionEntries/its sort — appended
+  // after, so it always renders last regardless of sort order, and never
+  // shows up while some OTHER group/type/conditional filter would hide a
+  // real picker with these same field values (this card bypasses those
+  // filters entirely, same reasoning as showConditionals never gating on
+  // existence — it's the only place to create one).
+  const draftPicker = newDraftId ? pickers.find((p) => p.id === newDraftId) : null;
+  const draftEntry = draftPicker ? { kind: 'picker', pk: draftPicker, isDraft: true } : null;
+  const renderedEntries = draftEntry ? [...sectionEntries, draftEntry] : sectionEntries;
 
   return (
     <div className="tab tab--data">
@@ -1022,13 +1453,14 @@ function TabData({ state, actions, onHome, onNavTab }) {
             <h1 className="section-title">The knobs and levers, that <span className="stat-title-accent">ease</span> your life.</h1>
           </div>
         </div>
-        <p className="section-sub">All your created items can be edited here, including conditionals, reminders, pickers and all of their items. You can use the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('stats')}>Stats tab</button> to view how they are performing and then adjust their numbers here to get them exactly where you want them.</p>
-        <p className="section-sub"><strong>WARNING:</strong> Manually changing any of these values will affect the Stats tab's accuracy. Minor or infrequent changes will have an almost negligible effect but major or frequent changes will definitely skew the Stats tab's accuracy.</p>
+        <p className="section-sub">All your created items can be edited here, including conditionals, reminders, pickers and all of their items. You can use the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('stats')}>Stats page</button> to view how they are performing and then adjust their numbers here to get them exactly where you want them.</p>
+        <p className="section-sub"><strong>WARNING:</strong> Manually changing any of these values will affect the Stats page's accuracy. Minor or infrequent changes will have an almost negligible effect but major or frequent changes will definitely skew the Stats page's accuracy.</p>
       </header>
 
-      {/* ── Filters: group pills + picker boxes (mirrors the Pickers + Stats
-          tabs). Both default to "All"; the box row also carries a Reminders box
-          when the group filter is "All". Click behavior is stubbed for now. ── */}
+      {/* ── Filters: group + type pills + picker boxes (mirrors the Pickers +
+          Stats tabs). All default to "All"; the box row also carries a
+          Reminders box when the type filter is "All". Click behavior is
+          stubbed for now. ── */}
       <div className="stat-filters">
         {existingGroups.length > 1 && (
           <div className="stat-filter-row">
@@ -1037,22 +1469,69 @@ function TabData({ state, actions, onHome, onNavTab }) {
               <button type="button" role="tab" aria-selected={statGroup === 'all'}
                       className={`picker-group-pill ${statGroup === 'all' ? 'is-on' : ''}`}
                       disabled={disableGroupFilter}
-                      onClick={() => { setStatGroup('all'); setScope('all'); }}>
+                      onClick={() => setStatGroup('all')}>
                 All
                 <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
               </button>
-              {existingGroups.map((g) => {
-                const n = pickers.filter((p) => p.group === g && !p.hidden).length;
-                return (
-                  <button key={g} type="button" role="tab" aria-selected={statGroup === g}
-                          className={`picker-group-pill ${statGroup === g ? 'is-on' : ''}`}
+              {existingGroups.map((g) => (
+                <button key={g} type="button" role="tab" aria-selected={statGroup === g}
+                        className={`picker-group-pill ${statGroup === g ? 'is-on' : ''}`}
+                        disabled={disableGroupFilter}
+                        onClick={() => setStatGroup(g)}>
+                  {g}
+                  <span className="picker-group-count">{pickers.filter((p) => p.group === g && !p.hidden).length}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        {(existingModes.length > 1 || conditionals.length > 0) && (
+          <div className="stat-filter-row">
+            <span className="stat-filter-lbl">Type</span>
+            <div className="picker-groups stat-scope-groups stat-scope-groups--type" ref={typesRef} role="tablist" aria-label="Filter pickers by type">
+              <button type="button" role="tab" aria-selected={typeFilter === 'all'}
+                      className={`picker-group-pill ${typeFilter === 'all' ? 'is-on' : ''}`}
+                      disabled={disableGroupFilter}
+                      onClick={() => setTypeFilter('all')}>
+                All
+                <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
+              </button>
+              {/* Conditionals/Reminders sort in alphabetically alongside the real
+                  modes, rather than being pinned, so they're easy to find now
+                  that both this rail and the Show rail below sort that way.
+                  typeFilter doubles as their own scope value ('conditionals' /
+                  'reminders', not a real picker mode) so the Show row below can
+                  narrow to just that one card instead of the full "All" list —
+                  visiblePickers' own mode match naturally excludes every real
+                  picker under either value, same as any other empty mode. */}
+              {[
+                ...existingModes.map((m) => ({
+                  key: m, name: MODES[m].label,
+                  count: pickers.filter((p) => p.mode === m && !p.hidden).length,
+                  isOn: typeFilter === m,
+                  onClick: () => setTypeFilter(m),
+                })),
+                ...(conditionals.length > 0 ? [{
+                  key: 'conditionals', name: 'Conditionals', count: conditionals.length,
+                  isOn: typeFilter === 'conditionals',
+                  onClick: () => { setTypeFilter('conditionals'); onSelectScope('conditionals'); },
+                }] : []),
+                {
+                  key: 'reminders', name: 'Reminders', count: (state.tasks || []).filter((t) => !t.hidden).length,
+                  isOn: typeFilter === 'reminders',
+                  onClick: () => { setTypeFilter('reminders'); onSelectScope('reminders'); },
+                },
+              ]
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((entry) => (
+                  <button key={entry.key} type="button" role="tab" aria-selected={entry.isOn}
+                          className={`picker-group-pill ${entry.isOn ? 'is-on' : ''}`}
                           disabled={disableGroupFilter}
-                          onClick={() => setStatGroup(g)}>
-                    {g}
-                    <span className="picker-group-count">{n}</span>
+                          onClick={entry.onClick}>
+                    {entry.name}
+                    <span className="picker-group-count">{entry.count}</span>
                   </button>
-                );
-              })}
+                ))}
             </div>
           </div>
         )}
@@ -1063,15 +1542,15 @@ function TabData({ state, actions, onHome, onNavTab }) {
               <button type="button" role="tab" aria-selected={condFilter === 'all'}
                       className={`picker-group-pill ${condFilter === 'all' ? 'is-on' : ''}`}
                       disabled={disableGroupFilter}
-                      onClick={() => { setCondFilter('all'); if (scope !== 'all' && scope !== 'reminders' && scope !== 'conditionals') setScope('all'); }}>
+                      onClick={() => setCondFilter('all')}>
                 All
                 <span className="picker-group-count">{pickers.length}</span>
               </button>
-              {conditionals.map((c) => (
+              {[...conditionals].sort((a, b) => a.name.localeCompare(b.name)).map((c) => (
                 <button key={c.id} type="button" role="tab" aria-selected={condFilter === c.id}
                         className={`picker-group-pill ${condFilter === c.id ? 'is-on' : ''}`}
                         disabled={disableGroupFilter}
-                        onClick={() => { setCondFilter(c.id); setScope('all'); setStatGroup('all'); }}>
+                        onClick={() => { setCondFilter(c.id); setStatGroup('all'); setTypeFilter('all'); }}>
                   {c.name}
                   <span className="picker-group-count">{condPickerCount(c.id)}</span>
                 </button>
@@ -1081,8 +1560,8 @@ function TabData({ state, actions, onHome, onNavTab }) {
         )}
         <div className="stat-filter-row">
           <span className="stat-filter-lbl">Show</span>
-          <div className="picker-tabs stat-scope-tabs" ref={scopeRef} key={statGroup}>
-            {statGroup === 'all' && (
+          <div className="picker-tabs stat-scope-tabs" ref={scopeRef} key={statGroup + '|' + typeFilter}>
+            {showAllCard && (
               <button type="button"
                       className={`picker-tab picker-tab--enter ${scope === 'all' ? 'is-on' : ''}`}
                       style={{ animationDelay: '0ms' }}
@@ -1092,42 +1571,48 @@ function TabData({ state, actions, onHome, onNavTab }) {
                 <span className="picker-tab-mode">Everything</span>
               </button>
             )}
-            {statGroup === 'all' && conditionals.length > 0 && (
-              <button type="button"
-                      className={`picker-tab picker-tab--enter ${scope === 'conditionals' ? 'is-on' : ''}`}
-                      style={{ animationDelay: '40ms' }}
-                      disabled={disablePickersFilter}
-                      onClick={() => onSelectScope('conditionals')}>
-                <span className="picker-tab-name">Conditionals</span>
-                <span className="picker-tab-mode">Gates</span>
-              </button>
-            )}
-            {statGroup === 'all' && (
-              <button type="button"
-                      className={`picker-tab picker-tab--enter ${scope === 'reminders' ? 'is-on' : ''}`}
-                      style={{ animationDelay: '80ms' }}
-                      disabled={disablePickersFilter}
-                      onClick={() => onSelectScope('reminders')}>
-                <span className="picker-tab-name">Reminders</span>
-                <span className="picker-tab-mode">Tasks</span>
-              </button>
-            )}
-            {visiblePickers.map((p, i) => (
-              <button key={p.id} type="button" data-picker-id={p.id}
-                      className={`picker-tab picker-tab--enter ${scope === p.id ? 'is-on' : ''}`}
-                      style={{ animationDelay: ((statGroup === 'all' ? (conditionals.length > 0 ? 3 : 2) : 0) + i) * 40 + 'ms' }}
-                      disabled={disablePickersFilter}
-                      onClick={() => onSelectScope(p.id)}>
-                <span className="picker-tab-name">{p.name}</span>
-                <span className="picker-tab-mode">{MODES[p.mode].label}</span>
-              </button>
-            ))}
+            {/* Everything after "All" — Conditionals, Reminders, and every
+                visible picker — sorts together alphabetically by its own
+                displayed name, rather than Conditionals/Reminders being
+                pinned right after All. typeFilter 'conditionals'/'reminders'
+                (set by their own Type-rail pill) narrows this down to just
+                that one card, same as any real group/type narrows to its
+                pickers. showAllCard (derived from sortedShowEntries above, so
+                the two always agree) also pins "All" first for a real filter
+                that still leaves 2+ entries in view — a lone entry would
+                make "All" a redundant duplicate of that one card. */}
+            {[
+              ...((typeFilter === 'all' || typeFilter === 'conditionals') && conditionals.length > 0
+                ? [{ key: 'conditionals', name: 'Conditionals', modeLabel: 'Gates', isOn: scope === 'conditionals', onClick: () => onSelectScope('conditionals') }]
+                : []),
+              ...(typeFilter === 'all' || typeFilter === 'reminders'
+                ? [{ key: 'reminders', name: 'Reminders', modeLabel: 'Tasks', isOn: scope === 'reminders', onClick: () => onSelectScope('reminders') }]
+                : []),
+              ...visiblePickers.map((p) => ({ key: p.id, name: p.name, modeLabel: MODES[p.mode].label, isOn: scope === p.id, onClick: () => onSelectScope(p.id), pickerId: p.id })),
+            ]
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((entry, i) => (
+                <button key={entry.key} type="button" data-picker-id={entry.pickerId}
+                        className={`picker-tab picker-tab--enter ${entry.isOn ? 'is-on' : ''}`}
+                        style={{ animationDelay: (i + 1) * 40 + 'ms' }}
+                        disabled={disablePickersFilter}
+                        onClick={entry.onClick}>
+                  <span className="picker-tab-name">{entry.name}</span>
+                  <span className="picker-tab-mode">{entry.modeLabel}</span>
+                </button>
+              ))}
           </div>
         </div>
       </div>
 
-      {showConditionals && <ConditionalsManager state={state} actions={actions} key="cnd-shown" />}
-      {showReminders && <ReminderManager state={state} actions={actions} key="rem-shown" />}
+      {/* Section sort — orders Conditionals / Reminders / each picker card
+          below. Only meaningful with more than one section in view, but
+          left visible either way rather than popping in/out as filters
+          change. */}
+      <div className="data-sort-bar">
+        <SortSelect id="data-section-sort" label="Sort" options={SECTION_SORT_OPTIONS}
+                    value={sectionSort} onChange={(key) => actions.setDataSort('sections', key)} />
+      </div>
 
       <div className="data-list" key={statGroup + '::' + scope + '::' + condFilter}>
         {!showConditionals && !showReminders && shownPickers.length === 0 && (
@@ -1136,55 +1621,135 @@ function TabData({ state, actions, onHome, onNavTab }) {
             <p className="data-empty-sub">No items match the current Group, Conditionals, and Show selections. Try widening a filter to “All”.</p>
           </div>
         )}
-        {shownPickers.map((pk, pkIndex) => {
+        {renderedEntries.map((entry, pkIndex) => {
+          if (entry.kind === 'conditionals') return <ConditionalsManager state={state} actions={actions} key="cnd-shown" />;
+          if (entry.kind === 'reminders') return <ReminderManager state={state} actions={actions} key="rem-shown" />;
+          const pk = entry.pk;
+          const isDraft = !!entry.isDraft;
           const items = state.items.filter((i) => i.pickerId === pk.id);
           const eligible = items.filter((i) => !i.vacation).length;
           const allVac = items.length > 0 && items.every((i) => i.vacation);
-          const open = collapsedMap[pk.id] === false;
+          // A draft's own card is always expanded (no collapse toggle — see
+          // the header button's disabled prop below) and its Items section
+          // starts closed instead of the usual default-open, revealed by
+          // either the footer's "Add Items" button or its own header (see
+          // draftItemsOpen).
+          const open = isDraft || collapsedMap[pk.id] === false;
           const isEase = pk.mode === 'ease-up' || pk.mode === 'ease-down';
           const usesWeight = pk.mode === 'weighted' || pk.mode === 'dynamic';
           const inDaily = state.daily.pickerIds.includes(pk.id);
           const ctlCollapsed = !!collapsedMap[pk.id + ':controls'];
-          const itemsCollapsed = !!collapsedMap[pk.id + ':items'];
+          const itemsCollapsed = isDraft ? !draftItemsOpen : !!collapsedMap[pk.id + ':items'];
+          // Item sort — see pickerItemSortOptions for why the available
+          // options vary by mode (a mode-specific numeric field standing in
+          // for the generic 'count' comparator field: charge for ease modes,
+          // weight for weighted/dynamic; truly random has neither). Ease
+          // modes also get Range, from the same soonest/latest band math the
+          // item rows below render (hoisted here so both share one
+          // PICKERS.avgEase call instead of computing it per item twice).
+          // Dynamic Weighted also gets Boost — the same `value` field ease
+          // modes use for Range/charge, repurposed per mode exactly like the
+          // Conditionals section's own range/odds/boost fields.
+          const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort[pk.id]) || 'name-asc';
+          const fallbackEase = isEase ? PICKERS.avgEase(items, pk.id) : null;
+          const itemSortEntry = (it) => {
+            const eMax = it.easeMax ?? fallbackEase?.easeMax ?? 20;
+            return {
+              name: it.name, type: null, group: null,
+              count: isEase ? (it.value ?? 0) : (usesWeight ? (it.weight ?? 1) : null),
+              range: isEase ? Math.max(1, Math.round(100 / (eMax || 1))) : null,
+              boost: pk.mode === 'dynamic' ? (it.value ?? 0) : null,
+              isActive: !it.vacation,
+            };
+          };
+          const sortedItems = [...items].sort((a, b) => compareSortEntries(itemSortEntry(a), itemSortEntry(b), itemSort));
+          const displayItems = freezeEditedRow(sortedItems, openItemId, justAddedItemRef.current, frozenItemIndexRef);
+          // Creates a fresh item and opens its editor — the "+ Add to X" button's
+          // own action, factored out so the new draft's "Add Items" footer button
+          // (below) can trigger the exact same first-item flow the instant it
+          // reveals the Items section, instead of leaving the user to find and
+          // click "+ Add to X" themselves right after.
+          const startAddItem = () => {
+            if (justAddedItemRef.current) return;   // guard: ignore rapid double-click
+            const id = 'it_' + Math.random().toString(36).slice(2, 8);
+            actions.addItem(pk.id, 'New item', id);
+            justAddedItemRef.current = id;   // Cancel discards it
+            setInsertItemId(id);
+            setOpenItemId(id);
+          };
+          // Shared by the row's own collapse chevron AND ItemEditor's Save —
+          // both mean "keep this, I'm done", so both need the exact same
+          // cleanup (clear the new-item flag, close only if we're still the
+          // open row). Keeping this in one place means the chevron can't
+          // drift out of sync with what Save already does.
+          const keepAndCloseItem = (id) => {
+            openEditorRef.current?.keep();
+            if (justAddedItemRef.current === id) justAddedItemRef.current = null;
+            setOpenItemId((cur) => cur === id ? null : cur);
+          };
           return (
-            <section key={pk.id} data-picker-id={pk.id} className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''} ${highlightEditTourPickerHeaders ? 'ob-tour-pulse' : ''}`}
+            <section key={pk.id} data-picker-id={pk.id} ref={isDraft ? draftCardRef : undefined}
+                     className={`cat cat--enter ${allVac ? 'is-vac' : ''} ${removingPickerId === pk.id ? 'cat--removing' : ''} ${highlightEditTourPickerHeaders ? 'ob-tour-pulse' : ''}`}
                      onAnimationEnd={(e) => {
                        if (e.target === e.currentTarget && removingPickerId === pk.id) {
                          actions.removePicker(pk.id); setRemovingPickerId(null);
                        }
                      }}
-                     style={{ animationDelay: (pkIndex * 45) + 'ms' }}>
+                     style={{
+                       animationDelay: (isDraft ? 0 : pkIndex * 45) + 'ms',
+                       // Leaves the same gap the .data-list itself uses between
+                       // sections above the scroll-to-top below, instead of
+                       // butting flush against the viewport's edge.
+                       ...(isDraft ? { scrollMarginTop: 14 } : {}),
+                     }}>
               <header className="cat-h"
-                      onClick={(e) => { if (!disableEditTourPickerHeader && !e.target.closest('button')) toggle(pk.id); }}>
+                      onClick={(e) => { if (!isDraft && !disableEditTourPickerHeader && !e.target.closest('button')) toggle(pk.id); }}>
                 <button type="button" className="cat-h-l" aria-expanded={open}
-                        disabled={disableEditTourPickerHeader}
+                        disabled={isDraft || disableEditTourPickerHeader}
                         onClick={() => toggle(pk.id)}>
                   <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
-                  <h2 className="cat-name">{pk.name}</h2>
-                  <span className="cat-group">{pk.group}</span>
-                  {/* Each part its own element (not one text run) so a narrow
-                      viewport can stack them into 3 centered rows — see
-                      .cat-count's own @container rule in styles2.css. */}
-                  <span className="cat-count">
-                    <span className="cat-count-n">{eligible}</span>
-                    <span className="cat-count-of">of</span>
-                    <span className="cat-count-n">{items.length}</span>
+                  <span className="cat-h-main">
+                    <h2 className="cat-name">{pk.name}</h2>
+                    {/* Each part its own element, not one text run (see
+                        .cat-count in styles2.css for the row+baseline look). */}
+                    <span className="cat-count">
+                      <span className="cat-count-n">{eligible}</span>
+                      <span className="cat-count-of">of</span>
+                      <span className="cat-count-n">{items.length}</span>
+                    </span>
                   </span>
-                  {/* Not shown — read by help-mode's pickerRow entry via
-                      labelSel to build "{type} Picker" per-picker badge
-                      titles; the type itself isn't otherwise surfaced
-                      anywhere in the collapsed header. */}
-                  <span className="cat-mode-label" hidden>{MODES[pk.mode].label}</span>
                 </button>
-                <button className="vac-toggle" aria-pressed={!!allVac}
-                        aria-label={`${allVac ? 'End vacation for' : 'Start vacation for'} all items in ${pk.name}`}
-                        onClick={(e) => { e.stopPropagation(); actions.toggleVacation(pk.id, 'picker'); }}
-                        title="Vacation for all items in this picker">
-                  <Icon name={allVac ? 'moon' : 'sparkle'} size={14} />
-                  <span>{allVac ? 'On vacation' : 'Active'}</span>
-                </button>
+                {/* Type + group pills — their own fixed-width columns (not
+                    inline with the name) so they line up across every picker
+                    card regardless of how long the name, group, or type text
+                    is, same fixed-column trick used for Stats' rank-bd-vals.
+                    Each is click-to-reveal (InfoTip truncationOnly) since a
+                    long group name or "Dynamic Weighted" can still truncate
+                    at this width — same pattern as day-log.jsx's dl-name/
+                    dl-mode. */}
+                {/* Wraps the tags + toggle as one group so a narrow viewport
+                    can stack all 3 into a single narrow column here in place
+                    (freeing up width for the name) instead of squeezing the
+                    name down to nothing — see the @container rule below. */}
+                <span className="cat-h-right">
+                  <span className="cat-h-tags">
+                    {/* Read by help-mode's pickerRow entry via labelSel to
+                        build "{type} Picker" per-picker badge titles. */}
+                    <InfoTip className="cat-mode-label" label={MODES[pk.mode].label} truncationOnly>
+                      {MODES[pk.mode].label}
+                    </InfoTip>
+                    <InfoTip className="cat-group" label={pk.group} truncationOnly>{pk.group}</InfoTip>
+                  </span>
+                  <button className="vac-toggle" aria-pressed={!!allVac}
+                          aria-label={`${allVac ? 'Activate' : 'Deactivate'} all items in ${pk.name}`}
+                          onClick={(e) => { e.stopPropagation(); actions.toggleVacation(pk.id, 'picker'); }}
+                          title="Active toggle for all items in this picker">
+                    <Icon name={allVac ? 'moon' : 'sparkle'} size={14} />
+                    <span className="set-sub-fade" key={allVac ? 'inactive' : 'active'}>{allVac ? 'Inactive' : 'Active'}</span>
+                  </button>
+                </span>
               </header>
-              <Collapse open={open}>
+              <Collapse open={open} instant={isDraft}>
                 <div className="cat-body">
                   {/* Controls — nested collapsible (open by default, remembered per
                       picker). Holds the pick-algorithm config moved here from
@@ -1198,20 +1763,27 @@ function TabData({ state, actions, onHome, onNavTab }) {
                     </span>
                     {ctlCollapsed && <span className="rd-ctl-sum">{Object.keys(MODES).length} options</span>}
                   </button>
-                  <Collapse open={!ctlCollapsed}>
+                  <Collapse open={!ctlCollapsed} instant={isDraft}>
                     <PickerControls picker={pk} items={items} inDaily={inDaily}
                                     allGroups={existingGroups}
                                     conditionals={state.conditionals || []}
                                     dailyIds={state.daily.pickerIds} actions={actions}
                                     onCollapse={() => actions.toggleControlsCollapsed(pk.id + ':controls')}
-                                    onRequestDelete={() => deletePickerAnimated(pk.id)} />
+                                    onRequestDelete={() => deletePickerAnimated(pk.id)}
+                                    isNewDraft={isDraft}
+                                    itemsSectionOpen={draftItemsOpen}
+                                    hasOpenNewItem={openItemId != null && justAddedItemRef.current === openItemId && items.some((it) => it.id === openItemId)}
+                                    onOpenItemsSection={() => { setDraftItemsOpen(true); setPendingAutoAddItem(true); }}
+                                    onSaveNew={saveNewPicker}
+                                    onCancelNew={cancelNewPicker} />
                   </Collapse>
 
                   {/* Items — nested collapsible (open by default, remembered per
-                      picker); collapsed shows the item count. */}
+                      picker, except a fresh draft — see draftItemsOpen); collapsed
+                      shows the item count. */}
                   <button type="button" className={`rd-ctl ${highlightEditTourItemsHeader ? 'ob-tour-pulse' : ''}`} aria-expanded={!itemsCollapsed}
                        disabled={disableEditTourItemsToggle}
-                       onClick={() => actions.toggleControlsCollapsed(pk.id + ':items')}>
+                       onClick={() => isDraft ? setDraftItemsOpen((o) => !o) : actions.toggleControlsCollapsed(pk.id + ':items')}>
                     <span className="rd-ctl-l">
                       <span className={`chev ${itemsCollapsed ? '' : 'is-open'}`}><Icon name="chev" size={12} /></span>
                       <span className="kicker">Items</span>
@@ -1226,29 +1798,31 @@ function TabData({ state, actions, onHome, onNavTab }) {
                           <Icon name="plus" size={13} /> Add to {pk.name.toLowerCase()}
                         </InfoTip>
                       ) : (
-                        <button className="rd-add" disabled={disableEditTourAddItem} onClick={() => {
-                          if (justAddedItemRef.current) return;   // guard: ignore rapid double-click
-                          const id = 'it_' + Math.random().toString(36).slice(2, 8);
-                          actions.addItem(pk.id, 'New item', id);
-                          justAddedItemRef.current = id;   // Cancel discards it
-                          setInsertItemId(id);
-                          setOpenItemId(id);
-                        }}>
+                        <button className="rd-add" disabled={disableEditTourAddItem} onClick={startAddItem}>
                           <Icon name="plus" size={13} /> Add to {pk.name.toLowerCase()}
                         </button>
                       )}
-                      {items.map((it) => {
+                      {items.length > 1 && (
+                        <SortSelect id={`item-sort-${pk.id}`} label="Sort" options={pickerItemSortOptions(pk.mode)}
+                                    value={itemSort} onChange={(key) => actions.setDataSort(pk.id, key)} />
+                      )}
+                      {displayItems.map((it) => {
                         const itemOpen = openItemId === it.id;
-                        const eMin = it.easeMin ?? pk.easeMin ?? 10;
-                        const eMax = it.easeMax ?? pk.easeMax ?? 20;
+                        // Same fallback the picking engine itself uses for an
+                        // item with no ease band of its own (see
+                        // PICKERS.avgEase) — hoisted above (with itemSortEntry)
+                        // rather than recomputed per item here.
+                        const eMin = it.easeMin ?? fallbackEase?.easeMin ?? 10;
+                        const eMax = it.easeMax ?? fallbackEase?.easeMax ?? 20;
                         const soonest = Math.max(1, Math.round(100 / (eMax || 1)));
                         const latest = Math.max(1, Math.round(100 / (eMin || 1)));
                         const meta = it.vacation
-                          ? 'On vacation'
+                          ? 'Inactive'
                           : (isEase ? `${soonest}\u2013${latest} ${CADENCE.unitWord(pk.cadence, latest)}`
                              : (usesWeight ? `Weight w${it.weight}` : 'Equal chance'));
                         return (
-                          <div key={it.id} className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''} ${highlightEditTourItemRows ? 'is-tour-target ob-tour-pulse' : ''}`}
+                          <div key={it.id} ref={itemOpen ? openRowRef : undefined}
+                               className={`rd-item ${it.vacation ? 'is-vac' : ''} ${itemOpen ? 'is-editing' : ''} ${insertItemId === it.id ? 'rd-item--insert' : ''} ${highlightEditTourItemRows ? 'is-tour-target ob-tour-pulse' : ''}`}
                                onAnimationEnd={() => { if (insertItemId === it.id) setInsertItemId(null); }}>
                             {itemOpen ? (
                               // Plain div, not a button, while editing — see the
@@ -1260,13 +1834,14 @@ function TabData({ state, actions, onHome, onNavTab }) {
                               <div className="rd-row">
                                 <span className="rd-main">
                                   <input className="rd-name-input" type="text" value={it.name} maxLength={60}
-                                         placeholder="Item name" aria-label="Item name" autoFocus
+                                         placeholder="Item name" aria-label="Item name"
+                                         ref={(el) => { if (el && focusedInputRef.current !== el) { el.focus({ preventScroll: true }); focusedInputRef.current = el; } }}
                                          onChange={(e) => actions.updateItem(it.id, { name: e.target.value })}
                                          onBlur={(e) => { const n = e.target.value.trim(); if (n) actions.renameItem(it.id, n); }}
                                          onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
                                 </span>
                                 <button type="button" className="rd-chev chev is-open" aria-label="Collapse"
-                                        onClick={() => setOpenItemId(null)}>
+                                        onClick={() => keepAndCloseItem(it.id)}>
                                   <Icon name="chev" size={16} />
                                 </button>
                               </div>
@@ -1284,18 +1859,11 @@ function TabData({ state, actions, onHome, onNavTab }) {
                             )}
                             <Collapse open={itemOpen}>
                               <div className="rd-edit">
-                                <ItemEditor item={it} picker={pk} actions={actions}
+                                <ItemEditor ref={itemOpen ? openEditorRef : undefined}
+                                            item={it} picker={pk} actions={actions} items={items}
                                             isNew={justAddedItemRef.current === it.id}
                                             itemCount={items.length}
-                                            onClose={() => {
-                                              if (justAddedItemRef.current === it.id) justAddedItemRef.current = null;
-                                              // Only close OUR row — this can fire well after the user
-                                              // has already switched to a different item's editor (this
-                                              // callback is invoked from a deferred implicit-close), so a
-                                              // bare setOpenItemId(null) would clobber whichever item is
-                                              // now open.
-                                              setOpenItemId((cur) => cur === it.id ? null : cur);
-                                            }}
+                                            onClose={() => keepAndCloseItem(it.id)}
                                             onCancel={(snap) => {
                                               if (justAddedItemRef.current === it.id) {
                                                 // Discard a brand-new item, but let the editor play
@@ -1329,6 +1897,16 @@ function TabData({ state, actions, onHome, onNavTab }) {
             </section>
           );
         })}
+        {/* "Create Picker" — hidden while Type is filtered to Conditionals/
+            Reminders (there'd be nothing here for a new PICKER to belong to
+            in that view) or while a draft is already in progress (one at a
+            time, same as the Conditionals manager's own "one draft at a
+            time" guard). */}
+        {!newDraftId && typeFilter !== 'conditionals' && typeFilter !== 'reminders' && (
+          <button type="button" className="cat-create-btn" disabled={disableCreatePicker} onClick={startNewPicker}>
+            <Icon name="plus" size={14} /> Create Picker
+          </button>
+        )}
       </div>
     </div>
   );

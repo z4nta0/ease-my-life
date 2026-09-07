@@ -4,7 +4,7 @@ import { emlTour } from './eml-tour-bus.js';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { OB_REMINDER_CARD_TEXT, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { TASKS } from './tasks.js';
-import { Btn, Collapse, Icon, InfoTip, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
+import { Btn, Collapse, compareSortEntries, freezeEditedRow, Icon, InfoTip, SortSelect, WeekdayChips, reduceMotion, useEscapeCancel } from './ui.jsx';
 
 // Reminders UI — shared components for manual, statically-scheduled tasks.
 // Rendered in two places:
@@ -15,11 +15,11 @@ import { Btn, Collapse, Icon, InfoTip, WeekdayChips, reduceMotion, useEscapeCanc
 // + small local form state only.
 
 const REPEAT_OPTS = [
-  { key: 'once',     label: 'Once',        sub: <>included in the Today tab <strong>until marked as completed</strong></> },
-  { key: 'interval', label: 'Every N days', sub: <>included in the Today tab <strong>as often as specified below</strong></> },
-  { key: 'weekly',   label: 'Weekly',      sub: <>included in the Today tab <strong>on the days specified below</strong></> },
-  { key: 'monthly',  label: 'Monthly',     sub: <>included in the Today tab <strong>every month as specified below</strong></> },
-  { key: 'annual',   label: 'Yearly',      sub: <>included in the Today tab <strong>every year as specified below</strong></> },
+  { key: 'once',     label: 'Once',        sub: <>included in the Today page <strong>until marked as completed</strong></> },
+  { key: 'interval', label: 'Every N days', sub: <>included in the Today page <strong>as often as specified below</strong></> },
+  { key: 'weekly',   label: 'Weekly',      sub: <>included in the Today page <strong>on the days specified below</strong></> },
+  { key: 'monthly',  label: 'Monthly',     sub: <>included in the Today page <strong>every month as specified below</strong></> },
+  { key: 'annual',   label: 'Yearly',      sub: <>included in the Today page <strong>every year as specified below</strong></> },
 ];
 
 // Animated segmented control: a single accent "thumb" slides between options.
@@ -144,7 +144,7 @@ function RemVisibilityNote({ task, state, kind, id }) {
     return (
       <p className="rem-vis-note is-never">
         <strong>WARNING:</strong> Because of the values that you are using and because {why}, this
-        item will <strong>never</strong> show in the Today list.
+        item will <strong>never</strong> show up in your todo list.
       </p>
     );
   }
@@ -154,11 +154,11 @@ function RemVisibilityNote({ task, state, kind, id }) {
   const phrase = remReasonPhrase(v);
   if (phrase) {
     // Covers weekends, holidays, or both — "…on weekends and Christmas Day".
-    body = <>Because Reminders are set to <strong>not show {kindWord} items on {phrase}</strong>, this item will not show up in the list today.</>;
+    body = <>Because Reminders are set to <strong>not show {kindWord} items on {phrase}</strong>, this item will not show up in your todo list today.</>;
   } else if (v.cause === 'skipUntil') {
-    body = <>This item is <strong>skipped</strong> until a later date, so it will not show up in the list today.</>;
+    body = <>This item is <strong>skipped</strong> until a later date, so it will not show up in your todo list today.</>;
   } else {
-    body = <>Because of the values that you are using, this item will not show up in the list today.</>;
+    body = <>Because of the values that you are using, this item will not show up in your todo list today.</>;
   }
   return (
     <p className="rem-vis-note">
@@ -191,6 +191,11 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const fullMonthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const dayAbbr = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const DATE_MODE_OPTS = [
+    { key: 'date', label: 'Date' },
+    { key: 'nthWeekday', label: 'Weekday' },
+  ];
   // Interval reminders count from a start date (`anchor`); the user can amend
   // it if they got it wrong. The link toggles an inline native date picker.
   const [editAnchor, setEditAnchor] = React.useState(false);
@@ -200,6 +205,17 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
     const dt = (y && m && d) ? new Date(y, m - 1, d) : new Date();
     return dt.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
   })();
+  // A one-time reminder's start date — defaults to today (defaultTask), so
+  // it's due right away same as before this control existed; picking a
+  // later date defers that. Same click-to-edit link/inline-date-input swap
+  // as the anchor above.
+  const [editOnceDate, setEditOnceDate] = React.useState(false);
+  const onceDateIso = task.onceDate || TASKS.isoToday();
+  const onceIsFuture = onceDateIso > TASKS.isoToday();
+  const onceDateLabel = (() => {
+    const [y, m, d] = onceDateIso.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+  })();
 
   // Ids so the advisory can double as the accessible DESCRIPTION of the control
   // that caused it: a live region alone is silent when the editor opens with the
@@ -207,6 +223,61 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
   // subsection renders at a time, so one id each is enough.
   const schedNoteId = `rem-vis-sched-${task.id}`;
   const setNoteId = `rem-vis-set-${task.id}`;
+
+  // Shared "Counted from {anchor}" hint — only shown once N > 1, since at N=1
+  // (the old, only-ever-possible behavior) every week/month/year already
+  // qualifies and the anchor is never actually consulted.
+  const anchorHint = (
+    <p className="rem-hint">
+      Counted from{' '}
+      {editAnchor ? (
+        <input className="rem-date-inline" type="date" value={anchorIso} autoFocus
+               onChange={(e) => { if (e.target.value) set({ anchor: e.target.value }); }}
+               onBlur={() => setEditAnchor(false)}
+               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); setEditAnchor(false); } }} />
+      ) : (
+        <>
+          <button type="button" className="rem-date-link" aria-describedby={schedNoteId} onClick={() => setEditAnchor(true)}>
+            {anchorLabel}
+          </button>.
+        </>
+      )}
+    </p>
+  );
+
+  // A one-time reminder is due immediately by default (onceDate = today);
+  // picking a later date here defers that — still one-time, just deferred.
+  const onceFields = (
+    <div className="rem-field">
+      <div className="rem-flabel-wrap">
+        <span className="rem-flabel">Start date</span>
+        <span className="rem-flabel-sub set-sub-fade" key={onceIsFuture ? 'future' : 'now'}>
+          {onceIsFuture
+            ? <>won't show on the Today page until <strong>{onceDateLabel}</strong></>
+            : <>shows on the Today page <strong>right away</strong></>}
+        </span>
+      </div>
+      <p className="rem-hint">
+        Starting on{' '}
+        {editOnceDate ? (
+          <input className="rem-date-inline" type="date" value={onceDateIso} min={TASKS.isoToday()} autoFocus
+                 // `min` only disables the picker UI's own earlier dates —
+                 // typing a date by hand bypasses it entirely in every
+                 // browser, so a past pick still has to be clamped here.
+                 onChange={(e) => { if (e.target.value) set({ onceDate: e.target.value < TASKS.isoToday() ? TASKS.isoToday() : e.target.value }); }}
+                 onBlur={() => setEditOnceDate(false)}
+                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); setEditOnceDate(false); } }} />
+        ) : (
+          <>
+            <button type="button" className="rem-date-link" aria-describedby={schedNoteId} onClick={() => setEditOnceDate(true)}>
+              {onceDateLabel}
+            </button>.
+          </>
+        )}
+      </p>
+      {state && <RemVisibilityNote task={task} state={state} kind="schedule" id={schedNoteId} />}
+    </div>
+  );
 
   const extraFields = (() => {
   const rep = task.repeat === 'once' ? lastExtraRepeat.current : task.repeat;
@@ -216,13 +287,22 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         <div className="rem-field">
           <div className="rem-flabel-wrap">
             <span className="rem-flabel">On these days</span>
-            <span className="rem-flabel-sub">
+            <span className="rem-flabel-sub set-sub-fade" key={task.interval || 1}>
               {(task.daysOfWeek && task.daysOfWeek.length)
-                ? <>shows on the Today tab <strong>every {[...task.daysOfWeek].sort((a, b) => a - b).map((d) => dayAbbr[d]).join(', ')}</strong></>
+                ? <>shows on the Today page <strong>every {(task.interval || 1) > 1 ? `${task.interval} weeks on ` : ''}{[...task.daysOfWeek].sort((a, b) => a - b).map((d) => dayAbbr[d]).join(', ')}</strong></>
                 : 'pick at least one day'}
             </span>
           </div>
+          <div className="rem-inline">
+            <span>Every</span>
+            <input className="np-input rem-num" type="number" min="1" max="52"
+                   aria-label="Interval in weeks" aria-describedby={schedNoteId}
+                   value={task.interval || 1}
+                   onChange={(e) => set({ interval: Math.max(1, parseInt(e.target.value) || 1) })} />
+            <span>{(task.interval || 1) === 1 ? 'week on' : 'weeks on'}</span>
+          </div>
           <WeekdayChips value={task.daysOfWeek || []} onChange={(d) => set({ daysOfWeek: d })} describedBy={schedNoteId} />
+          <Collapse open={(task.interval || 1) > 1}><div className="cad-anchor-fade">{anchorHint}</div></Collapse>
         {state && <RemVisibilityNote task={task} state={state} kind="schedule" id={schedNoteId} />}
         </div>
       )}
@@ -231,7 +311,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
         <div className="rem-field">
           <div className="rem-flabel-wrap">
             <span className="rem-flabel">Frequency</span>
-            <span className="rem-flabel-sub">shows on the Today tab <strong>every {task.interval || 1} days</strong></span>
+            <span className="rem-flabel-sub">shows on the Today page <strong>every {task.interval || 1} days</strong></span>
           </div>
           <div className="rem-inline">
             <span>Every</span>
@@ -241,21 +321,7 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
                    onChange={(e) => set({ interval: Math.max(1, parseInt(e.target.value) || 1) })} />
             <span>days</span>
           </div>
-          <p className="rem-hint">
-            Counted from{' '}
-            {editAnchor ? (
-              <input className="rem-date-inline" type="date" value={anchorIso} autoFocus
-                     onChange={(e) => { if (e.target.value) set({ anchor: e.target.value }); }}
-                     onBlur={() => setEditAnchor(false)}
-                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); setEditAnchor(false); } }} />
-            ) : (
-              <>
-                <button type="button" className="rem-date-link" aria-describedby={schedNoteId} onClick={() => setEditAnchor(true)}>
-                  {anchorLabel}
-                </button>.
-              </>
-            )}
-          </p>
+          {anchorHint}
         {state && <RemVisibilityNote task={task} state={state} kind="schedule" id={schedNoteId} />}
         </div>
       )}
@@ -263,21 +329,58 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
       {rep === 'monthly' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <span className="rem-flabel">Day of the month</span>
-            <span className="rem-flabel-sub">shows on the Today tab <strong>every {ordinalLabel(task.dayOfMonth || 1)} of the month</strong></span>
+            <span className="rem-flabel">Frequency</span>
+            <span className="rem-flabel-sub set-sub-fade" key={task.interval || 1}>shows on the Today page <strong>every {(task.interval || 1) > 1 ? `${task.interval} months` : 'month'}</strong></span>
           </div>
           <div className="rem-inline">
-            <span>On the</span>
-            <select className="np-input rem-sel" aria-label="Day of the month" aria-describedby={schedNoteId} value={task.dayOfMonth || 1}
-                    onChange={(e) => set({ dayOfMonth: parseInt(e.target.value) })}>
-              {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
-                <option key={d} value={d}>{ordinalLabel(d)}</option>
-              ))}
-            </select>
+            <span>Every</span>
+            <input className="np-input rem-num" type="number" min="1" max="60"
+                   aria-label="Interval in months" aria-describedby={schedNoteId}
+                   value={task.interval || 1}
+                   onChange={(e) => set({ interval: Math.max(1, parseInt(e.target.value) || 1) })} />
+            <span>{(task.interval || 1) === 1 ? 'month' : 'months'}</span>
           </div>
-          {(task.dayOfMonth || 1) > 28 && (
-            <p className="rem-hint">In shorter months this falls on the last day.</p>
+          <Collapse open={(task.interval || 1) > 1}><div className="cad-anchor-fade">{anchorHint}</div></Collapse>
+        </div>
+      )}
+      {rep === 'monthly' && (
+        <div className="rem-field">
+          <div className="rem-flabel-wrap">
+            <span className="rem-flabel">Day of the month</span>
+            <span className="rem-flabel-sub set-sub-fade" key={task.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date'}>
+              shows on the Today page <strong>{task.dateMode === 'nthWeekday'
+                ? <>on the {ordinalLabel(task.nthOrdinal || 1)} {dayFull[task.nthWeekday ?? 0]}</>
+                : <>every {ordinalLabel(task.dayOfMonth || 1)}</>} of the month</strong>
+            </span>
+          </div>
+          <Segmented options={DATE_MODE_OPTS} value={task.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date'}
+                     onChange={(key) => set({ dateMode: key })} ariaLabel="Day selection" describedBy={schedNoteId} />
+          {task.dateMode === 'nthWeekday' ? (
+            <div className="rem-inline">
+              <span>On the</span>
+              <select className="np-input rem-sel" aria-label="Week of the month" aria-describedby={schedNoteId} value={task.nthOrdinal || 1}
+                      onChange={(e) => set({ nthOrdinal: parseInt(e.target.value) })}>
+                {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{ordinalLabel(n)}</option>)}
+              </select>
+              <select className="np-input rem-sel" aria-label="Weekday" aria-describedby={schedNoteId} value={task.nthWeekday ?? 0}
+                      onChange={(e) => set({ nthWeekday: parseInt(e.target.value) })}>
+                {dayFull.map((d, i) => <option key={d} value={i}>{d}</option>)}
+              </select>
+            </div>
+          ) : (
+            <div className="rem-inline">
+              <span>On the</span>
+              <select className="np-input rem-sel" aria-label="Day of the month" aria-describedby={schedNoteId} value={task.dayOfMonth || 1}
+                      onChange={(e) => set({ dayOfMonth: parseInt(e.target.value) })}>
+                {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                  <option key={d} value={d}>{ordinalLabel(d)}</option>
+                ))}
+              </select>
+            </div>
           )}
+          {task.dateMode === 'nthWeekday'
+            ? (task.nthOrdinal || 1) === 5 && <p className="rem-hint">In months without a 5th, this falls on the 4th instead.</p>
+            : (task.dayOfMonth || 1) > 28 && <p className="rem-hint">In shorter months this falls on the last day.</p>}
         {state && <RemVisibilityNote task={task} state={state} kind="schedule" id={schedNoteId} />}
         </div>
       )}
@@ -285,21 +388,65 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
       {rep === 'annual' && (
         <div className="rem-field">
           <div className="rem-flabel-wrap">
-            <span className="rem-flabel">Date each year</span>
-            <span className="rem-flabel-sub">shows on the Today tab <strong>every {fullMonthNames[(task.month || 1) - 1]} {task.day || 1}</strong></span>
+            <span className="rem-flabel">Frequency</span>
+            <span className="rem-flabel-sub set-sub-fade" key={task.interval || 1}>shows on the Today page <strong>every {(task.interval || 1) > 1 ? `${task.interval} years` : 'year'}</strong></span>
           </div>
           <div className="rem-inline">
-            <select className="np-input rem-sel" aria-label="Month" aria-describedby={schedNoteId} value={task.month || 1}
-                    onChange={(e) => set({ month: parseInt(e.target.value) })}>
-              {monthNames.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
-            </select>
-            <select className="np-input rem-sel" aria-label="Day" aria-describedby={schedNoteId} value={task.day || 1}
-                    onChange={(e) => set({ day: parseInt(e.target.value) })}>
-              {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
-                <option key={d} value={d}>{d}</option>
-              ))}
-            </select>
+            <span>Every</span>
+            <input className="np-input rem-num" type="number" min="1" max="50"
+                   aria-label="Interval in years" aria-describedby={schedNoteId}
+                   value={task.interval || 1}
+                   onChange={(e) => set({ interval: Math.max(1, parseInt(e.target.value) || 1) })} />
+            <span>{(task.interval || 1) === 1 ? 'year' : 'years'}</span>
           </div>
+          <Collapse open={(task.interval || 1) > 1}><div className="cad-anchor-fade">{anchorHint}</div></Collapse>
+        </div>
+      )}
+      {rep === 'annual' && (
+        <div className="rem-field">
+          <div className="rem-flabel-wrap">
+            <span className="rem-flabel">Date each year</span>
+            <span className="rem-flabel-sub set-sub-fade" key={task.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date'}>
+              shows on the Today page <strong>{task.dateMode === 'nthWeekday'
+                ? <>the {ordinalLabel(task.nthOrdinal || 1)} {dayFull[task.nthWeekday ?? 0]} of {fullMonthNames[(task.month || 1) - 1]}</>
+                : <>{fullMonthNames[(task.month || 1) - 1]} {task.day || 1}</>}</strong>
+            </span>
+          </div>
+          <Segmented options={DATE_MODE_OPTS} value={task.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date'}
+                     onChange={(key) => set({ dateMode: key })} ariaLabel="Day selection" describedBy={schedNoteId} />
+          {task.dateMode === 'nthWeekday' ? (
+            <div className="rem-inline">
+              <select className="np-input rem-sel" aria-label="Week of the month" aria-describedby={schedNoteId} value={task.nthOrdinal || 1}
+                      onChange={(e) => set({ nthOrdinal: parseInt(e.target.value) })}>
+                {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{ordinalLabel(n)}</option>)}
+              </select>
+              <select className="np-input rem-sel" aria-label="Weekday" aria-describedby={schedNoteId} value={task.nthWeekday ?? 0}
+                      onChange={(e) => set({ nthWeekday: parseInt(e.target.value) })}>
+                {dayFull.map((d, i) => <option key={d} value={i}>{d}</option>)}
+              </select>
+              <span>of</span>
+              <select className="np-input rem-sel" aria-label="Month" aria-describedby={schedNoteId} value={task.month || 1}
+                      onChange={(e) => set({ month: parseInt(e.target.value) })}>
+                {monthNames.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
+              </select>
+            </div>
+          ) : (
+            <div className="rem-inline">
+              <select className="np-input rem-sel" aria-label="Month" aria-describedby={schedNoteId} value={task.month || 1}
+                      onChange={(e) => set({ month: parseInt(e.target.value) })}>
+                {monthNames.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
+              </select>
+              <select className="np-input rem-sel" aria-label="Day" aria-describedby={schedNoteId} value={task.day || 1}
+                      onChange={(e) => set({ day: parseInt(e.target.value) })}>
+                {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
+            </div>
+          )}
+          {task.dateMode === 'nthWeekday' && (task.nthOrdinal || 1) === 5 && (
+            <p className="rem-hint">In years where that month has no 5th, this falls on the 4th instead.</p>
+          )}
         {state && <RemVisibilityNote task={task} state={state} kind="schedule" id={schedNoteId} />}
         </div>
       )}
@@ -315,10 +462,19 @@ function ReminderEditor({ task, actions, animateExtra = false, state }) {
           <span className="rem-flabel-sub set-sub-fade" key={task.repeat}>{(REPEAT_OPTS.find((o) => o.key === task.repeat) || {}).sub}</span>
         </div>
         <Segmented options={REPEAT_OPTS} value={task.repeat}
-                   onChange={(key) => set({ repeat: key })} ariaLabel="Repeat" describedBy={setNoteId} />
+                   // `interval` is shared across interval/weekly/monthly/annual
+                   // (each is its own "every N ___"), so switching kind resets
+                   // it to that kind's own sensible default instead of
+                   // carrying over a number that meant something else a
+                   // moment ago (e.g. "every 5" days becoming "every 5"
+                   // months unintentionally).
+                   onChange={(key) => set({ repeat: key, interval: key === 'interval' ? 2 : 1 })} ariaLabel="Repeat" describedBy={setNoteId} />
         {state && <RemVisibilityNote task={task} state={state} kind="settings" id={setNoteId} />}
       </div>
 
+      {animateExtra
+        ? <Collapse open={task.repeat === 'once'}><div className="rem-extra-fade">{onceFields}</div></Collapse>
+        : (task.repeat === 'once' && onceFields)}
       {animateExtra
         ? <Collapse open={task.repeat !== 'once'}><div className="rem-extra-fade" key={task.repeat === 'once' ? lastExtraRepeat.current : task.repeat}>{extraFields}</div></Collapse>
         : extraFields}
@@ -336,21 +492,26 @@ function ordinalLabel(n) {
 // the schedule editor above intact (so a tall editor doesn't collapse). Cancel
 // reverts to a snapshot taken when the editor opened; Done keeps the changes.
 // Kept in one place so both tabs stay exact copies.
-function ReminderEditFoot({ task, onDelete, onDone, onCancel, isNew }) {
+const ReminderEditFoot = React.forwardRef(function ReminderEditFoot({ task, onDelete, onDone, onCancel, isNew }, ref) {
   // Snapshot the task as it was when the editor opened (this footer mounts with
   // the editor), so Cancel can restore it after live edits.
   const orig = React.useRef(task);
   const [confirm, setConfirm] = React.useState(false);
   // Set the instant Save/Cancel/Delete explicitly runs, so the implicit-close
   // effect below doesn't ALSO fire for an action that already handled itself.
+  // A caller with its OWN close affordance outside this component (e.g. the
+  // row's own collapse chevron, which sits in the row header above where
+  // this footer renders) can call the exposed `keep()` first, so that
+  // affordance reads as "done, keep this" rather than an implicit close.
   const doneRef = React.useRef(false);
+  React.useImperativeHandle(ref, () => ({ keep: () => { doneRef.current = true; } }));
   const cancelNow = () => { doneRef.current = true; onCancel(orig.current); };
   const doneNow = () => { doneRef.current = true; onDone(); };
   const deleteNow = () => { doneRef.current = true; onDelete(); };
   // A brand-new, not-yet-kept reminder (isNew) should be discarded if its
   // editor closes ANY other way — switching to a different reminder, the
   // Items list collapsing, navigating to another tab, ... — not just an
-  // explicit Cancel. Mirrors the Today tab's "provisional until Save" editors.
+  // explicit Cancel. Mirrors the Today page's "provisional until Save" editors.
   React.useEffect(() => () => { if (isNew && !doneRef.current) onCancel(orig.current); }, []);
   // Escape = Cancel (discards live edits), except while the delete confirm is up,
   // where it just backs out of the confirm.
@@ -375,7 +536,7 @@ function ReminderEditFoot({ task, onDelete, onDone, onCancel, isNew }) {
       </div>
     </div>
   );
-}
+});
 
 // Today inline editor for a SAVED reminder. Edits a LOCAL draft (never the store)
 // so changing the schedule — e.g. moving a weekly reminder off today — doesn't
@@ -747,13 +908,13 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
           </div>
           {!editMode && (
             tutorialsInProgress ? (
-              <InfoTip className="rem-add-btn is-tour-disabled" action="Add a reminder"
+              <InfoTip className="rem-add-btn is-tour-disabled" action="Add a Reminder"
                        label="This button is disabled until all tutorials are completed.">
                 <Icon name="plus" size={16} />
               </InfoTip>
             ) : (
               <button className="rem-add-btn" onClick={() => { adding ? cancelAdd() : startAdd(); }}
-                      aria-label="Add a reminder" title="Add a reminder">
+                      aria-label="Add a Reminder" title="Add a Reminder">
                 <Icon name="plus" size={16} />
               </button>
             )
@@ -775,7 +936,7 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
           <div className={`rem-quickadd-wrap ${addClosing ? 'is-closing' : ''}`}>
             <div className="rem-quickadd">
               <input ref={inputRef} className="np-input" type="text" value={draftTask.name} maxLength={60}
-                     placeholder="Add a reminder, e.g. Call the dentist" aria-label="Reminder name"
+                     placeholder="Add a reminder, e.g. Take out the trash" aria-label="Reminder name"
                      onChange={(e) => setDraftTask((d) => ({ ...d, name: e.target.value }))}
                      onKeyDown={(e) => { if (e.key === 'Enter') commit(); }} />
             </div>
@@ -883,15 +1044,15 @@ const remPairSub = (verb, neitherConj = 'and') => (once, recur) =>
   : <><strong>neither</strong> one-time {neitherConj} recurring items will {verb}</>;
 
 const REMINDER_OPT_DEFS = [
-  { key: 'streak', label: 'Counts toward day streak', dyn: remPairSub('trigger the day streak in the Today tab', 'nor') },
-  { key: 'ring', label: 'Include in completion ring', dyn: remPairSub('trigger the completion ring in the Today tab', 'nor') },
-  { key: 'excludeWeekends', label: 'Exclude on weekends', dyn: remPairSub('show in the Today tab on weekends', 'nor') },
-  { key: 'excludeHolidays', label: 'Exclude on holidays', dyn: remPairSub('show in the Today tab on holidays', 'nor') },
+  { key: 'streak', label: 'Counts toward day streak', dyn: remPairSub('trigger the day streak in the Today page', 'nor') },
+  { key: 'ring', label: 'Include in completion ring', dyn: remPairSub('trigger the completion ring in the Today page', 'nor') },
+  { key: 'excludeWeekends', label: 'Exclude on weekends', dyn: remPairSub('show in the Today page on weekends', 'nor') },
+  { key: 'excludeHolidays', label: 'Exclude on holidays', dyn: remPairSub('show in the Today page on holidays', 'nor') },
   { key: 'stats', label: 'Include in Stats', dyn: (once, recur) =>
-    once && recur ? <><strong>both</strong> one-time and recurring item statistics will be shown in the Stats tab</>
-    : once ? <><strong>only</strong> one-time item statistics will be shown in the Stats tab</>
-    : recur ? <><strong>only</strong> recurring item statistics will be shown in the Stats tab</>
-    : <><strong>neither</strong> one-time nor recurring item statistics will be shown in the Stats tab</> },
+    once && recur ? <><strong>both</strong> one-time and recurring item statistics will be shown in the Stats page</>
+    : once ? <><strong>only</strong> one-time item statistics will be shown in the Stats page</>
+    : recur ? <><strong>only</strong> recurring item statistics will be shown in the Stats page</>
+    : <><strong>neither</strong> one-time nor recurring item statistics will be shown in the Stats page</> },
 ];
 const REMINDER_TYPE_DEFS = [
   { type: 'once', label: 'One-time', icon: 'pin', blurb: 'A single to-do that sits on Today until done.' },
@@ -942,6 +1103,30 @@ function ReminderControls({ opts, actions, onCollapse }) {
   );
 }
 
+// Item-list sort options for the Data tab's Reminders section — extrapolated
+// from the same vocabulary as the Data tab's own section/item sorts (see
+// compareSortEntries in ui.jsx). Reminders have no per-item Active/Inactive
+// concept (no enabled/disabled toggle — only a schedule and a today's-
+// completion state, which isn't the same thing) and no Group, so only Name
+// and Type (One-time vs Recurring) apply besides Date — the reminder's next
+// eligible occurrence (TASKS.nextEligible), same date a Skip confirm already
+// computes elsewhere in this file. Labeled Soonest/Latest rather than "Low
+// to High"/"High to Low" like the numeric sorts elsewhere, matching the
+// app's own wording for date proximity (e.g. the ease editor's Soonest/
+// Latest). A reminder with no next occurrence at all (rare — effectively
+// stale, normally purged before it'd ever be seen here) is a genuinely
+// missing value, not an irrelevant field the way Range/Odds/Boost are for a
+// conditional whose mode doesn't use them, so it uses compareSortEntries'
+// ordinary top/bottom-by-direction N/A placement rather than always-last.
+const REMINDER_ITEM_SORT_OPTIONS = [
+  { key: 'name-asc', label: 'Name (A–Z)' },
+  { key: 'name-desc', label: 'Name (Z–A)' },
+  { key: 'type-asc', label: 'Type (A–Z)' },
+  { key: 'type-desc', label: 'Type (Z–A)' },
+  { key: 'date-asc', label: 'Soonest' },
+  { key: 'date-desc', label: 'Latest' },
+];
+
 function ReminderManager({ state, actions, hidden }) {
   const [openId, setOpenId] = React.useState(null);
   // Tracks a reminder that was just created via “New reminder” and hasn't been
@@ -950,8 +1135,76 @@ function ReminderManager({ state, actions, hidden }) {
   const justAddedRef = React.useRef(null);
   // Id of a just-inserted reminder row, so it plays the slide-in entrance once.
   const [insertId, setInsertId] = React.useState(null);
+  // The currently-open reminder's ReminderEditFoot instance, so the row's own
+  // collapse chevron (outside the footer, in the row header) can call
+  // .keep() before closing — otherwise a brand-new reminder gets silently
+  // discarded, the same implicit-close reasoning tab-data.jsx's picker items
+  // fix documents on openEditorRef there.
+  const openEditorRef = React.useRef(null);
+  // Frozen render-position for whichever reminder is open — see
+  // freezeEditedRow (tab-data.jsx's picker items use the same helper).
+  const frozenTaskIndexRef = React.useRef(null);
+  // Replays the insert entrance animation once a reminder's editor closes, so
+  // it settles into its (possibly new, now-unfrozen) sorted position with the
+  // same visual treatment a freshly-created row gets, instead of silently
+  // snapping there. Fires on ANY close (Done, Cancel-revert, delete, or the
+  // row's own collapse chevron) since they all just change openId.
+  const prevOpenIdRef = React.useRef(null);
+  React.useEffect(() => {
+    const prev = prevOpenIdRef.current;
+    if (prev != null && prev !== openId) setInsertId(prev);
+    prevOpenIdRef.current = openId;
+  }, [openId]);
+  // DOM node for whichever reminder's row is open, so a brand-new
+  // reminder's "+ New reminder" click can scroll the resulting form into
+  // view. It opens pinned right below the sort control (freezeEditedRow)
+  // rather than right below the Add button itself, so on a short viewport
+  // it's no longer guaranteed to already be on-screen the way a plain
+  // top-of-list append used to be.
+  const openRowRef = React.useRef(null);
+  React.useEffect(() => {
+    if (!openId || justAddedRef.current !== openId || !openRowRef.current) return;
+    const el = openRowRef.current;
+    if (reduceMotion()) { el.scrollIntoView({ behavior: 'auto', block: 'nearest' }); return; }
+    // Wait for the Collapse open animation (.26s, see .collapse in
+    // styles2.css) to finish growing the editor below the row header before
+    // scrolling.
+    const t = setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 300);
+    return () => clearTimeout(t);
+  }, [openId]);
+  // The name input focuses itself via a ref callback below instead of the
+  // plain `autoFocus` attribute — see tab-data.jsx's picker items' own
+  // focusedInputRef for why (suppresses the browser's own instant/
+  // unsmoothed focus-scroll so it doesn't fight the deliberate smooth scroll
+  // above).
+  const focusedInputRef = React.useRef(null);
   const tasks = (state.tasks || []).filter((t) => !t.hidden);
   const opts = TASKS.normalizeOpts(state.reminderOpts);
+  const itemSort = (state.ui && state.ui.dataSort && state.ui.dataSort.reminders) || 'name-asc';
+  // Each task's next-occurrence date, computed once up front rather than
+  // inside the comparator below — TASKS.nextEligible can walk up to ~3 years
+  // of days per call, and the comparator runs it on every comparison
+  // otherwise.
+  const taskDates = new Map(tasks.map((t) => {
+    const next = TASKS.nextEligible(t, state.reminderOpts, state.holidays);
+    return [t.id, next ? next.getTime() : null];
+  }));
+  const sortedTasks = [...tasks].sort((a, b) => compareSortEntries(
+    { name: a.name, type: TASKS.isRecurring(a) ? 'Recurring' : 'One-time', group: null, count: null, date: taskDates.get(a.id), isActive: null },
+    { name: b.name, type: TASKS.isRecurring(b) ? 'Recurring' : 'One-time', group: null, count: null, date: taskDates.get(b.id), isActive: null },
+    itemSort,
+  ));
+  const displayTasks = freezeEditedRow(sortedTasks, openId, justAddedRef.current, frozenTaskIndexRef);
+  // Shared by the row's own collapse chevron AND ReminderEditFoot's Save —
+  // both mean "keep this, I'm done", so both need the exact same cleanup
+  // (clear the new-item flag, close only if we're still the open row).
+  // Keeping this in one place means the chevron can't drift out of sync
+  // with what Save already does.
+  const keepAndCloseTask = (id) => {
+    openEditorRef.current?.keep();
+    if (justAddedRef.current === id) justAddedRef.current = null;
+    setOpenId((cur) => cur === id ? null : cur);
+  };
   // Main section collapse persists (like the pickers) so it survives tab
   // switches. Reserved key '__reminders_main'; defaults COLLAPSED, so absent =
   // collapsed and explicit false = expanded.
@@ -984,8 +1237,18 @@ function ReminderManager({ state, actions, hidden }) {
       <header className="cat-h">
         <button type="button" className="cat-h-l" aria-expanded={open} onClick={setOpen}>
           <span className={`chev ${open ? 'is-open' : ''}`}><Icon name="chev" size={14} /></span>
-          <h2 className="cat-name">Reminders</h2>
-          <span className="cat-count">{tasks.length}</span>
+          <span className="cat-h-main">
+            <h2 className="cat-name">Reminders</h2>
+            {/* Reminders have no active/inactive concept yet (unlike pickers'
+                eligible-of-total and Conditionals' active-of-total), so both
+                numbers are the same for now — kept in this "N of N" shape
+                for visual consistency and in case that changes later. */}
+            <span className="cat-count">
+              <span className="cat-count-n">{tasks.length}</span>
+              <span className="cat-count-of">of</span>
+              <span className="cat-count-n">{tasks.length}</span>
+            </span>
+          </span>
         </button>
       </header>
       <Collapse open={open}>
@@ -1032,11 +1295,17 @@ function ReminderManager({ state, actions, hidden }) {
               {tasks.length === 0 ? (
                 <div className="rd-empty">No reminders yet. Add one to see it on Today.</div>
               ) : (
-                tasks.map((t) => {
+                <>
+                  {tasks.length > 1 && (
+                    <SortSelect id="rem-item-sort" label="Sort" options={REMINDER_ITEM_SORT_OPTIONS}
+                                value={itemSort} onChange={(key) => actions.setDataSort('reminders', key)} />
+                  )}
+                  {displayTasks.map((t) => {
               const cardOpen = openId === t.id;
               const once = t.repeat === 'once';
               return (
-                <div key={t.id} className={`rd-item ${cardOpen ? 'is-editing' : ''} ${insertId === t.id ? 'rd-item--insert' : ''}`}
+                <div key={t.id} ref={cardOpen ? openRowRef : undefined}
+                     className={`rd-item ${cardOpen ? 'is-editing' : ''} ${insertId === t.id ? 'rd-item--insert' : ''}`}
                      onAnimationEnd={() => { if (insertId === t.id) setInsertId(null); }}>
                   {cardOpen ? (
                     // Plain div, not a button, while editing — a <button> can't
@@ -1054,13 +1323,14 @@ function ReminderManager({ state, actions, hidden }) {
                       </span>
                       <span className="rd-main">
                         <input className="rd-name-input" type="text" value={t.name} maxLength={60}
-                               placeholder="Reminder name" aria-label="Reminder name" autoFocus
+                               placeholder="Reminder name" aria-label="Reminder name"
+                               ref={(el) => { if (el && focusedInputRef.current !== el) { el.focus({ preventScroll: true }); focusedInputRef.current = el; } }}
                                onChange={(e) => actions.updateTask(t.id, { name: e.target.value })}
                                onBlur={(e) => { const n = e.target.value.trim(); if (n) actions.renameTask(t.id, n); }}
                                onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }} />
                       </span>
                       <button type="button" className="rd-chev chev is-open" aria-label="Collapse"
-                              onClick={() => setOpenId(null)}>
+                              onClick={() => keepAndCloseTask(t.id)}>
                         <Icon name="chev" size={16} />
                       </button>
                     </div>
@@ -1083,7 +1353,8 @@ function ReminderManager({ state, actions, hidden }) {
                     <div className="rd-edit">
                       <div className="rem-inline-editor">
                         <ReminderEditor task={t} actions={actions} animateExtra state={state} />
-                        <ReminderEditFoot task={t} isNew={justAddedRef.current === t.id}
+                        <ReminderEditFoot ref={cardOpen ? openEditorRef : undefined}
+                          task={t} isNew={justAddedRef.current === t.id}
                           onDelete={() => {
                             if (justAddedRef.current === t.id) justAddedRef.current = null;
                             const rid = t.id;
@@ -1108,17 +1379,15 @@ function ReminderManager({ state, actions, hidden }) {
                               setOpenId((cur) => cur === t.id ? null : cur);
                             }
                           }}
-                          onDone={() => {
-                            if (justAddedRef.current === t.id) justAddedRef.current = null;
-                            setOpenId((cur) => cur === t.id ? null : cur);
-                          }} />
+                          onDone={() => keepAndCloseTask(t.id)} />
                       </div>
                     </div>
                   </Collapse>
                 </div>
               );
-            })
-          )}
+                  })}
+                </>
+              )}
             </React.Fragment>
           </Collapse>
         </div>

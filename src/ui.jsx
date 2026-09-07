@@ -64,11 +64,15 @@ const Card = ({ children, padded = true, className = '', ...rest }) => (
 // a fade+slide on the inner content. Crucially it UNMOUNTS children after the
 // close animation and remounts them on open — which preserves the snapshot-on-
 // open behaviour that the Controls panels and item editors rely on for Cancel.
-function Collapse({ open, children, className = '' }) {
+function Collapse({ open, children, className = '', instant = false }) {
   const [render, setRender] = React.useState(open);   // is the child mounted?
-  const [expanded, setExpanded] = React.useState(false); // drives 0fr/1fr — starts
-  // collapsed even when open, so a fresh mount-while-open still animates open
-  // (the effect's rAF flips it) instead of snapping to the expanded state.
+  // Drives 0fr/1fr — starts collapsed even when open, so a fresh mount-while-
+  // open still animates open (the effect's rAF flips it) instead of snapping
+  // to the expanded state. `instant` opts a specific mount out of that (e.g. a
+  // freshly-created draft picker's Controls section, forced open the instant
+  // it's created rather than by any click a user made on its own header —
+  // animating that reveal just reads as the button having lagged).
+  const [expanded, setExpanded] = React.useState(instant && open);
   React.useEffect(() => {
     if (open) { setRender(true); return; }   // mount first; expand handled below
     setExpanded(false);   // animate closed; unmount happens on transitionend
@@ -79,9 +83,10 @@ function Collapse({ open, children, className = '' }) {
   // Flip to expanded only AFTER the child is mounted (render true) and committed,
   // so the collapsed 0fr state has painted first — otherwise a fresh open-from-
   // unmounted races the mount paint and snaps open. Depends on `render` so it
-  // re-runs on the mount commit, not just the open change.
+  // re-runs on the mount commit, not just the open change. Skipped when already
+  // expanded (the `instant` mount case above) — nothing to animate.
   React.useEffect(() => {
-    if (!open || !render) return;
+    if (!open || !render || expanded) return;
     const r1 = requestAnimationFrame(() => {
       const r2 = requestAnimationFrame(() => setExpanded(true));
       return () => cancelAnimationFrame(r2);
@@ -481,4 +486,137 @@ function FillButton({ label, onClick, disabled }) {
   );
 }
 
-export { Icon, Btn, Card, Collapse, Pill, ProgressBar, NumStepper, InfoTip, WeekdayChips, BoostReset, FillButton, fmtDate, fmtDateLong, fmtTime };
+// Shared sort vocabulary for the Data tab's section list (Conditionals /
+// Reminders / each picker card) and, per section, its own item list (picker
+// pool items, conditionals, reminders) — each list builds its own array of
+// { name, type, group, count, range, odds, boost, date, isActive } rows
+// (fields that don't apply to a given row are `null`) and sorts them with
+// this one comparator, keyed by e.g. 'name-asc' or 'count-desc'.
+// `group`/`date`/`isActive` are N/A (null) for anything that doesn't have a
+// meaningful single value for that field (the Conditionals/Reminders section
+// as a whole, an item type with no such concept, or — for `date` — a
+// reminder with no next occurrence at all) — those sort to the top for the
+// forward direction and the bottom for the reverse, rather than being forced
+// into a fake value. `range`/`odds`/`boost` are different: null on a row
+// means the field is irrelevant to that row's own mode (mixed into the same
+// list as rows it does apply to — e.g. Odds/Boost only mean something for a
+// weighted/dynamic conditional, Range only for an ease-up/ease-down one), so
+// those always sort to the bottom in EITHER direction, rather than flipping
+// to the top on a reverse sort the way a genuinely missing value would. Ties
+// always fall back to name (A–Z); a reverse sort only flips the primary
+// field's comparison, never that tie-break.
+function compareSortEntries(a, b, sortKey) {
+  const [field, dir] = sortKey.split('-');
+  const reverse = dir === 'desc';
+  const byName = () => a.name.localeCompare(b.name);
+  // Returns a real comparison result if either side is N/A, or null to mean
+  // "both are real values — caller does the actual field comparison".
+  const withNA = (av, bv) => {
+    const aNA = av == null, bNA = bv == null;
+    if (aNA && bNA) return byName();
+    if (aNA) return reverse ? 1 : -1;
+    if (bNA) return reverse ? -1 : 1;
+    return null;
+  };
+  // Same idea, but for fields that are irrelevant to a row rather than a
+  // missing value on an otherwise-comparable row — always last, regardless
+  // of sort direction (e.g. Range for a non-ease conditional).
+  const withNAAlwaysLast = (av, bv) => {
+    const aNA = av == null, bNA = bv == null;
+    if (aNA && bNA) return byName();
+    if (aNA) return 1;
+    if (bNA) return -1;
+    return null;
+  };
+  // A numeric field using the "irrelevant, not missing" N/A rule above.
+  const numericAlwaysLast = (av, bv) => {
+    const na = withNAAlwaysLast(av, bv);
+    if (na != null) return na;
+    const primary = av - bv;
+    return (reverse ? -primary : primary) || byName();
+  };
+  switch (field) {
+    case 'name':
+      return reverse ? -byName() : byName();
+    case 'type': {
+      const primary = a.type.localeCompare(b.type);
+      return (reverse ? -primary : primary) || byName();
+    }
+    case 'group': {
+      const na = withNA(a.group, b.group);
+      if (na != null) return na;
+      const primary = a.group.localeCompare(b.group);
+      return (reverse ? -primary : primary) || byName();
+    }
+    case 'count': {
+      const primary = a.count - b.count;
+      return (reverse ? -primary : primary) || byName();
+    }
+    case 'date': {
+      const na = withNA(a.date, b.date);
+      if (na != null) return na;
+      const primary = a.date - b.date;
+      return (reverse ? -primary : primary) || byName();
+    }
+    case 'range':
+      return numericAlwaysLast(a.range, b.range);
+    case 'odds':
+      return numericAlwaysLast(a.odds, b.odds);
+    case 'boost':
+      return numericAlwaysLast(a.boost, b.boost);
+    case 'active': {
+      const na = withNA(a.isActive, b.isActive);
+      if (na != null) return na;
+      if (a.isActive !== b.isActive) {
+        const primary = a.isActive ? -1 : 1;
+        return reverse ? -primary : primary;
+      }
+      return byName();
+    }
+    default:
+      return byName();
+  }
+}
+
+// A small labeled <select> reused for every sort control on the Data tab —
+// the section-list sort and each section's own item-list sort.
+function SortSelect({ id, label, options, value, onChange }) {
+  return (
+    <div className="data-sort-row">
+      <label className="data-sort-lbl" htmlFor={id}>{label}</label>
+      <select id={id} className="np-input data-sort-sel" value={value}
+              onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
+      </select>
+    </div>
+  );
+}
+
+// Keeps whichever row is currently open for editing from jumping around a
+// live sort (picker items and reminders both write each keystroke straight
+// to the store, so their sort key can change mid-edit): a brand-new row
+// (still being named for the first time, id === justCreatedId) pins to the
+// very top, matching where its own "+ Add" button sits, rather than wherever
+// its still-default values would otherwise sort it; an existing row being
+// edited freezes at whatever index it already occupied when editing began,
+// instead of chasing its live-typed values through the sort in real time.
+// `frozenRef` is a plain useRef({}) owned by the caller, persisted across
+// renders for as long as openId stays the same — the caller is responsible
+// for replaying the row's entrance animation once its editor actually closes
+// (openId changes away), so it settles into its now-current live position
+// with the same visual treatment a freshly-created row already gets, rather
+// than silently snapping there.
+function freezeEditedRow(sortedList, openId, justCreatedId, frozenRef) {
+  if (openId == null) { frozenRef.current = null; return sortedList; }
+  const liveIndex = sortedList.findIndex((x) => x.id === openId);
+  if (liveIndex === -1) return sortedList;   // this list doesn't hold the open row
+  if (!frozenRef.current || frozenRef.current.id !== openId) {
+    frozenRef.current = { id: openId, index: openId === justCreatedId ? 0 : liveIndex };
+  }
+  const openRow = sortedList[liveIndex];
+  const rest = sortedList.filter((x) => x.id !== openId);
+  const index = Math.min(frozenRef.current.index, rest.length);
+  return [...rest.slice(0, index), openRow, ...rest.slice(index)];
+}
+
+export { Icon, Btn, Card, Collapse, Pill, ProgressBar, NumStepper, InfoTip, WeekdayChips, BoostReset, FillButton, fmtDate, fmtDateLong, fmtTime, compareSortEntries, SortSelect, freezeEditedRow };

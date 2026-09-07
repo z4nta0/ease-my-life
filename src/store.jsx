@@ -4,7 +4,7 @@ import { CONDITIONALS } from './conditionals.js';
 import { HOLIDAYS } from './holidays.js';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';
-import { normalizeConditionalName, normalizeGroupName, normalizePickerName } from './pickers.js';
+import { PICKERS, normalizeConditionalName, normalizeGroupName, normalizePickerName } from './pickers.js';
 import { PWA } from './pwa.js';
 import { CLEAN_STATE } from './seed.js';
 import { STORAGE } from './storage.js';
@@ -138,6 +138,35 @@ function logRow(s, { eid = null, pickerId, itemId, source, date, depletedEnd = f
 // keeps resurfacing. The staged mutation rides on the entry as `entry.pending`;
 // applying it records an `entry.revert` snapshot so unchecking restores exactly.
 //   pending = { updates:[{id,value?,weight?}], pickerPatch?, depletedEnd?, pickedId?, bumpPick? }
+
+// A direct edit to an item's value — Fill/Refill/Reset boost, all three of
+// which live on tab-today.jsx's EntryEditor and patch via updateItem — is
+// meant to win immediately; it deliberately bypasses pending staging. But
+// ease-up/dynamic pick()s stash an `updates` row for EVERY pool item on each
+// NOT-YET-DONE entry's `pending`, not just the one actually picked (see
+// pick()'s ease-up/dynamic cases in pickers.js), snapshotted from value at
+// generation time. Left alone, later completing a SIBLING entry for the same
+// picker would silently overwrite the fresh direct edit with that stale
+// snapshot via applyEntryPending — this is the actual bug (items looked like
+// they "lost" a manual Fill/Refill/Reset). Strip the touched item's own stale
+// row from every OTHER entry's pending; an item's OWN entry (entry.itemId ===
+// the touched id) is left alone on purpose — its completion is still supposed
+// to perform its designed effect (e.g. ease-up's picked item resetting to 0)
+// regardless of an interim Fill.
+function dropStalePendingUpdates(entries, itemIds) {
+  const ids = new Set(itemIds);
+  if (!ids.size) return entries;
+  let changed = false;
+  const next = entries.map((e) => {
+    if (e.done || !e.pending || !e.pending.updates || !e.pending.updates.length) return e;
+    if (ids.has(e.itemId)) return e;
+    const updates = e.pending.updates.filter((u) => !ids.has(u.id));
+    if (updates.length === e.pending.updates.length) return e;
+    changed = true;
+    return { ...e, pending: { ...e.pending, updates } };
+  });
+  return changed ? next : entries;
+}
 function applyEntryPending(s, entry) {
   const p = entry.pending;
   if (!p) return { items: s.items, pickers: s.pickers, pickLog: s.pickLog || [], revert: null };
@@ -243,7 +272,7 @@ function applyConditionalToggle(s, newEntries, toggled, nowDone) {
 //     configured-vs-observed numerator; probability cards log too).
 //   • FIRST dependent completion of an UNtriggered cycle → triggered:false
 //     (the "evaluated but didn't fire" denominator).
-// Vacationed conditionals (active:false) log nothing — no logic runs for them.
+// Inactive conditionals (active:false) log nothing — no logic runs for them.
 // Undo removes the cycle's row once the confirming completion is gone. Rows
 // denormalize name + mode so the log survives edits/deletes.
 function applyConditionalLog(s, newEntries, toggled, nowDone) {
@@ -259,7 +288,7 @@ function applyConditionalLog(s, newEntries, toggled, nowDone) {
   }
   if (!condId) return log;
   const cond = conds.find((c) => c.id === condId);
-  if (!cond || cond.active === false) return log; // vacationed → no logging
+  if (!cond || cond.active === false) return log; // inactive → no logging
   const day = isoDay();
   const existing = log.find((r) => r.condId === condId && r.date === day);
   const depDoneCount = () => newEntries.filter((e) => {
@@ -369,6 +398,30 @@ function migrate(s) {
   // without deleting the data future mini-tours will reuse.
   if (s && Array.isArray(s.tasks)) {
     s.tasks = s.tasks.map((t) => (typeof t.hidden === 'boolean' ? t : { ...t, hidden: false }));
+  }
+  // Every-N-weeks/months/years + "Nth weekday" scheduling (added later).
+  // dateMode/nthOrdinal/nthWeekday are new fields the UI reads directly, so
+  // they're backfilled explicitly.
+  if (s && Array.isArray(s.tasks)) {
+    s.tasks = s.tasks.map((t) => {
+      if (t.dateMode === 'date' || t.dateMode === 'nthWeekday') return t;
+      const now = new Date();
+      return { ...t, dateMode: 'date', nthOrdinal: t.nthOrdinal || 1, nthWeekday: t.nthWeekday ?? now.getDay() };
+    });
+  }
+  // `interval` is reused for weekly/monthly/annual's own "every N ___", but
+  // defaultTask has ALWAYS unconditionally set `interval: 2` on every new
+  // task regardless of repeat kind (a leftover default from when only the
+  // 'interval' repeat used it) — so every pre-existing weekly/monthly/annual
+  // reminder already has a real `interval: 2` sitting on it, completely
+  // unused until now. Without this reset, every one of them would silently
+  // start meaning "every 2 weeks/months/years" the moment this shipped. This
+  // must run only ONCE — after a user deliberately sets an interval via the
+  // new controls, this reset must never fire again and clobber it.
+  if (s && !s._taskIntervalReset && Array.isArray(s.tasks)) {
+    s.tasks = s.tasks.map((t) =>
+      (t.repeat === 'weekly' || t.repeat === 'monthly' || t.repeat === 'annual') ? { ...t, interval: 1 } : t);
+    s._taskIntervalReset = true;
   }
   // Per-type reminder participation options (added later). Normalize so partial
   // or absent state gets the full default switch set.
@@ -500,14 +553,14 @@ function migrate(s) {
   if (s && !Array.isArray(s.reminderLog)) s.reminderLog = [];
   // Reminder skip log (added later). Append-only history of skip actions.
   if (s && !Array.isArray(s.reminderSkipLog)) s.reminderSkipLog = [];
-  // Vacation event log (added later). Append-only on/off transitions per item so
-  // Stats can exclude days an item wasn't eligible. Empty for old state (past
-  // treated as always-eligible); the live `item.vacation` bool is current truth.
+  // Inactive-state event log (added later). Append-only on/off transitions per
+  // item so Stats can exclude days an item wasn't eligible. Empty for old state
+  // (past treated as always-eligible); the live `item.vacation` bool is current truth.
   if (s && !Array.isArray(s.vacationLog)) s.vacationLog = [];
   // Conditionals (per-day picker gates, added later). Backfill empty; ensure
   // every picker has a conditionalId slot so gating code can read it uniformly.
   if (s && !Array.isArray(s.conditionals)) s.conditionals = [];
-  // Split the old single `active` field into `active` (enabled/not-vacation) and
+  // Split the old single `active` field into `active` (enabled/not-inactive) and
   // `triggered` (currently firing). Old `active` was the trigger, so migrate it.
   if (s && Array.isArray(s.conditionals)) {
     s.conditionals = s.conditionals.map((c) => {
@@ -530,7 +583,7 @@ function migrate(s) {
   // Conditional history log (added later). Append-only; one row per conditional
   // per completed cycle. Backfill empty for old state.
   if (s && !Array.isArray(s.conditionalLog)) s.conditionalLog = [];
-  // Ease-down fair-rotation weights (added later). Older state carried arbitrary
+  // Ease Down fair-rotation weights (added later). Older state carried arbitrary
   // static per-item weights; normalize each ease-down picker to the invariant:
   // its active item sits at weight 0 (barred from immediate re-pick) and every
   // other item at weight 1, so the fair rotation starts from a clean footing.
@@ -551,6 +604,8 @@ function migrate(s) {
       // saved before this rule existed).
       if (CADENCE) np.daysOfWeek = CADENCE.enforceWeeklyDay(np);
       if (typeof np.skipHolidays !== 'boolean') np.skipHolidays = false;
+      // Avoid-duplicate-item-names flag (added later).
+      if (typeof np.avoidDuplicates !== 'boolean') np.avoidDuplicates = false;
       // Picker Cadence (added later): surfacing anchor + display unit. Backfill
       // to 'daily' (original behavior) with sensible default anchors.
       if (!CADENCE.isCadence(np.cadence)) Object.assign(np, CADENCE.normalize(np));
@@ -843,7 +898,7 @@ function useStore(opts) {
     // Add a NEW today entry for `pickerId` showing `itemId`. Multiple entries
     // per picker are allowed for other modes — the Pickers tab uses this to ADD
     // a choice; the user prunes any they don't want with each entry's own Skip
-    // button. Ease-down is the one exception: since it's a single ongoing
+    // button. Ease Down is the one exception: since it's a single ongoing
     // "active item", sending a new pick REPLACES today's existing entry for
     // that picker rather than stacking a second one.
     addTodayEntry: (pickerId, itemId, pendingArg) => setState((s) => {
@@ -871,7 +926,7 @@ function useStore(opts) {
       }
       const entry = { eid, pickerId, itemId, done: false, skipped: false, pending, revert: null };
       const row = logRow(s, { eid, pickerId, itemId, source: 'manual' });
-      // Ease-down keeps a single entry per picker — a manual push normally
+      // Ease Down keeps a single entry per picker — a manual push normally
       // replaces it. EXCEPTION: if the picker was suppressed and its conditional's
       // day-off card is showing, ADD an extra card instead (leave the day-off
       // card intact) so the override sits alongside it.
@@ -980,7 +1035,7 @@ function useStore(opts) {
         name: cond.name || 'Conditional', mode: cond.mode || 'ease-up',
         cardText: cond.cardText || 'Day off', value: cond.mode === 'ease-down' ? (cond.threshold ?? 100) : 0,
         weight: cond.weight ?? 1, oddsPct: cond.oddsPct ?? 50,
-        // `active` = enabled (not on vacation); `triggered` = currently firing.
+        // `active` = enabled (not inactive); `triggered` = currently firing.
         active: cond.active !== undefined ? cond.active : true,
         triggered: cond.triggered !== undefined ? cond.triggered : (cond.mode === 'ease-down'),
         easeMin: cond.easeMin ?? 7, easeMax: cond.easeMax ?? 14,
@@ -1050,9 +1105,10 @@ function useStore(opts) {
 
     toggleVacation: (id, kind) => setState((s) => {
       const day = isoDay();
-      // When an item that is a picker's active ease-down item goes ON vacation,
-      // abandon it: null the picker's activeItemId and recharge the item to full
-      // (an abandoned streak never reached 0, so it won't count toward Spent).
+      // When a picker's in-progress ease-down item (its activeItemId) is
+      // marked inactive, abandon it: null the picker's activeItemId and
+      // recharge the item to full (an abandoned streak never reached 0, so
+      // it won't count toward Spent).
       const abandonIfActive = (pickers, items, itemIds) => {
         let nextP = pickers, nextI = items;
         for (const itemId of itemIds) {
@@ -1096,6 +1152,9 @@ function useStore(opts) {
     updateItem: (id, patch) => setState((s) => ({
       ...s,
       items: s.items.map((it) => it.id === id ? { ...it, ...patch } : it),
+      // A direct `value` edit (Fill/Refill/Reset boost) must win over any stale
+      // pending mutation still riding a sibling entry — see dropStalePendingUpdates.
+      ...('value' in patch ? { today: { ...s.today, entries: dropStalePendingUpdates(s.today.entries, [id]) } } : {}),
     })),
 
     // Move an item to the end of the global items array (Pickers-tab add flow
@@ -1126,7 +1185,8 @@ function useStore(opts) {
       const siblings = s.items.filter((it) => it.pickerId === pickerId);
       const pk = s.pickers.find((p) => p.id === pickerId);
       const isDown = pk && pk.mode === 'ease-down';
-      // Ease-down items start fully charged and join the fairness rotation at the
+      const isEase = pk && (pk.mode === 'ease-up' || pk.mode === 'ease-down');
+      // Ease Down items start fully charged and join the fairness rotation at the
       // AVERAGE weight of existing items (excluding the weight-0 active item, so a
       // fresh streak's zero can't drag the newcomer down), rounded, floored at 1
       // so it's never a second weight-0. No peers yet → weight 1.
@@ -1142,6 +1202,13 @@ function useStore(opts) {
         id: id || ('it_' + Math.random().toString(36).slice(2, 8)),
         name: uniqueName(name, siblings.map((x) => x.name)), pickerId,
         weight, value, vacation: false, picks: 0, lastPicked: null,
+        // Stamped immediately, same reasoning as the weight average above —
+        // a new ease-mode item starts at this picker's own current average
+        // drift band. Picker-level easeMin/easeMax (set once at picker
+        // creation) is no longer read by anything — pick(), the Data tab,
+        // and the item editor all compute this same average live instead
+        // (see PICKERS.avgEase) — so this is the only place that matters.
+        ...(isEase ? PICKERS.avgEase(siblings, pickerId) : {}),
       };
       return { ...s, items: [it, ...s.items] };
     }),
@@ -1160,7 +1227,7 @@ function useStore(opts) {
     // Keeping the id alive is what makes it "the same picker" rather than a
     // renamed-on-collision duplicate — Stats history/pick log/daily
     // generator membership all keep pointing at it.
-    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, createdFromSample, replaceId, hidden = false }) => {
+    addPicker: ({ id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, avoidDuplicates = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday, createdFromSample, replaceId, hidden = false }) => {
       // First picker = the first data worth protecting from eviction. Ask the
       // browser for persistent storage now rather than on a cold first load,
       // where a denial would be sticky for the session.
@@ -1178,7 +1245,7 @@ function useStore(opts) {
       const newItems = (items || []).map((it) => ({
         id: it.id || ('it_' + Math.random().toString(36).slice(2, 8)),
         name: it.name, pickerId: pid,
-        // Ease-down: every item starts at fairness-weight 1 (system-managed), so
+        // Ease Down: every item starts at fairness-weight 1 (system-managed), so
         // the first pick is uniform; user-supplied weights don't apply to it.
         weight: isDown ? 1 : (it.weight || 1),
         // Honor a value the create form already set (e.g. Fill/Refill charging an
@@ -1206,18 +1273,22 @@ function useStore(opts) {
         // Daily-generator schedule: which weekdays it may run on, and whether
         // it sits out public holidays.
         daysOfWeek: CADENCE.enforceWeeklyDay({
-          ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay }),
+          ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday }),
           daysOfWeek: Array.isArray(daysOfWeek) && daysOfWeek.length ? daysOfWeek : [0, 1, 2, 3, 4, 5, 6],
         }),
         skipHolidays: !!skipHolidays,
+        // Excludes an item from this picker's pool for the day if its name
+        // (case-insensitive) is already present elsewhere on today's list —
+        // see pickers.js's `pick()` for how this is applied.
+        avoidDuplicates: !!avoidDuplicates,
         // Picker Cadence: surfacing anchor + display unit (normalized/defaulted).
-        ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay }),
+        ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday }),
         // Optional conditional gate (existing id, or the freshly-made one).
         conditionalId: madeCond ? madeCond.id : (conditionalId || null),
         // Defaults false for every normal caller; tab-picker.jsx passes true
         // while the mini-tour checklist is up (mirrors reminders.jsx's own
         // startAdd) so a picker created during onboarding — whether by a
-        // tutorial or just the user clicking the real "+ Add new picker"
+        // tutorial or just the user clicking the real "+ Add New Picker"
         // button themselves — stays out of the real list alongside the
         // still-open launcher cards, revealed at the closing Generate step
         // (see tab-today.jsx's generateItemResolved effect).
@@ -1235,7 +1306,7 @@ function useStore(opts) {
         // they're invisible reference data the user can't see or tell apart
         // from, so they shouldn't cost a real picker an ugly " (2)" suffix
         // for a collision with something the user doesn't know exists (seen
-        // concretely: the Picker mini-tour's own "Create picker" step
+        // concretely: the Picker mini-tour's own "Create Picker" step
         // recreates a sample by name, e.g. "Daily Chores"). Excludes itself
         // too, so a replaceId update keeping the same name never collides
         // with its own prior name.
@@ -1279,6 +1350,76 @@ function useStore(opts) {
       });
       return pid;
     },
+
+    // Commits an edit made via the Pickers page's "Edit" button, which reuses
+    // NewPickerForm's Details step (items aren't touched by this flow — those
+    // are edited via the Data tab or the live Pickers-tab pool instead).
+    // Mirrors addPicker's own field normalization (name dedup, cadence/days,
+    // conditional attach) but as an in-place UPDATE, and — the one thing this
+    // flow can change that Data tab's own mode radio doesn't attempt to
+    // reconcile — resets every one of this picker's items to fresh defaults
+    // for the NEW mode whenever mode actually changes, since an item's
+    // weight/value/easeMin/easeMax from the OLD mode has no meaningful
+    // translation to the new one (e.g. a Weighted item's weight doesn't mean
+    // anything as an Ease Up drift band). Deliberately resets rather than
+    // tries to preserve old values — the user can revisit the item list
+    // after saving to tune them for the new mode.
+    commitPickerEdit: (pickerId, { name, group, mode, includeInDaily, daysOfWeek, skipHolidays, avoidDuplicates, conditionalId, newConditional, cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday }) => setState((s) => {
+      const pk = s.pickers.find((p) => p.id === pickerId);
+      if (!pk) return s;
+      const modeChanged = mode !== pk.mode;
+      const finalName = uniqueName(
+        normalizePickerName(name) || name,
+        s.pickers.filter((p) => !p.hidden && p.id !== pickerId).map((p) => p.name),
+      );
+      // A brand-new inline conditional gets a fresh id here so we can attach it —
+      // same shape as addPicker's own madeCond.
+      const madeCond = newConditional ? {
+        id: 'cnd_' + Math.random().toString(36).slice(2, 8),
+        name: normalizeConditionalName(newConditional.name) || newConditional.name || 'Conditional', mode: newConditional.mode || 'random',
+        cardText: newConditional.cardText || 'Day off',
+        value: newConditional.mode === 'ease-down' ? (newConditional.threshold ?? 100) : (newConditional.value ?? 0),
+        weight: newConditional.weight ?? 1, oddsPct: newConditional.oddsPct ?? 50,
+        active: newConditional.active !== undefined ? newConditional.active : true,
+        triggered: newConditional.triggered !== undefined ? newConditional.triggered : (newConditional.mode === 'ease-down'),
+        easeMin: newConditional.easeMin ?? 7, easeMax: newConditional.easeMax ?? 14,
+        threshold: newConditional.threshold ?? 100, chargedToday: false,
+      } : null;
+      const finalPicker = {
+        ...pk, name: finalName, group, mode,
+        daysOfWeek: CADENCE.enforceWeeklyDay({
+          ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday }),
+          daysOfWeek: Array.isArray(daysOfWeek) && daysOfWeek.length ? daysOfWeek : [0, 1, 2, 3, 4, 5, 6],
+        }),
+        skipHolidays: !!skipHolidays,
+        avoidDuplicates: !!avoidDuplicates,
+        ...CADENCE.normalize({ cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday }),
+        // Existing id, a freshly-made one, or explicitly cleared (null) —
+        // unlike addPicker's create-only flow, this can also DETACH a
+        // conditional the picker already had, so there's no bare default to
+        // fall back on here.
+        conditionalId: madeCond ? madeCond.id : (conditionalId || null),
+      };
+      const threshold = pk.threshold ?? 100;
+      const modeDefaults = mode === 'ease-down'
+        ? { weight: 1, value: threshold, easeMin: PICKERS.DEFAULT_EASE.easeMin, easeMax: PICKERS.DEFAULT_EASE.easeMax }
+        : mode === 'ease-up'
+        ? { weight: 1, value: 0, easeMin: PICKERS.DEFAULT_EASE.easeMin, easeMax: PICKERS.DEFAULT_EASE.easeMax }
+        : { weight: 1, value: 0 };
+      const items = modeChanged
+        ? s.items.map((it) => it.pickerId === pickerId ? { ...it, ...modeDefaults } : it)
+        : s.items;
+      const pickerIds = includeInDaily
+        ? (s.daily.pickerIds.includes(pickerId) ? s.daily.pickerIds : [...s.daily.pickerIds, pickerId])
+        : s.daily.pickerIds.filter((x) => x !== pickerId);
+      return {
+        ...s,
+        items,
+        pickers: s.pickers.map((p) => p.id === pickerId ? finalPicker : p),
+        conditionals: madeCond ? [...(s.conditionals || []), madeCond] : (s.conditionals || []),
+        daily: { ...s.daily, pickerIds },
+      };
+    }),
 
     // Merges precomputed, already-hydrated history rows into state — used
     // only by the Welcome Tour's onboarding seeding, to backfill Stats for
@@ -1327,11 +1468,11 @@ function useStore(opts) {
       const threshold = p.threshold ?? 100;
       return {
         ...s,
-        // Fill RAISES to the threshold; it must never pull a value down. Ease-up
+        // Fill RAISES to the threshold; it must never pull a value down. Ease Up
         // items keep charging past the threshold while they wait, and that
         // overshoot is what orders them — highest value is picked first, and
         // re-roll cycles highest→lowest. Assigning the threshold flat-out erased
-        // that ordering and reset every waiting item to a tie. (Ease-down values
+        // that ordering and reset every waiting item to a tie. (Ease Down values
         // only ever decay from the threshold, so max() is a no-op there.)
         items: s.items.map((it) =>
           it.pickerId === pickerId ? { ...it, value: Math.max(it.value ?? 0, threshold) } : it),
@@ -1657,6 +1798,13 @@ function useStore(opts) {
       const next = { ...cur, [id]: !now };
       return { ...s, ui: { ...(s.ui || {}), controlsCollapsed: next } };
     }),
+
+    // Persisted sort preference for the Data tab. `scope` is 'sections' (the
+    // top-level Conditionals/Reminders/picker card order) or a picker id /
+    // 'conditionals' / 'reminders' (that section's own item-list order).
+    setDataSort: (scope, key) => setState((s) => ({
+      ...s, ui: { ...(s.ui || {}), dataSort: { ...((s.ui && s.ui.dataSort) || {}), [scope]: key } },
+    })),
   }), []);
 
   return [state, actions];

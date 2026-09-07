@@ -86,6 +86,17 @@
 .picker-tabs.at-start { --fade-l: 0px; }
 .picker-tabs.at-end   { --fade-r: 0px; }
 .picker-tabs::-webkit-scrollbar { display: none; }
+/* Firefox specifically clips a sliver off the bottom edge of every card in
+   this scrollable row (the SHOW cards on the Pickers/Stats/Data pages all
+   share this class) — its overflow-x: auto rounds the scroll container's
+   content-box height down where Chromium/WebKit don't, cutting into the
+   last card's own bottom border/shadow. @supports (-moz-appearance: none)
+   is a standard Firefox-only feature-detect (there's no vendor-neutral way
+   to scope CSS to one engine) — -moz-appearance is Firefox-exclusive, so
+   only Firefox ever matches this block. */
+@supports (-moz-appearance: none) {
+  .picker-tabs { padding-bottom: 1px; }
+}
 .picker-tab {
   flex-shrink: 0;
   display: flex; flex-direction: column; gap: 1px;
@@ -285,6 +296,10 @@
   display: flex; justify-content: space-between; align-items: flex-start;
   gap: 16px;
 }
+/* The mode pill now sits below the name (Edit button took its old spot on
+   the right) — .pill's own inline-flex already puts it on its own line
+   after the block-level .picker-title, this just adds breathing room. */
+.picker-h > div > .pill { margin-top: 6px; }
 .picker-title {
   font-size: 28px; font-weight: 500;
   letter-spacing: -0.025em;
@@ -648,7 +663,7 @@
    than widening the column for everyone else. */
 .pool-item-name { flex: 0 1 160px; min-width: 0; }
 /* width: 80px — a fixed size for the pill itself, not just a max, so its
-   own text ("not yet" / "spent" / "vacation") never wraps onto a second
+   own text ("not yet" / "spent" / "inactive") never wraps onto a second
    line inside it. justify-content: center, not text-align: center — .pill
    is display:inline-flex (ui.jsx), so its text is a flex item rather than
    plain inline content; text-align has no effect on a flex item's position
@@ -711,6 +726,13 @@
 
 /* Custom tooltip — styled, viewport-clamped, tap-friendly (see InfoTip). */
 .infotip-trigger { cursor: help; }
+/* A disabled native <button> doesn't dispatch pointer/touch events to
+   itself OR let them bubble to an ancestor — on mobile that silently
+   swallows the tap before it ever reaches this wrapping trigger's own
+   handlers, so its tooltip never opens. Routing pointer-events through to
+   the trigger fixes hover/click for mouse too, but only touch actually
+   depended on it (mouse already worked via the trigger's own hover). */
+.infotip-trigger button:disabled { pointer-events: none; }
 .infotip-trigger:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -815,6 +837,30 @@
   font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--muted);
 }
+/* Data tab's section-list sort — top right, below the filter rows, above the
+   section list itself. Reused as-is (see SortSelect) for each section's own
+   item-list sort control too. */
+.data-sort-bar { display: flex; justify-content: flex-end; margin: -2px 0 4px; }
+.data-sort-row { display: flex; align-items: center; gap: 8px; }
+.data-sort-lbl {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted);
+}
+.data-sort-sel {
+  width: auto; max-width: none; margin-top: 0;
+  padding: 6px 10px; font-size: 13px; cursor: pointer;
+}
+/* Item-list sort (Conditionals/Reminders/each picker's own items) sits
+   inside the section's .cat-body, between the "+ Add …" row above and the
+   first item below — its own padding matches those rows (.rd-add/.rd-row),
+   and the first item gets a top border of its own since it no longer
+   shares .rd-add's bottom border as its top edge now that this sits
+   between them. The sibling combinator means this is a no-op when the
+   sort control isn't rendered at all (1 item or fewer) — the first item's
+   border-bottom-only styling is unaffected then. */
+.cat-body .data-sort-row { padding: 13px 16px; }
+.data-sort-row + .rd-item { border-top: 0.5px solid var(--border); }
 /* Data tab has a longer "Conditionals" label — widen its filter labels (which
    narrows the pill/card rows accordingly, since the row is flex). */
 .data-empty { padding: 40px 4px; text-align: center; }
@@ -874,10 +920,14 @@
   padding: 14px 2px;
 }
 
-/* Single-picker identity block — same vocabulary as the Pickers tab header. */
+/* Single-picker identity block — same vocabulary (and now the same
+   kicker/name/pill stacking order) as the Pickers page header. */
 .stat-picker-id { display: flex; flex-direction: column; gap: 2px; }
-.stat-picker-id-top { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
 .stat-picker-id .picker-title { margin: 6px 0 0; }
+/* align-self: flex-start — .stat-picker-id is a column flex container, whose
+   default align-items: stretch otherwise stretches the pill (normally
+   inline-flex, sized to its own content) to the container's full width. */
+.stat-picker-id > .pill { margin-top: 4px; align-self: flex-start; }
 .stat-picker-id .picker-hint { margin: 8px 0 0; }
 
 /* Breakdown: stacked proportion bar + legend (pick source, reminder type). */
@@ -1191,8 +1241,8 @@ button.heat-cell.is-sel {
   border: 0.5px solid var(--border); border-radius: 999px;
   padding: 1px 6px;
 }
-/* "Was on vacation" — item returned but not picked since. Uses the accent tint
-   (not the muted grey of currently-on-vacation) and its row stays un-dimmed. */
+/* "Was Inactive" — item returned but not picked since. Uses the accent tint
+   (not the muted grey of currently-inactive) and its row stays un-dimmed. */
 .rank-tag--was {
   color: var(--accent);
   border-color: oklch(from var(--accent) l c h / 0.4);
@@ -1212,7 +1262,7 @@ button.heat-cell.is-sel {
   background: oklch(0.55 0.16 25 / 0.08);
 }
 .rank-vals { display: flex; align-items: baseline; gap: 10px; flex: 0 0 auto; }
-/* Items breakdown: vacation/was-on-vacation status sits with the row's value
+/* Items breakdown: inactive/was-inactive status sits with the row's value
    on the right, same as Conditionals' .cnd-bd-vals and Reminders' own meta
    grouping, rather than crowding the name on the left. */
 .rank-bd-vals { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
@@ -1224,7 +1274,7 @@ button.heat-cell.is-sel {
 .rank-bd-vals .rank-metric-n { width: 40px; }
 /* Same fix again, for the Frequency/Spent and Last picked tabs: "every 12.5
    weeks" vs "Picked once" (or "N days ago" vs "Yesterday") differ enough in
-   width to shift the vacation/was-on-vacation tag before them. 112px matches
+   width to shift the inactive/was-inactive tag before them. 112px matches
    the width used for Conditionals' own Interval tab (.cnd-bd-freq--interval)
    — a longer "eligible" last-picked phrase is rare enough not to reserve
    full width for; it just wraps rather than pushing the tag out further. */
@@ -1324,8 +1374,38 @@ button.heat-cell.is-sel {
 }
 .cat.is-vac { opacity: 0.7; }
 
+/* "Create Picker" trigger (Data tab) — same footprint as a collapsed .cat
+   section (.cat-h's own 14px/16px padding, .cat's own border-radius), but a
+   dashed muted-gray outline instead of .cat's solid border + solid surface,
+   so it reads as "add a new one" rather than "an existing, collapsed card". */
+.cat-create-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  /* Vertical padding is taller than .cat-h's own 14px — its two-line name +
+     count stack (.cat-h-main) makes a collapsed card taller than this
+     button's single line of text would be at the same padding, so this
+     makes up the difference to match its real rendered height instead of
+     just copying its padding value literally. */
+  padding: 24px 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--r-md);
+  background: none;
+  color: var(--muted);
+  font-size: 14px; font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.cat-create-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+/* Its own color/border/background all override the browser's default
+   disabled dimming, so without this a disabled state (the Data tour's own
+   Step 7, see tab-data.jsx's disableCreatePicker) looked identical to a
+   clickable one. pointer-events:none also blocks :hover from reacting while
+   disabled, on top of the disabled attribute already blocking the click. */
+.cat-create-btn:disabled { opacity: 0.5; cursor: default; pointer-events: none; }
+
 .cat-h {
   display: flex; justify-content: space-between; align-items: center;
+  gap: 10px;
   padding: 14px 16px;
   cursor: pointer;
   user-select: none;
@@ -1360,66 +1440,62 @@ button.cat-h-l {
 @media (prefers-reduced-motion: reduce) {
   .collapse, .collapse-inner { transition: none; }
 }
-.cat-name { margin: 0; font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
-.cat-group {
+/* Name + eligible count stack into their own two-row block (see tab-data.jsx)
+   so the name's length never pushes the group/type pills around — those live
+   in their own .cat-h-tags cluster instead, each a fixed width so they line
+   up across every picker card regardless of what any single card's name or
+   group text is (same fixed-column trick as Stats' rank-bd-vals). */
+.cat-h-main { display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0; }
+.cat-name {
+  margin: 0; font-size: 16px; font-weight: 500; letter-spacing: -0.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* Tags + toggle as one group (see tab-data.jsx) — own gap since these two
+   used to be direct .cat-h children sharing its gap; now .cat-h only has
+   two children (.cat-h-l and this), so it needs the gap between ITS OWN two
+   parts restated here. */
+.cat-h-right { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+.cat-h-tags { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.cat-group, .cat-mode-label {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; color: var(--muted);
   padding: 2px 8px; border: 0.5px solid var(--border); border-radius: 999px;
+  flex: 0 0 auto; text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+/* 94px matches .vac-toggle's own natural width at its longer "Inactive"
+   state (icon + text + padding) — chosen as the common width for all 3
+   pills, per instruction, rather than sizing each to its own longest
+   possible label. */
+.cat-group, .cat-mode-label { width: 94px; }
 .cat-count {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--muted);
   letter-spacing: 0.03em;
-  /* Own elements (not one text run — see tab-data.jsx) so the narrow-
-     viewport rule below can stack them into 3 rows; row+baseline here
-     keeps the current "6 of 6" look on every other width. */
+  /* Own elements (not one text run — see tab-data.jsx); row+baseline gives
+     the "6 of 6" look. */
   display: flex; align-items: baseline; gap: 3px;
 }
-/* Each picker's own header row (name / group pill / eligible count) —
-   scoped to .data-list so Conditionals'/Reminders' OWN section headers
-   (outside .data-list, sharing the same .cat-name/.cat-count classes for
-   a "Conditionals"/"Reminders" title + a plain count with no group pill)
-   aren't affected; they never had this crowding problem since they have
-   far fewer things competing for the row's width.
-   On narrow viewports .cat-h-l had nowhere near enough room for a full
-   name + a group pill + "N of N", so the browser fell back to wrapping
-   each one's own text — ragged, uneven heights, and a long group name
-   could run into its neighbor entirely. Give each a defined, predictable
-   footprint instead: the name truncates with an ellipsis rather than
-   wrapping to a second line (keeping the row a single height), the group
-   pill gets a fixed max-width + ellipsis (so an especially long group
-   name truncates instead of overlapping), and the count restacks into 3
-   centered rows (its own column) instead of wrapping mid-fraction. */
-@container app (max-width: 400px) {
-  /* Own gap (rather than relying on .cat-h-l's flex-grow to naturally
-     leave room) — otherwise .cat-h-l fills every last px up to
-     .vac-toggle's own edge, butting the count's last digit right up
-     against it. */
-  .data-list > .cat > .cat-h { gap: 8px; }
-  .data-list > .cat > .cat-h .chev { flex: 0 0 auto; }
-  .data-list > .cat > .cat-h .cat-name {
-    flex: 1 1 0%; min-width: 0;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  /* Fixed (not max-) width so every collapsed picker's pill lines up at
-     the same edge regardless of its own group name's length, with the
-     (possibly truncated) text centered in that fixed box rather than
-     hugging its left edge. */
-  .data-list > .cat > .cat-h .cat-group {
-    flex: 0 0 auto; width: 72px; text-align: center;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .data-list > .cat > .cat-h .cat-count {
-    flex: 0 0 auto;
-    flex-direction: column; align-items: center; gap: 0;
-    text-align: center;
+/* Below 500px there's no longer room for the name next to a 3-pill row
+   without squeezing it to almost nothing. Rather than move the whole
+   cluster to its own row below the name (tried — cost too much vertical
+   space for not enough width relief) or let it wrap unpredictably, stack
+   all 3 pills into one narrow column, still in their original spot on the
+   header's right side, same row as the name — now only as wide as a
+   single pill (94px) instead of three plus gaps. */
+@container app (max-width: 500px) {
+  .data-list > .cat > .cat-h .cat-h-right,
+  .data-list > .cat > .cat-h .cat-h-tags {
+    flex-direction: column;
+    gap: 6px;
   }
 }
 
 .vac-toggle {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 5px 10px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 2px 8px;
+  width: 94px;
   border-radius: 999px;
   border: 0.5px solid var(--border);
   font-family: var(--font-mono);
@@ -2020,15 +2096,6 @@ button.cat-h-l {
 .rd-ctl-body .ease-config .pie-sub { font-size: 11px; color: var(--muted); }
 .rd-ctl-body .ease-config .pie-ctl { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .rd-ctl-body .ease-config .pie-ctl .np-ease-unit { font-size: 12px; }
-/* Labels the picker's default cadence rows (vs a per-item override) — font
-   styling now comes from the shared .rd-ctl-subhead class (see its own JSX
-   className); this rule is just the padding this nested context needs,
-   which the other three .rd-ctl-subhead contexts set on themselves too
-   (.rd-ctl-group--basics/--picks/--sched, each scoped to their own parent). */
-.rd-ctl-body .ease-config .ease-cadence-kicker { padding: 12px 16px 8px; }
-/* Separator between the kicker and its controls, matching the mode list's
-   border-top under the "How it picks" kicker. */
-.rd-ctl-body .ease-config .ease-cadence-kicker + .pie-row { border-top: 0.5px solid var(--border); }
 
 .daily-list { display: flex; flex-direction: column; }
 .daily-list li {
@@ -2487,7 +2554,7 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-card.is-editing { cursor: default; }
 
 /* Today picker entry: edit affordance — name turns into a direct-edit input and
-   a controls box (weight / vacation / delete) opens beneath, mirroring Data. */
+   a controls box (weight / active / delete) opens beneath, mirroring Data. */
 .entry-card-name-input {
   width: 100%; margin: 0; padding: 1px 0;
   border: none; background: none;
@@ -2527,7 +2594,7 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 }
 .entry-editor .pie-reset:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
 .entry-editor .pie-reset:disabled { opacity: 0.4; cursor: default; }
-/* Data picker items: dim a vacationed item's name in the resting row. */
+/* Data picker items: dim an inactive item's name in the resting row. */
 .rd-item.is-vac .rd-name { color: var(--muted); }
 .entry-edit-foot {
   display: flex; align-items: center; justify-content: flex-end; gap: 8px;
@@ -2545,9 +2612,14 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-quickadd .np-input { flex: 1; max-width: none; margin-top: 0; }
 .rem-quickadd .btn { flex: 0 0 auto; }
 
-/* Inline editor shown under a Today card when its pencil is toggled. */
+/* Inline editor shown under a Today card when its pencil is toggled. This
+   sits inside a <Collapse> (ui.jsx), whose .collapse-inner has a permanent
+   overflow: hidden — a negative top margin here pulls the border above that
+   boundary and gets clipped, cutting off the top border. Every other
+   consumer (.rd-edit, .rem-quickadd-wrap) already resets margin-top to 0 for
+   its own context, so 0 here too rather than -4px. */
 .rem-inline-editor {
-  margin: -4px 0 4px;
+  margin: 0 0 4px;
   padding: 16px;
   background: oklch(from var(--surface) calc(l - 0.006) c h);
   border: 0.5px solid var(--border); border-radius: var(--r-md);
@@ -2690,6 +2762,17 @@ legend.np-label { padding: 0; float: none; width: 100%; }
    sentence alone is wide enough), so this doesn't change anything
    visible, just makes it deterministic. */
 .rd-edit .rem-editor .rem-field .seg[aria-label="Repeat"] { flex-basis: 100%; }
+/* Day selection (Date/Weekday, Monthly+Yearly) is only ever 2 short options —
+   unlike Repeat, it never needs to wrap, so it doesn't need Repeat's grid
+   treatment. It DOES need its own fix for the same root cause though: .seg's
+   base justify-content:space-between only reads as "spread out" once the
+   container is wider than its content, and .rem-field is a column flex
+   container, so .seg stretches to that column's full width by default
+   (align-self:stretch) — pushing Date/Weekday to opposite edges with a big
+   empty gap between them. align-self:flex-start keeps it shrink-to-content
+   width instead; justify-content:flex-start keeps the two buttons snug
+   against each other even if something ever does widen the container. */
+.seg[aria-label="Day selection"] { justify-content: flex-start; align-self: flex-start; }
 .seg-thumb {
   position: absolute; top: 0; left: 0; width: 0; height: 0;
   background: var(--accent); border-radius: 999px;
@@ -2708,10 +2791,22 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .seg-btn.is-on:hover { color: var(--bg); }
 
 .rem-inline { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
+/* On an iPhone SE-width viewport, the Pickers create form's Yearly nth-weekday
+   row (Ordinal + Weekday + Month selects, 3 wide) clips the Month select's
+   right edge at the default 8px gap — shave it down just enough to fit. */
+@container app (max-width: 400px) {
+  .rem-inline { gap: 4px; }
+}
 .rem-num { width: 72px; max-width: 72px; margin-top: 0; text-align: center; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 .rem-sel { width: auto; max-width: none; margin-top: 0; cursor: pointer; }
-/* Data-tab cadence row: cadence + anchor selects, right-aligned, wrap on narrow. */
-.sched-cad-ctls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+/* Data-tab cadence row: cadence + anchor selects, wrap on narrow. flex-start
+   (not flex-end) so a wrapped second line (Monthly/Yearly nth-weekday, or
+   Yearly date mode, both wide enough to wrap before Weekly ever does) starts
+   flush with the first line instead of hugging the right edge on its own —
+   consistent with how an unwrapped row (Weekly, or Monthly's plain date
+   select) already reads as left-aligned once its own slack space is this
+   short. */
+.sched-cad-ctls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-start; }
 .rd-cad-sel { width: auto; max-width: none; margin-top: 0; cursor: pointer; font-size: 13px; }
 
 /* Editable interval start date: a link-styled toggle that swaps to a native
@@ -3039,7 +3134,7 @@ button.rd-chev {
    gap removed, each border touches its neighbour's for the subtle doubled-line
    separator (matching the Reminders controls → footer divider). */
 .rd-ctl-group { display: flex; flex-direction: column; gap: 12px; }
-.rd-ctl-group--sched, .rd-ctl-group--foot, .rd-ctl-group--danger {
+.rd-ctl-group--sched, .rd-ctl-group--items, .rd-ctl-group--foot, .rd-ctl-group--danger {
   margin: 0 -16px; padding: 16px; border-top: 0.5px solid var(--border);
 }
 /* Picker Details: subhead, then each control row (Name, Group) carries a
@@ -3114,7 +3209,7 @@ button.rd-chev {
 /* Footer with Delete/Cancel/Save — no bottom padding (the Controls body already
    pads its bottom edge) so it matches the item editor footer's height. */
 .rd-ctl-group--foot { padding-bottom: 0; }
-.rd-ctl-group--sched { border-bottom: 0.5px solid var(--border); }
+.rd-ctl-group--sched, .rd-ctl-group--items { border-bottom: 0.5px solid var(--border); }
 .rd-ctl-subhead {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
   text-transform: uppercase; color: var(--muted);
@@ -3180,20 +3275,28 @@ button.rd-chev {
 .rd-group-new-ok:not(:disabled):hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
 .rd-group-new-ok:disabled { opacity: 0.4; cursor: default; }
 .rd-group-new-cancel:hover { color: var(--danger, #c0392b); border-color: var(--danger, #c0392b); }
-/* "When it runs" rows use the same full-bleed divider system as the ease
-   cadence + item editor: a border under the kicker, then a hairline between
-   every control row (last row's own border is dropped so only the group's
-   bottom border shows at the section boundary). */
-.rd-ctl-group--sched { padding: 0; gap: 0; }
-.rd-ctl-group--sched .rd-ctl-subhead { padding: 12px 16px 8px; }
-.rd-ctl-group--sched .rd-ctl-subhead + .sched-line { border-top: 0.5px solid var(--border); }
+/* "When it runs" and "Item Controls" rows use the same full-bleed divider
+   system as the ease cadence + item editor: a border under the kicker, then
+   a hairline between every control row (last row's own border is dropped so
+   only the group's bottom border shows at the section boundary). */
+.rd-ctl-group--sched, .rd-ctl-group--items { padding: 0; gap: 0; }
+.rd-ctl-group--sched .rd-ctl-subhead, .rd-ctl-group--items .rd-ctl-subhead { padding: 12px 16px 8px; }
+.rd-ctl-group--sched .rd-ctl-subhead + .sched-line,
+.rd-ctl-group--items .rd-ctl-subhead + .sched-line { border-top: 0.5px solid var(--border); }
 .rd-ctl-group--sched .sched-line,
-.rd-ctl-group--sched .sched-off-note {
+.rd-ctl-group--sched .sched-off-note,
+.rd-ctl-group--items .sched-line {
   padding: 10px 16px; min-height: 44px; box-sizing: border-box;
   border-bottom: 0.5px solid var(--border);
 }
 .rd-ctl-group--sched .sched-line:last-child,
-.rd-ctl-group--sched .sched-off-note:last-child { border-bottom: 0; }
+.rd-ctl-group--sched .sched-off-note:last-child,
+.rd-ctl-group--items:not(:has(.ease-config)) .sched-line:last-child { border-bottom: 0; }
+/* Item Controls' own ease-config (Fill/Refill) sits after the always-shown
+   Avoid-duplicates row when ease mode is active — the last VISIBLE .pie-row
+   inside it should drop its own trailing border the same way the group's
+   other last-child rows do, so only the group's own bottom border shows. */
+.rd-ctl-group--items .ease-config .pie-row:last-child { border-bottom: 0; }
 /* Attach-a-conditional rail inside the Data-tab "When it runs" section. Full-
    bleed row matching the sched-line horizontal padding, with a divider below. */
 .rd-ctl-group--sched .rd-cnd-rail-row { padding: 8px 16px 12px; border-bottom: 0.5px solid var(--border); }
@@ -3209,6 +3312,10 @@ button.rd-chev {
 /* Delete-picker control lives in the Controls footer now. */
 .rd-ctl-group--danger { align-items: flex-start; }
 .rd-ctl-foot-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+/* The "Create Picker" draft's own footer has no Delete button on the left —
+   .rd-ctl-foot-row's own space-between would otherwise leave its one
+   remaining child (.rem-foot-right) flush left instead of right. */
+.rd-ctl-foot-row--new { justify-content: flex-end; }
 /* Picker card delete: collapse height + fade out before removal. */
 .cat--removing { animation: catRemove .3s ease forwards; overflow: hidden; }
 @keyframes catRemove { from { opacity: 1; max-height: 800px; } to { opacity: 0; max-height: 0; margin: 0; padding-top: 0; padding-bottom: 0; transform: translateY(-4px); } }
@@ -3395,9 +3502,15 @@ button.rd-chev {
   border: 0.5px solid var(--border); color: var(--muted);
 }
 .rem-log-type--recurring { color: var(--accent); border-color: oklch(from var(--accent) l c h / 0.4); background: oklch(from var(--accent-soft) l c h / 0.5); }
+/* width, not min-width — same fix as .cnd-sum-frac (below) for the identical
+   problem: a 1-digit day ("Aug 3") is narrower than a 2-digit one ("Aug 31"),
+   which was shrinking .rem-log-meta's own content width and shifting the
+   type pill before it out of alignment (it's pinned to the row's right edge
+   via .rem-log li's own justify-content: space-between). 76px comfortably
+   fits the longest case, "Wed, Sep 30" (measured ~75px). */
 .rem-log-when {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.02em;
-  color: var(--muted); white-space: nowrap;
+  color: var(--muted); white-space: nowrap; width: 76px; text-align: right;
 }
 .rem-log-empty { font-size: 13px; color: var(--muted); padding: 6px 0; }
 

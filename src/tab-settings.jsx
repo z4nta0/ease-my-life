@@ -94,7 +94,7 @@ function HolidayEditor({ state, actions }) {
                aria-label="Name of the day off to add"
                onChange={(e) => setName(e.target.value)}
                onKeyDown={(e) => { if (e.key === 'Enter') addCustom(); else if (e.key === 'Escape') e.currentTarget.blur(); }}
-               placeholder="Add a day off, e.g. Family day" autoComplete="off" />
+               placeholder="Add a holiday, e.g. Birthday" autoComplete="off" />
         <input className="np-input np-input--sm holiday-date-input" type="date" value={date}
                onKeyDown={(e) => { if (e.key === 'Escape') e.currentTarget.blur(); }}
                onChange={(e) => setDate(e.target.value)} aria-label="Date" />
@@ -183,7 +183,7 @@ function ContactSupportCard({ state, actions }) {
   const openForm = () => {
     setOpen(true);
     // Scroll the form into view once it's expanded — otherwise it renders
-    // below the fold and clicking "Contact support" looks like it did nothing.
+    // below the fold and clicking "Contact Support" looks like it did nothing.
     // Wait past Collapse's own expand animation so we scroll to its final
     // height, not a mid-animation one.
     setTimeout(() => {
@@ -276,7 +276,7 @@ function ContactSupportCard({ state, actions }) {
               <span className="set-import-msg is-ok" role="status" key={sentMsg}>Message sent &mdash; thanks! I&rsquo;ll be in touch.</span>
             )}
           </div>
-          <Btn kind="secondary" size="sm" onClick={openForm}>Contact support</Btn>
+          <Btn kind="secondary" size="sm" onClick={openForm}>Contact Support</Btn>
         </div>
       </Card>
 
@@ -404,7 +404,7 @@ function ThemeSection({ state, actions }) {
         <div className="set-subsection-h">Theme &middot; Light</div>
         <p className="settings-sub">
           Pick a light based theme below or create your own. If you enable the system
-          preference option, the corresponding dark theme (Ink &rarr; Night) will be applied
+          preference option, the corresponding dark theme (e.g. Ink &rarr; Night) will be applied
           when applicable.
         </p>
         <p className="settings-sub">
@@ -426,7 +426,7 @@ function ThemeSection({ state, actions }) {
         <div className="set-subsection-h">Theme &middot; Dark</div>
         <p className="settings-sub">
           Pick a dark based theme below or create your own. If you enable the system
-          preference option, the corresponding light theme (Night &rarr; Ink) will be applied
+          preference option, the corresponding light theme (e.g. Night &rarr; Ink) will be applied
           when applicable.
         </p>
         <p className="settings-sub">
@@ -941,7 +941,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
             <h1 className="section-title">Behind the scenes, of your <span className="stat-title-accent">eased</span> life.</h1>
           </div>
         </div>
-        <p className="section-sub">All app-wide settings can be found here relating to the app's appearance, the Daily generator, holiday preferences, app data import, export, and deletion, user account, about and legal. All conditionals, reminders, pickers and their items' settings can found in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>.</p>
+        <p className="section-sub">All app-wide settings can be found here relating to the app's appearance, the Daily generator, holiday preferences, app data import, export, and deletion, user account, about and legal. All conditionals, reminders, pickers and their items' settings can found in the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data page</button>.</p>
       </header>
 
       <div className="settings-layout">
@@ -995,7 +995,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               <div className="set-subsection-h">Completion celebration</div>
               <p className="settings-sub">
                 Pick which animation will play when all tasks are marked as completed
-                inside of the Today tab.
+                inside of the Today page.
               </p>
               {reduceMotionNote('celebrations')}
               <Card padded={false} className="style-radio-card">
@@ -1015,8 +1015,8 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
             <div className="set-subsection set-subsection--pickanim">
               <div className="set-subsection-h">Picker animation</div>
               <p className="settings-sub">
-                Pick which animation will play when the &ldquo;Pick one&rdquo; button is clicked
-                inside of the Pickers tab.
+                Pick which animation will play when the &ldquo;Pick One&rdquo; button is clicked
+                inside of the Pickers page.
               </p>
               {reduceMotionNote('this animation')}
               <Card padded={false} className="style-radio-card">
@@ -1066,8 +1066,8 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           <section className="set-section set-section--daily" ref={(el) => { sectionRefs.current['daily'] = el; }}>
             <div className="set-section-h"><span className="kicker">Daily generator</span></div>
             <p className="settings-sub">
-              The Daily generator can always be run manually from the Today tab regardless of this setting.
-              Which pickers are included in the Daily generator can be found with their own settings in the Data tab.
+              The Daily generator can always be run manually from the Today page regardless of this setting.
+              Which pickers are included in the Daily generator can be found with their own settings in the Data page.
             </p>
             <Card>
               <div className="set-data-row">
@@ -1076,7 +1076,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   <span className="set-data-sub set-sub-fade" key={dailyMode + (state.daily && state.daily.runTime)}>
                     {dailyMode === 'auto'
                       ? <>Daily generator will run automatically every day at <strong>{fmtRunTime((state.daily && state.daily.runTime) || '04:00')}</strong>.</>
-                      : <>Daily generator can only be run <strong>manually</strong> via the generator button at the bottom of the Today tab.</>}
+                      : <>Daily generator can only be run <strong>manually</strong> via the generator button at the bottom of the Today page.</>}
                   </span>
                 </div>
                 <button className={`switch ${dailyMode === 'auto' ? 'is-on' : ''}`} aria-pressed={dailyMode === 'auto'}
@@ -1105,7 +1105,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                     <span className="set-data-name">Notify me when it runs</span>
                     <span className="set-data-sub">
                       {notifPerm === 'granted'
-                        ? <>You&rsquo;ll get a notification once your list has been generated &mdash; but only while the app is open in a tab or window. Notifications for a closed app are coming in a future release.</>
+                        ? <>You&rsquo;ll get a notification once your list has been generated but only while the app is open in a tab or window. Notifications for a closed app are coming in a future release.</>
                         : notifPerm === 'denied'
                           ? <>Notifications are blocked for this site. You&rsquo;ll need to allow them in your browser&rsquo;s site settings.</>
                           : <>Get a nudge once your list has been generated. Only works while the app is open in a tab or window.</>}
@@ -1142,7 +1142,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           <section className="set-section set-section--data" ref={(el) => { sectionRefs.current['data'] = el; }}>
             <div className="set-section-h"><span className="kicker">Data control</span></div>
             <p className="settings-sub">
-              All of your data is stored locally, on this device - do with it as you will. Unfortunately,
+              All of your data is stored locally, on this device to do with it as you will. Unfortunately,
               this also means that if you want to use this app on a different device then you will need to
               export your data here, and then use the import feature on the other device. Exporting your data
               is also a good way to backup your data, just in case something were to happen either to
@@ -1177,7 +1177,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                     <Btn kind="secondary" size="sm" icon="download" disabled>Install app</Btn>
                   )}
                   {!(stor && stor.persisted) && (
-                    <Btn kind="secondary" size="sm" className="set-protect-btn" onClick={onPersist}>Protect data</Btn>
+                    <Btn kind="secondary" size="sm" className="set-protect-btn" onClick={onPersist}>Protect Data</Btn>
                   )}
                 </div>
               </div>
@@ -1187,7 +1187,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                     <span className="set-data-name">Already installed on this device</span>
                     <span className="set-data-sub">
                       You&rsquo;re viewing Ease My Life in a browser tab. Open the installed app from your
-                      home screen or app list instead &mdash; it&rsquo;s the same data, and the installed copy is
+                      home screen or app list instead. It&rsquo;s the same data, and the installed copy is
                       the one protected from browser cleanup.
                     </span>
                   </div>
@@ -1199,10 +1199,10 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                     <span className="set-data-name">Installing from this page isn&rsquo;t available here</span>
                     <span className="set-data-sub">
                       Some browsers offer <strong>Install app</strong> or <strong>Add to Home screen</strong> in their
-                      own menu &mdash; it&rsquo;s worth a look. Others, including Firefox on desktop, can&rsquo;t install
-                      web apps at all; there you&rsquo;d need a Chromium-based browser such as Chrome or Edge.
-                      Either way you can keep using Ease My Life right here &mdash; use <strong>Protect data</strong> above
-                      to make this browser far less likely to clear it.
+                      own menu, so it&rsquo;s worth a look. Others, including Firefox on desktop, can&rsquo;t install
+                      web apps at all. There you&rsquo;d need a Chromium based browser such as Chrome or Edge.
+                      Either way you can keep using Ease My Life right here, just use the <strong>Protect Data</strong> control
+                      above to make this browser far less likely to clear it.
                     </span>
                   </div>
                 </div>
@@ -1213,7 +1213,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                     <span className="set-data-name">Add to your Home Screen</span>
                     <span className="set-data-sub">
                       On iPhone and iPad, tap <strong>Share</strong> then <strong>Add to Home Screen</strong>. Do this and
-                      Safari stops clearing your data when the app sits unused &mdash; without it, everything here can be
+                      Safari stops clearing your data when the app sits unused. Without it, everything here can be
                       wiped after a period of not opening the app.
                     </span>
                     <span className="set-data-sub">
@@ -1230,7 +1230,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                     <span className="set-data-name">Add to your Dock</span>
                     <span className="set-data-sub">
                       On Mac, open Safari&rsquo;s <strong>File</strong> menu and choose <strong>Add to Dock</strong>. Do this
-                      and Safari stops clearing your data when the app sits unused &mdash; without it, everything here can be
+                      and Safari stops clearing your data when the app sits unused. Without it, everything here can be
                       wiped after a period of not opening the app.
                     </span>
                     <span className="set-data-sub">
@@ -1244,7 +1244,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               <div className="set-data-row set-export-row">
                 <div className="set-data-info">
                   <span className="set-data-name">Export a backup</span>
-                  <span className="set-data-sub">Downloads a JSON file of everything &mdash; <strong>{pickerCount}</strong> pickers, <strong>{itemCount}</strong> items, <strong>{reminderCount}</strong> reminders and <strong>all app settings</strong>.</span>
+                  <span className="set-data-sub">Downloads a JSON file of everything, this includes <strong>{pickerCount}</strong> pickers, <strong>{itemCount}</strong> items, <strong>{reminderCount}</strong> reminders and <strong>all app settings</strong>.</span>
                   {exportMsg && (
                     <span className="set-import-msg is-ok" key={exportMsg.t}>
                       Backup exported &mdash; including <strong>{exportMsg.entries}</strong> history {exportMsg.entries === 1 ? 'entry' : 'entries'}.
@@ -1319,7 +1319,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           <section className="set-section set-section--account" ref={(el) => { sectionRefs.current['account'] = el; }}>
             <div className="set-section-h"><span className="kicker">Account</span></div>
             <p className="settings-sub">
-              Ease My Life runs entirely on this device &mdash; no account required. Sign in to
+              Ease My Life runs entirely on this device, with no account required. Sign in to
               sync across devices is planned for a future release as a paid feature (one time fee only).
             </p>
             <Card>
@@ -1328,7 +1328,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   <span className="set-data-name">Sync across devices</span>
                   <span className="set-data-sub">This feature will keep all of your Ease My Life data synced across every device that you sign in to.</span>
                 </div>
-                <Btn kind="secondary" size="sm" disabled>Coming soon</Btn>
+                <Btn kind="secondary" size="sm" disabled>Coming Soon</Btn>
               </div>
             </Card>
           </section>
@@ -1350,8 +1350,8 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
               allow anyone to freely fork and modify the project&rsquo;s source code, provided that
               attribution is included in your project and that you will not be selling the software
               or making money off it in any way. Please be responsible with the source code, because
-              this is one person maintaining this project in their free time who is just trying to
-              make a living &mdash; not some big company with vast resources that is trying to
+              I am just one person maintaining the project in their free time trying to
+              make a living. This is not some big company with vast resources trying to
               extract every dollar that they can.
             </p>
             <Card>
@@ -1371,7 +1371,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                   <span className="set-data-name">Support the project</span>
                   <span className="set-data-sub">Enjoying Ease My Life? Consider buying me a coffee.</span>
                 </div>
-                <Btn kind="secondary" size="sm" disabled>Buy me a coffee</Btn>
+                <Btn kind="secondary" size="sm" disabled>Buy Me a Coffee</Btn>
               </div>
             </Card>
 
@@ -1414,7 +1414,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
                          welcomed: false, dismissed: true, appFeatures: {}, appFeaturesSectionResolved: false, checklist: {},
                          ...(hasRealPickers ? { checklistDone: true, appFeaturesIntroSeen: true } : {}),
                        });
-                     }}>Replay tour</Btn>
+                     }}>Replay Tour</Btn>
               </div>
             </Card>
 

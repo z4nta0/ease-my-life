@@ -10,9 +10,15 @@ import { Collapse, InfoTip } from './ui.jsx';
 // Reuses the Segmented control + the Reminders scheduling styles (rem-*).
 const CAD_OPTS = [
   { key: 'daily',   label: 'Daily',   sub: <>surfaces <strong>every day</strong> it runs (the standard behavior)</> },
-  { key: 'weekly',  label: 'Weekly',  sub: <>surfaces <strong>once a week</strong>, on the weekday you choose below — pick will persist until marked as completed</> },
-  { key: 'monthly', label: 'Monthly', sub: <>surfaces <strong>once a month</strong>, on the day you choose below — pick will persist until marked as completed</> },
-  { key: 'yearly',  label: 'Yearly',  sub: <>surfaces <strong>once a year</strong>, on the date you choose below — pick will persist until marked as completed</> },
+  { key: 'weekly',  label: 'Weekly',  sub: <>surfaces <strong>once a week</strong>, on the weekday you choose below, after which the pick will persist until marked as completed</> },
+  { key: 'monthly', label: 'Monthly', sub: <>surfaces <strong>once a month</strong>, on the day you choose below, after which the pick will persist until marked as completed</> },
+  { key: 'yearly',  label: 'Yearly',  sub: <>surfaces <strong>once a year</strong>, on the date you choose below, after which the pick will persist until marked as completed</> },
+];
+// Monthly/yearly only — same Date-vs-Weekday choice as reminders.jsx' own
+// monthly/annual editors (dateMode: 'date' | 'nthWeekday').
+const DATE_MODE_OPTS = [
+  { key: 'date', label: 'Date' },
+  { key: 'nthWeekday', label: 'Weekday' },
 ];
 const DAY_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
@@ -66,21 +72,43 @@ function CadenceControl({ value, onChange }) {
             <span className="rem-flabel pie-lbl-row">On which day?
               <InfoTip className="pie-help" label={CADENCE.tipFor('monthly', 'Which days?')}>?</InfoTip>
             </span>
-            <span className="rem-flabel-sub">surfaces the <strong>{ord(v.anchorDom)} of every month</strong></span>
+            <span className="rem-flabel-sub set-sub-fade" key={v.dateMode}>
+              {v.dateMode === 'nthWeekday'
+                ? <>surfaces on the <strong>{ord(v.nthOrdinal)} {DAY_FULL[v.nthWeekday]}</strong> of every month</>
+                : <>surfaces the <strong>{ord(v.anchorDom)} of every month</strong></>}
+            </span>
           </div>
-          <div className="rem-inline">
-            <span>On the</span>
-            <select className="np-input rem-sel" value={v.anchorDom}
-                    onChange={(e) => set({ anchorDom: parseInt(e.target.value) })}
-                    aria-label="Anchor day of month">
-              {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
-                <option key={d} value={d}>{ord(d)}</option>
-              ))}
-            </select>
-          </div>
-          {v.anchorDom > 28 && (
-            <p className="rem-hint">In shorter months this falls on the last day.</p>
+          <Segmented options={DATE_MODE_OPTS} value={v.dateMode}
+                     onChange={(key) => set({ dateMode: key })} ariaLabel="Day selection" />
+          {v.dateMode === 'nthWeekday' ? (
+            <div className="rem-inline">
+              <span>On the</span>
+              <select className="np-input rem-sel" value={v.nthOrdinal}
+                      onChange={(e) => set({ nthOrdinal: parseInt(e.target.value) })}
+                      aria-label="Week of the month">
+                {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{ord(n)}</option>)}
+              </select>
+              <select className="np-input rem-sel" value={v.nthWeekday}
+                      onChange={(e) => set({ nthWeekday: parseInt(e.target.value) })}
+                      aria-label="Weekday">
+                {DAY_FULL.map((d, i) => <option key={i} value={i}>{d}</option>)}
+              </select>
+            </div>
+          ) : (
+            <div className="rem-inline">
+              <span>On the</span>
+              <select className="np-input rem-sel" value={v.anchorDom}
+                      onChange={(e) => set({ anchorDom: parseInt(e.target.value) })}
+                      aria-label="Anchor day of month">
+                {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                  <option key={d} value={d}>{ord(d)}</option>
+                ))}
+              </select>
+            </div>
           )}
+          {v.dateMode === 'nthWeekday'
+            ? v.nthOrdinal === 5 && <p className="rem-hint">In months without a 5th, this falls on the 4th instead.</p>
+            : v.anchorDom > 28 && <p className="rem-hint">In shorter months this falls on the last day.</p>}
         </div>
       )}
 
@@ -90,28 +118,53 @@ function CadenceControl({ value, onChange }) {
             <span className="rem-flabel pie-lbl-row">On which date?
               <InfoTip className="pie-help" label={CADENCE.tipFor('yearly', 'Which days?')}>?</InfoTip>
             </span>
-            <span className="rem-flabel-sub">
-              surfaces <strong>every {MONTHS[v.anchorMonth - 1]} {ord(Math.min(v.anchorDay, daysInMonth(v.anchorMonth)))}</strong>
+            <span className="rem-flabel-sub set-sub-fade" key={v.dateMode}>
+              {v.dateMode === 'nthWeekday'
+                ? <>surfaces the <strong>{ord(v.nthOrdinal)} {DAY_FULL[v.nthWeekday]}</strong> of <strong>{MONTHS[v.anchorMonth - 1]}</strong>, every year</>
+                : <>surfaces <strong>every {MONTHS[v.anchorMonth - 1]} {ord(Math.min(v.anchorDay, daysInMonth(v.anchorMonth)))}</strong></>}
             </span>
           </div>
-          <div className="rem-inline">
-            <span>Every</span>
-            <select className="np-input rem-sel" value={v.anchorMonth}
-                    onChange={(e) => set({ anchorMonth: parseInt(e.target.value) })}
-                    aria-label="Anchor month">
-              {MONTHS.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
-            </select>
-            <select className="np-input rem-sel" value={Math.min(v.anchorDay, daysInMonth(v.anchorMonth))}
-                    onChange={(e) => set({ anchorDay: parseInt(e.target.value) })}
-                    aria-label="Anchor day">
-              {Array.from({ length: daysInMonth(v.anchorMonth) }, (_, i) => i + 1).map((d) => (
-                <option key={d} value={d}>{ord(d)}</option>
-              ))}
-            </select>
-          </div>
-          {v.anchorMonth === 2 && v.anchorDay === 29 && (
-            <p className="rem-hint">In common (non-leap) years this falls on Feb 28.</p>
+          <Segmented options={DATE_MODE_OPTS} value={v.dateMode}
+                     onChange={(key) => set({ dateMode: key })} ariaLabel="Day selection" />
+          {v.dateMode === 'nthWeekday' ? (
+            <div className="rem-inline">
+              <select className="np-input rem-sel" value={v.nthOrdinal}
+                      onChange={(e) => set({ nthOrdinal: parseInt(e.target.value) })}
+                      aria-label="Week of the month">
+                {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{ord(n)}</option>)}
+              </select>
+              <select className="np-input rem-sel" value={v.nthWeekday}
+                      onChange={(e) => set({ nthWeekday: parseInt(e.target.value) })}
+                      aria-label="Weekday">
+                {DAY_FULL.map((d, i) => <option key={i} value={i}>{d}</option>)}
+              </select>
+              <span>of</span>
+              <select className="np-input rem-sel" value={v.anchorMonth}
+                      onChange={(e) => set({ anchorMonth: parseInt(e.target.value) })}
+                      aria-label="Anchor month">
+                {MONTHS.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
+              </select>
+            </div>
+          ) : (
+            <div className="rem-inline">
+              <span>Every</span>
+              <select className="np-input rem-sel" value={v.anchorMonth}
+                      onChange={(e) => set({ anchorMonth: parseInt(e.target.value) })}
+                      aria-label="Anchor month">
+                {MONTHS.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
+              </select>
+              <select className="np-input rem-sel" value={Math.min(v.anchorDay, daysInMonth(v.anchorMonth))}
+                      onChange={(e) => set({ anchorDay: parseInt(e.target.value) })}
+                      aria-label="Anchor day">
+                {Array.from({ length: daysInMonth(v.anchorMonth) }, (_, i) => i + 1).map((d) => (
+                  <option key={d} value={d}>{ord(d)}</option>
+                ))}
+              </select>
+            </div>
           )}
+          {v.dateMode === 'nthWeekday'
+            ? v.nthOrdinal === 5 && <p className="rem-hint">In years where that month has no 5th, this falls on the 4th instead.</p>
+            : (v.anchorMonth === 2 && v.anchorDay === 29 && <p className="rem-hint">In common (non-leap) years this falls on Feb 28.</p>)}
         </div>
       )}
       </div>

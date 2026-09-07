@@ -88,10 +88,16 @@ const REMINDER_TOUR_STEP_2 = {
 // segmented control, as one combined highlight — scoped to the quick-add
 // form specifically (`.seg-btn ~ .seg-btn` matches every pill after the
 // first, i.e. every option except "Once", since REPEAT_OPTS in reminders.jsx
-// always lists it first). No requireClick: there's no single correct pill to
-// click, the prefilled "Weekly" is just a starting point.
+// always lists it first). Also scoped to `.seg[aria-label="Repeat"]`
+// specifically, not just `.rem-quickadd-wrap` — Monthly/Yearly's own Date/
+// Weekday toggle below is a second, nested Segmented (`aria-label="Day
+// selection"`), and findTargets' querySelectorAll would otherwise match its
+// pills too the moment one of those repeat kinds is selected, unioning the
+// highlight down to include that whole control as well. No requireClick:
+// there's no single correct pill to click, the prefilled "Weekly" is just a
+// starting point.
 const REMINDER_TOUR_STEP_3 = {
-  sel: '.rem-quickadd-wrap .seg-btn ~ .seg-btn', tab: 'today',
+  sel: '.rem-quickadd-wrap .seg[aria-label="Repeat"] .seg-btn ~ .seg-btn', tab: 'today',
   title: 'Select recurring schedule',
   body: <>Recurring reminders have multiple options for <b>how often they should show up in your todo list</b>. We’ve already selected "Weekly" for you but feel free to select whichever one you’d prefer.</>,
   primary: 'Next', back: true, resumable: false,
@@ -111,17 +117,17 @@ const REPEAT_STEP_COPY = {
   },
   weekly: {
     title: 'Select day of the week',
-    lead: 'which day(s) of the week a recurring reminder will show up in your todo list',
+    lead: 'how often and which day(s) of the week a recurring reminder will show up in your todo list',
     tail: ' (multiple days may be selected).',
   },
   monthly: {
     title: 'Select day of the month',
-    lead: 'which day of the month a recurring reminder will show up in your todo list',
+    lead: 'how often and which day or weekday of the month a recurring reminder will show up in your todo list',
     tail: '.',
   },
   annual: {
     title: 'Select day of the year',
-    lead: 'which day of the year a recurring reminder will show up in your todo list',
+    lead: 'how often and which day or weekday of the year a recurring reminder will show up in your todo list',
     tail: '.',
   },
 };

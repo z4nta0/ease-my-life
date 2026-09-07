@@ -64,11 +64,24 @@ function eligible(items) {
 function pick(picker, items, opts) {
   let pool = eligible(items.filter((it) => it.pickerId === picker.id));
   // `excludeIds` (a Set) drops items that are already live on Today, so a
-  // manual "Pick one" spin can't land on a duplicate. A direct `forceItemId`
+  // manual "Pick One" spin can't land on a duplicate. A direct `forceItemId`
   // send bypasses this (its button is disabled in the UI when on Today).
   const excludeIds = opts && opts.excludeIds;
   if (excludeIds && excludeIds.size && !(opts && opts.forceItemId)) {
     pool = pool.filter((it) => !excludeIds.has(it.id));
+  }
+  // `excludeNames` (a Set of lowercased names) drops items whose name
+  // case-insensitively matches something already on today's list — opt-in
+  // per picker via `avoidDuplicates`, for pickers that intentionally share
+  // items with another picker (e.g. two meal pickers with an overlapping
+  // pool) and don't want the same item to surface twice in one day. Falls
+  // back to the FULL pool if this would leave nothing eligible, rather than
+  // ever leaving the picker with no pick at all — duplication is preferred
+  // over an empty result.
+  const excludeNames = opts && opts.excludeNames;
+  if (picker.avoidDuplicates && excludeNames && excludeNames.size && !(opts && opts.forceItemId)) {
+    const deduped = pool.filter((it) => !excludeNames.has(it.name.toLowerCase()));
+    if (deduped.length) pool = deduped;
   }
   if (!pool.length) return { picked: null, updates: [], cycleCandidates: [] };
 
@@ -107,9 +120,10 @@ function pick(picker, items, opts) {
       // items we pick the MOST overdue (highest value); ties break on oldest
       // lastPicked. Weight is deliberately NOT used (ease-up is a cadence system).
       const threshold = picker.threshold ?? 100;
+      const fallbackEase = avgEase(pool, picker.id);
       const rollStep = (it) => {
-        const so = Math.max(1, Math.round(threshold / (it.easeMax ?? picker.easeMax)));
-        const la = Math.max(so, Math.round(threshold / (it.easeMin ?? picker.easeMin)));
+        const so = Math.max(1, Math.round(threshold / (it.easeMax ?? fallbackEase.easeMax)));
+        const la = Math.max(so, Math.round(threshold / (it.easeMin ?? fallbackEase.easeMin)));
         const N = so + Math.floor(Math.random() * (la - so + 1));
         return threshold / N;
       };
@@ -147,8 +161,13 @@ function pick(picker, items, opts) {
       // at the threshold and the rest keep their relative order. Sub-threshold
       // charging items are untouched, so each item's time-to-eligible (its
       // cadence) is preserved exactly; only the unbounded slack is removed.
+      // Needs at least 2 overshooting items to mean anything — with only one,
+      // "compress relative to the smallest" degenerates into subtracting the
+      // item's own overshoot from itself, unconditionally clamping any lone
+      // waiter back to exactly the threshold every cycle it isn't picked
+      // (the actual bug: items looked like they could never exceed 100).
       const overshoots = updates.filter((u) => u.value > threshold).map((u) => u.value - threshold);
-      if (overshoots.length) {
+      if (overshoots.length > 1) {
         const minOver = Math.min(...overshoots);
         if (minOver > 0) {
           for (const u of updates) if (u.value > threshold) u.value -= minOver;
@@ -176,9 +195,10 @@ function pick(picker, items, opts) {
       // uniformly in its [shortest, longest] range and decays by a FIXED step
       // (100/N), emptying in exactly N cycles. `chargeStep` persists that plan
       // across the streak; legacy items lazily roll one.
+      const fallbackEase = avgEase(pool, picker.id);
       const rollStep = (it) => {
-        const so = Math.max(1, Math.round(threshold / (it.easeMax ?? picker.easeMax)));
-        const la = Math.max(so, Math.round(threshold / (it.easeMin ?? picker.easeMin)));
+        const so = Math.max(1, Math.round(threshold / (it.easeMax ?? fallbackEase.easeMax)));
+        const la = Math.max(so, Math.round(threshold / (it.easeMin ?? fallbackEase.easeMin)));
         const N = so + Math.floor(Math.random() * (la - so + 1));
         return threshold / N;
       };
@@ -260,7 +280,24 @@ function readiness(item, mode, threshold = 100) {
   return null;
 }
 
-// Ease-up eligibility, in ONE place. The half-unit tolerance matters: a
+// Fallback drift band for an ease-up/ease-down item with no easeMin/easeMax
+// of its own — averages the OTHER items already on this picker (each falling
+// back to DEFAULT_EASE itself, so one bare item can't skew this into NaN),
+// rather than a separate per-picker default kept in sync by hand. A brand
+// new picker with no items yet (or an ease-mode switch before any item has
+// its own band) gets the flat DEFAULT_EASE. Used both to stamp a freshly
+// added item's own easeMin/easeMax immediately (store.jsx's addItem) and, for
+// any item that still doesn't have its own values (older data), as the same
+// safety-net fallback the picking engine itself uses below.
+const DEFAULT_EASE = { easeMin: 7, easeMax: 14 };
+function avgEase(items, pickerId) {
+  const siblings = (items || []).filter((it) => it.pickerId === pickerId);
+  if (!siblings.length) return { ...DEFAULT_EASE };
+  const avg = (key) => siblings.reduce((sum, it) => sum + (it[key] ?? DEFAULT_EASE[key]), 0) / siblings.length;
+  return { easeMin: Math.max(1, Math.round(avg('easeMin'))), easeMax: Math.max(1, Math.round(avg('easeMax'))) };
+}
+
+// Ease Up eligibility, in ONE place. The half-unit tolerance matters: a
 // threshold/N charge step (100/3, say) can land a hair under the threshold on
 // the very cycle it was planned to become eligible. The engine has always used
 // it; Today's re-roll did not, so an item at 99.7 could be picked by the
@@ -269,9 +306,9 @@ function readiness(item, mode, threshold = 100) {
 const EASE_TOL = 0.5;
 const easeEligible = (item, threshold) => (item.value ?? 0) >= ((threshold ?? 100) - EASE_TOL);
 
-// Whether an item could be picked RIGHT NOW under its picker's mode. Vacation
-// is deliberately not considered here — callers that care combine it, and the
-// Pickers pool shows vacation as its own row state.
+// Whether an item could be picked RIGHT NOW under its picker's mode. Active/
+// inactive is deliberately not considered here — callers that care combine
+// it, and the Pickers pool shows inactive as its own row state.
 const modeEligible = (item, picker) => {
   if (!picker) return true;
   if (picker.mode === 'ease-up') return easeEligible(item, picker.threshold);
@@ -279,4 +316,4 @@ const modeEligible = (item, picker) => {
   return true;
 };
 
-export const PICKERS = { pick, readiness, easeEligible, modeEligible, EASE_TOL };
+export const PICKERS = { pick, readiness, easeEligible, modeEligible, EASE_TOL, avgEase, DEFAULT_EASE };

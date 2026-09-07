@@ -10,15 +10,29 @@ import { HOLIDAYS } from './holidays.js';
 // the next day).
 //
 // Schedule kinds (`repeat`):
-//   once     — no schedule; due every day until completed, then gone
-//   weekly   — due on the chosen weekdays (daysOfWeek: [0=Sun … 6=Sat])
+//   once     — no schedule; due every day (starting `onceDate`,
+//              'YYYY-MM-DD', which defaults to today) until completed,
+//              then gone. Set onceDate in the future to defer that window
+//              instead of starting it immediately.
+//   weekly   — due on the chosen weekdays (daysOfWeek: [0=Sun … 6=Sat]),
+//              every `interval` weeks (default 1), counted from `anchor`
 //   interval — due every N days, counted from `anchor`
-//   monthly  — due on a day-of-month (dayOfMonth: 1–31; clamps to month length)
-//   annual   — due on a day-of-year (month: 1–12, day: 1–31; clamps Feb 29)
+//   monthly  — due every `interval` months (default 1), counted from
+//              `anchor`, on either a day-of-month (dateMode: 'date',
+//              dayOfMonth: 1–31; clamps to month length) or the Nth
+//              occurrence of a weekday (dateMode: 'nthWeekday', nthOrdinal:
+//              1–5, nthWeekday: 0–6; clamps to the 4th if a requested 5th
+//              doesn't occur that month — every month has at least 4 of
+//              any given weekday, only a 5th can be missing)
+//   annual   — due every `interval` years (default 1), counted from
+//              `anchor`, within `month` (1–12), on either a day-of-month
+//              (dateMode: 'date', day: 1–31; clamps Feb 29) or the Nth
+//              weekday within that month (dateMode: 'nthWeekday', same
+//              nthOrdinal/nthWeekday fields and clamp as monthly)
 //
 // Shape (lives at state.tasks, an array of):
-//   { id, name, repeat, daysOfWeek, interval, anchor, dayOfMonth, month, day,
-//     lastDone, createdAt }
+//   { id, name, repeat, daysOfWeek, interval, anchor, dateMode, dayOfMonth,
+//     nthOrdinal, nthWeekday, month, day, onceDate, lastDone, createdAt }
 
 const pad = (n) => String(n).padStart(2, '0');
 const isoOf = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -45,6 +59,30 @@ const diffDays = (aIso, date) => {
   const b = new Date(date.getFullYear(), date.getMonth(), date.getDate());
   return Math.round((b - a) / 86400000);
 };
+// Calendar months between an anchor and `date` (ignores day-of-month —
+// "every N months" only cares which month index this is, the day itself is
+// resolved separately via dayOfMonth/nthWeekday).
+const diffMonths = (aIso, date) => {
+  const a = fromIso(aIso);
+  return (date.getFullYear() - a.getFullYear()) * 12 + (date.getMonth() - a.getMonth());
+};
+const diffYears = (aIso, date) => date.getFullYear() - fromIso(aIso).getFullYear();
+// Every-N-units check shared by weekly/monthly/annual: `n` defaults to 1 (no
+// anchor needed — every week/month/year always qualifies, same as before
+// this feature existed), and only actually consults the anchor once N > 1.
+const everyN = (n, unitsSinceAnchor) => n <= 1 || (unitsSinceAnchor >= 0 && unitsSinceAnchor % n === 0);
+// Day-of-month of the Nth (1–5) occurrence of `weekday` (0–6) in
+// `year`/`month1` (1–12). Clamps down to the 4th if a requested 5th doesn't
+// exist — every month has at least 4 of any weekday (the shortest month is
+// 28 days = exactly 4 weeks), so only the 5th can ever be missing, and the
+// 4th is always a valid fallback.
+function nthWeekdayOfMonth(year, month1, nth, weekday) {
+  const firstWeekday = new Date(year, month1 - 1, 1).getDay();
+  const firstOccurrence = 1 + ((weekday - firstWeekday + 7) % 7);
+  const dim = daysInMonth(year, month1);
+  const date = firstOccurrence + (Math.max(1, Math.min(5, nth)) - 1) * 7;
+  return date > dim ? date - 7 : date;
+}
 
 function defaultTask(p = {}) {
   const now = new Date();
@@ -53,11 +91,23 @@ function defaultTask(p = {}) {
     name: p.name || '',
     repeat: p.repeat || 'once',
     daysOfWeek: Array.isArray(p.daysOfWeek) ? p.daysOfWeek : [now.getDay()],
-    interval: p.interval || 2,
+    // `interval` is shared by interval/weekly/monthly/annual (each is its
+    // own "every N ___"). Only the 'interval' repeat's default is 2 (a
+    // deliberately non-1 starting example); every other kind defaults to 1
+    // ("every week/month/year", the only behavior any of them had before
+    // this field applied to them) — this matters for any caller that
+    // constructs a weekly/monthly/annual task directly with no explicit
+    // interval (onboarding samples, help-sample-data.js), not just the
+    // interactive editor.
+    interval: p.interval || (p.repeat === 'interval' ? 2 : 1),
     anchor: p.anchor || isoToday(),
+    dateMode: p.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date',
     dayOfMonth: p.dayOfMonth || now.getDate(),
+    nthOrdinal: p.nthOrdinal || 1,
+    nthWeekday: p.nthWeekday ?? now.getDay(),
     month: p.month || now.getMonth() + 1,
     day: p.day || now.getDate(),
+    onceDate: p.onceDate || isoToday(),
     lastDone: p.lastDone ?? null,
     skipUntil: p.skipUntil ?? null,
     createdAt: p.createdAt || isoToday(),
@@ -75,21 +125,41 @@ function isDueToday(task, date = new Date()) {
   switch (task.repeat) {
     case 'once':
       // Due until completed; the day it's completed it still shows (checked).
+      // An optional onceDate defers that window to start on a future date —
+      // string comparison is safe here since both sides are 'YYYY-MM-DD'.
+      if (task.onceDate && today < task.onceDate) return false;
       return !task.lastDone || task.lastDone === today;
-    case 'weekly':
-      return (task.daysOfWeek || []).includes(date.getDay());
+    case 'weekly': {
+      if (!(task.daysOfWeek || []).includes(date.getDay())) return false;
+      const n = Math.max(1, task.interval || 1);
+      // Weeks are counted as rolling 7-day blocks from the anchor, not
+      // calendar (Sun–Sat) weeks — every day within the same block counts as
+      // the same "week", same non-calendar-aligned convention `interval`
+      // (days) already uses.
+      return everyN(n, Math.floor(diffDays(task.anchor || task.createdAt, date) / 7));
+    }
     case 'interval': {
       const n = Math.max(1, task.interval || 1);
       const delta = diffDays(task.anchor || task.createdAt, date);
       return delta >= 0 && delta % n === 0;
     }
     case 'monthly': {
+      const n = Math.max(1, task.interval || 1);
+      if (!everyN(n, diffMonths(task.anchor || task.createdAt, date))) return false;
+      if (task.dateMode === 'nthWeekday') {
+        return date.getDate() === nthWeekdayOfMonth(date.getFullYear(), date.getMonth() + 1, task.nthOrdinal || 1, task.nthWeekday ?? 0);
+      }
       const dim = daysInMonth(date.getFullYear(), date.getMonth() + 1);
       const target = Math.min(task.dayOfMonth || 1, dim);
       return date.getDate() === target;
     }
     case 'annual': {
       if (date.getMonth() + 1 !== task.month) return false;
+      const n = Math.max(1, task.interval || 1);
+      if (!everyN(n, diffYears(task.anchor || task.createdAt, date))) return false;
+      if (task.dateMode === 'nthWeekday') {
+        return date.getDate() === nthWeekdayOfMonth(date.getFullYear(), task.month, task.nthOrdinal || 1, task.nthWeekday ?? 0);
+      }
       const dim = daysInMonth(date.getFullYear(), task.month);
       const target = Math.min(task.day || 1, dim); // Feb 29 → Feb 28 in common years
       return date.getDate() === target;
@@ -125,26 +195,57 @@ const ordinal = (n) => {
 // Short human label for a reminder's schedule.
 function summary(task) {
   switch (task.repeat) {
-    case 'once':
-      return 'One-time';
+    case 'once': {
+      // onceDate defaults to today (defaultTask), so only a genuinely
+      // future date changes the label — today-or-past reads as plain
+      // "One-Time", same as before this control existed.
+      if (!task.onceDate || task.onceDate <= isoToday()) return 'One-Time';
+      const [y, m, d] = task.onceDate.split('-').map(Number);
+      const dateLabel = new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return `One-Time · starts ${dateLabel}`;
+    }
     case 'weekly': {
       const d = [...(task.daysOfWeek || [])].sort((a, b) => a - b);
-      if (d.length === 0) return 'Weekly';
-      if (d.length === 7) return 'Every day';
-      if (d.length === 5 && [1, 2, 3, 4, 5].every((x) => d.includes(x))) return 'Every weekday';
-      if (d.length === 2 && d.includes(0) && d.includes(6)) return 'Weekends';
-      if (d.length === 1) return 'Every ' + DAY_FULL[d[0]];
-      return 'Every ' + d.map((x) => DAY_ABBR[x]).join(', ');
+      const n = Math.max(1, task.interval || 1);
+      if (n === 1) {
+        if (d.length === 0) return 'Weekly';
+        if (d.length === 7) return 'Every day';
+        if (d.length === 5 && [1, 2, 3, 4, 5].every((x) => d.includes(x))) return 'Every weekday';
+        if (d.length === 2 && d.includes(0) && d.includes(6)) return 'Weekends';
+        if (d.length === 1) return 'Every ' + DAY_FULL[d[0]];
+        return 'Every ' + d.map((x) => DAY_ABBR[x]).join(', ');
+      }
+      const unit = `Every ${n} weeks`;
+      if (d.length === 0) return unit;
+      const dayLabel =
+        d.length === 7 ? 'every day' :
+        (d.length === 5 && [1, 2, 3, 4, 5].every((x) => d.includes(x))) ? 'weekdays' :
+        (d.length === 2 && d.includes(0) && d.includes(6)) ? 'weekends' :
+        d.length === 1 ? DAY_FULL[d[0]] :
+        d.map((x) => DAY_ABBR[x]).join(', ');
+      return `${unit} · ${dayLabel}`;
     }
     case 'interval': {
       const n = Math.max(1, task.interval || 1);
       return n === 1 ? 'Every day' : `Every ${n} days`;
     }
-    case 'monthly':
-      return `Monthly · ${ordinal(task.dayOfMonth || 1)}`;
-    case 'annual':
-      return 'Yearly · ' + new Date(2001, (task.month || 1) - 1, task.day || 1)
-        .toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    case 'monthly': {
+      const n = Math.max(1, task.interval || 1);
+      const unit = n === 1 ? 'Monthly' : `Every ${n} months`;
+      const dayLabel = task.dateMode === 'nthWeekday'
+        ? `${ordinal(task.nthOrdinal || 1)} ${DAY_FULL[task.nthWeekday ?? 0]}`
+        : ordinal(task.dayOfMonth || 1);
+      return `${unit} · ${dayLabel}`;
+    }
+    case 'annual': {
+      const n = Math.max(1, task.interval || 1);
+      const unit = n === 1 ? 'Yearly' : `Every ${n} years`;
+      const monthAbbr = new Date(2001, (task.month || 1) - 1, 1).toLocaleDateString('en-US', { month: 'short' });
+      const dayLabel = task.dateMode === 'nthWeekday'
+        ? `${ordinal(task.nthOrdinal || 1)} ${DAY_ABBR[task.nthWeekday ?? 0]} of ${monthAbbr}`
+        : new Date(2001, (task.month || 1) - 1, task.day || 1).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return `${unit} · ${dayLabel}`;
+    }
     default:
       return '';
   }
@@ -260,7 +361,21 @@ function todayVisibility(task, opts, holidayState, date = new Date()) {
 function nextEligible(task, opts, holidayState, from = new Date(), respectSkipUntil = false) {
   const o = optsFor(task, opts);
   const base = new Date(from.getFullYear(), from.getMonth(), from.getDate());
-  for (let i = 1; i <= 1100; i++) {
+  // 1100 days (~3 years) comfortably covers the old max (annual, interval 1)
+  // but not a large "every N weeks/months/years" — scale the horizon up so a
+  // sparse schedule doesn't fail to find its own next occurrence.
+  const n = Math.max(1, task.interval || 1);
+  // A one-time reminder's onceDate has no upper bound (a plain date picker),
+  // so a far-future pick needs its own horizon or nextEligible falsely comes
+  // back null — which the caller reads as "this will never show" and shows a
+  // scary warning for a perfectly valid future reminder.
+  const horizonDays = task.repeat === 'annual' ? n * 366 + 366
+    : task.repeat === 'monthly' ? n * 31 + 31
+    : task.repeat === 'weekly' ? n * 7 + 7
+    : (task.repeat === 'once' && task.onceDate) ? Math.round((fromIso(task.onceDate) - base) / 86400000) + 30
+    : 1100;
+  const horizon = Math.max(1100, horizonDays);
+  for (let i = 1; i <= horizon; i++) {
     const d = new Date(base); d.setDate(base.getDate() + i);
     if (!isDueToday(task, d)) continue;
     if (respectSkipUntil && task.skipUntil && isoOf(d) < task.skipUntil) continue;

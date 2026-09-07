@@ -88,7 +88,7 @@ function groupEntries(state) {
   // first-time checklist, until checklistDone (set once the closing
   // Generate card runs, see onboarding-checklist.js). Unlike checklistDone
   // itself, this does NOT permanently stop once that happens: Settings'
-  // Replay tour button (tab-settings.jsx) resets each item's own checklist
+  // Replay Tour button (tab-settings.jsx) resets each item's own checklist
   // entry (though never checklistDone), so a still-unresolved sample keeps
   // offering its card afterward too — EXCLUDED if a real (non-sample)
   // picker has since taken its exact name, since re-prompting "set up a
@@ -342,9 +342,9 @@ function LoaderCard({ picker, info }) {
 // the Pickers-tab per-item controls: for weighted/dynamic pickers a weight
 // stepper; for ease-up/ease-down the item's cadence range (soonest/latest, the
 // human face of its drift band) since weight is irrelevant to those modes.
-// Plus a vacation toggle and a confirm-gated delete (delete behaves exactly as
+// Plus an Active/Inactive toggle and a confirm-gated delete (delete behaves exactly as
 // Data — actions.removeItem).
-function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew, itemCount }) {
+const EntryEditor = React.forwardRef(function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew, itemCount, items }, ref) {
   const [confirmDel, setConfirmDel] = React.useState(false);
   // A picker needs at least 2 items for a pick to be a real choice — refuse to
   // let this one go below that. itemCount is the picker's CURRENT total
@@ -356,8 +356,13 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew
   // discard a brand-new item instead of reverting it.
   const orig = React.useRef(item);
   // 'saved' | 'cancel' once closed explicitly; null = still open → an implicit
-  // close (tab-switch / reload) should discard the unsaved live edits.
+  // close (tab-switch / reload) should discard the unsaved live edits. A
+  // caller that offers its OWN close affordance outside this component (e.g.
+  // the Data tab row's own collapse chevron, which sits in the row header
+  // above where this editor renders) can call the exposed `keep()` first, so
+  // that affordance reads as "done, keep this" rather than an implicit close.
   const doneRef = React.useRef(null);
+  React.useImperativeHandle(ref, () => ({ keep: () => { doneRef.current = 'saved'; } }));
   const revertState = () => {
     if (onCancel) onCancel(orig.current);
     else actions.replaceItem(orig.current.id, orig.current);
@@ -400,8 +405,12 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew
   const driftToSoonest = (easeMax) => Math.max(1, Math.round(THRESHOLD / (easeMax || 1)));
   const driftToLatest = (easeMin) => Math.max(1, Math.round(THRESHOLD / (easeMin || 1)));
   const daysToDrift = (days) => THRESHOLD / Math.max(1, days);
-  const eMin = item.easeMin ?? (picker && picker.easeMin) ?? 10;
-  const eMax = item.easeMax ?? (picker && picker.easeMax) ?? 20;
+  // Same fallback the picking engine itself uses for an item with no ease
+  // band of its own (see PICKERS.avgEase) — e.g. one added before per-item
+  // stamping existed, or from an old imported backup.
+  const fallbackEase = picker ? PICKERS.avgEase(items, picker.id) : null;
+  const eMin = item.easeMin ?? fallbackEase?.easeMin ?? 10;
+  const eMax = item.easeMax ?? fallbackEase?.easeMax ?? 20;
   const soonest = driftToSoonest(eMax);
   const latest = driftToLatest(eMin);
   const setSoonest = (days) => {
@@ -526,11 +535,11 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew
         )}
         <div className="pie-row">
           <div className="pie-rowlabel">
-            <span className="pie-lbl">Active</span>
-            <span className="pie-sub set-sub-fade" key={String(!!item.vacation)}>{item.vacation ? <><strong>not eligible</strong> to be picked</> : <><strong>eligible</strong> to be picked</>}</span>
+            <span className="pie-lbl set-sub-fade" key={`lbl-${!!item.vacation}`}>{item.vacation ? 'Inactive' : 'Active'}</span>
+            <span className="pie-sub set-sub-fade" key={`sub-${!!item.vacation}`}>{item.vacation ? <><strong>not eligible</strong> to be picked</> : <><strong>eligible</strong> to be picked</>}</span>
           </div>
           <button className={`switch ${!item.vacation ? 'is-on' : ''}`} aria-pressed={!item.vacation}
-                  aria-label={item.vacation ? 'Bring back into rotation' : 'Send on vacation'}
+                  aria-label={item.vacation ? 'Activate' : 'Deactivate'}
                   onClick={() => actions.toggleVacation(item.id, 'item')}><i /></button>
         </div>
       </div>
@@ -565,7 +574,7 @@ function EntryEditor({ item, picker, actions, onClose, onCancel, onDelete, isNew
       )}
     </div>
   );
-}
+});
 
 function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip, onReroll, isRemoving, isRolling, isEditing, onEdit, onRename, editMode, onGripDown, onPlayTutorial, onUncheckTutorial, checklistExiting }) {
   // Mini-tour launcher: a sample picker from the Welcome Tour, offered as a
@@ -666,7 +675,7 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
         </div>
         {!editMode && (
           <div className="today-card-actions">
-            <InfoTip className="icon-btn is-disabled" label={disabledTip} action="Re-roll">
+            <InfoTip className="icon-btn is-disabled" label={disabledTip} action="Re-Roll">
               <Icon name="refresh" size={14} />
             </InfoTip>
             <button className="icon-btn" onClick={(e) => { e.stopPropagation(); onSkip(entry.eid); }}
@@ -717,7 +726,7 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
         </div>
         {!editMode && (
           <div className="today-card-actions">
-            <InfoTip className="icon-btn is-disabled" label={disabledTip} action="Re-roll">
+            <InfoTip className="icon-btn is-disabled" label={disabledTip} action="Re-Roll">
               <Icon name="refresh" size={14} />
             </InfoTip>
             <InfoTip className="icon-btn is-disabled" label={disabledTip} action="Skip">
@@ -737,7 +746,7 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
   // Re-roll needs at least two candidates to land on a DIFFERENT item; with only
   // one the button is disabled and shows a tip (hover on desktop, tap on mobile).
   // What counts as a candidate is per-mode: ease-up cycles items charged to the
-  // threshold; every other mode draws from the picker's non-vacation items.
+  // threshold; every other mode draws from the picker's active (non-inactive) items.
   const rerollPool = state.items.filter((it) => it.pickerId === picker.id && !it.vacation);
   const eligCount = picker.mode === 'ease-up'
     ? rerollPool.filter((it) => PICKERS.easeEligible(it, picker.threshold)).length
@@ -800,11 +809,11 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
           {canReroll ? (
             <button className={`icon-btn ${isRolling ? 'is-spinning' : ''}`}
                     onClick={(e) => { e.stopPropagation(); onReroll(entry, picker); }}
-                    aria-label="Re-roll" title="Re-roll">
+                    aria-label="Re-Roll" title="Re-Roll">
               <Icon name="refresh" size={14} />
             </button>
           ) : (
-            <InfoTip className="icon-btn is-disabled" label={activeRerollTip} action="Re-roll">
+            <InfoTip className="icon-btn is-disabled" label={activeRerollTip} action="Re-Roll">
               <Icon name="refresh" size={14} />
             </InfoTip>
           )}
@@ -1018,7 +1027,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     || (state.tasks || []).some((t) => t.hidden && OB_SAMPLE_TASK_IDS.includes(t.id));
   const showChecklist = mainTourEnded && !checklistDone;
   // Page Tours cards keep offering themselves post-checklistDone too, same
-  // "Replay tour resets each item's own entry but never checklistDone
+  // "Replay Tour resets each item's own entry but never checklistDone
   // itself" reasoning as groupEntries()'s own picker-sample cards — no
   // name-collision concept applies here (a page tour isn't named after
   // anything the user could "already have"), just whether it's still
@@ -1369,7 +1378,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     // upside-down) — same direction continues, so the new content rolls in.
     setTimeout(() => {
       if (picker.mode === 'ease-up') {
-        // Ease-up re-roll = manual cycle through eligible (charged ≥ threshold)
+        // Ease Up re-roll = manual cycle through eligible (charged ≥ threshold)
         // items, highest→lowest value, wrapping back to the highest. Deterministic
         // order: value desc, then oldest lastPicked, then id (stable because
         // done-gating freezes values between rolls). Fewer than 2 eligible → the
@@ -1641,7 +1650,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   };
   const [generatingMap, setGeneratingMap] = React.useState(null);
   // Entries a regenerate is about to drop entirely (their picker produced no new
-  // pick — e.g. its last eligible item just went on vacation). They get no loader
+  // pick — e.g. its last eligible item just went inactive). They get no loader
   // card, so without this they sat untouched through the whole generation and
   // then blinked out. Marked here so they play the normal removal animation.
   const [leavingEids, setLeavingEids] = React.useState(() => new Set());
@@ -1710,6 +1719,13 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     // occupies during the loader.
     const orderedSlots = [];
     const carriedEntries = [];    // cadence picks persisting from a prior day
+    // Item names already committed to today's list so far (lowercased) — fed
+    // to any `avoidDuplicates` picker below so it won't re-surface an item
+    // another picker already put on today's list. Seeded with carried-over
+    // cadence picks (still "on the list" today, just not freshly picked),
+    // then grown as each fresh pick lands, in encounter order — matching
+    // "as it is being built" rather than checking against the final list.
+    const pickedNames = new Set();
     const CAD = CADENCE;
     for (const pid of state.daily.pickerIds) {
       const picker = state.pickers.find((p) => p.id === pid);
@@ -1727,6 +1743,8 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
         if (existing && existing.periodKey === periodK) {
           if (existing.done) continue;                 // period satisfied → nothing
           carriedEntries.push({ _carry: true, entry: existing });
+          const carriedItem = state.items.find((it) => it.id === existing.itemId);
+          if (carriedItem) pickedNames.add(carriedItem.name.toLowerCase());
           continue;                                     // persist the locked card
         }
         // No current-period card yet; a completed pick logged this period also
@@ -1750,8 +1768,9 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
         continue;
       }
       const periodKey = cadence !== 'daily' ? CAD.periodKey(picker, now) : null;
-      const res = PICKERS.pick(picker, state.items);
+      const res = PICKERS.pick(picker, state.items, { excludeNames: pickedNames });
       if (res.picked) {
+        pickedNames.add(res.picked.name.toLowerCase());
         newPicks.push({
           pickerId: pid, res,
           candidates: res.cycleCandidates || [],
@@ -1761,7 +1780,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
         });
         orderedSlots.push({ pickerId: pid, info: { kind: 'pick', candidates: res.cycleCandidates || [], pickedId: res.picked.id } });
       } else if (picker.mode === 'ease-up' && res.updates && res.updates.length) {
-        // Ease-up with nothing charged to threshold: surface a "charging" card so
+        // Ease Up with nothing charged to threshold: surface a "charging" card so
         // the day's drift (res.updates) is applied only when the user checks it —
         // consistent with done-gating. Without this the drift would be dropped and
         // the picker could never climb to eligibility.
@@ -2139,7 +2158,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
       const t2 = setTimeout(() => {
         // Any real reminder OR picker created while the checklist was up —
         // whether by finishing a mini-tour or just the user clicking "+"/
-        // "Add new picker" themselves (see reminders.jsx's startAdd and
+        // "Add New Picker" themselves (see reminders.jsx's startAdd and
         // tab-picker.jsx's onCreate, both gated on the showChecklist bus
         // field) — was seeded hidden so it didn't clutter the list alongside
         // the still-open launcher cards. Surface them all now, right before
@@ -2259,7 +2278,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
           <div className={`editmode-banner ${bannerClosing ? 'is-closing' : ''}`} role="status">
             <span className="editmode-banner-msg">
               <Icon name="grip" size={15} />
-              Edit Mode — drag groups and items to rearrange or click group names to edit them
+              Edit Mode allows you to drag groups and items to rearrange them or to click group names to edit them.
             </span>
             <span className="editmode-banner-actions">
               <Btn kind="ghost" size="sm" onClick={() => exitEditMode(false)}>Cancel</Btn>
@@ -2460,7 +2479,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
                           <Collapse open={activeEditor === `item:${entry.eid}` && !!item}>
                             {item && (
                               <div className="today-entry-editor">
-                                <EntryEditor item={item} picker={picker} actions={actions}
+                                <EntryEditor item={item} picker={picker} actions={actions} items={state.items}
                                              itemCount={state.items.filter((it) => it.pickerId === picker.id).length}
                                              onClose={() => setActiveEditor((cur) => cur === `item:${entry.eid}` ? null : cur)}
                                              onDelete={() => handleDeleteItem(entry.eid, item.id)} />

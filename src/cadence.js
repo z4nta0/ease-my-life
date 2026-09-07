@@ -4,10 +4,21 @@
 //   cadence: 'daily' (default) | 'weekly' | 'monthly' | 'yearly'
 //     daily   — surfaces every day (today's original behavior); no anchor.
 //     weekly  — surfaces on a chosen weekday (anchorDow: 0=Sun … 6=Sat).
-//     monthly — surfaces on a chosen day-of-month (anchorDom: 1–31; clamps to the
-//               month's last day for short months, e.g. 31 → Feb 28/29).
-//     yearly  — surfaces on a chosen month+day (anchorMonth 1–12, anchorDay 1–31;
-//               Feb 29 clamps to Feb 28 in common years).
+//     monthly — surfaces on a chosen day-of-month (dateMode: 'date',
+//               anchorDom: 1–31; clamps to the month's last day for short
+//               months, e.g. 31 → Feb 28/29) OR the Nth occurrence of a
+//               weekday (dateMode: 'nthWeekday', nthOrdinal: 1–5, nthWeekday:
+//               0–6; clamps to the 4th if a requested 5th doesn't occur that
+//               month — every month has at least 4 of any given weekday,
+//               only a 5th can be missing). Same dateMode/nthOrdinal/
+//               nthWeekday fields and semantics as tasks.js' own monthly
+//               reminders — duplicated rather than shared, per this module's
+//               own isolation from tasks.js (see CLAUDE.md's domain modules).
+//     yearly  — surfaces on a chosen month+day (dateMode: 'date', anchorMonth
+//               1–12, anchorDay 1–31; Feb 29 clamps to Feb 28 in common
+//               years) OR the Nth weekday within that month (dateMode:
+//               'nthWeekday', same nthOrdinal/nthWeekday fields and clamp as
+//               monthly).
 //
 // PERIOD MODEL: each cadence divides the calendar into consecutive periods whose
 // boundary is the anchor. The period a date falls in is identified by its START
@@ -24,6 +35,30 @@ const pad = (n) => String(n).padStart(2, '0');
 const isoOf = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const daysInMonth = (year, month1) => new Date(year, month1, 0).getDate();
 const atMidnight = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+// Day-of-month of the Nth (1–5) occurrence of `weekday` (0–6) in
+// `year`/`month1` (1–12). Clamps down to the 4th if a requested 5th doesn't
+// exist — every month has at least 4 of any weekday (the shortest month is
+// 28 days = exactly 4 weeks), so only the 5th can ever be missing, and the
+// 4th is always a valid fallback. Same logic as tasks.js' own
+// nthWeekdayOfMonth, duplicated per this module's isolation from tasks.js.
+function nthWeekdayOfMonth(year, month1, nth, weekday) {
+  const firstWeekday = new Date(year, month1 - 1, 1).getDay();
+  const firstOccurrence = 1 + ((weekday - firstWeekday + 7) % 7);
+  const dim = daysInMonth(year, month1);
+  const date = firstOccurrence + (Math.max(1, Math.min(5, nth)) - 1) * 7;
+  return date > dim ? date - 7 : date;
+}
+// Resolves to a day-of-month for either monthly (anchorDom) or yearly
+// (anchorDay, within its own fixed anchorMonth) cadences, honoring
+// nth-weekday mode for either. `domField` is which raw field on `picker`
+// holds its plain date-of-month value ('anchorDom' for monthly, 'anchorDay'
+// for yearly) — shared so isAnchorDay/periodStart don't each duplicate the
+// dateMode branch.
+function targetDayInMonth(picker, year, month1, domField) {
+  return picker.dateMode === 'nthWeekday'
+    ? nthWeekdayOfMonth(year, month1, picker.nthOrdinal ?? 1, picker.nthWeekday ?? 0)
+    : Math.min(picker[domField] ?? 1, daysInMonth(year, month1));
+}
 
 const CADENCES = ['daily', 'weekly', 'monthly', 'yearly'];
 const isCadence = (c) => CADENCES.includes(c);
@@ -48,6 +83,11 @@ function normalize(p = {}) {
     anchorDom: Number.isInteger(p.anchorDom) ? p.anchorDom : now.getDate(),
     anchorMonth: Number.isInteger(p.anchorMonth) ? p.anchorMonth : now.getMonth() + 1,
     anchorDay: Number.isInteger(p.anchorDay) ? p.anchorDay : now.getDate(),
+    // Monthly/yearly only — which of anchorDom/anchorDay vs nthOrdinal+
+    // nthWeekday actually decides the day. See targetDayInMonth.
+    dateMode: p.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date',
+    nthOrdinal: Number.isInteger(p.nthOrdinal) ? p.nthOrdinal : 1,
+    nthWeekday: Number.isInteger(p.nthWeekday) ? p.nthWeekday : now.getDay(),
   };
 }
 
@@ -57,14 +97,12 @@ function isAnchorDay(picker, date = new Date()) {
   if (c === 'daily') return true;
   if (c === 'weekly') return date.getDay() === (picker.anchorDow ?? date.getDay());
   if (c === 'monthly') {
-    const target = Math.min(picker.anchorDom ?? 1, daysInMonth(date.getFullYear(), date.getMonth() + 1));
-    return date.getDate() === target;
+    return date.getDate() === targetDayInMonth(picker, date.getFullYear(), date.getMonth() + 1, 'anchorDom');
   }
   if (c === 'yearly') {
     const m = picker.anchorMonth ?? 1;
     if (date.getMonth() + 1 !== m) return false;
-    const target = Math.min(picker.anchorDay ?? 1, daysInMonth(date.getFullYear(), m));
-    return date.getDate() === target;
+    return date.getDate() === targetDayInMonth(picker, date.getFullYear(), m, 'anchorDay');
   }
   return true;
 }
@@ -81,21 +119,21 @@ function periodStart(picker, date = new Date()) {
     const s = new Date(d); s.setDate(d.getDate() - back); return s;
   }
   if (c === 'monthly') {
-    const dom = picker.anchorDom ?? 1;
-    // This month's clamped anchor; if we're before it, step to previous month.
-    const thisTarget = Math.min(dom, daysInMonth(d.getFullYear(), d.getMonth() + 1));
+    // This month's target (date-of-month or nth-weekday, per dateMode); if
+    // we're before it, step to previous month.
+    const thisTarget = targetDayInMonth(picker, d.getFullYear(), d.getMonth() + 1, 'anchorDom');
     if (d.getDate() >= thisTarget) return new Date(d.getFullYear(), d.getMonth(), thisTarget);
     const pm = new Date(d.getFullYear(), d.getMonth() - 1, 1);
-    const pTarget = Math.min(dom, daysInMonth(pm.getFullYear(), pm.getMonth() + 1));
+    const pTarget = targetDayInMonth(picker, pm.getFullYear(), pm.getMonth() + 1, 'anchorDom');
     return new Date(pm.getFullYear(), pm.getMonth(), pTarget);
   }
   if (c === 'yearly') {
     const m = (picker.anchorMonth ?? 1) - 1;
-    const thisTarget = Math.min(picker.anchorDay ?? 1, daysInMonth(d.getFullYear(), m + 1));
+    const thisTarget = targetDayInMonth(picker, d.getFullYear(), m + 1, 'anchorDay');
     const thisAnchor = new Date(d.getFullYear(), m, thisTarget);
     if (d >= thisAnchor) return thisAnchor;
     const py = d.getFullYear() - 1;
-    const pTarget = Math.min(picker.anchorDay ?? 1, daysInMonth(py, m + 1));
+    const pTarget = targetDayInMonth(picker, py, m + 1, 'anchorDay');
     return new Date(py, m, pTarget);
   }
   return d;
@@ -114,12 +152,20 @@ function completedThisPeriod(picker, pickLog, date = new Date()) {
 
 // Short human label for a picker's cadence (for chips/summaries).
 const DAY_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 function summary(picker) {
   const c = picker.cadence || 'daily';
   if (c === 'daily') return 'Daily';
   if (c === 'weekly') return 'Weekly · ' + DAY_FULL[picker.anchorDow ?? 0];
-  if (c === 'monthly') return 'Monthly · ' + ordinal(picker.anchorDom ?? 1);
+  if (c === 'monthly') {
+    return picker.dateMode === 'nthWeekday'
+      ? `Monthly · ${ordinal(picker.nthOrdinal ?? 1)} ${DAY_FULL[picker.nthWeekday ?? 0]}`
+      : 'Monthly · ' + ordinal(picker.anchorDom ?? 1);
+  }
   if (c === 'yearly') {
+    if (picker.dateMode === 'nthWeekday') {
+      return `Yearly · ${ordinal(picker.nthOrdinal ?? 1)} ${DAY_FULL[picker.nthWeekday ?? 0]} of ${MONTH_SHORT[(picker.anchorMonth ?? 1) - 1]}`;
+    }
     return 'Yearly · ' + new Date(2001, (picker.anchorMonth ?? 1) - 1, picker.anchorDay ?? 1)
       .toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
   }

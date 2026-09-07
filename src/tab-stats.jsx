@@ -21,38 +21,35 @@ function statIso(d) {
   return x.toISOString().slice(0, 10);
 }
 
-// Relative label for a completion timestamp. Today intentionally gets no
-// special "Today · {time}" case of its own — that was a longer, differently
-// shaped string than every other row's "{weekday}, {month} {day}", which
-// misaligned the column it sits in; today just falls through to the same
-// format as any other day.
+// Relative label for a completion timestamp. Today and Yesterday intentionally
+// get no special "Today · {time}" / "Yesterday" case of their own — those were
+// longer, differently shaped strings than every other row's
+// "{weekday}, {month} {day}", which misaligned the column they sit in; both
+// just fall through to the same format as any other day.
 function relWhen(iso) {
   const d = new Date(iso);
-  const day = TASKS.isoOf(d);
-  const yest = TASKS.isoOf(new Date(Date.now() - 86400000));
-  if (day === yest) return 'Yesterday';
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
 const STAT_RANGES = [
-  { key: 'week',  label: 'Week',     days: 7   },
-  { key: 'month', label: 'Month',    days: 30  },
-  { key: '3m',    label: '3 months', days: 90  },
-  { key: '6m',    label: '6 months', days: 182 },
+  { key: 'all',   label: 'All Time', days: Infinity },
   { key: 'year',  label: '1 year',   days: 365 },
-  { key: 'all',   label: 'All time', days: Infinity },
+  { key: '6m',    label: '6 months', days: 182 },
+  { key: '3m',    label: '3 months', days: 90  },
+  { key: 'month', label: 'Month',    days: 30  },
+  { key: 'week',  label: 'Week',     days: 7   },
 ];
 
 // How each Today pick came to be — kept on-palette (accent + warm) so the bar
 // reads as one family rather than a random spectrum.
 const SOURCE_META = [
-  { key: 'auto',   label: 'Auto-generated', color: 'var(--accent)' },
-  { key: 'reroll', label: 'Re-rolled',      color: 'oklch(from var(--accent) calc(l + 0.22) calc(c - 0.05) h)' },
-  { key: 'manual', label: 'Hand-picked',    color: 'var(--warm)' },
+  { key: 'auto',   label: 'Auto Generated', color: 'var(--accent)' },
+  { key: 'reroll', label: 'Re-Rolled',      color: 'oklch(from var(--accent) calc(l + 0.22) calc(c - 0.05) h)' },
+  { key: 'manual', label: 'Hand Picked',    color: 'var(--warm)' },
 ];
 const TYPE_META = [
   { key: 'recurring', label: 'Recurring', color: 'var(--accent)' },
-  { key: 'once',      label: 'One-time',  color: 'var(--warm)' },
+  { key: 'once',      label: 'One-Time',  color: 'var(--warm)' },
 ];
 
 // Count → heat level for reminder days (no "possible" denominator like picks,
@@ -173,7 +170,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   // And for the ease-down "Spent" metric.
   const [spentMode, setSpentMode] = React.useState('eligible');
   // Count denominator mode: 'total' (share of all picks, sums 100%) vs
-  // 'eligible' (share of picks while the item was not on vacation).
+  // 'eligible' (share of picks while the item was active).
   const [countMode, setCountMode] = React.useState('total');
   // Reminders "Reminders breakdown" card: which metric (completions | skipped),
   // sort direction, and current pager page (0-indexed).
@@ -193,7 +190,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   // slide in from the matching side. Cleared to '' on any non-paging change.
   const [heatDir, setHeatDir] = React.useState('');
 
-  const rangeDef = STAT_RANGES.find((r) => r.key === range) || STAT_RANGES[5];
+  const rangeDef = STAT_RANGES.find((r) => r.key === range) || STAT_RANGES[0];
   const rangeNoun = range === 'all' ? 'all time' : `the last ${rangeDef.label.toLowerCase()}`;
   const rangeKicker = range === 'all' ? 'All time' : `Last ${rangeDef.label.toLowerCase()}`;
 
@@ -279,20 +276,36 @@ function TabStats({ state, actions, onHome, onNavTab }) {
     });
   }, [condStats, condMetric, condSort]);
 
-  // Distinct group names in first-seen order — drive the group selector that
-  // narrows the "Show" picker row below it (mirrors the Pickers tab).
+  // Distinct group names, alphabetical — drive the group selector that
+  // narrows the "Show" picker row below it (mirrors the Pickers tab; "All"
+  // itself is a separate, always-first pill rendered outside this list).
   const existingGroups = React.useMemo(() => {
     const seen = [];
     for (const p of pickers) if (p.group && !p.hidden && !seen.includes(p.group)) seen.push(p.group);
-    return seen;
+    return seen.sort((a, b) => a.localeCompare(b));
   }, [pickers]);
   // statGroup only scopes which pickers appear in the Show row; it never filters
   // the stats itself. 'all' also lets the All + Reminders options show. Hidden
   // pickers (see store.jsx's `hidden` flag) never appear here.
   const [statGroup, setStatGroup] = React.useState('all');
+  // Distinct modes actually in use, alphabetical by their own display label —
+  // the Type filter bar's own picker-mode pills ("All" pinned first, same as
+  // Group). Independent of statGroup — both narrow visiblePickers together.
+  const existingModes = React.useMemo(() => {
+    const seen = new Set();
+    for (const p of pickers) if (!p.hidden) seen.add(p.mode);
+    return [...seen].sort((a, b) => MODES[a].label.localeCompare(MODES[b].label));
+  }, [pickers]);
+  // typeFilter also carries the Conditionals/Reminders sentinel values (moved
+  // here from statGroup) — a real picker's mode never matches either, so
+  // visiblePickers naturally excludes every real picker under both, same as
+  // any other empty filter value.
+  const [typeFilter, setTypeFilter] = React.useState('all');
   const visiblePickers = React.useMemo(() => (
-    pickers.filter((p) => !p.hidden && (statGroup === 'all' || p.group === statGroup))
-  ), [pickers, statGroup]);
+    pickers.filter((p) => !p.hidden
+      && (statGroup === 'all' || p.group === statGroup)
+      && (typeFilter === 'all' || p.mode === typeFilter))
+  ), [pickers, statGroup, typeFilter]);
 
   // Which reminder types opt into Stats. If none, the Reminders scope is hidden.
   const opts = TASKS.normalizeOpts(state.reminderOpts);
@@ -308,15 +321,34 @@ function TabStats({ state, actions, onHome, onNavTab }) {
     if (scope === 'conditionals' && !hasConditionals) setScope('all');
   }, [scope, hasConditionals]);
 
-  // Keep scope coherent with the group filter: within a specific group, All /
-  // Reminders aren't offered, so if the current scope isn't one of the group's
-  // pickers, fall back to the first picker in the list.
+  // Same alphabetical order the Show row itself renders its pickers in
+  // (below) — reused so "jump to the first card" always agrees with what's
+  // actually shown first, not visiblePickers' own storage-array order.
+  const sortedVisiblePickers = React.useMemo(() => (
+    [...visiblePickers].sort((a, b) => a.name.localeCompare(b.name))
+  ), [visiblePickers]);
+
+  // Keep scope coherent with the group + type filters: within a specific
+  // group and/or type, All / Reminders aren't offered, so if the current
+  // scope isn't one of the filtered pickers, fall back to the first one —
+  // alphabetically, matching the Show row. Also jumps whenever either filter
+  // itself just changed, not only once the OLD scope happens to fall out of
+  // view (e.g. switching between two groups that both happen to contain the
+  // same picker used to leave it stranded there instead of jumping to the
+  // new filter's own first card).
+  const prevFiltersRef = React.useRef({ statGroup, typeFilter });
   React.useEffect(() => {
-    if (statGroup === 'all') return;
-    if (!visiblePickers.some((p) => p.id === scope)) {
-      setScope(visiblePickers[0] ? visiblePickers[0].id : 'all');
+    const filtersChanged = prevFiltersRef.current.statGroup !== statGroup || prevFiltersRef.current.typeFilter !== typeFilter;
+    prevFiltersRef.current = { statGroup, typeFilter };
+    // 'conditionals'/'reminders' are the Type rail's own sentinel values (their
+    // pill sets scope directly), not a real picker mode to auto-pick a first
+    // card from — visiblePickers is empty for both, so falling through below
+    // would immediately reset scope back to 'all' right after it's set.
+    if (typeFilter === 'conditionals' || typeFilter === 'reminders') return;
+    if (filtersChanged || !visiblePickers.some((p) => p.id === scope)) {
+      setScope(sortedVisiblePickers[0] ? sortedVisiblePickers[0].id : 'all');
     }
-  }, [statGroup, visiblePickers, scope]);
+  }, [statGroup, typeFilter, visiblePickers, sortedVisiblePickers, scope]);
 
   const isReminders = scope === 'reminders';
 
@@ -324,12 +356,13 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   // tab strip: a mask gradient that only fades the side with more content.
   const scopeRef = React.useRef(null);
   const groupsRef = React.useRef(null);
+  const typesRef = React.useRef(null);
   const rangeRef = React.useRef(null);
   const metricsRef = React.useRef(null);
   const remMetricsRef = React.useRef(null);
   const condMetricsRef = React.useRef(null);
   React.useEffect(() => {
-    const els = [scopeRef.current, groupsRef.current, rangeRef.current, metricsRef.current, remMetricsRef.current, condMetricsRef.current].filter(Boolean);
+    const els = [scopeRef.current, groupsRef.current, typesRef.current, rangeRef.current, metricsRef.current, remMetricsRef.current, condMetricsRef.current].filter(Boolean);
     const cleanups = els.map((el) => {
       const update = () => {
         const scrollable = el.scrollWidth - el.clientWidth > 1;
@@ -345,7 +378,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
       return () => { el.removeEventListener('scroll', update); ro.disconnect(); };
     });
     return () => cleanups.forEach((c) => c());
-  }, [pickers.length, remEnabled, scope, metric, remBdMetric, condMetric, isConditionals, isReminders, statGroup, visiblePickers.length]);
+  }, [pickers.length, remEnabled, scope, range, metric, remBdMetric, condMetric, isConditionals, isReminders, statGroup, typeFilter, existingModes.length, visiblePickers.length]);
 
   // ── Pick rows for the active scope ('all' or a single picker) ─────────────
   // Active picks only — rejected (re-rolled-away) and skipped rows are excluded
@@ -505,7 +538,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   }, [state.items, scope, countById, hiddenPickerIds]);
 
   // Single-picker breakdown — EVERY item in the picker (incl. zero-pick and
-  // vacation), with all per-item metrics on one object. The "Pick breakdown"
+  // inactive), with all per-item metrics on one object. The "Pick breakdown"
   // card pivots on `metric` to choose which value to show + sort by.
   const isPicker = scope !== 'all' && !isReminders && !isConditionals;
   const pickerObj = pickers.find((p) => p.id === scope);
@@ -514,8 +547,9 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   const usesWeight = isPicker && pickerObj && (pickerObj.mode === 'weighted' || pickerObj.mode === 'dynamic');
   const THRESHOLD = 100;
 
-  // Vacation replay from the event log: onAt(item, date) = was it on vacation
-  // that day; onAfter(item, date) = did an 'on' transition happen after `date`.
+  // Inactive-state replay from the event log: onAt(item, date) = was it
+  // inactive that day; onAfter(item, date) = did an 'on' transition happen
+  // after `date`.
   const vac = React.useMemo(() => {
     const byItem = new Map();
     for (const r of (state.vacationLog || [])) {
@@ -541,7 +575,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   const activeDates = React.useMemo(() => [...new Set(rows.map((r) => r.date))].sort(), [rows]);
 
   // Eligible-day gap per item (used by the Frequency metric). The eligible index
-  // is per-item: picker run days MINUS that item's vacation days, so a vacation
+  // is per-item: picker run days MINUS that item's inactive days, so an inactive
   // stretch can't inflate the gap. Calendar gap stays literal wall-clock time.
   const freqById = React.useMemo(() => {
     const m = new Map();
@@ -570,10 +604,10 @@ function TabStats({ state, actions, onHome, onNavTab }) {
     return m;
   }, [isPicker, isEaseDown, rows, activeDates, vac]);
 
-  // Ease-down "Spent" — measured from ACTUAL history: the average length of a
+  // Ease Down "Spent" — measured from ACTUAL history: the average length of a
   // completed depletion streak (consecutive runs of the same active item that
   // ended when its charge hit 0, flagged depletedEnd). Abandoned streaks (re-
-  // roll / vacation / manual) never reach 0, so they're excluded — which is why
+  // roll / inactive / manual) never reach 0, so they're excluded — which is why
   // recharging an abandoned item can't skew this. elig = runs; cal = calendar
   // days spanned. null when the item has no completed cycle in range.
   const spentById = React.useMemo(() => {
@@ -643,7 +677,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
       const avgGap = freqMode === 'calendar' ? f.avgGapCal : f.avgGapElig;
       const lastIso = lastById.get(it.id) || null;
       // Calendar days ago vs eligible days ago; eligible excludes days the
-      // picker didn't run AND days this item was on vacation.
+      // picker didn't run AND days this item was inactive.
       const lastCal = lastIso ? Math.round((new Date(todayIso) - new Date(lastIso)) / 86400000) : null;
       const eligDates = activeDates.filter((d) => !vac.onAt(it.id, d));
       const eligIdx = eligDates.indexOf(lastIso);
@@ -651,7 +685,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
       const lastDays = lastMode === 'eligible' ? lastElig : lastCal;
       // Count denominator: total picks vs picks made while this item was eligible.
       const eligDenom = rows.reduce((a, r) => a + (vac.onAt(it.id, r.date) ? 0 : 1), 0);
-      // Label: not currently on vacation, but went on vacation after its last
+      // Label: not currently inactive, but went inactive after its last
       // pick and hasn't been picked since returning. (Never for deleted items.)
       const wasOnVac = !it.__deleted && !it.vacation && vac.onAfter(it.id, lastIso || '');
       return {
@@ -757,7 +791,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   //   • Count    → weight suffix (weighted / dynamic)
   //   • Freq/Spent → range suffix (ease modes), days from the drift band
   //     (soonest = 100/easeMax, latest = 100/easeMin)
-  //   • Auto / Hand-picked / Re-rolled away → no suffix ("{name} {count}")
+  //   • Auto / Hand Picked / Re-Rolled Away → no suffix ("{name} {count}")
   const weightSuffix = React.useCallback((it) => {
     if (!it || !usesWeight) return null;
     return `weight ${it.weight ?? 1}`;
@@ -794,10 +828,10 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   const metricPills = [
     { key: 'count', label: 'Count' },
     isEaseDown ? { key: 'spent', label: 'Spent' } : { key: 'freq', label: 'Frequency' },
-    { key: 'last', label: 'Last picked' },
+    { key: 'last', label: 'Last Picked' },
     { key: 'auto', label: 'Auto' },
-    { key: 'manual', label: 'Hand-picked' },
-    { key: 'rejected', label: 'Re-rolled away' },
+    { key: 'manual', label: 'Hand Picked' },
+    { key: 'rejected', label: 'Re-Rolled Away' },
     { key: 'skipped', label: 'Skipped' },
   ];
 
@@ -915,7 +949,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
             <h1 className="section-title">Your <span className="stat-title-accent">eased</span> life, according to the numbers.</h1>
           </div>
         </div>
-        <p className="section-sub stat-h-sub">Filter by group, conditionals, reminders, pickers, and time below. This tab is best used in conjunction with the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data tab</button>, so that you can view the statistics here in order to see if your created items' numbers line up with your expectations and then tweak them in the Data tab if they do not.</p>
+        <p className="section-sub stat-h-sub">Filter by group, conditionals, reminders, pickers, and time below. This page is best used in conjunction with the <button type="button" className="sub-tablink" onClick={() => onNavTab && onNavTab('data')}>Data page</button>, so that you can view the statistics here in order to see if your created items' numbers line up with your expectations and then tweak them in the Data page if they do not.</p>
       </header>
 
       <div className="stat-body-wrap" style={tour.reserveTop ? { paddingTop: tour.reserveTop } : undefined}>
@@ -931,24 +965,69 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                 All
                 <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
               </button>
-              {existingGroups.map((g) => {
-                const n = pickers.filter((p) => p.group === g && !p.hidden).length;
-                return (
-                  <button key={g} type="button" role="tab" aria-selected={statGroup === g}
-                          className={`picker-group-pill ${statGroup === g ? 'is-on' : ''}`}
-                          onClick={() => setStatGroup(g)}>
-                    {g}
-                    <span className="picker-group-count">{n}</span>
+              {existingGroups.map((g) => (
+                <button key={g} type="button" role="tab" aria-selected={statGroup === g}
+                        className={`picker-group-pill ${statGroup === g ? 'is-on' : ''}`}
+                        onClick={() => setStatGroup(g)}>
+                  {g}
+                  <span className="picker-group-count">{pickers.filter((p) => p.group === g && !p.hidden).length}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        {(existingModes.length > 1 || hasConditionals || remEnabled) && (
+          <div className="stat-filter-row">
+            <span className="stat-filter-lbl">Type</span>
+            <div className="picker-groups stat-scope-groups stat-scope-groups--type" ref={typesRef} role="tablist" aria-label="Filter pickers by type">
+              <button type="button" role="tab" aria-selected={typeFilter === 'all'}
+                      className={`picker-group-pill ${typeFilter === 'all' ? 'is-on' : ''}`}
+                      onClick={() => { setTypeFilter('all'); setScope('all'); }}>
+                All
+                <span className="picker-group-count">{pickers.filter((p) => !p.hidden).length}</span>
+              </button>
+              {/* Conditionals/Reminders sort in alphabetically alongside the real
+                  modes, rather than being pinned, so they're easy to find now
+                  that both this rail and the Show rail below sort that way.
+                  typeFilter doubles as their own scope value ('conditionals' /
+                  'reminders', not a real picker mode) so the Show row below can
+                  narrow to just that one card instead of the full "All" list —
+                  visiblePickers' own mode match naturally excludes every real
+                  picker under either value, same as any other empty mode. */}
+              {[
+                ...existingModes.map((m) => ({
+                  key: m, name: MODES[m].label,
+                  count: pickers.filter((p) => p.mode === m && !p.hidden).length,
+                  isOn: typeFilter === m,
+                  onClick: () => setTypeFilter(m),
+                })),
+                ...(hasConditionals ? [{
+                  key: 'conditionals', name: 'Conditionals', count: conditionalDefs.length,
+                  isOn: typeFilter === 'conditionals',
+                  onClick: () => { setTypeFilter('conditionals'); setScope('conditionals'); },
+                }] : []),
+                ...(remEnabled ? [{
+                  key: 'reminders', name: 'Reminders', count: (state.tasks || []).filter((t) => !t.hidden).length,
+                  isOn: typeFilter === 'reminders',
+                  onClick: () => { setTypeFilter('reminders'); setScope('reminders'); },
+                }] : []),
+              ]
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((entry) => (
+                  <button key={entry.key} type="button" role="tab" aria-selected={entry.isOn}
+                          className={`picker-group-pill ${entry.isOn ? 'is-on' : ''}`}
+                          onClick={entry.onClick}>
+                    {entry.name}
+                    <span className="picker-group-count">{entry.count}</span>
                   </button>
-                );
-              })}
+                ))}
             </div>
           </div>
         )}
         <div className="stat-filter-row">
           <span className="stat-filter-lbl">Show</span>
-          <div className="picker-tabs stat-scope-tabs" ref={scopeRef} key={statGroup}>
-            {statGroup === 'all' && (
+          <div className="picker-tabs stat-scope-tabs" ref={scopeRef} key={statGroup + '|' + typeFilter}>
+            {statGroup === 'all' && typeFilter === 'all' && (
               <button type="button"
                       className={`picker-tab picker-tab--enter ${scope === 'all' ? 'is-on' : ''}`}
                       style={{ animationDelay: '0ms' }}
@@ -957,33 +1036,32 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                 <span className="picker-tab-mode">Everything</span>
               </button>
             )}
-            {statGroup === 'all' && hasConditionals && (
-              <button type="button"
-                      className={`picker-tab picker-tab--enter ${isConditionals ? 'is-on' : ''}`}
-                      style={{ animationDelay: '40ms' }}
-                      onClick={() => setScope('conditionals')}>
-                <span className="picker-tab-name">Conditionals</span>
-                <span className="picker-tab-mode">Gates</span>
-              </button>
-            )}
-            {statGroup === 'all' && remEnabled && (
-              <button type="button"
-                      className={`picker-tab picker-tab--enter ${isReminders ? 'is-on' : ''}`}
-                      style={{ animationDelay: (hasConditionals ? 80 : 40) + 'ms' }}
-                      onClick={() => setScope('reminders')}>
-                <span className="picker-tab-name">Reminders</span>
-                <span className="picker-tab-mode">Tasks</span>
-              </button>
-            )}
-            {visiblePickers.map((p, i) => (
-              <button key={p.id} type="button" data-picker-id={p.id}
-                      className={`picker-tab picker-tab--enter ${scope === p.id ? 'is-on' : ''}`}
-                      style={{ animationDelay: ((statGroup === 'all' ? (1 + (hasConditionals ? 1 : 0) + (remEnabled ? 1 : 0)) : 0) + i) * 40 + 'ms' }}
-                      onClick={() => setScope(p.id)}>
-                <span className="picker-tab-name">{p.name}</span>
-                <span className="picker-tab-mode">{MODES[p.mode].label}</span>
-              </button>
-            ))}
+            {/* Everything after "All" — Conditionals, Reminders, and every
+                visible picker — sorts together alphabetically by its own
+                displayed name, rather than Conditionals/Reminders being
+                pinned right after All. typeFilter 'conditionals'/'reminders'
+                (set by their own Type-rail pill) narrows this down to just
+                that one card, same as any real group/type narrows to its
+                pickers. */}
+            {[
+              ...((typeFilter === 'all' || typeFilter === 'conditionals') && hasConditionals
+                ? [{ key: 'conditionals', name: 'Conditionals', modeLabel: 'Gates', isOn: isConditionals, onClick: () => setScope('conditionals') }]
+                : []),
+              ...((typeFilter === 'all' || typeFilter === 'reminders') && remEnabled
+                ? [{ key: 'reminders', name: 'Reminders', modeLabel: 'Tasks', isOn: isReminders, onClick: () => setScope('reminders') }]
+                : []),
+              ...visiblePickers.map((p) => ({ key: p.id, name: p.name, modeLabel: MODES[p.mode].label, isOn: scope === p.id, onClick: () => setScope(p.id), pickerId: p.id })),
+            ]
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((entry, i) => (
+                <button key={entry.key} type="button" data-picker-id={entry.pickerId}
+                        className={`picker-tab picker-tab--enter ${entry.isOn ? 'is-on' : ''}`}
+                        style={{ animationDelay: (i + 1) * 40 + 'ms' }}
+                        onClick={entry.onClick}>
+                  <span className="picker-tab-name">{entry.name}</span>
+                  <span className="picker-tab-mode">{entry.modeLabel}</span>
+                </button>
+              ))}
           </div>
         </div>
         <div className="stat-filter-row">
@@ -1001,16 +1079,14 @@ function TabStats({ state, actions, onHome, onNavTab }) {
       </div>
 
       <div className="tab-fade stat-body ob-stat-content" key={scope + '|' + range}>
-      {/* ── Picker identity (single-picker scope) — mirrors the Pickers tab
-          header: "Picker" + colored mode pill, then name, then the mode's
-          description. ── */}
+      {/* ── Picker identity (single-picker scope) — mirrors the Pickers page
+          header: "Picker" kicker, then name, then the mode pill below it,
+          then the mode's description. ── */}
       {isPicker && pickerObj && (
         <div className="stat-picker-id">
-          <div className="stat-picker-id-top">
-            <span className="kicker">Picker</span>
-            <Pill tone="mode">{(MODES[pickerObj.mode] || {}).label || pickerObj.mode}</Pill>
-          </div>
+          <span className="kicker">Picker</span>
           <h2 className="picker-title">{pickerObj.name}</h2>
+          <Pill tone="mode">{(MODES[pickerObj.mode] || {}).label || pickerObj.mode}</Pill>
           {(() => { const h = (MODES[pickerObj.mode] || {}).hint; return Array.isArray(h)
             ? h.map((para, pi) => <p key={pi} className="picker-hint">{para}</p>)
             : <p className="picker-hint">{h}</p>; })()}
@@ -1051,7 +1127,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                 </button>
               </div>
               <div className="bd-metrics" ref={condMetricsRef}>
-                {[['rate', 'Fire rate'], ['triggers', 'Triggers'], ['cycles', 'Cycles'], ['interval', 'Interval'], ['last', 'Last fired']].map(([key, label]) => (
+                {[['rate', 'Fire Rate'], ['triggers', 'Triggers'], ['cycles', 'Cycles'], ['interval', 'Interval'], ['last', 'Last Fired']].map(([key, label]) => (
                   <button key={key} type="button"
                           className={`bd-metric ${condMetric === key ? 'is-on' : ''}`}
                           onClick={() => setCondMetric(key)}>
@@ -1061,7 +1137,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
               </div>
               <p className="rank-note">
                 {condMetric === 'rate'
-                  ? `How often each conditional fired versus the cycles it was actually evaluated over ${rangeNoun} — a cycle only counts once a dependent item or the replacement card is completed.`
+                  ? `How often each conditional fired versus the cycles it was actually evaluated over ${rangeNoun}. A cycle only counts once a dependent item or the replacement card is completed.`
                   : condMetric === 'triggers'
                   ? `Number of cycles each conditional fired (suppressed its picker) over ${rangeNoun}.`
                   : condMetric === 'cycles'
@@ -1096,7 +1172,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                         {target && <span className="rank-meta">{target}</span>}
                       </span>
                       <span className="cnd-bd-vals">
-                        {!o.deleted && o.active === false && <span className="rank-tag">vacation</span>}
+                        {!o.deleted && o.active === false && <span className="rank-tag">inactive</span>}
                         <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
                         {condMetric === 'rate' && (
                           <span className="rank-vals">
@@ -1109,7 +1185,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                         {condMetric === 'interval' && (
                           o.avgInterval != null
                             ? <span className="rank-freq-val cnd-bd-freq--interval">every {o.avgInterval} {o.avgInterval === 1 ? 'day' : 'days'}</span>
-                            : <span className="rank-freq-val cnd-bd-freq--interval is-dim">{o.fired <= 1 ? 'Fired once' : 'Not fired'}</span>
+                            : <span className="rank-freq-val cnd-bd-freq--interval is-dim">{o.fired <= 1 ? 'Fired Once' : 'Not Fired'}</span>
                         )}
                         {condMetric === 'last' && (
                           o.lastFired
@@ -1288,7 +1364,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                   <span className="cnd-sum-name">
                     {o.name}
                     {o.deleted && <span className="rank-tag rank-tag--deleted">deleted</span>}
-                    {!o.deleted && o.active === false && <span className="rank-tag">vacation</span>}
+                    {!o.deleted && o.active === false && <span className="rank-tag">inactive</span>}
                   </span>
                   <span className="cnd-sum-meta">
                     <span className="rem-log-type">{(o.mode || '').replace('-', '‑')}</span>
@@ -1329,10 +1405,10 @@ function TabStats({ state, actions, onHome, onNavTab }) {
             </div>
             <p className="rank-note">
               {remBdMetric === 'recent'
-                ? 'Every Reminders completion, most recent first — check one off in the Today tab and it lands here.'
+                ? 'Every Reminder that has been completed. Once you check one off on the Today page, it will show up here.'
                 : remBdMetric === 'completions'
-                ? 'Total count for the number of times that a Reminders item was completed using the check-off in the Today tab.'
-                : 'Total count for the number of times that a Reminders item was skipped using the skip button in the Today tab.'}
+                ? 'Total count for the number of times that a Reminders item was completed on the Today page.'
+                : 'Total count for the number of times that a Reminders item was skipped using the skip button on the Today page.'}
             </p>
             {remBdList.length ? (
               <>
@@ -1456,7 +1532,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
               {' '}or only{' '}
               <button type="button" className={`note-link ${countMode === 'eligible' ? 'is-on' : ''}`}
                       onClick={() => setCountMode('eligible')}>eligible picks</button>
-              {' '}when an item was not on vacation.
+              {' '}when an item was active.
             </p>
           )}
           {effMetric === 'freq' && (
@@ -1485,13 +1561,13 @@ function TabStats({ state, actions, onHome, onNavTab }) {
             <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was picked using the auto generator.</p>
           )}
           {effMetric === 'manual' && (
-            <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was picked manually using the Pickers tab.</p>
+            <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was picked manually using the Pick One button on the Pickers page.</p>
           )}
           {effMetric === 'rejected' && (
-            <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was rejected using the re-roll button in the Today tab.</p>
+            <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was rejected using the re-roll button on the Today page.</p>
           )}
           {effMetric === 'skipped' && (
-            <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was skipped using the skip button in the Today tab.</p>
+            <p className="rank-note">Total count for the number of times that a {pickerObj.name} item was skipped using the skip button on the Today page.</p>
           )}
           {effMetric === 'last' && (
             <p className="rank-note">
@@ -1518,9 +1594,9 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                       {suffix && <span className="rank-meta">{suffix}</span>}
                     </span>
                     <span className="rank-bd-vals">
-                      {!it.deleted && it.vacation && <span className="rank-tag">vacation</span>}
+                      {!it.deleted && it.vacation && <span className="rank-tag">inactive</span>}
                       {!it.deleted && effMetric === 'last' && !it.vacation && it.wasOnVac && (
-                        <span className="rank-tag rank-tag--was">was vacation</span>
+                        <span className="rank-tag rank-tag--was">was inactive</span>
                       )}
                       {effMetric === 'count' && (() => {
                         const denom = countMode === 'eligible' ? it.eligDenom : totalPossible;
@@ -1534,7 +1610,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                       {effMetric === 'freq' && (
                         it.avgGap != null
                           ? (() => { const d = cadDisplay(it.avgGap, freqMode, fmtGap(it.avgGap)); return <span className="rank-freq-val rank-bd-freq--freq">every {d.num} {d.word}</span>; })()
-                          : <span className="rank-freq-val rank-bd-freq--freq is-dim">{it.freqCount === 1 ? 'Picked once' : 'Not picked'}</span>
+                          : <span className="rank-freq-val rank-bd-freq--freq is-dim">{it.freqCount === 1 ? 'Picked Once' : 'Not Picked'}</span>
                       )}
                       {effMetric === 'spent' && (
                         it.spent != null
@@ -1548,7 +1624,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
                       {effMetric === 'last' && (
                         it.lastDays != null
                           ? <span className="rank-freq-val rank-bd-freq--last">{fmtLast(it.lastDays, lastMode)}</span>
-                          : <span className="rank-freq-val rank-bd-freq--last is-dim">Not picked</span>
+                          : <span className="rank-freq-val rank-bd-freq--last is-dim">Not Picked</span>
                       )}
                       {(effMetric === 'auto' || effMetric === 'manual' || effMetric === 'rejected' || effMetric === 'skipped') && (
                         <span className="rank-metric-n">{it[effMetric]}</span>
