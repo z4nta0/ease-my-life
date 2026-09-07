@@ -171,6 +171,30 @@ worked examples of every rule below before guessing). "N blank lines" always
 means N visually-empty rows, i.e. N+1 newline characters between two lines
 of content — not N newline characters.
 
+### Import statements
+- One imported binding per `import` statement, even when multiple bindings
+  come from the same source — never combine them into one `import { A, B }`
+  line. Splitting an existing combined import (without reordering it) is a
+  real, mechanical source change, not whitespace, but produces an identical
+  build output — verify with a byte-for-byte-identical bundle hash before
+  treating it as done. Reordering to alphabetize (below) is also a real
+  change and generally safe for side-effect-free modules like these, but
+  don't expect an identical hash from that step — only from the splitting
+  itself.
+- Group non-destructured (default) imports separately from destructured
+  (named, `{ ... }`) imports: all default imports first, then 2 blank lines,
+  then all named imports.
+- Within each of those two groups, alphabetize by the imported binding's own
+  name (case-insensitive), not by source path — regardless of which source
+  file each one came from.
+- Within the named-imports group, pad every specifier name (left-justify) so
+  the closing `}`, the `from` keyword, and the start of every source string
+  all line up in their own columns — computed from the single longest
+  specifier name in that group. Default imports don't need this treatment
+  unless there's more than one (rare, since only one default export per
+  module makes multiple default imports from the same source impossible
+  anyway).
+
 ### Indentation
 - Use tabs for indentation, one tab per nesting level — not spaces.
 - Exception: a continuation line that's deliberately visually aligned to a

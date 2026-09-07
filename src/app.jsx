@@ -2,20 +2,27 @@
 
 
 import React from 'react';
-import { PALETTES, applyPaletteObj, resolveActiveThemeKey, resolveCustomPalette } from './appearance.js';
-import { Onboarding, useEmlTour } from './onboarding.jsx';
-import { PickerTour } from './onboarding-picker-tours.jsx';
-import { PageTour } from './onboarding-page-tours.jsx';
-import { AppFeatureTour } from './onboarding-app-features.jsx';
-import { CLEAN_STATE } from './seed.js';
-import { useStore } from './store.jsx';
-import { TabData } from './tab-data.jsx';
-import { TabPicker } from './tab-picker.jsx';
-import { TabSettings } from './tab-settings.jsx';
-import { TabStats } from './tab-stats.jsx';
-import { TabToday } from './tab-today.jsx';
-import { Icon, reduceMotion } from './ui.jsx';
-import { BgFlourish } from './bg-flourish.jsx';
+
+
+import { AppFeatureTour        } from './onboarding-app-features.jsx';
+import { applyPaletteObj       } from './appearance.js';
+import { BgFlourish            } from './bg-flourish.jsx';
+import { CLEAN_STATE           } from './seed.js';
+import { Icon                  } from './ui.jsx';
+import { Onboarding            } from './onboarding.jsx';
+import { PageTour              } from './onboarding-page-tours.jsx';
+import { PALETTES              } from './appearance.js';
+import { PickerTour            } from './onboarding-picker-tours.jsx';
+import { reduceMotion          } from './ui.jsx';
+import { resolveActiveThemeKey } from './appearance.js';
+import { resolveCustomPalette  } from './appearance.js';
+import { TabData               } from './tab-data.jsx';
+import { TabPicker             } from './tab-picker.jsx';
+import { TabSettings           } from './tab-settings.jsx';
+import { TabStats              } from './tab-stats.jsx';
+import { TabToday              } from './tab-today.jsx';
+import { useEmlTour            } from './onboarding.jsx';
+import { useStore              } from './store.jsx';
 
 
 
