@@ -165,11 +165,40 @@ outside the normal React import graph.
 
 ## Code formatting rules
 
-Blank-line conventions for JS/JSX in this repo, being rolled out gradually
+Whitespace conventions for JS/JSX in this repo, being rolled out gradually
 (started with `src/app.jsx` as the reference implementation — consult it for
 worked examples of every rule below before guessing). "N blank lines" always
 means N visually-empty rows, i.e. N+1 newline characters between two lines
 of content — not N newline characters.
+
+### Indentation
+- Use tabs for indentation, one tab per nesting level — not spaces.
+- Exception: a continuation line that's deliberately visually aligned to a
+  specific column on the line above it (e.g. a wrapped JSX attribute list
+  where the second attribute lines up directly under the first one, right
+  after the tag name) keeps that alignment as literal spaces, but ONLY for
+  the portion beyond its own structural depth. Concretely, such a line's
+  leading whitespace is: the SAME number of tabs as the element's own
+  opening line (not one level deeper — it's a continuation of the same
+  element, not a child of it), followed by literal spaces to reach the
+  exact alignment column (i.e. matching the width of the tag name and
+  whatever it's lining up under).
+- A continuation line that ISN'T deliberately aligned to a specific column —
+  it's just wrapped for length, with nothing on the line(s) above to line up
+  with (e.g. `<path\n  d="..."\n  strokeWidth="8" />`, where `<path` alone
+  leaves nothing to align to) — uses one MORE tab than its own opening line,
+  same as any other nested content, with no space-padding at all.
+- When judging which case applies: does the continuation line's indentation
+  match a specific character position on the line(s) above (typically right
+  after `<tagname `)? If yes, it's an alignment case (tabs to the opening
+  line's own depth + spaces for the rest). If the line above ends with just
+  the tag name and nothing else, or the "continuation" is really just
+  deeper nesting, it's a plain structural indent (tabs only, one level
+  deeper).
+- This rule only governs LEADING indentation. Mid-line spacing — e.g.
+  padding array/object entries so their values line up in a column, like
+  `TABS`' `label:`/`icon:` fields — is untouched; it stays literal spaces
+  regardless, since it isn't indentation at all.
 
 ### File boundaries
 - Every file starts with exactly 3 blank lines before its first real line,
