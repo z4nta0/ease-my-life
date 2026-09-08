@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { STORAGE } from './storage.js';
-import { App } from './app.jsx';
+import { AppRooCom } from './app.jsx';
 // Self-hosted fonts (Phase C) — see src/fonts.css. Imported before the app
 // stylesheets so the @font-face rules are registered first.
 import './fonts.css';
@@ -10,7 +10,7 @@ import './styles.css';
 import './styles2.css';
 
 function boot() {
-  createRoot(document.getElementById('root')).render(<App />);
+  createRoot(document.getElementById('root')).render(<AppRooCom />);
   // Let the first paint settle, then release the boot splash (it finishes its
   // current cycle before fading).
   requestAnimationFrame(() => setTimeout(() => {

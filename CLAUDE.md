@@ -42,8 +42,8 @@ if asked to cut a release.
 ### No router, no build-time code splitting of routes
 
 `src/main.jsx` boots by racing `STORAGE.init()` against a timeout, then
-mounts `<App />` (`src/app.jsx`). `App` owns a single `active` tab id in
-React state and renders one of five tabs directly — there's no react-router.
+mounts `<AppRooCom />` (`src/app.jsx`). `AppRooCom` owns a single active-tab-id
+in React state and renders one of five tabs directly — there's no react-router.
 The five tabs (`src/tab-today.jsx`, `tab-picker.jsx`, `tab-stats.jsx`,
 `tab-data.jsx`, `tab-settings.jsx`) are large, self-contained files (each
 ~200KB+ of JSX) that share state/actions passed down as props.
@@ -53,8 +53,8 @@ The five tabs (`src/tab-today.jsx`, `tab-picker.jsx`, `tab-stats.jsx`,
 `src/store.jsx`'s `useStore()` hook is the entire state layer: a single
 `useState` holding the whole app state object, plus a `React.useMemo`'d
 `actions` object of state-transition functions (`toggleDone`, `addPicker`,
-`skipEntry`, `resolveConditionalsForDay`, ...). `App` calls `useStore()` once
-and passes `[state, actions]` down to every tab as props — there is no
+`skipEntry`, `resolveConditionalsForDay`, ...). `AppRooCom` calls `useStore()`
+once and passes the state/actions pair down to every tab as props — there is no
 context provider and no global store singleton reachable from arbitrary
 files. Persistence is debounced via `requestIdleCallback` and flushed
 synchronously on `pagehide`/tab-hide so nothing is lost.
@@ -221,8 +221,8 @@ of content — not N newline characters.
   deeper).
 - This rule only governs LEADING indentation. Mid-line spacing — e.g.
   padding array/object entries so their values line up in a column, like
-  `TABS`' `label:`/`icon:` fields — is untouched; it stays literal spaces
-  regardless, since it isn't indentation at all.
+  `TAB_OBJ_ARR`'s `label :`/`icon :` fields — is untouched; it stays literal
+  spaces regardless, since it isn't indentation at all.
 
 ### File boundaries
 - Every file starts with exactly 3 blank lines before its first real line,
@@ -253,6 +253,32 @@ of content — not N newline characters.
   as a function body (below). This only applies when the literal already
   spans multiple lines — a single-line literal (e.g. one inline `{ id, label }`
   passed as a prop) needs no padding.
+- A one-line array literal — including a destructuring array binding like
+  `const [ indRecObj, setIndRecObj ] = React.useState( null );` — gets a
+  space directly after `[` and directly before `]` when it has at least one
+  element. An empty array (`[]`, e.g. an empty `useEffect`/`useCallback`
+  dependency list) stays tight — no space either side.
+- Every object literal gets a space between each property name and its
+  `:` (`id : 'today'`, not `id: 'today'`) — this applies universally to
+  every object literal in the file, not just one array of config objects.
+- When several structurally-similar object literals (or JSX conditional
+  branches) are stacked as adjacent lines, column-align their matching
+  parts too — e.g. every entry's closing `}` in a config array, or the
+  `&&`/tag-name padding across parallel `{x === 'a' && <TabA .../>}`
+  branches — computed from the longest entry's needed width.
+
+### Parentheses spacing (declarations, calls, control-flow)
+- A non-empty parenthesized list gets a space directly after `(` and
+  directly before `)` — this covers a function/arrow declaration's own
+  parameter list, a function/method call's own arguments, AND an
+  `if`/`else if`/`while` condition alike (`if ( !navCurEle ) return;`,
+  `resObsObj.observe( navCurEle );`, `function TabBarCom ( { ... } ) {`).
+- An EMPTY parenthesized list stays tight instead — a zero-argument call
+  (`foo()`), a zero-parameter arrow (`() => ...`), an empty dependency
+  array's enclosing call — no space inserted either side.
+- Ternary/grouping parens used purely for operator precedence (not a call,
+  a declaration, or a control-flow condition) are NOT covered by this rule
+  and stay exactly as written.
 
 ### Functions
 This means ANY function that isn't a one-line declaration — named
@@ -264,17 +290,19 @@ how short the body is.
   2 blank lines before the first line inside. Directly before the closing
   `}`/`)`, insert 2 blank lines after the last line inside.
 - A function that fits entirely on one line (e.g.
-  `const onChange = (e) => setSystemDark(e.matches);`, or a one-line cleanup
-  `return () => { ro.disconnect(); };`) is exempt — there's nothing to pad.
+  `const onDarChaFun = ( chaEveObj ) => setSysDarBoo( chaEveObj.matches );`,
+  or a one-line cleanup `return () => { resObsObj.disconnect(); };`) is
+  exempt — there's nothing to pad.
 
 ### if/else and while statements
 - Same padding as functions — 2 blank lines after the opening `{` and 2
   before the closing `}` — but only when the block actually spans multiple
-  lines. A one-line body (`if (!nav) return;`, or even
-  `if (!btn) { setInd(null); return; }` written on one line) is exempt and
-  stays exactly as compact as it already is.
+  lines. A one-line body (`if ( !navCurEle ) return;`, or even
+  `if ( !butActEle ) { setIndRecObj( null ); return; }` written on one
+  line) is exempt and stays exactly as compact as it already is.
 - A short "declare a value, then immediately guard-check it and return
-  early" pair (e.g. `const prev = x.current; if (prev === next) return;`)
+  early" pair (e.g.
+  `const prePlaStr = prePlaRef.current; if ( prePlaStr === tabPlaStr ) return;`)
   counts as one small isolated unit: 1 blank line between the two lines
   internally, but 3 blank lines on both sides separating that whole pair
   from whatever comes before/after it — even if a neighboring pair looks
@@ -314,7 +342,7 @@ how short the body is.
   unrelated tiering as regular code (see below). One common case: a run of
   visually-repetitive sibling elements of the exact same kind (e.g. the
   several `<path>` elements making up one SVG icon, or a handful of mutually
-  exclusive `{active === 'x' && <TabX />}` branches selecting a page) is
+  exclusive `{actIdeStr === 'x' && <TabX />}` branches selecting a page) is
   usually "related" (1), not the 3-blank-line default reserved for
   genuinely different elements.
 
@@ -367,6 +395,69 @@ between JSX siblings. Three tiers:
   array?") rather than assuming a topical-sounding comment means they're
   related — several calls in this file were revised from 2 down to 3 after
   actually checking for shared data and finding none.
+
+### Naming conventions
+Applies to every named thing — variables, function/component declarations,
+function parameters, destructured bindings — no matter how short-lived or
+narrowly scoped, subject to the specific exemptions below. Being rolled out
+gradually alongside the whitespace rules above (started with `src/app.jsx`).
+
+- **The 9-character/3-segment rule**: a name is built from exactly three
+  3-character segments (9 characters total, camelCase for regular
+  identifiers): segment 1 = what it is, segment 2 = a descriptor or
+  continuation of what it is (no hard rule for this one beyond "strictly
+  3 letters"), segment 3 = the type of variable (e.g.
+  `Str`/`Boo`/`Obj`/`Arr`/`Fun`/`Ref`/`Tmo`). Each segment is strictly the
+  first 3 letters of a chosen English word — even when a shorter
+  conventional abbreviation exists (e.g. `but` for "button", not `btn`;
+  `con` for "config", not `cfg`).
+  - Example: `TABS` → `TAB_OBJ_ARR` (Tab + Object + Array).
+  - Example: `active` (the app's current tab id) → `actIdeStr` (Active +
+    Identifier + String).
+- **True module-level constants** use `ALL_CAPS_WITH_UNDERSCORES` instead
+  of camelCase, but still 9 letters across the 3 segments — underscores
+  don't count toward that total (`TAB_OBJ_ARR` is Tab+Obj+Arr = 9 letters
+  plus 2 separating underscores).
+- **React components** get PascalCase (all 3 segments capitalized) but
+  otherwise follow the same 9-character/3-segment rule — e.g. `TabBar` →
+  `TabBarCom` (Tab+Bar+Component), the root `App` export → `AppRooCom`
+  (App+Root+Component).
+  - Renaming an exported symbol (a component, in particular) ripples to
+    every file that imports it — e.g. renaming `App` also required
+    updating `main.jsx`'s import and its `<App />` JSX usage. Check for
+    other importers before committing to a rename like this.
+- **Exemptions** — standard React/DOM convention names are left as-is,
+  entirely exempt from the rule: `onChange`, `className`, and React's own
+  hooks (`useState`, `useRef`, `useLayoutEffect`, `useEffect`,
+  `useCallback`, ...).
+- **"on"-prefix pattern**: a custom callback prop/handler that isn't the
+  exact standard `onChange` keeps the "on" prefix (since "on" itself is
+  standard convention) and applies the normal 9-character/3-segment rule
+  to the rest of the name, for an 11-character total — e.g. `onToggleRail`
+  → `onTogRaiFun` (on + Toggle + Rail + Function).
+- **"set"-prefix pattern**: a `useState` setter function keeps the "set"
+  prefix and reuses its paired state variable's own (already-renamed) name
+  verbatim after it, for a 12-character total — e.g. the state variable
+  `railOpen` → `raiOpeBoo`, so its setter `setRailOpen` → `setRaiOpeBoo`.
+- **Acronym-reference rule**: when a name describes or refers to another
+  named thing (a component, function, etc.), its own first segment is
+  built from the first letter of *that* thing's own three segments,
+  instead of inventing a fourth truncated word — e.g. a boolean describing
+  whether `TabBarCom` itself (Tab+Bar+Com) is a ghost copy becomes
+  `tbcGhoBoo` (tbc from Tab/Bar/Com + Ghost + Boolean).
+
+### Default parameter values
+- Only give a parameter a default where it's genuinely reachable/
+  meaningful — some real caller actually relies on the fallback, or it
+  documents real existing behavior — not a blanket "every parameter gets
+  one" rule.
+- For a callback prop that's central to a component's core purpose, weigh
+  a silent no-op default (`() => {}`) against letting a call fail loudly
+  with a thrown error if the prop is never wired up: a no-op can mask a
+  forgotten-integration bug, while a thrown error surfaces it immediately.
+  Lean toward the loud failure for those; a quiet, cosmetic default (e.g. a
+  boolean flag's natural resting state, or a string's natural starting
+  value) is fine either way.
 
 
 

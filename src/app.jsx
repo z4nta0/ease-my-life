@@ -30,92 +30,92 @@ import { useStore              } from './store.jsx';
 
 
 
-const TABS = [
+const TAB_OBJ_ARR = [
 
 
-	{ id: 'today',    label: 'Today',    icon: 'today' },
-	{ id: 'picker',   label: 'Pickers',  icon: 'picker' },
-	{ id: 'stats',    label: 'Stats',    icon: 'stats' },
-	{ id: 'data',     label: 'Data',     icon: 'data' },
-	{ id: 'settings', label: 'Settings', icon: 'settings' },
+	{ id : 'today',    label : 'Today',    icon : 'today'    },
+	{ id : 'picker',   label : 'Pickers',  icon : 'picker'   },
+	{ id : 'stats',    label : 'Stats',    icon : 'stats'    },
+	{ id : 'data',     label : 'Data',     icon : 'data'     },
+	{ id : 'settings', label : 'Settings', icon : 'settings' },
 
 
 ];
 
 
 
-function TabBar({ active, onChange, placement, railOpen, onToggleRail, className = '', ghost }) {
+function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, className = '', tbcGhoBoo = false } ) {
 
 
-	const navRef = React.useRef(null);
+	const navEleRef = React.useRef( null );
 
-	const [ind, setInd] = React.useState(null); // {x,y,w,h} of active tab, nav-relative
-
-
-	React.useLayoutEffect(() => {
+	const [ indRecObj, setIndRecObj ] = React.useState( null ); // {x,y,w,h} of the active tab, nav-relative
 
 
-		const measure = () => {
+	React.useLayoutEffect( () => {
 
 
-			const nav = navRef.current;
-
-			if (!nav) return;
+		const meaPosFun = () => {
 
 
+			const navCurEle = navEleRef.current;
 
-			const btn = nav.querySelector('.tabbtn.is-on');
-
-			if (!btn) { setInd(null); return; }
+			if ( !navCurEle ) return;
 
 
 
-			const nr = nav.getBoundingClientRect();
+			const butActEle = navCurEle.querySelector( '.tabbtn.is-on' );
 
-			const br = btn.getBoundingClientRect();
+			if ( !butActEle ) { setIndRecObj( null ); return; }
 
 
-			setInd({ x: br.left - nr.left + nav.scrollLeft, y: br.top - nr.top + nav.scrollTop, w: br.width, h: br.height });
+
+			const navRecObj = navCurEle.getBoundingClientRect();
+
+			const butRecObj = butActEle.getBoundingClientRect();
+
+
+			setIndRecObj( { x : butRecObj.left - navRecObj.left + navCurEle.scrollLeft, y : butRecObj.top - navRecObj.top + navCurEle.scrollTop, w : butRecObj.width, h : butRecObj.height } );
 
 
 		};
 
 
-		measure();
+		meaPosFun();
 
 
 
-		const nav = navRef.current;
+		const navCurEle = navEleRef.current;
 
-		const ro = nav && window.ResizeObserver ? new ResizeObserver(measure) : null;
-
-
-		if (ro && nav) ro.observe(nav);
+		const resObsObj = navCurEle && window.ResizeObserver ? new ResizeObserver( meaPosFun ) : null;
 
 
-		window.addEventListener('resize', measure);
+		if ( resObsObj && navCurEle ) resObsObj.observe( navCurEle );
+
+
+		window.addEventListener( 'resize', meaPosFun );
 
 
 
-		return () => { if (ro) ro.disconnect(); window.removeEventListener('resize', measure); };
+		return () => { if ( resObsObj ) resObsObj.disconnect(); window.removeEventListener( 'resize', meaPosFun ); };
 
 
-	}, [active, placement, railOpen]);
+	}, [ actIdeStr, tabPlaStr, raiOpeBoo ] );
 
 
 
 	return (
 
 
-		<nav ref={navRef} className={`tabbar tabbar--${placement} ${railOpen ? 'is-open' : ''} ${className}`} aria-label="Sections" aria-hidden={ghost || undefined}>
+		<nav ref={navEleRef} className={`tabbar tabbar--${tabPlaStr} ${raiOpeBoo ? 'is-open' : ''} ${className}`} aria-label="Sections" aria-hidden={tbcGhoBoo || undefined}>
 
 
-			{ind && <span className="tabbar-indicator" aria-hidden="true"
-			              style={{ transform: `translate(${ind.x}px, ${ind.y}px)`, width: ind.w + 'px', height: ind.h + 'px' }} />}
+			{indRecObj && <span className="tabbar-indicator" aria-hidden="true"
+			              style={{ transform : `translate(${indRecObj.x}px, ${indRecObj.y}px)`, width : indRecObj.w + 'px', height : indRecObj.h + 'px' }} />}
 
 
 
-			<button type="button" className="tabbar-brand" onClick={() => onChange('today')} aria-label="Ease My Life — go to Today">
+			<button type="button" className="tabbar-brand" onClick={() => onChange( 'today' )} aria-label="Ease My Life — go to Today">
 
 
 				<span className="brand-mark" aria-hidden="true">
@@ -140,7 +140,7 @@ function TabBar({ active, onChange, placement, railOpen, onToggleRail, className
 
 
 
-						<g style={{ stroke: 'var(--accent-soft)', strokeWidth: 16 }}>
+						<g style={{ stroke : 'var(--accent-soft)', strokeWidth : 16 }}>
 
 
 							<path d="M 528 112 L 16 112" />
@@ -165,14 +165,14 @@ function TabBar({ active, onChange, placement, railOpen, onToggleRail, className
 
 
 						<rect width="512" height="512" y="16" x="16" rx="75" ry="75"
-							style={{ strokeWidth: 16, strokeLinecap: 'round', strokeLinejoin: 'round', stroke: 'currentColor' }} />
+							style={{ strokeWidth : 16, strokeLinecap : 'round', strokeLinejoin : 'round', stroke : 'currentColor' }} />
 
 
 						<path
 							d="M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z"
 							strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"
 							clipPath="url(#brandMarkClipNav)"
-							style={{ fill: 'currentColor', stroke: 'currentColor' }}
+							style={{ fill : 'currentColor', stroke : 'currentColor' }}
 						/>
 
 
@@ -202,7 +202,7 @@ function TabBar({ active, onChange, placement, railOpen, onToggleRail, className
 
 							<path d="M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z"
 								strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"
-								style={{ fill: 'currentColor', stroke: 'currentColor' }} />
+								style={{ fill : 'currentColor', stroke : 'currentColor' }} />
 
 
 						</svg>
@@ -229,42 +229,42 @@ function TabBar({ active, onChange, placement, railOpen, onToggleRail, className
 
 
 
-			{TABS.map((t) => (
+			{TAB_OBJ_ARR.map( ( tabConObj ) => (
 
 
-				<button key={t.id}
-				        className={`tabbtn ${t.id === active ? 'is-on' : ''}`}
-				        data-tab={t.id}
-				        onClick={() => onChange(t.id)}
-				        aria-current={t.id === active ? 'page' : undefined}>
+				<button key={tabConObj.id}
+				        className={`tabbtn ${tabConObj.id === actIdeStr ? 'is-on' : ''}`}
+				        data-tab={tabConObj.id}
+				        onClick={() => onChange( tabConObj.id )}
+				        aria-current={tabConObj.id === actIdeStr ? 'page' : undefined}>
 
 
-					<Icon name={t.icon} size={20} />
+					<Icon name={tabConObj.icon} size={20} />
 
 
-					<span>{t.label}</span>
+					<span>{tabConObj.label}</span>
 
 
 				</button>
 
 
-			))}
+			) )}
 
 
 
 			{/* Pull handle — only visible when the side rail collapses to a drawer on
 			   small screens (CSS-gated). Rides the rail's outer edge; chevron flips. */}
 			<button type="button" className="rail-handle"
-			        onClick={onToggleRail}
-			        aria-label={railOpen ? 'Collapse menu' : 'Expand menu'}
-			        aria-expanded={railOpen}>
+			        onClick={onTogRaiFun}
+			        aria-label={raiOpeBoo ? 'Collapse menu' : 'Expand menu'}
+			        aria-expanded={raiOpeBoo}>
 
 
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none"
 				     stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
 
 
-					<path d={railOpen ? 'M 15 6 L 9 12 L 15 18' : 'M 9 6 L 15 12 L 9 18'} />
+					<path d={raiOpeBoo ? 'M 15 6 L 9 12 L 15 18' : 'M 9 6 L 15 12 L 9 18'} />
 
 
 				</svg>
@@ -283,36 +283,36 @@ function TabBar({ active, onChange, placement, railOpen, onToggleRail, className
 
 
 
-function App() {
+function AppRooCom () {
 
 
 	// Non-destructive onboarding preview: #onboard-demo (or #onboard) runs the app
 	// on a fresh clean state for this tab only, without touching saved data.
-	const onboardDemo = typeof location !== 'undefined' && location.hash.indexOf('onboard') !== -1;
+	const onbDemBoo = typeof location !== 'undefined' && location.hash.indexOf( 'onboard' ) !== -1;
 
-	const [state, actions] = useStore(onboardDemo ? { initial: CLEAN_STATE(), persist: false } : undefined);
+	const [ staAppObj, actStoObj ] = useStore( onbDemBoo ? { initial : CLEAN_STATE(), persist : false } : undefined );
 
 	// Deep-link straight to Settings via #settings.
-	const [active, setActive] = React.useState(() => (
+	const [ actIdeStr, setActIdeStr ] = React.useState( () => (
 
 
 		location.hash === '#settings' ? 'settings' : 'today'
 
 
-	));
+	) );
 
 	// Decorative background glyphs (see bg-flourish.jsx) — .main-inner is
 	// shared by every non-Today tab (one at a time, remounted per switch via
-	// its own key={active} below), so one ref reused across all of them is
+	// its own key={actIdeStr} below), so one ref reused across all of them is
 	// enough; Today has its own .today-body and manages its own ref/ instance
 	// internally instead (see tab-today.jsx).
-	const mainInnerRef = React.useRef(null);
+	const maiInnRef = React.useRef( null );
 
 
 	// Collapsible side rail (small screens only — the rail becomes an off-canvas
 	// drawer there instead of falling back to bottom tabs). Starts closed; the
 	// pull handle toggles it, and selecting a tab or tapping the scrim closes it.
-	const [railOpen, setRailOpen] = React.useState(false);
+	const [ raiOpeBoo, setRaiOpeBoo ] = React.useState( false );
 
 
 	// Which sample picker's mini-tour is currently running — null when none
@@ -324,76 +324,76 @@ function App() {
 	// silently vanishing — see onboarding-picker-tours.jsx's own resume
 	// handling for the other half of this (skipping the intro modal,
 	// resuming at the right — resumable — step).
-	const [activePickerTour, setActivePickerTour] = React.useState(() => {
+	const [ actPicStr, setActPicStr ] = React.useState( () => {
 
 
-		const at = state.onboarding && state.onboarding.activeTour;
+		const actTouObj = staAppObj.onboarding && staAppObj.onboarding.activeTour;
 
 
 
-		return (at && typeof at.id === 'string' && at.id.startsWith('picker-')) ? at.id.slice('picker-'.length) : null;
+		return ( actTouObj && typeof actTouObj.id === 'string' && actTouObj.id.startsWith( 'picker-' ) ) ? actTouObj.id.slice( 'picker-'.length ) : null;
 
 
 	});
 
-	// Same reasoning as activePickerTour just above, for the "Explore the
+	// Same reasoning as actPicStr just above, for the "Explore the
 	// {page}" page tours: only the Today page tour stays entirely on Today —
 	// the others (Pickers' own Step 2+, and presumably Stats/Data/Settings
 	// once built) navigate to their own tab, which would unmount TabToday
 	// (and this tour along with it) if it lived there instead. A page tour's
 	// activeTour.id is already `page-${checklist id}` (see PageTour's own
 	// tourId), which already IS the id this needs.
-	const [activePageTour, setActivePageTour] = React.useState(() => {
+	const [ actPagStr, setActPagStr ] = React.useState( () => {
 
 
-		const at = state.onboarding && state.onboarding.activeTour;
+		const actTouObj = staAppObj.onboarding && staAppObj.onboarding.activeTour;
 
 
 
-		return (at && typeof at.id === 'string' && at.id.startsWith('page-')) ? at.id.slice('page-'.length) : null;
+		return ( actTouObj && typeof actTouObj.id === 'string' && actTouObj.id.startsWith( 'page-' ) ) ? actTouObj.id.slice( 'page-'.length ) : null;
 
 
-	});
+	} );
 
 	// Same reasoning again, for App Features tutorials (see
 	// onboarding-app-features.jsx) — most of these live on Pickers/Settings,
 	// not Today, so this has to live here too rather than in TabToday.
-	const [activeAppFeatureTour, setActiveAppFeatureTour] = React.useState(() => {
+	const [ actFeaStr, setActFeaStr ] = React.useState( () => {
 
 
-		const at = state.onboarding && state.onboarding.activeTour;
+		const actTouObj = staAppObj.onboarding && staAppObj.onboarding.activeTour;
 
 
 
-		return (at && typeof at.id === 'string' && at.id.startsWith('appfeature-')) ? at.id.slice('appfeature-'.length) : null;
+		return ( actTouObj && typeof actTouObj.id === 'string' && actTouObj.id.startsWith( 'appfeature-' ) ) ? actTouObj.id.slice( 'appfeature-'.length ) : null;
 
 
-	});
+	} );
 
 	// The Welcome Tour auto-opens/closes this same rail while it's running, so
 	// a step spotlighting a nav button can actually find it there even when
 	// collapsed — see onboarding.jsx's wantRailOpen publish. Only acts while a
 	// tour is actually active, so it never fights the user's own manual
-	// toggling outside of one. Depends on obBus.step too, not just
+	// toggling outside of one. Depends on onbEveBus.step too, not just
 	// wantRailOpen's own value — two consecutive nav-button steps both want it
-	// open (true → true, no value change to react to), but selectTab (called
+	// open (true → true, no value change to react to), but selTabFun (called
 	// by the outgoing step's own run()) unconditionally closes the rail on
 	// every tab switch in between. Without step in the deps, that close would
 	// never get corrected past the first pair of back-to-back nav steps.
-	const obBus = useEmlTour();
+	const onbEveBus = useEmlTour();
 
 
-	React.useEffect(() => {
+	React.useEffect( () => {
 
 
-		if (obBus.phase === 'tour' && typeof obBus.wantRailOpen === 'boolean') setRailOpen(obBus.wantRailOpen);
+		if ( onbEveBus.phase === 'tour' && typeof onbEveBus.wantRailOpen === 'boolean' ) setRaiOpeBoo( onbEveBus.wantRailOpen );
 
 
-	}, [obBus.phase, obBus.wantRailOpen, obBus.step]);
+	}, [ onbEveBus.phase, onbEveBus.wantRailOpen, onbEveBus.step ] );
 
 
 
-	const mainRef = React.useRef(null);
+	const maiEleRef = React.useRef( null );
 
 
 
@@ -401,29 +401,29 @@ function App() {
 	// GHOST of the old bar mounted to play its exit-toward-edge keyframe while the
 	// real bar (now in the new slot) plays a staggered enter-from-edge; main's
 	// padding transition eases the content reflow. Reduced motion skips it all.
-	const [exitingPlacement, setExitingPlacement] = React.useState(null);
+	const [ exiPlaStr, setExiPlaStr ] = React.useState( null );
 
-	const [navEntering, setNavEntering] = React.useState(false);
+	const [ navEntBoo, setNavEntBoo ] = React.useState( false );
 
-	const prevPlacementRef = React.useRef((state.appearance && state.appearance.tabPlacement) || 'bottom');
+	const prePlaRef = React.useRef( ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' );
 
 
 
 	// Switching tabs should always land at the top of the new tab — otherwise the
 	// shared <main> scroller keeps the previous tab's scroll position, which reads
 	// as arriving on a page already scrolled down.
-	const selectTab = React.useCallback((id) => {
+	const selTabFun = React.useCallback( ( tabIdeStr ) => {
 
 
-		setActive(id);
+		setActIdeStr( tabIdeStr );
 
-		setRailOpen(false);
-
-
-		if (mainRef.current) mainRef.current.scrollTop = 0;
+		setRaiOpeBoo( false );
 
 
-	}, []);
+		if ( maiEleRef.current ) maiEleRef.current.scrollTop = 0;
+
+
+	}, [] );
 
 
 	// Theme is now a real, persisted Settings feature (Appearance tab) rather
@@ -431,158 +431,158 @@ function App() {
 	// colors and apply them on every appearance change (and once on load).
 	// When "System preference" is on, also track prefers-color-scheme so the
 	// applied theme swaps to its counterpart as the OS switches.
-	const [systemDark, setSystemDark] = React.useState(() => (
+	const [ sysDarBoo, setSysDarBoo ] = React.useState( () => (
 
 
-		typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches
+		typeof matchMedia === 'function' && matchMedia( '(prefers-color-scheme: dark)' ).matches
 
 
-	));
+	) );
 
 
-	React.useEffect(() => {
+	React.useEffect( () => {
 
 
-		if (typeof matchMedia !== 'function') return;
+		if ( typeof matchMedia !== 'function' ) return;
 
-		const mq = matchMedia('(prefers-color-scheme: dark)');
+		const medQueObj = matchMedia( '(prefers-color-scheme: dark)' );
 
-		const onChange = (e) => setSystemDark(e.matches);
+		const onDarChaFun = ( chaEveObj ) => setSysDarBoo( chaEveObj.matches );
 
-		mq.addEventListener('change', onChange);
+		medQueObj.addEventListener( 'change', onDarChaFun );
 
 
 
-		return () => mq.removeEventListener('change', onChange);
+		return () => medQueObj.removeEventListener( 'change', onDarChaFun );
 
 
-	}, []);
+	}, [] );
 
 
-	React.useEffect(() => {
+	React.useEffect( () => {
 
 
-		const ap = state.appearance || { theme: 'ink' };
+		const appCurObj = staAppObj.appearance || { theme : 'ink' };
 
-		const key = resolveActiveThemeKey(ap, systemDark);
+		const theKeyStr = resolveActiveThemeKey( appCurObj, sysDarBoo );
 
-		let palette;
+		let palResObj;
 
 
-		if (key === 'customLight' && ap.customLight) palette = resolveCustomPalette('light', ap.customLight);
+		if ( theKeyStr === 'customLight' && appCurObj.customLight ) palResObj = resolveCustomPalette( 'light', appCurObj.customLight );
 
-		else if (key === 'customDark' && ap.customDark) palette = resolveCustomPalette('dark', ap.customDark);
+		else if ( theKeyStr === 'customDark' && appCurObj.customDark ) palResObj = resolveCustomPalette( 'dark', appCurObj.customDark );
 
-		else palette = PALETTES[key] || PALETTES.ink;
+		else palResObj = PALETTES[theKeyStr] || PALETTES.ink;
 
 
-		applyPaletteObj(palette, key);
+		applyPaletteObj( palResObj, theKeyStr );
 
 
-	}, [state.appearance, systemDark]);
+	}, [ staAppObj.appearance, sysDarBoo ] );
 
 
-	React.useEffect(() => {
+	React.useEffect( () => {
 
 
-		document.body.dataset.placement = (state.appearance && state.appearance.tabPlacement) || 'bottom';
+		document.body.dataset.placement = ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom';
 
 
-	}, [state.appearance && state.appearance.tabPlacement]);
+	}, [ staAppObj.appearance && staAppObj.appearance.tabPlacement ] );
 
 
-	React.useEffect(() => {
+	React.useEffect( () => {
 
 
-		document.body.dataset.completionStyle = (state.appearance && state.appearance.completionStyle) || 'confetti';
+		document.body.dataset.completionStyle = ( staAppObj.appearance && staAppObj.appearance.completionStyle ) || 'confetti';
 
 
-	}, [state.appearance && state.appearance.completionStyle]);
+	}, [ staAppObj.appearance && staAppObj.appearance.completionStyle ] );
 
 
-	const placement = (state.appearance && state.appearance.tabPlacement) || 'bottom';
+	const tabPlaStr = ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom';
 
 
-	React.useLayoutEffect(() => {
+	React.useLayoutEffect( () => {
 
 
-		const prev = prevPlacementRef.current;
+		const prePlaStr = prePlaRef.current;
 
-		if (prev === placement) return;
+		if ( prePlaStr === tabPlaStr ) return;
 
 
 
-		prevPlacementRef.current = placement;
+		prePlaRef.current = tabPlaStr;
 
-		if (reduceMotion && reduceMotion()) return;
+		if ( reduceMotion && reduceMotion() ) return;
 
 
 
-		setExitingPlacement(prev);
+		setExiPlaStr( prePlaStr );
 
-		setNavEntering(true);
+		setNavEntBoo( true );
 
 
 
-		const t1 = setTimeout(() => setExitingPlacement(null), 380);
+		const exiEndTmo = setTimeout( () => setExiPlaStr( null ), 380 );
 
-		const t2 = setTimeout(() => setNavEntering(false), 560);
+		const entEndTmo = setTimeout( () => setNavEntBoo( false ), 560 );
 
 
 
-		return () => { clearTimeout(t1); clearTimeout(t2); };
+		return () => { clearTimeout( exiEndTmo ); clearTimeout( entEndTmo ); };
 
 
-	}, [placement]);
+	}, [ tabPlaStr ] );
 
 
 
 	return (
 
 
-		<div className="app" data-placement={placement}>
+		<div className="app" data-placement={tabPlaStr}>
 
 
-			<TabBar active={active} onChange={selectTab} placement={placement}
-			        className={navEntering ? 'tabbar--entering' : ''}
-			        railOpen={railOpen} onToggleRail={() => setRailOpen((v) => !v)} />
+			<TabBarCom actIdeStr={actIdeStr} onChange={selTabFun} tabPlaStr={tabPlaStr}
+			        className={navEntBoo ? 'tabbar--entering' : ''}
+			        raiOpeBoo={raiOpeBoo} onTogRaiFun={() => setRaiOpeBoo( ( v ) => !v )} />
 
-			{exitingPlacement && (
+			{exiPlaStr && (
 
 
-				<TabBar active={active} onChange={() => {}} placement={exitingPlacement}
-				        className="tabbar--exiting" ghost
-				        railOpen={false} onToggleRail={() => {}} />
+				<TabBarCom actIdeStr={actIdeStr} onChange={() => {}} tabPlaStr={exiPlaStr}
+				        className="tabbar--exiting" tbcGhoBoo
+				        raiOpeBoo={false} onTogRaiFun={() => {}} />
 
 
 			)}
 
 
-			{railOpen && <div className="rail-scrim" onClick={() => setRailOpen(false)} aria-hidden="true" />}
+			{raiOpeBoo && <div className="rail-scrim" onClick={() => setRaiOpeBoo( false )} aria-hidden="true" />}
 
 
 
-			<main className="main" ref={mainRef}>
+			<main className="main" ref={maiEleRef}>
 
 
-				{active === 'today' && <div className="tab-fade" key="today"><TabToday state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} onStartPickerTour={setActivePickerTour} onStartPageTour={setActivePageTour} onStartAppFeatureTour={setActiveAppFeatureTour} /></div>}
+				{actIdeStr === 'today' && <div className="tab-fade" key="today"><TabToday state={staAppObj} actions={actStoObj} onHome={() => selTabFun( 'today' )} onNavTab={selTabFun} onStartPickerTour={setActPicStr} onStartPageTour={setActPagStr} onStartAppFeatureTour={setActFeaStr} /></div>}
 
 
-				{active !== 'today' && (
+				{actIdeStr !== 'today' && (
 
 
-					<div className="main-inner tab-fade" key={active} ref={mainInnerRef}>
+					<div className="main-inner tab-fade" key={actIdeStr} ref={maiInnRef}>
 
 
-						<BgFlourish tabId={active} measureRef={mainInnerRef} />
+						<BgFlourish tabId={actIdeStr} measureRef={maiInnRef} />
 
-						{active === 'picker'   && <TabPicker   state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} animStyle={(state.appearance && state.appearance.pickAnim) || 'reel'} />}
+						{actIdeStr === 'picker'   && <TabPicker   state={staAppObj} actions={actStoObj} onHome={() => selTabFun( 'today' )} onNavTab={selTabFun} animStyle={(staAppObj.appearance && staAppObj.appearance.pickAnim) || 'reel'} />}
 
-						{active === 'stats'    && <TabStats    state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} />}
+						{actIdeStr === 'stats'    && <TabStats    state={staAppObj} actions={actStoObj} onHome={() => selTabFun( 'today' )} onNavTab={selTabFun} />}
 
-						{active === 'data'     && <TabData     state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} />}
+						{actIdeStr === 'data'     && <TabData     state={staAppObj} actions={actStoObj} onHome={() => selTabFun( 'today' )} onNavTab={selTabFun} />}
 
-						{active === 'settings' && <TabSettings state={state} actions={actions} onHome={() => selectTab('today')} onNavTab={selectTab} />}
+						{actIdeStr === 'settings' && <TabSettings state={staAppObj} actions={actStoObj} onHome={() => selTabFun( 'today' )} onNavTab={selTabFun} />}
 
 
 					</div>
@@ -595,51 +595,51 @@ function App() {
 
 
 
-			<Onboarding state={state} actions={actions} active={active} selectTab={selectTab} />
+			<Onboarding state={staAppObj} actions={actStoObj} active={actIdeStr} selectTab={selTabFun} />
 
 
-			{activePickerTour && (
+			{actPicStr && (
 
 
 				<PickerTour
-					pickerId={activePickerTour}
-					state={state}
-					actions={actions}
-					active={active}
-					selectTab={selectTab}
-					onClose={() => setActivePickerTour(null)}
+					pickerId={actPicStr}
+					state={staAppObj}
+					actions={actStoObj}
+					active={actIdeStr}
+					selectTab={selTabFun}
+					onClose={() => setActPicStr( null )}
 				/>
 
 
 			)}
 
 
-			{activePageTour && (
+			{actPagStr && (
 
 
 				<PageTour
-					pageId={activePageTour}
-					state={state}
-					actions={actions}
-					active={active}
-					selectTab={selectTab}
-					onClose={() => setActivePageTour(null)}
+					pageId={actPagStr}
+					state={staAppObj}
+					actions={actStoObj}
+					active={actIdeStr}
+					selectTab={selTabFun}
+					onClose={() => setActPagStr( null )}
 				/>
 
 
 			)}
 
 
-			{activeAppFeatureTour && (
+			{actFeaStr && (
 
 
 				<AppFeatureTour
-					featureId={activeAppFeatureTour}
-					state={state}
-					actions={actions}
-					active={active}
-					selectTab={selectTab}
-					onClose={() => setActiveAppFeatureTour(null)}
+					featureId={actFeaStr}
+					state={staAppObj}
+					actions={actStoObj}
+					active={actIdeStr}
+					selectTab={selTabFun}
+					onClose={() => setActFeaStr( null )}
 				/>
 
 
@@ -656,7 +656,6 @@ function App() {
 
 
 
-export { App };
-
+export { AppRooCom };
 
 
