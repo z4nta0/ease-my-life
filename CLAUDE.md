@@ -209,7 +209,7 @@ of content — not N newline characters.
   whatever it's lining up under).
 - A continuation line that ISN'T deliberately aligned to a specific column —
   it's just wrapped for length, with nothing on the line(s) above to line up
-  with (e.g. `<path\n  d="..."\n  strokeWidth="8" />`, where `<path` alone
+  with (e.g. `<path\n  d='...'\n  strokeWidth='8' />`, where `<path` alone
   leaves nothing to align to) — uses one MORE tab than its own opening line,
   same as any other nested content, with no space-padding at all.
 - When judging which case applies: does the continuation line's indentation
@@ -246,6 +246,32 @@ of content — not N newline characters.
   freestanding unit, with whatever blank-line count applies on both sides
   given its surroundings (3 if it sits between top-level declarations).
 
+### Quotes
+- Use `'single quotes'` for every string literal, including JSX attribute
+  values — even though double quotes are the idiomatic default there (e.g.
+  `className="x"` becomes `className='x'`). If a string's own content
+  needs a literal `"` character, that's fine — it just sits inside the
+  single-quoted string as normal text, no escaping concern either way.
+- This only governs actual string-literal delimiters in code. Quotation
+  marks used as ordinary English punctuation inside a `//`/`/* */` comment
+  (e.g. quoting a UI phrase in a design-rationale comment) are prose, not
+  a code token, and are untouched by this rule.
+- **`className` template literals specifically**: a backtick-templated
+  `className` value gets a space directly after its opening backtick and
+  directly before its closing one, and each individual class-name token
+  inside it (a plain word, or a `${...}` interpolation standing in for
+  one) is separated from its neighbors by exactly 3 spaces — not the
+  normal single space:
+  ```
+  className={ ` tabbar   tabbar--${ tabPlaStr }   ${ raiOpeBoo ? 'is-open' : '' }   ${ className } ` }
+  ```
+  This only changes the SOURCE formatting, not the rendered class list —
+  the browser collapses any run of whitespace in an element's `class`
+  attribute to a single separator when matching selectors, so the extra
+  spacing is purely a readability convention with no visual/behavioral
+  effect. Plain non-templated `className='single-class'` strings are
+  unaffected — this only applies to the backtick-templated form.
+
 ### Arrays and objects
 - No blank lines between entries within the same array/object literal
   (e.g. the rows of a plain config array) — but directly after the opening
@@ -253,6 +279,74 @@ of content — not N newline characters.
   as a function body (below). This only applies when the literal already
   spans multiple lines — a single-line literal (e.g. one inline `{ id, label }`
   passed as a prop) needs no padding.
+- **A multi-line entry inside an array, or a multi-line property inside an
+  object, gets exactly 1 blank line before and after it** — UNLESS that
+  side is also the container's own first/last position, in which case the
+  container's own 2-blank-line open/close padding (the bullet above)
+  applies instead of the 1-blank rule. The two sides (before/after) are
+  judged independently: an entry can be "first" (so its own 2-blank rule
+  applies before it, but only 1 blank after it, assuming something follows)
+  or "last" (2 blanks after, 1 before) or neither (1 blank both sides) or
+  both at once if it's the container's only entry (2 blanks both sides).
+  This nests recursively at every depth — a deeply-nested multi-line
+  property follows the exact same before/after logic relative to ITS OWN
+  immediate parent, independent of how outer levels are padded:
+  ```
+  const exaRulArr = [
+
+
+  	{
+
+
+  		exaStr : 'example property string',
+  		exaNum : 456,
+  		exaBoo : true,
+
+  		exaObj : {
+
+
+  			exaStr : 'example property string',
+  			exaNum : 456,
+  			exaBoo : true,
+
+  			exaObj : {
+
+
+  				exaStr : 'example property string',
+  				exaNum : 456,
+  				exaBoo : true
+
+
+  			}
+
+
+  		}
+
+
+  	},
+
+  	{
+
+  		...
+  	}
+
+
+  ];
+  ```
+  Walking this: `exaRulArr`'s first entry gets 2 blanks after `[` (first);
+  that entry's first property `exaStr` gets 2 blanks after its own `{`
+  (first); the simple properties `exaStr`/`exaNum`/`exaBoo` have no blanks
+  between each other (plain entries, not multi-line); the multi-line
+  property `exaObj` gets 1 blank before it (it's not first) and, since
+  it's also the LAST property of its parent, 2 blanks after its own
+  closing `}` before the parent's closing `}` (last). Between sibling
+  array entries that are each multi-line objects (neither first nor last),
+  it's 1 blank on both sides.
+- Every multi-line object's properties get their `:` column-aligned —
+  pad each property name (left-justify) to the width of the longest name
+  in that specific object, same computation used for `style` objects and
+  named imports elsewhere in this doc. This applies per-object — a nested
+  object's own alignment is computed independently from its parent's.
 - A one-line array literal — including a destructuring array binding like
   `const [ indRecObj, setIndRecObj ] = React.useState( null );` — gets a
   space directly after `[` and directly before `]` when it has at least one
@@ -266,6 +360,34 @@ of content — not N newline characters.
   parts too — e.g. every entry's closing `}` in a config array, or the
   `&&`/tag-name padding across parallel `{x === 'a' && <TabA .../>}`
   branches — computed from the longest entry's needed width.
+- An object literal with 2+ properties gets split to one property per line
+  — even if it would otherwise still fit on one line character-count-wise
+  — whenever at least one property's value is a non-trivial expression
+  (contains a binary operator like `+`/`-`/`*`/`/`, or is otherwise more
+  than a bare literal/identifier/single property-access). A simple
+  config-style object whose values are plain literals only (e.g.
+  `TAB_OBJ_ARR`'s entries) stays on one line even with several properties,
+  since there's nothing to visually untangle. Even when it's really just
+  one call argument wrapped for readability (as opposed to a genuine
+  multi-entry container like `TAB_OBJ_ARR`), it STILL gets the usual
+  2-blank-line padding after `{`/before `}` — same as any other multi-line
+  object literal, no exception for the call-argument case — but its last
+  property still does NOT get a trailing comma. Combined with the
+  tight-`({`/`})` exception from the Parentheses spacing section below
+  (a call whose sole argument is this kind of object skips the paren's own
+  inner space):
+  ```
+  setIndRecObj({
+
+
+  	x : butRecObj.left - navRecObj.left + navCurEle.scrollLeft,
+  	y : butRecObj.top - navRecObj.top + navCurEle.scrollTop,
+  	w : butRecObj.width,
+  	h : butRecObj.height
+
+
+  });
+  ```
 
 ### Parentheses spacing (declarations, calls, control-flow)
 - A non-empty parenthesized list gets a space directly after `(` and
@@ -279,6 +401,28 @@ of content — not N newline characters.
 - Ternary/grouping parens used purely for operator precedence (not a call,
   a declaration, or a control-flow condition) are NOT covered by this rule
   and stay exactly as written.
+- **Exception**: a call whose sole argument is a multi-line object literal
+  — where the `(` is followed immediately by `{` with nothing else on
+  that line, and (on the matching closing line) `}` is followed
+  immediately by `)` with nothing else before it — skips the space on
+  that side. The object literal's own opening/closing braces already mark
+  the boundary clearly, so the paren adds no useful separation there:
+  ```
+  setIndRecObj({
+
+
+  	x : butRecObj.left - navRecObj.left + navCurEle.scrollLeft,
+  	y : butRecObj.top - navRecObj.top + navCurEle.scrollTop,
+  	w : butRecObj.width,
+  	h : butRecObj.height
+
+
+  });
+  ```
+  This is narrow: it's specifically about `(`/`{` and `}`/`)` landing
+  directly adjacent at a line boundary. A call whose argument is anything
+  else (an arrow function, a ternary, multiple arguments, ...) still
+  follows the normal spacing rule above.
 
 ### Functions
 This means ANY function that isn't a one-line declaration — named
@@ -289,17 +433,46 @@ how short the body is.
   arrow like `() => ( expr )`, which counts as a function body too — insert
   2 blank lines before the first line inside. Directly before the closing
   `}`/`)`, insert 2 blank lines after the last line inside.
-- A function that fits entirely on one line (e.g.
+- A function that fits entirely on one line AND has only a single
+  statement inside (e.g.
   `const onDarChaFun = ( chaEveObj ) => setSysDarBoo( chaEveObj.matches );`,
   or a one-line cleanup `return () => { resObsObj.disconnect(); };`) is
-  exempt — there's nothing to pad.
+  exempt — there's nothing to pad. See "Multi-statement one-line blocks"
+  below for what happens once there's more than one statement.
+
+### Multi-statement one-line blocks
+- A one-line block that requires 2 or more semicolon-separated statements
+  crammed together (e.g. a cleanup function running two unrelated
+  teardown calls) must be broken into a real multi-line block instead —
+  even if it's a `return`ed arrow function and would otherwise qualify
+  for the "Functions" one-liner exemption above. Space the resulting
+  statements using the normal relatedness tiering (see "General
+  relatedness tiering" below), and pad the block like any other
+  multi-line function body (2 blank lines after `{`, 2 before `}`):
+  ```
+  return () => {
+
+  	if ( resObsObj ) resObsObj.disconnect();
+
+  	window.removeEventListener( 'resize', meaPosFun );
+
+  };
+  ```
+- **Exception**: a guard-clause block whose second (and final) statement
+  is a bare `return;` stays exempt and compact on one line regardless —
+  e.g. `if ( !butActEle ) { setIndRecObj( null ); return; }`. Any other
+  combination of 2+ statements (including two calls with no `return` at
+  all, like two sibling `clearTimeout(...)` calls) follows the rule above
+  instead.
 
 ### if/else and while statements
 - Same padding as functions — 2 blank lines after the opening `{` and 2
   before the closing `}` — but only when the block actually spans multiple
-  lines. A one-line body (`if ( !navCurEle ) return;`, or even
-  `if ( !butActEle ) { setIndRecObj( null ); return; }` written on one
-  line) is exempt and stays exactly as compact as it already is.
+  lines. A one-line body with a single statement (`if ( !navCurEle )
+  return;`), or the guard-clause-ending-in-`return` exception from
+  "Multi-statement one-line blocks" above (`if ( !butActEle ) {
+  setIndRecObj( null ); return; }`), is exempt and stays exactly as
+  compact as it already is.
 - A short "declare a value, then immediately guard-check it and return
   early" pair (e.g.
   `const prePlaStr = prePlaRef.current; if ( prePlaStr === tabPlaStr ) return;`)
@@ -309,6 +482,40 @@ how short the body is.
   structurally identical (e.g. a second `declare + guard` pair checking a
   completely different, independent condition right after it also gets 3
   before it, not folded into the same unit).
+- A multi-line `if`/`else if`/`else` chain puts each `else if`/`else` on
+  its OWN line — never cuddled onto the previous block's closing `}` (no
+  `} else {`) — with exactly 1 blank line between that closing `}` and
+  the next `else if`/`else` keyword. This is the same "related" (1 blank
+  line) tiering already used for mutually-exclusive branches elsewhere in
+  this doc, just made explicit for statement-level if/else chains: each
+  branch of one conditional is inherently related to its siblings. Each
+  branch's own body still gets the standard 2-blank-line padding from the
+  bullet above when it spans multiple lines:
+  ```
+  if ( exaConBoo === true ) {
+
+
+  	example code;
+
+
+  }
+
+  else if ( exaConBoo === false ) {
+
+
+  	example code;
+
+
+  }
+
+  else {
+
+
+  	example code;
+
+
+  }
+  ```
 
 ### Return statements
 - A `return` that occupies its own line (not a `return;`/`return x;` fused
@@ -329,14 +536,38 @@ how short the body is.
   relatedness tiering below instead.
 
 ### JSX
+- No space after `<`/`</` or before `>`/`/>` on any element — `<span>`,
+  `</span>`, `<img src='x' />` all stay tight. (An earlier version of this
+  doc required a space there; reversed once multi-line attributes — see
+  below — became the norm, since the tag name and its attribute list are
+  now already visually separated by being on different lines, and the
+  extra bracket-spacing just added noise on top of that.)
+  - **Exception**: a one-line element with exactly one attribute (the
+    only case where an element can have an attribute AND still be
+    one-line, since 2+ always forces multi-line) DOES get a space before
+    its closing `>` — e.g. `<span className='brand-name'>` →
+    `<span className='brand-name' >`. A self-closing one-liner already has
+    this space before `/>` from the pre-existing convention, so it's
+    unaffected. A zero-attribute element (`<defs>`) or a closing tag
+    (`</span>`, never carries attributes) stays tight either way.
+- Every JSX expression container — an attribute value (`ref={navEleRef}`)
+  or a JSX child expression (`{actIdeStr === 'today' && ...}`) — gets a
+  space directly after its `{` and directly before its `}`:
+  `ref={ navEleRef }`, `{ actIdeStr === 'today' && ... }`. This extends to
+  `${...}` template-literal interpolations too: `` `tab--${tabPlaStr}` ``
+  → `` `tab--${ tabPlaStr }` ``.
+  - **Exception**: when the container's content is itself an object
+    literal (the double-brace case, e.g. `style={{ stroke : '...' }}`),
+    don't add a second, separate space on top of the object literal's own
+    spacing — `{{`/`}}` stays tight exactly as it already reads.
 - Treat a JSX element that has actual children spanning multiple lines the
   same as a function/array/object: 2 blank lines directly after its opening
   tag and 2 directly before its closing tag. This includes a
-  `{condition && (\n  <Foo />\n)}` multi-line conditional wrapper — the `(`
-  and `)` count as an opening/closing pair too.
+  `{ condition && (\n  <Foo />\n) }` multi-line conditional wrapper — the
+  `(` and `)` count as an opening/closing pair too.
   - Exception: a self-closing element whose only multi-line aspect is its
     own wrapped attributes (no children at all, e.g.
-    `<button className="x"\n        onClick={...}>`) needs no padding
+    `<button\n\tclassName='x'\n\tonClick={...}\n>`) needs no padding
     between its attribute lines — there's no "inside" to pad.
 - Between sibling JSX children, apply the same related/somewhat-related/
   unrelated tiering as regular code (see below). One common case: a run of
@@ -345,6 +576,125 @@ how short the body is.
   exclusive `{actIdeStr === 'x' && <TabX />}` branches selecting a page) is
   usually "related" (1), not the 3-blank-line default reserved for
   genuinely different elements.
+
+### Attribute/prop ordering
+Every JSX element's attributes/props (native DOM/SVG elements AND custom
+components alike — a custom component's props follow the exact same
+8-tier scheme, mapped by role, not by whether they're a "real" HTML
+attribute) are ordered into these 8 tiers, top to bottom:
+1. **React-internal, not real DOM attributes**: `key`, `ref`,
+   `dangerouslySetInnerHTML`. React strips these before the element ever
+   reaches the DOM, so they always come first regardless of element type —
+   this includes SVG elements (SVG's own attributes do NOT get ranked
+   ahead of `key`/`ref`, see tier 6 below).
+2. **Identity**: `id` on a native element; on a custom component, whichever
+   prop plays the equivalent identity role (e.g. `pickerId`, `featureId`,
+   `pageId`).
+3. **Class**: `className` (never bare `class` — that attribute name
+   doesn't exist in JSX at all).
+4. **Style**: `style={{ ... }}`.
+5. **State/custom identifiers**: `name`, `data-*`, `htmlFor` (never bare
+   `for` — reserved word in JS, so JSX renames it).
+6. **Core functional / primary data** — the tier that does the most work,
+   so it absorbs a few different things:
+   - Native elements: `src`, `href`, `action`, `type`, `value`/
+     `defaultValue`, `checked`/`defaultChecked`, `disabled`, `required`,
+     `readOnly`, `placeholder`, `min`/`max`/`step`/`pattern`/`maxLength`,
+     `target`/`rel`, `autoFocus`, `autoComplete`, `spellCheck`,
+     `contentEditable`, `draggable`.
+   - SVG elements specifically: every SVG geometry/presentation attribute
+     (`viewBox`, `width`, `height`, `x`, `y`, `cx`, `cy`, `r`, `rx`, `ry`,
+     `d`, `points`, `transform`, `fill`, `stroke`, `strokeWidth`,
+     `strokeLinecap`, `strokeLinejoin`, `clipPath`, `clipPathUnits`, ...)
+     sits in THIS tier — alphabetized among themselves rather than
+     individually ranked, since there are too many to rank one by one.
+   - Custom components: whatever core data/behavior props actually drive
+     the component (e.g. `state`, `actions`, `animStyle`) — anything that
+     isn't identity/style/descriptive/an event callback lands here.
+7. **Descriptive / accessibility**: `alt`, `title`, `aria-*`, `role`,
+   `tabIndex`.
+8. **Events/callbacks, always last**: native handlers (`onClick`,
+   `onChange`, ...) AND custom-component callback props (`onHome`,
+   `onNavTab`, `onClose`, ...) — both are the same conceptual category, so
+   they're interleaved by whatever order makes sense, not native-first.
+
+### Multi-line attributes
+- Any element (native or custom component) with 2 OR MORE attributes/props
+  always goes multi-line — never all on one line, no matter how short the
+  attributes are. This is exact, not "as long as it's reasonably long":
+  even a 2-attribute element like `<span className='x' aria-hidden='true'>`
+  must split.
+- Exactly one attribute per line, no grouping multiple attributes onto a
+  shared line. The opening tag name gets its OWN line with nothing else on
+  it (not even the first attribute). The closing `>`/`/>` ALSO gets its
+  own line, at the same indentation depth as (i.e. column-aligned under)
+  the opening tag name's own `<` — it does NOT stay glued to the last
+  attribute's line:
+  ```
+  <span
+  	className='x'
+  	aria-hidden='true'
+  >
+  ```
+  Applies identically to self-closing elements — the `/>` sits alone on
+  its own line too, aligned with the `<`:
+  ```
+  <Icon
+  	name={ tabConObj.icon }
+  	size={ 20 }
+  />
+  ```
+  This supersedes the earlier "wrapped attributes column-aligned under the
+  first attribute" indentation case for element attribute lists specifically
+  — since the tag name never shares a line with an attribute anymore, there's
+  no longer a column to align under. Use plain structural indent (one tab
+  deeper than the opening tag's own line) for every attribute line instead.
+  (That said, the alignment mechanism itself, from the Indentation section
+  above, still applies to OTHER kinds of deliberately-column-aligned
+  continuation lines that aren't an element's own attribute list.)
+- A single-attribute element is unaffected as long as that attribute's own
+  value doesn't itself force multi-line (see the `style` rule right below)
+  — e.g. `<path d='...' />` stays exactly as compact as it already is.
+- **`style={{ ... }}` objects follow this same "2+ means multi-line" rule,
+  one property per line** — regardless of whether the property values are
+  simple literals or complex expressions (this is stricter than the
+  general object-literal rule elsewhere in this doc, which only splits an
+  object when a value is non-trivial; `style` always splits at 2+
+  properties). No trailing comma on the last property, and it stays tight
+  (no blank-line padding) — same convention as a wrapped call-argument
+  object. Additionally, the `:` of every property in the same `style`
+  object always lines up in one column — pad each property name
+  (left-justify) to the width of the longest name in that object, same
+  computation as the column-alignment already used for named imports and
+  stacked object literals elsewhere in this doc:
+  ```
+  style={{
+  	stroke      : 'var(--accent-soft)',
+  	strokeWidth : 16
+  }}
+  ```
+  If `style` is an element's ONLY attribute and it has 2+ properties, the
+  element itself still goes multi-line as a consequence — the tag name
+  gets its own line, `style={{` follows, then each property, then the
+  closing `}}`, then (per the closing-bracket rule above) the element's
+  own `>`/`/>` on its own line after that:
+  ```
+  <g
+  	style={{
+  		stroke      : 'var(--accent-soft)',
+  		strokeWidth : 16
+  	}}
+  >
+  ```
+- When this turns a JSX child into a genuine multi-line element (most
+  commonly a `{condition && <Foo attr1 attr2 />}` one-liner that now has
+  to expand), wrap it in the multi-line conditional `(...)` pattern from
+  the JSX section above, with the usual 2 blank lines inside.
+- A run of visually-repetitive sibling conditionals that used to share a
+  deliberately-aligned single line each (e.g. four
+  `{actIdeStr === 'x' && <TabX .../>}` branches column-padded to line up)
+  loses that alignment once each one expands to multi-line — that's an
+  accepted tradeoff of this rule, not a bug to fix.
 
 ### Variable declarations
 - Every variable gets its own `const`/`let` on its own row — a single
@@ -445,6 +795,91 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   instead of inventing a fourth truncated word — e.g. a boolean describing
   whether `TabBarCom` itself (Tab+Bar+Com) is a ghost copy becomes
   `tbcGhoBoo` (tbc from Tab/Bar/Com + Ghost + Boolean).
+- **Naming-conflict resolution** (rare — only when the standard first-3-
+  letters rule would produce a 9-character name that collides with an
+  already-in-use name elsewhere). Segment 3 (the type segment) is never
+  touched by this — it's standard and always stays as the literal first 3
+  letters of the type word, to avoid confusion about what type a variable
+  is. Only segments 1 and 2 are ever adjusted, trying segment 1's word
+  first and then segment 2's, using this escalating two-phase search:
+  - **Phase A**: keep the segment's first 2 letters, skip its normal 3rd
+    letter, and escalate which LATER letter fills the segment's 3rd
+    character — try the word's 4th letter; if the name still collides, try
+    the 5th letter, then 6th, and so on, one letter further each time. If
+    the word is too short to reach a next letter before the collision
+    resolves, stop escalating this segment and restart Phase A on segment
+    2's word instead (only if segment 1 was the one just tried).
+  - **Phase B**: only reached if Phase A ran out on both segments 1 and 2
+    without resolving the collision. Restart from segment 1 with a
+    different skip pattern — keep the word's 1st letter, skip its 2nd
+    letter, and escalate the segment's 3rd character starting from the
+    4th letter: try `[1st letter, 3rd letter, 4th letter]`; if it still
+    collides, try `[1st letter, 3rd letter, 5th letter]`, then 6th, and so
+    on. If segment 1's word runs out again, move to segment 2's word and
+    repeat Phase B on it.
+  - A segment whose word is too short even for a phase's first attempt
+    (e.g. a 3-letter word has no 4th letter to skip to) contributes
+    nothing in that phase and is simply skipped in favor of the other one.
+    In the near-impossible case Phase B also exhausts both segments 1 and
+    2, fall back to choosing a different word entirely for one of them and
+    reapply the normal rule.
+- **`id` attributes** follow the same 9-character/3-segment rule as any
+  other name, but segment 3 (the "type" segment) describes what KIND OF
+  THING the id labels — the element/role it identifies — rather than the
+  JS data type of the string holding it. Example: the SVG `<clipPath>`
+  that clips the nav brand-mark's glyph path to its rounded-square badge
+  → `braMarCli` (Brand + Mark + Clippath), referenced via
+  `clipPath={ \`url(#${ braMarCli })\` }` on the path it clips.
+  - When a component can render more than one live instance of itself at
+    once (e.g. `TabBarCom` mounts a second "ghost" copy of itself during
+    the nav placement-switch animation, gated by its own `tbcGhoBoo`
+    prop), a static id shared by both instances is a real bug — ids must
+    be document-unique, and a duplicate means `url(#id)` only ever
+    resolves to whichever instance is first in the DOM. Compute the id
+    once as a local variable and append a `--` + 3-letter modifier
+    segment (same truncation rule as the base name, e.g. `--gho` for
+    "ghost") when the condition that causes duplication is true:
+    ```
+    const braMarCli = `braMarCli${ tbcGhoBoo ? '--gho' : '' }`;
+    ```
+    Reference that variable everywhere the id is needed (both the
+    defining element's `id` and every place that reads it back via
+    `url(#...)`) rather than recomputing or restating the ternary each
+    time, so the definition and every reference can never drift apart.
+- **Object property names** follow the same naming rule as everything
+  above, but are only 6 characters — they drop the middle "descriptor"
+  segment and keep just segment 1 (what it is) + segment 3 (type), each
+  still strictly the first 3 letters of its word. Example — `TAB_OBJ_ARR`'s
+  own entries: `id` → `ideStr` (Identifier + String), `label` → `labStr`
+  (Label + String), `icon` → `icoStr` (Icon + String). Every place that
+  reads the property (e.g. `tabConObj.ideStr`) must be updated to match
+  when a property is renamed this way — same as any other rename.
+  - **Naming-conflict resolution for properties**: with only 2 segments
+    (6 characters) instead of 3, conflicts are more likely. The type
+    segment (segment 2 here) is protected exactly like segment 3 is for
+    the general rule — never touched. Only segment 1's word is ever
+    escalated, using the same two-phase search as the general rule's
+    Phase A/Phase B (Phase A: keep the first 2 letters, escalate the 3rd
+    character through the word's 4th, 5th, 6th, ... letters; Phase B, only
+    if Phase A exhausts: keep the 1st letter, skip the 2nd, escalate the
+    3rd character through the 4th, 5th, 6th, ... letters). Since there's
+    no second segment to fall back to this time (there's nowhere else for
+    the escalation to move to), if Phase A and Phase B both exhaust
+    without resolving the collision, stop and ask the user what to do —
+    don't guess a different word unprompted the way the general rule's
+    final fallback does.
+  - **Exemption**: this rule only applies to an object whose property
+    names are entirely OUR OWN invention — both the write site and every
+    read site are code we control, so renaming is free (e.g. the
+    `{ lefNum, topNum, widNum, heiNum }` shape `setIndRecObj` builds and
+    `indRecObj.lefNum`/etc. reads back, all private to `TabBarCom`). An
+    object whose keys are constrained by an external contract is exempt
+    entirely — most commonly a `style={{ ... }}` object, whose keys must
+    stay as real camelCase CSS property names (`strokeWidth`, `transform`,
+    ...) because React passes them straight through to the DOM; renaming
+    those would silently break rendering, not just look different. The
+    test is always "do I control every reader of this key," not merely
+    "is this an object I wrote."
 
 ### Default parameter values
 - Only give a parameter a default where it's genuinely reachable/

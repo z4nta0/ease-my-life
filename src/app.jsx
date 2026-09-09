@@ -33,11 +33,11 @@ import { useStore              } from './store.jsx';
 const TAB_OBJ_ARR = [
 
 
-	{ id : 'today',    label : 'Today',    icon : 'today'    },
-	{ id : 'picker',   label : 'Pickers',  icon : 'picker'   },
-	{ id : 'stats',    label : 'Stats',    icon : 'stats'    },
-	{ id : 'data',     label : 'Data',     icon : 'data'     },
-	{ id : 'settings', label : 'Settings', icon : 'settings' },
+	{ ideStr : 'today',    labStr : 'Today',    icoStr : 'today'    },
+	{ ideStr : 'picker',   labStr : 'Pickers',  icoStr : 'picker'   },
+	{ ideStr : 'stats',    labStr : 'Stats',    icoStr : 'stats'    },
+	{ ideStr : 'data',     labStr : 'Data',     icoStr : 'data'     },
+	{ ideStr : 'settings', labStr : 'Settings', icoStr : 'settings' },
 
 
 ];
@@ -49,7 +49,7 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 	const navEleRef = React.useRef( null );
 
-	const [ indRecObj, setIndRecObj ] = React.useState( null ); // {x,y,w,h} of the active tab, nav-relative
+	const [ indRecObj, setIndRecObj ] = React.useState( null ); // {lefNum,topNum,widNum,heiNum} of the active tab, nav-relative
 
 
 	React.useLayoutEffect( () => {
@@ -75,7 +75,16 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 			const butRecObj = butActEle.getBoundingClientRect();
 
 
-			setIndRecObj( { x : butRecObj.left - navRecObj.left + navCurEle.scrollLeft, y : butRecObj.top - navRecObj.top + navCurEle.scrollTop, w : butRecObj.width, h : butRecObj.height } );
+			setIndRecObj({
+
+
+				lefNum : butRecObj.left - navRecObj.left + navCurEle.scrollLeft,
+				topNum : butRecObj.top - navRecObj.top + navCurEle.scrollTop,
+				widNum : butRecObj.width,
+				heiNum : butRecObj.height
+
+
+			});
 
 
 		};
@@ -97,40 +106,95 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 
 
-		return () => { if ( resObsObj ) resObsObj.disconnect(); window.removeEventListener( 'resize', meaPosFun ); };
+		return () => {
+
+
+			if ( resObsObj ) resObsObj.disconnect();
+
+
+			window.removeEventListener( 'resize', meaPosFun );
+
+
+		};
 
 
 	}, [ actIdeStr, tabPlaStr, raiOpeBoo ] );
 
 
 
+	const braMarCli = `braMarCli${ tbcGhoBoo ? '--gho' : '' }`;
+
+
+
 	return (
 
 
-		<nav ref={navEleRef} className={`tabbar tabbar--${tabPlaStr} ${raiOpeBoo ? 'is-open' : ''} ${className}`} aria-label="Sections" aria-hidden={tbcGhoBoo || undefined}>
+		<nav
+			ref={ navEleRef }
+			className={ ` tabbar   tabbar--${ tabPlaStr }   ${ raiOpeBoo ? 'is-open' : '' }   ${ className } ` }
+			aria-hidden={ tbcGhoBoo || undefined }
+			aria-label='Sections'
+		>
 
 
-			{indRecObj && <span className="tabbar-indicator" aria-hidden="true"
-			              style={{ transform : `translate(${indRecObj.x}px, ${indRecObj.y}px)`, width : indRecObj.w + 'px', height : indRecObj.h + 'px' }} />}
+			{ indRecObj && (
+
+
+				<span
+					className='tabbar-indicator'
+					style={{
+						transform : `translate(${ indRecObj.lefNum }px, ${ indRecObj.topNum }px)`,
+						width     : indRecObj.widNum + 'px',
+						height    : indRecObj.heiNum + 'px'
+					}}
+					aria-hidden='true'
+				/>
+
+
+			) }
 
 
 
-			<button type="button" className="tabbar-brand" onClick={() => onChange( 'today' )} aria-label="Ease My Life — go to Today">
+			<button
+				className='tabbar-brand'
+				type='button'
+				aria-label='Ease My Life — go to Today'
+				onClick={ () => onChange( 'today' ) }
+			>
 
 
-				<span className="brand-mark" aria-hidden="true">
+				<span
+					className='brand-mark'
+					aria-hidden='true'
+				>
 
 
-					<svg viewBox="8 8 528 528" width="18" height="18" fill="none">
+					<svg
+						fill='none'
+						height='18'
+						viewBox='8 8 528 528'
+						width='18'
+					>
 
 
 						<defs>
 
 
-							<clipPath id="brandMarkClipNav" clipPathUnits="userSpaceOnUse">
+							<clipPath
+								id={ braMarCli }
+								clipPathUnits='userSpaceOnUse'
+							>
 
 
-								<rect width="512" height="512" y="16" x="16" rx="75" ry="75" />
+								<rect
+									height='512'
+									rx='75'
+									ry='75'
+									width='512'
+									x='16'
+									y='16'
+								/>
+
 
 
 							</clipPath>
@@ -140,39 +204,61 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 
 
-						<g style={{ stroke : 'var(--accent-soft)', strokeWidth : 16 }}>
+						<g
+							style={{
+								stroke      : 'var(--accent-soft)',
+								strokeWidth : 16
+							}}
+						>
 
 
-							<path d="M 528 112 L 16 112" />
+							<path d='M 528 112 L 16 112' />
 
-							<path d="M 216 528 L 216 16" />
+							<path d='M 216 528 L 216 16' />
 
-							<path d="M 320 528 L 320 16" />
+							<path d='M 320 528 L 320 16' />
 
-							<path d="M 424 528 L 424 16" />
+							<path d='M 424 528 L 424 16' />
 
-							<path d="M 112 528 L 112 16" />
+							<path d='M 112 528 L 112 16' />
 
-							<path d="M 528 216 L 16 216" />
+							<path d='M 528 216 L 16 216' />
 
-							<path d="M 528 320 L 16 320" />
+							<path d='M 528 320 L 16 320' />
 
-							<path d="M 528 424 L 16 424" />
+							<path d='M 528 424 L 16 424' />
 
 
 						</g>
 
 
 
-						<rect width="512" height="512" y="16" x="16" rx="75" ry="75"
-							style={{ strokeWidth : 16, strokeLinecap : 'round', strokeLinejoin : 'round', stroke : 'currentColor' }} />
+						<rect
+							style={{
+								strokeWidth    : 16,
+								strokeLinecap  : 'round',
+								strokeLinejoin : 'round',
+								stroke         : 'currentColor'
+							}}
+							height='512'
+							rx='75'
+							ry='75'
+							width='512'
+							x='16'
+							y='16'
+						/>
 
 
 						<path
-							d="M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z"
-							strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"
-							clipPath="url(#brandMarkClipNav)"
-							style={{ fill : 'currentColor', stroke : 'currentColor' }}
+							style={{
+								fill   : 'currentColor',
+								stroke : 'currentColor'
+							}}
+							clipPath={ `url(#${ braMarCli })` }
+							d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z'
+							strokeLinecap='round'
+							strokeLinejoin='round'
+							strokeWidth='8'
 						/>
 
 
@@ -182,27 +268,40 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 				</span>
 
 
-				<span className="brand-name">
+				<span className='brand-name' >
 
 
-					<span className="brand-letter">E</span><span className="brand-letter">M</span><span className="brand-letter">L</span>
+					<span className='brand-letter' >E</span><span className='brand-letter' >M</span><span className='brand-letter' >L</span>
 
 
 				</span>
 
 
-				<span className="brand-wordmark" aria-hidden="true">
+				<span
+					className='brand-wordmark'
+					aria-hidden='true'
+				>
 
 
-					<span className="bw-mark">
+					<span className='bw-mark' >
 
 
-						<svg viewBox="8 8 528 528" fill="none">
+						<svg
+							fill='none'
+							viewBox='8 8 528 528'
+						>
 
 
-							<path d="M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z"
-								strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"
-								style={{ fill : 'currentColor', stroke : 'currentColor' }} />
+							<path
+								style={{
+									fill   : 'currentColor',
+									stroke : 'currentColor'
+								}}
+								d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z'
+								strokeLinecap='round'
+								strokeLinejoin='round'
+								strokeWidth='8'
+							/>
 
 
 						</svg>
@@ -211,12 +310,12 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 					</span>
 
 
-					<span className="bw-lines">
+					<span className='bw-lines' >
 
 
-						<span className="bw-ease">Ease</span>
+						<span className='bw-ease' >Ease</span>
 
-						<span className="bw-rest">My Life</span>
+						<span className='bw-rest' >My Life</span>
 
 
 					</span>
@@ -232,17 +331,22 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 			{TAB_OBJ_ARR.map( ( tabConObj ) => (
 
 
-				<button key={tabConObj.id}
-				        className={`tabbtn ${tabConObj.id === actIdeStr ? 'is-on' : ''}`}
-				        data-tab={tabConObj.id}
-				        onClick={() => onChange( tabConObj.id )}
-				        aria-current={tabConObj.id === actIdeStr ? 'page' : undefined}>
+				<button
+					key={ tabConObj.ideStr }
+					className={ ` tabbtn   ${ tabConObj.ideStr === actIdeStr ? 'is-on' : '' } ` }
+					data-tab={ tabConObj.ideStr }
+					aria-current={ tabConObj.ideStr === actIdeStr ? 'page' : undefined }
+					onClick={ () => onChange( tabConObj.ideStr ) }
+				>
 
 
-					<Icon name={tabConObj.icon} size={20} />
+					<Icon
+						name={ tabConObj.icoStr }
+						size={ 20 }
+					/>
 
 
-					<span>{tabConObj.label}</span>
+					<span>{ tabConObj.labStr }</span>
 
 
 				</button>
@@ -254,17 +358,28 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 			{/* Pull handle — only visible when the side rail collapses to a drawer on
 			   small screens (CSS-gated). Rides the rail's outer edge; chevron flips. */}
-			<button type="button" className="rail-handle"
-			        onClick={onTogRaiFun}
-			        aria-label={raiOpeBoo ? 'Collapse menu' : 'Expand menu'}
-			        aria-expanded={raiOpeBoo}>
+			<button
+				className='rail-handle'
+				type='button'
+				aria-expanded={ raiOpeBoo }
+				aria-label={ raiOpeBoo ? 'Collapse menu' : 'Expand menu' }
+				onClick={ onTogRaiFun }
+			>
 
 
-				<svg viewBox="0 0 24 24" width="16" height="16" fill="none"
-				     stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+				<svg
+					fill='none'
+					height='16'
+					stroke='currentColor'
+					strokeLinecap='round'
+					strokeLinejoin='round'
+					strokeWidth='2.2'
+					viewBox='0 0 24 24'
+					width='16'
+				>
 
 
-					<path d={raiOpeBoo ? 'M 15 6 L 9 12 L 15 18' : 'M 9 6 L 15 12 L 9 18'} />
+					<path d={ raiOpeBoo ? 'M 15 6 L 9 12 L 15 18' : 'M 9 6 L 15 12 L 9 18' } />
 
 
 				</svg>
@@ -303,7 +418,7 @@ function AppRooCom () {
 
 	// Decorative background glyphs (see bg-flourish.jsx) — .main-inner is
 	// shared by every non-Today tab (one at a time, remounted per switch via
-	// its own key={actIdeStr} below), so one ref reused across all of them is
+	// its own key={ actIdeStr } below), so one ref reused across all of them is
 	// enough; Today has its own .today-body and manages its own ref/ instance
 	// internally instead (see tab-today.jsx).
 	const maiInnRef = React.useRef( null );
@@ -530,7 +645,15 @@ function AppRooCom () {
 
 
 
-		return () => { clearTimeout( exiEndTmo ); clearTimeout( entEndTmo ); };
+		return () => {
+
+
+			clearTimeout( exiEndTmo );
+
+			clearTimeout( entEndTmo );
+
+
+		};
 
 
 	}, [ tabPlaStr ] );
@@ -540,49 +663,151 @@ function AppRooCom () {
 	return (
 
 
-		<div className="app" data-placement={tabPlaStr}>
+		<div
+			className='app'
+			data-placement={ tabPlaStr }
+		>
 
 
-			<TabBarCom actIdeStr={actIdeStr} onChange={selTabFun} tabPlaStr={tabPlaStr}
-			        className={navEntBoo ? 'tabbar--entering' : ''}
-			        raiOpeBoo={raiOpeBoo} onTogRaiFun={() => setRaiOpeBoo( ( v ) => !v )} />
+			<TabBarCom
+				className={ navEntBoo ? 'tabbar--entering' : '' }
+				actIdeStr={ actIdeStr }
+				raiOpeBoo={ raiOpeBoo }
+				tabPlaStr={ tabPlaStr }
+				onChange={ selTabFun }
+				onTogRaiFun={ () => setRaiOpeBoo( ( v ) => !v ) }
+			/>
 
-			{exiPlaStr && (
-
-
-				<TabBarCom actIdeStr={actIdeStr} onChange={() => {}} tabPlaStr={exiPlaStr}
-				        className="tabbar--exiting" tbcGhoBoo
-				        raiOpeBoo={false} onTogRaiFun={() => {}} />
-
-
-			)}
+			{ exiPlaStr && (
 
 
-			{raiOpeBoo && <div className="rail-scrim" onClick={() => setRaiOpeBoo( false )} aria-hidden="true" />}
+				<TabBarCom
+					className='tabbar--exiting'
+					actIdeStr={ actIdeStr }
+					raiOpeBoo={ false }
+					tabPlaStr={ exiPlaStr }
+					tbcGhoBoo
+					onChange={ () => {} }
+					onTogRaiFun={ () => {} }
+				/>
+
+
+			) }
+
+
+			{ raiOpeBoo && (
+
+
+				<div
+					className='rail-scrim'
+					aria-hidden='true'
+					onClick={ () => setRaiOpeBoo( false ) }
+				/>
+
+
+			) }
 
 
 
-			<main className="main" ref={maiEleRef}>
+			<main
+				ref={ maiEleRef }
+				className='main'
+			>
 
 
-				{actIdeStr === 'today' && <div className="tab-fade" key="today"><TabToday state={staAppObj} actions={actStoObj} onHome={() => selTabFun( 'today' )} onNavTab={selTabFun} onStartPickerTour={setActPicStr} onStartPageTour={setActPagStr} onStartAppFeatureTour={setActFeaStr} /></div>}
+				{ actIdeStr === 'today' && (
 
 
-				{actIdeStr !== 'today' && (
+					<div
+						key='today'
+						className='tab-fade'
+					>
 
 
-					<div className="main-inner tab-fade" key={actIdeStr} ref={maiInnRef}>
+						<TabToday
+							actions={ actStoObj }
+							state={ staAppObj }
+							onHome={ () => selTabFun( 'today' ) }
+							onNavTab={ selTabFun }
+							onStartAppFeatureTour={ setActFeaStr }
+							onStartPageTour={ setActPagStr }
+							onStartPickerTour={ setActPicStr }
+						/>
 
 
-						<BgFlourish tabId={actIdeStr} measureRef={maiInnRef} />
+					</div>
 
-						{actIdeStr === 'picker'   && <TabPicker   state={staAppObj} actions={actStoObj} onHome={() => selTabFun( 'today' )} onNavTab={selTabFun} animStyle={(staAppObj.appearance && staAppObj.appearance.pickAnim) || 'reel'} />}
 
-						{actIdeStr === 'stats'    && <TabStats    state={staAppObj} actions={actStoObj} onHome={() => selTabFun( 'today' )} onNavTab={selTabFun} />}
+				) }
 
-						{actIdeStr === 'data'     && <TabData     state={staAppObj} actions={actStoObj} onHome={() => selTabFun( 'today' )} onNavTab={selTabFun} />}
 
-						{actIdeStr === 'settings' && <TabSettings state={staAppObj} actions={actStoObj} onHome={() => selTabFun( 'today' )} onNavTab={selTabFun} />}
+				{ actIdeStr !== 'today' && (
+
+
+					<div
+						key={ actIdeStr }
+						ref={ maiInnRef }
+						className='main-inner tab-fade'
+					>
+
+
+						<BgFlourish
+							measureRef={ maiInnRef }
+							tabId={ actIdeStr }
+						/>
+
+						{ actIdeStr === 'picker' && (
+
+
+							<TabPicker
+								actions={ actStoObj }
+								animStyle={ (staAppObj.appearance && staAppObj.appearance.pickAnim) || 'reel' }
+								state={ staAppObj }
+								onHome={ () => selTabFun( 'today' ) }
+								onNavTab={ selTabFun }
+							/>
+
+
+						) }
+
+						{ actIdeStr === 'stats' && (
+
+
+							<TabStats
+								actions={ actStoObj }
+								state={ staAppObj }
+								onHome={ () => selTabFun( 'today' ) }
+								onNavTab={ selTabFun }
+							/>
+
+
+						) }
+
+						{ actIdeStr === 'data' && (
+
+
+							<TabData
+								actions={ actStoObj }
+								state={ staAppObj }
+								onHome={ () => selTabFun( 'today' ) }
+								onNavTab={ selTabFun }
+							/>
+
+
+						) }
+
+						{ actIdeStr === 'settings' && (
+
+
+							<TabSettings
+								actions={ actStoObj }
+								state={ staAppObj }
+								onHome={ () => selTabFun( 'today' ) }
+								onNavTab={ selTabFun }
+							/>
+
+
+						) }
 
 
 					</div>
@@ -595,55 +820,60 @@ function AppRooCom () {
 
 
 
-			<Onboarding state={staAppObj} actions={actStoObj} active={actIdeStr} selectTab={selTabFun} />
+			<Onboarding
+				actions={ actStoObj }
+				active={ actIdeStr }
+				state={ staAppObj }
+				selectTab={ selTabFun }
+			/>
 
 
-			{actPicStr && (
+			{ actPicStr && (
 
 
 				<PickerTour
-					pickerId={actPicStr}
-					state={staAppObj}
-					actions={actStoObj}
-					active={actIdeStr}
-					selectTab={selTabFun}
-					onClose={() => setActPicStr( null )}
+					pickerId={ actPicStr }
+					actions={ actStoObj }
+					active={ actIdeStr }
+					state={ staAppObj }
+					onClose={ () => setActPicStr( null ) }
+					selectTab={ selTabFun }
 				/>
 
 
-			)}
+			) }
 
 
-			{actPagStr && (
+			{ actPagStr && (
 
 
 				<PageTour
-					pageId={actPagStr}
-					state={staAppObj}
-					actions={actStoObj}
-					active={actIdeStr}
-					selectTab={selTabFun}
-					onClose={() => setActPagStr( null )}
+					pageId={ actPagStr }
+					actions={ actStoObj }
+					active={ actIdeStr }
+					state={ staAppObj }
+					onClose={ () => setActPagStr( null ) }
+					selectTab={ selTabFun }
 				/>
 
 
-			)}
+			) }
 
 
-			{actFeaStr && (
+			{ actFeaStr && (
 
 
 				<AppFeatureTour
-					featureId={actFeaStr}
-					state={staAppObj}
-					actions={actStoObj}
-					active={actIdeStr}
-					selectTab={selTabFun}
-					onClose={() => setActFeaStr( null )}
+					featureId={ actFeaStr }
+					actions={ actStoObj }
+					active={ actIdeStr }
+					state={ staAppObj }
+					onClose={ () => setActFeaStr( null ) }
+					selectTab={ selTabFun }
 				/>
 
 
-			)}
+			) }
 
 
 		</div>
