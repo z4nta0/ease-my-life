@@ -245,6 +245,166 @@ of content — not N newline characters.
   actually describing), don't guess a glue point — treat it as its own
   freestanding unit, with whatever blank-line count applies on both sides
   given its surroundings (3 if it sits between top-level declarations).
+- **Every line of code gets a comment.** Rare exceptions: a closing
+  bracket alone on its own line (a function/object/array/block's `}`,
+  `]`, `)`, or a combination like `});`/`};`) never gets one. A bare
+  `function foo(...) {}` declaration (a custom function that ISN'T stored
+  in a `const`/`let`) is deferred — its own, more involved comment rules
+  come later; this does NOT extend to inline/anonymous functions passed
+  as arguments (a hook's callback like `useLayoutEffect(() => {...})`, a
+  `return () => {...}` cleanup, `.map((x) => ...)`, ...) — those get
+  commented normally, same as everything else. Other exceptions will turn
+  up rarely; handle them case by case as they're found.
+  - **Exception to the closing-bracket exemption**: a React hook call's
+    closing line that carries a dependency array (`}, [ a, b, c ] );`)
+    DOES get a comment, even though it's otherwise just a closing bracket
+    — specifically to explain why the effect/callback/memo needs to
+    re-run when each of those values changes, one clause per dependency
+    if there's more than one:
+    ```
+    }, [ actIdeStr, tabPlaStr, raiOpeBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever a change to one of these values could move or resize the active tab's indicator target. How: actIdeStr changes which button is marked active, tabPlaStr changes the tab bar's placement and therefore its whole layout, and raiOpeBoo toggling the rail open or closed can resize the nav itself.
+    ```
+- **Placement**: a single-line statement's comment goes at the very end of
+  the line, one space after the line's own trailing `;` (or just one space
+  after whatever the line ends with, if it doesn't need a `;` — e.g. a
+  `,` on an array/object entry). A multi-line construct (an array, object,
+  if/else block, function, call, ...) gets its comment right after its own
+  opening bracket, one space in — on that same line, not a new one:
+  `const TAB_OBJ_ARR = [ // What: ...`, `React.useLayoutEffect( () => { // What: ...`.
+- **Column alignment**: when a run of lines has NO blank lines between
+  them (e.g. entries in the same array/object literal), pad each line so
+  every comment's `//` starts at the same column — computed from the
+  longest line in that run, same mechanism used for colon/import
+  alignment elsewhere in this doc.
+- **Structure — every comment is exactly one line**, following this exact
+  template: `// What: <Name Expansion Or Short Descriptive Purpose, Title
+  Cased>. Why: <a terse but complete sentence explaining why this exists>.
+  How: <a terse but complete sentence explaining how it works and/or how
+  it's used.>` The `What:` value is Title Case (capitalize every word,
+  e.g. `TAB_OBJ_ARR` → `Tab Object Array`) — it's a label, not a sentence.
+  When the name being expanded follows the 9-char/3-segment (or 6-char
+  property) naming rule, expand each segment to its actual full word, in
+  the SAME ORDER the segments appear in the name — never reordered, and
+  never replaced with a paraphrase of what the thing conceptually is. E.g.
+  `butActEle` (But+Act+Ele) → `Button Active Element`, not `Active Button
+  Element` (segments swapped) and not `Clicked Tab Node` (a paraphrase
+  instead of an expansion). This includes the type segment: expand it to
+  its real word too (`Ref` → `Reference`, `Obj` → `Object`, `Ele` →
+  `Element`, ...), don't leave it abbreviated while expanding the others.
+  A clarifying word beyond the strict segment expansion is fine, but only
+  APPENDED after all the real segment words, never inserted between them
+  (e.g. `Indicator Record Object And Setter` is fine; `Left Offset Number`
+  is not, since "Offset" sits between the two real segments — say that in
+  the Why/How sentences instead). `Why:`/`How:` are real sentences
+  (capitalized start, subject + verb,
+  often starting with "This" as the subject), not sentence fragments —
+  e.g. `Why: This defines the fixed set of tabs that TabBarCom renders.`,
+  not `Why: defines the fixed set of tabs TabBarCom renders.` For an
+  object literal with multiple properties packed onto ONE line, chain a
+  separate What/Why/How group per property, one after another in the same
+  comment: `// What: Prop1... Why: This... How: This... // What: Prop2...
+  Why: This... How: This...`. These comments get long — that's expected
+  and accepted, not a sign something's wrong.
+  - **Editor tip worth knowing**: Alt+Z (Windows/Linux) or Option+Z (Mac)
+    toggles soft-wrap in most editors (VS Code included), which makes
+    these long single-line comments actually readable on screen without
+    changing the file's real line structure. Turn it on when working in
+    this codebase.
+- **JSX elements get exactly the same comment treatment as everything
+  else** — every element, one comment each.
+  - **The `What:` for a native HTML/SVG element**: pretend the element
+    has an `id`, even though it doesn't — invent a plausible 3-segment
+    name for it the same way the `id`-naming rule would, then expand THAT
+    (Title Case, same segment order) as the `What:` value. E.g. `<nav>` →
+    imagine an id like `conNavEle` (Container + Nav + Element) → `What:
+    Container Nav Element`. Structurally-identical sibling elements (e.g.
+    8 decorative grid-line `<path>`s, or repeated single-letter spans) may
+    share the exact same What/Why/How text — they don't need distinct
+    invented names just to be different.
+  - **The `What:` for a custom component**: if the component's OWN name
+    already follows the naming rules (like `TabBarCom`), use its real
+    expanded name directly, same as any other named identifier — don't
+    invent a separate pretend-id name for it. If the component HASN'T had
+    naming rules applied yet (e.g. `Icon`, still awaiting its own pass),
+    just use its literal current name as-is for now (e.g. `What: Icon.`)
+    — that comment is expected to be revisited once the component itself
+    gets renamed.
+  - **Placement — NEVER a bare `//`/text comment as JSX children.**
+    Anything that isn't wrapped in `{}` between an opening and closing tag
+    is literal DOM text content, so a plain `// comment` placed after an
+    element's closing tag (even a multi-line one) gets rendered as visible
+    text — a real bug, not just a style slip. Instead, every JSX element
+    comment is a comment-only JSX expression, `{ /* What: ... Why: ...
+    How: ... */ }` — no `//`, and it compiles away to nothing at all (a
+    comment-only `{}` child produces zero arguments to `createElement`,
+    verified identical output with or without it), so it's always safe.
+  - **Container elements and self-closing elements** get their comment
+    glued directly onto their own closing bracket — the opening tag's own
+    `>` for a container (right where the tag itself finishes, BEFORE any
+    of its children/content — this is what keeps a big element like `<nav>`
+    readable, since its comment sits right at its declaration instead of
+    buried after everything it contains), or the `/>` for a self-closing
+    element. Same line, no space, tight:
+    ```
+    <nav
+    	ref={ navEleRef }
+    	...
+    >{ /* What: Container Nav Element. Why: ... How: ... */ }
+
+    	...real children...
+
+    </nav>
+    ```
+    ```
+    <path d='M 528 112 L 16 112' />{ /* What: Grid Line Element. Why: ... How: ... */ }
+
+    <path d='M 216 528 L 216 16' />{ /* What: Grid Line Element. Why: ... How: ... */ }
+    ```
+    Self-closing elements stay self-closing — no need to convert them to
+    an explicit open/close pair, since a comment-only `{}` sibling on the
+    same line works exactly like any other sibling in a normal children
+    list (an element can have any number of siblings; the special case
+    below is the one exception to that).
+  - **A fully one-line element** — opening tag, real text/expression
+    content, AND its own closing tag all on the same physical line (e.g.
+    `<span className='bw-ease'>Ease</span>`, or `<span>{ tabConObj.labStr
+    }</span>`) — gets its comment AFTER that closing tag instead, same
+    line, so the comment never sits between the tag and its own content:
+    `<span className='bw-ease'>Ease</span>{ /* What: Ease Span Element. Why: ... How: ... */ }`.
+    Several such elements chained on one physical line (e.g. three
+    single-letter spans) each get their own comment immediately after
+    their own closing tag, chained along that same line — not one merged
+    trailing comment covering the whole line.
+  - **Exception — an element sitting directly inside a `{}` JS expression**
+    (e.g. a self-closing element that's the sole value of a
+    `{cond && ( <span ... /> )}` or `.map((x) => ( <span ... /> ))`
+    expression, rather than a normal member of some element's DOM children
+    list) is still real JS at that point, not JSX children syntax — so an
+    ordinary `//` comment works there directly, at the same position the
+    `{ /* */ }` rule would otherwise use (after the `>` for a multi-line
+    tag, after the content and closing tag for a one-liner). This keeps
+    the comment glued to the element itself instead of needing to hunt
+    for an external sibling slot:
+    ```
+    { indRecObj && (
+
+    	<span
+    		className='tabbar-indicator'
+    		...
+    	/> // What: Indicator Span Element. Why: ... How: ...
+
+    ) }
+    ```
+  - The closing tag itself still gets nothing, same as always.
+  - **Attribute lines never get their own comment** — unlike object
+    properties, a JSX attribute is self-descriptive enough via its own
+    name/value pairing that per-attribute comments would just be noise.
+  - A multi-line JS expression embedded in JSX that ISN'T itself an
+    element — a `{condition && (` wrapper, a `{arr.map((x) => (` call —
+    still gets a comment (it's still a line of code), but follows the
+    general descriptive-purpose comment rule instead of the pretend-id
+    one, placed after its own opening bracket like any other multi-line
+    construct: `{ indRecObj && ( // What: Indicator Visibility Check. Why: ... How: ...`.
 
 ### Quotes
 - Use `'single quotes'` for every string literal, including JSX attribute
@@ -560,6 +720,13 @@ how short the body is.
     literal (the double-brace case, e.g. `style={{ stroke : '...' }}`),
     don't add a second, separate space on top of the object literal's own
     spacing — `{{`/`}}` stays tight exactly as it already reads.
+  - **Exception**: when a JSX child expression's closing `}` is directly
+    preceded by more than one other closing bracket from nested
+    calls/arrows (e.g. `.map((x) => (<Foo />))`'s trailing `))}`), those
+    closing brackets stay tight against each other and against the `}` —
+    don't force a space between each one just because they're stacked:
+    `{ TAB_OBJ_ARR.map( ( tabConObj ) => (\n\t...\n))}`, not
+    `( ... ) )}`.
 - Treat a JSX element that has actual children spanning multiple lines the
   same as a function/array/object: 2 blank lines directly after its opening
   tag and 2 directly before its closing tag. This includes a
