@@ -3,27 +3,27 @@
 
 // #region Imports
 
-import { reduceMotion } from './ui.jsx'; // What: Reduce Motion. Why: The palette cross-fade should be skipped for a user who prefers reduced motion. How: This is called inside applyPaletteObj to gate the theme-animating class toggle.
+import { reduceMotion } from './ui.jsx'; // What: Reduce Motion. Why: The palette cross-fade should be skipped for a user who prefers reduced motion. How: This is called inside appPalFun to gate the theme-animating class toggle.
 
 // #endregion Imports
 
 
 
-const PALETTES = { // What: Palettes. Why: This is the app's fixed set of built-in color themes, each a full 8-token palette plus a display name. How: This is read directly by resolveActiveThemeKey/applyPaletteObj and exported for the Settings tab's theme picker.
+const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed set of built-in color themes, each a full 8-token palette plus a display name. How: This is read directly by resTheFun/appPalFun and exported for the Settings tab's theme picker.
 
 
 	ink : {
 
 
-		name       : 'Ink',
-		bg         : 'oklch(0.985 0.003 240)',
-		surface    : 'oklch(0.975 0.004 240)',
-		border     : 'oklch(0.91 0.005 240)',
-		text       : 'oklch(0.17 0.012 250)',
-		muted      : 'oklch(0.5 0.012 250)',
-		accent     : 'oklch(0.5 0.14 250)',
-		accentSoft : 'oklch(0.95 0.025 250)',
-		warm       : 'oklch(0.62 0.13 50)'
+		namStr : 'Ink',
+		bacStr : 'oklch(0.985 0.003 240)',
+		surStr : 'oklch(0.975 0.004 240)',
+		borStr : 'oklch(0.91 0.005 240)',
+		txtStr : 'oklch(0.17 0.012 250)',
+		mutStr : 'oklch(0.5 0.012 250)',
+		accStr : 'oklch(0.5 0.14 250)',
+		aceStr : 'oklch(0.95 0.025 250)',
+		warStr : 'oklch(0.62 0.13 50)'
 
 
 	},
@@ -31,15 +31,15 @@ const PALETTES = { // What: Palettes. Why: This is the app's fixed set of built-
 	sage : {
 
 
-		name       : 'Sage',
-		bg         : 'oklch(0.985 0.005 130)',
-		surface    : 'oklch(0.97 0.008 130)',
-		border     : 'oklch(0.9 0.012 130)',
-		text       : 'oklch(0.19 0.015 150)',
-		muted      : 'oklch(0.5 0.012 150)',
-		accent     : 'oklch(0.48 0.09 155)',
-		accentSoft : 'oklch(0.95 0.03 150)',
-		warm       : 'oklch(0.62 0.12 60)'
+		namStr : 'Sage',
+		bacStr : 'oklch(0.985 0.005 130)',
+		surStr : 'oklch(0.97 0.008 130)',
+		borStr : 'oklch(0.9 0.012 130)',
+		txtStr : 'oklch(0.19 0.015 150)',
+		mutStr : 'oklch(0.5 0.012 150)',
+		accStr : 'oklch(0.48 0.09 155)',
+		aceStr : 'oklch(0.95 0.03 150)',
+		warStr : 'oklch(0.62 0.12 60)'
 
 
 	},
@@ -47,15 +47,15 @@ const PALETTES = { // What: Palettes. Why: This is the app's fixed set of built-
 	sand : {
 
 
-		name       : 'Sand',
-		bg         : 'oklch(0.98 0.008 80)',
-		surface    : 'oklch(0.96 0.012 80)',
-		border     : 'oklch(0.9 0.015 75)',
-		text       : 'oklch(0.2 0.018 50)',
-		muted      : 'oklch(0.5 0.018 50)',
-		accent     : 'oklch(0.5 0.12 40)',
-		accentSoft : 'oklch(0.94 0.03 60)',
-		warm       : 'oklch(0.6 0.14 30)'
+		namStr : 'Sand',
+		bacStr : 'oklch(0.98 0.008 80)',
+		surStr : 'oklch(0.96 0.012 80)',
+		borStr : 'oklch(0.9 0.015 75)',
+		txtStr : 'oklch(0.2 0.018 50)',
+		mutStr : 'oklch(0.5 0.018 50)',
+		accStr : 'oklch(0.5 0.12 40)',
+		aceStr : 'oklch(0.94 0.03 60)',
+		warStr : 'oklch(0.6 0.14 30)'
 
 
 	},
@@ -63,15 +63,15 @@ const PALETTES = { // What: Palettes. Why: This is the app's fixed set of built-
 	night : {
 
 
-		name       : 'Night',
-		bg         : 'oklch(0.18 0.012 250)',
-		surface    : 'oklch(0.22 0.014 250)',
-		border     : 'oklch(0.3 0.014 250)',
-		text       : 'oklch(0.95 0.005 250)',
-		muted      : 'oklch(0.65 0.012 250)',
-		accent     : 'oklch(0.75 0.14 250)',
-		accentSoft : 'oklch(0.3 0.04 250)',
-		warm       : 'oklch(0.78 0.13 60)'
+		namStr : 'Night',
+		bacStr : 'oklch(0.18 0.012 250)',
+		surStr : 'oklch(0.22 0.014 250)',
+		borStr : 'oklch(0.3 0.014 250)',
+		txtStr : 'oklch(0.95 0.005 250)',
+		mutStr : 'oklch(0.65 0.012 250)',
+		accStr : 'oklch(0.75 0.14 250)',
+		aceStr : 'oklch(0.3 0.04 250)',
+		warStr : 'oklch(0.78 0.13 60)'
 
 
 	},
@@ -79,15 +79,15 @@ const PALETTES = { // What: Palettes. Why: This is the app's fixed set of built-
 	moss : {
 
 
-		name       : 'Moss',
-		bg         : 'oklch(0.17 0.01 150)',
-		surface    : 'oklch(0.21 0.014 150)',
-		border     : 'oklch(0.28 0.016 150)',
-		text       : 'oklch(0.95 0.008 150)',
-		muted      : 'oklch(0.65 0.012 150)',
-		accent     : 'oklch(0.7 0.1 155)',
-		accentSoft : 'oklch(0.3 0.035 150)',
-		warm       : 'oklch(0.78 0.13 60)'
+		namStr : 'Moss',
+		bacStr : 'oklch(0.17 0.01 150)',
+		surStr : 'oklch(0.21 0.014 150)',
+		borStr : 'oklch(0.28 0.016 150)',
+		txtStr : 'oklch(0.95 0.008 150)',
+		mutStr : 'oklch(0.65 0.012 150)',
+		accStr : 'oklch(0.7 0.1 155)',
+		aceStr : 'oklch(0.3 0.035 150)',
+		warStr : 'oklch(0.78 0.13 60)'
 
 
 	},
@@ -95,15 +95,15 @@ const PALETTES = { // What: Palettes. Why: This is the app's fixed set of built-
 	ember : {
 
 
-		name       : 'Ember',
-		bg         : 'oklch(0.17 0.014 45)',
-		surface    : 'oklch(0.21 0.016 45)',
-		border     : 'oklch(0.28 0.018 45)',
-		text       : 'oklch(0.95 0.012 50)',
-		muted      : 'oklch(0.65 0.016 50)',
-		accent     : 'oklch(0.72 0.13 42)',
-		accentSoft : 'oklch(0.32 0.05 42)',
-		warm       : 'oklch(0.78 0.13 60)'
+		namStr : 'Ember',
+		bacStr : 'oklch(0.17 0.014 45)',
+		surStr : 'oklch(0.21 0.016 45)',
+		borStr : 'oklch(0.28 0.018 45)',
+		txtStr : 'oklch(0.95 0.012 50)',
+		mutStr : 'oklch(0.65 0.016 50)',
+		accStr : 'oklch(0.72 0.13 42)',
+		aceStr : 'oklch(0.32 0.05 42)',
+		warStr : 'oklch(0.78 0.13 60)'
 
 
 	}
@@ -113,33 +113,34 @@ const PALETTES = { // What: Palettes. Why: This is the app's fixed set of built-
 
 
 
-let __paletteApplied = false; // What: Palette Applied Flag. Why: The very first palette application (initial page load) must never cross-fade, only later theme swaps should. How: This starts false and is set true at the end of applyPaletteObj's first run.
+let __palAppBoo = false; // What: Palette Applied Boolean. Why: The very first palette application (initial page load) must never cross-fade, only later theme swaps should. How: This starts false and is set true at the end of appPalFun's first run.
 
-let __themeAnimTimer = null; // What: Theme Animation Timer. Why: A running cross-fade class needs to be removed again after its own duration, and a fast repeat swap must cancel the previous removal instead of racing it. How: This holds the current setTimeout id, cleared and reassigned on every applyPaletteObj call that starts a new cross-fade.
+let __theAniTmo = null; // What: Theme Animation Timeout. Why: A running cross-fade class needs to be removed again after its own duration, and a fast repeat swap must cancel the previous removal instead of racing it. How: This holds the current setTimeout id, cleared and reassigned on every appPalFun call that starts a new cross-fade.
 
-let __lastPaletteSig = null; // What: Last Palette Signature. Why: The cross-fade should only run when the resolved palette's actual colors changed, not on every re-application. How: This holds the previous call's color signature string, compared against the current one below.
+let __lasPalStr = null; // What: Last Palette String. Why: The cross-fade should only run when the resolved palette's actual colors changed, not on every re-application. How: This holds the previous call's color signature string, compared against the current one below.
 
 
-// #region applyPaletteObj
+// #region appPalFun
 
 /**
- * applyPaletteObj = Apply Palette Object
+ * appPalFun = Apply Palette Function
  *
  * @summary
- * Applies a full 8-token palette object (a PALETTES entry, or a derived
- * custom one built by resolveCustomPalette) directly onto the document
- * root as CSS custom properties, and records the active palette name for
- * CSS that keys off it. Cross-fades the themable properties on every
- * change after the first, so the initial page load never animates but
- * every later user-driven theme swap does. Also keeps the installed
- * PWA's status-bar tint in sync with the newly-applied background color.
+ * Applies a full 8-token palette object (a PAL_SET_OBJ entry, or a
+ * derived custom one built by resCusFun) directly onto the document
+ * root as CSS custom properties, and records the active palette name
+ * for CSS that keys off it. Cross-fades the themable properties on
+ * every change after the first, so the initial page load never
+ * animates but every later user-driven theme swap does. Also keeps the
+ * installed PWA's status-bar tint in sync with the newly-applied
+ * background color.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param palResObj - The full 8-token palette object to apply (bg,
- *                    surface, border, text, muted, accent, accentSoft,
- *                    warm), either a PALETTES entry or a derived custom
- *                    palette from resolveCustomPalette.
+ * @param palResObj - The full 8-token palette object to apply
+ *                    (bacStr, surStr, borStr, txtStr, mutStr, accStr,
+ *                    aceStr, warStr), either a PAL_SET_OBJ entry or a
+ *                    derived custom palette from resCusFun.
  * @param theKeyStr - The resolved theme key this palette corresponds to
  *                    (e.g. 'ink', 'customLight'), written onto
  *                    document.body's dataset for CSS to key off.
@@ -148,22 +149,22 @@ let __lastPaletteSig = null; // What: Last Palette Signature. Why: The cross-fad
  *
  * @example
  * ```ts
- * applyPaletteObj(palResObj, theKeyStr) // => void
+ * appPalFun(palResObj, theKeyStr) // => void
  * ```
  *
 */
 
-function applyPaletteObj( palResObj, theKeyStr ) {
+function appPalFun( palResObj, theKeyStr ) {
 
 
-	const palSigStr = [ palResObj.bg, palResObj.surface, palResObj.text, palResObj.accent, palResObj.accentSoft, palResObj.border, palResObj.muted, palResObj.warm ].join( '|' ); // What: Palette Signature String. Why: Detecting an actual color change requires comparing against what was last applied, not just re-running on every call. How: This joins every token into one comparable string.
+	const palSigStr = [ palResObj.bacStr, palResObj.surStr, palResObj.txtStr, palResObj.accStr, palResObj.aceStr, palResObj.borStr, palResObj.mutStr, palResObj.warStr ].join( '|' ); // What: Palette Signature String. Why: Detecting an actual color change requires comparing against what was last applied, not just re-running on every call. How: This joins every token into one comparable string.
 
-	const palChaBoo = palSigStr !== __lastPaletteSig; // What: Palette Changed Boolean. Why: The cross-fade must only run when the resolved colors actually differ from last time. How: This compares the freshly-built signature against the previous call's stored one.
+	const palChaBoo = palSigStr !== __lasPalStr; // What: Palette Changed Boolean. Why: The cross-fade must only run when the resolved colors actually differ from last time. How: This compares the freshly-built signature against the previous call's stored one.
 
-	__lastPaletteSig = palSigStr; // What: Last Palette Signature Update. Why: The next call needs to compare against what is current now. How: This overwrites __lastPaletteSig with the freshly-computed signature.
+	__lasPalStr = palSigStr; // What: Last Palette String Update. Why: The next call needs to compare against what is current now. How: This overwrites __lasPalStr with the freshly-computed signature.
 
 
-	if ( __paletteApplied && palChaBoo && !reduceMotion() ) {
+	if ( __palAppBoo && palChaBoo && !reduceMotion() ) {
 
 
 		const docRooEle = document.documentElement; // What: Document Root Element. Why: The cross-fade class toggles on the root element, which is what the app's CSS transition rules key off. How: This is read once and reused for both the add and remove below.
@@ -171,47 +172,47 @@ function applyPaletteObj( palResObj, theKeyStr ) {
 		docRooEle.classList.add( 'theme-animating' ); // What: Theme Animating Class Add. Why: This is the actual class the app's CSS uses to enable a brief cross-fade transition on the themable custom properties. How: This adds the class to the root element immediately, before the new values are written below.
 
 
-		clearTimeout( __themeAnimTimer ); // What: Theme Animation Timer Clear. Why: A fast repeat theme swap must not let an earlier removal fire after this newer swap's own class add. How: This cancels whatever removal was previously scheduled.
+		clearTimeout( __theAniTmo ); // What: Theme Animation Timeout Clear. Why: A fast repeat theme swap must not let an earlier removal fire after this newer swap's own class add. How: This cancels whatever removal was previously scheduled.
 
-		__themeAnimTimer = setTimeout( () => docRooEle.classList.remove( 'theme-animating' ), 480 ); // What: Theme Animation Timer Schedule. Why: The cross-fade class must not stay on indefinitely, only for the duration of the transition. How: This schedules the class's removal 480ms later, matching the CSS transition's own duration.
+		__theAniTmo = setTimeout( () => docRooEle.classList.remove( 'theme-animating' ), 480 ); // What: Theme Animation Timeout Schedule. Why: The cross-fade class must not stay on indefinitely, only for the duration of the transition. How: This schedules the class's removal 480ms later, matching the CSS transition's own duration.
 
 
 	}
 
 
-	__paletteApplied = true; // What: Palette Applied Flag Update. Why: Every call after this one is a real theme swap, eligible for the cross-fade above. How: This is set true unconditionally, once, on the very first call.
+	__palAppBoo = true; // What: Palette Applied Boolean Update. Why: Every call after this one is a real theme swap, eligible for the cross-fade above. How: This is set true unconditionally, once, on the very first call.
 
 	const rooStyObj = document.documentElement.style; // What: Root Style Object. Why: Every custom property write below targets the same style object. How: This is read once and reused for all 8 setProperty calls that follow.
 
-	rooStyObj.setProperty( '--bg', palResObj.bg ); // What: Background Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the page background. How: This writes the palette's bg token onto the root element's inline style.
+	rooStyObj.setProperty( '--bg', palResObj.bacStr ); // What: Background Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the page background. How: This writes the palette's bacStr token onto the root element's inline style.
 
-	rooStyObj.setProperty( '--surface', palResObj.surface ); // What: Surface Property Write. Why: This is the actual CSS custom property the app's stylesheets read for card/surface backgrounds. How: This writes the palette's surface token onto the root element's inline style.
+	rooStyObj.setProperty( '--surface', palResObj.surStr ); // What: Surface Property Write. Why: This is the actual CSS custom property the app's stylesheets read for card/surface backgrounds. How: This writes the palette's surStr token onto the root element's inline style.
 
-	rooStyObj.setProperty( '--border', palResObj.border ); // What: Border Property Write. Why: This is the actual CSS custom property the app's stylesheets read for border colors. How: This writes the palette's border token onto the root element's inline style.
+	rooStyObj.setProperty( '--border', palResObj.borStr ); // What: Border Property Write. Why: This is the actual CSS custom property the app's stylesheets read for border colors. How: This writes the palette's borStr token onto the root element's inline style.
 
-	rooStyObj.setProperty( '--text', palResObj.text ); // What: Text Property Write. Why: This is the actual CSS custom property the app's stylesheets read for body text color. How: This writes the palette's text token onto the root element's inline style.
+	rooStyObj.setProperty( '--text', palResObj.txtStr ); // What: Text Property Write. Why: This is the actual CSS custom property the app's stylesheets read for body text color. How: This writes the palette's txtStr token onto the root element's inline style.
 
-	rooStyObj.setProperty( '--muted', palResObj.muted ); // What: Muted Property Write. Why: This is the actual CSS custom property the app's stylesheets read for de-emphasized text color. How: This writes the palette's muted token onto the root element's inline style.
+	rooStyObj.setProperty( '--muted', palResObj.mutStr ); // What: Muted Property Write. Why: This is the actual CSS custom property the app's stylesheets read for de-emphasized text color. How: This writes the palette's mutStr token onto the root element's inline style.
 
-	rooStyObj.setProperty( '--accent', palResObj.accent ); // What: Accent Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the primary accent color. How: This writes the palette's accent token onto the root element's inline style.
+	rooStyObj.setProperty( '--accent', palResObj.accStr ); // What: Accent Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the primary accent color. How: This writes the palette's accStr token onto the root element's inline style.
 
-	rooStyObj.setProperty( '--accent-soft', palResObj.accentSoft ); // What: Accent Soft Property Write. Why: This is the actual CSS custom property the app's stylesheets read for a softened accent background. How: This writes the palette's accentSoft token onto the root element's inline style.
+	rooStyObj.setProperty( '--accent-soft', palResObj.aceStr ); // What: Accent Soft Property Write. Why: This is the actual CSS custom property the app's stylesheets read for a softened accent background. How: This writes the palette's aceStr token onto the root element's inline style.
 
-	rooStyObj.setProperty( '--warm', palResObj.warm ); // What: Warm Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the warm/celebration accent color. How: This writes the palette's warm token onto the root element's inline style.
+	rooStyObj.setProperty( '--warm', palResObj.warStr ); // What: Warm Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the warm/celebration accent color. How: This writes the palette's warStr token onto the root element's inline style.
 
 
 	document.body.dataset.palette = theKeyStr || 'custom'; // What: Palette Dataset Write. Why: Some CSS keys off which specific palette is active, not just its raw token values. How: This writes the resolved theme key, or 'custom' if none was given, onto body's own dataset.
 
-	syncTinFun( palResObj.bg ); // What: Status Bar Tint Sync Call. Why: An installed PWA's status bar should follow the newly-applied background color too. How: This hands the resolved background color to syncTinFun.
+	syncTinFun( palResObj.bacStr ); // What: Status Bar Tint Sync Call. Why: An installed PWA's status bar should follow the newly-applied background color too. How: This hands the resolved background color to syncTinFun.
 
 
 }
 
-// #endregion applyPaletteObj
+// #endregion appPalFun
 
 
 
-let __tintProbe = null; // What: Tint Probe. Why: Resolving a CSS color string to hex needs a real canvas 2D context, which is comparatively expensive to create. How: This caches the first successfully-created context so later calls reuse it instead of creating a new canvas each time.
+let __tinProObj = null; // What: Tint Probe Object. Why: Resolving a CSS color string to hex needs a real canvas 2D context, which is comparatively expensive to create. How: This caches the first successfully-created context so later calls reuse it instead of creating a new canvas each time.
 
 
 // #region toHexFun
@@ -252,25 +253,25 @@ function toHexFun( cssColStr ) {
 		if ( window.CSS && CSS.supports && !CSS.supports( 'color', cssColStr ) ) return null; // What: Unsupported Color Guard. Why: Some very old browsers may not recognize a given color syntax at all, such as oklch(). How: This bails out early with null when the CSS.supports API exists and reports the color as unparseable.
 
 
-		if ( !__tintProbe ) {
+		if ( !__tinProObj ) {
 
 
 			const canProEle = document.createElement( 'canvas' ); // What: Canvas Probe Element. Why: A canvas 2D context is the mechanism used to normalize the color below. How: This creates a fresh, unattached canvas purely to obtain its context.
 
-			__tintProbe = canProEle.getContext && canProEle.getContext( '2d' ); // What: Tint Probe Assignment. Why: The created canvas must actually support a 2D context for this technique to work at all. How: This guards the getContext call itself and caches whatever it returns, including undefined.
+			__tinProObj = canProEle.getContext && canProEle.getContext( '2d' ); // What: Tint Probe Object Assignment. Why: The created canvas must actually support a 2D context for this technique to work at all. How: This guards the getContext call itself and caches whatever it returns, including undefined.
 
 
 		}
 
 
-		if ( !__tintProbe ) return null; // What: No Probe Guard. Why: Without a working 2D context there is no way to resolve the color at all. How: This bails out with null when canvas 2D support is unavailable.
+		if ( !__tinProObj ) return null; // What: No Probe Guard. Why: Without a working 2D context there is no way to resolve the color at all. How: This bails out with null when canvas 2D support is unavailable.
 
 
-		__tintProbe.fillStyle = '#000000'; // What: Fill Style Reset. Why: fillStyle silently ignores an invalid assignment rather than throwing, so a stale previous value could otherwise be mistaken for a successful parse. How: This resets fillStyle to a known value before attempting the real assignment below.
+		__tinProObj.fillStyle = '#000000'; // What: Fill Style Reset. Why: fillStyle silently ignores an invalid assignment rather than throwing, so a stale previous value could otherwise be mistaken for a successful parse. How: This resets fillStyle to a known value before attempting the real assignment below.
 
-		__tintProbe.fillStyle = cssColStr; // What: Fill Style Assignment. Why: This is the actual parse step; the browser normalizes whatever valid color string is assigned here. How: This assigns the given CSS color string, which silently no-ops if it fails to parse.
+		__tinProObj.fillStyle = cssColStr; // What: Fill Style Assignment. Why: This is the actual parse step; the browser normalizes whatever valid color string is assigned here. How: This assigns the given CSS color string, which silently no-ops if it fails to parse.
 
-		const hexResStr = __tintProbe.fillStyle; // What: Hex Result String. Why: Reading fillStyle back after assignment is what yields the browser's normalized value. How: This reads the (possibly unchanged, on parse failure) current fillStyle value.
+		const hexResStr = __tinProObj.fillStyle; // What: Hex Result String. Why: Reading fillStyle back after assignment is what yields the browser's normalized value. How: This reads the (possibly unchanged, on parse failure) current fillStyle value.
 
 		return typeof hexResStr === 'string' && hexResStr.charAt( 0 ) === '#' ? hexResStr : null; // What: Hex Result Return. Why: A failed parse leaves fillStyle at its prior value, which this codebase always resets to a non-hex sentinel first, so this is what actually detects success. How: This returns the read-back value only when it is a real hex string, null otherwise.
 
@@ -360,10 +361,10 @@ function syncTinFun( bacColStr ) {
 
 
 
-// #region resolveCustomPalette
+// #region resCusFun
 
 /**
- * resolveCustomPalette = Resolve Custom Palette
+ * resCusFun = Resolve Custom Function
  *
  * @summary
  * Builds a full 8-token palette from the 3 colors a Custom theme lets
@@ -383,18 +384,22 @@ function syncTinFun( bacColStr ) {
  *                    derived surface/border/muted/accentSoft tokens move
  *                    away from the user's own chosen colors.
  * @param usrColObj - The user's own 3 chosen colors: { bg, text, accent }.
+ *                    This is a separate, persisted contract from the
+ *                    returned palette shape below, so its own bg/text/
+ *                    accent keys stay as-is rather than following the
+ *                    palette-shape renames.
  *
  * @returns A full 8-token palette object in the same shape as a
- * PALETTES entry, ready to hand to applyPaletteObj.
+ * PAL_SET_OBJ entry, ready to hand to appPalFun.
  *
  * @example
  * ```ts
- * resolveCustomPalette(modKeyStr, usrColObj) // => full palette object
+ * resCusFun(modKeyStr, usrColObj) // => full palette object
  * ```
  *
 */
 
-function resolveCustomPalette( modKeyStr, usrColObj ) {
+function resCusFun( modKeyStr, usrColObj ) {
 
 
 	const bacColStr = usrColObj.bg; // What: Background Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.bg and reused in the returned object and the relative-color expressions below.
@@ -416,14 +421,14 @@ function resolveCustomPalette( modKeyStr, usrColObj ) {
 	return {
 
 
-		bg         : bacColStr,
-		text       : txtColStr,
-		accent     : accColStr,
-		surface    : `oklch(from ${ bacColStr } ${ calOffFun( 0.04, 0.17 ) } c h)`,
-		border     : `oklch(from ${ bacColStr } ${ calOffFun( 0.12, 0.26 ) } c h)`,
-		muted      : `oklch(from ${ txtColStr } calc(l + ${ modSgnNum * -0.32 }) c h)`,
-		accentSoft : `oklch(from ${ accColStr } calc(l + ${ modSgnNum * -0.42 }) calc(c - 0.08) h)`,
-		warm       : modKeyStr === 'dark' ? 'oklch(0.78 0.13 60)' : 'oklch(0.62 0.13 50)'
+		bacStr : bacColStr,
+		txtStr : txtColStr,
+		accStr : accColStr,
+		surStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.04, 0.17 ) } c h)`,
+		borStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.12, 0.26 ) } c h)`,
+		mutStr : `oklch(from ${ txtColStr } calc(l + ${ modSgnNum * -0.32 }) c h)`,
+		aceStr : `oklch(from ${ accColStr } calc(l + ${ modSgnNum * -0.42 }) calc(c - 0.08) h)`,
+		warStr : modKeyStr === 'dark' ? 'oklch(0.78 0.13 60)' : 'oklch(0.62 0.13 50)'
 
 
 	};
@@ -431,11 +436,11 @@ function resolveCustomPalette( modKeyStr, usrColObj ) {
 
 }
 
-// #endregion resolveCustomPalette
+// #endregion resCusFun
 
 
 
-const THE_PAI_OBJ = { // What: Theme Pair Object. Why: "System preference" auto-switching needs to know each theme's light/dark sibling; built-ins mirror the palette design (Ink and Night, Sage and Moss, Sand and Ember), and the two custom slots pair with each other. How: This is looked up by the current theme key in resolveActiveThemeKey below.
+const THE_PAI_OBJ = { // What: Theme Pair Object. Why: "System preference" auto-switching needs to know each theme's light/dark sibling; built-ins mirror the palette design (Ink and Night, Sage and Moss, Sand and Ember), and the two custom slots pair with each other. How: This is looked up by the current theme key in resTheFun below.
 
 
 	ink         : { ligStr : 'ink',         drkStr : 'night' },
@@ -452,10 +457,10 @@ const THE_PAI_OBJ = { // What: Theme Pair Object. Why: "System preference" auto-
 
 
 
-// #region resolveActiveThemeKey
+// #region resTheFun
 
 /**
- * resolveActiveThemeKey = Resolve Active Theme Key
+ * resTheFun = Resolve Theme Function
  *
  * @summary
  * Resolves which theme key should actually be applied right now. If
@@ -476,12 +481,12 @@ const THE_PAI_OBJ = { // What: Theme Pair Object. Why: "System preference" auto-
  *
  * @example
  * ```ts
- * resolveActiveThemeKey(appSetObj, sysDarBoo) // => theme key string
+ * resTheFun(appSetObj, sysDarBoo) // => theme key string
  * ```
  *
 */
 
-export function resolveActiveThemeKey( appSetObj, sysDarBoo ) {
+export function resTheFun( appSetObj, sysDarBoo ) {
 
 
 	const theKeyStr = appSetObj.theme || 'ink'; // What: Theme Key String. Why: Very old/incomplete persisted states might not have a theme field at all. How: This falls back to 'ink' when appSetObj.theme is missing.
@@ -506,13 +511,13 @@ export function resolveActiveThemeKey( appSetObj, sysDarBoo ) {
 
 }
 
-// #endregion resolveActiveThemeKey
+// #endregion resTheFun
 
 
 
-export const APPEARANCE = { PALETTES, applyPaletteObj, resolveCustomPalette, resolveActiveThemeKey }; // What: Appearance Namespace Object. Why: Some callers prefer one namespaced import over several individual named ones. How: This groups the same 4 bindings already exported individually below under one object.
+export const APP_NAM_OBJ = { PAL_SET_OBJ, appPalFun, resCusFun, resTheFun }; // What: Appearance Namespace Object. Why: Some callers prefer one namespaced import over several individual named ones. How: This groups the same 4 bindings already exported individually below under one object.
 
-export { PALETTES, applyPaletteObj, resolveCustomPalette }; // What: Named Exports. Why: Most callers import these individually rather than through the APPEARANCE namespace object above. How: This re-exports PALETTES, applyPaletteObj, and resolveCustomPalette by name (resolveActiveThemeKey is already exported directly at its own declaration above).
+export { PAL_SET_OBJ, appPalFun, resCusFun }; // What: Named Exports. Why: Most callers import these individually rather than through the APP_NAM_OBJ namespace object above. How: This re-exports PAL_SET_OBJ, appPalFun, and resCusFun by name (resTheFun is already exported directly at its own declaration above).
 
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { APPEARANCE } from './appearance.js';
+import { APP_NAM_OBJ } from './appearance.js';
 import { HOLIDAYS } from './holidays.js';
 import { LegalModal } from './legal-docs.jsx';
 import { NOTIFY } from './notify.js';
@@ -350,10 +350,10 @@ function ThemeRow({ pKey, palette, active, dark, onClick }) {
     <div className={`theme-row ${active ? 'is-on' : ''} ${dark ? 'is-dark' : ''}`}
          role="radio" aria-checked={active} tabIndex={0}
          onClick={onClick} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}>
-      <i style={{ background: palette.surface }} />
-      <i style={{ background: palette.accent, flex: '0 0 34%' }} />
-      <i style={{ background: palette.warm, flex: '0 0 12%' }} />
-      <span>{palette.name}</span>
+      <i style={{ background: palette.surStr }} />
+      <i style={{ background: palette.accStr, flex: '0 0 34%' }} />
+      <i style={{ background: palette.warStr, flex: '0 0 12%' }} />
+      <span>{palette.namStr}</span>
       {active && <span className="theme-row-check" aria-hidden="true">&#10003;</span>}
     </div>
   );
@@ -413,7 +413,7 @@ function ThemeSection({ state, actions }) {
         </p>
         <Card>
           {LIGHT_THEMES.map((key) => (
-            <ThemeRow key={key} pKey={key} palette={APPEARANCE.PALETTES[key]}
+            <ThemeRow key={key} pKey={key} palette={APP_NAM_OBJ.PAL_SET_OBJ[key]}
                       active={ap.theme === key}
                       onClick={() => actions.setAppearanceTheme(key)} />
           ))}
@@ -435,7 +435,7 @@ function ThemeSection({ state, actions }) {
         </p>
         <Card>
           {DARK_THEMES.map((key) => (
-            <ThemeRow key={key} pKey={key} palette={APPEARANCE.PALETTES[key]} dark
+            <ThemeRow key={key} pKey={key} palette={APP_NAM_OBJ.PAL_SET_OBJ[key]} dark
                       active={ap.theme === key}
                       onClick={() => actions.setAppearanceTheme(key)} />
           ))}

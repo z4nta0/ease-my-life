@@ -1222,6 +1222,18 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   prefix and reuses its paired state variable's own (already-renamed) name
   verbatim after it, for a 12-character total — e.g. the state variable
   `railOpen` → `raiOpeBoo`, so its setter `setRailOpen` → `setRaiOpeBoo`.
+- **"use"-prefix pattern**: a local custom hook (one this codebase defines
+  itself, as opposed to React's own exempted hooks) keeps the "use" prefix
+  and applies the normal 9-character/3-segment rule to the rest of the
+  name, for a 12-character total, the same mechanism as the "on"-prefix
+  pattern above, e.g. `useFlourishItems` → `useFloIteFun` (use + Flourish
+  + Items + Function).
+- **`__`-prefix pattern**: a module-private variable that already uses a
+  leading `__` (a plain JS convention marking "private to this module,"
+  distinct from the `window.__thing` runtime-globals convention described
+  under "Runtime globals on `window`") keeps the `__` prefix and applies
+  the normal 9-character/3-segment rule to the rest of the name, e.g.
+  `__paletteApplied` → `__palAppBoo` (Palette + Applied + Boolean).
 - **Acronym-reference rule**: when a name describes or refers to another
   named thing (a component, function, etc.), its own first segment is
   built from the first letter of *that* thing's own three segments,

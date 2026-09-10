@@ -455,14 +455,14 @@ function genSidFun( gutWidNum, conHeiNum ) {
 
 
 
-const floCacMap = new Map(); // What: Flourish Cache Map. Why: Every generated side must survive switching tabs back and forth within the same session, without regenerating on every visit. How: This is read/written by useFlourishItems below, keyed by tab id.
+const floCacMap = new Map(); // What: Flourish Cache Map. Why: Every generated side must survive switching tabs back and forth within the same session, without regenerating on every visit. How: This is read/written by useFloIteFun below, keyed by tab id.
 
 
 
-// #region useFlourishItems
+// #region useFloIteFun
 
 /**
- * useFlourishItems = Use Flourish Items
+ * useFloIteFun = Use Flourish Items
  *
  * @summary
  * Loads (from floCacMap) or generates this tab's own left/right flourish
@@ -488,12 +488,12 @@ const floCacMap = new Map(); // What: Flourish Cache Map. Why: Every generated s
  *
  * @example
  * ```tsx
- * useFlourishItems(tabIdeStr, meaEleRef) // => { left, right } or null
+ * useFloIteFun(tabIdeStr, meaEleRef) // => { left, right } or null
  * ```
  *
 */
 
-function useFlourishItems( tabIdeStr, meaEleRef ) {
+function useFloIteFun( tabIdeStr, meaEleRef ) {
 
 
 	const [ floItmObj, setFloItmObj ] = React.useState( () => floCacMap.get( tabIdeStr ) || null ); // What: Flourish Item Object And Setter. Why: A tab already generated earlier in this session should render immediately, without waiting on the effect below. How: This seeds itself from floCacMap if this tab's own entry already exists, null otherwise.
@@ -533,7 +533,7 @@ function useFlourishItems( tabIdeStr, meaEleRef ) {
 
 }
 
-// #endregion useFlourishItems
+// #endregion useFloIteFun
 
 
 
@@ -586,11 +586,12 @@ function FloColCom( { side : sidKeyStr, items : floItmArr } ) {
 					key={ floCurObj.ideStr }
 					className={ ` bg-flourish-item   ${ floCurObj.bigBoo ? 'is-big' : '' } ` }
 					style={{
-						top : `${ floCurObj.topNum }px`,
-						[ sidKeyStr === 'left' ? 'right' : 'left' ] : `${ floCurObj.insNum }px`,
+						top       : `${ floCurObj.topNum }px`,
 						fontSize  : `${ floCurObj.sizNum }px`,
 						opacity   : floCurObj.opaNum,
-						transform : `rotate(${ floCurObj.rotNum }deg)`
+						transform : `rotate(${ floCurObj.rotNum }deg)`,
+
+						[ sidKeyStr === 'left' ? 'right' : 'left' ] : `${ floCurObj.insNum }px`
 					}}
 				>{ /* What: Flourish Item Span Element. Why: This is the actual decorative glyph, absolutely positioned within its own parent gutter. How: This renders floCurObj's own symbol, sized/rotated/positioned entirely via the inline style above. */ }
 
@@ -616,13 +617,38 @@ function FloColCom( { side : sidKeyStr, items : floItmArr } ) {
 
 
 
-// tabIdeStr picks the per-session cache slot; meaEleRef must point at the
-// tab's own centered-column container (.main-inner or .today-body), the
-// element whose real width/height the grid is measured against.
-function BgFlourish( { tabId : tabIdeStr, measureRef : meaEleRef } ) {
+// #region BacFloCom
+
+/**
+ * BacFloCom = Background Flourish Component
+ *
+ * @summary
+ * Renders both of a tab's decorative gutters (left and right), loading
+ * or generating this tab's own flourish items via useFloIteFun and
+ * handing each side's own array to its own FloColCom instance.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.tabId      - The current tab's own id, used as the cache
+ *                           key.
+ * @param props.measureRef - A ref pointing at the tab's own centered-
+ *                           column container, whose real measured
+ *                           width/height the grid is generated against.
+ *
+ * @returns Both of this tab's own gutters, each as one FloColCom
+ * instance, or null before the first measurement has completed.
+ *
+ * @example
+ * ```tsx
+ * BacFloCom({ tabId, measureRef }) // => <BacFloCom />
+ * ```
+ *
+*/
+
+function BacFloCom( { tabId : tabIdeStr, measureRef : meaEleRef } ) {
 
 
-	const floItmObj = useFlourishItems( tabIdeStr, meaEleRef ); // What: Flourish Item Object. Why: Both gutters below need this tab's own already-generated (or not-yet-generated) items. How: This calls the hook above, which returns null until the first measurement completes.
+	const floItmObj = useFloIteFun( tabIdeStr, meaEleRef ); // What: Flourish Item Object. Why: Both gutters below need this tab's own already-generated (or not-yet-generated) items. How: This calls the hook above, which returns null until the first measurement completes.
 
 	if ( !floItmObj ) return null; // What: No Items Guard. Why: There is nothing to render before the first measurement has completed. How: This returns null early rather than rendering two empty gutters.
 
@@ -645,7 +671,11 @@ function BgFlourish( { tabId : tabIdeStr, measureRef : meaEleRef } ) {
 
 }
 
-export { BgFlourish };
+// #endregion BacFloCom
+
+
+
+export { BacFloCom };
 
 
 

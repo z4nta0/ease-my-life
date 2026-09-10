@@ -6,25 +6,25 @@
 import React from 'react'; // What: React. Why: This is the UI library the entire file's components and hooks are built on. How: This is used directly (React.useState, React.useRef, React.useLayoutEffect, ...) throughout, instead of importing individual named hooks.
 
 
-import { AppFeatureTour        } from './onboarding-app-features.jsx'; // What: App Feature Tour. Why: This drives the App Features tutorial overlay. How: This is rendered while actFeaStr holds a feature id, passed the shared state/actions and a close handler.
-import { applyPaletteObj       } from './appearance.js';               // What: Apply Palette Object. Why: A resolved palette still has to be written onto the document to take visible effect. How: This is called with the resolved palette and the active theme key inside the theme-application effect.
-import { BgFlourish            } from './bg-flourish.jsx';             // What: Background Flourish. Why: The decorative background glyphs are rendered behind every non-Today tab. How: This is passed the shared main-inner ref and the current tab id.
-import { CLEAN_STATE           } from './seed.js';                     // What: Clean State. Why: The onboarding demo needs a fresh, non-persisted state to run against instead of the user's real data. How: This is called to seed useStore when the onboarding demo flag is set.
-import { Icon                  } from './ui.jsx';                      // What: Icon. Why: Every tab button needs a recognizable glyph alongside its label. How: This is rendered inside TabBarCom with the name from each tab's own icoStr.
-import { Onboarding            } from './onboarding.jsx';              // What: Onboarding. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
-import { PageTour              } from './onboarding-page-tours.jsx';   // What: Page Tour. Why: This drives the currently-running "Explore the page" mini-tour. How: This is rendered while actPagStr holds a page id.
-import { PALETTES              } from './appearance.js';               // What: Palettes. Why: Every built-in theme key needs to resolve to one of the app's own palettes. How: This is looked up by the resolved theme key, falling back to the ink palette.
-import { PickerTour            } from './onboarding-picker-tours.jsx'; // What: Picker Tour. Why: This drives the currently-running sample-picker mini-tour. How: This is rendered while actPicStr holds a picker id.
-import { reduceMotion          } from './ui.jsx';                      // What: Reduce Motion. Why: A user who prefers reduced motion shouldn't see the ghost/enter animation. How: This is checked inside the animation effect to bail out early when it reports true.
-import { resolveActiveThemeKey } from './appearance.js';               // What: Resolve Active Theme Key. Why: The palette to apply depends on both the user's theme choice and the current system dark-mode state. How: This resolves both into a single concrete theme key inside the theme-application effect.
-import { resolveCustomPalette  } from './appearance.js';               // What: Resolve Custom Palette. Why: A user-defined custom palette needs resolving into a usable palette object. How: This is called with 'light' or 'dark' and the user's saved custom colors when a custom theme key is active.
-import { TabData               } from './tab-data.jsx';                // What: Tab Data. Why: This is the actual Data tab content. How: This is rendered while actIdeStr is 'data', passed the shared state/actions.
-import { TabPicker             } from './tab-picker.jsx';              // What: Tab Picker. Why: This is the actual Pickers tab content. How: This is rendered while actIdeStr is 'picker', passed the shared state/actions plus the persisted pick-animation style.
-import { TabSettings           } from './tab-settings.jsx';            // What: Tab Settings. Why: This is the actual Settings tab content. How: This is rendered while actIdeStr is 'settings', passed the shared state/actions.
-import { TabStats              } from './tab-stats.jsx';               // What: Tab Stats. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
-import { TabToday              } from './tab-today.jsx';               // What: Tab Today. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
-import { useEmlTour            } from './onboarding.jsx';              // What: Use Ease My Life Tour. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's phase/wantRailOpen/step fields.
-import { useStore              } from './store.jsx';                   // What: Use Store. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
+import { AppFeatureTour } from './onboarding-app-features.jsx'; // What: App Feature Tour. Why: This drives the App Features tutorial overlay. How: This is rendered while actFeaStr holds a feature id, passed the shared state/actions and a close handler.
+import { appPalFun      } from './appearance.js';               // What: Apply Palette Function. Why: A resolved palette still has to be written onto the document to take visible effect. How: This is called with the resolved palette and the active theme key inside the theme-application effect.
+import { BacFloCom      } from './bg-flourish.jsx';             // What: Background Flourish Component. Why: The decorative background glyphs are rendered behind every non-Today tab. How: This is passed the shared main-inner ref and the current tab id.
+import { CLEAN_STATE    } from './seed.js';                     // What: Clean State. Why: The onboarding demo needs a fresh, non-persisted state to run against instead of the user's real data. How: This is called to seed useStore when the onboarding demo flag is set.
+import { Icon           } from './ui.jsx';                      // What: Icon. Why: Every tab button needs a recognizable glyph alongside its label. How: This is rendered inside TabBarCom with the name from each tab's own icoStr.
+import { Onboarding     } from './onboarding.jsx';              // What: Onboarding. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
+import { PageTour       } from './onboarding-page-tours.jsx';   // What: Page Tour. Why: This drives the currently-running "Explore the page" mini-tour. How: This is rendered while actPagStr holds a page id.
+import { PAL_SET_OBJ    } from './appearance.js';               // What: Palette Set Object. Why: Every built-in theme key needs to resolve to one of the app's own palettes. How: This is looked up by the resolved theme key, falling back to the ink palette.
+import { PickerTour     } from './onboarding-picker-tours.jsx'; // What: Picker Tour. Why: This drives the currently-running sample-picker mini-tour. How: This is rendered while actPicStr holds a picker id.
+import { reduceMotion   } from './ui.jsx';                      // What: Reduce Motion. Why: A user who prefers reduced motion shouldn't see the ghost/enter animation. How: This is checked inside the animation effect to bail out early when it reports true.
+import { resCusFun      } from './appearance.js';               // What: Resolve Custom Function. Why: A user-defined custom palette needs resolving into a usable palette object. How: This is called with 'light' or 'dark' and the user's saved custom colors when a custom theme key is active.
+import { resTheFun      } from './appearance.js';               // What: Resolve Theme Function. Why: The palette to apply depends on both the user's theme choice and the current system dark-mode state. How: This resolves both into a single concrete theme key inside the theme-application effect.
+import { TabData        } from './tab-data.jsx';                // What: Tab Data. Why: This is the actual Data tab content. How: This is rendered while actIdeStr is 'data', passed the shared state/actions.
+import { TabPicker      } from './tab-picker.jsx';              // What: Tab Picker. Why: This is the actual Pickers tab content. How: This is rendered while actIdeStr is 'picker', passed the shared state/actions plus the persisted pick-animation style.
+import { TabSettings    } from './tab-settings.jsx';            // What: Tab Settings. Why: This is the actual Settings tab content. How: This is rendered while actIdeStr is 'settings', passed the shared state/actions.
+import { TabStats       } from './tab-stats.jsx';               // What: Tab Stats. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
+import { TabToday       } from './tab-today.jsx';               // What: Tab Today. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
+import { useEmlTour     } from './onboarding.jsx';              // What: Use Ease My Life Tour. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's phase/wantRailOpen/step fields.
+import { useStore       } from './store.jsx';                   // What: Use Store. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
 
 // #endregion Imports
 
@@ -489,7 +489,7 @@ function AppRooCom () {
 
 
 
-	const maiInnRef = React.useRef( null ); // What: Main Inner Reference. Why: Every non-Today tab shares one .main-inner wrapper (remounted per switch), so a single ref reused across all of them is enough, unlike Today which manages its own instance. How: This is attached to the shared main-inner div's ref prop below and read by BgFlourish to measure it.
+	const maiInnRef = React.useRef( null ); // What: Main Inner Reference. Why: Every non-Today tab shares one .main-inner wrapper (remounted per switch), so a single ref reused across all of them is enough, unlike Today which manages its own instance. How: This is attached to the shared main-inner div's ref prop below and read by BacFloCom to measure it.
 
 
 
@@ -615,19 +615,19 @@ function AppRooCom () {
 
 		const appCurObj = staAppObj.appearance || { theme : 'ink' }; // What: Appearance Current Object. Why: Very old/incomplete persisted states might not have an appearance object at all. How: This falls back to a default theme:'ink' object when appearance is missing.
 
-		const theKeyStr = resolveActiveThemeKey( appCurObj, sysDarBoo ); // What: Theme Key String. Why: The actual palette to apply depends on the user's theme choice combined with the current system dark-mode state. How: This resolves both into a single concrete theme key, such as 'ink' or 'customLight'.
+		const theKeyStr = resTheFun( appCurObj, sysDarBoo ); // What: Theme Key String. Why: The actual palette to apply depends on the user's theme choice combined with the current system dark-mode state. How: This resolves both into a single concrete theme key, such as 'ink' or 'customLight'.
 
 		let palResObj; // What: Palette Resolved Object. Why: The concrete color palette to apply isn't known yet, since it depends on which branch below resolves it. How: This is declared here and assigned in exactly one of the branches that follow.
 
 
-		if ( theKeyStr === 'customLight' && appCurObj.customLight ) palResObj = resolveCustomPalette( 'light', appCurObj.customLight ); // What: Custom Light Branch. Why: A user-defined light palette takes priority when that theme key is active and a custom palette actually exists. How: This resolves the user's own saved custom-light colors into a usable palette object.
+		if ( theKeyStr === 'customLight' && appCurObj.customLight ) palResObj = resCusFun( 'light', appCurObj.customLight ); // What: Custom Light Branch. Why: A user-defined light palette takes priority when that theme key is active and a custom palette actually exists. How: This resolves the user's own saved custom-light colors into a usable palette object.
 
-		else if ( theKeyStr === 'customDark' && appCurObj.customDark ) palResObj = resolveCustomPalette( 'dark', appCurObj.customDark ); // What: Custom Dark Branch. Why: Same reasoning as the light branch, for a user-defined dark palette. How: This resolves the user's own saved custom-dark colors into a usable palette object.
+		else if ( theKeyStr === 'customDark' && appCurObj.customDark ) palResObj = resCusFun( 'dark', appCurObj.customDark ); // What: Custom Dark Branch. Why: Same reasoning as the light branch, for a user-defined dark palette. How: This resolves the user's own saved custom-dark colors into a usable palette object.
 
-		else palResObj = PALETTES[theKeyStr] || PALETTES.ink; // What: Built-in Palette Branch. Why: Every other theme key maps to one of the app's own built-in palettes. How: This looks up the resolved key in PALETTES, falling back to the ink palette if the key is somehow unrecognized.
+		else palResObj = PAL_SET_OBJ[theKeyStr] || PAL_SET_OBJ.ink; // What: Built-in Palette Branch. Why: Every other theme key maps to one of the app's own built-in palettes. How: This looks up the resolved key in PAL_SET_OBJ, falling back to the ink palette if the key is somehow unrecognized.
 
 
-		applyPaletteObj( palResObj, theKeyStr ); // What: Apply Palette Call. Why: Resolving a palette does nothing on its own, since it still has to be written to the page. How: This applies the resolved palette's colors, and records the active key, onto the document.
+		appPalFun( palResObj, theKeyStr ); // What: Apply Palette Call. Why: Resolving a palette does nothing on its own, since it still has to be written to the page. How: This applies the resolved palette's colors, and records the active key, onto the document.
 
 
 	}, [ staAppObj.appearance, sysDarBoo ] ); // What: Effect Dependency Array. Why: The applied palette only ever needs to change when the persisted appearance settings or the system dark-mode state change. How: staAppObj.appearance covers the user's own theme choice/custom colors; sysDarBoo covers the OS-level light/dark toggle.
@@ -788,10 +788,10 @@ function AppRooCom () {
 					>{ /* What: Main Inner Fade Div Element. Why: Every non-Today tab needs the same fade transition and a stable per-tab key so React remounts it on switch, plus a shared ref for the background flourish to measure. How: This wraps whichever tab matches actIdeStr below, remounting (and replaying the fade) every time the active tab changes. */ }
 
 
-						<BgFlourish
+						<BacFloCom
 							measureRef={ maiInnRef }
 							tabId={ actIdeStr }
-						/>{ /* What: BgFlourish. Why: The decorative background glyphs need to know which tab they're behind and where to measure their bounds. How: This is passed the shared main-inner ref and the current tab id. */ }
+						/>{ /* What: Background Flourish Component. Why: The decorative background glyphs need to know which tab they're behind and where to measure their bounds. How: This is passed the shared main-inner ref and the current tab id. */ }
 
 						{ actIdeStr === 'picker' && ( // What: Picker Tab Visibility Check. Why: Only one tab's content should render at a time. How: This renders TabPicker only while actIdeStr is 'picker'.
 

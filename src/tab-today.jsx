@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { BgFlourish } from './bg-flourish.jsx';
+import { BacFloCom } from './bg-flourish.jsx';
 import { CADENCE } from './cadence.js';
 import { CONDITIONALS } from './conditionals.js';
 import { EASE_UP_RANGE_WARN } from './constants.js';
@@ -2273,7 +2273,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
       </header>
 
       <div className="today-body" ref={todayBodyRef}>
-        <BgFlourish tabId="today" measureRef={todayBodyRef} />
+        <BacFloCom tabId="today" measureRef={todayBodyRef} />
         {(editMode || bannerClosing) && (
           <div className={`editmode-banner ${bannerClosing ? 'is-closing' : ''}`} role="status">
             <span className="editmode-banner-msg">
