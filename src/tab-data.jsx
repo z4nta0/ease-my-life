@@ -500,7 +500,7 @@ function PickerControls({ picker, items, inDaily, dailyIds, allGroups, condition
                   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                   const ord = (n) => { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
                   const isNthWeekday = pk.dateMode === 'nthWeekday';
-                  const tail = ' — pick will persist until marked as completed';
+                  const tail = ', and the pick will persist until marked as completed';
                   if (cad === 'weekly') return <>surfaces once a week, <strong>every {DAYS[pk.anchorDow ?? 0]}</strong>{tail}</>;
                   if (cad === 'monthly') {
                     return isNthWeekday
@@ -1420,7 +1420,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
           <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
         </div>
         <div className="stat-h-lead">
-          <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
+          <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life link to go to the Today page">
             {/* Same theme-wired logo as the Today + Stats headers (currentColor →
                 accent, grid lines → accent-soft) so every tab reads as one product. */}
             <svg viewBox="8 8 528 528" fill="none" aria-hidden="true">

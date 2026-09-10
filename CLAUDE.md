@@ -163,6 +163,28 @@ outside the normal React import graph.
   timed to the animation's own keyframe durations — see the comment block
   there before changing the animation timing.
 
+## Copy rules
+
+Applies to every piece of prose this repo produces: user-facing app copy
+(toasts, tooltips, help text, onboarding/tour copy, labels, aria-labels,
+legal docs, seed/sample data strings, ...) and prose written as part of the
+code itself (comments, this file's own writing, commit messages, PR
+descriptions, ...). Being rolled out gradually, the same way the formatting/
+naming rules below are: existing text gets cleaned up as its file is next
+touched, not swept all at once.
+
+- **No em dashes ("—"), full stop.** Reword the sentence instead: split it
+  into two sentences, use a comma, a colon, or a parenthetical, whichever
+  reads most naturally for that specific sentence. There's no single
+  mechanical substitution that always works; judge each case on its own.
+  Reason: regardless of how carefully a sentence was actually written, an
+  em dash reads to many people today as a tell for hastily-generated AI
+  text, undermining copy that was in fact deliberately reviewed.
+- **Exception**: an em dash used as a standalone placeholder GLYPH for "no
+  value yet" in a stat/number display (e.g. a table cell rendering `—`
+  instead of a number that hasn't been computed) is a display character,
+  not prose punctuation, and is unaffected by this rule.
+
 ## Code formatting rules
 
 Whitespace conventions for JS/JSX in this repo, being rolled out gradually

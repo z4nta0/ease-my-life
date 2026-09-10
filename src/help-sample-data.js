@@ -46,7 +46,7 @@ const HELP_EXTRA_PICKERS = [
 const HELP_CONDITIONAL_ID = 'cnd_hlp_restday';
 const HELP_CONDITIONAL = {
   id: HELP_CONDITIONAL_ID, name: 'Rest Day', mode: 'ease-up',
-  cardText: 'Take a rest day — no yard work today!',
+  cardText: 'Take a rest day, no yard work today!',
 };
 const HELP_GATED_PICKER = {
   id: 'hlp_pkr_yardwork', name: 'Yard Work', group: 'Chores', mode: 'ease-up',

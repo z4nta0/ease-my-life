@@ -647,19 +647,19 @@ function PickerView({ picker, state, actions, animStyle }) {
             // tooltip on the wN pill. (wN itself is fixed — it never drifts.)
             const w = it.weight;
             const weightTip = w === 1
-              ? 'Weight 1 — the baseline pick rate.'
-              : `Weight ${w} — ${w}× as likely to be picked as a w1 item.`;
+              ? 'Weight 1, the baseline pick rate.'
+              : `Weight ${w}, ${w}× as likely to be picked as a w1 item.`;
             // Explanation of the drifting `value` shown to the left of wN.
             // This is the part that changes run-to-run; what it means depends
             // on the picker's mode.
             const thr = picker.threshold ?? 100;
             const valueTip =
               picker.mode === 'dynamic'
-                ? `Drift bonus — climbs by ${w} (the item’s weight) every time it isn’t picked, and resets to 0 when it is.`
+                ? `Drift bonus, climbs by ${w} (the item’s weight) every time it isn’t picked, and resets to 0 when it is.`
               : picker.mode === 'ease-up'
-                ? `Progress toward eligibility — starts at 0 and rises by a random amount each run it isn’t picked. The item becomes pickable at ${thr}, then resets to 0.`
+                ? `Progress toward eligibility, starts at 0 and rises by a random amount each run it isn’t picked. The item becomes pickable at ${thr}, then resets to 0.`
               : picker.mode === 'ease-down'
-                ? `Remaining charge — starts at ${thr} and drops by a random amount each time it’s picked. At 0 it refills automatically and a new item is chosen; this one sits out the next pick.`
+                ? `Remaining charge, starts at ${thr} and drops by a random amount each time it’s picked. At 0 it refills automatically and a new item is chosen; this one sits out the next pick.`
               : '';
             return (
               <div key={it.id} className={`pool-row ${it.vacation ? 'is-vac' : ''} ${!eligibleHere ? 'is-ineligible' : ''} ${insertSavedId === it.id ? 'pool-row--insert' : ''} ${confirmDelId === it.id ? 'pool-row--confirm' : ''} ${removingId === it.id ? 'pool-row--removing' : ''}`}
@@ -1749,8 +1749,8 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
         <div className="np-footer-note">
           {enoughItems
             ? (showWeights
-                ? 'Looks good — set each item’s weight above, or leave them even.'
-                : `Minimum number of items added (${committedCount} so far) — you can always add more items later.`)
+                ? 'Looks good, set each item’s weight above, or leave them even.'
+                : `Minimum number of items added (${committedCount} so far). You can always add more items later.`)
             : `Add at least 2 items to create this picker${committedCount === 1 ? ' (1 so far)' : ''}.`}
         </div>
         <div className="np-footer-actions">
@@ -1944,7 +1944,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
           <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
         </div>
         <div className="picker-h-lead">
-          <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
+          <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life link to go to the Today page">
             {/* Same theme-wired logo as the Today + Stats headers so the tabs
                 read as one product (currentColor → accent, grid → accent-soft). */}
             <svg viewBox="8 8 528 528" fill="none" aria-hidden="true">

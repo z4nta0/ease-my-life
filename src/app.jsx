@@ -158,7 +158,7 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 			<button
 				className='tabbar-brand'
 				type='button'
-				aria-label='Ease My Life — go to Today'
+				aria-label='Ease My Life link to go to the Today page'
 				onClick={ () => onChange( 'today' ) }
 			>{ /* What: Brand Button Element. Why: The logo/wordmark should also work as a shortcut back to the Today tab. How: This wraps the mark and wordmark spans in a real button and jumps to 'today' on click. */ }
 
@@ -433,7 +433,7 @@ function AppRooCom () {
 	});
 
 
-	const [ actPagStr, setActPagStr ] = React.useState( () => { // What: Active Page String And Setter. Why: Tracks which "Explore the {page}" page tour is running, kept here for the same reason as actPicStr — some page tours navigate away from Today and would unmount it. How: This seeds itself from a persisted activeTour on first mount so a reload resumes the tour instead of losing it.
+	const [ actPagStr, setActPagStr ] = React.useState( () => { // What: Active Page String And Setter. Why: Tracks which "Explore the {page}" page tour is running, kept here for the same reason as actPicStr: some page tours navigate away from Today and would unmount it. How: This seeds itself from a persisted activeTour on first mount so a reload resumes the tour instead of losing it.
 
 
 		const actTouObj = staAppObj.onboarding && staAppObj.onboarding.activeTour; // What: Active Tour Object. Why: This is the persisted record of whichever onboarding tour (if any) was mid-progress on last save. How: This is read from the app's own onboarding state and checked below for a "page-" prefixed id.
@@ -534,7 +534,7 @@ function AppRooCom () {
 
 		const theKeyStr = resolveActiveThemeKey( appCurObj, sysDarBoo ); // What: Theme Key String. Why: The actual palette to apply depends on the user's theme choice combined with the current system dark-mode state. How: This resolves both into a single concrete theme key, such as 'ink' or 'customLight'.
 
-		let palResObj; // What: Palette Resolved Object. Why: The concrete color palette to apply isn't known yet — it depends on which branch below resolves it. How: This is declared here and assigned in exactly one of the branches that follow.
+		let palResObj; // What: Palette Resolved Object. Why: The concrete color palette to apply isn't known yet, since it depends on which branch below resolves it. How: This is declared here and assigned in exactly one of the branches that follow.
 
 
 		if ( theKeyStr === 'customLight' && appCurObj.customLight ) palResObj = resolveCustomPalette( 'light', appCurObj.customLight ); // What: Custom Light Branch. Why: A user-defined light palette takes priority when that theme key is active and a custom palette actually exists. How: This resolves the user's own saved custom-light colors into a usable palette object.
@@ -544,7 +544,7 @@ function AppRooCom () {
 		else palResObj = PALETTES[theKeyStr] || PALETTES.ink; // What: Built-in Palette Branch. Why: Every other theme key maps to one of the app's own built-in palettes. How: This looks up the resolved key in PALETTES, falling back to the ink palette if the key is somehow unrecognized.
 
 
-		applyPaletteObj( palResObj, theKeyStr ); // What: Apply Palette Call. Why: Resolving a palette does nothing on its own — it still has to be written to the page. How: This applies the resolved palette's colors, and records the active key, onto the document.
+		applyPaletteObj( palResObj, theKeyStr ); // What: Apply Palette Call. Why: Resolving a palette does nothing on its own, since it still has to be written to the page. How: This applies the resolved palette's colors, and records the active key, onto the document.
 
 
 	}, [ staAppObj.appearance, sysDarBoo ] ); // What: Effect Dependency Array. Why: The applied palette only ever needs to change when the persisted appearance settings or the system dark-mode state change. How: staAppObj.appearance covers the user's own theme choice/custom colors; sysDarBoo covers the OS-level light/dark toggle.

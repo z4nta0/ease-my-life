@@ -916,7 +916,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
           <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
         </div>
         <div className="stat-h-lead">
-          <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
+          <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life link to go to the Today page">
             {/* Same theme-wired logo as the Today header (currentColor → accent,
                 grid lines → accent-soft) so the two tabs read as one product. */}
             <svg viewBox="8 8 528 528" fill="none" aria-hidden="true">

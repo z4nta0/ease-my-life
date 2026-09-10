@@ -267,7 +267,7 @@ function GroupHeader({ name, doneCount, total, editMode, onGripDown, onRenameGro
     {mergePending && (
       <div className="group-merge-confirm">
         <span className="confirm-msg">
-          A group named &ldquo;{mergePending.to}&rdquo; already exists — merge
+          A group named &ldquo;{mergePending.to}&rdquo; already exists. Merge
           &ldquo;{mergePending.from}&rdquo;&rsquo;s pickers into it? This can&rsquo;t be undone.
         </span>
         <div className="rem-del-actions">
@@ -642,7 +642,7 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
   if (entry.kind === 'dayoff') {
     const dofresh = justChecked === entry.eid && entry.done;
     const disabledTip = 'This action is disabled for this type of item.';
-    const dayoffTitle = entry.pickerName ? `${entry.pickerName} — ${entry.condName || 'Day off'}` : 'Day off';
+    const dayoffTitle = entry.pickerName ? `${entry.pickerName} · ${entry.condName || 'Day off'}` : 'Day off';
     const onRowClick = (e) => {
       if (editMode || isRemoving) return;
       if (e.target.closest('.today-card-actions')) return;
@@ -668,7 +668,7 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
         <div className="today-card-body">
           <div className="today-card-meta today-card-meta--dayoff">
             <InfoTip className="meta-picker meta-dayoff-title" label={dayoffTitle} truncationOnly>
-              {entry.pickerName ? <>{entry.pickerName} — <strong>{entry.condName || 'Day off'}</strong></> : 'Day off'}
+              {entry.pickerName ? <>{entry.pickerName} · <strong>{entry.condName || 'Day off'}</strong></> : 'Day off'}
             </InfoTip>
           </div>
           <div className="today-card-name">{entry.cardText || 'Enjoy your day off'}</div>
@@ -761,8 +761,8 @@ function EntryCard({ entry, picker, state, actions, justChecked, onCheck, onSkip
   const doneRerollTip = 'Item is completed and cannot be rolled away. If you want another item added, use the Pickers tab to manually push another item here.';
   const doneSkipTip = 'Item is completed and cannot be skipped. If you want remove this item, uncheck it first.';
   const rerollTip = picker.mode === 'ease-up'
-    ? 'Only one item is charged and ready — nothing to re-roll to. Another item becomes available once it reaches full charge.'
-    : 'This picker has only one active item — nothing to re-roll to. Add or activate another item for this picker to enable re-rolls.';
+    ? "Only one item is charged and ready, so there's nothing to re-roll to. Another item becomes available once it reaches full charge."
+    : "This picker has only one active item, so there's nothing to re-roll to. Add or activate another item for this picker to enable re-rolls.";
   // Completion takes precedence: it applies regardless of candidate count.
   const activeRerollTip = isDone ? doneRerollTip : rerollTip;
   const handleRowClick = (e) => {
@@ -2211,7 +2211,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
               </div>
             </div>
             <div className="today-h-lead">
-              <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
+              <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life link to go to the Today page">
                 {/* Logo colors are wired to the UI theme:
                     – border + easing-checkmark use currentColor, which the
                       .brand-mark sets to var(--accent).

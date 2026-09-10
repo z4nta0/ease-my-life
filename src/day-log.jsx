@@ -296,7 +296,7 @@ function CondSection({ state, pickersInGroup, day }) {
                 <Ico name="branch" />
                 {trig
                   ? <span>Rested: {attached.map((n, i) => <React.Fragment key={n}>{i ? ', ' : ''}<b>{n}</b></React.Fragment>)}</span>
-                  : <span>Attached: {attached.map((n, i) => <React.Fragment key={n}>{i ? ', ' : ''}<b>{n}</b></React.Fragment>)} — ran normally</span>}
+                  : <span>Attached: {attached.map((n, i) => <React.Fragment key={n}>{i ? ', ' : ''}<b>{n}</b></React.Fragment>)} (ran normally)</span>}
               </div>
             </React.Fragment>
           );

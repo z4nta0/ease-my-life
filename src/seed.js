@@ -475,7 +475,7 @@ function buildSeed() {
     // to exercise. (Attached below via conditionalId on pkr_chore_w.)
     conditionals: [
       { id: 'cnd_chorefree', name: 'Chore Free Day', mode: 'ease-up',
-        cardText: 'Chore-free day — enjoy the break!', value: 60, weight: 1,
+        cardText: 'Chore free day, enjoy the break!', value: 60, weight: 1,
         active: true, triggered: false, easeMin: 18, easeMax: 30, threshold: 100, chargedToday: false },
     ],
     daily: { pickerIds: pickers.map((p) => p.id), runTime: '04:00', mode: 'auto' }, // every picker runs daily, auto-run 4am

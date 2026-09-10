@@ -728,13 +728,13 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
   };
   const onInstall = async () => {
     const res = await PWA.promptInstall();
-    if (res === 'accepted') setPersistMsg({ ok: true, text: 'Installed — your data is now protected from browser cleanup.' });
+    if (res === 'accepted') setPersistMsg({ ok: true, text: 'Installed. Your data is now protected from browser cleanup.' });
     else if (res === 'dismissed') setPersistMsg({ ok: false, text: 'Install dismissed.' });
   };
   const onPersist = async () => {
     const ok = await PWA.requestPersistOnce(true);
     setPersistMsg(ok
-      ? { ok: true, text: 'Granted — this browser will not evict your data.' }
+      ? { ok: true, text: 'Granted. This browser will not evict your data.' }
       : { ok: false, text: 'The browser declined for now. Installing the app is the surest way to get it.' });
     if (STORAGE) STORAGE.status().then(setStor);
   };
@@ -909,7 +909,7 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
           <HelpButton active={helpOn} onClick={() => setHelpOn((o) => !o)} />
         </div>
         <div className="stat-h-lead">
-          <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life — go to Today">
+          <button type="button" onClick={onHome} className="brand-mark" aria-label="Ease My Life link to go to the Today page">
             {/* Same theme-wired logo as the Today + Stats + Data headers. */}
             <svg viewBox="8 8 528 528" fill="none" aria-hidden="true">
               <defs>
