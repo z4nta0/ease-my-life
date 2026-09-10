@@ -30,10 +30,6 @@ import { useStore              } from './store.jsx';                   // What: 
 
 
 
-// App shell. Tab bar (bottom / side / top) + main content area.
-
-
-
 const TAB_OBJ_ARR = [ // What: Tab Object Array. Why: This defines the fixed set of tabs that TabBarCom renders. How: This is mapped over in TabBarCom's JSX to render one nav button per entry.
 
 
