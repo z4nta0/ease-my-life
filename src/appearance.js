@@ -12,98 +12,98 @@ import { reduceMotion } from './ui.jsx'; // What: Reduce Motion. Why: The palett
 const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed set of built-in color themes, each a full 8-token palette plus a display name. How: This is read directly by resTheFun/appPalFun and exported for the Settings tab's theme picker.
 
 
-	ink : {
+	ink : { // What: Ink Palette Object. Why: This is one of the app's built-in themes. How: This holds Ink's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
 
 
-		namStr : 'Ink',
-		bacStr : 'oklch(0.985 0.003 240)',
-		surStr : 'oklch(0.975 0.004 240)',
-		borStr : 'oklch(0.91 0.005 240)',
-		txtStr : 'oklch(0.17 0.012 250)',
-		mutStr : 'oklch(0.5 0.012 250)',
-		accStr : 'oklch(0.5 0.14 250)',
-		aceStr : 'oklch(0.95 0.025 250)',
-		warStr : 'oklch(0.62 0.13 50)'
-
-
-	},
-
-	sage : {
-
-
-		namStr : 'Sage',
-		bacStr : 'oklch(0.985 0.005 130)',
-		surStr : 'oklch(0.97 0.008 130)',
-		borStr : 'oklch(0.9 0.012 130)',
-		txtStr : 'oklch(0.19 0.015 150)',
-		mutStr : 'oklch(0.5 0.012 150)',
-		accStr : 'oklch(0.48 0.09 155)',
-		aceStr : 'oklch(0.95 0.03 150)',
-		warStr : 'oklch(0.62 0.12 60)'
+		namStr : 'Ink',                    // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
+		bacStr : 'oklch(0.985 0.003 240)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
+		surStr : 'oklch(0.975 0.004 240)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
+		borStr : 'oklch(0.91 0.005 240)',  // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
+		txtStr : 'oklch(0.17 0.012 250)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		mutStr : 'oklch(0.5 0.012 250)',   // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
+		accStr : 'oklch(0.5 0.14 250)',    // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
+		aceStr : 'oklch(0.95 0.025 250)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
+		warStr : 'oklch(0.62 0.13 50)'     // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
 
 
 	},
 
-	sand : {
+	sage : { // What: Sage Palette Object. Why: This is one of the app's built-in themes. How: This holds Sage's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
 
 
-		namStr : 'Sand',
-		bacStr : 'oklch(0.98 0.008 80)',
-		surStr : 'oklch(0.96 0.012 80)',
-		borStr : 'oklch(0.9 0.015 75)',
-		txtStr : 'oklch(0.2 0.018 50)',
-		mutStr : 'oklch(0.5 0.018 50)',
-		accStr : 'oklch(0.5 0.12 40)',
-		aceStr : 'oklch(0.94 0.03 60)',
-		warStr : 'oklch(0.6 0.14 30)'
-
-
-	},
-
-	night : {
-
-
-		namStr : 'Night',
-		bacStr : 'oklch(0.18 0.012 250)',
-		surStr : 'oklch(0.22 0.014 250)',
-		borStr : 'oklch(0.3 0.014 250)',
-		txtStr : 'oklch(0.95 0.005 250)',
-		mutStr : 'oklch(0.65 0.012 250)',
-		accStr : 'oklch(0.75 0.14 250)',
-		aceStr : 'oklch(0.3 0.04 250)',
-		warStr : 'oklch(0.78 0.13 60)'
+		namStr : 'Sage',                   // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
+		bacStr : 'oklch(0.985 0.005 130)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
+		surStr : 'oklch(0.97 0.008 130)',  // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
+		borStr : 'oklch(0.9 0.012 130)',   // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
+		txtStr : 'oklch(0.19 0.015 150)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		mutStr : 'oklch(0.5 0.012 150)',   // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
+		accStr : 'oklch(0.48 0.09 155)',   // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
+		aceStr : 'oklch(0.95 0.03 150)',   // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
+		warStr : 'oklch(0.62 0.12 60)'     // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
 
 
 	},
 
-	moss : {
+	sand : { // What: Sand Palette Object. Why: This is one of the app's built-in themes. How: This holds Sand's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
 
 
-		namStr : 'Moss',
-		bacStr : 'oklch(0.17 0.01 150)',
-		surStr : 'oklch(0.21 0.014 150)',
-		borStr : 'oklch(0.28 0.016 150)',
-		txtStr : 'oklch(0.95 0.008 150)',
-		mutStr : 'oklch(0.65 0.012 150)',
-		accStr : 'oklch(0.7 0.1 155)',
-		aceStr : 'oklch(0.3 0.035 150)',
-		warStr : 'oklch(0.78 0.13 60)'
+		namStr : 'Sand',                 // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
+		bacStr : 'oklch(0.98 0.008 80)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
+		surStr : 'oklch(0.96 0.012 80)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
+		borStr : 'oklch(0.9 0.015 75)',  // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
+		txtStr : 'oklch(0.2 0.018 50)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		mutStr : 'oklch(0.5 0.018 50)',  // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
+		accStr : 'oklch(0.5 0.12 40)',   // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
+		aceStr : 'oklch(0.94 0.03 60)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
+		warStr : 'oklch(0.6 0.14 30)'    // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
 
 
 	},
 
-	ember : {
+	night : { // What: Night Palette Object. Why: This is one of the app's built-in themes. How: This holds Night's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
 
 
-		namStr : 'Ember',
-		bacStr : 'oklch(0.17 0.014 45)',
-		surStr : 'oklch(0.21 0.016 45)',
-		borStr : 'oklch(0.28 0.018 45)',
-		txtStr : 'oklch(0.95 0.012 50)',
-		mutStr : 'oklch(0.65 0.016 50)',
-		accStr : 'oklch(0.72 0.13 42)',
-		aceStr : 'oklch(0.32 0.05 42)',
-		warStr : 'oklch(0.78 0.13 60)'
+		namStr : 'Night',                 // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
+		bacStr : 'oklch(0.18 0.012 250)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
+		surStr : 'oklch(0.22 0.014 250)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
+		borStr : 'oklch(0.3 0.014 250)',  // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
+		txtStr : 'oklch(0.95 0.005 250)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		mutStr : 'oklch(0.65 0.012 250)', // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
+		accStr : 'oklch(0.75 0.14 250)',  // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
+		aceStr : 'oklch(0.3 0.04 250)',   // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
+		warStr : 'oklch(0.78 0.13 60)'    // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
+
+
+	},
+
+	moss : { // What: Moss Palette Object. Why: This is one of the app's built-in themes. How: This holds Moss's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
+
+
+		namStr : 'Moss',                  // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
+		bacStr : 'oklch(0.17 0.01 150)',  // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
+		surStr : 'oklch(0.21 0.014 150)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
+		borStr : 'oklch(0.28 0.016 150)', // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
+		txtStr : 'oklch(0.95 0.008 150)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		mutStr : 'oklch(0.65 0.012 150)', // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
+		accStr : 'oklch(0.7 0.1 155)',    // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
+		aceStr : 'oklch(0.3 0.035 150)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
+		warStr : 'oklch(0.78 0.13 60)'    // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
+
+
+	},
+
+	ember : { // What: Ember Palette Object. Why: This is one of the app's built-in themes. How: This holds Ember's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
+
+
+		namStr : 'Ember',                // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
+		bacStr : 'oklch(0.17 0.014 45)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
+		surStr : 'oklch(0.21 0.016 45)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
+		borStr : 'oklch(0.28 0.018 45)', // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
+		txtStr : 'oklch(0.95 0.012 50)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		mutStr : 'oklch(0.65 0.016 50)', // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
+		accStr : 'oklch(0.72 0.13 42)',  // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
+		aceStr : 'oklch(0.32 0.05 42)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
+		warStr : 'oklch(0.78 0.13 60)'   // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
 
 
 	}
@@ -114,10 +114,9 @@ const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed 
 
 
 let __palAppBoo = false; // What: Palette Applied Boolean. Why: The very first palette application (initial page load) must never cross-fade, only later theme swaps should. How: This starts false and is set true at the end of appPalFun's first run.
+let __tatIdeNum = null;  // What: Theme-Animation-Timeout Identifier Number. Why: A running cross-fade class needs to be removed again after its own duration, and a fast repeat swap must cancel the previous removal instead of racing it. How: This holds the current setTimeout id, cleared and reassigned on every appPalFun call that starts a new cross-fade.
+let __lasPalStr = null;  // What: Last Palette String. Why: The cross-fade should only run when the resolved palette's actual colors changed, not on every re-application. How: This holds the previous call's color signature string, compared against the current one below.
 
-let __theAniTmo = null; // What: Theme Animation Timeout. Why: A running cross-fade class needs to be removed again after its own duration, and a fast repeat swap must cancel the previous removal instead of racing it. How: This holds the current setTimeout id, cleared and reassigned on every appPalFun call that starts a new cross-fade.
-
-let __lasPalStr = null; // What: Last Palette String. Why: The cross-fade should only run when the resolved palette's actual colors changed, not on every re-application. How: This holds the previous call's color signature string, compared against the current one below.
 
 
 // #region appPalFun
@@ -158,13 +157,12 @@ function appPalFun( palResObj, theKeyStr ) {
 
 
 	const palSigStr = [ palResObj.bacStr, palResObj.surStr, palResObj.txtStr, palResObj.accStr, palResObj.aceStr, palResObj.borStr, palResObj.mutStr, palResObj.warStr ].join( '|' ); // What: Palette Signature String. Why: Detecting an actual color change requires comparing against what was last applied, not just re-running on every call. How: This joins every token into one comparable string.
-
-	const palChaBoo = palSigStr !== __lasPalStr; // What: Palette Changed Boolean. Why: The cross-fade must only run when the resolved colors actually differ from last time. How: This compares the freshly-built signature against the previous call's stored one.
+	const palChaBoo = palSigStr !== __lasPalStr;                                                                                                                                      // What: Palette Changed Boolean. Why: The cross-fade must only run when the resolved colors actually differ from last time. How: This compares the freshly-built signature against the previous call's stored one.
 
 	__lasPalStr = palSigStr; // What: Last Palette String Update. Why: The next call needs to compare against what is current now. How: This overwrites __lasPalStr with the freshly-computed signature.
 
 
-	if ( __palAppBoo && palChaBoo && !reduceMotion() ) {
+	if ( __palAppBoo && palChaBoo && !reduceMotion() ) { // What: Cross-Fade Trigger Check. Why: The cross-fade should only play when a palette had already been applied before, the resolved colors actually changed, and the user doesn't prefer reduced motion. How: This gates the class-add/timeout block below on all three conditions holding at once.
 
 
 		const docRooEle = document.documentElement; // What: Document Root Element. Why: The cross-fade class toggles on the root element, which is what the app's CSS transition rules key off. How: This is read once and reused for both the add and remove below.
@@ -172,9 +170,9 @@ function appPalFun( palResObj, theKeyStr ) {
 		docRooEle.classList.add( 'theme-animating' ); // What: Theme Animating Class Add. Why: This is the actual class the app's CSS uses to enable a brief cross-fade transition on the themable custom properties. How: This adds the class to the root element immediately, before the new values are written below.
 
 
-		clearTimeout( __theAniTmo ); // What: Theme Animation Timeout Clear. Why: A fast repeat theme swap must not let an earlier removal fire after this newer swap's own class add. How: This cancels whatever removal was previously scheduled.
+		clearTimeout( __tatIdeNum ); // What: Theme-Animation-Timeout Identifier Number Clear. Why: A fast repeat theme swap must not let an earlier removal fire after this newer swap's own class add. How: This cancels whatever removal was previously scheduled.
 
-		__theAniTmo = setTimeout( () => docRooEle.classList.remove( 'theme-animating' ), 480 ); // What: Theme Animation Timeout Schedule. Why: The cross-fade class must not stay on indefinitely, only for the duration of the transition. How: This schedules the class's removal 480ms later, matching the CSS transition's own duration.
+		__tatIdeNum = setTimeout( () => docRooEle.classList.remove( 'theme-animating' ), 480 ); // What: Theme-Animation-Timeout Identifier Number Schedule. Why: The cross-fade class must not stay on indefinitely, only for the duration of the transition. How: This schedules the class's removal 480ms later, matching the CSS transition's own duration.
 
 
 	}
@@ -184,24 +182,18 @@ function appPalFun( palResObj, theKeyStr ) {
 
 	const rooStyObj = document.documentElement.style; // What: Root Style Object. Why: Every custom property write below targets the same style object. How: This is read once and reused for all 8 setProperty calls that follow.
 
-	rooStyObj.setProperty( '--bg', palResObj.bacStr ); // What: Background Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the page background. How: This writes the palette's bacStr token onto the root element's inline style.
-
-	rooStyObj.setProperty( '--surface', palResObj.surStr ); // What: Surface Property Write. Why: This is the actual CSS custom property the app's stylesheets read for card/surface backgrounds. How: This writes the palette's surStr token onto the root element's inline style.
-
-	rooStyObj.setProperty( '--border', palResObj.borStr ); // What: Border Property Write. Why: This is the actual CSS custom property the app's stylesheets read for border colors. How: This writes the palette's borStr token onto the root element's inline style.
-
-	rooStyObj.setProperty( '--text', palResObj.txtStr ); // What: Text Property Write. Why: This is the actual CSS custom property the app's stylesheets read for body text color. How: This writes the palette's txtStr token onto the root element's inline style.
-
-	rooStyObj.setProperty( '--muted', palResObj.mutStr ); // What: Muted Property Write. Why: This is the actual CSS custom property the app's stylesheets read for de-emphasized text color. How: This writes the palette's mutStr token onto the root element's inline style.
-
-	rooStyObj.setProperty( '--accent', palResObj.accStr ); // What: Accent Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the primary accent color. How: This writes the palette's accStr token onto the root element's inline style.
-
+	rooStyObj.setProperty( '--bg', palResObj.bacStr );          // What: Background Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the page background. How: This writes the palette's bacStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--surface', palResObj.surStr );     // What: Surface Property Write. Why: This is the actual CSS custom property the app's stylesheets read for card/surface backgrounds. How: This writes the palette's surStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--border', palResObj.borStr );      // What: Border Property Write. Why: This is the actual CSS custom property the app's stylesheets read for border colors. How: This writes the palette's borStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--text', palResObj.txtStr );        // What: Text Property Write. Why: This is the actual CSS custom property the app's stylesheets read for body text color. How: This writes the palette's txtStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--muted', palResObj.mutStr );       // What: Muted Property Write. Why: This is the actual CSS custom property the app's stylesheets read for de-emphasized text color. How: This writes the palette's mutStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--accent', palResObj.accStr );      // What: Accent Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the primary accent color. How: This writes the palette's accStr token onto the root element's inline style.
 	rooStyObj.setProperty( '--accent-soft', palResObj.aceStr ); // What: Accent Soft Property Write. Why: This is the actual CSS custom property the app's stylesheets read for a softened accent background. How: This writes the palette's aceStr token onto the root element's inline style.
-
-	rooStyObj.setProperty( '--warm', palResObj.warStr ); // What: Warm Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the warm/celebration accent color. How: This writes the palette's warStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--warm', palResObj.warStr );        // What: Warm Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the warm/celebration accent color. How: This writes the palette's warStr token onto the root element's inline style.
 
 
 	document.body.dataset.palette = theKeyStr || 'custom'; // What: Palette Dataset Write. Why: Some CSS keys off which specific palette is active, not just its raw token values. How: This writes the resolved theme key, or 'custom' if none was given, onto body's own dataset.
+
 
 	syncTinFun( palResObj.bacStr ); // What: Status Bar Tint Sync Call. Why: An installed PWA's status bar should follow the newly-applied background color too. How: This hands the resolved background color to syncTinFun.
 
@@ -213,6 +205,7 @@ function appPalFun( palResObj, theKeyStr ) {
 
 
 let __tinProObj = null; // What: Tint Probe Object. Why: Resolving a CSS color string to hex needs a real canvas 2D context, which is comparatively expensive to create. How: This caches the first successfully-created context so later calls reuse it instead of creating a new canvas each time.
+
 
 
 // #region toHexFun
@@ -247,13 +240,13 @@ let __tinProObj = null; // What: Tint Probe Object. Why: Resolving a CSS color s
 function toHexFun( cssColStr ) {
 
 
-	try {
+	try { // What: Fill Style Probe Try. Why: Assigning an unsupported color to a canvas context's fillStyle could throw in some environments rather than silently no-op. How: This wraps the whole probe-and-resolve sequence below so any such error is caught and treated as an ordinary parse failure.
 
 
 		if ( window.CSS && CSS.supports && !CSS.supports( 'color', cssColStr ) ) return null; // What: Unsupported Color Guard. Why: Some very old browsers may not recognize a given color syntax at all, such as oklch(). How: This bails out early with null when the CSS.supports API exists and reports the color as unparseable.
 
 
-		if ( !__tinProObj ) {
+		if ( !__tinProObj ) { // What: No Probe Object Check. Why: The scratch canvas 2D context only needs to be created once, ever. How: This gates the creation block below so it only runs on the very first call.
 
 
 			const canProEle = document.createElement( 'canvas' ); // What: Canvas Probe Element. Why: A canvas 2D context is the mechanism used to normalize the color below. How: This creates a fresh, unattached canvas purely to obtain its context.
@@ -273,10 +266,14 @@ function toHexFun( cssColStr ) {
 
 		const hexResStr = __tinProObj.fillStyle; // What: Hex Result String. Why: Reading fillStyle back after assignment is what yields the browser's normalized value. How: This reads the (possibly unchanged, on parse failure) current fillStyle value.
 
+
+
 		return typeof hexResStr === 'string' && hexResStr.charAt( 0 ) === '#' ? hexResStr : null; // What: Hex Result Return. Why: A failed parse leaves fillStyle at its prior value, which this codebase always resets to a non-hex sentinel first, so this is what actually detects success. How: This returns the read-back value only when it is a real hex string, null otherwise.
 
 
-	} catch ( e ) { return null; } // What: Parse Error Guard. Why: Some environments could throw rather than silently no-op on an invalid assignment. How: This catches any such error and returns null, same as an ordinary parse failure.
+	}
+
+	catch ( e ) { return null; } // What: Parse Error Guard. Why: Some environments could throw rather than silently no-op on an invalid assignment. How: This catches any such error and returns null, same as an ordinary parse failure.
 
 
 }
@@ -322,11 +319,11 @@ function syncTinFun( bacColStr ) {
 	if ( !hexResStr ) return; // What: No Hex Guard. Why: There is nothing safe to write if the color could not be resolved. How: This bails out early, leaving whatever theme-color tag already exists untouched.
 
 
-	const metTagLst = document.querySelectorAll( 'meta[name="theme-color"]' ); // What: Meta Tag List. Why: index.html ships a light/dark pair of theme-color tags, both of which need collapsing down to one. How: This finds every existing theme-color meta tag, in document order.
+	const metTagLis = document.querySelectorAll( 'meta[name="theme-color"]' ); // What: Meta Tag List. Why: index.html ships a light/dark pair of theme-color tags, both of which need collapsing down to one. How: This finds every existing theme-color meta tag, in document order.
 
 	let priMetEle = null; // What: Primary Meta Element And Setter. Why: Exactly one theme-color tag should survive; every other one gets removed below. How: This starts null and is assigned the first tag found in the loop that follows.
 
-	for ( const metCurEle of metTagLst ) { // What: Meta Tag Loop. Why: Every existing theme-color tag must be visited once, to keep the first and discard the rest. How: This iterates metTagLst in document order.
+	for ( const metCurEle of metTagLis ) { // What: Meta Tag Loop. Why: Every existing theme-color tag must be visited once, to keep the first and discard the rest. How: This iterates metTagLis in document order.
 
 
 		if ( !priMetEle ) priMetEle = metCurEle; // What: Primary Assignment Guard. Why: Only the very first tag encountered should be kept. How: This assigns priMetEle once, on the first iteration only.
@@ -337,7 +334,7 @@ function syncTinFun( bacColStr ) {
 	}
 
 
-	if ( !priMetEle ) {
+	if ( !priMetEle ) { // What: No Primary Meta Element Check. Why: index.html may not ship a theme-color tag at all in some old/edited builds. How: This gates the creation block below so a fresh tag is only made when none already survived the loop above.
 
 
 		priMetEle = document.createElement( 'meta' ); // What: Primary Meta Element Creation. Why: Some old persisted markup, or a future index.html edit, might ship with no theme-color tag at all. How: This creates a fresh meta element to fill that gap.
@@ -402,10 +399,8 @@ function syncTinFun( bacColStr ) {
 function resCusFun( modKeyStr, usrColObj ) {
 
 
-	const bacColStr = usrColObj.bg; // What: Background Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.bg and reused in the returned object and the relative-color expressions below.
-
-	const txtColStr = usrColObj.text; // What: Text Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.text and reused in the returned object and the muted expression below.
-
+	const bacColStr = usrColObj.bg;     // What: Background Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.bg and reused in the returned object and the relative-color expressions below.
+	const txtColStr = usrColObj.text;   // What: Text Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.text and reused in the returned object and the muted expression below.
 	const accColStr = usrColObj.accent; // What: Accent Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.accent and reused in the returned object and the accentSoft expression below.
 
 
@@ -418,17 +413,18 @@ function resCusFun( modKeyStr, usrColObj ) {
 		: `calc(l - ${ offAmtNum })` ); // What: Light Mode Calc Expression. Why: Light mode has no black-end hazard, so a plain offset is enough. How: This simply lowers the lightness by offAmtNum.
 
 
-	return {
+
+	return { // What: Palette Object Return. Why: The derived custom palette must be handed back to the caller in the same 8-token shape as a PAL_SET_OBJ entry. How: This builds the object literal below from the 3 anchor colors and the CSS relative-color expressions computed above.
 
 
-		bacStr : bacColStr,
-		txtStr : txtColStr,
-		accStr : accColStr,
-		surStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.04, 0.17 ) } c h)`,
-		borStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.12, 0.26 ) } c h)`,
-		mutStr : `oklch(from ${ txtColStr } calc(l + ${ modSgnNum * -0.32 }) c h)`,
-		aceStr : `oklch(from ${ accColStr } calc(l + ${ modSgnNum * -0.42 }) calc(c - 0.08) h)`,
-		warStr : modKeyStr === 'dark' ? 'oklch(0.78 0.13 60)' : 'oklch(0.62 0.13 50)'
+		bacStr : bacColStr,                                                                      // What: Background String. Why: The user's own chosen background color is used as-is, no derivation needed. How: This is just bacColStr, computed above from usrColObj.bg.
+		txtStr : txtColStr,                                                                      // What: Text String. Why: The user's own chosen text color is used as-is, no derivation needed. How: This is just txtColStr, computed above from usrColObj.text.
+		accStr : accColStr,                                                                      // What: Accent String. Why: The user's own chosen accent color is used as-is, no derivation needed. How: This is just accColStr, computed above from usrColObj.accent.
+		surStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.04, 0.17 ) } c h)`,                  // What: Surface String. Why: The surface token needs to sit slightly toward/away from the background depending on mode. How: This computes an oklch relative-color expression off bacColStr using calOffFun's smaller offset/floor pair.
+		borStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.12, 0.26 ) } c h)`,                  // What: Border String. Why: The border token needs a stronger lightness shift off the background than surface does. How: This computes an oklch relative-color expression off bacColStr using calOffFun's larger offset/floor pair.
+		mutStr : `oklch(from ${ txtColStr } calc(l + ${ modSgnNum * -0.32 }) c h)`,              // What: Muted String. Why: The muted token needs to sit between text and background in lightness. How: This computes an oklch relative-color expression off txtColStr, shifted by modSgnNum's signed offset.
+		aceStr : `oklch(from ${ accColStr } calc(l + ${ modSgnNum * -0.42 }) calc(c - 0.08) h)`, // What: Accent Soft String. Why: The softened accent token needs a lighter or darker, less saturated version of the chosen accent. How: This computes an oklch relative-color expression off accColStr, shifting both lightness (via modSgnNum) and chroma.
+		warStr : modKeyStr === 'dark' ? 'oklch(0.78 0.13 60)' : 'oklch(0.62 0.13 50)'            // What: Warm String. Why: The warm/celebration token isn't derived from user input at all, unlike the other 7. How: This picks one of 2 fixed oklch values based on whether modKeyStr is 'dark' or 'light'.
 
 
 	};
@@ -443,14 +439,14 @@ function resCusFun( modKeyStr, usrColObj ) {
 const THE_PAI_OBJ = { // What: Theme Pair Object. Why: "System preference" auto-switching needs to know each theme's light/dark sibling; built-ins mirror the palette design (Ink and Night, Sage and Moss, Sand and Ember), and the two custom slots pair with each other. How: This is looked up by the current theme key in resTheFun below.
 
 
-	ink         : { ligStr : 'ink',         drkStr : 'night' },
-	night       : { ligStr : 'ink',         drkStr : 'night' },
-	sage        : { ligStr : 'sage',        drkStr : 'moss' },
-	moss        : { ligStr : 'sage',        drkStr : 'moss' },
-	sand        : { ligStr : 'sand',        drkStr : 'ember' },
-	ember       : { ligStr : 'sand',        drkStr : 'ember' },
-	customLight : { ligStr : 'customLight', drkStr : 'customDark' },
-	customDark  : { ligStr : 'customLight', drkStr : 'customDark' }
+	ink         : { ligStr : 'ink',         drkStr : 'night' },      // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
+	night       : { ligStr : 'ink',         drkStr : 'night' },      // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
+	sage        : { ligStr : 'sage',        drkStr : 'moss' },       // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
+	moss        : { ligStr : 'sage',        drkStr : 'moss' },       // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
+	sand        : { ligStr : 'sand',        drkStr : 'ember' },      // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
+	ember       : { ligStr : 'sand',        drkStr : 'ember' },      // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
+	customLight : { ligStr : 'customLight', drkStr : 'customDark' }, // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
+	customDark  : { ligStr : 'customLight', drkStr : 'customDark' }  // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
 
 
 };
@@ -506,6 +502,7 @@ export function resTheFun( appSetObj, sysDarBoo ) {
 	if ( wanKeyStr === 'customLight' && !appSetObj.customLight ) return theKeyStr; // What: No Custom Light Guard. Why: Same reasoning as the customDark guard above, for the light custom slot. How: This falls back to the resolved theme key unchanged when customLight is wanted but missing.
 
 
+
 	return wanKeyStr; // What: Wanted Key Return. Why: Every guard above has already ruled out the cases where switching would be unsafe. How: This returns the OS-preference-driven counterpart key.
 
 
@@ -518,6 +515,5 @@ export function resTheFun( appSetObj, sysDarBoo ) {
 export const APP_NAM_OBJ = { PAL_SET_OBJ, appPalFun, resCusFun, resTheFun }; // What: Appearance Namespace Object. Why: Some callers prefer one namespaced import over several individual named ones. How: This groups the same 4 bindings already exported individually below under one object.
 
 export { PAL_SET_OBJ, appPalFun, resCusFun }; // What: Named Exports. Why: Most callers import these individually rather than through the APP_NAM_OBJ namespace object above. How: This re-exports PAL_SET_OBJ, appPalFun, and resCusFun by name (resTheFun is already exported directly at its own declaration above).
-
 
 

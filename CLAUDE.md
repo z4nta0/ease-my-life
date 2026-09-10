@@ -943,6 +943,39 @@ how short the body is.
   }
   ```
 
+### try/catch statements
+Treated the same as an `if`/`else` chain in every respect: `catch` (and
+`finally`, by the same logic) goes on its OWN line, never cuddled onto
+the `try` block's own closing `}` (no `} catch (e) {`), with exactly 1
+blank line between that closing `}` and the `catch` keyword. Each
+block's own body still gets the standard 2-blank-line padding from
+"if/else and while statements" above when it spans multiple lines.
+- **One-line vs. multi-line body follows "### Multi-statement one-line
+  blocks" above, exactly like an `if`/`while` body does**: a `try` or
+  `catch` block whose body is a single statement may stay compact on one
+  line (e.g. `catch ( e ) { return null; }`); the moment its body needs 2
+  or more statements, it must become a real multi-line block instead,
+  padded like any other (2 blank lines after `{`, 2 before `}`), with
+  the same guard-clause-ending-in-`return` exception staying compact
+  regardless (e.g. `catch ( e ) { setErrBoo( true ); return; }`).
+```
+try {
+
+
+	example code;
+
+
+}
+
+catch ( e ) {
+
+
+	example code;
+
+
+}
+```
+
 ### Return statements
 - A `return` that occupies its own line (not a `return;`/`return x;` fused
   into a compact one-line guard clause like `if (!x) return;`) always gets
@@ -1135,19 +1168,65 @@ attribute) are ordered into these 8 tiers, top to bottom:
   split into separate statements, each on its own line (this is a real,
   intentional code change, not just whitespace — verify nothing depends on
   the original combined-statement ordering/scoping before splitting).
-  Space the resulting lines using the normal relatedness tiering below
-  (typically 1, "related," when one was born from the same combined
-  statement as the other).
+- **Consecutive plain `const`/`let` declarations get 0 blank lines between
+  them, not the general "related" (1-blank) tier**, whenever they're
+  tightly connected: the next one directly consumes the previous one (the
+  resulting lines from splitting a combined declaration, per the bullet
+  above, are the common case), or several declarations jointly share one
+  clearly-scoped purpose even without directly consuming each other (e.g.
+  a small group of module-private state variables all backing the same
+  piece of behavior). This is a correction to (and takes priority over)
+  "### General relatedness tiering" below, whose own "Related" tier does
+  NOT cover plain declarations at all anymore.
+  - **Only same-keyword declarations (all `const`, or all `let`) group
+    this tightly.** A run that would otherwise mix `const` and `let`
+    splits into two separate sub-groups by keyword instead (each 0-blank
+    internally, using the mechanism below independently within itself),
+    with the normal 1 blank line between the two sub-groups, even though
+    the whole run still shares one overall purpose.
+  - **This same run gets its `=` signs column-aligned**, the same
+    column-alignment mechanism used elsewhere in this doc (named imports,
+    object `:` alignment, ...): pad each line's own left-hand side
+    (everything before its own `=`, whether that's a bare name or a
+    destructured `[ a, b ]`/`{ a, b }` pattern) to the width of the
+    longest one in that run. This is usually a non-event in practice,
+    since the naming rules already produce same-length names within a
+    tightly-related group most of the time, but apply it explicitly
+    whenever a run's names (or their destructuring shapes) genuinely
+    differ in length, e.g. a mix of a plain name and a destructured
+    `[ a, b ]` pair, or a mix of prefixed and unprefixed names.
+  - The comment on each line in the run still gets column-aligned per the
+    usual "no blank lines between them" comment rule too, computed from
+    the single longest full line (code plus its own padding) in that run.
+  - The moment a declaration is followed by anything that ISN'T also a
+    plain `const`/`let` declaration, that's the end of THIS run; normal
+    relatedness tiering resumes, UNLESS what follows is itself the start
+    of a same-operation statement run (see the bullet below), which gets
+    its own fresh 0-blank grouping instead of reverting to 1-blank.
+- **A run of consecutive statement-calls that all perform the same
+  repeated operation on different data gets 0 blank lines between them
+  too** (e.g. 8 back-to-back `rooStyObj.setProperty(...)` calls, one per
+  palette token), the same principle as consecutive plain declarations
+  above, just for calls instead of declarations. Column-align their
+  comments the same way (computed from the single longest line in the
+  run). This is the exception the bullet above refers to: a
+  declaration immediately followed by the FIRST call of such a run does
+  NOT end up 1-blank-separated by default just because a call isn't a
+  declaration; judge it on whether the calls themselves are a genuine
+  repeated-operation run, and give that run its own correct spacing
+  (0-blank internally, then the normal tiering rules for whatever
+  precedes/follows the run as a whole).
 
 ### General relatedness tiering
 Used for spacing between statements inside a function/block body, and
 between JSX siblings. Three tiers:
 - **Related (1 blank line)**: tightly, directly connected — a value used on
   the very next line; two lines that are literally the same *kind* of code
-  working toward the same immediate step (e.g. two plain `const`
-  declarations where the second directly consumes the first; two sibling
-  `useState` calls backing the same visual feature; parallel/mutually-
-  exclusive branches of one conditional).
+  working toward the same immediate step (e.g. two sibling `useState` calls
+  backing the same visual feature; parallel/mutually-exclusive branches of
+  one conditional). This does NOT cover two plain `const`/`let`
+  declarations, even when the second directly consumes the first: see
+  "### Variable declarations" above, which gets 0 blank lines instead.
 - **Somewhat related (2 blank lines)**: connected, but via a different
   specific mechanism or a different *kind* of code, even when the
   underlying data is identical. Two recurring shapes:
@@ -1190,10 +1269,11 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   identifiers): segment 1 = what it is, segment 2 = a descriptor or
   continuation of what it is (no hard rule for this one beyond "strictly
   3 letters"), segment 3 = the type of variable (e.g.
-  `Str`/`Boo`/`Obj`/`Arr`/`Fun`/`Ref`/`Tmo`). Each segment is strictly the
-  first 3 letters of a chosen English word — even when a shorter
-  conventional abbreviation exists (e.g. `but` for "button", not `btn`;
-  `con` for "config", not `cfg`).
+  `Str`/`Boo`/`Obj`/`Arr`/`Fun`/`Ref`/`Tmo`/`Lis`). Each segment is
+  strictly the first 3 letters of a chosen English word — even when a
+  shorter conventional abbreviation exists (e.g. `but` for "button", not
+  `btn`; `con` for "config", not `cfg`), e.g. `Lis` for "List" (a
+  `NodeList`, such as `querySelectorAll`'s return value), not `Lst`.
   - Example: `TABS` → `TAB_OBJ_ARR` (Tab + Object + Array).
   - Example: `active` (the app's current tab id) → `actIdeStr` (Active +
     Identifier + String).
@@ -1234,6 +1314,37 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   under "Runtime globals on `window`") keeps the `__` prefix and applies
   the normal 9-character/3-segment rule to the rest of the name, e.g.
   `__paletteApplied` → `__palAppBoo` (Palette + Applied + Boolean).
+- **Initialism compression for a "what" that genuinely needs more than 2
+  words**: some concepts need 3 (or more) real words just to say what the
+  value IS, before even getting to what specific aspect of it matters or
+  what actual JS type it holds. Forcing that into the normal "1 truncated
+  word per segment" scheme means either dropping words that were actually
+  load-bearing, or letting a domain concept masquerade as the type segment
+  even though it doesn't say what JS type the value actually is (which
+  defeats the type segment's whole purpose: naming-conflict resolution
+  and everything else relies on the last segment being an honest, real JS
+  type). When this happens, compress every "what" word down to its own
+  first LETTER (not first 3 letters) into one 3-letter initialism segment,
+  freeing the other 2 segments for a genuine descriptor and a real type.
+  Example: a variable holding the numeric id a scheduled `setTimeout` call
+  returns, used to animate a theme cross-fade, has a 3-word "what" (Theme,
+  Animation, Timeout) before even getting to what it specifically is (an
+  Identifier) or what type it holds (a plain Number in a browser, not a
+  string): `__theAniTmo` (the normal scheme, which lost "identifier" and
+  used "Timeout" as a fake, non-revealing type segment) becomes
+  `__tatIdeNum` (tat = Theme+Animation+Timeout initialism, Ide =
+  Identifier, Num = the actual type).
+  - **Comment expansion differs for an initialism segment**: since it
+    doesn't correspond to one truncated word, spell out every word it
+    stands for, hyphenated, in the same order, in place of the normal
+    single-word expansion, then expand the remaining segments normally,
+    e.g. `__tatIdeNum` → `What: Theme-Animation-Timeout Identifier
+    Number.`
+  - This is a last resort for the genuinely hard case, not a shortcut to
+    reach for whenever 2 words feels like a squeeze; the normal "drop a
+    less-essential word, keep 2 concepts + a real type" resolution from
+    the base rule still applies whenever it doesn't lose something
+    genuinely load-bearing.
 - **Acronym-reference rule**: when a name describes or refers to another
   named thing (a component, function, etc.), its own first segment is
   built from the first letter of *that* thing's own three segments,

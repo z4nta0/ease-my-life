@@ -86,8 +86,7 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 	// #region Active Tab Indicator
 
-	const navEleRef = React.useRef( null ); // What: Nav Element Reference. Why: This gives the effect a handle on the actual nav DOM node. How: This is attached via the nav element's ref prop and read inside the layout effect to query and measure it.
-
+	const navEleRef                   = React.useRef( null );   // What: Nav Element Reference. Why: This gives the effect a handle on the actual nav DOM node. How: This is attached via the nav element's ref prop and read inside the layout effect to query and measure it.
 	const [ indRecObj, setIndRecObj ] = React.useState( null ); // What: Indicator Record Object And Setter. Why: This holds the active tab's measured position and size so the sliding indicator pill can be rendered. How: This is computed by meaPosFun and consumed in the JSX style to position the indicator span.
 
 
@@ -112,7 +111,6 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 
 			const navRecObj = navCurEle.getBoundingClientRect(); // What: Nav Rect Object. Why: The indicator's position must be relative to the nav rather than the viewport. How: This is used to subtract the nav's own offset from the active button's rect below.
-
 			const butRecObj = butActEle.getBoundingClientRect(); // What: Button Rect Object. Why: This gives the raw viewport position and size of the active tab. How: This is combined with navRecObj to compute the nav-relative position stored in indRecObj.
 
 
@@ -137,8 +135,7 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 
 
-		const navCurEle = navEleRef.current; // What: Nav Current Element. Why: This is needed here to set up the resize observation below. How: This is read once and reused for the ResizeObserver's observe call and the guard on the next line.
-
+		const navCurEle = navEleRef.current;                                                           // What: Nav Current Element. Why: This is needed here to set up the resize observation below. How: This is read once and reused for the ResizeObserver's observe call and the guard on the next line.
 		const resObsObj = navCurEle && window.ResizeObserver ? new ResizeObserver( meaPosFun ) : null; // What: Resize Observer Object. Why: The indicator must re-measure whenever the nav's own layout changes size, not just the window. How: This is created only when both the nav element and the ResizeObserver API are available, and it calls meaPosFun on every observed resize.
 
 
@@ -474,8 +471,7 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 function AppRooCom () {
 
 
-	const onbDemBoo = typeof location !== 'undefined' && location.hash.indexOf( 'onboard' ) !== -1; // What: Onboard Demo Boolean. Why: This lets #onboard-demo/#onboard run the app against a fresh clean state without touching the user's real saved data. How: This checks the URL hash for the "onboard" substring.
-
+	const onbDemBoo                = typeof location !== 'undefined' && location.hash.indexOf( 'onboard' ) !== -1;     // What: Onboard Demo Boolean. Why: This lets #onboard-demo/#onboard run the app against a fresh clean state without touching the user's real saved data. How: This checks the URL hash for the "onboard" substring.
 	const [ staAppObj, actStoObj ] = useStore( onbDemBoo ? { initial : CLEAN_STATE(), persist : false } : undefined ); // What: State App Object And Action Store Object. Why: This is the entire app's persisted state and the actions that mutate it. How: This calls useStore, seeded with a clean, non-persisted state when the onboarding demo flag is set, otherwise loading the real persisted state normally.
 
 
@@ -558,11 +554,9 @@ function AppRooCom () {
 
 
 
-	const [ exiPlaStr, setExiPlaStr ] = React.useState( null ); // What: Exiting Placement String And Setter. Why: The old nav bar's ghost copy needs to know which placement it's animating away from. How: This is set to the previous placement when tabPlaStr changes, then cleared after the exit keyframe finishes.
-
-	const [ navEntBoo, setNavEntBoo ] = React.useState( false ); // What: Nav Entering Boolean And Setter. Why: The real nav bar needs to know when it's mid-entrance so it can play its staggered enter-from-edge keyframe. How: This is set true when tabPlaStr changes and cleared after the enter keyframe finishes.
-
-	const prePlaRef = React.useRef( ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' ); // What: Previous Placement Reference. Why: The layout-switch effect needs to remember the last placement across renders to detect an actual change. How: This starts at the current persisted placement and is updated by the effect below whenever tabPlaStr changes.
+	const [ exiPlaStr, setExiPlaStr ] = React.useState( null );                                                                    // What: Exiting Placement String And Setter. Why: The old nav bar's ghost copy needs to know which placement it's animating away from. How: This is set to the previous placement when tabPlaStr changes, then cleared after the exit keyframe finishes.
+	const [ navEntBoo, setNavEntBoo ] = React.useState( false );                                                                   // What: Nav Entering Boolean And Setter. Why: The real nav bar needs to know when it's mid-entrance so it can play its staggered enter-from-edge keyframe. How: This is set true when tabPlaStr changes and cleared after the enter keyframe finishes.
+	const prePlaRef                   = React.useRef( ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' ); // What: Previous Placement Reference. Why: The layout-switch effect needs to remember the last placement across renders to detect an actual change. How: This starts at the current persisted placement and is updated by the effect below whenever tabPlaStr changes.
 
 
 
@@ -596,8 +590,7 @@ function AppRooCom () {
 
 		if ( typeof matchMedia !== 'function' ) return; // What: No MatchMedia Guard. Why: Some environments (or very old browsers) may not support matchMedia at all. How: This bails out of the effect entirely when matchMedia isn't available, leaving sysDarBoo at its initial value.
 
-		const medQueObj = matchMedia( '(prefers-color-scheme: dark)' ); // What: Media Query Object. Why: The same query used for the initial value must be reused here so the listener matches. How: This is the live MediaQueryList that the change listener below attaches to.
-
+		const medQueObj   = matchMedia( '(prefers-color-scheme: dark)' );       // What: Media Query Object. Why: The same query used for the initial value must be reused here so the listener matches. How: This is the live MediaQueryList that the change listener below attaches to.
 		const onDarChaFun = ( chaEveObj ) => setSysDarBoo( chaEveObj.matches ); // What: On Dark Change Function. Why: The OS's own light/dark setting can change at any time while the app is open. How: This updates sysDarBoo to the media query's current match state whenever it fires a change event.
 
 		medQueObj.addEventListener( 'change', onDarChaFun ); // What: Dark Change Subscribe Call. Why: sysDarBoo needs to be kept live, not just set once at mount. How: This registers onDarChaFun to run on every future change event from medQueObj.
@@ -614,8 +607,7 @@ function AppRooCom () {
 
 
 		const appCurObj = staAppObj.appearance || { theme : 'ink' }; // What: Appearance Current Object. Why: Very old/incomplete persisted states might not have an appearance object at all. How: This falls back to a default theme:'ink' object when appearance is missing.
-
-		const theKeyStr = resTheFun( appCurObj, sysDarBoo ); // What: Theme Key String. Why: The actual palette to apply depends on the user's theme choice combined with the current system dark-mode state. How: This resolves both into a single concrete theme key, such as 'ink' or 'customLight'.
+		const theKeyStr = resTheFun( appCurObj, sysDarBoo );         // What: Theme Key String. Why: The actual palette to apply depends on the user's theme choice combined with the current system dark-mode state. How: This resolves both into a single concrete theme key, such as 'ink' or 'customLight'.
 
 		let palResObj; // What: Palette Resolved Object. Why: The concrete color palette to apply isn't known yet, since it depends on which branch below resolves it. How: This is declared here and assigned in exactly one of the branches that follow.
 
@@ -658,6 +650,7 @@ function AppRooCom () {
 
 
 		const prePlaStr = prePlaRef.current; // What: Previous Placement String. Why: Detecting an actual change requires comparing against what was last recorded, not just the current value.
+
 		if ( prePlaStr === tabPlaStr ) return; // What: No Change Guard. Why: The whole ghost/enter animation should only run when the placement actually changed. How: This bails out of the effect early when the previous and current placement are identical.
 
 
@@ -674,8 +667,7 @@ function AppRooCom () {
 
 
 
-		const exiEndTmo = setTimeout( () => setExiPlaStr( null ), 380 ); // What: Exit End Timeout. Why: The ghost bar must be unmounted once its own exit keyframe has actually finished playing. How: This clears exiPlaStr, removing the ghost, 380ms later, matching the exit animation's own duration.
-
+		const exiEndTmo = setTimeout( () => setExiPlaStr( null ), 380 );  // What: Exit End Timeout. Why: The ghost bar must be unmounted once its own exit keyframe has actually finished playing. How: This clears exiPlaStr, removing the ghost, 380ms later, matching the exit animation's own duration.
 		const entEndTmo = setTimeout( () => setNavEntBoo( false ), 560 ); // What: Enter End Timeout. Why: The "entering" className modifier only needs to apply for the duration of the enter keyframe. How: This clears navEntBoo 560ms later, matching the enter animation's own duration.
 
 
