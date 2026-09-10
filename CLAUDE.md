@@ -271,8 +271,9 @@ of content — not N newline characters.
   bracket alone on its own line (a function/object/array/block's `}`,
   `]`, `)`, or a combination like `});`/`};`) never gets one. A bare
   `function foo(...) {}` declaration (a custom function that ISN'T stored
-  in a `const`/`let`) is deferred — its own, more involved comment rules
-  come later; this does NOT extend to inline/anonymous functions passed
+  in a `const`/`let`) gets its own, more involved JSDoc-style comment
+  instead — see "### Custom function declaration comments" below. This
+  does NOT extend to inline/anonymous functions passed
   as arguments (a hook's callback like `useLayoutEffect(() => {...})`, a
   `return () => {...}` cleanup, `.map((x) => ...)`, ...) — those get
   commented normally, same as everything else. Other exceptions will turn
@@ -451,6 +452,97 @@ of content — not N newline characters.
   expansion matches whatever segment words that pass actually lands on —
   same spirit as the "revisit once renamed" note already covering JSX
   custom components (`Icon`, `TabToday`, ...) above.
+
+### Custom function declaration comments
+A bare `function Name(...) {}` declaration that isn't stored in a
+`const`/`let` (e.g. `function TabBarCom(...)`, `function AppRooCom()`)
+gets a JSDoc-style block comment instead of the usual one-line What/Why/How
+treatment. See `TabBarCom`/`AppRooCom` in `src/app.jsx` for the reference
+implementation of every rule below.
+- **Placement**: 3 blank lines before the opening `/**`, exactly 1 blank
+  line between the closing `*/` and the function's own declaration line.
+- **Name line** (first line inside the block): `<FunctionName> = <expanded
+  name>`, expanded the exact same way a variable/import `What:` value is
+  (Title Case each segment, expand the type segment too) — e.g.
+  `TabBarCom = Tab Bar Component`, `AppRooCom = App Root Component`.
+- A blank ` *` line (no trailing space — every blank line inside the block
+  is a bare ` *`, never ` * ` with a trailing space).
+- **`@summary`**: a real, multi-sentence explanation (multiple paragraphs
+  only if that actually helps), hard-wrapped at a strict 79-character line
+  limit (i.e. never reaching column 80), never splitting a word across
+  lines. This limit applies throughout the whole JSDoc block, not just
+  `@summary` — every line inside it, `@param`/`@returns` continuation
+  lines included, stays at 79 characters or fewer.
+- **`@author z4nta0 <https://github.com/z4nta0>`**: a static, literal line,
+  always exactly this, every time.
+- **`@param`**: which form to use depends on the function's own parameter
+  list, not on whether any individual value happens to be an object:
+  - No parameters at all: exactly ONE of these two lines, verbatim, never
+    both together — `props` for a React component (even a zero-prop one,
+    since it's still conceptually a component), `void` for a plain,
+    non-component JS function:
+    ```
+    @param props - This component does not use any props.
+    ```
+    ```
+    @param void - This function takes no parameters.
+    ```
+  - A single destructured-object parameter (the common case for a React
+    component, e.g. `function Foo({ a, b })`): one `@param props.<name>`
+    line PER destructured field, in the same order as the destructuring
+    itself. This is the ONLY form used for this case — do not also emit a
+    bare `@param <name>` line for the same field, that was a documentation
+    mistake in an earlier draft of this rule.
+  - A plain, non-destructured positional parameter (e.g.
+    `function foo(bar)`): a bare `@param <name>` line (no `props.` prefix),
+    since there's no props object at all in that case.
+  - Whichever form applies, pad every specifier (left-justify) so every
+    line's `-` lines up in one shared column, computed from the single
+    longest specifier in that function's own `@param` block — same
+    column-alignment mechanism used elsewhere in this doc. No blank lines
+    between different parameters' lines.
+  - **Description content**: if the parameter's value, at its PRIMARY real
+    call site (the non-decorative one, when a function like `TabBarCom` is
+    called from more than one place), is itself a named variable or
+    function that already carries its own What/Why/How comment at its
+    declaration, use `{@link <thatName>}` instead of writing prose — this
+    points at the existing description rather than duplicating it, and
+    once this codebase migrates to TypeScript, `@link` should point at a
+    real type definition wherever one exists instead. Otherwise (the value
+    passed in is an inline expression, ternary, literal, or anonymous
+    arrow with no standalone declared-and-commented identifier of its own)
+    write a terse plain-English description instead, following the
+    no-em-dash Copy rule same as any other prose in this repo.
+  - If the parameter has a default value in the function signature (e.g.
+    `className = ''`), mention that default in the description.
+  - A description that doesn't fit the 80-column limit on one line wraps
+    onto a continuation line indented to the same column the description
+    text itself starts at (not the `@param` column), still prefixed with
+    ` * ` so it stays inside the comment.
+- A blank ` *` line.
+- **`@returns`**: exactly one of three shapes, depending on what the
+  function's own `return` statement actually does:
+  - Returns nothing: `@returns This function does not return anything.`
+  - Returns a value that was first assigned to a variable and then that
+    variable is returned: `@returns <terse description>` followed by its
+    own `@see {@link <variableName>}` line.
+  - Returns an expression directly, not stored in a variable first (JSX is
+    the common case, e.g. `return ( <nav>...</nav> );`): just `@returns
+    <terse description>`, no `@see`.
+- A blank ` *` line.
+- **`@example`**: matches whichever return type applies.
+  - A JSX-returning component: a ` ```tsx ``` ` fenced block whose one
+    line calls the function with its REAL call signature (a single
+    destructured-object argument shown as an object literal, e.g.
+    `TabBarCom({ actIdeStr, onChange, tabPlaStr, ... })`, truncated with
+    `...` if the full real prop list would make the line unwieldy) followed
+    by `// => <FunctionName />`.
+  - A plain JS/TS function: a ` ```ts ``` ` fenced block calling the
+    function with its real positional arguments, followed by `// =>` and
+    either the returned variable/void/a terse description of the returned
+    data.
+- A final blank ` *` line (no trailing space) directly before the closing
+  `*/`.
 
 ### Quotes
 - Use `'single quotes'` for every string literal, including JSX attribute

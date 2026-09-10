@@ -44,6 +44,41 @@ const TAB_OBJ_ARR = [ // What: Tab Object Array. Why: This defines the fixed set
 
 
 
+/**
+ * TabBarCom = Tab Bar Component
+ *
+ * @summary
+ * Renders the app's persistent tab bar, showing one button per entry in
+ * TAB_OBJ_ARR next to a sliding indicator pill that tracks the active tab's
+ * measured position and size. Also renders the pull handle used to open the
+ * off-canvas rail on small screens when the bar is placed on the side. Can
+ * render as a decorative ghost copy of itself, flagged via tbcGhoBoo, so a
+ * placement-change animation can crossfade between the old and new bar without
+ * waiting on a full remount.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.actIdeStr   - {@link actIdeStr}
+ * @param props.onChange    - {@link selTabFun}
+ * @param props.tabPlaStr   - {@link tabPlaStr}
+ * @param props.raiOpeBoo   - {@link raiOpeBoo}
+ * @param props.onTogRaiFun - Toggles the rail open or closed.
+ * @param props.className   - Extra class name(s) to append; defaults to an
+ *                            empty string.
+ * @param props.tbcGhoBoo   - Marks this as a decorative ghost copy during a
+ *                            placement-change animation; defaults to false.
+ *
+ * @returns The tab bar's own nav element, including every tab button, the
+ * sliding indicator, the brand button, and (when in a side placement)
+ * the rail pull handle.
+ *
+ * @example
+ * ```tsx
+ * TabBarCom({ actIdeStr, onChange, tabPlaStr, ... }) // => <TabBarCom />
+ * ```
+ *
+*/
+
 function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, className = '', tbcGhoBoo = false } ) {
 
 
@@ -394,6 +429,33 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 }
 
 
+
+/**
+ * AppRooCom = App Root Component
+ *
+ * @summary
+ * Owns the single source of truth for which of the five tabs is active and
+ * renders the app's entire shell around it: the persistent tab bar (plus its
+ * ghost copy during a placement-change animation), the active tab's own
+ * content component, and every onboarding/tour overlay layered on top. Also
+ * resolves and applies the current color palette, tracks the system's
+ * dark-mode preference, and manages the animated crossfade between tab bar
+ * placements when the user changes it in Settings.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props - This component does not use any props.
+ *
+ * @returns The app's entire rendered shell: the current tab bar, the active
+ * tab's own content, and any onboarding overlay that's currently
+ * running.
+ *
+ * @example
+ * ```tsx
+ * AppRooCom() // => <AppRooCom />
+ * ```
+ *
+*/
 
 function AppRooCom () {
 
