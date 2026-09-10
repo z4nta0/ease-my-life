@@ -188,10 +188,22 @@ touched, not swept all at once.
 ## Code formatting rules
 
 Whitespace conventions for JS/JSX in this repo, being rolled out gradually
-(started with `src/app.jsx` as the reference implementation — consult it for
+(started with `src/app.jsx` as the reference implementation; consult it for
 worked examples of every rule below before guessing). "N blank lines" always
 means N visually-empty rows, i.e. N+1 newline characters between two lines
-of content — not N newline characters.
+of content, not N newline characters.
+
+### Undefined cases: stop and ask
+This governs every rule in this section, permanently, not just while the
+rule set is still being defined, and it covers every language this section
+applies to, including CSS and HTML once they get their own rules (neither
+has any yet). If a piece of code needs a formatting, naming, or comment
+decision that isn't already covered by an explicit rule here, stop before
+making any change and ask what to do, rather than guessing, extrapolating
+from a rule that seems "close enough," or inventing something in the
+moment. Once an answer is given, write the new rule into this file, in
+whichever section it belongs, before or alongside applying it, so the
+decision is captured for next time instead of getting re-asked later.
 
 ### Import statements
 - One imported binding per `import` statement, even when multiple bindings
