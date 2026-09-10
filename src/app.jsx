@@ -1,28 +1,28 @@
 
 
 
-import React from 'react';
+import React from 'react'; // What: React. Why: This is the UI library the entire file's components and hooks are built on. How: This is used directly (React.useState, React.useRef, React.useLayoutEffect, ...) throughout, instead of importing individual named hooks.
 
 
-import { AppFeatureTour        } from './onboarding-app-features.jsx';
-import { applyPaletteObj       } from './appearance.js';
-import { BgFlourish            } from './bg-flourish.jsx';
-import { CLEAN_STATE           } from './seed.js';
-import { Icon                  } from './ui.jsx';
-import { Onboarding            } from './onboarding.jsx';
-import { PageTour              } from './onboarding-page-tours.jsx';
-import { PALETTES              } from './appearance.js';
-import { PickerTour            } from './onboarding-picker-tours.jsx';
-import { reduceMotion          } from './ui.jsx';
-import { resolveActiveThemeKey } from './appearance.js';
-import { resolveCustomPalette  } from './appearance.js';
-import { TabData               } from './tab-data.jsx';
-import { TabPicker             } from './tab-picker.jsx';
-import { TabSettings           } from './tab-settings.jsx';
-import { TabStats              } from './tab-stats.jsx';
-import { TabToday              } from './tab-today.jsx';
-import { useEmlTour            } from './onboarding.jsx';
-import { useStore              } from './store.jsx';
+import { AppFeatureTour        } from './onboarding-app-features.jsx'; // What: App Feature Tour. Why: This drives the App Features tutorial overlay. How: This is rendered while actFeaStr holds a feature id, passed the shared state/actions and a close handler.
+import { applyPaletteObj       } from './appearance.js';               // What: Apply Palette Object. Why: A resolved palette still has to be written onto the document to take visible effect. How: This is called with the resolved palette and the active theme key inside the theme-application effect.
+import { BgFlourish            } from './bg-flourish.jsx';             // What: Background Flourish. Why: The decorative background glyphs are rendered behind every non-Today tab. How: This is passed the shared main-inner ref and the current tab id.
+import { CLEAN_STATE           } from './seed.js';                     // What: Clean State. Why: The onboarding demo needs a fresh, non-persisted state to run against instead of the user's real data. How: This is called to seed useStore when the onboarding demo flag is set.
+import { Icon                  } from './ui.jsx';                      // What: Icon. Why: Every tab button needs a recognizable glyph alongside its label. How: This is rendered inside TabBarCom with the name from each tab's own icoStr.
+import { Onboarding            } from './onboarding.jsx';              // What: Onboarding. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
+import { PageTour              } from './onboarding-page-tours.jsx';   // What: Page Tour. Why: This drives the currently-running "Explore the page" mini-tour. How: This is rendered while actPagStr holds a page id.
+import { PALETTES              } from './appearance.js';               // What: Palettes. Why: Every built-in theme key needs to resolve to one of the app's own palettes. How: This is looked up by the resolved theme key, falling back to the ink palette.
+import { PickerTour            } from './onboarding-picker-tours.jsx'; // What: Picker Tour. Why: This drives the currently-running sample-picker mini-tour. How: This is rendered while actPicStr holds a picker id.
+import { reduceMotion          } from './ui.jsx';                      // What: Reduce Motion. Why: A user who prefers reduced motion shouldn't see the ghost/enter animation. How: This is checked inside the animation effect to bail out early when it reports true.
+import { resolveActiveThemeKey } from './appearance.js';               // What: Resolve Active Theme Key. Why: The palette to apply depends on both the user's theme choice and the current system dark-mode state. How: This resolves both into a single concrete theme key inside the theme-application effect.
+import { resolveCustomPalette  } from './appearance.js';               // What: Resolve Custom Palette. Why: A user-defined custom palette needs resolving into a usable palette object. How: This is called with 'light' or 'dark' and the user's saved custom colors when a custom theme key is active.
+import { TabData               } from './tab-data.jsx';                // What: Tab Data. Why: This is the actual Data tab content. How: This is rendered while actIdeStr is 'data', passed the shared state/actions.
+import { TabPicker             } from './tab-picker.jsx';              // What: Tab Picker. Why: This is the actual Pickers tab content. How: This is rendered while actIdeStr is 'picker', passed the shared state/actions plus the persisted pick-animation style.
+import { TabSettings           } from './tab-settings.jsx';            // What: Tab Settings. Why: This is the actual Settings tab content. How: This is rendered while actIdeStr is 'settings', passed the shared state/actions.
+import { TabStats              } from './tab-stats.jsx';               // What: Tab Stats. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
+import { TabToday              } from './tab-today.jsx';               // What: Tab Today. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
+import { useEmlTour            } from './onboarding.jsx';              // What: Use Ease My Life Tour. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's phase/wantRailOpen/step fields.
+import { useStore              } from './store.jsx';                   // What: Use Store. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
 
 
 

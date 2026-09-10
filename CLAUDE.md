@@ -405,6 +405,30 @@ of content — not N newline characters.
     general descriptive-purpose comment rule instead of the pretend-id
     one, placed after its own opening bracket like any other multi-line
     construct: `{ indRecObj && ( // What: Indicator Visibility Check. Why: ... How: ...`.
+- **Import statements** get the same one-line What/Why/How comment as any
+  other single-line statement — treat the imported binding like a variable
+  declaration. Since import lines have no blank lines between them, pad
+  every line so its `//` lines up in the same column as its neighbors,
+  computed from the longest line in that run — same column-alignment
+  mechanism used elsewhere in this doc (named-import padding, object
+  `:` alignment, ...). The two import groups (default vs. named, see
+  "Import statements" above) are padded independently, each against its
+  own longest line — a single default import naturally has nothing to
+  align against. The `What:` value expands the imported binding's OWN
+  CURRENT name: split it into whatever camelCase/PascalCase word segments
+  it already has (NOT the strict 9-char/3-segment truncation — the name
+  hasn't had its own naming pass yet, so it may have more or fewer than 3
+  segments), Title Case each word, and expand a recognizable abbreviation
+  to its real word the same way segment-type expansion works elsewhere
+  (`Obj`→`Object`, `Bg`→`Background`, `Eml`→`Ease My Life`, ...) — e.g.
+  `AppFeatureTour` → `What: App Feature Tour.`, `applyPaletteObj` → `What:
+  Apply Palette Object.` Since almost none of these imported names have
+  been through their own defining file's naming pass yet, this expansion
+  is provisional: once a source file gets its own naming/comment pass,
+  revisit every import comment that pulls a binding from it so the
+  expansion matches whatever segment words that pass actually lands on —
+  same spirit as the "revisit once renamed" note already covering JSX
+  custom components (`Icon`, `TabToday`, ...) above.
 
 ### Quotes
 - Use `'single quotes'` for every string literal, including JSX attribute
