@@ -1,6 +1,8 @@
 
 
 
+// #region Imports
+
 import React from 'react'; // What: React. Why: This is the UI library the entire file's components and hooks are built on. How: This is used directly (React.useState, React.useRef, React.useLayoutEffect, ...) throughout, instead of importing individual named hooks.
 
 
@@ -24,6 +26,8 @@ import { TabToday              } from './tab-today.jsx';               // What: 
 import { useEmlTour            } from './onboarding.jsx';              // What: Use Ease My Life Tour. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's phase/wantRailOpen/step fields.
 import { useStore              } from './store.jsx';                   // What: Use Store. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
 
+// #endregion Imports
+
 
 
 // App shell. Tab bar (bottom / side / top) + main content area.
@@ -43,6 +47,8 @@ const TAB_OBJ_ARR = [ // What: Tab Object Array. Why: This defines the fixed set
 ];
 
 
+
+// #region TabBarCom
 
 /**
  * TabBarCom = Tab Bar Component
@@ -82,6 +88,8 @@ const TAB_OBJ_ARR = [ // What: Tab Object Array. Why: This defines the fixed set
 function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, className = '', tbcGhoBoo = false } ) {
 
 
+	// #region Active Tab Indicator
+
 	const navEleRef = React.useRef( null ); // What: Nav Element Reference. Why: This gives the effect a handle on the actual nav DOM node. How: This is attached via the nav element's ref prop and read inside the layout effect to query and measure it.
 
 	const [ indRecObj, setIndRecObj ] = React.useState( null ); // What: Indicator Record Object And Setter. Why: This holds the active tab's measured position and size so the sliding indicator pill can be rendered. How: This is computed by meaPosFun and consumed in the JSX style to position the indicator span.
@@ -89,6 +97,8 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 	React.useLayoutEffect( () => { // What: Indicator Position Layout Effect. Why: This must measure and set the indicator's position before the browser paints, avoiding a visible flash. How: This measures the active button on mount and on dependency change, re-measures on resize via a ResizeObserver and a window resize listener, and cleans both up on unmount.
 
+
+		// #region Measure Position
 
 		const meaPosFun = () => { // What: Measure Position Function. Why: This centralizes the logic for locating the active tab button and computing the indicator's rect. How: This queries the active button, bails out if none exists, then sets indRecObj from its bounding rect relative to the nav.
 
@@ -127,6 +137,8 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 		meaPosFun(); // What: Initial Measurement Call. Why: This positions the indicator immediately on mount or dependency change, without waiting for a resize. How: This invokes meaPosFun once, synchronously.
 
+		// #endregion Measure Position
+
 
 
 		const navCurEle = navEleRef.current; // What: Nav Current Element. Why: This is needed here to set up the resize observation below. How: This is read once and reused for the ResizeObserver's observe call and the guard on the next line.
@@ -154,6 +166,8 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 
 	}, [ actIdeStr, tabPlaStr, raiOpeBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever a change to one of these values could move or resize the active tab's indicator target. How: actIdeStr changes which button is marked active, tabPlaStr changes the tab bar's placement and therefore its whole layout, and raiOpeBoo toggling the rail open or closed can resize the nav itself.
+
+	// #endregion Active Tab Indicator
 
 
 
@@ -428,7 +442,11 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 }
 
+// #endregion TabBarCom
 
+
+
+// #region AppRooCom
 
 /**
  * AppRooCom = App Root Component
@@ -482,6 +500,9 @@ function AppRooCom () {
 	const [ raiOpeBoo, setRaiOpeBoo ] = React.useState( false ); // What: Rail Open Boolean And Setter. Why: On small screens the nav collapses into an off-canvas drawer that starts closed. How: This is toggled by the pull handle and closed automatically on tab selection or scrim tap.
 
 
+
+	// #region Tour Resume State
+
 	const [ actPicStr, setActPicStr ] = React.useState( () => { // What: Active Picker String And Setter. Why: Tracks which sample picker's mini-tour is running, kept here (not in TabToday) since Step 1 navigates away to the Pickers tab and would unmount TabToday. How: This seeds itself from a persisted activeTour on first mount so a reload resumes the tour instead of losing it.
 
 
@@ -520,6 +541,8 @@ function AppRooCom () {
 
 	} );
 
+	// #endregion Tour Resume State
+
 
 
 	const onbEveBus = useEmlTour(); // What: Onboarding Event Bus. Why: The Welcome Tour needs to auto-open/close the rail while running, even outside the user's own manual toggling. How: This subscribes to the shared tour event bus's phase/wantRailOpen/step fields, read by the effect right below.
@@ -546,6 +569,8 @@ function AppRooCom () {
 	const prePlaRef = React.useRef( ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' ); // What: Previous Placement Reference. Why: The layout-switch effect needs to remember the last placement across renders to detect an actual change. How: This starts at the current persisted placement and is updated by the effect below whenever tabPlaStr changes.
 
 
+
+	// #region App Shell Behavior
 
 	const selTabFun = React.useCallback( ( tabIdeStr ) => { // What: Select Tab Function. Why: Switching tabs should always land at the top of the new tab, not keep the previous tab's scroll position. How: This sets the active tab, closes the rail, and resets the shared main scroller's scrollTop to 0.
 
@@ -671,6 +696,8 @@ function AppRooCom () {
 
 
 	}, [ tabPlaStr ] ); // What: Effect Dependency Array. Why: The whole ghost/enter animation sequence only needs to re-evaluate when the resolved placement itself changes. How: tabPlaStr is the single value this effect's own change-detection, via prePlaRef, is built around.
+
+	// #endregion App Shell Behavior
 
 
 
@@ -897,6 +924,8 @@ function AppRooCom () {
 
 
 }
+
+// #endregion AppRooCom
 
 
 

@@ -248,7 +248,10 @@ of content — not N newline characters.
 
 ### File boundaries
 - Every file starts with exactly 3 blank lines before its first real line,
-  and ends with exactly 3 blank lines after its last real line.
+  and ends with exactly 3 blank lines after its last real line. When the
+  file's imports are wrapped in a `// #region Imports` marker (see
+  "### Sectioning / fold regions" below), that marker counts as the first
+  real line for this purpose.
 
 ### Top-level (module scope)
 - Between any two distinct top-level declarations (a comment block, a
@@ -258,7 +261,10 @@ of content — not N newline characters.
   both top-level).
 - Import statements are the one exception within top-level scope: no blank
   lines between individual `import` lines — they're one tight block. The
-  gap between that whole block and whatever follows it is still 3.
+  gap between that whole block and whatever follows it is still 3 —
+  except when the block is wrapped in a `// #region Imports` marker (see
+  "### Sectioning / fold regions" below), in which case that 3-blank gap
+  moves to after the `// #endregion Imports` marker instead.
 
 ### Comments
 - A comment sits glued (0 blank lines) to the specific line/block it
@@ -459,26 +465,28 @@ A bare `function Name(...) {}` declaration that isn't stored in a
 gets a JSDoc-style block comment instead of the usual one-line What/Why/How
 treatment. See `TabBarCom`/`AppRooCom` in `src/app.jsx` for the reference
 implementation of every rule below.
-- **Placement**: 3 blank lines before the opening `/**`, exactly 1 blank
-  line between the closing `*/` and the function's own declaration line.
+- **Placement**: exactly 1 blank line before the opening `/**` (see
+  "### Sectioning / fold regions" below for what comes before that blank
+  line), exactly 1 blank line between the closing `*/` and the function's
+  own declaration line.
 - **Name line** (first line inside the block): `<FunctionName> = <expanded
   name>`, expanded the exact same way a variable/import `What:` value is
-  (Title Case each segment, expand the type segment too) — e.g.
+  (Title Case each segment, expand the type segment too), e.g.
   `TabBarCom = Tab Bar Component`, `AppRooCom = App Root Component`.
-- A blank ` *` line (no trailing space — every blank line inside the block
+- A blank ` *` line (no trailing space; every blank line inside the block
   is a bare ` *`, never ` * ` with a trailing space).
 - **`@summary`**: a real, multi-sentence explanation (multiple paragraphs
   only if that actually helps), hard-wrapped at a strict 79-character line
   limit (i.e. never reaching column 80), never splitting a word across
   lines. This limit applies throughout the whole JSDoc block, not just
-  `@summary` — every line inside it, `@param`/`@returns` continuation
+  `@summary`: every line inside it, `@param`/`@returns` continuation
   lines included, stays at 79 characters or fewer.
 - **`@author z4nta0 <https://github.com/z4nta0>`**: a static, literal line,
   always exactly this, every time.
 - **`@param`**: which form to use depends on the function's own parameter
   list, not on whether any individual value happens to be an object:
   - No parameters at all: exactly ONE of these two lines, verbatim, never
-    both together — `props` for a React component (even a zero-prop one,
+    both together: `props` for a React component (even a zero-prop one,
     since it's still conceptually a component), `void` for a plain,
     non-component JS function:
     ```
@@ -490,7 +498,7 @@ implementation of every rule below.
   - A single destructured-object parameter (the common case for a React
     component, e.g. `function Foo({ a, b })`): one `@param props.<name>`
     line PER destructured field, in the same order as the destructuring
-    itself. This is the ONLY form used for this case — do not also emit a
+    itself. This is the ONLY form used for this case; do not also emit a
     bare `@param <name>` line for the same field, that was a documentation
     mistake in an earlier draft of this rule.
   - A plain, non-destructured positional parameter (e.g.
@@ -498,14 +506,14 @@ implementation of every rule below.
     since there's no props object at all in that case.
   - Whichever form applies, pad every specifier (left-justify) so every
     line's `-` lines up in one shared column, computed from the single
-    longest specifier in that function's own `@param` block — same
+    longest specifier in that function's own `@param` block, the same
     column-alignment mechanism used elsewhere in this doc. No blank lines
     between different parameters' lines.
   - **Description content**: if the parameter's value, at its PRIMARY real
     call site (the non-decorative one, when a function like `TabBarCom` is
     called from more than one place), is itself a named variable or
     function that already carries its own What/Why/How comment at its
-    declaration, use `{@link <thatName>}` instead of writing prose — this
+    declaration, use `{@link <thatName>}` instead of writing prose; this
     points at the existing description rather than duplicating it, and
     once this codebase migrates to TypeScript, `@link` should point at a
     real type definition wherever one exists instead. Otherwise (the value
@@ -543,6 +551,114 @@ implementation of every rule below.
     data.
 - A final blank ` *` line (no trailing space) directly before the closing
   `*/`.
+
+### Sectioning / fold regions
+A collapsible fold region uses the editor-standard `// #region <Name>` /
+`// #endregion <Name>` marker pair (recognized by VS Code and other
+editors for code folding), wrapped tightly around the specific unit it
+covers. Three cases are defined so far; more may be added later, but
+don't invent one for anything else yet:
+- **Custom function declarations**: the exact same `function Name(...) {}`
+  case covered by "### Custom function declaration comments" above always
+  gets a region, wrapping the function's own JSDoc comment AND its
+  declaration/body together as one collapsible unit.
+  - `<Name>` on both markers is the function's own literal name,
+    unexpanded, e.g. `// #region TabBarCom` / `// #endregion TabBarCom`,
+    not its Title Case expansion.
+  - **This supersedes the function-comment placement rule above**: the 3
+    blank lines that otherwise sit before a top-level declaration now sit
+    before the `// #region` marker instead of before the JSDoc's opening
+    `/**`. Between the marker and the JSDoc's own `/**`, use exactly 1
+    blank line (per the "Placement" bullet above); nothing else about
+    the JSDoc block itself changes.
+  - Symmetrically on the close side: exactly 1 blank line between the
+    function's own closing `}` and the `// #endregion` marker, then the
+    normal 3 blank lines after `// #endregion` before whatever top-level
+    thing comes next.
+- **The whole import-statement block**: a file's entire run of `import`
+  lines (see "### Import statements" above) gets wrapped as a single
+  `// #region Imports` / `// #endregion Imports` region: one region for
+  the whole block, not one per import and not split by the default/named
+  grouping within it.
+  - `<Name>` is the literal word `Imports`, every time.
+  - **This supersedes the file-boundary and top-level-declaration rules
+    where they'd otherwise apply directly to the imports**: the file's
+    own "exactly 3 blank lines before the first real line" now lands
+    before the `// #region Imports` marker instead of before the first
+    `import`. Between the marker and the first `import` line, use exactly
+    1 blank line.
+  - Symmetrically on the close side: exactly 1 blank line between the
+    last `import` line and the `// #endregion Imports` marker, then the
+    normal 3 blank lines after it before whatever top-level thing comes
+    next, the same as the 3-blank-line gap that used to sit directly
+    after the import block per "### Top-level (module scope)" above.
+  - Nothing about the imports themselves changes: still no blank lines
+    between individual `import` lines, still the default/named grouping
+    with its own 2-blank-line separator inside the region.
+- **A related cluster of declarations/statements inside a function body**
+  (not itself a whole separate function or the import block) can also get
+  its own named region, when ALL of the following hold. This is a manual,
+  judgment-call process (propose a grouping and a name, confirm it),
+  never a mechanical scan; see `TabBarCom`'s "Active Tab Indicator" region
+  in `src/app.jsx` as the reference example.
+  - **Bounded by a genuine unrelated gap**: both the line right before the
+    candidate range and the line right after it are separated from it by
+    the 3-blank-line "unrelated" tier from "### General relatedness
+    tiering" above. This counts normally even when the following line is
+    a `return` statement (whose own mandatory 3-blank-before-`return`
+    rule governs the return's OWN placement, not whether the code above
+    it was genuinely a separate topic): the return being exempt from
+    getting its own region does not disqualify the 3-blank gap in front
+    of it from bounding whatever comes before. The only gaps that DON'T
+    count as a real "this is a new topic" signal are ones produced by a
+    rule that redirects WHERE a 3-blank gap physically sits rather than
+    judging relatedness at all, namely the gap around an already-existing
+    `// #region`/`// #endregion` marker (see the other two cases above).
+    - Exception: the range's own STARTING edge may have only 2 blank
+      lines instead of 3, when it's the very first thing inside its own
+      enclosing `{`/`(` (the function-body-open padding rule) rather than
+      following genuinely different code.
+  - **At least 25 lines long**: counted as the candidate range's own total
+    line span, start to end inclusive, blank padding lines included. This
+    is deliberately a raw line-count (screen space), not a count of real
+    statements, since the actual goal is whether collapsing the range
+    saves meaningful scroll distance. 25 was chosen as a clean quarter of
+    "100 lines of code," an admittedly somewhat arbitrary but easy-to-
+    remember threshold. Below it, don't wrap the range even if it's
+    bounded by genuine unrelated gaps on both sides.
+  - **Isn't already natively foldable as one existing bracketed
+    construct**: if the ENTIRE candidate range is already exactly the
+    body of one function declaration/expression, object/array literal,
+    `if` block, or other bracketed construct an editor can already
+    collapse on its own, wrapping it in a redundant region adds nothing;
+    skip it. But if the range includes anything OUTSIDE that construct's
+    own brackets (e.g. a function's own definition immediately followed
+    by a call to it, where the call sits after the function's closing
+    `}`), the existing fold only covers part of the range, so an explicit
+    region is still needed to cover the whole thing together.
+  - **JSX is entirely exempt from this rule.** VS Code/TypeScript's
+    `#region` folding only recognizes a `//`-style LINE comment as the
+    marker, never a `/* */` block comment. A bare `// #region ...` can't
+    be placed as JSX children at all (it would render as literal DOM
+    text, the same reason JSX elements themselves use `{ /* ... */ }`
+    comments instead of `//`), and the only syntactically-safe
+    alternative, `{ /* #region Name */ }`, is a block comment that the
+    folding provider does not recognize as a marker, so it would compile
+    safely but never actually produce a collapsible chevron. Since the
+    entire point of this mechanism is collapsibility, a marker that can't
+    deliver that inside JSX is pointless there; don't add one, no matter
+    how long or how clearly-groupable a run of JSX children is. (A whole
+    JSX-returning function's own region, from "Custom function
+    declarations" above, still works fine, since that marker sits outside
+    the JSX entirely, in the function's own plain-JS scope.)
+  - `<Name>` is a short, plain-English description of what the block does
+    or represents (Title Case, e.g. `Active Tab Indicator`), not an
+    abbreviated/segmented identifier name.
+  - Spacing works exactly like the other two cases: exactly 1 blank line
+    between each marker and the content it wraps, while whatever blank-
+    line count already existed OUTSIDE the whole candidate range (before
+    its first line, after its last line) stays exactly as it was, now
+    bracketing the markers instead of the content directly.
 
 ### Quotes
 - Use `'single quotes'` for every string literal, including JSX attribute
