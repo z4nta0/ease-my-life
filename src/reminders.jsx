@@ -818,7 +818,7 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
     const when = remNextDateLabel(v.next, task.repeat === 'annual');
     setAddedMsg(v.visible
       ? { ok: true, text: `"${task.name}" added.` }
-      : { ok: false, text: `"${task.name}" added, but it will not show today${when ? ` — it will next appear on ${when}` : ''}.` });
+      : { ok: false, text: `"${task.name}" added, but it will not show up in today's todo list.${when ? ` It will next appear on ${when}.` : ''}` });
     clearTimeout(addedTimer.current);
     addedTimer.current = setTimeout(() => setAddedMsg(null), v.visible ? 3000 : 9000);
   };
