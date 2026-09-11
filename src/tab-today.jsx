@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { BacFloCom } from './bg-flourish.jsx';
 import { CADENCE } from './cadence.js';
 import { CONDITIONALS } from './conditionals.js';
-import { EASE_UP_RANGE_WARN } from './constants.js';
+import { EUR_WAR_STR } from './constants.js';
 import { DayLogChip, GroupLog } from './day-log.jsx';
 import { HOLIDAYS } from './holidays.js';
 import { HelpButton, HelpOverlay } from './help-mode.jsx';
@@ -451,7 +451,7 @@ const EntryEditor = React.forwardRef(function EntryEditor({ item, picker, action
                 <span className="pie-lbl-row">
                   <span className="pie-lbl">{soonestLbl}</span>
                   {mode === 'ease-up' && (
-                    <InfoTip className="pie-help" label={EASE_UP_RANGE_WARN}>?</InfoTip>
+                    <InfoTip className="pie-help" label={EUR_WAR_STR}>?</InfoTip>
                   )}
                 </span>
                 <span className="pie-sub set-sub-fade" key={`${isDown}-${soonest}-${uw(soonest)}`}>{soonestSub}</span>
@@ -467,7 +467,7 @@ const EntryEditor = React.forwardRef(function EntryEditor({ item, picker, action
                 <span className="pie-lbl-row">
                   <span className="pie-lbl">{latestLbl}</span>
                   {mode === 'ease-up' && (
-                    <InfoTip className="pie-help" label={EASE_UP_RANGE_WARN}>?</InfoTip>
+                    <InfoTip className="pie-help" label={EUR_WAR_STR}>?</InfoTip>
                   )}
                 </span>
                 <span className="pie-sub set-sub-fade" key={`${isDown}-${latest}-${uw(latest)}`}>{latestSub}</span>
