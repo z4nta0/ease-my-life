@@ -564,6 +564,62 @@ implementation of every rule below.
 - A final blank ` *` line (no trailing space) directly before the closing
   `*/`.
 
+### Large / design-rationale comments
+A comment block that documents a specific problem-and-solution, a
+non-obvious design decision, or otherwise genuinely warrants staying
+substantial (rather than being compressed into a single-line What/Why/How)
+gets formatted with the same `/** ... */` block structure as a custom
+function declaration comment above, minus the parts that only make sense
+for a callable's signature. Applies equally whether the comment already
+existed as a large prose block being reformatted, or is being newly
+written because the file/section genuinely warrants one; see the
+file-level comment and the `COL_WID_NUM`/`MIN_COL_NUM`/`BIG_CHA_NUM`
+comments in `src/bg-flourish.jsx` for the reference examples.
+- **Name/title line**: if the comment is attached to a specific
+  declaration (the thing it immediately precedes), use that
+  declaration's own name and expansion, exactly like a function
+  comment's own name line (`<Name> = <Expanded Name>`). If the comment
+  is genuinely file-level, not attached to any one declaration (e.g.
+  explaining the whole file's own purpose/design), use the file's own
+  name in place of a function name (`<filename.ext> = <Expanded Name>`).
+- Hard-wrapped at the same strict 79-character line limit as a function
+  comment.
+- Blank ` *` lines are bare, no trailing space, same as a function
+  comment.
+- **Only `@summary` and `@author`, nothing else**: no `@param`,
+  `@returns`, or `@example`, since this is a narrative/design-rationale
+  block, not documentation of a callable's own signature.
+- **Placement**: exactly 3 blank lines before the opening `/**`, always,
+  a fixed override regardless of what relatedness tiering would otherwise
+  put there (these blocks are dense enough to want visual separation on
+  their own). What comes after the closing `*/` depends on whether the
+  block is attached to something:
+  - **Attached to a specific declaration**: exactly 1 blank line between
+    the closing `*/` and that declaration (same as a function comment),
+    then exactly 3 blank lines after "whatever it is the comment
+    describes" is fully finished, before whatever comes next. When one
+    comment covers more than one declaration (e.g. a single comment
+    explaining the calibration behind two related constants declared
+    right after each other), that 3-blank gap lands after the LAST such
+    declaration, not right after the comment's own `*/`.
+  - **File-level** (nothing to attach to): exactly 3 blank lines after
+    the closing `*/` too, same as before it, since the comment block
+    itself is the whole unit.
+- **This does NOT replace the per-line What/Why/How comment still
+  required on the actual declaration line itself** (when there is one):
+  the two serve different purposes, this block explains the design
+  rationale or history, the trailing comment explains the declaration's
+  own role, so both coexist.
+- **The 25+-line `#region` threshold from "### Sectioning / fold
+  regions" below applies to a comment attached to a declaration too**,
+  measured together (the comment's own `/** ... */` plus every
+  declaration it describes), even though this happens at module/
+  top-level scope rather than inside a function body, which is the only
+  case that rule's own wording currently names explicitly. Below 25
+  lines, no `#region` is needed; every example in `src/bg-flourish.jsx`
+  currently falls under this (the longest, `COL_WID_NUM`'s, is around
+  20 lines total).
+
 ### Sectioning / fold regions
 A collapsible fold region uses the editor-standard `// #region <Name>` /
 `// #endregion <Name>` marker pair (recognized by VS Code and other
@@ -1217,6 +1273,58 @@ attribute) are ordered into these 8 tiers, top to bottom:
   (0-blank internally, then the normal tiering rules for whatever
   precedes/follows the run as a whole).
 
+### Long boolean expressions
+A "long boolean expression" is an `&&`/`||` chain where MORE THAN 2 of
+its operands are real expressions — a comparison, a negation, a member/
+array access, a function call, or anything else that isn't already just
+a bare variable reference — whether it's a `while`/`if` condition or a
+plain boolean assignment. A chain that already combines nothing but
+bare, already-named identifiers (e.g. `a && b && c && d`, every operand
+an existing variable) does NOT count, no matter how many operands it
+has: there's nothing left to extract from it, that's the intended,
+readable end state, not something to decompose further. Each operand
+that IS a real expression gets pulled out into its own named `const`
+boolean variable (named per the usual 9-character/3-segment naming
+rules, `Boo` as the type segment), rather than left inline as part of
+one long, hard-to-parse condition. The point is purely readability: a
+chain mixing real expressions with bare names forces the reader to
+parse each real expression inline; naming them removes that burden
+without also demanding that already-simple bare identifiers get
+pointlessly wrapped in variables of their own. See `canBigBoo` and
+`diaOpeBoo` in `src/bg-flourish.jsx` for the reference examples:
+`canBigBoo` combines 6 bare identifiers and needs no further extraction
+despite having "more than 2" operands, while `diaOpeBoo` (`rowFitBoo &&
+colFitBoo && !bloGriArr[ rowIndNum + 1 ][ colIndNum + 1 ]`) has only 1
+real-expression operand among its 3 (the other 2 are already bare
+identifiers) and also stays inline as one line, for the same reason.
+- **Grouping**: the extracted variables are placed directly before the
+  final boolean that combines them, tightly grouped (0 blank lines
+  between them, same mechanism as "### Variable declarations" above),
+  followed by exactly 1 blank line, then the final combining
+  declaration.
+- Exactly 2 or fewer real-expression operands stay inline as-is,
+  regardless of how many additional bare-identifier operands are also
+  in the same chain (e.g. `canBigBoo && Math.random() < BIG_CHA_NUM` has
+  1 real-expression operand and stays inline); extraction only kicks in
+  once a chain has 3 or more real-expression operands.
+- If the surrounding code has no existing named variable for the final
+  combined condition (e.g. it was written directly inline in an `if`),
+  a new one still needs to be introduced for the extracted operands to
+  combine into, following the same naming and grouping rules as if the
+  original code had already used one.
+- **The final combining boolean never tight-groups with what comes
+  after it, even when what follows would otherwise directly consume it
+  and normally qualify for the 0-blank "### Variable declarations" tier
+  above.** Its own visual relationship is with the block of extracted
+  operands it summarizes (1 blank line before it, per the bullet
+  above); collapsing the gap to whatever reads it next would blur that
+  specific pairing. Always exactly 2 blank lines after the final
+  combining boolean, regardless of what the general tiering rules would
+  otherwise assign — e.g. `canBigBoo` (the combined result) sits flush
+  with nothing, gets 2 blank lines before `isBigBoo` even though
+  `isBigBoo` directly consumes it and would normally tight-group at
+  0-blank.
+
 ### General relatedness tiering
 Used for spacing between statements inside a function/block body, and
 between JSX siblings. Three tiers:
@@ -1345,6 +1453,27 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     less-essential word, keep 2 concepts + a real type" resolution from
     the base rule still applies whenever it doesn't lose something
     genuinely load-bearing.
+- **Under-length first-word padding**: the opposite problem from
+  initialism compression — some segment 1 words are naturally SHORTER
+  than 3 letters (e.g. "is", for a boolean naturally phrased "is
+  <adjective> <noun>"). Pad the word with the fewest extra letters
+  needed to reach exactly 3, chosen so the padded segment still reads
+  as a short natural phrase rather than an arbitrary truncation. The
+  reference case is "is": pad with an "a" to get `isa` (reading "is
+  a"/"is an" depending on what follows) — e.g. `isBigBoo` →
+  `isaBigBoo`, `isOutBoo` → `isaOutBoo`. This is a case-by-case
+  resolution, not a general algorithm; document each new instance here
+  as it's encountered rather than inventing a fresh padding scheme each
+  time.
+  - **Comment expansion**: since the padded segment doesn't correspond
+    to one truncated word, expand it the same way an initialism segment
+    is expanded above — spell out the full grammatical phrase it stands
+    for, hyphenated, in place of the normal single-word expansion, then
+    expand the remaining segments normally. For `isa`, choose "Is-A" or
+    "Is-An" based on whether the word immediately after it in the
+    comment starts with a vowel sound: `isaBigBoo` → `What: Is-A Big
+    Boolean.`, `isaOutBoo` → `What: Is-An Outer Boolean.` ("Outer"
+    starts with a vowel sound, so "An").
 - **Acronym-reference rule**: when a name describes or refers to another
   named thing (a component, function, etc.), its own first segment is
   built from the first letter of *that* thing's own three segments,
