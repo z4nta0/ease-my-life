@@ -22,7 +22,7 @@ import { buildPageTourStep1 } from './onboarding-page-tours.jsx';
 // Content here is a first-pass STUB, same as every page tour in
 // onboarding-page-tours.jsx started as (see that file's own PAGE_TOUR_COPY
 // header comment) — one step per feature (highlight the real nav button for
-// whichever page it lives on, reusing OB_NAV_TARGETS the same way
+// whichever page it lives on, reusing NAV_TAR_OBJ the same way
 // buildPageTourStep1 does), not yet the full walkthrough. Copy/pills/order
 // are a first draft per the user's own dictated list — expect an editing
 // pass.

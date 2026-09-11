@@ -1,6 +1,6 @@
 import React from 'react';
 import { DayLogChip, RemindersLog } from './day-log.jsx';
-import { emlTour } from './eml-tour-bus.js';
+import { emlTouObj } from './eml-tour-bus.js';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { OB_REMINDER_CARD_TEXT, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
 import { TASKS } from './tasks.js';
@@ -768,7 +768,7 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
   // lifted anywhere — the tour just re-renders off the bus like any other
   // subscriber.
   React.useEffect(() => {
-    emlTour.set({ draftRepeat: draftTask ? draftTask.repeat : null });
+    emlTouObj.set({ draftRepeat: draftTask ? draftTask.repeat : null });
   }, [draftTask && draftTask.repeat]);
   const startAdd = () => {
     clearTimeout(closeTimerRef.current);   // a pending forced-close discard from a moment ago shouldn't wipe this fresh draft
@@ -777,7 +777,7 @@ function ReminderSection({ state, actions, sectionRef, editMode, onGripDown, log
     // tour has the user click themselves, not a simulated one — opens
     // pre-filled with that sample's data instead of blank. Never touches the
     // sample task itself, just seeds this brand-new draft.
-    const bus = emlTour.get();
+    const bus = emlTouObj.get();
     // Any reminder created while the mini-tour checklist is up — not just
     // ones a tour itself creates — stays out of the real list until it
     // concludes; otherwise a real item mixed in with the still-open

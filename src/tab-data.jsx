@@ -2,7 +2,7 @@ import React from 'react';
 import { CAD_OPTS } from './cadence-control.jsx';
 import { CADENCE } from './cadence.js';
 import { PICKERS, normalizeConditionalName, normalizeGroupName } from './pickers.js';
-import { useEmlTour } from './onboarding.jsx';
+import { useEmlTouFun } from './onboarding.jsx';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { ReminderManager } from './reminders.jsx';
 import { MODES } from './seed.js';
@@ -1005,7 +1005,7 @@ function TabData({ state, actions, onHome, onNavTab }) {
   // target (Reminders, which only renders at scope 'all') unable to find
   // anything, since nothing resets it back afterward. Same tourId+step
   // gating pattern as tab-picker.jsx's own disableTourAddPicker.
-  const tour = useEmlTour();
+  const tour = useEmlTouFun();
   const disableGroupFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 1;
   const disablePickersFilter = tour.phase === 'tour' && tour.tourId === 'page-explore_data' && tour.step === 3;
   // Step 7 (Create Picker) only points at the button — actually clicking it

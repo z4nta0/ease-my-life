@@ -1,9 +1,9 @@
 import React from 'react';
-import { emlTour } from './eml-tour-bus.js';
+import { emlTouObj } from './eml-tour-bus.js';
 import { Icon } from './ui.jsx';
 import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
 import { GuidedTour } from './onboarding-tour-runner.jsx';
-import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
+import { NAV_TAR_OBJ } from './onboarding-targets.jsx';
 import { OB_EXAMPLE, OB_EXTRA_PICKERS } from './onboarding-seed-data.js';
 import { MODES } from './seed.js';
 
@@ -82,7 +82,7 @@ const PICKER_TOUR_COPY = {
 // Step 1 is identical for every picker tutorial — just the Pickers nav
 // button itself, requireClick so Next stays disabled and the user has to
 // actually click the real icon to advance. Body copy is kept in sync with
-// the Pickers page tour's own Step 1 (OB_NAV_TARGETS.picker + its
+// the Pickers page tour's own Step 1 (NAV_TAR_OBJ.picker + its
 // buildPageTourStep1 suffix) by explicit request — the step still has to
 // stay on Today (tab: 'today') rather than pre-navigating, so there's
 // something left for the user's own click to do; only the copy is shared,
@@ -97,7 +97,7 @@ const PICKER_TOUR_STEP_1 = {
 // Lands at the top of the Pickers page (scrollToTop) and highlights the real
 // "+ Add New Picker" tab — requireClick again, same teaching-the-real-
 // interface pattern as the Reminders tours' "+" step. run() publishes the
-// sample's data as the emlTour bus's prefill, timed so the real click (which
+// sample's data as the emlTouObj bus's prefill, timed so the real click (which
 // natively opens the form via the button's own onClick, not this run()) ends
 // up mounting NewPickerForm with it already applied — see the long comment
 // on PickerTour below for why this specific ordering matters.
@@ -134,7 +134,7 @@ const buildPickerTourStep2 = (pickerId, state) => ({
   // future replay to find.
   run: () => {
     const existing = state.pickers.find((p) => p.createdFromSample === pickerId);
-    emlTour.set({
+    emlTouObj.set({
       prefill: PICKER_SAMPLES[pickerId], suppressAutoOpen: true,
       existingPickerId: existing ? existing.id : null,
       createdFromSample: pickerId,
@@ -243,7 +243,7 @@ const buildPickerTourStep7 = (pickerId) => ({
   primary: 'Next', back: true, requireClick: true, resumable: false,
   run: () => {
     const copy = PICKER_TOUR_COPY[pickerId];
-    emlTour.set({
+    emlTouObj.set({
       itemPrefill: copy.itemPrefill,
       // 100/days is the same days↔drift conversion tab-picker.jsx's own
       // driftToSoonest/daysToDrift use — kept in sync manually since those
@@ -406,7 +406,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
     // with stale sample data the next time TabPicker mounts (e.g. just
     // revisiting the Pickers tab), same class of bug the Reminders tours'
     // closeTour already guards against.
-    emlTour.set({
+    emlTouObj.set({
       prefill: null, itemPrefill: null, itemEaseMin: null, itemEaseMax: null,
       suppressAutoOpen: false, existingPickerId: null, createdFromSample: null,
     });
@@ -489,7 +489,7 @@ function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
           // the reset/redo nonces the Pickers PAGE tour's own onGoBack
           // (onboarding-page-tours.jsx) uses for its own no-real-control
           // Back cases.
-          emlTour.set({ pickerTourReopenItemNonce: (emlTour.get().pickerTourReopenItemNonce || 0) + 1 });
+          emlTouObj.set({ pickerTourReopenItemNonce: (emlTouObj.get().pickerTourReopenItemNonce || 0) + 1 });
         }
       }}
       // Skip (or the not-found watchdog) reads as "the user didn't finish",

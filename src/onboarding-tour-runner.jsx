@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { emlTour, useEmlTour } from './eml-tour-bus.js';
+import { emlTouObj, useEmlTouFun } from './eml-tour-bus.js';
 import { InfoTip, reduceMotion } from './ui.jsx';
 
 // Generic guided-tour engine: sequential single-spotlight steps with a coach
@@ -258,7 +258,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // coach card can sit right over whatever's being dragged, making it hard
   // to see where to drop. Only the coach hides; the spotlight/dim stay so
   // the highlighted target is still visible to drop onto.
-  const { dragging } = useEmlTour();
+  const { dragging } = useEmlTouFun();
   const [step, setStep] = React.useState(resumeStep || 0);
   const [rect, setRect] = React.useState(null);
   // Extra top-space (px) reserved above the Today list, ON the Today tab,
@@ -305,14 +305,14 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // obShowEmpty/obShowNoRun, app.jsx's rail sync). Cleared back to 'off' on
   // unmount, however that happens.
   React.useEffect(() => {
-    emlTour.set({ phase: 'tour' });
+    emlTouObj.set({ phase: 'tour' });
     // reserveTop is republished continuously while mounted (see the effect
     // below), but nothing clears it once this component unmounts — the last
     // step's value would otherwise linger on the bus forever, permanently
     // padding Today's list even after the tour is long over.
-    return () => { emlTour.set({ phase: 'off', reserveTop: 0 }); };
+    return () => { emlTouObj.set({ phase: 'off', reserveTop: 0 }); };
   }, []);
-  React.useEffect(() => { emlTour.set({ step }); }, [step]);
+  React.useEffect(() => { emlTouObj.set({ step }); }, [step]);
   // Lets a consumer that needs to act only during a SPECIFIC tour's specific
   // step (not just "some tour is up", like phase/step alone give you) tell
   // them apart — e.g. tab-picker.jsx disabling its own "Add New Picker"
@@ -321,7 +321,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // unmount (like `step` itself isn't) — consumers already have to gate on
   // `phase === 'tour'` too, which IS cleared, so a stale tourId left over
   // from the last tour can't be read as still current.
-  React.useEffect(() => { emlTour.set({ tourId }); }, [tourId]);
+  React.useEffect(() => { emlTouObj.set({ tourId }); }, [tourId]);
 
   // Persist progress as it advances, so a reload can resume from wherever
   // this tour is — the caller is responsible for reading
@@ -397,7 +397,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // resolving would need the rail already open, which is exactly what this
   // is for.
   React.useEffect(() => {
-    emlTour.set({ wantRailOpen: !!(cur && cur.sel.includes('[data-tab=')) });
+    emlTouObj.set({ wantRailOpen: !!(cur && cur.sel.includes('[data-tab=')) });
   }, [step]);
 
   // Resolve every element a step's selector matches — honoring selector
@@ -1096,7 +1096,7 @@ function GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, onG
   // doesn't own that layout. reserveTop itself is set by the position-
   // tracking effect above, decided ONCE per step rather than continuously —
   // see the comment on decideReserve there for why.
-  React.useEffect(() => { emlTour.set({ reserveTop }); }, [reserveTop]);
+  React.useEffect(() => { emlTouObj.set({ reserveTop }); }, [reserveTop]);
 
   const portal = (node) => createPortal(node, document.body);
 

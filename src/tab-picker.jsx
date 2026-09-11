@@ -2,7 +2,7 @@ import React from 'react';
 import { CadenceControl } from './cadence-control.jsx';
 import { CADENCE } from './cadence.js';
 import { EntryEditor } from './tab-today.jsx';
-import { emlTour, useEmlTour } from './onboarding.jsx';
+import { emlTouObj, useEmlTouFun } from './onboarding.jsx';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { PICKERS, normalizeConditionalName, normalizeGroupName } from './pickers.js';
 import { MODES } from './seed.js';
@@ -174,7 +174,7 @@ function PickerView({ picker, state, actions, animStyle }) {
   // landing on Today from it — this is a tutorial pick on a disposable
   // sample picker, not something the user meant to act on. Same
   // tourId+step gating as tab-picker.jsx's own disableTourAddPicker.
-  const tour = useEmlTour();
+  const tour = useEmlTouFun();
   const tourInterceptSend = tour.phase === 'tour' && tour.tourId === 'page-explore_pickers' && tour.step === 7;
   // Done needs the same visual + functional disabling during App Features'
   // own "Make your first manual pick" tour's equivalent step (onboarding-
@@ -856,7 +856,7 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
   // currently driving the page, per the shared onboarding bus. Read here
   // specifically so goToStep2 can skip its own scroll-to-top when a picker
   // mini-tour is mid-flight — see its own comment for why.
-  const obTour = useEmlTour();
+  const obTour = useEmlTouFun();
   const [step, setStep] = React.useState((initial && initial.step) || 1);
   const [name, setName] = React.useState((initial && initial.name) || '');
   // Focus the name input on mount when arriving from Today's empty-state card.
@@ -1088,21 +1088,21 @@ function NewPickerForm({ existingGroups, initialGroup, conditionals = [], onCanc
     if (newDraftId || editingDraftItemId) return;
     setDraftClosing(false);   // clear any stale closing state from a prior editor
     const id = 'draft_' + Math.random().toString(36).slice(2, 8);
-    // Read straight off the bus (emlTour.get()), not the React-state obTour
+    // Read straight off the bus (emlTouObj.get()), not the React-state obTour
     // — this fires as the NATIVE bubble-phase handler of the same click
     // whose CAPTURE-phase handling just ran Step 7's own run() (see its own
     // doc comment in onboarding-tour-runner.jsx), which sets itemPrefill on
-    // the bus synchronously, but useEmlTour's subscriber-driven setState is
+    // the bus synchronously, but useEmlTouFun's subscriber-driven setState is
     // batched and hasn't actually landed in this component's own render yet
     // — obTour here is still the PREVIOUS render's snapshot, from before
     // itemPrefill was set. Reading the bus's own synchronous getter instead
     // (same fix reminders.jsx's own prefill already uses — see its
-    // `emlTour.get()` call) is what actually lands the tour's staged name/
+    // `emlTouObj.get()` call) is what actually lands the tour's staged name/
     // ease on the item it creates, instead of silently falling back to
     // "New item" — the tour stages a specific name for its own walkthrough
     // item (see buildPickerTourStep7's run()) rather than falling back to
     // "New item".
-    const bus = emlTour.get();
+    const bus = emlTouObj.get();
     const inTour = bus.phase === 'tour' && bus.itemPrefill;
     let nm;
     if (inTour) {
@@ -1795,7 +1795,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
   // calls are no-ops against ids that don't exist).
   React.useEffect(() => () => clearHelpPickers(actions), []);
   // Onboarding tour: when it stages a prefill, open the create form for it.
-  const tour = useEmlTour ? useEmlTour() : { prefill: null, startCreate: null };
+  const tour = useEmlTouFun ? useEmlTouFun() : { prefill: null, startCreate: null };
   // The Pickers page tour's own Step 4 highlights "Add New Picker" but
   // explicitly doesn't want the user opening the real create form from it —
   // that flow is what the separate picker mini-tours already cover. Gated
@@ -1841,7 +1841,7 @@ export function TabPicker({ state, actions, animStyle, onHome, onNavTab }) {
         : tour.startCreate;
       setEmptyInitial(payload);
       setCreating(true);
-      emlTour.set({ startCreate: null });
+      emlTouObj.set({ startCreate: null });
     }
   }, [tour.startCreate]);
 

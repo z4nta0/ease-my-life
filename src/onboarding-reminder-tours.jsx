@@ -1,5 +1,5 @@
 import React from 'react';
-import { emlTour, useEmlTour } from './eml-tour-bus.js';
+import { emlTouObj, useEmlTouFun } from './eml-tour-bus.js';
 import { Icon } from './ui.jsx';
 import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
 import { GuidedTour } from './onboarding-tour-runner.jsx';
@@ -33,7 +33,7 @@ const REMINDER_TOUR_COPY = {
 // Requires the user to actually click the "+" button themselves (Next stays
 // disabled) — the click isn't just a gate, it's the thing being taught, and
 // it also opens the real add-reminder form. run() publishes the sample's
-// prefill data onto the emlTour bus (read by reminders.jsx's startAdd)
+// prefill data onto the emlTouObj bus (read by reminders.jsx's startAdd)
 // in the click-guard's capture phase, same batch as startAdd's own
 // bubble-phase handler — same ordering trick as the Picker tour's Step 2.
 // Deliberately NOT set any earlier (e.g. the intro modal's onStart, where
@@ -61,7 +61,7 @@ const buildReminderTourStep1 = (variant, state) => {
       // applies `hidden: true` generically whenever the checklist is up,
       // not just for tutorial-prefilled ones, so nothing needs to be set
       // here for that.
-      emlTour.set({
+      emlTouObj.set({
         prefill: {
           name: sample.name,
           repeat: sample.repeat,
@@ -132,7 +132,7 @@ const REPEAT_STEP_COPY = {
   },
 };
 // `repeat` is the live draft's current schedule type (published by
-// reminders.jsx's startAdd/draftActions onto the emlTour bus) — falls back
+// reminders.jsx's startAdd/draftActions onto the emlTouObj bus) — falls back
 // to 'weekly' (the recurring sample's own prefilled default) for the one
 // frame before that publish has happened yet.
 const buildReminderTourStep4 = (repeat) => {
@@ -168,7 +168,7 @@ function ReminderTour({ variant, state, actions, closeReminderForm, onClose }) {
   const copy = REMINDER_TOUR_COPY[variant];
   // Only the recurring tour's Step 4 actually depends on this, but the hook
   // has to run unconditionally either way — harmless to read it up front.
-  const bus = useEmlTour();
+  const bus = useEmlTouFun();
 
   // A reload lands here with tab-today.jsx's activeMiniTour already
   // re-derived from this SAME persisted activeTour (that's how this
@@ -186,7 +186,7 @@ function ReminderTour({ variant, state, actions, closeReminderForm, onClose }) {
   // phase. Never touches the sample task itself (see startAdd's comment in
   // reminders.jsx) — only the new draft it seeded gets built from it.
   const closeTour = (status) => {
-    emlTour.set({ prefill: null });
+    emlTouObj.set({ prefill: null });
     actions.setChecklistItem(copy.taskId, { status });
     onClose();
   };

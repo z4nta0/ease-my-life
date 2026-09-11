@@ -1054,7 +1054,7 @@ button.brand-mark { appearance: none; -webkit-appearance: none; border: 0; backg
   gap: 28px;
   min-width: 0;
   /* No transition here on purpose: the Welcome Tour's dynamic top-reserve
-     (padding-top, set inline via onboarding.jsx's emlTour bus) is measured
+     (padding-top, set inline via onboarding.jsx's emlTouObj bus) is measured
      back out of the target's live position every frame while a step is up
      (see the reserve-space effect in onboarding.jsx) — an animated change
      would read as a moving target mid-transition and fight its own math. */

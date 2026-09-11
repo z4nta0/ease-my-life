@@ -3,8 +3,8 @@ import {
   OB_EXAMPLE, OB_EXTRA_PICKERS, OB_TASKS, OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS,
   hydrateOnboardingStats,
 } from './onboarding-seed-data.js';
-import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
-import { emlTour, useEmlTour } from './eml-tour-bus.js';
+import { NAV_TAR_OBJ } from './onboarding-targets.jsx';
+import { emlTouObj, useEmlTouFun } from './eml-tour-bus.js';
 import { GuidedTour, goToTodayTop } from './onboarding-tour-runner.jsx';
 import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
 
@@ -12,7 +12,7 @@ import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
 // tab-stats.jsx) — the bus itself lives in eml-tour-bus.js now, split out so
 // onboarding-tour-runner.jsx can import it without a circular dependency on
 // this file.
-export { emlTour, useEmlTour };
+export { emlTouObj, useEmlTouFun };
 
 // Onboarding: first-run welcome modal + a guided spotlight tour that
 // actually drives the app (each coach card's primary button performs the
@@ -26,7 +26,7 @@ export { emlTour, useEmlTour };
 // two shared pieces.
 //
 // Decoupled from the tabs via:
-//   • emlTour — a tiny observable bus (prefill for the picker form, plus live
+//   • emlTouObj — a tiny observable bus (prefill for the picker form, plus live
 //     phase/step so other tabs can react to the tour without a context
 //     provider — e.g. Today's empty-states gate on obBus.phase).
 //   • window.__emlGenerate() — registered by TabToday so the tour can run the
@@ -86,7 +86,7 @@ const OB_BRAND = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.4
 //       OB_EXTRA_PICKERS.forEach((p) => {
 //         if (!state.pickers.some((pk) => pk.name === p.name)) actions.addPicker(p);
 //       });
-//       emlTour.set({ prefill: null });
+//       emlTouObj.set({ prefill: null });
 //       selectTab('today');
 //       setStep(4);
 //     }
@@ -111,7 +111,7 @@ const OB_BRAND = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.4
 //     title: 'Pickers live here',
 //     body: 'All of your pickers can be found on this page, which is also where new pickers are created. Click this button now so that we can create a new picker together.',
 //     primary: 'Next', back: true,
-//     run: () => { emlTour.set({ prefill: OB_EXAMPLE }); selectTab('picker'); setStep(2); },
+//     run: () => { emlTouObj.set({ prefill: OB_EXAMPLE }); selectTab('picker'); setStep(2); },
 //   },
 //   {
 //     sel: '.np-form', place: 'above',
@@ -143,7 +143,7 @@ const OB_BRAND = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.4
 //         }, 60);
 //         return;
 //       }
-//       emlTour.set({ prefill: { ...OB_EXAMPLE, step: 2 } });
+//       emlTouObj.set({ prefill: { ...OB_EXAMPLE, step: 2 } });
 //       selectTab('picker');
 //     },
 //   },
@@ -151,15 +151,15 @@ const OB_BRAND = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.4
 // 3) goBack()'s special cases for to===0,1,2,3 (replaced the generic
 //    `else selectTab('today')` fallback that's there now):
 //
-//   if (to === 0) { emlTour.set({ prefill: null }); selectTab('today'); }
-//   else if (to === 1) { emlTour.set({ prefill: null }); selectTab('today'); }
+//   if (to === 0) { emlTouObj.set({ prefill: null }); selectTab('today'); }
+//   else if (to === 1) { emlTouObj.set({ prefill: null }); selectTab('today'); }
 //   else if (to === 2) {
-//     emlTour.set({ prefill: { ...OB_EXAMPLE } });
+//     emlTouObj.set({ prefill: { ...OB_EXAMPLE } });
 //     selectTab('picker');
 //     const details = document.querySelector('.ob-picker-details');
 //     if (details) details.click();
 //   }
-//   else if (to === 3) { emlTour.set({ prefill: { ...OB_EXAMPLE, step: 2 } }); selectTab('picker'); }
+//   else if (to === 3) { emlTouObj.set({ prefill: { ...OB_EXAMPLE, step: 2 } }); selectTab('picker'); }
 //   else selectTab('today');
 //
 // 4) Desync-detection effect (catches the user clicking the real Pickers nav
@@ -167,7 +167,7 @@ const OB_BRAND = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.4
 //
 //   React.useEffect(() => {
 //     if (phase === 'tour' && (step === 0 || step === 1) && active === 'picker') {
-//       emlTour.set({ prefill: { ...OB_EXAMPLE } });
+//       emlTouObj.set({ prefill: { ...OB_EXAMPLE } });
 //       setStep(2);
 //     }
 //   }, [phase, step, active]);
@@ -181,7 +181,7 @@ const OB_BRAND = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.4
 //     const iv = setInterval(() => {
 //       if (document.querySelector('.np-form')) { clearInterval(iv); return; }
 //       if (++tries > 20) { clearInterval(iv); return; }
-//       emlTour.set({ prefill: { ...OB_EXAMPLE, ...(step === 3 ? { step: 2 } : {}) } });
+//       emlTouObj.set({ prefill: { ...OB_EXAMPLE, ...(step === 3 ? { step: 2 } : {}) } });
 //       selectTab('picker');
 //     }, 120);
 //     return () => clearInterval(iv);
@@ -247,7 +247,7 @@ function Onboarding({ state, actions, active, selectTab }) {
 
   const finish = React.useCallback(() => {
     setPhase('off');
-    emlTour.set({ prefill: null });
+    emlTouObj.set({ prefill: null });
   }, []);
   const welcomeDone = () => actions.setOnboarding({ welcomed: true });
 
@@ -259,7 +259,7 @@ function Onboarding({ state, actions, active, selectTab }) {
   // primary:'Done').
   const steps = [
     {
-      ...OB_NAV_TARGETS.today,
+      ...NAV_TAR_OBJ.today,
       tab: 'today',
       primary: 'Next', back: false,
     },
@@ -323,22 +323,22 @@ function Onboarding({ state, actions, active, selectTab }) {
       scrollToTop: true,
     },
     {
-      ...OB_NAV_TARGETS.picker,
+      ...NAV_TAR_OBJ.picker,
       tab: 'picker',
       primary: 'Next', back: true,
     },
     {
-      ...OB_NAV_TARGETS.stats,
+      ...NAV_TAR_OBJ.stats,
       tab: 'stats',
       primary: 'Next', back: true,
     },
     {
-      ...OB_NAV_TARGETS.data,
+      ...NAV_TAR_OBJ.data,
       tab: 'data',
       primary: 'Next', back: true,
     },
     {
-      ...OB_NAV_TARGETS.settings,
+      ...NAV_TAR_OBJ.settings,
       tab: 'settings',
       primary: 'Next', back: true,
       run: () => {

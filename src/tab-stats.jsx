@@ -1,6 +1,6 @@
 import React from 'react';
 import { CADENCE } from './cadence.js';
-import { useEmlTour } from './onboarding.jsx';
+import { useEmlTouFun } from './onboarding.jsx';
 import { MODES } from './seed.js';
 import { TASKS } from './tasks.js';
 import { Card, Icon, InfoTip, Pill } from './ui.jsx';
@@ -128,7 +128,7 @@ function TabStats({ state, actions, onHome, onNavTab }) {
   // Welcome Tour: reserves top-space above the page content when its own
   // coach card doesn't fit above/below the highlighted area — see the
   // reserve-space effect in onboarding.jsx (same mechanism as the Pickers tab).
-  const tour = useEmlTour ? useEmlTour() : { reserveTop: 0 };
+  const tour = useEmlTouFun ? useEmlTouFun() : { reserveTop: 0 };
   // Help mode (see help-mode.jsx) — nothing here is editable, so unlike
   // Pickers/Data this doesn't seed a disposable copy: it borrows the REAL
   // hidden sample pickers directly (same reasoning as the page tour's own

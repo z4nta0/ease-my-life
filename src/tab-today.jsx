@@ -8,8 +8,8 @@ import { DayLogChip, GroupLog } from './day-log.jsx';
 import { HOLIDAYS } from './holidays.js';
 import { HelpButton, HelpOverlay } from './help-mode.jsx';
 import { TODAY_HELP_ITEMS } from './help-content.jsx';
-import { NOTIFY } from './notify.js';
-import { emlTour, useEmlTour } from './onboarding.jsx';
+import { NOT_NAM_OBJ } from './notify.js';
+import { emlTouObj, useEmlTouFun } from './onboarding.jsx';
 import { OB_CHECKLIST, OB_GENERATE_ITEM_ID, OB_PAGE_TOURS } from './onboarding-checklist.js';
 import { APP_FEATURES, APP_FEATURE_PAGE_LABELS, appFeatureBlockedReason, AppFeaturesIntroTip } from './onboarding-app-features.jsx';
 import { OB_PICKER_CARD_TIME, OB_SAMPLE_PICKER_IDS, OB_SAMPLE_TASK_IDS } from './onboarding-seed-data.js';
@@ -1089,7 +1089,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   // so a user manually clicking "+" mid-onboarding doesn't clutter the list
   // alongside the still-open launcher cards either. See the unhide side in
   // the generateItemResolved effect below.
-  React.useEffect(() => { emlTour.set({ showChecklist }); }, [showChecklist]);
+  React.useEffect(() => { emlTouObj.set({ showChecklist }); }, [showChecklist]);
   const pageToursName = (state.onboarding && state.onboarding.pageToursName) || 'Page Tours';
   // Page Tours has no pickers to merge into on a name collision (unlike
   // renameGroup), so a collision just blocks the rename outright — checked
@@ -1619,8 +1619,8 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
       // page tour's own Movable Icon step) — its own tooltip card can sit
       // right over the group being dragged, making it hard to see where to
       // drop. A no-op harmless bus write when no tour is active/mounted.
-      onStart: () => emlTour.set({ dragging: true }),
-      onEnd: () => emlTour.set({ dragging: false }),
+      onStart: () => emlTouObj.set({ dragging: true }),
+      onEnd: () => emlTouObj.set({ dragging: false }),
       onDrop: (order) => {
         const rendered = renderedOrderRef.current || [];
         const present = order.map((i) => rendered[i]).filter(Boolean);
@@ -1640,8 +1640,8 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
       gripEl,
       scroller: mainRef.current?.closest('.main'),
       // Same reasoning as startGroupDrag's own onStart/onEnd above.
-      onStart: () => emlTour.set({ dragging: true }),
-      onEnd: () => emlTour.set({ dragging: false }),
+      onStart: () => emlTouObj.set({ dragging: true }),
+      onEnd: () => emlTouObj.set({ dragging: false }),
       onDrop: (order) => {
         const present = order.map((i) => g.entries[i].picker.id);
         actions.reorderPickersInGroup(g.name, mergeOrder((state.pickerOrder || {})[g.name] || [], present));
@@ -1940,7 +1940,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
         // notification just focuses the app — it can never generate twice. Also
         // suppressed when the app is visible and focused. Async; the result is
         // deliberately ignored, a failed notification must never break the run.
-        try { if (NOTIFY) Promise.resolve(NOTIFY.generated()).catch(() => {}); } catch (e) {}
+        try { if (NOT_NAM_OBJ) Promise.resolve(NOT_NAM_OBJ.generated()).catch(() => {}); } catch (e) {}
       }
     };
     check();
@@ -1978,7 +1978,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   }, [blockOrder, newSlotsByGroup]);
   renderedOrderRef.current = genBlockOrder;
 
-  const obBus = useEmlTour ? useEmlTour() : {};
+  const obBus = useEmlTouFun ? useEmlTouFun() : {};
   // Whether the user is still mid-onboarding at all — replaces the old
   // onboarding.dismissed flag (which only ever got set by the now-removed
   // "Get started" checklist, so it was permanently stuck false). Derived
@@ -2021,7 +2021,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
   const obShowNoRun = !obShowCreate && obBus.phase !== 'tour'
     && obNoRunToday && entries.length === 0 && !hasTutorialCards;
   const startCreatePicker = () => {
-    emlTour.set({ startCreate: { name: 'Chores', step: 1, focusName: true } });
+    emlTouObj.set({ startCreate: { name: 'Chores', step: 1, focusName: true } });
     if (onNavTab) onNavTab('picker');
   };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { APP_NAM_OBJ } from './appearance.js';
 import { HOLIDAYS } from './holidays.js';
 import { LegalModal } from './legal-docs.jsx';
-import { NOTIFY } from './notify.js';
+import { NOT_NAM_OBJ } from './notify.js';
 import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';
 import { PWA } from './pwa.js';
 import { Segmented } from './reminders.jsx';
@@ -673,17 +673,17 @@ function TabSettings({ state, actions, onHome, onNavTab }) {
   // Permission is asked exactly once, from the run-time change gesture: that is
   // the moment the user has shown they care when the generator runs, and a
   // denied prompt can't be re-shown by us.
-  const [notifPerm, setNotifPerm] = React.useState(() => (NOTIFY ? NOTIFY.permission() : 'unsupported'));
+  const [notifPerm, setNotifPerm] = React.useState(() => (NOT_NAM_OBJ ? NOT_NAM_OBJ.permission() : 'unsupported'));
   React.useEffect(() => {
-    if (!NOTIFY) return;
-    return NOTIFY.subscribe(() => setNotifPerm(NOTIFY.permission()));
+    if (!NOT_NAM_OBJ) return;
+    return NOT_NAM_OBJ.subscribe(() => setNotifPerm(NOT_NAM_OBJ.permission()));
   }, []);
   const onRunTimeChange = (v) => {
     actions.setDailyRunTime(v);
-    if (NOTIFY) NOTIFY.askOnce().then(() => setNotifPerm(NOTIFY.permission()));
+    if (NOT_NAM_OBJ) NOT_NAM_OBJ.askOnce().then(() => setNotifPerm(NOT_NAM_OBJ.permission()));
   };
   const enableNotifs = () => {
-    if (NOTIFY) NOTIFY.request().then(() => setNotifPerm(NOTIFY.permission()));
+    if (NOT_NAM_OBJ) NOT_NAM_OBJ.request().then(() => setNotifPerm(NOT_NAM_OBJ.permission()));
   };
 
   // ── Storage & installation ──────────────────────────────────────────────────

@@ -2,14 +2,14 @@ import React from 'react';
 import { Icon } from './ui.jsx';
 import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
 import { GuidedTour } from './onboarding-tour-runner.jsx';
-import { OB_NAV_TARGETS } from './onboarding-targets.jsx';
+import { NAV_TAR_OBJ } from './onboarding-targets.jsx';
 import { OB_PAGE_TOURS } from './onboarding-checklist.js';
 import { OB_EXAMPLE, OB_EXTRA_PICKERS, OB_SAMPLE_PICKER_IDS, OB_TASKS, hydrateOnboardingStats } from './onboarding-seed-data.js';
-import { emlTour } from './onboarding.jsx';
+import { emlTouObj } from './onboarding.jsx';
 
 // Page tours ("Explore the {page}" — Today/Pickers/Stats/Data/Settings) are
 // still growing in from an intro-only stub — Today is the only one with real
-// steps beyond this so far. Falls back to OB_NAV_TARGETS' own per-page
+// steps beyond this so far. Falls back to NAV_TAR_OBJ' own per-page
 // title/body (already written to stand alone, with no reference to "this
 // tour" or "the next step" baked in — see that file's own comment) for any
 // page PAGE_TOUR_COPY below hasn't gotten its own dedicated pass yet.
@@ -42,7 +42,7 @@ const PAGE_TOUR_COPY = {
 };
 
 // Step 1 for every page tour: highlight that page's own navbar button,
-// reusing the Welcome Tour's own copy for it verbatim (OB_NAV_TARGETS
+// reusing the Welcome Tour's own copy for it verbatim (NAV_TAR_OBJ
 // already carries `sel`/title/body written to stand alone). Unlike
 // PICKER_TOUR_STEP_1 (which deliberately writes its OWN copy instructing
 // the click), this one is asked to match the Welcome Tour's wording
@@ -58,7 +58,7 @@ const PAGE_TOUR_COPY = {
 // "click it now" — optional and only passed where a caller has explicitly
 // asked for it, so other callers' wording is unaffected.
 const buildPageTourStep1 = (page, run, primary = 'Next', buttonLabel = null) => {
-  const nav = OB_NAV_TARGETS[page];
+  const nav = NAV_TAR_OBJ[page];
   return {
     ...nav,
     body: <>{nav.body} Go ahead and click {buttonLabel ? <>the "{buttonLabel}" page's button</> : 'it'} now.</>,
@@ -448,14 +448,14 @@ const SETTINGS_PAGE_TARGETS = {
 };
 
 // Target + description catalog for the Today page's OWN interior elements
-// (as opposed to OB_NAV_TARGETS, which only covers the nav bar buttons) —
+// (as opposed to NAV_TAR_OBJ, which only covers the nav bar buttons) —
 // same shape/reasoning as that file's own catalog: content only (sel/title/
 // body), no navigation fields, written to stand alone with no reference to
 // "this tour" or "the next step" baked in. Kept here rather than moved into
 // onboarding-targets.jsx for now (nothing outside this file reads it yet),
 // but is exactly what a future on-demand multi-highlight help mode would
 // pull from by id — see the onboarding-engine-reuse-design memory. Extract
-// into its own module alongside OB_NAV_TARGETS if/when that help mode
+// into its own module alongside NAV_TAR_OBJ if/when that help mode
 // actually gets built and needs to reference these same targets.
 const TODAY_PAGE_TARGETS = {
   progressRing: {
@@ -793,7 +793,7 @@ const buildPageTourSteps = (pageId, actions) => {
 
 function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
   const tour = OB_PAGE_TOURS.find((t) => t.id === pageId);
-  const nav = OB_NAV_TARGETS[tour.page];
+  const nav = NAV_TAR_OBJ[tour.page];
   const copy = PAGE_TOUR_COPY[pageId];
   // A reload lands here with tab-today.jsx's activeMiniTour already
   // re-derived from this SAME persisted activeTour (that's how this
@@ -886,7 +886,7 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
             // cancelling the in-flight animation outright, not just leaving
             // it to finish on its own and clean up after. Harmless no-op if
             // the pick had already settled by the time Back was clicked.
-            emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
+            emlTouObj.set({ pickerTourResetNonce: (emlTouObj.get().pickerTourResetNonce || 0) + 1 });
           } else if (to === 6) {
             // Back from Step 8 (Add to Todo List) to Step 7 (Manual
             // Generation) — a pick already ran, so PickerView's own local
@@ -907,7 +907,7 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
             // only Pick One ever shows here, matching what this step
             // actually expects and forecloses both failure modes by
             // construction instead of specifically patching either one.
-            emlTour.set({ pickerTourResetNonce: (emlTour.get().pickerTourResetNonce || 0) + 1 });
+            emlTouObj.set({ pickerTourResetNonce: (emlTouObj.get().pickerTourResetNonce || 0) + 1 });
           } else if (to === 7) {
             // Back from Step 9 (Picker Items) to Step 8 (Add to Todo List)
             // — Step 8's own target is .pv-act--send, which only exists
@@ -922,7 +922,7 @@ function PageTour({ pageId, state, actions, active, selectTab, onClose }) {
             // fires a SEPARATE bus nonce telling PickerView to synthesize
             // one directly (skipping the spin animation, since this is a
             // revisit, not the user's first time seeing it).
-            emlTour.set({ pickerTourRedoNonce: (emlTour.get().pickerTourRedoNonce || 0) + 1 });
+            emlTouObj.set({ pickerTourRedoNonce: (emlTouObj.get().pickerTourRedoNonce || 0) + 1 });
           }
           return;
         }

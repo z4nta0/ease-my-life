@@ -21,7 +21,7 @@ import { Icon } from './ui.jsx';
 //
 // Ownership: the parent (each tab component) owns the on/off boolean as
 // plain local state and renders both <HelpButton> (controlled toggle) and
-// <HelpOverlay> from it — deliberately NOT a global bus like emlTour. Since
+// <HelpOverlay> from it — deliberately NOT a global bus like emlTouObj. Since
 // this app renders exactly one tab's component tree at a time (no router —
 // see CLAUDE.md), that local state resets to its default (off) every time a
 // tab unmounts and remounts, which is exactly the "navigating away closes
