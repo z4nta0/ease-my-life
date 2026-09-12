@@ -682,10 +682,10 @@ const BAD_SIZ_NUM = 20;
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tgtRecObj - The already-padded target rect (its own
+ * @param tarRecObj - The already-padded target rect (its own
  *                    padTop/padRight/padLeft, if any, came from
  *                    {@link claPadFun}) to anchor the badge to.
- * @param cenBoo    - Whether to center the badge over tgtRecObj's own
+ * @param cenBoo    - Whether to center the badge over tarRecObj's own
  *                    top edge (columnGroup members) instead of using
  *                    the usual corner placement.
  *
@@ -694,22 +694,22 @@ const BAD_SIZ_NUM = 20;
  *
  * @example
  * ```ts
- * badRecFun(tgtRecObj, cenBoo) // => badge rect
+ * badRecFun(tarRecObj, cenBoo) // => badge rect
  * ```
  *
 */
 
-function badRecFun ( tgtRecObj, cenBoo ) {
+function badRecFun ( tarRecObj, cenBoo ) {
 
 
-	const padTopNum = tgtRecObj.padTop ?? PAD_MAR_NUM; // What: Pad Top Number. Why: The badge's own vertical anchor must match whatever pad actually survived clipping on this target's own top side, not the flat default. How: This reads tgtRecObj's own padTop, falling back to the flat pad margin.
-	const rawTopNum = tgtRecObj.top - padTopNum - BAD_SIZ_NUM / 2; // What: Raw Top Number. Why: The badge's own natural vertical position overlaps up into the highlight box's own top-right corner. How: This subtracts the pad and half the badge's own size from the target's own top edge.
+	const padTopNum = tarRecObj.padTop ?? PAD_MAR_NUM; // What: Pad Top Number. Why: The badge's own vertical anchor must match whatever pad actually survived clipping on this target's own top side, not the flat default. How: This reads tarRecObj's own padTop, falling back to the flat pad margin.
+	const rawTopNum = tarRecObj.top - padTopNum - BAD_SIZ_NUM / 2; // What: Raw Top Number. Why: The badge's own natural vertical position overlaps up into the highlight box's own top-right corner. How: This subtracts the pad and half the badge's own size from the target's own top edge.
 	const topNum    = rawTopNum < -BAD_SIZ_NUM ? rawTopNum : Math.max( 4, rawTopNum ); // What: Clamped Top Number. Why: A badge only ALMOST on screen (within one badge-height of the top edge) should nudge down to stay visible, but a badge genuinely scrolled far above the viewport must not get dragged all the way down to that same floor. How: This only applies the 4px floor once rawTopNum is no further than one badge-height above 0.
 
 	if ( cenBoo ) { // What: Center Mode Branch. Why: A columnGroup member's own badge centers over its column's top edge instead of using the usual corner placement. How: This returns early with a horizontally-centered badge rect.
 
 
-		const lefNum = tgtRecObj.left + tgtRecObj.width / 2 - BAD_SIZ_NUM / 2; // What: Centered Left Number. Why: The badge must sit centered on the column's own horizontal midpoint. How: This computes the target's own midpoint and subtracts half the badge's own size.
+		const lefNum = tarRecObj.left + tarRecObj.width / 2 - BAD_SIZ_NUM / 2; // What: Centered Left Number. Why: The badge must sit centered on the column's own horizontal midpoint. How: This computes the target's own midpoint and subtracts half the badge's own size.
 
 
 		return { top: topNum, left: lefNum, width: BAD_SIZ_NUM, height: BAD_SIZ_NUM, bottom: topNum + BAD_SIZ_NUM };
@@ -717,10 +717,10 @@ function badRecFun ( tgtRecObj, cenBoo ) {
 
 	}
 
-	const padRigNum = tgtRecObj.padRight ?? PAD_MAR_NUM, padLefNum = tgtRecObj.padLeft ?? PAD_MAR_NUM; // What: Pad Right/Left Numbers. Why: Both the right-corner placement and its left-corner fallback below need whichever pad actually survived clipping on their own respective side. How: This reads tgtRecObj's own padRight/padLeft, falling back to the flat pad margin.
-	const rigLefNum = tgtRecObj.right + padRigNum - BAD_SIZ_NUM / 2;                                    // What: Right Corner Left Number. Why: This is the badge's own candidate left position for the usual top-right corner placement. How: This adds the surviving right pad to the target's own right edge, then centers the badge on that point.
+	const padRigNum = tarRecObj.padRight ?? PAD_MAR_NUM, padLefNum = tarRecObj.padLeft ?? PAD_MAR_NUM; // What: Pad Right/Left Numbers. Why: Both the right-corner placement and its left-corner fallback below need whichever pad actually survived clipping on their own respective side. How: This reads tarRecObj's own padRight/padLeft, falling back to the flat pad margin.
+	const rigLefNum = tarRecObj.right + padRigNum - BAD_SIZ_NUM / 2;                                    // What: Right Corner Left Number. Why: This is the badge's own candidate left position for the usual top-right corner placement. How: This adds the surviving right pad to the target's own right edge, then centers the badge on that point.
 	const ovfRigBoo = rigLefNum + BAD_SIZ_NUM > window.innerWidth;                                      // What: Overflows Right Boolean. Why: A target rect already clipped flush to the viewport can still overflow once the badge's own pad gap and half-width are added on top. How: This checks whether the right-corner candidate's own far edge would cross the viewport's own width.
-	const lefNum     = ovfRigBoo ? tgtRecObj.left - padLefNum - BAD_SIZ_NUM / 2 : rigLefNum;             // What: Final Left Number. Why: The badge must fall back to the target's own top-LEFT corner whenever the right corner would overflow. How: This picks the left-corner candidate when ovfRigBoo is true, otherwise the right-corner candidate.
+	const lefNum     = ovfRigBoo ? tarRecObj.left - padLefNum - BAD_SIZ_NUM / 2 : rigLefNum;             // What: Final Left Number. Why: The badge must fall back to the target's own top-LEFT corner whenever the right corner would overflow. How: This picks the left-corner candidate when ovfRigBoo is true, otherwise the right-corner candidate.
 
 
 
@@ -761,7 +761,7 @@ function badRecFun ( tgtRecObj, cenBoo ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tgtRecObj  - The target rect the tip is being placed
+ * @param tarRecObj  - The target rect the tip is being placed
  *                     relative to.
  * @param tipWidNum  - The tip's own real, already-measured width.
  * @param tipHeiNum  - The tip's own real, already-measured height.
@@ -774,12 +774,12 @@ function badRecFun ( tgtRecObj, cenBoo ) {
  *
  * @example
  * ```ts
- * plaTipFun(tgtRecObj, tipWidNum, tipHeiNum, pinBelYNum) // => placement
+ * plaTipFun(tarRecObj, tipWidNum, tipHeiNum, pinBelYNum) // => placement
  * ```
  *
 */
 
-function plaTipFun ( tgtRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
+function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 
 
 	const vpWidNum = window.innerWidth, vpHeiNum = window.innerHeight, marNum = 8; // What: Viewport/Margin Numbers. Why: Every clamp below needs the current viewport size plus the fixed edge margin the tip should never sit flush against. How: These are read once up front and reused throughout.
@@ -787,10 +787,10 @@ function plaTipFun ( tgtRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 	let topNum, arwClsStr, maxHeiNum; // What: Placement Result Numbers. Why: Exactly one of the 3 branches below assigns these, whichever applies. How: These are returned as-is once the branch below has run.
 
 
-	if ( tgtRecObj.alwaysBelow ) { // What: Always Below Branch. Why: A target spanning nearly the whole viewport itself (the nav tip's own 'side'/'top' placements) has essentially zero room above no matter what. How: This skips the below/above choice entirely and places the tip a fixed 16px below the target.
+	if ( tarRecObj.alwaysBelow ) { // What: Always Below Branch. Why: A target spanning nearly the whole viewport itself (the nav tip's own 'side'/'top' placements) has essentially zero room above no matter what. How: This skips the below/above choice entirely and places the tip a fixed 16px below the target.
 
 
-		topNum = tgtRecObj.bottom + 16; arwClsStr = 'ob-coach--up';
+		topNum = tarRecObj.bottom + 16; arwClsStr = 'ob-coach--up';
 		maxHeiNum = vpHeiNum - topNum - marNum;
 
 
@@ -808,16 +808,16 @@ function plaTipFun ( tgtRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 	else { // What: Normal Above/Below Branch. Why: This is the ordinary case, where the tip prefers below but can flip above when that genuinely has more room. How: This compares the room below against the room above before picking a side.
 
 
-		const useBadBoo    = tgtRecObj.badgeAnchorTop != null;                          // What: Use Badge Anchor Boolean. Why: A columnGroup member's own badge sits well above tgtRecObj.top itself, so an above-placed tip anchored to tgtRecObj.top would point its own arrow at empty space instead of the badge. How: This checks whether tgtRecObj carries a badgeAnchorTop at all.
-		const abvAncNum    = useBadBoo ? tgtRecObj.badgeAnchorTop : tgtRecObj.top;      // What: Above Anchor Number. Why: The "flips above" branch below needs one single Y to anchor against, whichever is correct for this target. How: This picks badgeAnchorTop when useBadBoo, otherwise the target's own top edge.
+		const useBadBoo    = tarRecObj.badgeAnchorTop != null;                          // What: Use Badge Anchor Boolean. Why: A columnGroup member's own badge sits well above tarRecObj.top itself, so an above-placed tip anchored to tarRecObj.top would point its own arrow at empty space instead of the badge. How: This checks whether tarRecObj carries a badgeAnchorTop at all.
+		const abvAncNum    = useBadBoo ? tarRecObj.badgeAnchorTop : tarRecObj.top;      // What: Above Anchor Number. Why: The "flips above" branch below needs one single Y to anchor against, whichever is correct for this target. How: This picks badgeAnchorTop when useBadBoo, otherwise the target's own top edge.
 		const gapAbvNum    = useBadBoo ? 8 : 16;                                        // What: Gap Above Number. Why: The usual 16px breathing room reads as "detached" for a small round badge specifically, so a badge anchor uses a tighter 8px instead. How: This picks 8 when anchored to a badge, otherwise the app's own normal 16px gap.
-		const spcBelNum    = vpHeiNum - tgtRecObj.bottom - 16;                          // What: Space Below Number. Why: This is how much room the "below" placement actually has to work with. How: This subtracts the target's own bottom edge and the normal 16px gap from the viewport's own height.
+		const spcBelNum    = vpHeiNum - tarRecObj.bottom - 16;                          // What: Space Below Number. Why: This is how much room the "below" placement actually has to work with. How: This subtracts the target's own bottom edge and the normal 16px gap from the viewport's own height.
 		const spcAbvNum    = abvAncNum - gapAbvNum - marNum;                            // What: Space Above Number. Why: This is how much room the "above" placement actually has to work with. How: This subtracts gapAbvNum and the edge margin from abvAncNum.
 
 		if ( spcBelNum >= tipHeiNum || spcBelNum >= spcAbvNum ) { // What: Prefer Below Guard. Why: Below wins whenever the full content actually fits there, or whenever below simply has more room than above even if neither fully fits. How: This checks tipHeiNum against spcBelNum first, then compares the two spaces directly.
 
 
-			topNum = tgtRecObj.bottom + 16; arwClsStr = 'ob-coach--up';
+			topNum = tarRecObj.bottom + 16; arwClsStr = 'ob-coach--up';
 			maxHeiNum = vpHeiNum - topNum - marNum;
 
 
@@ -835,7 +835,7 @@ function plaTipFun ( tgtRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 
 	}
 
-	const ctrXNum = tgtRecObj.left + tgtRecObj.width / 2;                         // What: Center X Number. Why: The tip's own arrow always centers on the target's own horizontal midpoint. How: This adds half the target's own width to its left edge.
+	const ctrXNum = tarRecObj.left + tarRecObj.width / 2;                         // What: Center X Number. Why: The tip's own arrow always centers on the target's own horizontal midpoint. How: This adds half the target's own width to its left edge.
 	const lefNum  = Math.max( marNum, Math.min( ctrXNum - tipWidNum / 2, vpWidNum - tipWidNum - marNum ) ); // What: Left Number. Why: The tip box itself must clamp within the viewport even while its arrow stays centered on ctrXNum. How: This centers the tip on ctrXNum, then clamps between the edge margin and the viewport's own right-edge margin.
 	const arwXNum = Math.max( 18, Math.min( ctrXNum - lefNum, tipWidNum - 26 ) );  // What: Arrow X Number. Why: The arrow's own horizontal offset inside the tip box must stay clear of the tip's own rounded corners. How: This computes the arrow's position relative to lefNum, clamped to a safe inset range.
 
@@ -860,7 +860,7 @@ function plaTipFun ( tgtRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
  * own measure-after-mount approach; simpler than the guided tour's
  * permanent hidden measurer since at most one of these ever exists at
  * a time. iteObj.matchTargetWidth (e.g. the nav tip, once it grew to 5
- * paragraphs) sizes the tip to tgtRecObj.tipWidth instead of the usual
+ * paragraphs) sizes the tip to tarRecObj.tipWidth instead of the usual
  * fixed 280px, applied as an inline style so it already wins by the
  * time offsetWidth first measures it. iteObj.scrollable caps the tip
  * to whatever vertical room plaTipFun found and scrolls internally
@@ -885,7 +885,7 @@ function plaTipFun ( tgtRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
  *
 */
 
-function HelTipCom ( { item: iteObj, targetRect: tgtRecObj } ) {
+function HelTipCom ( { item: iteObj, targetRect: tarRecObj } ) {
 
 
 	const tipEleRef                     = React.useRef( null );                     // What: Tip Element Reference. Why: The layout effect below needs a handle on the real tip DOM node to measure and position it. How: This is attached to the root coach div's own ref prop below.
@@ -893,9 +893,9 @@ function HelTipCom ( { item: iteObj, targetRect: tgtRecObj } ) {
 	const [ arwClsStr, setArwClsStr ]   = React.useState( 'ob-coach--up' );          // What: Arrow Class String And Setter. Why: The tip's own arrow direction depends on whether it landed above or below the target. How: This starts pointing up (the "below target" case) and is written by the layout effect below.
 	const [ scrMaxNum, setScrMaxNum ]   = React.useState( null );                    // What: Scroll Max Number And Setter. Why: A scrollable tip needs its own inner cap recomputed alongside its position. How: This starts null (uncapped) and is written by the layout effect below.
 
-	const widStyObj = iteObj.matchTargetWidth && tgtRecObj.tipWidth != null ? { width: tgtRecObj.tipWidth } : null; // What: Width Style Object. Why: Only a tip whose own catalog item opts in, AND whose target actually computed a tipWidth, should override the usual fixed 280px. How: This reads tgtRecObj.tipWidth only under that combined condition, otherwise falls through to no override at all.
+	const widStyObj = iteObj.matchTargetWidth && tarRecObj.tipWidth != null ? { width: tarRecObj.tipWidth } : null; // What: Width Style Object. Why: Only a tip whose own catalog item opts in, AND whose target actually computed a tipWidth, should override the usual fixed 280px. How: This reads tarRecObj.tipWidth only under that combined condition, otherwise falls through to no override at all.
 
-	React.useLayoutEffect( () => { // What: Placement Effect. Why: The tip's own position, arrow direction, and scroll cap must all be recomputed whenever the target it is anchored to changes. How: This measures the mounted tip element and runs plaTipFun against tgtRecObj.
+	React.useLayoutEffect( () => { // What: Placement Effect. Why: The tip's own position, arrow direction, and scroll cap must all be recomputed whenever the target it is anchored to changes. How: This measures the mounted tip element and runs plaTipFun against tarRecObj.
 
 
 		const tipCurEle = tipEleRef.current; // What: Tip Current Element. Why: The measurement below needs a stable local reference to the live tip DOM node. How: This is read once from tipEleRef.current.
@@ -903,14 +903,14 @@ function HelTipCom ( { item: iteObj, targetRect: tgtRecObj } ) {
 		if ( !tipCurEle ) return; // What: No Element Guard. Why: The ref may not be attached yet on a very first render. How: This bails out early when there is no tip element to measure.
 
 
-		const { top: topNum, left: lefNum, arrowClass: arwClsVal, arrowX: arwXNum, maxHeight: maxHeiNum } = plaTipFun( tgtRecObj, tipCurEle.offsetWidth, tipCurEle.offsetHeight, tgtRecObj.pinBelowY ); // What: Placement Result. Why: This is the whole positioning answer for this render. How: This calls plaTipFun with the tip's own real measured size and tgtRecObj's own pinBelowY.
+		const { top: topNum, left: lefNum, arrowClass: arwClsVal, arrowX: arwXNum, maxHeight: maxHeiNum } = plaTipFun( tarRecObj, tipCurEle.offsetWidth, tipCurEle.offsetHeight, tarRecObj.pinBelowY ); // What: Placement Result. Why: This is the whole positioning answer for this render. How: This calls plaTipFun with the tip's own real measured size and tarRecObj's own pinBelowY.
 
 		setTipStyObj( { top: topNum, left: lefNum, '--ob-ax': arwXNum + 'px' } ); // What: Tip Style Update. Why: The rendered tip needs its own top/left plus the CSS custom property its own arrow reads. How: This writes the freshly-computed position into tipStyObj.
 		setArwClsStr( arwClsVal );                                               // What: Arrow Class Update. Why: The rendered tip needs its own up/down arrow modifier class. How: This writes arwClsVal into arwClsStr.
 		setScrMaxNum( iteObj.scrollable ? maxHeiNum - 28 : null );               // What: Scroll Max Update. Why: A scrollable tip's own inner wrapper must leave room for .ob-coach's own 28px of vertical padding. How: This writes maxHeiNum minus that padding, or null when this item is not scrollable at all.
 
 
-	}, [ tgtRecObj, iteObj.matchTargetWidth, iteObj.scrollable ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the target it is anchored to moves or resizes, or whenever the item's own width/scroll behavior could change. How: tgtRecObj changing means a new position is needed, and iteObj.matchTargetWidth/iteObj.scrollable changing means the sizing rules themselves changed.
+	}, [ tarRecObj, iteObj.matchTargetWidth, iteObj.scrollable ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the target it is anchored to moves or resizes, or whenever the item's own width/scroll behavior could change. How: tarRecObj changing means a new position is needed, and iteObj.matchTargetWidth/iteObj.scrollable changing means the sizing rules themselves changed.
 
 
 	const innStyObj = scrMaxNum != null ? { maxHeight: scrMaxNum, overflowY: 'auto' } : null; // What: Inner Style Object. Why: Only a scrollable item's own inner wrapper needs a capped height and its own scrollbar. How: This builds the style object only while scrMaxNum holds a real cap.
@@ -930,7 +930,7 @@ function HelTipCom ( { item: iteObj, targetRect: tgtRecObj } ) {
 			<div style={ innStyObj }>{ /* What: Inner Scroll Div Element. Why: The scroll cap must live on an inner wrapper so it never clips the outer box's own arrow. How: This applies innStyObj only while this item is scrollable and a cap has been computed. */ }
 
 
-				<p className='help-tip-title'>{ typeof iteObj.title === 'function' ? iteObj.title( tgtRecObj ) : iteObj.title }</p>{ /* What: Help Tip Title Element. Why: A function title (e.g. the Charge Controls items) reads something off the live DOM at open time instead of baking in a value that could be wrong for a different picker's own setting. How: This calls iteObj.title with tgtRecObj when it is a function, otherwise renders it directly. */ }
+				<p className='help-tip-title'>{ typeof iteObj.title === 'function' ? iteObj.title( tarRecObj ) : iteObj.title }</p>{ /* What: Help Tip Title Element. Why: A function title (e.g. the Charge Controls items) reads something off the live DOM at open time instead of baking in a value that could be wrong for a different picker's own setting. How: This calls iteObj.title with tarRecObj when it is a function, otherwise renders it directly. */ }
 
 				<div className='ob-body'>{ typeof iteObj.body === 'function' ? iteObj.body() : iteObj.body }</div>{ /* What: Ob Body Div Element. Why: Same reasoning as the title above applies to a function body. How: This calls iteObj.body when it is a function, otherwise renders it directly. */ }
 
@@ -1272,9 +1272,9 @@ function HelpOverlay ( { active, items, onExit } ) {
 		if ( togBtnEle ) { // What: Toggle Found Guard. Why: Only write a toggle rect when the button was actually found. How: This measures and stores togBtnEle's own bounding rect.
 
 
-			const btnRecObj = togBtnEle.getBoundingClientRect(); // What: Button Rect Object. Why: The mask cutout below needs the toggle button's own real on-screen position and size. How: This reads togBtnEle's own bounding rect.
+			const butRecObj = togBtnEle.getBoundingClientRect(); // What: Button Rect Object. Why: The mask cutout below needs the toggle button's own real on-screen position and size. How: This reads togBtnEle's own bounding rect.
 
-			setTogRecObj( { top: btnRecObj.top, left: btnRecObj.left, width: btnRecObj.width, height: btnRecObj.height } ); // What: Toggle Rect Commit. Why: The rendered mask reads togRecObj directly for its own always-on-top cutout. How: This writes a plain { top, left, width, height } copy of btnRecObj into togRecObj via its own setter.
+			setTogRecObj( { top: butRecObj.top, left: butRecObj.left, width: butRecObj.width, height: butRecObj.height } ); // What: Toggle Rect Commit. Why: The rendered mask reads togRecObj directly for its own always-on-top cutout. How: This writes a plain { top, left, width, height } copy of butRecObj into togRecObj via its own setter.
 
 
 		}

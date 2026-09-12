@@ -945,7 +945,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 			const isaDocBoo = scrEle === document.scrollingElement || scrEle === document.documentElement; // What: Is-A Document Boolean. Why: Several branches below need to know whether the resolved scroller is the document itself. How: This compares scrEle against both document.scrollingElement and document.documentElement.
 
-			const tgtRecObj = uniRecFun( eleArr ); // What: Target Rect Object. Why: Every branch below needs the target's own current union rect. How: This unions every matched element via uniRecFun.
+			const tarRecObj = uniRecFun( eleArr ); // What: Target Rect Object. Why: Every branch below needs the target's own current union rect. How: This unions every matched element via uniRecFun.
 
 			const scrRecObj = isaDocBoo ? { top: 0, bottom: window.innerHeight } : scrEle.getBoundingClientRect(); // What: Scroller Rect Object. Why: The pad math below needs the scroller's own visible bounds. How: This uses the viewport bounds for the document scroller, otherwise scrEle's own bounding rect.
 
@@ -954,7 +954,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 				const desTopNum = safTopFun( { forCoaBoo: true } ) + 12 + coaHeiRef.current + 16; // What: Desired Top Number. Why: This is exactly where the target's own top edge should land. How: This adds the coach's own floor, its 12px margin, its current measured height, and a 16px gap.
 
-				scrAmtFun( scrEle, tgtRecObj.top - desTopNum ); // What: Scroll By Desired Delta. Why: The scroller needs to move by exactly the gap between the target's own current top and its desired top. How: This calls scrAmtFun with that difference.
+				scrAmtFun( scrEle, tarRecObj.top - desTopNum ); // What: Scroll By Desired Delta. Why: The scroller needs to move by exactly the gap between the target's own current top and its desired top. How: This calls scrAmtFun with that difference.
 
 				return; // What: Coach-At-Top Early Return. Why: Nothing below applies once this branch has already handled the scroll. How: This exits before the pad-based branch.
 
@@ -967,16 +967,16 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 			let preTopNum = null; // What: Predicted Top Number. Why: A target too tall to fit alongside the coach no matter where it is scrolled to needs reserve space, decided HERE using a PREDICTED landing position (wherever the branch just below is about to place it) rather than an OBSERVED post-scroll one, so it can be applied before this step's very first scroll instead of discovered only after that scroll already settled. How: preTopNum mirrors whichever of the two branches below will actually fire; null (no scroll needed at all) is deliberately left unhandled, since a target that already fits without scrolling was never going to need reserve either.
 
-			if ( tgtRecObj.top < minTopNum ) preTopNum = minTopNum; // What: Predicted Top From Above. Why: A target starting above the safe floor will be scrolled down to exactly minTopNum. How: This sets preTopNum to minTopNum whenever the target's own top sits above it.
+			if ( tarRecObj.top < minTopNum ) preTopNum = minTopNum; // What: Predicted Top From Above. Why: A target starting above the safe floor will be scrolled down to exactly minTopNum. How: This sets preTopNum to minTopNum whenever the target's own top sits above it.
 
-			else if ( tgtRecObj.bottom > scrRecObj.bottom - padBotNum ) preTopNum = ( scrRecObj.bottom - padBotNum ) - tgtRecObj.height; // What: Predicted Top From Below. Why: A target overflowing the bottom pad boundary will be scrolled up until its own bottom lands exactly there. How: This derives the resulting top from that landing bottom minus the target's own height.
+			else if ( tarRecObj.bottom > scrRecObj.bottom - padBotNum ) preTopNum = ( scrRecObj.bottom - padBotNum ) - tarRecObj.height; // What: Predicted Top From Below. Why: A target overflowing the bottom pad boundary will be scrolled up until its own bottom lands exactly there. How: This derives the resulting top from that landing bottom minus the target's own height.
 
 			if ( !curSteObj.coachAtTop && !resDecBoo && preTopNum != null ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the exact same fits-below/fits-above checks decResFun itself uses below, so this can never disagree with what decResFun would have decided anyway, just decided proactively instead of reactively; this replaces the loop's own decResFun (unchanged) used to be the only place this got decided, which meant a visibly separate second "jump then re-scroll" once it found the overlap, this step's target genuinely overlapping the coach at its settled position is exactly the case reproduced live and reported as jank.
 
 
 				const vpHeiNum = window.innerHeight, coaHeiNum = coaHeiRef.current; // What: Viewport Height Number And Coach Height Number. Why: Both fit checks below need the current viewport height and the coach's own latest measured height. How: These are read fresh from window.innerHeight and coaHeiRef.current.
 
-				const ftsBelBoo = vpHeiNum - ( preTopNum + tgtRecObj.height ) >= coaHeiNum + 16; // What: Fits Below Boolean. Why: The below placement only works if the coach's own height plus its 16px gap actually fits under the predicted landing position. How: This compares the remaining viewport space under the predicted bottom edge against coaHeiNum + 16.
+				const ftsBelBoo = vpHeiNum - ( preTopNum + tarRecObj.height ) >= coaHeiNum + 16; // What: Fits Below Boolean. Why: The below placement only works if the coach's own height plus its 16px gap actually fits under the predicted landing position. How: This compares the remaining viewport space under the predicted bottom edge against coaHeiNum + 16.
 				const ftsAbvBoo = preTopNum - 16 - coaHeiNum >= safTopFun( { forCoaBoo: true } ) + 12; // What: Fits Above Boolean. Why: The above placement only works if the coach's own height plus its 16px gap actually fits above the predicted top edge, down to the coach's own safe floor. How: This compares the predicted top edge minus the coach's own space against the safe floor.
 
 				if ( !ftsBelBoo && !ftsAbvBoo ) { // What: No Fit Guard. Why: Reserve space is only ever needed once neither the below nor the above placement actually fits. How: This only enters the reserve branch when both fit checks failed.
@@ -996,9 +996,9 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 			}
 
-			if ( tgtRecObj.top < minTopNum ) scrAmtFun( scrEle, -( minTopNum - tgtRecObj.top ) ); // What: Scroll Up To Min Top. Why: A target above the safe floor must be scrolled down until it clears it. How: This calls scrAmtFun with the negative gap between minTopNum and the target's own top.
+			if ( tarRecObj.top < minTopNum ) scrAmtFun( scrEle, -( minTopNum - tarRecObj.top ) ); // What: Scroll Up To Min Top. Why: A target above the safe floor must be scrolled down until it clears it. How: This calls scrAmtFun with the negative gap between minTopNum and the target's own top.
 
-			else if ( tgtRecObj.bottom > scrRecObj.bottom - padBotNum ) scrAmtFun( scrEle, tgtRecObj.bottom - ( scrRecObj.bottom - padBotNum ) ); // What: Scroll Down To Pad Bottom. Why: A target overflowing the bottom pad boundary must be scrolled up until it clears it. How: This calls scrAmtFun with the gap between the target's own bottom and the pad boundary.
+			else if ( tarRecObj.bottom > scrRecObj.bottom - padBotNum ) scrAmtFun( scrEle, tarRecObj.bottom - ( scrRecObj.bottom - padBotNum ) ); // What: Scroll Down To Pad Bottom. Why: A target overflowing the bottom pad boundary must be scrolled up until it clears it. How: This calls scrAmtFun with the gap between the target's own bottom and the pad boundary.
 
 
 		};
@@ -1028,15 +1028,15 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 		const plcTarFun = ( eleArr ) => { // What: Place Target Function. Why: This positions both the spotlight and the real coach imperatively, every frame, so neither one visibly lags behind a smooth scroll the way pure React state would.
 
 
-			const tgtRecObj = claChrFun( uniRecFun( eleArr ), eleArr ); // What: Target Rect Object. Why: Both the spotlight and the coach below need the same clamped, unioned rect. How: This unions eleArr, then clamps the result against chrome.
+			const tarRecObj = claChrFun( uniRecFun( eleArr ), eleArr ); // What: Target Rect Object. Why: Both the spotlight and the coach below need the same clamped, unioned rect. How: This unions eleArr, then clamps the result against chrome.
 
 			if ( spoEleRef.current ) { // What: Spotlight Ref Guard. Why: The spotlight element may not be mounted yet on the very first call. How: This only writes to spoEleRef.current when it is actually present.
 
 
 				const padNum = spoPadNum, spoStyObj = spoEleRef.current.style; // What: Pad Number And Spotlight Style Object. Why: Both are needed together to size/position the spot below. How: padNum reuses spoPadNum, spoStyObj is the live CSSStyleDeclaration for the spotlight element.
 
-				spoStyObj.top = ( tgtRecObj.top - padNum ) + 'px'; spoStyObj.left = ( tgtRecObj.left - padNum ) + 'px'; // What: Spotlight Top/Left Write. Why: The spot must sit padNum outside the target's own top-left corner. How: This writes both inline style properties directly.
-				spoStyObj.width = ( tgtRecObj.width + padNum * 2 ) + 'px'; spoStyObj.height = ( tgtRecObj.height + padNum * 2 ) + 'px'; // What: Spotlight Width/Height Write. Why: The spot must grow by padNum on every side, not just its own position. How: This writes both inline style properties directly.
+				spoStyObj.top = ( tarRecObj.top - padNum ) + 'px'; spoStyObj.left = ( tarRecObj.left - padNum ) + 'px'; // What: Spotlight Top/Left Write. Why: The spot must sit padNum outside the target's own top-left corner. How: This writes both inline style properties directly.
+				spoStyObj.width = ( tarRecObj.width + padNum * 2 ) + 'px'; spoStyObj.height = ( tarRecObj.height + padNum * 2 ) + 'px'; // What: Spotlight Width/Height Write. Why: The spot must grow by padNum on every side, not just its own position. How: This writes both inline style properties directly.
 
 
 			}
@@ -1046,11 +1046,11 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 				const vpWidNum = window.innerWidth, vpHeiNum = window.innerHeight; // What: Viewport Width Number And Viewport Height Number. Why: The layout math below needs the current viewport size. How: These are read fresh from window on every call.
 				const coaWidNum = Math.min( 300, vpWidNum - 24 ); // What: Coach Width Number. Why: The coach's own width must clamp to the viewport on a narrow screen. How: This caps the usual 300px width to the viewport minus a 24px margin.
-				const layObj = coaLayFun( tgtRecObj, coaHeiRef.current, coaWidNum, vpWidNum, vpHeiNum ); // What: Layout Object. Why: This is the single shared placement math also used by the render function's own first-paint fallback. How: This calls coaLayFun with the current target rect, the coach's own latest measured height, and the current viewport/coach sizes.
+				const layObj = coaLayFun( tarRecObj, coaHeiRef.current, coaWidNum, vpWidNum, vpHeiNum ); // What: Layout Object. Why: This is the single shared placement math also used by the render function's own first-paint fallback. How: This calls coaLayFun with the current target rect, the coach's own latest measured height, and the current viewport/coach sizes.
 				const coaStyObj = reaCoaRef.current.style; // What: Coach Style Object. Why: The layout above must actually be written onto the real DOM element. How: This reads reaCoaRef.current's own live CSSStyleDeclaration.
 
 				coaStyObj.top = layObj.top + 'px'; coaStyObj.left = layObj.left + 'px'; // What: Coach Top/Left Write. Why: The coach must move to exactly where coaLayFun decided. How: This writes both inline style properties directly.
-				coaStyObj.setProperty( '--ob-ax', arwXFun( tgtRecObj, layObj.left, coaWidNum ) + 'px' ); // What: Arrow X Custom Property Write. Why: The coach's own CSS arrow reads this custom property to stay centered on the target. How: This sets --ob-ax to the freshly computed arrow offset.
+				coaStyObj.setProperty( '--ob-ax', arwXFun( tarRecObj, layObj.left, coaWidNum ) + 'px' ); // What: Arrow X Custom Property Write. Why: The coach's own CSS arrow reads this custom property to stay centered on the target. How: This sets --ob-ax to the freshly computed arrow offset.
 				reaCoaRef.current.classList.toggle( 'ob-coach--up', layObj.arrowClass === 'ob-coach--up' ); // What: Arrow Up Class Toggle. Why: The coach's own arrow direction must match whichever side coaLayFun picked. How: This toggles the ob-coach--up class based on layObj.arrowClass.
 				reaCoaRef.current.classList.toggle( 'ob-coach--down', layObj.arrowClass === 'ob-coach--down' ); // What: Arrow Down Class Toggle. Why: Same reasoning as the up-class toggle, for the opposite direction. How: This toggles the ob-coach--down class based on layObj.arrowClass.
 
@@ -1058,7 +1058,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 			}
 
 
-			return tgtRecObj; // What: Placed Rect Return. Why: The caller (the loop below) needs the placed rect back to feed into React state too. How: This returns the same tgtRecObj just placed.
+			return tarRecObj; // What: Placed Rect Return. Why: The caller (the loop below) needs the placed rect back to feed into React state too. How: This returns the same tarRecObj just placed.
 
 
 		};
@@ -1072,14 +1072,14 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 			if ( resDecBoo ) return; // What: Already Decided Guard. Why: This decision must only ever happen once per step. How: This returns immediately once resDecBoo is already true.
 
-			const tgtRecObj = uniRecFun( eleArr ); // What: Target Rect Object. Why: The stability check below needs the target's own current union rect. How: This unions eleArr via uniRecFun.
+			const tarRecObj = uniRecFun( eleArr ); // What: Target Rect Object. Why: The stability check below needs the target's own current union rect. How: This unions eleArr via uniRecFun.
 
-			if ( lasHeiNum != null && Math.abs( tgtRecObj.height - lasHeiNum ) < 1 && Math.abs( tgtRecObj.top - lasTopNum ) < 1 ) stbFraNum++; // What: Stable Frame Increment. Why: Both the target's own top and height must be unchanged from the previous frame for it to count as settled. How: This increments stbFraNum only when both deltas are under 1px.
+			if ( lasHeiNum != null && Math.abs( tarRecObj.height - lasHeiNum ) < 1 && Math.abs( tarRecObj.top - lasTopNum ) < 1 ) stbFraNum++; // What: Stable Frame Increment. Why: Both the target's own top and height must be unchanged from the previous frame for it to count as settled. How: This increments stbFraNum only when both deltas are under 1px.
 
 			else stbFraNum = 0; // What: Stable Frame Reset. Why: Any real movement restarts the settle count from scratch. How: This resets stbFraNum to 0 whenever the stability check above failed.
 
-			lasTopNum = tgtRecObj.top; // What: Last Top Commit. Why: The next frame's own stability check needs this frame's own top value to compare against. How: This overwrites lasTopNum with tgtRecObj.top.
-			lasHeiNum = tgtRecObj.height; // What: Last Height Commit. Why: Same reasoning as the top commit, for height. How: This overwrites lasHeiNum with tgtRecObj.height.
+			lasTopNum = tarRecObj.top; // What: Last Top Commit. Why: The next frame's own stability check needs this frame's own top value to compare against. How: This overwrites lasTopNum with tarRecObj.top.
+			lasHeiNum = tarRecObj.height; // What: Last Height Commit. Why: Same reasoning as the top commit, for height. How: This overwrites lasHeiNum with tarRecObj.height.
 
 			if ( stbFraNum < 2 ) return; // What: Not Yet Stable Guard. Why: 2 consecutive stable frames are required before trusting the geometry. How: This returns whenever stbFraNum has not yet reached 2.
 
@@ -1089,9 +1089,9 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 			const coaHeiNum = coaHeiRef.current; // What: Coach Height Number. Why: This must read coaHeiRef.current, not a closed-over value, since a narrower coach (small/mobile screens) wraps the same body text over more lines and renders taller, so the fixed COA_HEI_NUM guess under-reserved there specifically, this step fitting "above" by the estimate but not in reality, with the coach ending up overlapping the highlight's top edge anyway. How: This reads the ref's own current value fresh.
 
-			if ( vpHeiNum - ( tgtRecObj.top + tgtRecObj.height ) >= coaHeiNum + 16 ) return; // What: Fits Below Return. Why: No reserve is needed once the coach's own height plus its 16px gap already fits below the target. How: This returns whenever that check passes, leaving resTopNum at its already-0 default.
+			if ( vpHeiNum - ( tarRecObj.top + tarRecObj.height ) >= coaHeiNum + 16 ) return; // What: Fits Below Return. Why: No reserve is needed once the coach's own height plus its 16px gap already fits below the target. How: This returns whenever that check passes, leaving resTopNum at its already-0 default.
 
-			if ( tgtRecObj.top - 16 - coaHeiNum >= safTopFun( { forCoaBoo: true } ) + 12 ) return; // What: Fits Above Return. Why: No reserve is needed once the coach's own height plus its 16px gap already fits above the target either. How: This returns whenever that check passes, leaving resTopNum at its already-0 default.
+			if ( tarRecObj.top - 16 - coaHeiNum >= safTopFun( { forCoaBoo: true } ) + 12 ) return; // What: Fits Above Return. Why: No reserve is needed once the coach's own height plus its 16px gap already fits above the target either. How: This returns whenever that check passes, leaving resTopNum at its already-0 default.
 
 			resAmtNum = coaHeiNum + 40; // What: Reserve Amount Commit. Why: Neither side fits, so the reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmtNum to the coach's own height plus a fixed 40px.
 			setResTopNum( resAmtNum ); // What: Reserve Top Commit. Why: TabToday reads this off the bus to actually pad its own list. How: This publishes resAmtNum into React state.
@@ -1103,7 +1103,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 				const scr2Ele = getScrFun( ele2Arr[ 0 ] ); // What: Scroller 2 Element. Why: The scroll compensation below needs to know which element actually scrolls. How: This resolves the first re-found element's own scroller via getScrFun.
 
-				requestAnimationFrame( () => { // What: Scroll Compensation Frame. Why: The padding needs to have actually landed in the DOM first, so this re-measures the target after a frame rather than computing from tgtRecObj, which is now stale. How: This recomputes the scroller and desired top freshly, rather than closing over briTarFun's own local scrEle, which this function does not have access to.
+				requestAnimationFrame( () => { // What: Scroll Compensation Frame. Why: The padding needs to have actually landed in the DOM first, so this re-measures the target after a frame rather than computing from tarRecObj, which is now stale. How: This recomputes the scroller and desired top freshly, rather than closing over briTarFun's own local scrEle, which this function does not have access to.
 
 
 					const freEleArr = finTarFun( curSteObj.sel ); // What: Fresh Element Array. Why: The target's own geometry must be read again, now that the reserve padding has actually rendered. How: This calls finTarFun once more for the current step's own sel.
@@ -1174,10 +1174,10 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 				decResFun( eleArr ); // What: Reserve Decision Call. Why: Every frame gets a chance to settle the once-per-step reserve decision. How: This calls decResFun with the currently-resolved elements.
 
-				const tgtRecObj = plcTarFun( eleArr ); // What: Target Rect Object. Why: The spotlight/coach must actually be positioned every frame. How: This calls plcTarFun, which both writes the DOM directly and returns the placed rect.
+				const tarRecObj = plcTarFun( eleArr ); // What: Target Rect Object. Why: The spotlight/coach must actually be positioned every frame. How: This calls plcTarFun, which both writes the DOM directly and returns the placed rect.
 
-				setRecObj( ( preRecObj ) => ( preRecObj && Math.abs( preRecObj.top - tgtRecObj.top ) < 0.5 && Math.abs( preRecObj.left - tgtRecObj.left ) < 0.5 && preRecObj.width === tgtRecObj.width && preRecObj.height === tgtRecObj.height ) // What: Rect State Commit. Why: React state should only actually change when the placement moved by a meaningful amount, avoiding a render storm from sub-pixel jitter. How: This keeps the previous state object when every field is within tolerance, otherwise commits a fresh { top, left, width, height } snapshot.
-					? preRecObj : { top: tgtRecObj.top, left: tgtRecObj.left, width: tgtRecObj.width, height: tgtRecObj.height } );
+				setRecObj( ( preRecObj ) => ( preRecObj && Math.abs( preRecObj.top - tarRecObj.top ) < 0.5 && Math.abs( preRecObj.left - tarRecObj.left ) < 0.5 && preRecObj.width === tarRecObj.width && preRecObj.height === tarRecObj.height ) // What: Rect State Commit. Why: React state should only actually change when the placement moved by a meaningful amount, avoiding a render storm from sub-pixel jitter. How: This keeps the previous state object when every field is within tolerance, otherwise commits a fresh { top, left, width, height } snapshot.
+					? preRecObj : { top: tarRecObj.top, left: tarRecObj.left, width: tarRecObj.width, height: tarRecObj.height } );
 
 
 			}
