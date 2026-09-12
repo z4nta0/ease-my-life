@@ -1,7 +1,6 @@
 
 
 
-
 /**
  * cadence.js = Picker Cadence
  *
@@ -62,10 +61,10 @@
 
 
 
-const padNumFun = ( numValNum ) => String( numValNum ).padStart( 2, '0' ); // What: Pad Number Function. Why: An ISO date string needs its month and day both zero-padded to 2 digits. How: This is called twice by fmtIsoFun below, once for the month and once for the day.
+const padNumFun = ( numValNum ) => String( numValNum ).padStart( 2, '0' );                                                                          // What: Pad Number Function. Why: An ISO date string needs its month and day both zero-padded to 2 digits. How: This is called twice by fmtIsoFun below, once for the month and once for the day.
 const fmtIsoFun = ( inpDatObj ) => `${ inpDatObj.getFullYear() }-${ padNumFun( inpDatObj.getMonth() + 1 ) }-${ padNumFun( inpDatObj.getDate() ) }`; // What: Format Iso Function. Why: Period keys and pick-log date comparisons both need a plain YYYY-MM-DD string, not a Date instance. How: This reads inpDatObj's own year/month/day and zero-pads the month and day via padNumFun.
-const dimCouFun = ( yeaValNum, monOneNum ) => new Date( yeaValNum, monOneNum, 0 ).getDate(); // What: Days-In-Month Count Function. Why: Monthly/yearly clamping and nth-weekday math both need to know how many days a given month actually has. How: This asks for day 0 of the FOLLOWING month, which JS's own Date resolves back to the last real day of monOneNum.
-const midDatFun = ( inpDatObj ) => new Date( inpDatObj.getFullYear(), inpDatObj.getMonth(), inpDatObj.getDate() ); // What: Midnight Date Function. Why: Period-start comparisons must ignore whatever time-of-day inpDatObj carries. How: This rebuilds a Date from inpDatObj's own year/month/day alone, dropping the time component entirely.
+const dimCouFun = ( yeaValNum, monOneNum ) => new Date( yeaValNum, monOneNum, 0 ).getDate();                                                        // What: Days-In-Month Count Function. Why: Monthly/yearly clamping and nth-weekday math both need to know how many days a given month actually has. How: This asks for day 0 of the FOLLOWING month, which JS's own Date resolves back to the last real day of monOneNum.
+const midDatFun = ( inpDatObj ) => new Date( inpDatObj.getFullYear(), inpDatObj.getMonth(), inpDatObj.getDate() );                                  // What: Midnight Date Function. Why: Period-start comparisons must ignore whatever time-of-day inpDatObj carries. How: This rebuilds a Date from inpDatObj's own year/month/day alone, dropping the time component entirely.
 
 
 
@@ -106,9 +105,9 @@ function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
 
 
 	const firWeeNum = new Date( yeaValNum, monOneNum - 1, 1 ).getDay();                // What: First Weekday Number. Why: Finding the Nth occurrence of weeValNum needs to know which weekday the month itself starts on. How: This reads the weekday of that month's own 1st day.
-	const firOccNum = 1 + ( ( weeValNum - firWeeNum + 7 ) % 7 );                        // What: First Occurrence Number. Why: This is the day-of-month of the VERY FIRST occurrence of weeValNum in this month, the base every later occurrence is counted from. How: This walks forward from firWeeNum to weeValNum, wrapping via modulo 7.
-	const dimValNum = dimCouFun( yeaValNum, monOneNum );                                // What: Days-In-Month Value Number. Why: The clamp below needs to know how many real days this month actually has. How: This calls dimCouFun once and reuses the result.
-	const canDayNum = firOccNum + ( Math.max( 1, Math.min( 5, nthValNum ) ) - 1 ) * 7;  // What: Candidate Day Number. Why: This is the day-of-month the requested Nth occurrence would land on before any clamping. How: This adds 7 days per occurrence past the first, with nthValNum itself clamped to [1, 5].
+	const firOccNum = 1 + ( ( weeValNum - firWeeNum + 7 ) % 7 );                       // What: First Occurrence Number. Why: This is the day-of-month of the VERY FIRST occurrence of weeValNum in this month, the base every later occurrence is counted from. How: This walks forward from firWeeNum to weeValNum, wrapping via modulo 7.
+	const dimValNum = dimCouFun( yeaValNum, monOneNum );                               // What: Days-In-Month Value Number. Why: The clamp below needs to know how many real days this month actually has. How: This calls dimCouFun once and reuses the result.
+	const canDayNum = firOccNum + ( Math.max( 1, Math.min( 5, nthValNum ) ) - 1 ) * 7; // What: Candidate Day Number. Why: This is the day-of-month the requested Nth occurrence would land on before any clamping. How: This adds 7 days per occurrence past the first, with nthValNum itself clamped to [1, 5].
 
 
 
@@ -161,8 +160,8 @@ function tdmResFun( pkrCadObj, yeaValNum, monOneNum, domFldStr ) { return pkrCad
 
 
 
-const CAD_OPT_ARR = [ 'daily', 'weekly', 'monthly', 'yearly' ]; // What: Cadence Option Array. Why: This is the fixed set of valid cadence values every picker's own cadence field must fall back to one of. How: This is read by isaCadFun below, and re-exported as CADENCES on the CADENCE object.
-const isaCadFun = ( cadValStr ) => CAD_OPT_ARR.includes( cadValStr ); // What: Is-A Cadence Function. Why: norCadFun needs to tell a real, already-valid cadence value apart from a missing or corrupted one. How: This checks cadValStr against CAD_OPT_ARR.
+const CAD_OPT_ARR = [ 'daily', 'weekly', 'monthly', 'yearly' ];         // What: Cadence Option Array. Why: This is the fixed set of valid cadence values every picker's own cadence field must fall back to one of. How: This is read by isaCadFun below, and re-exported as CADENCES on the CADENCE object.
+const isaCadFun   = ( cadValStr ) => CAD_OPT_ARR.includes( cadValStr ); // What: Is-A Cadence Function. Why: norCadFun needs to tell a real, already-valid cadence value apart from a missing or corrupted one. How: This checks cadValStr against CAD_OPT_ARR.
 
 
 
@@ -196,10 +195,10 @@ function uniWorFun( cadValStr, cntValNum ) {
 	switch ( cadValStr ) { // What: Cadence Switch. Why: Each cadence has its own unit word, singular or plural per cntValNum. How: This branches on cadValStr, falling back to the daily day/days pair for anything else.
 
 
-		case 'weekly':  return cntValNum === 1 ? 'week' : 'weeks';   // What: Weekly Case Return. Why: A weekly cadence's own stepper counts in weeks. How: This returns the singular form only when cntValNum is exactly 1.
-		case 'monthly': return cntValNum === 1 ? 'month' : 'months'; // What: Monthly Case Return. Why: A monthly cadence's own stepper counts in months. How: This returns the singular form only when cntValNum is exactly 1.
-		case 'yearly':  return cntValNum === 1 ? 'year' : 'years';   // What: Yearly Case Return. Why: A yearly cadence's own stepper counts in years. How: This returns the singular form only when cntValNum is exactly 1.
-		default:        return cntValNum === 1 ? 'day' : 'days';     // What: Default Case Return. Why: Daily (or an unrecognized cadence) counts in days. How: This returns the singular form only when cntValNum is exactly 1.
+		case 'weekly'  : return cntValNum === 1 ? 'week'  : 'weeks';  // What: Weekly Case Return. Why: A weekly cadence's own stepper counts in weeks. How: This returns the singular form only when cntValNum is exactly 1.
+		case 'monthly' : return cntValNum === 1 ? 'month' : 'months'; // What: Monthly Case Return. Why: A monthly cadence's own stepper counts in months. How: This returns the singular form only when cntValNum is exactly 1.
+		case 'yearly'  : return cntValNum === 1 ? 'year'  : 'years';  // What: Yearly Case Return. Why: A yearly cadence's own stepper counts in years. How: This returns the singular form only when cntValNum is exactly 1.
+		default        : return cntValNum === 1 ? 'day'   : 'days';   // What: Default Case Return. Why: Daily (or an unrecognized cadence) counts in days. How: This returns the singular form only when cntValNum is exactly 1.
 
 
 	}
@@ -246,6 +245,7 @@ function norCadFun( pkrLikObj = {} ) {
 	const curCadStr = isaCadFun( pkrLikObj.cadence ) ? pkrLikObj.cadence : 'daily'; // What: Current Cadence String. Why: An invalid or missing cadence value must fall back to 'daily' rather than propagate a bad value. How: This checks pkrLikObj's own cadence via isaCadFun, defaulting to 'daily' otherwise.
 
 
+
 	return { // What: Normalized Cadence Object Return. Why: Every caller of norCadFun needs this exact same full set of fields back, whatever pkrLikObj did or didn't already have. How: This builds the object below from curCadStr, curDatObj, and pkrLikObj's own existing fields.
 
 
@@ -271,7 +271,7 @@ function norCadFun( pkrLikObj = {} ) {
 // #region isaAncFun
 
 /**
- * isaAncFun = Is-A Anchor Function
+ * isaAncFun = Is-An Anchor Function
  *
  * @summary
  * Is chkDatObj an anchor day for pkrCadObj's own cadence? Daily has no
@@ -303,6 +303,7 @@ function isaAncFun( pkrCadObj, chkDatObj = new Date() ) {
 	if ( curCadStr === 'weekly' ) return chkDatObj.getDay() === ( pkrCadObj.anchorDow ?? chkDatObj.getDay() ); // What: Weekly Case Return. Why: A weekly cadence's own anchor day is whichever weekday anchorDow names. How: This compares chkDatObj's own weekday against pkrCadObj's own anchorDow, defaulted to chkDatObj's own weekday (a no-op match) when missing.
 
 	if ( curCadStr === 'monthly' ) return chkDatObj.getDate() === tdmResFun( pkrCadObj, chkDatObj.getFullYear(), chkDatObj.getMonth() + 1, 'anchorDom' ); // What: Monthly Case Return. Why: A monthly cadence's own anchor day is whatever tdmResFun resolves for this month. How: This compares chkDatObj's own date-of-month against tdmResFun's own resolved target.
+
 
 	if ( curCadStr === 'yearly' ) {
 
@@ -358,10 +359,11 @@ function perStaFun( pkrCadObj, chkDatObj = new Date() ) {
 
 
 	const curCadStr = pkrCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs pkrCadObj's own cadence, defaulted the same way every other function in this file defaults it. How: This reads pkrCadObj.cadence, falling back to 'daily' when missing.
-	const midDatObj = midDatFun( chkDatObj );        // What: Midnight Date Object. Why: Every branch below computes its own period start relative to chkDatObj with its time-of-day stripped. How: This calls midDatFun once and reuses the result throughout.
+	const midDatObj = midDatFun( chkDatObj );       // What: Midnight Date Object. Why: Every branch below computes its own period start relative to chkDatObj with its time-of-day stripped. How: This calls midDatFun once and reuses the result throughout.
 
 
 	if ( curCadStr === 'daily' ) return midDatObj; // What: Daily Case Return. Why: Daily has no anchor, so every day is its own period, starting at its own midnight. How: This returns midDatObj directly.
+
 
 	if ( curCadStr === 'weekly' ) {
 
@@ -379,6 +381,7 @@ function perStaFun( pkrCadObj, chkDatObj = new Date() ) {
 
 
 	}
+
 
 	if ( curCadStr === 'monthly' ) {
 
@@ -398,10 +401,11 @@ function perStaFun( pkrCadObj, chkDatObj = new Date() ) {
 
 	}
 
+
 	if ( curCadStr === 'yearly' ) {
 
 
-		const monIndNum = ( pkrCadObj.anchorMonth ?? 1 ) - 1;                                        // What: Month Index Number. Why: Every calculation below needs the anchor month as a 0-indexed JS Date month. How: This subtracts 1 from pkrCadObj's own anchorMonth, defaulted to January.
+		const monIndNum = ( pkrCadObj.anchorMonth ?? 1 ) - 1;                                          // What: Month Index Number. Why: Every calculation below needs the anchor month as a 0-indexed JS Date month. How: This subtracts 1 from pkrCadObj's own anchorMonth, defaulted to January.
 		const curTgtNum = tdmResFun( pkrCadObj, midDatObj.getFullYear(), monIndNum + 1, 'anchorDay' ); // What: Current Target Number. Why: This year's own anchor day within anchorMonth must be known before deciding whether midDatObj has already passed it. How: This calls tdmResFun for midDatObj's own year and monIndNum.
 		const curAncObj = new Date( midDatObj.getFullYear(), monIndNum, curTgtNum );                   // What: Current Anchor Object. Why: The guard below needs a real Date to compare midDatObj against, not just a day number. How: This builds that Date from midDatObj's own year, monIndNum, and curTgtNum.
 
@@ -506,7 +510,7 @@ function comPerFun( pkrCadObj, pckLogArr, chkDatObj = new Date() ) {
 
 
 
-const DAY_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]; // What: Day Full Array. Why: sumCadFun's own weekly/monthly/yearly nth-weekday summaries need the full weekday name to display. How: This is indexed by anchorDow/nthWeekday throughout sumCadFun below.
+const DAY_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];       // What: Day Full Array. Why: sumCadFun's own weekly/monthly/yearly nth-weekday summaries need the full weekday name to display. How: This is indexed by anchorDow/nthWeekday throughout sumCadFun below.
 const MON_SHO_ARR = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]; // What: Month Short Array. Why: sumCadFun's own yearly nth-weekday summary needs a short month name to display. How: This is indexed by anchorMonth (0-based) inside sumCadFun below.
 
 
@@ -543,6 +547,7 @@ function sumCadFun( pkrCadObj ) {
 
 	if ( curCadStr === 'weekly' ) return 'Weekly · ' + DAY_FUL_ARR[ pkrCadObj.anchorDow ?? 0 ]; // What: Weekly Case Return. Why: A weekly cadence's own summary names its anchor weekday. How: This looks pkrCadObj's own anchorDow (defaulted to Sunday) up in DAY_FUL_ARR.
 
+
 	if ( curCadStr === 'monthly' ) {
 
 
@@ -553,10 +558,12 @@ function sumCadFun( pkrCadObj ) {
 
 	}
 
+
 	if ( curCadStr === 'yearly' ) {
 
 
 		if ( pkrCadObj.dateMode === 'nthWeekday' ) return `Yearly · ${ ordSufFun( pkrCadObj.nthOrdinal ?? 1 ) } ${ DAY_FUL_ARR[ pkrCadObj.nthWeekday ?? 0 ] } of ${ MON_SHO_ARR[ ( pkrCadObj.anchorMonth ?? 1 ) - 1 ] }`; // What: Yearly Nth-Weekday Case Return. Why: A yearly cadence in nth-weekday mode names its ordinal, weekday, and anchor month all at once. How: This builds the summary string from pkrCadObj's own nthOrdinal/nthWeekday/anchorMonth.
+
 
 
 		return 'Yearly · ' + new Date( 2001, ( pkrCadObj.anchorMonth ?? 1 ) - 1, pkrCadObj.anchorDay ?? 1 ).toLocaleDateString( undefined, { month : 'short', day : 'numeric' } ); // What: Yearly Plain-Date Case Return. Why: A yearly cadence in plain-date mode names its anchor month and day via the locale's own short date formatting. How: This builds a throwaway Date (year 2001 is arbitrary) from pkrCadObj's own anchorMonth/anchorDay and formats it.
@@ -602,7 +609,7 @@ function ordSufFun( ordValNum ) {
 
 
 	const sufTxtArr = [ 'th', 'st', 'nd', 'rd' ]; // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed below by lasTwoNum's own value.
-	const lasTwoNum = ordValNum % 100;             // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exception every other rule must respect). How: This is ordValNum modulo 100.
+	const lasTwoNum = ordValNum % 100;            // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exception every other rule must respect). How: This is ordValNum modulo 100.
 
 
 
@@ -625,7 +632,7 @@ const tipMesFun = ( cadValStr, dayLblStr = 'Days' ) => { // What: Tip Message Fu
 			return `WARNING: The day you select here will be auto-selected in the ${ dayLblStr } control below and cannot be deselected.`;
 
 		case 'monthly': // What: Monthly Case. Why: A monthly or yearly anchor landing on an excluded day is silently deferred rather than dropped, which the user needs to be warned about. How: This falls through to the shared 'yearly' return just below.
-		case 'yearly':  // What: Yearly Case. Why: Same warning as monthly, since both cadences share this exact deferral behavior. How: This returns the shared WARNING message.
+		case 'yearly' : // What: Yearly Case. Why: Same warning as monthly, since both cadences share this exact deferral behavior. How: This returns the shared WARNING message.
 			return `WARNING: If the day that you select here falls on a day that is not selected in the ${ dayLblStr } control below, the picker will be deferred until the next eligible day.`;
 
 		default: // What: Default Case. Why: A daily cadence has no anchor at all, so the days control is just a plain filter, not something that can conflict with it. How: This returns a plain HINT instead of a WARNING.
