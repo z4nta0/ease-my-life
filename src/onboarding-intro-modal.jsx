@@ -99,10 +99,10 @@ function TutorialIntroModal ( { icon, title, paragraphs, pills, onStart, onSkip,
 				<h2>{ title }</h2>{ /* What: Title Heading Element. Why: Every intro modal needs one visible, accessible heading. How: This renders the title prop as an h2. */ }
 
 
-				{ paragraphs.map( ( parItmNod, parIndNum ) => ( // What: Paragraph Map. Why: Each entry in paragraphs needs to become its own rendered paragraph tag. How: This maps every paragraph entry to a <p>, keyed by its own index since paragraph text can repeat.
+				{ paragraphs.map( ( parIteNod, parIndNum ) => ( // What: Paragraph Map. Why: Each entry in paragraphs needs to become its own rendered paragraph tag. How: This maps every paragraph entry to a <p>, keyed by its own index since paragraph text can repeat.
 
 
-					<p key={ parIndNum }>{ parItmNod }</p> // What: Paragraph Element. Why: This renders one paragraph of the modal's own body copy. How: This wraps parItmNod, which may be a plain string or a JSX fragment, directly as the tag's own children.
+					<p key={ parIndNum }>{ parIteNod }</p> // What: Paragraph Element. Why: This renders one paragraph of the modal's own body copy. How: This wraps parIteNod, which may be a plain string or a JSX fragment, directly as the tag's own children.
 
 				) ) }
 

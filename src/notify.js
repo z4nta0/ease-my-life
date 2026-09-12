@@ -30,7 +30,7 @@
 
 
 const DAY_KEY_STR = 'easemylife.notifiedday'; // What: Day Key String. Why: This is the localStorage key that tracks the last local day this module already notified on. How: This is read/written by stoGetFun/stoSetFun inside genNotFun's own once-per-day guard below.
-const ASK_KEY_STR = 'easemylife.notifyasked'; // What: Ask Key String. Why: This is the localStorage key that tracks whether permission has already been requested once. How: This is read by askChkFun and written by askOncFun/reqPerFun below.
+const ASK_KEY_STR = 'easemylife.notifyasked'; // What: Ask Key String. Why: This is the localStorage key that tracks whether permission has already been requested once. How: This is read by askCheFun and written by askOncFun/reqPerFun below.
 
 
 
@@ -51,7 +51,7 @@ const subAddFun = ( lisCalFun ) => { // What: Subscribe Add Function. Why: A cal
 
 
 const notSupFun = () => typeof window.Notification === 'function'; // What: Notification Support Function. Why: Every other function below needs to know whether the browser has the Notification API at all before doing anything else with it. How: This checks that window.Notification exists and is itself a function.
-const perChkFun = () => ( notSupFun() ? Notification.permission : 'unsupported' ); // What: Permission Check Function. Why: Callers (the Settings page's own display) need the current permission state without caring whether the API even exists. How: This reports Notification.permission when supported, or the literal string 'unsupported' otherwise.
+const perCheFun = () => ( notSupFun() ? Notification.permission : 'unsupported' ); // What: Permission Check Function. Why: Callers (the Settings page's own display) need the current permission state without caring whether the API even exists. How: This reports Notification.permission when supported, or the literal string 'unsupported' otherwise.
 
 
 
@@ -65,7 +65,7 @@ const stoSetFun = ( stoKeyStr, stoValStr ) => { try { localStorage.setItem( stoK
 
 
 
-const askChkFun = () => !!stoGetFun( ASK_KEY_STR ); // What: Ask Check Function. Why: askOncFun below must only ever prompt once, ever, regardless of how the previous prompt was answered. How: This reports whether the one-time "asked" flag has already been written.
+const askCheFun = () => !!stoGetFun( ASK_KEY_STR ); // What: Ask Check Function. Why: askOncFun below must only ever prompt once, ever, regardless of how the previous prompt was answered. How: This reports whether the one-time "asked" flag has already been written.
 
 
 
@@ -92,7 +92,7 @@ const askChkFun = () => !!stoGetFun( ASK_KEY_STR ); // What: Ask Check Function.
  * @param void - This function takes no parameters.
  *
  * @returns A Promise resolving to the current permission string:
- * either {@link perChkFun}'s own result, when the guard above
+ * either {@link perCheFun}'s own result, when the guard above
  * short-circuits, or the freshly-resolved result of the permission
  * prompt otherwise.
  * @see {@link perResStr}
@@ -107,7 +107,7 @@ const askChkFun = () => !!stoGetFun( ASK_KEY_STR ); // What: Ask Check Function.
 async function askOncFun() {
 
 
-	if ( !notSupFun() || Notification.permission !== 'default' || askChkFun() ) return perChkFun(); // What: Ask Guard Clause. Why: There is nothing to prompt for when notifications aren't supported at all, the permission has already moved past 'default', or this module has already asked once before. How: This checks all 3 conditions with ||, short-circuiting on the first true one, and returns the current permission instead of prompting.
+	if ( !notSupFun() || Notification.permission !== 'default' || askCheFun() ) return perCheFun(); // What: Ask Guard Clause. Why: There is nothing to prompt for when notifications aren't supported at all, the permission has already moved past 'default', or this module has already asked once before. How: This checks all 3 conditions with ||, short-circuiting on the first true one, and returns the current permission instead of prompting.
 
 
 
@@ -336,7 +336,7 @@ async function genNotFun() {
 
 
 
-export const NOT_NAM_OBJ = { notSupFun, perChkFun, askOncFun, reqPerFun, genNotFun, askChkFun, subAddFun }; // What: Notification Namespace Object. Why: This bundles every one of this module's public operations behind one object, giving callers a single import surface. How: This groups shorthand references to every exported-worthy helper/function declared above.
+export const NOT_NAM_OBJ = { notSupFun, perCheFun, askOncFun, reqPerFun, genNotFun, askCheFun, subAddFun }; // What: Notification Namespace Object. Why: This bundles every one of this module's public operations behind one object, giving callers a single import surface. How: This groups shorthand references to every exported-worthy helper/function declared above.
 
 
 

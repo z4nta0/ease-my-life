@@ -234,12 +234,12 @@ function Collapse ( { open, children, className = '', instant = false } ) {
 	const onTraEndFun = ( traEndObj ) => { // What: On Transition End Function. Why: The child can only safely unmount once the close animation has actually finished playing. How: This checks that the event is the grid-row transition finishing on this element itself while closed, then unmounts the child.
 
 
-		const tgtSelBoo  = traEndObj.target === traEndObj.currentTarget;    // What: Target Self Boolean. Why: A transitionend can bubble up from an unrelated descendant's own transition. How: This confirms the event fired on this element itself, not a child.
+		const tarSelBoo  = traEndObj.target === traEndObj.currentTarget;    // What: Target Self Boolean. Why: A transitionend can bubble up from an unrelated descendant's own transition. How: This confirms the event fired on this element itself, not a child.
 		const rowPropBoo = traEndObj.propertyName === 'grid-template-rows'; // What: Row Property Boolean. Why: Other CSS properties on this element could also transition and fire their own events. How: This confirms the specific property that finished is the grid row driving the collapse.
 		const notOpenBoo = !open;                                          // What: Not Open Boolean. Why: Only a genuine close should ever unmount the child. How: This confirms open is currently false.
 
 
-		if ( tgtSelBoo && rowPropBoo && notOpenBoo ) setChiMouBoo( false ); // What: Unmount Guard. Why: All 3 conditions above must hold before it's actually safe to unmount. How: This unmounts the child once the real close transition has genuinely finished.
+		if ( tarSelBoo && rowPropBoo && notOpenBoo ) setChiMouBoo( false ); // What: Unmount Guard. Why: All 3 conditions above must hold before it's actually safe to unmount. How: This unmounts the child once the real close transition has genuinely finished.
 
 
 	};
@@ -610,7 +610,7 @@ const InfoTip = ( { children, label, className = '', action = null, truncationOn
 	const [ txtTrnBoo, setTxtTrnBoo ] = React.useState( false );                                     // What: Text Truncated Boolean And Setter. Why: truncationOnly mode needs to know whether the trigger's own text is actually overflowing before deciding to be interactive at all. How: This is measured by the effect below and read by actTipBoo.
 	const trgEleRef                   = React.useRef( null );                                        // What: Trigger Element Reference. Why: Both the truncation measurement and the positioning math need a handle on the real trigger DOM node. How: This is attached to the trigger span's own ref prop in both the inert and interactive render branches below.
 	const tipEleRef                   = React.useRef( null );                                        // What: Tip Element Reference. Why: The positioning math needs to measure the portaled tooltip's own rendered size. How: This is attached to the portaled tooltip span's own ref prop below.
-	const lasPtrStr                   = React.useRef( 'mouse' );                                     // What: Last Pointer String Reference. Why: The click handler needs to know whether the interaction so far has been mouse-driven (where clicks are ignored) or touch/pen-driven (where a tap should toggle). How: This is updated on every pointerdown and read by the click handler below.
+	const lasPoiStr                   = React.useRef( 'mouse' );                                     // What: Last Pointer String Reference. Why: The click handler needs to know whether the interaction so far has been mouse-driven (where clicks are ignored) or touch/pen-driven (where a tap should toggle). How: This is updated on every pointerdown and read by the click handler below.
 	const actTipBoo                   = truncationOnly ? txtTrnBoo : true;                           // What: Active Tip Boolean. Why: Every other piece of this component needs one single answer for whether the tip should behave as a real, focusable, interactive trigger at all. How: This is txtTrnBoo itself under truncationOnly, otherwise always true.
 
 
@@ -624,15 +624,15 @@ const InfoTip = ( { children, label, className = '', action = null, truncationOn
 		if ( !trgCurEle ) return; // What: No Trigger Guard. Why: The ref may not be attached yet. How: This bails out early when there is no trigger element to measure.
 
 
-		const chkTrnFun = () => setTxtTrnBoo( trgCurEle.scrollWidth > trgCurEle.clientWidth ); // What: Check Truncated Function. Why: This is the actual comparison that decides whether the trigger's own text is currently overflowing. How: This compares trgCurEle's own scrollWidth against its clientWidth.
+		const cheTrnFun = () => setTxtTrnBoo( trgCurEle.scrollWidth > trgCurEle.clientWidth ); // What: Check Truncated Function. Why: This is the actual comparison that decides whether the trigger's own text is currently overflowing. How: This compares trgCurEle's own scrollWidth against its clientWidth.
 
-		chkTrnFun(); // What: Initial Check Call. Why: The truncation state must be known immediately on mount, not just after a later resize. How: This invokes chkTrnFun once, synchronously.
+		cheTrnFun(); // What: Initial Check Call. Why: The truncation state must be known immediately on mount, not just after a later resize. How: This invokes cheTrnFun once, synchronously.
 
 
 		if ( typeof ResizeObserver === 'function' ) { // What: Resize Observer Support Check. Why: ResizeObserver catches every real cause of a width change, including ones that never fire a window resize event. How: This prefers ResizeObserver when the browser actually supports it.
 
 
-			const resObsObj = new ResizeObserver( chkTrnFun ); // What: Resize Observer Object. Why: The trigger's own box (not just the viewport) needs to be watched. How: This creates an observer that re-runs chkTrnFun on every observed size change.
+			const resObsObj = new ResizeObserver( cheTrnFun ); // What: Resize Observer Object. Why: The trigger's own box (not just the viewport) needs to be watched. How: This creates an observer that re-runs cheTrnFun on every observed size change.
 
 			resObsObj.observe( trgCurEle ); // What: Resize Observer Start Call. Why: An observer does nothing until it's actually watching something. How: This starts watching trgCurEle for size changes.
 
@@ -643,9 +643,9 @@ const InfoTip = ( { children, label, className = '', action = null, truncationOn
 		}
 
 
-		window.addEventListener( 'resize', chkTrnFun ); // What: Window Resize Listener Fallback. Why: A browser without ResizeObserver still needs some way to catch a viewport-level size change. How: This re-runs chkTrnFun on every window resize event.
+		window.addEventListener( 'resize', cheTrnFun ); // What: Window Resize Listener Fallback. Why: A browser without ResizeObserver still needs some way to catch a viewport-level size change. How: This re-runs cheTrnFun on every window resize event.
 
-		return () => window.removeEventListener( 'resize', chkTrnFun ); // What: Window Resize Listener Cleanup Return. Why: The fallback listener must not outlive this effect run. How: This removes the same chkTrnFun reference that was added above.
+		return () => window.removeEventListener( 'resize', cheTrnFun ); // What: Window Resize Listener Cleanup Return. Why: The fallback listener must not outlive this effect run. How: This removes the same cheTrnFun reference that was added above.
 
 
 	}, [ truncationOnly, label ] ); // What: Effect Dependency Array. Why: truncationOnly decides whether to measure at all, and label changing means the underlying text (and therefore its own overflow) may have changed too. How: Both are read directly inside the guards/effect above.
@@ -720,10 +720,10 @@ const InfoTip = ( { children, label, className = '', action = null, truncationOn
 		if ( !tipOpeBoo ) return; // What: Not Open Guard. Why: There is nothing to guard against while the tooltip is already closed. How: This skips the rest of the effect entirely while tipOpeBoo is false.
 
 
-		const onPtrDwnFun = ( ptrDwnObj ) => { // What: On Pointer Down Function. Why: A pointerdown anywhere outside the trigger itself should close the tooltip. How: This checks whether the event's own target falls inside the trigger element before closing.
+		const onPoiDwnFun = ( poiDwnObj ) => { // What: On Pointer Down Function. Why: A pointerdown anywhere outside the trigger itself should close the tooltip. How: This checks whether the event's own target falls inside the trigger element before closing.
 
 
-			if ( trgEleRef.current && trgEleRef.current.contains( ptrDwnObj.target ) ) return; // What: Inside Trigger Guard. Why: A pointerdown on the trigger itself is handled by the trigger's own onPointerDown/onClick handlers below, not this outside-close listener. How: This bails out when the event's own target is contained within the trigger element.
+			if ( trgEleRef.current && trgEleRef.current.contains( poiDwnObj.target ) ) return; // What: Inside Trigger Guard. Why: A pointerdown on the trigger itself is handled by the trigger's own onPointerDown/onClick handlers below, not this outside-close listener. How: This bails out when the event's own target is contained within the trigger element.
 
 			setTipOpeBoo( false ); // What: Tip Close Call. Why: A pointerdown genuinely outside the trigger should close the tooltip. How: This sets tipOpeBoo false.
 
@@ -733,14 +733,14 @@ const InfoTip = ( { children, label, className = '', action = null, truncationOn
 		const onKeyDwnFun = ( keyDwnObj ) => { if ( keyDwnObj.key === 'Escape' ) setTipOpeBoo( false ); }; // What: On Key Down Function. Why: Escape is a standard way to dismiss a transient overlay like this tooltip. How: This closes the tooltip only when the pressed key is exactly Escape.
 
 
-		document.addEventListener( 'pointerdown', onPtrDwnFun, true ); // What: Pointer Down Listener Add Call. Why: The capture phase ensures this fires before an inner element's own stopPropagation could swallow it. How: This registers onPtrDwnFun for every pointerdown in the document.
+		document.addEventListener( 'pointerdown', onPoiDwnFun, true ); // What: Pointer Down Listener Add Call. Why: The capture phase ensures this fires before an inner element's own stopPropagation could swallow it. How: This registers onPoiDwnFun for every pointerdown in the document.
 		document.addEventListener( 'keydown', onKeyDwnFun );           // What: Key Down Listener Add Call. Why: Escape must close the tooltip regardless of which element currently has focus. How: This registers onKeyDwnFun for every keydown in the document.
 
 
 		return () => { // What: Effect Cleanup Function. Why: Neither listener may outlive this effect run. How: This removes both listeners registered above.
 
 
-			document.removeEventListener( 'pointerdown', onPtrDwnFun, true ); // What: Pointer Down Listener Remove Call. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onPtrDwnFun reference, matching the capture-phase flag.
+			document.removeEventListener( 'pointerdown', onPoiDwnFun, true ); // What: Pointer Down Listener Remove Call. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onPoiDwnFun reference, matching the capture-phase flag.
 			document.removeEventListener( 'keydown', onKeyDwnFun );           // What: Key Down Listener Remove Call. Why: Same reasoning as the pointerdown listener removal above. How: This removes the same onKeyDwnFun reference.
 
 
@@ -776,15 +776,15 @@ const InfoTip = ( { children, label, className = '', action = null, truncationOn
 			role='button'
 			aria-label={ action ? `${ action }, unavailable. ${ label }` : label }
 			aria-disabled={ action ? 'true' : undefined }
-			onPointerDown={ ( ptrDwnObj ) => { lasPtrStr.current = ptrDwnObj.pointerType || 'mouse'; } }
-			onPointerEnter={ ( ptrEntObj ) => { if ( ( ptrEntObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( true ); } }
-			onPointerLeave={ ( ptrLeaObj ) => { if ( ( ptrLeaObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( false ); } }
+			onPointerDown={ ( poiDwnObj ) => { lasPoiStr.current = poiDwnObj.pointerType || 'mouse'; } }
+			onPointerEnter={ ( poiEntObj ) => { if ( ( poiEntObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( true ); } }
+			onPointerLeave={ ( poiLeaObj ) => { if ( ( poiLeaObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( false ); } }
 			onClick={ ( clkEveObj ) => { // What: On Click Handler. Why: A mouse click should never toggle the tooltip since hover already owns it, but a touch/pen tap should. How: This stops the click from also reaching an outside-close listener, then toggles tipOpeBoo only when the last known pointer type wasn't mouse.
 
 
 				clkEveObj.stopPropagation(); // What: Propagation Stop Call. Why: This click must not also be seen as an "outside click" by some ancestor's own dismiss handler. How: This stops the click event from bubbling further.
 
-				if ( lasPtrStr.current !== 'mouse' ) setTipOpeBoo( ( preOpeBoo ) => !preOpeBoo ); // What: Tap Toggle Guard. Why: Only a touch/pen tap should toggle the tooltip this way; a mouse click is intentionally ignored since hover already handles it. How: This flips tipOpeBoo only when lasPtrStr's own current value isn't 'mouse'.
+				if ( lasPoiStr.current !== 'mouse' ) setTipOpeBoo( ( preOpeBoo ) => !preOpeBoo ); // What: Tap Toggle Guard. Why: Only a touch/pen tap should toggle the tooltip this way; a mouse click is intentionally ignored since hover already handles it. How: This flips tipOpeBoo only when lasPoiStr's own current value isn't 'mouse'.
 
 
 			} }
@@ -1104,19 +1104,19 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 	let annTimNum = null; // What: Announce Timeout Number. Why: A rapid-fire announce() call must debounce against the previous call's own pending timeout. How: This holds the current setTimeout id, cleared and reassigned on every call below.
 
 
-	announce = ( msgTxtStr, msgOptObj ) => { // What: announce. Why: This is the actual exported implementation, assigned into the module-level announce binding declared at the top of this file. How: This updates the region's own politeness, clears its text, then sets the new text on the next tick so the change is reliably detected.
+	announce = ( mesTxtStr, mesOptObj ) => { // What: announce. Why: This is the actual exported implementation, assigned into the module-level announce binding declared at the top of this file. How: This updates the region's own politeness, clears its text, then sets the new text on the next tick so the change is reliably detected.
 
 
-		if ( !msgTxtStr ) return; // What: No Message Guard. Why: There is nothing useful to announce for an empty/falsy message. How: This bails out without touching the region at all.
+		if ( !mesTxtStr ) return; // What: No Message Guard. Why: There is nothing useful to announce for an empty/falsy message. How: This bails out without touching the region at all.
 
-		livRegEle.setAttribute( 'aria-live', ( msgOptObj && msgOptObj.assertive ) ? 'assertive' : 'polite' ); // What: Live Attribute Update. Why: Some announcements (e.g. an error) need to interrupt immediately rather than wait politely. How: This sets assertive only when msgOptObj explicitly asks for it, polite otherwise.
+		livRegEle.setAttribute( 'aria-live', ( mesOptObj && mesOptObj.assertive ) ? 'assertive' : 'polite' ); // What: Live Attribute Update. Why: Some announcements (e.g. an error) need to interrupt immediately rather than wait politely. How: This sets assertive only when mesOptObj explicitly asks for it, polite otherwise.
 
 
 		livRegEle.textContent = ''; // What: Text Content Clear. Why: Re-announcing the exact same text as last time needs a real change for the reader to detect. How: This empties the region first, before the delayed set below.
 
 		clearTimeout( annTimNum ); // What: Timeout Clear. Why: A rapid repeat call must not let an earlier delayed set race this newer one. How: This cancels whatever timeout was previously scheduled.
 
-		annTimNum = setTimeout( () => { livRegEle.textContent = msgTxtStr; }, 60 ); // What: Timeout Schedule. Why: Setting the text on the very next tick (rather than immediately) is what makes even an identical repeat message reliably re-announced. How: This schedules the real text write 60ms later.
+		annTimNum = setTimeout( () => { livRegEle.textContent = mesTxtStr; }, 60 ); // What: Timeout Schedule. Why: Setting the text on the very next tick (rather than immediately) is what makes even an identical repeat message reliably re-announced. How: This schedules the real text write 60ms later.
 
 
 	};

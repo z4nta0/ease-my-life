@@ -441,29 +441,29 @@ function actYeaFun( holStaObj, yeaValNum ) {
  *
  * @param holStaObj - The persisted holidays state object to check
  *                    against, in the same shape actYeaFun accepts.
- * @param chkDatObj - The date being checked.
+ * @param cheDatObj - The date being checked.
  *
  * @returns The matching holiday/custom-day's own name, or null if
- * chkDatObj is not an active day off.
+ * cheDatObj is not an active day off.
  *
  * @example
  * ```ts
- * holDatFun(holStaObj, chkDatObj) // => holiday name, or null
+ * holDatFun(holStaObj, cheDatObj) // => holiday name, or null
  * ```
  *
 */
 
-function holDatFun( holStaObj, chkDatObj ) {
+function holDatFun( holStaObj, cheDatObj ) {
 
 
-	const tgtIsoStr = isoDatFun( chkDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts chkDatObj via isoDatFun once, reused across every loop iteration below.
-	const curYeaNum = chkDatObj.getFullYear(); // What: Current Year Number. Why: The neighboring-year search below needs an anchor year to offset from. How: This reads chkDatObj's own calendar year.
+	const tarIsoStr = isoDatFun( cheDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDatFun once, reused across every loop iteration below.
+	const curYeaNum = cheDatObj.getFullYear(); // What: Current Year Number. Why: The neighboring-year search below needs an anchor year to offset from. How: This reads cheDatObj's own calendar year.
 
 
-	for ( const chkYeaNum of [ curYeaNum - 1, curYeaNum, curYeaNum + 1 ] ) { // What: Neighboring Year Loop. Why: An observed shift can push a holiday across a year boundary, so the year before and after must be checked too, not just curYeaNum itself. How: This walks the prior, current, and next calendar year in turn.
+	for ( const cheYeaNum of [ curYeaNum - 1, curYeaNum, curYeaNum + 1 ] ) { // What: Neighboring Year Loop. Why: An observed shift can push a holiday across a year boundary, so the year before and after must be checked too, not just curYeaNum itself. How: This walks the prior, current, and next calendar year in turn.
 
 
-		const hitHolObj = actYeaFun( holStaObj, chkYeaNum ).find( ( comRecObj ) => comRecObj.iso === tgtIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches chkYeaNum's own active list for a matching iso string.
+		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRecObj ) => comRecObj.iso === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
 
 		if ( hitHolObj ) return hitHolObj.name; // What: Hit Found Guard. Why: The first matching year's own record is enough; there's no need to keep searching once found. How: This returns the matched record's own name immediately.
 
@@ -495,29 +495,29 @@ function holDatFun( holStaObj, chkDatObj ) {
  *
  * @param holStaObj - The persisted holidays state object to check
  *                    against, in the same shape actYeaFun accepts.
- * @param chkDatObj - The date being checked.
+ * @param cheDatObj - The date being checked.
  *
  * @returns The matching full holiday/custom-day record, or null if
- * chkDatObj is not an active day off.
+ * cheDatObj is not an active day off.
  *
  * @example
  * ```ts
- * holInfFun(holStaObj, chkDatObj) // => holiday record, or null
+ * holInfFun(holStaObj, cheDatObj) // => holiday record, or null
  * ```
  *
 */
 
-function holInfFun( holStaObj, chkDatObj ) {
+function holInfFun( holStaObj, cheDatObj ) {
 
 
-	const tgtIsoStr = isoDatFun( chkDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts chkDatObj via isoDatFun once, reused across every loop iteration below.
-	const curYeaNum = chkDatObj.getFullYear(); // What: Current Year Number. Why: The neighboring-year search below needs an anchor year to offset from. How: This reads chkDatObj's own calendar year.
+	const tarIsoStr = isoDatFun( cheDatObj );  // What: Target Iso String. Why: Every candidate year's own active list needs comparing against the queried date as a plain string, not a Date instance. How: This converts cheDatObj via isoDatFun once, reused across every loop iteration below.
+	const curYeaNum = cheDatObj.getFullYear(); // What: Current Year Number. Why: The neighboring-year search below needs an anchor year to offset from. How: This reads cheDatObj's own calendar year.
 
 
-	for ( const chkYeaNum of [ curYeaNum - 1, curYeaNum, curYeaNum + 1 ] ) { // What: Neighboring Year Loop. Why: An observed shift can push a holiday across a year boundary, so the year before and after must be checked too, not just curYeaNum itself. How: This walks the prior, current, and next calendar year in turn.
+	for ( const cheYeaNum of [ curYeaNum - 1, curYeaNum, curYeaNum + 1 ] ) { // What: Neighboring Year Loop. Why: An observed shift can push a holiday across a year boundary, so the year before and after must be checked too, not just curYeaNum itself. How: This walks the prior, current, and next calendar year in turn.
 
 
-		const hitHolObj = actYeaFun( holStaObj, chkYeaNum ).find( ( comRecObj ) => comRecObj.iso === tgtIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches chkYeaNum's own active list for a matching iso string.
+		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRecObj ) => comRecObj.iso === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
 
 		if ( hitHolObj ) return hitHolObj; // What: Hit Found Guard. Why: The first matching year's own record is enough; there's no need to keep searching once found. How: This returns the matched full record immediately, unlike holDatFun which returns just its name.
 

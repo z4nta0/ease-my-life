@@ -259,7 +259,7 @@ const isaMacBoo = /Mac/.test( navigator.userAgent ) && !( navigator.maxTouchPoin
  *
  * @returns Whether this page is currently running standalone, or false
  * when the check itself throws.
- * @see {@link isaStdBoo}
+ * @see {@link isaStaBoo}
  *
  * @example
  * ```ts
@@ -276,12 +276,12 @@ function isaStaFun() {
 
 		const disStaBoo = window.matchMedia( '(display-mode: standalone)' ).matches; // What: Display Standalone Boolean. Why: This is the standard, spec-defined way a PWA can tell it is running installed. How: This reads the current match state of the 'display-mode: standalone' media query.
 		const disFulBoo = window.matchMedia( '(display-mode: fullscreen)' ).matches; // What: Display Fullscreen Boolean. Why: Some installed configurations report as fullscreen display-mode instead of standalone. How: This reads the current match state of the 'display-mode: fullscreen' media query.
-		const navStdBoo = window.navigator.standalone === true; // What: Navigator Standalone Boolean. Why: Safari on iOS predates the display-mode media queries and only ever exposes this legacy flag. How: This compares window.navigator.standalone against true directly.
+		const navStaBoo = window.navigator.standalone === true; // What: Navigator Standalone Boolean. Why: Safari on iOS predates the display-mode media queries and only ever exposes this legacy flag. How: This compares window.navigator.standalone against true directly.
 
-		const isaStdBoo = disStaBoo || disFulBoo || navStdBoo; // What: Is-A Standalone Boolean. Why: insStaFun (and every other caller) only needs one combined answer, true whenever any one of the three underlying checks holds. How: This ORs all three together.
+		const isaStaBoo = disStaBoo || disFulBoo || navStaBoo; // What: Is-A Standalone Boolean. Why: insStaFun (and every other caller) only needs one combined answer, true whenever any one of the three underlying checks holds. How: This ORs all three together.
 
 
-		return isaStdBoo; // What: Is-A Standalone Return. Why: The caller needs the fully-combined result computed above. How: This returns the same isaStdBoo just assembled.
+		return isaStaBoo; // What: Is-A Standalone Return. Why: The caller needs the fully-combined result computed above. How: This returns the same isaStaBoo just assembled.
 
 
 	}

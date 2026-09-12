@@ -1379,6 +1379,34 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - Example: `TABS` → `TAB_OBJ_ARR` (Tab + Object + Array).
   - Example: `active` (the app's current tab id) → `actIdeStr` (Active +
     Identifier + String).
+- **Known miscorrections — check every segment against this list before
+  finalizing a name.** In practice, segments built from a word with a
+  strong, ubiquitous conventional abbreviation (the kind used constantly
+  across real-world code) keep drifting toward that abbreviation instead
+  of the word's own literal first 3 letters, even when the rule above is
+  explicit and has already been applied correctly elsewhere in the same
+  file. Don't reason from the abbreviation you'd normally reach for;
+  spell out the actual English word first, then take its own literal
+  first 3 letters. Confirmed wrong → right pairs found so far, each
+  caught only after being used repeatedly across multiple files:
+  - `idx` → `ind` (Index)
+  - `cnt` → `cou` (Count)
+  - `itm` → `ite` (Item)
+  - `evt` → `eve` (Event)
+  - `msg` → `mes` (Message)
+  - `chk` → `che` (Check)
+  - `evr` → `eve` (Every)
+  - `avg` → `ave` (Average)
+  - `cfg` → `con` (Config/Configuration)
+  - `btn` → `but` (Button)
+  - `tgt` → `tar` (Target)
+  - `mgr` → `man` (Manager)
+  - `ptr` → `poi` (Pointer)
+  - `std` → `sta` (Standard *or* Standalone — both truncate the same way)
+  - `prv` → `pre` (Previous)
+  This list grows every time a new instance is found; add to it rather
+  than only fixing the one file where it turned up, since the same
+  miscorrection reliably recurs in later files too.
 - **True module-level constants** use `ALL_CAPS_WITH_UNDERSCORES` instead
   of camelCase, but still 9 letters across the 3 segments — underscores
   don't count toward that total (`TAB_OBJ_ARR` is Tab+Obj+Arr = 9 letters

@@ -485,17 +485,17 @@ function pikIteFun( pikRecObj, iteAllArr, optConObj ) {
 			*/
 
 			const thrValNum = pikRecObj.threshold ?? 100; // What: Threshold Value Number. Why: Every charge/eligibility calculation below is relative to this picker's own threshold. How: This reads pikRecObj's own threshold, defaulting to 100 for older pickers with none set.
-			const falEasObj = avgEasFun( itePooArr, pikRecObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a drift band to roll a target cycle count from. How: This computes the sibling-average fallback band via avgEasFun.
+			const falEasObj = aveEasFun( itePooArr, pikRecObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a drift band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
 			const rolSteFun = ( curIteObj ) => { // What: Roll Step Function. Why: A freshly-reset item needs a brand new fixed charge step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that lands the item exactly on thrValNum in that many cycles.
 
 
 				const sooCycNum = Math.max( 1, Math.round( thrValNum / ( curIteObj.easeMax ?? falEasObj.easeMax ) ) );                  // What: Soonest Cycle Number. Why: This is the fewest cycles this item's own band allows before becoming eligible. How: This divides thrValNum by the item's own (or fallback) easeMax, its fastest charge rate.
 				const latCycNum = Math.max( sooCycNum, Math.round( thrValNum / ( curIteObj.easeMin ?? falEasObj.easeMin ) ) ); // What: Latest Cycle Number. Why: This is the most cycles this item's own band allows before becoming eligible. How: This divides thrValNum by the item's own (or fallback) easeMin, its slowest charge rate, floored at sooCycNum so the range is never inverted.
-				const tgtCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );                             // What: Target Cycle Number. Why: Every duration in [sooCycNum, latCycNum] should have equal odds of being this item's own plan. How: This rolls a uniform-random integer across that inclusive range.
+				const tarCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );                             // What: Target Cycle Number. Why: Every duration in [sooCycNum, latCycNum] should have equal odds of being this item's own plan. How: This rolls a uniform-random integer across that inclusive range.
 
 
 
-				return thrValNum / tgtCycNum; // What: Roll Step Return. Why: A fixed step of this size charges the item from 0 to exactly thrValNum in exactly tgtCycNum cycles. How: This divides thrValNum by tgtCycNum.
+				return thrValNum / tarCycNum; // What: Roll Step Return. Why: A fixed step of this size charges the item from 0 to exactly thrValNum in exactly tarCycNum cycles. How: This divides thrValNum by tarCycNum.
 
 
 			};
@@ -639,17 +639,17 @@ function pikIteFun( pikRecObj, iteAllArr, optConObj ) {
 			*/
 
 			const thrValNum = pikRecObj.threshold ?? 100; // What: Threshold Value Number. Why: Every charge/decay calculation below is relative to this picker's own threshold. How: This reads pikRecObj's own threshold, defaulting to 100 for older pickers with none set.
-			const falEasObj = avgEasFun( itePooArr, pikRecObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a decay band to roll a target cycle count from. How: This computes the sibling-average fallback band via avgEasFun.
+			const falEasObj = aveEasFun( itePooArr, pikRecObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a decay band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
 			const rolSteFun = ( curIteObj ) => { // What: Roll Step Function. Why: A freshly-chosen item needs a brand new fixed decay step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that empties the item exactly in that many cycles.
 
 
 				const sooCycNum = Math.max( 1, Math.round( thrValNum / ( curIteObj.easeMax ?? falEasObj.easeMax ) ) );                  // What: Soonest Cycle Number. Why: This is the fewest cycles this item's own band allows before fully depleting. How: This divides thrValNum by the item's own (or fallback) easeMax, its fastest decay rate.
 				const latCycNum = Math.max( sooCycNum, Math.round( thrValNum / ( curIteObj.easeMin ?? falEasObj.easeMin ) ) ); // What: Latest Cycle Number. Why: This is the most cycles this item's own band allows before fully depleting. How: This divides thrValNum by the item's own (or fallback) easeMin, its slowest decay rate, floored at sooCycNum so the range is never inverted.
-				const tgtCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );                             // What: Target Cycle Number. Why: Every duration in [sooCycNum, latCycNum] should have equal odds of being this item's own plan. How: This rolls a uniform-random integer across that inclusive range.
+				const tarCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );                             // What: Target Cycle Number. Why: Every duration in [sooCycNum, latCycNum] should have equal odds of being this item's own plan. How: This rolls a uniform-random integer across that inclusive range.
 
 
 
-				return thrValNum / tgtCycNum; // What: Roll Step Return. Why: A fixed step of this size decays the item from thrValNum to 0 in exactly tgtCycNum cycles. How: This divides thrValNum by tgtCycNum.
+				return thrValNum / tarCycNum; // What: Roll Step Return. Why: A fixed step of this size decays the item from thrValNum to 0 in exactly tarCycNum cycles. How: This divides thrValNum by tarCycNum.
 
 
 			};
@@ -818,14 +818,14 @@ function reaValFun( iteRecObj, modKeyStr, thrValNum = 100 ) {
 
 
 
-const DEF_EAS_OBJ = { easeMin : 7, easeMax : 14 }; // What: Default Ease Object. Why: A brand new picker with no items yet (or an ease-mode switch before any item has its own band) needs some flat drift band to fall back to. How: This is read directly by avgEasFun below whenever every sibling item (or the pool itself) has nothing better to offer.
+const DEF_EAS_OBJ = { easeMin : 7, easeMax : 14 }; // What: Default Ease Object. Why: A brand new picker with no items yet (or an ease-mode switch before any item has its own band) needs some flat drift band to fall back to. How: This is read directly by aveEasFun below whenever every sibling item (or the pool itself) has nothing better to offer.
 
 
 
-// #region avgEasFun
+// #region aveEasFun
 
 /**
- * avgEasFun = Average Ease Function
+ * aveEasFun = Average Ease Function
  *
  * @summary
  * Computes a fallback easeMin/easeMax drift band for an ease-up/ease-down
@@ -849,12 +849,12 @@ const DEF_EAS_OBJ = { easeMin : 7, easeMax : 14 }; // What: Default Ease Object.
  *
  * @example
  * ```ts
- * avgEasFun(iteAllArr, pikIdeStr) // => { easeMin, easeMax }
+ * aveEasFun(iteAllArr, pikIdeStr) // => { easeMin, easeMax }
  * ```
  *
 */
 
-function avgEasFun( iteAllArr, pikIdeStr ) {
+function aveEasFun( iteAllArr, pikIdeStr ) {
 
 
 	const sibIteArr = ( iteAllArr || [] ).filter( ( curIteObj ) => curIteObj.pickerId === pikIdeStr ); // What: Sibling Item Array. Why: Only this picker's own items should factor into its own averaged band. How: This filters iteAllArr down to items whose own pickerId matches pikIdeStr.
@@ -862,16 +862,16 @@ function avgEasFun( iteAllArr, pikIdeStr ) {
 	if ( !sibIteArr.length ) return { ...DEF_EAS_OBJ }; // What: No Sibling Guard. Why: A picker with no items yet at all has nothing real to average. How: This returns a fresh copy of DEF_EAS_OBJ early when sibIteArr came out empty.
 
 
-	const avgKeyFun = ( curKeyStr ) => sibIteArr.reduce( ( sumValNum, curIteObj ) => sumValNum + ( curIteObj[ curKeyStr ] ?? DEF_EAS_OBJ[ curKeyStr ] ), 0 ) / sibIteArr.length; // What: Average Key Function. Why: Both easeMin and easeMax need the exact same averaging logic, just keyed differently. How: This sums curKeyStr across sibIteArr (each falling back to DEF_EAS_OBJ's own value when missing), divided by the sibling count.
+	const aveKeyFun = ( curKeyStr ) => sibIteArr.reduce( ( sumValNum, curIteObj ) => sumValNum + ( curIteObj[ curKeyStr ] ?? DEF_EAS_OBJ[ curKeyStr ] ), 0 ) / sibIteArr.length; // What: Average Key Function. Why: Both easeMin and easeMax need the exact same averaging logic, just keyed differently. How: This sums curKeyStr across sibIteArr (each falling back to DEF_EAS_OBJ's own value when missing), divided by the sibling count.
 
 
 
-	return { easeMin : Math.max( 1, Math.round( avgKeyFun( 'easeMin' ) ) ), easeMax : Math.max( 1, Math.round( avgKeyFun( 'easeMax' ) ) ) }; // What: Averaged Ease Return. Why: The caller needs a real, rounded, at-least-1 band, not a raw (possibly fractional or zero) average. How: This rounds and floors-at-1 both avgKeyFun results.
+	return { easeMin : Math.max( 1, Math.round( aveKeyFun( 'easeMin' ) ) ), easeMax : Math.max( 1, Math.round( aveKeyFun( 'easeMax' ) ) ) }; // What: Averaged Ease Return. Why: The caller needs a real, rounded, at-least-1 band, not a raw (possibly fractional or zero) average. How: This rounds and floors-at-1 both aveKeyFun results.
 
 
 }
 
-// #endregion avgEasFun
+// #endregion aveEasFun
 
 
 
@@ -898,7 +898,7 @@ const modEliFun = ( iteRecObj, pikRecObj ) => { // What: Mode Eligible Function.
 
 
 
-export const PICKERS = { pick : pikIteFun, readiness : reaValFun, easeEligible : easEliFun, modeEligible : modEliFun, EASE_TOL : EAS_TOL_NUM, avgEase : avgEasFun, DEFAULT_EASE : DEF_EAS_OBJ }; // What: Pickers Namespace Object. Why: store.jsx, tab-today.jsx, and tab-picker.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on, deliberately left unrenamed (see this file's own header comment).
+export const PICKERS = { pick : pikIteFun, readiness : reaValFun, easeEligible : easEliFun, modeEligible : modEliFun, EASE_TOL : EAS_TOL_NUM, avgEase : aveEasFun, DEFAULT_EASE : DEF_EAS_OBJ }; // What: Pickers Namespace Object. Why: store.jsx, tab-today.jsx, and tab-picker.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on, deliberately left unrenamed (see this file's own header comment).
 
 
 

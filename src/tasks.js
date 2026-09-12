@@ -358,11 +358,11 @@ function isaDueFun( tskRecObj, cheDatObj = new Date() ) {
 
 
 			const dimValNum = dimCouFun( cheDatObj.getFullYear(), cheDatObj.getMonth() + 1 ); // What: Days-In-Month Value Number. Why: A plain-date target must clamp to however many real days cheDatObj's own month actually has. How: This calls dimCouFun for cheDatObj's own year and month.
-			const tgtDayNum = Math.min( tskRecObj.dayOfMonth || 1, dimValNum );               // What: Target Day Number. Why: This is the actual target day-of-month, clamped so e.g. a 31st target still resolves in a 30-day month. How: This clamps tskRecObj's own dayOfMonth against dimValNum.
+			const tarDayNum = Math.min( tskRecObj.dayOfMonth || 1, dimValNum );               // What: Target Day Number. Why: This is the actual target day-of-month, clamped so e.g. a 31st target still resolves in a 30-day month. How: This clamps tskRecObj's own dayOfMonth against dimValNum.
 
 
 
-			return cheDatObj.getDate() === tgtDayNum; // What: Monthly Case Return. Why: The plain-date branch's own due-ness is a straight comparison against the clamped target day. How: This compares cheDatObj's own date-of-month against tgtDayNum.
+			return cheDatObj.getDate() === tarDayNum; // What: Monthly Case Return. Why: The plain-date branch's own due-ness is a straight comparison against the clamped target day. How: This compares cheDatObj's own date-of-month against tarDayNum.
 
 
 		}
@@ -384,11 +384,11 @@ function isaDueFun( tskRecObj, cheDatObj = new Date() ) {
 
 
 			const dimValNum = dimCouFun( cheDatObj.getFullYear(), tskRecObj.month ); // What: Days-In-Month Value Number. Why: A plain-date target must clamp to however many real days the target month actually has this year (Feb 29 in a leap year, Feb 28 otherwise). How: This calls dimCouFun for cheDatObj's own year and tskRecObj's own month.
-			const tgtDayNum = Math.min( tskRecObj.day || 1, dimValNum );             // What: Target Day Number. Why: This is the actual target day, clamped so e.g. a Feb 29th target still resolves in a common year. How: This clamps tskRecObj's own day against dimValNum.
+			const tarDayNum = Math.min( tskRecObj.day || 1, dimValNum );             // What: Target Day Number. Why: This is the actual target day, clamped so e.g. a Feb 29th target still resolves in a common year. How: This clamps tskRecObj's own day against dimValNum.
 
 
 
-			return cheDatObj.getDate() === tgtDayNum; // What: Annual Case Return. Why: The plain-date branch's own due-ness is a straight comparison against the clamped target day. How: This compares cheDatObj's own date-of-month against tgtDayNum.
+			return cheDatObj.getDate() === tarDayNum; // What: Annual Case Return. Why: The plain-date branch's own due-ness is a straight comparison against the clamped target day. How: This compares cheDatObj's own date-of-month against tarDayNum.
 
 
 		}
