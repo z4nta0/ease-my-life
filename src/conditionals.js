@@ -62,7 +62,7 @@ const claValFun = ( curValNum, minValNum, maxValNum ) => Math.max( minValNum, Ma
 
 
 
-const modProFun = ( modKeyStr ) => modKeyStr === 'random' || modKeyStr === 'weighted';                                // What: Mode Probability Function. Why: resDayFun below and the exported isProbability property both need to know whether a conditional's own mode rolls triggered fresh at generate time. How: This is true for exactly the two probability-family modes, random and weighted.
+const modProFun = ( modKeyStr ) => modKeyStr === 'random' || modKeyStr === 'weighted';                              // What: Mode Probability Function. Why: resDayFun below and the exported isProbability property both need to know whether a conditional's own mode rolls triggered fresh at generate time. How: This is true for exactly the two probability-family modes, random and weighted.
 const modValFun = ( modKeyStr ) => modKeyStr === 'ease-up' || modKeyStr === 'ease-down' || modKeyStr === 'dynamic'; // What: Mode Value Function. Why: advValFun below and the exported isValue property both need to know whether a conditional's own mode is completion-driven instead of rolled. How: This is true for exactly the three value-family modes, ease-up, ease-down, and dynamic.
 
 
@@ -98,7 +98,7 @@ function truOddFun( conCurObj ) {
 	if ( conCurObj.mode === 'random' ) return 0.5; // What: Random Mode Guard. Why: A random-mode conditional always resolves at a fixed fifty percent, with no oddsPct or value involved at all. How: This returns 0.5 immediately when conCurObj's own mode is 'random'.
 
 
-	const basPctNum = conCurObj.oddsPct ?? 50;                                                             // What: Base Percentage Number. Why: Every non-random mode starts from the conditional's own configured odds, defaulting to 50 for a legacy conditional with none. How: This reads conCurObj.oddsPct, falling back to 50 when it is nullish.
+	const basPctNum = conCurObj.oddsPct ?? 50;                                                         // What: Base Percentage Number. Why: Every non-random mode starts from the conditional's own configured odds, defaulting to 50 for a legacy conditional with none. How: This reads conCurObj.oddsPct, falling back to 50 when it is nullish.
 	const finPctNum = conCurObj.mode === 'dynamic' ? basPctNum + ( conCurObj.value || 0 ) : basPctNum; // What: Final Percentage Number. Why: A dynamic-mode conditional's own odds climb by its own accrued value (a miss boost), while every other mode stays at its base. How: This adds conCurObj.value on top of basPctNum only when conCurObj's own mode is 'dynamic'.
 
 
@@ -162,6 +162,7 @@ function resDayFun( conAllArr ) {
 
 
 		}
+
 
 		let triValBoo = conCurObj.triggered; // What: Triggered Value Boolean. Why: Ease-up and ease-down carry their own persisted triggered state forward unchanged, so this starts from it before the roll below may overwrite it. How: This reads conCurObj's own current triggered field.
 
@@ -309,6 +310,7 @@ function advValFun( conCurObj ) {
 
 
 	if ( !conCurObj || conCurObj.active === false || !modValFun( conCurObj.mode ) ) return null; // What: Ineligible Guard. Why: There is nothing to advance for a missing conditional, a disabled one, or a probability-family one, which never charges at all. How: This returns null immediately when any of those three hold.
+
 	if ( conCurObj.chargedToday ) return null; // What: Already Charged Guard. Why: Value only advances once per day, no matter how many dependent completions happen after the first. How: This returns null immediately when conCurObj's own chargedToday guard is already set.
 
 
@@ -337,6 +339,7 @@ function advValFun( conCurObj ) {
 
 	}
 
+
 	if ( conCurObj.mode === 'dynamic' ) return { // What: Dynamic Miss Accrual Return. Why: A dynamic conditional's own odds should climb after a completion that means today's roll did not fire. How: This adds a fixed 10 percentage points onto conCurObj's own value.
 
 
@@ -345,6 +348,7 @@ function advValFun( conCurObj ) {
 
 
 	};
+
 
 	if ( conCurObj.mode === 'ease-down' ) {
 
