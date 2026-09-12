@@ -36,7 +36,6 @@ const ASK_KEY_STR = 'easemylife.notifyasked'; // What: Ask Key String. Why: This
 
 const subLisSet = new Set(); // What: Subscriber Listener Set. Why: This holds every callback that wants to hear about a permission change, most notably the Settings page's own permission-state display. How: This is added to by subAddFun and iterated by broSubFun below.
 const broSubFun = () => { for ( const lisCurFun of subLisSet ) { try { lisCurFun(); } catch ( e ) {} } };                                                                                                // What: Broadcast Subscriber Function. Why: Every subscriber needs to hear about a permission change the moment askOncFun/reqPerFun resolve one. How: This calls every function currently in subLisSet, swallowing any individual subscriber's own error so one bad listener can't block the rest.
-
 const subAddFun = ( lisCalFun ) => { // What: Subscribe Add Function. Why: A caller (the Settings page) needs a way to register for permission-change broadcasts and later unregister again. How: This adds the given callback to subLisSet and hands back its own removal function.
 
 
