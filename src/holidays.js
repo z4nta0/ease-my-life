@@ -615,7 +615,20 @@ function regLabFun( couCodStr ) { return ( REG_DEF_OBJ[ couCodStr ] || REG_DEF_O
 
 
 
-export const HOL_NAM_OBJ = { comYeaFun, actYeaFun, holDatFun, holInfFun, defStaFun, gueCouFun, regLabFun, isoDatFun }; // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object every consuming file imports and calls through. How: This groups every function above under one object via shorthand properties, each key matching that function's own already-renamed identifier.
+export const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object every consuming file imports and calls through. How: This maps each of this file's own renamed internal implementations back onto the exact public property names every caller (store.jsx, seed.js, tasks.js, tab-today.jsx, tab-settings.jsx) already depends on.
+
+
+	computeForYear : comYeaFun, // What: Compute For Year. Why: Callers ask for a specific year's own active holiday set by this exact name. How: This re-exports comYeaFun under its original external property name.
+	activeForYear  : actYeaFun, // What: Active For Year. Why: Callers ask which holidays are active for a given year/state by this exact name. How: This re-exports actYeaFun under its original external property name.
+	holidayOn      : holDatFun, // What: Holiday On. Why: Callers check whether a specific date is a holiday by this exact name. How: This re-exports holDatFun under its original external property name.
+	holidayInfoOn  : holInfFun, // What: Holiday Info On. Why: Callers ask for a specific date's own full holiday info by this exact name. How: This re-exports holInfFun under its original external property name.
+	defaultState   : defStaFun, // What: Default State. Why: Callers ask for a fresh holidays-state shape by this exact name. How: This re-exports defStaFun under its original external property name.
+	guessCountry   : gueCouFun, // What: Guess Country. Why: Callers ask for the best-guess country code by this exact name. How: This re-exports gueCouFun under its original external property name.
+	regionLabel    : regLabFun, // What: Region Label. Why: Callers ask for a country's own display label by this exact name. How: This re-exports regLabFun under its original external property name.
+	isoOf          : isoDatFun  // What: Iso Of. Why: Callers ask for a date's own ISO string by this exact name. How: This re-exports isoDatFun under its original external property name.
+
+
+};
 
 
 
