@@ -177,7 +177,6 @@ function proSupFun() {
 
 
 	const staGraNum = 2500; // What: Start Grace Number. Why: This is the fixed number of milliseconds to wait, once the service worker is ready, before concluding the install prompt is never coming. How: This is passed as the delay to the setTimeout call inside finProFun below.
-
 	const finProFun = () => { // What: Finish Probe Function. Why: Both branches below (service worker ready, or no service worker support at all) must eventually reach the same conclusion after the same grace period. How: This starts a single setTimeout that flips insProBoo true and notifies every subscriber once staGraNum has elapsed.
 
 
