@@ -66,7 +66,7 @@ const padNumFun = ( numValNum ) => String( numValNum ).padStart( 2, '0' ); // Wh
 
 const fmtIsoFun = ( inpDatObj ) => `${ inpDatObj.getFullYear() }-${ padNumFun( inpDatObj.getMonth() + 1 ) }-${ padNumFun( inpDatObj.getDate() ) }`; // What: Format Iso Function. Why: Period keys and pick-log date comparisons both need a plain YYYY-MM-DD string, not a Date instance. How: This reads inpDatObj's own year/month/day and zero-pads the month and day via padNumFun.
 
-const dimCntFun = ( yeaValNum, monOneNum ) => new Date( yeaValNum, monOneNum, 0 ).getDate(); // What: Days-In-Month Count Function. Why: Monthly/yearly clamping and nth-weekday math both need to know how many days a given month actually has. How: This asks for day 0 of the FOLLOWING month, which JS's own Date resolves back to the last real day of monOneNum.
+const dimCouFun = ( yeaValNum, monOneNum ) => new Date( yeaValNum, monOneNum, 0 ).getDate(); // What: Days-In-Month Count Function. Why: Monthly/yearly clamping and nth-weekday math both need to know how many days a given month actually has. How: This asks for day 0 of the FOLLOWING month, which JS's own Date resolves back to the last real day of monOneNum.
 
 const midDatFun = ( inpDatObj ) => new Date( inpDatObj.getFullYear(), inpDatObj.getMonth(), inpDatObj.getDate() ); // What: Midnight Date Function. Why: Period-start comparisons must ignore whatever time-of-day inpDatObj carries. How: This rebuilds a Date from inpDatObj's own year/month/day alone, dropping the time component entirely.
 
@@ -110,7 +110,7 @@ function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
 
 	const firWeeNum = new Date( yeaValNum, monOneNum - 1, 1 ).getDay();                // What: First Weekday Number. Why: Finding the Nth occurrence of weeValNum needs to know which weekday the month itself starts on. How: This reads the weekday of that month's own 1st day.
 	const firOccNum = 1 + ( ( weeValNum - firWeeNum + 7 ) % 7 );                        // What: First Occurrence Number. Why: This is the day-of-month of the VERY FIRST occurrence of weeValNum in this month, the base every later occurrence is counted from. How: This walks forward from firWeeNum to weeValNum, wrapping via modulo 7.
-	const dimValNum = dimCntFun( yeaValNum, monOneNum );                                // What: Days-In-Month Value Number. Why: The clamp below needs to know how many real days this month actually has. How: This calls dimCntFun once and reuses the result.
+	const dimValNum = dimCouFun( yeaValNum, monOneNum );                                // What: Days-In-Month Value Number. Why: The clamp below needs to know how many real days this month actually has. How: This calls dimCouFun once and reuses the result.
 	const canDayNum = firOccNum + ( Math.max( 1, Math.min( 5, nthValNum ) ) - 1 ) * 7;  // What: Candidate Day Number. Why: This is the day-of-month the requested Nth occurrence would land on before any clamping. How: This adds 7 days per occurrence past the first, with nthValNum itself clamped to [1, 5].
 
 
@@ -158,7 +158,7 @@ function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
  *
 */
 
-function tdmResFun( pkrCadObj, yeaValNum, monOneNum, domFldStr ) { return pkrCadObj.dateMode === 'nthWeekday' ? nwmDayFun( yeaValNum, monOneNum, pkrCadObj.nthOrdinal ?? 1, pkrCadObj.nthWeekday ?? 0 ) : Math.min( pkrCadObj[ domFldStr ] ?? 1, dimCntFun( yeaValNum, monOneNum ) ); } // What: Target-Day-Month Resolve Body. Why: Both isaAncFun and perStaFun need this exact same dateMode branch for both monthly and yearly cadences. How: This resolves via nwmDayFun in nth-weekday mode, or pkrCadObj's own plain field (clamped to the real month length) otherwise.
+function tdmResFun( pkrCadObj, yeaValNum, monOneNum, domFldStr ) { return pkrCadObj.dateMode === 'nthWeekday' ? nwmDayFun( yeaValNum, monOneNum, pkrCadObj.nthOrdinal ?? 1, pkrCadObj.nthWeekday ?? 0 ) : Math.min( pkrCadObj[ domFldStr ] ?? 1, dimCouFun( yeaValNum, monOneNum ) ); } // What: Target-Day-Month Resolve Body. Why: Both isaAncFun and perStaFun need this exact same dateMode branch for both monthly and yearly cadences. How: This resolves via nwmDayFun in nth-weekday mode, or pkrCadObj's own plain field (clamped to the real month length) otherwise.
 
 // #endregion tdmResFun
 
@@ -405,19 +405,19 @@ function perStaFun( pkrCadObj, chkDatObj = new Date() ) {
 	if ( curCadStr === 'yearly' ) {
 
 
-		const monIdxNum = ( pkrCadObj.anchorMonth ?? 1 ) - 1;                                        // What: Month Index Number. Why: Every calculation below needs the anchor month as a 0-indexed JS Date month. How: This subtracts 1 from pkrCadObj's own anchorMonth, defaulted to January.
-		const curTgtNum = tdmResFun( pkrCadObj, midDatObj.getFullYear(), monIdxNum + 1, 'anchorDay' ); // What: Current Target Number. Why: This year's own anchor day within anchorMonth must be known before deciding whether midDatObj has already passed it. How: This calls tdmResFun for midDatObj's own year and monIdxNum.
-		const curAncObj = new Date( midDatObj.getFullYear(), monIdxNum, curTgtNum );                   // What: Current Anchor Object. Why: The guard below needs a real Date to compare midDatObj against, not just a day number. How: This builds that Date from midDatObj's own year, monIdxNum, and curTgtNum.
+		const monIndNum = ( pkrCadObj.anchorMonth ?? 1 ) - 1;                                        // What: Month Index Number. Why: Every calculation below needs the anchor month as a 0-indexed JS Date month. How: This subtracts 1 from pkrCadObj's own anchorMonth, defaulted to January.
+		const curTgtNum = tdmResFun( pkrCadObj, midDatObj.getFullYear(), monIndNum + 1, 'anchorDay' ); // What: Current Target Number. Why: This year's own anchor day within anchorMonth must be known before deciding whether midDatObj has already passed it. How: This calls tdmResFun for midDatObj's own year and monIndNum.
+		const curAncObj = new Date( midDatObj.getFullYear(), monIndNum, curTgtNum );                   // What: Current Anchor Object. Why: The guard below needs a real Date to compare midDatObj against, not just a day number. How: This builds that Date from midDatObj's own year, monIndNum, and curTgtNum.
 
 		if ( midDatObj >= curAncObj ) return curAncObj; // What: Current Year Guard. Why: Once midDatObj has reached (or passed) this year's own anchor date, that date itself is the period start. How: This returns curAncObj directly when midDatObj is already at or past it.
 
 
 		const prvYeaNum = midDatObj.getFullYear() - 1;                                   // What: Previous Year Number. Why: Before this year's own anchor date, the period actually started back in the previous year. How: This subtracts 1 from midDatObj's own year.
-		const prvTgtNum = tdmResFun( pkrCadObj, prvYeaNum, monIdxNum + 1, 'anchorDay' ); // What: Previous Target Number. Why: The previous year's own anchor day is what the period actually started on. How: This calls tdmResFun for prvYeaNum and monIdxNum.
+		const prvTgtNum = tdmResFun( pkrCadObj, prvYeaNum, monIndNum + 1, 'anchorDay' ); // What: Previous Target Number. Why: The previous year's own anchor day is what the period actually started on. How: This calls tdmResFun for prvYeaNum and monIndNum.
 
 
 
-		return new Date( prvYeaNum, monIdxNum, prvTgtNum ); // What: Yearly Case Return. Why: The caller needs the previous year's own anchor date as the period start. How: This builds that Date from prvYeaNum, monIdxNum, and prvTgtNum.
+		return new Date( prvYeaNum, monIndNum, prvTgtNum ); // What: Yearly Case Return. Why: The caller needs the previous year's own anchor date as the period start. How: This builds that Date from prvYeaNum, monIndNum, and prvTgtNum.
 
 
 	}
@@ -620,7 +620,7 @@ function ordSufFun( ordValNum ) {
 
 
 
-const tipMsgFun = ( cadValStr, dayLblStr = 'Days' ) => { // What: Tip Message Function. Why: The "?" InfoTip on each cadence needs copy explaining how that cadence interacts with the Days control, and the control is named differently per surface. How: This switches on cadValStr (defaulted to 'daily'), interpolating dayLblStr into whichever message applies.
+const tipMesFun = ( cadValStr, dayLblStr = 'Days' ) => { // What: Tip Message Function. Why: The "?" InfoTip on each cadence needs copy explaining how that cadence interacts with the Days control, and the control is named differently per surface. How: This switches on cadValStr (defaulted to 'daily'), interpolating dayLblStr into whichever message applies.
 
 
 	switch ( cadValStr || 'daily' ) {
@@ -705,7 +705,7 @@ export const CADENCE = { // What: Cadence Namespace Object. Why: store.jsx, tab-
 	isCadence           : isaCadFun,   // What: Is Cadence. Why: Callers validate an arbitrary string as a real cadence value by this exact name. How: This re-exports isaCadFun under its original external property name.
 	unitWord            : uniWorFun,   // What: Unit Word. Why: Callers need a cadence's own human-readable unit word (day/week/month/year) by this exact name. How: This re-exports uniWorFun under its original external property name.
 	normalize           : norCadFun,   // What: Normalize. Why: store.jsx calls this to fill in every cadence-related field a picker needs, defaulted consistently. How: This re-exports norCadFun under its original external property name.
-	tipFor              : tipMsgFun,   // What: Tip For. Why: Callers need the explanatory tooltip text for a given cadence by this exact name. How: This re-exports tipMsgFun under its original external property name.
+	tipFor              : tipMesFun,   // What: Tip For. Why: Callers need the explanatory tooltip text for a given cadence by this exact name. How: This re-exports tipMesFun under its original external property name.
 	lockedDayTip        : locTipFun,   // What: Locked Day Tip. Why: Callers need the explanatory tooltip text for a weekly cadence's own locked anchor day by this exact name. How: This re-exports locTipFun under its original external property name.
 	enforceWeeklyDay    : enfWeeFun,   // What: Enforce Weekly Day. Why: Callers need a weekly picker's own anchor day folded back into its selected days by this exact name. How: This re-exports enfWeeFun under its original external property name.
 	isAnchorDay         : isaAncFun,   // What: Is Anchor Day. Why: Callers check whether a given weekday is a weekly picker's own locked anchor by this exact name. How: This re-exports isaAncFun under its original external property name.
@@ -714,7 +714,7 @@ export const CADENCE = { // What: Cadence Namespace Object. Why: store.jsx, tab-
 	completedThisPeriod : comPerFun,   // What: Completed This Period. Why: Callers check whether a picker has already completed its own current period by this exact name. How: This re-exports comPerFun under its original external property name.
 	summary             : sumCadFun,   // What: Summary. Why: Callers need a picker's own human-readable cadence summary by this exact name. How: This re-exports sumCadFun under its original external property name.
 	isoOf               : fmtIsoFun,   // What: Iso Of. Why: Callers need a date's own ISO string by this exact name. How: This re-exports fmtIsoFun under its original external property name.
-	daysInMonth         : dimCntFun    // What: Days In Month. Why: Callers need a given year/month's own real day count by this exact name. How: This re-exports dimCntFun under its original external property name.
+	daysInMonth         : dimCouFun    // What: Days In Month. Why: Callers need a given year/month's own real day count by this exact name. How: This re-exports dimCouFun under its original external property name.
 
 
 };

@@ -520,12 +520,12 @@ function staDraFun ( dowEveObj, draConObj ) {
 		if ( finTgtNum !== oriIndNum ) { // What: Order Changed Guard. Why: onDroOrdFun should only ever fire for a real reorder, never for a drag that snapped back to its own start. How: This gates the whole order-building block below on the index having actually moved.
 
 
-			const ordIdxArr = iteEleArr.map( ( _, iteIndNum ) => iteIndNum ); // What: Order Index Array. Why: The caller expects an array of original indices in their new order, not the elements themselves. How: This builds the identity order [0, 1, 2, ...] as the starting point for the splice below.
-			const [ movIdxNum ] = ordIdxArr.splice( oriIndNum, 1 ); // What: Moved Index Number. Why: The dragged item's own original index must be pulled out before it can be reinserted at its new position. How: This removes exactly one entry at oriIndNum and captures it.
+			const ordIndArr = iteEleArr.map( ( _, iteIndNum ) => iteIndNum ); // What: Order Index Array. Why: The caller expects an array of original indices in their new order, not the elements themselves. How: This builds the identity order [0, 1, 2, ...] as the starting point for the splice below.
+			const [ movIndNum ] = ordIndArr.splice( oriIndNum, 1 ); // What: Moved Index Number. Why: The dragged item's own original index must be pulled out before it can be reinserted at its new position. How: This removes exactly one entry at oriIndNum and captures it.
 
-			ordIdxArr.splice( finTgtNum, 0, movIdxNum ); // What: Moved Index Reinsert. Why: This is what actually produces the final reordered index array. How: This reinserts movIdxNum at finTgtNum without removing anything else.
+			ordIndArr.splice( finTgtNum, 0, movIndNum ); // What: Moved Index Reinsert. Why: This is what actually produces the final reordered index array. How: This reinserts movIndNum at finTgtNum without removing anything else.
 
-			if ( onDroOrdFun ) onDroOrdFun( ordIdxArr ); // What: On Drop Callback Guard. Why: The caller's own onDrop is optional, same as onStaDraFun/onEndDraFun. How: This calls onDroOrdFun only when the caller actually provided one, passing the freshly-built order.
+			if ( onDroOrdFun ) onDroOrdFun( ordIndArr ); // What: On Drop Callback Guard. Why: The caller's own onDrop is optional, same as onStaDraFun/onEndDraFun. How: This calls onDroOrdFun only when the caller actually provided one, passing the freshly-built order.
 
 
 		}

@@ -327,8 +327,8 @@ async function askInsFun() {
 	if ( !insCapObj ) return 'unavailable'; // What: No Install Event Guard. Why: There is nothing to prompt with when beforeinstallprompt was never captured, or was already consumed by an earlier call. How: This returns 'unavailable' immediately whenever insCapObj is falsy.
 
 
-	const curEvtObj = insCapObj; // What: Current Event Object. Why: insCapObj is cleared immediately below, so the actual event this call acts on must be captured into its own local first. How: This copies the live insCapObj reference before it is nulled out.
-	insCapObj = null; // What: Install Captured Object Reset. Why: A captured prompt can only ever be shown once; leaving insCapObj set would let a later caller try to reuse an already-consumed event. How: This clears insCapObj immediately after curEvtObj has captured its own reference.
+	const curEveObj = insCapObj; // What: Current Event Object. Why: insCapObj is cleared immediately below, so the actual event this call acts on must be captured into its own local first. How: This copies the live insCapObj reference before it is nulled out.
+	insCapObj = null; // What: Install Captured Object Reset. Why: A captured prompt can only ever be shown once; leaving insCapObj set would let a later caller try to reuse an already-consumed event. How: This clears insCapObj immediately after curEveObj has captured its own reference.
 
 	notSubFun(); // What: Notify Subscribers Call. Why: canInstall() must now report false, since the captured event is about to be shown (and consumed) below. How: This calls notSubFun so every subscriber re-reads the now-cleared insCapObj.
 
@@ -336,8 +336,8 @@ async function askInsFun() {
 	try { // What: Ask Install Try. Why: Both .prompt() and awaiting .userChoice can throw if the browser's own dialog fails to show. How: This wraps the actual prompt-and-await sequence below, falling back to 'unavailable' in its own catch.
 
 
-		curEvtObj.prompt(); // What: Prompt Call. Why: This is the actual native install dialog the browser shows on the captured event's behalf. How: This calls curEvtObj's own prompt() method.
-		const choResObj = await curEvtObj.userChoice; // What: Choice Result Object. Why: The caller needs to know what the user actually chose, not merely that the dialog was shown. How: This awaits curEvtObj's own userChoice promise.
+		curEveObj.prompt(); // What: Prompt Call. Why: This is the actual native install dialog the browser shows on the captured event's behalf. How: This calls curEveObj's own prompt() method.
+		const choResObj = await curEveObj.userChoice; // What: Choice Result Object. Why: The caller needs to know what the user actually chose, not merely that the dialog was shown. How: This awaits curEveObj's own userChoice promise.
 
 
 
@@ -416,11 +416,11 @@ async function askPerFun( forAskBoo ) {
 
 
 
-window.addEventListener( 'beforeinstallprompt', ( insEvtObj ) => { // What: Before Install Prompt Listener. Why: Chromium fires this instead of showing its own mini-infobar, and the app wants to drive its own install button instead of relying on that. How: This suppresses the browser's own UI, captures the event for askInsFun to use later, and tells every subscriber the install state just changed.
+window.addEventListener( 'beforeinstallprompt', ( insEveObj ) => { // What: Before Install Prompt Listener. Why: Chromium fires this instead of showing its own mini-infobar, and the app wants to drive its own install button instead of relying on that. How: This suppresses the browser's own UI, captures the event for askInsFun to use later, and tells every subscriber the install state just changed.
 
 
-	insEvtObj.preventDefault(); // What: Prevent Default Call. Why: The browser's own mini-infobar must not appear now that this app is handling the prompt itself. How: This calls the captured event's own preventDefault method.
-	insCapObj = insEvtObj; // What: Install Captured Object Assignment. Why: askInsFun and canInstall both need this exact event later, once the user actually clicks the app's own install button. How: This stores insEvtObj onto the module-level insCapObj.
+	insEveObj.preventDefault(); // What: Prevent Default Call. Why: The browser's own mini-infobar must not appear now that this app is handling the prompt itself. How: This calls the captured event's own preventDefault method.
+	insCapObj = insEveObj; // What: Install Captured Object Assignment. Why: askInsFun and canInstall both need this exact event later, once the user actually clicks the app's own install button. How: This stores insEveObj onto the module-level insCapObj.
 
 	notSubFun(); // What: Notify Subscribers Call. Why: canInstall()/insStaFun() must now report differently to any subscribed UI. How: This calls notSubFun so every subscriber re-reads the now-set insCapObj.
 

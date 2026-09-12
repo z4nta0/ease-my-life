@@ -1039,9 +1039,9 @@ export const useEscapeCancel = function useEscapeCancel ( active, handler ) {
 		return () => { // What: Stack Cleanup Function. Why: A closed or unmounted editor must not linger on the shared stack. How: This finds staEntObj's own current index and removes it.
 
 
-			const entIdxNum = window.__escStack.indexOf( staEntObj ); // What: Entry Index Number. Why: splice needs a real index, not the entry object itself. How: This looks up staEntObj's own current position in the shared stack.
+			const entIndNum = window.__escStack.indexOf( staEntObj ); // What: Entry Index Number. Why: splice needs a real index, not the entry object itself. How: This looks up staEntObj's own current position in the shared stack.
 
-			if ( entIdxNum > -1 ) window.__escStack.splice( entIdxNum, 1 ); // What: Stack Splice Guard. Why: The entry could conceivably already be gone. How: This removes exactly one element at entIdxNum when it was actually found.
+			if ( entIndNum > -1 ) window.__escStack.splice( entIndNum, 1 ); // What: Stack Splice Guard. Why: The entry could conceivably already be gone. How: This removes exactly one element at entIndNum when it was actually found.
 
 
 		};
@@ -1623,29 +1623,29 @@ function freezeEditedRow ( sorLisArr, opeIdeVal, newIdeVal, frzRowRef ) {
 
 
 
-	const livIdxNum = sorLisArr.findIndex( ( curRowObj ) => curRowObj.id === opeIdeVal ); // What: Live Index Number. Why: The frozen position logic below needs to know where the open row currently sits in the live sort. How: This searches sorLisArr for the row whose id matches opeIdeVal.
+	const livIndNum = sorLisArr.findIndex( ( curRowObj ) => curRowObj.id === opeIdeVal ); // What: Live Index Number. Why: The frozen position logic below needs to know where the open row currently sits in the live sort. How: This searches sorLisArr for the row whose id matches opeIdeVal.
 
-	if ( livIdxNum === -1 ) return sorLisArr; // What: Not Found Guard. Why: A list that doesn't contain the currently-open row has nothing to freeze at all. How: This returns sorLisArr unmodified when no matching row was found.
+	if ( livIndNum === -1 ) return sorLisArr; // What: Not Found Guard. Why: A list that doesn't contain the currently-open row has nothing to freeze at all. How: This returns sorLisArr unmodified when no matching row was found.
 
 
 
 	if ( !frzRowRef.current || frzRowRef.current.id !== opeIdeVal ) { // What: Frozen Record Guard. Why: A frozen position must only be computed once per "this row became the open one" session, not recomputed on every render while it stays open. How: This (re)computes frzRowRef only when there's no existing record or it belongs to a different row than the currently-open one.
 
 
-		frzRowRef.current = { id : opeIdeVal, index : opeIdeVal === newIdeVal ? 0 : livIdxNum }; // What: Frozen Record Set. Why: A brand-new row pins to the very top matching its own "+ Add" button, while an existing row freezes at whatever index it already occupied. How: This records the open row's id plus its own starting index, 0 for a just-created row, livIdxNum otherwise.
+		frzRowRef.current = { id : opeIdeVal, index : opeIdeVal === newIdeVal ? 0 : livIndNum }; // What: Frozen Record Set. Why: A brand-new row pins to the very top matching its own "+ Add" button, while an existing row freezes at whatever index it already occupied. How: This records the open row's id plus its own starting index, 0 for a just-created row, livIndNum otherwise.
 
 
 	}
 
 
 
-	const opeRowObj = sorLisArr[ livIdxNum ];                                          // What: Open Row Object. Why: The final result needs the actual open row's own data to reinsert at its frozen position. How: This reads the row at livIdxNum from sorLisArr.
+	const opeRowObj = sorLisArr[ livIndNum ];                                          // What: Open Row Object. Why: The final result needs the actual open row's own data to reinsert at its frozen position. How: This reads the row at livIndNum from sorLisArr.
 	const resRowArr = sorLisArr.filter( ( curRowObj ) => curRowObj.id !== opeIdeVal ); // What: Rest Row Array. Why: The open row must be pulled out before it can be reinserted at a fixed position rather than wherever it currently live-sorts to. How: This filters sorLisArr down to every row except the open one.
-	const insIdxNum = Math.min( frzRowRef.current.index, resRowArr.length );          // What: Insert Index Number. Why: A frozen index from an earlier, longer list must not run past the current (possibly shorter) rest array. How: This clamps frzRowRef's own recorded index to resRowArr's own current length.
+	const insIndNum = Math.min( frzRowRef.current.index, resRowArr.length );          // What: Insert Index Number. Why: A frozen index from an earlier, longer list must not run past the current (possibly shorter) rest array. How: This clamps frzRowRef's own recorded index to resRowArr's own current length.
 
 
 
-	return [ ...resRowArr.slice( 0, insIdxNum ), opeRowObj, ...resRowArr.slice( insIdxNum ) ]; // What: Frozen Order Return. Why: The caller needs the open row reinserted at its own frozen position rather than wherever it currently live-sorts to. How: This splices opeRowObj back into resRowArr at insIdxNum.
+	return [ ...resRowArr.slice( 0, insIndNum ), opeRowObj, ...resRowArr.slice( insIndNum ) ]; // What: Frozen Order Return. Why: The caller needs the open row reinserted at its own frozen position rather than wherever it currently live-sorts to. How: This splices opeRowObj back into resRowArr at insIndNum.
 
 
 }

@@ -199,7 +199,7 @@ const seedHelpPickers = ( appStaObj, actGrpObj ) => { // What: Seed Help Pickers
 			name  : curPkrObj.name,                                              // What: Name Field. Why: The copy should display exactly like the onboarding sample it mirrors. How: This carries curPkrObj's own name through unchanged.
 			group : curPkrObj.group,                                             // What: Group Field. Why: The copy should sit in the same group as the onboarding sample it mirrors. How: This carries curPkrObj's own group through unchanged.
 			mode  : curPkrObj.mode,                                              // What: Mode Field. Why: The copy must use the same picker-engine algorithm as the onboarding sample it mirrors. How: This carries curPkrObj's own mode through unchanged.
-			items : curPkrObj.items.map( ( { id, ...itmRstObj } ) => itmRstObj ) // What: Items Field. Why: Each item needs to drop its own onboarding-only id so the copy doesn't collide with the sample it mirrors. How: This maps every curPkrObj item down to itmRstObj, its own fields minus id.
+			items : curPkrObj.items.map( ( { id, ...iteRstObj } ) => iteRstObj ) // What: Items Field. Why: Each item needs to drop its own onboarding-only id so the copy doesn't collide with the sample it mirrors. How: This maps every curPkrObj item down to iteRstObj, its own fields minus id.
 
 
 		});
