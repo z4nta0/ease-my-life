@@ -5,7 +5,7 @@ import { CADENCE } from './cadence.js';
 import { CONDITIONALS } from './conditionals.js';
 import { EUR_WAR_STR } from './constants.js';
 import { DayLogChip, GroupLog } from './day-log.jsx';
-import { HOLIDAYS } from './holidays.js';
+import { HOL_NAM_OBJ } from './holidays.js';
 import { HelpButton, HelpOverlay } from './help-mode.jsx';
 import { TODAY_HELP_ITEMS } from './help-content.jsx';
 import { NOT_NAM_OBJ } from './notify.js';
@@ -1698,7 +1698,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     // active holiday.
     const now = new Date();
     const dow = now.getDay();
-    const holidayToday = HOLIDAYS.holidayOn(state.holidays, now);
+    const holidayToday = HOL_NAM_OBJ.holidayOn(state.holidays, now);
     // Phase A: resolve every conditional's `triggered` for today up front.
     const conds = actions.resolveConditionalsForDay() || state.conditionals || [];
     const condById = new Map(conds.map((c) => [c.id, c]));
@@ -2004,7 +2004,7 @@ function TabToday({ state, actions, onHome, onNavTab, onStartPickerTour, onStart
     if (state.pickers.length === 0) return false;
     const now = new Date();
     const dow = now.getDay();
-    const holiday = HOLIDAYS.holidayOn(state.holidays, now);
+    const holiday = HOL_NAM_OBJ.holidayOn(state.holidays, now);
     return !state.pickers.some((p) => (
       !p.hidden &&
       state.daily.pickerIds.includes(p.id) &&

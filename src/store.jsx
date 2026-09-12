@@ -1,7 +1,7 @@
 import React from 'react';
 import { CADENCE } from './cadence.js';
 import { CONDITIONALS } from './conditionals.js';
-import { HOLIDAYS } from './holidays.js';
+import { HOL_NAM_OBJ } from './holidays.js';
 import { OB_CHECKLIST } from './onboarding-checklist.js';
 import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';
 import { PICKERS, normalizeConditionalName, normalizeGroupName, normalizePickerName } from './pickers.js';
@@ -373,7 +373,7 @@ function migrate(s) {
   }
   // Backfill the daily-schedule config introduced later: a global editable
   // holiday list, plus per-picker weekday + skip-holiday gates.
-  if (s && !s.holidays && HOLIDAYS) s.holidays = HOLIDAYS.defaultState();
+  if (s && !s.holidays && HOL_NAM_OBJ) s.holidays = HOL_NAM_OBJ.defaultState();
   // Daily generator auto-run time (added later); default 4:00 AM.
   if (s && s.daily && !s.daily.runTime) s.daily.runTime = '04:00';
   // Appearance (Settings tab, added later) — real persisted theme choice,
@@ -1747,19 +1747,19 @@ function useStore(opts) {
     // ── Holiday list (global "days off" the skip-on-holidays gate reads) ──
     // Turn a computed holiday on/off (off = listed in `disabled`).
     toggleHoliday: (key) => setState((s) => {
-      const cur = s.holidays || HOLIDAYS.defaultState();
+      const cur = s.holidays || HOL_NAM_OBJ.defaultState();
       const disabled = cur.disabled.includes(key)
         ? cur.disabled.filter((k) => k !== key)
         : [...cur.disabled, key];
       return { ...s, holidays: { ...cur, disabled } };
     }),
     addCustomHoliday: ({ name, month, day }) => setState((s) => {
-      const cur = s.holidays || HOLIDAYS.defaultState();
+      const cur = s.holidays || HOL_NAM_OBJ.defaultState();
       const entry = { id: 'h_' + Math.random().toString(36).slice(2, 7), name, month, day };
       return { ...s, holidays: { ...cur, custom: [...(cur.custom || []), entry] } };
     }),
     removeCustomHoliday: (id) => setState((s) => {
-      const cur = s.holidays || HOLIDAYS.defaultState();
+      const cur = s.holidays || HOL_NAM_OBJ.defaultState();
       return { ...s, holidays: { ...cur, custom: (cur.custom || []).filter((c) => c.id !== id) } };
     }),
 

@@ -1,319 +1,896 @@
-// Picker algorithms. Each runs against a snapshot of items and returns:
-//   { picked: item|null, updates: [{id, value}], cycleCandidates: [item, item, ...] }
-//
-// `updates` is the list of items whose `value` changed as a side-effect (drift,
-// reset, decay). `cycleCandidates` is the pool the cycle animation flashes
-// through before settling on `picked` — it's just the eligible set.
 
-// Tidy a user-typed container-style name: collapse any separator run (dashes,
-// underscores, extra spaces) to a single space, trim, then Title Case every
-// word. Any run of non-alphanumeric characters becomes a single space:
-// "wind_down" / "WIND-DOWN!" / "wind  down" → "Wind Down". Shared by the
-// group and picker normalizers (both are short, container-type names).
-function titleCaseName(raw) {
-  const cleaned = String(raw || '')
-    .replace(/[^a-z0-9]+/gi, ' ')
-    .trim()
-    .replace(/\s+/g, ' ');
-  if (!cleaned) return '';
-  return cleaned.split(' ')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-    .join(' ');
+
+
+
+/**
+ * pickers.js = Pickers
+ *
+ * @summary
+ * Picker selection algorithms. Each mode-specific branch inside pikItmFun
+ * runs against a snapshot of items and returns one common shape:
+ * { picked: item|null, updates: [{id, value}], cycleCandidates: [item,
+ * item, ...] }. `updates` is the list of items whose own value (and
+ * sometimes weight/chargeStep) changed as a side effect of this one pick
+ * (drift, reset, decay, fairness bookkeeping). `cycleCandidates` is the
+ * pool the cycle animation flashes through before settling on `picked`;
+ * it is just the eligible set for that mode.
+ *
+ * The exported PICKERS namespace object's own property names (pick,
+ * readiness, easeEligible, modeEligible, EASE_TOL, avgEase,
+ * DEFAULT_EASE), the three exported name normalizers
+ * (normalizeGroupName, normalizePickerName, normalizeConditionalName),
+ * and the { picked, updates, cycleCandidates, depletedEnd, pickerPatch }
+ * return shape itself are all a cross-file contract read directly by
+ * store.jsx, tab-today.jsx, tab-picker.jsx, tab-data.jsx, and
+ * tab-conditional.jsx. They are deliberately left unrenamed on this
+ * formatting pass; renaming any of them needs its own cross-file pass,
+ * the same way appearance.js's own exported bindings were deferred on
+ * its own first single-file formatting pass.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+// #region titCasFun
+
+/**
+ * titCasFun = Title Case Function
+ *
+ * @summary
+ * Tidies a user-typed container-style name: collapses any separator run
+ * (dashes, underscores, extra spaces) down to a single space, trims the
+ * ends, then Title Cases every word. Any run of non-alphanumeric
+ * characters becomes a single space, so "wind_down", "WIND-DOWN!", and
+ * "wind  down" all normalize to "Wind Down". Shared by the group, picker,
+ * and conditional name normalizers below, since all three are short,
+ * container-type names that want the exact same tidy-up.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param rawNamStr - The raw, possibly messy, user-typed name to tidy.
+ *
+ * @returns The tidied, Title Cased name, or an empty string when
+ * rawNamStr had no alphanumeric content at all to tidy.
+ *
+ * @example
+ * ```ts
+ * titCasFun(rawNamStr) // => tidied, Title Cased name
+ * ```
+ *
+*/
+
+function titCasFun( rawNamStr ) {
+
+
+	const cleNamStr = String( rawNamStr || '' ).replace( /[^a-z0-9]+/gi, ' ' ).trim().replace( /\s+/g, ' ' ); // What: Cleaned Name String. Why: A messy user-typed name needs every separator run collapsed to plain single spacing before it can be split into words. How: This coerces rawNamStr to a string, turns every run of non-alphanumeric characters into one space, trims the ends, then collapses any remaining space run to one.
+
+	if ( !cleNamStr ) return ''; // What: No Cleaned Name Guard. Why: An input with no alphanumeric content at all has nothing left to Title Case. How: This returns an empty string early when cleNamStr came out empty.
+
+
+
+	return cleNamStr.split( ' ' ).map( ( curWorStr ) => curWorStr.charAt( 0 ).toUpperCase() + curWorStr.slice( 1 ).toLowerCase() ).join( ' ' ); // What: Title Cased Name Return. Why: The caller needs every word capitalized, not just the cleaned-up spacing. How: This splits cleNamStr on its spaces, upper-cases each word's own first letter while lower-casing the rest, then rejoins the words with single spaces.
+
+
 }
 
-// Group name: title-case, and if it case-insensitively matches an existing
-// group, return that existing spelling so we never create a near-duplicate.
-function normalizeGroupName(raw, existing) {
-  const titled = titleCaseName(raw);
-  if (!titled) return '';
-  if (Array.isArray(existing)) {
-    const hit = existing.find((g) => g.toLowerCase() === titled.toLowerCase());
-    if (hit) return hit;
-  }
-  return titled;
-}
-// Picker name: same title-case tidy, but NO collision reuse — pickers are
-// distinct entities (dedup to a "(2)" suffix happens in the store instead).
-function normalizePickerName(raw) { return titleCaseName(raw); }
-// Conditional name: same title-case tidy as pickers. Collision handling
-// (reuse an existing conditional on an exact case-insensitive match) is done
-// at the call site, mirroring group-name reuse.
-function normalizeConditionalName(raw) { return titleCaseName(raw); }
-export { normalizeGroupName };
-export { normalizePickerName };
-export { normalizeConditionalName };
+// #endregion titCasFun
 
-function rng(min, max) { return min + Math.random() * (max - min); }
 
-function weightedPick(items, weightFn) {
-  const ws = items.map(weightFn);
-  const total = ws.reduce((a, b) => a + b, 0);
-  if (total <= 0) return items[Math.floor(Math.random() * items.length)] || null;
-  let r = Math.random() * total;
-  for (let i = 0; i < items.length; i++) {
-    r -= ws[i];
-    if (r <= 0) return items[i];
-  }
-  return items[items.length - 1];
-}
 
-function eligible(items) {
-  return items.filter((it) => !it.vacation);
-}
+// #region normalizeGroupName
 
-function pick(picker, items, opts) {
-  let pool = eligible(items.filter((it) => it.pickerId === picker.id));
-  // `excludeIds` (a Set) drops items that are already live on Today, so a
-  // manual "Pick One" spin can't land on a duplicate. A direct `forceItemId`
-  // send bypasses this (its button is disabled in the UI when on Today).
-  const excludeIds = opts && opts.excludeIds;
-  if (excludeIds && excludeIds.size && !(opts && opts.forceItemId)) {
-    pool = pool.filter((it) => !excludeIds.has(it.id));
-  }
-  // `excludeNames` (a Set of lowercased names) drops items whose name
-  // case-insensitively matches something already on today's list — opt-in
-  // per picker via `avoidDuplicates`, for pickers that intentionally share
-  // items with another picker (e.g. two meal pickers with an overlapping
-  // pool) and don't want the same item to surface twice in one day. Falls
-  // back to the FULL pool if this would leave nothing eligible, rather than
-  // ever leaving the picker with no pick at all — duplication is preferred
-  // over an empty result.
-  const excludeNames = opts && opts.excludeNames;
-  if (picker.avoidDuplicates && excludeNames && excludeNames.size && !(opts && opts.forceItemId)) {
-    const deduped = pool.filter((it) => !excludeNames.has(it.name.toLowerCase()));
-    if (deduped.length) pool = deduped;
-  }
-  if (!pool.length) return { picked: null, updates: [], cycleCandidates: [] };
+/**
+ * normalizeGroupName = Normalize Group Name
+ *
+ * @summary
+ * Title Cases a user-typed group name via {@link titCasFun}, then, if it
+ * case-insensitively matches a group that already exists, returns that
+ * existing entry's own exact spelling instead of the freshly Title Cased
+ * one, so normalizing a name never creates a near-duplicate group that
+ * only differs by casing.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param rawNamStr - The raw, possibly messy, user-typed group name.
+ * @param exiGroArr - The list of group names already in use, checked
+ *                    case-insensitively for a match; anything other than
+ *                    a real array (including undefined) skips this check
+ *                    entirely.
+ *
+ * @returns The existing group's own exact spelling on a case-insensitive
+ * match, the freshly Title Cased name otherwise, or an empty string when
+ * rawNamStr had no alphanumeric content at all.
+ *
+ * @example
+ * ```ts
+ * normalizeGroupName(rawNamStr, exiGroArr) // => resolved group name
+ * ```
+ *
+*/
 
-  switch (picker.mode) {
-    case 'random': {
-      const forceId = opts && opts.forceItemId;
-      const picked = (forceId && pool.find((it) => it.id === forceId)) || pool[Math.floor(Math.random() * pool.length)];
-      return { picked, updates: [], cycleCandidates: pool };
-    }
-    case 'weighted': {
-      const forceId = opts && opts.forceItemId;
-      const picked = (forceId && pool.find((it) => it.id === forceId)) || weightedPick(pool, (it) => Math.max(0.0001, it.weight));
-      return { picked, updates: [], cycleCandidates: pool };
-    }
-    case 'dynamic': {
-      // Effective pick weight = base weight + drift value, chosen weighted-random.
-      // Drift `value` = cycles since last picked: every eligible item that
-      // ISN'T picked gains +1 (flat, not its weight) so low-weight items reliably
-      // catch up over time instead of starving; the picked item resets to 0.
-      const forceId = opts && opts.forceItemId;
-      const picked = (forceId && pool.find((it) => it.id === forceId)) || weightedPick(pool, (it) => Math.max(0.0001, it.weight + it.value));
-      const updates = [];
-      for (const it of pool) {
-        if (it.id === picked.id) updates.push({ id: it.id, value: 0 });
-        else updates.push({ id: it.id, value: it.value + 1 });
-      }
-      return { picked, updates, cycleCandidates: pool };
-    }
-    case 'ease-up': {
-      // "Most overdue wins." Instead of a fresh random drift each run, each item
-      // rolls a TARGET number of cycles uniformly in its [soonest, latest] range
-      // when it resets to 0, then charges by a FIXED step (100/N) so it lands in
-      // exactly N cycles — giving every duration in the range equal odds (the
-      // reciprocal drift-band collapse is gone). `chargeStep` persists that plan
-      // across cycles; legacy items with none lazily roll one. Among eligible
-      // items we pick the MOST overdue (highest value); ties break on oldest
-      // lastPicked. Weight is deliberately NOT used (ease-up is a cadence system).
-      const threshold = picker.threshold ?? 100;
-      const fallbackEase = avgEase(pool, picker.id);
-      const rollStep = (it) => {
-        const so = Math.max(1, Math.round(threshold / (it.easeMax ?? fallbackEase.easeMax)));
-        const la = Math.max(so, Math.round(threshold / (it.easeMin ?? fallbackEase.easeMin)));
-        const N = so + Math.floor(Math.random() * (la - so + 1));
-        return threshold / N;
-      };
-      const stepFor = (it) => (it.chargeStep && it.chargeStep > 0 ? it.chargeStep : rollStep(it));
-      // Charge by the fixed step, persisting it so the plan holds across cycles.
-      const chargeUpdate = (it) => { const s = stepFor(it); return { id: it.id, value: it.value + s, chargeStep: s }; };
-      // Half-unit tolerance so a 100/3-type step never spills into an extra cycle.
-      const elig = pool.filter((it) => easeEligible(it, threshold));
-      // A manual send (`forceItemId`) may target ANY item — search the whole
-      // pool and bypass the eligibility gate, since the user chose it directly.
-      const forceId = opts && opts.forceItemId;
-      const forced = forceId && pool.find((it) => it.id === forceId);
-      if (!elig.length && !forced) {
-        const updates = pool.map(chargeUpdate);
-        return { picked: null, updates, cycleCandidates: pool };
-      }
-      const ts = (it) => (it.lastPicked ? Date.parse(it.lastPicked) : 0);
-      // Today's Re-roll cycles ease-up manually: it passes `forceItemId` to
-      // land on a specific eligible item (highest→lowest value, wrapping). The
-      // completion consequence is identical to a natural pick — the forced item
-      // resets, others charge — so done-handling never diverges.
-      const picked = forced || elig.reduce((best, it) => {
-        if (!best) return it;
-        if (it.value !== best.value) return it.value > best.value ? it : best;
-        return ts(it) < ts(best) ? it : best; // tie → waited longest
-      }, null);
-      // Picked item resets to 0 AND rolls a fresh plan for its next charge cycle.
-      const updates = pool.map((it) =>
-        it.id === picked.id ? { id: it.id, value: 0, chargeStep: rollStep(it) } : chargeUpdate(it));
+function normalizeGroupName( rawNamStr, exiGroArr ) {
 
-      // Inflation guard: values overshoot the threshold while waiting, and with
-      // many items that overshoot can drift into the hundreds over time. Compress
-      // it by pulling every still-waiting item (value > threshold) down by the
-      // smallest overshoot in that group — so the least-overdue waiter lands back
-      // at the threshold and the rest keep their relative order. Sub-threshold
-      // charging items are untouched, so each item's time-to-eligible (its
-      // cadence) is preserved exactly; only the unbounded slack is removed.
-      // Needs at least 2 overshooting items to mean anything — with only one,
-      // "compress relative to the smallest" degenerates into subtracting the
-      // item's own overshoot from itself, unconditionally clamping any lone
-      // waiter back to exactly the threshold every cycle it isn't picked
-      // (the actual bug: items looked like they could never exceed 100).
-      const overshoots = updates.filter((u) => u.value > threshold).map((u) => u.value - threshold);
-      if (overshoots.length > 1) {
-        const minOver = Math.min(...overshoots);
-        if (minOver > 0) {
-          for (const u of updates) if (u.value > threshold) u.value -= minOver;
-        }
-      }
-      return { picked, updates, cycleCandidates: elig };
-    }
-    case 'ease-down': {
-      // Perpetual fair-rotation model. Two things drive it, tracked separately:
-      //   • value  — the active item's remaining CHARGE. Decays each run while
-      //              active; at <=0 the item auto-recharges to full and is
-      //              released back into the pool (never depletes permanently).
-      //   • weight — a system-managed FAIRNESS counter (NOT a user preference,
-      //              not surfaced in the UI). It changes ONLY when a NEW active
-      //              item is chosen — never on the intermediate decay runs. At
-      //              that moment the chosen item resets to 0 and every OTHER
-      //              item gains +1. A weight of 0 is excluded from selection,
-      //              so exactly one item (the most-recently-picked) is barred
-      //              from being re-picked on the very next draw; it re-enters
-      //              at weight 1 on the following pick. Long-ignored items climb
-      //              and grow steadily more likely — fixing truly-random's
-      //              "an item can be ignored forever / picked twice in a row".
-      const threshold = picker.threshold ?? 100;
-      // Option-1 steady decay: a newly-chosen item rolls a target N cycles
-      // uniformly in its [shortest, longest] range and decays by a FIXED step
-      // (100/N), emptying in exactly N cycles. `chargeStep` persists that plan
-      // across the streak; legacy items lazily roll one.
-      const fallbackEase = avgEase(pool, picker.id);
-      const rollStep = (it) => {
-        const so = Math.max(1, Math.round(threshold / (it.easeMax ?? fallbackEase.easeMax)));
-        const la = Math.max(so, Math.round(threshold / (it.easeMin ?? fallbackEase.easeMin)));
-        const N = so + Math.floor(Math.random() * (la - so + 1));
-        return threshold / N;
-      };
-      const forceId = opts && opts.forceItemId;
-      // A manual send of a specific item starts a NEW streak on that item
-      // (unless it's already the active one) — same as re-roll's forceNew.
-      const forceNew = !!(opts && opts.forceNew) || !!(forceId && forceId !== picker.activeItemId);
-      const updates = [];
 
-      // 1) CONTINUE the current active item's depletion. No weight changes on
-      //    these runs. On hitting 0 the item auto-recharges and is released
-      //    (weight stays 0 → excluded from the very next new-pick draw).
-      let active = null;
-      if (picker.activeItemId && !forceNew) {
-        active = pool.find((it) => it.id === picker.activeItemId && it.value > 0);
-      }
-      if (active) {
-        const decay = (active.chargeStep && active.chargeStep > 0) ? active.chargeStep : rollStep(active);
-        const newValue = Math.max(0, active.value - decay);
-        const depletedEnd = newValue <= 0.5;
-        updates.push({ id: active.id, value: depletedEnd ? threshold : newValue, chargeStep: decay });
-        return {
-          picked: active,
-          updates,
-          cycleCandidates: [active],
-          depletedEnd,
-          pickerPatch: { activeItemId: depletedEnd ? null : active.id },
-        };
-      }
+	const titNamStr = titCasFun( rawNamStr ); // What: Titled Name String. Why: Every further step below needs the already Title Cased version of rawNamStr to compare and possibly return. How: This calls titCasFun once and reuses the result throughout.
 
-      // 2) START A NEW STREAK. Re-roll (forceNew) abandons the current active
-      //    item, recharging it to full; like a naturally-released item its
-      //    weight is 0, so it's excluded from THIS draw and re-enters next time.
-      const abandoned = forceNew ? picker.activeItemId : null;
-      if (abandoned) {
-        const old = items.find((it) => it.id === abandoned);
-        if (old) updates.push({ id: old.id, value: threshold });
-      }
-      // Draw among weight > 0 items (excludes the single most-recently-picked
-      // item, at 0). Degenerate fallbacks: a lone item, or an all-zero pool.
-      let candidates = pool.filter((it) => (it.weight ?? 1) > 0 && it.id !== abandoned);
-      if (!candidates.length) candidates = pool.filter((it) => it.id !== abandoned);
-      if (!candidates.length) candidates = pool;
-      // Manual send forces the chosen item (bypassing weighted draw); it still
-      // takes the identical fairness + decay consequences below.
-      const chosen = (forceId && pool.find((it) => it.id === forceId)) || weightedPick(candidates, (it) => Math.max(0, it.weight ?? 1));
+	if ( !titNamStr ) return ''; // What: No Titled Name Guard. Why: An input with no alphanumeric content at all has no existing group worth matching against. How: This returns an empty string early when titNamStr came out empty.
 
-      // Fairness bookkeeping (happens ONLY here): every other item +1 (incl.
-      // the just-released 0-weight one → 1); the chosen item resets to 0.
-      for (const it of pool) {
-        if (it.id === chosen.id) continue;
-        updates.push({ id: it.id, weight: (it.weight ?? 1) + 1 });
-      }
-      // Decay the freshly-chosen item from full charge, on a fresh steady plan.
-      const base = chosen.value > 0 ? chosen.value : threshold;
-      const decay = rollStep(chosen);
-      const newValue = Math.max(0, base - decay);
-      const depletedEnd = newValue <= 0.5;
-      updates.push({ id: chosen.id, value: depletedEnd ? threshold : newValue, weight: 0, chargeStep: decay });
-      return {
-        picked: chosen,
-        updates,
-        cycleCandidates: candidates,
-        depletedEnd,
-        pickerPatch: { activeItemId: depletedEnd ? null : chosen.id },
-      };
-    }
-    default:
-      return { picked: null, updates: [], cycleCandidates: [] };
-  }
+
+	if ( Array.isArray( exiGroArr ) ) { // What: Existing Group Array Check. Why: The case-insensitive reuse lookup below only makes sense when a real array of existing names was actually given. How: This gates the lookup block so a missing or non-array exiGroArr just falls through to the plain Title Cased return.
+
+
+		const hitGroStr = exiGroArr.find( ( curGroStr ) => curGroStr.toLowerCase() === titNamStr.toLowerCase() ); // What: Hit Group String. Why: An existing group whose name only differs from titNamStr by casing must be reused, not duplicated. How: This searches exiGroArr for the first entry whose lower-cased spelling matches titNamStr's own lower-cased spelling.
+
+		if ( hitGroStr ) return hitGroStr; // What: Hit Group Guard. Why: The existing group's own exact spelling must win over the freshly Title Cased one. How: This returns hitGroStr early the moment a case-insensitive match is found.
+
+
+	}
+
+
+
+	return titNamStr; // What: Titled Name Return. Why: No existing group matched (or none was given to check against), so the freshly Title Cased name is the final result. How: This returns the same value computed by titCasFun above.
+
+
 }
 
-// For modes that maintain `value`, this is the visualization helper used by
-// the picker view's "current state" rows. It returns a 0–1 readiness number.
-function readiness(item, mode, threshold = 100) {
-  if (mode === 'ease-up')   return Math.min(1, item.value / threshold);
-  if (mode === 'ease-down') return Math.max(0, item.value / threshold);
-  if (mode === 'dynamic')   return Math.min(1, item.value / 50); // soft cap for vis
-  return null;
+// #endregion normalizeGroupName
+
+
+
+// #region normalizePickerName
+
+/**
+ * normalizePickerName = Normalize Picker Name
+ *
+ * @summary
+ * Title Cases a user-typed picker name via {@link titCasFun}. Unlike
+ * {@link normalizeGroupName}, this never reuses an existing spelling on a
+ * case-insensitive match, since pickers are distinct entities; a
+ * same-name collision is instead resolved by the store appending a "(2)"
+ * suffix at its own call site.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param rawNamStr - The raw, possibly messy, user-typed picker name.
+ *
+ * @returns The tidied, Title Cased picker name, or an empty string when
+ * rawNamStr had no alphanumeric content at all.
+ *
+ * @example
+ * ```ts
+ * normalizePickerName(rawNamStr) // => tidied picker name
+ * ```
+ *
+*/
+
+function normalizePickerName( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidied Picker Name Body. Why: A picker name only ever needs the shared Title Case tidy-up, with no collision-reuse step. How: This is a thin wrapper straight over titCasFun.
+
+// #endregion normalizePickerName
+
+
+
+// #region normalizeConditionalName
+
+/**
+ * normalizeConditionalName = Normalize Conditional Name
+ *
+ * @summary
+ * Title Cases a user-typed conditional name via {@link titCasFun}, the
+ * same tidy-up {@link normalizePickerName} applies. Collision handling
+ * (reusing an existing conditional on an exact case-insensitive match) is
+ * left to the call site, mirroring how {@link normalizeGroupName}'s own
+ * reuse step works for groups.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param rawNamStr - The raw, possibly messy, user-typed conditional
+ *                    name.
+ *
+ * @returns The tidied, Title Cased conditional name, or an empty string
+ * when rawNamStr had no alphanumeric content at all.
+ *
+ * @example
+ * ```ts
+ * normalizeConditionalName(rawNamStr) // => tidied conditional name
+ * ```
+ *
+*/
+
+function normalizeConditionalName( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidied Conditional Name Body. Why: A conditional name only ever needs the shared Title Case tidy-up; collision reuse happens at the call site instead. How: This is a thin wrapper straight over titCasFun.
+
+// #endregion normalizeConditionalName
+
+
+
+export { normalizeConditionalName, normalizeGroupName, normalizePickerName }; // What: Named Exports. Why: store.jsx, tab-picker.jsx, tab-conditional.jsx, tab-data.jsx, and tab-today.jsx all import these three normalizers individually, by these exact names. How: This re-exports all three; their own names are deliberately left unrenamed here since renaming them ripples into every one of those files (see this file's own header comment).
+
+
+
+// #region ranValFun
+
+/**
+ * ranValFun = Random Value Function
+ *
+ * @summary
+ * Returns a random floating-point value uniformly distributed in
+ * [minValNum, maxValNum). Currently unused anywhere in this codebase;
+ * left in place as-is during this formatting pass rather than removed,
+ * since removing dead code is outside the scope of a pure
+ * formatting/naming/comment pass.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param minValNum - The smallest value the result can take.
+ * @param maxValNum - The upper bound the result stays strictly under.
+ *
+ * @returns A random value in [minValNum, maxValNum).
+ *
+ * @example
+ * ```ts
+ * ranValFun(minValNum, maxValNum) // => random value in the given range
+ * ```
+ *
+*/
+
+function ranValFun( minValNum, maxValNum ) { return minValNum + Math.random() * ( maxValNum - minValNum ); } // What: Random Value Body. Why: The caller needs one random value uniformly spread across the given range. How: This scales Math.random()'s own [0,1) output by the range's width, then offsets it by minValNum.
+
+// #endregion ranValFun
+
+
+
+// #region weiPicFun
+
+/**
+ * weiPicFun = Weighted Pick Function
+ *
+ * @summary
+ * Picks one item from itmPooArr via a weighted-random roulette-wheel
+ * draw: every item's own weight (computed by weiGetFun) becomes a band on
+ * a number line from 0 up to the total weight, a single random point on
+ * that line is rolled, and whichever band it lands in wins. Falls back to
+ * a plain uniform-random pick across itmPooArr when every weight is 0 or
+ * the total is otherwise non-positive, so a degenerate all-zero-weight
+ * pool still produces a pick instead of always returning null.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param itmPooArr - The pool of items to pick from.
+ * @param weiGetFun - A function called once per item in itmPooArr,
+ *                    returning that item's own weight for this draw.
+ *
+ * @returns The item this draw picked, or null when itmPooArr is empty.
+ *
+ * @example
+ * ```ts
+ * weiPicFun(itmPooArr, weiGetFun) // => picked item or null
+ * ```
+ *
+*/
+
+function weiPicFun( itmPooArr, weiGetFun ) {
+
+
+	const weiValArr = itmPooArr.map( weiGetFun );                                                 // What: Weight Value Array. Why: The roulette-wheel draw below needs every item's own weight resolved up front, not recomputed on each loop iteration. How: This calls weiGetFun once per item in itmPooArr.
+	const totWeiNum = weiValArr.reduce( ( accValNum, curValNum ) => accValNum + curValNum, 0 ); // What: Total Weight Number. Why: The roulette wheel's own full number line spans exactly the sum of every item's weight. How: This sums every value in weiValArr.
+
+	if ( totWeiNum <= 0 ) return itmPooArr[ Math.floor( Math.random() * itmPooArr.length ) ] || null; // What: Non-Positive Total Guard. Why: A degenerate all-zero (or negative) weight pool has no real roulette wheel to draw from, but should still produce a pick rather than none at all. How: This falls back to a plain uniform-random index into itmPooArr.
+
+
+	let rouRemNum = Math.random() * totWeiNum; // What: Roulette Remaining Number. Why: This is the single random point rolled on the roulette wheel's own number line, decremented below until it lands inside the winning item's own band. How: This scales Math.random()'s own [0,1) output by totWeiNum.
+
+
+	for ( let curIndNum = 0; curIndNum < itmPooArr.length; curIndNum++ ) { // What: Roulette Walk Loop. Why: Every item's own band must be walked in order until the one containing rouRemNum's own point is found. How: This walks curIndNum across itmPooArr, subtracting each item's own weight from rouRemNum in turn.
+
+
+		rouRemNum -= weiValArr[ curIndNum ]; // What: Roulette Remaining Decrement. Why: Subtracting this item's own weight moves the remaining point past this item's own band. How: This subtracts weiValArr's own value at curIndNum from rouRemNum.
+
+		if ( rouRemNum <= 0 ) return itmPooArr[ curIndNum ]; // What: Roulette Winner Guard. Why: rouRemNum crossing to zero or below means the rolled point landed inside this item's own band. How: This returns itmPooArr's own item at curIndNum the moment that happens.
+
+
+	}
+
+
+
+	return itmPooArr[ itmPooArr.length - 1 ]; // What: Roulette Fallback Return. Why: Floating-point rounding could in rare cases leave rouRemNum still positive after every band has been walked. How: This returns the very last item in itmPooArr as a safe fallback.
+
+
 }
 
-// Fallback drift band for an ease-up/ease-down item with no easeMin/easeMax
-// of its own — averages the OTHER items already on this picker (each falling
-// back to DEFAULT_EASE itself, so one bare item can't skew this into NaN),
-// rather than a separate per-picker default kept in sync by hand. A brand
-// new picker with no items yet (or an ease-mode switch before any item has
-// its own band) gets the flat DEFAULT_EASE. Used both to stamp a freshly
-// added item's own easeMin/easeMax immediately (store.jsx's addItem) and, for
-// any item that still doesn't have its own values (older data), as the same
-// safety-net fallback the picking engine itself uses below.
-const DEFAULT_EASE = { easeMin: 7, easeMax: 14 };
-function avgEase(items, pickerId) {
-  const siblings = (items || []).filter((it) => it.pickerId === pickerId);
-  if (!siblings.length) return { ...DEFAULT_EASE };
-  const avg = (key) => siblings.reduce((sum, it) => sum + (it[key] ?? DEFAULT_EASE[key]), 0) / siblings.length;
-  return { easeMin: Math.max(1, Math.round(avg('easeMin'))), easeMax: Math.max(1, Math.round(avg('easeMax'))) };
+// #endregion weiPicFun
+
+
+
+// #region eliPooFun
+
+/**
+ * eliPooFun = Eligible Pool Function
+ *
+ * @summary
+ * Filters itmSrcArr down to items not currently on vacation. Vacation is
+ * a blanket per-item override that suppresses an item from every mode's
+ * pool regardless of its own weight/value/threshold state.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param itmSrcArr - The items to filter.
+ *
+ * @returns A new array holding only itmSrcArr's own non-vacationing
+ * items.
+ *
+ * @example
+ * ```ts
+ * eliPooFun(itmSrcArr) // => non-vacationing items
+ * ```
+ *
+*/
+
+function eliPooFun( itmSrcArr ) { return itmSrcArr.filter( ( curItmObj ) => !curItmObj.vacation ); } // What: Eligible Pool Body. Why: The caller needs only the items actually available to pick from right now. How: This keeps every item in itmSrcArr whose own vacation field is falsy.
+
+// #endregion eliPooFun
+
+
+
+// #region pikItmFun
+
+/**
+ * pikItmFun = Pick Item Function
+ *
+ * @summary
+ * Runs one pick against pikRecObj's own pool of eligible items, branching
+ * on pikRecObj's own mode (random / weighted / dynamic / ease-up /
+ * ease-down). Every branch returns the same shape: { picked, updates,
+ * cycleCandidates }, with ease-down additionally returning depletedEnd
+ * and pickerPatch. See this file's own header comment for the full
+ * return-shape contract and why its own property names stay unrenamed.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param pikRecObj - The picker record this pick runs against (mode,
+ *                    threshold, activeItemId, avoidDuplicates, ...).
+ * @param itmAllArr - The FULL items snapshot, not yet filtered down to
+ *                    this picker's own pool; ease-down's abandoned-item
+ *                    lookup deliberately searches this instead of the
+ *                    filtered pool, since an abandoned item may no longer
+ *                    be eligible.
+ * @param optConObj - Options controlling this specific pick: excludeIds
+ *                    (a Set of item ids already live on Today),
+ *                    excludeNames (a Set of lower-cased names already on
+ *                    today's list), forceItemId (a manual, specific pick
+ *                    that bypasses the normal draw), and forceNew
+ *                    (ease-down only, abandons the current active item to
+ *                    start a fresh streak).
+ *
+ * @returns This pick's own result. See this file's own header comment
+ * for the full shape.
+ *
+ * @example
+ * ```ts
+ * pikItmFun(pikRecObj, itmAllArr, optConObj) // => pick result
+ * ```
+ *
+*/
+
+function pikItmFun( pikRecObj, itmAllArr, optConObj ) {
+
+
+	let itmPooArr = eliPooFun( itmAllArr.filter( ( curItmObj ) => curItmObj.pickerId === pikRecObj.id ) ); // What: Item Pool Array. Why: Every mode below draws from this picker's own eligible items only. How: This filters itmAllArr down to this picker's own items, then drops any currently on vacation via eliPooFun.
+
+
+	const excIdeSet = optConObj && optConObj.excludeIds; // What: Exclude Identifier Set. Why: A manual "Pick One" spin must not land on an item already live on Today. How: This reads optConObj's own excludeIds Set, if any was given.
+
+	if ( excIdeSet && excIdeSet.size && !( optConObj && optConObj.forceItemId ) ) { // What: Exclude Ids Check. Why: A direct forceItemId send bypasses this drop entirely, since its own button is already disabled in the UI whenever the target item is on Today. How: This gates the filter below on a real, non-empty excIdeSet and the absence of a forced pick.
+
+
+		itmPooArr = itmPooArr.filter( ( curItmObj ) => !excIdeSet.has( curItmObj.id ) ); // What: Item Pool Exclude-Ids Filter. Why: Every id already live on Today must actually be dropped from the pool a normal draw can land on. How: This keeps only items whose own id is absent from excIdeSet.
+
+
+	}
+
+
+	const excNamSet = optConObj && optConObj.excludeNames; // What: Exclude Name Set. Why: A picker opted into avoidDuplicates must not resurface an item another picker already placed on Today under the same name. How: This reads optConObj's own excludeNames Set, if any was given.
+
+	if ( pikRecObj.avoidDuplicates && excNamSet && excNamSet.size && !( optConObj && optConObj.forceItemId ) ) { // What: Avoid Duplicates Check. Why: This behavior is opt-in per picker (avoidDuplicates), skipped entirely on a forced pick, and must never leave the picker with zero eligible items. How: This gates the dedup block below on the picker's own flag, a real non-empty excNamSet, and the absence of a forced pick.
+
+
+		const dedItmArr = itmPooArr.filter( ( curItmObj ) => !excNamSet.has( curItmObj.name.toLowerCase() ) ); // What: Deduped Item Array. Why: This is the pool with same-named items dropped, but it must never actually replace itmPooArr if doing so would leave nothing to pick from. How: This keeps only items whose own lower-cased name is absent from excNamSet.
+
+		if ( dedItmArr.length ) itmPooArr = dedItmArr; // What: Deduped Pool Guard. Why: Duplication across pickers is preferred over leaving this picker with no pick at all. How: This only swaps in dedItmArr when it actually left at least one item.
+
+
+	}
+
+
+	if ( !itmPooArr.length ) return { picked : null, updates : [], cycleCandidates : [] }; // What: Empty Pool Guard. Why: A picker with nothing eligible at all (after vacation/exclude/dedup filtering) has no pick to make. How: This returns the same empty result shape every mode falls back to.
+
+
+
+	switch ( pikRecObj.mode ) { // What: Mode Switch. Why: Each mode below implements a completely different selection algorithm over the same itmPooArr. How: This branches on pikRecObj's own mode field.
+
+
+		case 'random': { // What: Random Mode Branch. Why: This is the simplest mode, an unweighted uniform-random pick with no side effects on item state. How: This either honors a forced pick or draws one uniformly-random index from itmPooArr.
+
+
+			const forIdeStr = optConObj && optConObj.forceItemId; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forceItemId, if any was given.
+			const pikResObj = ( forIdeStr && itmPooArr.find( ( curItmObj ) => curItmObj.id === forIdeStr ) ) || itmPooArr[ Math.floor( Math.random() * itmPooArr.length ) ]; // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise a uniform-random item is drawn. How: This tries the forced lookup first, falling back to Math.random() against itmPooArr's own length.
+
+
+
+			return { picked : pikResObj, updates : [], cycleCandidates : itmPooArr }; // What: Random Mode Return. Why: Random mode never mutates item state, so updates is always empty. How: This hands back the picked item alongside the full pool as the cycle animation's own candidates.
+
+
+		}
+
+		case 'weighted': { // What: Weighted Mode Branch. Why: This mode draws proportionally to each item's own user-set weight, with no drift/decay side effects. How: This either honors a forced pick or draws via weiPicFun keyed on each item's own weight.
+
+
+			const forIdeStr = optConObj && optConObj.forceItemId; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forceItemId, if any was given.
+			const pikResObj = ( forIdeStr && itmPooArr.find( ( curItmObj ) => curItmObj.id === forIdeStr ) ) || weiPicFun( itmPooArr, ( curItmObj ) => Math.max( 0.0001, curItmObj.weight ) ); // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise the weighted draw picks proportionally to weight. How: This tries the forced lookup first, falling back to weiPicFun with a floored weight so a literal 0 weight still has a sliver of a chance.
+
+
+
+			return { picked : pikResObj, updates : [], cycleCandidates : itmPooArr }; // What: Weighted Mode Return. Why: Weighted mode never mutates item state, so updates is always empty. How: This hands back the picked item alongside the full pool as the cycle animation's own candidates.
+
+
+		}
+
+		case 'dynamic': { // What: Dynamic Mode Branch. Why: This mode draws on base weight plus an accumulating drift value, so low-weight items reliably catch up over time instead of starving. How: This either honors a forced pick or draws via weiPicFun keyed on weight plus drift, then charges every item's own drift value as a side effect below.
+
+
+			const forIdeStr = optConObj && optConObj.forceItemId; // What: Force Identifier String. Why: A manual send targets one specific item directly. How: This reads optConObj's own forceItemId, if any was given.
+			const pikResObj = ( forIdeStr && itmPooArr.find( ( curItmObj ) => curItmObj.id === forIdeStr ) ) || weiPicFun( itmPooArr, ( curItmObj ) => Math.max( 0.0001, curItmObj.weight + curItmObj.value ) ); // What: Picked Result Object. Why: The forced item wins outright when given and actually found; otherwise the weighted draw picks proportionally to weight plus drift. How: This tries the forced lookup first, falling back to weiPicFun with a floored weight-plus-drift value.
+			const updItmArr = []; // What: Update Item Array. Why: Every eligible item's own drift value changes as a side effect of this one pick, whether picked or not. How: This starts empty and is pushed to once per item in the loop below.
+
+
+			for ( const curItmObj of itmPooArr ) { // What: Drift Charge Loop. Why: Every eligible item's own drift value must be updated by this pick, not just the picked one. How: This walks itmPooArr, resetting the picked item to 0 and incrementing every other item by a flat +1.
+
+
+				if ( curItmObj.id === pikResObj.id ) updItmArr.push( { id : curItmObj.id, value : 0 } ); // What: Picked Item Reset. Why: The item that was just picked should not keep accumulating drift toward its own next pick. How: This pushes a value:0 update for the picked item.
+
+				else updItmArr.push( { id : curItmObj.id, value : curItmObj.value + 1 } ); // What: Other Item Drift Increment. Why: Every eligible item that wasn't picked should get one step closer to its own next pick. How: This pushes a flat +1 drift update for every other item.
+
+
+			}
+
+
+
+			return { picked : pikResObj, updates : updItmArr, cycleCandidates : itmPooArr }; // What: Dynamic Mode Return. Why: The caller needs both the pick and every drift-value change this pick caused. How: This hands back the picked item, the full drift updates, and the pool as the cycle animation's own candidates.
+
+
+		}
+
+		case 'ease-up': { // What: Ease Up Mode Branch. Why: This mode picks whichever eligible item is most overdue, on a fixed per-item charge plan rather than fresh random drift each run. How: See the design-rationale comment attached to thrValNum below for the full charge-plan model.
+
+
+			/**
+			 * thrValNum (ease-up) = Threshold Value Number
+			 *
+			 * @summary
+			 * "Most overdue wins." Instead of a fresh random drift each
+			 * run, each item rolls a TARGET number of cycles uniformly in
+			 * its own [soonest, latest] range when it resets to 0, then
+			 * charges by a FIXED step (threshold/N) so it lands in
+			 * exactly N cycles, giving every duration in the range equal
+			 * odds (the reciprocal drift-band collapse a naive per-cycle
+			 * random step would have is gone). chargeStep persists that
+			 * plan across cycles; a legacy item with none lazily rolls
+			 * one via getSteFun below. Among eligible items, the MOST
+			 * overdue one wins (highest value); ties break on oldest
+			 * lastPicked. Weight is deliberately NOT used at all here,
+			 * since ease-up is a cadence system, not a preference one.
+			 *
+			 * @author z4nta0 <https://github.com/z4nta0>
+			 *
+			*/
+
+			const thrValNum = pikRecObj.threshold ?? 100; // What: Threshold Value Number. Why: Every charge/eligibility calculation below is relative to this picker's own threshold. How: This reads pikRecObj's own threshold, defaulting to 100 for older pickers with none set.
+			const falEasObj = avgEasFun( itmPooArr, pikRecObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a drift band to roll a target cycle count from. How: This computes the sibling-average fallback band via avgEasFun.
+			const rolSteFun = ( curItmObj ) => { // What: Roll Step Function. Why: A freshly-reset item needs a brand new fixed charge step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that lands the item exactly on thrValNum in that many cycles.
+
+
+				const sooCycNum = Math.max( 1, Math.round( thrValNum / ( curItmObj.easeMax ?? falEasObj.easeMax ) ) );                  // What: Soonest Cycle Number. Why: This is the fewest cycles this item's own band allows before becoming eligible. How: This divides thrValNum by the item's own (or fallback) easeMax, its fastest charge rate.
+				const latCycNum = Math.max( sooCycNum, Math.round( thrValNum / ( curItmObj.easeMin ?? falEasObj.easeMin ) ) ); // What: Latest Cycle Number. Why: This is the most cycles this item's own band allows before becoming eligible. How: This divides thrValNum by the item's own (or fallback) easeMin, its slowest charge rate, floored at sooCycNum so the range is never inverted.
+				const tgtCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );                             // What: Target Cycle Number. Why: Every duration in [sooCycNum, latCycNum] should have equal odds of being this item's own plan. How: This rolls a uniform-random integer across that inclusive range.
+
+
+
+				return thrValNum / tgtCycNum; // What: Roll Step Return. Why: A fixed step of this size charges the item from 0 to exactly thrValNum in exactly tgtCycNum cycles. How: This divides thrValNum by tgtCycNum.
+
+
+			};
+
+			const getSteFun = ( curItmObj ) => ( curItmObj.chargeStep && curItmObj.chargeStep > 0 ) ? curItmObj.chargeStep : rolSteFun( curItmObj ); // What: Get Step Function. Why: An item already mid-plan must keep charging by its own already-rolled step; only a legacy item with none rolls a fresh one. How: This returns curItmObj's own chargeStep when it's a real positive number, rolling one via rolSteFun otherwise.
+			const chgUpdFun = ( curItmObj ) => { // What: Charge Update Function. Why: A waiting item needs its own resolved step both applied to its value and persisted for next cycle. How: This resolves the step once via getSteFun, then returns an update carrying both the new value and that same step.
+
+
+				const curSteNum = getSteFun( curItmObj ); // What: Current Step Number. Why: This item's own resolved charge step is needed twice below, for the value increment and the persisted chargeStep. How: This calls getSteFun once and reuses the result.
+
+
+
+				return { id : curItmObj.id, value : curItmObj.value + curSteNum, chargeStep : curSteNum }; // What: Charge Update Return. Why: The caller needs both the charged value and the step that produced it, so next cycle can reuse the same plan. How: This builds the update object from curItmObj's own id/value plus curSteNum.
+
+
+			};
+
+			const eliItmArr = itmPooArr.filter( ( curItmObj ) => easEliFun( curItmObj, thrValNum ) ); // What: Eligible Item Array. Why: Only items that have actually charged up to (within tolerance of) thrValNum can be picked naturally. How: This keeps every item in itmPooArr that easEliFun reports as eligible.
+			const forIdeStr = optConObj && optConObj.forceItemId; // What: Force Identifier String. Why: A manual send (Today's Re-roll) may target any item in the pool, bypassing the eligibility gate entirely. How: This reads optConObj's own forceItemId, if any was given.
+			const forItmObj = forIdeStr && itmPooArr.find( ( curItmObj ) => curItmObj.id === forIdeStr ); // What: Forced Item Object. Why: A forced pick searches the WHOLE pool, not just eliItmArr, since the user chose this item directly. How: This looks forIdeStr up against itmPooArr rather than eliItmArr.
+
+			if ( !eliItmArr.length && !forItmObj ) { // What: No Eligible Item Guard. Why: With nothing eligible and no forced target, this cycle can only charge every waiting item, not actually pick one. How: This gates the early-return charge-only branch below.
+
+
+				const updItmArr = itmPooArr.map( chgUpdFun ); // What: Update Item Array. Why: Every item still needs its own charge applied even when nothing becomes eligible this cycle. How: This maps chgUpdFun across the whole pool.
+
+
+
+				return { picked : null, updates : updItmArr, cycleCandidates : itmPooArr }; // What: No Eligible Item Return. Why: The caller needs the charge updates applied even though there is no pick this cycle. How: This returns a null pick alongside updItmArr and the full pool.
+
+
+			}
+
+
+			const getTimFun = ( curItmObj ) => curItmObj.lastPicked ? Date.parse( curItmObj.lastPicked ) : 0; // What: Get Time Function. Why: A tie between equally-overdue items must break on whichever waited longest. How: This resolves an item's own lastPicked into a comparable timestamp, treating a never-picked item as the oldest possible (0).
+			const pikResObj = forItmObj || eliItmArr.reduce( ( besItmObj, curItmObj ) => { // What: Picked Result Object. Why: A forced target wins outright; otherwise the most overdue eligible item (by value, ties broken by oldest lastPicked) is picked. How: This reduces eliItmArr, keeping whichever of besItmObj/curItmObj is more overdue by the rules in its own body.
+
+
+				if ( !besItmObj ) return curItmObj; // What: First Candidate Guard. Why: The very first item walked by the reduce has nothing yet to compare against. How: This seeds besItmObj with curItmObj on that first iteration.
+
+				if ( curItmObj.value !== besItmObj.value ) return curItmObj.value > besItmObj.value ? curItmObj : besItmObj; // What: Higher Value Check. Why: A strictly more-overdue item (higher value) always wins over a less-overdue one. How: This compares curItmObj's own value against besItmObj's own value directly.
+
+
+
+				return getTimFun( curItmObj ) < getTimFun( besItmObj ) ? curItmObj : besItmObj; // What: Oldest Timestamp Tiebreak Return. Why: Two equally-overdue items must break their tie on whichever has waited longest. How: This compares both items' own resolved timestamps via getTimFun, keeping the older one.
+
+
+			}, null );
+
+			const updItmArr = itmPooArr.map( ( curItmObj ) => curItmObj.id === pikResObj.id ? { id : curItmObj.id, value : 0, chargeStep : rolSteFun( curItmObj ) } : chgUpdFun( curItmObj ) ); // What: Update Item Array. Why: The picked item must reset to 0 and roll a fresh plan, while every other item charges by its own existing plan. How: This maps itmPooArr, branching per item on whether it matches pikResObj's own id.
+
+			/**
+			 * ovrShoArr = Overshoot Array
+			 *
+			 * @summary
+			 * Values overshoot thrValNum while waiting, and with many
+			 * items that overshoot can drift into the hundreds over
+			 * time. This compresses it by pulling every still-waiting
+			 * item (value > thrValNum) down by the SMALLEST overshoot in
+			 * that group, so the least-overdue waiter lands back at
+			 * exactly thrValNum and the rest keep their own relative
+			 * order. Sub-threshold charging items are untouched, so each
+			 * item's own time-to-eligible (its cadence) is preserved
+			 * exactly; only the unbounded slack is removed. This needs
+			 * at least 2 overshooting items to mean anything; with only
+			 * one, "compress relative to the smallest" degenerates into
+			 * subtracting the item's own overshoot from itself,
+			 * unconditionally clamping any lone waiter back to exactly
+			 * thrValNum every cycle it isn't picked. That was the actual
+			 * bug this guards against: items looked like they could
+			 * never exceed 100.
+			 *
+			 * @author z4nta0 <https://github.com/z4nta0>
+			 *
+			*/
+
+			const ovrShoArr = updItmArr.filter( ( curUpdObj ) => curUpdObj.value > thrValNum ).map( ( curUpdObj ) => curUpdObj.value - thrValNum ); // What: Overshoot Array. Why: Compressing the inflation below needs every still-waiting item's own overshoot amount, not just which items overshot. How: This keeps updates whose value exceeds thrValNum, then maps each to how far past thrValNum it landed.
+
+			if ( ovrShoArr.length > 1 ) { // What: Multiple Overshoot Guard. Why: Compressing relative to the smallest overshoot only means something with at least 2 overshooting items; with only one, it degenerates into clamping that lone item back to exactly thrValNum every cycle. How: This gates the compression block below on there being more than one overshooting item.
+
+
+				const minOvrNum = Math.min( ...ovrShoArr ); // What: Minimum Overshoot Number. Why: Pulling every overshooting item down by the SMALLEST overshoot preserves their relative order while removing the shared unbounded slack. How: This finds the smallest value in ovrShoArr.
+
+				if ( minOvrNum > 0 ) { // What: Positive Minimum Guard. Why: A zero minimum overshoot means nothing to compress at all. How: This gates the actual subtraction loop below on minOvrNum being genuinely positive.
+
+
+					for ( const curUpdObj of updItmArr ) if ( curUpdObj.value > thrValNum ) curUpdObj.value -= minOvrNum; // What: Overshoot Compression Loop. Why: Every still-waiting item above thrValNum needs the same minOvrNum subtracted, so the least-overdue waiter lands back at exactly thrValNum. How: This walks updItmArr, decrementing value in place for every entry still above thrValNum.
+
+
+				}
+
+
+			}
+
+
+
+			return { picked : pikResObj, updates : updItmArr, cycleCandidates : eliItmArr }; // What: Ease Up Mode Return. Why: The caller needs the pick, every item's own charge/reset update, and the naturally-eligible set as the cycle animation's own candidates. How: This hands back pikResObj, updItmArr, and eliItmArr.
+
+
+		}
+
+		case 'ease-down': { // What: Ease Down Mode Branch. Why: This mode maintains a perpetual fair-rotation streak, one active item depleting over several cycles before a new one starts. How: See the design-rationale comment attached to thrValNum below for the full two-counter model.
+
+
+			/**
+			 * thrValNum (ease-down) = Threshold Value Number
+			 *
+			 * @summary
+			 * Perpetual fair-rotation model. Two things drive it, tracked
+			 * separately. value is the active item's own remaining
+			 * CHARGE: it decays each run while active, and at or below
+			 * EAS_TOL_NUM's own tolerance the item auto-recharges to full
+			 * and is released back into the pool, never depleting
+			 * permanently. weight is a system-managed FAIRNESS counter
+			 * (NOT a user preference, not surfaced in the UI): it changes
+			 * ONLY when a NEW active item is chosen, never on the
+			 * intermediate decay runs. At that moment the chosen item
+			 * resets to 0 and every OTHER item gains +1. A weight of 0 is
+			 * excluded from selection, so exactly one item (the
+			 * most-recently-picked) is barred from being re-picked on the
+			 * very next draw; it re-enters at weight 1 on the following
+			 * pick. Long-ignored items climb and grow steadily more
+			 * likely, fixing truly-random's own "an item can be ignored
+			 * forever / picked twice in a row" failure mode. A newly
+			 * chosen item rolls a target N cycles uniformly in its own
+			 * [shortest, longest] range and decays by a fixed step
+			 * (thrValNum/N), emptying in exactly N cycles; chargeStep
+			 * persists that plan across the streak, and a legacy item
+			 * with none lazily rolls one via rolSteFun below.
+			 *
+			 * @author z4nta0 <https://github.com/z4nta0>
+			 *
+			*/
+
+			const thrValNum = pikRecObj.threshold ?? 100; // What: Threshold Value Number. Why: Every charge/decay calculation below is relative to this picker's own threshold. How: This reads pikRecObj's own threshold, defaulting to 100 for older pickers with none set.
+			const falEasObj = avgEasFun( itmPooArr, pikRecObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a decay band to roll a target cycle count from. How: This computes the sibling-average fallback band via avgEasFun.
+			const rolSteFun = ( curItmObj ) => { // What: Roll Step Function. Why: A freshly-chosen item needs a brand new fixed decay step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that empties the item exactly in that many cycles.
+
+
+				const sooCycNum = Math.max( 1, Math.round( thrValNum / ( curItmObj.easeMax ?? falEasObj.easeMax ) ) );                  // What: Soonest Cycle Number. Why: This is the fewest cycles this item's own band allows before fully depleting. How: This divides thrValNum by the item's own (or fallback) easeMax, its fastest decay rate.
+				const latCycNum = Math.max( sooCycNum, Math.round( thrValNum / ( curItmObj.easeMin ?? falEasObj.easeMin ) ) ); // What: Latest Cycle Number. Why: This is the most cycles this item's own band allows before fully depleting. How: This divides thrValNum by the item's own (or fallback) easeMin, its slowest decay rate, floored at sooCycNum so the range is never inverted.
+				const tgtCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );                             // What: Target Cycle Number. Why: Every duration in [sooCycNum, latCycNum] should have equal odds of being this item's own plan. How: This rolls a uniform-random integer across that inclusive range.
+
+
+
+				return thrValNum / tgtCycNum; // What: Roll Step Return. Why: A fixed step of this size decays the item from thrValNum to 0 in exactly tgtCycNum cycles. How: This divides thrValNum by tgtCycNum.
+
+
+			};
+
+			const forIdeStr = optConObj && optConObj.forceItemId; // What: Force Identifier String. Why: A manual send may target a specific item directly. How: This reads optConObj's own forceItemId, if any was given.
+			const forNewBoo = !!( optConObj && optConObj.forceNew ) || !!( forIdeStr && forIdeStr !== pikRecObj.activeItemId ); // What: Force New Boolean. Why: A manual send of a DIFFERENT item than the current active one must start a fresh streak, same as an explicit re-roll. How: This is true when optConObj.forceNew was given directly, or when forIdeStr names an item other than pikRecObj's own current activeItemId.
+			const updItmArr = []; // What: Update Item Array. Why: Both branches below (continue vs. start new) need a shared place to collect their own item-state changes. How: This starts empty and is pushed to by whichever branch below actually runs.
+
+
+			let actItmObj = null; // What: Active Item Object. Why: The continue-branch below needs to know whether there is a real, still-charged active item to keep decaying. How: This starts null and is only assigned when pikRecObj's own activeItemId resolves to a real, still-positive item.
+
+			if ( pikRecObj.activeItemId && !forNewBoo ) { // What: Active Item Lookup Check. Why: A streak can only continue when this picker actually has an active item AND this draw isn't forcing a new one. How: This gates the lookup below on both conditions holding.
+
+
+				actItmObj = itmPooArr.find( ( curItmObj ) => curItmObj.id === pikRecObj.activeItemId && curItmObj.value > 0 ); // What: Active Item Object Assignment. Why: An active item that has already fully depleted (value at or below 0) doesn't count as still active. How: This searches itmPooArr for the item matching pikRecObj's own activeItemId with a positive value remaining.
+
+
+			}
+
+
+			if ( actItmObj ) { // What: Continue Streak Check. Why: A real active item found above means this draw continues its own depletion rather than starting a new streak. How: This gates the whole continue-branch below, which returns directly.
+
+
+				const decValNum = ( actItmObj.chargeStep && actItmObj.chargeStep > 0 ) ? actItmObj.chargeStep : rolSteFun( actItmObj ); // What: Decay Value Number. Why: An item already mid-plan must keep decaying by its own already-rolled step; only a legacy item with none rolls a fresh one. How: This returns actItmObj's own chargeStep when it's a real positive number, rolling one via rolSteFun otherwise.
+				const newValNum = Math.max( 0, actItmObj.value - decValNum );                                                          // What: New Value Number. Why: The active item's own remaining charge must never go negative. How: This subtracts decValNum from actItmObj's own value, floored at 0.
+				const depEndBoo = newValNum <= 0.5;                                                                                     // What: Depleted End Boolean. Why: A half-unit tolerance matches easEliFun's own, so a step that lands a hair under 0 still counts as fully depleted this cycle. How: This checks newValNum against 0.5 rather than a strict 0.
+
+				updItmArr.push( { id : actItmObj.id, value : depEndBoo ? thrValNum : newValNum, chargeStep : decValNum } ); // What: Continue Update Push. Why: A depleted item must auto-recharge to full rather than sit at (or below) 0 forever. How: This pushes newValNum normally, or thrValNum when depEndBoo, alongside the same decValNum for the next cycle's own plan.
+
+
+
+				return { // What: Continue Streak Return. Why: The active item stays picked while it decays, releasing back into the pool (activeItemId cleared) only once fully depleted. How: This returns actItmObj as the pick, updItmArr, itself as the sole cycle candidate, and a pickerPatch clearing activeItemId only when depEndBoo.
+
+
+					picked          : actItmObj,
+					updates         : updItmArr,
+					cycleCandidates : [ actItmObj ],
+					depletedEnd     : depEndBoo,
+					pickerPatch     : { activeItemId : depEndBoo ? null : actItmObj.id }
+
+
+				};
+
+
+			}
+
+
+			const abaIdeStr = forNewBoo ? pikRecObj.activeItemId : null; // What: Abandoned Identifier String. Why: A forced new streak abandons whatever was active, which still needs recharging back to full below. How: This reads pikRecObj's own activeItemId only when forNewBoo, null otherwise.
+
+			if ( abaIdeStr ) { // What: Abandoned Item Check. Why: An abandoned item needs recharging back to full charge, just like a naturally-released one. How: This gates the lookup-and-recharge block below on there actually being an abandoned item.
+
+
+				const oldItmObj = itmAllArr.find( ( curItmObj ) => curItmObj.id === abaIdeStr ); // What: Old Item Object. Why: The abandoned item may no longer be eligible (or even still exist), so this must search the FULL snapshot, not just itmPooArr. How: This searches itmAllArr for the item matching abaIdeStr.
+
+				if ( oldItmObj ) updItmArr.push( { id : oldItmObj.id, value : thrValNum } ); // What: Abandoned Item Recharge Push. Why: The abandoned item must recharge to full even though this draw is choosing a different one. How: This pushes a value:thrValNum update for oldItmObj, only when it was actually found.
+
+
+			}
+
+
+			let canItmArr = itmPooArr.filter( ( curItmObj ) => ( curItmObj.weight ?? 1 ) > 0 && curItmObj.id !== abaIdeStr ); // What: Candidate Item Array. Why: The new streak's draw excludes the single most-recently-picked item (weight 0) and the just-abandoned one. How: This keeps items with a positive (or defaulted) weight whose id doesn't match abaIdeStr.
+
+			if ( !canItmArr.length ) canItmArr = itmPooArr.filter( ( curItmObj ) => curItmObj.id !== abaIdeStr ); // What: No Weighted Candidate Fallback. Why: An all-zero-weight pool would otherwise leave nothing to draw from. How: This falls back to every item except the abandoned one, ignoring weight entirely.
+
+			if ( !canItmArr.length ) canItmArr = itmPooArr; // What: No Candidate Fallback. Why: A pool of exactly one item (which is also the abandoned one) would otherwise leave nothing at all. How: This falls back to the full pool as a last resort.
+
+
+			const chsItmObj = ( forIdeStr && itmPooArr.find( ( curItmObj ) => curItmObj.id === forIdeStr ) ) || weiPicFun( canItmArr, ( curItmObj ) => Math.max( 0, curItmObj.weight ?? 1 ) ); // What: Chosen Item Object. Why: A forced target wins outright when given and actually found; otherwise the new streak draws weighted by fairness weight. How: This tries the forced lookup first, falling back to weiPicFun against canItmArr.
+
+
+			for ( const curItmObj of itmPooArr ) { // What: Fairness Bookkeeping Loop. Why: Every OTHER item's own fairness weight must climb by 1, and this happens only here, on a new-streak draw. How: This walks itmPooArr, skipping the chosen item and pushing a weight+1 update for every other one.
+
+
+				if ( curItmObj.id === chsItmObj.id ) continue; // What: Chosen Item Skip. Why: The chosen item's own weight resets to 0 below instead, not +1 here. How: This skips straight to the next item when curItmObj is the one just chosen.
+
+				updItmArr.push( { id : curItmObj.id, weight : ( curItmObj.weight ?? 1 ) + 1 } ); // What: Other Item Weight Increment Push. Why: Every item not chosen this draw should become steadily more likely on a future one. How: This pushes a weight update one higher than curItmObj's own current (or defaulted) weight.
+
+
+			}
+
+
+			const basValNum = chsItmObj.value > 0 ? chsItmObj.value : thrValNum; // What: Base Value Number. Why: The freshly-chosen item decays from its own full charge, which may already be sitting at thrValNum or need defaulting there. How: This uses chsItmObj's own value when positive, thrValNum otherwise.
+			const decValNum = rolSteFun( chsItmObj );                              // What: Decay Value Number. Why: A brand new streak always rolls a fresh decay plan, never reusing a stale chargeStep. How: This calls rolSteFun directly for chsItmObj.
+			const newValNum = Math.max( 0, basValNum - decValNum );                // What: New Value Number. Why: The freshly-chosen item's own first decay step must never go negative. How: This subtracts decValNum from basValNum, floored at 0.
+			const depEndBoo = newValNum <= 0.5;                                    // What: Depleted End Boolean. Why: Same half-unit tolerance as the continue-branch above, in case a single-cycle plan empties immediately. How: This checks newValNum against 0.5 rather than a strict 0.
+
+			updItmArr.push( { id : chsItmObj.id, value : depEndBoo ? thrValNum : newValNum, weight : 0, chargeStep : decValNum } ); // What: New Streak Update Push. Why: The chosen item's own weight resets to 0 (excluding it from the very next draw) alongside its first decay step. How: This pushes the resolved value, a weight of 0, and decValNum for next cycle's own plan.
+
+
+
+			return { // What: New Streak Return. Why: The chosen item becomes the new active one while it decays, tracked via pickerPatch's own activeItemId. How: This returns chsItmObj as the pick, updItmArr, canItmArr as the cycle candidates, and a pickerPatch setting activeItemId only when not already depEndBoo.
+
+
+				picked          : chsItmObj,
+				updates         : updItmArr,
+				cycleCandidates : canItmArr,
+				depletedEnd     : depEndBoo,
+				pickerPatch     : { activeItemId : depEndBoo ? null : chsItmObj.id }
+
+
+			};
+
+
+		}
+
+		default: // What: Default Branch. Why: An unrecognized or missing mode has no defined algorithm to run. How: This falls through to the same empty result shape every mode falls back to below.
+
+
+			return { picked : null, updates : [], cycleCandidates : [] }; // What: Default Branch Return. Why: There is no algorithm defined for an unrecognized mode. How: This returns the same empty result shape used by the empty-pool guard above.
+
+
+	}
+
+
 }
 
-// Ease Up eligibility, in ONE place. The half-unit tolerance matters: a
-// threshold/N charge step (100/3, say) can land a hair under the threshold on
-// the very cycle it was planned to become eligible. The engine has always used
-// it; Today's re-roll did not, so an item at 99.7 could be picked by the
-// generator yet be invisible to re-roll cycling (and to the count that enables
-// the button). Callers must use this rather than comparing values themselves.
-const EASE_TOL = 0.5;
-const easeEligible = (item, threshold) => (item.value ?? 0) >= ((threshold ?? 100) - EASE_TOL);
+// #endregion pikItmFun
 
-// Whether an item could be picked RIGHT NOW under its picker's mode. Active/
-// inactive is deliberately not considered here — callers that care combine
-// it, and the Pickers pool shows inactive as its own row state.
-const modeEligible = (item, picker) => {
-  if (!picker) return true;
-  if (picker.mode === 'ease-up') return easeEligible(item, picker.threshold);
-  if (picker.mode === 'ease-down') return (item.value ?? 0) > 0;
-  return true;
+
+
+// #region reaValFun
+
+/**
+ * reaValFun = Readiness Value Function
+ *
+ * @summary
+ * Computes a 0-1 readiness number for one item under its own picker's
+ * mode, used by the Pickers view's "current state" rows as a visual
+ * progress indicator. Modes with no meaningful readiness concept (random,
+ * weighted) return null.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param itmRecObj - The item to compute readiness for.
+ * @param modKeyStr - The item's own picker's mode.
+ * @param thrValNum - The item's own picker's threshold, defaulting to 100
+ *                    to match every other threshold default in this file.
+ *
+ * @returns A 0-1 readiness number, or null when modKeyStr has no
+ * meaningful readiness concept.
+ *
+ * @example
+ * ```ts
+ * reaValFun(itmRecObj, modKeyStr, thrValNum) // => 0-1 readiness or null
+ * ```
+ *
+*/
+
+function reaValFun( itmRecObj, modKeyStr, thrValNum = 100 ) {
+
+
+	if ( modKeyStr === 'ease-up' ) return Math.min( 1, itmRecObj.value / thrValNum ); // What: Ease Up Readiness Check. Why: Ease Up's own readiness is how close the item's value has charged toward thrValNum. How: This divides itmRecObj's own value by thrValNum, capped at 1.
+
+	if ( modKeyStr === 'ease-down' ) return Math.max( 0, itmRecObj.value / thrValNum ); // What: Ease Down Readiness Check. Why: Ease Down's own readiness is how much charge the active item has left before depleting. How: This divides itmRecObj's own value by thrValNum, floored at 0.
+
+	if ( modKeyStr === 'dynamic' ) return Math.min( 1, itmRecObj.value / 50 ); // What: Dynamic Readiness Check. Why: Dynamic's own drift value has no fixed threshold, so this uses a flat soft cap purely for visualization. How: This divides itmRecObj's own value by a fixed 50, capped at 1.
+
+
+
+	return null; // What: No Readiness Return. Why: Random and weighted modes have no meaningful readiness concept at all. How: This returns null for every mode not already handled above.
+
+
+}
+
+// #endregion reaValFun
+
+
+
+const DEF_EAS_OBJ = { easeMin : 7, easeMax : 14 }; // What: Default Ease Object. Why: A brand new picker with no items yet (or an ease-mode switch before any item has its own band) needs some flat drift band to fall back to. How: This is read directly by avgEasFun below whenever every sibling item (or the pool itself) has nothing better to offer.
+
+
+
+// #region avgEasFun
+
+/**
+ * avgEasFun = Average Ease Function
+ *
+ * @summary
+ * Computes a fallback easeMin/easeMax drift band for an ease-up/ease-down
+ * item with no band of its own, by averaging the OTHER items already on
+ * the same picker (each falling back to DEF_EAS_OBJ itself, so a single
+ * bare sibling can't skew this into NaN), rather than keeping a separate
+ * per-picker default in sync by hand. Used both to stamp a freshly added
+ * item's own easeMin/easeMax immediately, and, for any item that still
+ * doesn't have its own values, as the same safety-net fallback pikItmFun
+ * itself uses.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param itmAllArr - The items to average siblings from (only entries
+ *                    matching pikIdeStr are actually used).
+ * @param pikIdeStr - The picker id whose own items' band should be
+ *                    averaged.
+ *
+ * @returns { easeMin, easeMax }, averaged from itmAllArr's own matching
+ * items, or a copy of DEF_EAS_OBJ when none exist at all.
+ *
+ * @example
+ * ```ts
+ * avgEasFun(itmAllArr, pikIdeStr) // => { easeMin, easeMax }
+ * ```
+ *
+*/
+
+function avgEasFun( itmAllArr, pikIdeStr ) {
+
+
+	const sibItmArr = ( itmAllArr || [] ).filter( ( curItmObj ) => curItmObj.pickerId === pikIdeStr ); // What: Sibling Item Array. Why: Only this picker's own items should factor into its own averaged band. How: This filters itmAllArr down to items whose own pickerId matches pikIdeStr.
+
+	if ( !sibItmArr.length ) return { ...DEF_EAS_OBJ }; // What: No Sibling Guard. Why: A picker with no items yet at all has nothing real to average. How: This returns a fresh copy of DEF_EAS_OBJ early when sibItmArr came out empty.
+
+
+	const avgKeyFun = ( curKeyStr ) => sibItmArr.reduce( ( sumValNum, curItmObj ) => sumValNum + ( curItmObj[ curKeyStr ] ?? DEF_EAS_OBJ[ curKeyStr ] ), 0 ) / sibItmArr.length; // What: Average Key Function. Why: Both easeMin and easeMax need the exact same averaging logic, just keyed differently. How: This sums curKeyStr across sibItmArr (each falling back to DEF_EAS_OBJ's own value when missing), divided by the sibling count.
+
+
+
+	return { easeMin : Math.max( 1, Math.round( avgKeyFun( 'easeMin' ) ) ), easeMax : Math.max( 1, Math.round( avgKeyFun( 'easeMax' ) ) ) }; // What: Averaged Ease Return. Why: The caller needs a real, rounded, at-least-1 band, not a raw (possibly fractional or zero) average. How: This rounds and floors-at-1 both avgKeyFun results.
+
+
+}
+
+// #endregion avgEasFun
+
+
+
+const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N charge step (100/3, say) can land a hair under thrValNum on the very cycle it was planned to become eligible, and this tolerance must be the ONE place that's decided, not re-derived per caller. How: This is read directly by easEliFun below, the single source every eligibility check in this file and its callers must use.
+const easEliFun   = ( itmRecObj, thrValNum ) => ( itmRecObj.value ?? 0 ) >= ( ( thrValNum ?? 100 ) - EAS_TOL_NUM ); // What: Ease Eligible Function. Why: Comparing an item's own value against its threshold directly (with no tolerance) can make an item at 99.7 invisible to a re-roll cycle count while still being eligible to the generator itself, a real inconsistency this file used to have. How: This treats itmRecObj as eligible once its own value reaches thrValNum minus EAS_TOL_NUM, both defaulted the same way pikItmFun defaults them.
+
+
+
+const modEliFun = ( itmRecObj, pikRecObj ) => { // What: Mode Eligible Function. Why: Some callers need to know whether an item could be picked RIGHT NOW under its own picker's mode, independent of whether the item is active/inactive. How: This branches on pikRecObj's own mode, delegating ease-up to easEliFun and treating ease-down/dynamic/random/weighted by their own simpler rules.
+
+
+	if ( !pikRecObj ) return true; // What: No Picker Guard. Why: With no picker to check a mode against, nothing can be ruled ineligible. How: This returns true early when pikRecObj is missing.
+
+	if ( pikRecObj.mode === 'ease-up' ) return easEliFun( itmRecObj, pikRecObj.threshold ); // What: Ease Up Mode Check. Why: Ease Up's own eligibility is exactly easEliFun's own tolerance-aware threshold check. How: This delegates straight to easEliFun.
+
+	if ( pikRecObj.mode === 'ease-down' ) return ( itmRecObj.value ?? 0 ) > 0; // What: Ease Down Mode Check. Why: Ease Down's own eligibility is simply having any charge left at all. How: This checks itmRecObj's own value against 0 directly.
+
+
+
+	return true; // What: Default Mode Return. Why: Random, weighted, and dynamic modes have no additional eligibility rule beyond already being in the pool. How: This returns true for every mode not already handled above.
+
+
 };
 
-export const PICKERS = { pick, readiness, easeEligible, modeEligible, EASE_TOL, avgEase, DEFAULT_EASE };
+
+
+export const PICKERS = { pick : pikItmFun, readiness : reaValFun, easeEligible : easEliFun, modeEligible : modEliFun, EASE_TOL : EAS_TOL_NUM, avgEase : avgEasFun, DEFAULT_EASE : DEF_EAS_OBJ }; // What: Pickers Namespace Object. Why: store.jsx, tab-today.jsx, and tab-picker.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on, deliberately left unrenamed (see this file's own header comment).
+
+
+

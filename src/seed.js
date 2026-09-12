@@ -1,4 +1,4 @@
-import { HOLIDAYS } from './holidays.js';
+import { HOL_NAM_OBJ } from './holidays.js';
 import { TASKS } from './tasks.js';
 
 // Seed data + canonical types for Ease My Life.
@@ -479,7 +479,7 @@ function buildSeed() {
         active: true, triggered: false, easeMin: 18, easeMax: 30, threshold: 100, chargedToday: false },
     ],
     daily: { pickerIds: pickers.map((p) => p.id), runTime: '04:00', mode: 'auto' }, // every picker runs daily, auto-run 4am
-    holidays: HOLIDAYS.defaultState(),
+    holidays: HOL_NAM_OBJ.defaultState(),
     appearance: { theme: 'ink', customLight: null, customDark: null, autoSystem: false, pickAnim: 'reel', completionStyle: 'confetti', tabPlacement: 'bottom' },
     // Manual reminders — statically scheduled tasks shown atop Today.
     tasks: [
@@ -564,7 +564,7 @@ function buildClean() {
     pickers: [],
     conditionals: [],
     daily: { pickerIds: [], runTime: '04:00', mode: 'auto' },
-    holidays: HOLIDAYS.defaultState(),
+    holidays: HOL_NAM_OBJ.defaultState(),
     appearance: { theme: 'ink', customLight: null, customDark: null, autoSystem: false, pickAnim: 'reel', completionStyle: 'confetti', tabPlacement: 'bottom' },
     tasks: [],
     reminderOpts: TASKS.defaultOpts(),

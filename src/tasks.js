@@ -1,4 +1,4 @@
-import { HOLIDAYS } from './holidays.js';
+import { HOL_NAM_OBJ } from './holidays.js';
 
 // Reminders engine — manual, statically-scheduled tasks that live alongside
 // the random pickers. Unlike a picker (which chooses ONE item from many), a
@@ -293,7 +293,7 @@ function optsFor(task, opts) {
 // their type's weekend / holiday switches.
 function visibleToday(tasks, opts, holidayState, date = new Date()) {
   const weekend = date.getDay() === 0 || date.getDay() === 6;
-  const holiday = !!(HOLIDAYS && HOLIDAYS.holidayOn(holidayState, date));
+  const holiday = !!(HOL_NAM_OBJ && HOL_NAM_OBJ.holidayOn(holidayState, date));
   const todayIso = isoOf(date);
   return dueToday(tasks, date).filter((t) => {
     const o = optsFor(t, opts);
@@ -320,9 +320,9 @@ function todayVisibility(task, opts, holidayState, date = new Date()) {
   const weekend = date.getDay() === 0 || date.getDay() === 6;
   // Full record (not just the name) so the advisory can distinguish "the
   // Christmas Day holiday" from "your Family Day custom holiday".
-  const hol = HOLIDAYS && HOLIDAYS.holidayInfoOn
-    ? HOLIDAYS.holidayInfoOn(holidayState, date)
-    : (HOLIDAYS && HOLIDAYS.holidayOn(holidayState, date) ? { name: HOLIDAYS.holidayOn(holidayState, date), custom: false } : null);
+  const hol = HOL_NAM_OBJ && HOL_NAM_OBJ.holidayInfoOn
+    ? HOL_NAM_OBJ.holidayInfoOn(holidayState, date)
+    : (HOL_NAM_OBJ && HOL_NAM_OBJ.holidayOn(holidayState, date) ? { name: HOL_NAM_OBJ.holidayOn(holidayState, date), custom: false } : null);
   const holiday = !!hol;
   const todayIso = isoOf(date);
   // ALL applicable reasons, not just the first: a day can be both an excluded
@@ -381,7 +381,7 @@ function nextEligible(task, opts, holidayState, from = new Date(), respectSkipUn
     if (respectSkipUntil && task.skipUntil && isoOf(d) < task.skipUntil) continue;
     const weekend = d.getDay() === 0 || d.getDay() === 6;
     if (o.excludeWeekends && weekend) continue;
-    if (o.excludeHolidays && HOLIDAYS && HOLIDAYS.holidayOn(holidayState, d)) continue;
+    if (o.excludeHolidays && HOL_NAM_OBJ && HOL_NAM_OBJ.holidayOn(holidayState, d)) continue;
     return d;
   }
   return null;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { APP_NAM_OBJ } from './appearance.js';
-import { HOLIDAYS } from './holidays.js';
+import { HOL_NAM_OBJ } from './holidays.js';
 import { LegalModal } from './legal-docs.jsx';
 import { NOT_NAM_OBJ } from './notify.js';
 import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';
@@ -28,8 +28,8 @@ function fmtRunTime(hhmm) {
 // gate reads against.
 function HolidayEditor({ state, actions }) {
   const year = new Date().getFullYear();
-  const hstate = state.holidays || HOLIDAYS.defaultState();
-  const computed = HOLIDAYS.computeForYear(year, hstate.country);
+  const hstate = state.holidays || HOL_NAM_OBJ.defaultState();
+  const computed = HOL_NAM_OBJ.computeForYear(year, hstate.country);
   const disabled = hstate.disabled || [];
   const custom = hstate.custom || [];
   const [name, setName] = React.useState('');
