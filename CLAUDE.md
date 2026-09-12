@@ -1051,20 +1051,14 @@ catch ( e ) {
   relatedness tiering below instead.
 
 ### JSX
-- No space after `<`/`</` or before `>`/`/>` on any element — `<span>`,
-  `</span>`, `<img src='x' />` all stay tight. (An earlier version of this
-  doc required a space there; reversed once multi-line attributes — see
-  below — became the norm, since the tag name and its attribute list are
-  now already visually separated by being on different lines, and the
-  extra bracket-spacing just added noise on top of that.)
-  - **Exception**: a one-line element with exactly one attribute (the
-    only case where an element can have an attribute AND still be
-    one-line, since 2+ always forces multi-line) DOES get a space before
-    its closing `>` — e.g. `<span className='brand-name'>` →
-    `<span className='brand-name' >`. A self-closing one-liner already has
-    this space before `/>` from the pre-existing convention, so it's
-    unaffected. A zero-attribute element (`<defs>`) or a closing tag
-    (`</span>`, never carries attributes) stays tight either way.
+- No space after `<`/`</` or before `>`/`/>` on any element, including a
+  one-line element with exactly one attribute — `<span>`, `</span>`,
+  `<span className='brand-name'>`, `<img src='x' />` all stay tight. (An
+  earlier version of this doc required a space before a one-attribute
+  element's closing `>` specifically; dropped as stale/superseded once
+  app.jsx's own actual practice — confirmed never applying it, including
+  at the exact element the old rule used as its own example — showed it
+  wasn't really the intended convention.)
 - Every JSX expression container — an attribute value (`ref={navEleRef}`)
   or a JSX child expression (`{actIdeStr === 'today' && ...}`) — gets a
   space directly after its `{` and directly before its `}`:

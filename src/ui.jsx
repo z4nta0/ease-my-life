@@ -273,11 +273,11 @@ function Collapse ( { open, children, className = '', instant = false } ) {
 
 
 
-// What: SectionTitle. Why: Several full-page views need the same kicker/title/subtitle header shape. How: This renders an optional kicker line, the required title as an h1, and an optional sub line.
-const SectionTitle = ( { kicker, title, sub } ) => (
+// What: Section Title Component. Why: Several full-page views need the same kicker/title/subtitle header shape. How: This renders an optional kicker line, the required title as an h1, and an optional sub line.
+const SecTitCom = ( { kicker, title, sub } ) => (
 
 
-	<header className='section-h'>{ /* What: Container Section Header Element. Why: This is SectionTitle's own root landmark element. How: This wraps the optional kicker, the required title, and the optional sub line below. */ }
+	<header className='section-h'>{ /* What: Container Section Header Element. Why: This is SecTitCom's own root landmark element. How: This wraps the optional kicker, the required title, and the optional sub line below. */ }
 
 
 		{ kicker && <div className='kicker'>{ kicker }</div> }{ /* What: Kicker Visibility Check. Why: Not every section has a kicker line above its title. How: This renders the kicker div only while the kicker prop holds a value. */ }
@@ -411,12 +411,12 @@ const WeekdayChips = ( { value, onChange, size = 'md', lockedDay = null, lockedT
 
 
 
-const WEE_ABB_ARR = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ]; // What: Week Abbreviation Array. Why: The abbreviated-list fallback below needs a 3-letter label per weekday. How: This is indexed by day number inside weekdaySummary below.
+const WEE_ABB_ARR = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ]; // What: Week Abbreviation Array. Why: The abbreviated-list fallback below needs a 3-letter label per weekday. How: This is indexed by day number inside weeSumFun below.
 
 
 
-// What: weekdaySummary. Why: Cadence editors need a compact human-readable summary of an arbitrary day selection instead of showing the raw index array. How: This sorts a defensive copy of daySelArr and matches it against the "every day"/"weekdays"/"weekends"/"never" special cases before falling back to an abbreviated list.
-const weekdaySummary = ( daySelArr ) => {
+// What: Weekday Summary Function. Why: Cadence editors need a compact human-readable summary of an arbitrary day selection instead of showing the raw index array. How: This sorts a defensive copy of daySelArr and matches it against the "every day"/"weekdays"/"weekends"/"never" special cases before falling back to an abbreviated list.
+const weeSumFun = ( daySelArr ) => {
 
 
 	const sorDayArr = [ ...( daySelArr || [] ) ].sort( ( aDayNum, bDayNum ) => aDayNum - bDayNum ); // What: Sorted Day Array. Why: Every check below assumes an ascending, defensive copy rather than mutating or trusting the caller's own array order. How: This spreads a copy of daySelArr (or an empty array when it's missing) and sorts it ascending.
