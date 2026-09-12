@@ -323,12 +323,28 @@ function advValFun( conCurObj ) {
 
 
 
-		return { value : newValNum, triggered : newValNum >= thrValNum, chargedToday : true, chargeStep : steValNum }; // What: Ease Up Charge Return. Why: This completion's own charge step must land in the returned patch alongside the newly-advanced value and triggered state. How: This applies steValNum to conCurObj's own value, clamped to [0, thrValNum], then triggers once that reaches thrValNum.
+		return {
+
+
+			value        : newValNum,              // What: Value. Why: This completion's own newly-advanced charge must land in the returned patch. How: This carries newValNum through unchanged.
+			triggered    : newValNum >= thrValNum, // What: Triggered. Why: The conditional fires the moment its charge actually reaches thrValNum. How: This compares newValNum against thrValNum directly.
+			chargedToday : true,                   // What: Charged Today. Why: This completion must not also charge this same conditional again later today. How: This is fixed true whenever this branch runs at all.
+			chargeStep   : steValNum               // What: Charge Step. Why: The already-rolled plan for this streak must carry forward unchanged. How: This carries steValNum through unchanged.
+
+
+		};
 
 
 	}
 
-	if ( conCurObj.mode === 'dynamic' ) return { value : ( conCurObj.value || 0 ) + 10, chargedToday : true }; // What: Dynamic Miss Accrual Return. Why: A dynamic conditional's own odds should climb after a completion that means today's roll did not fire. How: This adds a fixed 10 percentage points onto conCurObj's own value.
+	if ( conCurObj.mode === 'dynamic' ) return { // What: Dynamic Miss Accrual Return. Why: A dynamic conditional's own odds should climb after a completion that means today's roll did not fire. How: This adds a fixed 10 percentage points onto conCurObj's own value.
+
+
+		value        : ( conCurObj.value || 0 ) + 10, // What: Value. Why: A dynamic conditional's own odds climb by a fixed amount after a miss. How: This adds 10 onto conCurObj's own current value, defaulting a missing value to 0 first.
+		chargedToday : true                           // What: Charged Today. Why: This completion must not also charge this same conditional again later today. How: This is fixed true whenever this branch runs at all.
+
+
+	};
 
 	if ( conCurObj.mode === 'ease-down' ) {
 
@@ -400,7 +416,15 @@ function carComFun( conCurObj ) {
 
 
 
-		return { value : newValNum, triggered : newValNum > 0, chargeStep : steValNum }; // What: Ease Down Discharge Return. Why: This streak continues discharging on its own already-rolled plan; no new roll happens here, only at refill (see advValFun). How: This subtracts steValNum from conCurObj's own value, clamped to [0, thrValNum], clearing triggered only once it reaches 0.
+		return {
+
+
+			value      : newValNum,     // What: Value. Why: This completion's own newly-discharged value must land in the returned patch. How: This carries newValNum through unchanged.
+			triggered  : newValNum > 0, // What: Triggered. Why: This streak stays triggered only while it hasn't fully discharged to 0 yet. How: This compares newValNum against 0 directly.
+			chargeStep : steValNum      // What: Charge Step. Why: The already-rolled plan for this streak must carry forward unchanged. How: This carries steValNum through unchanged.
+
+
+		};
 
 
 	}

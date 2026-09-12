@@ -508,7 +508,15 @@ function pikItmFun( pikRecObj, itmAllArr, optConObj ) {
 
 
 
-				return { id : curItmObj.id, value : curItmObj.value + curSteNum, chargeStep : curSteNum }; // What: Charge Update Return. Why: The caller needs both the charged value and the step that produced it, so next cycle can reuse the same plan. How: This builds the update object from curItmObj's own id/value plus curSteNum.
+				return {
+
+
+					id         : curItmObj.id,               // What: Id. Why: The caller needs to know which item this update applies to. How: This carries curItmObj's own id through unchanged.
+					value      : curItmObj.value + curSteNum, // What: Value. Why: This is the actual charged value the caller needs to persist. How: This adds curSteNum onto curItmObj's own current value.
+					chargeStep : curSteNum                    // What: Charge Step. Why: Next cycle must keep charging by this exact same step, not roll a new one. How: This carries curSteNum through unchanged for getSteFun to find on the next pass.
+
+
+				};
 
 
 			};
