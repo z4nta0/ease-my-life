@@ -698,7 +698,26 @@ function enfWeeFun( pkrCadObj ) {
 
 
 
-export const CADENCE = { CADENCES : CAD_OPT_ARR, isCadence : isaCadFun, unitWord : uniWorFun, normalize : norCadFun, tipFor : tipMsgFun, lockedDayTip : locTipFun, enforceWeeklyDay : enfWeeFun, isAnchorDay : isaAncFun, periodStart : perStaFun, periodKey : perKeyFun, completedThisPeriod : comPerFun, summary : sumCadFun, isoOf : fmtIsoFun, daysInMonth : dimCntFun }; // What: Cadence Namespace Object. Why: store.jsx, tab-today.jsx, tab-picker.jsx, tab-data.jsx, tab-stats.jsx, day-log.jsx, and cadence-control.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on, deliberately left unrenamed (see this file's own header comment).
+export const CADENCE = { // What: Cadence Namespace Object. Why: store.jsx, tab-today.jsx, tab-picker.jsx, tab-data.jsx, tab-stats.jsx, day-log.jsx, and cadence-control.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on.
+
+
+	CADENCES            : CAD_OPT_ARR, // What: Cadences. Why: Callers (a picker's own cadence dropdown) need the fixed list of valid cadence option values. How: This re-exports CAD_OPT_ARR under its original external property name.
+	isCadence           : isaCadFun,   // What: Is Cadence. Why: Callers validate an arbitrary string as a real cadence value by this exact name. How: This re-exports isaCadFun under its original external property name.
+	unitWord            : uniWorFun,   // What: Unit Word. Why: Callers need a cadence's own human-readable unit word (day/week/month/year) by this exact name. How: This re-exports uniWorFun under its original external property name.
+	normalize           : norCadFun,   // What: Normalize. Why: store.jsx calls this to fill in every cadence-related field a picker needs, defaulted consistently. How: This re-exports norCadFun under its original external property name.
+	tipFor              : tipMsgFun,   // What: Tip For. Why: Callers need the explanatory tooltip text for a given cadence by this exact name. How: This re-exports tipMsgFun under its original external property name.
+	lockedDayTip        : locTipFun,   // What: Locked Day Tip. Why: Callers need the explanatory tooltip text for a weekly cadence's own locked anchor day by this exact name. How: This re-exports locTipFun under its original external property name.
+	enforceWeeklyDay    : enfWeeFun,   // What: Enforce Weekly Day. Why: Callers need a weekly picker's own anchor day folded back into its selected days by this exact name. How: This re-exports enfWeeFun under its original external property name.
+	isAnchorDay         : isaAncFun,   // What: Is Anchor Day. Why: Callers check whether a given weekday is a weekly picker's own locked anchor by this exact name. How: This re-exports isaAncFun under its original external property name.
+	periodStart         : perStaFun,   // What: Period Start. Why: Callers need a given date's own period-start date by this exact name. How: This re-exports perStaFun under its original external property name.
+	periodKey           : perKeyFun,   // What: Period Key. Why: Callers need a given date's own comparable period key by this exact name. How: This re-exports perKeyFun under its original external property name.
+	completedThisPeriod : comPerFun,   // What: Completed This Period. Why: Callers check whether a picker has already completed its own current period by this exact name. How: This re-exports comPerFun under its original external property name.
+	summary             : sumCadFun,   // What: Summary. Why: Callers need a picker's own human-readable cadence summary by this exact name. How: This re-exports sumCadFun under its original external property name.
+	isoOf               : fmtIsoFun,   // What: Iso Of. Why: Callers need a date's own ISO string by this exact name. How: This re-exports fmtIsoFun under its original external property name.
+	daysInMonth         : dimCntFun    // What: Days In Month. Why: Callers need a given year/month's own real day count by this exact name. How: This re-exports dimCntFun under its original external property name.
+
+
+};
 
 
 
