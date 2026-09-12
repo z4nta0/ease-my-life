@@ -41,7 +41,7 @@ import { TASKS        } from './tasks.js';        // What: Tasks. Why: Reminders
 
 
 
-// What: isoDayFun. Why: Every log lookup below needs a plain local-timezone "YYYY-MM-DD" key to match against state.pickLog's own date field. How: This shifts a copy of inpDatObj by its own timezone offset before slicing the ISO string down to just the date.
+// What: Iso Day Function. Why: Every log lookup below needs a plain local-timezone "YYYY-MM-DD" key to match against state.pickLog's own date field. How: This shifts a copy of inpDatObj by its own timezone offset before slicing the ISO string down to just the date.
 const isoDayFun = ( inpDatObj = new Date() ) => {
 
 
@@ -62,7 +62,7 @@ const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease-mode r
 
 
 
-// What: hasValFun. Why: PicBloCom and ValCelCom both need to know whether a picker's own mode tracks a numeric value at all, since random/weighted modes have nothing to show in the At-generation/After columns. How: This is called with a picker's own mode string.
+// What: Has Value Function. Why: PicBloCom and ValCelCom both need to know whether a picker's own mode tracks a numeric value at all, since random/weighted modes have nothing to show in the At-generation/After columns. How: This is called with a picker's own mode string.
 const hasValFun = ( modStr ) => {
 
 
@@ -606,8 +606,8 @@ function ValCelCom ( { hasValBoo, genValNum, aftValNum, offValNum = 0 } ) {
 
 
 
-// What: fmtTimFun. Why: Both GroupLog's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
-const fmtTimFun = ( isoStr ) => {
+// What: Format Time Function. Why: Both GroupLog's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
+const forTimFun = ( isoStr ) => {
 
 
 	try { return new Date( isoStr ).toLocaleTimeString( [], { hour : 'numeric', minute : '2-digit' } ); } // What: Format Attempt. Why: An otherwise-valid isoStr should render as a plain local time. How: This builds a Date from isoStr and formats it with no seconds.
@@ -1138,11 +1138,11 @@ function GroupLog ( { state, group, onClose } ) {
 			<div className='dl-panel-h'>{ /* What: Panel Header Div Element. Why: This groups the panel's own kicker with its optional close button. How: This renders the kicker span plus onClose's own button when provided. */ }
 
 
-				<span className='dl-kicker'>{ /* What: Kicker Span Element. Why: The panel names which group it covers and when it was generated. How: This renders a log glyph plus group and fmtTimFun's own formatted time. */ }
+				<span className='dl-kicker'>{ /* What: Kicker Span Element. Why: The panel names which group it covers and when it was generated. How: This renders a log glyph plus group and forTimFun's own formatted time. */ }
 
 
 					<IcoSetCom icoKeyStr='log' />{ /* What: Icon Shape Component. Why: The kicker needs a small recognizable log glyph. How: This renders IcoSetCom's own "log" shape. */ }
-					<span>{ group } log · generated { fmtTimFun( state.today.generatedAt ) }</span>{ /* What: Kicker Text Span Element. Why: The kicker's own text names the group and generation time. How: This renders group plus fmtTimFun's own result for state's own today.generatedAt. */ }
+					<span>{ group } log · generated { forTimFun( state.today.generatedAt ) }</span>{ /* What: Kicker Text Span Element. Why: The kicker's own text names the group and generation time. How: This renders group plus forTimFun's own result for state's own today.generatedAt. */ }
 
 
 				</span>
@@ -1214,7 +1214,7 @@ function GroupLog ( { state, group, onClose } ) {
 
 
 /**
- * fmtDueFun = Format Due Function
+ * forDueFun = Format Due Function
  *
  * @summary
  * Phrases a not-yet-due reminder's own next occurrence as a short
@@ -1232,14 +1232,14 @@ function GroupLog ( { state, group, onClose } ) {
  *
  * @example
  * ```ts
- * fmtDueFun(dueDatObj, dayKeyStr) // => due label string
+ * forDueFun(dueDatObj, dayKeyStr) // => due label string
  * ```
  *
 */
 
-// #region fmtDueFun
+// #region forDueFun
 
-function fmtDueFun ( dueDatObj, dayKeyStr ) {
+function forDueFun ( dueDatObj, dayKeyStr ) {
 
 
 	if ( !dueDatObj ) return 'No upcoming'; // What: No Upcoming Guard. Why: A reminder with no real next occurrence at all needs its own plain label. How: This returns immediately when dueDatObj is falsy.
@@ -1259,7 +1259,7 @@ function fmtDueFun ( dueDatObj, dayKeyStr ) {
 
 }
 
-// #endregion fmtDueFun
+// #endregion forDueFun
 
 
 
@@ -1298,9 +1298,9 @@ function RemindersLog ( { state, onClose } ) {
 
 	const ancDatObj = TASKS.anchorDate( state.today && state.today.generatedAt ); // What: Anchor Date Object. Why: Every lookup below must use the same frozen anchor the Reminders section above this panel already used. How: This calls TASKS.anchorDate with state's own today.generatedAt, if any.
 	const dayKeyStr = isoDayFun( ancDatObj );                                     // What: Day Key String. Why: The skipped-lookup below needs a plain date key to match against, scoped to ancDatObj rather than live "now". How: This calls isoDayFun with ancDatObj.
-	const tskListArr = ( state.tasks || [] ).filter( ( curTskObj ) => !curTskObj.hidden ); // What: Task List Array. Why: A hidden task/reminder never belongs in this log at all. How: This filters state's own tasks down to the non-hidden ones.
-	const visTskArr = TASKS.visibleToday( state.tasks, state.reminderOpts, state.holidays, ancDatObj ); // What: Visible Task Array. Why: The status below needs to know which tasks are actually due today. How: This calls TASKS.visibleToday with state's own tasks/reminderOpts/holidays and ancDatObj.
-	const visIdSet = new Set( visTskArr.map( ( curTskObj ) => curTskObj.id ) );   // What: Visible Id Set. Why: The status below needs a fast membership check, not a repeated array scan. How: This maps visTskArr down to just its own ids.
+	const tasListArr = ( state.tasks || [] ).filter( ( curTasObj ) => !curTasObj.hidden ); // What: Task List Array. Why: A hidden task/reminder never belongs in this log at all. How: This filters state's own tasks down to the non-hidden ones.
+	const visTasArr = TASKS.visibleToday( state.tasks, state.reminderOpts, state.holidays, ancDatObj ); // What: Visible Task Array. Why: The status below needs to know which tasks are actually due today. How: This calls TASKS.visibleToday with state's own tasks/reminderOpts/holidays and ancDatObj.
+	const visIdSet = new Set( visTasArr.map( ( curTasObj ) => curTasObj.id ) );   // What: Visible Id Set. Why: The status below needs a fast membership check, not a repeated array scan. How: This maps visTasArr down to just its own ids.
 	const skiIdSet = new Set( // What: Skipped Id Set. Why: The status below needs to know which tasks were manually skipped specifically today. How: This filters state's own reminderSkipLog down to today's own rows, then maps to their own taskId.
 
 
@@ -1311,40 +1311,40 @@ function RemindersLog ( { state, onClose } ) {
 
 	);
 
-	const remRowArr = tskListArr.map( ( curTskObj ) => { // What: Reminder Row Map Callback. Why: One display row is needed per task/reminder in tskListArr. How: This computes each row's own status and (once not-yet-due) its own due label before returning its shape below.
+	const remRowArr = tasListArr.map( ( curTasObj ) => { // What: Reminder Row Map Callback. Why: One display row is needed per task/reminder in tasListArr. How: This computes each row's own status and (once not-yet-due) its own due label before returning its shape below.
 
 
-		const tskDonBoo = TASKS.isDoneToday( curTskObj, ancDatObj ); // What: Task Done Boolean. Why: A done task always outranks every other status below. How: This calls TASKS.isDoneToday for curTskObj/ancDatObj.
+		const tasDonBoo = TASKS.isDoneToday( curTasObj, ancDatObj ); // What: Task Done Boolean. Why: A done task always outranks every other status below. How: This calls TASKS.isDoneToday for curTasObj/ancDatObj.
 
 		let staStr = 'notdue'; // What: Status String And Fallthrough. Why: Every task starts as not-yet-due until one of the checks below says otherwise. How: This is overwritten by whichever of the 3 checks below matches first.
 
-		if ( tskDonBoo ) staStr = 'done'; // What: Done Status Check. Why: Done always wins over every other status. How: This sets staStr to 'done' once tskDonBoo is true.
+		if ( tasDonBoo ) staStr = 'done'; // What: Done Status Check. Why: Done always wins over every other status. How: This sets staStr to 'done' once tasDonBoo is true.
 
-		else if ( skiIdSet.has( curTskObj.id ) ) staStr = 'skip'; // What: Skip Status Check. Why: A manually-skipped task (that wasn't also done) is its own distinct status. How: This sets staStr to 'skip' once curTskObj's own id is in skiIdSet.
+		else if ( skiIdSet.has( curTasObj.id ) ) staStr = 'skip'; // What: Skip Status Check. Why: A manually-skipped task (that wasn't also done) is its own distinct status. How: This sets staStr to 'skip' once curTasObj's own id is in skiIdSet.
 
-		else if ( visIdSet.has( curTskObj.id ) ) staStr = 'due'; // What: Due Status Check. Why: A currently-visible task (neither done nor skipped) is due today. How: This sets staStr to 'due' once curTskObj's own id is in visIdSet.
+		else if ( visIdSet.has( curTasObj.id ) ) staStr = 'due'; // What: Due Status Check. Why: A currently-visible task (neither done nor skipped) is due today. How: This sets staStr to 'due' once curTasObj's own id is in visIdSet.
 
 		let dueStr = null; // What: Due String And Fallthrough. Why: Only a genuinely not-yet-due task ever gets a relative due label at all. How: This stays null unless the guard below overwrites it.
 
 		if ( staStr === 'notdue' ) { // What: Not Due Guard. Why: A relative due label only makes sense for a task that is neither done, skipped, nor due today. How: This computes and assigns dueStr only while staStr is still 'notdue'.
 
 
-			const nexDatObj = TASKS.nextEligible( curTskObj, state.reminderOpts, state.holidays, ancDatObj, true ); // What: Next Date Object. Why: This is the raw next-occurrence Date fmtDueFun below needs, honoring an active manual skip so the label reflects when the reminder actually reappears. How: This calls TASKS.nextEligible with respectSkipUntil set true.
-			dueStr = fmtDueFun( nexDatObj, dayKeyStr ); // What: Due String Assign. Why: The row below needs the final short relative label, not the raw Date. How: This calls fmtDueFun with nexDatObj and dayKeyStr.
+			const nexDatObj = TASKS.nextEligible( curTasObj, state.reminderOpts, state.holidays, ancDatObj, true ); // What: Next Date Object. Why: This is the raw next-occurrence Date forDueFun below needs, honoring an active manual skip so the label reflects when the reminder actually reappears. How: This calls TASKS.nextEligible with respectSkipUntil set true.
+			dueStr = forDueFun( nexDatObj, dayKeyStr ); // What: Due String Assign. Why: The row below needs the final short relative label, not the raw Date. How: This calls forDueFun with nexDatObj and dayKeyStr.
 
 
 		}
 
 
 
-		return { tskObj : curTskObj, staStr : staStr, dueStr : dueStr, wheStr : TASKS.summary( curTskObj ) }; // What: Reminder Row Return. Why: The render below needs exactly these 4 fields per row. How: This bundles curTskObj alongside its own computed staStr/dueStr and TASKS.summary's own schedule text.
+		return { tasObj : curTasObj, staStr : staStr, dueStr : dueStr, wheStr : TASKS.summary( curTasObj ) }; // What: Reminder Row Return. Why: The render below needs exactly these 4 fields per row. How: This bundles curTasObj alongside its own computed staStr/dueStr and TASKS.summary's own schedule text.
 
 
 	} );
 
 	const staRanObj = { done : 0, due : 1, skip : 2, notdue : 3 }; // What: Status Rank Object. Why: The sort below needs a numeric priority per status to order the rows sensibly. How: This is indexed just below by each row's own staStr.
 
-	remRowArr.sort( ( aRowObj, bRowObj ) => ( staRanObj[ aRowObj.staStr ] - staRanObj[ bRowObj.staStr ] ) || ( aRowObj.tskObj.name < bRowObj.tskObj.name ? -1 : 1 ) ); // What: Reminder Row Sort Call. Why: Rows should group by status first, then alphabetically within a status. How: This sorts remRowArr by staRanObj's own rank difference, falling back to a plain name comparison when ranks tie.
+	remRowArr.sort( ( aRowObj, bRowObj ) => ( staRanObj[ aRowObj.staStr ] - staRanObj[ bRowObj.staStr ] ) || ( aRowObj.tasObj.name < bRowObj.tasObj.name ? -1 : 1 ) ); // What: Reminder Row Sort Call. Why: Rows should group by status first, then alphabetically within a status. How: This sorts remRowArr by staRanObj's own rank difference, falling back to a plain name comparison when ranks tie.
 
 
 
@@ -1385,20 +1385,20 @@ function RemindersLog ( { state, onClose } ) {
 
 				<div className='dl-rt-head'><span className='dl-mk-rname'>Reminder</span><span className='dl-mk-rwhen'>When</span><span className='r dl-mk-rst'>Status</span></div>{ /* What: Reminders Table Head Div Element. Why: This table needs its own 3-column header row. How: This renders the 3 shared column-header spans. */ }
 				{ remRowArr.length === 0 && <div className='dl-empty'>No reminders yet.</div> }{ /* What: Empty Reminders Visibility Check. Why: No non-hidden tasks at all needs an explanatory row instead of an empty table. How: This renders only while remRowArr's own length is 0. */ }
-				{ remRowArr.map( ( { tskObj, staStr, dueStr, wheStr } ) => ( // What: Reminder Row Map Callback. Why: One row is needed per remRowArr entry. How: This destructures each row and renders its own name/when/status cells.
+				{ remRowArr.map( ( { tasObj, staStr, dueStr, wheStr } ) => ( // What: Reminder Row Map Callback. Why: One row is needed per remRowArr entry. How: This destructures each row and renders its own name/when/status cells.
 
 
 					<div
-						key={ tskObj.id }
+						key={ tasObj.id }
 						className={ `dl-rt-row ${ staStr === 'done' ? 'is-done' : staStr === 'due' ? 'is-due' : staStr === 'notdue' ? 'is-notdue' : '' }` }
 					>{ /* What: Reminder Row Div Element. Why: This is one task/reminder's own full row. How: This toggles its own is-done/is-due/is-notdue classes from staStr. */ }
 
 
 						<InfoTip
 							className='dl-r-name dl-mk-rname'
-							label={ tskObj.name }
+							label={ tasObj.name }
 							truncationOnly
-						>{ tskObj.name }</InfoTip>{ /* What: Reminder Name Info Tip Element. Why: A long reminder name can truncate in a narrow layout. How: This renders tskObj's own name as a truncation-revealing InfoTip. */ }
+						>{ tasObj.name }</InfoTip>{ /* What: Reminder Name Info Tip Element. Why: A long reminder name can truncate in a narrow layout. How: This renders tasObj's own name as a truncation-revealing InfoTip. */ }
 						<span className='dl-r-when dl-mk-rwhen'>{ wheStr }</span>{ /* What: Reminder When Span Element. Why: Every row shows its own plain schedule summary. How: This renders wheStr directly. */ }
 						<span className='dl-r-st dl-mk-rst'>{ /* What: Reminder Status Span Element. Why: The last column shows this row's own current status, differently per staStr. How: This renders one of 4 status variants below, matched on staStr. */ }
 

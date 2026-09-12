@@ -1404,6 +1404,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - `ptr` → `poi` (Pointer)
   - `std` → `sta` (Standard *or* Standalone — both truncate the same way)
   - `prv` → `pre` (Previous)
+  - `tsk` → `tas` (Task)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

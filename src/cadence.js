@@ -61,8 +61,8 @@
 
 
 
-const padNumFun = ( numValNum ) => String( numValNum ).padStart( 2, '0' );                                                                          // What: Pad Number Function. Why: An ISO date string needs its month and day both zero-padded to 2 digits. How: This is called twice by fmtIsoFun below, once for the month and once for the day.
-const fmtIsoFun = ( inpDatObj ) => `${ inpDatObj.getFullYear() }-${ padNumFun( inpDatObj.getMonth() + 1 ) }-${ padNumFun( inpDatObj.getDate() ) }`; // What: Format Iso Function. Why: Period keys and pick-log date comparisons both need a plain YYYY-MM-DD string, not a Date instance. How: This reads inpDatObj's own year/month/day and zero-pads the month and day via padNumFun.
+const padNumFun = ( numValNum ) => String( numValNum ).padStart( 2, '0' );                                                                          // What: Pad Number Function. Why: An ISO date string needs its month and day both zero-padded to 2 digits. How: This is called twice by forIsoFun below, once for the month and once for the day.
+const forIsoFun = ( inpDatObj ) => `${ inpDatObj.getFullYear() }-${ padNumFun( inpDatObj.getMonth() + 1 ) }-${ padNumFun( inpDatObj.getDate() ) }`; // What: Format Iso Function. Why: Period keys and pick-log date comparisons both need a plain YYYY-MM-DD string, not a Date instance. How: This reads inpDatObj's own year/month/day and zero-pads the month and day via padNumFun.
 const dimCouFun = ( yeaValNum, monOneNum ) => new Date( yeaValNum, monOneNum, 0 ).getDate();                                                        // What: Days-In-Month Count Function. Why: Monthly/yearly clamping and nth-weekday math both need to know how many days a given month actually has. How: This asks for day 0 of the FOLLOWING month, which JS's own Date resolves back to the last real day of monOneNum.
 const midDatFun = ( inpDatObj ) => new Date( inpDatObj.getFullYear(), inpDatObj.getMonth(), inpDatObj.getDate() );                                  // What: Midnight Date Function. Why: Period-start comparisons must ignore whatever time-of-day inpDatObj carries. How: This rebuilds a Date from inpDatObj's own year/month/day alone, dropping the time component entirely.
 
@@ -457,7 +457,7 @@ function perStaFun( pkrCadObj, cheDatObj = new Date() ) {
  *
 */
 
-function perKeyFun( pkrCadObj, cheDatObj = new Date() ) { return fmtIsoFun( perStaFun( pkrCadObj, cheDatObj ) ); } // What: Period Key Body. Why: Every caller needs a plain comparable string, not a Date instance. How: This formats perStaFun's own resolved period start via fmtIsoFun.
+function perKeyFun( pkrCadObj, cheDatObj = new Date() ) { return forIsoFun( perStaFun( pkrCadObj, cheDatObj ) ); } // What: Period Key Body. Why: Every caller needs a plain comparable string, not a Date instance. How: This formats perStaFun's own resolved period start via forIsoFun.
 
 // #endregion perKeyFun
 
@@ -715,7 +715,7 @@ export const CADENCE = { // What: Cadence Namespace Object. Why: store.jsx, tab-
 	periodKey           : perKeyFun,   // What: Period Key. Why: Callers need a given date's own comparable period key by this exact name. How: This re-exports perKeyFun under its original external property name.
 	completedThisPeriod : comPerFun,   // What: Completed This Period. Why: Callers check whether a picker has already completed its own current period by this exact name. How: This re-exports comPerFun under its original external property name.
 	summary             : sumCadFun,   // What: Summary. Why: Callers need a picker's own human-readable cadence summary by this exact name. How: This re-exports sumCadFun under its original external property name.
-	isoOf               : fmtIsoFun,   // What: Iso Of. Why: Callers need a date's own ISO string by this exact name. How: This re-exports fmtIsoFun under its original external property name.
+	isoOf               : forIsoFun,   // What: Iso Of. Why: Callers need a date's own ISO string by this exact name. How: This re-exports forIsoFun under its original external property name.
 	daysInMonth         : dimCouFun    // What: Days In Month. Why: Callers need a given year/month's own real day count by this exact name. How: This re-exports dimCouFun under its original external property name.
 
 
