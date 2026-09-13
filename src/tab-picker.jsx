@@ -784,7 +784,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 			<PicForCom
 				isaEdiBoo
-				conDitArr={ state.conditionals || [] }
+				conObjArr={ state.conditionals || [] }
 				exiGrpArr={ ediGrpArr }
 				iniFrmObj={ ediIniObj }
 				iniGrpStr={ picker.group }
@@ -1476,8 +1476,9 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
  * @param props.iniGrpStr - Initial Group String: A group name to prefill the
  *                          picker onto, without opening the add-a-new-group
  *                          sub-form.
- * @param props.conDitArr - Conditional Dit Array: Every existing conditional,
- *                          offered for attachment; defaults to an empty array.
+ * @param props.conObjArr - Conditional Object Array: Every existing
+ *                          conditional, offered for attachment; defaults to
+ *                          an empty array.
  * @param props.onCnlFun  - On Cancel Function: Called when the user backs out
  *                          without creating/saving anything.
  * @param props.onCreFun  - On Create Function: Called with the finished
@@ -1502,12 +1503,12 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
  *
  * @example
  * ```tsx
- * PicForCom({ exiGrpArr, iniGrpStr, conDitArr, onCnlFun, onCreFun, onSavFun, iniFrmObj, opeTouBoo, isaEdiBoo }) // => <PicForCom />
+ * PicForCom({ exiGrpArr, iniGrpStr, conObjArr, onCnlFun, onCreFun, onSavFun, iniFrmObj, opeTouBoo, isaEdiBoo }) // => <PicForCom />
  * ```
  *
 */
 
-function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun, onSavFun, iniFrmObj, opeTouBoo, isaEdiBoo } ) {
+function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun, onSavFun, iniFrmObj, opeTouBoo, isaEdiBoo } ) {
 
 
 	const touBusObj = useEmlTouFun(); // What: Tour Bus Object. Why: advStpFun needs to know whether a guided tour (of any kind) is currently driving the page, so it can skip its own scroll-to-top when a picker mini-tour is mid-flight. How: This subscribes to the shared tour event bus.
@@ -1594,7 +1595,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun,
 	const cndTidStr = normalizeConditionalName( cndDftObj.name ) || '';
 	const cndColBoo = cndOnBoo && cndSelStr === 'new' && // What: Conditional Collides Boolean. Why: Reuse is the deliberate act of tapping an existing pill, not a silent name match, so only the create-new path can ever collide. How: This checks cndTidStr against every existing conditional's own name, case-insensitively.
 
-		conDitArr.some( ( c ) => ( c.name || '' ).toLowerCase() === cndTidStr.toLowerCase() );
+		conObjArr.some( ( c ) => ( c.name || '' ).toLowerCase() === cndTidStr.toLowerCase() );
 
 	const cndErrStr = cndColBoo // What: Conditional Error String. Why: The name field needs a concrete, actionable message once a collision is actually detected. How: This names the colliding conditional directly and suggests reusing it instead.
 
@@ -2296,11 +2297,11 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun,
 						<div className='cnd-attach'>{ /* What: Conditional Attach Div Element. Why: The pill rail and the inline new-conditional editor form one block. How: This wraps cnd-rail and the Collapse around ConditionalControls. */ }
 
 
-							<div className='cnd-rail picker-groups at-start at-end' ref={ raiCalFun }>{ /* What: Conditional Rail Div Element. Why: Every existing conditional plus the "Add New" pill need a horizontally-scrolling rail. How: This wraps one pill per sorted entry in conDitArr, then the fixed "Add New Conditional" pill. */ }
+							<div className='cnd-rail picker-groups at-start at-end' ref={ raiCalFun }>{ /* What: Conditional Rail Div Element. Why: Every existing conditional plus the "Add New" pill need a horizontally-scrolling rail. How: This wraps one pill per sorted entry in conObjArr, then the fixed "Add New Conditional" pill. */ }
 
 
 								{ /* What: Conditional Sort Design Note. Why: The rail reads alphabetically, except the currently-selected conditional (once the user has picked one) pins to the front. How: This is the same "selected stays first" convention as the Data tab's own rail. */ }
-								{ [ ...conDitArr ].sort( ( a, b ) => { // What: Sorted Conditional List Render. Why: The rail needs a stable order with the active selection pinned to the front. How: This sorts alphabetically, except a or b matching cndSelStr is forced to the very front.
+								{ [ ...conObjArr ].sort( ( a, b ) => { // What: Sorted Conditional List Render. Why: The rail needs a stable order with the active selection pinned to the front. How: This sorts alphabetically, except a or b matching cndSelStr is forced to the very front.
 
 
 									if ( a.id === cndSelStr ) return -1; // What: A Pinned Guard. Why: The currently-selected conditional must sort before everything else. How: This returns -1 whenever a is the selection.
@@ -2334,7 +2335,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun,
 								<button
 									type='button'
 									className={ ` cnd-pill cnd-pill--new   ${ cndSelStr === 'new' ? 'is-on' : '' } ` }
-									onClick={ () => { setCndSelStr( 'new' ); setCndDftObj( conditionalDraftDefault( newNamStr.trim(), conDitArr.map( ( c ) => c.name ) ) ); } }
+									onClick={ () => { setCndSelStr( 'new' ); setCndDftObj( conditionalDraftDefault( newNamStr.trim(), conObjArr.map( ( c ) => c.name ) ) ); } }
 								>
 
 									<Icon name='plus' size={ 16 } />
@@ -3601,7 +3602,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 				{ creOpnBoo
 
 					? ( <PicForCom
-							conDitArr={ state.conditionals || [] }
+							conObjArr={ state.conditionals || [] }
 							exiGrpArr={ exiGrpArr }
 							iniFrmObj={ touBusObj.prefill || empIniObj || null }
 							iniGrpStr={ grpFilStr === 'all' ? '' : grpFilStr }
