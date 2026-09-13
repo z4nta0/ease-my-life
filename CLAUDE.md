@@ -37,6 +37,49 @@ Release version 0.9.14 to fix incorrect site usage data in Settings tab
 Follow this pattern (bump commit, then a "Release version X.Y.Z ..." commit)
 if asked to cut a release.
 
+### Commit message structure
+
+Every commit follows the same What/Why/How structure as the code comments
+elsewhere in this doc, adapted to a commit's own subject+body shape:
+- **Subject line = the What**: a short, cohesive, Title Case name covering
+  everything the commit actually changes, the same way a comment's `What:`
+  names its target. If the subject can't be written as one cohesive name
+  without papering over unrelated changes, that's a sign the commit is
+  really 2+ commits pretending to be one, split it into separate commits,
+  each with its own clean, nameable subject, rather than picking a vague
+  umbrella title. E.g. discovering and fixing unrelated issues in other
+  files while working on one file's own formatting pass becomes separate
+  commits like "Cadence Control Formatting Issues Fixed" and "JSX Element
+  Empty Row Rule Added with Fixes", not one commit titled after only one
+  of the two, or a vague catch-all like "Various fixes".
+- **Body = Why then How**, each on its own literal labeled line (or
+  wrapped block), matching the code comment convention exactly: `Why:
+  <sentence(s)>` followed by `How: <sentence(s)>`. Real sentences (capitalized
+  start, subject + verb), not fragments, but as terse as they can be
+  while staying descriptive, the same balance the code comments strike.
+- **Catch-all**: on the rare occasion a commit genuinely can't be split
+  cleanly enough to produce one cohesive What (e.g. a single mechanical
+  change that happens to touch many unrelated-looking places for one
+  real reason), don't force an artificial split or a dishonest title.
+  Do the best reasonably-nameable subject possible, and say plainly in
+  the Why or How that the commit covers more ground than a single clean
+  name can capture, and why splitting it further wasn't practical.
+- **Known risk — this format is not a common real-world convention**,
+  unlike a plain imperative subject line, so it's just as vulnerable to
+  silent drift as the naming/spacing/comment rules elsewhere in this doc,
+  arguably more so: a violation here has no passive detection surface the
+  way a file's own naming or spacing does (those get caught just by
+  reading the file; nobody casually reads `git log` the same way).
+  **Mandatory self-check before running `git commit`**: re-read the
+  drafted message against this section's own 3 bullets above (cohesive
+  What in the subject, literal `Why:`/`How:` labels in the body, real
+  terse sentences) before the commit actually runs, the same discipline
+  as the JSX comment rule's own mandatory grep self-audit. If a spot
+  check is ever needed later, this format's own literal labels make it
+  cheap: `git log --format=%B -10 | grep -c '^Why:'` should equal the
+  number of commits checked — a single grep, unlike naming/spacing
+  drift, which needed custom detection scripts to even find.
+
 ## Architecture
 
 ### No router, no build-time code splitting of routes
@@ -1695,5 +1738,15 @@ treat `src/store.jsx` as the canonical file if you need to edit store logic.
 - Start any dev/test server via the Bash tool's `run_in_background: true` option (not a manual `&` subshell) — this returns a task ID that stays valid across turns.
 - To stop a server started that way, use the `TaskStop` tool with that task ID. Never `pkill`/`kill` by name, port, or a guessed PID.
 - Do not interfere with any pre-existing Node processes running in this environment, or any dev server the user started themselves.
+
+## Reporting a commit
+After running `git commit`, always show the user the FULL commit message
+(subject + the entire Why/How body from "### Commit message structure"
+above) alongside the short hash, not just the hash or a truncated
+subject line. This is the cheapest available check that the commit
+message rule is actually being followed, since nobody casually reads
+`git log` the way a file gets read; showing the real message every time
+means a drift is visible immediately, in the same turn it happens,
+without the user ever needing to go look for it.
 
 
