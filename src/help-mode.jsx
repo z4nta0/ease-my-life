@@ -64,11 +64,11 @@ import { Icon         } from './ui.jsx';  // What: Icon. Why: The navigation hel
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.active  - Whether help mode is currently on for this
- *                         page; drives both the "is-on" styling and
- *                         the button's own pressed state.
- * @param props.onClick - Called when the button is pressed. The caller
- *                         owns actually flipping its own on/off state.
+ * @param props.active  - Active: Whether help mode is currently on for this
+ *                        page; drives both the "is-on" styling and the
+ *                        button's own pressed state.
+ * @param props.onClick - On Click: Called when the button is pressed. The
+ *                        caller owns actually flipping its own on/off state.
  *
  * @returns The toggle's own single rendered button.
  *
@@ -123,8 +123,8 @@ function HelpButton ( { active, onClick } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param selStr - A comma-separated CSS selector list, tried left to
- *                 right until one alternative actually matches a
+ * @param selStr - Select String: A comma-separated CSS selector list, tried
+ *                 left to right until one alternative actually matches a
  *                 visible element.
  *
  * @returns The first alternative's matched, currently-visible elements.
@@ -180,9 +180,9 @@ function finTarFun ( selStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param recObj - The element's own unclipped bounding rect.
- * @param tarEle - The element recObj belongs to, needed to read its
- *                 own and its ancestors' overflow-x styling.
+ * @param recObj - Record Object: The element's own unclipped bounding rect.
+ * @param tarEle - Target Element: The element recObj belongs to, needed to
+ *                 read its own and its ancestors' overflow-x styling.
  *
  * @returns A clipped { top, left, right, bottom } rect, or null once
  * the element ends up fully clipped away.
@@ -258,7 +258,7 @@ function cliHorFun ( recObj, tarEle ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param eleArr - The matched elements to union together.
+ * @param eleArr - Element Array: The matched elements to union together.
  *
  * @returns A { top, left, right, bottom, width, height } rect spanning
  * every element in eleArr that survived clipping.
@@ -327,7 +327,7 @@ function uniRecFun ( eleArr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param recObj - The chrome element's own bounding rect.
+ * @param recObj - Record Object: The chrome element's own bounding rect.
  *
  * @returns Whichever of 'top', 'bottom', 'left' or 'right' recObj sits
  * closest to.
@@ -390,11 +390,11 @@ const CHR_PRI_OBJ = { '.tabbar' : 2, '.today-h' : 1, '.group-rail' : 1, '.settin
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param recObj    - The target's own rect to clip.
- * @param chrIteArr - Every chrome item currently present on the page,
- *                    as { recObj, sidStr, chrEle, selStr } entries.
- * @param eleArr    - The target's own matched element(s), used to
- *                    detect which chrome item (if any) this target is
+ * @param recObj    - Record Object: The target's own rect to clip.
+ * @param chrIteArr - Chore Item Array: Every chrome item currently present on
+ *                    the page, as { recObj, sidStr, chrEle, selStr } entries.
+ * @param eleArr    - Element Array: The target's own matched element(s), used
+ *                    to detect which chrome item (if any) this target is
  *                    itself part of.
  *
  * @returns The clipped rect, or null once it collapses to zero or
@@ -503,13 +503,15 @@ function cliChrFun ( recObj, chrIteArr, eleArr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param recObj    - The target's own unpadded core rect.
- * @param padXNum   - The horizontal padding to request on each side.
- * @param padYNum   - The vertical padding to request on each side.
- * @param chrIteArr - Every chrome item currently present on the page;
+ * @param recObj    - Record Object: The target's own unpadded core rect.
+ * @param padXNum   - Padding X Number: The horizontal padding to request on
+ *                    each side.
+ * @param padYNum   - Padding Y Number: The vertical padding to request on each
+ *                    side.
+ * @param chrIteArr - Chore Item Array: Every chrome item currently present on
+ *                    the page; forwarded to cliChrFun.
+ * @param eleArr    - Element Array: The target's own matched element(s);
  *                    forwarded to cliChrFun.
- * @param eleArr    - The target's own matched element(s); forwarded to
- *                    cliChrFun.
  *
  * @returns { padTop, padBottom, padLeft, padRight }, each the actual
  * pad that survived clipping on that side.
@@ -582,13 +584,14 @@ const DEF_RAD_NUM = 12;
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tarEle    - The single matched element to read a radius from.
- * @param padWidNum - The padded box's own width, used to scale a
- *                    percentage radius.
- * @param padHeiNum - The padded box's own height, used to scale a
- *                    percentage radius.
- * @param shpOveStr - 'circle' to skip CSS inspection and force a
- *                    perfect ellipse; otherwise omitted.
+ * @param tarEle    - Target Element: The single matched element to read a
+ *                    radius from.
+ * @param padWidNum - Padding Width Number: The padded box's own width, used to
+ *                    scale a percentage radius.
+ * @param padHeiNum - Padding Height Number: The padded box's own height, used
+ *                    to scale a percentage radius.
+ * @param shpOveStr - Shape Override String: 'circle' to skip CSS inspection
+ *                    and force a perfect ellipse; otherwise omitted.
  *
  * @returns { rx, ry } for the SVG mask cutout and the highlight div's
  * own border-radius.
@@ -682,12 +685,12 @@ const BAD_SIZ_NUM = 20;
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tarRecObj - The already-padded target rect (its own
- *                    padTop/padRight/padLeft, if any, came from
- *                    {@link claPadFun}) to anchor the badge to.
- * @param cenBoo    - Whether to center the badge over tarRecObj's own
- *                    top edge (columnGroup members) instead of using
- *                    the usual corner placement.
+ * @param tarRecObj - Target Record Object: The already-padded target rect (its
+ *                    own padTop/padRight/padLeft, if any, came from {@link
+ *                    claPadFun}) to anchor the badge to.
+ * @param cenBoo    - Center Boolean: Whether to center the badge over
+ *                    tarRecObj's own top edge (columnGroup members) instead of
+ *                    using the usual corner placement.
  *
  * @returns { top, left, width, height, bottom } for the badge's own
  * fixed-position placement.
@@ -761,12 +764,14 @@ function badRecFun ( tarRecObj, cenBoo ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tarRecObj  - The target rect the tip is being placed
- *                     relative to.
- * @param tipWidNum  - The tip's own real, already-measured width.
- * @param tipHeiNum  - The tip's own real, already-measured height.
- * @param pinBelYNum - A fixed Y to always place the tip below,
- *                     skipping the normal above/below choice; may be
+ * @param tarRecObj  - Target Record Object: The target rect the tip is being
+ *                     placed relative to.
+ * @param tipWidNum  - Tip Width Number: The tip's own real, already-measured
+ *                     width.
+ * @param tipHeiNum  - Tip Height Number: The tip's own real, already-measured
+ *                     height.
+ * @param pinBelYNum - Pin Below Y Number: A fixed Y to always place the tip
+ *                     below, skipping the normal above/below choice; may be
  *                     null/undefined.
  *
  * @returns { top, left, arrowClass, arrowX, maxHeight } for the tip's
@@ -872,9 +877,9 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.item       - The catalog item this tip is showing.
- * @param props.targetRect - The already-measured/padded target rect
- *                           this tip is anchored to.
+ * @param props.item       - Item: The catalog item this tip is showing.
+ * @param props.targetRect - Target Rect: The already-measured/padded target
+ *                           rect this tip is anchored to.
  *
  * @returns The tip's own positioned coach bubble.
  *
@@ -1082,14 +1087,13 @@ const RAI_HAN_OBJ = {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.active - Whether help mode is currently on for this
- *                        page.
- * @param props.items  - The page-specific catalog of help items;
- *                       {@link NAV_HEL_OBJ} and {@link RAI_HAN_OBJ}
- *                       are always prepended ahead of these.
- * @param props.onExit - Called once help mode itself should close
- *                       entirely, as opposed to just closing one open
- *                       tip.
+ * @param props.active - Active: Whether help mode is currently on for this
+ *                       page.
+ * @param props.items  - Items: The page-specific catalog of help items; {@link
+ *                       NAV_HEL_OBJ} and {@link RAI_HAN_OBJ} are always
+ *                       prepended ahead of these.
+ * @param props.onExit - On Exit: Called once help mode itself should close
+ *                       entirely, as opposed to just closing one open tip.
  *
  * @returns The whole overlay (dim layer, highlight spots, badges, and
  * at most one open tip), portaled to document.body, or null while

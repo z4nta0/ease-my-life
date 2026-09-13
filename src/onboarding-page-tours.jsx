@@ -1215,15 +1215,14 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.pageId    - This page tour's own checklist id (e.g.
- *                          'explore_today'), keying PAG_COP_OBJ and
- *                          bldSteFun.
- * @param props.state     - The entire app's own persisted state.
- * @param props.actions   - The actions that mutate props.state.
- * @param props.active    - The app's own currently active tab id.
- * @param props.selectTab - Switches the app's own active tab.
- * @param props.onClose   - Clears app.jsx's own actPagStr, ending this
- *                          mount.
+ * @param props.pageId    - Page Id: This page tour's own checklist id (e.g.
+ *                          'explore_today'), keying PAG_COP_OBJ and bldSteFun.
+ * @param props.state     - State: The entire app's own persisted state.
+ * @param props.actions   - Actions: The actions that mutate props.state.
+ * @param props.active    - Active: The app's own currently active tab id.
+ * @param props.selectTab - Select Tab: Switches the app's own active tab.
+ * @param props.onClose   - On Close: Clears app.jsx's own actPagStr, ending
+ *                          this mount.
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running
  * guided tour (touPhaStr 'tour'), depending on this page's own phase.

@@ -80,7 +80,8 @@ const modValFun = ( modKeyStr ) => modKeyStr === 'ease-up' || modKeyStr === 'eas
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param conCurObj - The conditional to resolve odds for.
+ * @param conCurObj - Conditional Current Object: The conditional to resolve
+ *                    odds for.
  *
  * @returns A probability in [0, 1] that this conditional resolves
  * true this run.
@@ -129,9 +130,9 @@ function truOddFun( conCurObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param conAllArr - Every persisted conditional to resolve for the
- *                    day, in no particular order; a missing or empty
- *                    array yields an empty patch.
+ * @param conAllArr - Conditional All Array: Every persisted conditional to
+ *                    resolve for the day, in no particular order; a missing or
+ *                    empty array yields an empty patch.
  *
  * @returns A patch object keyed by conditional id, each value holding
  * the fields (triggered, chargedToday) to apply to that conditional
@@ -197,10 +198,10 @@ function resDayFun( conAllArr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param conCurObj - The conditional to check, or a nullish value
- *                    (checked defensively, since a picker's own
- *                    conditionalId may not resolve to a live
- *                    conditional at all).
+ * @param conCurObj - Conditional Current Object: The conditional to check, or
+ *                    a nullish value (checked defensively, since a picker's
+ *                    own conditionalId may not resolve to a live conditional
+ *                    at all).
  *
  * @returns True when conCurObj currently suppresses its own dependent
  * pickers, false otherwise.
@@ -239,10 +240,10 @@ function supGatFun( conCurObj ) { return !!( conCurObj && conCurObj.active !== f
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param conCurObj - The value-mode conditional to roll a fresh plan
- *                    for.
- * @param thrValNum - The conditional's own resolved charge ceiling
- *                    (defaulted to 100 by every caller).
+ * @param conCurObj - Conditional Current Object: The value-mode conditional to
+ *                    roll a fresh plan for.
+ * @param thrValNum - Threshold Value Number: The conditional's own resolved
+ *                    charge ceiling (defaulted to 100 by every caller).
  *
  * @returns The fixed per-cycle charge/discharge step this new plan
  * commits to.
@@ -290,9 +291,9 @@ const steResFun = ( conCurObj, thrValNum ) => ( conCurObj.chargeStep && conCurOb
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param conCurObj - The dependent picker's own gating conditional
- *                    whose first completion of the day is being
- *                    applied.
+ * @param conCurObj - Conditional Current Object: The dependent picker's own
+ *                    gating conditional whose first completion of the day is
+ *                    being applied.
  *
  * @returns A patch object with whichever of value/triggered/
  * chargedToday/chargeStep actually changed, or null when conCurObj is
@@ -385,8 +386,8 @@ function advValFun( conCurObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param conCurObj - The conditional whose own day-off card was just
- *                    completed.
+ * @param conCurObj - Conditional Current Object: The conditional whose own
+ *                    day-off card was just completed.
  *
  * @returns A patch object with whichever of value/triggered/
  * chargeStep actually changed, or null for a missing conCurObj or a

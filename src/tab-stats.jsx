@@ -37,7 +37,7 @@ import { useEmlTouFun           } from './onboarding.jsx';      // What: Use Eas
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param dayDatObj - The Date to convert.
+ * @param dayDatObj - Day Date Object: The Date to convert.
  *
  * @returns The local calendar day as a 'YYYY-MM-DD' string.
  *
@@ -81,7 +81,7 @@ function dayIsoFun ( dayDatObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param whenIsoStr - The ISO timestamp string to format.
+ * @param whenIsoStr - When Iso String: The ISO timestamp string to format.
  *
  * @returns A short "weekday, month day" label.
  *
@@ -159,7 +159,8 @@ const TYP_MET_ARR = [ // What: Type Meta Array. Why: This defines the one-time v
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param doneCouNum - How many reminders were completed that day.
+ * @param doneCouNum - Done Count Number: How many reminders were completed
+ *                     that day.
  *
  * @returns A heat level from 0 (none) to 4 (four or more).
  *
@@ -196,15 +197,16 @@ function couLevFun ( doneCouNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.titStr    - The card's own kicker text.
- * @param props.totNum    - The combined total every segment's own share is
- *                          computed against.
- * @param props.segArr    - {@link SOU_MET_ARR} or {@link TYP_MET_ARR},
- *                          each entry already joined with its own live n.
- * @param props.empStr    - Message shown in place of the bar when totNum
- *                          is zero.
- * @param props.className - Extra class name(s) to append; defaults to an
- *                          empty string.
+ * @param props.titStr    - Title String: The card's own kicker text.
+ * @param props.totNum    - Total Number: The combined total every segment's
+ *                          own share is computed against.
+ * @param props.segArr    - Segment Array: {@link SOU_MET_ARR} or {@link
+ *                          TYP_MET_ARR}, each entry already joined with its
+ *                          own live n.
+ * @param props.empStr    - Empty String: Message shown in place of the bar
+ *                          when totNum is zero.
+ * @param props.className - Class Name: Extra class name(s) to append; defaults
+ *                          to an empty string.
  *
  * @returns The card containing the stacked bar and legend, or the empty
  * state.
@@ -371,15 +373,15 @@ function HeaLegCom () {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.curPagNum - The current, 0-indexed page.
- * @param props.pagSizNum - How many items one page holds.
- * @param props.totIteNum - The full, unpaged item count.
- * @param props.onChange  - Called with the next 0-indexed page on an
- *                          arrow tap.
- * @param props.untStr    - Unit word shown after the total; defaults to
- *                          'items'.
- * @param props.alwShoBoo - Forces the pager to render even when
- *                          everything fits on one page; defaults to
+ * @param props.curPagNum - Current Page Number: The current, 0-indexed page.
+ * @param props.pagSizNum - Page Size Number: How many items one page holds.
+ * @param props.totIteNum - Total Item Number: The full, unpaged item count.
+ * @param props.onChange  - On Change: Called with the next 0-indexed page on
+ *                          an arrow tap.
+ * @param props.untStr    - Unit String: Unit word shown after the total;
+ *                          defaults to 'items'.
+ * @param props.alwShoBoo - Always Show Boolean: Forces the pager to render
+ *                          even when everything fits on one page; defaults to
  *                          false.
  *
  * @returns The pager row, or nothing at all when the list fits on one
@@ -475,10 +477,10 @@ function PagNavCom ( { curPagNum, pagSizNum, totIteNum, onChange, untStr = 'item
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state    - The whole app's persisted state.
- * @param props.actions  - The whole app's state-transition functions.
- * @param props.onHome   - Navigates back to the Today tab.
- * @param props.onNavTab - Navigates to an arbitrary tab by id.
+ * @param props.state    - State: The whole app's persisted state.
+ * @param props.actions  - Actions: The whole app's state-transition functions.
+ * @param props.onHome   - On Home: Navigates back to the Today tab.
+ * @param props.onNavTab - On Nav Tab: Navigates to an arbitrary tab by id.
  *
  * @returns The Stats tab's own root element, including its header, filter
  * rows, and every scope-dependent card.

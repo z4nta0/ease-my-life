@@ -399,24 +399,23 @@ const goToTodayTop = ( active, selectTab ) => { // What: Go To Today Top. Why: E
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.tourId     - This tour's slot key in
- *                           state.onboarding.activeTour, e.g.
- *                           'welcome'.
- * @param props.steps      - The step array described in this file's
- *                           own header comment above.
- * @param props.resumeStep - Initial step index; the caller decides
- *                           whether/what to resume.
- * @param props.actions    - The shared app actions object.
- * @param props.active     - The app's own currently active tab id.
- * @param props.selectTab  - Switches the app's own active tab.
- * @param props.onGoBack   - Optional (targetStepIndex) => void, side
- *                           effects to run before navigating back to
- *                           a given step.
- * @param props.onFinish   - Called on genuine completion only (the
+ * @param props.tourId     - Tour Id: This tour's slot key in
+ *                           state.onboarding.activeTour, e.g. 'welcome'.
+ * @param props.steps      - Steps: The step array described in this file's own
+ *                           header comment above.
+ * @param props.resumeStep - Resume Step: Initial step index; the caller
+ *                           decides whether/what to resume.
+ * @param props.actions    - Actions: The shared app actions object.
+ * @param props.active     - Active: The app's own currently active tab id.
+ * @param props.selectTab  - Select Tab: Switches the app's own active tab.
+ * @param props.onGoBack   - On Go Back: Optional (targetStepIndex) => void,
+ *                           side effects to run before navigating back to a
+ *                           given step.
+ * @param props.onFinish   - On Finish: Called on genuine completion only (the
  *                           primary button on a 'Done' step).
- * @param props.onSkip     - Called for everything else the tour can
- *                           end from; optional, falls back to
- *                           onFinish when omitted.
+ * @param props.onSkip     - On Skip: Called for everything else the tour can
+ *                           end from; optional, falls back to onFinish when
+ *                           omitted.
  *
  * @returns The tour's own dim/spotlight/coach overlay, portaled onto
  * document.body.

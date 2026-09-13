@@ -115,8 +115,8 @@ const entLooFun = ( appStaObj, iteIdeStr ) => ( appStaObj.onboarding && appStaOb
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appStaObj - The full app state object, read for its own
- *                    onboarding.checklist map via entLooFun below.
+ * @param appStaObj - App State Object: The full app state object, read for its
+ *                    own onboarding.checklist map via entLooFun below.
  *
  * @returns The checklist's own summary counts, as a plain object.
  *
@@ -179,8 +179,8 @@ function cheStaFun ( appStaObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appStaObj - The full app state object, read for its own
- *                    pickers array.
+ * @param appStaObj - App State Object: The full app state object, read for its
+ *                    own pickers array.
  *
  * @returns How many of appStaObj's own pickers are real (not one of
  * the seeded samples), as a plain count.
@@ -210,8 +210,8 @@ function reaPicFun ( appStaObj ) { return appStaObj.pickers.filter( ( curPicObj 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appStaObj - The full app state object, read for its own
- *                    onboarding.checklist map via entLooFun above.
+ * @param appStaObj - App State Object: The full app state object, read for its
+ *                    own onboarding.checklist map via entLooFun above.
  *
  * @returns How many non-Generate checklist items still have no
  * resolution at all, as a plain count.
@@ -241,8 +241,8 @@ function othRemFun ( appStaObj ) { return CHE_ITE_ARR.filter( ( curIteObj ) => c
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appStaObj - The full app state object, passed straight
- *                    through to othRemFun and reaPicFun below.
+ * @param appStaObj - App State Object: The full app state object, passed
+ *                    straight through to othRemFun and reaPicFun below.
  *
  * @returns Whether the Generate card is actionable yet, as a boolean.
  *
@@ -285,8 +285,8 @@ function reaGenFun ( appStaObj ) { return othRemFun( appStaObj ) === 0 && reaPic
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appStaObj - The full app state object, read for its own
- *                    onboarding/pickers/tasks fields.
+ * @param appStaObj - App State Object: The full app state object, read for its
+ *                    own onboarding/pickers/tasks fields.
  *
  * @returns Whether tutorial-gated controls should currently stay
  * disabled, as a boolean.

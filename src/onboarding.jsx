@@ -247,14 +247,14 @@ const BRA_MAR_STR = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 43
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state      - {@link staAppObj}, the entire app's own
- *                            persisted state.
- * @param props.actions    - {@link actStoObj}, the actions that mutate
- *                            props.state.
- * @param props.active     - {@link actIdeStr}, the app's own currently
- *                            active tab id.
- * @param props.selectTab  - {@link selTabFun}, switches the app's own
- *                            active tab.
+ * @param props.state      - State: {@link staAppObj}, the entire app's own
+ *                           persisted state.
+ * @param props.actions    - Actions: {@link actStoObj}, the actions that
+ *                           mutate props.state.
+ * @param props.active     - Active: {@link actIdeStr}, the app's own currently
+ *                           active tab id.
+ * @param props.selectTab  - Select Tab: {@link selTabFun}, switches the app's
+ *                           own active tab.
  *
  * @returns Either null (phase 'off'), the intro modal (phase
  * 'welcome'), or the running guided tour (phase 'tour'), depending on

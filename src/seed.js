@@ -280,7 +280,7 @@ function buiPicFun() {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param datRawObj - The date to convert.
+ * @param datRawObj - Date Raw Object: The date to convert.
  *
  * @returns The given date's own local calendar day, as a "YYYY-MM-DD"
  * string.
@@ -321,7 +321,7 @@ function seedIsoDay( datRawObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param itePooArr - The pool of items to pick from.
+ * @param itePooArr - Item Pool Array: The pool of items to pick from.
  *
  * @returns The chosen item.
  *
@@ -377,8 +377,8 @@ function weightedPick( itePooArr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param allIteArr - The full seeded item array to look items up by
- *                    name in.
+ * @param allIteArr - All Item Array: The full seeded item array to look items
+ *                    up by name in.
  *
  * @returns An array of vacationLog rows, in state.vacationLog's own
  * shape.
@@ -457,7 +457,7 @@ function buiVacFun( allIteArr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param vacRowArr - The vacationLog rows to replay, in
+ * @param vacRowArr - Vacation Row Array: The vacationLog rows to replay, in
  *                    state.vacationLog's own shape.
  *
  * @returns A function of (itemId, iso) resolving whether that item was
@@ -543,11 +543,12 @@ function makVacFun( vacRowArr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param allIteArr - Every seeded item to draw picks from.
- * @param allPicArr - Every seeded picker to generate history for.
- * @param onVacFun  - {@link onVacFun}
- * @param totDayNum - How many days of history to generate, counting
- *                    back from today; defaults to 365.
+ * @param allIteArr - All Item Array: Every seeded item to draw picks from.
+ * @param allPicArr - All Picker Array: Every seeded picker to generate history
+ *                    for.
+ * @param onVacFun  - On Vacation Function: {@link onVacFun}
+ * @param totDayNum - Total Day Number: How many days of history to generate,
+ *                    counting back from today; defaults to 365.
  *
  * @returns The generated rows plus each Ease Down picker's own final
  * in-progress state.

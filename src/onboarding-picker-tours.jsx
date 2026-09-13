@@ -748,14 +748,14 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.pickerId   - The sample picker's own id, keying both
- *                          PIC_SAM_OBJ and PIC_COP_OBJ.
- * @param props.state      - The entire app's own persisted state.
- * @param props.actions    - The actions that mutate props.state.
- * @param props.active     - The app's own currently active tab id.
- * @param props.selectTab  - Switches the app's own active tab.
- * @param props.onClose    - Clears app.jsx's own actPicStr, ending
- *                          this mount.
+ * @param props.pickerId   - Picker Id: The sample picker's own id, keying both
+ *                           PIC_SAM_OBJ and PIC_COP_OBJ.
+ * @param props.state      - State: The entire app's own persisted state.
+ * @param props.actions    - Actions: The actions that mutate props.state.
+ * @param props.active     - Active: The app's own currently active tab id.
+ * @param props.selectTab  - Select Tab: Switches the app's own active tab.
+ * @param props.onClose    - On Close: Clears app.jsx's own actPicStr, ending
+ *                           this mount.
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running
  * guided tour (touPhaStr 'tour'), depending on this picker's own

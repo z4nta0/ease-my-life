@@ -58,20 +58,19 @@ const EDG_SPE_NUM = 14;                                             // What: Edg
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param dowEveObj - The pointerdown event that started the gesture,
- *                    read for its button, pointerId, and clientY.
- * @param draConObj - The caller's own drag configuration: container
- *                    (the element whose direct children matching
- *                    itemSelector are the reorderable list), itemSelector
- *                    (a CSS selector identifying those siblings),
- *                    handleEl (the grabbed row/section being dragged),
- *                    gripEl (the specific element that received the
- *                    pointerdown, defaulting to handleEl when absent),
- *                    scroller (an optional scroll container for edge
- *                    auto-scroll), onDrop (called with an array of
- *                    original indices in their new order, only when the
- *                    order actually changed), and onStart/onEnd (optional
- *                    lifecycle hooks).
+ * @param dowEveObj - Down Event Object: The pointerdown event that started the
+ *                    gesture, read for its button, pointerId, and clientY.
+ * @param draConObj - Drag Configuration Object: The caller's own drag
+ *                    configuration: container (the element whose direct
+ *                    children matching itemSelector are the reorderable list),
+ *                    itemSelector (a CSS selector identifying those siblings),
+ *                    handleEl (the grabbed row/section being dragged), gripEl
+ *                    (the specific element that received the pointerdown,
+ *                    defaulting to handleEl when absent), scroller (an
+ *                    optional scroll container for edge auto-scroll), onDrop
+ *                    (called with an array of original indices in their new
+ *                    order, only when the order actually changed), and
+ *                    onStart/onEnd (optional lifecycle hooks).
  *
  * @returns This function does not return anything.
  *
@@ -369,7 +368,8 @@ function staDraFun ( dowEveObj, draConObj ) {
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param movEveObj - The pointermove event, read for its clientY.
+	 * @param movEveObj - Move Event Object: The pointermove event, read for
+	 *                    its clientY.
 	 *
 	 * @returns This function does not return anything.
 	 *

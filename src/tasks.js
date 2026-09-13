@@ -159,12 +159,12 @@ const eveNthFun = ( nthValNum, uniCouNum ) => nthValNum <= 1 || ( uniCouNum >= 0
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param yeaValNum - The calendar year to compute against.
- * @param monOneNum - The 1-indexed month to compute against (1 for
- *                    January through 12 for December).
- * @param nthValNum - Which occurrence to find, 1 through 5.
- * @param weeValNum - The target weekday, 0 for Sunday through 6 for
- *                    Saturday.
+ * @param yeaValNum - Year Value Number: The calendar year to compute against.
+ * @param monOneNum - Month One Number: The 1-indexed month to compute against
+ *                    (1 for January through 12 for December).
+ * @param nthValNum - Nth Value Number: Which occurrence to find, 1 through 5.
+ * @param weeValNum - Weekday Value Number: The target weekday, 0 for Sunday
+ *                    through 6 for Saturday.
  *
  * @returns The day-of-month (1 through 31) of that Nth weekday
  * occurrence, clamped to the 4th when a requested 5th doesn't exist.
@@ -214,8 +214,8 @@ function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskInpObj - The (possibly partial) task fields to default
- *                    against, defaulting to an empty object for a
+ * @param tskInpObj - Task Input Object: The (possibly partial) task fields to
+ *                    default against, defaulting to an empty object for a
  *                    brand new draft with nothing set yet.
  *
  * @returns A fully-defaulted task/reminder record, in the persisted
@@ -281,9 +281,10 @@ function defTasFun( tskInpObj = {} ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - The task/reminder record being checked.
- * @param cheDatObj - The date to check due-ness against, defaulting to
- *                    right now.
+ * @param tskRecObj - Task Record Object: The task/reminder record being
+ *                    checked.
+ * @param cheDatObj - Check Date Object: The date to check due-ness against,
+ *                    defaulting to right now.
  *
  * @returns Whether tskRecObj is due on cheDatObj, per its own repeat
  * kind's rule.
@@ -415,9 +416,10 @@ function isaDueFun( tskRecObj, cheDatObj = new Date() ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - The task/reminder record being checked.
- * @param cheDatObj - The date to check completion against, defaulting
- *                    to right now.
+ * @param tskRecObj - Task Record Object: The task/reminder record being
+ *                    checked.
+ * @param cheDatObj - Check Date Object: The date to check completion against,
+ *                    defaulting to right now.
  *
  * @returns Whether tskRecObj's own lastDone exactly matches cheDatObj.
  *
@@ -444,9 +446,10 @@ function isaDonFun( tskRecObj, cheDatObj = new Date() ) { return !!tskRecObj.las
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - The task/reminder record being checked.
- * @param cheDatObj - The date to check staleness against, defaulting
- *                    to right now.
+ * @param tskRecObj - Task Record Object: The task/reminder record being
+ *                    checked.
+ * @param cheDatObj - Check Date Object: The date to check staleness against,
+ *                    defaulting to right now.
  *
  * @returns Whether tskRecObj is a 'once' task completed on some day
  * other than cheDatObj.
@@ -476,7 +479,8 @@ function isaStaFun( tskRecObj, cheDatObj = new Date() ) { return tskRecObj.repea
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - The task/reminder record being checked.
+ * @param tskRecObj - Task Record Object: The task/reminder record being
+ *                    checked.
  *
  * @returns Whether tskRecObj is a 'once' task with any lastDone at all.
  *
@@ -511,7 +515,7 @@ const DAY_ABB_ARR = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ]; // What
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param ordValNum - The number to suffix.
+ * @param ordValNum - Ordinal Value Number: The number to suffix.
  *
  * @returns ordValNum followed by its correct ordinal suffix, as a
  * string.
@@ -551,8 +555,8 @@ function ordSufFun( ordValNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - The task/reminder whose schedule is being
- *                    summarized.
+ * @param tskRecObj - Task Record Object: The task/reminder whose schedule is
+ *                    being summarized.
  *
  * @returns The short human summary string.
  *
@@ -723,9 +727,10 @@ function sumTskFun( tskRecObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskListArr - The full list of task/reminder records to filter.
- * @param cheDatObj  - The date to check due-ness against, defaulting
- *                     to right now.
+ * @param tskListArr - Task List Array: The full list of task/reminder records
+ *                     to filter.
+ * @param cheDatObj  - Check Date Object: The date to check due-ness against,
+ *                     defaulting to right now.
  *
  * @returns The due, non-hidden subset of tskListArr, sorted one-time
  * first, then newest createdAt first.
@@ -818,8 +823,8 @@ function defOptFun() {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param remOptObj - The raw, possibly partial or missing reminderOpts
- *                    state to normalize.
+ * @param remOptObj - Reminder Option Object: The raw, possibly partial or
+ *                    missing reminderOpts state to normalize.
  *
  * @returns A fully-shaped { once, recurring } participation-options
  * object.
@@ -870,10 +875,10 @@ const isaRecFun = ( tskRecObj ) => tskRecObj.repeat !== 'once'; // What: Is-A Re
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - The task/reminder whose governing options are
- *                    wanted.
- * @param remOptObj - The raw reminderOpts state to normalize and
- *                    choose from.
+ * @param tskRecObj - Task Record Object: The task/reminder whose governing
+ *                    options are wanted.
+ * @param remOptObj - Reminder Option Object: The raw reminderOpts state to
+ *                    normalize and choose from.
  *
  * @returns tskRecObj's own governing options object, either
  * remOptObj's normalized once or recurring class.
@@ -913,13 +918,14 @@ function optForFun( tskRecObj, remOptObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskListArr - The full list of task/reminder records to filter.
- * @param remOptObj  - The raw reminderOpts state governing weekend/
- *                     holiday participation.
- * @param holStaObj  - The persisted holidays state to check exclusions
- *                     against.
- * @param cheDatObj  - The date to check visibility against, defaulting
- *                     to right now.
+ * @param tskListArr - Task List Array: The full list of task/reminder records
+ *                     to filter.
+ * @param remOptObj  - Reminder Option Object: The raw reminderOpts state
+ *                     governing weekend/ holiday participation.
+ * @param holStaObj  - Holiday State Object: The persisted holidays state to
+ *                     check exclusions against.
+ * @param cheDatObj  - Check Date Object: The date to check visibility against,
+ *                     defaulting to right now.
  *
  * @returns The subset of tskListArr that's both due and not excluded
  * on cheDatObj.
@@ -985,13 +991,13 @@ function visTodFun( tskListArr, remOptObj, holStaObj, cheDatObj = new Date() ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - The task/reminder being checked.
- * @param remOptObj - The raw reminderOpts state governing weekend/
- *                    holiday participation.
- * @param holStaObj - The persisted holidays state to check exclusions
- *                    against.
- * @param cheDatObj - The date to check visibility against, defaulting
- *                    to right now.
+ * @param tskRecObj - Task Record Object: The task/reminder being checked.
+ * @param remOptObj - Reminder Option Object: The raw reminderOpts state
+ *                    governing weekend/ holiday participation.
+ * @param holStaObj - Holiday State Object: The persisted holidays state to
+ *                    check exclusions against.
+ * @param cheDatObj - Check Date Object: The date to check visibility against,
+ *                    defaulting to right now.
  *
  * @returns A { visible, cause, causes, holidayName, holidayCustom,
  * next } advisory object; see this function's own @summary above for
@@ -1082,16 +1088,16 @@ function todVisFun( tskRecObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj  - The task/reminder to search a next occurrence
- *                     for.
- * @param remOptObj  - The raw reminderOpts state governing weekend/
- *                     holiday participation.
- * @param holStaObj  - The persisted holidays state to check exclusions
- *                     against.
- * @param fromDatObj - The date to search forward from, defaulting to
- *                     right now.
- * @param resSkiBoo  - Whether to also respect an already-active
- *                     skipUntil, defaulting to false.
+ * @param tskRecObj  - Task Record Object: The task/reminder to search a next
+ *                     occurrence for.
+ * @param remOptObj  - Reminder Option Object: The raw reminderOpts state
+ *                     governing weekend/ holiday participation.
+ * @param holStaObj  - Holiday State Object: The persisted holidays state to
+ *                     check exclusions against.
+ * @param fromDatObj - From Date Object: The date to search forward from,
+ *                     defaulting to right now.
+ * @param resSkiBoo  - Resolved Skip Boolean: Whether to also respect an
+ *                     already-active skipUntil, defaulting to false.
  *
  * @returns The next eligible Date, or null if nothing qualifies within
  * this function's own search horizon (e.g. an annual task that always

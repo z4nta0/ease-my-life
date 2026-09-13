@@ -87,9 +87,9 @@ const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.style - Which celebration style to play: 'ripple',
+ * @param props.style - Style: Which celebration style to play: 'ripple',
  *                      'confetti', or 'sparkle'.
- * @param props.token - A monotonically-increasing counter; bumping it
+ * @param props.token - Token: A monotonically-increasing counter; bumping it
  *                      replays the effect.
  *
  * @returns The preview stage: the mock done-cards row plus whichever
@@ -382,11 +382,11 @@ function CelebrationPreviewStage ( { style : styStr, token : tokNum } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.style - Which of PickerStrip's own animation styles to
+ * @param props.style - Style: Which of PickerStrip's own animation styles to
  *                      preview: 'reel', 'spotlight', or 'dissolve'.
- * @param props.token - A monotonically-increasing counter; the cycle
- *                      only plays once this first becomes greater than
- *                      0, and bumping it again replays the cycle.
+ * @param props.token - Token: A monotonically-increasing counter; the cycle
+ *                      only plays once this first becomes greater than 0, and
+ *                      bumping it again replays the cycle.
  *
  * @returns Either the live PickerStrip cycle (once Play has been pressed
  * at least once) or a static preview of the fixed landing candidate's

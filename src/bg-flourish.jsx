@@ -112,8 +112,8 @@ const BIG_CHA_NUM = 0.12; // What: Big Chance Number. Why: A minority of glyphs 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param souEleArr - The array to shuffle. Left untouched; a shuffled
- *                    copy is returned instead.
+ * @param souEleArr - Source Element Array: The array to shuffle. Left
+ *                    untouched; a shuffled copy is returned instead.
  *
  * @returns A new array holding the same elements as souEleArr, in random
  * order.
@@ -164,7 +164,7 @@ function shuArrFun( souEleArr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param lenValNum - How many integers to produce.
+ * @param lenValNum - Length Value Number: How many integers to produce.
  *
  * @returns An array [0, 1, 2, ..., lenValNum - 1].
  *
@@ -195,8 +195,8 @@ function ranArrFun( lenValNum ) { return Array.from( { length : lenValNum }, ( _
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param pooFacFun - A zero-argument function that produces a fresh pool
- *                    array each time it's called.
+ * @param pooFacFun - Pool Factor Function: A zero-argument function that
+ *                    produces a fresh pool array each time it's called.
  *
  * @returns A zero-argument function that returns one value from
  * pooFacFun's pool per call, reshuffling automatically once exhausted.
@@ -254,9 +254,11 @@ function makCycFun( pooFacFun ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param minValNum - The smallest value in the returned array.
- * @param maxValNum - The largest value in the returned array.
- * @param couValNum - How many values to produce.
+ * @param minValNum - Minimum Value Number: The smallest value in the returned
+ *                    array.
+ * @param maxValNum - Maximum Value Number: The largest value in the returned
+ *                    array.
+ * @param couValNum - Count Value Number: How many values to produce.
  *
  * @returns An array of couValNum values, evenly spaced from minValNum to
  * maxValNum inclusive (or just [minValNum] when couValNum is 1 or less).
@@ -299,13 +301,15 @@ function eveSpaFun( minValNum, maxValNum, couValNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param bloGriArr - The 2D excluded-cells grid to mutate.
- * @param rowIndNum - The row of the placed glyph's own top-left cell.
- * @param colIndNum - The column of the placed glyph's own top-left cell.
- * @param heiSpaNum - How many rows the placed glyph itself spans (1 for a
- *                    normal glyph, 2 for a "big" one).
- * @param widSpaNum - How many columns the placed glyph itself spans (1
- *                    for a normal glyph, 2 for a "big" one).
+ * @param bloGriArr - Blocked Grid Array: The 2D excluded-cells grid to mutate.
+ * @param rowIndNum - Row Index Number: The row of the placed glyph's own
+ *                    top-left cell.
+ * @param colIndNum - Column Index Number: The column of the placed glyph's own
+ *                    top-left cell.
+ * @param heiSpaNum - Height Spacing Number: How many rows the placed glyph
+ *                    itself spans (1 for a normal glyph, 2 for a "big" one).
+ * @param widSpaNum - Width Spacing Number: How many columns the placed glyph
+ *                    itself spans (1 for a normal glyph, 2 for a "big" one).
  *
  * @returns This function does not return anything.
  *
@@ -367,8 +371,8 @@ function bloAroFun( bloGriArr, rowIndNum, colIndNum, heiSpaNum, widSpaNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param colCouNum - How many columns the grid has.
- * @param rowCouNum - How many rows the grid has.
+ * @param colCouNum - Column Count Number: How many columns the grid has.
+ * @param rowCouNum - Row Count Number: How many rows the grid has.
  *
  * @returns An array of { row, col, big } placements, one per glyph.
  *
@@ -456,8 +460,10 @@ function plaGriFun( colCouNum, rowCouNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param gutWidNum - The gutter's own measured width, in pixels.
- * @param conHeiNum - The tab's own measured content height, in pixels.
+ * @param gutWidNum - Gutter Width Number: The gutter's own measured width, in
+ *                    pixels.
+ * @param conHeiNum - Content Height Number: The tab's own measured content
+ *                    height, in pixels.
  *
  * @returns An array of styled glyph items ready to render, or an empty
  * array when the gutter is too narrow to bother decorating at all.
@@ -550,10 +556,11 @@ const floCacMap = new Map(); // What: Flourish Cache Map. Why: Every generated s
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tabIdeStr - The current tab's own id, used as the cache key.
- * @param meaEleRef - A ref pointing at the tab's own centered-column
- *                    container, whose real measured width/height the
- *                    grid is generated against.
+ * @param tabIdeStr - Tab Identifier String: The current tab's own id, used as
+ *                    the cache key.
+ * @param meaEleRef - Measure Element Reference: A ref pointing at the tab's
+ *                    own centered-column container, whose real measured
+ *                    width/height the grid is generated against.
  *
  * @returns The tab's own { left, right } generated flourish items, or
  * null before the first measurement has completed.
@@ -622,11 +629,11 @@ function useFloIteFun( tabIdeStr, meaEleRef ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.sidKeyStr - Which side this column renders on, 'left' or
- *                          'right'; flips which CSS inset property each
- *                          item's own insNum applies to.
- * @param props.floIteArr - This side's own array of already-generated,
- *                          already-styled items to render.
+ * @param props.sidKeyStr - Side Key String: Which side this column renders on,
+ *                          'left' or 'right'; flips which CSS inset property
+ *                          each item's own insNum applies to.
+ * @param props.floIteArr - Floor Item Array: This side's own array of
+ *                          already-generated, already-styled items to render.
  *
  * @returns This side's own flourish items, each as one absolutely-
  * positioned decorative span, or null when there is nothing to render.
@@ -704,10 +711,10 @@ function FloColCom( { side : sidKeyStr, items : floIteArr } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.tabId      - The current tab's own id, used as the cache
- *                           key.
- * @param props.measureRef - A ref pointing at the tab's own centered-
- *                           column container, whose real measured
+ * @param props.tabId      - Tab Id: The current tab's own id, used as the
+ *                           cache key.
+ * @param props.measureRef - Measure Reference: A ref pointing at the tab's own
+ *                           centered- column container, whose real measured
  *                           width/height the grid is generated against.
  *
  * @returns Both of this tab's own gutters, each as one FloColCom

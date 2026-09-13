@@ -84,12 +84,14 @@ const midDatFun = ( inpDatObj ) => new Date( inpDatObj.getFullYear(), inpDatObj.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param yeaValNum - The calendar year to compute against.
- * @param monOneNum - The 1-indexed month to compute against (1 for
- *                    January through 12 for December).
- * @param nthValNum - Which occurrence to find, 1 through 5.
- * @param weeValNum - The target weekday, 0 for Sunday through 6 for
- *                    Saturday.
+ * @param yeaValNum - Year Value Number: The calendar year to compute
+ *                    against.
+ * @param monOneNum - Month One Number: The 1-indexed month to compute
+ *                    against (1 for January through 12 for December).
+ * @param nthValNum - Nth Value Number: Which occurrence to find, 1
+ *                    through 5.
+ * @param weeValNum - Weekday Value Number: The target weekday, 0 for
+ *                    Sunday through 6 for Saturday.
  *
  * @returns The day-of-month (1 through 31) of that Nth weekday
  * occurrence, clamped to the 4th when a requested 5th doesn't exist.
@@ -135,13 +137,17 @@ function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picCadObj - The picker whose cadence fields (dateMode,
- *                    nthOrdinal, nthWeekday, and whichever field
- *                    domFldStr names) are being resolved.
- * @param yeaValNum - The calendar year to compute against.
- * @param monOneNum - The 1-indexed month to compute against.
- * @param domFldStr - Which of picCadObj's own fields holds its plain
- *                    date-of-month value, 'anchorDom' or 'anchorDay'.
+ * @param picCadObj - Picker Cadence Object: The picker whose cadence
+ *                    fields (dateMode, nthOrdinal, nthWeekday, and
+ *                    whichever field domFldStr names) are being
+ *                    resolved.
+ * @param yeaValNum - Year Value Number: The calendar year to compute
+ *                    against.
+ * @param monOneNum - Month One Number: The 1-indexed month to compute
+ *                    against.
+ * @param domFldStr - Day-Of-Month Field String: Which of picCadObj's
+ *                    own fields holds its plain date-of-month value,
+ *                    'anchorDom' or 'anchorDay'.
  *
  * @returns The resolved day-of-month, from picCadObj's own plain value
  * (clamped to the month's own real length) or, in nth-weekday mode,
@@ -176,9 +182,11 @@ const isaCadFun   = ( cadValStr ) => CAD_STR_ARR.includes( cadValStr ); // What:
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param cadValStr - The picker's own cadence value.
- * @param couValNum - How many of the unit are being displayed; exactly 1
- *                    gets the singular form, anything else the plural.
+ * @param cadValStr - Cadence Value String: The picker's own cadence
+ *                    value.
+ * @param couValNum - Count Value Number: How many of the unit are being
+ *                    displayed; exactly 1 gets the singular form,
+ *                    anything else the plural.
  *
  * @returns The matching unit word, e.g. 'week' or 'weeks'.
  *
@@ -223,9 +231,9 @@ function uniWorFun( cadValStr, couValNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picLikObj - The picker-like object to normalize, defaulting to
- *                    an empty object for a brand new draft with nothing
- *                    set yet.
+ * @param picLikObj - Picker Like Object: The picker-like object to
+ *                    normalize, defaulting to an empty object for a
+ *                    brand new draft with nothing set yet.
  *
  * @returns A full { cadence, anchorDow, anchorDom, anchorMonth,
  * anchorDay, dateMode, nthOrdinal, nthWeekday } object, every field
@@ -279,8 +287,10 @@ function norCadFun( picLikObj = {} ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picCadObj - The picker whose cadence is being checked.
- * @param cheDatObj - The date to check, defaulting to right now.
+ * @param picCadObj - Picker Cadence Object: The picker whose cadence is
+ *                    being checked.
+ * @param cheDatObj - Check Date Object: The date to check, defaulting
+ *                    to right now.
  *
  * @returns Whether cheDatObj is an anchor day for picCadObj's own
  * cadence.
@@ -341,9 +351,10 @@ function isaAncFun( picCadObj, cheDatObj = new Date() ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picCadObj - The picker whose cadence's period is being resolved.
- * @param cheDatObj - The date whose own period start is wanted,
- *                    defaulting to right now.
+ * @param picCadObj - Picker Cadence Object: The picker whose cadence's
+ *                    period is being resolved.
+ * @param cheDatObj - Check Date Object: The date whose own period start
+ *                    is wanted, defaulting to right now.
  *
  * @returns The Date (at midnight) that starts cheDatObj's own current
  * period.
@@ -444,9 +455,10 @@ function perStaFun( picCadObj, cheDatObj = new Date() ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picCadObj - The picker whose current period key is wanted.
- * @param cheDatObj - The date to resolve the period against, defaulting
- *                    to right now.
+ * @param picCadObj - Picker Cadence Object: The picker whose current
+ *                    period key is wanted.
+ * @param cheDatObj - Check Date Object: The date to resolve the period
+ *                    against, defaulting to right now.
  *
  * @returns The ISO date string of picCadObj's own current period start.
  *
@@ -475,10 +487,11 @@ function perKeyFun( picCadObj, cheDatObj = new Date() ) { return forIsoFun( perS
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picCadObj - The picker whose current period is being checked.
- * @param pckLogArr - The full pick log to search.
- * @param cheDatObj - The date to resolve the current period against,
- *                    defaulting to right now.
+ * @param picCadObj - Picker Cadence Object: The picker whose current
+ *                    period is being checked.
+ * @param pckLogArr - Pick Log Array: The full pick log to search.
+ * @param cheDatObj - Check Date Object: The date to resolve the current
+ *                    period against, defaulting to right now.
  *
  * @returns Whether a done pick-log row for picCadObj exists dated on or
  * after the current period's own start. Always false for a daily
@@ -526,7 +539,8 @@ const MON_SHO_ARR = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'S
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picCadObj - The picker whose cadence is being summarized.
+ * @param picCadObj - Picker Cadence Object: The picker whose cadence is
+ *                    being summarized.
  *
  * @returns The short human summary string.
  *
@@ -593,7 +607,7 @@ function sumCadFun( picCadObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param ordValNum - The number to suffix.
+ * @param ordValNum - Ordinal Value Number: The number to suffix.
  *
  * @returns ordValNum followed by its correct ordinal suffix, as a
  * string.
@@ -663,7 +677,8 @@ const locTipFun = ( dowValNum, srcLblStr = 'How often?' ) => `Because you select
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picCadObj - The picker-shaped object to check.
+ * @param picCadObj - Picker Cadence Object: The picker-shaped object to
+ *                    check.
  *
  * @returns The corrected daysOfWeek array (with the anchor day added
  * when it was missing), or the same array unchanged when nothing needs

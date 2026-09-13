@@ -143,7 +143,7 @@ const CIS_OPT_ARR = [
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param modStr - The picker's own current mode key.
+ * @param modStr - Mode String: The picker's own current mode key.
  *
  * @returns An array of { keyStr, labStr } sort options for that mode.
  *
@@ -222,35 +222,39 @@ function pisOptFun ( modStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.picker              - {@link picObj}
- * @param props.items               - {@link iteArr}
- * @param props.inDaily             - Whether this picker is currently a
- *                                     member of the daily generator.
- * @param props.dailyIds            - Every picker id currently in the
- *                                     daily generator.
- * @param props.allGroups           - Every existing group name, used to
- *                                     populate the Group selector.
- * @param props.conditionals        - Every existing conditional, used
- *                                     to populate the attach-a-
- *                                     conditional rail; defaults to an
- *                                     empty array.
- * @param props.actions             - {@link useStore}
- * @param props.onCollapse          - Collapses this picker's own
- *                                     Controls disclosure.
- * @param props.onRequestDelete     - Deletes this picker, in place of
- *                                     the default actions.removePicker
- *                                     call, when the caller wants to
- *                                     animate the removal itself.
- * @param props.isNewDraft          - Whether this is a brand-new,
- *                                     not-yet-saved draft picker.
- * @param props.itemsSectionOpen    - Whether the draft's own Items
- *                                     section has been revealed yet.
- * @param props.hasOpenNewItem      - Whether a brand-new item's editor
- *                                     is still open, unsaved.
- * @param props.onOpenItemsSection  - Reveals the draft's own Items
- *                                     section.
- * @param props.onSaveNew           - Commits a brand-new draft picker.
- * @param props.onCancelNew         - Discards a brand-new draft picker.
+ * @param props.picker              - Picker: {@link picObj}
+ * @param props.items               - Items: {@link iteArr}
+ * @param props.inDaily             - In Daily: Whether this picker is
+ *                                    currently a member of the daily
+ *                                    generator.
+ * @param props.dailyIds            - Daily Ids: Every picker id currently in
+ *                                    the daily generator.
+ * @param props.allGroups           - All Groups: Every existing group name,
+ *                                    used to populate the Group selector.
+ * @param props.conditionals        - Conditionals: Every existing conditional,
+ *                                    used to populate the attach-a-
+ *                                    conditional rail; defaults to an empty
+ *                                    array.
+ * @param props.actions             - Actions: {@link useStore}
+ * @param props.onCollapse          - On Collapse: Collapses this picker's own
+ *                                    Controls disclosure.
+ * @param props.onRequestDelete     - On Request Delete: Deletes this picker,
+ *                                    in place of the default
+ *                                    actions.removePicker call, when the
+ *                                    caller wants to animate the removal
+ *                                    itself.
+ * @param props.isNewDraft          - Is New Draft: Whether this is a
+ *                                    brand-new, not-yet-saved draft picker.
+ * @param props.itemsSectionOpen    - Items Section Open: Whether the draft's
+ *                                    own Items section has been revealed yet.
+ * @param props.hasOpenNewItem      - Has Open New Item: Whether a brand-new
+ *                                    item's editor is still open, unsaved.
+ * @param props.onOpenItemsSection  - On Open Items Section: Reveals the
+ *                                    draft's own Items section.
+ * @param props.onSaveNew           - On Save New: Commits a brand-new draft
+ *                                    picker.
+ * @param props.onCancelNew         - On Cancel New: Discards a brand-new draft
+ *                                    picker.
  *
  * @returns This picker's own Controls body: Picker Details, How it
  * picks, When it runs, Item Controls, and the footer.
@@ -1560,23 +1564,26 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.cond      - The conditional record this row belongs to.
- * @param props.draft     - The in-progress, not-yet-committed field
+ * @param props.cond      - Conditional: The conditional record this row
+ *                          belongs to.
+ * @param props.draft     - Draft: The in-progress, not-yet-committed field
  *                          values for this conditional.
- * @param props.setDraft  - Replaces the in-progress draft object.
- * @param props.actions   - {@link useStore}
- * @param props.isNew     - Whether this conditional is a brand-new,
+ * @param props.setDraft  - Setter Draft: Replaces the in-progress draft
+ *                          object.
+ * @param props.actions   - Actions: {@link useStore}
+ * @param props.isNew     - Is New: Whether this conditional is a brand-new,
  *                          not-yet-saved draft.
- * @param props.nameError - The current validation message for the
+ * @param props.nameError - Name Error: The current validation message for the
  *                          draft's own name, or null when it's valid.
- * @param props.tidyName  - The draft's own name, already normalized to
- *                          the app's tidy-casing rule.
- * @param props.onClose   - Closes this row without discarding an
+ * @param props.tidyName  - Tidy Name: The draft's own name, already normalized
+ *                          to the app's tidy-casing rule.
+ * @param props.onClose   - On Close: Closes this row without discarding an
  *                          existing conditional's edits.
- * @param props.onDiscard - Discards a brand-new conditional entirely.
- * @param props.onSaveNew - Commits a brand-new conditional, when set;
- *                          undefined for an existing one.
- * @param props.onDelete  - Deletes this existing conditional.
+ * @param props.onDiscard - On Discard: Discards a brand-new conditional
+ *                          entirely.
+ * @param props.onSaveNew - On Save New: Commits a brand-new conditional, when
+ *                          set; undefined for an existing one.
+ * @param props.onDelete  - On Delete: Deletes this existing conditional.
  *
  * @returns This conditional's own editor body: any name error, the
  * shared ConditionalControls fields, and the footer.
@@ -1710,8 +1717,8 @@ function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, acti
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state   - {@link useStore}
- * @param props.actions - {@link useStore}
+ * @param props.state   - State: {@link useStore}
+ * @param props.actions - Actions: {@link useStore}
  *
  * @returns The Conditionals section: its own header, the "Add a
  * conditional" control, and every conditional's own collapsible row.
@@ -2112,10 +2119,10 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state     - {@link useStore}
- * @param props.actions   - {@link useStore}
- * @param props.onHome    - Navigates back to the Today tab.
- * @param props.onNavTab  - Switches to another tab by id.
+ * @param props.state     - State: {@link useStore}
+ * @param props.actions   - Actions: {@link useStore}
+ * @param props.onHome    - On Home: Navigates back to the Today tab.
+ * @param props.onNavTab  - On Nav Tab: Switches to another tab by id.
  *
  * @returns The Data tab's entire rendered content: its header, its
  * filters, the section sort bar, and the list of sections.

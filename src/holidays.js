@@ -92,12 +92,13 @@ const isoDatFun = ( srcDatObj ) => `${ srcDatObj.getFullYear() }-${ padDigFun( s
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param yeaValNum - The calendar year to resolve the date within.
- * @param monOneNum - The 1-based month number (1 = January).
- * @param dayIndNum - The target weekday, matching Date.getDay()'s own
- *                    encoding (Sun = 0 ... Sat = 6).
- * @param nthCouNum - Which occurrence of that weekday to resolve,
- *                    1-based (e.g. 2 for the 2nd Monday).
+ * @param yeaValNum - Year Value Number: The calendar year to resolve the date
+ *                    within.
+ * @param monOneNum - Month One Number: The 1-based month number (1 = January).
+ * @param dayIndNum - Day Index Number: The target weekday, matching
+ *                    Date.getDay()'s own encoding (Sun = 0 ... Sat = 6).
+ * @param nthCouNum - Nth Count Number: Which occurrence of that weekday to
+ *                    resolve, 1-based (e.g. 2 for the 2nd Monday).
  *
  * @returns The resolved Date for the Nth occurrence of that weekday.
  *
@@ -136,10 +137,11 @@ function nthDayFun( yeaValNum, monOneNum, dayIndNum, nthCouNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param yeaValNum - The calendar year to resolve the date within.
- * @param monOneNum - The 1-based month number (1 = January).
- * @param dayIndNum - The target weekday, matching Date.getDay()'s own
- *                    encoding (Sun = 0 ... Sat = 6).
+ * @param yeaValNum - Year Value Number: The calendar year to resolve the date
+ *                    within.
+ * @param monOneNum - Month One Number: The 1-based month number (1 = January).
+ * @param dayIndNum - Day Index Number: The target weekday, matching
+ *                    Date.getDay()'s own encoding (Sun = 0 ... Sat = 6).
  *
  * @returns The resolved Date for the month's last occurrence of that
  * weekday.
@@ -179,9 +181,11 @@ function lasDayFun( yeaValNum, monOneNum, dayIndNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param holDefObj - The holiday definition to resolve, one HOL_DEF_ARR
- *                    entry carrying exactly one of fixArr/nthArr/lasArr.
- * @param yeaValNum - The calendar year to resolve the date within.
+ * @param holDefObj - Holiday Default Object: The holiday definition to
+ *                    resolve, one HOL_DEF_ARR entry carrying exactly one of
+ *                    fixArr/nthArr/lasArr.
+ * @param yeaValNum - Year Value Number: The calendar year to resolve the date
+ *                    within.
  *
  * @returns The resolved Date, or null if holDefObj carries none of the
  * 3 recognized rule shapes.
@@ -227,7 +231,8 @@ function datDefFun( holDefObj, yeaValNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param actDatObj - The holiday's own true, un-shifted calendar date.
+ * @param actDatObj - Active Date Object: The holiday's own true, un-shifted
+ *                    calendar date.
  *
  * @returns The observed Date: actDatObj itself, unless it fell on a
  * Saturday or Sunday, in which case the shifted weekday instead.
@@ -272,9 +277,10 @@ function obsDatFun( actDatObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param yeaValNum - The calendar year to resolve every holiday for.
- * @param couCodStr - The 2-letter country code to resolve holidays
- *                    for, defaulting to 'US' (the only region this
+ * @param yeaValNum - Year Value Number: The calendar year to resolve every
+ *                    holiday for.
+ * @param couCodStr - Count Code String: The 2-letter country code to resolve
+ *                    holidays for, defaulting to 'US' (the only region this
  *                    module currently defines a rule table for).
  *
  * @returns An array of resolved holiday records, one per definition in
@@ -365,10 +371,11 @@ function defStaFun() { return { country : 'US', disabled : [], custom : [] }; } 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param holStaObj - The persisted holidays state object ({ country,
- *                    disabled, custom }), or a falsy value to fall
+ * @param holStaObj - Holiday State Object: The persisted holidays state object
+ *                    ({ country, disabled, custom }), or a falsy value to fall
  *                    back to defStaFun's canonical empty shape.
- * @param yeaValNum - The calendar year to resolve active days off for.
+ * @param yeaValNum - Year Value Number: The calendar year to resolve active
+ *                    days off for.
  *
  * @returns An array of active holiday/custom-day records for the year.
  *
@@ -439,9 +446,9 @@ function actYeaFun( holStaObj, yeaValNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param holStaObj - The persisted holidays state object to check
- *                    against, in the same shape actYeaFun accepts.
- * @param cheDatObj - The date being checked.
+ * @param holStaObj - Holiday State Object: The persisted holidays state object
+ *                    to check against, in the same shape actYeaFun accepts.
+ * @param cheDatObj - Check Date Object: The date being checked.
  *
  * @returns The matching holiday/custom-day's own name, or null if
  * cheDatObj is not an active day off.
@@ -493,9 +500,9 @@ function holDatFun( holStaObj, cheDatObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param holStaObj - The persisted holidays state object to check
- *                    against, in the same shape actYeaFun accepts.
- * @param cheDatObj - The date being checked.
+ * @param holStaObj - Holiday State Object: The persisted holidays state object
+ *                    to check against, in the same shape actYeaFun accepts.
+ * @param cheDatObj - Check Date Object: The date being checked.
  *
  * @returns The matching full holiday/custom-day record, or null if
  * cheDatObj is not an active day off.
@@ -597,7 +604,8 @@ function gueCouFun() {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param couCodStr - The 2-letter country code to resolve a label for.
+ * @param couCodStr - Count Code String: The 2-letter country code to resolve a
+ *                    label for.
  *
  * @returns The resolved region's own display name, falling back to the
  * US entry's name when couCodStr is unrecognized.

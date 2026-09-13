@@ -344,16 +344,16 @@ const bldSubFun = ( varKeyStr ) => ({
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.variant           - Which sample reminder this mounts
+ * @param props.variant           - Variant: Which sample reminder this mounts
  *                                  for, 'once' or 'recurring'.
- * @param props.state             - The entire app's own persisted
+ * @param props.state             - State: The entire app's own persisted
  *                                  state.
- * @param props.actions           - The actions that mutate
+ * @param props.actions           - Actions: The actions that mutate
  *                                  props.state.
- * @param props.closeReminderForm - Closes the real add-reminder form
- *                                  on Today, exactly like its own
- *                                  Cancel button would.
- * @param props.onClose           - Clears tab-today.jsx's own
+ * @param props.closeReminderForm - Close Reminder Form: Closes the real
+ *                                  add-reminder form on Today, exactly like
+ *                                  its own Cancel button would.
+ * @param props.onClose           - On Close: Clears tab-today.jsx's own
  *                                  activeMiniTour, ending this mount.
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running

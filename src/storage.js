@@ -252,9 +252,10 @@ function opeDatFun() {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param stoNamStr - Which object store to open, STA_STO_STR or
- *                    PIC_LOG_STR.
- * @param modValStr - The transaction mode, 'readonly' or 'readwrite'.
+ * @param stoNamStr - Store Name String: Which object store to open,
+ *                    STA_STO_STR or PIC_LOG_STR.
+ * @param modValStr - Mode Value String: The transaction mode, 'readonly' or
+ *                    'readwrite'.
  *
  * @returns The requested IDBObjectStore, opened within a brand new
  * transaction on datConObj.
@@ -335,7 +336,7 @@ async function reaDatFun() {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appStaObj - The full app state object to persist.
+ * @param appStaObj - App State Object: The full app state object to persist.
  *
  * @returns This function does not return anything.
  *
@@ -457,10 +458,11 @@ function reaLocFun() {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appStaObj - The full app state object to mirror.
- * @param fulWriBoo - Whether to write pickLog too, instead of excluding
- *                    it. True whenever localStorage is the store of
- *                    record rather than just a warm mirror of IDB.
+ * @param appStaObj - App State Object: The full app state object to mirror.
+ * @param fulWriBoo - Full Writer Boolean: Whether to write pickLog too,
+ *                    instead of excluding it. True whenever localStorage is
+ *                    the store of record rather than just a warm mirror of
+ *                    IDB.
  *
  * @returns Whether the localStorage write succeeded.
  *
@@ -669,7 +671,7 @@ async function iniStoFun() {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appStaObj - The full app state object to persist.
+ * @param appStaObj - App State Object: The full app state object to persist.
  *
  * @returns This function does not return anything.
  *
@@ -722,7 +724,7 @@ function savStaFun( appStaObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appStaObj - The full app state object to persist.
+ * @param appStaObj - App State Object: The full app state object to persist.
  *
  * @returns This function does not return anything.
  *

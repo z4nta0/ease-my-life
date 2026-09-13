@@ -325,7 +325,7 @@ export const OB_PICKER_CARD_TIME = { // What: Onboarding Picker Card Time Object
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param datRawObj - The date to convert.
+ * @param datRawObj - Date Raw Object: The date to convert.
  *
  * @returns The given date's own local calendar day, as a "YYYY-MM-DD"
  * string.
@@ -371,7 +371,7 @@ function isoDayFun( datRawObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staRawObj - The precomputed stats object from
+ * @param staRawObj - State Raw Object: The precomputed stats object from
  *                    onboarding-stats-data.js, holding day-offset-based
  *                    pickLog / reminderLog / reminderSkipLog arrays.
  *

@@ -44,8 +44,8 @@ import { useEscapeCancel         } from './ui.jsx';                  // What: Us
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param runTimStr - The raw 24-hour "HH:MM" string to format; defaults
- *                    to '04:00' when missing or falsy.
+ * @param runTimStr - Run Time String: The raw 24-hour "HH:MM" string to
+ *                    format; defaults to '04:00' when missing or falsy.
  *
  * @returns The formatted 12-hour clock label, such as "4:00 AM".
  *
@@ -88,9 +88,9 @@ function forRunFun ( runTimStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state   - The whole app state, read here for its own
+ * @param props.state   - State: The whole app state, read here for its own
  *                        state.holidays sub-object.
- * @param props.actions - The store's own action functions; this uses
+ * @param props.actions - Actions: The store's own action functions; this uses
  *                        addCustomHoliday/removeCustomHoliday/toggleHoliday.
  *
  * @returns The holiday list (computed rows plus custom rows) and the
@@ -447,10 +447,10 @@ const SUPPORT_FORM_NAME = 'support'; // What: Support Form Name. Why: Netlify ma
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state   - The whole app state; unused directly by this
- *                        component today, but threaded through for
- *                        consistency with every other section here.
- * @param props.actions - The store's own action functions; unused
+ * @param props.state   - State: The whole app state; unused directly by this
+ *                        component today, but threaded through for consistency
+ *                        with every other section here.
+ * @param props.actions - Actions: The store's own action functions; unused
  *                        directly by this component today, same reason.
  *
  * @returns The "Having problems?" trigger card, plus the collapsible
@@ -888,15 +888,17 @@ const DAR_THE_ARR = [ 'night', 'moss', 'ember' ]; // What: Dark Theme Array. Why
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.theKeyStr - The theme's own key, such as 'ink' or 'moss'.
- * @param props.thePalObj - The resolved palette to preview, read from
+ * @param props.theKeyStr - Theme Key String: The theme's own key, such as
+ *                          'ink' or 'moss'.
+ * @param props.thePalObj - Theme Palette Object: The resolved palette to
+ *                          preview, read from
  *                          APP_NAM_OBJ.PAL_SET_OBJ[theKeyStr].
- * @param props.actThmBoo - Whether this specific theme is the currently
- *                          active one.
- * @param props.drkModBoo - Whether this row belongs to the Dark card,
- *                          for its own styling hook.
- * @param props.onClkFun  - Activates this theme when the row itself is
- *                          clicked or activated via keyboard.
+ * @param props.actThmBoo - Active Theme Boolean: Whether this specific theme
+ *                          is the currently active one.
+ * @param props.drkModBoo - Dark Mode Boolean: Whether this row belongs to the
+ *                          Dark card, for its own styling hook.
+ * @param props.onClkFun  - On Click Function: Activates this theme when the
+ *                          row itself is clicked or activated via keyboard.
  *
  * @returns One theme-row div, acting as a radio option within its own
  * card's implicit radio group.
@@ -972,16 +974,19 @@ function TheRowCom ( { pKey : theKeyStr, palette : thePalObj, active : actThmBoo
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.theModStr - Either 'light' or 'dark', selecting which of
- *                          the 2 custom themes this row edits.
- * @param props.cusColObj - The user's own saved custom colors for this
- *                          mode, or null before any have been set.
- * @param props.actThmBoo - Whether this specific custom theme is the
- *                          currently active one.
- * @param props.drkModBoo - Whether this row belongs to the Dark card,
- *                          for its own styling hook; defaults to false.
- * @param props.actions   - The store's own action functions; this uses
- *                          setCustomTheme/setAppearanceTheme/
+ * @param props.theModStr - Theme Mode String: Either 'light' or 'dark',
+ *                          selecting which of the 2 custom themes this row
+ *                          edits.
+ * @param props.cusColObj - Custom Color Object: The user's own saved custom
+ *                          colors for this mode, or null before any have been
+ *                          set.
+ * @param props.actThmBoo - Active Theme Boolean: Whether this specific custom
+ *                          theme is the currently active one.
+ * @param props.drkModBoo - Dark Mode Boolean: Whether this row belongs to the
+ *                          Dark card, for its own styling hook; defaults to
+ *                          false.
+ * @param props.actions   - Actions: The store's own action functions; this
+ *                          uses setCustomTheme/setAppearanceTheme/
  *                          setCustomThemeName.
  *
  * @returns One theme-row div holding 3 live color inputs, a name input,
@@ -1097,11 +1102,10 @@ function TheCusCom ( { mode : theModStr, colors : cusColObj, active : actThmBoo,
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state   - The whole app state, read here for its own
+ * @param props.state   - State: The whole app state, read here for its own
  *                        state.appearance sub-object.
- * @param props.actions - The store's own action functions, threaded
- *                        straight through to every TheRowCom/TheCusCom
- *                        below.
+ * @param props.actions - Actions: The store's own action functions, threaded
+ *                        straight through to every TheRowCom/TheCusCom below.
  *
  * @returns Both theme cards, Light then Dark, as a fragment.
  *
@@ -1263,24 +1267,24 @@ function TheSecCom ( { state, actions } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.grpNamStr  - The native radio group's own `name`
- *                           attribute, keeping its rows mutually
+ * @param props.grpNamStr  - Group Name String: The native radio group's own
+ *                           `name` attribute, keeping its rows mutually
  *                           exclusive.
- * @param props.grpLabStr  - The group's own accessible name, applied to
- *                           a visually-hidden legend since the section's
- *                           real heading, just above and outside this
- *                           component, already shows the same text.
- * @param props.radOptArr  - The list of { value, label, hint } options
- *                           to render, one row each.
- * @param props.value      - The currently-selected option's own value.
- * @param props.onChange   - Selects a new option; the exact standard
- *                           name, left as-is.
- * @param props.onPreStyFun - Plays a live preview of one option's own
- *                           style; omit to hide every row's own Preview
- *                           button entirely.
- * @param props.preDisBoo  - Disables every row's own Preview button at
- *                           once, such as while a preview is already
- *                           mid-animation.
+ * @param props.grpLabStr  - Group Label String: The group's own accessible
+ *                           name, applied to a visually-hidden legend since
+ *                           the section's real heading, just above and outside
+ *                           this component, already shows the same text.
+ * @param props.radOptArr  - Radio Option Array: The list of { value, label,
+ *                           hint } options to render, one row each.
+ * @param props.value      - Value: The currently-selected option's own value.
+ * @param props.onChange   - On Change: Selects a new option; the exact
+ *                           standard name, left as-is.
+ * @param props.onPreStyFun - On Preview Style Function: Plays a live preview
+ *                            of one option's own style; omit to hide every
+ *                            row's own Preview button entirely.
+ * @param props.preDisBoo  - Previous Disabled Boolean: Disables every row's
+ *                           own Preview button at once, such as while a
+ *                           preview is already mid-animation.
  *
  * @returns A fieldset wrapping one radio row per entry in radOptArr,
  * each with an optional Preview button.
@@ -1416,11 +1420,11 @@ function StyRadCom ( { groupName : grpNamStr, groupLabel : grpLabStr, options : 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state       - {@link useStore}
- * @param props.actions     - {@link useStore}
- * @param props.onHome      - Navigates back to the Today tab; renamed
+ * @param props.state       - State: {@link useStore}
+ * @param props.actions     - Actions: {@link useStore}
+ * @param props.onHome      - On Home: Navigates back to the Today tab; renamed
  *                            onHomFun below.
- * @param props.onNavTab    - Navigates to an arbitrary tab by id;
+ * @param props.onNavTab    - On Nav Tab: Navigates to an arbitrary tab by id;
  *                            renamed onNavTabFun below.
  *
  * @returns The tab's own header, the section rail, and every section's

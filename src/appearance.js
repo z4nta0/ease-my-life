@@ -136,12 +136,12 @@ let __lasPalStr = null;  // What: Last Palette String. Why: The cross-fade shoul
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param palResObj - The full 8-token palette object to apply
- *                    (bacStr, surStr, borStr, txtStr, mutStr, accStr,
- *                    aceStr, warStr), either a PAL_SET_OBJ entry or a
- *                    derived custom palette from resCusFun.
- * @param theKeyStr - The resolved theme key this palette corresponds to
- *                    (e.g. 'ink', 'customLight'), written onto
+ * @param palResObj - Palette Resolved Object: The full 8-token palette object
+ *                    to apply (bacStr, surStr, borStr, txtStr, mutStr, accStr,
+ *                    aceStr, warStr), either a PAL_SET_OBJ entry or a derived
+ *                    custom palette from resCusFun.
+ * @param theKeyStr - Theme Key String: The resolved theme key this palette
+ *                    corresponds to (e.g. 'ink', 'customLight'), written onto
  *                    document.body's dataset for CSS to key off.
  *
  * @returns This function does not return anything.
@@ -223,8 +223,8 @@ let __tinProObj = null; // What: Tint Probe Object. Why: Resolving a CSS color s
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param cssColStr - The CSS color string to resolve, e.g. an oklch()
- *                    palette token.
+ * @param cssColStr - Css Color String: The CSS color string to resolve, e.g.
+ *                    an oklch() palette token.
  *
  * @returns A hex color string (e.g. '#a1b2c3'), or null if the browser
  * cannot parse the given color or does not support a 2D canvas context
@@ -299,8 +299,9 @@ function toHexFun( cssColStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param bacColStr - The resolved background color to tint the status
- *                    bar with, in any CSS color syntax toHexFun accepts.
+ * @param bacColStr - Background Color String: The resolved background color to
+ *                    tint the status bar with, in any CSS color syntax
+ *                    toHexFun accepts.
  *
  * @returns This function does not return anything.
  *
@@ -377,13 +378,13 @@ function syncTinFun( bacColStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param modKeyStr - Either 'light' or 'dark'; flips which direction the
- *                    derived surface/border/muted/accentSoft tokens move
- *                    away from the user's own chosen colors.
- * @param usrColObj - The user's own 3 chosen colors: { bg, text, accent }.
- *                    This is a separate, persisted contract from the
- *                    returned palette shape below, so its own bg/text/
- *                    accent keys stay as-is rather than following the
+ * @param modKeyStr - Mode Key String: Either 'light' or 'dark'; flips which
+ *                    direction the derived surface/border/muted/accentSoft
+ *                    tokens move away from the user's own chosen colors.
+ * @param usrColObj - User Color Object: The user's own 3 chosen colors: { bg,
+ *                    text, accent }. This is a separate, persisted contract
+ *                    from the returned palette shape below, so its own
+ *                    bg/text/ accent keys stay as-is rather than following the
  *                    palette-shape renames.
  *
  * @returns A full 8-token palette object in the same shape as a
@@ -468,9 +469,10 @@ const THE_PAI_OBJ = { // What: Theme Pair Object. Why: "System preference" auto-
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appSetObj - The persisted appearance settings object (theme,
- *                    autoSystem, customLight, customDark).
- * @param sysDarBoo - Whether the OS currently prefers dark mode.
+ * @param appSetObj - App Settings Object: The persisted appearance settings
+ *                    object (theme, autoSystem, customLight, customDark).
+ * @param sysDarBoo - System Dark Boolean: Whether the OS currently prefers
+ *                    dark mode.
  *
  * @returns The theme key that should actually be applied, e.g. 'ink' or
  * 'customDark'.

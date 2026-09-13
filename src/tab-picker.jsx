@@ -55,18 +55,19 @@ import { WeekdayChips             } from './ui.jsx';                  // What: W
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.candidates  - The pool of items being cycled through.
- * @param props.picked      - The already-decided outcome the cycle
- *                           animates toward, or null while nothing has
- *                           been chosen yet.
- * @param props.style       - Which of the three animation styles to
- *                           render: 'reel', 'spotlight', or 'dissolve'.
- * @param props.onDone      - Called once the cycle settles on picked;
- *                           optional, since the Settings preview never
- *                           passes it.
- * @param props.forceMotion - Opts out of the reduced-motion skip, for the
- *                           Settings preview's own explicit Play press;
- *                           defaults to undefined (falsy).
+ * @param props.candidates  - Candidates: The pool of items being cycled
+ *                            through.
+ * @param props.picked      - Picked: The already-decided outcome the cycle
+ *                            animates toward, or null while nothing has been
+ *                            chosen yet.
+ * @param props.style       - Style: Which of the three animation styles to
+ *                            render: 'reel', 'spotlight', or 'dissolve'.
+ * @param props.onDone      - On Done: Called once the cycle settles on picked;
+ *                            optional, since the Settings preview never passes
+ *                            it.
+ * @param props.forceMotion - Force Motion: Opts out of the reduced-motion
+ *                            skip, for the Settings preview's own explicit
+ *                            Play press; defaults to undefined (falsy).
  *
  * @returns The current cycle frame for the given style, or the settled
  * end state directly when reduced motion applies.
@@ -387,12 +388,12 @@ export { PickerStrip }; // What: Picker Strip Export. Why: settings-previews.jsx
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.picker    - The currently-selected picker record this view
- *                         renders.
- * @param props.state     - The whole app's persisted state.
- * @param props.actions   - The whole app's state-mutating actions.
- * @param props.animStyle - Which PickerStrip animation style to play:
- *                         'reel', 'spotlight', or 'dissolve'.
+ * @param props.picker    - Picker: The currently-selected picker record this
+ *                          view renders.
+ * @param props.state     - State: The whole app's persisted state.
+ * @param props.actions   - Actions: The whole app's state-mutating actions.
+ * @param props.animStyle - Anim Style: Which PickerStrip animation style to
+ *                          play: 'reel', 'spotlight', or 'dissolve'.
  *
  * @returns Either the picker's own edit form (PicForCom, while ediOpnBoo
  * is true) or the full picker view: its run stage, its action buttons,
@@ -1470,29 +1471,31 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.exiGrpArr - Every distinct group name already in use,
- *                         offered as chips.
- * @param props.iniGrpStr - A group name to prefill the picker onto,
- *                         without opening the add-a-new-group sub-form.
- * @param props.conDitArr - Every existing conditional, offered for
- *                         attachment; defaults to an empty array.
- * @param props.onCnlFun  - Called when the user backs out without
- *                         creating/saving anything.
- * @param props.onCreFun  - Called with the finished payload when a new
- *                         picker is submitted (isaEdiBoo false).
- * @param props.onSavFun  - Called with the finished payload when an edit
- *                         is submitted (isaEdiBoo true).
- * @param props.iniFrmObj - A prefilled starting shape (edit values, a
- *                         tour's staged sample, or an empty-state quick-
- *                         start prefill); optional.
- * @param props.opeTouBoo - Marks this instance as opened by a guided
- *                         tour, so advStpFun skips its own scroll-to-top
- *                         (a tour step's own highlight target can sit
- *                         further down this same Items sub-step);
- *                         defaults to undefined (falsy).
- * @param props.isaEdiBoo - Switches between the create flow (both steps,
- *                         onCreFun) and the edit flow (Step 1 only,
- *                         onSavFun); defaults to undefined (falsy).
+ * @param props.exiGrpArr - Existing Group Array: Every distinct group name
+ *                          already in use, offered as chips.
+ * @param props.iniGrpStr - Initial Group String: A group name to prefill the
+ *                          picker onto, without opening the add-a-new-group
+ *                          sub-form.
+ * @param props.conDitArr - Conditional Dit Array: Every existing conditional,
+ *                          offered for attachment; defaults to an empty array.
+ * @param props.onCnlFun  - On Cancel Function: Called when the user backs out
+ *                          without creating/saving anything.
+ * @param props.onCreFun  - On Create Function: Called with the finished
+ *                          payload when a new picker is submitted (isaEdiBoo
+ *                          false).
+ * @param props.onSavFun  - On Save Function: Called with the finished payload
+ *                          when an edit is submitted (isaEdiBoo true).
+ * @param props.iniFrmObj - Initial Form Object: A prefilled starting shape
+ *                          (edit values, a tour's staged sample, or an
+ *                          empty-state quick- start prefill); optional.
+ * @param props.opeTouBoo - Open Tour Boolean: Marks this instance as opened by
+ *                          a guided tour, so advStpFun skips its own
+ *                          scroll-to-top (a tour step's own highlight target
+ *                          can sit further down this same Items sub-step);
+ *                          defaults to undefined (falsy).
+ * @param props.isaEdiBoo - Is-An Edit Boolean: Switches between the create
+ *                          flow (both steps, onCreFun) and the edit flow (Step
+ *                          1 only, onSavFun); defaults to undefined (falsy).
  *
  * @returns The form's own current step (Details or Items), or, while
  * isaEdiBoo is true, only ever the Details step.
@@ -3064,12 +3067,12 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun,
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state     - The whole app's persisted state.
- * @param props.actions   - The whole app's state-mutating actions.
- * @param props.animStyle - Which PickerStrip animation style PicVieCom
- *                         should play.
- * @param props.onHome    - Navigates back to the Today tab.
- * @param props.onNavTab  - Switches to an arbitrary tab by id.
+ * @param props.state     - State: The whole app's persisted state.
+ * @param props.actions   - Actions: The whole app's state-mutating actions.
+ * @param props.animStyle - Anim Style: Which PickerStrip animation style
+ *                          PicVieCom should play.
+ * @param props.onHome    - On Home: Navigates back to the Today tab.
+ * @param props.onNavTab  - On Nav Tab: Switches to an arbitrary tab by id.
  *
  * @returns The whole Pickers page: its header, filter rows, the Show tab
  * row, and whichever of PicForCom/PicVieCom currently applies.

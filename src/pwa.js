@@ -369,8 +369,8 @@ async function askInsFun() {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param forAskBoo - Whether to ask again even if this device has
- *                    already been asked before.
+ * @param forAskBoo - Force Ask Boolean: Whether to ask again even if this
+ *                    device has already been asked before.
  *
  * @returns A Promise resolving to whether persistent storage is now
  * granted, either already, or as a result of this actual request.

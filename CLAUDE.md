@@ -602,6 +602,18 @@ implementation of every rule below.
     longest specifier in that function's own `@param` block, the same
     column-alignment mechanism used elsewhere in this doc. No blank lines
     between different parameters' lines.
+  - **Name expansion prefix**: every `@param` line's description begins
+    with the parameter's own expanded name, formatted exactly like a
+    variable's `What:` label (Title Case, each segment expanded to its
+    real word, in the same order the segments appear in the name),
+    followed by a colon and a space, then the rest of the description.
+    E.g. `yeaValNum` (Year + Value + Number) → `@param yeaValNum - Year
+    Value Number: The calendar year to compute against.` This applies
+    even to a name exempt from the 9-char/3-segment naming rule itself
+    (`value`, `onChange`, a `props.<name>` field that hasn't had its own
+    naming pass yet, ...): expand it plainly by its own existing word
+    segments instead, the same way an import comment's `What:` expands a
+    not-yet-renamed name (`value` → `Value:`, `onChange` → `On Change:`).
   - **Description content**: if the parameter's value, at its PRIMARY real
     call site (the non-decorative one, when a function like `TabBarCom` is
     called from more than one place), is itself a named variable or

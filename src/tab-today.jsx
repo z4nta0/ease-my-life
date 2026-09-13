@@ -67,10 +67,11 @@ import { useEscapeCancel         } from './ui.jsx';                        // Wh
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param fulOrdArr - The fuller, previously-saved ordering, which may
- *                    hold keys that are absent from preNewArr entirely.
- * @param preNewArr - The subset of keys that are present today, already
- *                    in their new, just-dragged relative order.
+ * @param fulOrdArr - Full Ordinal Array: The fuller, previously-saved
+ *                    ordering, which may hold keys that are absent from
+ *                    preNewArr entirely.
+ * @param preNewArr - Previous New Array: The subset of keys that are present
+ *                    today, already in their new, just-dragged relative order.
  *
  * @returns A single merged ordering array combining both inputs, per the
  * rule described above.
@@ -175,8 +176,9 @@ function merOrdFun ( fulOrdArr, preNewArr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staAppObj - The shared app state, read for today.entries,
- *                    pickers, groupOrder, pickerOrder, and onboarding.
+ * @param staAppObj - State App Object: The shared app state, read for
+ *                    today.entries, pickers, groupOrder, pickerOrder, and
+ *                    onboarding.
  *
  * @returns An array of { name, entries } group objects, in display
  * order, each already internally sorted.
@@ -365,22 +367,31 @@ function groEntFun ( staAppObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.groNamStr   - The group's own current display name.
- * @param props.donCouNum   - How many of this group's own rows are done.
- * @param props.totCouNum   - How many rows this group has in total.
- * @param props.ediModBoo   - Whether Edit Mode is currently on.
- * @param props.onGriDowFun - Starts a group-reorder drag from this
- *                            header's own grip handle.
- * @param props.onRenGroFun - Commits a typed rename of this group.
- * @param props.merPenObj   - A pending rename that would merge into an
- *                            existing group, or null.
- * @param props.onConMerFun - Confirms the pending merge in merPenObj.
- * @param props.onCanMerFun - Cancels the pending merge in merPenObj.
- * @param props.logOpeBoo   - Whether this group's own Day Log panel is
- *                            open.
- * @param props.onTogLogFun - Toggles this group's own Day Log panel.
- * @param props.valNamFun   - Validates a typed rename, returning an error
- *                            string on collision or null when it is fine.
+ * @param props.groNamStr   - Group Name String: The group's own current
+ *                            display name.
+ * @param props.donCouNum   - Done Count Number: How many of this group's own
+ *                            rows are done.
+ * @param props.totCouNum   - Total Count Number: How many rows this group has
+ *                            in total.
+ * @param props.ediModBoo   - Edit Mode Boolean: Whether Edit Mode is currently
+ *                            on.
+ * @param props.onGriDowFun - On Grid Down Function: Starts a group-reorder
+ *                            drag from this header's own grip handle.
+ * @param props.onRenGroFun - On Rename Group Function: Commits a typed rename
+ *                            of this group.
+ * @param props.merPenObj   - Merge Pending Object: A pending rename that would
+ *                            merge into an existing group, or null.
+ * @param props.onConMerFun - On Confirm Merge Function: Confirms the pending
+ *                            merge in merPenObj.
+ * @param props.onCanMerFun - On Cancel Merge Function: Cancels the pending
+ *                            merge in merPenObj.
+ * @param props.logOpeBoo   - Log Open Boolean: Whether this group's own Day
+ *                            Log panel is open.
+ * @param props.onTogLogFun - On Toggle Log Function: Toggles this group's own
+ *                            Day Log panel.
+ * @param props.valNamFun   - Value Name Function: Validates a typed rename,
+ *                            returning an error string on collision or null
+ *                            when it is fine.
  *
  * @returns This group's own header element, plus any merge-confirm or
  * name-error banner beneath it.
@@ -745,8 +756,9 @@ function GroHeaCom ( { name : groNamStr, doneCount : donCouNum, total : totCouNu
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.canIteArr - The candidate pool this picker's own slot is
- *                          drawing from, cycled purely for visual effect.
+ * @param props.canIteArr - Cancel Item Array: The candidate pool this picker's
+ *                          own slot is drawing from, cycled purely for visual
+ *                          effect.
  *
  * @returns The currently-shown candidate's own name, in a span keyed by
  * its own index so each tick replays a fade.
@@ -820,11 +832,12 @@ function LoaReeCom ( { candidates : canIteArr } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.picRecObj - The picker this loader slot belongs to.
- * @param props.infRecObj - The slot's own generation-in-progress record:
- *                          { status, kind, candidates, pickedId,
- *                          cardText }, built up in TabToday's own
- *                          generate().
+ * @param props.picRecObj - Picker Record Object: The picker this loader slot
+ *                          belongs to.
+ * @param props.infRecObj - Info Record Object: The slot's own
+ *                          generation-in-progress record: { status, kind,
+ *                          candidates, pickedId, cardText }, built up in
+ *                          TabToday's own generate().
  *
  * @returns This slot's own loader card, whose visible state follows
  * infRecObj.status.
@@ -1542,33 +1555,42 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.entRecObj   - The entry (or synthetic tutorial/day-off/
- *                            charging row) this card renders.
- * @param props.picRecObj   - The entry's own resolved picker (or a
- *                            picker-shaped stand-in for a day-off row).
- * @param props.staAppObj   - The shared app state.
- * @param props.actStoObj   - The shared app actions.
- * @param props.jusCheStr   - The eid of whichever entry was just checked,
- *                            for the brief "fresh" cue.
- * @param props.onCheFun    - Toggles this row's own done state.
- * @param props.onSkiFun    - Skips (removes) this row entirely.
- * @param props.onRerFun    - Re-rolls this row to a different item.
- * @param props.isaRemBoo   - Whether this row is mid-removal animation.
- * @param props.isaRolBoo   - Whether this row is mid-reroll animation.
- * @param props.isaEdiBoo   - Whether this row's own inline editor is
- *                            open.
- * @param props.onEdiFun    - Toggles this row's own inline editor.
- * @param props.onRenFun    - Renames this row's own item.
- * @param props.ediModBoo   - Whether Edit Mode is currently on.
- * @param props.onGriDowFun - Starts a within-group drag from this row's
- *                            own grip handle.
- * @param props.onPlaTutFun - Starts this row's own mini-tour (tutorial
- *                            rows only).
- * @param props.onUncTutFun - Un-resolves this row's own mini-tour
+ * @param props.entRecObj   - Entry Record Object: The entry (or synthetic
+ *                            tutorial/day-off/ charging row) this card
+ *                            renders.
+ * @param props.picRecObj   - Picker Record Object: The entry's own resolved
+ *                            picker (or a picker-shaped stand-in for a day-off
+ *                            row).
+ * @param props.staAppObj   - State App Object: The shared app state.
+ * @param props.actStoObj   - Action Store Object: The shared app actions.
+ * @param props.jusCheStr   - Just Check String: The eid of whichever entry was
+ *                            just checked, for the brief "fresh" cue.
+ * @param props.onCheFun    - On Check Function: Toggles this row's own done
+ *                            state.
+ * @param props.onSkiFun    - On Skip Function: Skips (removes) this row
+ *                            entirely.
+ * @param props.onRerFun    - On Reroll Function: Re-rolls this row to a
+ *                            different item.
+ * @param props.isaRemBoo   - Is-A Removal Boolean: Whether this row is
+ *                            mid-removal animation.
+ * @param props.isaRolBoo   - Is-A Rolling Boolean: Whether this row is
+ *                            mid-reroll animation.
+ * @param props.isaEdiBoo   - Is-An Edit Boolean: Whether this row's own inline
+ *                            editor is open.
+ * @param props.onEdiFun    - On Edit Function: Toggles this row's own inline
+ *                            editor.
+ * @param props.onRenFun    - On Rename Function: Renames this row's own item.
+ * @param props.ediModBoo   - Edit Mode Boolean: Whether Edit Mode is currently
+ *                            on.
+ * @param props.onGriDowFun - On Grid Down Function: Starts a within-group drag
+ *                            from this row's own grip handle.
+ * @param props.onPlaTutFun - On Play Tutorial Function: Starts this row's own
+ *                            mini-tour (tutorial rows only).
+ * @param props.onUncTutFun - On Uncheck Tutorial Function: Un-resolves this
+ *                            row's own mini-tour (tutorial rows only).
+ * @param props.cheExiBoo   - Check Existing Boolean: Whether the checklist's
+ *                            own closing exit animation is currently playing
  *                            (tutorial rows only).
- * @param props.cheExiBoo   - Whether the checklist's own closing exit
- *                            animation is currently playing (tutorial
- *                            rows only).
  *
  * @returns Exactly one of the tutorial/day-off/charging/real-pick
  * article elements, chosen by entRecObj.kind, or null when the row's own
@@ -2378,15 +2400,15 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.touRecObj   - The page-tour manifest entry this card
- *                            offers.
- * @param props.staAppObj   - The shared app state.
- * @param props.actStoObj   - The shared app actions.
- * @param props.onPlaTutFun - Starts this page tour.
- * @param props.onUncTutFun - Un-resolves this page tour's own checklist
- *                            entry.
- * @param props.cheExiBoo   - Whether the checklist's own closing exit
- *                            animation is currently playing.
+ * @param props.touRecObj   - Tour Record Object: The page-tour manifest entry
+ *                            this card offers.
+ * @param props.staAppObj   - State App Object: The shared app state.
+ * @param props.actStoObj   - Action Store Object: The shared app actions.
+ * @param props.onPlaTutFun - On Play Tutorial Function: Starts this page tour.
+ * @param props.onUncTutFun - On Uncheck Tutorial Function: Un-resolves this
+ *                            page tour's own checklist entry.
+ * @param props.cheExiBoo   - Check Existing Boolean: Whether the checklist's
+ *                            own closing exit animation is currently playing.
  *
  * @returns This card's own article element.
  *
@@ -2557,12 +2579,14 @@ function PagTouCom ( { tour : touRecObj, state : staAppObj, actions : actStoObj,
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.feaRecObj    - The App Features manifest entry this card
- *                             offers.
- * @param props.staAppObj    - The shared app state.
- * @param props.actStoObj    - The shared app actions.
- * @param props.onPlaTutFun  - Starts this App Feature's own tutorial.
- * @param props.onUncFeaFun  - Un-resolves this App Feature.
+ * @param props.feaRecObj    - Feature Record Object: The App Features manifest
+ *                             entry this card offers.
+ * @param props.staAppObj    - State App Object: The shared app state.
+ * @param props.actStoObj    - Action Store Object: The shared app actions.
+ * @param props.onPlaTutFun  - On Play Tutorial Function: Starts this App
+ *                             Feature's own tutorial.
+ * @param props.onUncFeaFun  - On Uncheck Feature Function: Un-resolves this
+ *                             App Feature.
  *
  * @returns This card's own article element.
  *
@@ -2756,18 +2780,21 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state                  - The shared app state.
- * @param props.actions                - The shared app actions.
- * @param props.onHome                 - Returns to the Today tab (used by
- *                                       the brand mark).
- * @param props.onNavTab               - Switches to a different tab.
- * @param props.onStartPickerTour      - Starts a sample-picker mini-tour
- *                                       at the app level (some steps
- *                                       navigate away from Today).
- * @param props.onStartPageTour        - Starts an "Explore the page"
- *                                       tour at the app level.
- * @param props.onStartAppFeatureTour  - Starts an App Features tutorial
- *                                       at the app level.
+ * @param props.state                  - State: The shared app state.
+ * @param props.actions                - Actions: The shared app actions.
+ * @param props.onHome                 - On Home: Returns to the Today tab
+ *                                       (used by the brand mark).
+ * @param props.onNavTab               - On Nav Tab: Switches to a different
+ *                                       tab.
+ * @param props.onStartPickerTour      - On Start Picker Tour: Starts a
+ *                                       sample-picker mini-tour at the app
+ *                                       level (some steps navigate away from
+ *                                       Today).
+ * @param props.onStartPageTour        - On Start Page Tour: Starts an "Explore
+ *                                       the page" tour at the app level.
+ * @param props.onStartAppFeatureTour  - On Start App Feature Tour: Starts an
+ *                                       App Features tutorial at the app
+ *                                       level.
  *
  * @returns The Today tab's entire rendered content: its header, its
  * grouped list (or empty-state CTAs), and any reminder mini-tour/App

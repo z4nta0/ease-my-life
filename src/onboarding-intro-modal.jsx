@@ -34,27 +34,24 @@ import { reduceMotion } from './ui.jsx';  // What: Reduce Motion.  Why: A user w
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.icon        - The icon or glyph node rendered above
- *                            the title, typically an <Icon /> or an
- *                            inline <svg>.
- * @param props.title       - The modal's own heading text, used as
- *                            both the visible <h2> and the dialog's
- *                            own aria-label.
- * @param props.paragraphs  - The body paragraphs shown under the
- *                            title, in order; each entry may be a
- *                            plain string or a JSX fragment.
- * @param props.pills       - An optional array of short label
- *                            strings rendered as small chips below
- *                            the paragraphs; omitted or empty renders
- *                            no chip row at all.
- * @param props.onStart     - Called when the primary action button is
- *                            activated.
- * @param props.onSkip      - Called when the secondary, skip action
+ * @param props.icon        - Icon: The icon or glyph node rendered above the
+ *                            title, typically an <Icon /> or an inline <svg>.
+ * @param props.title       - Title: The modal's own heading text, used as both
+ *                            the visible <h2> and the dialog's own aria-label.
+ * @param props.paragraphs  - Paragraphs: The body paragraphs shown under the
+ *                            title, in order; each entry may be a plain string
+ *                            or a JSX fragment.
+ * @param props.pills       - Pills: An optional array of short label strings
+ *                            rendered as small chips below the paragraphs;
+ *                            omitted or empty renders no chip row at all.
+ * @param props.onStart     - On Start: Called when the primary action button
+ *                            is activated.
+ * @param props.onSkip      - On Skip: Called when the secondary, skip action
  *                            button is activated.
- * @param props.startLabel  - The primary button's own visible text;
- *                            defaults to 'Get started'.
- * @param props.skipLabel   - The secondary button's own visible text;
- *                            defaults to 'Skip'.
+ * @param props.startLabel  - Start Label: The primary button's own visible
+ *                            text; defaults to 'Get started'.
+ * @param props.skipLabel   - Skip Label: The secondary button's own visible
+ *                            text; defaults to 'Skip'.
  *
  * @returns The modal's own scrim-and-card markup, portaled into
  * document.body.

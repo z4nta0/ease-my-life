@@ -163,16 +163,15 @@ const Card = ( { children, padded = true, className = '', ...resProObj } ) => ( 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.open      - Whether this section should be expanded.
- * @param props.children  - The section's own content, unmounted while
- *                          closed and remounted on open.
- * @param props.className - Extra class name(s) to append; defaults to
- *                          an empty string.
- * @param props.instant   - Opts a specific mount out of the open
- *                          animation, snapping straight to expanded
- *                          instead (e.g. a freshly-created draft
- *                          picker's Controls section); defaults to
- *                          false.
+ * @param props.open      - Open: Whether this section should be expanded.
+ * @param props.children  - Children: The section's own content, unmounted
+ *                          while closed and remounted on open.
+ * @param props.className - Class Name: Extra class name(s) to append; defaults
+ *                          to an empty string.
+ * @param props.instant   - Instant: Opts a specific mount out of the open
+ *                          animation, snapping straight to expanded instead
+ *                          (e.g. a freshly-created draft picker's Controls
+ *                          section); defaults to false.
  *
  * @returns The section's own animated wrapper and its children, or
  * null while fully closed and unmounted.
@@ -467,13 +466,13 @@ const ProgressBar = ( { value, max = 1, tone = 'accent' } ) => (
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.value    - {@link value}
- * @param props.min      - The lowest allowed value; defaults to 1.
- * @param props.max      - The highest allowed value; defaults to 99.
- * @param props.onSet    - Receives the newly committed, clamped
+ * @param props.value    - Value: {@link value}
+ * @param props.min      - Minimum: The lowest allowed value; defaults to 1.
+ * @param props.max      - Maximum: The highest allowed value; defaults to 99.
+ * @param props.onSet    - On Setter: Receives the newly committed, clamped
  *                         integer.
- * @param props.ariaLabel - The accessible name for the whole stepper
- *                         group and its own text input.
+ * @param props.ariaLabel - Aria Label: The accessible name for the whole
+ *                          stepper group and its own text input.
  *
  * @returns The stepper's own -/text/+ trio as one grouped control.
  *
@@ -891,11 +890,11 @@ const fmtTime = ( isoDatStr ) => {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.value   - The current boost value to display and reset
+ * @param props.value   - Value: The current boost value to display and reset
  *                        from.
- * @param props.suffix  - Extra text appended after the number (e.g. a
+ * @param props.suffix  - Suffix: Extra text appended after the number (e.g. a
  *                        unit); defaults to an empty string.
- * @param props.onReset - Commits the real value to 0; called once,
+ * @param props.onReset - On Reset: Commits the real value to 0; called once,
  *                        immediately, when Reset is clicked.
  *
  * @returns The boost value span and the Reset button, as sibling
@@ -1209,12 +1208,12 @@ window.__editGuard = window.__editGuard || { // What: Edit Guard Global. Why: Th
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.label    - The button's own visible text (e.g. "Fill",
+ * @param props.label    - Label: The button's own visible text (e.g. "Fill",
  *                         "Refill all").
- * @param props.onClick  - The real Fill/Refill action, called once the
- *                         disabled guard passes.
- * @param props.disabled - Whether this lever is currently unavailable
- *                         (e.g. already at full charge).
+ * @param props.onClick  - On Click: The real Fill/Refill action, called once
+ *                         the disabled guard passes.
+ * @param props.disabled - Disabled: Whether this lever is currently
+ *                         unavailable (e.g. already at full charge).
  *
  * @returns The lever rendered as a Btn, with its own spin-on-click
  * behavior layered on top.
@@ -1302,11 +1301,11 @@ function FillButton ( { label, onClick, disabled } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param rowAObj   - The left-hand row to compare.
- * @param rowBObj   - The right-hand row to compare.
- * @param sorKeyStr - The sort key, e.g. 'name-asc' or 'count-desc';
- *                    everything before the last dash names the field,
- *                    the trailing 'asc'/'desc' names the direction.
+ * @param rowAObj   - Row A Object: The left-hand row to compare.
+ * @param rowBObj   - Row B Object: The right-hand row to compare.
+ * @param sorKeyStr - Sort Key String: The sort key, e.g. 'name-asc' or
+ *                    'count-desc'; everything before the last dash names the
+ *                    field, the trailing 'asc'/'desc' names the direction.
  *
  * @returns A standard Array.prototype.sort comparator result: negative
  * when rowAObj sorts first, positive when rowBObj sorts first, 0 on a
@@ -1497,13 +1496,14 @@ function compareSortEntries ( rowAObj, rowBObj, sorKeyStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.id      - The id shared between the label's htmlFor and
- *                        the select itself.
- * @param props.label   - The visible label text.
- * @param props.options - The list of { keyStr, labStr } choices to
+ * @param props.id      - Id: The id shared between the label's htmlFor and the
+ *                        select itself.
+ * @param props.label   - Label: The visible label text.
+ * @param props.options - Options: The list of { keyStr, labStr } choices to
  *                        render as options.
- * @param props.value   - The currently-selected option's own key.
- * @param props.onChange - Receives the newly-chosen option's own key.
+ * @param props.value   - Value: The currently-selected option's own key.
+ * @param props.onChange - On Change: Receives the newly-chosen option's own
+ *                         key.
  *
  * @returns The labeled select as one grouped row.
  *
@@ -1585,14 +1585,15 @@ function SortSelect ( { id, label, options, value, onChange } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param sorLisArr  - The list, already sorted by the caller's own
- *                     live sort key.
- * @param opeIdeVal  - The currently-open row's own id, or null/
- *                     undefined when nothing is open.
- * @param newIdeVal  - The id of a row that was just created (pins to
- *                     the top instead of freezing at its live index).
- * @param frzRowRef  - A ref, owned by the caller, that persists the
- *                     frozen { id, index } record across renders.
+ * @param sorLisArr  - Sort List Array: The list, already sorted by the
+ *                     caller's own live sort key.
+ * @param opeIdeVal  - Open Identifier Value: The currently-open row's own id,
+ *                     or null/ undefined when nothing is open.
+ * @param newIdeVal  - New Identifier Value: The id of a row that was just
+ *                     created (pins to the top instead of freezing at its live
+ *                     index).
+ * @param frzRowRef  - Frozen Row Reference: A ref, owned by the caller, that
+ *                     persists the frozen { id, index } record across renders.
  *
  * @returns sorLisArr unmodified when nothing is open or the open row
  * isn't in this list, otherwise the same rows with the open one

@@ -125,16 +125,19 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.options     - The array of { keyStr, labStr } entries this
- *                             control renders one button per; also read
- *                             directly by cadence-control.jsx and
- *                             tab-settings.jsx when they build their own
- *                             option arrays for this same component.
- * @param props.value        - The currently-selected entry's own key.
- * @param props.onChange     - Called with the clicked entry's own key.
- * @param props.ariaLabel    - The control's own accessible group label.
- * @param props.describedBy  - An optional id of an external element (an
- *                             advisory note) that describes this control.
+ * @param props.options     - Options: The array of { keyStr, labStr } entries
+ *                            this control renders one button per; also read
+ *                            directly by cadence-control.jsx and
+ *                            tab-settings.jsx when they build their own option
+ *                            arrays for this same component.
+ * @param props.value        - Value: The currently-selected entry's own key.
+ * @param props.onChange     - On Change: Called with the clicked entry's own
+ *                             key.
+ * @param props.ariaLabel    - Aria Label: The control's own accessible group
+ *                             label.
+ * @param props.describedBy  - Described By: An optional id of an external
+ *                             element (an advisory note) that describes this
+ *                             control.
  *
  * @returns The segmented control's own group element, including the
  * sliding thumb span and one button per entry in props.options.
@@ -301,10 +304,10 @@ function Segmented ( { options, value, onChange, ariaLabel, describedBy } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param nexDatObj - The next-eligible date to format, or a falsy
- *                    value when there is none.
- * @param alwYeaBoo - Whether the year must always be included,
- *                    regardless of whether nexDatObj falls in the
+ * @param nexDatObj - Next Date Object: The next-eligible date to format, or a
+ *                    falsy value when there is none.
+ * @param alwYeaBoo - Always Year Boolean: Whether the year must always be
+ *                    included, regardless of whether nexDatObj falls in the
  *                    current year (true for a yearly reminder).
  *
  * @returns The full prose date label, or null when nexDatObj is falsy.
@@ -357,9 +360,9 @@ function nexDatFun ( nexDatObj, alwYeaBoo ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param visResObj - {@link TASKS.todayVisibility}'s own result object,
- *                    carrying the causes array and holiday name fields
- *                    this function reads.
+ * @param visResObj - Visibility Resolved Object: {@link
+ *                    TASKS.todayVisibility}'s own result object, carrying the
+ *                    causes array and holiday name fields this function reads.
  *
  * @returns The joined reason phrase, e.g. 'weekends and the Christmas
  * Day holiday', or an empty string when no settings-based cause
@@ -431,15 +434,16 @@ function reaPhrFun ( visResObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.tasRecObj - The reminder/task record to advise about.
- * @param props.staAppObj - The shared app state, read for its own
- *                          reminderOpts and holidays.
- * @param props.kndValStr - Which placement this instance renders for,
- *                          'settings' (the Repeat row) or 'schedule'
- *                          (the specific schedule subsection).
- * @param props.notIdeStr - The dom id to assign to this note's own
- *                          live region, so a control above it can
- *                          reference it via aria-describedby.
+ * @param props.tasRecObj - Task Record Object: The reminder/task record to
+ *                          advise about.
+ * @param props.staAppObj - State App Object: The shared app state, read for
+ *                          its own reminderOpts and holidays.
+ * @param props.kndValStr - Kind Value String: Which placement this instance
+ *                          renders for, 'settings' (the Repeat row) or
+ *                          'schedule' (the specific schedule subsection).
+ * @param props.notIdeStr - Note Identifier String: The dom id to assign to
+ *                          this note's own live region, so a control above it
+ *                          can reference it via aria-describedby.
  *
  * @returns The note's own always-mounted live region, holding the
  * advisory paragraph when one applies to this instance's own
@@ -579,16 +583,19 @@ function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.tasRecObj - The reminder/task record (real or draft)
- *                          being edited.
- * @param props.actStoObj - The actions bag this editor commits through;
- *                          a caller editing a local draft passes a
- *                          stand-in object exposing its own updateTask.
- * @param props.aniExtBoo - Whether the extra-fields subsection should
- *                          animate open/closed via Collapse, defaulting
- *                          to false for a context that doesn't need it.
- * @param props.staAppObj - The shared app state, passed through to
- *                          VisNotCom for its own visibility computation.
+ * @param props.tasRecObj - Task Record Object: The reminder/task record (real
+ *                          or draft) being edited.
+ * @param props.actStoObj - Action Store Object: The actions bag this editor
+ *                          commits through; a caller editing a local draft
+ *                          passes a stand-in object exposing its own
+ *                          updateTask.
+ * @param props.aniExtBoo - Animate Extra Boolean: Whether the extra-fields
+ *                          subsection should animate open/closed via Collapse,
+ *                          defaulting to false for a context that doesn't need
+ *                          it.
+ * @param props.staAppObj - State App Object: The shared app state, passed
+ *                          through to VisNotCom for its own visibility
+ *                          computation.
  *
  * @returns The full schedule editor: the Repeat row plus whichever
  * detail subsection matches the current (or last non-once) repeat kind.
@@ -1420,7 +1427,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param ordValNum - The number to suffix.
+ * @param ordValNum - Ordinal Value Number: The number to suffix.
  *
  * @returns ordValNum followed by its correct ordinal suffix, as a
  * string.
@@ -1572,13 +1579,16 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.tasRecObj   - The saved reminder record being edited.
- * @param props.onCloEdiFun - Closes this inline editor without saving.
- * @param props.onDelTasFun - Deletes the underlying reminder outright.
- * @param props.onComTasFun - Commits the local draft back onto the
- *                            real store.
- * @param props.staAppObj   - The shared app state, passed through to
- *                            {@link SchEdiCom}.
+ * @param props.tasRecObj   - Task Record Object: The saved reminder record
+ *                            being edited.
+ * @param props.onCloEdiFun - On Close Edit Function: Closes this inline editor
+ *                            without saving.
+ * @param props.onDelTasFun - On Delete Task Function: Deletes the underlying
+ *                            reminder outright.
+ * @param props.onComTasFun - On Commit Task Function: Commits the local draft
+ *                            back onto the real store.
+ * @param props.staAppObj   - State App Object: The shared app state, passed
+ *                            through to {@link SchEdiCom}.
  *
  * @returns The inline editor's own schedule editor plus its footer.
  *
@@ -1646,41 +1656,44 @@ function InlEdiCom ( { tasRecObj, onCloEdiFun, onDelTasFun, onComTasFun, staAppO
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.tasRecObj    - The reminder/task record this card
- *                             renders, real or (while isaTutBoo) a
+ * @param props.tasRecObj    - Task Record Object: The reminder/task record
+ *                             this card renders, real or (while isaTutBoo) a
  *                             still-hidden sample.
- * @param props.actStoObj    - The actions bag; only its own
- *                             setChecklistItem is used, and only while
+ * @param props.actStoObj    - Action Store Object: The actions bag; only its
+ *                             own setChecklistItem is used, and only while
  *                             isaTutBoo.
- * @param props.jusCheStr    - The id of whichever reminder was just
- *                             checked, driving the brief "is-fresh"
+ * @param props.jusCheStr    - Just Check String: The id of whichever reminder
+ *                             was just checked, driving the brief "is-fresh"
  *                             flourish; unrelated to isaTutBoo.
- * @param props.isaOpeBoo    - Whether this card's own inline editor is
- *                             currently open.
- * @param props.onEdiTasFun  - Opens/closes this card's own inline
- *                             editor.
- * @param props.onTogTasFun  - Toggles this card's own done state.
- * @param props.onRenTasFun  - Commits a new name while the inline name
- *                             input is open.
- * @param props.onSkiTasFun  - Opens/closes this card's own skip
- *                             confirm.
- * @param props.isaSkiBoo    - Whether this card's own skip confirm is
- *                             currently open.
- * @param props.extClaStr    - Extra class name(s) driving the card's
- *                             own insert/remove/purge animations,
+ * @param props.isaOpeBoo    - Is-An Open Boolean: Whether this card's own
+ *                             inline editor is currently open.
+ * @param props.onEdiTasFun  - On Edit Task Function: Opens/closes this card's
+ *                             own inline editor.
+ * @param props.onTogTasFun  - On Toggle Task Function: Toggles this card's own
+ *                             done state.
+ * @param props.onRenTasFun  - On Rename Task Function: Commits a new name
+ *                             while the inline name input is open.
+ * @param props.onSkiTasFun  - On Skip Task Function: Opens/closes this card's
+ *                             own skip confirm.
+ * @param props.isaSkiBoo    - Is-A Skip Boolean: Whether this card's own skip
+ *                             confirm is currently open.
+ * @param props.extClaStr    - Extra Class String: Extra class name(s) driving
+ *                             the card's own insert/remove/purge animations,
  *                             defaulting to an empty string.
- * @param props.onAniEndFun  - Fires when this card's own outer
- *                             animation ends.
- * @param props.cheDatObj    - The generator-anchored date to check
- *                             done-ness against.
- * @param props.isaTutBoo    - Whether this instance is a mini-tour
- *                             launcher card for a still-hidden sample,
- *                             rather than a real due reminder.
- * @param props.tutDonBoo    - Whether this sample's own mini-tour has
- *                             already been resolved; only meaningful
- *                             while isaTutBoo.
- * @param props.onPlaTutFun  - Starts this sample's own mini-tour.
- * @param props.onUncTutFun  - Un-resolves this sample's own mini-tour.
+ * @param props.onAniEndFun  - On Animate End Function: Fires when this card's
+ *                             own outer animation ends.
+ * @param props.cheDatObj    - Check Date Object: The generator-anchored date
+ *                             to check done-ness against.
+ * @param props.isaTutBoo    - Is-A Tutorial Boolean: Whether this instance is
+ *                             a mini-tour launcher card for a still-hidden
+ *                             sample, rather than a real due reminder.
+ * @param props.tutDonBoo    - Tutorial Done Boolean: Whether this sample's own
+ *                             mini-tour has already been resolved; only
+ *                             meaningful while isaTutBoo.
+ * @param props.onPlaTutFun  - On Play Tutorial Function: Starts this sample's
+ *                             own mini-tour.
+ * @param props.onUncTutFun  - On Uncheck Tutorial Function: Un-resolves this
+ *                             sample's own mini-tour.
  *
  * @returns Either the mini-tour launcher card's own markup (isaTutBoo)
  * or the real reminder row's own markup.
@@ -2009,30 +2022,34 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state              - The shared app state.
- * @param props.actions            - The shared actions bag.
- * @param props.sectionRef         - A ref callback registering this
- *                                   section's own DOM node by group key.
- * @param props.editMode           - Whether Today's own Edit Mode is on.
- * @param props.onGripDown         - Starts dragging this whole section
- *                                   to reorder it among other groups.
- * @param props.logOpen            - Whether the Reminders day-log panel
- *                                   is currently open.
- * @param props.onToggleLog        - Toggles the day-log panel above.
- * @param props.leavingTaskIds     - Ids currently playing a cross-day
- *                                   purge exit animation.
- * @param props.arrivingTaskIds    - Ids currently playing a cross-day
- *                                   arrival animation.
- * @param props.activeEditor       - The tab-wide "which editor is open"
- *                                   slot, shared with the picker item
+ * @param props.state              - State: The shared app state.
+ * @param props.actions            - Actions: The shared actions bag.
+ * @param props.sectionRef         - Section Reference: A ref callback
+ *                                   registering this section's own DOM node by
+ *                                   group key.
+ * @param props.editMode           - Edit Mode: Whether Today's own Edit Mode
+ *                                   is on.
+ * @param props.onGripDown         - On Grip Down: Starts dragging this whole
+ *                                   section to reorder it among other groups.
+ * @param props.logOpen            - Log Open: Whether the Reminders day-log
+ *                                   panel is currently open.
+ * @param props.onToggleLog        - On Toggle Log: Toggles the day-log panel
+ *                                   above.
+ * @param props.leavingTaskIds     - Leaving Task Ids: Ids currently playing a
+ *                                   cross-day purge exit animation.
+ * @param props.arrivingTaskIds    - Arriving Task Ids: Ids currently playing a
+ *                                   cross-day arrival animation.
+ * @param props.activeEditor       - Active Editor: The tab-wide "which editor
+ *                                   is open" slot, shared with the picker item
  *                                   editor.
- * @param props.setActiveEditor    - Updates props.activeEditor.
- * @param props.onPlayTutorial     - Starts a sample reminder's own
- *                                   mini-tour.
- * @param props.onUncheckTutorial  - Un-resolves a sample reminder's own
- *                                   mini-tour.
- * @param props.checklistExiting   - Whether the onboarding checklist
- *                                   itself is mid-exit animation.
+ * @param props.setActiveEditor    - Setter Active Editor: Updates
+ *                                   props.activeEditor.
+ * @param props.onPlayTutorial     - On Play Tutorial: Starts a sample
+ *                                   reminder's own mini-tour.
+ * @param props.onUncheckTutorial  - On Uncheck Tutorial: Un-resolves a sample
+ *                                   reminder's own mini-tour.
+ * @param props.checklistExiting   - Checklist Exiting: Whether the onboarding
+ *                                   checklist itself is mid-exit animation.
  *
  * @returns The full Reminders section: its header, optional day-log
  * panel, and its list of tutorial cards, quick-add form, and real
@@ -2738,11 +2755,12 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param verTexStr - The trailing clause naming what the setting does,
- *                    e.g. 'trigger the day streak in the Today page'.
- * @param neiConStr - The conjunction used in the neither-selected
- *                    phrasing, defaulting to 'and' ('nor' reads better
- *                    for a negatively-phrased verb).
+ * @param verTexStr - Version Text String: The trailing clause naming what the
+ *                    setting does, e.g. 'trigger the day streak in the Today
+ *                    page'.
+ * @param neiConStr - Neither Conjunction String: The conjunction used in the
+ *                    neither-selected phrasing, defaulting to 'and' ('nor'
+ *                    reads better for a negatively-phrased verb).
  *
  * @returns A function of (oncOnBoo, recOnBoo) that renders the correct
  * one of the 4 mutually-exclusive sub-explanation phrases.
@@ -2867,11 +2885,11 @@ const REM_TYP_ARR = [ // What: Reminder Type Array. Why: This documents the 2 re
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.remOptObj  - The live { once, recurring } participation
- *                           options object.
- * @param props.actStoObj  - The shared actions bag.
- * @param props.onCloConFun - Collapses this Controls body, called by
- *                            both Cancel and Save.
+ * @param props.remOptObj  - Reminder Option Object: The live { once, recurring
+ *                           } participation options object.
+ * @param props.actStoObj  - Action Store Object: The shared actions bag.
+ * @param props.onCloConFun - On Close Control Function: Collapses this
+ *                            Controls body, called by both Cancel and Save.
  *
  * @returns The full participation matrix: its head row, one row per
  * REM_MAT_ARR entry, and its own Cancel/Save foot.
@@ -3061,11 +3079,11 @@ const ITE_SOR_ARR = [ // What: Item Sort Array. Why: ReminderManager's own Items
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state   - The shared app state.
- * @param props.actions - The shared actions bag.
- * @param props.hidden  - Whether this section should render display:
- *                        none instead of its real markup; currently
- *                        never passed true by its only real caller.
+ * @param props.state   - State: The shared app state.
+ * @param props.actions - Actions: The shared actions bag.
+ * @param props.hidden  - Hidden: Whether this section should render display:
+ *                        none instead of its real markup; currently never
+ *                        passed true by its only real caller.
  *
  * @returns The Reminders category: its header, the Controls
  * disclosure (OptMatCom), and the Items disclosure (one row per

@@ -49,7 +49,8 @@
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param rawNamStr - The raw, possibly messy, user-typed name to tidy.
+ * @param rawNamStr - Raw Name String: The raw, possibly messy, user-typed name
+ *                    to tidy.
  *
  * @returns The tidied, Title Cased name, or an empty string when
  * rawNamStr had no alphanumeric content at all to tidy.
@@ -93,11 +94,12 @@ function titCasFun( rawNamStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param rawNamStr - The raw, possibly messy, user-typed group name.
- * @param exiGroArr - The list of group names already in use, checked
- *                    case-insensitively for a match; anything other than
- *                    a real array (including undefined) skips this check
- *                    entirely.
+ * @param rawNamStr - Raw Name String: The raw, possibly messy, user-typed
+ *                    group name.
+ * @param exiGroArr - Existing Group Array: The list of group names already in
+ *                    use, checked case-insensitively for a match; anything
+ *                    other than a real array (including undefined) skips this
+ *                    check entirely.
  *
  * @returns The existing group's own exact spelling on a case-insensitive
  * match, the freshly Title Cased name otherwise, or an empty string when
@@ -153,7 +155,8 @@ function normalizeGroupName( rawNamStr, exiGroArr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param rawNamStr - The raw, possibly messy, user-typed picker name.
+ * @param rawNamStr - Raw Name String: The raw, possibly messy, user-typed
+ *                    picker name.
  *
  * @returns The tidied, Title Cased picker name, or an empty string when
  * rawNamStr had no alphanumeric content at all.
@@ -185,8 +188,8 @@ function normalizePickerName( rawNamStr ) { return titCasFun( rawNamStr ); } // 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param rawNamStr - The raw, possibly messy, user-typed conditional
- *                    name.
+ * @param rawNamStr - Raw Name String: The raw, possibly messy, user-typed
+ *                    conditional name.
  *
  * @returns The tidied, Title Cased conditional name, or an empty string
  * when rawNamStr had no alphanumeric content at all.
@@ -222,8 +225,10 @@ export { normalizeConditionalName, normalizeGroupName, normalizePickerName }; //
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param minValNum - The smallest value the result can take.
- * @param maxValNum - The upper bound the result stays strictly under.
+ * @param minValNum - Minimum Value Number: The smallest value the result can
+ *                    take.
+ * @param maxValNum - Maximum Value Number: The upper bound the result stays
+ *                    strictly under.
  *
  * @returns A random value in [minValNum, maxValNum).
  *
@@ -256,9 +261,10 @@ function ranValFun( minValNum, maxValNum ) { return minValNum + Math.random() * 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param itePooArr - The pool of items to pick from.
- * @param weiGetFun - A function called once per item in itePooArr,
- *                    returning that item's own weight for this draw.
+ * @param itePooArr - Item Pool Array: The pool of items to pick from.
+ * @param weiGetFun - Weight Get Function: A function called once per item in
+ *                    itePooArr, returning that item's own weight for this
+ *                    draw.
  *
  * @returns The item this draw picked, or null when itePooArr is empty.
  *
@@ -314,7 +320,7 @@ function weiPicFun( itePooArr, weiGetFun ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param iteSrcArr - The items to filter.
+ * @param iteSrcArr - Item Source Array: The items to filter.
  *
  * @returns A new array holding only iteSrcArr's own non-vacationing
  * items.
@@ -347,20 +353,21 @@ function eliPooFun( iteSrcArr ) { return iteSrcArr.filter( ( curIteObj ) => !cur
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param pikRecObj - The picker record this pick runs against (mode,
- *                    threshold, activeItemId, avoidDuplicates, ...).
- * @param iteAllArr - The FULL items snapshot, not yet filtered down to
- *                    this picker's own pool; ease-down's abandoned-item
- *                    lookup deliberately searches this instead of the
- *                    filtered pool, since an abandoned item may no longer
- *                    be eligible.
- * @param optConObj - Options controlling this specific pick: excludeIds
- *                    (a Set of item ids already live on Today),
- *                    excludeNames (a Set of lower-cased names already on
- *                    today's list), forceItemId (a manual, specific pick
- *                    that bypasses the normal draw), and forceNew
- *                    (ease-down only, abandons the current active item to
- *                    start a fresh streak).
+ * @param pikRecObj - Picker Record Object: The picker record this pick runs
+ *                    against (mode, threshold, activeItemId, avoidDuplicates,
+ *                    ...).
+ * @param iteAllArr - Item All Array: The FULL items snapshot, not yet filtered
+ *                    down to this picker's own pool; ease-down's
+ *                    abandoned-item lookup deliberately searches this instead
+ *                    of the filtered pool, since an abandoned item may no
+ *                    longer be eligible.
+ * @param optConObj - Option Control Object: Options controlling this specific
+ *                    pick: excludeIds (a Set of item ids already live on
+ *                    Today), excludeNames (a Set of lower-cased names already
+ *                    on today's list), forceItemId (a manual, specific pick
+ *                    that bypasses the normal draw), and forceNew (ease-down
+ *                    only, abandons the current active item to start a fresh
+ *                    streak).
  *
  * @returns This pick's own result. See this file's own header comment
  * for the full shape.
@@ -783,10 +790,11 @@ function pikIteFun( pikRecObj, iteAllArr, optConObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param iteRecObj - The item to compute readiness for.
- * @param modKeyStr - The item's own picker's mode.
- * @param thrValNum - The item's own picker's threshold, defaulting to 100
- *                    to match every other threshold default in this file.
+ * @param iteRecObj - Item Record Object: The item to compute readiness for.
+ * @param modKeyStr - Mode Key String: The item's own picker's mode.
+ * @param thrValNum - Threshold Value Number: The item's own picker's
+ *                    threshold, defaulting to 100 to match every other
+ *                    threshold default in this file.
  *
  * @returns A 0-1 readiness number, or null when modKeyStr has no
  * meaningful readiness concept.
@@ -839,10 +847,10 @@ const DEF_EAS_OBJ = { easeMin : 7, easeMax : 14 }; // What: Default Ease Object.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param iteAllArr - The items to average siblings from (only entries
- *                    matching pikIdeStr are actually used).
- * @param pikIdeStr - The picker id whose own items' band should be
- *                    averaged.
+ * @param iteAllArr - Item All Array: The items to average siblings from (only
+ *                    entries matching pikIdeStr are actually used).
+ * @param pikIdeStr - Picker Identifier String: The picker id whose own items'
+ *                    band should be averaged.
  *
  * @returns { easeMin, easeMax }, averaged from iteAllArr's own matching
  * items, or a copy of DEF_EAS_OBJ when none exist at all.

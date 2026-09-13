@@ -84,20 +84,19 @@ const RAN_NOT_STR = 'Truly Random conditionals have no options and function like
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.draft     - The plain conditional draft object this
- *                          editor renders and patches; owned by the
- *                          caller, never mutated directly.
- * @param props.onChange  - Called with the whole next draft object
+ * @param props.draft     - Draft: The plain conditional draft object this
+ *                          editor renders and patches; owned by the caller,
+ *                          never mutated directly.
+ * @param props.onChange  - On Change: Called with the whole next draft object
  *                          whenever any field changes.
- * @param props.nameError - An optional validation message shown under
- *                          the name field, such as a name collision.
- * @param props.variant   - 'card' (the Pickers create-flow's own boxed
- *                          layout) or 'inline' (the Data tab's tighter
+ * @param props.nameError - Name Error: An optional validation message shown
+ *                          under the name field, such as a name collision.
+ * @param props.variant   - Variant: 'card' (the Pickers create-flow's own
+ *                          boxed layout) or 'inline' (the Data tab's tighter
  *                          layout), defaulting to 'card'.
- * @param props.hideName  - Whether to omit the name field entirely,
- *                          for a caller (the Data tab) that already
- *                          hosts its own inline name input elsewhere;
- *                          defaults to false.
+ * @param props.hideName  - Hide Name: Whether to omit the name field entirely,
+ *                          for a caller (the Data tab) that already hosts its
+ *                          own inline name input elsewhere; defaults to false.
  *
  * @returns The full editor: the name/card-text fields (name optional),
  * the mode radio, whichever mode-specific settings block matches the
@@ -685,13 +684,12 @@ export { ConditionalControls };
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picNamStr - The picker's own name this conditional's default
- *                    name is prefixed with; normalized the same way a
- *                    typed conditional name is.
- * @param exiNamArr - Every existing conditional name already in use,
- *                    checked case-insensitively to pick a free N;
- *                    defaults to an empty array for a picker with none
- *                    yet.
+ * @param picNamStr - Picker Name String: The picker's own name this
+ *                    conditional's default name is prefixed with; normalized
+ *                    the same way a typed conditional name is.
+ * @param exiNamArr - Existing Name Array: Every existing conditional name
+ *                    already in use, checked case-insensitively to pick a free
+ *                    N; defaults to an empty array for a picker with none yet.
  *
  * @returns The new conditional's own default draft object.
  *

@@ -90,9 +90,10 @@ const hasValFun = ( modStr ) => {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.icoKeyStr  - Which shape to render; looked up in this
- *                           component's own pahObj.
- * @param props.strWidNum  - The SVG stroke width, defaulting to 2.
+ * @param props.icoKeyStr  - Icon Key String: Which shape to render; looked up
+ *                           in this component's own pahObj.
+ * @param props.strWidNum  - String Width Number: The SVG stroke width,
+ *                           defaulting to 2.
  *
  * @returns This component's own single rendered svg element.
  *
@@ -167,12 +168,11 @@ function IcoSetCom ( { icoKeyStr, strWidNum = 2 } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.open    - Whether this section's own log panel is
- *                         currently open; drives the chip's own
- *                         "is-on" styling and aria-pressed state.
- * @param props.onClick - Called when the chip is clicked; the caller
- *                         owns actually toggling its own log panel
- *                         open state.
+ * @param props.open    - Open: Whether this section's own log panel is
+ *                        currently open; drives the chip's own "is-on" styling
+ *                        and aria-pressed state.
+ * @param props.onClick - On Click: Called when the chip is clicked; the caller
+ *                        owns actually toggling its own log panel open state.
  *
  * @returns This component's own single rendered button.
  *
@@ -229,10 +229,11 @@ function DayLogChip ( { open, onClick } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picLogArr - The full state.pickLog array to scan.
- * @param picIdeStr - Which picker's own rows to keep.
- * @param dayKeyStr - Which day's own rows to keep, as a "YYYY-MM-DD"
- *                    key from {@link isoDayFun}.
+ * @param picLogArr - Picker Log Array: The full state.pickLog array to scan.
+ * @param picIdeStr - Picker Identifier String: Which picker's own rows to
+ *                    keep.
+ * @param dayKeyStr - Day Key String: Which day's own rows to keep, as a
+ *                    "YYYY-MM-DD" key from {@link isoDayFun}.
  *
  * @returns A Map from itemId to its own { autBoo, pusBoo, rolBoo,
  * skiBoo, comBoo, anyBoo } flags.
@@ -304,9 +305,9 @@ function dayFlgFun ( picLogArr, picIdeStr, dayKeyStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.iteFlgObj - This item's own flags object from
- *                          {@link dayFlgFun}, or undefined when the
- *                          item has no pick-log rows today at all.
+ * @param props.iteFlgObj - Item Flag Object: This item's own flags object from
+ *                          {@link dayFlgFun}, or undefined when the item has
+ *                          no pick-log rows today at all.
  *
  * @returns This item's own run of status icon chips, or a placeholder
  * span when there is nothing to show.
@@ -383,10 +384,11 @@ function StaChiCom ( { iteFlgObj } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picRecObj - The item's own picker record.
- * @param iteRecObj - The item record itself.
- * @param booValNum - This item's own at-generation boost snapshot
- *                    (dynamic mode only), or null when not applicable.
+ * @param picRecObj - Picker Record Object: The item's own picker record.
+ * @param iteRecObj - Item Record Object: The item record itself.
+ * @param booValNum - Boolean Value Number: This item's own at-generation boost
+ *                    snapshot (dynamic mode only), or null when not
+ *                    applicable.
  *
  * @returns The item's own subline, as either a plain string or a
  * small React.Fragment.
@@ -467,7 +469,7 @@ function iteSubFun ( picRecObj, iteRecObj, booValNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param conRecObj - The conditional record itself.
+ * @param conRecObj - Conditional Record Object: The conditional record itself.
  *
  * @returns The conditional's own subline string.
  *
@@ -529,14 +531,14 @@ function conSubFun ( conRecObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.hasValBoo - Whether this row's own mode tracks a value
- *                          at all.
- * @param props.genValNum - The value at generation time, or null/
- *                          undefined when there is no snapshot.
- * @param props.aftValNum - The current value, after whatever
- *                          happened today.
- * @param props.offValNum - The base weight to add to both cells
- *                          (dynamic items only); defaults to 0.
+ * @param props.hasValBoo - Has Value Boolean: Whether this row's own mode
+ *                          tracks a value at all.
+ * @param props.genValNum - Generation Value Number: The value at generation
+ *                          time, or null/ undefined when there is no snapshot.
+ * @param props.aftValNum - After Value Number: The current value, after
+ *                          whatever happened today.
+ * @param props.offValNum - Offset Value Number: The base weight to add to both
+ *                          cells (dynamic items only); defaults to 0.
  *
  * @returns This row's own 3 value cells (at generation, delta, after),
  * as a React.Fragment.
@@ -632,8 +634,9 @@ const forTimFun = ( isoStr ) => {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.heaLabStr - The first column's own label, defaulting
- *                          to 'Item' (ConSecCom passes 'Conditional').
+ * @param props.heaLabStr - Header Label String: The first column's own label,
+ *                          defaulting to 'Item' (ConSecCom passes
+ *                          'Conditional').
  *
  * @returns This table's own single header row.
  *
@@ -695,12 +698,13 @@ function TabHeaCom ( { heaLabStr = 'Item' } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.appStaObj - The whole app state object.
- * @param props.picRecObj - The picker this block renders.
- * @param props.dayKeyStr - Today's own "YYYY-MM-DD" key, from
+ * @param props.appStaObj - App State Object: The whole app state object.
+ * @param props.picRecObj - Picker Record Object: The picker this block
+ *                          renders.
+ * @param props.dayKeyStr - Day Key String: Today's own "YYYY-MM-DD" key, from
  *                          {@link isoDayFun}.
- * @param props.isaSupBoo - Whether picRecObj is suppressed today by a
- *                          triggered conditional.
+ * @param props.isaSupBoo - Is-A Suppressed Boolean: Whether picRecObj is
+ *                          suppressed today by a triggered conditional.
  *
  * @returns This picker's own block, either a static rested row or its
  * full collapsible item table.
@@ -932,9 +936,10 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.appStaObj - The whole app state object.
- * @param props.picGroArr - Every picker in the current group.
- * @param props.dayKeyStr - Today's own "YYYY-MM-DD" key, from
+ * @param props.appStaObj - App State Object: The whole app state object.
+ * @param props.picGroArr - Picker Group Array: Every picker in the current
+ *                          group.
+ * @param props.dayKeyStr - Day Key String: Today's own "YYYY-MM-DD" key, from
  *                          {@link isoDayFun}.
  *
  * @returns This group's own conditionals section, or null once it has
@@ -1112,11 +1117,10 @@ function ConSecCom ( { appStaObj, picGroArr, dayKeyStr } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state   - The whole app state object.
- * @param props.group   - Which group this panel covers.
- * @param props.onClose - Called when the panel's own close button is
- *                        pressed; omitted entirely suppresses that
- *                        button.
+ * @param props.state   - State: The whole app state object.
+ * @param props.group   - Group: Which group this panel covers.
+ * @param props.onClose - On Close: Called when the panel's own close button is
+ *                        pressed; omitted entirely suppresses that button.
  *
  * @returns This group's own full log panel.
  *
@@ -1272,9 +1276,9 @@ function GroupLog ( { state, group, onClose } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param dueDatObj - The next occurrence Date, or null/undefined when
- *                    there is none upcoming at all.
- * @param dayKeyStr - Today's own "YYYY-MM-DD" key, used as the
+ * @param dueDatObj - Due Date Object: The next occurrence Date, or
+ *                    null/undefined when there is none upcoming at all.
+ * @param dayKeyStr - Day Key String: Today's own "YYYY-MM-DD" key, used as the
  *                    reference point dueDatObj is measured against.
  *
  * @returns A short due-date label string.
@@ -1326,10 +1330,9 @@ function forDueFun ( dueDatObj, dayKeyStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state   - The whole app state object.
- * @param props.onClose - Called when the panel's own close button is
- *                        pressed; omitted entirely suppresses that
- *                        button.
+ * @param props.state   - State: The whole app state object.
+ * @param props.onClose - On Close: Called when the panel's own close button is
+ *                        pressed; omitted entirely suppresses that button.
  *
  * @returns This panel's own full reminders log.
  *

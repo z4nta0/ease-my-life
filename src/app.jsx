@@ -60,15 +60,17 @@ const TAB_OBJ_ARR = [ // What: Tab Object Array. Why: This defines the fixed set
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actIdeStr   - {@link actIdeStr}
- * @param props.onChange    - {@link selTabFun}
- * @param props.tabPlaStr   - {@link tabPlaStr}
- * @param props.raiOpeBoo   - {@link raiOpeBoo}
- * @param props.onTogRaiFun - Toggles the rail open or closed.
- * @param props.className   - Extra class name(s) to append; defaults to an
- *                            empty string.
- * @param props.tbcGhoBoo   - Marks this as a decorative ghost copy during a
- *                            placement-change animation; defaults to false.
+ * @param props.actIdeStr   - Active Identifier String: {@link actIdeStr}
+ * @param props.onChange    - On Change: {@link selTabFun}
+ * @param props.tabPlaStr   - Tab Placement String: {@link tabPlaStr}
+ * @param props.raiOpeBoo   - Rail Open Boolean: {@link raiOpeBoo}
+ * @param props.onTogRaiFun - On Toggle Rail Function: Toggles the rail open or
+ *                            closed.
+ * @param props.className   - Class Name: Extra class name(s) to append;
+ *                            defaults to an empty string.
+ * @param props.tbcGhoBoo   - Tab-Bar-Com Ghost Boolean: Marks this as a
+ *                            decorative ghost copy during a placement-change
+ *                            animation; defaults to false.
  *
  * @returns The tab bar's own nav element, including every tab button, the
  * sliding indicator, the brand button, and (when in a side placement)

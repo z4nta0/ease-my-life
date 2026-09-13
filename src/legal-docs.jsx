@@ -864,9 +864,9 @@ function TerSerCom () {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.which   - Which document to show, 'privacy' or
- *                        'terms', or null to render nothing.
- * @param props.onClose - Called once the close animation (or the
+ * @param props.which   - Which: Which document to show, 'privacy' or 'terms',
+ *                        or null to render nothing.
+ * @param props.onClose - On Close: Called once the close animation (or the
  *                        instant reduced-motion path) finishes.
  *
  * @returns The modal's own backdrop-and-panel markup, or null while

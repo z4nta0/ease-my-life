@@ -144,12 +144,12 @@ const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.value    - The picker's own persisted cadence value
- *                        (or an in-progress draft), normalized on
- *                        every render via CADENCE.normalize.
- * @param props.onChange - Called with a patch object whenever any
- *                        cadence field changes; the caller owns how
- *                        the patch gets merged into its own storage.
+ * @param props.value    - Value: The picker's own persisted cadence value (or
+ *                         an in-progress draft), normalized on every render
+ *                         via CADENCE.normalize.
+ * @param props.onChange - On Change: Called with a patch object whenever any
+ *                         cadence field changes; the caller owns how the patch
+ *                         gets merged into its own storage.
  *
  * @returns The full cadence editor: the cadence picker plus, for
  * every mode but daily, the matching anchor subsection inside an

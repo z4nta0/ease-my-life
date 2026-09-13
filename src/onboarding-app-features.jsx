@@ -728,9 +728,9 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param feaIdeStr - The feature id tab-today.jsx's own AppFeatureCard is
- *                    asking about.
- * @param state     - The entire app's own persisted state.
+ * @param feaIdeStr - Feature Identifier String: The feature id tab-today.jsx's
+ *                    own AppFeatureCard is asking about.
+ * @param state     - State: The entire app's own persisted state.
  *
  * @returns A user-facing reason string whenever this feature is blocked,
  * otherwise null.
@@ -782,16 +782,16 @@ function appFeatureBlockedReason ( feaIdeStr, state ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.featureId  - This feature's own id (e.g. 'feat_manual_pick'),
- *                           keying APP_FEATURES and bldSteFun. Named
- *                           featureId, not the usual feaIdeStr, to match
- *                           app.jsx's own JSX call site.
- * @param props.state      - The entire app's own persisted state.
- * @param props.actions    - The actions that mutate props.state.
- * @param props.active     - The app's own currently active tab id.
- * @param props.selectTab  - Switches the app's own active tab.
- * @param props.onClose    - Clears app.jsx's own actFeaStr, ending this
- *                           mount.
+ * @param props.featureId  - Feature Id: This feature's own id (e.g.
+ *                           'feat_manual_pick'), keying APP_FEATURES and
+ *                           bldSteFun. Named featureId, not the usual
+ *                           feaIdeStr, to match app.jsx's own JSX call site.
+ * @param props.state      - State: The entire app's own persisted state.
+ * @param props.actions    - Actions: The actions that mutate props.state.
+ * @param props.active     - Active: The app's own currently active tab id.
+ * @param props.selectTab  - Select Tab: Switches the app's own active tab.
+ * @param props.onClose    - On Close: Clears app.jsx's own actFeaStr, ending
+ *                           this mount.
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running guided
  * tour (touPhaStr 'tour'), depending on this feature's own phase.
@@ -1024,8 +1024,8 @@ function AppFeatureTour ( { featureId, state, actions, active, selectTab, onClos
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actions - The actions that mutate the app's own persisted
- *                        state.
+ * @param props.actions - Actions: The actions that mutate the app's own
+ *                        persisted state.
  *
  * @returns The single, solo GuidedTour step described above.
  *

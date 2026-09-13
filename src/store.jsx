@@ -93,7 +93,8 @@ const SCH_VER_NUM = 1; // What: Schema Version Number. Why: migrate() stamps thi
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param hexColStr - The '#rrggbb' (or '#rgb') color to invert.
+ * @param hexColStr - Hex Color String: The '#rrggbb' (or '#rgb') color to
+ *                    invert.
  *
  * @returns The inverted color, as a '#rrggbb' string, or hexColStr
  * itself unchanged if the conversion throws.
@@ -221,8 +222,9 @@ function invColFun( hexColStr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param namRawStr  - The candidate name to make unique.
- * @param sibNamArr  - The sibling names already in use in this scope.
+ * @param namRawStr  - Name Raw String: The candidate name to make unique.
+ * @param sibNamArr  - Sibling Name Array: The sibling names already in use in
+ *                     this scope.
  *
  * @returns The unique name: namRawStr as-is if it doesn't collide,
  * otherwise namRawStr (or its already-numbered base) with the next
@@ -347,8 +349,8 @@ function nclIdeFun() {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param datInpObj - The date to convert; defaults to the current
- *                    moment when omitted.
+ * @param datInpObj - Date Input Object: The date to convert; defaults to the
+ *                    current moment when omitted.
  *
  * @returns datInpObj's own local calendar day, as a 'YYYY-MM-DD' string.
  *
@@ -414,18 +416,18 @@ const isoDayFun = ( datInpObj = new Date() ) => {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param curStaObj    - The current state, read (not mutated) to look
- *                       up the item/picker being logged.
- * @param logFldObj.eid         - Links the row to its live today.entries
+ * @param curStaObj    - Current State Object: The current state, read (not
+ *                       mutated) to look up the item/picker being logged.
+ * @param logFldObj.eid         - Eid: Links the row to its live today.entries
  *                                row; defaults to null.
- * @param logFldObj.pickerId    - The picker the pick belongs to.
- * @param logFldObj.itemId      - The item that was picked.
- * @param logFldObj.source      - How the pick was made: 'auto' |
+ * @param logFldObj.pickerId    - Picker Id: The picker the pick belongs to.
+ * @param logFldObj.itemId      - Item Id: The item that was picked.
+ * @param logFldObj.source      - Source: How the pick was made: 'auto' |
  *                                'manual' | 'reroll'.
- * @param logFldObj.date        - The 'YYYY-MM-DD' to stamp the row
- *                                with; defaults to today.
- * @param logFldObj.depletedEnd - Whether this row ends an Ease Down
- *                                depletion streak; defaults to false.
+ * @param logFldObj.date        - Date: The 'YYYY-MM-DD' to stamp the row with;
+ *                                defaults to today.
+ * @param logFldObj.depletedEnd - Depleted End: Whether this row ends an Ease
+ *                                Down depletion streak; defaults to false.
  *
  * @returns A new pickLog row, in state.pickLog's own shape.
  *
@@ -519,9 +521,9 @@ function logRowFun( curStaObj, { eid = null, pickerId, itemId, source, date, dep
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param entArr - The today.entries array to scan.
- * @param iteIdsArr - The item ids whose stale pending rows should be
- *                    dropped.
+ * @param entArr - Entry Array: The today.entries array to scan.
+ * @param iteIdsArr - Item Ids Array: The item ids whose stale pending rows
+ *                    should be dropped.
  *
  * @returns The same entArr reference when nothing changed, else a new
  * array with the affected entries' own pending.updates filtered.
@@ -585,9 +587,10 @@ function dropStalePendingUpdates( entArr, iteIdsArr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param curStaObj - The current state, read (not mutated) for its own
- *                    items/pickers/pickLog.
- * @param curEntObj - The Today entry whose own pending is being applied.
+ * @param curStaObj - Current State Object: The current state, read (not
+ *                    mutated) for its own items/pickers/pickLog.
+ * @param curEntObj - Current Entry Object: The Today entry whose own pending
+ *                    is being applied.
  *
  * @returns { items, pickers, pickLog, revert } with pending applied, or
  * the same items/pickers/pickLog and revert:null when curEntObj has no
@@ -686,10 +689,10 @@ function applyEntryPending( curStaObj, curEntObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param curStaObj - The current state, read (not mutated) for its own
- *                    items/pickers/pickLog.
- * @param curEntObj - The Today entry being un-done, whose own revert
- *                    snapshot drives the restoration.
+ * @param curStaObj - Current State Object: The current state, read (not
+ *                    mutated) for its own items/pickers/pickLog.
+ * @param curEntObj - Current Entry Object: The Today entry being un-done,
+ *                    whose own revert snapshot drives the restoration.
  *
  * @returns { items, pickers, pickLog } restored to their pre-apply
  * values, or the state's own arrays untouched when curEntObj has no
@@ -760,13 +763,14 @@ function revertEntryPending( curStaObj, curEntObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param curStaObj - The current state, read (not mutated) for its own
- *                    pickers/conditionals.
- * @param nxtEntArr - today.entries AFTER this toggle has already been
- *                    applied to it, used to count dependent completions.
- * @param togEntObj - The entry that was just toggled.
- * @param nowDoneBoo - Whether togEntObj is now done (true) or was just
- *                     un-done (false).
+ * @param curStaObj - Current State Object: The current state, read (not
+ *                    mutated) for its own pickers/conditionals.
+ * @param nxtEntArr - Next Entry Array: today.entries AFTER this toggle has
+ *                    already been applied to it, used to count dependent
+ *                    completions.
+ * @param togEntObj - Toggle Entry Object: The entry that was just toggled.
+ * @param nowDoneBoo - Now Done Boolean: Whether togEntObj is now done (true)
+ *                     or was just un-done (false).
  *
  * @returns The updated conditionals array, or the same reference when
  * nothing about it actually changes.
@@ -903,13 +907,14 @@ function applyConditionalToggle( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param curStaObj - The current state, read (not mutated) for its own
- *                    pickers/conditionals/conditionalLog.
- * @param nxtEntArr - today.entries AFTER this toggle has already been
- *                    applied to it, used to count dependent completions.
- * @param togEntObj - The entry that was just toggled.
- * @param nowDoneBoo - Whether togEntObj is now done (true) or was just
- *                     un-done (false).
+ * @param curStaObj - Current State Object: The current state, read (not
+ *                    mutated) for its own pickers/conditionals/conditionalLog.
+ * @param nxtEntArr - Next Entry Array: today.entries AFTER this toggle has
+ *                    already been applied to it, used to count dependent
+ *                    completions.
+ * @param togEntObj - Toggle Entry Object: The entry that was just toggled.
+ * @param nowDoneBoo - Now Done Boolean: Whether togEntObj is now done (true)
+ *                     or was just un-done (false).
  *
  * @returns The updated conditionalLog array, or the same reference when
  * nothing about it actually changes.
@@ -1124,8 +1129,8 @@ function loadState() {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param curStaObj - The raw, possibly-old-shaped state to migrate in
- *                    place.
+ * @param curStaObj - Current State Object: The raw, possibly-old-shaped state
+ *                    to migrate in place.
  *
  * @returns curStaObj itself, mutated in place with every missing field
  * backfilled and state.v stamped.
@@ -1811,7 +1816,7 @@ function migrate( curStaObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param curStaObj - The state to persist.
+ * @param curStaObj - Current State Object: The state to persist.
  *
  * @returns This function does not return anything.
  *
@@ -1856,7 +1861,7 @@ function saveState( curStaObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param curStaObj - The state to flush synchronously.
+ * @param curStaObj - Current State Object: The state to flush synchronously.
  *
  * @returns This function does not return anything.
  *
@@ -1910,11 +1915,12 @@ function flushState( curStaObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param curStaObj - The current state, read (not mutated) for its own
+ * @param curStaObj - Current State Object: The current state, read (not
+ *                    mutated) for its own
  *                    pickers/today/reminderOpts/holidays/streak.
- * @param entArgArr - The today.entries to reconcile against (may
- *                    already reflect an in-progress toggle).
- * @param tasArgArr - The tasks to reconcile against.
+ * @param entArgArr - Entry Argument Array: The today.entries to reconcile
+ *                    against (may already reflect an in-progress toggle).
+ * @param tasArgArr - Task Argument Array: The tasks to reconcile against.
  *
  * @returns { streak, streakClaimed } reflecting the reconciled verdict.
  * @see {@link strNumVal}
@@ -1983,12 +1989,12 @@ function reconcileStreak( curStaObj, entArgArr, tasArgArr ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param optArgObj - Optional. { initial, persist }: initial supplies a
- *                    non-persisted starting state (used by the
- *                    onboarding demo) instead of loadState(); persist:
+ * @param optArgObj - Option Argument Object: Optional. { initial, persist }:
+ *                    initial supplies a non-persisted starting state (used by
+ *                    the onboarding demo) instead of loadState(); persist:
  *                    false (used by the same demo) disables the idle-
- *                    save/flush effects entirely. Omitted entirely for
- *                    every normal, real-data caller.
+ *                    save/flush effects entirely. Omitted entirely for every
+ *                    normal, real-data caller.
  *
  * @returns [state, actions]: the current app state, and the memoized
  * object of state-transition functions that mutate it.
