@@ -4,7 +4,7 @@
 
 // #region Imports
 
-import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js'; // What: Onboarding Sample Picker Ids. Why: This module needs every seeded sample picker's own id to build its own 'sample' checklist entries below and to tell a real, user-created picker apart from a sample one. How: This is read directly by reaPkrFun below and mapped into CHE_ITE_ARR's own 'sample' entries.
+import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js'; // What: Onboarding Sample Picker Ids. Why: This module needs every seeded sample picker's own id to build its own 'sample' checklist entries below and to tell a real, user-created picker apart from a sample one. How: This is read directly by reaPicFun below and mapped into CHE_ITE_ARR's own 'sample' entries.
 import { OB_SAMPLE_TASK_IDS   } from './onboarding-seed-data.js'; // What: Onboarding Sample Task Ids. Why: This module needs every seeded sample task's own id to build its own 'sample' checklist entries below. How: This is mapped into CHE_ITE_ARR's own 'sample' entries, one per seeded sample task id.
 
 // #endregion Imports
@@ -88,7 +88,7 @@ export const OB_PAGE_TOURS = [ // What: Onboarding Page Tours Array. Why: This i
 const CHE_ITE_ARR = [ // What: Checklist Item Array. Why: This is the full, flat manifest of every checklist item the app currently knows about (every sample picker, every sample task, every page tour, plus the closing Generate card), across all 3 item kinds. How: This concatenates a 'sample' entry per OB_SAMPLE_PICKER_IDS/OB_SAMPLE_TASK_IDS id, a 'pageTour' entry per OB_PAGE_TOURS entry, and the single 'generate' entry, in that fixed order.
 
 
-	...OB_SAMPLE_PICKER_IDS.map( ( pkrIdeStr ) => ( { id : pkrIdeStr, kind : 'sample', entityKind : 'picker' } ) ), // What: Sample Picker Entries. Why: Every seeded sample picker needs its own 'sample' checklist entry so it can be resolved (finished/skipped/cancelled) independently. How: This maps OB_SAMPLE_PICKER_IDS down to one { id, kind, entityKind } object per sample picker id.
+	...OB_SAMPLE_PICKER_IDS.map( ( picIdeStr ) => ( { id : picIdeStr, kind : 'sample', entityKind : 'picker' } ) ), // What: Sample Picker Entries. Why: Every seeded sample picker needs its own 'sample' checklist entry so it can be resolved (finished/skipped/cancelled) independently. How: This maps OB_SAMPLE_PICKER_IDS down to one { id, kind, entityKind } object per sample picker id.
 	...OB_SAMPLE_TASK_IDS.map( ( tskIdeStr ) => ( { id : tskIdeStr, kind : 'sample', entityKind : 'task' } ) ),   // What: Sample Task Entries. Why: Every seeded sample task needs its own 'sample' checklist entry, same reasoning as the picker entries above. How: This maps OB_SAMPLE_TASK_IDS down to one { id, kind, entityKind } object per sample task id.
 	...OB_PAGE_TOURS.map( ( touConObj ) => ( { id : touConObj.id, kind : 'pageTour' } ) ),                       // What: Page Tour Entries. Why: Every page tour needs its own checklist entry too, even though it has no sample data of its own to finish/skip/cancel. How: This maps OB_PAGE_TOURS down to one { id, kind } object per page tour entry, keyed by that tour's own id.
 	{ id : OB_GENERATE_ITEM_ID, kind : 'generate' }                                                              // What: Generate Entry. Why: The single closing Generate card needs its own checklist entry, the same as every other item. How: This is a single { id, kind } object, keyed by the fixed OB_GENERATE_ITEM_ID above.
@@ -153,10 +153,10 @@ function cheStaFun ( appStaObj ) {
 
 
 
-// #region reaPkrFun
+// #region reaPicFun
 
 /**
- * reaPkrFun = Real Picker Function
+ * reaPicFun = Real Picker Function
  *
  * @summary
  * How many real (non-sample) pickers currently exist. The Generate card
@@ -187,14 +187,14 @@ function cheStaFun ( appStaObj ) {
  *
  * @example
  * ```ts
- * reaPkrFun(appStaObj) // => 4
+ * reaPicFun(appStaObj) // => 4
  * ```
  *
 */
 
-function reaPkrFun ( appStaObj ) { return appStaObj.pickers.filter( ( curPkrObj ) => !OB_SAMPLE_PICKER_IDS.includes( curPkrObj.id ) ).length; } // What: Real Picker Count Return. Why: The caller needs a plain count of every picker that isn't one of the seeded samples. How: This filters appStaObj.pickers down to ids absent from OB_SAMPLE_PICKER_IDS, then takes the resulting count.
+function reaPicFun ( appStaObj ) { return appStaObj.pickers.filter( ( curPicObj ) => !OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) ).length; } // What: Real Picker Count Return. Why: The caller needs a plain count of every picker that isn't one of the seeded samples. How: This filters appStaObj.pickers down to ids absent from OB_SAMPLE_PICKER_IDS, then takes the resulting count.
 
-// #endregion reaPkrFun
+// #endregion reaPicFun
 
 
 
@@ -237,12 +237,12 @@ function othRemFun ( appStaObj ) { return CHE_ITE_ARR.filter( ( curIteObj ) => c
  * @summary
  * The Generate card is actionable once every OTHER item is resolved
  * (ready to generate) AND at least one real picker exists (see
- * reaPkrFun above). It's still visible before that, just blocked.
+ * reaPicFun above). It's still visible before that, just blocked.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param appStaObj - The full app state object, passed straight
- *                    through to othRemFun and reaPkrFun below.
+ *                    through to othRemFun and reaPicFun below.
  *
  * @returns Whether the Generate card is actionable yet, as a boolean.
  *
@@ -253,7 +253,7 @@ function othRemFun ( appStaObj ) { return CHE_ITE_ARR.filter( ( curIteObj ) => c
  *
 */
 
-function reaGenFun ( appStaObj ) { return othRemFun( appStaObj ) === 0 && reaPkrFun( appStaObj ) >= 1; } // What: Ready-To-Generate Return. Why: The caller needs a single boolean saying whether the Generate card can actually be actioned yet. How: This combines othRemFun's own zero-check with reaPkrFun's own >=1 check.
+function reaGenFun ( appStaObj ) { return othRemFun( appStaObj ) === 0 && reaPicFun( appStaObj ) >= 1; } // What: Ready-To-Generate Return. Why: The caller needs a single boolean saying whether the Generate card can actually be actioned yet. How: This combines othRemFun's own zero-check with reaPicFun's own >=1 check.
 
 // #endregion reaGenFun
 
@@ -309,7 +309,7 @@ function tutProFun ( appStaObj ) {
 	if ( onbStaObj.activeTour && onbStaObj.activeTour.id === 'welcome' ) return true; // What: Welcome Tour Active Guard. Why: The Welcome Tour's own steps run before any sample picker/task is ever hidden, so maiTouBoo below wouldn't catch this phase on its own. How: This reports true immediately whenever the persisted activeTour is specifically the 'welcome' tour.
 
 
-	const maiTouBoo = appStaObj.pickers.some( ( curPkrObj ) => curPkrObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPkrObj.id ) ) // What: Main-Tour-Ended Boolean. Why: The mini-tour checklist phase only starts once the Welcome Tour's own last step has actually hidden at least one sample. How: This checks appStaObj.pickers and appStaObj.tasks for any still-hidden sample, either one being enough.
+	const maiTouBoo = appStaObj.pickers.some( ( curPicObj ) => curPicObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) ) // What: Main-Tour-Ended Boolean. Why: The mini-tour checklist phase only starts once the Welcome Tour's own last step has actually hidden at least one sample. How: This checks appStaObj.pickers and appStaObj.tasks for any still-hidden sample, either one being enough.
 		|| ( appStaObj.tasks || [] ).some( ( curTskObj ) => curTskObj.hidden && OB_SAMPLE_TASK_IDS.includes( curTskObj.id ) ); // What: Main-Tour-Ended Boolean Continuation. Why: A hidden sample task counts exactly the same as a hidden sample picker for this check. How: This is the second half of the || above, guarded by a fallback empty array since appStaObj.tasks may be missing on an old save.
 
 
@@ -329,7 +329,7 @@ export const OB_CHECKLIST = { // What: Onboarding Checklist Object. Why: This is
 	items               : CHE_ITE_ARR, // What: Items Property. Why: Some future caller may need the full flat manifest directly rather than one of the derived helpers below. How: This is CHE_ITE_ARR above, assigned under its own external, stable property name.
 	status              : cheStaFun,   // What: Status Property. Why: tab-today.jsx reads this to decide whether the whole checklist (and therefore its own launcher UI) is complete. How: This is cheStaFun above, assigned under its own external, stable property name.
 	entryFor            : entLooFun,   // What: Entry-For Property. Why: Every consuming file needs to check one specific checklist item's own resolution. How: This is entLooFun above, assigned under its own external, stable property name.
-	realPickerCount     : reaPkrFun,   // What: Real-Picker-Count Property. Why: store.jsx and tab-today.jsx both gate real-data-exists checks on this. How: This is reaPkrFun above, assigned under its own external, stable property name.
+	realPickerCount     : reaPicFun,   // What: Real-Picker-Count Property. Why: store.jsx and tab-today.jsx both gate real-data-exists checks on this. How: This is reaPicFun above, assigned under its own external, stable property name.
 	othersRemaining     : othRemFun,   // What: Others-Remaining Property. Why: tab-today.jsx reads this for the Generate card's own dynamic explanation text. How: This is othRemFun above, assigned under its own external, stable property name.
 	readyToGenerate     : reaGenFun,   // What: Ready-To-Generate Property. Why: store.jsx and tab-today.jsx both gate the Generate card's own actionability on this. How: This is reaGenFun above, assigned under its own external, stable property name.
 	tutorialsInProgress : tutProFun    // What: Tutorials-In-Progress Property. Why: reminders.jsx/tab-picker.jsx/tab-data.jsx all gate their own "add new X" controls on this. How: This is tutProFun above, assigned under its own external, stable property name.
