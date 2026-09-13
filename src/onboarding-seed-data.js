@@ -245,7 +245,7 @@ export const OB_TASKS = [ // What: Onboarding Tasks Array. Why: This is the samp
  *
 */
 
-export const OB_SAMPLE_PICKER_IDS = [ OB_EXAMPLE, ...OB_EXTRA_PICKERS ].map( ( curPkrObj ) => curPkrObj.id ); // What: Onboarding Sample Picker Ids Array. Why: This is every seeded sample picker's own id, flattened into one array (see the comment above this declaration). How: This maps OB_EXAMPLE plus every OB_EXTRA_PICKERS entry down to just its own id field.
+export const OB_SAMPLE_PICKER_IDS = [ OB_EXAMPLE, ...OB_EXTRA_PICKERS ].map( ( curPicObj ) => curPicObj.id ); // What: Onboarding Sample Picker Ids Array. Why: This is every seeded sample picker's own id, flattened into one array (see the comment above this declaration). How: This maps OB_EXAMPLE plus every OB_EXTRA_PICKERS entry down to just its own id field.
 export const OB_SAMPLE_TASK_IDS   = OB_TASKS.map( ( curTskObj ) => curTskObj.id );                           // What: Onboarding Sample Task Ids Array. Why: This is every seeded sample task's own id, flattened into one array (see the comment above OB_SAMPLE_PICKER_IDS above). How: This maps every OB_TASKS entry down to just its own id field.
 
 
