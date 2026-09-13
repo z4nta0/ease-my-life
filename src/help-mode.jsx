@@ -621,15 +621,15 @@ function shaRadFun ( tarEle, padWidNum, padHeiNum, shpOveStr ) {
 	if ( radTokStr.endsWith( '%' ) ) { // What: Percentage Radius Branch. Why: A percentage radius (almost always 50%) must scale with the padded box's own size rather than being reused as a literal pixel value. How: This parses the percentage and multiplies it against padWidNum/padHeiNum below.
 
 
-		const pctNum = parseFloat( radTokStr ) / 100; // What: Percent Number. Why: The parsed percentage needs converting to a plain 0-1 ratio before it can scale anything. How: This parses radTokStr as a float and divides by 100.
+		const perNum = parseFloat( radTokStr ) / 100; // What: Percent Number. Why: The parsed percentage needs converting to a plain 0-1 ratio before it can scale anything. How: This parses radTokStr as a float and divides by 100.
 
-		if ( Number.isNaN( pctNum ) ) return { rx: DEF_RAD_NUM, ry: DEF_RAD_NUM }; // What: Unparseable Guard. Why: A malformed percentage token must not silently produce NaN radii. How: This falls back to the default radius once pctNum failed to parse.
+		if ( Number.isNaN( perNum ) ) return { rx: DEF_RAD_NUM, ry: DEF_RAD_NUM }; // What: Unparseable Guard. Why: A malformed percentage token must not silently produce NaN radii. How: This falls back to the default radius once perNum failed to parse.
 
 
 		return {
 
-			rx : pctNum * padWidNum,
-			ry : pctNum * padHeiNum
+			rx : perNum * padWidNum,
+			ry : perNum * padHeiNum
 
 		};
 

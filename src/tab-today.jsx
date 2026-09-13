@@ -3262,8 +3262,8 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 				setParArr( Array.from( { length : 22 }, () => ( {
 
 					id    : Math.random(),
-					xPct  : Math.round( Math.random() * 100 ),
-					yPct  : Math.round( Math.random() * 100 ),
+					xPer  : Math.round( Math.random() * 100 ),
+					yPer  : Math.round( Math.random() * 100 ),
 					delay : Math.round( Math.random() * 700 )
 
 				} ) ) );
@@ -5556,7 +5556,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 									<span
 										key={ curParObj.id }
-										style={{ left : `${ curParObj.xPct }%`, top : `${ curParObj.yPct }%`, animationDelay : `${ curParObj.delay }ms` }}
+										style={{ left : `${ curParObj.xPer }%`, top : `${ curParObj.yPer }%`, animationDelay : `${ curParObj.delay }ms` }}
 									>&#10022;</span> // What: Sparkle Piece Span Element. Why: This is one single sparkle piece, positioned/timed entirely via inline style. How: This renders a fixed glyph at curParObj's own randomized position/delay.
 
 								) ) }

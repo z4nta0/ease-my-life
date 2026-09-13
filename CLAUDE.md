@@ -1545,6 +1545,12 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     stays exactly as-is per the Naming conventions exemptions, since it
     is a real external HTML attribute, not our own invented segment)
   - `lbl` → `lab` (Label)
+  - `pct` → `per` (Percent — note this collides with `per` already
+    meaning Period (`perStaFun`/`perDayNum`) and Permission (`perCheFun`)
+    elsewhere, the same way `ctl`/`cfg` collide; a name's own surrounding
+    context, e.g. `finPerNum` holding a clamped percentage rather than a
+    period or a permission state, disambiguates which word "per" stands
+    for in practice)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
