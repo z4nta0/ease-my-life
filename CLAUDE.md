@@ -1533,6 +1533,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     (Config) above; when both "Control" and "Config/Configuration" are
     real concepts in the same name, resolve the collision via the
     normal Naming-conflict resolution escalation rather than guessing)
+  - `fld` → `fie` (Field)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

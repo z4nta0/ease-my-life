@@ -475,7 +475,7 @@ function ConSupCom ( { state, actions } ) {
 	const [ adrCpdBoo, setAdrCpdBoo ] = React.useState( false ); // What: Address Copied Boolean And Setter. Why: The fallback "Copy address" button needs to confirm the copy actually happened. How: This is set true by cpyAdrFun and cleared 2400ms later.
 	// Honeypot. Bots fill every field they find; humans never see this one, so a
 	// non-empty value means we silently accept and drop the submission.
-	const [ botFldStr, setBotFldStr ] = React.useState( '' ); // What: Bot Field String And Setter. Why: A spam bot filling this hidden field is the signal a real human never would. How: This is posted alongside the real fields and left for Netlify's own spam filtering to act on.
+	const [ botFieStr, setBotFieStr ] = React.useState( '' ); // What: Bot Field String And Setter. Why: A spam bot filling this hidden field is the signal a real human never would. How: This is posted alongside the real fields and left for Netlify's own spam filtering to act on.
 	const braNamStr    = React.useMemo( () => detBroFun(), [] );        // What: Browser Name String. Why: The diagnostic fields need the detected browser, computed once rather than on every render. How: This memoizes detBroFun's own return value with an empty dependency array.
 	const appVerStr    = APP_VER_STR == null ? '1.0' : APP_VER_STR;     // What: App Version String. Why: The diagnostic fields still need a sane version to show even on a build where the define is missing. How: This falls back to '1.0' when APP_VER_STR is null.
 	const frmCarRef    = React.useRef( null );                          // What: Form Card Reference. Why: openFrmFun needs a handle on the rendered form to scroll it into view. How: This is attached to the support-form div's own ref prop below.
@@ -577,7 +577,7 @@ function ConSupCom ( { state, actions } ) {
 
 
 			'form-name' : SUPPORT_FORM_NAME,
-			'bot-field' : botFldStr,
+			'bot-field' : botFieStr,
 			subject     : draSubStr.trim(),
 			message     : draMesStr.trim(),
 			version     : appVerStr,
@@ -762,9 +762,9 @@ function ConSupCom ( { state, actions } ) {
 									tabIndex={ -1 }
 									autoComplete='off'
 									name='bot-field'
-									value={ botFldStr }
-									onChange={ ( chgEveObj ) => setBotFldStr( chgEveObj.target.value ) }
-								/>{ /* What: Bot Field Input Element. Why: A non-empty value here is the actual honeypot signal. How: This is bound to botFldStr and posted alongside the real fields. */ }
+									value={ botFieStr }
+									onChange={ ( chgEveObj ) => setBotFieStr( chgEveObj.target.value ) }
+								/>{ /* What: Bot Field Input Element. Why: A non-empty value here is the actual honeypot signal. How: This is bound to botFieStr and posted alongside the real fields. */ }
 
 
 							</label>

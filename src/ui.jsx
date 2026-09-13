@@ -1323,7 +1323,7 @@ function FillButton ( { label, onClick, disabled } ) {
 function compareSortEntries ( rowAObj, rowBObj, sorKeyStr ) {
 
 
-	const [ fldNamStr, sorDirStr ] = sorKeyStr.split( '-' ); // What: Field Name String And Direction String. Why: Every sort key packs both which field to compare and which way, joined by a dash. How: This splits sorKeyStr once into the two pieces every branch below reads.
+	const [ fieNamStr, sorDirStr ] = sorKeyStr.split( '-' ); // What: Field Name String And Direction String. Why: Every sort key packs both which field to compare and which way, joined by a dash. How: This splits sorKeyStr once into the two pieces every branch below reads.
 	const revSorBoo                = sorDirStr === 'desc';   // What: Reverse Sort Boolean. Why: Every branch below needs to know whether to flip its own comparison. How: This is true only when sorDirStr is exactly 'desc'.
 
 
@@ -1384,7 +1384,7 @@ function compareSortEntries ( rowAObj, rowBObj, sorKeyStr ) {
 	};
 
 
-	switch ( fldNamStr ) { // What: Field Switch. Why: Each sortable field has its own distinct comparison rule, keyed by name. How: This dispatches to one of the branches below, falling back to a plain name comparison for any unrecognized field. (Every case below returns directly; per this file's own switch-statement convention, a case's own return is treated like an if-branch's guard return rather than forcing a 3-blank-line gap before it.)
+	switch ( fieNamStr ) { // What: Field Switch. Why: Each sortable field has its own distinct comparison rule, keyed by name. How: This dispatches to one of the branches below, falling back to a plain name comparison for any unrecognized field. (Every case below returns directly; per this file's own switch-statement convention, a case's own return is treated like an if-branch's guard return rather than forcing a 3-blank-line gap before it.)
 
 
 		case 'name':

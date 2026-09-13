@@ -130,7 +130,7 @@ function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
  * @summary
  * Resolves a day-of-month for either a monthly (anchorDom) or yearly
  * (anchorDay, within its own fixed anchor month) cadence, honoring
- * nth-weekday mode for either. domFldStr is which raw field on
+ * nth-weekday mode for either. domFieStr is which raw field on
  * picCadObj holds its plain date-of-month value ('anchorDom' for
  * monthly, 'anchorDay' for yearly), shared so isaAncFun/perStaFun don't
  * each duplicate the dateMode branch below.
@@ -139,13 +139,13 @@ function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
  *
  * @param picCadObj - Picker Cadence Object: The picker whose cadence
  *                    fields (dateMode, nthOrdinal, nthWeekday, and
- *                    whichever field domFldStr names) are being
+ *                    whichever field domFieStr names) are being
  *                    resolved.
  * @param yeaValNum - Year Value Number: The calendar year to compute
  *                    against.
  * @param monOneNum - Month One Number: The 1-indexed month to compute
  *                    against.
- * @param domFldStr - Day-Of-Month Field String: Which of picCadObj's
+ * @param domFieStr - Day-Of-Month Field String: Which of picCadObj's
  *                    own fields holds its plain date-of-month value,
  *                    'anchorDom' or 'anchorDay'.
  *
@@ -155,12 +155,12 @@ function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
  *
  * @example
  * ```ts
- * tdmResFun(picCadObj, yeaValNum, monOneNum, domFldStr) // => day number
+ * tdmResFun(picCadObj, yeaValNum, monOneNum, domFieStr) // => day number
  * ```
  *
 */
 
-function tdmResFun( picCadObj, yeaValNum, monOneNum, domFldStr ) { return picCadObj.dateMode === 'nthWeekday' ? nwmDayFun( yeaValNum, monOneNum, picCadObj.nthOrdinal ?? 1, picCadObj.nthWeekday ?? 0 ) : Math.min( picCadObj[ domFldStr ] ?? 1, dimCouFun( yeaValNum, monOneNum ) ); } // What: Target-Day-Month Resolve Body. Why: Both isaAncFun and perStaFun need this exact same dateMode branch for both monthly and yearly cadences. How: This resolves via nwmDayFun in nth-weekday mode, or picCadObj's own plain field (clamped to the real month length) otherwise.
+function tdmResFun( picCadObj, yeaValNum, monOneNum, domFieStr ) { return picCadObj.dateMode === 'nthWeekday' ? nwmDayFun( yeaValNum, monOneNum, picCadObj.nthOrdinal ?? 1, picCadObj.nthWeekday ?? 0 ) : Math.min( picCadObj[ domFieStr ] ?? 1, dimCouFun( yeaValNum, monOneNum ) ); } // What: Target-Day-Month Resolve Body. Why: Both isaAncFun and perStaFun need this exact same dateMode branch for both monthly and yearly cadences. How: This resolves via nwmDayFun in nth-weekday mode, or picCadObj's own plain field (clamped to the real month length) otherwise.
 
 // #endregion tdmResFun
 

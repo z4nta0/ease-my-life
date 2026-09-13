@@ -418,15 +418,15 @@ const isoDayFun = ( datInpObj = new Date() ) => {
  *
  * @param curStaObj    - Current State Object: The current state, read (not
  *                       mutated) to look up the item/picker being logged.
- * @param logFldObj.eid         - Eid: Links the row to its live today.entries
+ * @param logFieObj.eid         - Eid: Links the row to its live today.entries
  *                                row; defaults to null.
- * @param logFldObj.pickerId    - Picker Id: The picker the pick belongs to.
- * @param logFldObj.itemId      - Item Id: The item that was picked.
- * @param logFldObj.source      - Source: How the pick was made: 'auto' |
+ * @param logFieObj.pickerId    - Picker Id: The picker the pick belongs to.
+ * @param logFieObj.itemId      - Item Id: The item that was picked.
+ * @param logFieObj.source      - Source: How the pick was made: 'auto' |
  *                                'manual' | 'reroll'.
- * @param logFldObj.date        - Date: The 'YYYY-MM-DD' to stamp the row with;
+ * @param logFieObj.date        - Date: The 'YYYY-MM-DD' to stamp the row with;
  *                                defaults to today.
- * @param logFldObj.depletedEnd - Depleted End: Whether this row ends an Ease
+ * @param logFieObj.depletedEnd - Depleted End: Whether this row ends an Ease
  *                                Down depletion streak; defaults to false.
  *
  * @returns A new pickLog row, in state.pickLog's own shape.
@@ -816,10 +816,10 @@ function applyConditionalToggle( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
 
 			if ( !preSnpObj ) return curCndObj; // What: No-Snapshot Guard. Why: A card that was never completed (or already reverted) has nothing to restore. How: This returns curCndObj unchanged when preSnpObj is falsy.
 
-			const { _cardPrev, ...remFldObj } = curCndObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _cardPrev snapshot. How: This destructures _cardPrev off curCndObj, keeping every other field in remFldObj.
+			const { _cardPrev, ...remFieObj } = curCndObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _cardPrev snapshot. How: This destructures _cardPrev off curCndObj, keeping every other field in remFieObj.
 
 
-			return { ...remFldObj, value : preSnpObj.value, triggered : preSnpObj.triggered, chargeStep : preSnpObj.chargeStep }; // What: Restored Card Return. Why: The caller needs curCndObj's own pre-completion fields restored exactly. How: This spreads remFldObj, overriding value/triggered/chargeStep from preSnpObj.
+			return { ...remFieObj, value : preSnpObj.value, triggered : preSnpObj.triggered, chargeStep : preSnpObj.chargeStep }; // What: Restored Card Return. Why: The caller needs curCndObj's own pre-completion fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargeStep from preSnpObj.
 
 
 		} );
@@ -868,10 +868,10 @@ function applyConditionalToggle( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
 
 
 			const preSnpObj = curCndObj._chargePrev; // What: Previous Snapshot Object. Why: The restoration below needs the exact pre-charge fields recorded earlier. How: This reads curCndObj's own _chargePrev field.
-			const { _chargePrev, ...remFldObj } = curCndObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _chargePrev snapshot. How: This destructures _chargePrev off curCndObj, keeping every other field in remFldObj.
+			const { _chargePrev, ...remFieObj } = curCndObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _chargePrev snapshot. How: This destructures _chargePrev off curCndObj, keeping every other field in remFieObj.
 
 
-			return { ...remFldObj, value : preSnpObj.value, triggered : preSnpObj.triggered, chargedToday : preSnpObj.chargedToday, chargeStep : preSnpObj.chargeStep }; // What: Restored Charge Return. Why: The caller needs curCndObj's own pre-charge fields restored exactly. How: This spreads remFldObj, overriding value/triggered/chargedToday/chargeStep from preSnpObj.
+			return { ...remFieObj, value : preSnpObj.value, triggered : preSnpObj.triggered, chargedToday : preSnpObj.chargedToday, chargeStep : preSnpObj.chargeStep }; // What: Restored Charge Return. Why: The caller needs curCndObj's own pre-charge fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargedToday/chargeStep from preSnpObj.
 
 
 		}
@@ -1194,10 +1194,10 @@ function migrate( curStaObj ) {
 			curStaObj.items = curStaObj.items.map( ( curIteObj ) => {
 
 				const rsvPicIde = curIteObj.pickerId || itePicObj[ curIteObj.id ] || null; // What: Resolved Picker Identifier. Why: An item may already carry a pickerId, or only be inferable from the old itemIds inversion above. How: This prefers curIteObj's own pickerId, falling back to itePicObj's lookup, then null.
-				const { categoryId, ...remFldObj } = curIteObj; // What: Remaining Fields Object. Why: The old categoryId field must be dropped entirely, not merely ignored. How: This destructures categoryId off curIteObj, keeping every other field in remFldObj.
+				const { categoryId, ...remFieObj } = curIteObj; // What: Remaining Fields Object. Why: The old categoryId field must be dropped entirely, not merely ignored. How: This destructures categoryId off curIteObj, keeping every other field in remFieObj.
 
 
-				return { ...remFldObj, pickerId : rsvPicIde }; // What: Rewritten Item Return. Why: The caller needs this item's own real pickerId written, with categoryId gone. How: This spreads remFldObj with pickerId set to rsvPicIde.
+				return { ...remFieObj, pickerId : rsvPicIde }; // What: Rewritten Item Return. Why: The caller needs this item's own real pickerId written, with categoryId gone. How: This spreads remFieObj with pickerId set to rsvPicIde.
 
 
 			} );
@@ -1205,7 +1205,7 @@ function migrate( curStaObj ) {
 
 		}
 
-		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj ) => { const { itemIds, ...remFldObj } = curPicObj; return remFldObj; } ); // What: Picker Itemids Drop. Why: A picker no longer owns an itemIds list at all once items carry their own pickerId. How: This destructures itemIds off every picker, keeping every other field.
+		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj ) => { const { itemIds, ...remFieObj } = curPicObj; return remFieObj; } ); // What: Picker Itemids Drop. Why: A picker no longer owns an itemIds list at all once items carry their own pickerId. How: This destructures itemIds off every picker, keeping every other field.
 		delete curStaObj.categories; // What: Categories Entity Drop. Why: The categories entity is gone entirely under the new model. How: This deletes curStaObj's own categories field outright.
 
 
