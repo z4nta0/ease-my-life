@@ -609,7 +609,7 @@ function shaRadFun ( tarEle, padWidNum, padHeiNum, shpOveStr ) {
 	if ( shpOveStr === 'circle' ) { // What: Circle Override Guard. Why: A target whose round appearance comes from an inner SVG shape rather than its own border-radius has nothing for getComputedStyle to read. How: This forces a perfect ellipse matching the padded box's own half-width/half-height.
 
 
-		return { rx: padWidNum / 2, ry: padHeiNum / 2 };
+		return { rx: padWidNum / 2, ry: padHeiNum / 2 }; // What: Circle Override Return. Why: The caller needs a perfect ellipse matching the padded box, not a radius read off getComputedStyle. How: This halves padWidNum/padHeiNum directly.
 
 
 	}
@@ -626,7 +626,7 @@ function shaRadFun ( tarEle, padWidNum, padHeiNum, shpOveStr ) {
 		if ( Number.isNaN( perNum ) ) return { rx: DEF_RAD_NUM, ry: DEF_RAD_NUM }; // What: Unparseable Guard. Why: A malformed percentage token must not silently produce NaN radii. How: This falls back to the default radius once perNum failed to parse.
 
 
-		return {
+		return { // What: Percentage Radius Return. Why: The caller needs the percentage token actually scaled against the padded box's own size. How: This multiplies perNum against padWidNum/padHeiNum.
 
 			rx : perNum * padWidNum,
 			ry : perNum * padHeiNum
@@ -643,12 +643,12 @@ function shaRadFun ( tarEle, padWidNum, padHeiNum, shpOveStr ) {
 	if ( pxNum >= 24 ) return { rx: DEF_RAD_NUM, ry: DEF_RAD_NUM }; // What: Pill Cap Guard. Why: A "pill" source radius renders visibly faceted through the SVG mask's own rx/ry math at extreme values, confirmed against plain CSS border-radius. How: This caps anything at or past 24px down to the app's own default radius instead.
 
 
-	return {
+	return { // What: Grown Radius Return. Why: A real, moderate rounded-corner value should keep reading as rounded once the box has grown by the pad amount. How: This adds the flat pad margin back onto the parsed pixel radius.
 
 		rx : pxNum + PAD_MAR_NUM,
 		ry : pxNum + PAD_MAR_NUM
 
-	}; // What: Grown Radius Return. Why: A real, moderate rounded-corner value should keep reading as rounded once the box has grown by the pad amount. How: This adds the flat pad margin back onto the parsed pixel radius.
+	};
 
 
 }

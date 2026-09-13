@@ -251,7 +251,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 	if ( feaIdeStr === 'feat_manual_pick' ) { // What: Manual Pick Branch Check. Why: The manual-pick tour's own steps only apply to this one feature. How: This returns its own step array whenever feaIdeStr matches.
 
 
-		return [
+		return [ // What: Manual Pick Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the manual-pick tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 			// Title/body copied verbatim from the Pickers page tour's own pickerSelection step. Has to come before Manual Generation below (the user needs to choose WHICH picker before running one): that's the whole reason this exists, letting the user pick a different picker than whichever one happened to already be active. No requireClick, same as the page tour's own step, selecting a different picker here is purely optional.
 			{
@@ -330,7 +330,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 	if ( feaIdeStr === 'feat_edit_item' ) { // What: Edit Item Branch Check. Why: The edit-item tour's own steps only apply to this one feature. How: This returns its own step array whenever feaIdeStr matches.
 
 
-		return [
+		return [ // What: Edit Item Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the edit-item tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 			// Highlights .data-list, same target as the Data page tour's own pickersManager step (DAT_TAR_OBJ in onboarding-page-tours.jsx), ALL of the user's real pickers, not one specific picker, since which one they choose to edit is up to them. clickSel narrows the actual click-guard/requireClick target down to .cat-h-l (each picker's own collapsible header button), any one of them expanding satisfies this step, matching "click on one of the pickers headers" per the user's own framing, not just a specific picker's. coachAtTop: true, .data-list can be far taller than the viewport once the user has more than a couple pickers, same "pin the coach to the top, let the list run off the bottom" treatment as the Data page tour's own equivalent step (see that step's own comment) and every other tall-target step in this app, see coachAtTop's own doc comment in onboarding-tour-runner.jsx.
 			{
@@ -488,7 +488,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 	if ( feaIdeStr === 'feat_run_time' ) { // What: Run Time Branch Check. Why: The generator run-time tour's own steps only apply to this one feature. How: This returns its own step array whenever feaIdeStr matches.
 
 
-		return [
+		return [ // What: Run Time Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the generator run-time tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 			// Body copied verbatim from the Settings page tour's own daily target (SET_TAR_OBJ in onboarding-page-tours.jsx), same section, same explanation. Title given its own, more specific wording rather than reusing that tour's plain "Daily Generator" verbatim. coachAtTop: true, matches every section step in that same tour, since .set-section--daily can run taller than the viewport just like the others.
 			{
@@ -514,7 +514,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 	if ( feaIdeStr === 'feat_theme' ) { // What: Theme Branch Check. Why: The app-theme tour's own steps only apply to this one feature. How: This returns its own step array whenever feaIdeStr matches.
 
 
-		return [
+		return [ // What: Theme Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the app-theme tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 			// .set-subsection--systempref, a new modifier class added to tab-settings.jsx for exactly this (previously bare .set-subsection, ambiguous against its own siblings: --celebration/--pickanim/--layout further down the same Appearance section). coachAtTop: true, same reasoning as every other Settings section step in this app: content can easily run taller than the viewport.
 			{
@@ -569,7 +569,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 	if ( feaIdeStr === 'feat_celebration' ) { // What: Celebration Branch Check. Why: The celebration-animation tour's own steps only apply to this one feature. How: This returns its own step array whenever feaIdeStr matches.
 
 
-		return [
+		return [ // What: Celebration Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the celebration-animation tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 			// .set-subsection--celebration, already its own modifier class in tab-settings.jsx's Appearance section, no changes needed there.
 			{
@@ -595,7 +595,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 	if ( feaIdeStr === 'feat_pick_anim' ) { // What: Pick Animation Branch Check. Why: The picker-animation tour's own steps only apply to this one feature. How: This returns its own step array whenever feaIdeStr matches.
 
 
-		return [
+		return [ // What: Pick Animation Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the picker-animation tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 			// .set-subsection--pickanim, already its own modifier class in tab-settings.jsx's Appearance section, no changes needed there. Same shape as feat_celebration's own step just above.
 			{
@@ -622,7 +622,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 
 
 		// Unlike every other feature, this one does NOT use the shared buildPageTourStep1 nav-click (see AppFeatureTour's own steps prop below, which skips prepending it for this feaIdeStr specifically): the whole point is the help-highlight toggle itself (.help-btn, help-mode.jsx), which already sits in the CURRENT page's own header, there's nothing to navigate to first. Both steps target the exact same element (it never moves), so the highlight/coach position stays pinned across the transition between them, only the body copy changes.
-		return [
+		return [ // What: Highlights Tour Steps Return. Why: The caller needs this feature's own full 2-step array, replacing Step 1 entirely rather than following it. How: This returns the highlights tour's own steps, each carrying its own selector/copy/navigation fields.
 
 			{
 
@@ -661,7 +661,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 	if ( feaIdeStr === 'feat_protect_data' ) { // What: Protect Data Branch Check. Why: The protect-data tour's own steps only apply to this one feature. How: This returns its own step array whenever feaIdeStr matches.
 
 
-		return [
+		return [ // What: Protect Data Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the protect-data tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 			// .set-protect-btn, new modifier class on the "Protect Data" Btn in tab-settings.jsx (only rendered while !stor.persisted, same condition already gating the real button). Omitted entirely when alrProBoo (see AppFeatureTour's own effect that computes it): a browser that already has persisted storage never renders this button at all, so this step's requireClick target would never resolve; without this the tour would sit on a phantom "Step 2 of 3" until the generic not-found timeout gave up and cancelled the whole tutorial. Skipping the step outright instead makes this a clean "Step n of 2".
 			...( alrProBoo ? [] : [ {

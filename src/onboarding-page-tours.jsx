@@ -994,7 +994,7 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
 	if ( pagIdeStr === 'explore_pickers' ) { // What: Pickers Branch Check. Why: The Pickers tour's own steps only apply to this one page tour. How: This returns its own step array whenever pagIdeStr matches.
 
 
-		return [
+		return [ // What: Pickers Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Pickers tour's own remaining steps, each spreading PIC_TAR_OBJ's matching entry with this flow's own navigation flags.
 
 			{ ...PIC_TAR_OBJ.groupFilter, tab : 'picker', primary : 'Next', back : true }, // What: Group Filter Step. Why: This is the Pickers tour's own 2nd step. How: This spreads PIC_TAR_OBJ.groupFilter with this flow's own navigation flags.
 			{ ...PIC_TAR_OBJ.typeFilter, tab : 'picker', primary : 'Next', back : true }, // What: Type Filter Step. Why: This is the Pickers tour's own 3rd step. How: This spreads PIC_TAR_OBJ.typeFilter with this flow's own navigation flags.
@@ -1041,7 +1041,7 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
 	if ( pagIdeStr === 'explore_stats' ) { // What: Stats Branch Check. Why: The Stats tour's own steps only apply to this one page tour. How: This returns its own step array whenever pagIdeStr matches.
 
 
-		return [
+		return [ // What: Stats Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Stats tour's own remaining steps, each spreading STA_TAR_OBJ's matching entry with this flow's own navigation flags.
 
 			{ ...STA_TAR_OBJ.groupFilter, tab : 'stats', primary : 'Next', back : true }, // What: Group Filter Step. Why: This is the Stats tour's own 2nd step. How: This spreads STA_TAR_OBJ.groupFilter with this flow's own navigation flags.
 			{ ...STA_TAR_OBJ.typeFilter, tab : 'stats', primary : 'Next', back : true }, // What: Type Filter Step. Why: This is the Stats tour's own 3rd step. How: This spreads STA_TAR_OBJ.typeFilter with this flow's own navigation flags.
@@ -1085,7 +1085,7 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
 	if ( pagIdeStr === 'explore_data' ) { // What: Data Branch Check. Why: The Data tour's own steps only apply to this one page tour. How: This returns its own step array whenever pagIdeStr matches.
 
 
-		return [
+		return [ // What: Data Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Data tour's own remaining steps, each spreading DAT_TAR_OBJ's matching entry with this flow's own navigation flags.
 
 			{ ...DAT_TAR_OBJ.groupFilter, tab : 'data', primary : 'Next', back : true }, // What: Group Filter Step. Why: This is the Data tour's own 2nd step. How: This spreads DAT_TAR_OBJ.groupFilter with this flow's own navigation flags.
 			{ ...DAT_TAR_OBJ.typeFilter, tab : 'data', primary : 'Next', back : true }, // What: Type Filter Step. Why: This is the Data tour's own 3rd step. How: This spreads DAT_TAR_OBJ.typeFilter with this flow's own navigation flags.
@@ -1111,7 +1111,7 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
 	if ( pagIdeStr === 'explore_settings' ) { // What: Settings Branch Check. Why: The Settings tour's own steps only apply to this one page tour. How: This returns its own step array whenever pagIdeStr matches, coachAtTop on every section but Legal (short enough to fit normally), each of these can be taller than the viewport, same "pin the coach to the top instead of padding the target past the fold" reasoning as the Data tour's own tall .data-list step above.
 
 
-		return [
+		return [ // What: Settings Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Settings tour's own remaining steps, each spreading SET_TAR_OBJ's matching entry with this flow's own navigation flags.
 
 			{ ...SET_TAR_OBJ.appearance, tab : 'settings', primary : 'Next', back : true, coachAtTop : true }, // What: Appearance Step. Why: This is the Settings tour's own 2nd step. How: This spreads SET_TAR_OBJ.appearance with this flow's own navigation flags plus coachAtTop.
 			{ ...SET_TAR_OBJ.daily, tab : 'settings', primary : 'Next', back : true, coachAtTop : true }, // What: Daily Generator Step. Why: This is the Settings tour's own 3rd step. How: This spreads SET_TAR_OBJ.daily with this flow's own navigation flags plus coachAtTop.
@@ -1128,7 +1128,7 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
 
 	if ( pagIdeStr !== 'explore_today' ) return []; // What: Today Fallback Guard. Why: Any page tour not yet handled above (or not this one) has no steps beyond Step 1. How: This returns an empty array whenever pagIdeStr isn't 'explore_today'.
 
-	return [
+	return [ // What: Today Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Today tour's own remaining steps, each spreading TOD_TAR_OBJ's matching entry with this flow's own navigation flags.
 
 		{ ...TOD_TAR_OBJ.progressRing, tab : 'today', primary : 'Next', back : true }, // What: Progress Ring Step. Why: This is the Today tour's own 2nd step. How: This spreads TOD_TAR_OBJ.progressRing with this flow's own navigation flags.
 		{ ...TOD_TAR_OBJ.groupsNav, tab : 'today', primary : 'Next', back : true }, // What: Groups Nav Step. Why: This is the Today tour's own 3rd step. How: This spreads TOD_TAR_OBJ.groupsNav with this flow's own navigation flags.

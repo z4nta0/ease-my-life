@@ -371,6 +371,20 @@ decision is captured for next time instead of getting re-asked later.
   if/else block, function, call, ...) gets its comment right after its own
   opening bracket, one space in — on that same line, not a new one:
   `const TAB_OBJ_ARR = [ // What: ...`, `React.useLayoutEffect( () => { // What: ...`.
+  - **Known blind spot**: a bare `return {`/`return [` that opens a
+    multi-line object/array literal is easy to skip, since it reads as
+    "just a return statement" rather than as its own multi-line
+    construct distinct from the properties/entries already commented
+    inside it. This rule makes no exception for it: found to be a
+    systemic, recurring miss across multiple already-reviewed files
+    (conditionals.js, tab-conditional.jsx, seed.js, pickers.js,
+    help-mode.jsx, tab-data.jsx, onboarding-page-tours.jsx,
+    onboarding-app-features.jsx, in one audit), the same recurring-bias
+    pattern as the other "Known blind spot" notes elsewhere in this doc.
+    When auditing a file for comment completeness, explicitly grep
+    `^\s*return \{$` and `^\s*return \[$` for hits with no trailing
+    `// What: ...` on that same line, not just the properties/entries
+    inside the literal.
 - **Column alignment**: when a run of lines has NO blank lines between
   them (e.g. entries in the same array/object literal), pad each line so
   every comment's `//` starts at the same column — computed from the

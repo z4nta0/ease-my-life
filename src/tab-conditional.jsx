@@ -714,7 +714,7 @@ export const conditionalDraftDefault = ( picNamStr, exiNamArr = [] ) => { // Wha
 
 
 
-	return {
+	return { // What: Conditional Draft Default Return. Why: The caller needs a full, ready-to-edit conditional draft with every field defaulted, not just the resolved name. How: This builds that draft from basNamStr/namCouNum plus each field's own fixed starting value.
 
 
 		name      : `${ basNamStr } ${ namCouNum }`, // What: Name. Why: This is the new conditional's own resolved, collision-free default name. How: This joins basNamStr and namCouNum with a space.

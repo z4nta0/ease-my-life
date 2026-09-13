@@ -2935,7 +2935,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 						const easMaxNum = iteCurObj.easeMax ?? flbEasObj?.easeMax ?? 20; // What: Ease Max Number. Why: The Range field below needs this item's own (or the fallback) ease-max value. How: This reads iteCurObj.easeMax, falling back to flbEasObj's own easeMax, then a hardcoded 20.
 
 
-						return {
+						return { // What: Item Entry Return. Why: compareSortEntries needs one comparable shape per item, mode-dependent fields included. How: This builds that entry from iteCurObj plus the resolved isaEasBoo/useWgtBoo/easMaxNum context above.
 
 							name     : iteCurObj.name,
 							type     : null,

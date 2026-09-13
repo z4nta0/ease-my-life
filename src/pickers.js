@@ -515,7 +515,7 @@ function pikIteFun( pikRecObj, iteAllArr, optConObj ) {
 
 
 
-				return {
+				return { // What: Charge Update Return. Why: The caller needs this item's own newly-charged value and the step that produced it landing together as one update. How: This builds that update from curIteObj's own id, its incremented value, and curSteNum.
 
 
 					id         : curIteObj.id,               // What: Id. Why: The caller needs to know which item this update applies to. How: This carries curIteObj's own id through unchanged.

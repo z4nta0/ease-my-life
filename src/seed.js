@@ -233,7 +233,7 @@ function buiPicFun() {
 
 
 
-	return [
+	return [ // What: Built Pickers Return. Why: The caller needs the full array of demo picker objects, in state.pickers' own shape. How: This lists every sample picker, each spreading its own group's fixed fields plus picSchObj's own schedule override when one exists.
 
 
 	// Chores group
