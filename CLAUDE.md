@@ -1141,7 +1141,7 @@ catch ( e ) {
 }
 ```
 
-### Return statements
+### Return and continue statements
 - A `return` that occupies its own line (not a `return;`/`return x;` fused
   into a compact one-line guard clause like `if (!x) return;`) always gets
   3 blank lines directly before it, regardless of whether the returned
@@ -1158,6 +1158,15 @@ catch ( e ) {
   are exempt from the "3 before" rule entirely — they're not a standalone
   return statement, just an inline guard, so they follow the ordinary
   relatedness tiering below instead.
+- **`continue` (inside a loop) follows this exact same treatment as
+  `return`, with no exceptions beyond the ones already listed above**: a
+  `continue;` that occupies its own line always gets 3 blank lines
+  directly before it, 2 blank lines between it and the loop/if-block's
+  own closing `}` when that `}` comes right after it, and a single-line
+  early guard fused onto one line (`if ( conCurObj.active === false )
+  continue;`) is exempt from the "3 before" rule the same way a fused
+  early-return guard is. `continue` never takes a value, so the
+  multi-line/parenthesized-return bullet has no equivalent case for it.
 
 ### JSX
 - No space after `<`/`</` or before `>`/`/>` on any element, including a

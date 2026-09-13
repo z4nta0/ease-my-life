@@ -209,6 +209,8 @@ function groEntFun ( staAppObj ) {
 
 			byGroMap.get( groNamStr ).entries.push( { entry : curEntObj, picker : { id : 'dayoff_' + curEntObj.conditionalId, name : curEntObj.cardText, group : groNamStr, _dayoff : true } } ); // What: Day-Off Row Push. Why: This is the synthetic row EntCarCom's own day-off branch renders. How: This pairs curEntObj with a picker-shaped stand-in carrying just enough fields (id/name/group/_dayoff) to sort and render like a real one.
 
+
+
 			continue; // What: Day-Off Continue. Why: A day-off card has no real picker to look up below. How: This skips straight to the next entry.
 
 
@@ -4198,6 +4200,8 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 					if ( carIteObj ) pikNamSet.add( carIteObj.name.toLowerCase() ); // What: Carried Name Add. Why: An avoidDuplicates picker elsewhere in this loop must not re-surface an item this carried card already shows. How: This adds carIteObj's own lowercased name to pikNamSet.
 
+
+
 					continue; // What: Carried Continue. Why: A carried card needs no fresh pick this generation. How: This skips the rest of the loop body for curPicIdeStr.
 
 
@@ -4243,6 +4247,8 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 				}
+
+
 
 				continue; // What: Suppressed Continue. Why: A suppressed picker never attempts a real pick. How: This skips the pick attempt below entirely.
 
