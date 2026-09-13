@@ -273,6 +273,20 @@ decision is captured for next time instead of getting re-asked later.
   unless there's more than one (rare, since only one default export per
   module makes multiple default imports from the same source impossible
   anyway).
+- **Unused imports**: after modifying a file for any reason, not just an
+  import-statement change, verify every one of its own import lines is
+  still used somewhere else in that file before considering the change
+  done. Grep the file for the imported binding's own name, excluding the
+  import line itself, to confirm real usage rather than assuming a
+  binding is needed. Remove any import that comes back unused, e.g. a
+  stale default `import React from 'react';` left in a file whose JSX
+  compiles under this project's automatic JSX runtime (`@vitejs/
+  plugin-react`'s default, confirmed in `vite.config.js`, meaning JSX
+  never needs `React` in scope, unlike the older classic runtime) and
+  never calls `React.*` directly elsewhere in the file. This check runs
+  on every file touched regardless of what the edit itself was about,
+  since an import can go unused as a side effect of any other change to
+  the file, not only a change to the imports themselves.
 
 ### Indentation
 - Use tabs for indentation, one tab per nesting level — not spaces.

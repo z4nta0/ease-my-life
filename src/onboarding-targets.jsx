@@ -1,14 +1,6 @@
 
 
 
-// #region Imports
-
-import React from 'react'; // What: React. Why: This file's own body fields need React in scope to compile their JSX. How: This is implicitly used by the JSX literals below via the classic runtime.
-
-// #endregion Imports
-
-
-
 // #region NAV_TAR_OBJ
 
 /**

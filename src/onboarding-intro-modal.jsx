@@ -77,7 +77,7 @@ function TutorialIntroModal ( { icon, title, paragraphs, pills, onStart, onSkip,
 
 
 
-	return (
+	return createPortal(
 
 
 		<div
@@ -145,8 +145,9 @@ function TutorialIntroModal ( { icon, title, paragraphs, pills, onStart, onSkip,
 			</div>
 
 
-		</div>
+		</div>,
 
+		document.body // What: Document Body Target. Why: The modal must render outside the app's own DOM subtree so ancestor overflow/stacking never clips or buries it. How: This is createPortal's own target container argument.
 
 	);
 
