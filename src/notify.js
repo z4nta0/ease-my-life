@@ -336,7 +336,7 @@ async function genNotFun() {
 
 
 
-export const NOT_NAM_OBJ = { notSupFun, perCheFun, askOncFun, reqPerFun, genNotFun, askCheFun, subAddFun }; // What: Notification Namespace Object. Why: This bundles every one of this module's public operations behind one object, giving callers a single import surface. How: This groups shorthand references to every exported-worthy helper/function declared above.
+export const NOT_NAM_OBJ = { supported : notSupFun, permission : perCheFun, askOnce : askOncFun, request : reqPerFun, generated : genNotFun, asked : askCheFun, subscribe : subAddFun }; // What: Notification Namespace Object. Why: This bundles every one of this module's public operations behind one object, giving callers a single import surface; tab-settings.jsx/tab-today.jsx call these exact external names (permission/askOnce/request/subscribe/generated), so they must map explicitly rather than shorthand, which would silently rename the external API to this file's own internal names. How: This maps each original external name to its own renamed internal implementation.
 
 
 
