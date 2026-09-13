@@ -498,11 +498,9 @@ const bldAddFun = ( picIdeStr ) => ({ // What: Build Add Function. Why: This bui
 
 
 
-const DEF_NAM_ELE = <>This is the name of the task item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>; // What: Default Name Element. Why: This is bldNamFun's own fallback body, used whenever a sample's own picCopObj has no namEle override. How: This is read as `picCopObj.namEle || DEF_NAM_ELE` inside bldNamFun below.
-
+const DEF_NAM_ELE = <>This is the name of the task item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>;                          // What: Default Name Element.    Why: This is bldNamFun's own fallback body, used whenever a sample's own picCopObj has no namEle override. How: This is read as `picCopObj.namEle || DEF_NAM_ELE` inside bldNamFun below.
 const DEF_SOO_ELE = <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>; // What: Default Soonest Element. Why: This is bldSooFun's own fallback body, used whenever a sample's own picCopObj has no sooEle override. How: This is read as `picCopObj.sooEle || DEF_SOO_ELE` inside bldSooFun below.
-
-const DEF_LAT_ELE = <>This controls the <b>maximum number of days that a task item must wait before it should be picked again</b>. This is also useful since most chores need to be done again within a certain timeframe.</>; // What: Default Latest Element. Why: This is bldLatFun's own fallback body, used whenever a sample's own picCopObj has no latEle override. How: This is read as `picCopObj.latEle || DEF_LAT_ELE` inside bldLatFun below.
+const DEF_LAT_ELE = <>This controls the <b>maximum number of days that a task item must wait before it should be picked again</b>. This is also useful since most chores need to be done again within a certain timeframe.</>;                        // What: Default Latest Element.  Why: This is bldLatFun's own fallback body, used whenever a sample's own picCopObj has no latEle override. How: This is read as `picCopObj.latEle || DEF_LAT_ELE` inside bldLatFun below.
 
 
 
