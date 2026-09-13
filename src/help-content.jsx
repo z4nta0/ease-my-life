@@ -138,8 +138,8 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 
 			<>
-				<p><b>Cancel:</b> This button discards any reordering or renaming edits that you have made and exits Edit Mode.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Done:</b> This button saves any edits that you have made and exits Edit Mode.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Cancel:</b> This button discards any reordering or renaming edits that you have made and exits Edit Mode.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Done:</b> This button saves any edits that you have made and exits Edit Mode.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -159,8 +159,8 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 
 			<>
-				<p><b>Cancel:</b> This button discards any reordering or renaming edits that you have made and exits Edit Mode.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Done:</b> This button saves any edits that you have made and exits Edit Mode.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Cancel:</b> This button discards any reordering or renaming edits that you have made and exits Edit Mode.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Done:</b> This button saves any edits that you have made and exits Edit Mode.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -242,8 +242,8 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 
 			<>
-				<p>When you click this circle, it marks the item as completed and updates the progress ring's completed count. When all items are completed, your Day Streak increases and the celebration animations will play.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p>For items that belong to a picker with updatable values, marking as complete will also apply updates to all of the pickers' items. Dynamic Weighted items wil have their boost value increased or reset to 0. Ease Up and Ease Down items will have their charge values increased or decreased, respectively.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p>When you click this circle, it marks the item as completed and updates the progress ring's completed count. When all items are completed, your Day Streak increases and the celebration animations will play.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p>For items that belong to a picker with updatable values, marking as complete will also apply updates to all of the pickers' items. Dynamic Weighted items wil have their boost value increased or reset to 0. Ease Up and Ease Down items will have their charge values increased or decreased, respectively.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -276,17 +276,17 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 
 			<>
-				<div className='help-nav-item'> // What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip.
-					<div className='help-nav-label'><Icon name='refresh' size={14} /><b>Re-Roll:</b></div> // What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip.
-					<p>This button swaps this item for a different one from the same picker, without waiting for the next generation.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><Icon name='refresh' size={14} /><b>Re-Roll:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<p>This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
-				<div className='help-nav-item'> // What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip.
-					<div className='help-nav-label'><Icon name='skip' size={14} /><b>Skip:</b></div> // What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip.
-					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><Icon name='skip' size={14} /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
-				<div className='help-nav-item'> // What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip.
-					<div className='help-nav-label'><Icon name='edit' size={14} /><b>Edit:</b></div> // What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip.
-					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><Icon name='edit' size={14} /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
 			</>
 
@@ -308,13 +308,13 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 
 			<>
-				<div className='help-nav-item'> // What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip.
-					<div className='help-nav-label'><Icon name='skip' size={14} /><b>Skip:</b></div> // What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip.
-					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><Icon name='skip' size={14} /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
-				<div className='help-nav-item'> // What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip.
-					<div className='help-nav-label'><Icon name='edit' size={14} /><b>Edit:</b></div> // What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip.
-					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><Icon name='edit' size={14} /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
 			</>
 
@@ -385,9 +385,9 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 			return (
 				<>
-					<p><b>Soonest:</b> This controls the minimum number of {unit} that the item must wait before becoming eligible to be picked again.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-					<p><b>Latest:</b> This controls the maximum number of {unit} that the item must wait before becoming eligible to be picked again.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-					<p><b>Fill:</b> This will fill the item's charge to 100, making it eligible to be picked again.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+					<p><b>Soonest:</b> This controls the minimum number of {unit} that the item must wait before becoming eligible to be picked again.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+					<p><b>Latest:</b> This controls the maximum number of {unit} that the item must wait before becoming eligible to be picked again.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+					<p><b>Fill:</b> This will fill the item's charge to 100, making it eligible to be picked again.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</>
 			);
 
@@ -414,9 +414,9 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 			return (
 				<>
-					<p><b>Shortest:</b> This controls the minimum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-					<p><b>Longest:</b> This controls the maximum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-					<p><b>Refill:</b> This will refill the item's charge back to 100, effectively resetting its active pick cadence.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+					<p><b>Shortest:</b> This controls the minimum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+					<p><b>Longest:</b> This controls the maximum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+					<p><b>Refill:</b> This will refill the item's charge back to 100, effectively resetting its active pick cadence.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</>
 			);
 
@@ -479,9 +479,9 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 
 			<>
-				<p><b>Delete:</b> This button permanently deletes this item, after asking you to confirm.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Save:</b> This button saves your changes to this item.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Delete:</b> This button permanently deletes this item, after asking you to confirm.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Save:</b> This button saves your changes to this item.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -543,11 +543,11 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 
 			<>
-				<p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Monthly:</b> This reminder will show up on your todo list every N month(s) on the day or weekday that you select below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Yearly:</b> This reminder will show up on your todo list every N year(s) on the date or weekday that you select below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Monthly:</b> This reminder will show up on your todo list every N month(s) on the day or weekday that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Yearly:</b> This reminder will show up on your todo list every N year(s) on the date or weekday that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -570,8 +570,8 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 
 			<>
-				<p><b>Cancel:</b> This button discards the reminder form without saving anything.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Add:</b> This button saves the reminder and adds it to your todo list, unless you selected a recurring reminder that is not due today. Stays disabled until at least a name is entered.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Cancel:</b> This button discards the reminder form without saving anything.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Add:</b> This button saves the reminder and adds it to your todo list, unless you selected a recurring reminder that is not due today. Stays disabled until at least a name is entered.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -622,11 +622,11 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 
 			<>
-				<p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Monthly:</b> This reminder will show up on your todo list every N month(s) on the day or weekday that you select below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Yearly:</b> This reminder will show up on your todo list every N year(s) on the date or weekday that you select below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Monthly:</b> This reminder will show up on your todo list every N month(s) on the day or weekday that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Yearly:</b> This reminder will show up on your todo list every N year(s) on the date or weekday that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -670,9 +670,9 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 
 			<>
-				<p><b>Delete:</b> This button permanently deletes this reminder, after asking you to confirm.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Save:</b> This button saves your changes to this reminder and updates it on your todo list.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Delete:</b> This button permanently deletes this reminder, after asking you to confirm.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Save:</b> This button saves your changes to this reminder and updates it on your todo list.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -783,12 +783,12 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 
 			<>
-				<p>This explains the icons that are used in the Status column below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Auto-picked:</b> This indicates that an item was chosen automatically by the daily generator.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Pushed:</b> This indicates that an item was pushed onto your todo list manually from the Pickers page.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Rolled off:</b> This indicates that an item was on your todo list but was then replaced by another item via the Re-Roll button.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Skipped:</b> This indicates that an item was on your todo list but was then removed via the Skip button.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Completed:</b> This indicates that the item is on your todo list and has been marked as completed.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p>This explains the icons that are used in the Status column below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Auto-picked:</b> This indicates that an item was chosen automatically by the daily generator.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Pushed:</b> This indicates that an item was pushed onto your todo list manually from the Pickers page.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Rolled off:</b> This indicates that an item was on your todo list but was then replaced by another item via the Re-Roll button.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Skipped:</b> This indicates that an item was on your todo list but was then removed via the Skip button.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Completed:</b> This indicates that the item is on your todo list and has been marked as completed.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -1052,8 +1052,8 @@ const PICKER_HELP_ITEMS = [ // What: Picker Help Items Array. Why: This is the o
 
 
 			<>
-				<p>The Pick One button runs a manual pick generation for the selected picker, so that you don't have to completely rely on your todo list's auto generation.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p>Once it resolves and generates a pick it is replaced by the Send to Today button, which will add the selected pick to your todo list. The Re-Roll button will run the process again and the Done button will end the process without doing anything.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p>The Pick One button runs a manual pick generation for the selected picker, so that you don't have to completely rely on your todo list's auto generation.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p>Once it resolves and generates a pick it is replaced by the Send to Today button, which will add the selected pick to your todo list. The Re-Roll button will run the process again and the Done button will end the process without doing anything.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -1140,9 +1140,9 @@ const PICKER_HELP_ITEMS = [ // What: Picker Help Items Array. Why: This is the o
 
 			return (
 				<>
-					<p><b>Soonest:</b> This controls the minimum number of {unit} that the item must wait before becoming eligible to be picked again.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-					<p><b>Latest:</b> This controls the maximum number of {unit} that the item must wait before becoming eligible to be picked again.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-					<p><b>Fill:</b> This will fill the item's charge to 100, making it eligible to be picked again.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+					<p><b>Soonest:</b> This controls the minimum number of {unit} that the item must wait before becoming eligible to be picked again.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+					<p><b>Latest:</b> This controls the maximum number of {unit} that the item must wait before becoming eligible to be picked again.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+					<p><b>Fill:</b> This will fill the item's charge to 100, making it eligible to be picked again.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</>
 			);
 
@@ -1169,9 +1169,9 @@ const PICKER_HELP_ITEMS = [ // What: Picker Help Items Array. Why: This is the o
 
 			return (
 				<>
-					<p><b>Shortest:</b> This controls the minimum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-					<p><b>Longest:</b> This controls the maximum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-					<p><b>Refill:</b> This will refill the item's charge back to 100, effectively resetting its active pick cadence.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+					<p><b>Shortest:</b> This controls the minimum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+					<p><b>Longest:</b> This controls the maximum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+					<p><b>Refill:</b> This will refill the item's charge back to 100, effectively resetting its active pick cadence.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</>
 			);
 
@@ -1232,8 +1232,8 @@ const PICKER_HELP_ITEMS = [ // What: Picker Help Items Array. Why: This is the o
 
 
 			<>
-				<p><b>Cancel:</b> This button discards the form and closes the editor without saving the new item.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Save:</b> This button saves the new item to the picker's pool.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Cancel:</b> This button discards the form and closes the editor without saving the new item.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Save:</b> This button saves the new item to the picker's pool.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -1409,9 +1409,9 @@ const PICKER_HELP_ITEMS = [ // What: Picker Help Items Array. Why: This is the o
 
 
 			<>
-				<p><b>Soonest:</b> This controls the minimum number of days that must pass before the conditional becomes eligible to trigger.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Latest:</b> This controls the maximum number of days that must pass before the conditional is guaranteed to trigger.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Fill:</b> This will fill the conditional's charge to 100, making it eligible to trigger.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Soonest:</b> This controls the minimum number of days that must pass before the conditional becomes eligible to trigger.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Latest:</b> This controls the maximum number of days that must pass before the conditional is guaranteed to trigger.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Fill:</b> This will fill the conditional's charge to 100, making it eligible to trigger.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -1432,9 +1432,9 @@ const PICKER_HELP_ITEMS = [ // What: Picker Help Items Array. Why: This is the o
 
 
 			<>
-				<p><b>Shortest:</b> This controls the minimum number of days that the conditional must stay triggered before it can stop.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Longest:</b> This controls the maximum number of days that the conditional can stay triggered before it must stop.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Refill:</b> This will refill the conditional's charge back to 100, effectively resetting how long it stays triggered.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Shortest:</b> This controls the minimum number of days that the conditional must stay triggered before it can stop.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Longest:</b> This controls the maximum number of days that the conditional can stay triggered before it must stop.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Refill:</b> This will refill the conditional's charge back to 100, effectively resetting how long it stays triggered.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -1487,10 +1487,10 @@ const PICKER_HELP_ITEMS = [ // What: Picker Help Items Array. Why: This is the o
 
 
 			<>
-				<p><b>Daily:</b> This is the picker's default cadence. It surfaces every day that it's scheduled to run, exactly like an ordinary picker.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Weekly:</b> This surfaces the picker once a week, on whichever weekday you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Monthly:</b> This surfaces the picker once a month, on whichever day you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Yearly:</b> This surfaces the picker once a year, on whichever date you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Daily:</b> This is the picker's default cadence. It surfaces every day that it's scheduled to run, exactly like an ordinary picker.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Weekly:</b> This surfaces the picker once a week, on whichever weekday you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Monthly:</b> This surfaces the picker once a month, on whichever day you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Yearly:</b> This surfaces the picker once a year, on whichever date you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -1563,8 +1563,8 @@ const PICKER_HELP_ITEMS = [ // What: Picker Help Items Array. Why: This is the o
 
 
 			<>
-				<p><b>Cancel:</b> This button discards the picker form without saving anything.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Add Items:</b> This button advances to the next step, where you'll build this picker's item pool. Stays disabled until at least a name and group are set.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Cancel:</b> This button discards the picker form without saving anything.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Add Items:</b> This button advances to the next step, where you'll build this picker's item pool. Stays disabled until at least a name and group are set.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -1597,8 +1597,8 @@ const PICKER_HELP_ITEMS = [ // What: Picker Help Items Array. Why: This is the o
 
 
 			<>
-				<p><b>Back:</b> This button will take you back to the first part of the form, allowing you to adjust the picker's settings.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Create Picker:</b> This button will create the new picker. Stays disabled until at least 2 items are created.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Back:</b> This button will take you back to the first part of the form, allowing you to adjust the picker's settings.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Create Picker:</b> This button will create the new picker. Stays disabled until at least 2 items are created.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -2301,9 +2301,9 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 
 			<>
-				<p><b>Soonest:</b> This controls the minimum number of days that must pass before the conditional becomes eligible to trigger.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Latest:</b> This controls the maximum number of days that must pass before the conditional is guaranteed to trigger.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Fill:</b> This will fill the conditional's charge to 100, making it eligible to trigger.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Soonest:</b> This controls the minimum number of days that must pass before the conditional becomes eligible to trigger.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Latest:</b> This controls the maximum number of days that must pass before the conditional is guaranteed to trigger.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Fill:</b> This will fill the conditional's charge to 100, making it eligible to trigger.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -2324,9 +2324,9 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 
 			<>
-				<p><b>Shortest:</b> This controls the minimum number of days that the conditional must stay triggered before it can stop.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Longest:</b> This controls the maximum number of days that the conditional can stay triggered before it must stop.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Refill:</b> This will refill the conditional's charge back to 100, effectively resetting how long it stays triggered.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Shortest:</b> This controls the minimum number of days that the conditional must stay triggered before it can stop.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Longest:</b> This controls the maximum number of days that the conditional can stay triggered before it must stop.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Refill:</b> This will refill the conditional's charge back to 100, effectively resetting how long it stays triggered.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -2364,9 +2364,9 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 
 			<>
-				<p><b>Delete:</b> This button permanently deletes this conditional, after asking you to confirm. Any pickers using it will be detached.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Save:</b> This button saves your changes to this conditional.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Delete:</b> This button permanently deletes this conditional, after asking you to confirm. Any pickers using it will be detached.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Save:</b> This button saves your changes to this conditional.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -2389,8 +2389,8 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 
 			<>
-				<p><b>Cancel:</b> This button discards the new conditional without saving it.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Save:</b> This button saves the new conditional.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Cancel:</b> This button discards the new conditional without saving it.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Save:</b> This button saves the new conditional.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -2461,8 +2461,8 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 
 			<>
-				<p><b>Cancel:</b> This button discards any changes and closes this section without saving.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Save:</b> This button saves your changes to the Reminders controls.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Cancel:</b> This button discards any changes and closes this section without saving.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Save:</b> This button saves your changes to the Reminders controls.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -2561,11 +2561,11 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 
 			<>
-				<p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Monthly:</b> This reminder will show up on your todo list every N month(s) on the day or weekday that you select below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Yearly:</b> This reminder will show up on your todo list every N year(s) on the date or weekday that you select below.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Once:</b> This reminder stays on your todo list every day until you complete it, then it's gone for good.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Every N Days:</b> This reminder will show up on your todo list every N days, counted from the start date that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Weekly:</b> This reminder will show up on your todo list every N week(s) on the days that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Monthly:</b> This reminder will show up on your todo list every N month(s) on the day or weekday that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Yearly:</b> This reminder will show up on your todo list every N year(s) on the date or weekday that you select below.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -2595,9 +2595,9 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 
 			<>
-				<p><b>Delete:</b> This button permanently deletes this reminder, after asking you to confirm.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Save:</b> This button saves your changes to this reminder.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Delete:</b> This button permanently deletes this reminder, after asking you to confirm.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Save:</b> This button saves your changes to this reminder.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -2620,8 +2620,8 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 
 			<>
-				<p><b>Cancel:</b> This button discards the new reminder without saving it.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Save:</b> This button saves the new reminder.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Cancel:</b> This button discards the new reminder without saving it.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Save:</b> This button saves the new reminder.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -2785,10 +2785,10 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 
 			<>
-				<p><b>Daily:</b> This is the picker's default cadence. It surfaces every day that it's scheduled to run, exactly like an ordinary picker.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Weekly:</b> This surfaces the picker once a week, on whichever weekday you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Monthly:</b> This surfaces the picker once a month, on whichever day you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Yearly:</b> This surfaces the picker once a year, on whichever date you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Daily:</b> This is the picker's default cadence. It surfaces every day that it's scheduled to run, exactly like an ordinary picker.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Weekly:</b> This surfaces the picker once a week, on whichever weekday you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Monthly:</b> This surfaces the picker once a month, on whichever day you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Yearly:</b> This surfaces the picker once a year, on whichever date you choose below. Once picked, that item stays on your todo list until you mark it as completed, even if that takes more than one day.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -2890,9 +2890,9 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 
 			<>
-				<p><b>Delete:</b> This button permanently deletes this picker, after asking you to confirm. This will also delete all of its items.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Save:</b> This button saves your changes to this picker.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Delete:</b> This button permanently deletes this picker, after asking you to confirm. This will also delete all of its items.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Save:</b> This button saves your changes to this picker.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -3035,9 +3035,9 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 			return (
 				<>
-					<p><b>Soonest:</b> This controls the minimum number of {unit} that the item must wait before becoming eligible to be picked again.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-					<p><b>Latest:</b> This controls the maximum number of {unit} that the item must wait before becoming eligible to be picked again.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-					<p><b>Fill:</b> This will fill the item's charge to 100, making it eligible to be picked again.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+					<p><b>Soonest:</b> This controls the minimum number of {unit} that the item must wait before becoming eligible to be picked again.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+					<p><b>Latest:</b> This controls the maximum number of {unit} that the item must wait before becoming eligible to be picked again.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+					<p><b>Fill:</b> This will fill the item's charge to 100, making it eligible to be picked again.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</>
 			);
 
@@ -3064,9 +3064,9 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 			return (
 				<>
-					<p><b>Shortest:</b> This controls the minimum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-					<p><b>Longest:</b> This controls the maximum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-					<p><b>Refill:</b> This will refill the item's charge back to 100, effectively resetting its active pick cadence.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+					<p><b>Shortest:</b> This controls the minimum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+					<p><b>Longest:</b> This controls the maximum number of {unit} that the item must stay as the active pick, after which a new item will be picked.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+					<p><b>Refill:</b> This will refill the item's charge back to 100, effectively resetting its active pick cadence.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</>
 			);
 
@@ -3133,9 +3133,9 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 
 			<>
-				<p><b>Delete:</b> This button permanently deletes this item, after asking you to confirm.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Save:</b> This button saves your changes to this item.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Delete:</b> This button permanently deletes this item, after asking you to confirm.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Cancel:</b> This button discards any changes and closes this editor without saving.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Save:</b> This button saves your changes to this item.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -3158,8 +3158,8 @@ const DATA_HELP_ITEMS = [ // What: Data Help Items Array. Why: This is the on-de
 
 
 			<>
-				<p><b>Cancel:</b> This button discards the new item without saving it.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Save:</b> This button saves the new item.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Cancel:</b> This button discards the new item without saving it.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Save:</b> This button saves the new item.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
@@ -3498,8 +3498,8 @@ const SETTINGS_HELP_ITEMS = [ // What: Settings Help Items Array. Why: This is t
 
 
 			<>
-				<p><b>Cancel:</b> This discards your message and closes the form without sending.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
-				<p><b>Send:</b> This sends your message. If it can't go through (for example, if you're offline), you'll be shown an email address to reach out to instead, and your message will be kept so you can try again.</p> // What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip.
+				<p><b>Cancel:</b> This discards your message and closes the form without sending.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
+				<p><b>Send:</b> This sends your message. If it can't go through (for example, if you're offline), you'll be shown an email address to reach out to instead, and your message will be kept so you can try again.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 			</>
 
 
