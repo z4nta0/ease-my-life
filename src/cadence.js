@@ -129,32 +129,32 @@ function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
  * Resolves a day-of-month for either a monthly (anchorDom) or yearly
  * (anchorDay, within its own fixed anchor month) cadence, honoring
  * nth-weekday mode for either. domFldStr is which raw field on
- * pkrCadObj holds its plain date-of-month value ('anchorDom' for
+ * picCadObj holds its plain date-of-month value ('anchorDom' for
  * monthly, 'anchorDay' for yearly), shared so isaAncFun/perStaFun don't
  * each duplicate the dateMode branch below.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param pkrCadObj - The picker whose cadence fields (dateMode,
+ * @param picCadObj - The picker whose cadence fields (dateMode,
  *                    nthOrdinal, nthWeekday, and whichever field
  *                    domFldStr names) are being resolved.
  * @param yeaValNum - The calendar year to compute against.
  * @param monOneNum - The 1-indexed month to compute against.
- * @param domFldStr - Which of pkrCadObj's own fields holds its plain
+ * @param domFldStr - Which of picCadObj's own fields holds its plain
  *                    date-of-month value, 'anchorDom' or 'anchorDay'.
  *
- * @returns The resolved day-of-month, from pkrCadObj's own plain value
+ * @returns The resolved day-of-month, from picCadObj's own plain value
  * (clamped to the month's own real length) or, in nth-weekday mode,
  * from nwmDayFun.
  *
  * @example
  * ```ts
- * tdmResFun(pkrCadObj, yeaValNum, monOneNum, domFldStr) // => day number
+ * tdmResFun(picCadObj, yeaValNum, monOneNum, domFldStr) // => day number
  * ```
  *
 */
 
-function tdmResFun( pkrCadObj, yeaValNum, monOneNum, domFldStr ) { return pkrCadObj.dateMode === 'nthWeekday' ? nwmDayFun( yeaValNum, monOneNum, pkrCadObj.nthOrdinal ?? 1, pkrCadObj.nthWeekday ?? 0 ) : Math.min( pkrCadObj[ domFldStr ] ?? 1, dimCouFun( yeaValNum, monOneNum ) ); } // What: Target-Day-Month Resolve Body. Why: Both isaAncFun and perStaFun need this exact same dateMode branch for both monthly and yearly cadences. How: This resolves via nwmDayFun in nth-weekday mode, or pkrCadObj's own plain field (clamped to the real month length) otherwise.
+function tdmResFun( picCadObj, yeaValNum, monOneNum, domFldStr ) { return picCadObj.dateMode === 'nthWeekday' ? nwmDayFun( yeaValNum, monOneNum, picCadObj.nthOrdinal ?? 1, picCadObj.nthWeekday ?? 0 ) : Math.min( picCadObj[ domFldStr ] ?? 1, dimCouFun( yeaValNum, monOneNum ) ); } // What: Target-Day-Month Resolve Body. Why: Both isaAncFun and perStaFun need this exact same dateMode branch for both monthly and yearly cadences. How: This resolves via nwmDayFun in nth-weekday mode, or picCadObj's own plain field (clamped to the real month length) otherwise.
 
 // #endregion tdmResFun
 
@@ -217,46 +217,46 @@ function uniWorFun( cadValStr, couValNum ) {
  *
  * @summary
  * Normalizes/defaults the cadence fields on a picker-like object.
- * pkrLikObj may be a partial draft (a new-picker form value), not
+ * picLikObj may be a partial draft (a new-picker form value), not
  * necessarily an already-persisted picker, so every field below falls
  * back to a sensible default rather than assuming it's already present.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param pkrLikObj - The picker-like object to normalize, defaulting to
+ * @param picLikObj - The picker-like object to normalize, defaulting to
  *                    an empty object for a brand new draft with nothing
  *                    set yet.
  *
  * @returns A full { cadence, anchorDow, anchorDom, anchorMonth,
  * anchorDay, dateMode, nthOrdinal, nthWeekday } object, every field
- * either taken from pkrLikObj or defaulted against the current date.
+ * either taken from picLikObj or defaulted against the current date.
  *
  * @example
  * ```ts
- * norCadFun(pkrLikObj) // => normalized cadence fields object
+ * norCadFun(picLikObj) // => normalized cadence fields object
  * ```
  *
 */
 
-function norCadFun( pkrLikObj = {} ) {
+function norCadFun( picLikObj = {} ) {
 
 
-	const curDatObj = new Date();                                                   // What: Current Date Object. Why: Every default below (anchorDow, anchorDom, anchorMonth, anchorDay, nthWeekday) falls back to today's own value when pkrLikObj has nothing set. How: This is read once and reused across the whole return object below.
-	const curCadStr = isaCadFun( pkrLikObj.cadence ) ? pkrLikObj.cadence : 'daily'; // What: Current Cadence String. Why: An invalid or missing cadence value must fall back to 'daily' rather than propagate a bad value. How: This checks pkrLikObj's own cadence via isaCadFun, defaulting to 'daily' otherwise.
+	const curDatObj = new Date();                                                   // What: Current Date Object. Why: Every default below (anchorDow, anchorDom, anchorMonth, anchorDay, nthWeekday) falls back to today's own value when picLikObj has nothing set. How: This is read once and reused across the whole return object below.
+	const curCadStr = isaCadFun( picLikObj.cadence ) ? picLikObj.cadence : 'daily'; // What: Current Cadence String. Why: An invalid or missing cadence value must fall back to 'daily' rather than propagate a bad value. How: This checks picLikObj's own cadence via isaCadFun, defaulting to 'daily' otherwise.
 
 
 
-	return { // What: Normalized Cadence Object Return. Why: Every caller of norCadFun needs this exact same full set of fields back, whatever pkrLikObj did or didn't already have. How: This builds the object below from curCadStr, curDatObj, and pkrLikObj's own existing fields.
+	return { // What: Normalized Cadence Object Return. Why: Every caller of norCadFun needs this exact same full set of fields back, whatever picLikObj did or didn't already have. How: This builds the object below from curCadStr, curDatObj, and picLikObj's own existing fields.
 
 
 		cadence     : curCadStr,                                                                                    // What: Cadence. Why: This is the already-validated/defaulted cadence value computed above. How: This is just curCadStr, computed above via isaCadFun.
-		anchorDow   : Number.isInteger( pkrLikObj.anchorDow ) ? pkrLikObj.anchorDow : curDatObj.getDay(),           // What: Anchor Dow. Why: A weekly cadence needs its own chosen weekday, defaulted to today's when not yet set. How: This keeps pkrLikObj's own anchorDow when it's a real integer, curDatObj's own weekday otherwise.
-		anchorDom   : Number.isInteger( pkrLikObj.anchorDom ) ? pkrLikObj.anchorDom : curDatObj.getDate(),          // What: Anchor Dom. Why: A monthly cadence needs its own chosen day-of-month, defaulted to today's when not yet set. How: This keeps pkrLikObj's own anchorDom when it's a real integer, curDatObj's own date otherwise.
-		anchorMonth : Number.isInteger( pkrLikObj.anchorMonth ) ? pkrLikObj.anchorMonth : curDatObj.getMonth() + 1, // What: Anchor Month. Why: A yearly cadence needs its own chosen month, defaulted to today's when not yet set. How: This keeps pkrLikObj's own anchorMonth when it's a real integer, curDatObj's own 1-indexed month otherwise.
-		anchorDay   : Number.isInteger( pkrLikObj.anchorDay ) ? pkrLikObj.anchorDay : curDatObj.getDate(),          // What: Anchor Day. Why: A yearly cadence also needs its own chosen day within anchorMonth, defaulted to today's when not yet set. How: This keeps pkrLikObj's own anchorDay when it's a real integer, curDatObj's own date otherwise.
-		dateMode    : pkrLikObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date',                                  // What: Date Mode. Why: Monthly/yearly cadences need to know whether a plain date or an nth-weekday rule decides the anchor day. How: This keeps 'nthWeekday' only when pkrLikObj already says so, 'date' otherwise.
-		nthOrdinal  : Number.isInteger( pkrLikObj.nthOrdinal ) ? pkrLikObj.nthOrdinal : 1,                          // What: Nth Ordinal. Why: Nth-weekday mode needs which occurrence (1st through 5th) to target. How: This keeps pkrLikObj's own nthOrdinal when it's a real integer, 1 otherwise.
-		nthWeekday  : Number.isInteger( pkrLikObj.nthWeekday ) ? pkrLikObj.nthWeekday : curDatObj.getDay()          // What: Nth Weekday. Why: Nth-weekday mode also needs which weekday to target. How: This keeps pkrLikObj's own nthWeekday when it's a real integer, curDatObj's own weekday otherwise.
+		anchorDow   : Number.isInteger( picLikObj.anchorDow ) ? picLikObj.anchorDow : curDatObj.getDay(),           // What: Anchor Dow. Why: A weekly cadence needs its own chosen weekday, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorDow when it's a real integer, curDatObj's own weekday otherwise.
+		anchorDom   : Number.isInteger( picLikObj.anchorDom ) ? picLikObj.anchorDom : curDatObj.getDate(),          // What: Anchor Dom. Why: A monthly cadence needs its own chosen day-of-month, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorDom when it's a real integer, curDatObj's own date otherwise.
+		anchorMonth : Number.isInteger( picLikObj.anchorMonth ) ? picLikObj.anchorMonth : curDatObj.getMonth() + 1, // What: Anchor Month. Why: A yearly cadence needs its own chosen month, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorMonth when it's a real integer, curDatObj's own 1-indexed month otherwise.
+		anchorDay   : Number.isInteger( picLikObj.anchorDay ) ? picLikObj.anchorDay : curDatObj.getDate(),          // What: Anchor Day. Why: A yearly cadence also needs its own chosen day within anchorMonth, defaulted to today's when not yet set. How: This keeps picLikObj's own anchorDay when it's a real integer, curDatObj's own date otherwise.
+		dateMode    : picLikObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date',                                  // What: Date Mode. Why: Monthly/yearly cadences need to know whether a plain date or an nth-weekday rule decides the anchor day. How: This keeps 'nthWeekday' only when picLikObj already says so, 'date' otherwise.
+		nthOrdinal  : Number.isInteger( picLikObj.nthOrdinal ) ? picLikObj.nthOrdinal : 1,                          // What: Nth Ordinal. Why: Nth-weekday mode needs which occurrence (1st through 5th) to target. How: This keeps picLikObj's own nthOrdinal when it's a real integer, 1 otherwise.
+		nthWeekday  : Number.isInteger( picLikObj.nthWeekday ) ? picLikObj.nthWeekday : curDatObj.getDay()          // What: Nth Weekday. Why: Nth-weekday mode also needs which weekday to target. How: This keeps picLikObj's own nthWeekday when it's a real integer, curDatObj's own weekday otherwise.
 
 
 	};
@@ -274,46 +274,46 @@ function norCadFun( pkrLikObj = {} ) {
  * isaAncFun = Is-An Anchor Function
  *
  * @summary
- * Is cheDatObj an anchor day for pkrCadObj's own cadence? Daily has no
+ * Is cheDatObj an anchor day for picCadObj's own cadence? Daily has no
  * anchor at all, so every day counts as one.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param pkrCadObj - The picker whose cadence is being checked.
+ * @param picCadObj - The picker whose cadence is being checked.
  * @param cheDatObj - The date to check, defaulting to right now.
  *
- * @returns Whether cheDatObj is an anchor day for pkrCadObj's own
+ * @returns Whether cheDatObj is an anchor day for picCadObj's own
  * cadence.
  *
  * @example
  * ```ts
- * isaAncFun(pkrCadObj, cheDatObj) // => true or false
+ * isaAncFun(picCadObj, cheDatObj) // => true or false
  * ```
  *
 */
 
-function isaAncFun( pkrCadObj, cheDatObj = new Date() ) {
+function isaAncFun( picCadObj, cheDatObj = new Date() ) {
 
 
-	const curCadStr = pkrCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs pkrCadObj's own cadence, defaulted the same way every other function in this file defaults it. How: This reads pkrCadObj.cadence, falling back to 'daily' when missing.
+	const curCadStr = picCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs picCadObj's own cadence, defaulted the same way every other function in this file defaults it. How: This reads picCadObj.cadence, falling back to 'daily' when missing.
 
 
 	if ( curCadStr === 'daily' ) return true; // What: Daily Case Return. Why: Daily has no anchor at all, so every day counts as one. How: This returns true unconditionally for the daily case.
 
-	if ( curCadStr === 'weekly' ) return cheDatObj.getDay() === ( pkrCadObj.anchorDow ?? cheDatObj.getDay() ); // What: Weekly Case Return. Why: A weekly cadence's own anchor day is whichever weekday anchorDow names. How: This compares cheDatObj's own weekday against pkrCadObj's own anchorDow, defaulted to cheDatObj's own weekday (a no-op match) when missing.
+	if ( curCadStr === 'weekly' ) return cheDatObj.getDay() === ( picCadObj.anchorDow ?? cheDatObj.getDay() ); // What: Weekly Case Return. Why: A weekly cadence's own anchor day is whichever weekday anchorDow names. How: This compares cheDatObj's own weekday against picCadObj's own anchorDow, defaulted to cheDatObj's own weekday (a no-op match) when missing.
 
-	if ( curCadStr === 'monthly' ) return cheDatObj.getDate() === tdmResFun( pkrCadObj, cheDatObj.getFullYear(), cheDatObj.getMonth() + 1, 'anchorDom' ); // What: Monthly Case Return. Why: A monthly cadence's own anchor day is whatever tdmResFun resolves for this month. How: This compares cheDatObj's own date-of-month against tdmResFun's own resolved target.
+	if ( curCadStr === 'monthly' ) return cheDatObj.getDate() === tdmResFun( picCadObj, cheDatObj.getFullYear(), cheDatObj.getMonth() + 1, 'anchorDom' ); // What: Monthly Case Return. Why: A monthly cadence's own anchor day is whatever tdmResFun resolves for this month. How: This compares cheDatObj's own date-of-month against tdmResFun's own resolved target.
 
 
 	if ( curCadStr === 'yearly' ) {
 
 
-		const ancMonNum = pkrCadObj.anchorMonth ?? 1; // What: Anchor Month Number. Why: A yearly cadence only anchors within one specific month, needed both for the month check below and the day resolution that follows it. How: This reads pkrCadObj's own anchorMonth, defaulting to January.
+		const ancMonNum = picCadObj.anchorMonth ?? 1; // What: Anchor Month Number. Why: A yearly cadence only anchors within one specific month, needed both for the month check below and the day resolution that follows it. How: This reads picCadObj's own anchorMonth, defaulting to January.
 
 		if ( cheDatObj.getMonth() + 1 !== ancMonNum ) return false; // What: Wrong Month Guard. Why: A yearly cadence can never anchor outside its own single anchor month. How: This returns false early when cheDatObj's own month doesn't match ancMonNum.
 
 
-		return cheDatObj.getDate() === tdmResFun( pkrCadObj, cheDatObj.getFullYear(), ancMonNum, 'anchorDay' ); // What: Yearly Case Return. Why: Within the right month, the anchor day is whatever tdmResFun resolves. How: This compares cheDatObj's own date-of-month against tdmResFun's own resolved target.
+		return cheDatObj.getDate() === tdmResFun( picCadObj, cheDatObj.getFullYear(), ancMonNum, 'anchorDay' ); // What: Yearly Case Return. Why: Within the right month, the anchor day is whatever tdmResFun resolves. How: This compares cheDatObj's own date-of-month against tdmResFun's own resolved target.
 
 
 	}
@@ -341,7 +341,7 @@ function isaAncFun( pkrCadObj, cheDatObj = new Date() ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param pkrCadObj - The picker whose cadence's period is being resolved.
+ * @param picCadObj - The picker whose cadence's period is being resolved.
  * @param cheDatObj - The date whose own period start is wanted,
  *                    defaulting to right now.
  *
@@ -350,15 +350,15 @@ function isaAncFun( pkrCadObj, cheDatObj = new Date() ) {
  *
  * @example
  * ```ts
- * perStaFun(pkrCadObj, cheDatObj) // => period start Date
+ * perStaFun(picCadObj, cheDatObj) // => period start Date
  * ```
  *
 */
 
-function perStaFun( pkrCadObj, cheDatObj = new Date() ) {
+function perStaFun( picCadObj, cheDatObj = new Date() ) {
 
 
-	const curCadStr = pkrCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs pkrCadObj's own cadence, defaulted the same way every other function in this file defaults it. How: This reads pkrCadObj.cadence, falling back to 'daily' when missing.
+	const curCadStr = picCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs picCadObj's own cadence, defaulted the same way every other function in this file defaults it. How: This reads picCadObj.cadence, falling back to 'daily' when missing.
 	const midDatObj = midDatFun( cheDatObj );       // What: Midnight Date Object. Why: Every branch below computes its own period start relative to cheDatObj with its time-of-day stripped. How: This calls midDatFun once and reuses the result throughout.
 
 
@@ -368,7 +368,7 @@ function perStaFun( pkrCadObj, cheDatObj = new Date() ) {
 	if ( curCadStr === 'weekly' ) {
 
 
-		const ancDowNum = pkrCadObj.anchorDow ?? midDatObj.getDay();  // What: Anchor Dow Number. Why: A weekly period's own start is whichever weekday anchorDow names. How: This reads pkrCadObj's own anchorDow, defaulting to midDatObj's own weekday (a no-op) when missing.
+		const ancDowNum = picCadObj.anchorDow ?? midDatObj.getDay();  // What: Anchor Dow Number. Why: A weekly period's own start is whichever weekday anchorDow names. How: This reads picCadObj's own anchorDow, defaulting to midDatObj's own weekday (a no-op) when missing.
 		const bakDayNum = ( midDatObj.getDay() - ancDowNum + 7 ) % 7; // What: Back Day Number. Why: The period start is whatever anchor weekday most recently occurred on or before midDatObj. How: This computes how many days to step back from midDatObj's own weekday to reach ancDowNum, wrapping via modulo 7.
 		const weeStaObj = new Date( midDatObj );                      // What: Weekly Start Object. Why: The actual period-start date must be built from a fresh Date, since setDate below mutates in place. How: This copies midDatObj so the mutation below doesn't affect the caller's own cheDatObj.
 
@@ -386,13 +386,13 @@ function perStaFun( pkrCadObj, cheDatObj = new Date() ) {
 	if ( curCadStr === 'monthly' ) {
 
 
-		const curTarNum = tdmResFun( pkrCadObj, midDatObj.getFullYear(), midDatObj.getMonth() + 1, 'anchorDom' ); // What: Current Target Number. Why: This month's own anchor day-of-month must be known before deciding whether midDatObj has already passed it. How: This calls tdmResFun for midDatObj's own year and month.
+		const curTarNum = tdmResFun( picCadObj, midDatObj.getFullYear(), midDatObj.getMonth() + 1, 'anchorDom' ); // What: Current Target Number. Why: This month's own anchor day-of-month must be known before deciding whether midDatObj has already passed it. How: This calls tdmResFun for midDatObj's own year and month.
 
 		if ( midDatObj.getDate() >= curTarNum ) return new Date( midDatObj.getFullYear(), midDatObj.getMonth(), curTarNum ); // What: Current Month Guard. Why: Once midDatObj has reached (or passed) this month's own anchor day, that day itself is the period start. How: This returns that anchor date directly when midDatObj's own date is already at or past curTarNum.
 
 
 		const preMonObj = new Date( midDatObj.getFullYear(), midDatObj.getMonth() - 1, 1 );                       // What: Previous Month Object. Why: Before this month's own anchor day, the period actually started back in the previous month. How: This builds a Date for the 1st of the month before midDatObj's own.
-		const preTarNum = tdmResFun( pkrCadObj, preMonObj.getFullYear(), preMonObj.getMonth() + 1, 'anchorDom' ); // What: Previous Target Number. Why: The previous month's own anchor day is what the period actually started on. How: This calls tdmResFun for preMonObj's own year and month.
+		const preTarNum = tdmResFun( picCadObj, preMonObj.getFullYear(), preMonObj.getMonth() + 1, 'anchorDom' ); // What: Previous Target Number. Why: The previous month's own anchor day is what the period actually started on. How: This calls tdmResFun for preMonObj's own year and month.
 
 
 
@@ -405,15 +405,15 @@ function perStaFun( pkrCadObj, cheDatObj = new Date() ) {
 	if ( curCadStr === 'yearly' ) {
 
 
-		const monIndNum = ( pkrCadObj.anchorMonth ?? 1 ) - 1;                                          // What: Month Index Number. Why: Every calculation below needs the anchor month as a 0-indexed JS Date month. How: This subtracts 1 from pkrCadObj's own anchorMonth, defaulted to January.
-		const curTarNum = tdmResFun( pkrCadObj, midDatObj.getFullYear(), monIndNum + 1, 'anchorDay' ); // What: Current Target Number. Why: This year's own anchor day within anchorMonth must be known before deciding whether midDatObj has already passed it. How: This calls tdmResFun for midDatObj's own year and monIndNum.
+		const monIndNum = ( picCadObj.anchorMonth ?? 1 ) - 1;                                          // What: Month Index Number. Why: Every calculation below needs the anchor month as a 0-indexed JS Date month. How: This subtracts 1 from picCadObj's own anchorMonth, defaulted to January.
+		const curTarNum = tdmResFun( picCadObj, midDatObj.getFullYear(), monIndNum + 1, 'anchorDay' ); // What: Current Target Number. Why: This year's own anchor day within anchorMonth must be known before deciding whether midDatObj has already passed it. How: This calls tdmResFun for midDatObj's own year and monIndNum.
 		const curAncObj = new Date( midDatObj.getFullYear(), monIndNum, curTarNum );                   // What: Current Anchor Object. Why: The guard below needs a real Date to compare midDatObj against, not just a day number. How: This builds that Date from midDatObj's own year, monIndNum, and curTarNum.
 
 		if ( midDatObj >= curAncObj ) return curAncObj; // What: Current Year Guard. Why: Once midDatObj has reached (or passed) this year's own anchor date, that date itself is the period start. How: This returns curAncObj directly when midDatObj is already at or past it.
 
 
 		const preYeaNum = midDatObj.getFullYear() - 1;                                   // What: Previous Year Number. Why: Before this year's own anchor date, the period actually started back in the previous year. How: This subtracts 1 from midDatObj's own year.
-		const preTarNum = tdmResFun( pkrCadObj, preYeaNum, monIndNum + 1, 'anchorDay' ); // What: Previous Target Number. Why: The previous year's own anchor day is what the period actually started on. How: This calls tdmResFun for preYeaNum and monIndNum.
+		const preTarNum = tdmResFun( picCadObj, preYeaNum, monIndNum + 1, 'anchorDay' ); // What: Previous Target Number. Why: The previous year's own anchor day is what the period actually started on. How: This calls tdmResFun for preYeaNum and monIndNum.
 
 
 
@@ -439,25 +439,25 @@ function perStaFun( pkrCadObj, cheDatObj = new Date() ) {
  * perKeyFun = Period Key Function
  *
  * @summary
- * The ISO string of pkrCadObj's own current period start, the "period
+ * The ISO string of picCadObj's own current period start, the "period
  * key" used to tag a today-entry and to compare against pick-log rows.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param pkrCadObj - The picker whose current period key is wanted.
+ * @param picCadObj - The picker whose current period key is wanted.
  * @param cheDatObj - The date to resolve the period against, defaulting
  *                    to right now.
  *
- * @returns The ISO date string of pkrCadObj's own current period start.
+ * @returns The ISO date string of picCadObj's own current period start.
  *
  * @example
  * ```ts
- * perKeyFun(pkrCadObj, cheDatObj) // => 'YYYY-MM-DD'
+ * perKeyFun(picCadObj, cheDatObj) // => 'YYYY-MM-DD'
  * ```
  *
 */
 
-function perKeyFun( pkrCadObj, cheDatObj = new Date() ) { return forIsoFun( perStaFun( pkrCadObj, cheDatObj ) ); } // What: Period Key Body. Why: Every caller needs a plain comparable string, not a Date instance. How: This formats perStaFun's own resolved period start via forIsoFun.
+function perKeyFun( picCadObj, cheDatObj = new Date() ) { return forIsoFun( perStaFun( picCadObj, cheDatObj ) ); } // What: Period Key Body. Why: Every caller needs a plain comparable string, not a Date instance. How: This formats perStaFun's own resolved period start via forIsoFun.
 
 // #endregion perKeyFun
 
@@ -469,39 +469,39 @@ function perKeyFun( pkrCadObj, cheDatObj = new Date() ) { return forIsoFun( perS
  * comPerFun = Completed Period Function
  *
  * @summary
- * Has an item from pkrCadObj been COMPLETED within the current period?
+ * Has an item from picCadObj been COMPLETED within the current period?
  * pckLogArr rows carry { pickerId, date (ISO), done }. Skips/rejects
  * don't count.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param pkrCadObj - The picker whose current period is being checked.
+ * @param picCadObj - The picker whose current period is being checked.
  * @param pckLogArr - The full pick log to search.
  * @param cheDatObj - The date to resolve the current period against,
  *                    defaulting to right now.
  *
- * @returns Whether a done pick-log row for pkrCadObj exists dated on or
+ * @returns Whether a done pick-log row for picCadObj exists dated on or
  * after the current period's own start. Always false for a daily
  * cadence, handled by a separate legacy path instead.
  *
  * @example
  * ```ts
- * comPerFun(pkrCadObj, pckLogArr, cheDatObj) // => true or false
+ * comPerFun(picCadObj, pckLogArr, cheDatObj) // => true or false
  * ```
  *
 */
 
-function comPerFun( pkrCadObj, pckLogArr, cheDatObj = new Date() ) {
+function comPerFun( picCadObj, pckLogArr, cheDatObj = new Date() ) {
 
 
-	if ( ( pkrCadObj.cadence || 'daily' ) === 'daily' ) return false; // What: Daily Cadence Guard. Why: Daily pickers are handled entirely by a separate legacy path, not this period-based check. How: This returns false early whenever pkrCadObj's own (defaulted) cadence is 'daily'.
+	if ( ( picCadObj.cadence || 'daily' ) === 'daily' ) return false; // What: Daily Cadence Guard. Why: Daily pickers are handled entirely by a separate legacy path, not this period-based check. How: This returns false early whenever picCadObj's own (defaulted) cadence is 'daily'.
 
 
-	const staIsoStr = perKeyFun( pkrCadObj, cheDatObj ); // What: Start Iso String. Why: A pick-log row's own date must be compared against the current period's start as a plain string. How: This calls perKeyFun once and reuses the result below.
+	const staIsoStr = perKeyFun( picCadObj, cheDatObj ); // What: Start Iso String. Why: A pick-log row's own date must be compared against the current period's start as a plain string. How: This calls perKeyFun once and reuses the result below.
 
 
 
-	return ( pckLogArr || [] ).some( ( curRowObj ) => curRowObj.pickerId === pkrCadObj.id && curRowObj.done && curRowObj.date >= staIsoStr ); // What: Completed Period Return. Why: The caller needs to know whether ANY matching row satisfies all 3 conditions at once. How: This searches pckLogArr (or an empty array when missing) for a row matching pkrCadObj's own id, marked done, dated on or after staIsoStr.
+	return ( pckLogArr || [] ).some( ( curRowObj ) => curRowObj.pickerId === picCadObj.id && curRowObj.done && curRowObj.date >= staIsoStr ); // What: Completed Period Return. Why: The caller needs to know whether ANY matching row satisfies all 3 conditions at once. How: This searches pckLogArr (or an empty array when missing) for a row matching picCadObj's own id, marked done, dated on or after staIsoStr.
 
 
 }
@@ -526,34 +526,34 @@ const MON_SHO_ARR = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'S
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param pkrCadObj - The picker whose cadence is being summarized.
+ * @param picCadObj - The picker whose cadence is being summarized.
  *
  * @returns The short human summary string.
  *
  * @example
  * ```ts
- * sumCadFun(pkrCadObj) // => summary string
+ * sumCadFun(picCadObj) // => summary string
  * ```
  *
 */
 
-function sumCadFun( pkrCadObj ) {
+function sumCadFun( picCadObj ) {
 
 
-	const curCadStr = pkrCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs pkrCadObj's own cadence, defaulted the same way every other function in this file defaults it. How: This reads pkrCadObj.cadence, falling back to 'daily' when missing.
+	const curCadStr = picCadObj.cadence || 'daily'; // What: Current Cadence String. Why: Every branch below needs picCadObj's own cadence, defaulted the same way every other function in this file defaults it. How: This reads picCadObj.cadence, falling back to 'daily' when missing.
 
 
 	if ( curCadStr === 'daily' ) return 'Daily'; // What: Daily Case Return. Why: A daily cadence has no anchor to summarize at all. How: This returns the plain label unconditionally.
 
-	if ( curCadStr === 'weekly' ) return 'Weekly · ' + DAY_FUL_ARR[ pkrCadObj.anchorDow ?? 0 ]; // What: Weekly Case Return. Why: A weekly cadence's own summary names its anchor weekday. How: This looks pkrCadObj's own anchorDow (defaulted to Sunday) up in DAY_FUL_ARR.
+	if ( curCadStr === 'weekly' ) return 'Weekly · ' + DAY_FUL_ARR[ picCadObj.anchorDow ?? 0 ]; // What: Weekly Case Return. Why: A weekly cadence's own summary names its anchor weekday. How: This looks picCadObj's own anchorDow (defaulted to Sunday) up in DAY_FUL_ARR.
 
 
 	if ( curCadStr === 'monthly' ) {
 
 
-		return pkrCadObj.dateMode === 'nthWeekday' // What: Monthly Case Return. Why: A monthly cadence summarizes differently depending on dateMode. How: This branches on pkrCadObj's own dateMode, naming either an nth-weekday or a plain day-of-month.
-			? `Monthly · ${ ordSufFun( pkrCadObj.nthOrdinal ?? 1 ) } ${ DAY_FUL_ARR[ pkrCadObj.nthWeekday ?? 0 ] }`
-			: 'Monthly · ' + ordSufFun( pkrCadObj.anchorDom ?? 1 );
+		return picCadObj.dateMode === 'nthWeekday' // What: Monthly Case Return. Why: A monthly cadence summarizes differently depending on dateMode. How: This branches on picCadObj's own dateMode, naming either an nth-weekday or a plain day-of-month.
+			? `Monthly · ${ ordSufFun( picCadObj.nthOrdinal ?? 1 ) } ${ DAY_FUL_ARR[ picCadObj.nthWeekday ?? 0 ] }`
+			: 'Monthly · ' + ordSufFun( picCadObj.anchorDom ?? 1 );
 
 
 	}
@@ -562,11 +562,11 @@ function sumCadFun( pkrCadObj ) {
 	if ( curCadStr === 'yearly' ) {
 
 
-		if ( pkrCadObj.dateMode === 'nthWeekday' ) return `Yearly · ${ ordSufFun( pkrCadObj.nthOrdinal ?? 1 ) } ${ DAY_FUL_ARR[ pkrCadObj.nthWeekday ?? 0 ] } of ${ MON_SHO_ARR[ ( pkrCadObj.anchorMonth ?? 1 ) - 1 ] }`; // What: Yearly Nth-Weekday Case Return. Why: A yearly cadence in nth-weekday mode names its ordinal, weekday, and anchor month all at once. How: This builds the summary string from pkrCadObj's own nthOrdinal/nthWeekday/anchorMonth.
+		if ( picCadObj.dateMode === 'nthWeekday' ) return `Yearly · ${ ordSufFun( picCadObj.nthOrdinal ?? 1 ) } ${ DAY_FUL_ARR[ picCadObj.nthWeekday ?? 0 ] } of ${ MON_SHO_ARR[ ( picCadObj.anchorMonth ?? 1 ) - 1 ] }`; // What: Yearly Nth-Weekday Case Return. Why: A yearly cadence in nth-weekday mode names its ordinal, weekday, and anchor month all at once. How: This builds the summary string from picCadObj's own nthOrdinal/nthWeekday/anchorMonth.
 
 
 
-		return 'Yearly · ' + new Date( 2001, ( pkrCadObj.anchorMonth ?? 1 ) - 1, pkrCadObj.anchorDay ?? 1 ).toLocaleDateString( undefined, { month : 'short', day : 'numeric' } ); // What: Yearly Plain-Date Case Return. Why: A yearly cadence in plain-date mode names its anchor month and day via the locale's own short date formatting. How: This builds a throwaway Date (year 2001 is arbitrary) from pkrCadObj's own anchorMonth/anchorDay and formats it.
+		return 'Yearly · ' + new Date( 2001, ( picCadObj.anchorMonth ?? 1 ) - 1, picCadObj.anchorDay ?? 1 ).toLocaleDateString( undefined, { month : 'short', day : 'numeric' } ); // What: Yearly Plain-Date Case Return. Why: A yearly cadence in plain-date mode names its anchor month and day via the locale's own short date formatting. How: This builds a throwaway Date (year 2001 is arbitrary) from picCadObj's own anchorMonth/anchorDay and formats it.
 
 
 	}
@@ -663,7 +663,7 @@ const locTipFun = ( dowValNum, srcLblStr = 'How often?' ) => `Because you select
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param pkrCadObj - The picker-shaped object to check.
+ * @param picCadObj - The picker-shaped object to check.
  *
  * @returns The corrected daysOfWeek array (with the anchor day added
  * when it was missing), or the same array unchanged when nothing needs
@@ -671,21 +671,21 @@ const locTipFun = ( dowValNum, srcLblStr = 'How often?' ) => `Because you select
  *
  * @example
  * ```ts
- * enfWeeFun(pkrCadObj) // => corrected daysOfWeek array
+ * enfWeeFun(picCadObj) // => corrected daysOfWeek array
  * ```
  *
 */
 
-function enfWeeFun( pkrCadObj ) {
+function enfWeeFun( picCadObj ) {
 
 
-	const dowSetArr = Array.isArray( pkrCadObj && pkrCadObj.daysOfWeek ) ? pkrCadObj.daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ]; // What: Dow Set Array. Why: A missing or malformed daysOfWeek must still fall back to every day allowed. How: This keeps pkrCadObj's own daysOfWeek only when it's a real array, defaulting to all 7 days otherwise.
+	const dowSetArr = Array.isArray( picCadObj && picCadObj.daysOfWeek ) ? picCadObj.daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ]; // What: Dow Set Array. Why: A missing or malformed daysOfWeek must still fall back to every day allowed. How: This keeps picCadObj's own daysOfWeek only when it's a real array, defaulting to all 7 days otherwise.
 
-	if ( !pkrCadObj || ( pkrCadObj.cadence || 'daily' ) !== 'weekly' ) return dowSetArr; // What: Non-Weekly Guard. Why: This enforcement only applies to a weekly cadence at all. How: This returns dowSetArr unchanged when pkrCadObj is missing or not weekly.
+	if ( !picCadObj || ( picCadObj.cadence || 'daily' ) !== 'weekly' ) return dowSetArr; // What: Non-Weekly Guard. Why: This enforcement only applies to a weekly cadence at all. How: This returns dowSetArr unchanged when picCadObj is missing or not weekly.
 
 
 
-	const ancDowNum = Number.isInteger( pkrCadObj.anchorDow ) ? pkrCadObj.anchorDow : null; // What: Anchor Dow Number. Why: The check below needs a real anchor day to compare against, not a possibly-missing one. How: This reads pkrCadObj's own anchorDow only when it's a real integer, null otherwise.
+	const ancDowNum = Number.isInteger( picCadObj.anchorDow ) ? picCadObj.anchorDow : null; // What: Anchor Dow Number. Why: The check below needs a real anchor day to compare against, not a possibly-missing one. How: This reads picCadObj's own anchorDow only when it's a real integer, null otherwise.
 
 	if ( ancDowNum === null || dowSetArr.includes( ancDowNum ) ) return dowSetArr; // What: Already-Included Guard. Why: With no real anchor day, or one already inside dowSetArr, there is nothing to add. How: This returns dowSetArr unchanged in either case.
 
