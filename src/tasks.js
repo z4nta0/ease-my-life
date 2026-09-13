@@ -57,8 +57,10 @@ import { HOL_NAM_OBJ } from './holidays.js'; // What: Holidays Namespace Object.
  * seed.js, onboarding-seed-data.js, onboarding-page-tours.jsx,
  * onboarding-reminder-tours.jsx, and onboarding.jsx. They are
  * deliberately left unrenamed on this formatting pass, the same way
- * cadence.js's own CADENCE property names and holidays.js's own
- * HOL_NAM_OBJ property names were left unrenamed on their own passes.
+ * holidays.js's own HOL_NAM_OBJ property names were left unrenamed on
+ * its own pass (unlike cadence.js's own CAD_NAM_OBJ, whose external
+ * names were later swept to match its internal implementation exactly,
+ * see CLAUDE.md's Exported namespace objects exception).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

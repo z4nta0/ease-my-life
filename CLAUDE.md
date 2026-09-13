@@ -1734,7 +1734,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     "is this an object I wrote."
 - **Exported namespace objects must use explicit `originalName :
   internalName` mapping, never JS shorthand `{ internalName }`.** A
-  domain module's public API (`STORAGE`, `PICKERS`, `CADENCE`, `TASKS`,
+  domain module's public API (`STORAGE`, `PICKERS`, `TASKS`,
   `CONDITIONALS`, `HOL_NAM_OBJ`, `NOT_NAM_OBJ`, ...) keeps its own
   ORIGINAL external property names stable while every internal
   implementation gets renamed to the 9-char scheme. Writing the export
@@ -1748,6 +1748,19 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   `<ObjectName>\.` to enumerate every property name actually called
   externally, then verify the export object explicitly maps EACH one
   (`realName : internalName`), never bare.
+  - **Exception**: `cadence.js`'s own `CAD_NAM_OBJ` (originally
+    `CADENCE`) deliberately swept its external property names to match
+    its internal implementation exactly (`normalize` → `norCadFun`,
+    `isCadence` → `isaCadFun`, ...), with every one of its ~60 external
+    call sites across 7 consumer files updated in the same pass. This
+    was a deliberate, fully-swept rename, not a case of the shorthand
+    danger above: the blast radius was checked first (every call site
+    is plain JS, resolved at call time, never persisted to IndexedDB/
+    localStorage), unlike a picker's own persisted cadence fields
+    (`anchorDow`, `anchorDom`, ...), which stay unrenamed for exactly
+    that reason. The explicit `name : name` mapping is still kept
+    (never JS shorthand) even though the names now match, so a future
+    internal rename still has to touch the export line deliberately.
 
 ### Default parameter values
 - Only give a parameter a default where it's genuinely reachable/

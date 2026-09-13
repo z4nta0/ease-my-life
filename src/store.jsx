@@ -6,7 +6,7 @@
 import React from 'react'; // What: React. Why: This is the UI library the whole store hook is built on. How: This is used directly (React.useState, React.useMemo, React.useEffect, React.useRef, React.useCallback) instead of importing individual named hooks.
 
 
-import { CADENCE                  } from './cadence.js';               // What: Cadence. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enforceWeeklyDay/normalize/isCadence) from migrate and from the picker-authoring actions below.
+import { CAD_NAM_OBJ               } from './cadence.js';               // What: Cadence. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enfWeeFun/norCadFun/isaCadFun) from migrate and from the picker-authoring actions below.
 import { CLEAN_STATE               } from './seed.js';                 // What: Clean State. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called by loadState and by the reset action below.
 import { CONDITIONALS              } from './conditionals.js';         // What: Conditionals. Why: Day-off gate resolution/advancement logic lives here, not in this file. How: This is called from resolveConditionalsForDay and from applyConditionalToggle below.
 import { HOL_NAM_OBJ               } from './holidays.js';             // What: Holidays Namespace Object. Why: The holiday list backfill and the holiday-editing actions both need the canonical empty holidays shape. How: This is called (defaultState) from migrate and from the holiday actions below.
@@ -1634,16 +1634,16 @@ function migrate( curStaObj ) {
 
 			if ( !Array.isArray( nxtPicObj.daysOfWeek ) ) nxtPicObj.daysOfWeek = [ 0, 1, 2, 3, 4, 5, 6 ]; // What: Days-Of-Week Backfill. Why: A picker with no schedule override at all still needs an explicit "every day" default. How: This backfills daysOfWeek to every weekday when it isn't already an array.
 
-			// What: Weekly-Anchor Enforce. Why: For weekly cadence, the anchor day must always be one of the allowed days, backfilling state saved before this rule existed. How: This calls CADENCE.enforceWeeklyDay to fold nxtPicObj's own anchor into its daysOfWeek.
-			if ( CADENCE ) nxtPicObj.daysOfWeek = CADENCE.enforceWeeklyDay( nxtPicObj );
+			// What: Weekly-Anchor Enforce. Why: For weekly cadence, the anchor day must always be one of the allowed days, backfilling state saved before this rule existed. How: This calls CAD_NAM_OBJ.enfWeeFun to fold nxtPicObj's own anchor into its daysOfWeek.
+			if ( CAD_NAM_OBJ ) nxtPicObj.daysOfWeek = CAD_NAM_OBJ.enfWeeFun( nxtPicObj );
 
 			if ( typeof nxtPicObj.skipHolidays !== 'boolean' ) nxtPicObj.skipHolidays = false; // What: Skip-Holidays Backfill. Why: Every picker needs an explicit holiday-skipping flag. How: This backfills skipHolidays to false when it isn't already a boolean.
 
 			// What: Avoid-Duplicates Backfill. Why: The avoid-duplicate-item-names flag was added later. How: This backfills avoidDuplicates to false when it isn't already a boolean.
 			if ( typeof nxtPicObj.avoidDuplicates !== 'boolean' ) nxtPicObj.avoidDuplicates = false;
 
-			// What: Picker-Cadence Normalize. Why: Picker Cadence (surfacing anchor + display unit) was added later; old state defaults to 'daily' (the original behavior) with sensible anchors. How: This calls CADENCE.normalize and merges its own result onto nxtPicObj when nxtPicObj's own cadence isn't already a real one.
-			if ( !CADENCE.isCadence( nxtPicObj.cadence ) ) Object.assign( nxtPicObj, CADENCE.normalize( nxtPicObj ) );
+			// What: Picker-Cadence Normalize. Why: Picker Cadence (surfacing anchor + display unit) was added later; old state defaults to 'daily' (the original behavior) with sensible anchors. How: This calls CAD_NAM_OBJ.norCadFun and merges its own result onto nxtPicObj when nxtPicObj's own cadence isn't already a real one.
+			if ( !CAD_NAM_OBJ.isaCadFun( nxtPicObj.cadence ) ) Object.assign( nxtPicObj, CAD_NAM_OBJ.norCadFun( nxtPicObj ) );
 
 			if ( typeof nxtPicObj.hidden !== 'boolean' ) nxtPicObj.hidden = false; // What: Hidden-Flag Backfill. Why: Every picker needs an explicit hidden flag, same reasoning as the tasks backfill above. How: This backfills hidden to false when it isn't already a boolean.
 
@@ -2883,16 +2883,16 @@ function useStore( optArgObj ) {
 
 				id : picIdeStr, group, name, mode,
 				easeMin : easeMin ?? 10, easeMax : easeMax ?? 20, threshold : 100,
-				// What: Daily-Generator Schedule. Why: Which weekdays this picker may run on, and whether it sits out public holidays, must be resolved before this picker is usable by the generator. How: This calls CADENCE.enforceWeeklyDay over CADENCE.normalize's own result, honoring an explicit daysOfWeek or defaulting to every day.
-				daysOfWeek : CADENCE.enforceWeeklyDay( {
-					...CADENCE.normalize( { cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ),
+				// What: Daily-Generator Schedule. Why: Which weekdays this picker may run on, and whether it sits out public holidays, must be resolved before this picker is usable by the generator. How: This calls CAD_NAM_OBJ.enfWeeFun over CAD_NAM_OBJ.norCadFun's own result, honoring an explicit daysOfWeek or defaulting to every day.
+				daysOfWeek : CAD_NAM_OBJ.enfWeeFun( {
+					...CAD_NAM_OBJ.norCadFun( { cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ),
 					daysOfWeek : Array.isArray( daysOfWeek ) && daysOfWeek.length ? daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ]
 				} ),
 				skipHolidays : !!skipHolidays,
 				// What: Avoid-Duplicates Flag. Why: This excludes an item from this picker's own pool for the day if its name (case-insensitively) is already present elsewhere on today's list. How: This coerces avoidDuplicates to a real boolean; see pickers.js's own pick() for how it's applied.
 				avoidDuplicates : !!avoidDuplicates,
-				// What: Picker-Cadence Normalize Spread. Why: The surfacing anchor + display unit must be resolved (and defaulted) the same way for every picker. How: This spreads CADENCE.normalize's own result over newPicObj.
-				...CADENCE.normalize( { cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ),
+				// What: Picker-Cadence Normalize Spread. Why: The surfacing anchor + display unit must be resolved (and defaulted) the same way for every picker. How: This spreads CAD_NAM_OBJ.norCadFun's own result over newPicObj.
+				...CAD_NAM_OBJ.norCadFun( { cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ),
 				// What: Conditional Id Resolve. Why: A freshly-made inline conditional wins over an explicitly-passed existing one. How: This prefers madCndObj's own id, else conditionalId, else null.
 				conditionalId : madCndObj ? madCndObj.id : ( conditionalId || null ),
 				// What: Hidden Flag. Why: tab-picker.jsx passes true while the mini-tour checklist is up (mirrors reminders.jsx's own startAdd) so a picker created during onboarding stays out of the real list until the closing Generate step. How: This is copied straight from the hidden parameter (defaulting false).
@@ -3029,14 +3029,14 @@ function useStore( optArgObj ) {
 
 
 				...curPicObj, name : finNamStr, group, mode,
-				// What: Daily-Generator Schedule. Why: The schedule must be re-resolved the same way addPicker itself resolves it. How: This calls CADENCE.enforceWeeklyDay over CADENCE.normalize's own result, honoring an explicit daysOfWeek or defaulting to every day.
-				daysOfWeek : CADENCE.enforceWeeklyDay( {
-					...CADENCE.normalize( { cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ),
+				// What: Daily-Generator Schedule. Why: The schedule must be re-resolved the same way addPicker itself resolves it. How: This calls CAD_NAM_OBJ.enfWeeFun over CAD_NAM_OBJ.norCadFun's own result, honoring an explicit daysOfWeek or defaulting to every day.
+				daysOfWeek : CAD_NAM_OBJ.enfWeeFun( {
+					...CAD_NAM_OBJ.norCadFun( { cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ),
 					daysOfWeek : Array.isArray( daysOfWeek ) && daysOfWeek.length ? daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ]
 				} ),
 				skipHolidays : !!skipHolidays,
 				avoidDuplicates : !!avoidDuplicates,
-				...CADENCE.normalize( { cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ),
+				...CAD_NAM_OBJ.norCadFun( { cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ),
 				// What: Conditional Id Resolve. Why: Unlike addPicker's own create-only flow, this can also DETACH a conditional the picker already had, so there's no bare "keep the old one" default to fall back on here. How: This prefers madCndObj's own id, else the given conditionalId, else null.
 				conditionalId : madCndObj ? madCndObj.id : ( conditionalId || null )
 
@@ -3473,7 +3473,7 @@ function useStore( optArgObj ) {
 
 				const nxtPicObj = { ...curPicObj, ...patValObj }; // What: Next Picker Object. Why: The patch itself must land before daysOfWeek is re-derived from it. How: This spreads curPicObj with patValObj merged on.
 
-				nxtPicObj.daysOfWeek = CADENCE.enforceWeeklyDay( nxtPicObj ); // What: Days-Of-Week Re-Derive. Why: A cadence/anchorDow/daysOfWeek change must keep the weekly-cadence anchor day selected in the Days control. How: This calls CADENCE.enforceWeeklyDay against nxtPicObj's own just-patched fields.
+				nxtPicObj.daysOfWeek = CAD_NAM_OBJ.enfWeeFun( nxtPicObj ); // What: Days-Of-Week Re-Derive. Why: A cadence/anchorDow/daysOfWeek change must keep the weekly-cadence anchor day selected in the Days control. How: This calls CAD_NAM_OBJ.enfWeeFun against nxtPicObj's own just-patched fields.
 
 
 				return nxtPicObj; // What: Next Picker Return. Why: The map above needs the fully-patched picker. How: This returns nxtPicObj, built above.

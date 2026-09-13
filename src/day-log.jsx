@@ -7,7 +7,7 @@
 import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.Fragment) throughout, instead of importing individual named hooks.
 
 
-import { CADENCE      } from './cadence.js';      // What: Cadence. Why: An ease-mode item's subline needs CADENCE.unitWord to phrase its range in the picker's own cadence unit (days/weeks/months/years) instead of always "days". How: This is called once inside iteSubFun below.
+import { CAD_NAM_OBJ  } from './cadence.js';      // What: Cadence. Why: An ease-mode item's subline needs CAD_NAM_OBJ.uniWorFun to phrase its range in the picker's own cadence unit (days/weeks/months/years) instead of always "days". How: This is called once inside iteSubFun below.
 import { Collapse     } from './ui.jsx';          // What: Collapse. Why: PicBloCom's own item table only needs to exist in the DOM while its block is actually expanded. How: This wraps that table, driven by PicBloCom's own open/closed state.
 import { CONDITIONALS } from './conditionals.js'; // What: Conditionals. Why: ConSecCom needs CONDITIONALS.isValue to know whether a given conditional's own mode even has a value to show. How: This is called once per conditional row inside ConSecCom below.
 import { InfoTip      } from './ui.jsx';          // What: Info Tip. Why: Every truncatable name/label in this file (item, conditional, reminder) needs the shared reveal-on-truncation tooltip. How: This wraps those names/labels throughout PicBloCom, ConSecCom and RemindersLog.
@@ -440,7 +440,7 @@ function iteSubFun ( picRecObj, iteRecObj, booValNum ) {
 		const easMaxNum = iteRecObj.easeMax ?? picRecObj.easeMax ?? 1; // What: Ease Max Number. Why: The range below needs this item's own effective ease-max, falling back to its picker's own. How: This reads iteRecObj's own easeMax, then picRecObj's own, then 1.
 		const sooDayNum = Math.max( 1, Math.round( THR_VAL_NUM / easMaxNum ) );          // What: Soonest Day Number. Why: This is the earliest day count the range can show. How: This divides THR_VAL_NUM by easMaxNum, floored at 1 whole day.
 		const latDayNum = Math.max( sooDayNum, Math.round( THR_VAL_NUM / easMinNum ) );  // What: Latest Day Number. Why: This is the latest day count the range can show, never earlier than sooDayNum. How: This divides THR_VAL_NUM by easMinNum, floored at sooDayNum itself.
-		const untWrdStr = ( picRecObj.cadence && picRecObj.cadence !== 'daily' ) ? CADENCE.unitWord( picRecObj.cadence, latDayNum ) : 'days'; // What: Unit Word String. Why: A non-daily cadence needs its own scaled unit word (e.g. "weeks") instead of always "days". How: This calls CADENCE.unitWord for a real non-daily cadence, otherwise falls back to the literal word "days".
+		const untWrdStr = ( picRecObj.cadence && picRecObj.cadence !== 'daily' ) ? CAD_NAM_OBJ.uniWorFun( picRecObj.cadence, latDayNum ) : 'days'; // What: Unit Word String. Why: A non-daily cadence needs its own scaled unit word (e.g. "weeks") instead of always "days". How: This calls CAD_NAM_OBJ.uniWorFun for a real non-daily cadence, otherwise falls back to the literal word "days".
 
 
 

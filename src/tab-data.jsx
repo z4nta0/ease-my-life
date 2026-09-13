@@ -7,8 +7,8 @@ import React from 'react'; // What: React. Why: This is the UI library every com
 
 
 import { Btn                     } from './ui.jsx';                    // What: Btn. Why: Every inline confirm/cancel/save action in this file's editors needs a consistently-styled button. How: This is rendered throughout PicConCom, CndEdiCom, and TabData's own footers.
+import { CAD_NAM_OBJ             } from './cadence.js';                // What: Cadence. Why: PicConCom needs the shared cadence math/summary helpers to render its own "how often" tip and select options. How: This is called throughout PicConCom for tipMesFun/sumCadFun/dimCouFun/uniWorFun/locTipFun.
 import { CAD_OPT_ARR                } from './cadence-control.jsx';       // What: Cadence Options Array. Why: PicConCom's own daily-cadence summary needs the same daily-cadence sub-explanation CadConCom itself uses. How: This is looked up by key 'daily' inside PicConCom's cadence-summary block.
-import { CADENCE                 } from './cadence.js';                // What: Cadence. Why: PicConCom needs the shared cadence math/summary helpers to render its own "how often" tip and select options. How: This is called throughout PicConCom for tipFor/summary/daysInMonth/unitWord/lockedDayTip.
 import { clearHelpPickers        } from './help-sample-data.js';       // What: Clear Help Pickers. Why: Help mode's disposable sample pickers must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabData's own unmount cleanup.
 import { clearHelpTasks          } from './help-sample-data.js';       // What: Clear Help Tasks. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabData's own unmount cleanup.
 import { Collapse                } from './ui.jsx';                    // What: Collapse. Why: Nearly every disclosure in this file (picker cards, Controls, Items, conditional rows, item rows) shares the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
@@ -1046,7 +1046,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 							<span className='sched-line-label'>{ /* What: Cadence Label Span Element. Why: The row's own name/help tip and live explanation belong together. How: This wraps the lbl row and sub span below. */ }
 
 								<span className='sched-line-lbl pie-lbl-row'>How often?
-									<InfoTip className='pie-help pie-help--sm' label={ CADENCE.tipFor( picObj.cadence ) }>?</InfoTip>{ /* What: Info Tip. Why: The cadence choice needs a fuller explanation available on demand. How: This shows CADENCE's own tip text for the picker's current cadence. */ }
+									<InfoTip className='pie-help pie-help--sm' label={ CAD_NAM_OBJ.tipMesFun( picObj.cadence ) }>?</InfoTip>{ /* What: Info Tip. Why: The cadence choice needs a fuller explanation available on demand. How: This shows CAD_NAM_OBJ's own tip text for the picker's current cadence. */ }
 								</span>
 
 								<span
@@ -1149,9 +1149,9 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											aria-label='Week of the month'
 											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { nthOrdinal : parseInt( chgEveObj.target.value ) } ) }
 										>
-											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum, labeled via CADENCE.summary.
+											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum, labeled via CAD_NAM_OBJ.sumCadFun.
 
-												<option key={ ordValNum } value={ ordValNum }>{ CADENCE.summary( { cadence : 'monthly', anchorDom : ordValNum } ).split( '· ' )[ 1 ] }</option>
+												<option key={ ordValNum } value={ ordValNum }>{ CAD_NAM_OBJ.sumCadFun( { cadence : 'monthly', anchorDom : ordValNum } ).split( '· ' )[ 1 ] }</option>
 
 											) ) }
 										</select>{ /* What: Nth Ordinal Select Element. Why: An nth-weekday monthly cadence needs its own "first/second/.../last" ordinal. How: This commits the chosen number as picObj.nthOrdinal. */ }
@@ -1182,9 +1182,9 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 										aria-label='Anchor day of month'
 										onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { anchorDom : parseInt( chgEveObj.target.value ) } ) }
 									>
-										{ Array.from( { length : 31 }, ( _, arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domValNum, labeled via CADENCE.summary.
+										{ Array.from( { length : 31 }, ( _, arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domValNum, labeled via CAD_NAM_OBJ.sumCadFun.
 
-											<option key={ domValNum } value={ domValNum }>{ CADENCE.summary( { cadence : 'monthly', anchorDom : domValNum } ).split( '· ' )[ 1 ] }</option>
+											<option key={ domValNum } value={ domValNum }>{ CAD_NAM_OBJ.sumCadFun( { cadence : 'monthly', anchorDom : domValNum } ).split( '· ' )[ 1 ] }</option>
 
 										) ) }
 									</select> // What: Anchor Dom Select Element. Why: A date-anchored monthly cadence needs its own day-of-month. How: This commits the chosen number as picObj.anchorDom.
@@ -1204,9 +1204,9 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											aria-label='Week of the month'
 											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { nthOrdinal : parseInt( chgEveObj.target.value ) } ) }
 										>
-											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum, labeled via CADENCE.summary.
+											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum, labeled via CAD_NAM_OBJ.sumCadFun.
 
-												<option key={ ordValNum } value={ ordValNum }>{ CADENCE.summary( { cadence : 'monthly', anchorDom : ordValNum } ).split( '· ' )[ 1 ] }</option>
+												<option key={ ordValNum } value={ ordValNum }>{ CAD_NAM_OBJ.sumCadFun( { cadence : 'monthly', anchorDom : ordValNum } ).split( '· ' )[ 1 ] }</option>
 
 											) ) }
 										</select>{ /* What: Nth Ordinal Select Element. Why: An nth-weekday yearly cadence needs its own "first/second/.../last" ordinal. How: This commits the chosen number as picObj.nthOrdinal. */ }
@@ -1262,11 +1262,11 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 										<select
 											className='np-input rd-cad-sel'
-											value={ Math.min( picObj.anchorDay ?? 1, CADENCE.daysInMonth( 2024, picObj.anchorMonth ?? 1 ) ) }
+											value={ Math.min( picObj.anchorDay ?? 1, CAD_NAM_OBJ.dimCouFun( 2024, picObj.anchorMonth ?? 1 ) ) }
 											aria-label='Anchor day'
 											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { anchorDay : parseInt( chgEveObj.target.value ) } ) }
 										>
-											{ Array.from( { length : CADENCE.daysInMonth( 2024, picObj.anchorMonth ?? 1 ) }, ( _, arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Anchor Day Option List Render. Why: One option is needed per possible day within the anchor month's own real length. How: This maps a generated array sized by CADENCE.daysInMonth to one option per entry, keyed by its own domValNum.
+											{ Array.from( { length : CAD_NAM_OBJ.dimCouFun( 2024, picObj.anchorMonth ?? 1 ) }, ( _, arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Anchor Day Option List Render. Why: One option is needed per possible day within the anchor month's own real length. How: This maps a generated array sized by CAD_NAM_OBJ.dimCouFun to one option per entry, keyed by its own domValNum.
 
 												<option key={ domValNum } value={ domValNum }>{ domValNum }</option>
 
@@ -1306,7 +1306,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 								value={ picObj.daysOfWeek || [ 0, 1, 2, 3, 4, 5, 6 ] }
 								size='sm'
 								lockedDay={ picObj.cadence === 'weekly' ? ( picObj.anchorDow ?? 0 ) : null }
-								lockedTip={ picObj.cadence === 'weekly' ? CADENCE.lockedDayTip( picObj.anchorDow ?? 0 ) : '' }
+								lockedTip={ picObj.cadence === 'weekly' ? CAD_NAM_OBJ.locTipFun( picObj.anchorDow ?? 0 ) : '' }
 								onChange={ ( dayArrArg ) => actObj.updatePicker( picObj.id, { daysOfWeek : dayArrArg } ) }
 							/>{ /* What: Weekday Chips. Why: This is the actual multi-select for which weekdays this picker runs on. How: This locks the anchor weekday when picObj.cadence is 'weekly', otherwise every day is freely toggleable. */ }
 
@@ -3186,7 +3186,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 												const latValNum  = Math.max( 1, Math.round( 100 / ( easMinNum || 1 ) ) );                                        // What: Latest Value Number. Why: Same reasoning as sonValNum, for the far end. How: This converts easMinNum into a day count.
 												const metStr     = iteCurObj.vacation // What: Meta String. Why: The closed row's own summary line depends entirely on whether the item is on vacation, then on the picker's own mode. How: This picks 'Inactive', an ease-band range, a weight, or "Equal chance".
 													? 'Inactive'
-													: ( isaEasBoo ? `${ sonValNum }–${ latValNum } ${ CADENCE.unitWord( picCurObj.cadence, latValNum ) }`
+													: ( isaEasBoo ? `${ sonValNum }–${ latValNum } ${ CAD_NAM_OBJ.uniWorFun( picCurObj.cadence, latValNum ) }`
 														: ( useWgtBoo ? `Weight w${ iteCurObj.weight }` : 'Equal chance' ) );
 
 

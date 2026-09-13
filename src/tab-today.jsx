@@ -13,7 +13,7 @@ import { AppFeaturesIntroTip     } from './onboarding-app-features.jsx';   // Wh
 import { BacFloCom               } from './bg-flourish.jsx';               // What: Background Flourish Component. Why: The decorative background glyphs render behind Today's own centered column too, same as every other tab. How: This is passed Today's own body ref and the fixed 'today' tab id.
 import { BoostReset              } from './ui.jsx';                        // What: Boost Reset. Why: A dynamic-mode item's inline editor needs a control for resetting its boost value back to 0. How: This is rendered inside EntryEditor's own Boost row.
 import { Btn                     } from './ui.jsx';                        // What: Button. Why: Nearly every action in this file (confirm, cancel, save, merge, generate) is a shared styled button. How: This is used throughout instead of a bare <button> for anything that needs the app's own button styling.
-import { CADENCE                 } from './cadence.js';                    // What: Cadence Namespace Object. Why: Non-daily pickers need period-key math and unit-word phrasing shared with the rest of the app. How: This is called for periodKey/completedThisPeriod/unitWord throughout generate() and EntryEditor.
+import { CAD_NAM_OBJ             } from './cadence.js';                    // What: Cadence Namespace Object. Why: Non-daily pickers need period-key math and unit-word phrasing shared with the rest of the app. How: This is called for perKeyFun/comPerFun/uniWorFun throughout generate() and EntryEditor.
 import { Collapse                } from './ui.jsx';                        // What: Collapse. Why: A group's Day Log panel and an entry's inline editor both need an animated expand/collapse wrapper. How: This wraps GroupLog and EntryEditor, gated on whichever key/eid currently owns the open state.
 import { CONDITIONALS            } from './conditionals.js';               // What: Conditionals Namespace Object. Why: Day-off suppression during generate() needs the shared conditional-evaluation logic. How: This is called via CONDITIONALS.suppresses against each picker's own resolved conditional.
 import { createPortal            } from 'react-dom';                       // What: Create Portal. Why: The completion celebration's confetti/sparkle overlay must escape the tab-fade wrapper's own containing block. How: This portals the celebration overlay straight onto document.body.
@@ -1074,7 +1074,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 	const sooLabStr = isaDowBoo ? 'Shortest' : 'Soonest'; // What: Soonest Label String. Why: The Soonest row's own heading text differs by direction. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
 	const latLabStr = isaDowBoo ? 'Longest' : 'Latest';   // What: Latest Label String. Why: The Latest row's own heading text differs by direction. How: This picks 'Longest' for ease-down, 'Latest' otherwise.
 
-	const uniWrdFun = ( couNum ) => CADENCE.unitWord( picker && picker.cadence, couNum ); // What: Unit Word Function. Why: Every day count below needs a correctly-pluralized cadence unit word next to it. How: This calls CADENCE.unitWord with the picker's own cadence and couNum.
+	const uniWrdFun = ( couNum ) => CAD_NAM_OBJ.uniWorFun( picker && picker.cadence, couNum ); // What: Unit Word Function. Why: Every day count below needs a correctly-pluralized cadence unit word next to it. How: This calls CAD_NAM_OBJ.uniWorFun with the picker's own cadence and couNum.
 
 	const sooSubEle = isaDowBoo // What: Soonest Sub Element. Why: The Soonest/Shortest row's own subtitle phrasing differs by direction. How: This renders "stays picked N days minimum" for ease-down, or "N days until pickable again" otherwise.
 		? <>stays picked <strong>{ sooDayNum } { uniWrdFun( sooDayNum ) }</strong> minimum</>
@@ -4149,7 +4149,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		const carEntArr = []; // What: Carried Entry Array. Why: A cadence pick persisting from a prior day still needs its own encounter-order slot, wrapped so the commit step below can tell it apart from a fresh pick. How: This is pushed to inside the main loop below.
 
 		const pikNamSet = new Set(); // What: Picked Name Set. Why: Item names already committed to today's list so far (lowercased) are fed to any avoidDuplicates picker below so it won't re-surface an item another picker already put on today's list; seeded with carried-over cadence picks (still "on the list" today, just not freshly picked), then grown as each fresh pick lands, in encounter order, matching "as it is being built" rather than checking against the final list. How: This is read by PICKERS.pick's own excludeNames option and added to throughout the loop below.
-		const cadNsObj  = CADENCE; // What: Cadence Namespace Object. Why: A short local alias reads more naturally throughout the dense loop below than the full import name repeated everywhere. How: This is just CADENCE itself.
+		const cadNsObj  = CAD_NAM_OBJ; // What: Cadence Namespace Object. Why: A short local alias reads more naturally throughout the dense loop below than the full import name repeated everywhere. How: This is just CAD_NAM_OBJ itself.
 
 		for ( const curPicIdeStr of state.daily.pickerIds ) { // What: Daily Picker Loop. Why: This is the actual per-picker scheduling/picking pass every other collection above feeds from. How: This walks every picker id in state.daily.pickerIds, gating and picking (or suppressing) each one in turn.
 
@@ -4183,7 +4183,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			if ( picCadStr !== 'daily' ) { // What: Non-Daily Branch. Why: See the doc comment just above. How: This runs the period-key/carry/completed checks and, when none of them apply, falls through to the fresh-surface path below.
 
 
-				const perKeyStr = cadNsObj.periodKey( picRecObj, genNowDat );  // What: Period Key String. Why: This identifies exactly which period (week/month/year) this picker's own card belongs to right now. How: This calls cadNsObj.periodKey.
+				const perKeyStr = cadNsObj.perKeyFun( picRecObj, genNowDat );  // What: Period Key String. Why: This identifies exactly which period (week/month/year) this picker's own card belongs to right now. How: This calls cadNsObj.perKeyFun.
 				const exiEntObj = exiByPicMap.get( curPicIdeStr );             // What: Existing Entry Object. Why: A live entry already on screen for this exact period must be carried or recognized as satisfied. How: This reads exiByPicMap at curPicIdeStr.
 
 				if ( exiEntObj && exiEntObj.periodKey === perKeyStr ) { // What: Same Period Branch. Why: An entry already logged against THIS exact period needs either carrying (still open) or skipping (already satisfied). How: This checks exiEntObj.done to choose between the two.
@@ -4203,7 +4203,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 				}
 
-				if ( cadNsObj.completedThisPeriod( picRecObj, state.pickLog, genNowDat ) ) continue; // What: Completed This Period Skip. Why: A completed pick logged this period, even with the entry itself wiped, still satisfies the cadence. How: This skips curPicIdeStr when cadNsObj.completedThisPeriod reports true.
+				if ( cadNsObj.comPerFun( picRecObj, state.pickLog, genNowDat ) ) continue; // What: Completed This Period Skip. Why: A completed pick logged this period, even with the entry itself wiped, still satisfies the cadence. How: This skips curPicIdeStr when cadNsObj.comPerFun reports true.
 
 
 			}
@@ -4235,7 +4235,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 					dofCarArr.push( { kind : 'dayoff', conditionalId : cndRecObj.id, cardText : carTexStr, group : picRecObj.group || 'Other',
 
 						pickerName : picRecObj.name, condName : cndRecObj.name,
-						...( picCadStr !== 'daily' ? { periodKey : cadNsObj.periodKey( picRecObj, genNowDat ) } : {} )
+						...( picCadStr !== 'daily' ? { periodKey : cadNsObj.perKeyFun( picRecObj, genNowDat ) } : {} )
 
 					} ); // What: Dayoff Card Push. Why: This is the actual card the commit step below turns into a real entry. How: This builds the full day-off record, tagging a period key only for a non-daily picker.
 
@@ -4249,7 +4249,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			}
 
-			const perKeyStr = picCadStr !== 'daily' ? cadNsObj.periodKey( picRecObj, genNowDat ) : null; // What: Period Key String. Why: A fresh non-daily pick still needs to be tagged with the period it belongs to, so a future generation can recognize it as already-current. How: This computes the period key only for a non-daily picker, otherwise null.
+			const perKeyStr = picCadStr !== 'daily' ? cadNsObj.perKeyFun( picRecObj, genNowDat ) : null; // What: Period Key String. Why: A fresh non-daily pick still needs to be tagged with the period it belongs to, so a future generation can recognize it as already-current. How: This computes the period key only for a non-daily picker, otherwise null.
 			const pikResObj = PICKERS.pick( picRecObj, state.items, { excludeNames : pikNamSet } ); // What: Pick Result Object. Why: This is the actual picking engine call for this picker. How: This calls PICKERS.pick, passing pikNamSet so an avoidDuplicates picker won't re-surface an already-committed name.
 
 			if ( pikResObj.picked ) { // What: Picked Branch. Why: A successful pick needs collecting into newPikArr plus its own animation slot. How: This adds the picked name to pikNamSet, then pushes both records.

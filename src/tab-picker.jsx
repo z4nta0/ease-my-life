@@ -7,8 +7,8 @@ import React from 'react'; // What: React. Why: This is the UI library every com
 
 
 import { Btn                      } from './ui.jsx';                  // What: Button. Why: Every action in this file needs a consistently-styled clickable control. How: This is rendered wherever a styled button is needed, across the live picker view, the edit form, and the create form.
+import { CAD_NAM_OBJ              } from './cadence.js';              // What: Cadence. Why: This is the namespace of pure functions this file uses to normalize and edit a picker's own cadence. How: This is called for CAD_NAM_OBJ.norCadFun/enfWeeFun/locTipFun/uniWorFun throughout PicForCom.
 import { CadConCom                } from './cadence-control.jsx';     // What: Cadence Control. Why: This is the shared editor for a picker's cadence settings. How: This is rendered inside PicForCom's daily-schedule block, wired to the local cadence state.
-import { CADENCE                  } from './cadence.js';              // What: Cadence. Why: This is the namespace of pure functions this file uses to normalize and edit a picker's own cadence. How: This is called for CADENCE.normalize/enforceWeeklyDay/lockedDayTip/unitWord throughout PicForCom.
 import { clearHelpPickers         } from './help-sample-data.js';     // What: Clear Help Pickers. Why: Help mode's disposable sample pickers/conditionals must be torn down the moment help mode turns off or this tab unmounts. How: This is called from TabPicker's own help-mode effect and its unmount cleanup.
 import { Collapse                 } from './ui.jsx';                  // What: Collapse. Why: Several optional sections need an animated expand/collapse instead of an abrupt show/hide. How: This wraps the add-group input, the conditional-attach block, and the daily-schedule block, each gated on its own open boolean.
 import { ConditionalControls      } from './tab-conditional.jsx';     // What: Conditional Controls. Why: Attaching a brand-new inline conditional needs the same editor the Data tab uses. How: This is rendered inside PicForCom's conditional-attach block, wired to the local condDraft state.
@@ -1567,17 +1567,17 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 	const [ skpHolBoo, setSkpHolBoo ] = React.useState( ( iniFrmObj && iniFrmObj.skipHolidays ) || false ); // What: Skip Holidays Boolean And Setter. Why: Whether this picker sits out major U.S. holidays. How: This starts from a prefilled value, or false.
 	// What: Avoid Duplicates Boolean And Setter. Why: Excludes an item from this picker's own pool for the day if its name (case-insensitive) is already present elsewhere on today's list, for pickers that intentionally share items with another picker and don't want the same one to surface twice. How: This defaults off, since most pickers don't share a pool with anything else, so this should stay opt-in.
 	const [ avdDupBoo, setAvdDupBoo ] = React.useState( ( iniFrmObj && iniFrmObj.avoidDuplicates ) || false );
-	// What: Cadence Current Object And Setter. Why: How often this picker surfaces, plus its anchor. How: This defaults to daily, unless editing an existing picker (which prefills its current cadence): CADENCE.normalize's accepted shape matches the same fields addPicker/commitPickerEdit read off iniFrmObj here, so passing it straight through picks up any of them that are present and falls back to daily defaults for the rest.
-	const [ cadCurObj, setCadCurObj ] = React.useState( () => CADENCE.normalize( iniFrmObj || {} ) );
+	// What: Cadence Current Object And Setter. Why: How often this picker surfaces, plus its anchor. How: This defaults to daily, unless editing an existing picker (which prefills its current cadence): CAD_NAM_OBJ.norCadFun's accepted shape matches the same fields addPicker/commitPickerEdit read off iniFrmObj here, so passing it straight through picks up any of them that are present and falls back to daily defaults for the rest.
+	const [ cadCurObj, setCadCurObj ] = React.useState( () => CAD_NAM_OBJ.norCadFun( iniFrmObj || {} ) );
 	const locDowNum = cadCurObj.cadence === 'weekly' ? cadCurObj.anchorDow : null; // What: Locked Dow Number. Why: Weekly cadence pins its anchor day ON in the Days control (and blocks the presets from dropping it), so the two controls can't contradict each other. How: This is the anchor day while weekly, otherwise null.
-	const wthLocFun = ( dayInpArr ) => CADENCE.enforceWeeklyDay({ ...cadCurObj, daysOfWeek : dayInpArr }); // What: With Locked Function. Why: Every preset button below needs to apply the same locked-day enforcement the effect below already applies to manual edits. How: This calls the shared CADENCE helper with the candidate days merged into the current cadence.
-	React.useEffect( () => { // What: Enforce Weekly Day Effect. Why: A cadence change (e.g. switching into weekly, or changing which day is anchored) must also keep runDowArr consistent with the new anchor. How: This re-applies CADENCE.enforceWeeklyDay whenever the cadence or its anchor day changes.
+	const wthLocFun = ( dayInpArr ) => CAD_NAM_OBJ.enfWeeFun({ ...cadCurObj, daysOfWeek : dayInpArr }); // What: With Locked Function. Why: Every preset button below needs to apply the same locked-day enforcement the effect below already applies to manual edits. How: This calls the shared CAD_NAM_OBJ helper with the candidate days merged into the current cadence.
+	React.useEffect( () => { // What: Enforce Weekly Day Effect. Why: A cadence change (e.g. switching into weekly, or changing which day is anchored) must also keep runDowArr consistent with the new anchor. How: This re-applies CAD_NAM_OBJ.enfWeeFun whenever the cadence or its anchor day changes.
 
 
 		setRunDowArr( ( curDayArr ) => { // What: Days Reconcile Call. Why: Only a genuinely different result should trigger a re-render. How: This computes the enforced days and returns the previous array unchanged if nothing actually changed.
 
 
-			const nxtDayArr = CADENCE.enforceWeeklyDay({ ...cadCurObj, daysOfWeek : curDayArr }); // What: Next Day Array. Why: This is the actual enforced result to compare against. How: This calls the shared CADENCE helper with the current days.
+			const nxtDayArr = CAD_NAM_OBJ.enfWeeFun({ ...cadCurObj, daysOfWeek : curDayArr }); // What: Next Day Array. Why: This is the actual enforced result to compare against. How: This calls the shared CAD_NAM_OBJ helper with the current days.
 
 			return nxtDayArr.length === curDayArr.length ? curDayArr : nxtDayArr; // What: Unchanged Guard Return. Why: Returning the SAME array reference when nothing changed avoids a pointless extra render. How: This compares lengths as a cheap proxy for "did enforcement actually add the missing anchor day".
 
@@ -2411,7 +2411,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 
 						<div className='np-sched-block'>
 
-							<CadConCom value={ cadCurObj } onChange={ ( patCadObj ) => setCadCurObj( ( c ) => CADENCE.normalize({ ...c, ...patCadObj }) ) } />
+							<CadConCom value={ cadCurObj } onChange={ ( patCadObj ) => setCadCurObj( ( c ) => CAD_NAM_OBJ.norCadFun({ ...c, ...patCadObj }) ) } />
 
 						</div>{ /* What: Cadence Block Div Element. Why: The shared cadence editor needs its own labelled block. How: This wraps a single CadConCom, wired to cadCurObj. */ }
 
@@ -2429,7 +2429,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 									value={ runDowArr }
 									onChange={ setRunDowArr }
 									lockedDay={ locDowNum }
-									lockedTip={ locDowNum === null ? '' : CADENCE.lockedDayTip( locDowNum, 'On which day?' ) }
+									lockedTip={ locDowNum === null ? '' : CAD_NAM_OBJ.locTipFun( locDowNum, 'On which day?' ) }
 								/>{ /* What: Weekday Chips. Why: The user needs a direct way to toggle individual weekdays on or off. How: This is passed runDowArr and locDowNum so a weekly cadence's own anchor day can't be turned off here. */ }
 
 								<div className='np-sched-presets'>{ /* What: Presets Div Element. Why: Three common day patterns deserve one-tap shortcuts instead of manual chip-tapping every time. How: This wraps the Every day/Weekdays/Weekends buttons. */ }
@@ -2758,7 +2758,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 												<div className='pool-meta'>{ /* What: Meta Div Element. Why: The optional cadence summary and the optional weight pill sit side by side. How: This wraps both, each independently gated. */ }
 
 
-													{ isaEasBoo && <span className='pool-ease-meta'>{ sonDayNum }&ndash;{ latDayNum } { CADENCE.unitWord( cadCurObj.cadence, latDayNum ) }</span> }{ /* What: Ease Meta Span Check. Why: Only ease-up/ease-down items have a cadence summary worth showing. How: This renders the soonest-latest range, unit-worded per the picker's own cadence, only while isaEasBoo is true. */ }
+													{ isaEasBoo && <span className='pool-ease-meta'>{ sonDayNum }&ndash;{ latDayNum } { CAD_NAM_OBJ.uniWorFun( cadCurObj.cadence, latDayNum ) }</span> }{ /* What: Ease Meta Span Check. Why: Only ease-up/ease-down items have a cadence summary worth showing. How: This renders the soonest-latest range, unit-worded per the picker's own cadence, only while isaEasBoo is true. */ }
 
 													{ shoWgtBoo && <span className='pool-weight'>w{ curIteObj.weight }</span> }{ /* What: Weight Span Check. Why: Only weighted/dynamic items have a weight worth showing. How: This renders the raw weight only while shoWgtBoo is true. */ }
 

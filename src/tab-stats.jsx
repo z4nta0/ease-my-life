@@ -6,7 +6,7 @@
 import React from 'react'; // What: React. Why: This is the UI library the whole file's component and its hooks are built on. How: This is used directly (React.useState, React.useMemo, React.useCallback, ...) throughout instead of importing individual named hooks.
 
 
-import { CADENCE                } from './cadence.js';          // What: Cadence. Why: A cadence-scoped picker's run gaps need relabeling into real period words instead of raw day counts. How: This is called via CADENCE.unitWord to turn a day/period count into "week"/"month"/"year" wording.
+import { CAD_NAM_OBJ            } from './cadence.js';          // What: Cadence. Why: A cadence-scoped picker's run gaps need relabeling into real period words instead of raw day counts. How: This is called via CAD_NAM_OBJ.uniWorFun to turn a day/period count into "week"/"month"/"year" wording.
 import { Card                   } from './ui.jsx';              // What: Card. Why: Every stat card on this page shares the same rounded container chrome. How: This wraps each headline/breakdown/heatmap block rendered below.
 import { HelpButton             } from './help-mode.jsx';       // What: Help Button. Why: This page needs its own header toggle for entering and leaving help mode. How: This is rendered in the header, flipping helOnBoo on click.
 import { HelpOverlay            } from './help-mode.jsx';       // What: Help Overlay. Why: Help mode needs a dimmed overlay with per-element tooltips layered above the real page. How: This is rendered while helOnBoo is true, fed STATS_HELP_ITEMS as its copy source.
@@ -1733,13 +1733,13 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 	// values are already period counts and need no conversion).
 	const PER_DAY_OBJ = { weekly : 7, monthly : 30, yearly : 365 };            // What: Per Day Object. Why: Converting a raw calendar-day count into cadence periods needs each cadence's own approximate period length. How: This is looked up by staCadStr below.
 	const perDayNum   = PER_DAY_OBJ[ staCadStr ] || 1;                        // What: Per Day Number. Why: cadDisFun below needs this scoped picker's own approximate days-per-period value. How: This looks staCadStr up in PER_DAY_OBJ, falling back to 1 for a daily picker.
-	const uniForFun   = ( untModStr, untNum ) => isaCadBoo // What: Unit For Function. Why: A day-count metric's own unit word depends on both the picker's cadence and whether the value is singular or plural. How: This defers to CADENCE.unitWord for a cadenced picker, otherwise pluralizes the literal word "day".
-		? CADENCE.unitWord( staCadStr, untNum )
+	const uniForFun   = ( untModStr, untNum ) => isaCadBoo // What: Unit For Function. Why: A day-count metric's own unit word depends on both the picker's cadence and whether the value is singular or plural. How: This defers to CAD_NAM_OBJ.uniWorFun for a cadenced picker, otherwise pluralizes the literal word "day".
+		? CAD_NAM_OBJ.uniWorFun( staCadStr, untNum )
 		: ( untNum === 1 ? 'day' : 'days' );
 
 	// Plural unit word for the eligible-mode toggle labels (weeks/months/
 	// years).
-	const eliUniStr = isaCadBoo ? CADENCE.unitWord( staCadStr, 2 ) : 'days';         // What: Eligible Unit String. Why: The eligible-mode toggle button's own label needs a plural unit word matching the picker's cadence. How: This asks CADENCE.unitWord for the plural form (using 2 as a representative plural count), or falls back to 'days'.
+	const eliUniStr = isaCadBoo ? CAD_NAM_OBJ.uniWorFun( staCadStr, 2 ) : 'days';         // What: Eligible Unit String. Why: The eligible-mode toggle button's own label needs a plural unit word matching the picker's cadence. How: This asks CAD_NAM_OBJ.uniWorFun for the plural form (using 2 as a representative plural count), or falls back to 'days'.
 	// Toggle-button label for calendar mode (relabelled to the cadence
 	// unit).
 	const calUniStr = isaCadBoo ? `calendar ${ eliUniStr }` : 'calendar days'; // What: Calendar Unit String. Why: The calendar-mode toggle button's own label needs the same cadence-aware relabeling as the eligible one. How: This prefixes eliUniStr with "calendar", or falls back to the literal "calendar days".
@@ -1756,7 +1756,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 		const perNum = untModStr === 'calendar' ? rawDayNum / perDayNum : rawDayNum; // What: Period Number. Why: A calendar-mode raw day count must be converted into periods before display; an eligible-mode one is already in periods. How: This divides by perDayNum only in calendar mode.
 
-		return { num : ( Math.round( perNum * 10 ) / 10 ).toFixed( 1 ), word : CADENCE.unitWord( staCadStr, perNum ) }; // What: Cadence Return. Why: A cadenced picker's own value column always shows one forced decimal place, with a matching singular/plural unit word. How: This rounds perNum to one decimal and asks CADENCE.unitWord for the matching word.
+		return { num : ( Math.round( perNum * 10 ) / 10 ).toFixed( 1 ), word : CAD_NAM_OBJ.uniWorFun( staCadStr, perNum ) }; // What: Cadence Return. Why: A cadenced picker's own value column always shows one forced decimal place, with a matching singular/plural unit word. How: This rounds perNum to one decimal and asks CAD_NAM_OBJ.uniWorFun for the matching word.
 
 
 	};
@@ -1770,7 +1770,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 			if ( dayNum === 0 ) return 'Most recent';
 
-			if ( isaCadBoo ) return `${ ( Math.round( dayNum * 10 ) / 10 ).toFixed( 1 ) } ${ CADENCE.unitWord( staCadStr, dayNum ) } ago`;
+			if ( isaCadBoo ) return `${ ( Math.round( dayNum * 10 ) / 10 ).toFixed( 1 ) } ${ CAD_NAM_OBJ.uniWorFun( staCadStr, dayNum ) } ago`;
 
 			return `${ dayNum } ${ uniForFun( 'eligible', dayNum ) } ago`;
 
@@ -1779,7 +1779,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 		if ( dayNum === 0 ) return 'Most recent'; // What: Calendar Zero Case. Why: A same-day pick reads more naturally as "Most recent" than "0 days ago" in calendar mode too. How: This short-circuits before the cadence/plain branches below.
 
-		if ( isaCadBoo ) { const perNum = dayNum / perDayNum; return `${ ( Math.round( perNum * 10 ) / 10 ).toFixed( 1 ) } ${ CADENCE.unitWord( staCadStr, perNum ) } ago`; } // What: Calendar Cadenced Case. Why: A cadenced picker's own calendar-mode reading must still convert into its own period unit. How: This divides dayNum by perDayNum, then phrases it the same way the eligible branch above does.
+		if ( isaCadBoo ) { const perNum = dayNum / perDayNum; return `${ ( Math.round( perNum * 10 ) / 10 ).toFixed( 1 ) } ${ CAD_NAM_OBJ.uniWorFun( staCadStr, perNum ) } ago`; } // What: Calendar Cadenced Case. Why: A cadenced picker's own calendar-mode reading must still convert into its own period unit. How: This divides dayNum by perDayNum, then phrases it the same way the eligible branch above does.
 
 		return dayNum === 1 ? 'Yesterday' : `${ dayNum } days ago`; // What: Calendar Daily Case. Why: A plain daily picker's own calendar-mode reading is just literal days. How: This special-cases exactly one day as "Yesterday", otherwise a plain "N days ago" string.
 
@@ -1820,8 +1820,8 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 		// soonDayNum/lateDayNum are period counts; relabel in the picker's
 		// own cadence unit.
-		const untWrdStr = ( ( scpPicObj && scpPicObj.cadence ) || 'daily' ) !== 'daily' // What: Unit Word String. Why: A cadenced picker's own band suffix must relabel from raw days into its own period word. How: This asks CADENCE.unitWord for lateDayNum's own word, or falls back to the literal "days".
-			? CADENCE.unitWord( scpPicObj.cadence, lateDayNum ) : 'days';
+		const untWrdStr = ( ( scpPicObj && scpPicObj.cadence ) || 'daily' ) !== 'daily' // What: Unit Word String. Why: A cadenced picker's own band suffix must relabel from raw days into its own period word. How: This asks CAD_NAM_OBJ.uniWorFun for lateDayNum's own word, or falls back to the literal "days".
+			? CAD_NAM_OBJ.uniWorFun( scpPicObj.cadence, lateDayNum ) : 'days';
 
 		return `range ${ soonDayNum }–${ lateDayNum } ${ untWrdStr }`; // What: Range Suffix Return. Why: This is the finished "range X-Y unit" string rendered under the item's own name. How: This joins the two computed bounds with an en dash and the resolved unit word.
 

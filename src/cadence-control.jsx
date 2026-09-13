@@ -3,10 +3,10 @@
 
 // #region Imports
 
-import { CADENCE   } from './cadence.js';     // What: Cadence. Why: Every cadence field this component reads or writes (mode, anchors, dateMode, nthOrdinal, nthWeekday) is normalized and summarized through this one domain namespace instead of duplicating that logic locally. How: This is called below for its own normalize and tipFor entries.
-import { Collapse  } from './ui.jsx';         // What: Collapse. Why: The anchor subsection needs to animate open and closed as the selected cadence changes, instead of snapping. How: This wraps the whole non-daily anchor block below, gated on the current cadence.
-import { InfoTip   } from './ui.jsx';         // What: Info Tip. Why: Every cadence row's own "?" control needs an explanatory tooltip beside its label. How: This is rendered once per cadence row below, fed by CADENCE's own tipFor copy.
-import { Segmented } from './reminders.jsx';  // What: Segmented. Why: The top-level cadence picker and the monthly/yearly Date-vs-Weekday picker both need the same animated segmented control. How: This is rendered once for the cadence choice and once more inside each of the monthly and yearly subsections.
+import { CAD_NAM_OBJ } from './cadence.js';    // What: Cadence. Why: Every cadence field this component reads or writes (mode, anchors, dateMode, nthOrdinal, nthWeekday) is normalized and summarized through this one domain namespace instead of duplicating that logic locally. How: This is called below for its own norCadFun and tipMesFun entries.
+import { Collapse    } from './ui.jsx';        // What: Collapse. Why: The anchor subsection needs to animate open and closed as the selected cadence changes, instead of snapping. How: This wraps the whole non-daily anchor block below, gated on the current cadence.
+import { InfoTip     } from './ui.jsx';        // What: Info Tip. Why: Every cadence row's own "?" control needs an explanatory tooltip beside its label. How: This is rendered once per cadence row below, fed by CAD_NAM_OBJ's own tipMesFun copy.
+import { Segmented   } from './reminders.jsx'; // What: Segmented. Why: The top-level cadence picker and the monthly/yearly Date-vs-Weekday picker both need the same animated segmented control. How: This is rendered once for the cadence choice and once more inside each of the monthly and yearly subsections.
 
 // #endregion Imports
 
@@ -146,7 +146,7 @@ const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // 
  *
  * @param props.value    - Value: The picker's own persisted cadence value (or
  *                         an in-progress draft), normalized on every render
- *                         via CADENCE.normalize.
+ *                         via CAD_NAM_OBJ.norCadFun.
  * @param props.onChange - On Change: Called with a patch object whenever any
  *                         cadence field changes; the caller owns how the patch
  *                         gets merged into its own storage.
@@ -165,7 +165,7 @@ const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // 
 function CadConCom ( { value, onChange } ) {
 
 
-	const norCadObj = CADENCE.normalize( value || {} );                                                             // What: Normalized Cadence Object. Why: Every field read throughout this component needs a fully-defaulted cadence value, not a possibly-partial draft. How: This calls CADENCE.normalize against the caller's own value, falling back to an empty object for a brand-new draft.
+	const norCadObj = CAD_NAM_OBJ.norCadFun( value || {} );                                                             // What: Normalized Cadence Object. Why: Every field read throughout this component needs a fully-defaulted cadence value, not a possibly-partial draft. How: This calls CAD_NAM_OBJ.norCadFun against the caller's own value, falling back to an empty object for a brand-new draft.
 	const setPatFun = ( patObj ) => onChange( patObj );                                                             // What: Set Patch Function. Why: Every field editor below needs one shared way to forward a partial change up to the caller. How: This calls onChange directly with whatever patch object it is given.
 	const curSubEle = ( CAD_OPT_ARR.find( ( optConObj ) => optConObj.keyStr === norCadObj.cadence ) || {} ).subEle; // What: Current Sub Element. Why: The cadence picker's own live sub-explanation needs whichever CAD_OPT_ARR entry matches the currently-selected cadence. How: This looks up norCadObj's own cadence in CAD_OPT_ARR and reads that entry's own subEle field.
 
@@ -192,8 +192,8 @@ function CadConCom ( { value, onChange } ) {
 
 							<InfoTip
 								className='pie-help pie-help--sm'
-								label={ CADENCE.tipFor( 'daily', 'Which days?' ) }
-							>?</InfoTip> // What: Info Tip. Why: Only the daily cadence needs this inline explanation of how it interacts with a picker's own Days control. How: This renders the shared "?" bubble, fed by CADENCE's own tipFor copy.
+								label={ CAD_NAM_OBJ.tipMesFun( 'daily', 'Which days?' ) }
+							>?</InfoTip> // What: Info Tip. Why: Only the daily cadence needs this inline explanation of how it interacts with a picker's own Days control. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy.
 
 
 						) }
@@ -244,8 +244,8 @@ function CadConCom ( { value, onChange } ) {
 									On which day?
 									<InfoTip
 										className='pie-help'
-										label={ CADENCE.tipFor( 'weekly', 'Which days?' ) }
-									>?</InfoTip>{ /* What: Info Tip. Why: The weekly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CADENCE's own tipFor copy. */ }
+										label={ CAD_NAM_OBJ.tipMesFun( 'weekly', 'Which days?' ) }
+									>?</InfoTip>{ /* What: Info Tip. Why: The weekly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
 
 
 								</span>
@@ -307,8 +307,8 @@ function CadConCom ( { value, onChange } ) {
 									On which day?
 									<InfoTip
 										className='pie-help'
-										label={ CADENCE.tipFor( 'monthly', 'Which days?' ) }
-									>?</InfoTip>{ /* What: Info Tip. Why: The monthly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CADENCE's own tipFor copy. */ }
+										label={ CAD_NAM_OBJ.tipMesFun( 'monthly', 'Which days?' ) }
+									>?</InfoTip>{ /* What: Info Tip. Why: The monthly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
 
 
 								</span>
@@ -446,8 +446,8 @@ function CadConCom ( { value, onChange } ) {
 									On which date?
 									<InfoTip
 										className='pie-help'
-										label={ CADENCE.tipFor( 'yearly', 'Which days?' ) }
-									>?</InfoTip>{ /* What: Info Tip. Why: The yearly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CADENCE's own tipFor copy. */ }
+										label={ CAD_NAM_OBJ.tipMesFun( 'yearly', 'Which days?' ) }
+									>?</InfoTip>{ /* What: Info Tip. Why: The yearly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
 
 
 								</span>
