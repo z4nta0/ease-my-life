@@ -1796,7 +1796,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 							<Icon
 								name='refresh'
 								size={ 14 }
-							/> // What: Icon. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size.
+							/>{ /* What: Icon. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
 
 						</InfoTip>{ /* What: Info Tip. Why: A day-off card has no items to re-roll between, so this action is explained rather than removed. How: This wraps a disabled-looking refresh icon with disTipStr. */ }
 						<button
@@ -1823,7 +1823,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 							<Icon
 								name='edit'
 								size={ 15 }
-							/> // What: Icon. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'edit' icon at a fixed size.
+							/>{ /* What: Icon. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'edit' icon at a fixed size. */ }
 
 						</InfoTip>{ /* What: Info Tip. Why: A day-off card has no editable name of its own, so this action is explained rather than removed. How: This wraps a disabled-looking edit icon with disTipStr. */ }
 
@@ -1956,7 +1956,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 							<Icon
 								name='refresh'
 								size={ 14 }
-							/> // What: Icon. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size.
+							/>{ /* What: Icon. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
 
 						</InfoTip>{ /* What: Info Tip. Why: A charging card has no items to re-roll between yet. How: This wraps a disabled-looking refresh icon with disTipStr. */ }
 						<InfoTip
@@ -1968,7 +1968,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 							<Icon
 								name='skip'
 								size={ 15 }
-							/> // What: Icon. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skip' icon at a fixed size.
+							/>{ /* What: Icon. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
 
 						</InfoTip>{ /* What: Info Tip. Why: Skipping a charging card would discard the day's own staged drift instead of applying it. How: This wraps a disabled-looking skip icon with disTipStr. */ }
 						<InfoTip
@@ -1980,7 +1980,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 							<Icon
 								name='edit'
 								size={ 15 }
-							/> // What: Icon. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'edit' icon at a fixed size.
+							/>{ /* What: Icon. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'edit' icon at a fixed size. */ }
 
 						</InfoTip>{ /* What: Info Tip. Why: A charging card has no item of its own yet to edit. How: This wraps a disabled-looking edit icon with disTipStr. */ }
 
@@ -2208,7 +2208,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 							<Icon
 								name='refresh'
 								size={ 14 }
-							/> // What: Icon. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size.
+							/>{ /* What: Icon. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
 
 						</InfoTip> // What: Info Tip. Why: A blocked re-roll (too few candidates, or already completed) still needs to explain itself. How: This wraps a disabled-looking refresh icon with actRerStr.
 
@@ -2226,7 +2226,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 							<Icon
 								name='skip'
 								size={ 15 }
-							/> // What: Icon. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skip' icon at a fixed size.
+							/>{ /* What: Icon. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
 
 						</InfoTip> // What: Info Tip. Why: A completed row's own skip is explained rather than removed, matching re-roll's own lockout above. How: This wraps a disabled-looking skip icon with donSkiStr.
 
