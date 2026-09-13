@@ -8,7 +8,7 @@ import React from 'react'; // What: React. Why: This is the UI library the whole
 
 import { CAD_NAM_OBJ               } from './cadence.js';               // What: Cadence. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enfWeeFun/norCadFun/isaCadFun) from migrate and from the picker-authoring actions below.
 import { CLEAN_STATE               } from './seed.js';                 // What: Clean State. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called by loadState and by the reset action below.
-import { CONDITIONALS              } from './conditionals.js';         // What: Conditionals. Why: Day-off gate resolution/advancement logic lives here, not in this file. How: This is called from resolveConditionalsForDay and from applyConditionalToggle below.
+import { CON_NAM_OBJ               } from './conditionals.js';         // What: Conditionals. Why: Day-off gate resolution/advancement logic lives here, not in this file. How: This is called from resolveConditionalsForDay and from applyConditionalToggle below.
 import { HOL_NAM_OBJ               } from './holidays.js';             // What: Holidays Namespace Object. Why: The holiday list backfill and the holiday-editing actions both need the canonical empty holidays shape. How: This is called (defaultState) from migrate and from the holiday actions below.
 import { normalizeConditionalName  } from './pickers.js';              // What: Normalize Conditional Name. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicker and commitPickerEdit below.
 import { normalizeGroupName        } from './pickers.js';              // What: Normalize Group Name. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called from migrate and from renameGroup/renamePageTours below.
@@ -753,7 +753,7 @@ function revertEntryPending( curStaObj, curEntObj ) {
  * @summary
  * Resolves the conditional consequences of toggling one Today entry
  * done/undone. A day-off CARD entry (kind:'dayoff') drives its own
- * conditional's cardComplete (ease-up/dynamic reset, ease-down
+ * conditional's carComFun (ease-up/dynamic reset, ease-down
  * discharge) with an undo snapshot in _cardPrev. A dependent PICKER
  * entry (whose own picker.conditionalId is set) advances its
  * conditional's own value on the FIRST dependent completion of the day
@@ -789,9 +789,9 @@ function applyConditionalToggle( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
 
 	if ( !curCndArr.length ) return curCndArr; // What: No-Conditionals Guard. Why: An app with no conditionals at all has nothing to resolve. How: This returns curCndArr unchanged when it's empty.
 
-	const cndModObj = CONDITIONALS; // What: Conditional Module Object. Why: Every branch below repeatedly calls into this module's own resolution helpers. How: This aliases the imported CONDITIONALS namespace for brevity below.
+	const cndModObj = CON_NAM_OBJ; // What: Conditional Module Object. Why: Every branch below repeatedly calls into this module's own resolution helpers. How: This aliases the imported CON_NAM_OBJ namespace for brevity below.
 
-	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card entry's own completion drives its conditional's cardComplete instead of the dependent-picker charging logic below. How: This maps curCndArr, resolving only the one matching conditional.
+	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card entry's own completion drives its conditional's carComFun instead of the dependent-picker charging logic below. How: This maps curCndArr, resolving only the one matching conditional.
 
 
 		return curCndArr.map( ( curCndObj ) => {
@@ -799,10 +799,10 @@ function applyConditionalToggle( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
 
 			if ( curCndObj.id !== togEntObj.conditionalId ) return curCndObj; // What: Non-Matching Guard. Why: Every other conditional is untouched by this card's own toggle. How: This returns curCndObj unchanged when its own id doesn't match.
 
-			if ( nowDoneBoo ) { // What: Now-Done Branch. Why: Completing the card is what actually drives its own mode-specific completion effect. How: This calls cardComplete and snapshots the pre-effect fields into _cardPrev before applying its own patch.
+			if ( nowDoneBoo ) { // What: Now-Done Branch. Why: Completing the card is what actually drives its own mode-specific completion effect. How: This calls carComFun and snapshots the pre-effect fields into _cardPrev before applying its own patch.
 
 
-				const patValObj = cndModObj.cardComplete( curCndObj ); // What: Patch Value Object And Guard. Why: Some modes (probability) treat completion as informational only, returning no patch. How: This calls cndModObj's own cardComplete on curCndObj.
+				const patValObj = cndModObj.carComFun( curCndObj ); // What: Patch Value Object And Guard. Why: Some modes (probability) treat completion as informational only, returning no patch. How: This calls cndModObj's own carComFun on curCndObj.
 
 				if ( !patValObj ) return curCndObj; // What: No-Patch Guard. Why: A probability-mode card has nothing to actually mutate on completion. How: This returns curCndObj unchanged when patValObj is falsy.
 
@@ -849,12 +849,12 @@ function applyConditionalToggle( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
 	return curCndArr.map( ( curCndObj ) => { // What: Charged Conditionals Return. Why: Only the one matching value-mode conditional can advance or revert here. How: This maps curCndArr, resolving the charging/reverting edges for the matching conditional only.
 
 
-		if ( curCndObj.id !== cndIdeStr || !cndModObj.isValue( curCndObj.mode ) ) return curCndObj; // What: Non-Matching Guard. Why: Every other conditional, and a non-value-mode match, is untouched here. How: This returns curCndObj unchanged when either condition holds.
+		if ( curCndObj.id !== cndIdeStr || !cndModObj.modValFun( curCndObj.mode ) ) return curCndObj; // What: Non-Matching Guard. Why: Every other conditional, and a non-value-mode match, is untouched here. How: This returns curCndObj unchanged when either condition holds.
 
-		if ( nowDoneBoo && depDonNum === 1 && !curCndObj.chargedToday ) { // What: Charging-Edge Branch. Why: The FIRST dependent completion of an as-yet-uncharged day is what actually advances the conditional's own value. How: This calls advanceOnCompletion and snapshots the pre-effect fields into _chargePrev before applying its own patch.
+		if ( nowDoneBoo && depDonNum === 1 && !curCndObj.chargedToday ) { // What: Charging-Edge Branch. Why: The FIRST dependent completion of an as-yet-uncharged day is what actually advances the conditional's own value. How: This calls advValFun and snapshots the pre-effect fields into _chargePrev before applying its own patch.
 
 
-			const patValObj = cndModObj.advanceOnCompletion( curCndObj ); // What: Patch Value Object And Guard. Why: Some modes may decline to advance at all. How: This calls cndModObj's own advanceOnCompletion on curCndObj.
+			const patValObj = cndModObj.advValFun( curCndObj ); // What: Patch Value Object And Guard. Why: Some modes may decline to advance at all. How: This calls cndModObj's own advValFun on curCndObj.
 
 			if ( !patValObj ) return curCndObj; // What: No-Patch Guard. Why: A decline to advance leaves curCndObj with nothing to mutate. How: This returns curCndObj unchanged when patValObj is falsy.
 
@@ -2449,7 +2449,7 @@ function useStore( optArgObj ) {
 
 		} ),
 
-		// What: Resolve Conditionals-For-Day Action. Why: Phase A of Generate: rolls probability/dynamic modes and carries persisted active for ease modes, clearing the per-day charge guard, so the generator can gate pickers off fresh values in the same pass. How: This calls CONDITIONALS.resolveForDay, applies its own per-conditional patch, and returns the resolved array directly (not just via setAppStaObj).
+		// What: Resolve Conditionals-For-Day Action. Why: Phase A of Generate: rolls probability/dynamic modes and carries persisted active for ease modes, clearing the per-day charge guard, so the generator can gate pickers off fresh values in the same pass. How: This calls CON_NAM_OBJ.resDayFun, applies its own per-conditional patch, and returns the resolved array directly (not just via setAppStaObj).
 		resolveConditionalsForDay : () => {
 
 
@@ -2457,7 +2457,7 @@ function useStore( optArgObj ) {
 
 			setAppStaObj( ( curStaObj ) => {
 
-				const patByIdObj = CONDITIONALS.resolveForDay( curStaObj.conditionals || [] ); // What: Patch By Id Object. Why: CONDITIONALS itself decides each conditional's own per-day patch (or none). How: This calls CONDITIONALS.resolveForDay with curStaObj's own conditionals.
+				const patByIdObj = CON_NAM_OBJ.resDayFun( curStaObj.conditionals || [] ); // What: Patch By Id Object. Why: CON_NAM_OBJ itself decides each conditional's own per-day patch (or none). How: This calls CON_NAM_OBJ.resDayFun with curStaObj's own conditionals.
 				const nxtCndArr = ( curStaObj.conditionals || [] ).map( ( curCndObj ) => ( { ...curCndObj, ...patByIdObj[ curCndObj.id ] } ) ); // What: Next Conditionals Array. Why: Every conditional gets its own matching patch (if any) merged on. How: This maps every conditional, spreading in patByIdObj's own entry for its id.
 
 				resCndArr = nxtCndArr; // What: Resolved Array Capture. Why: The outer resCndArr must be set from inside this updater, the only place nxtCndArr actually exists. How: This assigns nxtCndArr onto the closed-over resCndArr.

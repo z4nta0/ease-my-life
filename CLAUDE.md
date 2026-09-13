@@ -1480,6 +1480,25 @@ between JSX siblings. Three tiers:
   - The same logic applies to two `useEffect`s specifically: 1 if they
     handle the exact same data, 2 if they operate on different (even if
     related/sibling) data while doing a similar kind of action, 3 otherwise.
+  - **Mutually-exclusive sibling branches involving a multi-line one**: a
+    run of independent early-return `if`s dispatching on the same value
+    (e.g. `if ( mode === 'a' ) return ...; if ( mode === 'b' ) return
+    ...;`, not a formal `else if` chain, which has its own fixed
+    1-blank rule under "### if/else and while statements" regardless of
+    shape) stays Related (1) ONLY between two adjacent one-line siblings.
+    The moment EITHER side of a transition is a multi-line `if` block
+    (its own closing `}` on a line by itself), that specific gap is
+    Somewhat related (2) instead, the same "different kind of code
+    construct" reasoning as the declare-then-block case above, even
+    between two multi-line siblings back to back (a closing `}`
+    immediately followed by the next `if` is itself the shift, not
+    whether the two sides "match"). See `isaAncFun`'s monthly (one-line)
+    into yearly (multi-line) transition, `perStaFun`'s daily (one-line)
+    into weekly (multi-line) transition and its own monthly-into-yearly
+    (multi-line into multi-line) transition, and `advValFun`'s
+    ease-up/dynamic/ease-down (all multi-line, each gap still 2) in
+    `src/cadence.js` and `src/conditionals.js` for the reference
+    examples.
 - **Unrelated (3 blank lines)**: no real shared data and no real shared
   purpose — including cases that only *look* structurally parallel. Two
   independent "declare + guard clause" pairs that happen to share the same
@@ -1764,7 +1783,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
 - **Exported namespace objects must use explicit `originalName :
   internalName` mapping, never JS shorthand `{ internalName }`.** A
   domain module's public API (`STORAGE`, `PICKERS`, `TASKS`,
-  `CONDITIONALS`, `HOL_NAM_OBJ`, `NOT_NAM_OBJ`, ...) keeps its own
+  `HOL_NAM_OBJ`, `NOT_NAM_OBJ`, ...) keeps its own
   ORIGINAL external property names stable while every internal
   implementation gets renamed to the 9-char scheme. Writing the export
   as shorthand (e.g. `export const X = { perCheFun, askOncFun }`)
@@ -1778,18 +1797,23 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   externally, then verify the export object explicitly maps EACH one
   (`realName : internalName`), never bare.
   - **Exception**: `cadence.js`'s own `CAD_NAM_OBJ` (originally
-    `CADENCE`) deliberately swept its external property names to match
-    its internal implementation exactly (`normalize` → `norCadFun`,
-    `isCadence` → `isaCadFun`, ...), with every one of its ~60 external
-    call sites across 7 consumer files updated in the same pass. This
-    was a deliberate, fully-swept rename, not a case of the shorthand
-    danger above: the blast radius was checked first (every call site
-    is plain JS, resolved at call time, never persisted to IndexedDB/
-    localStorage), unlike a picker's own persisted cadence fields
-    (`anchorDow`, `anchorDom`, ...), which stay unrenamed for exactly
-    that reason. The explicit `name : name` mapping is still kept
-    (never JS shorthand) even though the names now match, so a future
-    internal rename still has to touch the export line deliberately.
+    `CADENCE`) and `conditionals.js`'s own `CON_NAM_OBJ` (originally
+    `CONDITIONALS`) both deliberately swept their external property
+    names to match their internal implementation exactly (e.g.
+    `normalize` → `norCadFun`, `isCadence` → `isaCadFun` for the
+    former; `cardComplete` → `carComFun`, `advanceOnCompletion` →
+    `advValFun` for the latter), with every external call site (~60
+    across 7 consumer files for CAD_NAM_OBJ, 6 across 3 for CON_NAM_OBJ)
+    updated in the same pass. This was a deliberate, fully-swept rename,
+    not a case of the shorthand danger above: the blast radius was
+    checked first for each (every call site is plain JS, resolved at
+    call time, never persisted to IndexedDB/localStorage), unlike a
+    picker's own persisted cadence fields (`anchorDow`, `anchorDom`,
+    ...) or a conditional's own persisted fields (`oddsPct`, `easeMin`,
+    `chargeStep`, ...), which stay unrenamed for exactly that reason.
+    The explicit `name : name` mapping is still kept (never JS
+    shorthand) even though the names now match, so a future internal
+    rename still has to touch the export line deliberately.
 
 ### Default parameter values
 - Only give a parameter a default where it's genuinely reachable/
