@@ -212,16 +212,16 @@ function groEntFun ( staAppObj ) {
 
 		}
 
-		const pkrRecObj = staAppObj.pickers.find( ( curPkrObj ) => curPkrObj.id === curEntObj.pickerId ); // What: Picker Record Object. Why: Every non-day-off entry needs its own picker resolved to know its group and to render its name. How: This finds the picker matching curEntObj's own pickerId.
+		const picRecObj = staAppObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId ); // What: Picker Record Object. Why: Every non-day-off entry needs its own picker resolved to know its group and to render its name. How: This finds the picker matching curEntObj's own pickerId.
 
-		if ( !pkrRecObj || pkrRecObj.hidden ) continue; // What: Missing Or Hidden Picker Guard. Why: An entry whose picker was deleted, or is still hidden mid-onboarding, must not render at all. How: This skips curEntObj when pkrRecObj is missing or flagged hidden.
+		if ( !picRecObj || picRecObj.hidden ) continue; // What: Missing Or Hidden Picker Guard. Why: An entry whose picker was deleted, or is still hidden mid-onboarding, must not render at all. How: This skips curEntObj when picRecObj is missing or flagged hidden.
 
 
-		const groNamStr = pkrRecObj.group || 'Other'; // What: Group Name String. Why: This entry needs a real group to bucket into. How: This reads pkrRecObj's own group, falling back to 'Other'.
+		const groNamStr = picRecObj.group || 'Other'; // What: Group Name String. Why: This entry needs a real group to bucket into. How: This reads picRecObj's own group, falling back to 'Other'.
 
 		if ( !byGroMap.has( groNamStr ) ) byGroMap.set( groNamStr, { name : groNamStr, entries : [] } ); // What: Group Bucket Init Guard. Why: The very first entry seen for a group must create its own bucket. How: This sets a fresh { name, entries } bucket only when groNamStr has none yet.
 
-		byGroMap.get( groNamStr ).entries.push( { entry : curEntObj, picker : pkrRecObj } ); // What: Entry Row Push. Why: This is the real row EntCarCom renders. How: This pairs curEntObj with its own resolved pkrRecObj.
+		byGroMap.get( groNamStr ).entries.push( { entry : curEntObj, picker : picRecObj } ); // What: Entry Row Push. Why: This is the real row EntCarCom renders. How: This pairs curEntObj with its own resolved picRecObj.
 
 
 	}
@@ -255,32 +255,32 @@ function groEntFun ( staAppObj ) {
 
 	const cheDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.checklistDone ); // What: Checklist Done Boolean. Why: The collision exclusion described above only ever applies post-checklistDone. How: This reads staAppObj's own onboarding.checklistDone.
 
-	for ( const curPkrObj of staAppObj.pickers ) { // What: Sample Picker Card Loop. Why: One launcher card is needed per still-hidden, still-relevant sample picker. How: This walks every picker, skipping anything that isn't a currently-hidden sample.
+	for ( const curPicObj of staAppObj.pickers ) { // What: Sample Picker Card Loop. Why: One launcher card is needed per still-hidden, still-relevant sample picker. How: This walks every picker, skipping anything that isn't a currently-hidden sample.
 
 
-		if ( !curPkrObj.hidden || !OB_SAMPLE_PICKER_IDS.includes( curPkrObj.id ) ) continue; // What: Non-Sample Guard. Why: Only a hidden SAMPLE picker gets a launcher card at all. How: This skips any picker that is not hidden, or not one of the fixed sample ids.
+		if ( !curPicObj.hidden || !OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) ) continue; // What: Non-Sample Guard. Why: Only a hidden SAMPLE picker gets a launcher card at all. How: This skips any picker that is not hidden, or not one of the fixed sample ids.
 
 
-		const isaDonBoo = !!OB_CHECKLIST.entryFor( staAppObj, curPkrObj.id ); // What: Is-A Done Boolean. Why: A card's own resolved/unresolved state decides both its own display and whether it should vanish post-checklistDone. How: This checks OB_CHECKLIST for an existing entry against this picker's own id.
+		const isaDonBoo = !!OB_CHECKLIST.entryFor( staAppObj, curPicObj.id ); // What: Is-A Done Boolean. Why: A card's own resolved/unresolved state decides both its own display and whether it should vanish post-checklistDone. How: This checks OB_CHECKLIST for an existing entry against this picker's own id.
 
-		if ( cheDonBoo && isaDonBoo ) continue; // What: Replay Resolved Guard. Why: Post-checklistDone, a resolved card vanishes for good the moment it resolves instead of sticking around with an Undo toggle, since there is no closing Generate card left to synchronize a batch disappearance against. How: This drops curPkrObj's own card once it is both post-checklistDone and already resolved.
+		if ( cheDonBoo && isaDonBoo ) continue; // What: Replay Resolved Guard. Why: Post-checklistDone, a resolved card vanishes for good the moment it resolves instead of sticking around with an Undo toggle, since there is no closing Generate card left to synchronize a batch disappearance against. How: This drops curPicObj's own card once it is both post-checklistDone and already resolved.
 
 
 		if ( cheDonBoo ) { // What: Replay Collision Branch. Why: Only matters post-checklistDone; during the ORIGINAL first-time checklist this must stay a no-op, since finishing this exact tutorial deliberately creates a real picker sharing the sample's own name (addPicker's own dedup skips hidden pickers for this reason, see store.jsx), and running this check then would immediately "collide" with its own result. How: This checks for a same-named real picker and drops the card if one already exists.
 
 
-			const colBoo = staAppObj.pickers.some( ( othPkrObj ) => !OB_SAMPLE_PICKER_IDS.includes( othPkrObj.id ) && othPkrObj.name === curPkrObj.name ); // What: Collision Boolean. Why: A real picker sharing this sample's exact name means re-prompting it would be redundant. How: This checks every non-sample picker's own name against curPkrObj's own name.
+			const colBoo = staAppObj.pickers.some( ( othPicObj ) => !OB_SAMPLE_PICKER_IDS.includes( othPicObj.id ) && othPicObj.name === curPicObj.name ); // What: Collision Boolean. Why: A real picker sharing this sample's exact name means re-prompting it would be redundant. How: This checks every non-sample picker's own name against curPicObj's own name.
 
-			if ( colBoo ) continue; // What: Collision Skip. Why: A colliding real picker means this sample's own card should stop offering itself. How: This drops curPkrObj's own card once colBoo is true.
+			if ( colBoo ) continue; // What: Collision Skip. Why: A colliding real picker means this sample's own card should stop offering itself. How: This drops curPicObj's own card once colBoo is true.
 
 
 		}
 
-		const groNamStr = curPkrObj.group || 'Other'; // What: Group Name String. Why: A launcher card still needs a real group to bucket into, same as any other row. How: This reads curPkrObj's own group, falling back to 'Other'.
+		const groNamStr = curPicObj.group || 'Other'; // What: Group Name String. Why: A launcher card still needs a real group to bucket into, same as any other row. How: This reads curPicObj's own group, falling back to 'Other'.
 
 		if ( !byGroMap.has( groNamStr ) ) byGroMap.set( groNamStr, { name : groNamStr, entries : [] } ); // What: Group Bucket Init Guard. Why: The very first entry seen for a group must create its own bucket. How: This sets a fresh { name, entries } bucket only when groNamStr has none yet.
 
-		byGroMap.get( groNamStr ).entries.push( { entry : { kind : 'tutorial', eid : 'tut_' + curPkrObj.id, done : isaDonBoo }, picker : curPkrObj } ); // What: Tutorial Row Push. Why: This is the synthetic row EntCarCom's own tutorial branch renders. How: This pairs a synthetic { kind, eid, done } entry with the real curPkrObj.
+		byGroMap.get( groNamStr ).entries.push( { entry : { kind : 'tutorial', eid : 'tut_' + curPicObj.id, done : isaDonBoo }, picker : curPicObj } ); // What: Tutorial Row Push. Why: This is the synthetic row EntCarCom's own tutorial branch renders. How: This pairs a synthetic { kind, eid, done } entry with the real curPicObj.
 
 
 	}
@@ -294,10 +294,10 @@ function groEntFun ( staAppObj ) {
 
 	for ( const curGroStr of savOrdArr ) if ( byGroMap.has( curGroStr ) && !ordArr.includes( curGroStr ) ) ordArr.push( curGroStr ); // What: Saved Order Pass. Why: A group the user has already positioned keeps that position. How: This appends each saved group name that actually has a bucket and isn't already collected.
 
-	for ( const curPkrObj of staAppObj.pickers ) { // What: First-Occurrence Order Pass. Why: A group not yet in the saved order still needs a stable position, taken from wherever it first appears among the user's own pickers. How: This appends any not-yet-collected group the first time a picker names it.
+	for ( const curPicObj of staAppObj.pickers ) { // What: First-Occurrence Order Pass. Why: A group not yet in the saved order still needs a stable position, taken from wherever it first appears among the user's own pickers. How: This appends any not-yet-collected group the first time a picker names it.
 
 
-		if ( curPkrObj.group && byGroMap.has( curPkrObj.group ) && !ordArr.includes( curPkrObj.group ) ) ordArr.push( curPkrObj.group ); // What: First-Occurrence Append. Why: This is the actual append this pass performs. How: This pushes curPkrObj's own group once, the first time it is encountered.
+		if ( curPicObj.group && byGroMap.has( curPicObj.group ) && !ordArr.includes( curPicObj.group ) ) ordArr.push( curPicObj.group ); // What: First-Occurrence Append. Why: This is the actual append this pass performs. How: This pushes curPicObj's own group once, the first time it is encountered.
 
 
 	}
@@ -310,15 +310,15 @@ function groEntFun ( staAppObj ) {
 
 	// #region Sort Rows Within Each Group
 
-	const savPkrOrdObj = ( staAppObj.pickerOrder && typeof staAppObj.pickerOrder === 'object' ) ? staAppObj.pickerOrder : {}; // What: Saved Picker Order Object. Why: Within each group, rows follow the user's own saved per-group picker order. How: This reads state.pickerOrder when it is a real object, otherwise an empty one.
+	const savPicOrdObj = ( staAppObj.pickerOrder && typeof staAppObj.pickerOrder === 'object' ) ? staAppObj.pickerOrder : {}; // What: Saved Picker Order Object. Why: Within each group, rows follow the user's own saved per-group picker order. How: This reads state.pickerOrder when it is a real object, otherwise an empty one.
 
 	return ordArr.filter( ( curGroStr ) => byGroMap.has( curGroStr ) ).map( ( curGroStr ) => { // What: Group Sort Map. Why: Every group in display order needs its own rows sorted before rendering. How: This maps each group name to its own bucket, sorted below.
 
 
 		const groRecObj = byGroMap.get( curGroStr );      // What: Group Record Object. Why: This is the specific bucket being sorted in this iteration. How: This reads curGroStr's own bucket out of byGroMap.
-		const posIndObj = {};                             // What: Position Index Object. Why: A row's own explicit saved position (if any) always wins, so it needs a fast lookup by picker id. How: This is populated just below from savPkrOrdObj's own entry for this group.
+		const posIndObj = {};                             // What: Position Index Object. Why: A row's own explicit saved position (if any) always wins, so it needs a fast lookup by picker id. How: This is populated just below from savPicOrdObj's own entry for this group.
 
-		( savPkrOrdObj[ curGroStr ] || [] ).forEach( ( curPkrIdeStr, curIndNum ) => { posIndObj[ curPkrIdeStr ] = curIndNum; } ); // What: Position Index Build. Why: Every saved picker id needs its own saved index recorded before the sort below can use it. How: This walks the saved per-group order, recording each picker id's own index.
+		( savPicOrdObj[ curGroStr ] || [] ).forEach( ( curPicIdeStr, curIndNum ) => { posIndObj[ curPicIdeStr ] = curIndNum; } ); // What: Position Index Build. Why: Every saved picker id needs its own saved index recorded before the sort below can use it. How: This walks the saved per-group order, recording each picker id's own index.
 
 		groRecObj.entries.forEach( ( curRowObj, curIndNum ) => { curRowObj._i = curIndNum; } ); // What: Stable Tiebreaker Stamp. Why: The sort below needs a stable tiebreaker for rows with no explicit position of their own. How: This stamps each row with its own current index before sorting.
 
@@ -813,7 +813,7 @@ function LoaReeCom ( { candidates : canIteArr } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.pkrRecObj - The picker this loader slot belongs to.
+ * @param props.picRecObj - The picker this loader slot belongs to.
  * @param props.infRecObj - The slot's own generation-in-progress record:
  *                          { status, kind, candidates, pickedId,
  *                          cardText }, built up in TabToday's own
@@ -824,19 +824,19 @@ function LoaReeCom ( { candidates : canIteArr } ) {
  *
  * @example
  * ```tsx
- * LoaCarCom({ pkrRecObj, infRecObj }) // => <LoaCarCom />
+ * LoaCarCom({ picRecObj, infRecObj }) // => <LoaCarCom />
  * ```
  *
 */
 
-function LoaCarCom ( { picker : pkrRecObj, info : infRecObj } ) {
+function LoaCarCom ( { picker : picRecObj, info : infRecObj } ) {
 
 
 	const staStr = infRecObj?.status || 'pending'; // What: Status String. Why: Every branch below renders differently depending on this slot's own current phase. How: This reads infRecObj's own status, defaulting to 'pending' before the effect even sets one.
 	const kndStr = infRecObj?.kind || 'pick';       // What: Kind String. Why: A non-pick slot (day-off/charging) has no candidate reel and a fixed settled name instead. How: This reads infRecObj's own kind, defaulting to 'pick'.
 
 	const finNamStr = kndStr === 'dayoff' // What: Final Name String. Why: The settled state needs one final display name, computed differently per kind. How: This resolves a day-off's own cardText (or the picker's own name), a fixed charging message, or the actually-picked candidate's own name.
-		? ( infRecObj.cardText || pkrRecObj.name )
+		? ( infRecObj.cardText || picRecObj.name )
 		: kndStr === 'charging'
 		? 'No eligible items for today'
 		: ( infRecObj && infRecObj.candidates ? infRecObj.candidates.find( ( curCanObj ) => curCanObj.id === infRecObj.pickedId )?.name : '' );
@@ -860,7 +860,7 @@ function LoaCarCom ( { picker : pkrRecObj, info : infRecObj } ) {
 				<div className='today-card-meta'>{ /* What: Loader Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot, matching a real card's own layout. How: This wraps the picker-name span below. */ }
 
 
-					<span className='meta-picker'>{ pkrRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this slot belongs to while it is still generating. How: This renders pkrRecObj's own name. */ }
+					<span className='meta-picker'>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this slot belongs to while it is still generating. How: This renders picRecObj's own name. */ }
 
 
 				</div>
@@ -1001,10 +1001,10 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 	// #region Mode-Derived Display Values
 
-	const pkrModStr = picker ? picker.mode : 'random';                   // What: Picker Mode String. Why: Nearly every row below renders differently depending on the picker's own mode. How: This reads picker.mode, falling back to 'random' when no picker was passed at all.
-	const isaEasBoo = pkrModStr === 'ease-up' || pkrModStr === 'ease-down'; // What: Is-A Ease Boolean. Why: Ease-up/ease-down show a cadence range instead of a weight stepper, since weight is irrelevant to those modes. How: This is true for either ease mode.
-	const hasWgtBoo = pkrModStr === 'weighted' || pkrModStr === 'dynamic'; // What: Has Weight Boolean. Why: Weight is only a real lever for weighted/dynamic; random picks uniformly and ease modes ignore it entirely. How: This is true for either of those two modes.
-	const isaDynBoo = pkrModStr === 'dynamic'; // What: Is-A Dynamic Boolean. Why: Only dynamic mode also shows the Boost row beneath its weight stepper. How: This is true only when pkrModStr is 'dynamic'.
+	const picModStr = picker ? picker.mode : 'random';                   // What: Picker Mode String. Why: Nearly every row below renders differently depending on the picker's own mode. How: This reads picker.mode, falling back to 'random' when no picker was passed at all.
+	const isaEasBoo = picModStr === 'ease-up' || picModStr === 'ease-down'; // What: Is-A Ease Boolean. Why: Ease-up/ease-down show a cadence range instead of a weight stepper, since weight is irrelevant to those modes. How: This is true for either ease mode.
+	const hasWgtBoo = picModStr === 'weighted' || picModStr === 'dynamic'; // What: Has Weight Boolean. Why: Weight is only a real lever for weighted/dynamic; random picks uniformly and ease modes ignore it entirely. How: This is true for either of those two modes.
+	const isaDynBoo = picModStr === 'dynamic'; // What: Is-A Dynamic Boolean. Why: Only dynamic mode also shows the Boost row beneath its weight stepper. How: This is true only when picModStr is 'dynamic'.
 
 	// #endregion Mode-Derived Display Values
 
@@ -1044,7 +1044,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 	};
 
-	const isaDowBoo = pkrModStr === 'ease-down'; // What: Is-A Down Boolean. Why: Ease-down uses different row labels/phrasing (Shortest/Longest/Refill) than ease-up (Soonest/Latest/Fill). How: This is true only when pkrModStr is 'ease-down'.
+	const isaDowBoo = picModStr === 'ease-down'; // What: Is-A Down Boolean. Why: Ease-down uses different row labels/phrasing (Shortest/Longest/Refill) than ease-up (Soonest/Latest/Fill). How: This is true only when picModStr is 'ease-down'.
 	const sooLblStr = isaDowBoo ? 'Shortest' : 'Soonest'; // What: Soonest Label String. Why: The Soonest row's own heading text differs by direction. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
 	const latLblStr = isaDowBoo ? 'Longest' : 'Latest';   // What: Latest Label String. Why: The Latest row's own heading text differs by direction. How: This picks 'Longest' for ease-down, 'Latest' otherwise.
 
@@ -1106,7 +1106,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 
 									<span className='pie-lbl'>{ sooLblStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders sooLblStr directly. */ }
-									{ pkrModStr === 'ease-up' && (
+									{ picModStr === 'ease-up' && (
 
 										<InfoTip
 											className='pie-help'
@@ -1150,7 +1150,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 
 									<span className='pie-lbl'>{ latLblStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders latLblStr directly. */ }
-									{ pkrModStr === 'ease-up' && (
+									{ picModStr === 'ease-up' && (
 
 										<InfoTip
 											className='pie-help'
@@ -1184,7 +1184,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 
 						</div>
-						{ pkrModStr === 'ease-up' && (
+						{ picModStr === 'ease-up' && (
 
 
 							<div className='pie-row pie-ease-up-row'>{ /* What: Fill Row Div Element. Why: Ease-up specifically offers an instant-fill shortcut. How: This renders the Fill label/subtitle plus its FillButton. */ }
@@ -1212,7 +1212,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 
 						) }
-						{ pkrModStr === 'ease-down' && (
+						{ picModStr === 'ease-down' && (
 
 
 							<div className='pie-row pie-ease-down-row'>{ /* What: Refill Row Div Element. Why: Ease-down specifically offers an instant-refill shortcut. How: This renders the Refill label/subtitle plus its FillButton. */ }
@@ -1492,7 +1492,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
  *
  * @param props.entRecObj   - The entry (or synthetic tutorial/day-off/
  *                            charging row) this card renders.
- * @param props.pkrRecObj   - The entry's own resolved picker (or a
+ * @param props.picRecObj   - The entry's own resolved picker (or a
  *                            picker-shaped stand-in for a day-off row).
  * @param props.staAppObj   - The shared app state.
  * @param props.actStoObj   - The shared app actions.
@@ -1524,12 +1524,12 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
  *
  * @example
  * ```tsx
- * EntCarCom({ entRecObj, pkrRecObj, staAppObj, ... }) // => <EntCarCom />
+ * EntCarCom({ entRecObj, picRecObj, staAppObj, ... }) // => <EntCarCom />
  * ```
  *
 */
 
-function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj, actions : actStoObj, justChecked : jusCheStr, onCheck : onCheFun, onSkip : onSkiFun, onReroll : onRerFun, isRemoving : isaRemBoo, isRolling : isaRolBoo, isEditing : isaEdiBoo, onEdit : onEdiFun, onRename : onRenFun, editMode : ediModBoo, onGripDown : onGriDowFun, onPlayTutorial : onPlaTutFun, onUncheckTutorial : onUncTutFun, checklistExiting : cheExiBoo } ) {
+function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj, actions : actStoObj, justChecked : jusCheStr, onCheck : onCheFun, onSkip : onSkiFun, onReroll : onRerFun, isRemoving : isaRemBoo, isRolling : isaRolBoo, isEditing : isaEdiBoo, onEdit : onEdiFun, onRename : onRenFun, editMode : ediModBoo, onGripDown : onGriDowFun, onPlayTutorial : onPlaTutFun, onUncheckTutorial : onUncTutFun, checklistExiting : cheExiBoo } ) {
 
 
 	// #region Tutorial Branch
@@ -1545,9 +1545,9 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 
 			if ( cliEveObj.target.closest( '.today-card-actions' ) ) return;
 
-			if ( tutDonBoo ) onUncTutFun( 'picker', pkrRecObj.id );
+			if ( tutDonBoo ) onUncTutFun( 'picker', picRecObj.id );
 
-			else onPlaTutFun( 'picker', pkrRecObj.id );
+			else onPlaTutFun( 'picker', picRecObj.id );
 
 
 		};
@@ -1568,8 +1568,8 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 						type='button'
 						className='check'
 						aria-pressed='true'
-						aria-label={ `Undo ${ pkrRecObj.name } tutorial` }
-						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onUncTutFun( 'picker', pkrRecObj.id ); } }
+						aria-label={ `Undo ${ picRecObj.name } tutorial` }
+						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onUncTutFun( 'picker', picRecObj.id ); } }
 					>{ /* What: Undo Check Button Element. Why: A resolved tutorial card can be un-resolved directly from its own check button, unlike a pending one. How: This calls onUncTutFun, scoped to 'picker'. */ }
 
 
@@ -1592,8 +1592,8 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 					<button
 						type='button'
 						className='check'
-						aria-label={ `Start the ${ pkrRecObj.name } tutorial` }
-						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onPlaTutFun( 'picker', pkrRecObj.id ); } }
+						aria-label={ `Start the ${ picRecObj.name } tutorial` }
+						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onPlaTutFun( 'picker', picRecObj.id ); } }
 					>{ /* What: Play Check Button Element. Why: A pending tutorial card's own check button starts its mini-tour instead of toggling done. How: This calls onPlaTutFun, scoped to 'picker'. */ }
 
 
@@ -1613,15 +1613,15 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 					<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The picker's own name and its optional time estimate sit together. How: This wraps the picker-name span and, when one exists, the time estimate. */ }
 
 
-						<span className='meta-picker'>{ pkrRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which sample picker this card offers. How: This renders pkrRecObj's own name. */ }
-						{ OB_PICKER_CARD_TIME[ pkrRecObj.id ] && (
+						<span className='meta-picker'>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which sample picker this card offers. How: This renders picRecObj's own name. */ }
+						{ OB_PICKER_CARD_TIME[ picRecObj.id ] && (
 
 
 							<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
 
 
 								<span className='meta-dot'>&middot;</span>{ /* What: Meta Dot Span Element. Why: The picker name and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
-								<span className='meta-time'>{ OB_PICKER_CARD_TIME[ pkrRecObj.id ] }</span>{ /* What: Meta Time Span Element. Why: A manually-timed estimate helps the user judge how long this tutorial takes. How: This renders the looked-up estimate for pkrRecObj's own id. */ }
+								<span className='meta-time'>{ OB_PICKER_CARD_TIME[ picRecObj.id ] }</span>{ /* What: Meta Time Span Element. Why: A manually-timed estimate helps the user judge how long this tutorial takes. How: This renders the looked-up estimate for picRecObj's own id. */ }
 
 
 							</React.Fragment>
@@ -1630,7 +1630,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 						) }
 
 					</div>
-					<div className='today-card-name'>Set up a { pkrRecObj.name } picker</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with pkrRecObj's own name interpolated. */ }
+					<div className='today-card-name'>Set up a { picRecObj.name } picker</div>{ /* What: Card Name Div Element. Why: This is the card's own call-to-action text. How: This renders the fixed phrasing with picRecObj's own name interpolated. */ }
 
 
 				</div>
@@ -1644,7 +1644,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 							className='icon-btn'
 							aria-label='Cancel tutorial'
 							title='Cancel'
-							onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); actStoObj.setChecklistItem( pkrRecObj.id, { status : 'cancelled' } ); } }
+							onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); actStoObj.setChecklistItem( picRecObj.id, { status : 'cancelled' } ); } }
 						>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setChecklistItem with a 'cancelled' status. */ }
 
 
@@ -1691,7 +1691,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 
 			if ( cliEveObj.target.closest( '.today-card-actions' ) ) return;
 
-			onCheFun( pkrRecObj, entRecObj );
+			onCheFun( picRecObj, entRecObj );
 
 
 		};
@@ -1736,7 +1736,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 						className='check'
 						aria-pressed={ !!entRecObj.done }
 						aria-label={ `${ entRecObj.done ? 'Unmark' : 'Mark' } day off complete` }
-						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onCheFun( pkrRecObj, entRecObj ); } }
+						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onCheFun( picRecObj, entRecObj ); } }
 					>{ /* What: Check Button Element. Why: This is the actual done-toggle control for a day-off row. How: This calls onCheFun, and shows a checkmark only once entRecObj.done is true. */ }
 
 
@@ -1861,7 +1861,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 
 			if ( cliEveObj.target.closest( '.today-card-actions' ) ) return;
 
-			onCheFun( pkrRecObj, entRecObj );
+			onCheFun( picRecObj, entRecObj );
 
 
 		};
@@ -1905,8 +1905,8 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 						type='button'
 						className='check'
 						aria-pressed={ !!entRecObj.done }
-						aria-label={ `${ entRecObj.done ? 'Unmark' : 'Mark' } ${ pkrRecObj.name } charging card complete` }
-						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onCheFun( pkrRecObj, entRecObj ); } }
+						aria-label={ `${ entRecObj.done ? 'Unmark' : 'Mark' } ${ picRecObj.name } charging card complete` }
+						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onCheFun( picRecObj, entRecObj ); } }
 					>{ /* What: Check Button Element. Why: This is the actual done-toggle control for a charging row, applying the day's own staged drift once checked. How: This calls onCheFun, and shows a checkmark only once entRecObj.done is true. */ }
 
 
@@ -1933,7 +1933,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 					<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot, matching a real card's own layout. How: This wraps the picker-name span below. */ }
 
 
-						<span className='meta-picker'>{ pkrRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this charging card belongs to. How: This renders pkrRecObj's own name. */ }
+						<span className='meta-picker'>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this charging card belongs to. How: This renders picRecObj's own name. */ }
 
 
 					</div>
@@ -2026,9 +2026,9 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 	 *
 	*/
 
-	const rerPooArr = staAppObj.items.filter( ( curIteObj ) => curIteObj.pickerId === pkrRecObj.id && !curIteObj.vacation ); // What: Reroll Pool Array. Why: See the doc comment just above. How: This filters state.items down to this picker's own active items.
-	const eliCouNum = pkrRecObj.mode === 'ease-up'
-		? rerPooArr.filter( ( curIteObj ) => PICKERS.easeEligible( curIteObj, pkrRecObj.threshold ) ).length
+	const rerPooArr = staAppObj.items.filter( ( curIteObj ) => curIteObj.pickerId === picRecObj.id && !curIteObj.vacation ); // What: Reroll Pool Array. Why: See the doc comment just above. How: This filters state.items down to this picker's own active items.
+	const eliCouNum = picRecObj.mode === 'ease-up'
+		? rerPooArr.filter( ( curIteObj ) => PICKERS.easeEligible( curIteObj, picRecObj.threshold ) ).length
 		: rerPooArr.length; // What: Eligible Count Number. Why: This is the actual number of candidates re-roll could land on. How: This counts only threshold-eligible items for ease-up, or the whole active pool for every other mode.
 
 	/**
@@ -2051,7 +2051,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 
 	const donRerStr = 'Item is completed and cannot be rolled away. If you want another item added, use the Pickers tab to manually push another item here.'; // What: Done Reroll String. Why: A completed row's own disabled re-roll needs its own specific explanation. How: This is passed as the InfoTip's own label when entDonBoo blocks re-roll.
 	const donSkiStr = 'Item is completed and cannot be skipped. If you want remove this item, uncheck it first.';                                            // What: Done Skip String. Why: A completed row's own disabled skip needs its own specific explanation. How: This is passed as the InfoTip's own label when entDonBoo blocks skip.
-	const rerTipStr = pkrRecObj.mode === 'ease-up' // What: Reroll Tip String. Why: A not-yet-completed row with too few candidates still needs an explanation, phrased differently per mode. How: This picks the ease-up-specific wording or the general "only one active item" wording.
+	const rerTipStr = picRecObj.mode === 'ease-up' // What: Reroll Tip String. Why: A not-yet-completed row with too few candidates still needs an explanation, phrased differently per mode. How: This picks the ease-up-specific wording or the general "only one active item" wording.
 		? 'Only one item is charged and ready, so there’s nothing to re-roll to. Another item becomes available once it reaches full charge.'
 		: 'This picker has only one active item, so there’s nothing to re-roll to. Add or activate another item for this picker to enable re-rolls.';
 
@@ -2066,7 +2066,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 
 		if ( cliEveObj.target.closest( '.entry-card-name-input' ) ) return;
 
-		onCheFun( pkrRecObj, entRecObj );
+		onCheFun( picRecObj, entRecObj );
 
 
 	};
@@ -2111,7 +2111,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 					className='check'
 					aria-pressed={ !!entRecObj.done }
 					aria-label={ `${ entRecObj.done ? 'Unmark' : 'Mark' } ${ curIteObj.name } complete` }
-					onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onCheFun( pkrRecObj, entRecObj ); } }
+					onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onCheFun( picRecObj, entRecObj ); } }
 				>{ /* What: Check Button Element. Why: This is the actual done-toggle control for an ordinary picked row. How: This calls onCheFun, and shows a checkmark only once entRecObj.done is true. */ }
 
 
@@ -2138,7 +2138,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 				<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot. How: This wraps the picker-name span below. */ }
 
 
-					<span className='meta-picker'>{ pkrRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker produced this item. How: This renders pkrRecObj's own name. */ }
+					<span className='meta-picker'>{ picRecObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker produced this item. How: This renders picRecObj's own name. */ }
 
 
 				</div>
@@ -2183,7 +2183,7 @@ function EntCarCom ( { entry : entRecObj, picker : pkrRecObj, state : staAppObj,
 							className={ `icon-btn ${ isaRolBoo ? 'is-spinning' : '' }` }
 							aria-label='Re-Roll'
 							title='Re-Roll'
-							onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onRerFun( entRecObj, pkrRecObj ); } }
+							onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onRerFun( entRecObj, picRecObj ); } }
 						>{ /* What: Reroll Icon Button Element. Why: This is the actual working re-roll control, available whenever canRerBoo allows it. How: This calls onRerFun, spinning its own icon while isaRolBoo is true. */ }
 
 
@@ -2780,8 +2780,8 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const entArr = React.useMemo( () => { // What: Entry Array. Why: Every count below needs today's own entries with hidden-picker rows already excluded, matching groEntFun's own exclusion so counts and rendered rows never disagree. How: This filters state.today.entries against the current hidden-picker id set.
 
 
-		const hidPkrSet = new Set( state.pickers.filter( ( curPkrObj ) => curPkrObj.hidden ).map( ( curPkrObj ) => curPkrObj.id ) ); // What: Hidden Picker Set. Why: An entry belonging to a still-hidden picker (see the hidden flag in store.jsx's migrate()) must be excluded from every count here. How: This collects every currently-hidden picker's own id.
-		return state.today.entries.filter( ( curEntObj ) => !curEntObj.pickerId || !hidPkrSet.has( curEntObj.pickerId ) ); // What: Entry Filter Return. Why: This is the actual filtered list every count below reads from. How: This keeps a day-off entry (no pickerId) and any entry whose own pickerId isn't in hidPkrSet.
+		const hidPicSet = new Set( state.pickers.filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: An entry belonging to a still-hidden picker (see the hidden flag in store.jsx's migrate()) must be excluded from every count here. How: This collects every currently-hidden picker's own id.
+		return state.today.entries.filter( ( curEntObj ) => !curEntObj.pickerId || !hidPicSet.has( curEntObj.pickerId ) ); // What: Entry Filter Return. Why: This is the actual filtered list every count below reads from. How: This keeps a day-off entry (no pickerId) and any entry whose own pickerId isn't in hidPicSet.
 
 
 	}, [ state.today.entries, state.pickers ] );
@@ -2826,7 +2826,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	*/
 
 	const cheDonBoo   = !!( state.onboarding && state.onboarding.checklistDone ); // What: Checklist Done Boolean. Why: This decides whether the mini-tour checklist phase should still be showing at all. How: This reads state.onboarding.checklistDone.
-	const mainEndBoo  = state.pickers.some( ( curPkrObj ) => curPkrObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPkrObj.id ) ) // What: Main Tour Ended Boolean. Why: Whether the main Welcome Tour has concluded (sample pickers/tasks flip hidden exactly once, at that tour's last step) decides whether the checklist phase should be considered at all, independent of cheDonBoo. How: This is true once any sample picker OR sample task is already flagged hidden.
+	const mainEndBoo  = state.pickers.some( ( curPicObj ) => curPicObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) ) // What: Main Tour Ended Boolean. Why: Whether the main Welcome Tour has concluded (sample pickers/tasks flip hidden exactly once, at that tour's last step) decides whether the checklist phase should be considered at all, independent of cheDonBoo. How: This is true once any sample picker OR sample task is already flagged hidden.
 		|| ( state.tasks || [] ).some( ( curTasObj ) => curTasObj.hidden && OB_SAMPLE_TASK_IDS.includes( curTasObj.id ) );
 	const shwCheBoo   = mainEndBoo && !cheDonBoo; // What: Show Checklist Boolean. Why: The whole checklist phase (launcher cards, Page Tours, the closing Generate card) should only show between the main tour ending and the checklist actually concluding. How: This combines mainEndBoo with the negation of cheDonBoo.
 
@@ -2916,7 +2916,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 		const tarNamStr = normalizeGroupName( trmValStr ) || trmValStr;                                             // What: Target Name String. Why: The typed name needs the same normalization a real group name would get before comparison. How: This calls normalizeGroupName, falling back to the raw trimmed value if normalization returns nothing.
-		const exiGroArr = [ ...new Set( state.pickers.filter( ( curPkrObj ) => curPkrObj.group ).map( ( curPkrObj ) => curPkrObj.group ) ) ]; // What: Existing Group Array. Why: The collision check needs every real group name currently in use. How: This deduplicates every picker's own group field via a Set.
+		const exiGroArr = [ ...new Set( state.pickers.filter( ( curPicObj ) => curPicObj.group ).map( ( curPicObj ) => curPicObj.group ) ) ]; // What: Existing Group Array. Why: The collision check needs every real group name currently in use. How: This deduplicates every picker's own group field via a Set.
 
 		exiGroArr.push( 'Reminders' ); // What: Reminders Name Push. Why: "Reminders" is the other fixed section header that isn't itself a real group, and still must not collide. How: This appends the literal string 'Reminders' to exiGroArr.
 
@@ -2954,15 +2954,15 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	const repActBoo = cheDonBoo && mainEndBoo; // What: Replay Active Boolean. Why: This is the shared gate every count below branches on. How: This combines cheDonBoo with mainEndBoo.
 
-	const tutPkrCouNum = ( shwCheBoo || repActBoo ) // What: Tutorial Picker Count Number. Why: See the doc comment just above. How: This counts hidden sample pickers, collision-filtered only once cheDonBoo (repActBoo), 0 while neither gate is open.
-		? state.pickers.filter( ( curPkrObj ) => curPkrObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPkrObj.id )
-			&& ( shwCheBoo || !OB_CHECKLIST.entryFor( state, curPkrObj.id ) )
-			&& ( shwCheBoo || !state.pickers.some( ( othPkrObj ) => !OB_SAMPLE_PICKER_IDS.includes( othPkrObj.id ) && othPkrObj.name === curPkrObj.name ) ) ).length
+	const tutPicCouNum = ( shwCheBoo || repActBoo ) // What: Tutorial Picker Count Number. Why: See the doc comment just above. How: This counts hidden sample pickers, collision-filtered only once cheDonBoo (repActBoo), 0 while neither gate is open.
+		? state.pickers.filter( ( curPicObj ) => curPicObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPicObj.id )
+			&& ( shwCheBoo || !OB_CHECKLIST.entryFor( state, curPicObj.id ) )
+			&& ( shwCheBoo || !state.pickers.some( ( othPicObj ) => !OB_SAMPLE_PICKER_IDS.includes( othPicObj.id ) && othPicObj.name === curPicObj.name ) ) ).length
 		: 0;
-	const tutPkrDonNum = shwCheBoo // What: Tutorial Picker Done Number. Why: The first-time phase counts every resolved sample picker card as done. How: This counts hidden sample pickers with an existing checklist entry, 0 outside shwCheBoo.
-		? state.pickers.filter( ( curPkrObj ) => curPkrObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPkrObj.id ) && OB_CHECKLIST.entryFor( state, curPkrObj.id ) ).length
+	const tutPicDonNum = shwCheBoo // What: Tutorial Picker Done Number. Why: The first-time phase counts every resolved sample picker card as done. How: This counts hidden sample pickers with an existing checklist entry, 0 outside shwCheBoo.
+		? state.pickers.filter( ( curPicObj ) => curPicObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) && OB_CHECKLIST.entryFor( state, curPicObj.id ) ).length
 		: 0;
-	const tutTasCouNum = ( shwCheBoo || repActBoo ) // What: Tutorial Task Count Number. Why: Same reasoning as tutPkrCouNum, for sample reminders. How: This counts hidden sample tasks, collision-filtered only once cheDonBoo (repActBoo), 0 while neither gate is open.
+	const tutTasCouNum = ( shwCheBoo || repActBoo ) // What: Tutorial Task Count Number. Why: Same reasoning as tutPicCouNum, for sample reminders. How: This counts hidden sample tasks, collision-filtered only once cheDonBoo (repActBoo), 0 while neither gate is open.
 		? ( state.tasks || [] ).filter( ( curTasObj ) => curTasObj.hidden && OB_SAMPLE_TASK_IDS.includes( curTasObj.id )
 			&& ( shwCheBoo || !OB_CHECKLIST.entryFor( state, curTasObj.id ) )
 			&& ( shwCheBoo || !( state.tasks || [] ).some( ( othTasObj ) => !OB_SAMPLE_TASK_IDS.includes( othTasObj.id ) && othTasObj.name === curTasObj.name ) ) ).length
@@ -2978,9 +2978,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const genCarDonNum = ( shwCheBoo && OB_CHECKLIST.entryFor( state, OB_GENERATE_ITEM_ID ) ) ? 1 : 0; // What: Generate Card Done Number. Why: The closing Generate card's own done contribution mirrors genCarCouNum. How: This is 1 only while shwCheBoo AND the Generate item already has a checklist entry.
 
 	const donCouNum = entArr.filter( ( curEntObj ) => curEntObj.done ).length + remDonNum
-		+ tutPkrDonNum + tutTasDonNum + pagTouDonNum + genCarDonNum; // What: Done Count Number. Why: This is the ring's own numerator, combining every countable source of "done" on the page. How: This sums done picker/day-off entries, done ring reminders, and every tutorial-card category's own done count.
+		+ tutPicDonNum + tutTasDonNum + pagTouDonNum + genCarDonNum; // What: Done Count Number. Why: This is the ring's own numerator, combining every countable source of "done" on the page. How: This sums done picker/day-off entries, done ring reminders, and every tutorial-card category's own done count.
 	const totCouNum = entArr.length + rngTasArr.length
-		+ tutPkrCouNum + tutTasCouNum + pagTouCouNum + genCarCouNum; // What: Total Count Number. Why: This is the ring's own denominator, combining every countable source on the page. How: This sums every category's own total count, mirroring donCouNum's own structure.
+		+ tutPicCouNum + tutTasCouNum + pagTouCouNum + genCarCouNum; // What: Total Count Number. Why: This is the ring's own denominator, combining every countable source on the page. How: This sums every category's own total count, mirroring donCouNum's own structure.
 
 
 
@@ -3334,7 +3334,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 
-	const onCheFun = ( pkrRecObj, entRecObj ) => { // What: On Check Function. Why: Toggling done also needs to stage the brief "fresh" cue, but only on a genuine not-done-to-done transition, never on an uncheck. How: This calls actions.toggleDone, then stages jusCheStr only when wasDonBoo was false.
+	const onCheFun = ( picRecObj, entRecObj ) => { // What: On Check Function. Why: Toggling done also needs to stage the brief "fresh" cue, but only on a genuine not-done-to-done transition, never on an uncheck. How: This calls actions.toggleDone, then stages jusCheStr only when wasDonBoo was false.
 
 
 		const wasDonBoo = entRecObj.done; // What: Was Done Boolean. Why: The fresh-cue guard below needs to know the PRE-toggle state. How: This reads entRecObj.done before actions.toggleDone below flips it.
@@ -3441,7 +3441,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const rolAniMsNum = ( reduceMotion && reduceMotion() ) ? 200 : 760; // What: Roll Animation Ms Number. Why: See the doc comment just above. How: This picks the short reduced-motion beat or the full flip duration.
 	const [ rolIdeSet, setRolIdeSet ] = React.useState( () => new Set() ); // What: Rolling Id Set And Setter. Why: A re-rolling row needs to know it is mid-flip so it can play its own animation class. How: This is added to right before the flip starts and cleared once it finishes.
 
-	const hndRerFun = ( entRecObj, pkrRecObj ) => { // What: Handle Reroll Function. Why: This is the actual re-roll trigger, shared by every EntCarCom's own onRerFun prop. How: This stages entRecObj's own eid as rolling, computes and stages a new pending pick at the flip's own apex, then clears the rolling flag once the flip finishes.
+	const hndRerFun = ( entRecObj, picRecObj ) => { // What: Handle Reroll Function. Why: This is the actual re-roll trigger, shared by every EntCarCom's own onRerFun prop. How: This stages entRecObj's own eid as rolling, computes and stages a new pending pick at the flip's own apex, then clears the rolling flag once the flip finishes.
 
 
 		if ( rolIdeSet.has( entRecObj.eid ) ) return; // What: Already Rolling Guard. Why: A row already mid-flip must not be re-triggered by a second click. How: This bails out early when entRecObj's own eid is already in rolIdeSet.
@@ -3452,14 +3452,14 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		setTimeout( () => { // What: Flip Apex Timeout. Why: The pick happens at the midpoint of the flip (when the card is fully upside-down), so the new content rolls in continuing the same direction. How: This runs at half of rolAniMsNum, computing and staging the new pick.
 
 
-			if ( pkrRecObj.mode === 'ease-up' ) { // What: Ease-Up Reroll Branch. Why: Ease Up re-roll is a manual cycle through eligible (charged >= threshold) items, highest-to-lowest value, wrapping back to the highest, rather than a fresh random pick. How: This computes a deterministic ordering, finds the current item's own position, and steps to the next one.
+			if ( picRecObj.mode === 'ease-up' ) { // What: Ease-Up Reroll Branch. Why: Ease Up re-roll is a manual cycle through eligible (charged >= threshold) items, highest-to-lowest value, wrapping back to the highest, rather than a fresh random pick. How: This computes a deterministic ordering, finds the current item's own position, and steps to the next one.
 
 
-				const thrNum   = pkrRecObj.threshold ?? 100;                                  // What: Threshold Number. Why: Eligibility below is judged against this picker's own resolved threshold. How: This reads pkrRecObj.threshold, falling back to 100.
+				const thrNum   = picRecObj.threshold ?? 100;                                  // What: Threshold Number. Why: Eligibility below is judged against this picker's own resolved threshold. How: This reads picRecObj.threshold, falling back to 100.
 				const tsOfFun  = ( curIteObj ) => ( curIteObj.lastPicked ? Date.parse( curIteObj.lastPicked ) : 0 ); // What: Timestamp Of Function. Why: The deterministic ordering below needs a numeric sort key for lastPicked. How: This parses curIteObj.lastPicked, or 0 when it has never been picked.
 
 				const eliArr = state.items // What: Eligible Array. Why: This is the actual candidate pool re-roll cycles through; deterministic order (value desc, then oldest lastPicked, then id) is stable since done-gating freezes values between rolls. How: This filters state.items to this picker's own active, threshold-eligible items, then sorts them.
-					.filter( ( curIteObj ) => curIteObj.pickerId === pkrRecObj.id && !curIteObj.vacation && PICKERS.easeEligible( curIteObj, thrNum ) )
+					.filter( ( curIteObj ) => curIteObj.pickerId === picRecObj.id && !curIteObj.vacation && PICKERS.easeEligible( curIteObj, thrNum ) )
 					.sort( ( aIteObj, bIteObj ) => ( bIteObj.value - aIteObj.value ) || ( tsOfFun( aIteObj ) - tsOfFun( bIteObj ) ) || ( aIteObj.id < bIteObj.id ? -1 : 1 ) );
 
 				if ( eliArr.length >= 2 ) { // What: Enough Candidates Guard. Why: Fewer than 2 eligible candidates means the UI already disabled the button, so this is a safe no-op rather than a real error case. How: This only proceeds once eliArr has at least 2 entries.
@@ -3467,7 +3467,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 					const curFndIndNum = eliArr.findIndex( ( curIteObj ) => curIteObj.id === entRecObj.itemId ); // What: Current Found Index Number. Why: The next candidate is found relative to whichever one is currently picked. How: This finds entRecObj's own itemId within eliArr.
 					const nxtIteObj    = eliArr[ ( curFndIndNum + 1 ) % eliArr.length ];                          // What: Next Item Object. Why: This is the actual next candidate to roll to, wrapping back to the front once the end is reached. How: This indexes eliArr one past curFndIndNum, modulo its own length.
-					const resObj       = PICKERS.pick( pkrRecObj, state.items, { forceItemId : nxtIteObj.id } );   // What: Result Object. Why: Forcing the specific next item still needs to run through the real picking engine so its own value/pending mutations compute correctly. How: This calls PICKERS.pick with forceItemId set to nxtIteObj's own id.
+					const resObj       = PICKERS.pick( picRecObj, state.items, { forceItemId : nxtIteObj.id } );   // What: Result Object. Why: Forcing the specific next item still needs to run through the real picking engine so its own value/pending mutations compute correctly. How: This calls PICKERS.pick with forceItemId set to nxtIteObj's own id.
 
 					actions.setEntryItem( entRecObj.eid, nxtIteObj.id, { // What: Set Entry Item Call. Why: This stages the new pick's own value/weight mutation as pending, applied only once the entry is marked done, preserving the "nothing changes until you actually do it" contract. How: This writes nxtIteObj's own id plus resObj's own updates/pickerPatch/depletedEnd.
 
@@ -3485,7 +3485,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			else { // What: Other Mode Reroll Branch. Why: Every other mode re-rolls via a fresh forced-new pick instead of a manual cycle; forceNew makes ease-down specifically abandon its current active item (recharging it) and roll to a different one, while other modes simply ignore the flag. How: This calls PICKERS.pick with forceNew and stages whatever it returns as pending.
 
 
-				const resObj = PICKERS.pick( pkrRecObj, state.items, { forceNew : true } ); // What: Result Object. Why: This is the actual fresh pick this branch draws. How: This calls PICKERS.pick with forceNew true.
+				const resObj = PICKERS.pick( picRecObj, state.items, { forceNew : true } ); // What: Result Object. Why: This is the actual fresh pick this branch draws. How: This calls PICKERS.pick with forceNew true.
 
 				if ( resObj.picked ) { // What: Picked Guard. Why: A pick can legitimately come back empty (no eligible candidates), in which case there is nothing to stage. How: This only proceeds once resObj.picked exists.
 
@@ -3782,7 +3782,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const reqRenFun = ( oldNamStr, rawNewStr ) => { // What: Request Rename Function. Why: A group header's own rename entry point needs to normalize the typed name and, if it resolves to a DIFFERENT existing group, defer to a merge confirm rather than rename straight away. How: This normalizes rawNewStr, then either stages merPmpObj or calls actions.renameGroup directly.
 
 
-		const othGroArr = [ ...new Set( state.pickers.filter( ( curPkrObj ) => curPkrObj.group && curPkrObj.group !== oldNamStr ).map( ( curPkrObj ) => curPkrObj.group ) ) ]; // What: Other Group Array. Why: The collision check below needs every OTHER real group name, excluding the one being renamed. How: This deduplicates every non-matching picker's own group field via a Set.
+		const othGroArr = [ ...new Set( state.pickers.filter( ( curPicObj ) => curPicObj.group && curPicObj.group !== oldNamStr ).map( ( curPicObj ) => curPicObj.group ) ) ]; // What: Other Group Array. Why: The collision check below needs every OTHER real group name, excluding the one being renamed. How: This deduplicates every non-matching picker's own group field via a Set.
 		const tarNamStr = normalizeGroupName( rawNewStr, othGroArr ); // What: Target Name String. Why: This is the actual normalized candidate name. How: This calls normalizeGroupName with rawNewStr and othGroArr.
 
 		if ( !tarNamStr || tarNamStr === oldNamStr ) return; // What: No-Op Guard. Why: An empty or unchanged normalized name has nothing to rename. How: This bails out early when either condition holds.
@@ -4017,12 +4017,12 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		const cndArr    = actions.resolveConditionalsForDay() || state.conditionals || []; // What: Conditional Array. Why: Phase A resolves every conditional's own `triggered` for today up front, before the per-picker loop below needs to read it. How: This calls actions.resolveConditionalsForDay, falling back to state.conditionals or an empty array.
 		const cndByIdMap = new Map( cndArr.map( ( curCndObj ) => [ curCndObj.id, curCndObj ] ) );   // What: Conditional By Id Map. Why: The per-picker loop below needs a fast lookup from a picker's own conditionalId to its resolved conditional. How: This maps cndArr down to an id-keyed Map.
 
-		const exiByPkrMap = new Map(); // What: Existing By Picker Map. Why: Existing live pick/charging entries are the source of truth for cadence carry/suppress decisions, since they persist across days until a regenerate. How: This is populated by the loop just below.
+		const exiByPicMap = new Map(); // What: Existing By Picker Map. Why: Existing live pick/charging entries are the source of truth for cadence carry/suppress decisions, since they persist across days until a regenerate. How: This is populated by the loop just below.
 
-		for ( const curEntObj of state.today.entries ) { // What: Existing Entry Index Loop. Why: Every current entry needs indexing by picker before the main per-picker loop below can consult it. How: This walks state.today.entries, keying exiByPkrMap by pickerId (day-off cards, which have none, are excluded).
+		for ( const curEntObj of state.today.entries ) { // What: Existing Entry Index Loop. Why: Every current entry needs indexing by picker before the main per-picker loop below can consult it. How: This walks state.today.entries, keying exiByPicMap by pickerId (day-off cards, which have none, are excluded).
 
 
-			if ( curEntObj.pickerId && curEntObj.kind !== 'dayoff' ) exiByPkrMap.set( curEntObj.pickerId, curEntObj );
+			if ( curEntObj.pickerId && curEntObj.kind !== 'dayoff' ) exiByPicMap.set( curEntObj.pickerId, curEntObj );
 
 
 		}
@@ -4038,16 +4038,16 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		const pikNamSet = new Set(); // What: Picked Name Set. Why: Item names already committed to today's list so far (lowercased) are fed to any avoidDuplicates picker below so it won't re-surface an item another picker already put on today's list; seeded with carried-over cadence picks (still "on the list" today, just not freshly picked), then grown as each fresh pick lands, in encounter order, matching "as it is being built" rather than checking against the final list. How: This is read by PICKERS.pick's own excludeNames option and added to throughout the loop below.
 		const cadNsObj  = CADENCE; // What: Cadence Namespace Object. Why: A short local alias reads more naturally throughout the dense loop below than the full import name repeated everywhere. How: This is just CADENCE itself.
 
-		for ( const curPkrIdeStr of state.daily.pickerIds ) { // What: Daily Picker Loop. Why: This is the actual per-picker scheduling/picking pass every other collection above feeds from. How: This walks every picker id in state.daily.pickerIds, gating and picking (or suppressing) each one in turn.
+		for ( const curPicIdeStr of state.daily.pickerIds ) { // What: Daily Picker Loop. Why: This is the actual per-picker scheduling/picking pass every other collection above feeds from. How: This walks every picker id in state.daily.pickerIds, gating and picking (or suppressing) each one in turn.
 
 
-			const pkrRecObj = state.pickers.find( ( curPkrObj ) => curPkrObj.id === curPkrIdeStr ); // What: Picker Record Object. Why: Every check below needs the real picker record, not just its id. How: This finds the picker matching curPkrIdeStr.
+			const picRecObj = state.pickers.find( ( curPicObj ) => curPicObj.id === curPicIdeStr ); // What: Picker Record Object. Why: Every check below needs the real picker record, not just its id. How: This finds the picker matching curPicIdeStr.
 
-			if ( !pkrRecObj || pkrRecObj.hidden ) continue; // What: Missing Or Hidden Guard. Why: A deleted or still-hidden (mid-onboarding) picker must not run today at all. How: This skips curPkrIdeStr when pkrRecObj is missing or flagged hidden.
+			if ( !picRecObj || picRecObj.hidden ) continue; // What: Missing Or Hidden Guard. Why: A deleted or still-hidden (mid-onboarding) picker must not run today at all. How: This skips curPicIdeStr when picRecObj is missing or flagged hidden.
 
-			if ( Array.isArray( pkrRecObj.daysOfWeek ) && !pkrRecObj.daysOfWeek.includes( dowNum ) ) continue; // What: Weekday Gate. Why: A picker scoped to specific weekdays must not run on any other day. How: This skips curPkrIdeStr when daysOfWeek is a real array that doesn't include dowNum.
+			if ( Array.isArray( picRecObj.daysOfWeek ) && !picRecObj.daysOfWeek.includes( dowNum ) ) continue; // What: Weekday Gate. Why: A picker scoped to specific weekdays must not run on any other day. How: This skips curPicIdeStr when daysOfWeek is a real array that doesn't include dowNum.
 
-			if ( pkrRecObj.skipHolidays && holTodBoo ) continue; // What: Holiday Gate. Why: A picker opted into skipping holidays must not run on an active one. How: This skips curPkrIdeStr when both flags hold.
+			if ( picRecObj.skipHolidays && holTodBoo ) continue; // What: Holiday Gate. Why: A picker opted into skipping holidays must not run on an active one. How: This skips curPicIdeStr when both flags hold.
 
 
 			/**
@@ -4065,18 +4065,18 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			 *
 			*/
 
-			const pkrCadStr = pkrRecObj.cadence || 'daily'; // What: Picker Cadence String. Why: Every branch in this region reads this same resolved cadence. How: This reads pkrRecObj.cadence, falling back to 'daily'.
+			const picCadStr = picRecObj.cadence || 'daily'; // What: Picker Cadence String. Why: Every branch in this region reads this same resolved cadence. How: This reads picRecObj.cadence, falling back to 'daily'.
 
-			if ( pkrCadStr !== 'daily' ) { // What: Non-Daily Branch. Why: See the doc comment just above. How: This runs the period-key/carry/completed checks and, when none of them apply, falls through to the fresh-surface path below.
+			if ( picCadStr !== 'daily' ) { // What: Non-Daily Branch. Why: See the doc comment just above. How: This runs the period-key/carry/completed checks and, when none of them apply, falls through to the fresh-surface path below.
 
 
-				const perKeyStr = cadNsObj.periodKey( pkrRecObj, genNowDat );  // What: Period Key String. Why: This identifies exactly which period (week/month/year) this picker's own card belongs to right now. How: This calls cadNsObj.periodKey.
-				const exiEntObj = exiByPkrMap.get( curPkrIdeStr );             // What: Existing Entry Object. Why: A live entry already on screen for this exact period must be carried or recognized as satisfied. How: This reads exiByPkrMap at curPkrIdeStr.
+				const perKeyStr = cadNsObj.periodKey( picRecObj, genNowDat );  // What: Period Key String. Why: This identifies exactly which period (week/month/year) this picker's own card belongs to right now. How: This calls cadNsObj.periodKey.
+				const exiEntObj = exiByPicMap.get( curPicIdeStr );             // What: Existing Entry Object. Why: A live entry already on screen for this exact period must be carried or recognized as satisfied. How: This reads exiByPicMap at curPicIdeStr.
 
 				if ( exiEntObj && exiEntObj.periodKey === perKeyStr ) { // What: Same Period Branch. Why: An entry already logged against THIS exact period needs either carrying (still open) or skipping (already satisfied). How: This checks exiEntObj.done to choose between the two.
 
 
-					if ( exiEntObj.done ) continue; // What: Period Satisfied Skip. Why: A completed entry for this period means nothing further should surface. How: This skips curPkrIdeStr entirely.
+					if ( exiEntObj.done ) continue; // What: Period Satisfied Skip. Why: A completed entry for this period means nothing further should surface. How: This skips curPicIdeStr entirely.
 
 
 					carEntArr.push( { _carry : true, entry : exiEntObj } ); // What: Carried Entry Push. Why: A not-yet-done entry from the current period must persist verbatim, locked, rather than being replaced. How: This wraps exiEntObj in a { _carry, entry } marker for the commit step below.
@@ -4085,12 +4085,12 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 					if ( carIteObj ) pikNamSet.add( carIteObj.name.toLowerCase() ); // What: Carried Name Add. Why: An avoidDuplicates picker elsewhere in this loop must not re-surface an item this carried card already shows. How: This adds carIteObj's own lowercased name to pikNamSet.
 
-					continue; // What: Carried Continue. Why: A carried card needs no fresh pick this generation. How: This skips the rest of the loop body for curPkrIdeStr.
+					continue; // What: Carried Continue. Why: A carried card needs no fresh pick this generation. How: This skips the rest of the loop body for curPicIdeStr.
 
 
 				}
 
-				if ( cadNsObj.completedThisPeriod( pkrRecObj, state.pickLog, genNowDat ) ) continue; // What: Completed This Period Skip. Why: A completed pick logged this period, even with the entry itself wiped, still satisfies the cadence. How: This skips curPkrIdeStr when cadNsObj.completedThisPeriod reports true.
+				if ( cadNsObj.completedThisPeriod( picRecObj, state.pickLog, genNowDat ) ) continue; // What: Completed This Period Skip. Why: A completed pick logged this period, even with the entry itself wiped, still satisfies the cadence. How: This skips curPicIdeStr when cadNsObj.completedThisPeriod reports true.
 
 
 			}
@@ -4107,7 +4107,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			 *
 			*/
 
-			const cndRecObj = pkrRecObj.conditionalId ? cndByIdMap.get( pkrRecObj.conditionalId ) : null; // What: Conditional Record Object. Why: This is the resolved conditional this picker's own suppression check reads. How: This looks up pkrRecObj's own conditionalId in cndByIdMap, or null when it has none.
+			const cndRecObj = picRecObj.conditionalId ? cndByIdMap.get( picRecObj.conditionalId ) : null; // What: Conditional Record Object. Why: This is the resolved conditional this picker's own suppression check reads. How: This looks up picRecObj's own conditionalId in cndByIdMap, or null when it has none.
 
 			if ( CONDITIONALS.suppresses( cndRecObj ) ) { // What: Suppressed Branch. Why: See the doc comment just above. How: This surfaces (or skips, if already shown) a day-off card, then always continues past the pick attempt below.
 
@@ -4119,14 +4119,14 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 					const carTexStr = cndRecObj.cardText || cndRecObj.name; // What: Card Text String. Why: The day-off card needs its own display text. How: This reads cndRecObj.cardText, falling back to its own name.
 
-					dofCarArr.push( { kind : 'dayoff', conditionalId : cndRecObj.id, cardText : carTexStr, group : pkrRecObj.group || 'Other',
+					dofCarArr.push( { kind : 'dayoff', conditionalId : cndRecObj.id, cardText : carTexStr, group : picRecObj.group || 'Other',
 
-						pickerName : pkrRecObj.name, condName : cndRecObj.name,
-						...( pkrCadStr !== 'daily' ? { periodKey : cadNsObj.periodKey( pkrRecObj, genNowDat ) } : {} )
+						pickerName : picRecObj.name, condName : cndRecObj.name,
+						...( picCadStr !== 'daily' ? { periodKey : cadNsObj.periodKey( picRecObj, genNowDat ) } : {} )
 
 					} ); // What: Dayoff Card Push. Why: This is the actual card the commit step below turns into a real entry. How: This builds the full day-off record, tagging a period key only for a non-daily picker.
 
-					ordSltArr.push( { pickerId : curPkrIdeStr, info : { kind : 'dayoff', candidates : [], cardText : carTexStr, conditionalId : cndRecObj.id } } ); // What: Ordered Slot Push. Why: The day-off card still needs its own animation slot, in encounter order alongside every pick. How: This pushes a { pickerId, info } pair keyed by curPkrIdeStr.
+					ordSltArr.push( { pickerId : curPicIdeStr, info : { kind : 'dayoff', candidates : [], cardText : carTexStr, conditionalId : cndRecObj.id } } ); // What: Ordered Slot Push. Why: The day-off card still needs its own animation slot, in encounter order alongside every pick. How: This pushes a { pickerId, info } pair keyed by curPicIdeStr.
 
 
 				}
@@ -4136,17 +4136,17 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			}
 
-			const perKeyStr = pkrCadStr !== 'daily' ? cadNsObj.periodKey( pkrRecObj, genNowDat ) : null; // What: Period Key String. Why: A fresh non-daily pick still needs to be tagged with the period it belongs to, so a future generation can recognize it as already-current. How: This computes the period key only for a non-daily picker, otherwise null.
-			const pikResObj = PICKERS.pick( pkrRecObj, state.items, { excludeNames : pikNamSet } ); // What: Pick Result Object. Why: This is the actual picking engine call for this picker. How: This calls PICKERS.pick, passing pikNamSet so an avoidDuplicates picker won't re-surface an already-committed name.
+			const perKeyStr = picCadStr !== 'daily' ? cadNsObj.periodKey( picRecObj, genNowDat ) : null; // What: Period Key String. Why: A fresh non-daily pick still needs to be tagged with the period it belongs to, so a future generation can recognize it as already-current. How: This computes the period key only for a non-daily picker, otherwise null.
+			const pikResObj = PICKERS.pick( picRecObj, state.items, { excludeNames : pikNamSet } ); // What: Pick Result Object. Why: This is the actual picking engine call for this picker. How: This calls PICKERS.pick, passing pikNamSet so an avoidDuplicates picker won't re-surface an already-committed name.
 
 			if ( pikResObj.picked ) { // What: Picked Branch. Why: A successful pick needs collecting into newPikArr plus its own animation slot. How: This adds the picked name to pikNamSet, then pushes both records.
 
 
 				pikNamSet.add( pikResObj.picked.name.toLowerCase() ); // What: Picked Name Add. Why: A LATER avoidDuplicates picker in this same loop must not re-surface this exact name. How: This adds pikResObj.picked's own lowercased name to pikNamSet.
 
-				newPikArr.push( { // What: New Pick Push. Why: This is the actual pending-commit record for this fresh pick. How: This bundles curPkrIdeStr, the full pikResObj, its own cycle candidates, picked id, depletedEnd flag, and period key.
+				newPikArr.push( { // What: New Pick Push. Why: This is the actual pending-commit record for this fresh pick. How: This bundles curPicIdeStr, the full pikResObj, its own cycle candidates, picked id, depletedEnd flag, and period key.
 
-					pickerId : curPkrIdeStr, res : pikResObj,
+					pickerId : curPicIdeStr, res : pikResObj,
 					candidates : pikResObj.cycleCandidates || [],
 					pickedId : pikResObj.picked.id,
 					depletedEnd : !!pikResObj.depletedEnd,
@@ -4154,21 +4154,21 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 				} );
 
-				ordSltArr.push( { pickerId : curPkrIdeStr, info : { kind : 'pick', candidates : pikResObj.cycleCandidates || [], pickedId : pikResObj.picked.id } } ); // What: Ordered Slot Push. Why: This pick still needs its own animation slot, in encounter order. How: This pushes a { pickerId, info } pair keyed by curPkrIdeStr.
+				ordSltArr.push( { pickerId : curPicIdeStr, info : { kind : 'pick', candidates : pikResObj.cycleCandidates || [], pickedId : pikResObj.picked.id } } ); // What: Ordered Slot Push. Why: This pick still needs its own animation slot, in encounter order. How: This pushes a { pickerId, info } pair keyed by curPicIdeStr.
 
 
 			}
 
-			else if ( pkrRecObj.mode === 'ease-up' && pikResObj.updates && pikResObj.updates.length ) { // What: Empty Ease-Up Branch. Why: An ease-up picker with nothing charged to threshold still needs a "charging" card so the day's own drift (pikResObj.updates) is applied only once the user checks it, consistent with done-gating; without this the drift would be dropped and the picker could never climb to eligibility. How: This collects a charging card plus its own animation slot.
+			else if ( picRecObj.mode === 'ease-up' && pikResObj.updates && pikResObj.updates.length ) { // What: Empty Ease-Up Branch. Why: An ease-up picker with nothing charged to threshold still needs a "charging" card so the day's own drift (pikResObj.updates) is applied only once the user checks it, consistent with done-gating; without this the drift would be dropped and the picker could never climb to eligibility. How: This collects a charging card plus its own animation slot.
 
 
-				empEasArr.push( { kind : 'charging', pickerId : curPkrIdeStr, group : pkrRecObj.group || 'Other',
+				empEasArr.push( { kind : 'charging', pickerId : curPicIdeStr, group : picRecObj.group || 'Other',
 
 					pending : { updates : pikResObj.updates }, ...( perKeyStr ? { periodKey : perKeyStr } : {} )
 
-				} ); // What: Charging Card Push. Why: This is the actual pending-commit record for this charging card. How: This bundles curPkrIdeStr, its own group, the staged drift updates, and an optional period key.
+				} ); // What: Charging Card Push. Why: This is the actual pending-commit record for this charging card. How: This bundles curPicIdeStr, its own group, the staged drift updates, and an optional period key.
 
-				ordSltArr.push( { pickerId : curPkrIdeStr, info : { kind : 'charging', candidates : [] } } ); // What: Ordered Slot Push. Why: This charging card still needs its own animation slot, in encounter order. How: This pushes a { pickerId, info } pair keyed by curPkrIdeStr.
+				ordSltArr.push( { pickerId : curPicIdeStr, info : { kind : 'charging', candidates : [] } } ); // What: Ordered Slot Push. Why: This charging card still needs its own animation slot, in encounter order. How: This pushes a { pickerId, info } pair keyed by curPicIdeStr.
 
 
 			}
@@ -4463,29 +4463,29 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 		const curEntArr  = state.today.entries || [];                                                   // What: Current Entry Array. Why: The "already on screen" checks below need today's own current entries. How: This reads state.today.entries, falling back to an empty array.
-		const havPkrSet  = new Set( curEntArr.map( ( curEntObj ) => curEntObj.pickerId ).filter( Boolean ) ); // What: Have Picker Set. Why: A picker already represented by a real entry doesn't need a placeholder slot. How: This collects every current entry's own pickerId.
+		const havPicSet  = new Set( curEntArr.map( ( curEntObj ) => curEntObj.pickerId ).filter( Boolean ) ); // What: Have Picker Set. Why: A picker already represented by a real entry doesn't need a placeholder slot. How: This collects every current entry's own pickerId.
 		const havDofSet  = new Set( curEntArr.filter( ( curEntObj ) => curEntObj.kind === 'dayoff' ).map( ( curEntObj ) => curEntObj.conditionalId ) ); // What: Have Dayoff Set. Why: A day-off card carries a conditionalId instead of a pickerId, so its own "already on screen" check needs its own set. How: This collects every current day-off entry's own conditionalId.
 		const outMapObj  = {}; // What: Out Map Object. Why: This is the actual { groupName: [picker, ...] } result being built. How: This is populated by the loop below and returned at the end.
 
-		for ( const curPkrIdeStr of Object.keys( genMapObj ) ) { // What: Generating Picker Loop. Why: Every picker with an active generation slot is a candidate for a placeholder, unless it is already represented on screen. How: This walks every key in genMapObj, filtering out already-present pickers/day-offs.
+		for ( const curPicIdeStr of Object.keys( genMapObj ) ) { // What: Generating Picker Loop. Why: Every picker with an active generation slot is a candidate for a placeholder, unless it is already represented on screen. How: This walks every key in genMapObj, filtering out already-present pickers/day-offs.
 
 
-			if ( havPkrSet.has( curPkrIdeStr ) ) continue; // What: Already Present Skip. Why: A picker already on screen needs no placeholder. How: This skips curPkrIdeStr when havPkrSet already has it.
+			if ( havPicSet.has( curPicIdeStr ) ) continue; // What: Already Present Skip. Why: A picker already on screen needs no placeholder. How: This skips curPicIdeStr when havPicSet already has it.
 
 
-			const curSltObj = genMapObj[ curPkrIdeStr ]; // What: Current Slot Object. Why: The day-off special case below needs this slot's own info. How: This reads genMapObj at curPkrIdeStr.
+			const curSltObj = genMapObj[ curPicIdeStr ]; // What: Current Slot Object. Why: The day-off special case below needs this slot's own info. How: This reads genMapObj at curPicIdeStr.
 
-			if ( curSltObj && curSltObj.kind === 'dayoff' && havDofSet.has( curSltObj.conditionalId ) ) continue; // What: Already Present Dayoff Skip. Why: A day-off card already on screen (by conditional, not picker id) needs no placeholder either. How: This skips curPkrIdeStr when both conditions hold.
-
-
-			const pkrRecObj = ( state.pickers || [] ).find( ( curPkrObj ) => curPkrObj.id === curPkrIdeStr ); // What: Picker Record Object. Why: The placeholder itself needs the real picker record to render against. How: This finds the picker matching curPkrIdeStr.
-
-			if ( !pkrRecObj ) continue; // What: Missing Picker Guard. Why: A picker id with no matching record has nothing to placeholder at all. How: This skips curPkrIdeStr when pkrRecObj cannot be found.
+			if ( curSltObj && curSltObj.kind === 'dayoff' && havDofSet.has( curSltObj.conditionalId ) ) continue; // What: Already Present Dayoff Skip. Why: A day-off card already on screen (by conditional, not picker id) needs no placeholder either. How: This skips curPicIdeStr when both conditions hold.
 
 
-			const groNamStr = pkrRecObj.group || 'Other'; // What: Group Name String. Why: The placeholder needs a real group to slot into, matching every other row's own grouping. How: This reads pkrRecObj.group, falling back to 'Other'.
+			const picRecObj = ( state.pickers || [] ).find( ( curPicObj ) => curPicObj.id === curPicIdeStr ); // What: Picker Record Object. Why: The placeholder itself needs the real picker record to render against. How: This finds the picker matching curPicIdeStr.
 
-			( outMapObj[ groNamStr ] = outMapObj[ groNamStr ] || [] ).push( pkrRecObj ); // What: Out Map Push. Why: This is the actual placeholder collection for this group. How: This pushes pkrRecObj into outMapObj's own array for groNamStr, creating it first if needed.
+			if ( !picRecObj ) continue; // What: Missing Picker Guard. Why: A picker id with no matching record has nothing to placeholder at all. How: This skips curPicIdeStr when picRecObj cannot be found.
+
+
+			const groNamStr = picRecObj.group || 'Other'; // What: Group Name String. Why: The placeholder needs a real group to slot into, matching every other row's own grouping. How: This reads picRecObj.group, falling back to 'Other'.
+
+			( outMapObj[ groNamStr ] = outMapObj[ groNamStr ] || [] ).push( picRecObj ); // What: Out Map Push. Why: This is the actual placeholder collection for this group. How: This pushes picRecObj into outMapObj's own array for groNamStr, creating it first if needed.
 
 
 		}
@@ -4553,12 +4553,12 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		const dowNum    = cheNowDat.getDay();                            // What: Day Of Week Number. Why: The weekday gate below is checked against this. How: This reads cheNowDat.getDay().
 		const holNowBoo = HOL_NAM_OBJ.holidayOn( state.holidays, cheNowDat ); // What: Holiday Now Boolean. Why: The holiday gate below is checked against this. How: This calls HOL_NAM_OBJ.holidayOn with state.holidays and cheNowDat.
 
-		return !state.pickers.some( ( curPkrObj ) => (
+		return !state.pickers.some( ( curPicObj ) => (
 
-			!curPkrObj.hidden &&
-			state.daily.pickerIds.includes( curPkrObj.id ) &&
-			( !Array.isArray( curPkrObj.daysOfWeek ) || curPkrObj.daysOfWeek.includes( dowNum ) ) &&
-			!( curPkrObj.skipHolidays && holNowBoo )
+			!curPicObj.hidden &&
+			state.daily.pickerIds.includes( curPicObj.id ) &&
+			( !Array.isArray( curPicObj.daysOfWeek ) || curPicObj.daysOfWeek.includes( dowNum ) ) &&
+			!( curPicObj.skipHolidays && holNowBoo )
 
 		) ); // What: No Runnable Picker Return. Why: This is the actual check every branch above feeds into. How: This is true only when NO picker satisfies every one of the 4 conditions (visible, in the daily generator, scheduled today, not sitting out today's holiday).
 
@@ -4670,15 +4670,15 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	*/
 
 	const onbRemNum   = OB_CHECKLIST.othersRemaining( state );     // What: Onboarding Remaining Number. Why: See the doc comment just above. How: This calls OB_CHECKLIST.othersRemaining.
-	const onbNeePkrBoo = OB_CHECKLIST.realPickerCount( state ) < 1; // What: Onboarding Needs Picker Boolean. Why: See the doc comment just above. How: This checks OB_CHECKLIST.realPickerCount against a floor of 1.
+	const onbNeePicBoo = OB_CHECKLIST.realPickerCount( state ) < 1; // What: Onboarding Needs Picker Boolean. Why: See the doc comment just above. How: This checks OB_CHECKLIST.realPickerCount against a floor of 1.
 	const genExpStr = onbRdyBoo
 		? 'Everything is completed! Click this button to generate your first, real todo list.'
 		: ( () => {
 
 
 				const tutClaStr = onbRemNum > 0 ? `${ onbRemNum } more tutorial${ onbRemNum > 1 ? 's' : '' }` : null; // What: Tutorial Clause String. Why: This is the tutorials half of the combined "still missing" sentence, correctly pluralized. How: This formats onbRemNum, or null when nothing is outstanding on this side.
-				const pkrClaStr = onbNeePkrBoo ? 'at least 1 picker' : null;                                          // What: Picker Clause String. Why: This is the picker half of the combined sentence. How: This is a fixed phrase, or null when a real picker already exists.
-				const comClaStr = tutClaStr && pkrClaStr ? `${ tutClaStr } and ${ pkrClaStr }` : ( tutClaStr || pkrClaStr ); // What: Combined Clause String. Why: Both halves may be missing at once, needing "and" to join them, or only one may be. How: This joins both clauses when both exist, otherwise falls back to whichever one does.
+				const picClaStr = onbNeePicBoo ? 'at least 1 picker' : null;                                          // What: Picker Clause String. Why: This is the picker half of the combined sentence. How: This is a fixed phrase, or null when a real picker already exists.
+				const comClaStr = tutClaStr && picClaStr ? `${ tutClaStr } and ${ picClaStr }` : ( tutClaStr || picClaStr ); // What: Combined Clause String. Why: Both halves may be missing at once, needing "and" to join them, or only one may be. How: This joins both clauses when both exist, otherwise falls back to whichever one does.
 
 				return `Finish ${ comClaStr } to enable this functionality and create your first, real generated todo list.`; // What: Explanation Return. Why: The caller needs the final assembled sentence. How: This interpolates comClaStr into the fixed template.
 
@@ -4837,7 +4837,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 				state.tasks.forEach( ( curTasObj ) => { if ( curTasObj.hidden && !OB_SAMPLE_TASK_IDS.includes( curTasObj.id ) ) actions.updateTask( curTasObj.id, { hidden : false } ); } );
 
-				state.pickers.forEach( ( curPkrObj ) => { if ( curPkrObj.hidden && !OB_SAMPLE_PICKER_IDS.includes( curPkrObj.id ) ) actions.updatePicker( curPkrObj.id, { hidden : false } ); } );
+				state.pickers.forEach( ( curPicObj ) => { if ( curPicObj.hidden && !OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) ) actions.updatePicker( curPicObj.id, { hidden : false } ); } );
 
 				actions.setChecklistDone( true ); // What: Set Checklist Done Call. Why: This is the actual permanent conclusion flag. How: This calls actions.setChecklistDone with true.
 				setCheExiBoo( false );            // What: Checklist Exiting Clear. Why: The exit animation has now fully played out. How: This flips cheExiBoo back to false.
@@ -5555,19 +5555,19 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 										<div className='today-list'>{ /* What: Today List Div Element. Why: Every row in this group (real, loader, or tutorial) shares this one list column. How: This maps curGroObj's own entries to one EntCarCom (or LoaCarCom, mid-generation) per row, then any incoming placeholder slots. */ }
 
 
-											{ curGroObj.entries.map( ( { entry : curEntObj, picker : curPkrObj } ) => { // What: Group Row Map. Why: Every row in this group needs rendering, either as a live loader slot (mid-generation) or as a normal EntCarCom. How: This dispatches per genActBoo/genMapObj first, otherwise resolves the row's own item and renders EntCarCom plus its own inline editor.
+											{ curGroObj.entries.map( ( { entry : curEntObj, picker : curPicObj } ) => { // What: Group Row Map. Why: Every row in this group needs rendering, either as a live loader slot (mid-generation) or as a normal EntCarCom. How: This dispatches per genActBoo/genMapObj first, otherwise resolves the row's own item and renders EntCarCom plus its own inline editor.
 
 
-												if ( genActBoo && genMapObj?.[ curPkrObj.id ] ) { // What: Loader Slot Branch. Why: A picker currently mid-generation shows its own animated loader instead of a normal card. How: This returns LoaCarCom keyed by curEntObj's own eid.
+												if ( genActBoo && genMapObj?.[ curPicObj.id ] ) { // What: Loader Slot Branch. Why: A picker currently mid-generation shows its own animated loader instead of a normal card. How: This returns LoaCarCom keyed by curEntObj's own eid.
 
 
 													return (
 
 														<LoaCarCom
 															key={ curEntObj.eid }
-															picker={ curPkrObj }
-															info={ genMapObj[ curPkrObj.id ] }
-														/> // What: Loader Card Component. Why: This is the actual mid-generation placeholder for curPkrObj. How: This is passed curPkrObj plus its own live genMapObj record.
+															picker={ curPicObj }
+															info={ genMapObj[ curPicObj.id ] }
+														/> // What: Loader Card Component. Why: This is the actual mid-generation placeholder for curPicObj. How: This is passed curPicObj plus its own live genMapObj record.
 
 													);
 
@@ -5584,7 +5584,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 														<EntCarCom
 															entry={ curEntObj }
-															picker={ curPkrObj }
+															picker={ curPicObj }
 															state={ state }
 															actions={ actions }
 															justChecked={ jusCheStr }
@@ -5601,7 +5601,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 															onGripDown={ ( ptdEveObj ) => startIteDraFun( ptdEveObj, curGroObj ) }
 															onPlayTutorial={ strMinFun }
 															onUncheckTutorial={ uncTutFun }
-														/>{ /* What: Entry Card Component. Why: This is the actual row: a real pick, a day-off/charging card, or a mini-tour launcher, depending on curEntObj's own kind. How: This is passed curEntObj/curPkrObj plus every shared handler/animation-state flag. */ }
+														/>{ /* What: Entry Card Component. Why: This is the actual row: a real pick, a day-off/charging card, or a mini-tour launcher, depending on curEntObj's own kind. How: This is passed curEntObj/curPicObj plus every shared handler/animation-state flag. */ }
 														<Collapse open={ activeEditor === `item:${ curEntObj.eid }` && !!curIteObj }>{ /* What: Collapse. Why: This row's own inline editor should only mount while it is actually open AND a real item still exists to edit. How: This wraps the editor wrapper div below. */ }
 
 
@@ -5613,13 +5613,13 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 																	<EntryEditor
 																		item={ curIteObj }
-																		picker={ curPkrObj }
+																		picker={ curPicObj }
 																		actions={ actions }
 																		items={ state.items }
-																		itemCount={ state.items.filter( ( curIteObj ) => curIteObj.pickerId === curPkrObj.id ).length }
+																		itemCount={ state.items.filter( ( curIteObj ) => curIteObj.pickerId === curPicObj.id ).length }
 																		onClose={ () => setActiveEditor( ( curValStr ) => curValStr === `item:${ curEntObj.eid }` ? null : curValStr ) }
 																		onDelete={ () => hndDelFun( curEntObj.eid, curIteObj.id ) }
-																	/>{ /* What: Entry Editor. Why: This is the actual shared item editor. How: This is passed curIteObj/curPkrObj, this picker's own live item count, and a close/delete handler pair. */ }
+																	/>{ /* What: Entry Editor. Why: This is the actual shared item editor. How: This is passed curIteObj/curPicObj, this picker's own live item count, and a close/delete handler pair. */ }
 
 
 																</div>
@@ -5638,14 +5638,14 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 											} ) }
-											{ genActBoo && newSltByGroObj[ curGroObj.name ] && newSltByGroObj[ curGroObj.name ].map( ( curPkrObj ) => (
+											{ genActBoo && newSltByGroObj[ curGroObj.name ] && newSltByGroObj[ curGroObj.name ].map( ( curPicObj ) => (
 
 
 												<LoaCarCom
-													key={ `newslot-${ curPkrObj.id }` }
-													picker={ curPkrObj }
-													info={ genMapObj[ curPkrObj.id ] }
-												/> // What: Loader Card Component. Why: A group with no entries yet, but an incoming slot, still needs its own placeholder loader during generation. How: This is passed curPkrObj plus its own live genMapObj record.
+													key={ `newslot-${ curPicObj.id }` }
+													picker={ curPicObj }
+													info={ genMapObj[ curPicObj.id ] }
+												/> // What: Loader Card Component. Why: A group with no entries yet, but an incoming slot, still needs its own placeholder loader during generation. How: This is passed curPicObj plus its own live genMapObj record.
 
 											) ) }
 
