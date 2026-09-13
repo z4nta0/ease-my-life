@@ -989,7 +989,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 						</React.Fragment>
 
-					) : (
+					) : ( // What: Pick One Branch. Why: Before a pick has settled, only the initial trigger belongs here. How: This renders the else branch, taken while runPhaStr is neither 'done' nor 'sent'.
 
 						<Btn
 							kind='primary'
@@ -1179,7 +1179,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 												</button> // What: Button. Why: A brief, disabled confirmation reads clearer than the button just vanishing. How: This is disabled and shows a checkmark instead of the calendar glyph.
 
 
-											) : todIdeSet.has( curIteObj.id ) ? (
+											) : todIdeSet.has( curIteObj.id ) ? ( // What: Already On Today Check. Why: An item already sent to Today can't be sent again and needs an explained disabled state instead. How: This renders the disabled InfoTip while todIdeSet has this item's own id, the real Send button otherwise.
 
 												<InfoTip
 													className='pool-send is-disabled'
@@ -1191,7 +1191,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 												</InfoTip> // What: Info Tip. Why: An item already on Today can't be sent again, and the user should know why the button is inert. How: This wraps the calendar glyph with an explanatory tooltip instead of a real button.
 
 
-											) : (
+											) : ( // What: Send Button Branch. Why: An item that's neither just-sent nor already on Today gets the real, working Send button. How: This renders the else branch, taken while neither prior condition holds.
 
 												<button
 													type='button'
@@ -1236,7 +1236,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 												</InfoTip> // What: Info Tip. Why: The user should understand why Delete is unavailable rather than it just silently not working. How: This wraps the trash glyph with the explanatory tooltip above.
 
 
-											) : (
+											) : ( // What: Delete Button Branch. Why: With more than 2 items in the pool, a real working Delete button belongs here instead. How: This renders the else branch, taken while picIteArr.length is above 2.
 
 												<button
 													type='button'
@@ -2596,7 +2596,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun,
 			</div>
 
 
-			) : (
+			) : ( // What: Step Two Branch. Why: With frmStpNum at 2, the Items step's own content shows instead. How: This renders the else branch, taken while frmStpNum isn't 1.
 
 
 			<div className='tab-fade' key='np-step2'>{ /* What: Step Two Fade Div Element. Why: Switching steps should play a fade transition, and React needs a stable key to treat each step as a distinct mounted instance. How: This wraps the whole Items step's own hint text, pool, and footer. */ }
@@ -2789,7 +2789,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun,
 													</InfoTip> // What: Info Tip. Why: The user should understand why Delete is unavailable rather than it just silently not working. How: This wraps the trash glyph with the explanatory tooltip above.
 
 
-												) : (
+												) : ( // What: Delete Button Branch. Why: With more than 2 committed items in the draft, a real working Delete button belongs here instead. How: This renders the else branch, taken while the draft pool is above that floor.
 
 													<button
 														type='button'
@@ -3545,7 +3545,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 							</InfoTip>
 
 
-						) : (
+						) : ( // What: Add Button Branch. Why: Outside the guided checklist, the real working Add New Picker button belongs here instead. How: This renders the else branch, taken while tutProBoo is false.
 
 							<button
 								type='button'

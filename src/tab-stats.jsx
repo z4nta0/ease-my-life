@@ -2715,7 +2715,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 							    dl-mk-* classes), since every headline card here
 							    shares the plain .stat-card class with no other
 							    way to address one specifically. */ }
-							{ isaRemBoo ? (
+							{ isaRemBoo ? ( // What: Reminders Headline Check. Why: The Reminders scope's own headline cards are shaped differently from a pick-based scope's. How: This renders the Reminders-shaped set while isaRemBoo is true, the pick-shaped set otherwise.
 
 
 								<React.Fragment>{ /* What: Reminders Headline Fragment Element. Why: The 4 Reminders-shaped headline cards need grouping without an extra DOM wrapper. How: This wraps those 4 Card elements. */ }
@@ -2753,7 +2753,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								</React.Fragment>
 
 
-							) : (
+							) : ( // What: Pick Headline Branch. Why: Every non-Reminders scope needs the pick-shaped headline cards instead. How: This renders the else branch, taken while isaRemBoo is false.
 
 
 								<React.Fragment>{ /* What: Pick Headline Fragment Element. Why: The 4 pick-shaped headline cards need grouping without an extra DOM wrapper. How: This wraps those 4 Card elements. */ }
@@ -2870,7 +2870,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								</div>
 
 
-							) : (
+							) : ( // What: Heatmap Grid Branch. Why: With at least one active day, the real grid and its tap-detail panel need to render instead of the empty message. How: This renders the else branch, taken while actDayNum is above zero.
 
 
 								<React.Fragment>{ /* What: Heatmap Grid Fragment Element. Why: The grid itself and its own tap-detail panel need grouping without an extra DOM wrapper. How: This wraps those two sibling blocks. */ }
@@ -3196,7 +3196,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 									</React.Fragment>
 
 
-								) : (
+								) : ( // What: Reminder Empty Branch. Why: An empty breakdown needs its own explanatory message instead of the list and pager. How: This renders the else branch, taken while remBreArr has no rows.
 
 
 									<div className='rem-log-empty'>{ /* What: Rem Log Empty Div Element. Why: An empty breakdown needs to explain why the list is missing, phrased differently for the Skipped metric than the others. How: This renders one of two explanatory messages based on remMetStr. */ }
@@ -3270,7 +3270,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								</ul>
 
 
-							) : (
+							) : ( // What: Rem Stats Empty Branch. Why: An empty summary needs its own fixed message instead of the real list. How: This renders the else branch, taken while remLogArr is empty.
 
 
 								<div className='rem-log-empty'>No completions in { ranNouStr }. Check one off on Today and it lands here.</div>

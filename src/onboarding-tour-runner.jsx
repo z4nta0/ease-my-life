@@ -1333,7 +1333,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 
 						) }
-						{ curSteObj.requireClick ? (
+						{ curSteObj.requireClick ? ( // What: Require-Click Check. Why: A requireClick step needs its Next button disabled and explained instead of the normal clickable one. How: This renders the InfoTip-wrapped disabled button while curSteObj.requireClick is true.
 
 							<InfoTip label='Please click the indicated element in order to advance.'>{ /* What: Require-Click Info Tip Element. Why: A requireClick step's Next button is disabled, and the user needs to be told why. How: This wraps the disabled button below with a hover/tap hint. */ }
 
@@ -1345,7 +1345,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 							</InfoTip>
 
-						) : (
+						) : ( // What: Normal Next Branch. Why: A step without requireClick just needs the plain clickable button. How: This renders the else branch, taken while curSteObj.requireClick is false.
 
 							<button className='ob-next' onClick={ priActFun }>
 								{ curSteObj.primary }{ ( curSteObj.primary !== 'Done' && !curSteObj.solo ) ? ' ›' : '' }

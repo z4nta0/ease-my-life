@@ -3057,7 +3057,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									onChange={ onImpFun }
 								/>{ /* What: File Input Element. Why: A real, native file picker is required to choose a backup file; it stays hidden since the Import Btn below is what the user actually sees. How: This is triggered indirectly via filInpRef.current.click() and handled by onImpFun. */ }
 
-								{ penImpObj ? (
+								{ penImpObj ? ( // What: Pending Import Check. Why: A staged backup awaiting confirmation replaces the plain Import trigger with its own confirm pair. How: This renders the confirm pair while penImpObj holds a value, the plain trigger otherwise.
 
 
 									<div className={ ` set-reset-confirm   ${ impLeaBoo ? 'is-leaving' : '' } ` }>{ /* What: Import Confirm Div Element. Why: The Import/Cancel confirm pair needs its own grouping, replacing the single Import trigger while a backup is staged. How: This wraps the confirm's own Import and Cancel buttons. */ }
@@ -3081,7 +3081,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									</div>
 
 
-								) : (
+								) : ( // What: Plain Import Branch. Why: With nothing staged yet, the row just needs its normal clickable trigger. How: This renders the else branch, taken while penImpObj is null.
 
 
 									<Btn
@@ -3127,7 +3127,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 								</div>
 
-								{ conResBoo ? (
+								{ conResBoo ? ( // What: Reset Confirm Check. Why: An in-progress reset confirmation replaces the trigger with its own Reset/Cancel pair. How: This renders the confirm pair while conResBoo is true.
 
 
 									<div className={ ` set-reset-confirm   ${ resLeaBoo ? 'is-leaving' : '' } ` }>{ /* What: Reset Confirm Div Element. Why: The Reset/Cancel confirm pair needs its own grouping, replacing the single Reset trigger while confirmation is pending. How: This wraps the confirm's own Reset and Cancel buttons. */ }
@@ -3168,7 +3168,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									</div>
 
 
-								) : hasDatBoo ? (
+								) : hasDatBoo ? ( // What: Has Data Check. Why: A working Reset trigger only makes sense while there's actually something to reset. How: This renders the working Reset button while hasDatBoo is true, an explained disabled one otherwise.
 
 
 									<Btn
@@ -3180,7 +3180,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									>Reset</Btn> // What: Btn. Why: This is the actual trigger that opens the reset confirmation. How: This clears any stale message and opens the confirm pair when clicked.
 
 
-								) : (
+								) : ( // What: No Data Branch. Why: With no data at all, the Reset trigger needs to explain why it's disabled instead of silently doing nothing. How: This renders the else branch, taken while hasDatBoo is false.
 
 
 									<InfoTip

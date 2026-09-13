@@ -814,7 +814,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 							</span>
 
 
-						) : (
+						) : ( // What: New Group Trigger Branch. Why: With no create-in-progress, the row just needs its own plain trigger pill instead of the input. How: This renders the else branch, taken while newGroBoo is false.
 
 
 							<button
@@ -984,7 +984,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 							</div>
 
 
-						) : (
+						) : ( // What: No Conditionals Branch. Why: With no conditionals to attach, the rail is replaced by a plain explanatory message. How: This renders the else branch, taken while cndIteArr is empty.
 
 
 							<p className='rd-cnd-empty'>No conditionals yet. Create one in the Conditionals section below, then attach it here.</p>
@@ -1107,7 +1107,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 										aria-label='Anchor weekday'
 										onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { anchorDow : parseInt( chgEveObj.target.value ) } ) }
 									>
-										{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => (
+										{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps the fixed weekday-name array to one option per entry, keyed by its own dayIndNum.
 
 											<option key={ dayIndNum } value={ dayIndNum }>{ dayNamStr }</option>
 
@@ -1145,7 +1145,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											aria-label='Week of the month'
 											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { nthOrdinal : parseInt( chgEveObj.target.value ) } ) }
 										>
-											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => (
+											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum, labeled via CADENCE.summary.
 
 												<option key={ ordValNum } value={ ordValNum }>{ CADENCE.summary( { cadence : 'monthly', anchorDom : ordValNum } ).split( '· ' )[ 1 ] }</option>
 
@@ -1158,7 +1158,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											aria-label='Weekday'
 											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { nthWeekday : parseInt( chgEveObj.target.value ) } ) }
 										>
-											{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => (
+											{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps the fixed weekday-name array to one option per entry, keyed by its own dayIndNum.
 
 												<option key={ dayIndNum } value={ dayIndNum }>{ dayNamStr }</option>
 
@@ -1169,7 +1169,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 									</React.Fragment>
 
 
-								) : (
+								) : ( // What: Anchor Dom Branch. Why: A date-anchored monthly cadence needs its own plain day-of-month select instead. How: This renders the else branch, taken while dateMode isn't 'nthWeekday'.
 
 
 									<select
@@ -1178,7 +1178,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 										aria-label='Anchor day of month'
 										onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { anchorDom : parseInt( chgEveObj.target.value ) } ) }
 									>
-										{ Array.from( { length : 31 }, ( _, arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => (
+										{ Array.from( { length : 31 }, ( _, arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domValNum, labeled via CADENCE.summary.
 
 											<option key={ domValNum } value={ domValNum }>{ CADENCE.summary( { cadence : 'monthly', anchorDom : domValNum } ).split( '· ' )[ 1 ] }</option>
 
@@ -1200,7 +1200,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											aria-label='Week of the month'
 											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { nthOrdinal : parseInt( chgEveObj.target.value ) } ) }
 										>
-											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => (
+											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum, labeled via CADENCE.summary.
 
 												<option key={ ordValNum } value={ ordValNum }>{ CADENCE.summary( { cadence : 'monthly', anchorDom : ordValNum } ).split( '· ' )[ 1 ] }</option>
 
@@ -1213,7 +1213,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											aria-label='Weekday'
 											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { nthWeekday : parseInt( chgEveObj.target.value ) } ) }
 										>
-											{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => (
+											{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps the fixed weekday-name array to one option per entry, keyed by its own dayIndNum.
 
 												<option key={ dayIndNum } value={ dayIndNum }>{ dayNamStr }</option>
 
@@ -1226,7 +1226,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											aria-label='Anchor month'
 											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { anchorMonth : parseInt( chgEveObj.target.value ) } ) }
 										>
-											{ [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ].map( ( monNamStr, monIndNum ) => (
+											{ [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ].map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps the fixed month-abbreviation array to one option per entry, keyed by its own 1-indexed monIndNum.
 
 												<option key={ monIndNum } value={ monIndNum + 1 }>{ monNamStr }</option>
 
@@ -1237,7 +1237,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 									</React.Fragment>
 
 
-								) : (
+								) : ( // What: Date Anchor Branch. Why: A date-anchored yearly cadence needs its own plain month-and-day selects instead. How: This renders the else branch, taken while dateMode isn't 'nthWeekday'.
 
 
 									<React.Fragment>{ /* What: Date Anchor Fragment Element. Why: The month and day-of-month selects are true siblings with no shared wrapper of their own. How: This groups both selects without adding an extra DOM node. */ }
@@ -1249,7 +1249,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											aria-label='Anchor month'
 											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { anchorMonth : parseInt( chgEveObj.target.value ) } ) }
 										>
-											{ [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ].map( ( monNamStr, monIndNum ) => (
+											{ [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ].map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps the fixed month-abbreviation array to one option per entry, keyed by its own 1-indexed monIndNum.
 
 												<option key={ monIndNum } value={ monIndNum + 1 }>{ monNamStr }</option>
 
@@ -1262,7 +1262,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											aria-label='Anchor day'
 											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { anchorDay : parseInt( chgEveObj.target.value ) } ) }
 										>
-											{ Array.from( { length : CADENCE.daysInMonth( 2024, picObj.anchorMonth ?? 1 ) }, ( _, arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => (
+											{ Array.from( { length : CADENCE.daysInMonth( 2024, picObj.anchorMonth ?? 1 ) }, ( _, arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Anchor Day Option List Render. Why: One option is needed per possible day within the anchor month's own real length. How: This maps a generated array sized by CADENCE.daysInMonth to one option per entry, keyed by its own domValNum.
 
 												<option key={ domValNum } value={ domValNum }>{ domValNum }</option>
 
@@ -1651,7 +1651,7 @@ function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, acti
 						</div>
 
 
-					) : (
+					) : ( // What: Plain Foot Branch. Why: With no delete confirmation pending, the normal Delete/Cancel/Save footer belongs here instead. How: This renders the else branch, taken while conDelBoo is false.
 
 
 						<div key='foot' className='rd-ctl-foot-row'>{ /* What: Foot Row Div Element. Why: Delete (left, existing conditionals only) and Cancel/Save (right) both belong in the same footer row. How: This conditionally renders the Delete Btn, then the rem-foot-right div below. */ }
@@ -1916,7 +1916,7 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 						</InfoTip> // What: Info Tip. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses.
 
 
-					) : (
+					) : ( // What: Add Button Branch. Why: Outside the guided checklist, the real working Add control belongs here instead. How: This renders the else branch, taken while the checklist isn't in progress.
 
 
 						<button
@@ -2018,7 +2018,7 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 									</div>
 
 
-								) : (
+								) : ( // What: Normal Row Branch. Why: A closed row just needs the plain clickable header instead. How: This renders the else branch, taken while isaOpnBoo is false or drfObj is missing.
 
 
 									<button
@@ -3145,7 +3145,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 												</InfoTip> // What: Info Tip. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses.
 
 
-											) : (
+											) : ( // What: Add Button Branch. Why: Outside the guided checklist, the real working Add-item control belongs here instead. How: This renders the else branch, taken while tutProBoo is false.
 
 
 												<button className='rd-add' disabled={ detAddBoo } onClick={ strAddFun }>
@@ -3236,7 +3236,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 															</div>
 
 
-														) : (
+														) : ( // What: Normal Row Branch. Why: A closed row just needs the plain clickable header instead. How: This renders the else branch, taken while iteOpnBoo is false.
 
 
 															<button

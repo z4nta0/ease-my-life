@@ -187,7 +187,7 @@ function CadConCom ( { value, onChange } ) {
 
 
 						How often?
-						{ norCadObj.cadence === 'daily' && (
+						{ norCadObj.cadence === 'daily' && ( // What: Daily Help Check. Why: Only the daily cadence needs its own inline explanation of how it interacts with a picker's own Days control. How: This renders the InfoTip only while norCadObj.cadence is 'daily'.
 
 
 							<InfoTip
@@ -229,7 +229,7 @@ function CadConCom ( { value, onChange } ) {
 				>{ /* What: Anchor Fade Div Element. Why: The anchor subsection should fade in and out as a unit whenever the selected cadence itself changes. How: This re-keys, and so re-fades, whenever norCadObj.cadence changes, wrapping whichever of the 3 subsections below actually matches it. */ }
 
 
-					{ norCadObj.cadence === 'weekly' && (
+					{ norCadObj.cadence === 'weekly' && ( // What: Weekly Visibility Check. Why: Only the weekly cadence's own anchor-weekday subsection belongs here. How: This renders it only while norCadObj.cadence is 'weekly'.
 
 
 						<div className='rem-field'>{ /* What: Weekly Field Div Element. Why: This groups every weekly-specific control as one anchor subsection. How: This renders the field label/summary and the anchor-weekday select below. */ }
@@ -269,7 +269,7 @@ function CadConCom ( { value, onChange } ) {
 								>{ /* What: Anchor Weekday Select Element. Why: This is the actual control for choosing the weekly anchor day. How: This commits the chosen weekday's own index straight through setPatFun. */ }
 
 
-									{ DAY_FUL_ARR.map( ( dayNamStr, dowIndNum ) => (
+									{ DAY_FUL_ARR.map( ( dayNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowIndNum.
 
 
 										<option
@@ -292,7 +292,7 @@ function CadConCom ( { value, onChange } ) {
 
 					) }
 
-					{ norCadObj.cadence === 'monthly' && (
+					{ norCadObj.cadence === 'monthly' && ( // What: Monthly Visibility Check. Why: Only the monthly cadence's own anchor subsection belongs here. How: This renders it only while norCadObj.cadence is 'monthly'.
 
 
 						<div className='rem-field'>{ /* What: Monthly Field Div Element. Why: This groups every monthly-specific control as one anchor subsection. How: This renders the field label/summary, the Date/Weekday Segmented, whichever detail row matches it, and a clamp hint. */ }
@@ -345,7 +345,7 @@ function CadConCom ( { value, onChange } ) {
 									>{ /* What: Nth Ordinal Select Element. Why: This is the actual control for choosing which occurrence (1st through 5th) of the weekday to target. How: This commits the chosen ordinal straight through setPatFun. */ }
 
 
-										{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => (
+										{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum.
 
 
 											<option
@@ -367,7 +367,7 @@ function CadConCom ( { value, onChange } ) {
 									>{ /* What: Nth Weekday Select Element. Why: This is the actual control for choosing which weekday to target. How: This commits the chosen weekday's own index straight through setPatFun. */ }
 
 
-										{ DAY_FUL_ARR.map( ( dayNamStr, dowIndNum ) => (
+										{ DAY_FUL_ARR.map( ( dayNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowIndNum.
 
 
 											<option
@@ -401,7 +401,7 @@ function CadConCom ( { value, onChange } ) {
 									>{ /* What: Anchor Day Of Month Select Element. Why: This is the actual control for choosing the monthly anchor day. How: This commits the chosen day-of-month straight through setPatFun. */ }
 
 
-										{ Array.from( { length : 31 }, ( _, dayIndNum ) => dayIndNum + 1 ).map( ( dayValNum ) => (
+										{ Array.from( { length : 31 }, ( _, dayIndNum ) => dayIndNum + 1 ).map( ( dayValNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own dayValNum.
 
 
 											<option
@@ -431,7 +431,7 @@ function CadConCom ( { value, onChange } ) {
 
 					) }
 
-					{ norCadObj.cadence === 'yearly' && (
+					{ norCadObj.cadence === 'yearly' && ( // What: Yearly Visibility Check. Why: Only the yearly cadence's own anchor subsection belongs here. How: This renders it only while norCadObj.cadence is 'yearly'.
 
 
 						<div className='rem-field'>{ /* What: Yearly Field Div Element. Why: This groups every yearly-specific control as one anchor subsection. How: This renders the field label/summary, the Date/Weekday Segmented, whichever detail row matches it, and a clamp hint. */ }
@@ -482,7 +482,7 @@ function CadConCom ( { value, onChange } ) {
 									>{ /* What: Nth Ordinal Select Element. Why: This is the actual control for choosing which occurrence (1st through 5th) of the weekday to target. How: This commits the chosen ordinal straight through setPatFun. */ }
 
 
-										{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => (
+										{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum.
 
 
 											<option
@@ -504,7 +504,7 @@ function CadConCom ( { value, onChange } ) {
 									>{ /* What: Nth Weekday Select Element. Why: This is the actual control for choosing which weekday to target. How: This commits the chosen weekday's own index straight through setPatFun. */ }
 
 
-										{ DAY_FUL_ARR.map( ( dayNamStr, dowIndNum ) => (
+										{ DAY_FUL_ARR.map( ( dayNamStr, dowIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps DAY_FUL_ARR to one option per entry, keyed by its own dowIndNum.
 
 
 											<option
@@ -528,7 +528,7 @@ function CadConCom ( { value, onChange } ) {
 									>{ /* What: Anchor Month Select Element. Why: This is the actual control for choosing the yearly anchor month. How: This commits the chosen month's own 1-indexed number straight through setPatFun. */ }
 
 
-										{ MON_FUL_ARR.map( ( monNamStr, monIndNum ) => (
+										{ MON_FUL_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps MON_FUL_ARR to one option per entry, keyed by its own 1-indexed monIndNum.
 
 
 											<option
@@ -562,7 +562,7 @@ function CadConCom ( { value, onChange } ) {
 									>{ /* What: Anchor Month Select Element. Why: This is the actual control for choosing the yearly anchor month. How: This commits the chosen month's own 1-indexed number straight through setPatFun. */ }
 
 
-										{ MON_FUL_ARR.map( ( monNamStr, monIndNum ) => (
+										{ MON_FUL_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps MON_FUL_ARR to one option per entry, keyed by its own 1-indexed monIndNum.
 
 
 											<option
@@ -584,7 +584,7 @@ function CadConCom ( { value, onChange } ) {
 									>{ /* What: Anchor Day Select Element. Why: This is the actual control for choosing the yearly anchor day, clamped to whatever the anchor month's own real length allows. How: This commits the chosen day-of-month straight through setPatFun. */ }
 
 
-										{ Array.from( { length : dayCouFun( norCadObj.anchorMonth ) }, ( _, dayIndNum ) => dayIndNum + 1 ).map( ( dayValNum ) => (
+										{ Array.from( { length : dayCouFun( norCadObj.anchorMonth ) }, ( _, dayIndNum ) => dayIndNum + 1 ).map( ( dayValNum ) => ( // What: Anchor Day Option List Render. Why: One option is needed per possible day within the anchor month's own real length. How: This maps a generated array sized by dayCouFun to one option per entry, keyed by its own dayValNum.
 
 
 											<option

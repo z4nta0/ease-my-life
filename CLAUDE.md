@@ -469,6 +469,21 @@ decision is captured for next time instead of getting re-asked later.
     general descriptive-purpose comment rule instead of the pretend-id
     one, placed after its own opening bracket like any other multi-line
     construct: `{ indRecObj && ( // What: Indicator Visibility Check. Why: ... How: ...`.
+    - **Known blind spot**: this specific case (a `{cond && (`/`{cond ? (`
+      ternary-branch/`{arr.map((x) => (` opener, or a ternary's own `) : (`
+      else-branch line) is easy to leave uncommented even in a file whose
+      actual JSX elements and statements are all correctly commented,
+      since real-world JSX almost never comments a bare control-flow
+      wrapper line like this at all, that's standard idiomatic React
+      elsewhere. This rule makes no exception for it: found to be a
+      systemic, file-wide miss across most files this rule set had
+      already been applied to (136 instances across 9 files in one
+      audit), the same recurring-bias pattern as the naming "Known
+      miscorrections" list and the JSX-spacing blind spot above, just for
+      control-flow wrapper comments instead of word choice or spacing.
+      When auditing a file for comment completeness, explicitly grep for
+      `{.*(&&|\?)\s*\($`, `^\s*\)\s*:\s*\($`, and `{.*\.map\(.*=>\s*\($`
+      lines with no trailing `//`, not just bare elements/statements.
 - **Import statements** get the same one-line What/Why/How comment as any
   other single-line statement — treat the imported binding like a variable
   declaration. Since import lines have no blank lines between them, pad

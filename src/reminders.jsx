@@ -668,7 +668,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 		<p className='rem-hint'>{ /* What: Anchor Hint Paragraph Element. Why: This is the shared hint every interval-based schedule below reuses unmodified. How: This renders the counted-from sentence, swapping in a live link or an inline input based on ancEdiBoo. */ }
 			Counted from{ ' ' }
-			{ ancEdiBoo ? (
+			{ ancEdiBoo ? ( // What: Anchor Editing Check. Why: The anchor date swaps between a plain link and a live inline input depending on whether editing is active. How: This renders the inline date input while ancEdiBoo is true, the plain link otherwise.
 
 
 				<input
@@ -695,7 +695,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 				/> // What: Anchor Inline Input Element. Why: This lets the user amend the anchor date directly, in place. How: This is a native date input, focused immediately, committing on change and closing on blur/Enter/Escape.
 
 
-			) : (
+			) : ( // What: Anchor Link Branch. Why: Outside editing, the plain clickable date link belongs here instead. How: This renders the else branch, taken while ancEdiBoo is false.
 
 
 				<>
@@ -747,7 +747,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 			<p className='rem-hint'>{ /* What: Once Hint Paragraph Element. Why: This is the same "starting on" link/input pattern ancHinEle uses, for the once-specific start date field. How: This renders the live link or inline input based on oncEdiBoo. */ }
 				Starting on{ ' ' }
-				{ oncEdiBoo ? (
+				{ oncEdiBoo ? ( // What: Once Editing Check. Why: The once start date swaps between a plain link and a live inline input depending on whether editing is active. How: This renders the inline date input while oncEdiBoo is true, the plain link otherwise.
 
 
 					<input
@@ -781,7 +781,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 					/> // What: Once Date Inline Input Element. Why: This lets the user amend the start date directly, in place, never earlier than today. How: This is a native date input, focused immediately, committing (clamped) on change and closing on blur/Enter/Escape.
 
 
-				) : (
+				) : ( // What: Once Link Branch. Why: Outside editing, the plain clickable date link belongs here instead. How: This renders the else branch, taken while oncEdiBoo is false.
 
 
 					<>
@@ -1082,7 +1082,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 								>{ /* What: Day-Of-Month Select Element. Why: This is the plain 1-31 day picker for the default mode. How: This commits the chosen option's own numeric value as tasRecObj's new dayOfMonth. */ }
 
 
-									{ Array.from( { length : 31 }, ( _, domIndNum ) => domIndNum + 1 ).map( ( domNum ) => (
+									{ Array.from( { length : 31 }, ( _, domIndNum ) => domIndNum + 1 ).map( ( domNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domNum.
 
 
 										<option key={ domNum } value={ domNum }>{ ordSufFun( domNum ) }</option> // What: Day-Of-Month Option Element. Why: One option is needed per possible day-of-month. How: This renders domNum's own ordinal label.
@@ -1257,7 +1257,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 							</div>
 
 
-						) : (
+						) : ( // What: Plain Date Mode Branch. Why: The default mode just needs the plain month-and-day selects instead. How: This renders the else branch, taken while tasRecObj.dateMode isn't 'nthWeekday'.
 
 
 							<div className='rem-inline'>{ /* What: Plain Date Inline Div Element. Why: The default mode needs a month select and a day select read together. How: This wraps both selects below. */ }
@@ -1286,7 +1286,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 								>{ /* What: Day Select Element. Why: This is the plain 1-31 day picker for the default mode. How: This commits the chosen option's own numeric value as tasRecObj's new day. */ }
 
 
-									{ Array.from( { length : 31 }, ( _, domIndNum ) => domIndNum + 1 ).map( ( domNum ) => (
+									{ Array.from( { length : 31 }, ( _, domIndNum ) => domIndNum + 1 ).map( ( domNum ) => ( // What: Day Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domNum.
 
 
 										<option key={ domNum } value={ domNum }>{ domNum }</option> // What: Day Option Element. Why: One option is needed per possible day-of-month. How: This renders domNum's own plain numeric label, unlike the ordinal label the monthly subsection uses.
@@ -1726,7 +1726,7 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 			>{ /* What: Tutorial Article Element. Why: This is the mini-tour launcher card's own root element. How: This marks itself "is-done" once tutDonBoo, and dispatches every non-actions-area click to onRowCliFun. */ }
 
 
-				{ tutDonBoo ? (
+				{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved sample card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, the play-check button otherwise.
 
 
 					<button
@@ -1749,7 +1749,7 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 					</button>
 
 
-				) : (
+				) : ( // What: Play Check Branch. Why: A pending sample needs its own play-to-start checkbox instead. How: This renders the else branch, taken while tutDonBoo is false.
 
 
 					<button
@@ -1931,7 +1931,7 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 					/> // What: Name Input Element. Why: While isaOpeBoo, the plain name div below is replaced with a live-editable input. How: This commits on every change, re-trims and re-commits on blur, and blurs itself on Enter.
 
 
-				) : (
+				) : ( // What: Plain Name Branch. Why: Outside editing, the plain non-editable name div belongs here instead. How: This renders the else branch, taken while isaOpeBoo is false.
 
 
 					<div className='today-card-name'>{ tasRecObj.name }</div> // What: Card Name Div Element. Why: The plain, non-editing state just shows the name as text. How: This renders tasRecObj's own name directly.
@@ -2365,7 +2365,7 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 					{ !editMode && ( // What: Add Button Visibility Check. Why: The add button (or its disabled InfoTip stand-in) only makes sense outside Edit Mode. How: This renders one of the 2 branches below only while editMode is false.
 
 
-						tutProBoo ? (
+						tutProBoo ? ( // What: Tutorials In Progress Check. Why: The add control must stay disabled with an explanation while the guided checklist is still running. How: This renders the disabled InfoTip while tutProBoo is true, the real button otherwise.
 
 
 							<InfoTip
@@ -2384,7 +2384,7 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 							</InfoTip>
 
 
-						) : (
+						) : ( // What: Add Button Branch. Why: Outside the guided checklist, the real working Add button belongs here instead. How: This renders the else branch, taken while tutProBoo is false.
 
 
 							<button
@@ -3369,7 +3369,7 @@ function ReminderManager ( { state, actions, hidden } ) {
 								</InfoTip>
 
 
-							) : (
+							) : ( // What: Add Button Branch. Why: Outside the guided checklist, the real working Add button belongs here instead. How: This renders the else branch, taken while tutProBoo is false.
 
 
 								<button
@@ -3388,13 +3388,13 @@ function ReminderManager ( { state, actions, hidden } ) {
 
 
 							) }
-							{ visTasArr.length === 0 ? (
+							{ visTasArr.length === 0 ? ( // What: Empty List Check. Why: With no reminders at all, a plain empty-state message belongs here instead of a list. How: This renders the empty message while visTasArr is empty, the real list otherwise.
 
 
 								<div className='rd-empty'>No reminders yet. Add one to see it on Today.</div>
 
 
-							) : (
+							) : ( // What: Reminder List Branch. Why: With at least one reminder, the real list of rows belongs here instead. How: This renders the else branch, taken while visTasArr has entries.
 
 
 								<>
@@ -3431,7 +3431,7 @@ function ReminderManager ( { state, actions, hidden } ) {
 											>{ /* What: Row Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor Collapse. */ }
 
 
-												{ carOpeBoo ? (
+												{ carOpeBoo ? ( // What: Row Editing Check. Why: The row's own header swaps between a live-editable div and a plain clickable button depending on whether it's open. How: This renders the editing div while carOpeBoo is true, the plain toggle button otherwise.
 
 
 													<div className='rd-row'>{ /* What: Row Editing Div Element. Why: While editing, this is a plain div rather than a button, since a button can't legally contain the input below it (interactive-in-interactive), which also cost it an accessible name of its own. How: This renders the type icon, the live name input, and a real, separate collapse-chevron button. */ }
@@ -3489,7 +3489,7 @@ function ReminderManager ( { state, actions, hidden } ) {
 													</div>
 
 
-												) : (
+												) : ( // What: Row Toggle Branch. Why: A closed row just needs its own plain clickable toggle button instead. How: This renders the else branch, taken while carOpeBoo is false.
 
 
 													<button

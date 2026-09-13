@@ -190,7 +190,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 		<div className={ `cnd-controls   ${ isaInlBoo ? 'cnd-controls--inline' : '' }` }>{ /* What: Controls Container Div Element. Why: This is ConditionalControls' own root element, holding every field and settings block below. How: This renders as a plain div, switching to the tighter inline layout via a modifier class when isaInlBoo is true. */ }
 
 
-			{ !hideName && (
+			{ !hideName && ( // What: Name Field Visibility Check. Why: The caller can opt out of the whole name field via hideName. How: This renders the name field only while hideName is false.
 
 
 				<div className='np-field'>{ /* What: Name Field Div Element. Why: This groups the conditional-name label, input, and its own validation error as one field. How: This is omitted entirely whenever the caller passed hideName. */ }
@@ -545,7 +545,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 						</div>
-						{ !isaDowBoo && (
+						{ !isaDowBoo && ( // What: Fill Row Visibility Check. Why: Only ease-up's own charge can be jumped straight to full via this shortcut. How: This renders the Fill row only while isaDowBoo is false.
 
 
 							<div className='pie-row cnd-ease-up-row'>{ /* What: Fill Row Div Element. Why: Ease-up's own charge can be jumped straight to full instead of waiting out the drift. How: This wraps the label block and the Fill button below. */ }
@@ -576,7 +576,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 						) }
-						{ isaDowBoo && (
+						{ isaDowBoo && ( // What: Refill Row Visibility Check. Why: Only ease-down's own charge can be jumped straight back to full via this shortcut. How: This renders the Refill row only while isaDowBoo is true.
 
 
 							<div className='pie-row cnd-ease-down-row'>{ /* What: Refill Row Div Element. Why: Ease-down's own charge can be jumped straight back to full instead of waiting out a fresh streak. How: This wraps the label block and the Refill button below. */ }

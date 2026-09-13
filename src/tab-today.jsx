@@ -1242,7 +1242,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 
 						) }
-						{ picModStr === 'ease-down' && (
+						{ picModStr === 'ease-down' && ( // What: Refill Row Visibility Check. Why: Only ease-down offers an instant-refill shortcut for its own charge. How: This renders the Refill row only while picModStr is 'ease-down'.
 
 
 							<div className='pie-row pie-ease-down-row'>{ /* What: Refill Row Div Element. Why: Ease-down specifically offers an instant-refill shortcut. How: This renders the Refill label/subtitle plus its FillButton. */ }
@@ -1476,7 +1476,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 						</InfoTip> // What: Info Tip. Why: A blocked delete still needs to explain itself on hover/tap, not just silently refuse. How: This wraps the disabled Delete button with the fixed floor-explanation text.
 
 
-					) : (
+					) : ( // What: Working Delete Branch. Why: With more than 2 items still in the pool, a real working Delete button belongs here instead. How: This renders the else branch, taken while minIteBoo is false.
 
 
 						<Btn
@@ -1613,7 +1613,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 			>{ /* What: Tutorial Card Article Element. Why: This is EntCarCom's own root for a mini-tour launcher row. How: This renders a Play/Undo check button, the meta/name body, and (while unresolved) a Cancel action. */ }
 
 
-				{ tutDonBoo ? (
+				{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved sample card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, the play-check button otherwise.
 
 
 					<button
@@ -1639,7 +1639,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 					</button>
 
 
-				) : (
+				) : ( // What: Play Check Branch. Why: A pending sample needs its own play-to-start checkbox instead. How: This renders the else branch, taken while tutDonBoo is false.
 
 
 					<button
@@ -1763,7 +1763,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 			>{ /* What: Day-Off Card Article Element. Why: This is EntCarCom's own root for a day-off row. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) a disabled re-roll/edit plus a working Skip. */ }
 
 
-				{ ediModBoo ? (
+				{ ediModBoo ? ( // What: Edit Mode Check. Why: The row's own leading control swaps between a drag grip and a check button depending on whether Edit Mode is active. How: This renders the grip handle while ediModBoo is true, the check button otherwise.
 
 
 					<span
@@ -1786,7 +1786,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 					</span>
 
 
-				) : (
+				) : ( // What: Check Button Branch. Why: Outside Edit Mode, the row needs its own working done-toggle checkbox instead. How: This renders the else branch, taken while ediModBoo is false.
 
 
 					<button
@@ -1939,7 +1939,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 			>{ /* What: Charging Card Article Element. Why: This is EntCarCom's own root for a charging row. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) 3 fully-disabled actions. */ }
 
 
-				{ ediModBoo ? (
+				{ ediModBoo ? ( // What: Edit Mode Check. Why: The row's own leading control swaps between a drag grip and a check button depending on whether Edit Mode is active. How: This renders the grip handle while ediModBoo is true, the check button otherwise.
 
 
 					<span
@@ -1962,7 +1962,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 					</span>
 
 
-				) : (
+				) : ( // What: Check Button Branch. Why: Outside Edit Mode, the row needs its own working done-toggle checkbox instead. How: This renders the else branch, taken while ediModBoo is false.
 
 
 					<button
@@ -2150,7 +2150,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 		>{ /* What: Real Pick Card Article Element. Why: This is EntCarCom's own root for an ordinary picked-item row. How: This renders a grip (Edit Mode) or check button, the meta/name body (a text field while editing), and (outside Edit Mode) the re-roll/skip/edit actions. */ }
 
 
-			{ ediModBoo ? (
+			{ ediModBoo ? ( // What: Edit Mode Check. Why: The row's own leading control swaps between a drag grip and a check button depending on whether Edit Mode is active. How: This renders the grip handle while ediModBoo is true, the check button otherwise.
 
 
 				<span
@@ -2173,7 +2173,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 				</span>
 
 
-			) : (
+			) : ( // What: Check Button Branch. Why: Outside Edit Mode, the row needs its own working done-toggle checkbox instead. How: This renders the else branch, taken while ediModBoo is false.
 
 
 				<button
@@ -2234,7 +2234,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 					/> // What: Entry Card Name Input Element. Why: This is the actual editable field for renaming the item in place. How: This is wired to onRenFun on every change, committed by blurring on Enter.
 
 
-				) : (
+				) : ( // What: Plain Name Branch. Why: Outside editing, the plain non-editable name div belongs here instead. How: This renders the else branch, taken while isaEdiBoo is false.
 
 
 					<div className='today-card-name'>{ curIteObj.name }</div> // What: Card Name Div Element. Why: Outside the inline rename field, the item's own name just displays plainly. How: This renders curIteObj's own name.
@@ -2244,13 +2244,13 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 
 
 			</div>
-			{ !ediModBoo && (
+			{ !ediModBoo && ( // What: Card Actions Visibility Check. Why: Edit Mode replaces the whole actions strip with the drag grip above, so it has nothing left to show here. How: This renders the actions strip only while ediModBoo is false.
 
 
 				<div className='today-card-actions'>{ /* What: Card Actions Div Element. Why: An ordinary pick row's own re-roll/skip/edit controls sit together. How: This wraps a working-or-disabled Re-Roll, a working-or-disabled Skip, and an always-working Edit toggle. */ }
 
 
-					{ canRerBoo ? (
+					{ canRerBoo ? ( // What: Reroll Availability Check. Why: Re-Roll's own working control only makes sense while canRerBoo actually allows it. How: This renders the working button while canRerBoo is true, an explained disabled one otherwise.
 
 
 						<button
@@ -2270,7 +2270,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 						</button>
 
 
-					) : (
+					) : ( // What: Disabled Reroll Branch. Why: A blocked re-roll needs an explained disabled control instead. How: This renders the else branch, taken while canRerBoo is false.
 
 
 						<InfoTip
@@ -2288,7 +2288,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 
 
 					) }
-					{ entDonBoo ? (
+					{ entDonBoo ? ( // What: Entry Done Check. Why: Skip only makes sense while the row isn't already completed. How: This renders an explained disabled Skip while entDonBoo is true, the working button otherwise.
 
 
 						<InfoTip
@@ -2305,7 +2305,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 						</InfoTip> // What: Info Tip. Why: A completed row's own skip is explained rather than removed, matching re-roll's own lockout above. How: This wraps a disabled-looking skip icon with donSkiStr.
 
 
-					) : (
+					) : ( // What: Working Skip Branch. Why: An uncompleted row needs its own real, working Skip control instead. How: This renders the else branch, taken while entDonBoo is false.
 
 
 						<button
@@ -2423,7 +2423,7 @@ function PagTouCom ( { tour : touRecObj, state : staAppObj, actions : actStoObj,
 		>{ /* What: Page Tour Card Article Element. Why: This is PagTouCom's own root. How: This renders a Play/Undo check button, the meta/name body, and (while unresolved) a Cancel action. */ }
 
 
-			{ tutDonBoo ? (
+			{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved page-tour card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, the play-check button otherwise.
 
 
 				<button
@@ -2449,7 +2449,7 @@ function PagTouCom ( { tour : touRecObj, state : staAppObj, actions : actStoObj,
 				</button>
 
 
-			) : (
+			) : ( // What: Play Check Branch. Why: A pending page tour needs its own play-to-start checkbox instead. How: This renders the else branch, taken while tutDonBoo is false.
 
 
 				<button
@@ -2602,7 +2602,7 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 		>{ /* What: App Feature Card Article Element. Why: This is AppFeaCom's own root. How: This renders a Play/Undo/blocked check button, the meta/name body, and (while unresolved) a Cancel action. */ }
 
 
-			{ tutDonBoo ? (
+			{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved App Feature card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, otherwise one of the 2 branches below.
 
 
 				<button
@@ -2628,7 +2628,7 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 				</button>
 
 
-			) : blkRsnStr ? (
+			) : blkRsnStr ? ( // What: Blocked Feature Check. Why: A pending, blocked feature needs an explained disabled control instead of a working one. How: This renders the disabled InfoTip while blkRsnStr holds a reason, the real play-check button otherwise.
 
 
 				<InfoTip
@@ -2647,7 +2647,7 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 				</InfoTip>
 
 
-			) : (
+			) : ( // What: Play Check Branch. Why: A pending, unblocked feature needs its own real play-to-start checkbox instead. How: This renders the else branch, taken while blkRsnStr is falsy.
 
 
 				<button
@@ -5513,7 +5513,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 							>{ /* What: Celebration Overlay Div Element. Why: This is the actual portaled overlay hosting either style's own particles. How: This renders either the confetti pieces or the sparkle pieces, per cplStyStr. */ }
 
 
-								{ cplStyStr === 'confetti' && parArr.map( ( curParObj ) => (
+								{ cplStyStr === 'confetti' && parArr.map( ( curParObj ) => ( // What: Confetti Particle List Render. Why: One piece is needed per entry in parArr, only for the confetti style. How: This maps parArr to one confetti piece per entry, keyed by its own id, only while cplStyStr is 'confetti'.
 
 
 									<i
@@ -5524,7 +5524,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 									/> // What: Confetti Piece Element. Why: This is one single confetti piece, positioned/rotated/timed entirely via inline CSS custom properties. How: This renders curParObj's own randomized angle/distance/rotation/opacity/delay.
 
 								) ) }
-								{ cplStyStr === 'sparkle' && parArr.map( ( curParObj ) => (
+								{ cplStyStr === 'sparkle' && parArr.map( ( curParObj ) => ( // What: Sparkle Particle List Render. Why: One piece is needed per entry in parArr, only for the sparkle style. How: This maps parArr to one sparkle piece per entry, keyed by its own id, only while cplStyStr is 'sparkle'.
 
 
 									<span
@@ -5772,7 +5772,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 											} ) }
-											{ genActBoo && newSltByGroObj[ curGroObj.name ] && newSltByGroObj[ curGroObj.name ].map( ( curPicObj ) => (
+											{ genActBoo && newSltByGroObj[ curGroObj.name ] && newSltByGroObj[ curGroObj.name ].map( ( curPicObj ) => ( // What: New Slot Loader List Render. Why: A group with no entries yet, but an incoming pending slot mid-generation, still needs its own placeholder loader cards. How: This maps newSltByGroObj's own entry for curGroObj's name to one LoaCarCom per pending picker, only while genActBoo is true and a slot list actually exists.
 
 
 												<LoaCarCom
@@ -5825,7 +5825,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 									    replay-continuation cards. The ORIGINAL first-time pass is
 									    unaffected: every card stays until the whole section resolves
 									    together at the next real generation. */ }
-									{ APP_FEATURES.filter( ( curFeaObj ) => !( fecDonBoo && feaStaObj[ curFeaObj.id ] ) ).map( ( curFeaObj ) => (
+									{ APP_FEATURES.filter( ( curFeaObj ) => !( fecDonBoo && feaStaObj[ curFeaObj.id ] ) ).map( ( curFeaObj ) => ( // What: App Feature Card List Render. Why: Every still-relevant feature needs its own card; a resolved one during replay drops out immediately instead of lingering with an Undo toggle. How: This maps APP_FEATURES, filtered per the design note above, to one AppFeaCom per entry, keyed by its own id.
 
 
 										<AppFeaCom
@@ -5848,7 +5848,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 						) }
 
-						{ shwCheBoo && (
+						{ shwCheBoo && ( // What: Generate Card Visibility Check. Why: The closing checklist card only belongs while the guided checklist is still showing. How: This renders the Generate card only while shwCheBoo is true.
 
 
 							<div
@@ -5882,7 +5882,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 									>Generate your list</Btn> // What: Btn. Why: This is the actual working trigger once every requirement is satisfied. How: This calls onGenCarFun.
 
 
-								) : (
+								) : ( // What: Disabled Generate Branch. Why: Without every requirement satisfied, Generate needs an explained disabled control instead. How: This renders the else branch, taken while onbRdyBoo is false.
 
 
 									<InfoTip
@@ -5900,7 +5900,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 						) }
 
-						{ onbEmpBoo && (
+						{ onbEmpBoo && ( // What: Empty State Visibility Check. Why: This CTA only belongs to a brand-new user with no pickers at all. How: This renders the empty-state card only while onbEmpBoo is true.
 
 
 							<div className='ob-create ob-create--empty'>{ /* What: Empty State Div Element. Why: A brand-new user with no pickers at all needs a plain, non-tour empty-state CTA. How: This renders its own icon/heading/explanation plus a Create-a-picker button. */ }
@@ -5933,7 +5933,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 						) }
 
-						{ onbShwNorBoo && (
+						{ onbShwNorBoo && ( // What: No-Run Empty State Visibility Check. Why: This CTA only belongs to a user with real pickers but nothing runnable today. How: This renders the card only while onbShwNorBoo is true.
 
 
 							<div className='ob-create ob-create--empty ob-create--norun'>{ /* What: No-Run Empty State Div Element. Why: A user with real pickers but nothing runnable today needs its own explanatory empty state, distinct from the "no pickers at all" one above. How: This renders its own icon/heading/explanation with links out to the Data and Pickers tabs. */ }
@@ -6007,7 +6007,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 								</div>
 
 
-							) : ediModBoo ? (
+							) : ediModBoo ? ( // What: Edit Mode Branch. Why: Edit Mode replaces the normal footer with its own Cancel/Done pair. How: This renders the edit-mode actions while ediModBoo is true, the normal footer otherwise.
 
 
 								<div className='today-foot-actions editmode-foot-actions'>{ /* What: Edit Mode Foot Actions Div Element. Why: Edit Mode replaces the normal footer actions with its own Cancel/Done pair. How: This wraps both Btn elements below. */ }
@@ -6028,7 +6028,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 								</div>
 
 
-							) : (
+							) : ( // What: Normal Footer Branch. Why: Outside both the confirm prompt and Edit Mode, the normal Regenerate/generated-on footer belongs here instead. How: This renders the else branch, taken while neither prior condition holds.
 
 
 								<React.Fragment>{ /* What: Normal Footer Fragment Element. Why: The Edit Mode/Regenerate action row and the generated-on sub-line are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
@@ -6063,7 +6063,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 											</InfoTip>
 
 
-										) : (
+										) : ( // What: Working Regenerate Branch. Why: Outside the guided checklist, the real working Regenerate control belongs here instead. How: This renders the else branch, taken while shwCheBoo is false.
 
 
 											<Btn
@@ -6113,7 +6113,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 				/> // What: Reminder Tour. Why: A reminder mini-tour never leaves Today, so it renders directly here. How: This is passed which variant to run plus a close handler that clears actMinTouObj.
 
 			) }
-			{ shwFeaIntBoo && (
+			{ shwFeaIntBoo && ( // What: App Features Intro Check. Why: The one-time intro tip only belongs once, right when it first becomes relevant. How: This renders AppFeaturesIntroTip only while shwFeaIntBoo is true.
 
 				<AppFeaturesIntroTip actions={ actions } /> // What: App Features Intro Tip. Why: The App Features section needs its own one-time "One Last Thing..." intro. How: This renders only while shwFeaIntBoo is true.
 

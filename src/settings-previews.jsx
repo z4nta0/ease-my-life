@@ -325,7 +325,7 @@ function CelebrationPreviewStage ( { style : styStr, token : tokNum } ) {
 						/> // What: Confetti Piece Element. Why: This is one falling confetti piece of the celebration. How: This is styled entirely via CSS custom properties read by the .confetti-piece animation.
 
 
-					) : (
+					) : ( // What: Sparkle Piece Branch. Why: A non-confetti particle renders as a sparkle piece instead. How: This renders the else branch, taken whenever parCurObj.kinStr isn't 'confetti'.
 
 
 						<span
@@ -424,7 +424,7 @@ function PickerAnimStage ( { style : styStr, token : tokNum } ) {
 				/> // What: Picker Strip. Why: This plays the real reel/spotlight/dissolve cycle so the preview shows the actual animation, not a mockup of it. How: This is remounted (via its own key) on every replay, forced to play even under reduced motion since this is an explicit Play press.
 
 
-			) : (
+			) : ( // What: Static Pick Branch. Why: Before Play is first pressed, the stage still needs something meaningful to show instead of the cycling strip. How: This renders the else branch, taken while tokNum is still 0.
 
 
 				<span className='pickanim-preview-pick'>{ picCanObj.name }</span> // What: Picker Preview Pick Span Element. Why: Before Play is first pressed, the stage still needs to show something meaningful. How: This renders the fixed landing candidate's own name as a static placeholder.
