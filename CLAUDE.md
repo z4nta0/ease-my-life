@@ -436,6 +436,29 @@ decision is captured for next time instead of getting re-asked later.
 
     ) }
     ```
+    **This exception applies ONLY to the single outermost element of
+    that expression, never to anything nested inside it.** A fragment
+    (`<>...</>`) or container element that itself sits in a `{cond &&
+    (...)}`/ternary/`.map()`/`return (...)` boundary is safe for its
+    OWN trailing comment, but every child inside it (each `<p>`, each
+    nested `<div>`) is back to being a normal JSX child, so those still
+    need the `{ /* */ }` form. This was found live, twice, as a real
+    rendering bug: `body: ( <> <p>...</p> // comment <p>...</p> //
+    comment </> )` rendered the bare comments as literal visible text
+    between the paragraphs, since the fragment's own children are an
+    ordinary children list, not a further JS-expression boundary, no
+    matter how many levels deep the `//` comment is nested under the
+    outermost safe boundary.
+    - **Mandatory self-audit**: before calling a file's JSX comments
+      done, run `grep -nE "(/>|</[a-zA-Z][a-zA-Z0-9.]*>)\s*//" ` and
+      also `grep -nE "^\s*<[a-zA-Z][^/]*[^/]>\s*//"` (the "opening tag
+      immediately followed by a bare `//`" case, e.g. a container's own
+      `<div ...> // What: ...` instead of `<div ...>{ /* What: ... */
+      }`) against the file. For every hit, trace back to that specific
+      element's own immediate parent — if the parent is a real JSX
+      element/fragment's children list (not the direct `? (`/`: (`/`&&
+      (`/`.map((x) => (`/`return (` boundary), the comment is a live bug
+      and must be converted.
   - The closing tag itself still gets nothing, same as always.
   - **Attribute lines never get their own comment** — unlike object
     properties, a JSX attribute is self-descriptive enough via its own
@@ -1590,6 +1613,22 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     those would silently break rendering, not just look different. The
     test is always "do I control every reader of this key," not merely
     "is this an object I wrote."
+- **Exported namespace objects must use explicit `originalName :
+  internalName` mapping, never JS shorthand `{ internalName }`.** A
+  domain module's public API (`STORAGE`, `PICKERS`, `CADENCE`, `TASKS`,
+  `CONDITIONALS`, `HOL_NAM_OBJ`, `NOT_NAM_OBJ`, ...) keeps its own
+  ORIGINAL external property names stable while every internal
+  implementation gets renamed to the 9-char scheme. Writing the export
+  as shorthand (e.g. `export const X = { perCheFun, askOncFun }`)
+  silently renames the external API to match the internal names
+  instead, since shorthand's key IS the internal name — this has caused
+  two separate live production outages (`holidays.js`'s `HOL_NAM_OBJ`
+  and `notify.js`'s `NOT_NAM_OBJ`, both caught only after a real page
+  went blank/threw in the browser). Before finishing any file that
+  exports a namespace object, grep every other file for
+  `<ObjectName>\.` to enumerate every property name actually called
+  externally, then verify the export object explicitly maps EACH one
+  (`realName : internalName`), never bare.
 
 ### Default parameter values
 - Only give a parameter a default where it's genuinely reachable/
