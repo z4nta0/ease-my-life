@@ -440,7 +440,7 @@ function logRowFun( curStaObj, { eid = null, pickerId, itemId, source, date, dep
 
 
 	const curIteObj = curStaObj.items.find( ( iteFinObj ) => iteFinObj.id === itemId );    // What: Current Item Object And Guard. Why: The row below needs the item's own live name, or a removed-item fallback. How: This looks up itemId in curStaObj.items, undefined once removed.
-	const curPkrObj = curStaObj.pickers.find( ( pkrFinObj ) => pkrFinObj.id === pickerId ); // What: Current Picker Object And Guard. Why: The row below needs the picker's own live name/group, or removed-picker fallbacks. How: This looks up pickerId in curStaObj.pickers, undefined once removed.
+	const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === pickerId ); // What: Current Picker Object And Guard. Why: The row below needs the picker's own live name/group, or removed-picker fallbacks. How: This looks up pickerId in curStaObj.pickers, undefined once removed.
 
 
 	return { // What: Pick-Log Row Return. Why: The caller needs one fresh row shaped to state.pickLog's own contract. How: This builds the row from every argument plus the lookups above.
@@ -452,8 +452,8 @@ function logRowFun( curStaObj, { eid = null, pickerId, itemId, source, date, dep
 		pickerId    : pickerId,                                  // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from the pickerId parameter.
 		itemId      : itemId,                                    // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from the itemId parameter.
 		itemName    : curIteObj ? curIteObj.name : '(removed)',  // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This reads curIteObj's own name, else a removed-item placeholder.
-		pickerName  : curPkrObj ? curPkrObj.name : '(removed)',  // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This reads curPkrObj's own name, else a removed-picker placeholder.
-		group       : curPkrObj ? curPkrObj.group : '',          // What: Group. Why: Stats groups rows by their own picker's group. How: This reads curPkrObj's own group, else empty when the picker is gone.
+		pickerName  : curPicObj ? curPicObj.name : '(removed)',  // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This reads curPicObj's own name, else a removed-picker placeholder.
+		group       : curPicObj ? curPicObj.group : '',          // What: Group. Why: Stats groups rows by their own picker's group. How: This reads curPicObj's own group, else empty when the picker is gone.
 		done        : false,                                     // What: Done. Why: A freshly-logged pick was never yet completed. How: This is always false for a brand-new row.
 		completedAt : null,                                      // What: Completed At. Why: A freshly-logged pick has no completion timestamp yet. How: This is always null for a brand-new row.
 		source      : source,                                    // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from the source parameter.
@@ -644,14 +644,14 @@ function applyEntryPending( curStaObj, curEntObj ) {
 
 	} );
 
-	const havPkrPatBoo = !!curPenObj.pickerPatch; // What: Have Picker Patch Boolean. Why: Both the previous-active lookup and the pickers map below share this same condition. How: This coerces curPenObj's own pickerPatch to a real boolean.
+	const havPicPatBoo = !!curPenObj.pickerPatch; // What: Have Picker Patch Boolean. Why: Both the previous-active lookup and the pickers map below share this same condition. How: This coerces curPenObj's own pickerPatch to a real boolean.
 
-	const preActIde = havPkrPatBoo // What: Previous Active Identifier. Why: The revert snapshot needs the picker's own activeItemId as it stood BEFORE this apply, but only when a pickerPatch is actually being applied. How: This looks up curEntObj's own picker and reads its current activeItemId, else stays undefined.
-		? ( curStaObj.pickers.find( ( curPkrObj ) => curPkrObj.id === curEntObj.pickerId ) || {} ).activeItemId
+	const preActIde = havPicPatBoo // What: Previous Active Identifier. Why: The revert snapshot needs the picker's own activeItemId as it stood BEFORE this apply, but only when a pickerPatch is actually being applied. How: This looks up curEntObj's own picker and reads its current activeItemId, else stays undefined.
+		? ( curStaObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId ) || {} ).activeItemId
 		: undefined;
 
-	const nxtPkrArr = havPkrPatBoo // What: Next Picker Array. Why: Only a pending payload carrying pickerPatch (e.g. Ease Down's activeItemId) needs any picker actually rewritten. How: This patches curEntObj's own picker with pickerPatch's own fields, else passes pickers through unchanged.
-		? curStaObj.pickers.map( ( curPkrObj ) => curPkrObj.id === curEntObj.pickerId ? { ...curPkrObj, ...curPenObj.pickerPatch } : curPkrObj )
+	const nxtPicArr = havPicPatBoo // What: Next Picker Array. Why: Only a pending payload carrying pickerPatch (e.g. Ease Down's activeItemId) needs any picker actually rewritten. How: This patches curEntObj's own picker with pickerPatch's own fields, else passes pickers through unchanged.
+		? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === curEntObj.pickerId ? { ...curPicObj, ...curPenObj.pickerPatch } : curPicObj )
 		: curStaObj.pickers;
 
 	const nxtLogArr = curPenObj.depletedEnd // What: Next Pick-Log Array. Why: depletedEnd is a value consequence, so it's only recorded on the live log row once the pending payload is actually applied. How: This flags the live (no outcome) row sharing curEntObj's own eid, else passes pickLog through unchanged.
@@ -659,9 +659,9 @@ function applyEntryPending( curStaObj, curEntObj ) {
 		: ( curStaObj.pickLog || [] );
 
 
-	return { // What: Applied Pending Result Return. Why: The caller (toggleDone) needs the patched arrays plus a revert snapshot to stash on the entry. How: This bundles nxtIteArr/nxtPkrArr/nxtLogArr with a revert object capturing revIteArr/preActIde/the entry's own pickerId.
+	return { // What: Applied Pending Result Return. Why: The caller (toggleDone) needs the patched arrays plus a revert snapshot to stash on the entry. How: This bundles nxtIteArr/nxtPicArr/nxtLogArr with a revert object capturing revIteArr/preActIde/the entry's own pickerId.
 
-		items : nxtIteArr, pickers : nxtPkrArr, pickLog : nxtLogArr,
+		items : nxtIteArr, pickers : nxtPicArr, pickLog : nxtLogArr,
 		revert : { items : revIteArr, activeItemId : preActIde, pickerId : curEntObj.pickerId }
 
 	};
@@ -724,15 +724,15 @@ function revertEntryPending( curStaObj, curEntObj ) {
 
 	} );
 
-	const nxtPkrArr = ( curRevObj.activeItemId !== undefined ) // What: Next Picker Array. Why: Only a snapshot that actually recorded a previous activeItemId needs any picker rewritten back. How: This restores curRevObj's own pickerId's activeItemId, else passes pickers through unchanged.
-		? curStaObj.pickers.map( ( curPkrObj ) => curPkrObj.id === curRevObj.pickerId ? { ...curPkrObj, activeItemId : curRevObj.activeItemId } : curPkrObj )
+	const nxtPicArr = ( curRevObj.activeItemId !== undefined ) // What: Next Picker Array. Why: Only a snapshot that actually recorded a previous activeItemId needs any picker rewritten back. How: This restores curRevObj's own pickerId's activeItemId, else passes pickers through unchanged.
+		? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === curRevObj.pickerId ? { ...curPicObj, activeItemId : curRevObj.activeItemId } : curPicObj )
 		: curStaObj.pickers;
 
 	const nxtLogArr = ( curStaObj.pickLog || [] ).map( ( curRowObj ) => // What: Next Pick-Log Array. Why: A reverted day no longer counts as ending an Ease Down depletion streak. How: This strips depletedEnd back to false on the live (no outcome) row sharing curEntObj's own eid.
 		( curRowObj.eid === curEntObj.eid && !curRowObj.outcome ) ? { ...curRowObj, depletedEnd : false } : curRowObj );
 
 
-	return { items : nxtIteArr, pickers : nxtPkrArr, pickLog : nxtLogArr }; // What: Reverted Result Return. Why: The caller (toggleDone/skipEntry/setEntryItem) needs the restored arrays. How: This bundles nxtIteArr/nxtPkrArr/nxtLogArr together.
+	return { items : nxtIteArr, pickers : nxtPicArr, pickLog : nxtLogArr }; // What: Reverted Result Return. Why: The caller (toggleDone/skipEntry/setEntryItem) needs the restored arrays. How: This bundles nxtIteArr/nxtPicArr/nxtLogArr together.
 
 
 }
@@ -823,8 +823,8 @@ function applyConditionalToggle( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
 
 	}
 
-	const curPkrObj = curStaObj.pickers.find( ( pkrFinObj ) => pkrFinObj.id === togEntObj.pickerId ); // What: Current Picker Object And Guard. Why: A dependent entry's own conditional is looked up through its picker, not the entry itself. How: This looks up togEntObj's own pickerId in curStaObj.pickers.
-	const cndIdeStr = curPkrObj && curPkrObj.conditionalId; // What: Conditional Identifier String And Guard. Why: An entry whose picker has no conditionalId gates nothing. How: This reads curPkrObj's own conditionalId, or stays falsy when curPkrObj is missing.
+	const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === togEntObj.pickerId ); // What: Current Picker Object And Guard. Why: A dependent entry's own conditional is looked up through its picker, not the entry itself. How: This looks up togEntObj's own pickerId in curStaObj.pickers.
+	const cndIdeStr = curPicObj && curPicObj.conditionalId; // What: Conditional Identifier String And Guard. Why: An entry whose picker has no conditionalId gates nothing. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
 
 	if ( !cndIdeStr ) return curCndArr; // What: No-Conditional Guard. Why: An ungated picker's entry has no dependent conditional to charge. How: This returns curCndArr unchanged when cndIdeStr is falsy.
 
@@ -833,10 +833,10 @@ function applyConditionalToggle( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
 
 		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
 
-		const matPkrObj = curStaObj.pickers.find( ( pkrFinObj ) => pkrFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
+		const matPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
 
 
-		return matPkrObj && matPkrObj.conditionalId === cndIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPkrObj exists and shares cndIdeStr.
+		return matPicObj && matPicObj.conditionalId === cndIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares cndIdeStr.
 
 
 	} ).length;
@@ -943,9 +943,9 @@ function applyConditionalLog( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
 	else if ( togEntObj.pickerId ) { // What: Dependent Picker Branch. Why: A dependent entry's own conditional is looked up through its picker, and always logs as not-yet-triggered. How: This looks up the picker and, if gated, sets cndIdeStr/trgValBoo.
 
 
-		const curPkrObj = curStaObj.pickers.find( ( pkrFinObj ) => pkrFinObj.id === togEntObj.pickerId ); // What: Current Picker Object And Guard. Why: Only a gated picker's entry logs anything at all. How: This looks up togEntObj's own pickerId in curStaObj.pickers.
+		const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === togEntObj.pickerId ); // What: Current Picker Object And Guard. Why: Only a gated picker's entry logs anything at all. How: This looks up togEntObj's own pickerId in curStaObj.pickers.
 
-		if ( curPkrObj && curPkrObj.conditionalId ) { cndIdeStr = curPkrObj.conditionalId; trgValBoo = false; } // What: Gated-Picker Guard. Why: An ungated picker's entry logs nothing. How: This sets cndIdeStr/trgValBoo only when curPkrObj exists and carries a conditionalId.
+		if ( curPicObj && curPicObj.conditionalId ) { cndIdeStr = curPicObj.conditionalId; trgValBoo = false; } // What: Gated-Picker Guard. Why: An ungated picker's entry logs nothing. How: This sets cndIdeStr/trgValBoo only when curPicObj exists and carries a conditionalId.
 
 
 	}
@@ -964,10 +964,10 @@ function applyConditionalLog( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
 
 		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
 
-		const matPkrObj = curStaObj.pickers.find( ( pkrFinObj ) => pkrFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
+		const matPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
 
 
-		return matPkrObj && matPkrObj.conditionalId === cndIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPkrObj exists and shares cndIdeStr.
+		return matPicObj && matPicObj.conditionalId === cndIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares cndIdeStr.
 
 
 	} ).length;
@@ -1169,16 +1169,16 @@ function migrate( curStaObj ) {
 	}
 
 	// What: Category-Collapse Backfill Guard. Why: The old category layer (picker.itemIds + item.categoryId) is collapsed into a direct item.pickerId link; detected by any picker still carrying an itemIds array. How: This rebuilds every item's own pickerId from whichever picker's itemIds listed it, then drops itemIds/categoryId/categories entirely.
-	if ( curStaObj && Array.isArray( curStaObj.pickers ) && curStaObj.pickers.some( ( curPkrObj ) => Array.isArray( curPkrObj.itemIds ) ) ) {
+	if ( curStaObj && Array.isArray( curStaObj.pickers ) && curStaObj.pickers.some( ( curPicObj ) => Array.isArray( curPicObj.itemIds ) ) ) {
 
 
-		const itePkrObj = {}; // What: Item-Picker Object And Guard. Why: The item map below needs O(1) lookup of which picker (if any) used to list a given item id. How: This starts empty and is filled by the loop directly below.
+		const itePicObj = {}; // What: Item-Picker Object And Guard. Why: The item map below needs O(1) lookup of which picker (if any) used to list a given item id. How: This starts empty and is filled by the loop directly below.
 
 
-		for ( const curPkrObj of curStaObj.pickers ) { // What: Item-Picker Fill Loop. Why: Every old itemIds list must be inverted into itePkrObj before the item map below can use it. How: This iterates every picker with an itemIds array, filing each listed id under this picker's own id.
+		for ( const curPicObj of curStaObj.pickers ) { // What: Item-Picker Fill Loop. Why: Every old itemIds list must be inverted into itePicObj before the item map below can use it. How: This iterates every picker with an itemIds array, filing each listed id under this picker's own id.
 
 
-			if ( Array.isArray( curPkrObj.itemIds ) ) for ( const ownIdeStr of curPkrObj.itemIds ) itePkrObj[ ownIdeStr ] = curPkrObj.id; // What: Owned-Id Fill. Why: Every item id this picker used to own must map back to this picker's own id. How: This assigns curPkrObj.id under ownIdeStr for every id in curPkrObj.itemIds.
+			if ( Array.isArray( curPicObj.itemIds ) ) for ( const ownIdeStr of curPicObj.itemIds ) itePicObj[ ownIdeStr ] = curPicObj.id; // What: Owned-Id Fill. Why: Every item id this picker used to own must map back to this picker's own id. How: This assigns curPicObj.id under ownIdeStr for every id in curPicObj.itemIds.
 
 
 		}
@@ -1188,11 +1188,11 @@ function migrate( curStaObj ) {
 
 			curStaObj.items = curStaObj.items.map( ( curIteObj ) => {
 
-				const rsvPkrIde = curIteObj.pickerId || itePkrObj[ curIteObj.id ] || null; // What: Resolved Picker Identifier. Why: An item may already carry a pickerId, or only be inferable from the old itemIds inversion above. How: This prefers curIteObj's own pickerId, falling back to itePkrObj's lookup, then null.
+				const rsvPicIde = curIteObj.pickerId || itePicObj[ curIteObj.id ] || null; // What: Resolved Picker Identifier. Why: An item may already carry a pickerId, or only be inferable from the old itemIds inversion above. How: This prefers curIteObj's own pickerId, falling back to itePicObj's lookup, then null.
 				const { categoryId, ...remFldObj } = curIteObj; // What: Remaining Fields Object. Why: The old categoryId field must be dropped entirely, not merely ignored. How: This destructures categoryId off curIteObj, keeping every other field in remFldObj.
 
 
-				return { ...remFldObj, pickerId : rsvPkrIde }; // What: Rewritten Item Return. Why: The caller needs this item's own real pickerId written, with categoryId gone. How: This spreads remFldObj with pickerId set to rsvPkrIde.
+				return { ...remFldObj, pickerId : rsvPicIde }; // What: Rewritten Item Return. Why: The caller needs this item's own real pickerId written, with categoryId gone. How: This spreads remFldObj with pickerId set to rsvPicIde.
 
 
 			} );
@@ -1200,7 +1200,7 @@ function migrate( curStaObj ) {
 
 		}
 
-		curStaObj.pickers = curStaObj.pickers.map( ( curPkrObj ) => { const { itemIds, ...remFldObj } = curPkrObj; return remFldObj; } ); // What: Picker Itemids Drop. Why: A picker no longer owns an itemIds list at all once items carry their own pickerId. How: This destructures itemIds off every picker, keeping every other field.
+		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj ) => { const { itemIds, ...remFldObj } = curPicObj; return remFldObj; } ); // What: Picker Itemids Drop. Why: A picker no longer owns an itemIds list at all once items carry their own pickerId. How: This destructures itemIds off every picker, keeping every other field.
 		delete curStaObj.categories; // What: Categories Entity Drop. Why: The categories entity is gone entirely under the new model. How: This deletes curStaObj's own categories field outright.
 
 
@@ -1325,7 +1325,7 @@ function migrate( curStaObj ) {
 
 			conColObj.__collapseDefaultsV2 = true; // What: Guard Flag Set. Why: This one-shot strip must never re-run and clobber a user's own later collapse choices. How: This flips the guard flag permanently true.
 			delete conColObj.__sectionsSeeded; // What: Old Sections-Seeded Flag Drop. Why: This flag belonged to the old polarity and has no meaning under the new one. How: This deletes it from conColObj outright.
-			curStaObj.pickers.forEach( ( curPkrObj ) => { delete conColObj[ curPkrObj.id ]; } ); // What: Old Picker-Card Flags Drop. Why: Every picker's own old inverted flag must be cleared so it loads collapsed under the new polarity. How: This deletes conColObj's own entry for every picker's id.
+			curStaObj.pickers.forEach( ( curPicObj ) => { delete conColObj[ curPicObj.id ]; } ); // What: Old Picker-Card Flags Drop. Why: Every picker's own old inverted flag must be cleared so it loads collapsed under the new polarity. How: This deletes conColObj's own entry for every picker's id.
 			delete conColObj.__reminders_main; // What: Old Reminders-Main Flag Drop. Why: This flag belonged to the old polarity and has no meaning under the new one. How: This deletes it from conColObj outright.
 			delete conColObj.__conditionals; // What: Old Conditionals Flag Drop. Why: This flag belonged to the old polarity and has no meaning under the new one. How: This deletes it from conColObj outright.
 
@@ -1573,7 +1573,7 @@ function migrate( curStaObj ) {
 	// What: Picker Conditionalid Backfill. Why: Every picker needs a conditionalId slot so gating code elsewhere can read it uniformly, whether or not the picker is actually gated. How: This backfills conditionalId to null on any picker that doesn't already carry the field.
 	if ( curStaObj && Array.isArray( curStaObj.pickers ) ) {
 
-		curStaObj.pickers = curStaObj.pickers.map( ( curPkrObj ) => ( 'conditionalId' in curPkrObj ? curPkrObj : { ...curPkrObj, conditionalId : null } ) );
+		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj ) => ( 'conditionalId' in curPicObj ? curPicObj : { ...curPicObj, conditionalId : null } ) );
 
 
 	}
@@ -1603,13 +1603,13 @@ function migrate( curStaObj ) {
 	if ( curStaObj && !curStaObj._easeDownWeightsInit && Array.isArray( curStaObj.pickers ) && Array.isArray( curStaObj.items ) ) {
 
 
-		for ( const curPkrObj of curStaObj.pickers ) { // What: Ease-Down Normalize Loop. Why: Only an ease-down picker's own items need this one-time weight reset. How: This skips every non-ease-down picker, else rewrites its own items' weights below.
+		for ( const curPicObj of curStaObj.pickers ) { // What: Ease-Down Normalize Loop. Why: Only an ease-down picker's own items need this one-time weight reset. How: This skips every non-ease-down picker, else rewrites its own items' weights below.
 
 
-			if ( curPkrObj.mode !== 'ease-down' ) continue; // What: Non-Ease-Down Skip Guard. Why: Every other mode's items already own their real weights. How: This skips straight to the next picker when curPkrObj.mode isn't 'ease-down'.
+			if ( curPicObj.mode !== 'ease-down' ) continue; // What: Non-Ease-Down Skip Guard. Why: Every other mode's items already own their real weights. How: This skips straight to the next picker when curPicObj.mode isn't 'ease-down'.
 
-			curStaObj.items = curStaObj.items.map( ( curIteObj ) => // What: Ease-Down Weight Reset. Why: The active item must sit at weight 0 and every sibling at weight 1, per the design-rationale comment above. How: This rewrites weight only for items owned by curPkrObj, leaving every other item untouched.
-				curIteObj.pickerId === curPkrObj.id ? { ...curIteObj, weight : curIteObj.id === curPkrObj.activeItemId ? 0 : 1 } : curIteObj );
+			curStaObj.items = curStaObj.items.map( ( curIteObj ) => // What: Ease-Down Weight Reset. Why: The active item must sit at weight 0 and every sibling at weight 1, per the design-rationale comment above. How: This rewrites weight only for items owned by curPicObj, leaving every other item untouched.
+				curIteObj.pickerId === curPicObj.id ? { ...curIteObj, weight : curIteObj.id === curPicObj.activeItemId ? 0 : 1 } : curIteObj );
 
 
 		}
@@ -1623,27 +1623,27 @@ function migrate( curStaObj ) {
 	if ( curStaObj && Array.isArray( curStaObj.pickers ) ) {
 
 
-		curStaObj.pickers = curStaObj.pickers.map( ( curPkrObj ) => {
+		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj ) => {
 
-			const nxtPkrObj = { ...curPkrObj }; // What: Next Picker Object. Why: Every backfill below patches a copy, never curPkrObj itself. How: This starts as a shallow copy of curPkrObj.
+			const nxtPicObj = { ...curPicObj }; // What: Next Picker Object. Why: Every backfill below patches a copy, never curPicObj itself. How: This starts as a shallow copy of curPicObj.
 
-			if ( !Array.isArray( nxtPkrObj.daysOfWeek ) ) nxtPkrObj.daysOfWeek = [ 0, 1, 2, 3, 4, 5, 6 ]; // What: Days-Of-Week Backfill. Why: A picker with no schedule override at all still needs an explicit "every day" default. How: This backfills daysOfWeek to every weekday when it isn't already an array.
+			if ( !Array.isArray( nxtPicObj.daysOfWeek ) ) nxtPicObj.daysOfWeek = [ 0, 1, 2, 3, 4, 5, 6 ]; // What: Days-Of-Week Backfill. Why: A picker with no schedule override at all still needs an explicit "every day" default. How: This backfills daysOfWeek to every weekday when it isn't already an array.
 
-			// What: Weekly-Anchor Enforce. Why: For weekly cadence, the anchor day must always be one of the allowed days, backfilling state saved before this rule existed. How: This calls CADENCE.enforceWeeklyDay to fold nxtPkrObj's own anchor into its daysOfWeek.
-			if ( CADENCE ) nxtPkrObj.daysOfWeek = CADENCE.enforceWeeklyDay( nxtPkrObj );
+			// What: Weekly-Anchor Enforce. Why: For weekly cadence, the anchor day must always be one of the allowed days, backfilling state saved before this rule existed. How: This calls CADENCE.enforceWeeklyDay to fold nxtPicObj's own anchor into its daysOfWeek.
+			if ( CADENCE ) nxtPicObj.daysOfWeek = CADENCE.enforceWeeklyDay( nxtPicObj );
 
-			if ( typeof nxtPkrObj.skipHolidays !== 'boolean' ) nxtPkrObj.skipHolidays = false; // What: Skip-Holidays Backfill. Why: Every picker needs an explicit holiday-skipping flag. How: This backfills skipHolidays to false when it isn't already a boolean.
+			if ( typeof nxtPicObj.skipHolidays !== 'boolean' ) nxtPicObj.skipHolidays = false; // What: Skip-Holidays Backfill. Why: Every picker needs an explicit holiday-skipping flag. How: This backfills skipHolidays to false when it isn't already a boolean.
 
 			// What: Avoid-Duplicates Backfill. Why: The avoid-duplicate-item-names flag was added later. How: This backfills avoidDuplicates to false when it isn't already a boolean.
-			if ( typeof nxtPkrObj.avoidDuplicates !== 'boolean' ) nxtPkrObj.avoidDuplicates = false;
+			if ( typeof nxtPicObj.avoidDuplicates !== 'boolean' ) nxtPicObj.avoidDuplicates = false;
 
-			// What: Picker-Cadence Normalize. Why: Picker Cadence (surfacing anchor + display unit) was added later; old state defaults to 'daily' (the original behavior) with sensible anchors. How: This calls CADENCE.normalize and merges its own result onto nxtPkrObj when nxtPkrObj's own cadence isn't already a real one.
-			if ( !CADENCE.isCadence( nxtPkrObj.cadence ) ) Object.assign( nxtPkrObj, CADENCE.normalize( nxtPkrObj ) );
+			// What: Picker-Cadence Normalize. Why: Picker Cadence (surfacing anchor + display unit) was added later; old state defaults to 'daily' (the original behavior) with sensible anchors. How: This calls CADENCE.normalize and merges its own result onto nxtPicObj when nxtPicObj's own cadence isn't already a real one.
+			if ( !CADENCE.isCadence( nxtPicObj.cadence ) ) Object.assign( nxtPicObj, CADENCE.normalize( nxtPicObj ) );
 
-			if ( typeof nxtPkrObj.hidden !== 'boolean' ) nxtPkrObj.hidden = false; // What: Hidden-Flag Backfill. Why: Every picker needs an explicit hidden flag, same reasoning as the tasks backfill above. How: This backfills hidden to false when it isn't already a boolean.
+			if ( typeof nxtPicObj.hidden !== 'boolean' ) nxtPicObj.hidden = false; // What: Hidden-Flag Backfill. Why: Every picker needs an explicit hidden flag, same reasoning as the tasks backfill above. How: This backfills hidden to false when it isn't already a boolean.
 
 
-			return nxtPkrObj; // What: Normalized Picker Return. Why: The map above needs the fully-backfilled picker. How: This returns nxtPkrObj, built above.
+			return nxtPicObj; // What: Normalized Picker Return. Why: The map above needs the fully-backfilled picker. How: This returns nxtPicObj, built above.
 
 
 		} );
@@ -1682,25 +1682,25 @@ function migrate( curStaObj ) {
 		if ( normalizeGroupName ) { // What: Name-Tidy Guard. Why: The tidy/normalize pass below only makes sense when the normalizer itself is actually available. How: This runs the whole tidy pass only when normalizeGroupName is truthy.
 
 
-			curStaObj.pickers.forEach( ( curPkrObj ) => { // What: Picker Tidy Loop. Why: Every picker's own group and name need the same Title-Case tidy applied in place. How: This normalizes curPkrObj.group and curPkrObj.name, each only when the normalizer actually returns something.
+			curStaObj.pickers.forEach( ( curPicObj ) => { // What: Picker Tidy Loop. Why: Every picker's own group and name need the same Title-Case tidy applied in place. How: This normalizes curPicObj.group and curPicObj.name, each only when the normalizer actually returns something.
 
 
-				if ( curPkrObj.group ) { // What: Group Tidy Guard. Why: A picker with no group at all has nothing to tidy. How: This normalizes curPkrObj.group only when it's truthy.
+				if ( curPicObj.group ) { // What: Group Tidy Guard. Why: A picker with no group at all has nothing to tidy. How: This normalizes curPicObj.group only when it's truthy.
 
 
-					const nrmGrpStr = normalizeGroupName( curPkrObj.group ); // What: Normalized Group String And Guard. Why: The normalizer may decline to return anything for an unusual input. How: This calls normalizeGroupName on curPkrObj's own group.
+					const nrmGrpStr = normalizeGroupName( curPicObj.group ); // What: Normalized Group String And Guard. Why: The normalizer may decline to return anything for an unusual input. How: This calls normalizeGroupName on curPicObj's own group.
 
-					if ( nrmGrpStr ) curPkrObj.group = nrmGrpStr; // What: Group Tidy Write. Why: Only a genuine normalized result should overwrite the picker's own group. How: This writes nrmGrpStr back onto curPkrObj.group when it's truthy.
+					if ( nrmGrpStr ) curPicObj.group = nrmGrpStr; // What: Group Tidy Write. Why: Only a genuine normalized result should overwrite the picker's own group. How: This writes nrmGrpStr back onto curPicObj.group when it's truthy.
 
 
 				}
 
-				if ( curPkrObj.name && normalizePickerName ) { // What: Name Tidy Guard. Why: A picker with no name, or with no normalizer available, has nothing to tidy. How: This normalizes curPkrObj.name only when both are truthy.
+				if ( curPicObj.name && normalizePickerName ) { // What: Name Tidy Guard. Why: A picker with no name, or with no normalizer available, has nothing to tidy. How: This normalizes curPicObj.name only when both are truthy.
 
 
-					const nrmNamStr = normalizePickerName( curPkrObj.name ); // What: Normalized Name String And Guard. Why: The normalizer may decline to return anything for an unusual input. How: This calls normalizePickerName on curPkrObj's own name.
+					const nrmNamStr = normalizePickerName( curPicObj.name ); // What: Normalized Name String And Guard. Why: The normalizer may decline to return anything for an unusual input. How: This calls normalizePickerName on curPicObj's own name.
 
-					if ( nrmNamStr ) curPkrObj.name = nrmNamStr; // What: Name Tidy Write. Why: Only a genuine normalized result should overwrite the picker's own name. How: This writes nrmNamStr back onto curPkrObj.name when it's truthy.
+					if ( nrmNamStr ) curPicObj.name = nrmNamStr; // What: Name Tidy Write. Why: Only a genuine normalized result should overwrite the picker's own name. How: This writes nrmNamStr back onto curPicObj.name when it's truthy.
 
 
 				}
@@ -1724,12 +1724,12 @@ function migrate( curStaObj ) {
 				const rmpOrdObj = {}; // What: Remapped Order Object And Guard. Why: The loop below needs somewhere to accumulate the re-keyed pickerOrder. How: This starts empty and is filled by the loop directly below.
 
 
-				for ( const [ curGrpStr, pkrIdeArr ] of Object.entries( curStaObj.pickerOrder ) ) { // What: Picker-Order Remap Loop. Why: Every old group key must be normalized and merged into rmpOrdObj before it replaces curStaObj's own pickerOrder. How: This iterates curStaObj.pickerOrder's own entries, concatenating each onto its own normalized key's bucket.
+				for ( const [ curGrpStr, picIdeArr ] of Object.entries( curStaObj.pickerOrder ) ) { // What: Picker-Order Remap Loop. Why: Every old group key must be normalized and merged into rmpOrdObj before it replaces curStaObj's own pickerOrder. How: This iterates curStaObj.pickerOrder's own entries, concatenating each onto its own normalized key's bucket.
 
 
 					const nrmKeyStr = normalizeGroupName( curGrpStr ) || curGrpStr; // What: Normalized Key String. Why: The new pickerOrder must be keyed the same way groupOrder now is. How: This normalizes curGrpStr, falling back to itself when the normalizer declines.
 
-					rmpOrdObj[ nrmKeyStr ] = ( rmpOrdObj[ nrmKeyStr ] || [] ).concat( pkrIdeArr ); // What: Remapped Bucket Concat. Why: 2 old keys that normalize to the same new key must have their own picker-id lists merged, not overwrite each other. How: This concatenates pkrIdeArr onto whatever's already filed under nrmKeyStr.
+					rmpOrdObj[ nrmKeyStr ] = ( rmpOrdObj[ nrmKeyStr ] || [] ).concat( picIdeArr ); // What: Remapped Bucket Concat. Why: 2 old keys that normalize to the same new key must have their own picker-id lists merged, not overwrite each other. How: This concatenates picIdeArr onto whatever's already filed under nrmKeyStr.
 
 
 				}
@@ -1746,14 +1746,14 @@ function migrate( curStaObj ) {
 		const ideByGrpObj = {}; // What: Ids-By-Group Object And Guard. Why: The loop below needs to bucket every picker's own id under its own group. How: This starts empty and is filled by the loop directly below.
 
 
-		for ( const curPkrObj of curStaObj.pickers ) { // What: Group/Bucket Fill Loop. Why: Every picker must contribute its own group (once) to seeGrpArr and its own id to ideByGrpObj's matching bucket. How: This iterates curStaObj.pickers, updating both structures per picker.
+		for ( const curPicObj of curStaObj.pickers ) { // What: Group/Bucket Fill Loop. Why: Every picker must contribute its own group (once) to seeGrpArr and its own id to ideByGrpObj's matching bucket. How: This iterates curStaObj.pickers, updating both structures per picker.
 
 
-			const curGrpStr = curPkrObj.group || 'Other'; // What: Current Group String. Why: A picker with no group at all still needs a real bucket to file under. How: This reads curPkrObj's own group, defaulting to 'Other'.
+			const curGrpStr = curPicObj.group || 'Other'; // What: Current Group String. Why: A picker with no group at all still needs a real bucket to file under. How: This reads curPicObj's own group, defaulting to 'Other'.
 
 			if ( !seeGrpArr.includes( curGrpStr ) ) seeGrpArr.push( curGrpStr ); // What: First-Occurrence Push Guard. Why: Each group must appear in seeGrpArr exactly once, in its own first-seen order. How: This pushes curGrpStr only when it isn't already present.
 
-			( ideByGrpObj[ curGrpStr ] = ideByGrpObj[ curGrpStr ] || [] ).push( curPkrObj.id ); // What: Bucket Push. Why: This picker's own id must join every other picker already filed under the same group. How: This creates curGrpStr's own bucket on first use, then pushes curPkrObj.id into it.
+			( ideByGrpObj[ curGrpStr ] = ideByGrpObj[ curGrpStr ] || [] ).push( curPicObj.id ); // What: Bucket Push. Why: This picker's own id must join every other picker already filed under the same group. How: This creates curGrpStr's own bucket on first use, then pushes curPicObj.id into it.
 
 
 		}
@@ -1929,8 +1929,8 @@ function flushState( curStaObj ) {
 function reconcileStreak( curStaObj, entArgArr, tasArgArr ) {
 
 
-	const hidPkrSet = new Set( ( curStaObj.pickers || [] ).filter( ( curPkrObj ) => curPkrObj.hidden ).map( ( curPkrObj ) => curPkrObj.id ) ); // What: Hidden Picker Set. Why: The visible-entries filter below needs fast membership checks against every hidden picker's own id. How: This collects the id of every picker whose own hidden flag is true.
-	const vsbEntArr = ( entArgArr || [] ).filter( ( curEntObj ) => !curEntObj.pickerId || !hidPkrSet.has( curEntObj.pickerId ) ); // What: Visible Entry Array. Why: An entry belonging to a hidden picker must not count toward, or block, the streak. How: This keeps every entry with no pickerId at all, or whose pickerId isn't in hidPkrSet.
+	const hidPicSet = new Set( ( curStaObj.pickers || [] ).filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: The visible-entries filter below needs fast membership checks against every hidden picker's own id. How: This collects the id of every picker whose own hidden flag is true.
+	const vsbEntArr = ( entArgArr || [] ).filter( ( curEntObj ) => !curEntObj.pickerId || !hidPicSet.has( curEntObj.pickerId ) ); // What: Visible Entry Array. Why: An entry belonging to a hidden picker must not count toward, or block, the streak. How: This keeps every entry with no pickerId at all, or whose pickerId isn't in hidPicSet.
 
 	const curAncObj = TASKS.anchorDate( curStaObj.today && curStaObj.today.generatedAt ); // What: Current Anchor Object. Why: Reminder eligibility below must be pinned to the last generation's own day, matching whatever ReminderSection is actually showing right now. How: This calls TASKS.anchorDate with today's own generatedAt.
 	const vsbTasArr = TASKS.visibleToday( tasArgArr, curStaObj.reminderOpts, curStaObj.holidays, curAncObj ); // What: Visible Task Array. Why: Only a reminder actually shown today can participate in the streak at all. How: This calls TASKS.visibleToday with curAncObj as the anchor.
@@ -2241,12 +2241,12 @@ function useStore( optArgObj ) {
 
 			} );
 
-			const nxtPkrArr = resValObj.pickerPatch // What: Next Picker Array. Why: Only a result carrying its own pickerPatch (e.g. Ease Down's activeItemId) needs any picker actually rewritten. How: This patches pickerId's own picker with pickerPatch's own fields, else passes pickers through unchanged.
-				? curStaObj.pickers.map( ( curPkrObj ) => curPkrObj.id === pickerId ? { ...curPkrObj, ...resValObj.pickerPatch } : curPkrObj )
+			const nxtPicArr = resValObj.pickerPatch // What: Next Picker Array. Why: Only a result carrying its own pickerPatch (e.g. Ease Down's activeItemId) needs any picker actually rewritten. How: This patches pickerId's own picker with pickerPatch's own fields, else passes pickers through unchanged.
+				? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === pickerId ? { ...curPicObj, ...resValObj.pickerPatch } : curPicObj )
 				: curStaObj.pickers;
 
 
-			return { ...curStaObj, items : nxtIteArr, pickers : nxtPkrArr }; // What: Next State Return. Why: The caller needs the patched items/pickers written onto a fresh state. How: This spreads curStaObj with items/pickers replaced.
+			return { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }; // What: Next State Return. Why: The caller needs the patched items/pickers written onto a fresh state. How: This spreads curStaObj with items/pickers replaced.
 
 
 		} ),
@@ -2278,8 +2278,8 @@ function useStore( optArgObj ) {
 		addTodayEntry : ( pickerId, itemId, penArgObj ) => setAppStaObj( ( curStaObj ) => {
 
 
-			const curPkrObj = curStaObj.pickers.find( ( pkrFinObj ) => pkrFinObj.id === pickerId ); // What: Current Picker Object And Guard. Why: Every branch below needs to know this picker's own mode/activeItemId/conditionalId. How: This looks up pickerId in curStaObj.pickers.
-			const easDwnBoo = curPkrObj && curPkrObj.mode === 'ease-down'; // What: Ease-Down Boolean. Why: Ease Down's own single-entry-per-picker replace behavior branches everywhere below. How: This is true only when curPkrObj exists and its own mode is 'ease-down'.
+			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === pickerId ); // What: Current Picker Object And Guard. Why: Every branch below needs to know this picker's own mode/activeItemId/conditionalId. How: This looks up pickerId in curStaObj.pickers.
+			const easDwnBoo = curPicObj && curPicObj.mode === 'ease-down'; // What: Ease-Down Boolean. Why: Ease Down's own single-entry-per-picker replace behavior branches everywhere below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
 
 			const eid = easDwnBoo // What: Entry Id. Why: Ease Down reuses its own existing entry's eid (so a replace, not a stack); every other mode always mints a fresh one. How: This reuses the picker's own current entry's eid when found, else mints a new one via newEidFun.
 				? ( curStaObj.today.entries.find( ( curEntObj ) => curEntObj.pickerId === pickerId )?.eid || newEidFun() )
@@ -2292,15 +2292,15 @@ function useStore( optArgObj ) {
 
 				penValObj = null; // What: Default Pending Reset. Why: Every mode besides ease-down's own re-activation case has no mutation to stage at all. How: This starts penValObj at null before the ease-down check below.
 
-				if ( easDwnBoo && curPkrObj.activeItemId !== itemId ) { // What: Ease-Down Reactivation Guard. Why: Only switching to a DIFFERENT active item needs its own staged recharge-and-activate pending. How: This builds penValObj only when curPkrObj is ease-down and itemId isn't already its own active item.
+				if ( easDwnBoo && curPicObj.activeItemId !== itemId ) { // What: Ease-Down Reactivation Guard. Why: Only switching to a DIFFERENT active item needs its own staged recharge-and-activate pending. How: This builds penValObj only when curPicObj is ease-down and itemId isn't already its own active item.
 
 
-					const thrValNum = curPkrObj.threshold ?? 100; // What: Threshold Value Number. Why: The previously-active item (if any) must be staged to recharge back to this exact threshold. How: This reads curPkrObj's own threshold, defaulting to 100.
+					const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: The previously-active item (if any) must be staged to recharge back to this exact threshold. How: This reads curPicObj's own threshold, defaulting to 100.
 
 					penValObj = { // What: Ease-Down Pending Object. Why: The caller needs a real pending payload staging both the recharge and the activation switch. How: This stages the previously-active item's own recharge (if any), the activeItemId patch, and the pick bump.
 
 
-						updates : curPkrObj.activeItemId ? [ { id : curPkrObj.activeItemId, value : thrValNum } ] : [],
+						updates : curPicObj.activeItemId ? [ { id : curPicObj.activeItemId, value : thrValNum } ] : [],
 						pickerPatch : { activeItemId : itemId },
 						pickedId : itemId, bumpPick : false
 
@@ -2315,7 +2315,7 @@ function useStore( optArgObj ) {
 			const newEntObj = { eid, pickerId, itemId, done : false, skipped : false, pending : penValObj, revert : null }; // What: New Entry Object. Why: This is the actual Today entry being added, in today.entries' own shape. How: This bundles eid/pickerId/itemId with a fresh not-done/not-skipped state and penValObj as its own pending.
 			const logRowObj = logRowFun( curStaObj, { eid, pickerId, itemId, source : 'manual' } ); // What: Log Row Object. Why: A manual send must be reflected in the pick log too, denormalized the same way every other pick is. How: This calls logRowFun with source:'manual'.
 
-			const cndIdeStr = curPkrObj && curPkrObj.conditionalId; // What: Conditional Identifier String. Why: The day-off-card check below needs to know which conditional (if any) gates this picker. How: This reads curPkrObj's own conditionalId, or stays falsy when curPkrObj is missing.
+			const cndIdeStr = curPicObj && curPicObj.conditionalId; // What: Conditional Identifier String. Why: The day-off-card check below needs to know which conditional (if any) gates this picker. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
 			const hasDofBoo = easDwnBoo && cndIdeStr && // What: Has Day-Off Boolean. Why: An ease-down picker that's currently suppressed behind its own day-off card must NOT have that card silently replaced by this manual override. How: This is true only when this is ease-down, gated, and today already shows a live day-off card for that same conditional.
 				curStaObj.today.entries.some( ( curEntObj ) => curEntObj.kind === 'dayoff' && curEntObj.conditionalId === cndIdeStr );
 
@@ -2352,14 +2352,14 @@ function useStore( optArgObj ) {
 
 
 			const curEntObj = curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === eid ); // What: Current Entry Object And Guard. Why: The undo-then-restage flow below needs to know whether this entry was already completed. How: This looks up eid in curStaObj.today.entries.
-			let nxtIteArr = curStaObj.items, nxtPkrArr = curStaObj.pickers, nxtLogArr = curStaObj.pickLog || []; // What: Next Item/Picker/Pick-Log Arrays And Guard. Why: These default to the unchanged state and are only replaced below when an already-completed entry needs its own pending undone first. How: This starts at curStaObj's own current arrays.
+			let nxtIteArr = curStaObj.items, nxtPicArr = curStaObj.pickers, nxtLogArr = curStaObj.pickLog || []; // What: Next Item/Picker/Pick-Log Arrays And Guard. Why: These default to the unchanged state and are only replaced below when an already-completed entry needs its own pending undone first. How: This starts at curStaObj's own current arrays.
 
 			if ( curEntObj && curEntObj.done && curEntObj.revert ) { // What: Already-Done Undo Guard. Why: A re-roll always lands not-done, so an already-completed entry's own staged mutation must be undone first. How: This calls revertEntryPending and adopts its own result when curEntObj is done and carries a revert snapshot.
 
 
 				const resValObj = revertEntryPending( { ...curStaObj }, curEntObj ); // What: Result Value Object. Why: revertEntryPending returns the restored items/pickers/pickLog together. How: This calls revertEntryPending with a shallow copy of curStaObj and curEntObj.
 
-				nxtIteArr = resValObj.items; nxtPkrArr = resValObj.pickers; nxtLogArr = resValObj.pickLog; // What: Restored Arrays Adopt. Why: Every downstream line below must build on the RESTORED arrays, not the still-applied ones. How: This destructures resValObj's own items/pickers/pickLog onto the outer let bindings.
+				nxtIteArr = resValObj.items; nxtPicArr = resValObj.pickers; nxtLogArr = resValObj.pickLog; // What: Restored Arrays Adopt. Why: Every downstream line below must build on the RESTORED arrays, not the still-applied ones. How: This destructures resValObj's own items/pickers/pickLog onto the outer let bindings.
 
 
 			}
@@ -2376,7 +2376,7 @@ function useStore( optArgObj ) {
 
 			return { // What: Next State Return. Why: The caller needs the entry re-pointed at itemId (not-done, not-skipped, freshly staged), plus the updated log. How: This spreads curStaObj with items/pickers/today.entries/pickLog all replaced.
 
-				...curStaObj, items : nxtIteArr, pickers : nxtPkrArr,
+				...curStaObj, items : nxtIteArr, pickers : nxtPicArr,
 				today : { ...curStaObj.today, entries : curStaObj.today.entries.map( ( entMapObj ) =>
 					entMapObj.eid === eid ? { ...entMapObj, itemId, done : false, skipped : false, pending : penArgObj || null, revert : null } : entMapObj ) },
 				pickLog : nxtLogArr2
@@ -2500,7 +2500,7 @@ function useStore( optArgObj ) {
 		removeConditional : ( cndIdeStr ) => setAppStaObj( ( curStaObj ) => ( {
 
 			...curStaObj, conditionals : ( curStaObj.conditionals || [] ).filter( ( curCndObj ) => curCndObj.id !== cndIdeStr ),
-			pickers : curStaObj.pickers.map( ( curPkrObj ) => curPkrObj.conditionalId === cndIdeStr ? { ...curPkrObj, conditionalId : null } : curPkrObj )
+			pickers : curStaObj.pickers.map( ( curPicObj ) => curPicObj.conditionalId === cndIdeStr ? { ...curPicObj, conditionalId : null } : curPicObj )
 
 		} ) ),
 
@@ -2515,14 +2515,14 @@ function useStore( optArgObj ) {
 
 			const nowDoneBoo = !curEntObj.done; // What: Now Done Boolean. Why: Every branch below needs to know which direction this toggle is heading. How: This is the logical negation of curEntObj's own current done state.
 
-			let nxtIteArr = curStaObj.items, nxtPkrArr = curStaObj.pickers, nxtLogArr = curStaObj.pickLog || [], nxtRevObj = null; // What: Next Item/Picker/Pick-Log Arrays And Revert Object, And Guard. Why: These default to the unchanged state and are only replaced by whichever branch below actually fires. How: This starts at curStaObj's own current arrays, with nxtRevObj starting null.
+			let nxtIteArr = curStaObj.items, nxtPicArr = curStaObj.pickers, nxtLogArr = curStaObj.pickLog || [], nxtRevObj = null; // What: Next Item/Picker/Pick-Log Arrays And Revert Object, And Guard. Why: These default to the unchanged state and are only replaced by whichever branch below actually fires. How: This starts at curStaObj's own current arrays, with nxtRevObj starting null.
 
 			if ( nowDoneBoo ) { // What: Apply Branch. Why: Marking DONE is what actually applies curEntObj's own staged pending mutation. How: This calls applyEntryPending and adopts its own result, including the revert snapshot it returns.
 
 
 				const resValObj = applyEntryPending( { ...curStaObj }, curEntObj ); // What: Result Value Object. Why: applyEntryPending returns the patched arrays plus a fresh revert snapshot together. How: This calls applyEntryPending with a shallow copy of curStaObj and curEntObj.
 
-				nxtIteArr = resValObj.items; nxtPkrArr = resValObj.pickers; nxtLogArr = resValObj.pickLog; nxtRevObj = resValObj.revert; // What: Applied Arrays Adopt. Why: Every downstream line below must build on the PATCHED arrays, with the fresh revert snapshot staged on the entry itself. How: This destructures resValObj's own items/pickers/pickLog/revert onto the outer let bindings.
+				nxtIteArr = resValObj.items; nxtPicArr = resValObj.pickers; nxtLogArr = resValObj.pickLog; nxtRevObj = resValObj.revert; // What: Applied Arrays Adopt. Why: Every downstream line below must build on the PATCHED arrays, with the fresh revert snapshot staged on the entry itself. How: This destructures resValObj's own items/pickers/pickLog/revert onto the outer let bindings.
 
 
 			}
@@ -2532,7 +2532,7 @@ function useStore( optArgObj ) {
 
 				const resValObj = revertEntryPending( { ...curStaObj }, curEntObj ); // What: Result Value Object. Why: revertEntryPending returns the restored arrays together. How: This calls revertEntryPending with a shallow copy of curStaObj and curEntObj.
 
-				nxtIteArr = resValObj.items; nxtPkrArr = resValObj.pickers; nxtLogArr = resValObj.pickLog; nxtRevObj = null; // What: Reverted Arrays Adopt. Why: An un-done entry no longer carries any revert snapshot of its own. How: This destructures resValObj's own items/pickers/pickLog onto the outer let bindings, and nulls nxtRevObj.
+				nxtIteArr = resValObj.items; nxtPicArr = resValObj.pickers; nxtLogArr = resValObj.pickLog; nxtRevObj = null; // What: Reverted Arrays Adopt. Why: An un-done entry no longer carries any revert snapshot of its own. How: This destructures resValObj's own items/pickers/pickLog onto the outer let bindings, and nulls nxtRevObj.
 
 
 			}
@@ -2541,17 +2541,17 @@ function useStore( optArgObj ) {
 				entMapObj.eid === eid ? { ...entMapObj, done : nowDoneBoo, skipped : false, revert : nxtRevObj } : entMapObj );
 
 			// What: Conditional Consequences Resolve. Why: A charge on the first dependent completion, or a day-off card reset/discharge, must be resolved against the ALREADY-toggled entries list. How: This calls applyConditionalToggle then applyConditionalLog, both against the patched items/pickers.
-			const nxtCndArr = applyConditionalToggle( { ...curStaObj, items : nxtIteArr, pickers : nxtPkrArr }, nxtEntArr, curEntObj, nowDoneBoo );
-			const nxtCndLogArr = applyConditionalLog( { ...curStaObj, items : nxtIteArr, pickers : nxtPkrArr }, nxtEntArr, curEntObj, nowDoneBoo );
+			const nxtCndArr = applyConditionalToggle( { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }, nxtEntArr, curEntObj, nowDoneBoo );
+			const nxtCndLogArr = applyConditionalLog( { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }, nxtEntArr, curEntObj, nowDoneBoo );
 
 			nxtLogArr = nxtLogArr.map( ( curRowObj ) => ( curRowObj.eid === eid && !curRowObj.outcome ) // What: Live Log Row Toggle. Why: Only the live (active, non-rejected/non-skipped) row for this eid ever toggles its own done/completedAt. How: This stamps done/completedAt on the one matching row, leaving every other row untouched.
 				? { ...curRowObj, done : nowDoneBoo, completedAt : nowDoneBoo ? new Date().toISOString() : null }
 				: curRowObj );
 
-			const { streak, streakClaimed } = reconcileStreak( { ...curStaObj, items : nxtIteArr, pickers : nxtPkrArr }, nxtEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Toggling any entry can flip whether today counts as fully done. How: This calls reconcileStreak against the already-patched items/pickers and the already-toggled entries.
+			const { streak, streakClaimed } = reconcileStreak( { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }, nxtEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Toggling any entry can flip whether today counts as fully done. How: This calls reconcileStreak against the already-patched items/pickers and the already-toggled entries.
 
 
-			return { ...curStaObj, items : nxtIteArr, pickers : nxtPkrArr, conditionals : nxtCndArr, conditionalLog : nxtCndLogArr, streak, today : { ...curStaObj.today, entries : nxtEntArr, streakClaimed }, pickLog : nxtLogArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
+			return { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr, conditionals : nxtCndArr, conditionalLog : nxtCndLogArr, streak, today : { ...curStaObj.today, entries : nxtEntArr, streakClaimed }, pickLog : nxtLogArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
 
 
 		} ),
@@ -2574,14 +2574,14 @@ function useStore( optArgObj ) {
 
 
 			const curEntObj = curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === eid ); // What: Current Entry Object And Guard. Why: The undo-before-skip branch below needs to know whether this entry was already completed. How: This looks up eid in curStaObj.today.entries.
-			let nxtIteArr = curStaObj.items, nxtPkrArr = curStaObj.pickers, nxtLogArr = curStaObj.pickLog || []; // What: Next Item/Picker/Pick-Log Arrays And Guard. Why: These default to the unchanged state and are only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj's own current arrays.
+			let nxtIteArr = curStaObj.items, nxtPicArr = curStaObj.pickers, nxtLogArr = curStaObj.pickLog || []; // What: Next Item/Picker/Pick-Log Arrays And Guard. Why: These default to the unchanged state and are only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj's own current arrays.
 
 			if ( curEntObj && curEntObj.done && curEntObj.revert ) { // What: Already-Done Undo Guard. Why: A skipped entry is no longer a completion, so any staged mutation it already applied must be undone first. How: This calls revertEntryPending and adopts its own result.
 
 
 				const resValObj = revertEntryPending( { ...curStaObj }, curEntObj ); // What: Result Value Object. Why: revertEntryPending returns the restored items/pickers/pickLog together. How: This calls revertEntryPending with a shallow copy of curStaObj and curEntObj.
 
-				nxtIteArr = resValObj.items; nxtPkrArr = resValObj.pickers; nxtLogArr = resValObj.pickLog; // What: Restored Arrays Adopt. Why: Every downstream line below must build on the RESTORED arrays. How: This destructures resValObj's own items/pickers/pickLog onto the outer let bindings.
+				nxtIteArr = resValObj.items; nxtPicArr = resValObj.pickers; nxtLogArr = resValObj.pickLog; // What: Restored Arrays Adopt. Why: Every downstream line below must build on the RESTORED arrays. How: This destructures resValObj's own items/pickers/pickLog onto the outer let bindings.
 
 
 			}
@@ -2589,19 +2589,19 @@ function useStore( optArgObj ) {
 			const nxtEntArr = curStaObj.today.entries.filter( ( entFilObj ) => entFilObj.eid !== eid ); // What: Next Entry Array. Why: A skipped entry is removed from today entirely, not merely marked. How: This filters out the one entry matching eid.
 
 			const nxtCndArr = ( curEntObj && curEntObj.done ) // What: Next Conditionals Array. Why: A completed entry being skipped is no longer a completion, so any conditional charge/discharge it drove must be reverted. How: This calls applyConditionalToggle with nowDone:false only when curEntObj was actually done, else passes conditionals through unchanged.
-				? applyConditionalToggle( { ...curStaObj, items : nxtIteArr, pickers : nxtPkrArr }, nxtEntArr, curEntObj, false )
+				? applyConditionalToggle( { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }, nxtEntArr, curEntObj, false )
 				: ( curStaObj.conditionals || [] );
 			const nxtCndLogArr = ( curEntObj && curEntObj.done ) // What: Next Conditional-Log Array. Why: The matching cycle's own log row must be un-recorded too, for the same reason as nxtCndArr above. How: This calls applyConditionalLog with nowDone:false only when curEntObj was actually done, else passes conditionalLog through unchanged.
-				? applyConditionalLog( { ...curStaObj, items : nxtIteArr, pickers : nxtPkrArr }, nxtEntArr, curEntObj, false )
+				? applyConditionalLog( { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }, nxtEntArr, curEntObj, false )
 				: ( curStaObj.conditionalLog || [] );
 
 			nxtLogArr = nxtLogArr.map( ( curRowObj ) => // What: Live Log Row Skip. Why: The live row for this eid must be marked skipped (never overwriting an already-rejected row from an earlier re-roll). How: This flags the matching row outcome:'skipped', done:false, completedAt:null.
 				( curRowObj.eid === eid && curRowObj.outcome !== 'rejected' ) ? { ...curRowObj, outcome : 'skipped', done : false, completedAt : null } : curRowObj );
 
-			const { streak, streakClaimed } = reconcileStreak( { ...curStaObj, items : nxtIteArr, pickers : nxtPkrArr }, nxtEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Removing an entry from today can flip whether today counts as fully done. How: This calls reconcileStreak against the already-patched items/pickers and the already-filtered entries.
+			const { streak, streakClaimed } = reconcileStreak( { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }, nxtEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Removing an entry from today can flip whether today counts as fully done. How: This calls reconcileStreak against the already-patched items/pickers and the already-filtered entries.
 
 
-			return { ...curStaObj, items : nxtIteArr, pickers : nxtPkrArr, conditionals : nxtCndArr, conditionalLog : nxtCndLogArr, streak, today : { ...curStaObj.today, entries : nxtEntArr, streakClaimed }, pickLog : nxtLogArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
+			return { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr, conditionals : nxtCndArr, conditionalLog : nxtCndLogArr, streak, today : { ...curStaObj.today, entries : nxtEntArr, streakClaimed }, pickLog : nxtLogArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
 
 
 		} ),
@@ -2624,29 +2624,29 @@ function useStore( optArgObj ) {
 
 			const curDayStr = isoDayFun(); // What: Current Day String. Why: Every vacationLog row below is stamped with today's own calendar day. How: This reads isoDayFun().
 
-			const abnIfActFun = ( pkrArgArr, iteArgArr, iteIdsArr ) => { // What: Abandon-If-Active Function. Why: Both branches below (single item, whole picker) share this same abandon-in-progress-streak logic. How: This walks iteIdsArr, and for any item that's some ease-down picker's own activeItemId, nulls that pointer and recharges the item to full.
+			const abnIfActFun = ( picArgArr, iteArgArr, iteIdsArr ) => { // What: Abandon-If-Active Function. Why: Both branches below (single item, whole picker) share this same abandon-in-progress-streak logic. How: This walks iteIdsArr, and for any item that's some ease-down picker's own activeItemId, nulls that pointer and recharges the item to full.
 
 
-				let nxtPkrArr = pkrArgArr, nxtIteArr = iteArgArr; // What: Next Picker/Item Arrays And Guard. Why: The loop below folds its own patch onto these on each iteration that actually finds a match. How: This starts at pkrArgArr/iteArgArr, the caller's own current arrays.
+				let nxtPicArr = picArgArr, nxtIteArr = iteArgArr; // What: Next Picker/Item Arrays And Guard. Why: The loop below folds its own patch onto these on each iteration that actually finds a match. How: This starts at picArgArr/iteArgArr, the caller's own current arrays.
 
 
-				for ( const curIteIdeStr of iteIdsArr ) { // What: Abandon Loop. Why: Every touched item id must be checked for whether it's currently some ease-down picker's own in-progress item. How: This iterates iteIdsArr, patching nxtPkrArr/nxtIteArr only for a genuine match.
+				for ( const curIteIdeStr of iteIdsArr ) { // What: Abandon Loop. Why: Every touched item id must be checked for whether it's currently some ease-down picker's own in-progress item. How: This iterates iteIdsArr, patching nxtPicArr/nxtIteArr only for a genuine match.
 
 
-					const curPkrObj = nxtPkrArr.find( ( pkrFinObj ) => pkrFinObj.mode === 'ease-down' && pkrFinObj.activeItemId === curIteIdeStr ); // What: Current Picker Object And Guard. Why: Only an ease-down picker currently working down exactly this item needs anything abandoned. How: This looks for a picker whose own mode is 'ease-down' and activeItemId matches curIteIdeStr.
+					const curPicObj = nxtPicArr.find( ( picFinObj ) => picFinObj.mode === 'ease-down' && picFinObj.activeItemId === curIteIdeStr ); // What: Current Picker Object And Guard. Why: Only an ease-down picker currently working down exactly this item needs anything abandoned. How: This looks for a picker whose own mode is 'ease-down' and activeItemId matches curIteIdeStr.
 
-					if ( !curPkrObj ) continue; // What: No-Match Skip Guard. Why: An item not currently in progress for any picker needs nothing abandoned. How: This skips to the next id when curPkrObj wasn't found.
+					if ( !curPicObj ) continue; // What: No-Match Skip Guard. Why: An item not currently in progress for any picker needs nothing abandoned. How: This skips to the next id when curPicObj wasn't found.
 
-					const thrValNum = curPkrObj.threshold ?? 100; // What: Threshold Value Number. Why: An abandoned item must recharge back to this exact threshold, as if it were never touched. How: This reads curPkrObj's own threshold, defaulting to 100.
+					const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: An abandoned item must recharge back to this exact threshold, as if it were never touched. How: This reads curPicObj's own threshold, defaulting to 100.
 
-					nxtPkrArr = nxtPkrArr.map( ( curPkrObj2 ) => curPkrObj2.id === curPkrObj.id ? { ...curPkrObj2, activeItemId : null } : curPkrObj2 ); // What: Picker Pointer Null. Why: The abandoned picker must no longer point at this item as its own in-progress one. How: This nulls activeItemId on the one matching picker.
+					nxtPicArr = nxtPicArr.map( ( curPicObj2 ) => curPicObj2.id === curPicObj.id ? { ...curPicObj2, activeItemId : null } : curPicObj2 ); // What: Picker Pointer Null. Why: The abandoned picker must no longer point at this item as its own in-progress one. How: This nulls activeItemId on the one matching picker.
 					nxtIteArr = nxtIteArr.map( ( curIteObj ) => curIteObj.id === curIteIdeStr ? { ...curIteObj, value : thrValNum } : curIteObj );         // What: Item Recharge. Why: An abandoned streak must recharge to full, never counting toward Spent. How: This sets the one matching item's own value to thrValNum.
 
 
 				}
 
 
-				return { pickers : nxtPkrArr, items : nxtIteArr }; // What: Abandon Result Return. Why: The caller needs both patched arrays back together. How: This bundles nxtPkrArr/nxtIteArr.
+				return { pickers : nxtPicArr, items : nxtIteArr }; // What: Abandon Result Return. Why: The caller needs both patched arrays back together. How: This bundles nxtPicArr/nxtIteArr.
 
 
 			};
@@ -2658,12 +2658,12 @@ function useStore( optArgObj ) {
 				const onValBoo = curIteObj ? !curIteObj.vacation : true; // What: On Value Boolean. Why: The vacationLog row records whether the item just went ON (inactive) or OFF (active again). How: This is curIteObj's own negated vacation flag, else true when curIteObj is somehow missing.
 
 				let nxtIteArr = curStaObj.items.map( ( curIteObj2 ) => curIteObj2.id === tarIdeStr ? { ...curIteObj2, vacation : !curIteObj2.vacation } : curIteObj2 ); // What: Next Item Array. Why: Only the one matching item's own vacation flag actually flips. How: This maps curStaObj.items, negating vacation on the one matching item.
-				let nxtPkrArr = curStaObj.pickers; // What: Next Picker Array And Guard. Why: This only changes below when the item just went inactive and needs its own in-progress streak abandoned. How: This starts at curStaObj's own current pickers.
+				let nxtPicArr = curStaObj.pickers; // What: Next Picker Array And Guard. Why: This only changes below when the item just went inactive and needs its own in-progress streak abandoned. How: This starts at curStaObj's own current pickers.
 
-				if ( onValBoo ) ( { pickers : nxtPkrArr, items : nxtIteArr } = abnIfActFun( nxtPkrArr, nxtIteArr, [ tarIdeStr ] ) ); // What: Abandon-If-Active Call Guard. Why: Only going INTO vacation (not coming back out of it) can abandon an in-progress streak. How: This calls abnIfActFun and destructures its own result back onto nxtPkrArr/nxtIteArr, only when onValBoo is true.
+				if ( onValBoo ) ( { pickers : nxtPicArr, items : nxtIteArr } = abnIfActFun( nxtPicArr, nxtIteArr, [ tarIdeStr ] ) ); // What: Abandon-If-Active Call Guard. Why: Only going INTO vacation (not coming back out of it) can abandon an in-progress streak. How: This calls abnIfActFun and destructures its own result back onto nxtPicArr/nxtIteArr, only when onValBoo is true.
 
 
-				return { ...curStaObj, items : nxtIteArr, pickers : nxtPkrArr, // What: Single-Item Return. Why: The caller needs the patched arrays plus a fresh vacationLog row recording this exact transition. How: This spreads curStaObj with items/pickers replaced and appends one row to vacationLog.
+				return { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr, // What: Single-Item Return. Why: The caller needs the patched arrays plus a fresh vacationLog row recording this exact transition. How: This spreads curStaObj with items/pickers replaced and appends one row to vacationLog.
 
 					vacationLog : [ ...( curStaObj.vacationLog || [] ), { itemId : tarIdeStr, date : curDayStr, on : onValBoo } ] };
 
@@ -2675,16 +2675,16 @@ function useStore( optArgObj ) {
 			const chgIteArr = ownIteArr.filter( ( curIteObj ) => curIteObj.vacation !== nxtVacBoo ); // What: Changed Item Array. Why: Only an item whose own vacation flag actually differs from nxtVacBoo needs a vacationLog row of its own. How: This filters ownIteArr to items whose own vacation doesn't already match nxtVacBoo.
 
 			let nxtIteArr = curStaObj.items.map( ( curIteObj ) => curIteObj.pickerId === tarIdeStr ? { ...curIteObj, vacation : nxtVacBoo } : curIteObj ); // What: Next Item Array. Why: Every item owned by this picker gets the same new vacation state. How: This maps curStaObj.items, setting vacation:nxtVacBoo on every item owned by tarIdeStr.
-			let nxtPkrArr = curStaObj.pickers; // What: Next Picker Array And Guard. Why: This only changes below when the picker's own items just went inactive and need their own in-progress streaks abandoned. How: This starts at curStaObj's own current pickers.
+			let nxtPicArr = curStaObj.pickers; // What: Next Picker Array And Guard. Why: This only changes below when the picker's own items just went inactive and need their own in-progress streaks abandoned. How: This starts at curStaObj's own current pickers.
 
-			if ( nxtVacBoo ) ( { pickers : nxtPkrArr, items : nxtIteArr } = abnIfActFun( nxtPkrArr, nxtIteArr, chgIteArr.map( ( curIteObj ) => curIteObj.id ) ) ); // What: Abandon-If-Active Call Guard. Why: Only going INTO vacation can abandon an in-progress streak, same reasoning as the single-item branch above. How: This calls abnIfActFun (over just the CHANGED items) and destructures its own result, only when nxtVacBoo is true.
+			if ( nxtVacBoo ) ( { pickers : nxtPicArr, items : nxtIteArr } = abnIfActFun( nxtPicArr, nxtIteArr, chgIteArr.map( ( curIteObj ) => curIteObj.id ) ) ); // What: Abandon-If-Active Call Guard. Why: Only going INTO vacation can abandon an in-progress streak, same reasoning as the single-item branch above. How: This calls abnIfActFun (over just the CHANGED items) and destructures its own result, only when nxtVacBoo is true.
 
 
 			return { // What: Whole-Picker Return. Why: The caller needs the patched arrays plus one fresh vacationLog row per actually-changed item. How: This spreads curStaObj with items/pickers replaced and appends chgIteArr's own rows to vacationLog.
 
 				...curStaObj,
 				items : nxtIteArr,
-				pickers : nxtPkrArr,
+				pickers : nxtPicArr,
 				vacationLog : [ ...( curStaObj.vacationLog || [] ), ...chgIteArr.map( ( curIteObj ) => ( { itemId : curIteObj.id, date : curDayStr, on : nxtVacBoo } ) ) ]
 
 			};
@@ -2768,16 +2768,16 @@ function useStore( optArgObj ) {
 
 
 			const sibIteArr = curStaObj.items.filter( ( curIteObj ) => curIteObj.pickerId === pickerId ); // What: Sibling Item Array. Why: Both the name de-duplication and the ease-down weight averaging below need this picker's own existing items. How: This filters curStaObj.items to those owned by pickerId.
-			const curPkrObj = curStaObj.pickers.find( ( pkrFinObj ) => pkrFinObj.id === pickerId ); // What: Current Picker Object And Guard. Why: The mode checks below need this picker's own live mode. How: This looks up pickerId in curStaObj.pickers.
-			const isDwnBoo = curPkrObj && curPkrObj.mode === 'ease-down'; // What: Is Down Boolean. Why: Only Ease Down needs the special charged-value/fairness-weight treatment below. How: This is true only when curPkrObj exists and its own mode is 'ease-down'.
-			const isEasBoo = curPkrObj && ( curPkrObj.mode === 'ease-up' || curPkrObj.mode === 'ease-down' ); // What: Is Ease Boolean. Why: Both ease modes need their own drift-band fields stamped below. How: This is true when curPkrObj's own mode is either ease-up or ease-down.
+			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === pickerId ); // What: Current Picker Object And Guard. Why: The mode checks below need this picker's own live mode. How: This looks up pickerId in curStaObj.pickers.
+			const isDwnBoo = curPicObj && curPicObj.mode === 'ease-down'; // What: Is Down Boolean. Why: Only Ease Down needs the special charged-value/fairness-weight treatment below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
+			const isEasBoo = curPicObj && ( curPicObj.mode === 'ease-up' || curPicObj.mode === 'ease-down' ); // What: Is Ease Boolean. Why: Both ease modes need their own drift-band fields stamped below. How: This is true when curPicObj's own mode is either ease-up or ease-down.
 
 			let wgtValNum = 1, valValNum = 0; // What: Weight/Value Values And Guard. Why: Every non-ease-down item just uses these plain defaults; only ease-down overrides them below. How: This starts at weight 1, value 0.
 
 			if ( isDwnBoo ) { // What: Ease-Down Defaults Guard. Why: Only ease-down needs its own charged value and fairness-averaged weight computed. How: This overwrites valValNum/wgtValNum with the ease-down-specific computation below.
 
 
-				valValNum = curPkrObj.threshold ?? 100; // What: Charged Value Set. Why: A new ease-down item starts fully charged, same as every other item in that mode. How: This reads curPkrObj's own threshold, defaulting to 100.
+				valValNum = curPicObj.threshold ?? 100; // What: Charged Value Set. Why: A new ease-down item starts fully charged, same as every other item in that mode. How: This reads curPicObj's own threshold, defaulting to 100.
 
 				const perWeiArr = sibIteArr.map( ( curIteObj ) => curIteObj.weight ?? 1 ).filter( ( curWeiNum ) => curWeiNum > 0 ); // What: Peer Weight Array. Why: The average below must exclude the weight-0 active item, so a fresh streak's own zero can't drag the newcomer down. How: This maps sibIteArr to its own weights (defaulting 1), then drops any that are 0 or below.
 
@@ -2839,7 +2839,7 @@ function useStore( optArgObj ) {
 			catch ( errCauObj ) {} // What: Persistence-Request Failure Guard. Why: A failed permission request must never block picker creation itself. How: This swallows the error silently.
 
 			// What: Picker Id String. Why: An explicit id (onboarding's own sample pickers only, so their ids match the ones baked into precomputed Stats history) must win; every other caller gets a fresh random one. How: This prefers replaceId, then id, else mints a fresh 'pkr_' id.
-			const pkrIdeStr = replaceId || id || ( 'pkr_' + Math.random().toString( 36 ).slice( 2, 8 ) );
+			const picIdeStr = replaceId || id || ( 'pkr_' + Math.random().toString( 36 ).slice( 2, 8 ) );
 			const iniValNum = mode === 'ease-down' ? 100 : 0; // What: Initial Value Number. Why: Every new item's own starting drift value depends on the picker's own mode. How: This is 100 for ease-down (starts "charged"), else 0.
 			const isEasBoo = mode === 'ease-up' || mode === 'ease-down'; // What: Is Ease Boolean. Why: Only an ease-mode item carries its own per-item drift band. How: This is true when mode is either ease-up or ease-down.
 			const isDwnBoo = mode === 'ease-down'; // What: Is Down Boolean. Why: Only ease-down forces every item to a uniform starting weight of 1 regardless of any user-supplied weight. How: This is true only when mode is 'ease-down'.
@@ -2848,7 +2848,7 @@ function useStore( optArgObj ) {
 
 
 				id : curIteObj.id || ( 'it_' + Math.random().toString( 36 ).slice( 2, 8 ) ),
-				name : curIteObj.name, pickerId : pkrIdeStr,
+				name : curIteObj.name, pickerId : picIdeStr,
 				weight : isDwnBoo ? 1 : ( curIteObj.weight || 1 ),
 				// What: Value Honor-Or-Default. Why: A value the create form already set (e.g. Fill/Refill charging an ease item to threshold) must be honored; otherwise the mode's own default applies. How: This uses curIteObj.value when it isn't null/undefined, else iniValNum.
 				value : curIteObj.value != null ? curIteObj.value : iniValNum,
@@ -2872,10 +2872,10 @@ function useStore( optArgObj ) {
 
 			} : null;
 
-			const newPkrObj = { // What: New Picker Object. Why: This is the actual picker being created (or, with replaceId, re-created in place). How: This bundles the given fields with schedule/gate/visibility defaults resolved below.
+			const newPicObj = { // What: New Picker Object. Why: This is the actual picker being created (or, with replaceId, re-created in place). How: This bundles the given fields with schedule/gate/visibility defaults resolved below.
 
 
-				id : pkrIdeStr, group, name, mode,
+				id : picIdeStr, group, name, mode,
 				easeMin : easeMin ?? 10, easeMax : easeMax ?? 20, threshold : 100,
 				// What: Daily-Generator Schedule. Why: Which weekdays this picker may run on, and whether it sits out public holidays, must be resolved before this picker is usable by the generator. How: This calls CADENCE.enforceWeeklyDay over CADENCE.normalize's own result, honoring an explicit daysOfWeek or defaulting to every day.
 				daysOfWeek : CADENCE.enforceWeeklyDay( {
@@ -2885,7 +2885,7 @@ function useStore( optArgObj ) {
 				skipHolidays : !!skipHolidays,
 				// What: Avoid-Duplicates Flag. Why: This excludes an item from this picker's own pool for the day if its name (case-insensitively) is already present elsewhere on today's list. How: This coerces avoidDuplicates to a real boolean; see pickers.js's own pick() for how it's applied.
 				avoidDuplicates : !!avoidDuplicates,
-				// What: Picker-Cadence Normalize Spread. Why: The surfacing anchor + display unit must be resolved (and defaulted) the same way for every picker. How: This spreads CADENCE.normalize's own result over newPkrObj.
+				// What: Picker-Cadence Normalize Spread. Why: The surfacing anchor + display unit must be resolved (and defaulted) the same way for every picker. How: This spreads CADENCE.normalize's own result over newPicObj.
 				...CADENCE.normalize( { cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ),
 				// What: Conditional Id Resolve. Why: A freshly-made inline conditional wins over an explicitly-passed existing one. How: This prefers madCndObj's own id, else conditionalId, else null.
 				conditionalId : madCndObj ? madCndObj.id : ( conditionalId || null ),
@@ -2936,14 +2936,14 @@ function useStore( optArgObj ) {
 
 				const finNamStr = OB_SAMPLE_PICKER_IDS.includes( id ) ? ( normalizePickerName( name ) || name ) : uniNamFun(
 					normalizePickerName( name ) || name,
-					curStaObj.pickers.filter( ( curPkrObj ) => !curPkrObj.hidden && curPkrObj.id !== pkrIdeStr ).map( ( curPkrObj ) => curPkrObj.name )
+					curStaObj.pickers.filter( ( curPicObj ) => !curPicObj.hidden && curPicObj.id !== picIdeStr ).map( ( curPicObj ) => curPicObj.name )
 				);
-				const finPkrObj = { ...newPkrObj, name : finNamStr }; // What: Final Picker Object. Why: The picker actually written to state must carry the de-duplicated name, not the raw one. How: This spreads newPkrObj with name replaced by finNamStr.
+				const finPicObj = { ...newPicObj, name : finNamStr }; // What: Final Picker Object. Why: The picker actually written to state must carry the de-duplicated name, not the raw one. How: This spreads newPicObj with name replaced by finNamStr.
 
-				// What: Next Picker-Ids Array. Why: includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list. How: This adds pkrIdeStr when includeInDaily and it isn't already present, else removes it.
+				// What: Next Picker-Ids Array. Why: includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list. How: This adds picIdeStr when includeInDaily and it isn't already present, else removes it.
 				const nxtPidArr = includeInDaily
-					? ( curStaObj.daily.pickerIds.includes( pkrIdeStr ) ? curStaObj.daily.pickerIds : [ ...curStaObj.daily.pickerIds, pkrIdeStr ] )
-					: curStaObj.daily.pickerIds.filter( ( curPidStr ) => curPidStr !== pkrIdeStr );
+					? ( curStaObj.daily.pickerIds.includes( picIdeStr ) ? curStaObj.daily.pickerIds : [ ...curStaObj.daily.pickerIds, picIdeStr ] )
+					: curStaObj.daily.pickerIds.filter( ( curPidStr ) => curPidStr !== picIdeStr );
 
 
 				return { // What: Next State Return. Why: The caller needs items/pickers/conditionals/daily all updated together, honoring replaceId's own "recreate but keep the id" semantics when given. How: This spreads curStaObj, replacing or appending each field depending on whether replaceId was given.
@@ -2954,8 +2954,8 @@ function useStore( optArgObj ) {
 						? [ ...curStaObj.items.filter( ( curIteObj ) => curIteObj.pickerId !== replaceId ), ...newIteArr ]
 						: [ ...curStaObj.items, ...newIteArr ],
 					pickers : replaceId
-						? curStaObj.pickers.map( ( curPkrObj ) => curPkrObj.id === replaceId ? finPkrObj : curPkrObj )
-						: [ ...curStaObj.pickers, finPkrObj ],
+						? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === replaceId ? finPicObj : curPicObj )
+						: [ ...curStaObj.pickers, finPicObj ],
 					conditionals : madCndObj ? [ ...( curStaObj.conditionals || [] ), madCndObj ] : ( curStaObj.conditionals || [] ),
 					daily : { ...curStaObj.daily, pickerIds : nxtPidArr }
 
@@ -2965,7 +2965,7 @@ function useStore( optArgObj ) {
 			} );
 
 
-			return pkrIdeStr; // What: Picker Id Return. Why: The caller (the Add-Picker form) needs the new or reused picker's own id back. How: This returns pkrIdeStr, resolved above.
+			return picIdeStr; // What: Picker Id Return. Why: The caller (the Add-Picker form) needs the new or reused picker's own id back. How: This returns picIdeStr, resolved above.
 
 
 		},
@@ -2994,14 +2994,14 @@ function useStore( optArgObj ) {
 		commitPickerEdit : ( pickerId, { name, group, mode, includeInDaily, daysOfWeek, skipHolidays, avoidDuplicates, conditionalId, newConditional, cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ) => setAppStaObj( ( curStaObj ) => {
 
 
-			const curPkrObj = curStaObj.pickers.find( ( pkrFinObj ) => pkrFinObj.id === pickerId ); // What: Current Picker Object And Guard. Why: A stale pickerId (already removed) must be a no-op. How: This looks up pickerId in curStaObj.pickers.
+			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === pickerId ); // What: Current Picker Object And Guard. Why: A stale pickerId (already removed) must be a no-op. How: This looks up pickerId in curStaObj.pickers.
 
-			if ( !curPkrObj ) return curStaObj; // What: Missing-Picker Guard. Why: There's nothing to edit when curPkrObj wasn't found. How: This returns curStaObj unchanged.
+			if ( !curPicObj ) return curStaObj; // What: Missing-Picker Guard. Why: There's nothing to edit when curPicObj wasn't found. How: This returns curStaObj unchanged.
 
-			const modChgBoo = mode !== curPkrObj.mode; // What: Mode Changed Boolean. Why: Only an actual mode change triggers the item-defaults reset further below. How: This is true when the new mode differs from curPkrObj's own current one.
+			const modChgBoo = mode !== curPicObj.mode; // What: Mode Changed Boolean. Why: Only an actual mode change triggers the item-defaults reset further below. How: This is true when the new mode differs from curPicObj's own current one.
 			const finNamStr = uniNamFun( // What: Final Name String. Why: The committed picker still needs its own name tidied and de-duplicated against every OTHER visible picker. How: This calls uniNamFun with the tidied name against every sibling picker's own name, excluding itself.
 				normalizePickerName( name ) || name,
-				curStaObj.pickers.filter( ( pkrFilObj ) => !pkrFilObj.hidden && pkrFilObj.id !== pickerId ).map( ( pkrFilObj ) => pkrFilObj.name )
+				curStaObj.pickers.filter( ( picFilObj ) => !picFilObj.hidden && picFilObj.id !== pickerId ).map( ( picFilObj ) => picFilObj.name )
 			);
 
 			const madCndObj = newConditional ? { // What: Made Conditional Object. Why: A brand-new inline conditional authored inline in this same edit form needs its own fresh id, mirroring addPicker's own madCndObj. How: This builds a full conditional object from newConditional's own fields.
@@ -3019,10 +3019,10 @@ function useStore( optArgObj ) {
 
 			} : null;
 
-			const finPkrObj = { // What: Final Picker Object. Why: This is curPkrObj patched with every field this edit form can change. How: This spreads curPkrObj, overriding name/group/mode/schedule/gate fields with the resolved values below.
+			const finPicObj = { // What: Final Picker Object. Why: This is curPicObj patched with every field this edit form can change. How: This spreads curPicObj, overriding name/group/mode/schedule/gate fields with the resolved values below.
 
 
-				...curPkrObj, name : finNamStr, group, mode,
+				...curPicObj, name : finNamStr, group, mode,
 				// What: Daily-Generator Schedule. Why: The schedule must be re-resolved the same way addPicker itself resolves it. How: This calls CADENCE.enforceWeeklyDay over CADENCE.normalize's own result, honoring an explicit daysOfWeek or defaulting to every day.
 				daysOfWeek : CADENCE.enforceWeeklyDay( {
 					...CADENCE.normalize( { cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ),
@@ -3036,7 +3036,7 @@ function useStore( optArgObj ) {
 
 			};
 
-			const thrValNum = curPkrObj.threshold ?? 100; // What: Threshold Value Number. Why: The ease-down item-defaults branch below needs this picker's own threshold. How: This reads curPkrObj's own threshold, defaulting to 100.
+			const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: The ease-down item-defaults branch below needs this picker's own threshold. How: This reads curPicObj's own threshold, defaulting to 100.
 			const modDefObj = mode === 'ease-down' // What: Mode Defaults Object. Why: Every item's own weight/value/drift-band must reset to sensible defaults for whichever mode was just switched to. How: This picks the ease-down, ease-up, or plain-weighted default shape depending on mode.
 				? { weight : 1, value : thrValNum, easeMin : PICKERS.DEFAULT_EASE.easeMin, easeMax : PICKERS.DEFAULT_EASE.easeMax }
 				: mode === 'ease-up'
@@ -3056,7 +3056,7 @@ function useStore( optArgObj ) {
 
 				...curStaObj,
 				items : nxtIteArr,
-				pickers : curStaObj.pickers.map( ( pkrMapObj ) => pkrMapObj.id === pickerId ? finPkrObj : pkrMapObj ),
+				pickers : curStaObj.pickers.map( ( picMapObj ) => picMapObj.id === pickerId ? finPicObj : picMapObj ),
 				conditionals : madCndObj ? [ ...( curStaObj.conditionals || [] ), madCndObj ] : ( curStaObj.conditionals || [] ),
 				daily : { ...curStaObj.daily, pickerIds : nxtPidArr }
 
@@ -3086,10 +3086,10 @@ function useStore( optArgObj ) {
 			const nxtLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => !( curRowObj.itemId === tarIdeStr && curRowObj.date === curDayStr ) ); // What: Next Pick-Log Array. Why: Only today's own live rows for this item are dropped; historical rows survive (their own denormalized name preserves past stats, like reminderLog does). How: This filters out rows matching both tarIdeStr and curDayStr.
 
 			const { streak, streakClaimed } = reconcileStreak( curStaObj, nxtEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Removing an item can drop entries off today, which can flip whether today counts as fully done. How: This calls reconcileStreak against the already-filtered entries.
-			const nxtPkrArr = curStaObj.pickers.map( ( curPkrObj ) => curPkrObj.activeItemId === tarIdeStr ? { ...curPkrObj, activeItemId : null } : curPkrObj ); // What: Next Picker Array. Why: A removed item that was some ease-down picker's own in-progress item must no longer be pointed at. How: This nulls activeItemId on any picker that was pointing at tarIdeStr.
+			const nxtPicArr = curStaObj.pickers.map( ( curPicObj ) => curPicObj.activeItemId === tarIdeStr ? { ...curPicObj, activeItemId : null } : curPicObj ); // What: Next Picker Array. Why: A removed item that was some ease-down picker's own in-progress item must no longer be pointed at. How: This nulls activeItemId on any picker that was pointing at tarIdeStr.
 
 
-			return { ...curStaObj, items : nxtIteArr, pickers : nxtPkrArr, streak, pickLog : nxtLogArr, today : { ...curStaObj.today, entries : nxtEntArr, streakClaimed } }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/streak/pickLog/today all replaced.
+			return { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr, streak, pickLog : nxtLogArr, today : { ...curStaObj.today, entries : nxtEntArr, streakClaimed } }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/streak/pickLog/today all replaced.
 
 
 		} ),
@@ -3105,7 +3105,7 @@ function useStore( optArgObj ) {
 
 				...curStaObj,
 				items : curStaObj.items.filter( ( curIteObj ) => curIteObj.pickerId !== pickerId ),
-				pickers : curStaObj.pickers.filter( ( curPkrObj ) => curPkrObj.id !== pickerId ),
+				pickers : curStaObj.pickers.filter( ( curPicObj ) => curPicObj.id !== pickerId ),
 				daily : { ...curStaObj.daily, pickerIds : ( curStaObj.daily.pickerIds || [] ).filter( ( curPidStr ) => curPidStr !== pickerId ) },
 				today : { ...curStaObj.today, entries : ( curStaObj.today.entries || [] ).filter( ( curEntObj ) => curEntObj.pickerId !== pickerId ) },
 				// What: Pick-Log Purge. Why: Historical rows are kept (denormalized survivability); only today's own live ones for this picker are dropped. How: This filters out rows matching both pickerId and curDayStr.
@@ -3134,11 +3134,11 @@ function useStore( optArgObj ) {
 		refillPicker : ( pickerId ) => setAppStaObj( ( curStaObj ) => {
 
 
-			const curPkrObj = curStaObj.pickers.find( ( pkrFinObj ) => pkrFinObj.id === pickerId ); // What: Current Picker Object And Guard. Why: A stale pickerId (already removed) must be a no-op. How: This looks up pickerId in curStaObj.pickers.
+			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === pickerId ); // What: Current Picker Object And Guard. Why: A stale pickerId (already removed) must be a no-op. How: This looks up pickerId in curStaObj.pickers.
 
-			if ( !curPkrObj ) return curStaObj; // What: Missing-Picker Guard. Why: There's nothing to refill when curPkrObj wasn't found. How: This returns curStaObj unchanged.
+			if ( !curPicObj ) return curStaObj; // What: Missing-Picker Guard. Why: There's nothing to refill when curPicObj wasn't found. How: This returns curStaObj unchanged.
 
-			const thrValNum = curPkrObj.threshold ?? 100; // What: Threshold Value Number. Why: Every owned item's own value below must be raised to (at least) this exact number. How: This reads curPkrObj's own threshold, defaulting to 100.
+			const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: Every owned item's own value below must be raised to (at least) this exact number. How: This reads curPicObj's own threshold, defaulting to 100.
 
 
 			return { // What: Next State Return. Why: The caller needs every owned item's own value raised (never lowered), and any in-progress ease-down item cleared. How: This spreads curStaObj with items/pickers replaced.
@@ -3146,7 +3146,7 @@ function useStore( optArgObj ) {
 				...curStaObj,
 				items : curStaObj.items.map( ( curIteObj ) =>
 					curIteObj.pickerId === pickerId ? { ...curIteObj, value : Math.max( curIteObj.value ?? 0, thrValNum ) } : curIteObj ),
-				pickers : curStaObj.pickers.map( ( pkrMapObj ) => pkrMapObj.id === pickerId ? { ...pkrMapObj, activeItemId : null } : pkrMapObj )
+				pickers : curStaObj.pickers.map( ( picMapObj ) => picMapObj.id === pickerId ? { ...picMapObj, activeItemId : null } : picMapObj )
 
 			};
 
@@ -3461,27 +3461,27 @@ function useStore( optArgObj ) {
 
 
 			...curStaObj,
-			pickers : curStaObj.pickers.map( ( curPkrObj ) => {
+			pickers : curStaObj.pickers.map( ( curPicObj ) => {
 
-				if ( curPkrObj.id !== pickerId ) return curPkrObj; // What: Non-Matching Guard. Why: Every other picker is untouched by this patch. How: This returns curPkrObj unchanged when its own id doesn't match pickerId.
+				if ( curPicObj.id !== pickerId ) return curPicObj; // What: Non-Matching Guard. Why: Every other picker is untouched by this patch. How: This returns curPicObj unchanged when its own id doesn't match pickerId.
 
-				const nxtPkrObj = { ...curPkrObj, ...patValObj }; // What: Next Picker Object. Why: The patch itself must land before daysOfWeek is re-derived from it. How: This spreads curPkrObj with patValObj merged on.
+				const nxtPicObj = { ...curPicObj, ...patValObj }; // What: Next Picker Object. Why: The patch itself must land before daysOfWeek is re-derived from it. How: This spreads curPicObj with patValObj merged on.
 
-				nxtPkrObj.daysOfWeek = CADENCE.enforceWeeklyDay( nxtPkrObj ); // What: Days-Of-Week Re-Derive. Why: A cadence/anchorDow/daysOfWeek change must keep the weekly-cadence anchor day selected in the Days control. How: This calls CADENCE.enforceWeeklyDay against nxtPkrObj's own just-patched fields.
+				nxtPicObj.daysOfWeek = CADENCE.enforceWeeklyDay( nxtPicObj ); // What: Days-Of-Week Re-Derive. Why: A cadence/anchorDow/daysOfWeek change must keep the weekly-cadence anchor day selected in the Days control. How: This calls CADENCE.enforceWeeklyDay against nxtPicObj's own just-patched fields.
 
 
-				return nxtPkrObj; // What: Next Picker Return. Why: The map above needs the fully-patched picker. How: This returns nxtPkrObj, built above.
+				return nxtPicObj; // What: Next Picker Return. Why: The map above needs the fully-patched picker. How: This returns nxtPicObj, built above.
 
 
 			} )
 
 		} ) ),
 
-		// What: Replace Picker Action. Why: This is the full-replace path used to revert a picker to a snapshot on Controls Cancel. How: This overwrites the one matching picker entirely with snpPkrObj.
-		replacePicker : ( pickerId, snpPkrObj ) => setAppStaObj( ( curStaObj ) => ( {
+		// What: Replace Picker Action. Why: This is the full-replace path used to revert a picker to a snapshot on Controls Cancel. How: This overwrites the one matching picker entirely with snpPicObj.
+		replacePicker : ( pickerId, snpPicObj ) => setAppStaObj( ( curStaObj ) => ( {
 
 			...curStaObj,
-			pickers : curStaObj.pickers.map( ( curPkrObj ) => curPkrObj.id === pickerId ? { ...snpPkrObj } : curPkrObj )
+			pickers : curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === pickerId ? { ...snpPicObj } : curPicObj )
 
 		} ) ),
 
@@ -3489,12 +3489,12 @@ function useStore( optArgObj ) {
 		renamePicker : ( pickerId, name ) => setAppStaObj( ( curStaObj ) => {
 
 
-			const sibNamArr = curStaObj.pickers.filter( ( curPkrObj ) => curPkrObj.id !== pickerId ).map( ( curPkrObj ) => curPkrObj.name ); // What: Sibling Name Array. Why: A picker name only needs to be unique among every OTHER picker. How: This filters curStaObj.pickers to every picker but the one being renamed, then maps to their own names.
+			const sibNamArr = curStaObj.pickers.filter( ( curPicObj ) => curPicObj.id !== pickerId ).map( ( curPicObj ) => curPicObj.name ); // What: Sibling Name Array. Why: A picker name only needs to be unique among every OTHER picker. How: This filters curStaObj.pickers to every picker but the one being renamed, then maps to their own names.
 			const tdyNamStr = ( normalizePickerName && normalizePickerName( name ) ) || name; // What: Tidied Name String. Why: The name must be normalized to Title Case before the collision check below. How: This calls normalizePickerName when available, else falls back to the raw name.
 			const uniNamStr = uniNamFun( tdyNamStr, sibNamArr ); // What: Unique Name String. Why: The write below needs the actual de-duplicated name to apply. How: This calls uniNamFun with tdyNamStr and sibNamArr.
 
 
-			return { ...curStaObj, pickers : curStaObj.pickers.map( ( curPkrObj ) => curPkrObj.id === pickerId ? { ...curPkrObj, name : uniNamStr } : curPkrObj ) }; // What: Next State Return. Why: The caller needs the one matching picker's own name replaced. How: This spreads curStaObj with pickers rebuilt, patching only the one matching picker.
+			return { ...curStaObj, pickers : curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === pickerId ? { ...curPicObj, name : uniNamStr } : curPicObj ) }; // What: Next State Return. Why: The caller needs the one matching picker's own name replaced. How: This spreads curStaObj with pickers rebuilt, patching only the one matching picker.
 
 
 		} ),
@@ -3504,12 +3504,12 @@ function useStore( optArgObj ) {
 		renameGroup : ( oldName, rawNew ) => setAppStaObj( ( curStaObj ) => {
 
 
-			const othGrpArr = [ ...new Set( curStaObj.pickers.filter( ( curPkrObj ) => curPkrObj.group && curPkrObj.group !== oldName ).map( ( curPkrObj ) => curPkrObj.group ) ) ]; // What: Other Group Array. Why: The normalizer needs every OTHER existing group name to detect a same-name collision (a merge). How: This collects the distinct group of every picker not already in oldName.
+			const othGrpArr = [ ...new Set( curStaObj.pickers.filter( ( curPicObj ) => curPicObj.group && curPicObj.group !== oldName ).map( ( curPicObj ) => curPicObj.group ) ) ]; // What: Other Group Array. Why: The normalizer needs every OTHER existing group name to detect a same-name collision (a merge). How: This collects the distinct group of every picker not already in oldName.
 			const nxtNamStr = ( normalizeGroupName && normalizeGroupName( rawNew, othGrpArr ) ) || String( rawNew || '' ).trim(); // What: Next Name String. Why: The normalizer both tidies rawNew and reuses an existing collision's own exact casing. How: This calls normalizeGroupName with othGrpArr, else falls back to a plain trim.
 
 			if ( !nxtNamStr || nxtNamStr === oldName ) return curStaObj; // What: No-Op Guard. Why: An empty result, or a name that didn't actually change, has nothing to rename. How: This returns curStaObj unchanged when either holds.
 
-			const nxtPkrArr = curStaObj.pickers.map( ( curPkrObj ) => curPkrObj.group === oldName ? { ...curPkrObj, group : nxtNamStr } : curPkrObj ); // What: Next Picker Array. Why: Every picker that belonged to oldName must now belong to nxtNamStr. How: This maps curStaObj.pickers, rewriting group on every matching picker.
+			const nxtPicArr = curStaObj.pickers.map( ( curPicObj ) => curPicObj.group === oldName ? { ...curPicObj, group : nxtNamStr } : curPicObj ); // What: Next Picker Array. Why: Every picker that belonged to oldName must now belong to nxtNamStr. How: This maps curStaObj.pickers, rewriting group on every matching picker.
 
 			let nxtOrdArr = ( curStaObj.groupOrder || [] ).map( ( curGrpStr ) => curGrpStr === oldName ? nxtNamStr : curGrpStr ); // What: Next Order Array And Guard. Why: The display-order slot itself must follow the rename too. How: This maps groupOrder, replacing oldName with nxtNamStr.
 
@@ -3529,7 +3529,7 @@ function useStore( optArgObj ) {
 			}
 
 
-			return { ...curStaObj, pickers : nxtPkrArr, groupOrder : nxtOrdArr, pickerOrder : nxtPodObj }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with pickers/groupOrder/pickerOrder all replaced.
+			return { ...curStaObj, pickers : nxtPicArr, groupOrder : nxtOrdArr, pickerOrder : nxtPodObj }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with pickers/groupOrder/pickerOrder all replaced.
 
 
 		} ),
@@ -3640,15 +3640,15 @@ function useStore( optArgObj ) {
 		// What: Reorder Groups Action. Why: Edit Mode needs to persist a fresh group display order after a drag. How: This copies ordGrpArr onto groupOrder.
 		reorderGroups : ( ordGrpArr ) => setAppStaObj( ( curStaObj ) => ( { ...curStaObj, groupOrder : ordGrpArr.slice() } ) ),
 
-		// What: Reorder Pickers-In-Group Action. Why: Edit Mode needs to persist a fresh per-group row order after a drag. How: This copies pkrIdeArr onto pickerOrder's own entry for group.
-		reorderPickersInGroup : ( group, pkrIdeArr ) => setAppStaObj( ( curStaObj ) => ( {
-			...curStaObj, pickerOrder : { ...curStaObj.pickerOrder, [ group ] : pkrIdeArr.slice() }
+		// What: Reorder Pickers-In-Group Action. Why: Edit Mode needs to persist a fresh per-group row order after a drag. How: This copies picIdeArr onto pickerOrder's own entry for group.
+		reorderPickersInGroup : ( group, picIdeArr ) => setAppStaObj( ( curStaObj ) => ( {
+			...curStaObj, pickerOrder : { ...curStaObj.pickerOrder, [ group ] : picIdeArr.slice() }
 		} ) ),
 
-		// What: Set Today-Order Action. Why: This is the bulk restore Edit Mode's own "Cancel" uses to revert both order structures to their entry snapshot at once. How: This copies ordGrpArr onto groupOrder and deep-clones ordPkrObj onto pickerOrder.
-		setTodayOrder : ( ordGrpArr, ordPkrObj ) => setAppStaObj( ( curStaObj ) => ( {
+		// What: Set Today-Order Action. Why: This is the bulk restore Edit Mode's own "Cancel" uses to revert both order structures to their entry snapshot at once. How: This copies ordGrpArr onto groupOrder and deep-clones ordPicObj onto pickerOrder.
+		setTodayOrder : ( ordGrpArr, ordPicObj ) => setAppStaObj( ( curStaObj ) => ( {
 			...curStaObj, groupOrder : ordGrpArr.slice(),
-			pickerOrder : JSON.parse( JSON.stringify( ordPkrObj ) )
+			pickerOrder : JSON.parse( JSON.stringify( ordPicObj ) )
 		} ) ),
 
 		// What: Toggle Controls-Collapsed Action. Why: Persisted collapse state for the Data tab's own disclosures, uniform polarity everywhere (true means COLLAPSED, false means expanded); the main sections default collapsed via defColBoo so the first click expands rather than re-collapsing. How: This flips ui.controlsCollapsed[secIdeStr], falling back to defColBoo when it has no value yet.
