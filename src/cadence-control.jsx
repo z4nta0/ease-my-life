@@ -200,6 +200,7 @@ function CadConCom ( { value, onChange } ) {
 
 
 					</span>
+
 					<span
 						key={ norCadObj.cadence }
 						className='rem-flabel-sub set-sub-fade'
@@ -248,14 +249,18 @@ function CadConCom ( { value, onChange } ) {
 
 
 								</span>
+
 								<span className='rem-flabel-sub'>surfaces <strong>every { DAY_FUL_ARR[ norCadObj.anchorDow ] }</strong></span>{ /* What: Weekly Sub Span Element. Why: This is the plain summary of which weekday the picker surfaces on. How: This names norCadObj's own anchorDow, looked up in DAY_FUL_ARR. */ }
 
 
 							</div>
+
+
 							<div className='rem-inline'>{ /* What: Weekly Inline Div Element. Why: The anchor-weekday select reads best inline with its own leading word. How: This wraps the "Every" span and the weekday select below. */ }
 
 
 								<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
+
 								<select
 									className='np-input rem-sel'
 									value={ norCadObj.anchorDow }
@@ -307,6 +312,7 @@ function CadConCom ( { value, onChange } ) {
 
 
 								</span>
+
 								<span
 									key={ norCadObj.dateMode }
 									className='rem-flabel-sub set-sub-fade'
@@ -314,19 +320,23 @@ function CadConCom ( { value, onChange } ) {
 
 
 							</div>
+
+
 							<Segmented
 								options={ DAT_MOD_ARR }
 								value={ norCadObj.dateMode }
 								ariaLabel='Day selection'
 								onChange={ ( modKeyStr ) => setPatFun( { dateMode : modKeyStr } ) }
 							/>{ /* What: Segmented. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
-							{ norCadObj.dateMode === 'nthWeekday' ? (
+
+							{ norCadObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The monthly detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday selects while norCadObj.dateMode is 'nthWeekday', the plain day-of-month select otherwise.
 
 
 								<div className='rem-inline'>{ /* What: Monthly Nth-Weekday Inline Div Element. Why: The ordinal and weekday selects read best inline with their own leading word. How: This wraps the "On the" span and the 2 selects below. */ }
 
 
 									<span>On the</span>{ /* What: On The Span Element. Why: This is the inline control's own leading words. How: This renders the literal text "On the". */ }
+
 									<select
 										className='np-input rem-sel'
 										value={ norCadObj.nthOrdinal }
@@ -348,6 +358,7 @@ function CadConCom ( { value, onChange } ) {
 
 
 									</select>
+
 									<select
 										className='np-input rem-sel'
 										value={ norCadObj.nthWeekday }
@@ -374,13 +385,14 @@ function CadConCom ( { value, onChange } ) {
 								</div>
 
 
-							) : (
+							) : ( // What: Plain Date Mode Branch. Why: The default mode just needs the plain day-of-month select instead. How: This renders the else branch, taken while norCadObj.dateMode isn't 'nthWeekday'.
 
 
 								<div className='rem-inline'>{ /* What: Monthly Date Inline Div Element. Why: The anchor-day-of-month select reads best inline with its own leading word. How: This wraps the "On the" span and the day-of-month select below. */ }
 
 
 									<span>On the</span>{ /* What: On The Span Element. Why: This is the inline control's own leading words. How: This renders the literal text "On the". */ }
+
 									<select
 										className='np-input rem-sel'
 										value={ norCadObj.anchorDom }
@@ -439,6 +451,7 @@ function CadConCom ( { value, onChange } ) {
 
 
 								</span>
+
 								<span
 									key={ norCadObj.dateMode }
 									className='rem-flabel-sub set-sub-fade'
@@ -446,13 +459,16 @@ function CadConCom ( { value, onChange } ) {
 
 
 							</div>
+
+
 							<Segmented
 								options={ DAT_MOD_ARR }
 								value={ norCadObj.dateMode }
 								ariaLabel='Day selection'
 								onChange={ ( modKeyStr ) => setPatFun( { dateMode : modKeyStr } ) }
 							/>{ /* What: Segmented. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
-							{ norCadObj.dateMode === 'nthWeekday' ? (
+
+							{ norCadObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The yearly detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday-plus-month selects while norCadObj.dateMode is 'nthWeekday', the plain month-plus-day selects otherwise.
 
 
 								<div className='rem-inline'>{ /* What: Yearly Nth-Weekday Inline Div Element. Why: The ordinal, weekday, and month selects read best inline together. How: This wraps all 3 selects below. */ }
@@ -479,6 +495,7 @@ function CadConCom ( { value, onChange } ) {
 
 
 									</select>
+
 									<select
 										className='np-input rem-sel'
 										value={ norCadObj.nthWeekday }
@@ -500,7 +517,9 @@ function CadConCom ( { value, onChange } ) {
 
 
 									</select>
+
 									<span>of</span>{ /* What: Of Span Element. Why: This is the inline control's own connecting word between the weekday and month selects. How: This renders the literal text "of". */ }
+
 									<select
 										className='np-input rem-sel'
 										value={ norCadObj.anchorMonth }
@@ -527,13 +546,14 @@ function CadConCom ( { value, onChange } ) {
 								</div>
 
 
-							) : (
+							) : ( // What: Plain Date Mode Branch. Why: The default mode just needs the plain month-and-day selects instead. How: This renders the else branch, taken while norCadObj.dateMode isn't 'nthWeekday'.
 
 
 								<div className='rem-inline'>{ /* What: Yearly Date Inline Div Element. Why: The anchor-month and anchor-day selects read best inline with their own leading word. How: This wraps the "Every" span and the 2 selects below. */ }
 
 
 									<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
+
 									<select
 										className='np-input rem-sel'
 										value={ norCadObj.anchorMonth }
@@ -555,6 +575,7 @@ function CadConCom ( { value, onChange } ) {
 
 
 									</select>
+
 									<select
 										className='np-input rem-sel'
 										value={ Math.min( norCadObj.anchorDay, dayCouFun( norCadObj.anchorMonth ) ) }

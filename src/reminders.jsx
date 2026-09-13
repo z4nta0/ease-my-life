@@ -729,6 +729,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 				<span className='rem-flabel'>Start date</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Start date". */ }
+
 				<span className='rem-flabel-sub set-sub-fade' key={ oncFutBoo ? 'future' : 'now' }>{ /* What: Flabel Sub Span Element. Why: This is the live summary of when the reminder will actually start showing. How: This re-keys (and so re-fades) whenever oncFutBoo flips, rendering one of the 2 branches below. */ }
 					{ oncFutBoo
 
@@ -831,6 +832,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 							<span className='rem-flabel'>On these days</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "On these days". */ }
+
 							<span className='rem-flabel-sub set-sub-fade' key={ tasRecObj.interval || 1 }>{ /* What: Flabel Sub Span Element. Why: This is the live summary of which days and how often the reminder shows. How: This re-keys (and so re-fades) whenever interval changes, rendering one of the 2 branches below. */ }
 								{ ( tasRecObj.daysOfWeek && tasRecObj.daysOfWeek.length )
 
@@ -850,6 +852,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 							<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
+
 							<input
 								className='np-input rem-num'
 								type='number'
@@ -860,6 +863,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 								aria-describedby={ schPlaNot }
 								onChange={ ( chaEveObj ) => updPatFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) }
 							/>{ /* What: Interval Number Input Element. Why: This is the actual every-N-weeks control. How: This clamps its own committed value to a minimum of 1 whole week. */ }
+
 							<span>{ ( tasRecObj.interval || 1 ) === 1 ? 'week on' : 'weeks on' }</span>{ /* What: Weeks Label Span Element. Why: This is the inline control's own trailing word, singular or plural to match the current interval. How: This picks between 'week on' and 'weeks on' based on tasRecObj's own interval. */ }
 
 
@@ -870,6 +874,8 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 							describedBy={ schPlaNot }
 							onChange={ ( weeSelArr ) => updPatFun( { daysOfWeek : weeSelArr } ) }
 						/>{ /* What: Weekday Chips. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This commits the newly-selected day array straight through updPatFun. */ }
+
+
 						<Collapse open={ ( tasRecObj.interval || 1 ) > 1 }>{ /* What: Anchor Collapse Element. Why: The counted-from hint is only meaningful once interval is above 1 week. How: This animates ancHinEle open only while that condition holds. */ }
 
 
@@ -877,6 +883,8 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 						</Collapse>
+
+
 						{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kndValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Weekly Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kndValStr 'schedule', only while staAppObj was actually passed. */ }
 
 
@@ -895,6 +903,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 							<span className='rem-flabel'>Frequency</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Frequency". */ }
+
 							<span className='rem-flabel-sub'>shows on the Today page <strong>every { tasRecObj.interval || 1 } days</strong></span>{ /* What: Flabel Sub Span Element. Why: This is the plain cadence summary; interval has no alternate phrasing to fade between. How: This names tasRecObj's own interval directly. */ }
 
 
@@ -904,6 +913,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 							<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
+
 							<input
 								className='np-input rem-num'
 								type='number'
@@ -914,6 +924,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 								aria-describedby={ schPlaNot }
 								onChange={ ( chaEveObj ) => updPatFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) }
 							/>{ /* What: Interval Number Input Element. Why: This is the actual every-N-days control. How: This clamps its own committed value to a minimum of 1 whole day. */ }
+
 							<span>days</span>{ /* What: Days Label Span Element. Why: This is the inline control's own trailing word. How: This renders the literal, always-plural text "days". */ }
 
 
@@ -938,6 +949,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 							<span className='rem-flabel'>Frequency</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Frequency". */ }
+
 							<span className='rem-flabel-sub set-sub-fade' key={ tasRecObj.interval || 1 }>shows on the Today page <strong>every { ( tasRecObj.interval || 1 ) > 1 ? `${ tasRecObj.interval } months` : 'month' }</strong></span>{ /* What: Flabel Sub Span Element. Why: This is the live cadence summary, re-fading whenever interval changes. How: This picks between a plain "month" and an "every N months" phrase based on tasRecObj's own interval. */ }
 
 
@@ -947,6 +959,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 							<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
+
 							<input
 								className='np-input rem-num'
 								type='number'
@@ -957,10 +970,13 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 								aria-describedby={ schPlaNot }
 								onChange={ ( chaEveObj ) => updPatFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) }
 							/>{ /* What: Interval Number Input Element. Why: This is the actual every-N-months control. How: This clamps its own committed value to a minimum of 1 whole month. */ }
+
 							<span>{ ( tasRecObj.interval || 1 ) === 1 ? 'month' : 'months' }</span>{ /* What: Months Label Span Element. Why: This is the inline control's own trailing word, singular or plural to match the current interval. How: This picks between 'month' and 'months' based on tasRecObj's own interval. */ }
 
 
 						</div>
+
+
 						<Collapse open={ ( tasRecObj.interval || 1 ) > 1 }>{ /* What: Anchor Collapse Element. Why: The counted-from hint is only meaningful once interval is above 1 month. How: This animates ancHinEle open only while that condition holds. */ }
 
 
@@ -984,6 +1000,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 							<span className='rem-flabel'>Day of the month</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Day of the month". */ }
+
 							<span className='rem-flabel-sub set-sub-fade' key={ tasRecObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' }>{ /* What: Flabel Sub Span Element. Why: This is the live summary of which day targeting mode is active, re-fading on mode switch. How: This renders one of the 2 branches below depending on tasRecObj's own dateMode. */ }
 								shows on the Today page <strong>{ tasRecObj.dateMode === 'nthWeekday'
 
@@ -1006,13 +1023,16 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 							describedBy={ schPlaNot }
 							onChange={ ( modKeyStr ) => updPatFun( { dateMode : modKeyStr } ) }
 						/>{ /* What: Segmented. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRecObj's new dateMode. */ }
-						{ tasRecObj.dateMode === 'nthWeekday' ? (
+
+
+						{ tasRecObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The monthly detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday selects while tasRecObj.dateMode is 'nthWeekday', the plain day-of-month select otherwise.
 
 
 							<div className='rem-inline'>{ /* What: Nth-Weekday Inline Div Element. Why: This mode needs 2 selects (ordinal, weekday) read together as one sentence. How: This wraps the "On the" label and both selects below. */ }
 
 
 								<span>On the</span>{ /* What: On-The Span Element. Why: This is the inline row's own leading words. How: This renders the literal text "On the". */ }
+
 								<select
 									className='np-input rem-sel'
 									value={ tasRecObj.nthOrdinal || 1 }
@@ -1026,6 +1046,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 								</select>
+
 								<select
 									className='np-input rem-sel'
 									value={ tasRecObj.nthWeekday ?? 0 }
@@ -1044,13 +1065,14 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 							</div>
 
 
-						) : (
+						) : ( // What: Plain Date Mode Branch. Why: The default mode just needs the plain day-of-month select instead. How: This renders the else branch, taken while tasRecObj.dateMode isn't 'nthWeekday'.
 
 
 							<div className='rem-inline'>{ /* What: Plain Date Inline Div Element. Why: The default mode only needs the single day-of-month select read alongside its own label. How: This wraps the "On the" label and the day select below. */ }
 
 
 								<span>On the</span>{ /* What: On-The Span Element. Why: This is the inline row's own leading words. How: This renders the literal text "On the". */ }
+
 								<select
 									className='np-input rem-sel'
 									value={ tasRecObj.dayOfMonth || 1 }
@@ -1085,6 +1107,8 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 						}
+
+
 						{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kndValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Monthly Day Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kndValStr 'schedule', only while staAppObj was actually passed. */ }
 
 
@@ -1103,6 +1127,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 							<span className='rem-flabel'>Frequency</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Frequency". */ }
+
 							<span className='rem-flabel-sub set-sub-fade' key={ tasRecObj.interval || 1 }>shows on the Today page <strong>every { ( tasRecObj.interval || 1 ) > 1 ? `${ tasRecObj.interval } years` : 'year' }</strong></span>{ /* What: Flabel Sub Span Element. Why: This is the live cadence summary, re-fading whenever interval changes. How: This picks between a plain "year" and an "every N years" phrase based on tasRecObj's own interval. */ }
 
 
@@ -1112,6 +1137,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 							<span>Every</span>{ /* What: Every Span Element. Why: This is the inline control's own leading word. How: This renders the literal text "Every". */ }
+
 							<input
 								className='np-input rem-num'
 								type='number'
@@ -1122,10 +1148,13 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 								aria-describedby={ schPlaNot }
 								onChange={ ( chaEveObj ) => updPatFun( { interval : Math.max( 1, parseInt( chaEveObj.target.value ) || 1 ) } ) }
 							/>{ /* What: Interval Number Input Element. Why: This is the actual every-N-years control. How: This clamps its own committed value to a minimum of 1 whole year. */ }
+
 							<span>{ ( tasRecObj.interval || 1 ) === 1 ? 'year' : 'years' }</span>{ /* What: Years Label Span Element. Why: This is the inline control's own trailing word, singular or plural to match the current interval. How: This picks between 'year' and 'years' based on tasRecObj's own interval. */ }
 
 
 						</div>
+
+
 						<Collapse open={ ( tasRecObj.interval || 1 ) > 1 }>{ /* What: Anchor Collapse Element. Why: The counted-from hint is only meaningful once interval is above 1 year. How: This animates ancHinEle open only while that condition holds. */ }
 
 
@@ -1149,6 +1178,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 							<span className='rem-flabel'>Date each year</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Date each year". */ }
+
 							<span className='rem-flabel-sub set-sub-fade' key={ tasRecObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' }>{ /* What: Flabel Sub Span Element. Why: This is the live summary of which day targeting mode is active, re-fading on mode switch. How: This renders one of the 2 branches below depending on tasRecObj's own dateMode. */ }
 								shows on the Today page <strong>{ tasRecObj.dateMode === 'nthWeekday'
 
@@ -1171,7 +1201,9 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 							describedBy={ schPlaNot }
 							onChange={ ( modKeyStr ) => updPatFun( { dateMode : modKeyStr } ) }
 						/>{ /* What: Segmented. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRecObj's new dateMode. */ }
-						{ tasRecObj.dateMode === 'nthWeekday' ? (
+
+
+						{ tasRecObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The annual detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday-plus-month selects while tasRecObj.dateMode is 'nthWeekday', the plain month-plus-day selects otherwise.
 
 
 							<div className='rem-inline'>{ /* What: Nth-Weekday Inline Div Element. Why: This mode needs 3 selects (ordinal, weekday, month) read together as one sentence. How: This wraps both selects, the "of" word, and the month select below. */ }
@@ -1190,6 +1222,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 								</select>
+
 								<select
 									className='np-input rem-sel'
 									value={ tasRecObj.nthWeekday ?? 0 }
@@ -1203,7 +1236,9 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 								</select>
+
 								<span>of</span>{ /* What: Of Span Element. Why: This joins the weekday selects to the month select below as one sentence. How: This renders the literal text "of". */ }
+
 								<select
 									className='np-input rem-sel'
 									value={ tasRecObj.month || 1 }
@@ -1241,6 +1276,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 								</select>
+
 								<select
 									className='np-input rem-sel'
 									value={ tasRecObj.day || 1 }
@@ -1304,10 +1340,13 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 					<span className='rem-flabel'>Repeat</span>{ /* What: Flabel Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Repeat". */ }
-					<span className='rem-flabel-sub set-sub-fade' key={ tasRecObj.repeat }>{ ( REP_OPT_ARR.find( ( optConObj ) => optConObj.key === tasRecObj.repeat ) || {} ).subEle }</span>{ /* What: Flabel Sub Span Element. Why: This is the live sub-explanation matching the currently-selected repeat kind. How: This looks up REP_OPT_ARR by tasRecObj's own repeat and renders that entry's own subEle. */ }
+
+					<span className='rem-flabel-sub set-sub-fade' key={ tasRecObj.repeat }>{ ( REP_OPT_ARR.find( ( optConObj ) => optConObj.keyStr === tasRecObj.repeat ) || {} ).subEle }</span>{ /* What: Flabel Sub Span Element. Why: This is the live sub-explanation matching the currently-selected repeat kind. How: This looks up REP_OPT_ARR by tasRecObj's own repeat and renders that entry's own subEle. */ }
 
 
 				</div>
+
+
 				<Segmented
 					options={ REP_OPT_ARR }
 					value={ tasRecObj.repeat }
@@ -1315,6 +1354,8 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 					describedBy={ setPlaNot }
 					onChange={ ( modKeyStr ) => updPatFun( { repeat : modKeyStr, interval : modKeyStr === 'interval' ? 2 : 1 } ) } // What: Repeat Change Handler. Why: interval is shared across interval/weekly/monthly/annual (each its own "every N ___"), so switching kind resets it to that kind's own sensible default instead of carrying over a number that meant something else a moment ago. How: This commits the new repeat kind plus a matching default interval.
 				/>{ /* What: Segmented. Why: This is the actual Repeat kind picker. How: This renders one button per REP_OPT_ARR entry, committing both repeat and a reset interval on change. */ }
+
+
 				{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kndValStr='settings' notIdeStr={ setPlaNot } /> }{ /* What: Repeat Visibility Check. Why: A settings-based mismatch (weekends/holidays/skipUntil) belongs next to this row rather than the schedule subsection below. How: This renders VisNotCom, gated on kndValStr 'settings', only while staAppObj was actually passed. */ }
 
 
@@ -1329,6 +1370,8 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 			}
+
+
 			{ aniExtBoo
 
 
@@ -1438,6 +1481,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 
 
 				<span className='rem-del-msg'>Delete this reminder?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
+
 				<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both Btn elements below. */ }
 
 
@@ -1446,6 +1490,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 						size='sm'
 						onClick={ () => setConOpeBoo( false ) }
 					>Cancel</Btn>{ /* What: Btn. Why: This backs out of the delete confirm without changing anything. How: This closes conOpeBoo, returning to the plain footer. */ }
+
 					<Btn
 						kind='danger'
 						size='sm'
@@ -1491,6 +1536,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 					size='sm'
 					onClick={ canNowFun }
 				>Cancel</Btn>{ /* What: Btn. Why: This discards the live edits and reverts to the original snapshot. How: This calls canNowFun. */ }
+
 				<Btn
 					kind='ghost'
 					size='sm'
@@ -1563,6 +1609,8 @@ function InlEdiCom ( { tasRecObj, onCloEdiFun, onDelTasFun, onComTasFun, staAppO
 				staAppObj={ staAppObj }
 				aniExtBoo
 			/>{ /* What: Schedule Editor Component. Why: This is the actual live schedule editor, operating on the local draft. How: This is passed draActObj instead of the real store actions, so every edit stays local until Save. */ }
+
+
 			<EdiFooCom
 				tasRecObj={ draTasObj }
 				onDelTasFun={ onDelTasFun }
@@ -1691,6 +1739,7 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 						<span className='check-ripple' aria-hidden='true' />{ /* What: Check Ripple Span Element. Why: The checkbox needs its own decorative press-ripple, same as every other checkbox in the app. How: This renders an empty, purely decorative span. */ }
+
 						<Icon
 							name='check'
 							size={ 14 }
@@ -1728,6 +1777,8 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 						<span className='meta-picker'>{ texDisObj.kicStr }</span>{ /* What: Meta Picker Span Element. Why: This is the card's own kicker text, reusing the same class a real entry's picker name uses. How: This renders texDisObj's own kicStr. */ }
+
+
 						{ texDisObj.timStr && ( // What: Time Visibility Check. Why: Not every sample card has a manually-timed estimate. How: This renders the dot/time pair only while texDisObj's own timStr is set.
 
 
@@ -1735,6 +1786,7 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 								<span className='meta-dot'>·</span>{ /* What: Meta Dot Span Element. Why: This visually separates the kicker from the time estimate. How: This renders a literal middle-dot character. */ }
+
 								<span className='meta-time'>{ texDisObj.timStr }</span>{ /* What: Meta Time Span Element. Why: This shows roughly how long the mini-tour takes. How: This renders texDisObj's own timStr. */ }
 
 
@@ -1745,6 +1797,8 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 					</div>
+
+
 					<div className='today-card-name'>{ texDisObj.namStr }</div>{ /* What: Card Name Div Element. Why: This is the card's own primary, most prominent text. How: This renders texDisObj's own namStr. */ }
 
 
@@ -1824,7 +1878,9 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 				<span className='check-ripple' aria-hidden='true' />{ /* What: Check Ripple Span Element. Why: The checkbox needs its own decorative press-ripple. How: This renders an empty, purely decorative span. */ }
-				{ isaDonBoo && (
+
+
+				{ isaDonBoo && ( // What: Done Icon Check. Why: A done reminder's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the Icon only while isaDonBoo is true.
 
 
 					<Icon
@@ -1837,6 +1893,8 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 			</button>
+
+
 			<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The schedule-summary meta row and the name (or its inline editor) need to sit together. How: This wraps the meta row and the name/input below. */ }
 
 
@@ -1847,11 +1905,14 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 						name={ tasRecObj.repeat === 'once' ? 'pin' : 'calendar' }
 						size={ 12 }
 					/>{ /* What: Icon. Why: This distinguishes a one-time reminder from a recurring one at a glance. How: This renders 'pin' for a 'once' repeat, otherwise 'calendar'. */ }
+
 					<span className='meta-picker'>{ TASKS.summary( tasRecObj ) }</span>{ /* What: Meta Picker Span Element. Why: This is the row's own schedule summary, reusing the same class a real entry's picker name uses. How: This calls TASKS.summary against tasRecObj. */ }
 
 
 				</div>
-				{ isaOpeBoo ? (
+
+
+				{ isaOpeBoo ? ( // What: Name Editing Check. Why: The name area swaps between a live input and plain text depending on whether the row is being renamed. How: This renders the input while isaOpeBoo is true, the plain name div otherwise.
 
 
 					<input
@@ -1880,6 +1941,8 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 			</div>
+
+
 			<div className='today-card-actions'>{ /* What: Card Actions Div Element. Why: Skip and Edit are the row's own click-isolated actions. How: This wraps both buttons below. */ }
 
 
@@ -1898,6 +1961,7 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 				</button>
+
 				<button
 					className={ `icon-btn ${ isaOpeBoo ? 'is-on' : '' }` }
 					title='Edit'
@@ -2263,10 +2327,12 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 
 					) }
 					<h2 className='group-name'>Reminders</h2>{ /* What: Group Name Heading Element. Why: This is the section's own fixed title, matching every other Today group's own heading. How: This renders the literal text "Reminders". */ }
+
 					<span className='group-count'>{ /* What: Group Count Span Element. Why: The done and total counts read together as one "N of M" unit. How: This wraps the done span and the "of M" span below. */ }
 
 
 						<span className='group-done'>{ remDonNum }</span>{ /* What: Group Done Span Element. Why: This is the header's own live completed count. How: This renders remDonNum directly. */ }
+
 						<span className='group-of'>of { remTotNum }</span>{ /* What: Group Of Span Element. Why: This is the header's own live total count. How: This renders remTotNum directly. */ }
 
 
@@ -2275,6 +2341,8 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 
 
 				</div>
+
+
 				<div className='rem-h-r'>{ /* What: Header Right Div Element. Why: The progress dash-bar and the add button read together on the header's own right side. How: This wraps both below. */ }
 
 
@@ -2397,6 +2465,8 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 
 
 						</div>
+
+
 						<div className='rem-inline-editor'>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, same layout as InlEdiCom's own root. How: This renders SchEdiCom against draTasObj, then its own Cancel/Add footer. */ }
 
 
@@ -2406,6 +2476,8 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 								staAppObj={ state }
 								aniExtBoo
 							/>{ /* What: Schedule Editor Component. Why: This is the actual live schedule editor, operating on the in-progress draft before it's ever created. How: This is passed draActObj instead of the real store actions, so every field stays local until Add. */ }
+
+
 							<div className='rem-inline-foot'>{ /* What: Inline Foot Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both Btn elements below. */ }
 
 
@@ -2414,6 +2486,7 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 									size='sm'
 									onClick={ canAddFun }
 								>Cancel</Btn>{ /* What: Btn. Why: This discards the in-progress draft entirely. How: This calls canAddFun. */ }
+
 								<Btn
 									kind='primary'
 									size='sm'
@@ -2503,6 +2576,8 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 
 							} }
 						/>{ /* What: Reminder Card Component. Why: This is one real, due reminder's own row. How: This wires every one of its callback props straight into this section's own local state and actions. */ }
+
+
 						<Collapse open={ opeTasStr === curTasObj.id }>{ /* What: Edit Collapse Element. Why: The inline schedule editor only exists while this exact card's own edit affordance is open. How: This animates InlEdiCom open only while opeTasStr matches curTasObj's own id. */ }
 
 
@@ -2527,6 +2602,7 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 
 
 						</Collapse>
+
 						<Collapse open={ skiIdeStr === curTasObj.id }>{ /* What: Skip Collapse Element. Why: The skip confirm only exists while this exact card's own skip affordance is open. How: This animates the confirm prompt open only while skiIdeStr matches curTasObj's own id. */ }
 
 
@@ -2548,13 +2624,14 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 									<div className='rem-skip-confirm'>{ /* What: Skip Confirm Div Element. Why: This is the skip prompt's own root, replacing nothing (it renders inline below the card, inside its own Collapse). How: This renders one of the 2 branches below depending on whether skiLabStr resolved to a real day. */ }
 
 
-										{ skiLabStr ? (
+										{ skiLabStr ? ( // What: Skip Label Check. Why: The confirm prompt's own shape depends on whether a real eligible day was actually found. How: This renders the Skip-until confirm while skiLabStr holds a value, an explanatory no-day message otherwise.
 
 
 											<>
 
 
 												<div className='rem-skip-msg'>Skip until <strong>{ skiLabStr }</strong>?</div>{ /* What: Skip Message Div Element. Why: This names the exact day curTasObj would be deferred to. How: This renders skiLabStr inside the confirm question. */ }
+
 												<div className='rem-skip-actions'>{ /* What: Skip Actions Div Element. Why: Cancel and Confirm read as a pair. How: This wraps both Btn elements below. */ }
 
 
@@ -2563,6 +2640,7 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 														size='sm'
 														onClick={ () => setSkiIdeStr( null ) }
 													>Cancel</Btn>{ /* What: Btn. Why: This backs out of the skip confirm without changing anything. How: This closes skiIdeStr, returning to the plain row. */ }
+
 													<Btn
 														kind='primary'
 														size='sm'
@@ -2587,13 +2665,14 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 											</>
 
 
-										) : (
+										) : ( // What: No Eligible Day Branch. Why: With nothing to skip to, the prompt just needs a plain explanatory message and Close button instead. How: This renders the else branch, taken while skiLabStr is null.
 
 
 											<>
 
 
 												<div className='rem-skip-msg'>No upcoming eligible day to skip to.</div>{ /* What: Skip Message Div Element. Why: curTasObj has no eligible day at all to defer to, e.g. every allowed weekday is excluded. How: This renders the plain explanatory text instead of a real confirm question. */ }
+
 												<div className='rem-skip-actions'>{ /* What: Skip Actions Div Element. Why: Even with nothing to confirm, the prompt still needs a way to close. How: This wraps the single Close Btn below. */ }
 
 
@@ -2822,11 +2901,15 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
 
 
 				<span></span>{ /* What: Matrix Head Spacer Span Element. Why: This aligns the head row's own 2 column labels under the data rows' own switch cells, leaving the name column's own header cell blank. How: This renders an empty span. */ }
+
 				<span className='rd-mx-col'>One-time</span>{ /* What: Matrix Col Span Element. Why: This labels the first switch column. How: This renders the literal text "One-time". */ }
+
 				<span className='rd-mx-col'>Recurring</span>{ /* What: Matrix Col Span Element. Why: This labels the second switch column. How: This renders the literal text "Recurring". */ }
 
 
 			</div>
+
+
 			{ REM_MAT_ARR.map( ( optDefObj ) => ( // What: Matrix Row List Render. Why: One row is needed per participation setting. How: This maps REM_MAT_ARR to one row div per entry, keyed by its own key.
 
 
@@ -2897,6 +2980,7 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
 						size='sm'
 						onClick={ canMatFun }
 					>Cancel</Btn>{ /* What: Btn. Why: This reverts every toggle changed since this component mounted. How: This calls canMatFun. */ }
+
 					<Btn
 						kind='ghost'
 						size='sm'
@@ -3145,15 +3229,20 @@ function ReminderManager ( { state, actions, hidden } ) {
 
 
 					</span>
+
+
 					<span className='cat-h-main'>{ /* What: Category Header Main Span Element. Why: The name and count read together as one unit, distinct from the chevron beside them. How: This wraps the heading and the count span below. */ }
 
 
 						<h2 className='cat-name'>Reminders</h2>{ /* What: Category Name Heading Element. Why: This is the category's own fixed title. How: This renders the literal text "Reminders". */ }
+
 						<span className='cat-count'>{ /* What: Category Count Span Element. Why: Reminders have no active/inactive concept yet (unlike pickers' eligible-of-total and Conditionals' active-of-total), so both numbers are the same for now, kept in this "N of N" shape for visual consistency and in case that changes later. How: This wraps 2 identical count spans and the literal word "of" between them. */ }
 
 
 							<span className='cat-count-n'>{ visTasArr.length }</span>
+
 							<span className='cat-count-of'>of</span>
+
 							<span className='cat-count-n'>{ visTasArr.length }</span>
 
 
@@ -3167,6 +3256,8 @@ function ReminderManager ( { state, actions, hidden } ) {
 
 
 			</header>
+
+
 			<Collapse open={ secOpeBoo }>{ /* What: Main Collapse Element. Why: The entire body below only exists while the category itself is expanded. How: This animates cat-body open/closed based on secOpeBoo. */ }
 
 
@@ -3194,14 +3285,19 @@ function ReminderManager ( { state, actions, hidden } ) {
 
 
 							</span>
+
 							<span className='kicker'>Controls</span>{ /* What: Kicker Span Element. Why: This is the disclosure's own plain label. How: This renders the literal text "Controls". */ }
 
 
 						</span>
+
+
 						{ conColBoo && <span className='rd-ctl-sum'>{ REM_MAT_ARR.length } settings</span> }{ /* What: Controls Summary Span Element. Why: A collapsed disclosure still needs a hint of how much content it's hiding. How: This renders REM_MAT_ARR's own length only while conColBoo is true. */ }
 
 
 					</button>
+
+
 					<Collapse open={ !conColBoo }>{ /* What: Controls Collapse Element. Why: OptMatCom's own matrix only exists while the Controls disclosure is open. How: This animates OptMatCom open/closed based on conColBoo. */ }
 
 
@@ -3235,21 +3331,26 @@ function ReminderManager ( { state, actions, hidden } ) {
 
 
 							</span>
+
 							<span className='kicker'>Items</span>{ /* What: Kicker Span Element. Why: This is the disclosure's own plain label. How: This renders the literal text "Items". */ }
 
 
 						</span>
+
+
 						{ iteColBoo && <span className='rd-ctl-sum'>{ visTasArr.length } items</span> }{ /* What: Items Summary Span Element. Why: A collapsed disclosure still needs a hint of how many reminders it's hiding. How: This renders visTasArr's own length only while iteColBoo is true. */ }
 
 
 					</button>
+
+
 					<Collapse open={ !iteColBoo }>{ /* What: Items Collapse Element. Why: The whole Items list (full-bleed rows: type icon + name + schedule, expanding into the exact Today editor) only exists while this disclosure is open. How: This animates the fragment below open/closed based on iteColBoo. */ }
 
 
 						<React.Fragment>{ /* What: Items Fragment Element. Why: The add button and the list/empty-state below need to sit together with no extra dom wrapper of their own. How: This groups both below as one returned value. */ }
 
 
-							{ tutProBoo ? (
+							{ tutProBoo ? ( // What: Tutorials In Progress Check. Why: This second add-reminder entry point must also stay disabled with an explanation while the guided checklist is running. How: This renders the disabled InfoTip while tutProBoo is true, the real button otherwise.
 
 
 								<InfoTip
@@ -3346,6 +3447,8 @@ function ReminderManager ( { state, actions, hidden } ) {
 
 
 														</span>
+
+
 														<span className='rd-main'>{ /* What: Row Main Span Element. Why: The live name input needs its own wrapper matching the closed row's own layout. How: This wraps the single input below. */ }
 
 
@@ -3364,6 +3467,8 @@ function ReminderManager ( { state, actions, hidden } ) {
 
 
 														</span>
+
+
 														<button
 															className='rd-chev chev is-open'
 															type='button'
@@ -3405,14 +3510,19 @@ function ReminderManager ( { state, actions, hidden } ) {
 
 
 														</span>
+
+
 														<span className='rd-main'>{ /* What: Row Main Span Element. Why: The name and schedule summary read together as one unit, matching the editing state's own layout. How: This wraps both spans below. */ }
 
 
 															<span className='rd-name'>{ curTasObj.name }</span>{ /* What: Row Name Span Element. Why: This is the row's own primary text. How: This renders curTasObj's own name. */ }
+
 															<span className='rd-sched'>{ TASKS.summary( curTasObj ) }</span>{ /* What: Row Schedule Span Element. Why: This is the row's own secondary, schedule-summary text. How: This calls TASKS.summary against curTasObj. */ }
 
 
 														</span>
+
+
 														<span className='rd-chev chev' aria-hidden='true'>{ /* What: Row Chevron Span Element. Why: The plain state's own chevron is purely decorative (the whole row is already the real toggle), so it's a span rather than a separate button. How: This wraps the single Icon below, hidden from screen readers. */ }
 
 
@@ -3444,6 +3554,8 @@ function ReminderManager ( { state, actions, hidden } ) {
 																staAppObj={ state }
 																aniExtBoo
 															/>{ /* What: Schedule Editor Component. Why: Unlike Today's own InlEdiCom, the Data tab commits every field change straight to the real store; there's no local draft to revert on Cancel here except via EdiFooCom's own snapshot. How: This is passed the real actions bag directly as actStoObj. */ }
+
+
 															<EdiFooCom
 																ref={ carOpeBoo ? opeEdiRef : undefined }
 																tasRecObj={ curTasObj }

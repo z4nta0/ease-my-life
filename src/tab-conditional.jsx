@@ -200,6 +200,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 						className='np-label'
 						htmlFor={ `${ insIdeStr }-name` }
 					>Conditional name</label>{ /* What: Name Label Element. Why: This is the name field's own visible label, tied to the input below via htmlFor. How: This renders the literal text "Conditional name". */ }
+
 					<input
 						id={ `${ insIdeStr }-name` }
 						className={ `np-input   ${ nameError ? 'is-error' : '' }` }
@@ -220,7 +221,8 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 						} }
 						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 					/>{ /* What: Name Input Element. Why: This is the actual editable conditional-name field. How: This commits every keystroke to draft.name directly, tidies the value on blur, and treats Enter as a blur shortcut. */ }
-					{ nameError && (
+
+					{ nameError && ( // What: Name Error Visibility Check. Why: The error message should only show once a real validation problem exists. How: This renders the error paragraph only while nameError holds a value.
 
 
 						<p className='np-error'>{ nameError }</p> // What: Name Error Paragraph Element. Why: A colliding or otherwise invalid typed name needs a visible reason why. How: This renders the caller-supplied nameError message only while one is present.
@@ -243,10 +245,13 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 						className='np-label'
 						htmlFor={ `${ insIdeStr }-cardtext` }
 					>Replacement card text</label>{ /* What: Cardtext Label Element. Why: This is the card-text field's own visible label. How: This renders the literal text "Replacement card text". */ }
+
 					<p className='np-help'>This is the text that is shown on the card that appears on your todo list when this conditional suppresses its picker.</p>{ /* What: Cardtext Help Paragraph Element. Why: A user configuring this field for the first time needs to know exactly where and when this text appears. How: This renders a fixed explanatory sentence beneath the label. */ }
 
 
 				</div>
+
+
 				<input
 					id={ `${ insIdeStr }-cardtext` }
 					className='np-input'
@@ -267,6 +272,8 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 					<legend className='np-label'>Conditional type</legend>{ /* What: Type Legend Element. Why: A fieldset needs its own legend to label the group for assistive tech. How: This renders the literal text "Conditional type". */ }
+
+
 					<div className={ isaInlBoo ? '' : 'cnd-mode-card style-radio-card' }>{ /* What: Mode Card Div Element. Why: The card variant wraps the radio list in its own bordered card, while the inline variant needs no extra wrapper styling. How: This applies the card classes only when isaInlBoo is false. */ }
 
 
@@ -302,11 +309,16 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 											}) }
 										/>{ /* What: Mode Radio Input Element. Why: This is the actual selectable control for this mode option. How: This checks itself against modSelBoo and, on selection, patches mode plus the value/triggered reset every mode switch needs. */ }
+
 										<span className='rd-mode-dot' aria-hidden='true' />{ /* What: Mode Dot Span Element. Why: This is the small decorative marker showing the option's own on/off state via CSS. How: This renders empty, styled purely through the "is-on" class on its parent label. */ }
+
+
 										<span className='rd-mode-text'>{ /* What: Mode Text Span Element. Why: The option's own name and its expandable hint text need to sit together as one unit. How: This wraps the name span and the Collapse below. */ }
 
 
 											<span className='rd-mode-name'>{ modConObj.label }</span>{ /* What: Mode Name Span Element. Why: This is the option's own visible mode name. How: This renders modConObj's own label. */ }
+
+
 											<Collapse open={ modSelBoo }>{ /* What: Mode Hint Collapse Element. Why: The longer explanation of a mode should only take up space while that mode is actually selected. How: This animates the hint text below open only while modSelBoo is true. */ }
 
 
@@ -351,10 +363,13 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 								<span className='pie-lbl'>Weight</span>{ /* What: Random Label Span Element. Why: This names what the row would otherwise control. How: This renders the literal text "Weight". */ }
+
 								<span className='pie-sub'>{ RAN_NOT_STR }</span>{ /* What: Random Sub Span Element. Why: The user needs to understand why there is no weight control at all for this mode. How: This renders the fixed RAN_NOT_STR explanation. */ }
 
 
 							</div>
+
+
 							<span className='pie-noweight'>No weight</span>{ /* What: Random Noweight Span Element. Why: This fills the control slot the other modes use for an actual adjustable value. How: This renders the fixed literal text "No weight". */ }
 
 
@@ -379,10 +394,13 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 								<span className='pie-lbl'>Odds</span>{ /* What: Odds Label Span Element. Why: This names the row's own control. How: This renders the literal text "Odds". */ }
+
 								<span className='pie-sub'><strong>{ draft.oddsPct ?? 50 }%</strong>{ ` chance to trigger${ isaDynBoo ? ' (before boost)' : '' }` }</span>{ /* What: Odds Sub Span Element. Why: The user needs to see the current odds value plainly, with a dynamic-mode caveat that boost adds on top of it. How: This bolds the resolved oddsPct and appends the caveat only while isaDynBoo is true. */ }
 
 
 							</div>
+
+
 							<div className='weight-stepper'>{ /* What: Odds Stepper Div Element. Why: The odds percentage needs a plain plus/minus control, distinct from the drag-free NumStepper used elsewhere. How: This wraps the lower button, the live value, and the raise button below. */ }
 
 
@@ -391,7 +409,9 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 									aria-label='Lower odds'
 									onClick={ () => patSetFun( { oddsPct : Math.max( 10, ( draft.oddsPct ?? 50 ) - 10 ) } ) }
 								>−</button>{ /* What: Odds Lower Button Element. Why: This is the actual control for decreasing the odds percentage. How: This steps oddsPct down by 10, disabling itself at the 10 floor. */ }
+
 								<span className='weight-val'>{ draft.oddsPct ?? 50 }%</span>{ /* What: Odds Value Span Element. Why: The stepper needs its own plain numeric readout between the two buttons. How: This renders the resolved oddsPct directly. */ }
+
 								<button
 									disabled={ ( draft.oddsPct ?? 50 ) >= 90 }
 									aria-label='Raise odds'
@@ -403,6 +423,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 						</div>
+
 						<Collapse open={ isaDynBoo }>{ /* What: Boost Settings Collapse Element. Why: Only the dynamic mode has an accrued miss-boost to show and reset. How: This animates the Boost row open only while isaDynBoo is true. */ }
 
 
@@ -413,6 +434,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 									<span className='pie-lbl'>Boost</span>{ /* What: Boost Label Span Element. Why: This names the row's own control. How: This renders the literal text "Boost". */ }
+
 									<span
 										key={ ( draft.value || 0 ) === 0 ? 'none' : 'boost' }
 										className='pie-sub set-sub-fade'
@@ -459,6 +481,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 								<span className='pie-lbl-row'><span className='pie-lbl'>{ sooLabStr }</span></span>{ /* What: Soonest Label Span Element. Why: This names the row's own control, Shortest or Soonest depending on direction. How: This renders sooLabStr. */ }
+
 								<span
 									key={ sooDayNum }
 									className='pie-sub set-sub-fade'
@@ -478,6 +501,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 									ariaLabel={ sooLabStr }
 									onSet={ appSooFun }
 								/>{ /* What: Number Stepper. Why: This is the actual increment/decrement control for the lower drift bound. How: This commits every change through appSooFun. */ }
+
 								<span className='np-ease-unit'>{ sooDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Soonest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on sooDayNum. */ }
 
 
@@ -485,6 +509,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 						</div>
+
 						<div className={ `pie-row   ${ isaDowBoo ? 'cnd-ease-down-row' : 'cnd-ease-up-row' }` }>{ /* What: Latest Row Div Element. Why: This is the shared row layout for the upper drift bound, labeled Longest instead for ease-down. How: This wraps the label block and the NumStepper control below. */ }
 
 
@@ -492,6 +517,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 								<span className='pie-lbl-row'><span className='pie-lbl'>{ latLabStr }</span></span>{ /* What: Latest Label Span Element. Why: This names the row's own control, Longest or Latest depending on direction. How: This renders latLabStr. */ }
+
 								<span
 									key={ latDayNum }
 									className='pie-sub set-sub-fade'
@@ -511,6 +537,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 									ariaLabel={ latLabStr }
 									onSet={ appLatFun }
 								/>{ /* What: Number Stepper. Why: This is the actual increment/decrement control for the upper drift bound. How: This commits every change through appLatFun. */ }
+
 								<span className='np-ease-unit'>{ latDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Latest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on latDayNum. */ }
 
 
@@ -528,6 +555,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 									<span className='pie-lbl'>Fill</span>{ /* What: Fill Label Span Element. Why: This names the row's own control. How: This renders the literal text "Fill". */ }
+
 									<span
 										key={ ( draft.value ?? 0 ) >= thrValNum ? 'full' : 'part' }
 										className='pie-sub set-sub-fade'
@@ -535,6 +563,8 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 								</div>
+
+
 								<FillButton
 									label='Fill'
 									disabled={ ( draft.value ?? 0 ) >= thrValNum }
@@ -556,6 +586,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 									<span className='pie-lbl'>Refill</span>{ /* What: Refill Label Span Element. Why: This names the row's own control. How: This renders the literal text "Refill". */ }
+
 									<span
 										key={ ( draft.value ?? 0 ) >= thrValNum ? 'full' : 'part' }
 										className='pie-sub set-sub-fade'
@@ -563,6 +594,8 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 								</div>
+
+
 								<FillButton
 									label='Refill'
 									disabled={ ( draft.value ?? 0 ) >= thrValNum }
@@ -595,6 +628,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 								key={ draft.active !== false ? 'active' : 'inactive' }
 								className='pie-lbl set-sub-fade'
 							>{ draft.active !== false ? 'Active' : 'Inactive' }</span>{ /* What: Active Label Span Element. Why: The row's own title should read Active or Inactive to match the current toggle state. How: This re-keys, and so re-fades, whenever draft.active flips. */ }
+
 							<span
 								key={ draft.active !== false ? ( isaDowBoo ? 'on-down' : 'on' ) : 'off' }
 								className='pie-sub set-sub-fade'
@@ -602,6 +636,8 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 						</div>
+
+
 						<button
 							className={ `switch   ${ draft.active !== false ? 'is-on' : '' }` }
 							type='button'

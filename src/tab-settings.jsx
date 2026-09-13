@@ -730,6 +730,7 @@ function ConSupCom ( { state, actions } ) {
 
 
 								<span className='support-flabel'>App version</span>{ /* What: Support Flabel Span Element. Why: The diagnostic value needs a visible label. How: This renders the fixed text "App version". */ }
+
 								<span className='support-diag-val'>{ appVerStr }</span>{ /* What: Support Diag Val Span Element. Why: The actual diagnostic value needs to render. How: This renders appVerStr. */ }
 
 
@@ -739,6 +740,7 @@ function ConSupCom ( { state, actions } ) {
 
 
 								<span className='support-flabel'>Browser</span>{ /* What: Support Flabel Span Element. Why: The diagnostic value needs a visible label. How: This renders the fixed text "Browser". */ }
+
 								<span className='support-diag-val'>{ braNamStr }</span>{ /* What: Support Diag Val Span Element. Why: The actual diagnostic value needs to render. How: This renders braNamStr. */ }
 
 
@@ -924,8 +926,11 @@ function TheRowCom ( { pKey : theKeyStr, palette : thePalObj, active : actThmBoo
 
 
 			<i style={{ background : thePalObj.surStr }} />{ /* What: Surface Swatch Element. Why: This previews the theme's own background color across the bulk of the row. How: This is a bare, flex-grown <i> colored via thePalObj's own surStr. */ }
+
 			<i style={{ background : thePalObj.accStr, flex : '0 0 34%' }} />{ /* What: Accent Swatch Element. Why: This previews the theme's own accent color as a fixed-width sliver. How: This is a bare <i> colored via thePalObj's own accStr, at a fixed 34% width. */ }
+
 			<i style={{ background : thePalObj.warStr, flex : '0 0 12%' }} />{ /* What: Warn Swatch Element. Why: This previews the theme's own warn color as a fixed-width sliver. How: This is a bare <i> colored via thePalObj's own warStr, at a fixed 12% width. */ }
+
 			<span>{ thePalObj.namStr }</span>{ /* What: Theme Name Span Element. Why: Every row needs its own visible theme name. How: This renders thePalObj's own namStr. */ }
 
 			{ actThmBoo && ( // What: Active Checkmark Check. Why: A checkmark should only exist on whichever single row is currently active. How: This renders the checkmark span only while actThmBoo is true.
@@ -2199,6 +2204,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 					<div className='kicker stat-h-kicker'>Settings</div>{ /* What: Kicker Div Element. Why: Every tab's header names itself with this same small kicker label. How: This renders the fixed text "Settings". */ }
+
 					<HelpButton
 						active={ helModBoo }
 						onClick={ () => setHelModBoo( ( modCurBoo ) => !modCurBoo ) }
@@ -2254,12 +2260,19 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 								<path d='M 528 112 L 16 112' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings below draw the rest of the grid. */ }
+
 								<path d='M 216 528 L 216 16' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings draw the rest of the grid. */ }
+
 								<path d='M 320 528 L 320 16' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings draw the rest of the grid. */ }
+
 								<path d='M 424 528 L 424 16' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings draw the rest of the grid. */ }
+
 								<path d='M 112 528 L 112 16' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings draw the rest of the grid. */ }
+
 								<path d='M 528 216 L 16 216' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings draw the rest of the grid. */ }
+
 								<path d='M 528 320 L 16 320' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment; its siblings draw the rest of the grid. */ }
+
 								<path d='M 528 424 L 16 424' />{ /* What: Grid Line Element. Why: This is one of the purely decorative graph-paper lines behind the logo mark. How: This draws one straight horizontal/vertical segment, completing the grid. */ }
 
 
@@ -2372,6 +2385,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 						<div className='set-section-h'><span className='kicker'>Appearance</span></div>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This renders the fixed text "Appearance" inside the shared kicker span. */ }
+
 						<p className='settings-sub'>Control the appearance of Ease My life, including colors, animations and tab placement.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Appearance. */ }
 
 						<div className='set-subsection set-subsection--systempref'>{ /* What: System Pref Subsection Div Element. Why: The system-preference toggle needs its own labeled subsection, first among Appearance's own controls. How: This wraps the toggle row's own Card. */ }
@@ -2387,6 +2401,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 										<span className='set-data-name'>System preference</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "System preference". */ }
+
 										<span
 											className='set-data-sub set-sub-fade'
 											key={ String( !!appCurObj.autoSystem ) }
@@ -2430,7 +2445,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 							<div className='set-subsection-h'>Completion celebration</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Completion celebration". */ }
+
 							<p className='settings-sub'>Pick which animation will play when all tasks are marked as completed inside of the Today page.</p>{ /* What: Settings Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the celebration picker. */ }
+
+
 							{ motNotFun( 'celebrations' ) /* What: Reduced Motion Note Call. Why: A user who prefers reduced motion needs to know this animation won't play on its own, only on demand here. How: This renders motNotFun's own note, naming "celebrations", or nothing while redMotBoo is false. */ }
 							<Card
 								padded={ false }
@@ -2471,7 +2489,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 							<div className='set-subsection-h'>Picker animation</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Picker animation". */ }
+
 							<p className='settings-sub'>Pick which animation will play when the &ldquo;Pick One&rdquo; button is clicked inside of the Pickers page.</p>{ /* What: Settings Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the picker-animation picker. */ }
+
+
 							{ motNotFun( 'this animation' ) /* What: Reduced Motion Note Call. Why: A user who prefers reduced motion needs to know this animation won't play on its own, only on demand here. How: This renders motNotFun's own note, naming "this animation", or nothing while redMotBoo is false. */ }
 							<Card
 								padded={ false }
@@ -2512,7 +2533,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 							<div className='set-subsection-h'>Layout</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Layout". */ }
+
 							<p className='settings-sub'>Pick where the app&rsquo;s main navigation links should be located.</p>{ /* What: Settings Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the placement control. */ }
+
+
 							<Card>{ /* What: Layout Card. Why: The placement row needs the same bordered container as every other row in this tab. How: This wraps the placement row below. */ }
 
 
@@ -2523,6 +2547,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 										<span className='set-data-name'>Tab bar placement</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Tab bar placement". */ }
+
 										<span
 											className='set-data-sub set-sub-fade set-layout-sub'
 											key={ ( state.appearance && state.appearance.tabPlacement ) || 'bottom' }
@@ -2578,6 +2603,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 						<div className='set-section-h'><span className='kicker'>Daily generator</span></div>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This renders the fixed text "Daily generator" inside the shared kicker span. */ }
+
 						<p className='settings-sub'>The Daily generator can always be run manually from the Today page regardless of this setting. Which pickers are included in the Daily generator can be found with their own settings in the Data page.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for the Daily generator. */ }
 
 						<Card>{ /* What: Daily Generator Card. Why: The auto-run toggle, its run-time row, and the notify-me row all share one bordered container. How: This wraps all 3 rows below. */ }
@@ -2590,6 +2616,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									<span className='set-data-name'>Run automatically</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Run automatically". */ }
+
 									<span
 										className='set-data-sub set-sub-fade'
 										key={ dlyModStr + ( state.daily && state.daily.runTime ) }
@@ -2625,6 +2652,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									<span className='set-data-name'>Run automatically at</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Run automatically at". */ }
+
 									<span
 										className='set-data-sub set-sub-fade'
 										key={ dlyModStr }
@@ -2666,6 +2694,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 										<span className='set-data-name'>Notify me when it runs</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Notify me when it runs". */ }
+
 										<span className='set-data-sub'>{ /* What: Set Data Sub Span Element. Why: This row's own description depends on the real current notification permission. How: This renders one of 3 explanatory sentences depending on notPerStr. */ }
 
 
@@ -2731,6 +2760,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 						<div className='set-section-h'><span className='kicker'>Holidays</span></div>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This renders the fixed text "Holidays" inside the shared kicker span. */ }
+
 						<p className='settings-sub'>Any pickers that are set to &ldquo;Skip on holidays&rdquo; will not be run on the days that are toggled on here. Toggle off any that you don&rsquo;t observe, or even add your own! Dates shown are for { new Date().getFullYear() }.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Holidays, inlining the real current year. */ }
 
 						<Card>{ /* What: Holidays Card. Why: The whole holiday list and its add-form need a shared bordered container. How: This wraps HolEdiCom. */ }
@@ -2755,6 +2785,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 						<div className='set-section-h'><span className='kicker'>Data control</span></div>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This renders the fixed text "Data control" inside the shared kicker span. */ }
+
 						<p className='settings-sub'>All of your data is stored locally, on this device to do with it as you will. Unfortunately, this also means that if you want to use this app on a different device then you will need to export your data here, and then use the import feature on the other device. Exporting your data is also a good way to backup your data, just in case something were to happen either to your device or to the browser and its stored data.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Data control. */ }
 
 						<Card>{ /* What: Data Control Card. Why: The storage-status row, the platform-specific install notes, and the export/import/reset rows all share one bordered container. How: This wraps every row below. */ }
@@ -2767,6 +2798,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									<span className='set-data-name'>Where your data lives</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Where your data lives". */ }
+
 									<span className='set-data-sub'>{ /* What: Set Data Sub Span Element. Why: This row's own description depends on which storage engine is actually in use. How: This renders one of 2 explanatory sentences depending on stoStaObj's own engine field. */ }
 
 
@@ -2778,12 +2810,17 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									</span>
+
+
 									<span className='set-store-facts'>{ /* What: Store Facts Span Element. Why: The protected/size/mirror facts, plus an install confirmation, need their own grouping as a row of small chips. How: This wraps 3 always-shown chips plus an installed chip while isaStaBoo is true. */ }
 
 
 										<span className={ ` set-store-chip   ${ stoStaObj && stoStaObj.persisted ? 'is-ok' : 'is-warn' } ` }>{ stoStaObj && stoStaObj.persisted ? 'Protected from cleanup' : 'Not protected yet' }</span>{ /* What: Persisted Chip Span Element. Why: Whether the browser has promised not to evict this app's own data is worth its own always-visible chip. How: This renders one of 2 labels, styled ok/warn, based on stoStaObj's own persisted field. */ }
+
 										<span className='set-store-chip'>{ forBytFun( stoStaObj && stoStaObj.dataBytes ) } of your data</span>{ /* What: Size Chip Span Element. Why: How much data is actually stored is worth its own always-visible chip. How: This renders forBytFun's own formatted size, reading stoStaObj's own dataBytes field. */ }
+
 										<span className={ ` set-store-chip   ${ stoStaObj && stoStaObj.mirrorOk === false ? 'is-warn' : '' } ` }>Fallback copy: { stoStaObj && stoStaObj.mirrorOk === false ? 'out of date' : forWhnFun( stoStaObj && stoStaObj.mirrorAt ) }</span>{ /* What: Mirror Chip Span Element. Why: How fresh the localStorage fallback mirror is worth its own always-visible chip. How: This renders either a warning or forWhnFun's own formatted timestamp, reading stoStaObj's own mirrorOk/mirrorAt fields. */ }
+
 										{ isaStaBoo && <span className='set-store-chip is-ok'>Installed</span> /* What: Installed Chip Check. Why: An installed/standalone app deserves its own small confirmation chip alongside the others. How: This renders the chip only while isaStaBoo is true. */ }
 
 
@@ -2862,6 +2899,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 										<span className='set-data-name'>Already installed on this device</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Already installed on this device". */ }
+
 										<span className='set-data-sub'>You&rsquo;re viewing Ease My Life in a browser tab. Open the installed app from your home screen or app list instead. It&rsquo;s the same data, and the installed copy is the one protected from browser cleanup.</span>{ /* What: Set Data Sub Span Element. Why: The user needs a clear, actionable explanation of why they are seeing this note. How: This renders the fixed explanatory copy. */ }
 
 
@@ -2883,6 +2921,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 										<span className='set-data-name'>Installing from this page isn&rsquo;t available here</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Installing from this page isn't available here". */ }
+
 										<span className='set-data-sub'>Some browsers offer <strong>Install app</strong> or <strong>Add to Home screen</strong> in their own menu, so it&rsquo;s worth a look. Others, including Firefox on desktop, can&rsquo;t install web apps at all. There you&rsquo;d need a Chromium based browser such as Chrome or Edge. Either way you can keep using Ease My Life right here, just use the <strong>Protect Data</strong> control above to make this browser far less likely to clear it.</span>{ /* What: Set Data Sub Span Element. Why: The user needs a clear explanation of why no install option is showing, plus the next-best alternative. How: This renders the fixed explanatory copy. */ }
 
 
@@ -2904,7 +2943,9 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 										<span className='set-data-name'>Add to your Home Screen</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Add to your Home Screen". */ }
+
 										<span className='set-data-sub'>On iPhone and iPad, tap <strong>Share</strong> then <strong>Add to Home Screen</strong>. Do this and Safari stops clearing your data when the app sits unused. Without it, everything here can be wiped after a period of not opening the app.</span>{ /* What: Set Data Sub Span Element. Why: The user needs the actual step-by-step instructions for this platform. How: This renders the fixed instructional copy. */ }
+
 										<span className='set-data-sub'><strong>WARNING:</strong> iOS and iPadOS do not copy over your existing data when installing the app. Please use the Export feature below to export your data and then import your data back in using the Import feature.</span>{ /* What: Set Data Sub Span Element. Why: This platform's own install flow does not carry over existing data, and that is a genuinely destructive surprise worth its own separate warning. How: This renders the fixed warning copy. */ }
 
 
@@ -2926,7 +2967,9 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 										<span className='set-data-name'>Add to your Dock</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Add to your Dock". */ }
+
 										<span className='set-data-sub'>On Mac, open Safari&rsquo;s <strong>File</strong> menu and choose <strong>Add to Dock</strong>. Do this and Safari stops clearing your data when the app sits unused. Without it, everything here can be wiped after a period of not opening the app.</span>{ /* What: Set Data Sub Span Element. Why: The user needs the actual step-by-step instructions for this platform. How: This renders the fixed instructional copy. */ }
+
 										<span className='set-data-sub'><strong>WARNING:</strong> macOS does not copy over your existing data when installing the app. Please use the Export feature below to export your data and then import your data back in using the Import feature.</span>{ /* What: Set Data Sub Span Element. Why: This platform's own install flow does not carry over existing data, and that is a genuinely destructive surprise worth its own separate warning. How: This renders the fixed warning copy. */ }
 
 
@@ -2945,7 +2988,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									<span className='set-data-name'>Export a backup</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Export a backup". */ }
+
 									<span className='set-data-sub'>Downloads a JSON file of everything, this includes <strong>{ pikCouNum }</strong> pickers, <strong>{ iteCouNum }</strong> items, <strong>{ remCouNum }</strong> reminders and <strong>all app settings</strong>.</span>{ /* What: Set Data Sub Span Element. Why: The row's own description should say exactly what a backup would include right now. How: This renders the fixed description, inlining the live pikCouNum/iteCouNum/remCouNum counts. */ }
+
+
 									{ expMesObj && ( // What: Export Message Check. Why: A message should only exist right after an actual export just happened. How: This renders the message span only while expMesObj holds a value.
 
 
@@ -2976,7 +3022,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									<span className='set-data-name'>Import a backup</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Import a backup". */ }
+
 									<span className='set-data-sub'><strong>Replaces all data</strong> that is currently being stored by this app with a previously exported file.</span>{ /* What: Set Data Sub Span Element. Why: The destructive nature of import needs to be stated plainly up front. How: This renders the fixed description. */ }
+
+
 									{ penImpObj && ( // What: Pending Import Message Check. Why: A confirmation prompt should only exist while a backup is actually staged and awaiting confirmation. How: This renders the message span only while penImpObj holds a value.
 
 
@@ -3021,6 +3070,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 											aria-describedby='set-import-confirm-msg'
 											onClick={ doImpFun }
 										>Import</Btn>{ /* What: Btn. Why: This is the actual, final confirmation that replaces all data with the staged backup. How: This calls doImpFun when clicked. */ }
+
 										<Btn
 											kind='ghost'
 											size='sm'
@@ -3055,10 +3105,13 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									<span className='set-data-name'>Reset all data</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Reset all data". */ }
+
 									<span
 										className='set-data-sub'
 										id='set-reset-confirm-msg'
 									>Wipes everything and restores the app to a clean state. <strong>This can&rsquo;t be undone.</strong></span>{ /* What: Set Data Sub Span Element. Why: The destructive and irreversible nature of reset needs to be stated plainly up front, and is also referenced by the confirm button's own aria-describedby below. How: This renders the fixed description. */ }
+
+
 									{ resMesStr && ( // What: Reset Message Check. Why: A message should only exist right after an actual reset just happened. How: This renders the message span only while resMesStr holds a value.
 
 
@@ -3104,6 +3157,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 											}}
 										>Reset</Btn>{ /* What: Btn. Why: This is the actual, final confirmation that wipes all data. How: This navigates home, resets the store, closes the confirm, and announces the outcome when clicked. */ }
+
 										<Btn
 											kind='ghost'
 											size='sm'
@@ -3154,6 +3208,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 						<div className='set-section-h'><span className='kicker'>Account</span></div>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This renders the fixed text "Account" inside the shared kicker span. */ }
+
 						<p className='settings-sub'>Ease My Life runs entirely on this device, with no account required. Sign in to sync across devices is planned for a future release as a paid feature (one time fee only).</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Account. */ }
 
 						<Card>{ /* What: Account Card. Why: The sync-placeholder row needs the same bordered container as every other row in this tab. How: This wraps the sync row below. */ }
@@ -3166,6 +3221,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									<span className='set-data-name'>Sync across devices</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Sync across devices". */ }
+
 									<span className='set-data-sub'>This feature will keep all of your Ease My Life data synced across every device that you sign in to.</span>{ /* What: Set Data Sub Span Element. Why: The row needs to explain what this not-yet-shipped feature will actually do. How: This renders the fixed description. */ }
 
 
@@ -3194,7 +3250,9 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 						<div className='set-section-h'><span className='kicker'>About</span></div>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This renders the fixed text "About" inside the shared kicker span. */ }
+
 						<p className='settings-sub'>Ease My Life is a labor of love for me. I have been using a version of this app on my own home server for years, and I have always wanted to turn it into a &ldquo;proper app&rdquo; that I could share with everyone else. I hope there are at least a few people out there that find it as useful as I do. You can find out more information about myself by visiting the link below to my personal website, including links to some of my other projects.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading, and About's own is a longer personal note. How: This renders the fixed first paragraph. */ }
+
 						<p className='settings-sub'>You will also find the link to this app&rsquo;s source code on GitHub. This is an open source project with an &ldquo;MIT + Non-Commercial&rdquo; Custom License which will allow anyone to freely fork and modify the project&rsquo;s source code, provided that attribution is included in your project and that you will not be selling the software or making money off it in any way. Please be responsible with the source code, because I am just one person maintaining the project in their free time trying to make a living. This is not some big company with vast resources trying to extract every dollar that they can.</p>{ /* What: Settings Sub Paragraph Element. Why: The license terms deserve their own separate paragraph from the personal note above. How: This renders the fixed second paragraph. */ }
 
 						<Card>{ /* What: About Identity Card. Why: The app's own name, version, and creator/GitHub links need a shared bordered container. How: This wraps the set-about div below. */ }
@@ -3212,7 +3270,9 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 								</div>
 
 								<span className='set-about-ver'>{ APP_VER_STR == null ? 'Version: 1.0' : `Version: ${ APP_VER_STR }` }</span>{ /* What: Set About Ver Span Element. Why: The real build version belongs in this identity block. How: This renders APP_VER_STR, falling back to "1.0" when the build-time define is missing. */ }
+
 								<span className='set-about-creator'>Creator: <a href='https://techgeek.support/' target='_blank' rel='noopener noreferrer'>https://techgeek.support/</a></span>{ /* What: Set About Creator Span Element. Why: The identity block links to the creator's own personal site. How: This renders a fixed external link, opened in a new tab. */ }
+
 								<span className='set-about-creator'>GitHub: <a href='https://github.com/z4nta0/ease-my-life' target='_blank' rel='noopener noreferrer'>https://github.com/z4nta0/ease-my-life</a></span>{ /* What: Set About Creator Span Element. Why: The identity block also links to the project's own source code. How: This renders a fixed external link, opened in a new tab. */ }
 
 
@@ -3231,6 +3291,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									<span className='set-data-name'>Support the project</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Support the project". */ }
+
 									<span className='set-data-sub'>Enjoying Ease My Life? Consider buying me a coffee.</span>{ /* What: Set Data Sub Span Element. Why: The row needs a short, friendly ask. How: This renders the fixed description. */ }
 
 
@@ -3258,6 +3319,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									<span className='set-data-name'>Replay the welcome tour</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Replay the welcome tour". */ }
+
 									<span className='set-data-sub'>Runs the first-run walkthrough again. Including the welcome message, a guided tour of pickers, generating your day, and reminders.</span>{ /* What: Set Data Sub Span Element. Why: The row needs to explain what pressing this button actually does. How: This renders the fixed description. */ }
 
 
@@ -3330,6 +3392,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 						<div className='set-section-h'><span className='kicker'>Legal</span></div>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This renders the fixed text "Legal" inside the shared kicker span. */ }
+
 						<p className='settings-sub'>The documents below outline what you&rsquo;re agreeing to by using Ease My Life.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Legal. */ }
 
 						<Card>{ /* What: Legal Card. Why: Both document rows share one bordered container. How: This wraps the Privacy Policy row and the Terms of Service row. */ }
@@ -3342,6 +3405,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									<span className='set-data-name'>Privacy Policy</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Privacy Policy". */ }
+
 									<span className='set-data-sub'>How your data is collected, used, and stored.</span>{ /* What: Set Data Sub Span Element. Why: The row needs a short description of what the document actually covers. How: This renders the fixed description. */ }
 
 
@@ -3363,6 +3427,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									<span className='set-data-name'>Terms of Service</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Terms of Service". */ }
+
 									<span className='set-data-sub'>The rules for using Ease My Life, including paid features.</span>{ /* What: Set Data Sub Span Element. Why: The row needs a short description of what the document actually covers. How: This renders the fixed description. */ }
 
 

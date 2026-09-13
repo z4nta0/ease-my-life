@@ -1382,6 +1382,19 @@ between JSX siblings. Three tiers:
   array?") rather than assuming a topical-sounding comment means they're
   related — several calls in this file were revised from 2 down to 3 after
   actually checking for shared data and finding none.
+- **Known blind spot — 0 blank lines is NEVER a valid outcome for JSX
+  siblings, but a run of fully one-line siblings (opening tag, content,
+  closing tag, and its own trailing comment all on one physical line) is
+  easy to under-space, since compact one-liners are conventionally left
+  ungapped in typical JSX found elsewhere. This rule makes no such
+  exception: every JSX sibling pair needs at least 1 blank line regardless
+  of whether either side is one-line or multi-line. This was found to be a
+  systemic, file-wide miss (not an isolated slip) across every file this
+  rule set had already been applied to, the same recurring-bias pattern as
+  the naming "Known miscorrections" list below, just for spacing instead of
+  word choice. When auditing a file for this rule, explicitly check
+  one-liner-to-one-liner and one-liner-to-next-sibling transitions, not
+  just multi-line element closings.
 
 ### Naming conventions
 Applies to every named thing — variables, function/component declarations,
