@@ -19,7 +19,7 @@ const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed 
 		bacStr : 'oklch(0.985 0.003 240)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
 		surStr : 'oklch(0.975 0.004 240)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
 		borStr : 'oklch(0.91 0.005 240)',  // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
-		txtStr : 'oklch(0.17 0.012 250)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		texStr : 'oklch(0.17 0.012 250)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
 		mutStr : 'oklch(0.5 0.012 250)',   // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
 		accStr : 'oklch(0.5 0.14 250)',    // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
 		aceStr : 'oklch(0.95 0.025 250)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
@@ -35,7 +35,7 @@ const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed 
 		bacStr : 'oklch(0.985 0.005 130)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
 		surStr : 'oklch(0.97 0.008 130)',  // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
 		borStr : 'oklch(0.9 0.012 130)',   // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
-		txtStr : 'oklch(0.19 0.015 150)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		texStr : 'oklch(0.19 0.015 150)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
 		mutStr : 'oklch(0.5 0.012 150)',   // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
 		accStr : 'oklch(0.48 0.09 155)',   // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
 		aceStr : 'oklch(0.95 0.03 150)',   // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
@@ -51,7 +51,7 @@ const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed 
 		bacStr : 'oklch(0.98 0.008 80)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
 		surStr : 'oklch(0.96 0.012 80)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
 		borStr : 'oklch(0.9 0.015 75)',  // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
-		txtStr : 'oklch(0.2 0.018 50)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		texStr : 'oklch(0.2 0.018 50)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
 		mutStr : 'oklch(0.5 0.018 50)',  // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
 		accStr : 'oklch(0.5 0.12 40)',   // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
 		aceStr : 'oklch(0.94 0.03 60)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
@@ -67,7 +67,7 @@ const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed 
 		bacStr : 'oklch(0.18 0.012 250)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
 		surStr : 'oklch(0.22 0.014 250)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
 		borStr : 'oklch(0.3 0.014 250)',  // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
-		txtStr : 'oklch(0.95 0.005 250)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		texStr : 'oklch(0.95 0.005 250)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
 		mutStr : 'oklch(0.65 0.012 250)', // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
 		accStr : 'oklch(0.75 0.14 250)',  // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
 		aceStr : 'oklch(0.3 0.04 250)',   // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
@@ -83,7 +83,7 @@ const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed 
 		bacStr : 'oklch(0.17 0.01 150)',  // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
 		surStr : 'oklch(0.21 0.014 150)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
 		borStr : 'oklch(0.28 0.016 150)', // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
-		txtStr : 'oklch(0.95 0.008 150)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		texStr : 'oklch(0.95 0.008 150)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
 		mutStr : 'oklch(0.65 0.012 150)', // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
 		accStr : 'oklch(0.7 0.1 155)',    // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
 		aceStr : 'oklch(0.3 0.035 150)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
@@ -99,7 +99,7 @@ const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed 
 		bacStr : 'oklch(0.17 0.014 45)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
 		surStr : 'oklch(0.21 0.016 45)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
 		borStr : 'oklch(0.28 0.018 45)', // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
-		txtStr : 'oklch(0.95 0.012 50)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		texStr : 'oklch(0.95 0.012 50)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
 		mutStr : 'oklch(0.65 0.016 50)', // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
 		accStr : 'oklch(0.72 0.13 42)',  // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
 		aceStr : 'oklch(0.32 0.05 42)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
@@ -137,7 +137,7 @@ let __lasPalStr = null;  // What: Last Palette String. Why: The cross-fade shoul
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param palResObj - Palette Resolved Object: The full 8-token palette object
- *                    to apply (bacStr, surStr, borStr, txtStr, mutStr, accStr,
+ *                    to apply (bacStr, surStr, borStr, texStr, mutStr, accStr,
  *                    aceStr, warStr), either a PAL_SET_OBJ entry or a derived
  *                    custom palette from resCusFun.
  * @param theKeyStr - Theme Key String: The resolved theme key this palette
@@ -156,7 +156,7 @@ let __lasPalStr = null;  // What: Last Palette String. Why: The cross-fade shoul
 function appPalFun( palResObj, theKeyStr ) {
 
 
-	const palSigStr = [ palResObj.bacStr, palResObj.surStr, palResObj.txtStr, palResObj.accStr, palResObj.aceStr, palResObj.borStr, palResObj.mutStr, palResObj.warStr ].join( '|' ); // What: Palette Signature String. Why: Detecting an actual color change requires comparing against what was last applied, not just re-running on every call. How: This joins every token into one comparable string.
+	const palSigStr = [ palResObj.bacStr, palResObj.surStr, palResObj.texStr, palResObj.accStr, palResObj.aceStr, palResObj.borStr, palResObj.mutStr, palResObj.warStr ].join( '|' ); // What: Palette Signature String. Why: Detecting an actual color change requires comparing against what was last applied, not just re-running on every call. How: This joins every token into one comparable string.
 	const palChaBoo = palSigStr !== __lasPalStr;                                                                                                                                      // What: Palette Changed Boolean. Why: The cross-fade must only run when the resolved colors actually differ from last time. How: This compares the freshly-built signature against the previous call's stored one.
 
 	__lasPalStr = palSigStr; // What: Last Palette String Update. Why: The next call needs to compare against what is current now. How: This overwrites __lasPalStr with the freshly-computed signature.
@@ -185,7 +185,7 @@ function appPalFun( palResObj, theKeyStr ) {
 	rooStyObj.setProperty( '--bg', palResObj.bacStr );          // What: Background Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the page background. How: This writes the palette's bacStr token onto the root element's inline style.
 	rooStyObj.setProperty( '--surface', palResObj.surStr );     // What: Surface Property Write. Why: This is the actual CSS custom property the app's stylesheets read for card/surface backgrounds. How: This writes the palette's surStr token onto the root element's inline style.
 	rooStyObj.setProperty( '--border', palResObj.borStr );      // What: Border Property Write. Why: This is the actual CSS custom property the app's stylesheets read for border colors. How: This writes the palette's borStr token onto the root element's inline style.
-	rooStyObj.setProperty( '--text', palResObj.txtStr );        // What: Text Property Write. Why: This is the actual CSS custom property the app's stylesheets read for body text color. How: This writes the palette's txtStr token onto the root element's inline style.
+	rooStyObj.setProperty( '--text', palResObj.texStr );        // What: Text Property Write. Why: This is the actual CSS custom property the app's stylesheets read for body text color. How: This writes the palette's texStr token onto the root element's inline style.
 	rooStyObj.setProperty( '--muted', palResObj.mutStr );       // What: Muted Property Write. Why: This is the actual CSS custom property the app's stylesheets read for de-emphasized text color. How: This writes the palette's mutStr token onto the root element's inline style.
 	rooStyObj.setProperty( '--accent', palResObj.accStr );      // What: Accent Property Write. Why: This is the actual CSS custom property the app's stylesheets read for the primary accent color. How: This writes the palette's accStr token onto the root element's inline style.
 	rooStyObj.setProperty( '--accent-soft', palResObj.aceStr ); // What: Accent Soft Property Write. Why: This is the actual CSS custom property the app's stylesheets read for a softened accent background. How: This writes the palette's aceStr token onto the root element's inline style.
@@ -401,7 +401,7 @@ function resCusFun( modKeyStr, usrColObj ) {
 
 
 	const bacColStr = usrColObj.bg;     // What: Background Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.bg and reused in the returned object and the relative-color expressions below.
-	const txtColStr = usrColObj.text;   // What: Text Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.text and reused in the returned object and the muted expression below.
+	const texColStr = usrColObj.text;   // What: Text Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.text and reused in the returned object and the muted expression below.
 	const accColStr = usrColObj.accent; // What: Accent Color String. Why: This is one of the 3 user-chosen anchor colors every derived token is computed relative to. How: This is read once from usrColObj.accent and reused in the returned object and the accentSoft expression below.
 
 
@@ -419,11 +419,11 @@ function resCusFun( modKeyStr, usrColObj ) {
 
 
 		bacStr : bacColStr,                                                                      // What: Background String. Why: The user's own chosen background color is used as-is, no derivation needed. How: This is just bacColStr, computed above from usrColObj.bg.
-		txtStr : txtColStr,                                                                      // What: Text String. Why: The user's own chosen text color is used as-is, no derivation needed. How: This is just txtColStr, computed above from usrColObj.text.
+		texStr : texColStr,                                                                      // What: Text String. Why: The user's own chosen text color is used as-is, no derivation needed. How: This is just texColStr, computed above from usrColObj.text.
 		accStr : accColStr,                                                                      // What: Accent String. Why: The user's own chosen accent color is used as-is, no derivation needed. How: This is just accColStr, computed above from usrColObj.accent.
 		surStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.04, 0.17 ) } c h)`,                  // What: Surface String. Why: The surface token needs to sit slightly toward/away from the background depending on mode. How: This computes an oklch relative-color expression off bacColStr using calOffFun's smaller offset/floor pair.
 		borStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.12, 0.26 ) } c h)`,                  // What: Border String. Why: The border token needs a stronger lightness shift off the background than surface does. How: This computes an oklch relative-color expression off bacColStr using calOffFun's larger offset/floor pair.
-		mutStr : `oklch(from ${ txtColStr } calc(l + ${ modSgnNum * -0.32 }) c h)`,              // What: Muted String. Why: The muted token needs to sit between text and background in lightness. How: This computes an oklch relative-color expression off txtColStr, shifted by modSgnNum's signed offset.
+		mutStr : `oklch(from ${ texColStr } calc(l + ${ modSgnNum * -0.32 }) c h)`,              // What: Muted String. Why: The muted token needs to sit between text and background in lightness. How: This computes an oklch relative-color expression off texColStr, shifted by modSgnNum's signed offset.
 		aceStr : `oklch(from ${ accColStr } calc(l + ${ modSgnNum * -0.42 }) calc(c - 0.08) h)`, // What: Accent Soft String. Why: The softened accent token needs a lighter or darker, less saturated version of the chosen accent. How: This computes an oklch relative-color expression off accColStr, shifting both lightness (via modSgnNum) and chroma.
 		warStr : modKeyStr === 'dark' ? 'oklch(0.78 0.13 60)' : 'oklch(0.62 0.13 50)'            // What: Warm String. Why: The warm/celebration token isn't derived from user input at all, unlike the other 7. How: This picks one of 2 fixed oklch values based on whether modKeyStr is 'dark' or 'light'.
 

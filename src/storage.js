@@ -861,12 +861,12 @@ async function datBytFun() {
 		if ( !curStaObj ) return null; // What: No Current State Guard. Why: A genuinely fresh install has nothing to measure at all. How: This returns null immediately when neither reaPerFun nor cacStaObj has anything.
 
 
-		const jsoTxtStr = JSON.stringify( curStaObj ); // What: Json Text String. Why: The byte-size measurement below needs the exact serialized text that would actually be written to storage. How: This serializes curStaObj to JSON text.
+		const jsoTexStr = JSON.stringify( curStaObj ); // What: Json Text String. Why: The byte-size measurement below needs the exact serialized text that would actually be written to storage. How: This serializes curStaObj to JSON text.
 
 
-		if ( typeof Blob === 'function' ) return new Blob( [ jsoTxtStr ] ).size; // What: Blob Size Return. Why: Blob gives an exact byte count and is the preferred measurement wherever it is available. How: This wraps jsoTxtStr in a Blob and returns its own size.
+		if ( typeof Blob === 'function' ) return new Blob( [ jsoTexStr ] ).size; // What: Blob Size Return. Why: Blob gives an exact byte count and is the preferred measurement wherever it is available. How: This wraps jsoTexStr in a Blob and returns its own size.
 
-		if ( typeof TextEncoder === 'function' ) return new TextEncoder().encode( jsoTxtStr ).length; // What: Text Encoder Size Return. Why: Some environments lack Blob but still support TextEncoder, which covers the same measurement. How: This encodes jsoTxtStr and returns the resulting byte array's own length.
+		if ( typeof TextEncoder === 'function' ) return new TextEncoder().encode( jsoTexStr ).length; // What: Text Encoder Size Return. Why: Some environments lack Blob but still support TextEncoder, which covers the same measurement. How: This encodes jsoTexStr and returns the resulting byte array's own length.
 
 
 		return null; // What: No Measurement Return. Why: An environment with neither Blob nor TextEncoder has no way to measure this at all. How: This returns null as the last resort.

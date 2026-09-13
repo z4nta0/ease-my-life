@@ -2902,16 +2902,16 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 											}
 
-											const hedTxtStr = isaRemBoo // What: Head Text String. Why: The tooltip's own first line differs in shape between a Reminders day and a pick day. How: This phrases either a "done" count or a "done/total" fraction.
+											const hedTexStr = isaRemBoo // What: Head Text String. Why: The tooltip's own first line differs in shape between a Reminders day and a pick day. How: This phrases either a "done" count or a "done/total" fraction.
 												? `${ dayObj.date } · ${ dayObj.done } done`
 												: `${ dayObj.date } · ${ dayObj.done }/${ dayObj.total }`;
 
 											// Native (desktop) tooltip lists what was picked/completed
 											// that day.
-											const namTxtArr = ( dayObj.items || [] ).map( ( iteObj ) => // What: Name Text Array. Why: The tooltip's own body needs one bullet line per logged item that day. How: This maps each item to a "- name" line, appending a checkmark for a completed pick.
+											const namTexArr = ( dayObj.items || [] ).map( ( iteObj ) => // What: Name Text Array. Why: The tooltip's own body needs one bullet line per logged item that day. How: This maps each item to a "- name" line, appending a checkmark for a completed pick.
 												isaRemBoo ? `• ${ iteObj.name }` : `• ${ iteObj.name }${ iteObj.done ? ' ✓' : '' }` );
 
-											const titTxtStr = namTxtArr.length ? `${ hedTxtStr }\n${ namTxtArr.join( '\n' ) }` : hedTxtStr; // What: Title Text String. Why: The cell's own native tooltip needs the head line plus every bullet line joined together, or just the head line when nothing was logged. How: This joins hedTxtStr and namTxtArr with newlines, or falls back to hedTxtStr alone.
+											const titTexStr = namTexArr.length ? `${ hedTexStr }\n${ namTexArr.join( '\n' ) }` : hedTexStr; // What: Title Text String. Why: The cell's own native tooltip needs the head line plus every bullet line joined together, or just the head line when nothing was logged. How: This joins hedTexStr and namTexArr with newlines, or falls back to hedTexStr alone.
 											const selBoo     = heaSelStr === dayObj.date;                                                    // What: Selected Boolean. Why: A tapped cell needs its own distinct styling. How: This compares heaSelStr against this cell's own date.
 
 											return (
@@ -2921,8 +2921,8 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 													key={ dayObj.date }
 													type='button'
 													className={ `heat-cell heat-${ levNum }${ selBoo ? ' is-sel' : '' }` }
-													title={ titTxtStr }
-													aria-label={ titTxtStr }
+													title={ titTexStr }
+													aria-label={ titTexStr }
 													onClick={ () => setHeaSelStr( selBoo ? null : dayObj.date ) }
 												/> // What: Heat Cell Button Element. Why: Each day needs its own tappable, color-coded cell. How: This toggles heaSelStr to this cell's own date (or clears it, if already selected) on click.
 

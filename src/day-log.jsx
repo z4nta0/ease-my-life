@@ -583,7 +583,7 @@ function ValCelCom ( { hasValBoo, genValNum, aftValNum, offValNum = 0 } ) {
 	const effAftNum = Math.round( aftValNum ) + offValNum;  // What: Effective After Number. Why: This is the actual effective pick weight after whatever happened today. How: This rounds aftValNum and adds offValNum (0 for a non-dynamic row).
 	const delValNum = effAftNum - effGenNum;                // What: Delta Value Number. Why: The middle cell shows the actual change, not either raw value. How: This subtracts effGenNum from effAftNum; offValNum cancels out of this difference either way.
 	const treClsStr = delValNum > 0 ? 'up' : delValNum < 0 ? 'down' : 'flat';                                 // What: Trend Class String. Why: The delta cell's own color/direction styling depends on which way delValNum moved. How: This picks 'up'/'down'/'flat' from delValNum's own sign.
-	const disTxtStr = delValNum === 0 ? '—' : ( delValNum > 0 ? `+${ delValNum }` : `${ delValNum }` );       // What: Display Text String. Why: The delta cell needs its own signed text, or a flat placeholder at exactly 0. How: This renders the em-dash placeholder at 0, otherwise a "+"-prefixed or plain signed number.
+	const disTexStr = delValNum === 0 ? '—' : ( delValNum > 0 ? `+${ delValNum }` : `${ delValNum }` );       // What: Display Text String. Why: The delta cell needs its own signed text, or a flat placeholder at exactly 0. How: This renders the em-dash placeholder at 0, otherwise a "+"-prefixed or plain signed number.
 
 
 
@@ -595,7 +595,7 @@ function ValCelCom ( { hasValBoo, genValNum, aftValNum, offValNum = 0 } ) {
 
 			<span className='dl-val dl-mk-atgen r'>{ effGenNum }</span>{ /* What: At Generation Value Span Element. Why: This is the row's own value as it stood at generation time. How: This renders effGenNum directly. */ }
 
-			<span className={ `dl-delta dl-mk-delta ${ treClsStr } r` }>{ disTxtStr }</span>{ /* What: Delta Value Span Element. Why: This is the row's own signed change since generation. How: This renders disTxtStr, tinted by its own treClsStr direction class. */ }
+			<span className={ `dl-delta dl-mk-delta ${ treClsStr } r` }>{ disTexStr }</span>{ /* What: Delta Value Span Element. Why: This is the row's own signed change since generation. How: This renders disTexStr, tinted by its own treClsStr direction class. */ }
 
 			<span className='dl-val dl-after dl-mk-after r'>{ effAftNum }</span>{ /* What: After Value Span Element. Why: This is the row's own current value. How: This renders effAftNum directly. */ }
 

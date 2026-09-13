@@ -488,16 +488,16 @@ const ProgressBar = ( { value, max = 1, tone = 'accent' } ) => (
 function NumStepper ( { value, min = 1, max = 99, onSet, ariaLabel } ) {
 
 
-	const [ txtValStr, setTxtValStr ] = React.useState( String( value ) ); // What: Text Value String And Setter. Why: The value must be typeable as free text, not just steppable, so a separate string buffer is needed alongside the real numeric value. How: This starts mirroring the initial value and is kept in sync by the effect below and overwritten locally while the user types.
+	const [ texValStr, setTexValStr ] = React.useState( String( value ) ); // What: Text Value String And Setter. Why: The value must be typeable as free text, not just steppable, so a separate string buffer is needed alongside the real numeric value. How: This starts mirroring the initial value and is kept in sync by the effect below and overwritten locally while the user types.
 
 
-	React.useEffect( () => { setTxtValStr( String( value ) ); }, [ value ] ); // What: Value Sync Effect. Why: An external change to value (e.g. a +/- click, or another control writing the same state) must be reflected in the typed text too. How: This overwrites txtValStr with the current value whenever it changes.
+	React.useEffect( () => { setTexValStr( String( value ) ); }, [ value ] ); // What: Value Sync Effect. Why: An external change to value (e.g. a +/- click, or another control writing the same state) must be reflected in the typed text too. How: This overwrites texValStr with the current value whenever it changes.
 
 
-	const comTxtFun = () => { // What: Commit Text Function. Why: Whatever the user typed must be parsed, validated, and clamped before it becomes the real committed value. How: This parses txtValStr, falls back to the last real value if unparseable, clamps to [min,max], calls onSet, and re-syncs the text buffer to the final result.
+	const comTexFun = () => { // What: Commit Text Function. Why: Whatever the user typed must be parsed, validated, and clamped before it becomes the real committed value. How: This parses texValStr, falls back to the last real value if unparseable, clamps to [min,max], calls onSet, and re-syncs the text buffer to the final result.
 
 
-		let parIntNum = parseInt( txtValStr, 10 ); // What: Parsed Integer Number. Why: The raw typed text needs to become a real number before it can be validated. How: This parses txtValStr as a base-10 integer, which yields NaN for anything unparseable.
+		let parIntNum = parseInt( texValStr, 10 ); // What: Parsed Integer Number. Why: The raw typed text needs to become a real number before it can be validated. How: This parses texValStr as a base-10 integer, which yields NaN for anything unparseable.
 
 		if ( isNaN( parIntNum ) ) parIntNum = value; // What: Not A Number Guard. Why: An unparseable or emptied text field should fall back to the last known-good value rather than committing NaN. How: This overwrites parIntNum with the current value when parsing failed.
 
@@ -505,7 +505,7 @@ function NumStepper ( { value, min = 1, max = 99, onSet, ariaLabel } ) {
 
 
 		onSet( parIntNum );                  // What: On Set Call. Why: The parent owns the real persisted value. How: This hands the freshly-validated integer up to the caller.
-		setTxtValStr( String( parIntNum ) ); // What: Text Value Sync. Why: The visible text should reflect exactly what was actually committed, not whatever was typed. How: This overwrites txtValStr with the final clamped value.
+		setTexValStr( String( parIntNum ) ); // What: Text Value Sync. Why: The visible text should reflect exactly what was actually committed, not whatever was typed. How: This overwrites texValStr with the final clamped value.
 
 
 	};
@@ -532,13 +532,13 @@ function NumStepper ( { value, min = 1, max = 99, onSet, ariaLabel } ) {
 				className='np-stepper-input'
 				type='text'
 				inputMode='numeric'
-				value={ txtValStr }
+				value={ texValStr }
 				aria-label={ ariaLabel }
-				onChange={ ( chaEveObj ) => setTxtValStr( chaEveObj.target.value.replace( /[^0-9]/g, '' ) ) }
+				onChange={ ( chaEveObj ) => setTexValStr( chaEveObj.target.value.replace( /[^0-9]/g, '' ) ) }
 				onFocus={ ( focEveObj ) => focEveObj.target.select() }
-				onBlur={ comTxtFun }
+				onBlur={ comTexFun }
 				onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-			/>{ /* What: Stepper Input Element. Why: This lets the value be typed directly, handy for big jumps the +/- buttons make tedious. How: This mirrors txtValStr, strips non-digit characters as the user types, selects-all on focus, commits on blur, and commits early on Enter. */ }
+			/>{ /* What: Stepper Input Element. Why: This lets the value be typed directly, handy for big jumps the +/- buttons make tedious. How: This mirrors texValStr, strips non-digit characters as the user types, selects-all on focus, commits on blur, and commits early on Enter. */ }
 
 			<button
 				className='np-weight-btn'
@@ -606,11 +606,11 @@ const InfoTip = ( { children, label, className = '', action = null, truncationOn
 
 	const [ tipOpeBoo, setTipOpeBoo ] = React.useState( false );                                     // What: Tip Open Boolean And Setter. Why: This tracks whether the floating tooltip is currently showing. How: This is flipped by the pointer/keyboard handlers below and read by the render's own portal guard.
 	const [ tipPosObj, setTipPosObj ] = React.useState( { left : 0, top : 0, placement : 'top' } );   // What: Tip Position Object And Setter. Why: The portaled tooltip needs an absolute left/top plus which side it's placed on, recomputed every time it opens or the page scrolls/resizes. How: This is written by plaTipFun below and read directly in the portaled span's own inline style.
-	const [ txtTrnBoo, setTxtTrnBoo ] = React.useState( false );                                     // What: Text Truncated Boolean And Setter. Why: truncationOnly mode needs to know whether the trigger's own text is actually overflowing before deciding to be interactive at all. How: This is measured by the effect below and read by actTipBoo.
+	const [ texTrnBoo, setTexTrnBoo ] = React.useState( false );                                     // What: Text Truncated Boolean And Setter. Why: truncationOnly mode needs to know whether the trigger's own text is actually overflowing before deciding to be interactive at all. How: This is measured by the effect below and read by actTipBoo.
 	const trgEleRef                   = React.useRef( null );                                        // What: Trigger Element Reference. Why: Both the truncation measurement and the positioning math need a handle on the real trigger DOM node. How: This is attached to the trigger span's own ref prop in both the inert and interactive render branches below.
 	const tipEleRef                   = React.useRef( null );                                        // What: Tip Element Reference. Why: The positioning math needs to measure the portaled tooltip's own rendered size. How: This is attached to the portaled tooltip span's own ref prop below.
 	const lasPoiStr                   = React.useRef( 'mouse' );                                     // What: Last Pointer String Reference. Why: The click handler needs to know whether the interaction so far has been mouse-driven (where clicks are ignored) or touch/pen-driven (where a tap should toggle). How: This is updated on every pointerdown and read by the click handler below.
-	const actTipBoo                   = truncationOnly ? txtTrnBoo : true;                           // What: Active Tip Boolean. Why: Every other piece of this component needs one single answer for whether the tip should behave as a real, focusable, interactive trigger at all. How: This is txtTrnBoo itself under truncationOnly, otherwise always true.
+	const actTipBoo                   = truncationOnly ? texTrnBoo : true;                           // What: Active Tip Boolean. Why: Every other piece of this component needs one single answer for whether the tip should behave as a real, focusable, interactive trigger at all. How: This is texTrnBoo itself under truncationOnly, otherwise always true.
 
 
 	React.useLayoutEffect( () => { // What: Truncation Measurement Effect. Why: truncationOnly needs to know, before paint, whether the trigger's own text is actually overflowing. How: This measures scrollWidth vs. clientWidth on mount and on every observed resize, via ResizeObserver where available, a plain window resize listener otherwise.
@@ -623,7 +623,7 @@ const InfoTip = ( { children, label, className = '', action = null, truncationOn
 		if ( !trgCurEle ) return; // What: No Trigger Guard. Why: The ref may not be attached yet. How: This bails out early when there is no trigger element to measure.
 
 
-		const cheTrnFun = () => setTxtTrnBoo( trgCurEle.scrollWidth > trgCurEle.clientWidth ); // What: Check Truncated Function. Why: This is the actual comparison that decides whether the trigger's own text is currently overflowing. How: This compares trgCurEle's own scrollWidth against its clientWidth.
+		const cheTrnFun = () => setTexTrnBoo( trgCurEle.scrollWidth > trgCurEle.clientWidth ); // What: Check Truncated Function. Why: This is the actual comparison that decides whether the trigger's own text is currently overflowing. How: This compares trgCurEle's own scrollWidth against its clientWidth.
 
 		cheTrnFun(); // What: Initial Check Call. Why: The truncation state must be known immediately on mount, not just after a later resize. How: This invokes cheTrnFun once, synchronously.
 
@@ -1103,10 +1103,10 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 	let annTimNum = null; // What: Announce Timeout Number. Why: A rapid-fire announce() call must debounce against the previous call's own pending timeout. How: This holds the current setTimeout id, cleared and reassigned on every call below.
 
 
-	announce = ( mesTxtStr, mesOptObj ) => { // What: announce. Why: This is the actual exported implementation, assigned into the module-level announce binding declared at the top of this file. How: This updates the region's own politeness, clears its text, then sets the new text on the next tick so the change is reliably detected.
+	announce = ( mesTexStr, mesOptObj ) => { // What: announce. Why: This is the actual exported implementation, assigned into the module-level announce binding declared at the top of this file. How: This updates the region's own politeness, clears its text, then sets the new text on the next tick so the change is reliably detected.
 
 
-		if ( !mesTxtStr ) return; // What: No Message Guard. Why: There is nothing useful to announce for an empty/falsy message. How: This bails out without touching the region at all.
+		if ( !mesTexStr ) return; // What: No Message Guard. Why: There is nothing useful to announce for an empty/falsy message. How: This bails out without touching the region at all.
 
 		livRegEle.setAttribute( 'aria-live', ( mesOptObj && mesOptObj.assertive ) ? 'assertive' : 'polite' ); // What: Live Attribute Update. Why: Some announcements (e.g. an error) need to interrupt immediately rather than wait politely. How: This sets assertive only when mesOptObj explicitly asks for it, polite otherwise.
 
@@ -1115,7 +1115,7 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 
 		clearTimeout( annTimNum ); // What: Timeout Clear. Why: A rapid repeat call must not let an earlier delayed set race this newer one. How: This cancels whatever timeout was previously scheduled.
 
-		annTimNum = setTimeout( () => { livRegEle.textContent = mesTxtStr; }, 60 ); // What: Timeout Schedule. Why: Setting the text on the very next tick (rather than immediately) is what makes even an identical repeat message reliably re-announced. How: This schedules the real text write 60ms later.
+		annTimNum = setTimeout( () => { livRegEle.textContent = mesTexStr; }, 60 ); // What: Timeout Schedule. Why: Setting the text on the very next tick (rather than immediately) is what makes even an identical repeat message reliably re-announced. How: This schedules the real text write 60ms later.
 
 
 	};

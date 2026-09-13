@@ -115,11 +115,11 @@ const MON_FUL_ARR = [ 'January', 'February', 'March', 'April', 'May', 'June', 'J
 const ordSufFun = ( ordValNum ) => { // What: Ordinal Suffix Function. Why: Every day-of-month, week-ordinal, and weekday-of-month summary below needs the correct English ordinal suffix appended to a plain number. How: This picks the right suffix off ordValNum's own last two digits and returns the combined string.
 
 
-	const sufTxtArr = [ 'th', 'st', 'nd', 'rd' ]; // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed below by lasTwoNum's own value.
+	const sufTexArr = [ 'th', 'st', 'nd', 'rd' ]; // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed below by lasTwoNum's own value.
 	const lasTwoNum = ordValNum % 100;            // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exception every other rule must respect). How: This is ordValNum modulo 100.
 
 
-	return ordValNum + ( sufTxtArr[ ( lasTwoNum - 20 ) % 10 ] || sufTxtArr[ lasTwoNum ] || sufTxtArr[ 0 ] ); // What: Ordinal Suffix Return. Why: The caller needs the full suffixed string back, not just the suffix. How: This picks sufTxtArr's own entry for lasTwoNum minus 20 (handling 21st/22nd/23rd/31st/...), falling back to lasTwoNum directly (handling 11th/12th/13th), falling back to index 0 ('th') for everything else.
+	return ordValNum + ( sufTexArr[ ( lasTwoNum - 20 ) % 10 ] || sufTexArr[ lasTwoNum ] || sufTexArr[ 0 ] ); // What: Ordinal Suffix Return. Why: The caller needs the full suffixed string back, not just the suffix. How: This picks sufTexArr's own entry for lasTwoNum minus 20 (handling 21st/22nd/23rd/31st/...), falling back to lasTwoNum directly (handling 11th/12th/13th), falling back to index 0 ('th') for everything else.
 
 
 };

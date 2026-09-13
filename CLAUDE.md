@@ -1534,6 +1534,12 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     real concepts in the same name, resolve the collision via the
     normal Naming-conflict resolution escalation rather than guessing)
   - `fld` → `fie` (Field)
+  - `bak` → `bac` (Back)
+  - `pck` → `pic` (Pick — note this collides with `pkr` → `pic` (Picker)
+    above, the same way `ctl`/`cfg` collide; a name's own surrounding
+    context, e.g. `picLogArr` holding pick-log rows rather than a list of
+    pickers, disambiguates which word "pic" stands for in practice)
+  - `txt` → `tex` (Text)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

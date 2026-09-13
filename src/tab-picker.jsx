@@ -833,7 +833,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 			{ Array.isArray( modInfObj.hint )
 
-				? modInfObj.hint.map( ( parTxtStr, parIndNum ) => <p key={ parIndNum } className='picker-hint'>{ parTxtStr }</p> ) // What: Multi-Paragraph Hint Render. Why: Some modes explain themselves across more than one short paragraph. How: This maps modInfObj.hint to one <p> per entry when it's an array.
+				? modInfObj.hint.map( ( parTexStr, parIndNum ) => <p key={ parIndNum } className='picker-hint'>{ parTexStr }</p> ) // What: Multi-Paragraph Hint Render. Why: Some modes explain themselves across more than one short paragraph. How: This maps modInfObj.hint to one <p> per entry when it's an array.
 
 				: <p className='picker-hint'>{ modInfObj.hint }</p> // What: Single-Paragraph Hint Render. Why: Most modes only need one short explanation. How: This renders modInfObj.hint directly when it's a plain string.
 
@@ -1708,7 +1708,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 	const cnvLatFun = ( easMinNum ) => Math.max( 1, Math.round( easThrNum / ( easMinNum || 1 ) ) ); // What: Convert Latest Function. Why: The latest-days question is really just easThrNum divided by an item's own easeMin, floored at 1 day. How: This rounds the division and clamps it to at least 1.
 	const cnvDrfFun = ( dayInpNum ) => easThrNum / Math.max( 1, dayInpNum ); // What: Convert Drift Function. Why: Going the other direction (a days answer back into a raw drift number) is the same division inverted. How: This divides easThrNum by dayInpNum, floored at 1 day.
 
-	const capStrFun = ( srcTxtStr ) => srcTxtStr.length ? srcTxtStr[ 0 ].toUpperCase() + srcTxtStr.slice( 1 ) : srcTxtStr; // What: Capitalize String Function. Why: Every item/picker name this form commits should read with a capitalized first letter, regardless of how the user actually typed it. How: This upper-cases just the first character and leaves the rest untouched.
+	const capStrFun = ( srcTexStr ) => srcTexStr.length ? srcTexStr[ 0 ].toUpperCase() + srcTexStr.slice( 1 ) : srcTexStr; // What: Capitalize String Function. Why: Every item/picker name this form commits should read with a capitalized first letter, regardless of how the user actually typed it. How: This upper-cases just the first character and leaves the rest untouched.
 
 	// What: Reused Item Editor Design Note. Why: This is the same UI as the live Pickers-tab add flow; draft items carry a stable id so the shared EntryEditor plus a synthetic actions object (backed by the draft array, not the store) can key off it. How: Adding opens the editor inline at the bottom; Save/Cancel play the same fade animations as the live flow.
 	const [ actNewStr, setActNewStr ] = React.useState( null ); // What: Active New String And Setter. Why: This holds the id of whichever draft item is currently being newly added (as opposed to an already-committed row being edited). How: This is set by addDftFun and cleared once its own closing animation finishes.
@@ -2237,7 +2237,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 
 									{ Array.isArray( modInfObj.hint )
 
-										? modInfObj.hint.map( ( parTxtStr, parIndNum ) => <div key={ parIndNum } className='mode-opt-hint'>{ parTxtStr }</div> ) // What: Multi-Paragraph Hint Render. Why: Some modes explain themselves across more than one short paragraph. How: This maps modInfObj.hint to one div per entry when it's an array.
+										? modInfObj.hint.map( ( parTexStr, parIndNum ) => <div key={ parIndNum } className='mode-opt-hint'>{ parTexStr }</div> ) // What: Multi-Paragraph Hint Render. Why: Some modes explain themselves across more than one short paragraph. How: This maps modInfObj.hint to one div per entry when it's an array.
 
 										: <div className='mode-opt-hint'>{ modInfObj.hint }</div> // What: Single-Paragraph Hint Render. Why: Most modes only need one short explanation. How: This renders modInfObj.hint directly when it's a plain string.
 
