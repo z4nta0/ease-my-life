@@ -7,8 +7,8 @@ import React from 'react'; // What: React. Why: This is the UI library every com
 
 
 import { Btn                      } from './ui.jsx';                  // What: Button. Why: Every action in this file needs a consistently-styled clickable control. How: This is rendered wherever a styled button is needed, across the live picker view, the edit form, and the create form.
+import { CadConCom                } from './cadence-control.jsx';     // What: Cadence Control. Why: This is the shared editor for a picker's cadence settings. How: This is rendered inside PicForCom's daily-schedule block, wired to the local cadence state.
 import { CADENCE                  } from './cadence.js';              // What: Cadence. Why: This is the namespace of pure functions this file uses to normalize and edit a picker's own cadence. How: This is called for CADENCE.normalize/enforceWeeklyDay/lockedDayTip/unitWord throughout PicForCom.
-import { CadenceControl           } from './cadence-control.jsx';     // What: Cadence Control. Why: This is the shared editor for a picker's cadence settings. How: This is rendered inside PicForCom's daily-schedule block, wired to the local cadence state.
 import { clearHelpPickers         } from './help-sample-data.js';     // What: Clear Help Pickers. Why: Help mode's disposable sample pickers/conditionals must be torn down the moment help mode turns off or this tab unmounts. How: This is called from TabPicker's own help-mode effect and its unmount cleanup.
 import { Collapse                 } from './ui.jsx';                  // What: Collapse. Why: Several optional sections need an animated expand/collapse instead of an abrupt show/hide. How: This wraps the add-group input, the conditional-attach block, and the daily-schedule block, each gated on its own open boolean.
 import { ConditionalControls      } from './tab-conditional.jsx';     // What: Conditional Controls. Why: Attaching a brand-new inline conditional needs the same editor the Data tab uses. How: This is rendered inside PicForCom's conditional-attach block, wired to the local condDraft state.
@@ -2407,9 +2407,9 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun,
 
 						<div className='np-sched-block'>
 
-							<CadenceControl value={ cadCurObj } onChange={ ( patCadObj ) => setCadCurObj( ( c ) => CADENCE.normalize({ ...c, ...patCadObj }) ) } />
+							<CadConCom value={ cadCurObj } onChange={ ( patCadObj ) => setCadCurObj( ( c ) => CADENCE.normalize({ ...c, ...patCadObj }) ) } />
 
-						</div>{ /* What: Cadence Block Div Element. Why: The shared cadence editor needs its own labelled block. How: This wraps a single CadenceControl, wired to cadCurObj. */ }
+						</div>{ /* What: Cadence Block Div Element. Why: The shared cadence editor needs its own labelled block. How: This wraps a single CadConCom, wired to cadCurObj. */ }
 
 						<div className='np-sched-block'>{ /* What: Days Block Div Element. Why: The weekday picker and its own presets form one block. How: This wraps the label, help text, chips, and preset buttons below. */ }
 

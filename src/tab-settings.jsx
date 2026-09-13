@@ -2547,9 +2547,9 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 										options={ [
 
 
-											{ key : 'bottom', label : 'Bottom' },
-											{ key : 'side',   label : 'Side' },
-											{ key : 'top',    label : 'Top' }
+											{ keyStr : 'bottom', labStr : 'Bottom' }, // What: Key String. Why: This is the tab bar's own default placement. How: Segmented compares this against the current tabPlacement and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+											{ keyStr : 'side',   labStr : 'Side' },   // What: Key String. Why: This puts the tab bar in a vertical rail instead. How: Segmented compares this against the current tabPlacement and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+											{ keyStr : 'top',    labStr : 'Top' }     // What: Key String. Why: This puts the tab bar above the page content instead. How: Segmented compares this against the current tabPlacement and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
 
 
 										] }

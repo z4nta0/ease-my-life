@@ -6,9 +6,9 @@
 import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useMemo, React.useEffect, React.useCallback, React.useLayoutEffect, React.Fragment) throughout, instead of importing individual named hooks.
 
 
-import { Btn                     } from './ui.jsx';                    // What: Btn. Why: Every inline confirm/cancel/save action in this file's editors needs a consistently-styled button. How: This is rendered throughout PicCtlCom, CndEdiCom, and TabData's own footers.
-import { CAD_OPTS                } from './cadence-control.jsx';       // What: Cadence Options Array. Why: PicCtlCom's own daily-cadence summary needs the same daily-cadence sub-explanation CadenceControl itself uses. How: This is looked up by key 'daily' inside PicCtlCom's cadence-summary block.
-import { CADENCE                 } from './cadence.js';                // What: Cadence. Why: PicCtlCom needs the shared cadence math/summary helpers to render its own "how often" tip and select options. How: This is called throughout PicCtlCom for tipFor/summary/daysInMonth/unitWord/lockedDayTip.
+import { Btn                     } from './ui.jsx';                    // What: Btn. Why: Every inline confirm/cancel/save action in this file's editors needs a consistently-styled button. How: This is rendered throughout PicConCom, CndEdiCom, and TabData's own footers.
+import { CAD_OPT_ARR                } from './cadence-control.jsx';       // What: Cadence Options Array. Why: PicConCom's own daily-cadence summary needs the same daily-cadence sub-explanation CadConCom itself uses. How: This is looked up by key 'daily' inside PicConCom's cadence-summary block.
+import { CADENCE                 } from './cadence.js';                // What: Cadence. Why: PicConCom needs the shared cadence math/summary helpers to render its own "how often" tip and select options. How: This is called throughout PicConCom for tipFor/summary/daysInMonth/unitWord/lockedDayTip.
 import { clearHelpPickers        } from './help-sample-data.js';       // What: Clear Help Pickers. Why: Help mode's disposable sample pickers must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabData's own unmount cleanup.
 import { clearHelpTasks          } from './help-sample-data.js';       // What: Clear Help Tasks. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabData's own unmount cleanup.
 import { Collapse                } from './ui.jsx';                    // What: Collapse. Why: Nearly every disclosure in this file (picker cards, Controls, Items, conditional rows, item rows) shares the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
@@ -17,15 +17,15 @@ import { ConditionalControls     } from './tab-conditional.jsx';       // What: 
 import { conditionalDraftDefault } from './tab-conditional.jsx';       // What: Conditional Draft Default. Why: A brand-new conditional started from CndManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
 import { DATA_HELP_ITEMS         } from './help-content.jsx';          // What: Data Help Items. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelpOverlay's own items prop.
 import { EntryEditor             } from './tab-today.jsx';             // What: Entry Editor. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
-import { FillButton              } from './ui.jsx';                    // What: Fill Button. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicCtlCom's Item Controls group.
+import { FillButton              } from './ui.jsx';                    // What: Fill Button. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
 import { freezeEditedRow         } from './ui.jsx';                    // What: Freeze Edited Row. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This is called once per picker's item list, given the sorted list and the currently-open item id.
 import { HelpButton              } from './help-mode.jsx';             // What: Help Button. Why: This tab needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOnBoo.
 import { HelpOverlay             } from './help-mode.jsx';             // What: Help Overlay. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is rendered once, driven by helpOnBoo and DATA_HELP_ITEMS.
 import { Icon                    } from './ui.jsx';                    // What: Icon. Why: Nearly every button and row in this file needs a recognizable glyph. How: This is rendered throughout every component below.
 import { InfoTip                 } from './ui.jsx';                    // What: Info Tip. Why: A disabled control or a truncated pill still needs to explain itself on demand. How: This wraps disabled add buttons and truncatable type/group labels throughout this file.
-import { MODES                   } from './seed.js';                   // What: Modes. Why: Every picker/conditional mode's own label and hint text comes from this shared catalog. How: This is read throughout PicCtlCom, CndManCom, and TabData for mode labels and the mode radio group.
+import { MODES                   } from './seed.js';                   // What: Modes. Why: Every picker/conditional mode's own label and hint text comes from this shared catalog. How: This is read throughout PicConCom, CndManCom, and TabData for mode labels and the mode radio group.
 import { normalizeConditionalName} from './pickers.js';                // What: Normalize Conditional Name. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on CndManCom's own in-progress draft name.
-import { normalizeGroupName      } from './pickers.js';                // What: Normalize Group Name. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicCtlCom's own "+ New Group" inline input.
+import { normalizeGroupName      } from './pickers.js';                // What: Normalize Group Name. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
 import { OB_CHECKLIST            } from './onboarding-checklist.js';   // What: Onboarding Checklist. Why: Several add/edit controls in this file must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutorialsInProgress throughout TabData and CndManCom.
 import { PICKERS                 } from './pickers.js';                // What: Pickers. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PICKERS.avgEase.
 import { reduceMotion            } from './ui.jsx';                    // What: Reduce Motion. Why: A user who prefers reduced motion shouldn't see any of this file's own FLIP/scroll/collapse animations. How: This is checked before every animation throughout this file.
@@ -35,7 +35,7 @@ import { seedHelpTasks           } from './help-sample-data.js';       // What: 
 import { SortSelect              } from './ui.jsx';                    // What: Sort Select. Why: Every sortable list in this file needs the same sort control. How: This is rendered for sections, conditional items, and each picker's own item list.
 import { useEmlTouFun            } from './onboarding.jsx';            // What: Use Ease My Life Tour. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's phase/tourId/step fields.
 import { useEscapeCancel         } from './ui.jsx';                    // What: Use Escape Cancel. Why: CndEdiCom's Escape key must cancel the current edit (or back out of a delete confirm) the same way every other editor in the app does. How: This is called once inside CndEdiCom.
-import { WeekdayChips            } from './ui.jsx';                    // What: Weekday Chips. Why: PicCtlCom's own Days control needs the same weekday multi-select every other schedule editor uses. How: This is rendered inside PicCtlCom's "When it runs" group.
+import { WeekdayChips            } from './ui.jsx';                    // What: Weekday Chips. Why: PicConCom's own Days control needs the same weekday multi-select every other schedule editor uses. How: This is rendered inside PicConCom's "When it runs" group.
 
 // #endregion Imports
 
@@ -49,7 +49,7 @@ import { WeekdayChips            } from './ui.jsx';                    // What: 
  * grouped by picker with its weights, active/inactive status, and
  * per-picker Daily-generator scheduling (weekday + skip-holiday gates).
  * A picker's own "how it picks / when it runs / item controls" settings
- * (PicCtlCom) live here rather than in a separate Settings screen, so
+ * (PicConCom) live here rather than in a separate Settings screen, so
  * everything about one picker sits behind one card. Conditionals
  * (CndManCom/CndEdiCom) and Reminders (ReminderManager, a separately
  * maintained module) render as sibling sections above the picker cards.
@@ -64,16 +64,16 @@ import { WeekdayChips            } from './ui.jsx';                    // What: 
 const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditionals/Reminders/picker-card list needs one sort entry per supported key. How: This is passed as SortSelect's own options prop in TabData's own data-sort-bar.
 
 
-	{ key : 'name-asc',    label : 'Name (A–Z)' },                  // What: Name Ascending Option. Why: This is the section list's own default sort. How: SortSelect reads this against TabData's own sectionSort.
-	{ key : 'name-desc',   label : 'Name (Z–A)' },                  // What: Name Descending Option. Why: This is the reverse of the default sort. How: SortSelect reads this against TabData's own sectionSort.
-	{ key : 'type-asc',    label : 'Type (A–Z)' },                  // What: Type Ascending Option. Why: Type is each section's own mode/kind label. How: SortSelect reads this against TabData's own sectionSort.
-	{ key : 'type-desc',   label : 'Type (Z–A)' },                  // What: Type Descending Option. Why: This is the reverse of the type sort. How: SortSelect reads this against TabData's own sectionSort.
-	{ key : 'group-asc',   label : 'Group (A–Z)' },                 // What: Group Ascending Option. Why: Group only applies to a picker card, not Conditionals/Reminders as a whole. How: SortSelect reads this against TabData's own sectionSort.
-	{ key : 'group-desc',  label : 'Group (Z–A)' },                 // What: Group Descending Option. Why: This is the reverse of the group sort. How: SortSelect reads this against TabData's own sectionSort.
-	{ key : 'count-asc',   label : 'Item Count (Low to High)' },         // What: Count Ascending Option. Why: Every section (Conditionals/Reminders/a picker) has some notion of how many entries it holds. How: SortSelect reads this against TabData's own sectionSort.
-	{ key : 'count-desc',  label : 'Item Count (High to Low)' },        // What: Count Descending Option. Why: This is the reverse of the item-count sort. How: SortSelect reads this against TabData's own sectionSort.
-	{ key : 'active-asc',  label : 'Active to Inactive' },              // What: Active Ascending Option. Why: Only a picker card has a meaningful active/inactive state. How: SortSelect reads this against TabData's own sectionSort.
-	{ key : 'active-desc', label : 'Inactive to Active' }               // What: Active Descending Option. Why: This is the reverse of the active sort. How: SortSelect reads this against TabData's own sectionSort.
+	{ keyStr : 'name-asc',    labStr : 'Name (A–Z)' },               // What: Key String. Why: This is the section list's own default sort. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'name-desc',   labStr : 'Name (Z–A)' },               // What: Key String. Why: This is the reverse of the default sort. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'type-asc',    labStr : 'Type (A–Z)' },               // What: Key String. Why: Type is each section's own mode/kind label. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'type-desc',   labStr : 'Type (Z–A)' },               // What: Key String. Why: This is the reverse of the type sort. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'group-asc',   labStr : 'Group (A–Z)' },              // What: Key String. Why: Group only applies to a picker card, not Conditionals/Reminders as a whole. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'group-desc',  labStr : 'Group (Z–A)' },              // What: Key String. Why: This is the reverse of the group sort. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'count-asc',   labStr : 'Item Count (Low to High)' }, // What: Key String. Why: Every section (Conditionals/Reminders/a picker) has some notion of how many entries it holds. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'count-desc',  labStr : 'Item Count (High to Low)' }, // What: Key String. Why: This is the reverse of the item-count sort. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'active-asc',  labStr : 'Active to Inactive' },       // What: Key String. Why: Only a picker card has a meaningful active/inactive state. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'active-desc', labStr : 'Inactive to Active' }        // What: Key String. Why: This is the reverse of the active sort. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
 
 
 ];
@@ -104,18 +104,18 @@ const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditiona
 const CIS_OPT_ARR = [
 
 
-	{ key : 'name-asc',    label : 'Name (A–Z)' },                 // What: Name Ascending Option. Why: This is the conditional list's own default sort. How: SortSelect reads this against CndManCom's own itemSort.
-	{ key : 'name-desc',   label : 'Name (Z–A)' },                 // What: Name Descending Option. Why: This is the reverse of the default sort. How: SortSelect reads this against CndManCom's own itemSort.
-	{ key : 'type-asc',    label : 'Type (A–Z)' },                 // What: Type Ascending Option. Why: Type is each conditional's own mode label. How: SortSelect reads this against CndManCom's own itemSort.
-	{ key : 'type-desc',   label : 'Type (Z–A)' },                 // What: Type Descending Option. Why: This is the reverse of the type sort. How: SortSelect reads this against CndManCom's own itemSort.
-	{ key : 'odds-asc',    label : 'Odds (Low to High)' },              // What: Odds Ascending Option. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds. How: SortSelect reads this against CndManCom's own itemSort.
-	{ key : 'odds-desc',   label : 'Odds (High to Low)' },              // What: Odds Descending Option. Why: This is the reverse of the odds sort. How: SortSelect reads this against CndManCom's own itemSort.
-	{ key : 'boost-asc',   label : 'Boost (Low to High)' },             // What: Boost Ascending Option. Why: Only a dynamic conditional has a meaningful boost value. How: SortSelect reads this against CndManCom's own itemSort.
-	{ key : 'boost-desc',  label : 'Boost (High to Low)' },             // What: Boost Descending Option. Why: This is the reverse of the boost sort. How: SortSelect reads this against CndManCom's own itemSort.
-	{ key : 'range-asc',   label : 'Range (Low to High)' },             // What: Range Ascending Option. Why: Only an ease-up/ease-down conditional has a meaningful soonest/shortest band. How: SortSelect reads this against CndManCom's own itemSort.
-	{ key : 'range-desc',  label : 'Range (High to Low)' },             // What: Range Descending Option. Why: This is the reverse of the range sort. How: SortSelect reads this against CndManCom's own itemSort.
-	{ key : 'active-asc',  label : 'Active to Inactive' },              // What: Active Ascending Option. Why: Every conditional has its own active/inactive state. How: SortSelect reads this against CndManCom's own itemSort.
-	{ key : 'active-desc', label : 'Inactive to Active' }               // What: Active Descending Option. Why: This is the reverse of the active sort. How: SortSelect reads this against CndManCom's own itemSort.
+	{ keyStr : 'name-asc',    labStr : 'Name (A–Z)' },          // What: Key String. Why: This is the conditional list's own default sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'name-desc',   labStr : 'Name (Z–A)' },          // What: Key String. Why: This is the reverse of the default sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'type-asc',    labStr : 'Type (A–Z)' },          // What: Key String. Why: Type is each conditional's own mode label. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'type-desc',   labStr : 'Type (Z–A)' },          // What: Key String. Why: This is the reverse of the type sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'odds-asc',    labStr : 'Odds (Low to High)' },  // What: Key String. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'odds-desc',   labStr : 'Odds (High to Low)' },  // What: Key String. Why: This is the reverse of the odds sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'boost-asc',   labStr : 'Boost (Low to High)' }, // What: Key String. Why: Only a dynamic conditional has a meaningful boost value. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'boost-desc',  labStr : 'Boost (High to Low)' }, // What: Key String. Why: This is the reverse of the boost sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'range-asc',   labStr : 'Range (Low to High)' }, // What: Key String. Why: Only an ease-up/ease-down conditional has a meaningful soonest/shortest band. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'range-desc',  labStr : 'Range (High to Low)' }, // What: Key String. Why: This is the reverse of the range sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'active-asc',  labStr : 'Active to Inactive' },  // What: Key String. Why: Every conditional has its own active/inactive state. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'active-desc', labStr : 'Inactive to Active' }   // What: Key String. Why: This is the reverse of the active sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
 
 
 ];
@@ -145,11 +145,11 @@ const CIS_OPT_ARR = [
  *
  * @param modStr - The picker's own current mode key.
  *
- * @returns An array of { key, label } sort options for that mode.
+ * @returns An array of { keyStr, labStr } sort options for that mode.
  *
  * @example
  * ```ts
- * pisOptFun(modStr) // => array of { key, label } sort options
+ * pisOptFun(modStr) // => array of { keyStr, labStr } sort options
  * ```
  *
 */
@@ -160,8 +160,8 @@ function pisOptFun ( modStr ) {
 	const optArr = [ // What: Options Array. Why: Every mode shares at least the Name sort. How: This starts with the 2 Name entries every mode gets, then more are pushed below depending on modStr.
 
 
-		{ key : 'name-asc',  label : 'Name (A–Z)' }, // What: Name Ascending Option. Why: This is every mode's own default sort. How: SortSelect reads this against the picker's own itemSort.
-		{ key : 'name-desc', label : 'Name (Z–A)' }  // What: Name Descending Option. Why: This is the reverse of the default sort. How: SortSelect reads this against the picker's own itemSort.
+		{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Key String. Why: This is every mode's own default sort. How: SortSelect reads this against the picker's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+		{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }  // What: Key String. Why: This is the reverse of the default sort. How: SortSelect reads this against the picker's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
 
 
 	];
@@ -173,8 +173,8 @@ function pisOptFun ( modStr ) {
 		const ranLblStr = modStr === 'ease-down' ? 'Shortest' : 'Soonest'; // What: Range Label String. Why: The Range sort's own label reads differently for ease-up vs ease-down, matching the item editor's own Soonest/Shortest wording. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
 
 
-		optArr.push( { key : 'count-asc', label : 'Charge (Low to High)' }, { key : 'count-desc', label : 'Charge (High to Low)' } ); // What: Charge Options Push. Why: Ease modes reuse the generic count field to mean charge. How: This appends both charge sort directions.
-		optArr.push( { key : 'range-asc', label : `${ ranLblStr } (Low to High)` }, { key : 'range-desc', label : `${ ranLblStr } (High to Low)` } ); // What: Range Options Push. Why: Ease modes also expose their own soonest/latest band as a sortable Range value. How: This appends both range sort directions, labeled per ranLblStr.
+		optArr.push( { keyStr : 'count-asc', labStr : 'Charge (Low to High)' }, { keyStr : 'count-desc', labStr : 'Charge (High to Low)' } ); // What: Charge Options Push. Why: Ease modes reuse the generic count field to mean charge. How: This appends both charge sort directions.
+		optArr.push( { keyStr : 'range-asc', labStr : `${ ranLblStr } (Low to High)` }, { keyStr : 'range-desc', labStr : `${ ranLblStr } (High to Low)` } ); // What: Range Options Push. Why: Ease modes also expose their own soonest/latest band as a sortable Range value. How: This appends both range sort directions, labeled per ranLblStr.
 
 
 	}
@@ -182,16 +182,16 @@ function pisOptFun ( modStr ) {
 	else if ( modStr === 'weighted' || modStr === 'dynamic' ) {
 
 
-		optArr.push( { key : 'count-asc', label : 'Weight (Low to High)' }, { key : 'count-desc', label : 'Weight (High to Low)' } ); // What: Weight Options Push. Why: Weighted/dynamic modes reuse the generic count field to mean weight. How: This appends both weight sort directions.
+		optArr.push( { keyStr : 'count-asc', labStr : 'Weight (Low to High)' }, { keyStr : 'count-desc', labStr : 'Weight (High to Low)' } ); // What: Weight Options Push. Why: Weighted/dynamic modes reuse the generic count field to mean weight. How: This appends both weight sort directions.
 
 
-		if ( modStr === 'dynamic' ) optArr.push( { key : 'boost-asc', label : 'Boost (Low to High)' }, { key : 'boost-desc', label : 'Boost (High to Low)' } ); // What: Boost Options Guard. Why: Only dynamic (not plain weighted) has a meaningful boost value. How: This appends both boost sort directions only when modStr is 'dynamic'.
+		if ( modStr === 'dynamic' ) optArr.push( { keyStr : 'boost-asc', labStr : 'Boost (Low to High)' }, { keyStr : 'boost-desc', labStr : 'Boost (High to Low)' } ); // What: Boost Options Guard. Why: Only dynamic (not plain weighted) has a meaningful boost value. How: This appends both boost sort directions only when modStr is 'dynamic'.
 
 
 	}
 
 
-	optArr.push( { key : 'active-asc', label : 'Active to Inactive' }, { key : 'active-desc', label : 'Inactive to Active' } ); // What: Active Options Push. Why: Every mode has a meaningful active/inactive state. How: This appends both active sort directions, common to every mode.
+	optArr.push( { keyStr : 'active-asc', labStr : 'Active to Inactive' }, { keyStr : 'active-desc', labStr : 'Inactive to Active' } ); // What: Active Options Push. Why: Every mode has a meaningful active/inactive state. How: This appends both active sort directions, common to every mode.
 
 
 
@@ -204,10 +204,10 @@ function pisOptFun ( modStr ) {
 
 
 
-// #region PicCtlCom
+// #region PicConCom
 
 /**
- * PicCtlCom = Picker Controls Component
+ * PicConCom = Picker Controls Component
  *
  * @summary
  * A picker's own "how it picks / when it runs / item controls" body,
@@ -257,12 +257,12 @@ function pisOptFun ( modStr ) {
  *
  * @example
  * ```tsx
- * PicCtlCom({ picker, items, inDaily, dailyIds, ... }) // => <PicCtlCom />
+ * PicConCom({ picker, items, inDaily, dailyIds, ... }) // => <PicConCom />
  * ```
  *
 */
 
-function PicCtlCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dailyIds : daiIdeArr, allGroups : allGroArr, conditionals : cndIteArr = [], actions : actObj, onCollapse : onColFun, onRequestDelete : onReqDelFun, isNewDraft : isaNewBoo, itemsSectionOpen : iteSecBoo, hasOpenNewItem : hasNewBoo, onOpenItemsSection : onOpnSecFun, onSaveNew : onSavNewFun, onCancelNew : onCanNewFun } ) {
+function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dailyIds : daiIdeArr, allGroups : allGroArr, conditionals : cndIteArr = [], actions : actObj, onCollapse : onColFun, onRequestDelete : onReqDelFun, isNewDraft : isaNewBoo, itemsSectionOpen : iteSecBoo, hasOpenNewItem : hasNewBoo, onOpenItemsSection : onOpnSecFun, onSaveNew : onSavNewFun, onCancelNew : onCanNewFun } ) {
 
 
 	const isaEasBoo = picObj.mode === 'ease-up' || picObj.mode === 'ease-down'; // What: Is-A Ease Boolean. Why: Several sections below (Item Controls' own Fill/Refill, the item sort options) only apply to an ease-mode picker. How: This is true whenever picObj.mode is 'ease-up' or 'ease-down'.
@@ -704,7 +704,7 @@ function PicCtlCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 	return (
 
 
-		<div className='rd-ctl-body'>{ /* What: Controls Body Div Element. Why: This is PicCtlCom's own root element, holding Picker Details, How it picks, When it runs, Item Controls, and the footer. How: This renders as a plain div; every field below commits through actObj. */ }
+		<div className='rd-ctl-body'>{ /* What: Controls Body Div Element. Why: This is PicConCom's own root element, holding Picker Details, How it picks, When it runs, Item Controls, and the footer. How: This renders as a plain div; every field below commits through actObj. */ }
 
 
 			<div className='rd-ctl-group rd-ctl-group--basics'>{ /* What: Basics Group Div Element. Why: Name and Group are grouped as the picker's own basic identity fields. How: This wraps the subhead and the name/group rows below. */ }
@@ -1059,7 +1059,7 @@ function PicCtlCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 									const tailEndStr = ', and the pick will persist until marked as completed';                                                                 // What: Tail End String. Why: Every non-daily branch below ends with the same trailing clause. How: This is appended to each branch's own JSX below.
 
 
-									if ( cadStr === 'daily' ) return ( CAD_OPTS.find( ( optCurObj ) => optCurObj.key === 'daily' ) || {} ).sub; // What: Daily Branch Return. Why: The daily case reuses CadenceControl's own canonical sub-explanation rather than duplicating it. How: This looks up the 'daily' entry in CAD_OPTS.
+									if ( cadStr === 'daily' ) return ( CAD_OPT_ARR.find( ( optCurObj ) => optCurObj.keyStr === 'daily' ) || {} ).subEle; // What: Daily Branch Return. Why: The daily case reuses CadConCom's own canonical sub-explanation rather than duplicating it. How: This looks up the 'daily' entry in CAD_OPT_ARR.
 
 									if ( cadStr === 'weekly' ) return <>surfaces once a week, <strong>every { dayFulArr[ picObj.anchorDow ?? 0 ] }</strong>{ tailEndStr }</>; // What: Weekly Branch Return. Why: A weekly cadence just needs its own anchor weekday named. How: This reads picObj.anchorDow into dayFulArr.
 
@@ -1539,7 +1539,7 @@ function PicCtlCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 }
 
-// #endregion PicCtlCom
+// #endregion PicConCom
 
 
 
@@ -1591,7 +1591,7 @@ function PicCtlCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, actions : actObj, isNew : isaNewBoo, nameError : namErrStr, tidyName : tidNamStr, onClose : onCloFun, onDiscard : onDisFun, onSaveNew : onSavNewFun, onDelete : onDelFun } ) {
 
 
-	const CndCtlCom = ConditionalControls; // What: Conditional Control Component. Why: This scopes ConditionalControls under a name matching this file's own component-naming convention, without renaming the actual import. How: This is rendered directly as a JSX tag below.
+	const CndConCom = ConditionalControls; // What: Conditional Control Component. Why: This scopes ConditionalControls under a name matching this file's own component-naming convention, without renaming the actual import. How: This is rendered directly as a JSX tag below.
 	const [ conDelBoo, setConDelBoo ] = React.useState( false ); // What: Confirm Delete Boolean And Setter. Why: Deleting an existing conditional needs an inline confirm step before it actually happens. How: This is flipped true by the Delete button and read below to swap in the confirm row.
 
 
@@ -1626,7 +1626,7 @@ function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, acti
 
 				{ namErrStr && <p className='np-error rd-cnd-name-err'>{ namErrStr }</p> }{ /* What: Name Error Check. Why: An invalid/colliding name needs an inline warning right above the fields. How: This renders the message only while namErrStr holds one. */ }
 
-				<CndCtlCom draft={ drfObj } onChange={ setDrfObj } variant='inline' hideName />{ /* What: Conditional Control Component. Why: Every non-name field (type + settings) is edited through the exact same control the Pickers create-flow uses. How: This is passed the current draft, committing every change back via setDrfObj. */ }
+				<CndConCom draft={ drfObj } onChange={ setDrfObj } variant='inline' hideName />{ /* What: Conditional Control Component. Why: Every non-name field (type + settings) is edited through the exact same control the Pickers create-flow uses. How: This is passed the current draft, committing every change back via setDrfObj. */ }
 
 				<div className='rd-ctl-group rd-ctl-group--foot'>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the delete confirm) needs its own bottom group. How: This renders whichever of the 2 footer states below matches conDelBoo. */ }
 
@@ -1703,7 +1703,7 @@ function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, acti
  * LOCALLY (not written to the store) until Save, so a reload or
  * tab-switch mid-create discards it, mirroring the "nothing committed
  * until Save" contract TabData's own new-picker draft flow uses (that
- * one is backed by a real hidden picker instead, since PicCtlCom's own
+ * one is backed by a real hidden picker instead, since PicConCom's own
  * fields already write straight to the store). Delete detaches the
  * conditional from any pickers that reference it (the store itself
  * handles that cleanup).
@@ -2137,14 +2137,14 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 
 	const detPicBoo = touObj.phase === 'tour' && touObj.tourId === 'appfeature-feat_edit_item' && ( touObj.step === 3 || touObj.step === 5 || touObj.step === 6 ); // What: Disable Edit-Tour Picker Boolean. Why: Steps 4/6/7 of the "edit your first item" tour all depend on this exact picker staying expanded as their own target. How: This guards the picker header's own collapse toggle during those 3 steps.
-	const detCtlBoo = touObj.phase === 'tour' && touObj.tourId === 'appfeature-feat_edit_item' && ( touObj.step === 5 || touObj.step === 6 );                     // What: Disable Edit-Tour Controls Boolean. Why: Steps 6/7 would let the highlighted box balloon to include Controls, which those steps were never about. How: This guards the Controls header's own toggle during those 2 steps.
+	const detConBoo = touObj.phase === 'tour' && touObj.tourId === 'appfeature-feat_edit_item' && ( touObj.step === 5 || touObj.step === 6 );                     // What: Disable-Edit-Tour Control Boolean. Why: Steps 6/7 would let the highlighted box balloon to include Controls, which those steps were never about. How: This guards the Controls header's own toggle during those 2 steps.
 	const detIteBoo = touObj.phase === 'tour' && touObj.tourId === 'appfeature-feat_edit_item' && ( touObj.step === 3 || touObj.step === 5 || touObj.step === 6 ); // What: Disable Edit-Tour Items Boolean. Why: Collapsing Items during steps 6/7 would hide the item rows/Add button those steps depend on. How: This guards the Items header's own toggle during all 3 steps.
 	const detAddBoo = touObj.phase === 'tour' && touObj.tourId === 'appfeature-feat_edit_item' && ( touObj.step === 5 || touObj.step === 6 );                     // What: Disable Edit-Tour Add Boolean. Why: Step 6's own body text says this button is disabled for the tutorial, and a brand-new item would shift every row's position out from under its "click any of these" framing. How: This guards the Add button during steps 6/7.
 
 	const tutProBoo = OB_CHECKLIST.tutorialsInProgress( staAppObj ); // What: Tutorial Progress Boolean. Why: Several add/edit controls (distinct from the detAddBoo tour above, which only runs AFTER this is always false) must stay disabled until the Welcome Tour's own checklist finishes. How: This calls the shared OB_CHECKLIST helper against the whole app state.
 
 	const hetPicBoo = touObj.phase === 'tour' && touObj.tourId === 'appfeature-feat_edit_item' && touObj.step === 1; // What: Highlight Edit-Tour Picker Boolean. Why: Step 2 targets EVERY picker's own .cat section; a per-element fade (rather than the tour engine's default single-box pulse) is needed to show "any of these" rather than "this one group". How: This is true only during Step 1 (the step BEFORE the click it's preparing for).
-	const hetCtlBoo = touObj.phase === 'tour' && touObj.tourId === 'appfeature-feat_edit_item' && touObj.step === 2; // What: Highlight Edit-Tour Controls Boolean. Why: Step 3 targets a single Controls header. How: This is true only during Step 2.
+	const hetConBoo = touObj.phase === 'tour' && touObj.tourId === 'appfeature-feat_edit_item' && touObj.step === 2; // What: Highlight-Edit-Tour Control Boolean. Why: Step 3 targets a single Controls header. How: This is true only during Step 2.
 	const hetIteBoo = touObj.phase === 'tour' && touObj.tourId === 'appfeature-feat_edit_item' && touObj.step === 4; // What: Highlight Edit-Tour Items Boolean. Why: Step 5 targets a single Items header. How: This is true only during Step 4.
 	const hetRowBoo = touObj.phase === 'tour' && touObj.tourId === 'appfeature-feat_edit_item' && touObj.step === 5; // What: Highlight Edit-Tour Row Boolean. Why: Step 6 targets each item row's own .rd-item wrapper, using per-side borders rather than a shared outline. How: This is true only during Step 5.
 
@@ -2225,7 +2225,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 	const [ newDrfStr, setNewDrfStr ]   = React.useState( null );  // What: New Draft String And Setter. Why: The "Create Picker" trigger creates a REAL (but hidden) picker immediately; only its id is held here, since the card below always reads the LIVE picker from staAppObj.pickers, same as any other card. How: This is set by strNewFun and cleared by canNewFun/savNewFun.
 	const [ drfIteBoo, setDrfIteBoo ]   = React.useState( false ); // What: Draft Items Boolean And Setter. Why: The draft's own Items section starts closed, unlike a real picker's default-open one, since there's nothing to add to yet. How: This is toggled by the footer's "Add Items" button or the Items section's own header.
-	const [ penAutBoo, setPenAutBoo ]   = React.useState( false ); // What: Pending Auto Boolean And Setter. Why: The footer's first "Add Items" click should ALSO land straight in a ready-to-type new-item form, but PicCtlCom's own Items Collapse only starts mounting children one render after drfIteBoo flips, so this defers the auto-add by one effect tick. How: This is flagged true by onOpnSecFun and consumed by the effect below.
+	const [ penAutBoo, setPenAutBoo ]   = React.useState( false ); // What: Pending Auto Boolean And Setter. Why: The footer's first "Add Items" click should ALSO land straight in a ready-to-type new-item form, but PicConCom's own Items Collapse only starts mounting children one render after drfIteBoo flips, so this defers the auto-add by one effect tick. How: This is flagged true by onOpnSecFun and consumed by the effect below.
 
 	React.useEffect( () => { // What: Pending Auto Add Effect. Why: Deferring the auto-add by one render lets both the reveal and the new item's own open state land in the SAME next render, instead of racing the Collapse's own child-mount delay. How: This creates a brand-new item and opens it, exactly once per penAutBoo flip.
 
@@ -2914,8 +2914,8 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 					const secOpnBoo  = isaDrfBoo || colMapObj[ picCurObj.id ] === false;                                // What: Section Open Boolean. Why: A draft is always expanded (no toggle at all, see the header button's disabled prop below); an existing picker reads its own persisted state. How: This is true for a draft, or when the persisted entry is explicitly false.
 					const isaEasBoo  = picCurObj.mode === 'ease-up' || picCurObj.mode === 'ease-down';                   // What: Is-A Ease Boolean. Why: The item sort options and the meta text per item both depend on this. How: This is true whenever picCurObj.mode is 'ease-up' or 'ease-down'.
 					const useWgtBoo  = picCurObj.mode === 'weighted' || picCurObj.mode === 'dynamic';                    // What: Uses Weight Boolean. Why: Same reasoning as isaEasBoo, for the weighted/dynamic modes. How: This is true whenever picCurObj.mode is 'weighted' or 'dynamic'.
-					const inDaiBoo   = staAppObj.daily.pickerIds.includes( picCurObj.id );                              // What: In Daily Boolean. Why: PicCtlCom needs to know this picker's own current daily-generator membership. How: This checks staAppObj.daily.pickerIds for picCurObj.id.
-					const ctlColBoo  = !!colMapObj[ picCurObj.id + ':controls' ];                                        // What: Controls Collapsed Boolean. Why: The Controls disclosure's own persisted state is keyed separately from the card's own open/closed state. How: This reads colMapObj at the ':controls' suffix key.
+					const inDaiBoo   = staAppObj.daily.pickerIds.includes( picCurObj.id );                              // What: In Daily Boolean. Why: PicConCom needs to know this picker's own current daily-generator membership. How: This checks staAppObj.daily.pickerIds for picCurObj.id.
+					const conColBoo  = !!colMapObj[ picCurObj.id + ':controls' ];                                        // What: Controls Collapsed Boolean. Why: The Controls disclosure's own persisted state is keyed separately from the card's own open/closed state. How: This reads colMapObj at the ':controls' suffix key.
 					const iteColBoo  = isaDrfBoo ? !drfIteBoo : !!colMapObj[ picCurObj.id + ':items' ];                  // What: Items Collapsed Boolean. Why: A draft's own Items section tracks drfIteBoo instead of the normal persisted map. How: This reads drfIteBoo for a draft, otherwise the persisted entry at the ':items' suffix key.
 
 
@@ -3070,26 +3070,26 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 									<button
 										type='button'
-										className={ ` rd-ctl   ${ hetCtlBoo ? 'ob-tour-pulse' : '' } ` }
-										disabled={ detCtlBoo }
-										aria-expanded={ !ctlColBoo }
+										className={ ` rd-ctl   ${ hetConBoo ? 'ob-tour-pulse' : '' } ` }
+										disabled={ detConBoo }
+										aria-expanded={ !conColBoo }
 										onClick={ () => actObj.toggleControlsCollapsed( picCurObj.id + ':controls' ) }
 									>{ /* What: Controls Toggle Button Element. Why: This picker's own pick-algorithm/schedule config moved here from Settings, so it needs its own nested disclosure toggle. How: This toggles the persisted ':controls' entry, disabled during the guarded tour step. */ }
 
 
 										<span className='rd-ctl-l'>{ /* What: Controls Left Span Element. Why: The chevron and the "Controls" kicker belong together. How: This wraps both spans below. */ }
-											<span className={ ` chev   ${ ctlColBoo ? '' : 'is-open' } ` }><Icon name='chev' size={ 12 } />{ /* What: Icon. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }</span>
+											<span className={ ` chev   ${ conColBoo ? '' : 'is-open' } ` }><Icon name='chev' size={ 12 } />{ /* What: Icon. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }</span>
 											<span className='kicker'>Controls</span>
 										</span>
 
-										{ ctlColBoo && <span className='rd-ctl-sum'>{ Object.keys( MODES ).length } options</span> }{ /* What: Controls Summary Check. Why: A collapsed disclosure still needs a hint of what's inside. How: This renders only while ctlColBoo is true. */ }
+										{ conColBoo && <span className='rd-ctl-sum'>{ Object.keys( MODES ).length } options</span> }{ /* What: Controls Summary Check. Why: A collapsed disclosure still needs a hint of what's inside. How: This renders only while conColBoo is true. */ }
 
 
 									</button>
 
-									<Collapse open={ !ctlColBoo } instant={ isaDrfBoo }>{ /* What: Collapse. Why: PicCtlCom itself is expensive/stateful enough that it only needs to exist while the Controls disclosure is actually open. How: This opens per !ctlColBoo. */ }
+									<Collapse open={ !conColBoo } instant={ isaDrfBoo }>{ /* What: Collapse. Why: PicConCom itself is expensive/stateful enough that it only needs to exist while the Controls disclosure is actually open. How: This opens per !conColBoo. */ }
 
-										<PicCtlCom
+										<PicConCom
 											picker={ picCurObj }
 											items={ iteArr }
 											inDaily={ inDaiBoo }
@@ -3105,7 +3105,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 											onOpenItemsSection={ () => { setDrfIteBoo( true ); setPenAutBoo( true ); } }
 											onSaveNew={ savNewFun }
 											onCancelNew={ canNewFun }
-										/>{ /* What: PicCtlCom. Why: This is this picker's own full Controls body. How: This is passed the live picker/items/schedule fields and every handler this card's own draft lifecycle needs. */ }
+										/>{ /* What: PicConCom. Why: This is this picker's own full Controls body. How: This is passed the live picker/items/schedule fields and every handler this card's own draft lifecycle needs. */ }
 
 									</Collapse>
 

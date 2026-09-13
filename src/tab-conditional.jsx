@@ -341,7 +341,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 				<Collapse open={ curModStr === 'random' }>{ /* What: Random Settings Collapse Element. Why: The random mode has no adjustable settings at all, just a note explaining why. How: This animates the fixed 50/50 explanation open only while curModStr is 'random'. */ }
 
 
-					<div className='cnd-typectl pie-rows'>{ /* What: Random Typectl Div Element. Why: This groups the random mode's own single explanatory row using the shared pie-rows layout every other mode's settings reuse. How: This wraps the one pie-row below. */ }
+					<div className='cnd-typectl pie-rows'>{ /* What: Random Type Control Div Element. Why: This groups the random mode's own single explanatory row using the shared pie-rows layout every other mode's settings reuse. How: This wraps the one pie-row below. */ }
 
 
 						<div className='pie-row'>{ /* What: Random Row Div Element. Why: This is the shared row layout (a label plus a control) reused across every mode's settings. How: This wraps the label block and the "No weight" text in place of an actual control. */ }
@@ -365,10 +365,11 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 				</Collapse>
+
 				<Collapse open={ useWeiBoo }>{ /* What: Weight Settings Collapse Element. Why: Only the weighted and dynamic modes have an adjustable odds percentage. How: This animates the Odds row, and for dynamic the nested Boost row, open only while useWeiBoo is true. */ }
 
 
-					<div className='cnd-typectl pie-rows'>{ /* What: Weight Typectl Div Element. Why: This groups the Odds row and the dynamic-only Boost row using the shared pie-rows layout. How: This wraps the Odds pie-row and the nested Boost Collapse below. */ }
+					<div className='cnd-typectl pie-rows'>{ /* What: Weight Type Control Div Element. Why: This groups the Odds row and the dynamic-only Boost row using the shared pie-rows layout. How: This wraps the Odds pie-row and the nested Boost Collapse below. */ }
 
 
 						<div className='pie-row'>{ /* What: Odds Row Div Element. Why: This is the shared row layout for the odds percentage control. How: This wraps the label block and the plus/minus stepper below. */ }
@@ -419,7 +420,9 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 								</div>
-								<div className='pie-ctl'>{ /* What: Boost Ctl Div Element. Why: The control itself sits apart from the row's own label block. How: This wraps the BoostReset control below. */ }
+
+
+								<div className='pie-ctl'>{ /* What: Boost Control Div Element. Why: The control itself sits apart from the row's own label block. How: This wraps the BoostReset control below. */ }
 
 
 									<BoostReset
@@ -442,10 +445,11 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 				</Collapse>
+
 				<Collapse open={ isaEasBoo }>{ /* What: Ease Settings Collapse Element. Why: Only the ease-up and ease-down modes have a Soonest/Latest drift range and a Fill/Refill control. How: This animates the whole ease-mode settings block open only while isaEasBoo is true. */ }
 
 
-					<div className='cnd-typectl pie-rows'>{ /* What: Ease Typectl Div Element. Why: cnd-ease-up-row/cnd-ease-down-row (in addition to the shared pie-row) are pure selector hooks for help mode, see help-content.jsx's newCondEaseUp/newCondEaseDown, split by direction the same way EntryEditor's own pie-ease-up-row/pie-ease-down-row are, since Soonest/Latest/Fill and Shortest/Longest/Refill need entirely different tip copy. How: This groups the Soonest/Shortest row, the Latest/Longest row, and the direction-specific Fill/Refill row below. */ }
+					<div className='cnd-typectl pie-rows'>{ /* What: Ease Type Control Div Element. Why: cnd-ease-up-row/cnd-ease-down-row (in addition to the shared pie-row) are pure selector hooks for help mode, see help-content.jsx's newCondEaseUp/newCondEaseDown, split by direction the same way EntryEditor's own pie-ease-up-row/pie-ease-down-row are, since Soonest/Latest/Fill and Shortest/Longest/Refill need entirely different tip copy. How: This groups the Soonest/Shortest row, the Latest/Longest row, and the direction-specific Fill/Refill row below. */ }
 
 
 						<div className={ `pie-row   ${ isaDowBoo ? 'cnd-ease-down-row' : 'cnd-ease-up-row' }` }>{ /* What: Soonest Row Div Element. Why: This is the shared row layout for the lower drift bound, labeled Shortest instead for ease-down. How: This wraps the label block and the NumStepper control below. */ }
@@ -462,7 +466,9 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 							</div>
-							<div className='pie-ctl'>{ /* What: Soonest Ctl Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumStepper and its own unit label below. */ }
+
+
+							<div className='pie-ctl'>{ /* What: Soonest Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumStepper and its own unit label below. */ }
 
 
 								<NumStepper
@@ -493,7 +499,9 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 							</div>
-							<div className='pie-ctl'>{ /* What: Latest Ctl Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumStepper and its own unit label below. */ }
+
+
+							<div className='pie-ctl'>{ /* What: Latest Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumStepper and its own unit label below. */ }
 
 
 								<NumStepper
@@ -572,7 +580,9 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 				</Collapse>
-				<div className='cnd-typectl pie-rows'>{ /* What: Active Typectl Div Element. Why: The Active toggle applies regardless of mode, so it sits outside every mode-gated Collapse above. How: This wraps the one Active pie-row below. */ }
+
+
+				<div className='cnd-typectl pie-rows'>{ /* What: Active Type Control Div Element. Why: The Active toggle applies regardless of mode, so it sits outside every mode-gated Collapse above. How: This wraps the one Active pie-row below. */ }
 
 
 					<div className='pie-row'>{ /* What: Active Row Div Element. Why: This is the shared row layout for the enabled/disabled toggle. How: This wraps the label block and the switch button below. */ }

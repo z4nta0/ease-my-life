@@ -58,8 +58,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		key    : 'once', // What: Key. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		label  : 'Once', // What: Label. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'once', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
+		labStr : 'Once', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>until marked as completed</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'once' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -68,8 +68,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		key    : 'interval',      // What: Key. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		label  : 'Every N days', // What: Label. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'interval',      // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
+		labStr : 'Every N days', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>as often as specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'interval' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -78,8 +78,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		key    : 'weekly', // What: Key. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		label  : 'Weekly', // What: Label. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'weekly', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
+		labStr : 'Weekly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>on the days specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'weekly' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -88,8 +88,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		key    : 'monthly', // What: Key. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		label  : 'Monthly', // What: Label. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'monthly', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
+		labStr : 'Monthly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>every month as specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'monthly' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -98,8 +98,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		key    : 'annual', // What: Key. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		label  : 'Yearly', // What: Label. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'annual', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
+		labStr : 'Yearly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>every year as specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'annual' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -125,7 +125,7 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.options     - The array of { key, label } entries this
+ * @param props.options     - The array of { keyStr, labStr } entries this
  *                             control renders one button per; also read
  *                             directly by cadence-control.jsx and
  *                             tab-settings.jsx when they build their own
@@ -151,7 +151,7 @@ function Segmented ( { options, value, onChange, ariaLabel, describedBy } ) {
 
 	const segEleRef = React.useRef( null ); // What: Segment Element Reference. Why: plaThuFun needs a handle on the actual group DOM node to query and measure it. How: This is attached via the group div's own ref prop below.
 	const thuEleRef = React.useRef( null ); // What: Thumb Element Reference. Why: plaThuFun needs a handle on the sliding thumb span to move and resize it. How: This is attached via the thumb span's own ref prop below.
-	const preIndRef = React.useRef( options.findIndex( ( optConObj ) => optConObj.key === value ) ); // What: Previous Index Reference. Why: plaThuFun needs to know which direction the selection just moved in, to decide which edge of the thumb leads the animation. How: This starts at the initially-selected entry's own index and is updated at the end of every plaThuFun run.
+	const preIndRef = React.useRef( options.findIndex( ( optConObj ) => optConObj.keyStr === value ) ); // What: Previous Index Reference. Why: plaThuFun needs to know which direction the selection just moved in, to decide which edge of the thumb leads the animation. How: This starts at the initially-selected entry's own index and is updated at the end of every plaThuFun run.
 
 
 	const plaThuFun = React.useCallback( ( aniMovBoo ) => { // What: Place Thumb Function. Why: This centralizes measuring the active button and moving/resizing the thumb span to match it, with or without an animated transition. How: This is called by both layout effects below, once on every selection/resize and once (with animation) on every value change.
@@ -170,7 +170,7 @@ function Segmented ( { options, value, onChange, ariaLabel, describedBy } ) {
 
 
 
-		const curIndNum = options.findIndex( ( optConObj ) => optConObj.key === value ); // What: Current Index Number. Why: This is compared against the previous index to decide which direction the thumb is moving. How: This looks up the currently-selected entry's own position in options.
+		const curIndNum = options.findIndex( ( optConObj ) => optConObj.keyStr === value ); // What: Current Index Number. Why: This is compared against the previous index to decide which direction the thumb is moving. How: This looks up the currently-selected entry's own position in options.
 		const movDirNum = curIndNum - preIndRef.current;                                  // What: Move Direction Number. Why: A positive value means the selection moved right, negative means left, deciding which edge of the thumb leads. How: This subtracts the previous index from curIndNum.
 		const redMotBoo = window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches; // What: Reduced Motion Boolean. Why: A user who prefers reduced motion shouldn't see the thumb glide between options. How: This safely checks matchMedia support before querying the prefers-reduced-motion media query's current match state.
 
@@ -259,17 +259,17 @@ function Segmented ( { options, value, onChange, ariaLabel, describedBy } ) {
 			></span>{ /* What: Thumb Span Element. Why: This is the small sliding pill plaThuFun positions and sizes via direct style writes. How: This starts with no inline position at all, until the first layout effect above places it. */ }
 
 
-			{ options.map( ( optConObj ) => ( // What: Option Button List Render. Why: One button is needed per configured option, and the set of options is data, not hardcoded markup. How: This maps options to one button element per entry, keyed by its own key.
+			{ options.map( ( optConObj ) => ( // What: Option Button List Render. Why: One button is needed per configured option, and the set of options is data, not hardcoded markup. How: This maps options to one button element per entry, keyed by its own keyStr.
 
 
 				<button
-					key={ optConObj.key }
-					className={ `seg-btn ${ value === optConObj.key ? 'is-on' : '' }` }
+					key={ optConObj.keyStr }
+					className={ `seg-btn ${ value === optConObj.keyStr ? 'is-on' : '' }` }
 					type='button'
-					aria-pressed={ value === optConObj.key }
+					aria-pressed={ value === optConObj.keyStr }
 					aria-describedby={ describedBy }
-					onClick={ () => onChange( optConObj.key ) }
-				>{ optConObj.label }</button> // What: Option Button Element. Why: This is the clickable control for selecting this specific option. How: This marks itself pressed when its own key matches value, and calls onChange with its key when clicked.
+					onClick={ () => onChange( optConObj.keyStr ) }
+				>{ optConObj.labStr }</button> // What: Option Button Element. Why: This is the clickable control for selecting this specific option. How: This marks itself pressed when its own keyStr matches value, and calls onChange with its keyStr when clicked.
 
 
 			) ) }
@@ -2951,12 +2951,12 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
 const ITE_SOR_ARR = [ // What: Item Sort Array. Why: ReminderManager's own Items list sort control needs one entry per supported sort. How: This is passed as SortSelect's own options prop from ReminderManager below.
 
 
-	{ key : 'name-asc',  label : 'Name (A–Z)' }, // What: Name Ascending Option. Why: This is the section's own default sort. How: SortSelect reads this against ReminderManager's own itemSort.
-	{ key : 'name-desc', label : 'Name (Z–A)' }, // What: Name Descending Option. Why: This is the reverse of the default sort. How: SortSelect reads this against ReminderManager's own itemSort.
-	{ key : 'type-asc',  label : 'Type (A–Z)' }, // What: Type Ascending Option. Why: Type (One-time vs Recurring) is the only other text-like field reminders have. How: SortSelect reads this against ReminderManager's own itemSort.
-	{ key : 'type-desc', label : 'Type (Z–A)' }, // What: Type Descending Option. Why: This is the reverse of the type sort. How: SortSelect reads this against ReminderManager's own itemSort.
-	{ key : 'date-asc',  label : 'Soonest' },          // What: Date Ascending Option. Why: Date sorts by each reminder's own next eligible occurrence. How: SortSelect reads this against ReminderManager's own itemSort.
-	{ key : 'date-desc', label : 'Latest' }            // What: Date Descending Option. Why: This is the reverse of the date sort. How: SortSelect reads this against ReminderManager's own itemSort.
+	{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Key String. Why: This is the section's own default sort. How: SortSelect reads this against ReminderManager's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }, // What: Key String. Why: This is the reverse of the default sort. How: SortSelect reads this against ReminderManager's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'type-asc',  labStr : 'Type (A–Z)' }, // What: Key String. Why: Type (One-time vs Recurring) is the only other text-like field reminders have. How: SortSelect reads this against ReminderManager's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'type-desc', labStr : 'Type (Z–A)' }, // What: Key String. Why: This is the reverse of the type sort. How: SortSelect reads this against ReminderManager's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'date-asc',  labStr : 'Soonest' },    // What: Key String. Why: Date sorts by each reminder's own next eligible occurrence. How: SortSelect reads this against ReminderManager's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'date-desc', labStr : 'Latest' }      // What: Key String. Why: This is the reverse of the date sort. How: SortSelect reads this against ReminderManager's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
 
 
 ];

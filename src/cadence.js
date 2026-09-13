@@ -160,8 +160,8 @@ function tdmResFun( picCadObj, yeaValNum, monOneNum, domFldStr ) { return picCad
 
 
 
-const CAD_OPT_ARR = [ 'daily', 'weekly', 'monthly', 'yearly' ];         // What: Cadence Option Array. Why: This is the fixed set of valid cadence values every picker's own cadence field must fall back to one of. How: This is read by isaCadFun below, and re-exported as CADENCES on the CADENCE object.
-const isaCadFun   = ( cadValStr ) => CAD_OPT_ARR.includes( cadValStr ); // What: Is-A Cadence Function. Why: norCadFun needs to tell a real, already-valid cadence value apart from a missing or corrupted one. How: This checks cadValStr against CAD_OPT_ARR.
+const CAD_STR_ARR = [ 'daily', 'weekly', 'monthly', 'yearly' ];         // What: Cadence String Array. Why: This is the fixed set of valid cadence values every picker's own cadence field must fall back to one of. How: This is read by isaCadFun below, and re-exported as CADENCES on the CADENCE object.
+const isaCadFun   = ( cadValStr ) => CAD_STR_ARR.includes( cadValStr ); // What: Is-A Cadence Function. Why: norCadFun needs to tell a real, already-valid cadence value apart from a missing or corrupted one. How: This checks cadValStr against CAD_STR_ARR.
 
 
 
@@ -703,7 +703,7 @@ function enfWeeFun( picCadObj ) {
 export const CADENCE = { // What: Cadence Namespace Object. Why: store.jsx, tab-today.jsx, tab-picker.jsx, tab-data.jsx, tab-stats.jsx, day-log.jsx, and cadence-control.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on.
 
 
-	CADENCES            : CAD_OPT_ARR, // What: Cadences. Why: Callers (a picker's own cadence dropdown) need the fixed list of valid cadence option values. How: This re-exports CAD_OPT_ARR under its original external property name.
+	CADENCES            : CAD_STR_ARR, // What: Cadences. Why: Callers (a picker's own cadence dropdown) need the fixed list of valid cadence option values. How: This re-exports CAD_STR_ARR under its original external property name.
 	isCadence           : isaCadFun,   // What: Is Cadence. Why: Callers validate an arbitrary string as a real cadence value by this exact name. How: This re-exports isaCadFun under its original external property name.
 	unitWord            : uniWorFun,   // What: Unit Word. Why: Callers need a cadence's own human-readable unit word (day/week/month/year) by this exact name. How: This re-exports uniWorFun under its original external property name.
 	normalize           : norCadFun,   // What: Normalize. Why: store.jsx calls this to fill in every cadence-related field a picker needs, defaulted consistently. How: This re-exports norCadFun under its original external property name.

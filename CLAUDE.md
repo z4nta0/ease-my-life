@@ -1430,6 +1430,10 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - `tsk` → `tas` (Task)
   - `fmt` → `for` (Format)
   - `pkr` → `pic` (Picker)
+  - `ctl` → `con` (Control — note this collides with `cfg` → `con`
+    (Config) above; when both "Control" and "Config/Configuration" are
+    real concepts in the same name, resolve the collision via the
+    normal Naming-conflict resolution escalation rather than guessing)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
@@ -1446,9 +1450,13 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     updating `main.jsx`'s import and its `<App />` JSX usage. Check for
     other importers before committing to a rename like this.
 - **Exemptions** — standard React/DOM convention names are left as-is,
-  entirely exempt from the rule: `onChange`, `className`, and React's own
-  hooks (`useState`, `useRef`, `useLayoutEffect`, `useEffect`,
-  `useCallback`, ...).
+  entirely exempt from the rule: `onChange`, `className`, `value` (a
+  controlled component's own current value, always paired with
+  `onChange` the same way a native `<input value=... onChange=...>`
+  is — confirmed already left bare consistently everywhere this pairing
+  is used in this codebase, e.g. `Segmented`, `SortSelect`,
+  `CadenceControl`), and React's own hooks (`useState`, `useRef`,
+  `useLayoutEffect`, `useEffect`, `useCallback`, ...).
 - **"on"-prefix pattern**: a custom callback prop/handler that isn't the
   exact standard `onChange` keeps the "on" prefix (since "on" itself is
   standard convention) and applies the normal 9-character/3-segment rule

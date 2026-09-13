@@ -1500,8 +1500,8 @@ function compareSortEntries ( rowAObj, rowBObj, sorKeyStr ) {
  * @param props.id      - The id shared between the label's htmlFor and
  *                        the select itself.
  * @param props.label   - The visible label text.
- * @param props.options - The list of { key, label } choices to render
- *                        as options.
+ * @param props.options - The list of { keyStr, labStr } choices to
+ *                        render as options.
  * @param props.value   - The currently-selected option's own key.
  * @param props.onChange - Receives the newly-chosen option's own key.
  *
@@ -1544,7 +1544,7 @@ function SortSelect ( { id, label, options, value, onChange } ) {
 			>{ /* What: Sort Select Element. Why: This is the actual control the user picks a sort option from. How: This renders one <option> per entry in options below, and reports the chosen key up via onChange. */ }
 
 
-				{ options.map( ( optCurObj ) => <option key={ optCurObj.key } value={ optCurObj.key }>{ optCurObj.label }</option> ) }{ /* What: Sort Option Map. Why: One <option> is needed per entry in options. How: This maps options to one <option> per entry, keyed by its own key. */ }
+				{ options.map( ( optCurObj ) => <option key={ optCurObj.keyStr } value={ optCurObj.keyStr }>{ optCurObj.labStr }</option> ) }{ /* What: Sort Option Map. Why: One <option> is needed per entry in options. How: This maps options to one <option> per entry, keyed by its own keyStr. */ }
 
 
 			</select>
