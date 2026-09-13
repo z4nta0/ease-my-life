@@ -1455,16 +1455,23 @@ function RemindersLog ( { state, onClose } ) {
 							label={ tasObj.name }
 							truncationOnly
 						>{ tasObj.name }</InfoTip>{ /* What: Reminder Name Info Tip Element. Why: A long reminder name can truncate in a narrow layout. How: This renders tasObj's own name as a truncation-revealing InfoTip. */ }
+
 						<span className='dl-r-when dl-mk-rwhen'>{ wheStr }</span>{ /* What: Reminder When Span Element. Why: Every row shows its own plain schedule summary. How: This renders wheStr directly. */ }
+
 						<span className='dl-r-st dl-mk-rst'>{ /* What: Reminder Status Span Element. Why: The last column shows this row's own current status, differently per staStr. How: This renders one of 4 status variants below, matched on staStr. */ }
 
 
 							{ staStr === 'done' && ( // What: Done Status Visibility Check. Why: A done row shows its own check icon plus a Done pill. How: This renders only while staStr is 'done'.
 
 
-								<React.Fragment>
-									<span className='dl-ico dl-c-done'><IcoSetCom icoKeyStr='check' strWidNum={ 3 } /></span>
-									<span className='dl-st-pill dl-st-done'>Done</span>
+								<React.Fragment>{ /* What: Done Status Fragment Element. Why: The check icon and its own Done pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+
+
+									<span className='dl-ico dl-c-done'><IcoSetCom icoKeyStr='check' strWidNum={ 3 } /></span>{ /* What: Done Icon Span Element. Why: A done row's own status needs a recognizable check glyph before its pill. How: This renders IcoSetCom's own "check" shape. */ }
+
+									<span className='dl-st-pill dl-st-done'>Done</span>{ /* What: Done Pill Span Element. Why: The done row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Done". */ }
+
+
 								</React.Fragment>
 
 							) }
@@ -1472,9 +1479,14 @@ function RemindersLog ( { state, onClose } ) {
 							{ staStr === 'skip' && ( // What: Skip Status Visibility Check. Why: A skipped row shows its own x icon plus a Skipped pill. How: This renders only while staStr is 'skip'.
 
 
-								<React.Fragment>
-									<span className='dl-ico dl-c-skip'><IcoSetCom icoKeyStr='x' strWidNum={ 2.6 } /></span>
-									<span className='dl-st-pill dl-st-skip'>Skipped</span>
+								<React.Fragment>{ /* What: Skip Status Fragment Element. Why: The x icon and its own Skipped pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+
+
+									<span className='dl-ico dl-c-skip'><IcoSetCom icoKeyStr='x' strWidNum={ 2.6 } /></span>{ /* What: Skip Icon Span Element. Why: A skipped row's own status needs a recognizable x glyph before its pill. How: This renders IcoSetCom's own "x" shape. */ }
+
+									<span className='dl-st-pill dl-st-skip'>Skipped</span>{ /* What: Skip Pill Span Element. Why: The skipped row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Skipped". */ }
+
+
 								</React.Fragment>
 
 							) }
