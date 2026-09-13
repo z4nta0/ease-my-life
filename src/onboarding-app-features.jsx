@@ -749,8 +749,8 @@ function appFeatureBlockedReason ( feaIdeStr, state ) {
 	if ( feaIdeStr !== 'feat_manual_pick' ) return null; // What: Other Feature Guard. Why: No other App Feature has a requirement yet. How: This returns null immediately for any feaIdeStr besides 'feat_manual_pick'.
 
 	const iteAllArr = state.items || []; // What: Item All Array. Why: The eligibility check below needs every real item to count how many belong to each picker. How: This reads state.items, falling back to an empty array.
-	const eliPicBoo = ( state.pickers || [] ).some( ( curPkrObj ) => !curPkrObj.hidden
-		&& iteAllArr.filter( ( curIteObj ) => curIteObj.pickerId === curPkrObj.id ).length >= 2 ); // What: Eligible Picker Boolean. Why: The manual-pick tour needs at least one real, non-hidden picker with 2+ items to run against. How: This checks whether any non-hidden picker has 2 or more of its own items among iteAllArr.
+	const eliPicBoo = ( state.pickers || [] ).some( ( curPicObj ) => !curPicObj.hidden
+		&& iteAllArr.filter( ( curIteObj ) => curIteObj.pickerId === curPicObj.id ).length >= 2 ); // What: Eligible Picker Boolean. Why: The manual-pick tour needs at least one real, non-hidden picker with 2+ items to run against. How: This checks whether any non-hidden picker has 2 or more of its own items among iteAllArr.
 
 
 
@@ -877,7 +877,7 @@ function AppFeatureTour ( { featureId, state, actions, active, selectTab, onClos
 
 		const colMapObj = ( state.ui && state.ui.controlsCollapsed ) || {}; // What: Collapsed Map Object. Why: Only a picker actually found expanded (=== false) should be touched. How: This reads state.ui.controlsCollapsed, falling back to an empty object.
 
-		state.pickers.forEach( ( curPkrObj ) => { if ( colMapObj[ curPkrObj.id ] === false ) actions.toggleControlsCollapsed( curPkrObj.id ); } ); // What: Collapse Forced Call. Why: Every picker actually found expanded must be flipped closed. How: This toggles curPkrObj.id only when colMapObj marks it explicitly not collapsed.
+		state.pickers.forEach( ( curPicObj ) => { if ( colMapObj[ curPicObj.id ] === false ) actions.toggleControlsCollapsed( curPicObj.id ); } ); // What: Collapse Forced Call. Why: Every picker actually found expanded must be flipped closed. How: This toggles curPicObj.id only when colMapObj marks it explicitly not collapsed.
 
 
 	};
