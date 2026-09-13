@@ -1614,8 +1614,12 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   `onChange` the same way a native `<input value=... onChange=...>`
   is — confirmed already left bare consistently everywhere this pairing
   is used in this codebase, e.g. `Segmented`, `SortSelect`,
-  `CadenceControl`), and React's own hooks (`useState`, `useRef`,
-  `useLayoutEffect`, `useEffect`, `useCallback`, ...).
+  `CadenceControl`), `open` (a disclosure/collapse component's own
+  expanded state, the same native boolean attribute convention as
+  `<details open>`/`<dialog open>` — confirmed already left bare
+  consistently across all 39 call sites of `Collapse`'s own `open` prop
+  plus `DayLogChip`'s own `open`), and React's own hooks (`useState`,
+  `useRef`, `useLayoutEffect`, `useEffect`, `useCallback`, ...).
 - **"on"-prefix pattern**: a custom callback prop/handler that isn't the
   exact standard `onChange` keeps the "on" prefix (since "on" itself is
   standard convention) and applies the normal 9-character/3-segment rule
@@ -1723,6 +1727,21 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     In the near-impossible case Phase B also exhausts both segments 1 and
     2, fall back to choosing a different word entirely for one of them and
     reapply the normal rule.
+  - **Heavy pre-existing overload, not just a literal collision**: this
+    same escalation also applies when a word's own literal first-3-
+    letters truncation is technically correct and doesn't collide with
+    any single specific in-scope name, but that exact 3-letter code
+    already carries a large, heavily-established meaning elsewhere in
+    the codebase (a handful of uses is fine and gets documented as an
+    ordinary multi-meaning segment instead, like `con`/`sta`/`app`/
+    `pla`/`rem`/`pat`/`per` elsewhere in this list; this is for the
+    dozens-of-uses case). Example: `day-log.jsx`'s own icon-lookup
+    property for a clock glyph would literally truncate to `clo`, but
+    `clo` already means "Close" in dozens of other identifiers
+    throughout this codebase (`cloAddFun`, `cloTimRef`, `onCloConFun`,
+    ...); rather than adding an eleventh meaning to an already-loaded
+    code, it was escalated via Phase A to `clcEle` instead, keeping
+    `clo`'s own meaning unambiguous everywhere else.
 - **`id` attributes** follow the same 9-character/3-segment rule as any
   other name, but segment 3 (the "type" segment) describes what KIND OF
   THING the id labels — the element/role it identifies — rather than the
