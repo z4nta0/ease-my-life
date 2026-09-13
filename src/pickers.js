@@ -314,25 +314,25 @@ function weiPicFun( itePooArr, weiGetFun ) {
  * eliPooFun = Eligible Pool Function
  *
  * @summary
- * Filters iteSrcArr down to items not currently on vacation. Vacation is
+ * Filters iteSouArr down to items not currently on vacation. Vacation is
  * a blanket per-item override that suppresses an item from every mode's
  * pool regardless of its own weight/value/threshold state.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param iteSrcArr - Item Source Array: The items to filter.
+ * @param iteSouArr - Item Source Array: The items to filter.
  *
- * @returns A new array holding only iteSrcArr's own non-vacationing
+ * @returns A new array holding only iteSouArr's own non-vacationing
  * items.
  *
  * @example
  * ```ts
- * eliPooFun(iteSrcArr) // => non-vacationing items
+ * eliPooFun(iteSouArr) // => non-vacationing items
  * ```
  *
 */
 
-function eliPooFun( iteSrcArr ) { return iteSrcArr.filter( ( curIteObj ) => !curIteObj.vacation ); } // What: Eligible Pool Body. Why: The caller needs only the items actually available to pick from right now. How: This keeps every item in iteSrcArr whose own vacation field is falsy.
+function eliPooFun( iteSouArr ) { return iteSouArr.filter( ( curIteObj ) => !curIteObj.vacation ); } // What: Eligible Pool Body. Why: The caller needs only the items actually available to pick from right now. How: This keeps every item in iteSouArr whose own vacation field is falsy.
 
 // #endregion eliPooFun
 

@@ -581,11 +581,11 @@ function sumTskFun( tskRecObj ) {
 
 
 			const [ yeaNum, monNum, dayNum ] = tskRecObj.onceDate.split( '-' ).map( Number );                                       // What: Year Month Day Destructure. Why: A locale-formatted date label needs a real Date instance, not the raw ISO string. How: This splits tskRecObj's own onceDate on '-' and maps each segment through Number.
-			const datLblStr = new Date( yeaNum, monNum - 1, dayNum ).toLocaleDateString( 'en-US', { month : 'short', day : 'numeric' } ); // What: Date Label String. Why: This is the actual short, locale-formatted date the label displays. How: This builds a Date from the 3 destructured parts and formats it.
+			const datLabStr = new Date( yeaNum, monNum - 1, dayNum ).toLocaleDateString( 'en-US', { month : 'short', day : 'numeric' } ); // What: Date Label String. Why: This is the actual short, locale-formatted date the label displays. How: This builds a Date from the 3 destructured parts and formats it.
 
 
 
-			return `One-Time · starts ${ datLblStr }`; // What: Deferred Once Case Return. Why: The caller needs to know this one-time task hasn't started its own due window yet. How: This interpolates datLblStr into the deferred-start label.
+			return `One-Time · starts ${ datLabStr }`; // What: Deferred Once Case Return. Why: The caller needs to know this one-time task hasn't started its own due window yet. How: This interpolates datLabStr into the deferred-start label.
 
 
 		}
@@ -630,9 +630,9 @@ function sumTskFun( tskRecObj ) {
 
 
 
-			const unitLblStr = `Every ${ itvCouNum } weeks`; // What: Unit Label String. Why: This is the "every N weeks" prefix every branch below shares. How: This interpolates itvCouNum into the plain unit phrase.
+			const unitLabStr = `Every ${ itvCouNum } weeks`; // What: Unit Label String. Why: This is the "every N weeks" prefix every branch below shares. How: This interpolates itvCouNum into the plain unit phrase.
 
-			if ( dowSetArr.length === 0 ) return unitLblStr; // What: Empty Set Case Return. Why: No selected day at all still needs a defined label, just the bare unit phrase with no secondary day clause. How: This returns unitLblStr directly when dowSetArr is empty.
+			if ( dowSetArr.length === 0 ) return unitLabStr; // What: Empty Set Case Return. Why: No selected day at all still needs a defined label, just the bare unit phrase with no secondary day clause. How: This returns unitLabStr directly when dowSetArr is empty.
 
 
 
@@ -643,7 +643,7 @@ function sumTskFun( tskRecObj ) {
 			const isaWkdEndBoo = isaTwoLenBoo && isaSunIncBoo && isaSatIncBoo; // What: Is-A Weekend Boolean. Why: Exactly Sun+Sat is common enough to deserve its own plain phrase instead of a 2-day list. How: This combines the 3 individual checks above with &&, true only when every one of them holds.
 
 
-			const dayLblStr = dowSetArr.length === 7 ? 'every day' // What: Day Label String. Why: This is the secondary day-set clause the unit phrase is joined with below. How: This chains 4 mutually exclusive day-set shapes, falling back to a raw comma list, reusing isaWkdEndBoo for the weekend shape.
+			const dayLabStr = dowSetArr.length === 7 ? 'every day' // What: Day Label String. Why: This is the secondary day-set clause the unit phrase is joined with below. How: This chains 4 mutually exclusive day-set shapes, falling back to a raw comma list, reusing isaWkdEndBoo for the weekend shape.
 				: ( dowSetArr.length === 5 && [ 1, 2, 3, 4, 5 ].every( ( dowNum ) => dowSetArr.includes( dowNum ) ) ) ? 'weekdays'
 				: isaWkdEndBoo ? 'weekends'
 				: dowSetArr.length === 1 ? DAY_FUL_ARR[ dowSetArr[ 0 ] ]
@@ -651,7 +651,7 @@ function sumTskFun( tskRecObj ) {
 
 
 
-			return `${ unitLblStr } · ${ dayLblStr }`; // What: Weekly Case Return. Why: The caller needs the full "every N weeks · <days>" label. How: This interpolates unitLblStr and dayLblStr together.
+			return `${ unitLabStr } · ${ dayLabStr }`; // What: Weekly Case Return. Why: The caller needs the full "every N weeks · <days>" label. How: This interpolates unitLabStr and dayLabStr together.
 
 
 		}
@@ -672,14 +672,14 @@ function sumTskFun( tskRecObj ) {
 
 
 			const itvCouNum = Math.max( 1, tskRecObj.interval || 1 );                        // What: Interval Count Number. Why: This decides both the unit phrasing and the interpolated count below. How: This reads tskRecObj's own interval, floored at 1.
-			const unitLblStr = itvCouNum === 1 ? 'Monthly' : `Every ${ itvCouNum } months`;    // What: Unit Label String. Why: A plain monthly cadence reads better as "Monthly" than "Every 1 months". How: This picks the singular phrasing only when itvCouNum is exactly 1.
-			const dayLblStr = tskRecObj.dateMode === 'nthWeekday' // What: Day Label String. Why: The day clause reads completely differently depending on dateMode. How: This branches on tskRecObj's own dateMode, naming either an Nth-weekday or a plain ordinal day.
+			const unitLabStr = itvCouNum === 1 ? 'Monthly' : `Every ${ itvCouNum } months`;    // What: Unit Label String. Why: A plain monthly cadence reads better as "Monthly" than "Every 1 months". How: This picks the singular phrasing only when itvCouNum is exactly 1.
+			const dayLabStr = tskRecObj.dateMode === 'nthWeekday' // What: Day Label String. Why: The day clause reads completely differently depending on dateMode. How: This branches on tskRecObj's own dateMode, naming either an Nth-weekday or a plain ordinal day.
 				? `${ ordSufFun( tskRecObj.nthOrdinal || 1 ) } ${ DAY_FUL_ARR[ tskRecObj.nthWeekday ?? 0 ] }`
 				: ordSufFun( tskRecObj.dayOfMonth || 1 );
 
 
 
-			return `${ unitLblStr } · ${ dayLblStr }`; // What: Monthly Case Return. Why: The caller needs the full "<unit> · <day>" label. How: This interpolates unitLblStr and dayLblStr together.
+			return `${ unitLabStr } · ${ dayLabStr }`; // What: Monthly Case Return. Why: The caller needs the full "<unit> · <day>" label. How: This interpolates unitLabStr and dayLabStr together.
 
 
 		}
@@ -688,15 +688,15 @@ function sumTskFun( tskRecObj ) {
 
 
 			const itvCouNum = Math.max( 1, tskRecObj.interval || 1 );                     // What: Interval Count Number. Why: This decides both the unit phrasing and the interpolated count below. How: This reads tskRecObj's own interval, floored at 1.
-			const unitLblStr = itvCouNum === 1 ? 'Yearly' : `Every ${ itvCouNum } years`;   // What: Unit Label String. Why: A plain annual cadence reads better as "Yearly" than "Every 1 years". How: This picks the singular phrasing only when itvCouNum is exactly 1.
+			const unitLabStr = itvCouNum === 1 ? 'Yearly' : `Every ${ itvCouNum } years`;   // What: Unit Label String. Why: A plain annual cadence reads better as "Yearly" than "Every 1 years". How: This picks the singular phrasing only when itvCouNum is exactly 1.
 			const monAbbStr = new Date( 2001, ( tskRecObj.month || 1 ) - 1, 1 ).toLocaleDateString( 'en-US', { month : 'short' } ); // What: Month Abbreviation String. Why: The Nth-weekday branch below needs a short month name to name the target month. How: This builds a throwaway Date (year 2001 is arbitrary) from tskRecObj's own month and formats it.
-			const dayLblStr = tskRecObj.dateMode === 'nthWeekday' // What: Day Label String. Why: The day clause reads completely differently depending on dateMode. How: This branches on tskRecObj's own dateMode, naming either an Nth-weekday-of-month or a plain month/day via the locale's own short date formatting.
+			const dayLabStr = tskRecObj.dateMode === 'nthWeekday' // What: Day Label String. Why: The day clause reads completely differently depending on dateMode. How: This branches on tskRecObj's own dateMode, naming either an Nth-weekday-of-month or a plain month/day via the locale's own short date formatting.
 				? `${ ordSufFun( tskRecObj.nthOrdinal || 1 ) } ${ DAY_ABB_ARR[ tskRecObj.nthWeekday ?? 0 ] } of ${ monAbbStr }`
 				: new Date( 2001, ( tskRecObj.month || 1 ) - 1, tskRecObj.day || 1 ).toLocaleDateString( 'en-US', { month : 'short', day : 'numeric' } );
 
 
 
-			return `${ unitLblStr } · ${ dayLblStr }`; // What: Annual Case Return. Why: The caller needs the full "<unit> · <day>" label. How: This interpolates unitLblStr and dayLblStr together.
+			return `${ unitLabStr } · ${ dayLabStr }`; // What: Annual Case Return. Why: The caller needs the full "<unit> · <day>" label. How: This interpolates unitLabStr and dayLabStr together.
 
 
 		}

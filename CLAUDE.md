@@ -1540,6 +1540,11 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     context, e.g. `picLogArr` holding pick-log rows rather than a list of
     pickers, disambiguates which word "pic" stands for in practice)
   - `txt` → `tex` (Text)
+  - `src` → `sou` (Source — this is distinct from the bare `src` DOM/JSX
+    attribute name itself, e.g. `<img src=...>`/`<script src=...>`, which
+    stays exactly as-is per the Naming conventions exemptions, since it
+    is a real external HTML attribute, not our own invented segment)
+  - `lbl` → `lab` (Label)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

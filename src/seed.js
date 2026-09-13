@@ -582,7 +582,7 @@ function buildPickLog( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 	const ranBetFun = ( loBndNum, hiBndNum ) => loBndNum + Math.random() * ( hiBndNum - loBndNum ); // What: Random Between Function. Why: Several places below need a random value somewhere inside a given range, not just 0 to 1. How: This scales Math.random()'s own 0-1 output into the [ loBndNum, hiBndNum ] range.
 
 
-	const logPicFun = ( datValObj, curPicObj, curIteObj, donValBoo, srcValStr, outValStr, depEndBoo ) => { // What: Log Pick Function. Why: Every simulated pick, toss, skip, or Ease Down tick below shares the same row-building logic. How: This builds one pickLog row shaped to state.pickLog's own contract and pushes it onto picRowArr.
+	const logPicFun = ( datValObj, curPicObj, curIteObj, donValBoo, souValStr, outValStr, depEndBoo ) => { // What: Log Pick Function. Why: Every simulated pick, toss, skip, or Ease Down tick below shares the same row-building logic. How: This builds one pickLog row shaped to state.pickLog's own contract and pushes it onto picRowArr.
 
 
 		const pikTspObj = new Date( datValObj ); // What: Pick Timestamp Object. Why: A completed pick needs a plausible time of day, not just a bare date. How: This constructs a fresh copy of datValObj to set a random time of day on below.
@@ -604,7 +604,7 @@ function buildPickLog( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 			group       : curPicObj.group,                                                             // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPicObj's own group.
 			done        : outValStr === 'rejected' ? false : donValBoo,                                // What: Done. Why: A rejected toss was never actually completed, regardless of what donValBoo says. How: This forces false for a rejected row, otherwise uses donValBoo as given.
 			completedAt : ( outValStr !== 'rejected' && donValBoo ) ? pikTspObj.toISOString() : null,  // What: Completed At. Why: Only an actually-completed, non-rejected row has a real completion timestamp. How: This uses pikTspObj's own ISO string only when both conditions hold, otherwise null.
-			source      : srcValStr,                                                                    // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from srcValStr.
+			source      : souValStr,                                                                    // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from souValStr.
 			...( outValStr ? { outcome : outValStr } : {} ),                                           // What: Outcome Spread. Why: Most rows have no special outcome at all, so the field should be entirely absent rather than present-but-null. How: This spreads in an outcome field only when outValStr was actually given.
 			...( depEndBoo ? { depletedEnd : true } : {} )                                             // What: Depleted End Spread. Why: Only the row ending an Ease Down depletion streak needs this flag at all. How: This spreads in depletedEnd : true only when depEndBoo is truthy.
 
@@ -667,14 +667,14 @@ function buildPickLog( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 
 			const isaDonBoo = Math.random() < 0.82; // What: Is-A Done Boolean. Why: A real generated pick is usually, but not always, actually completed. How: This rolls an 82% chance of having been completed.
 
-			const srcRolNum = Math.random(); // What: Source Roll Number. Why: The source mix below needs one shared random roll to pick from. How: This rolls once, reused by srcValStr's own ternary chain directly below.
+			const souRolNum = Math.random(); // What: Source Roll Number. Why: The source mix below needs one shared random roll to pick from. How: This rolls once, reused by souValStr's own ternary chain directly below.
 
-			const srcValStr = srcRolNum < 0.10 ? 'manual' : srcRolNum < 0.16 ? 'reroll' : 'auto'; // What: Source Value String. Why: Most picks come from the daily generator, with a smaller mix of hand-pushed and rerolled picks. How: This resolves srcRolNum into 'manual' (10%), 'reroll' (6%), or 'auto' (the remaining 84%).
+			const souValStr = souRolNum < 0.10 ? 'manual' : souRolNum < 0.16 ? 'reroll' : 'auto'; // What: Source Value String. Why: Most picks come from the daily generator, with a smaller mix of hand-pushed and rerolled picks. How: This resolves souRolNum into 'manual' (10%), 'reroll' (6%), or 'auto' (the remaining 84%).
 
 
-			if ( Math.random() < 0.09 ) { logPicFun( curDatObj, curPicObj, curIteObj, false, srcValStr, 'skipped' ); continue; } // What: Skip Simulation Guard. Why: About 9% of the time, a real generated pick is skipped (marked, not completed) rather than acted on at all. How: This logs curIteObj as a skipped row and moves on to the next picker.
+			if ( Math.random() < 0.09 ) { logPicFun( curDatObj, curPicObj, curIteObj, false, souValStr, 'skipped' ); continue; } // What: Skip Simulation Guard. Why: About 9% of the time, a real generated pick is skipped (marked, not completed) rather than acted on at all. How: This logs curIteObj as a skipped row and moves on to the next picker.
 
-			logPicFun( curDatObj, curPicObj, curIteObj, isaDonBoo, srcValStr ); // What: Normal Pick Log Call. Why: Every other simulated pick is logged as an ordinary row. How: This logs curIteObj with its own rolled done state and source.
+			logPicFun( curDatObj, curPicObj, curIteObj, isaDonBoo, souValStr ); // What: Normal Pick Log Call. Why: Every other simulated pick is logged as an ordinary row. How: This logs curIteObj with its own rolled done state and source.
 
 
 		}
@@ -1046,19 +1046,19 @@ function buiSeeFun() {
 
 
 		// Chores group
-		{ pickerId : 'pkr_chore_d', iteStr : 'Wipe kitchen counters',   donValBoo : true,  srcValStr : 'auto'   }, // What: Chore Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
-		{ pickerId : 'pkr_chore_w', iteStr : 'Mop the kitchen',         donValBoo : false, srcValStr : 'auto'   }, // What: Chore Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
-		{ pickerId : 'pkr_chore_m', iteStr : 'Dust the bookshelves',    donValBoo : false, srcValStr : 'auto'   }, // What: Chore Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
+		{ pickerId : 'pkr_chore_d', iteStr : 'Wipe kitchen counters',   donValBoo : true,  souValStr : 'auto'   }, // What: Chore Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
+		{ pickerId : 'pkr_chore_w', iteStr : 'Mop the kitchen',         donValBoo : false, souValStr : 'auto'   }, // What: Chore Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
+		{ pickerId : 'pkr_chore_m', iteStr : 'Dust the bookshelves',    donValBoo : false, souValStr : 'auto'   }, // What: Chore Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
 
 		// Food group
-		{ pickerId : 'pkr_brk',     iteStr : 'Oatmeal with berries',    donValBoo : true,  srcValStr : 'auto'   }, // What: Food Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
-		{ pickerId : 'pkr_lun',     iteStr : 'Grain bowl',              donValBoo : true,  srcValStr : 'auto'   }, // What: Food Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
-		{ pickerId : 'pkr_din',     iteStr : 'Sheet-pan vegetables',    donValBoo : false, srcValStr : 'auto'   }, // What: Food Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
+		{ pickerId : 'pkr_brk',     iteStr : 'Oatmeal with berries',    donValBoo : true,  souValStr : 'auto'   }, // What: Food Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
+		{ pickerId : 'pkr_lun',     iteStr : 'Grain bowl',              donValBoo : true,  souValStr : 'auto'   }, // What: Food Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
+		{ pickerId : 'pkr_din',     iteStr : 'Sheet-pan vegetables',    donValBoo : false, souValStr : 'auto'   }, // What: Food Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
 
 		// Singletons, a couple hand-picked from the Pickers tab
-		{ pickerId : 'pkr_self',    iteStr : 'Walk without headphones', donValBoo : true,  srcValStr : 'manual' }, // What: Singleton Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
-		{ pickerId : 'pkr_work',    iteStr : 'Inbox triage, 20 min',    donValBoo : false, srcValStr : 'auto'   }, // What: Singleton Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
-		{ pickerId : 'pkr_play',    iteStr : ( plaActObj ? plaActObj.name : 'Long bath, no phone' ), donValBoo : false, srcValStr : 'auto' } // What: Ease Down Singleton Pick Tuple. Why: This continues whichever item the Ease Down simulation left in progress (or a safe fallback name if somehow none is), rather than authoring a fixed name like every entry above it. How: This is expanded below into both a today.entries row and a pickLog row.
+		{ pickerId : 'pkr_self',    iteStr : 'Walk without headphones', donValBoo : true,  souValStr : 'manual' }, // What: Singleton Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
+		{ pickerId : 'pkr_work',    iteStr : 'Inbox triage, 20 min',    donValBoo : false, souValStr : 'auto'   }, // What: Singleton Pick Tuple. Why: See the comment above this array. How: This is expanded below into both a today.entries row and a pickLog row.
+		{ pickerId : 'pkr_play',    iteStr : ( plaActObj ? plaActObj.name : 'Long bath, no phone' ), donValBoo : false, souValStr : 'auto' } // What: Ease Down Singleton Pick Tuple. Why: This continues whichever item the Ease Down simulation left in progress (or a safe fallback name if somehow none is), rather than authoring a fixed name like every entry above it. How: This is expanded below into both a today.entries row and a pickLog row.
 
 
 	].map( ( curPikObj ) => ({ ...curPikObj, eid : makEidFun(), itemId : iteNamFun( curPikObj.iteStr ).id }) ); // What: Today Pick Expansion Map. Why: Every authored tuple above still needs a real eid and a resolved itemId before it matches today.entries' own shape. How: This spreads curPikObj, adding a freshly-minted eid and the itemId resolved via iteNamFun.
@@ -1085,7 +1085,7 @@ function buiSeeFun() {
 			group       : curPicObj.group,                                        // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPicObj's own group.
 			done        : curPikObj.donValBoo,                                    // What: Done. Why: Every row must record whether it was actually completed. How: This is copied straight from curPikObj's own donValBoo.
 			completedAt : curPikObj.donValBoo ? pikTspObj.toISOString() : null,   // What: Completed At. Why: Only an actually-completed row has a real completion timestamp. How: This uses pikTspObj's own ISO string only when curPikObj's own donValBoo is true, otherwise null.
-			source      : curPikObj.srcValStr                                     // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from curPikObj's own srcValStr.
+			source      : curPikObj.souValStr                                     // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from curPikObj's own souValStr.
 
 
 		};

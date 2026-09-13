@@ -1071,8 +1071,8 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 	};
 
 	const isaDowBoo = picModStr === 'ease-down'; // What: Is-A Down Boolean. Why: Ease-down uses different row labels/phrasing (Shortest/Longest/Refill) than ease-up (Soonest/Latest/Fill). How: This is true only when picModStr is 'ease-down'.
-	const sooLblStr = isaDowBoo ? 'Shortest' : 'Soonest'; // What: Soonest Label String. Why: The Soonest row's own heading text differs by direction. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
-	const latLblStr = isaDowBoo ? 'Longest' : 'Latest';   // What: Latest Label String. Why: The Latest row's own heading text differs by direction. How: This picks 'Longest' for ease-down, 'Latest' otherwise.
+	const sooLabStr = isaDowBoo ? 'Shortest' : 'Soonest'; // What: Soonest Label String. Why: The Soonest row's own heading text differs by direction. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
+	const latLabStr = isaDowBoo ? 'Longest' : 'Latest';   // What: Latest Label String. Why: The Latest row's own heading text differs by direction. How: This picks 'Longest' for ease-down, 'Latest' otherwise.
 
 	const uniWrdFun = ( couNum ) => CADENCE.unitWord( picker && picker.cadence, couNum ); // What: Unit Word Function. Why: Every day count below needs a correctly-pluralized cadence unit word next to it. How: This calls CADENCE.unitWord with the picker's own cadence and couNum.
 
@@ -1131,7 +1131,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 								<span className='pie-lbl-row'>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfoTip sit side by side. How: This wraps the label span and, for ease-up only, the warning InfoTip. */ }
 
 
-									<span className='pie-lbl'>{ sooLblStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders sooLblStr directly. */ }
+									<span className='pie-lbl'>{ sooLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders sooLabStr directly. */ }
 
 
 									{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfoTip only while picModStr is 'ease-up'.
@@ -1162,7 +1162,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 									min={ 1 }
 									max={ 60 }
 									onSet={ setSooFun }
-									ariaLabel={ `${ sooLblStr } for ${ item.name }` }
+									ariaLabel={ `${ sooLabStr } for ${ item.name }` }
 								/>{ /* What: Number Stepper. Why: This is the actual editable control for the Soonest/Shortest day count. How: This is passed sooDayNum and setSooFun, clamped to [1, 60]. */ }
 
 								<span className='np-ease-unit'>{ uniWrdFun( sooDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWrdFun's own result for sooDayNum. */ }
@@ -1182,7 +1182,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 								<span className='pie-lbl-row'>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfoTip sit side by side. How: This wraps the label span and, for ease-up only, the warning InfoTip. */ }
 
 
-									<span className='pie-lbl'>{ latLblStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders latLblStr directly. */ }
+									<span className='pie-lbl'>{ latLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders latLabStr directly. */ }
 
 
 									{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfoTip only while picModStr is 'ease-up'.
@@ -1213,7 +1213,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 									min={ 1 }
 									max={ 90 }
 									onSet={ setLatFun }
-									ariaLabel={ `${ latLblStr } for ${ item.name }` }
+									ariaLabel={ `${ latLabStr } for ${ item.name }` }
 								/>{ /* What: Number Stepper. Why: This is the actual editable control for the Latest/Longest day count. How: This is passed latDayNum and setLatFun, clamped to [1, 90]. */ }
 
 								<span className='np-ease-unit'>{ uniWrdFun( latDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWrdFun's own result for latDayNum. */ }

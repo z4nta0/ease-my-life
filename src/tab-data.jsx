@@ -170,11 +170,11 @@ function pisOptFun ( modStr ) {
 	if ( modStr === 'ease-up' || modStr === 'ease-down' ) {
 
 
-		const ranLblStr = modStr === 'ease-down' ? 'Shortest' : 'Soonest'; // What: Range Label String. Why: The Range sort's own label reads differently for ease-up vs ease-down, matching the item editor's own Soonest/Shortest wording. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
+		const ranLabStr = modStr === 'ease-down' ? 'Shortest' : 'Soonest'; // What: Range Label String. Why: The Range sort's own label reads differently for ease-up vs ease-down, matching the item editor's own Soonest/Shortest wording. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
 
 
 		optArr.push( { keyStr : 'count-asc', labStr : 'Charge (Low to High)' }, { keyStr : 'count-desc', labStr : 'Charge (High to Low)' } ); // What: Charge Options Push. Why: Ease modes reuse the generic count field to mean charge. How: This appends both charge sort directions.
-		optArr.push( { keyStr : 'range-asc', labStr : `${ ranLblStr } (Low to High)` }, { keyStr : 'range-desc', labStr : `${ ranLblStr } (High to Low)` } ); // What: Range Options Push. Why: Ease modes also expose their own soonest/latest band as a sortable Range value. How: This appends both range sort directions, labeled per ranLblStr.
+		optArr.push( { keyStr : 'range-asc', labStr : `${ ranLabStr } (Low to High)` }, { keyStr : 'range-desc', labStr : `${ ranLabStr } (High to Low)` } ); // What: Range Options Push. Why: Ease modes also expose their own soonest/latest band as a sortable Range value. How: This appends both range sort directions, labeled per ranLabStr.
 
 
 	}
@@ -284,7 +284,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 	const neeNamBoo = !picObj.name.trim();                                                    // What: Need Name Boolean. Why: A new draft's footer must know whether the picker still lacks a name. How: This is true whenever picObj.name is empty once trimmed.
 	const neeGroBoo = !picObj.group;                                                           // What: Need Group Boolean. Why: A new draft's footer must also know whether the picker still lacks a group. How: This is true whenever picObj.group is falsy.
 	const shoSavBoo = isaNewBoo && iteSecBoo && iteArr.length >= 2 && !hasNewBoo;               // What: Show Save Boolean. Why: The footer button only becomes a real "Save" once the Items section is open, holds at least 2 items, and none is still an unsaved brand-new row. How: This combines all 4 conditions with &&.
-	const ftrLblStr = shoSavBoo ? 'Save' : 'Add Items';                                        // What: Footer Label String. Why: The footer button's own visible text depends on whether it's ready to save yet. How: This picks 'Save' once shoSavBoo is true, 'Add Items' otherwise.
+	const ftrLabStr = shoSavBoo ? 'Save' : 'Add Items';                                        // What: Footer Label String. Why: The footer button's own visible text depends on whether it's ready to save yet. How: This picks 'Save' once shoSavBoo is true, 'Add Items' otherwise.
 	const ftrDisBoo = shoSavBoo ? false : ( neeNamBoo || neeGroBoo || iteSecBoo );              // What: Footer Disabled Boolean. Why: The footer button stays disabled until every prerequisite for its current label is satisfied. How: This is never disabled once shoSavBoo is true, otherwise disabled while name/group is missing or the Items section is already open.
 	const ftrTipStr = neeNamBoo && neeGroBoo ? 'A picker name and group are both required.' // What: Footer Tip String. Why: The disabled button's own InfoTip needs a specific reason for whichever prerequisite is still unmet. How: This chains through every prerequisite in the same priority order the footer itself checks them.
 		: neeNamBoo ? 'A picker name is required.'
@@ -914,7 +914,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 					<span className='sched-line-label'>{ /* What: Conditional Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
 
-						<span className='sched-line-lbl'>Attach a conditional</span>{ /* What: Conditional Lbl Span Element. Why: The row needs its own literal name. How: This renders the literal text "Attach a conditional". */ }
+						<span className='sched-line-lbl'>Attach a conditional</span>{ /* What: Conditional Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Attach a conditional". */ }
 
 						<span className='sched-line-sub'>{ /* What: Conditional Sub Span Element. Why: The row needs a live one-line explanation of the current state. How: This renders whichever of the 2 explanations below matches whether a conditional is attached. */ }
 							{ attCndObj
@@ -1006,7 +1006,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 					<span className='sched-line-label'>{ /* What: Daily Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
 
-						<span className='sched-line-lbl'>In the daily generator</span>{ /* What: Daily Lbl Span Element. Why: The row needs its own literal name. How: This renders the literal text "In the daily generator". */ }
+						<span className='sched-line-lbl'>In the daily generator</span>{ /* What: Daily Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "In the daily generator". */ }
 
 						<span
 							key={ inDaiBoo ? 'on' : 'off' }
@@ -1289,7 +1289,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 							<span className='sched-line-label'>{ /* What: Days Label Span Element. Why: The row's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
 
-								<span className='sched-line-lbl'>Days</span>{ /* What: Days Lbl Span Element. Why: The row needs its own literal name. How: This renders the literal text "Days". */ }
+								<span className='sched-line-lbl'>Days</span>{ /* What: Days Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Days". */ }
 
 								<span
 									key={ ( picObj.daysOfWeek || [] ).join( ',' ) }
@@ -1318,7 +1318,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 							<span className='sched-line-label'>{ /* What: Holiday Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
 
-								<span className='sched-line-lbl'>Skip on holidays</span>{ /* What: Holiday Lbl Span Element. Why: The row needs its own literal name. How: This renders the literal text "Skip on holidays". */ }
+								<span className='sched-line-lbl'>Skip on holidays</span>{ /* What: Holiday Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Skip on holidays". */ }
 
 								<span
 									key={ picObj.skipHolidays ? 'on' : 'off' }
@@ -1365,7 +1365,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 					<span className='sched-line-label'>{ /* What: Duplicates Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
 
-						<span className='sched-line-lbl'>Avoid duplicate items</span>{ /* What: Duplicates Lbl Span Element. Why: The row needs its own literal name. How: This renders the literal text "Avoid duplicate items". */ }
+						<span className='sched-line-lbl'>Avoid duplicate items</span>{ /* What: Duplicates Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Avoid duplicate items". */ }
 
 						<span
 							key={ picObj.avoidDuplicates ? 'on' : 'off' }
@@ -1401,7 +1401,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 								<div className='pie-rowlabel'>{ /* What: Fill Rowlabel Div Element. Why: The Fill label and its live summary belong together. How: This wraps the lbl and sub spans below. */ }
 
-									<span className='pie-lbl'>Fill</span>{ /* What: Fill Lbl Span Element. Why: The row needs its own literal name. How: This renders the literal text "Fill". */ }
+									<span className='pie-lbl'>Fill</span>{ /* What: Fill Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Fill". */ }
 
 									<span className='pie-sub'>{ filSubEle }</span>{ /* What: Fill Sub Span Element. Why: The row needs a live summary of how many items still need charging. How: This renders filSubEle. */ }
 
@@ -1427,7 +1427,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 								<div className='pie-rowlabel'>{ /* What: Refill Rowlabel Div Element. Why: The Refill label and its live summary belong together. How: This wraps the lbl and sub spans below. */ }
 
-									<span className='pie-lbl'>Refill</span>{ /* What: Refill Lbl Span Element. Why: The row needs its own literal name. How: This renders the literal text "Refill". */ }
+									<span className='pie-lbl'>Refill</span>{ /* What: Refill Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Refill". */ }
 
 									<span className='pie-sub'>{ filSubEle }</span>{ /* What: Refill Sub Span Element. Why: The row needs a live summary of how many items still need charging. How: This renders filSubEle. */ }
 
@@ -1498,7 +1498,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 									size='sm'
 									disabled={ ftrDisBoo }
 									onClick={ ftrDisBoo ? undefined : () => { donRef.current = 'saved'; ftrActFun(); } }
-								>{ ftrLblStr }</Btn>{ /* What: Btn. Why: This is the new-draft footer's own primary action, reading "Add Items" or "Save" depending on progress. How: This marks donRef then calls ftrActFun, disabled per ftrDisBoo. */ }
+								>{ ftrLabStr }</Btn>{ /* What: Btn. Why: This is the new-draft footer's own primary action, reading "Add Items" or "Save" depending on progress. How: This marks donRef then calls ftrActFun, disabled per ftrDisBoo. */ }
 
 							</InfoTip>
 
@@ -2621,7 +2621,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 					<div className='stat-filter-row'>{ /* What: Group Filter Row Div Element. Why: The Group label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
 
 
-						<span className='stat-filter-lbl'>Group</span>{ /* What: Group Lbl Span Element. Why: The row needs its own literal name. How: This renders the literal text "Group". */ }
+						<span className='stat-filter-lbl'>Group</span>{ /* What: Group Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Group". */ }
 
 						<div
 							className='picker-groups stat-scope-groups'
@@ -2677,7 +2677,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 					<div className='stat-filter-row'>{ /* What: Type Filter Row Div Element. Why: The Type label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
 
 
-						<span className='stat-filter-lbl'>Type</span>{ /* What: Type Lbl Span Element. Why: The row needs its own literal name. How: This renders the literal text "Type". */ }
+						<span className='stat-filter-lbl'>Type</span>{ /* What: Type Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Type". */ }
 
 						<div
 							className='picker-groups stat-scope-groups stat-scope-groups--type'
@@ -2757,7 +2757,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 					<div className='stat-filter-row'>{ /* What: Conditional Filter Row Div Element. Why: The Conditionals label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
 
 
-						<span className='stat-filter-lbl'>Conditionals</span>{ /* What: Conditional Lbl Span Element. Why: The row needs its own literal name. How: This renders the literal text "Conditionals". */ }
+						<span className='stat-filter-lbl'>Conditionals</span>{ /* What: Conditional Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Conditionals". */ }
 
 						<div
 							className='picker-groups stat-scope-groups stat-scope-groups--cond'
@@ -2810,7 +2810,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 				<div className='stat-filter-row'>{ /* What: Show Filter Row Div Element. Why: The Show label and its own box rail belong together. How: This wraps the lbl span and the box rail below. */ }
 
 
-					<span className='stat-filter-lbl'>Show</span>{ /* What: Show Lbl Span Element. Why: The row needs its own literal name. How: This renders the literal text "Show". */ }
+					<span className='stat-filter-lbl'>Show</span>{ /* What: Show Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Show". */ }
 
 					<div
 						key={ filGrpStr + '|' + filTypStr }
@@ -2839,12 +2839,12 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 						{ [ // What: Show Entry Build. Why: Everything after "All" sorts together alphabetically by its own displayed name, rather than Conditionals/Reminders being pinned. How: This builds one entry per applicable Conditionals/Reminders/picker, then sorts and maps them below.
 
 							...( ( filTypStr === 'all' || filTypStr === 'conditionals' ) && cndIteArr.length > 0
-								? [ { key : 'conditionals', name : 'Conditionals', modLblStr : 'Gates', isOn : curScoStr === 'conditionals', onClick : () => selScoFun( 'conditionals' ) } ]
+								? [ { key : 'conditionals', name : 'Conditionals', modLabStr : 'Gates', isOn : curScoStr === 'conditionals', onClick : () => selScoFun( 'conditionals' ) } ]
 								: []),
 							...( filTypStr === 'all' || filTypStr === 'reminders'
-								? [ { key : 'reminders', name : 'Reminders', modLblStr : 'Tasks', isOn : curScoStr === 'reminders', onClick : () => selScoFun( 'reminders' ) } ]
+								? [ { key : 'reminders', name : 'Reminders', modLabStr : 'Tasks', isOn : curScoStr === 'reminders', onClick : () => selScoFun( 'reminders' ) } ]
 								: []),
-							...visPicArr.map( ( picCurObj ) => ( { key : picCurObj.id, name : picCurObj.name, modLblStr : MODES[ picCurObj.mode ].label, isOn : curScoStr === picCurObj.id, onClick : () => selScoFun( picCurObj.id ), pikIdeStr : picCurObj.id } ) )
+							...visPicArr.map( ( picCurObj ) => ( { key : picCurObj.id, name : picCurObj.name, modLabStr : MODES[ picCurObj.mode ].label, isOn : curScoStr === picCurObj.id, onClick : () => selScoFun( picCurObj.id ), pikIdeStr : picCurObj.id } ) )
 
 						]
 							.sort( ( aEntObj, bEntObj ) => aEntObj.name.localeCompare( bEntObj.name ) )
@@ -2860,7 +2860,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 									onClick={ filEntObj.onClick }
 								>
 									<span className='picker-tab-name'>{ filEntObj.name }</span>
-									<span className='picker-tab-mode'>{ filEntObj.modLblStr }</span>
+									<span className='picker-tab-mode'>{ filEntObj.modLabStr }</span>
 								</button>
 
 							) ) }

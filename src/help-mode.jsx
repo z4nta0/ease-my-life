@@ -1159,13 +1159,13 @@ function HelpOverlay ( { active, items, onExit } ) {
 
 					const shpObj = shaRadFun( curEle, widNum + PAD_MAR_NUM * 2, heiNum + PAD_MAR_NUM * 2, curIteObj.shape ); // What: Shape Object. Why: Each perElement instance reads its own border-radius independently. How: This calls shaRadFun with curEle's own padded box size.
 
-					const lblStr = curIteObj.labelSel // What: Label String. Why: A perElement conditional/reminder/item row's own title should read as "{its own name} Conditional" rather than one generic title shared by every instance. How: This reads text (or an input's own value, for a row currently open/editing) from within curEle only, when curIteObj.labelSel is set.
+					const labStr = curIteObj.labelSel // What: Label String. Why: A perElement conditional/reminder/item row's own title should read as "{its own name} Conditional" rather than one generic title shared by every instance. How: This reads text (or an input's own value, for a row currently open/editing) from within curEle only, when curIteObj.labelSel is set.
 						? ( curEle.querySelector( curIteObj.labelSel )?.textContent || curEle.querySelector( curIteObj.labelSel )?.value )
 						: undefined;
 
 					const padObj = claPadFun( recObj, curIteObj.padX ?? PAD_MAR_NUM, curIteObj.padY ?? PAD_MAR_NUM, chrIteArr, [ curEle ] ); // What: Pad Object. Why: This element's own surviving per-side padding must be computed the same way as the ordinary single-union case below. How: This calls claPadFun with curIteObj's own padX/padY override, or the flat default.
 
-					nexMapObj[ `${ curIteObj.id }::${ curIndNum }` ] = { ...recObj, width: widNum, height: heiNum, shape: shpObj, ...padObj, label: lblStr }; // What: Sub Id Map Write. Why: Each perElement instance is stored under its own synthesized sub-id, all sharing the parent item's own title/body when opened. How: This writes the merged rect/shape/pad/label into nexMapObj.
+					nexMapObj[ `${ curIteObj.id }::${ curIndNum }` ] = { ...recObj, width: widNum, height: heiNum, shape: shpObj, ...padObj, label: labStr }; // What: Sub Id Map Write. Why: Each perElement instance is stored under its own synthesized sub-id, all sharing the parent item's own title/body when opened. How: This writes the merged rect/shape/pad/label into nexMapObj.
 
 
 				} );
@@ -1526,7 +1526,7 @@ function HelpOverlay ( { active, items, onExit } ) {
 
 					const curRecObj = recMapObj[ curIdeStr ]; // What: Current Rect Object. Why: The badge's own position and its title function (if any) both need this id's own current rect. How: This reads curIdeStr straight out of recMapObj.
 					const badRecObj = badRecFun( curRecObj, !!curIteObj.columnGroup ); // What: Badge Rect Object. Why: The badge itself renders at its own anchor point, not at the highlighted target's own position. How: This calls badRecFun, centering only when this item is part of a columnGroup.
-					const badLblStr = typeof curIteObj.title === 'function' ? curIteObj.title( curRecObj ) : ( typeof curIteObj.title === 'string' ? curIteObj.title : 'More info' ); // What: Badge Label String. Why: The badge's own accessible name should reflect a dynamic title (e.g. reading a picker's own cadence unit) when curIteObj.title is a function. How: This calls curIteObj.title with curRecObj when it is a function, uses it directly when it is a string, otherwise falls back to a generic label.
+					const badLabStr = typeof curIteObj.title === 'function' ? curIteObj.title( curRecObj ) : ( typeof curIteObj.title === 'string' ? curIteObj.title : 'More info' ); // What: Badge Label String. Why: The badge's own accessible name should reflect a dynamic title (e.g. reading a picker's own cadence unit) when curIteObj.title is a function. How: This calls curIteObj.title with curRecObj when it is a function, uses it directly when it is a string, otherwise falls back to a generic label.
 
 
 					return (
@@ -1536,7 +1536,7 @@ function HelpOverlay ( { active, items, onExit } ) {
 							type='button'
 							className={ ` help-badge   ${ opeIdeStr === curIdeStr ? 'is-on' : '' } ` }
 							style={{ top: badRecObj.top, left: badRecObj.left }}
-							aria-label={ badLblStr }
+							aria-label={ badLabStr }
 							onClick={ ( clkEveObj ) => { clkEveObj.stopPropagation(); setOpeIdeStr( ( preIdeStr ) => preIdeStr === curIdeStr ? null : curIdeStr ); } }
 						>{ /* What: Help Badge Button Element. Why: This is the actual clickable "i" marker opening/closing this target's own tip. How: This shows opeIdeStr === curIdeStr as its own "is-on" class and toggles opeIdeStr when clicked. */ }
 

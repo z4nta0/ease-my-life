@@ -77,7 +77,7 @@ const REG_DEF_OBJ = { US : { labStr : 'United States', defArr : HOL_DEF_ARR } };
 
 
 const padDigFun = ( digValNum ) => String( digValNum ).padStart( 2, '0' ); // What: Pad Digit Function. Why: Every ISO date string segment (month, day) needs to render as exactly 2 digits. How: This left-pads digValNum's own string form with a leading '0' when it's under 2 characters.
-const isoDatFun = ( srcDatObj ) => `${ srcDatObj.getFullYear() }-${ padDigFun( srcDatObj.getMonth() + 1 ) }-${ padDigFun( srcDatObj.getDate() ) }`; // What: Iso Date Function. Why: Every date comparison and lookup in this module needs a plain, locale-independent, comparable string key, not a Date instance. How: This formats srcDatObj as YYYY-MM-DD using padDigFun for the 2-digit month/day segments.
+const isoDatFun = ( souDatObj ) => `${ souDatObj.getFullYear() }-${ padDigFun( souDatObj.getMonth() + 1 ) }-${ padDigFun( souDatObj.getDate() ) }`; // What: Iso Date Function. Why: Every date comparison and lookup in this module needs a plain, locale-independent, comparable string key, not a Date instance. How: This formats souDatObj as YYYY-MM-DD using padDigFun for the 2-digit month/day segments.
 
 
 
