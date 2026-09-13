@@ -402,6 +402,7 @@ function plaGriFun( colCouNum, rowCouNum ) {
 			if ( bloGriArr[ rowIndNum ][ colIndNum ] ) continue; // What: Excluded Cell Guard. Why: A cell already excluded by an earlier placement's own neighborhood can't take a glyph. How: This skips straight to the next column when the current cell is already blocked.
 
 
+
 			const rowOpeBoo = !rowBigBoo;                                                             // What: Row Open Boolean. Why: At most one "big" glyph is allowed per row, so a row that already claimed one can't be considered for another. How: This is the negation of rowBigBoo, true only while this row's own big-glyph budget is still unspent.
 			const rowFitBoo = rowIndNum + 1 < rowCouNum;                                              // What: Row Fit Boolean. Why: A 2x2 glyph needs one additional row below its own top-left cell, which must still fall inside the grid. How: This checks that rowIndNum plus 1 stays under rowCouNum.
 			const colFitBoo = colIndNum + 1 < colCouNum;                                              // What: Column Fit Boolean. Why: A 2x2 glyph also needs one additional column to the right of its own top-left cell, which must still fall inside the grid. How: This checks that colIndNum plus 1 stays under colCouNum.
