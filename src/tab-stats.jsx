@@ -620,7 +620,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 	const hidPicSet = React.useMemo( () => ( // What: Hidden Picker Set Memo. Why: Excluding a hidden picker's own rows from every rollup needs a fast id lookup, not a repeated array scan. How: This collects every picker flagged hidden into a Set of ids.
 
 
-		new Set( picLisArr.filter( ( pkrObj ) => pkrObj.hidden ).map( ( pkrObj ) => pkrObj.id ) )
+		new Set( picLisArr.filter( ( picObj ) => picObj.hidden ).map( ( picObj ) => picObj.id ) )
 
 
 	), [ picLisArr ] ); // What: Effect Dependency Array. Why: This set only ever needs rebuilding when the picker list itself changes. How: picLisArr is the sole source the filter/map above reads from.
@@ -794,7 +794,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 		const seenGroArr = []; // What: Seen Group Array. Why: A plain array preserves first-seen order for the loop below to check membership against, before the final sort reorders it. How: This starts empty and is pushed to as new group names are found.
 
-		for ( const pkrObj of picLisArr ) if ( pkrObj.group && !pkrObj.hidden && !seenGroArr.includes( pkrObj.group ) ) seenGroArr.push( pkrObj.group ); // What: Group Collection Loop. Why: Every non-hidden picker with a group contributes that group name, but only once each. How: This pushes a picker's own group the first time it's encountered.
+		for ( const picObj of picLisArr ) if ( picObj.group && !picObj.hidden && !seenGroArr.includes( picObj.group ) ) seenGroArr.push( picObj.group ); // What: Group Collection Loop. Why: Every non-hidden picker with a group contributes that group name, but only once each. How: This pushes a picker's own group the first time it's encountered.
 
 
 		return seenGroArr.sort( ( aGroStr, bGroStr ) => aGroStr.localeCompare( bGroStr ) ); // What: Sorted Group Return. Why: The filter row's own pills should list alphabetically, not in whatever order pickers happen to be stored. How: This sorts the collected group names via localeCompare.
@@ -817,7 +817,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 		const seenModSet = new Set(); // What: Seen Mode Set. Why: A Set naturally deduplicates without a manual membership check, unlike the group loop above which needed first-seen order preserved. How: This starts empty and is added to below.
 
-		for ( const pkrObj of picLisArr ) if ( !pkrObj.hidden ) seenModSet.add( pkrObj.mode ); // What: Mode Collection Loop. Why: Every non-hidden picker contributes its own mode key. How: This adds a picker's own mode to the set.
+		for ( const picObj of picLisArr ) if ( !picObj.hidden ) seenModSet.add( picObj.mode ); // What: Mode Collection Loop. Why: Every non-hidden picker contributes its own mode key. How: This adds a picker's own mode to the set.
 
 
 		return [ ...seenModSet ].sort( ( aModStr, bModStr ) => MODES[ aModStr ].label.localeCompare( MODES[ bModStr ].label ) ); // What: Sorted Mode Return. Why: The Type row's own pills should list by their user-facing label, not their raw internal mode key. How: This spreads the set into an array and sorts by each mode's own MODES label.
@@ -834,9 +834,9 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 	const visPicArr = React.useMemo( () => ( // What: Visible Picker Array Memo. Why: The Show row below needs the live picker list narrowed by both the Group and Type filters together. How: This filters out hidden pickers, then applies staGroStr and typFilStr as optional equality checks.
 
 
-		picLisArr.filter( ( pkrObj ) => !pkrObj.hidden
-			&& ( staGroStr === 'all' || pkrObj.group === staGroStr )
-			&& ( typFilStr === 'all' || pkrObj.mode === typFilStr ) )
+		picLisArr.filter( ( picObj ) => !picObj.hidden
+			&& ( staGroStr === 'all' || picObj.group === staGroStr )
+			&& ( typFilStr === 'all' || picObj.mode === typFilStr ) )
 
 
 	), [ picLisArr, staGroStr, typFilStr ] ); // What: Effect Dependency Array. Why: The narrowed list only ever needs recomputing when the live picker list or either filter itself changes. How: picLisArr supplies the rows, staGroStr and typFilStr each gate one of the two filter checks above.
@@ -881,7 +881,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 	const sorVisArr = React.useMemo( () => ( // What: Sorted Visible Array Memo. Why: The scope-repair effect below needs to know which picker the Show row would render first. How: This sorts a copy of visPicArr by each picker's own name.
 
 
-		[ ...visPicArr ].sort( ( aPkrObj, bPkrObj ) => aPkrObj.name.localeCompare( bPkrObj.name ) )
+		[ ...visPicArr ].sort( ( aPicObj, bPicObj ) => aPicObj.name.localeCompare( bPicObj.name ) )
 
 
 	), [ visPicArr ] ); // What: Effect Dependency Array. Why: This only ever needs resorting when the visible picker list itself changes. How: visPicArr is the sole source the sort above reads from.
@@ -911,7 +911,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 		// 'all' right after it's set.
 		if ( typFilStr === 'conditionals' || typFilStr === 'reminders' ) return; // What: Sentinel Type Guard. Why: Neither sentinel value has any "visible pickers" to fall back to. How: This bails out of the repair entirely while either sentinel is active.
 
-		if ( filChgBoo || !visPicArr.some( ( pkrObj ) => pkrObj.id === scoValStr ) ) setScoValStr( sorVisArr[ 0 ] ? sorVisArr[ 0 ].id : 'all' ); // What: Scope Reassignment. Why: A changed filter or a scope that fell out of view both need the same fallback behavior. How: This jumps to the first sorted visible picker, or 'all' when there isn't one.
+		if ( filChgBoo || !visPicArr.some( ( picObj ) => picObj.id === scoValStr ) ) setScoValStr( sorVisArr[ 0 ] ? sorVisArr[ 0 ].id : 'all' ); // What: Scope Reassignment. Why: A changed filter or a scope that fell out of view both need the same fallback behavior. How: This jumps to the first sorted visible picker, or 'all' when there isn't one.
 
 
 	}, [ staGroStr, typFilStr, visPicArr, sorVisArr, scoValStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever either filter, the resulting visible/sorted lists, or the scope itself changes. How: staGroStr/typFilStr detect a filter change, visPicArr/sorVisArr supply the fallback target, scoValStr is what's being validated.
@@ -1305,7 +1305,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 	// object. The Pick breakdown card pivots on metKeyStr to choose which
 	// value to show and sort by.
 	const isaPicBoo = scoValStr !== 'all' && !isaRemBoo && !isaConBoo;                                // What: Is-A Picker Boolean. Why: Several blocks below only make sense while a single real picker is the active scope. How: This is true when scoValStr isn't 'all' and neither the Reminders nor Conditionals sentinel is active.
-	const scpPicObj = picLisArr.find( ( pkrObj ) => pkrObj.id === scoValStr );                        // What: Scope Picker Object. Why: The single-picker header and every mode-dependent branch below need the actual picker object, not just its id. How: This looks scoValStr up in picLisArr.
+	const scpPicObj = picLisArr.find( ( picObj ) => picObj.id === scoValStr );                        // What: Scope Picker Object. Why: The single-picker header and every mode-dependent branch below need the actual picker object, not just its id. How: This looks scoValStr up in picLisArr.
 	const easDowBoo = isaPicBoo && scpPicObj && scpPicObj.mode === 'ease-down';                        // What: Ease Down Boolean. Why: An ease-down picker swaps the Frequency metric for Spent and measures things differently below. How: This checks the scoped picker's own mode.
 	const easUpwBoo = isaPicBoo && scpPicObj && scpPicObj.mode === 'ease-up';                          // What: Ease Upward Boolean. Why: An ease-up picker's own items show a range suffix the same way an ease-down picker's do. How: This checks the scoped picker's own mode.
 	const useWeiBoo = isaPicBoo && scpPicObj && ( scpPicObj.mode === 'weighted' || scpPicObj.mode === 'dynamic' ); // What: Uses Weight Boolean. Why: Only a weighted or dynamic picker's items have a meaningful weight suffix to show. How: This checks the scoped picker's own mode against both weight-driven modes.
@@ -2189,7 +2189,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								>{ /* What: All Group Pill Button Element. Why: The user needs a way back to seeing every group at once. How: This resets both staGroStr and scoValStr to 'all' when clicked. */ }
 
 									All
-									<span className='picker-group-count'>{ picLisArr.filter( ( pkrObj ) => !pkrObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: The All pill needs its own total picker count. How: This counts every non-hidden picker regardless of group. */ }
+									<span className='picker-group-count'>{ picLisArr.filter( ( picObj ) => !picObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: The All pill needs its own total picker count. How: This counts every non-hidden picker regardless of group. */ }
 
 								</button>
 
@@ -2206,7 +2206,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 									>{ /* What: Group Pill Button Element. Why: The user needs a way to narrow the Show row down to just this one group. How: This sets staGroStr to this pill's own group name when clicked. */ }
 
 										{ groStr }
-										<span className='picker-group-count'>{ picLisArr.filter( ( pkrObj ) => pkrObj.group === groStr && !pkrObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: This pill needs its own picker count for this specific group. How: This counts every non-hidden picker whose own group matches groStr. */ }
+										<span className='picker-group-count'>{ picLisArr.filter( ( picObj ) => picObj.group === groStr && !picObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: This pill needs its own picker count for this specific group. How: This counts every non-hidden picker whose own group matches groStr. */ }
 
 									</button>
 
@@ -2247,7 +2247,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								>{ /* What: All Type Pill Button Element. Why: The user needs a way back to seeing every mode/Conditionals/Reminders at once. How: This resets both typFilStr and scoValStr to 'all' when clicked. */ }
 
 									All
-									<span className='picker-group-count'>{ picLisArr.filter( ( pkrObj ) => !pkrObj.hidden ).length }</span>{ /* What: Type Count Span Element. Why: The All pill needs its own total picker count. How: This counts every non-hidden picker regardless of mode. */ }
+									<span className='picker-group-count'>{ picLisArr.filter( ( picObj ) => !picObj.hidden ).length }</span>{ /* What: Type Count Span Element. Why: The All pill needs its own total picker count. How: This counts every non-hidden picker regardless of mode. */ }
 
 								</button>
 
@@ -2266,7 +2266,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 
 										key : modStr, name : MODES[ modStr ].label,
-										count : picLisArr.filter( ( pkrObj ) => pkrObj.mode === modStr && !pkrObj.hidden ).length,
+										count : picLisArr.filter( ( picObj ) => picObj.mode === modStr && !picObj.hidden ).length,
 										isOn : typFilStr === modStr,
 										onClick : () => setTypFilStr( modStr )
 
@@ -2372,7 +2372,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 									? [ { key : 'reminders', name : 'Reminders', modeLabel : 'Tasks', isOn : isaRemBoo, onClick : () => setScoValStr( 'reminders' ) } ]
 									: [] ),
 
-								...visPicArr.map( ( pkrObj ) => ( { key : pkrObj.id, name : pkrObj.name, modeLabel : MODES[ pkrObj.mode ].label, isOn : scoValStr === pkrObj.id, onClick : () => setScoValStr( pkrObj.id ), pickerId : pkrObj.id } ) ) // What: Picker Tab Entry Mapping. Why: Every currently-visible picker needs its own scope tab entry before the combined list is sorted. How: This maps each visPicArr entry to a small { key, name, modeLabel, isOn, onClick, pickerId } shape.
+								...visPicArr.map( ( picObj ) => ( { key : picObj.id, name : picObj.name, modeLabel : MODES[ picObj.mode ].label, isOn : scoValStr === picObj.id, onClick : () => setScoValStr( picObj.id ), pickerId : picObj.id } ) ) // What: Picker Tab Entry Mapping. Why: Every currently-visible picker needs its own scope tab entry before the combined list is sorted. How: This maps each visPicArr entry to a small { key, name, modeLabel, isOn, onClick, pickerId } shape.
 
 
 							]
