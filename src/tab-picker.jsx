@@ -950,7 +950,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 					{ ( runPhaStr === 'done' || runPhaStr === 'sent' ) ? ( // What: Done-Or-Sent Actions Check. Why: Send to Today, Re-Roll, and Done only make sense once a pick has actually settled. How: This renders that trio while runPhaStr is 'done' or 'sent', otherwise the single Pick One button below.
 
 
-						<React.Fragment>
+						<React.Fragment>{ /* What: Done-Or-Sent Fragment Element. Why: Send to Today, Re-Roll, and Done are true siblings with no shared wrapper of their own. How: This groups all 3 buttons without adding an extra DOM node. */ }
 
 							<Btn
 								kind='primary'
@@ -1119,9 +1119,9 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 										</div>
 
 
-									) : (
+									) : ( // What: Row Content Branch. Why: A row not pending delete confirmation shows its own normal name/meta/actions content instead. How: This renders the else branch, taken while cnfDelStr doesn't match this item.
 
-										<React.Fragment>
+										<React.Fragment>{ /* What: Row Content Fragment Element. Why: The name/meta block and the send/edit/delete actions below are true siblings with no shared wrapper of their own. How: This groups all of this row's own real content without adding an extra DOM node. */ }
 
 											<div className='pool-name'>{ /* What: Name Div Element. Why: The item's own name and its status pills (inactive/not yet/spent) belong together. How: This wraps the name span and its conditional pills. */ }
 
@@ -2106,9 +2106,9 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun,
 
 				{ isaEdiBoo
 
-					? <React.Fragment>Pickers are the heart of the Ease My Life app. They are small machines that chooses one item for you from a list, e.g. a chore to do, a meal to make, a way to wind down. Adjust its name, group, how it should pick and when it should run below.</React.Fragment>
+					? <React.Fragment>Pickers are the heart of the Ease My Life app. They are small machines that chooses one item for you from a list, e.g. a chore to do, a meal to make, a way to wind down. Adjust its name, group, how it should pick and when it should run below.</React.Fragment> // What: Editing Intro Phrase. Why: An existing picker's own intro reads slightly differently since it's being adjusted rather than created for the first time. How: This renders while isaEdiBoo is true.
 
-					: <React.Fragment>Pickers are the heart of the Ease My Life app. They are small machines that chooses one item for you from a list, e.g. a chore to do, a meal to make, a way to wind down. Give it a name, attach a group, choose how it should pick and when it should run. You&rsquo;ll fill its list of items in the next step.</React.Fragment>
+					: <React.Fragment>Pickers are the heart of the Ease My Life app. They are small machines that chooses one item for you from a list, e.g. a chore to do, a meal to make, a way to wind down. Give it a name, attach a group, choose how it should pick and when it should run. You&rsquo;ll fill its list of items in the next step.</React.Fragment> // What: Create Intro Phrase. Why: A brand-new picker's own intro needs to set up the next Items step too. How: This renders while isaEdiBoo is false.
 
 				}
 
@@ -2372,9 +2372,9 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun,
 
 								{ incDlyBoo
 
-									? <React.Fragment>This picker <strong>will run</strong> automatically as part of your daily list or whenever you tap Regenerate in the Today tab.</React.Fragment>
+									? <React.Fragment>This picker <strong>will run</strong> automatically as part of your daily list or whenever you tap Regenerate in the Today tab.</React.Fragment> // What: Daily Enabled Phrase. Why: The daily-generator note needs its own live wording for the enabled state. How: This renders while incDlyBoo is true.
 
-									: <React.Fragment>This picker <strong>will not run</strong> automatically, but you can still run it manually from this tab.</React.Fragment>
+									: <React.Fragment>This picker <strong>will not run</strong> automatically, but you can still run it manually from this tab.</React.Fragment> // What: Daily Disabled Phrase. Why: The daily-generator note needs its own live wording for the disabled state. How: This renders while incDlyBoo is false.
 
 								}
 
@@ -2458,9 +2458,9 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun,
 
 									{ skpHolBoo
 
-										? <React.Fragment>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays, or even add your own, on the Settings page.</React.Fragment>
+										? <React.Fragment>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays, or even add your own, on the Settings page.</React.Fragment> // What: Holidays Skip Phrase. Why: The holiday note needs its own live wording for the skip-enabled state. How: This renders while skpHolBoo is true.
 
-										: <React.Fragment>This picker <strong>will always run</strong>, even on major U.S. holidays.</React.Fragment>
+										: <React.Fragment>This picker <strong>will always run</strong>, even on major U.S. holidays.</React.Fragment> // What: Holidays Run Phrase. Why: The holiday note needs its own live wording for the always-run state. How: This renders while skpHolBoo is false.
 
 									}
 
@@ -2498,9 +2498,9 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun,
 
 									{ avdDupBoo
 
-										? <React.Fragment>This picker <strong>won&rsquo;t pick</strong> an item whose name is already on today&rsquo;s todo list.</React.Fragment>
+										? <React.Fragment>This picker <strong>won&rsquo;t pick</strong> an item whose name is already on today&rsquo;s todo list.</React.Fragment> // What: Avoid Duplicates On Phrase. Why: The duplicate-avoidance note needs its own live wording for the enabled state. How: This renders while avdDupBoo is true.
 
-										: <React.Fragment>This picker <strong>may pick</strong> an item even if its name is already on today&rsquo;s todo list.</React.Fragment>
+										: <React.Fragment>This picker <strong>may pick</strong> an item even if its name is already on today&rsquo;s todo list.</React.Fragment> // What: Avoid Duplicates Off Phrase. Why: The duplicate-avoidance note needs its own live wording for the disabled state. How: This renders while avdDupBoo is false.
 
 									}
 
@@ -2745,9 +2745,9 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conDitArr = [], onCnlFun, onCreFun,
 											</div>
 
 
-										) : (
+										) : ( // What: Row Content Branch. Why: A row not pending delete confirmation shows its own normal name/meta/actions content instead. How: This renders the else branch, taken while cnfDelStr doesn't match this item.
 
-											<React.Fragment>
+											<React.Fragment>{ /* What: Row Content Fragment Element. Why: The name/meta block and the edit/delete actions below are true siblings with no shared wrapper of their own. How: This groups all of this draft row's own real content without adding an extra DOM node. */ }
 
 												<div className='pool-name'>{ curIteObj.name }</div>{ /* What: Name Div Element. Why: Every row needs its own visible item name. How: This renders curIteObj.name. */ }
 
