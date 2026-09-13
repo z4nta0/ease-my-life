@@ -150,6 +150,8 @@ const Card = ( { children, padded = true, className = '', ...resProObj } ) => ( 
 
 
 
+// #region Collapse
+
 /**
  * Collapse = Collapse
  *
@@ -182,8 +184,6 @@ const Card = ( { children, padded = true, className = '', ...resProObj } ) => ( 
  * ```
  *
 */
-
-// #region Collapse
 
 function Collapse ( { open, children, className = '', instant = false } ) {
 
@@ -455,6 +455,8 @@ const ProgressBar = ( { value, max = 1, tone = 'accent' } ) => (
 
 
 
+// #region NumStepper
+
 /**
  * NumStepper = NumStepper
  *
@@ -482,8 +484,6 @@ const ProgressBar = ( { value, max = 1, tone = 'accent' } ) => (
  * ```
  *
 */
-
-// #region NumStepper
 
 function NumStepper ( { value, min = 1, max = 99, onSet, ariaLabel } ) {
 
@@ -879,6 +879,8 @@ const fmtTime = ( isoDatStr ) => {
 
 
 
+// #region BoostReset
+
 /**
  * BoostReset = BoostReset
  *
@@ -906,8 +908,6 @@ const fmtTime = ( isoDatStr ) => {
  * ```
  *
 */
-
-// #region BoostReset
 
 function BoostReset ( { value, suffix = '', onReset } ) {
 
@@ -1196,6 +1196,8 @@ window.__editGuard = window.__editGuard || { // What: Edit Guard Global. Why: Th
 
 
 
+// #region FillButton
+
 /**
  * FillButton = FillButton
  *
@@ -1224,8 +1226,6 @@ window.__editGuard = window.__editGuard || { // What: Edit Guard Global. Why: Th
  * ```
  *
 */
-
-// #region FillButton
 
 function FillButton ( { label, onClick, disabled } ) {
 
@@ -1272,6 +1272,8 @@ function FillButton ( { label, onClick, disabled } ) {
 
 
 
+// #region compareSortEntries
+
 /**
  * compareSortEntries = compareSortEntries
  *
@@ -1317,8 +1319,6 @@ function FillButton ( { label, onClick, disabled } ) {
  * ```
  *
 */
-
-// #region compareSortEntries
 
 function compareSortEntries ( rowAObj, rowBObj, sorKeyStr ) {
 
@@ -1487,6 +1487,8 @@ function compareSortEntries ( rowAObj, rowBObj, sorKeyStr ) {
 
 
 
+// #region SortSelect
+
 /**
  * SortSelect = SortSelect
  *
@@ -1513,8 +1515,6 @@ function compareSortEntries ( rowAObj, rowBObj, sorKeyStr ) {
  * ```
  *
 */
-
-// #region SortSelect
 
 function SortSelect ( { id, label, options, value, onChange } ) {
 
@@ -1562,6 +1562,8 @@ function SortSelect ( { id, label, options, value, onChange } ) {
 
 
 
+// #region freezeEditedRow
+
 /**
  * freezeEditedRow = freezeEditedRow
  *
@@ -1605,8 +1607,6 @@ function SortSelect ( { id, label, options, value, onChange } ) {
  * ```
  *
 */
-
-// #region freezeEditedRow
 
 function freezeEditedRow ( sorLisArr, opeIdeVal, newIdeVal, frzRowRef ) {
 
