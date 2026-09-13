@@ -162,12 +162,12 @@ const ITE_DEF_ARR = [ // What: Item Definition Array. Why: This is the single so
 function buiIteFun() {
 
 
-	return ITE_DEF_ARR.map( ( [ tupNamStr, tupPkrStr, tupWeiNum, tupValNum, tupVacBoo, tupDelBoo ] ) => ({ // What: Item Object Map. Why: Every tuple in ITE_DEF_ARR must become a full item object before it can be seeded into state. How: This destructures each tuple positionally and builds the object below from its own fields.
+	return ITE_DEF_ARR.map( ( [ tupNamStr, tupPicStr, tupWeiNum, tupValNum, tupVacBoo, tupDelBoo ] ) => ({ // What: Item Object Map. Why: Every tuple in ITE_DEF_ARR must become a full item object before it can be seeded into state. How: This destructures each tuple positionally and builds the object below from its own fields.
 
 
 		id         : uniIdeFun( 'it' ),              // What: Id. Why: Every item needs its own stable, unique identifier. How: This mints one via uniIdeFun, prefixed 'it'.
 		name       : tupNamStr,                      // What: Name. Why: This is the item's own display name shown throughout the app. How: This is copied straight from the tuple's own name field.
-		pickerId   : tupPkrStr,                      // What: Picker Id. Why: This ties the item to its owning picker; a picker's own pool is every item whose own pickerId matches. How: This is copied straight from the tuple's own pickerId field.
+		pickerId   : tupPicStr,                      // What: Picker Id. Why: This ties the item to its owning picker; a picker's own pool is every item whose own pickerId matches. How: This is copied straight from the tuple's own pickerId field.
 		weight     : tupWeiNum,                      // What: Weight. Why: This is the item's own base selection weight. How: This is copied straight from the tuple's own weight field.
 		value      : tupValNum,                      // What: Value. Why: This is the item's own per-item drift state used by dynamic/ease-up/ease-down modes (see the file header comment). How: This is copied straight from the tuple's own value field.
 		vacation   : !!tupVacBoo,                    // What: Vacation. Why: This flags whether the item starts out inactive. How: This coerces the tuple's own optional vacation field to a real boolean.
@@ -220,7 +220,7 @@ function buiPicFun() {
 	const wekDayArr = [ 1, 2, 3, 4, 5 ];       // What: Week Day Array. Why: The weekly-chore and work pickers below are pre-tuned to run weekdays only. How: This lists Monday (1) through Friday (5), excluding both weekend days.
 
 
-	const pkrSchObj = { // What: Picker Schedule Object. Why: A handful of pickers need a non-default daysOfWeek/skipHolidays pairing to showcase the schedule feature; this is looked up by picker id below. How: This maps each overridden picker's own id to its own { daysOfWeek, skipHolidays } pair.
+	const picSchObj = { // What: Picker Schedule Object. Why: A handful of pickers need a non-default daysOfWeek/skipHolidays pairing to showcase the schedule feature; this is looked up by picker id below. How: This maps each overridden picker's own id to its own { daysOfWeek, skipHolidays } pair.
 
 
 		pkr_chore_d : { daysOfWeek : wekAllArr, skipHolidays : true }, // What: Daily Chore Schedule. Why: Chores are pre-tuned to skip holidays. How: This runs every day of the week, holidays skipped.
@@ -249,14 +249,14 @@ function buiPicFun() {
 	{ id : 'pkr_work', group : 'Work', name : 'Quick Win', mode : 'weighted', easeMin : 5, easeMax : 15, threshold : 100 },           // What: Id String. Why: This is this picker's own stable identifier, read by buiIteFun's pickerId field and by every picker lookup throughout the app. How: This is a literal, load-bearing string matching the pkr_* prefix used by ITE_DEF_ARR. What: Group String. Why: This clusters the picker under a shared label on Today. How: This is read by the grouping/filtering UI exactly like any real, user-created picker. What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying. What: Mode String. Why: This selects which of pickers.js's own selection algorithms this picker uses. How: This is read by the picker engine exactly like any real picker's own mode. What: Ease Min Number. Why: This sets the lower bound of this picker's own per-tick ease amount. How: This is read by pickers.js wherever this picker's mode consults easeMin. What: Ease Max Number. Why: This sets the upper bound of this picker's own per-tick ease amount. How: This is read by pickers.js wherever this picker's mode consults easeMax. What: Threshold Number. Why: This is the value an item (or, for ease-down, the active item's own charge) must reach for ease-up eligibility or ease-down depletion. How: This is read by pickers.js's own ease-up/ease-down logic.
 	{ id : 'pkr_play', group : 'Wind Down', name : 'Evening Pick', mode : 'ease-down', easeMin : 18, easeMax : 30, threshold : 100 }, // What: Id String. Why: This is this picker's own stable identifier, read by buiIteFun's pickerId field and by every picker lookup throughout the app. How: This is a literal, load-bearing string matching the pkr_* prefix used by ITE_DEF_ARR. What: Group String. Why: This clusters the picker under a shared label on Today. How: This is read by the grouping/filtering UI exactly like any real, user-created picker. What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying. What: Mode String. Why: This selects which of pickers.js's own selection algorithms this picker uses. How: This is read by the picker engine exactly like any real picker's own mode. What: Ease Min Number. Why: This sets the lower bound of this picker's own per-tick ease amount. How: This is read by pickers.js wherever this picker's mode consults easeMin. What: Ease Max Number. Why: This sets the upper bound of this picker's own per-tick ease amount. How: This is read by pickers.js wherever this picker's mode consults easeMax. What: Threshold Number. Why: This is the value an item (or, for ease-down, the active item's own charge) must reach for ease-up eligibility or ease-down depletion. How: This is read by pickers.js's own ease-up/ease-down logic.
 
-	].map( ( rawPkrObj ) => ({ // What: Picker Object Map. Why: Every raw picker definition above still needs its own schedule/ease-down/conditional defaults filled in before it matches state.pickers' own shape. How: This resolves each field below, then spreads rawPkrObj over them so its own explicit fields win.
+	].map( ( rawPicObj ) => ({ // What: Picker Object Map. Why: Every raw picker definition above still needs its own schedule/ease-down/conditional defaults filled in before it matches state.pickers' own shape. How: This resolves each field below, then spreads rawPicObj over them so its own explicit fields win.
 
 
-		daysOfWeek    : ( pkrSchObj[ rawPkrObj.id ] || {} ).daysOfWeek || [ 0, 1, 2, 3, 4, 5, 6 ], // What: Days Of Week. Why: Every picker needs a schedule, falling back to every day when pkrSchObj has no override for it. How: This looks up rawPkrObj.id in pkrSchObj, defaulting to every weekday.
-		skipHolidays  : !!( pkrSchObj[ rawPkrObj.id ] || {} ).skipHolidays,                       // What: Skip Holidays. Why: Every picker needs an explicit holiday-skipping flag, defaulting to false when pkrSchObj has no override for it. How: This looks up rawPkrObj.id in pkrSchObj, coerced to a real boolean.
+		daysOfWeek    : ( picSchObj[ rawPicObj.id ] || {} ).daysOfWeek || [ 0, 1, 2, 3, 4, 5, 6 ], // What: Days Of Week. Why: Every picker needs a schedule, falling back to every day when picSchObj has no override for it. How: This looks up rawPicObj.id in picSchObj, defaulting to every weekday.
+		skipHolidays  : !!( picSchObj[ rawPicObj.id ] || {} ).skipHolidays,                       // What: Skip Holidays. Why: Every picker needs an explicit holiday-skipping flag, defaulting to false when picSchObj has no override for it. How: This looks up rawPicObj.id in picSchObj, coerced to a real boolean.
 		activeItemId  : null,                                                                     // What: Active Item Id. Why: An Ease Down picker needs a place to record which item is currently being worked down; none are active yet at seed time. How: This starts every picker at null, later overwritten for Ease Down pickers by buiSeeFun.
-		conditionalId : rawPkrObj.id === 'pkr_chore_w' ? 'cnd_chorefree' : null,                  // What: Conditional Id. Why: The demo Chore-Free Day gate needs exactly one picker to attach to. How: This attaches the gate only to the weekly-chore picker, leaving every other picker ungated.
-		...rawPkrObj                                                                              // What: Raw Picker Spread. Why: rawPkrObj's own explicit fields (id, group, name, mode, easeMin, easeMax, threshold) must win over any default above sharing the same name. How: This spreads every field of rawPkrObj over the defaults built above.
+		conditionalId : rawPicObj.id === 'pkr_chore_w' ? 'cnd_chorefree' : null,                  // What: Conditional Id. Why: The demo Chore-Free Day gate needs exactly one picker to attach to. How: This attaches the gate only to the weekly-chore picker, leaving every other picker ungated.
+		...rawPicObj                                                                              // What: Raw Picker Spread. Why: rawPicObj's own explicit fields (id, group, name, mode, easeMin, easeMax, threshold) must win over any default above sharing the same name. How: This spreads every field of rawPicObj over the defaults built above.
 
 
 	}) );
@@ -544,7 +544,7 @@ function makVacFun( vacRowArr ) {
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param allIteArr - Every seeded item to draw picks from.
- * @param allPkrArr - Every seeded picker to generate history for.
+ * @param allPicArr - Every seeded picker to generate history for.
  * @param onVacFun  - {@link onVacFun}
  * @param totDayNum - How many days of history to generate, counting
  *                    back from today; defaults to 365.
@@ -555,12 +555,12 @@ function makVacFun( vacRowArr ) {
  *
  * @example
  * ```ts
- * buildPickLog(allIteArr, allPkrArr, onVacFun, 365) // => { rows, easeState }
+ * buildPickLog(allIteArr, allPicArr, onVacFun, 365) // => { rows, easeState }
  * ```
  *
 */
 
-function buildPickLog( allIteArr, allPkrArr, onVacFun, totDayNum = 365 ) {
+function buildPickLog( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 
 
 	const picRowArr = []; // What: Pick Row Array And Guard. Why: Every row built by logPicFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
@@ -570,10 +570,10 @@ function buildPickLog( allIteArr, allPkrArr, onVacFun, totDayNum = 365 ) {
 	todMidObj.setHours( 0, 0, 0, 0 ); // What: Today Midnight Hours Reset. Why: Only the calendar day matters for the day-offset arithmetic below, not the current time of day. How: This zeroes out todMidObj's own hours/minutes/seconds/milliseconds in place.
 
 
-	const pkrPooObj = {}; // What: Picker Pool Object And Guard. Why: The simulation below repeatedly needs "every item belonging to this picker," which would otherwise mean re-filtering allIteArr on every single day simulated. How: This starts empty and is filled once by the loop directly below, then read many times.
+	const picPooObj = {}; // What: Picker Pool Object And Guard. Why: The simulation below repeatedly needs "every item belonging to this picker," which would otherwise mean re-filtering allIteArr on every single day simulated. How: This starts empty and is filled once by the loop directly below, then read many times.
 
 
-	for ( const curIteObj of allIteArr ) ( pkrPooObj[ curIteObj.pickerId ] = pkrPooObj[ curIteObj.pickerId ] || [] ).push( curIteObj ); // What: Picker Pool Fill Loop. Why: Every item must be filed under its own picker exactly once before the simulation below can look pools up cheaply. How: This iterates allIteArr, creating each picker's own bucket on first use and pushing curIteObj into it.
+	for ( const curIteObj of allIteArr ) ( picPooObj[ curIteObj.pickerId ] = picPooObj[ curIteObj.pickerId ] || [] ).push( curIteObj ); // What: Picker Pool Fill Loop. Why: Every item must be filed under its own picker exactly once before the simulation below can look pools up cheaply. How: This iterates allIteArr, creating each picker's own bucket on first use and pushing curIteObj into it.
 
 
 	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every row needs its own unique id, and nothing else in this scope tracks that count. How: This starts at 0 and is incremented once per row created below.
@@ -581,7 +581,7 @@ function buildPickLog( allIteArr, allPkrArr, onVacFun, totDayNum = 365 ) {
 	const ranBetFun = ( loBndNum, hiBndNum ) => loBndNum + Math.random() * ( hiBndNum - loBndNum ); // What: Random Between Function. Why: Several places below need a random value somewhere inside a given range, not just 0 to 1. How: This scales Math.random()'s own 0-1 output into the [ loBndNum, hiBndNum ] range.
 
 
-	const logPicFun = ( datValObj, curPkrObj, curIteObj, donValBoo, srcValStr, outValStr, depEndBoo ) => { // What: Log Pick Function. Why: Every simulated pick, toss, skip, or Ease Down tick below shares the same row-building logic. How: This builds one pickLog row shaped to state.pickLog's own contract and pushes it onto picRowArr.
+	const logPicFun = ( datValObj, curPicObj, curIteObj, donValBoo, srcValStr, outValStr, depEndBoo ) => { // What: Log Pick Function. Why: Every simulated pick, toss, skip, or Ease Down tick below shares the same row-building logic. How: This builds one pickLog row shaped to state.pickLog's own contract and pushes it onto picRowArr.
 
 
 		const pikTspObj = new Date( datValObj ); // What: Pick Timestamp Object. Why: A completed pick needs a plausible time of day, not just a bare date. How: This constructs a fresh copy of datValObj to set a random time of day on below.
@@ -596,11 +596,11 @@ function buildPickLog( allIteArr, allPkrArr, onVacFun, totDayNum = 365 ) {
 			id          : 'pls_' + ( seqCouNum++ ).toString( 36 ),                                    // What: Id. Why: Every row needs its own stable, unique identifier. How: This mints one from a running counter, prefixed 'pls_'.
 			eid         : null,                                                                       // What: Entry Id. Why: A simulated historical row was never a live Today entry, so it has no entry to reference. How: This is always null for a row built by this simulation.
 			date        : seedIsoDay( datValObj ),                                                     // What: Date. Why: Stats groups and filters rows by their own calendar day. How: This converts datValObj via seedIsoDay.
-			pickerId    : curPkrObj.id,                                                                // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from curPkrObj's own id.
+			pickerId    : curPicObj.id,                                                                // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from curPicObj's own id.
 			itemId      : curIteObj.id,                                                                // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from curIteObj's own id.
 			itemName    : curIteObj.name,                                                              // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This is copied straight from curIteObj's own name.
-			pickerName  : curPkrObj.name,                                                              // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from curPkrObj's own name.
-			group       : curPkrObj.group,                                                             // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPkrObj's own group.
+			pickerName  : curPicObj.name,                                                              // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from curPicObj's own name.
+			group       : curPicObj.group,                                                             // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPicObj's own group.
 			done        : outValStr === 'rejected' ? false : donValBoo,                                // What: Done. Why: A rejected toss was never actually completed, regardless of what donValBoo says. How: This forces false for a rejected row, otherwise uses donValBoo as given.
 			completedAt : ( outValStr !== 'rejected' && donValBoo ) ? pikTspObj.toISOString() : null,  // What: Completed At. Why: Only an actually-completed, non-rejected row has a real completion timestamp. How: This uses pikTspObj's own ISO string only when both conditions hold, otherwise null.
 			source      : srcValStr,                                                                    // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from srcValStr.
@@ -626,16 +626,16 @@ function buildPickLog( allIteArr, allPkrArr, onVacFun, totDayNum = 365 ) {
 		if ( isaOffFun( dayIndNum ) ) continue; // What: Off Day Guard. Why: A day rolled fully off has no picks at all, for any picker. How: This skips straight to the next day when isaOffFun reports true.
 
 
-		for ( const curPkrObj of allPkrArr ) { // What: Per-Picker Simulation Loop. Why: Every scheduled picker needs its own simulated pick for this simulated day. How: This iterates allPkrArr, skipping any picker not due to run today.
+		for ( const curPicObj of allPicArr ) { // What: Per-Picker Simulation Loop. Why: Every scheduled picker needs its own simulated pick for this simulated day. How: This iterates allPicArr, skipping any picker not due to run today.
 
 
-			if ( curPkrObj.mode === 'ease-down' ) continue; // What: Ease Down Skip Guard. Why: Ease Down pickers are simulated separately below, since they carry state across days rather than picking fresh each time. How: This skips an Ease Down picker entirely in this loop.
+			if ( curPicObj.mode === 'ease-down' ) continue; // What: Ease Down Skip Guard. Why: Ease Down pickers are simulated separately below, since they carry state across days rather than picking fresh each time. How: This skips an Ease Down picker entirely in this loop.
 
-			if ( Array.isArray( curPkrObj.daysOfWeek ) && !curPkrObj.daysOfWeek.includes( curDowNum ) ) continue; // What: Schedule Skip Guard. Why: A picker not scheduled for this simulated day's own weekday must not pick at all today. How: This skips the picker when its own daysOfWeek excludes curDowNum.
+			if ( Array.isArray( curPicObj.daysOfWeek ) && !curPicObj.daysOfWeek.includes( curDowNum ) ) continue; // What: Schedule Skip Guard. Why: A picker not scheduled for this simulated day's own weekday must not pick at all today. How: This skips the picker when its own daysOfWeek excludes curDowNum.
 
 
 			const dayIsoStr = seedIsoDay( curDatObj ); // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via seedIsoDay.
-			const itePooArr = ( pkrPooObj[ curPkrObj.id ] || [] ).filter( ( curIteObj ) => !onVacFun( curIteObj.id, dayIsoStr ) ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible for it. How: This filters curPkrObj's own pool down to items onVacFun does not report inactive.
+			const itePooArr = ( picPooObj[ curPicObj.id ] || [] ).filter( ( curIteObj ) => !onVacFun( curIteObj.id, dayIsoStr ) ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible for it. How: This filters curPicObj's own pool down to items onVacFun does not report inactive.
 
 			if ( !itePooArr.length ) continue; // What: Empty Pool Guard. Why: A picker with nothing eligible today (e.g. every item currently inactive) cannot pick at all. How: This skips to the next picker when itePooArr is empty.
 
@@ -655,7 +655,7 @@ function buildPickLog( allIteArr, allPkrArr, onVacFun, totDayNum = 365 ) {
 
 					do { tosIteObj = itePooArr[ Math.floor( Math.random() * itePooArr.length ) ]; } while ( tosIteObj.id === curIteObj.id && itePooArr.length > 1 ); // What: Toss Draw Loop. Why: A discarded item must actually differ from the final pick whenever another option exists. How: This keeps redrawing at random until tosIteObj differs from curIteObj, or gives up when itePooArr has only 1 item.
 
-					if ( tosIteObj.id !== curIteObj.id ) logPicFun( curDatObj, curPkrObj, tosIteObj, false, 'auto', 'rejected' ); // What: Toss Row Guard. Why: Only a genuinely different, discarded item should be logged as rejected. How: This logs tosIteObj as a rejected row only when it differs from curIteObj.
+					if ( tosIteObj.id !== curIteObj.id ) logPicFun( curDatObj, curPicObj, tosIteObj, false, 'auto', 'rejected' ); // What: Toss Row Guard. Why: Only a genuinely different, discarded item should be logged as rejected. How: This logs tosIteObj as a rejected row only when it differs from curIteObj.
 
 
 				}
@@ -671,9 +671,9 @@ function buildPickLog( allIteArr, allPkrArr, onVacFun, totDayNum = 365 ) {
 			const srcValStr = srcRolNum < 0.10 ? 'manual' : srcRolNum < 0.16 ? 'reroll' : 'auto'; // What: Source Value String. Why: Most picks come from the daily generator, with a smaller mix of hand-pushed and rerolled picks. How: This resolves srcRolNum into 'manual' (10%), 'reroll' (6%), or 'auto' (the remaining 84%).
 
 
-			if ( Math.random() < 0.09 ) { logPicFun( curDatObj, curPkrObj, curIteObj, false, srcValStr, 'skipped' ); continue; } // What: Skip Simulation Guard. Why: About 9% of the time, a real generated pick is skipped (marked, not completed) rather than acted on at all. How: This logs curIteObj as a skipped row and moves on to the next picker.
+			if ( Math.random() < 0.09 ) { logPicFun( curDatObj, curPicObj, curIteObj, false, srcValStr, 'skipped' ); continue; } // What: Skip Simulation Guard. Why: About 9% of the time, a real generated pick is skipped (marked, not completed) rather than acted on at all. How: This logs curIteObj as a skipped row and moves on to the next picker.
 
-			logPicFun( curDatObj, curPkrObj, curIteObj, isaDonBoo, srcValStr ); // What: Normal Pick Log Call. Why: Every other simulated pick is logged as an ordinary row. How: This logs curIteObj with its own rolled done state and source.
+			logPicFun( curDatObj, curPicObj, curIteObj, isaDonBoo, srcValStr ); // What: Normal Pick Log Call. Why: Every other simulated pick is logged as an ordinary row. How: This logs curIteObj with its own rolled done state and source.
 
 
 		}
@@ -686,13 +686,13 @@ function buildPickLog( allIteArr, allPkrArr, onVacFun, totDayNum = 365 ) {
 	const easStaObj = {}; // What: Ease State Object And Guard. Why: Every Ease Down picker's own final in-progress state must be reported back to the caller, since the live app needs to resume it. How: This starts empty and is filled once per Ease Down picker by the loop directly below.
 
 
-	for ( const curPkrObj of allPkrArr ) { // What: Ease Down Simulation Loop. Why: An Ease Down picker's own item stays picked across many days and decays over time, which the per-picker loop above deliberately skips. How: This simulates every Ease Down picker's own full history independently.
+	for ( const curPicObj of allPicArr ) { // What: Ease Down Simulation Loop. Why: An Ease Down picker's own item stays picked across many days and decays over time, which the per-picker loop above deliberately skips. How: This simulates every Ease Down picker's own full history independently.
 
 
-		if ( curPkrObj.mode !== 'ease-down' ) continue; // What: Non-Ease-Down Skip Guard. Why: Only an Ease Down picker needs this simulation at all. How: This skips straight to the next picker otherwise.
+		if ( curPicObj.mode !== 'ease-down' ) continue; // What: Non-Ease-Down Skip Guard. Why: Only an Ease Down picker needs this simulation at all. How: This skips straight to the next picker otherwise.
 
 
-		const thrValNum = curPkrObj.threshold ?? 100; // What: Threshold Value Number. Why: Every charge calculation below needs this picker's own starting/eligibility value. How: This reads curPkrObj's own threshold, defaulting to 100 when missing.
+		const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: Every charge calculation below needs this picker's own starting/eligibility value. How: This reads curPicObj's own threshold, defaulting to 100 when missing.
 
 		let actIteObj = null; // What: Active Item Object And Guard. Why: The simulation below needs a running "currently active item" slot, starting with none picked yet. How: This starts null and is assigned/cleared throughout the loop below.
 		let chaValNum = 0;    // What: Charge Value Number And Guard. Why: The simulation below needs a running charge for whichever item is active. How: This starts at 0, immediately overwritten once an item first becomes active below.
@@ -704,13 +704,13 @@ function buildPickLog( allIteArr, allPkrArr, onVacFun, totDayNum = 365 ) {
 			const curDatObj = new Date( todMidObj ); curDatObj.setDate( todMidObj.getDate() - dayIndNum ); // What: Current Date Object. Why: Every check and row below needs this simulated day's own real date. How: This constructs a fresh copy of todMidObj, then moves it back dayIndNum days.
 			const curDowNum = curDatObj.getDay();                                                          // What: Current Day-Of-Week Number. Why: This picker's own daysOfWeek schedule must be checked against this simulated day's own weekday. How: This reads curDatObj's own weekday via Date.getDay().
 
-			if ( Array.isArray( curPkrObj.daysOfWeek ) && !curPkrObj.daysOfWeek.includes( curDowNum ) ) continue; // What: Schedule Skip Guard. Why: This picker not being scheduled for this simulated day's own weekday means no decay tick happens at all today. How: This skips the day when curPkrObj's own daysOfWeek excludes curDowNum.
+			if ( Array.isArray( curPicObj.daysOfWeek ) && !curPicObj.daysOfWeek.includes( curDowNum ) ) continue; // What: Schedule Skip Guard. Why: This picker not being scheduled for this simulated day's own weekday means no decay tick happens at all today. How: This skips the day when curPicObj's own daysOfWeek excludes curDowNum.
 
 			if ( isaOffFun( dayIndNum ) ) continue; // What: Off Day Guard. Why: A day rolled fully off has no decay tick either. How: This skips straight to the next day when isaOffFun reports true.
 
 
 			const dayIsoStr = seedIsoDay( curDatObj ); // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via seedIsoDay.
-			const itePooArr = ( pkrPooObj[ curPkrObj.id ] || [] ).filter( ( curIteObj ) => !onVacFun( curIteObj.id, dayIsoStr ) ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible to become (or remain) active. How: This filters curPkrObj's own pool down to items onVacFun does not report inactive.
+			const itePooArr = ( picPooObj[ curPicObj.id ] || [] ).filter( ( curIteObj ) => !onVacFun( curIteObj.id, dayIsoStr ) ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible to become (or remain) active. How: This filters curPicObj's own pool down to items onVacFun does not report inactive.
 
 			if ( !itePooArr.length ) { actIteObj = null; continue; } // What: Empty Pool Guard. Why: With nothing eligible today, any in-progress item must be abandoned rather than kept active. How: This clears actIteObj and skips to the next day.
 
@@ -722,13 +722,13 @@ function buildPickLog( allIteArr, allPkrArr, onVacFun, totDayNum = 365 ) {
 			if ( !actIteObj ) { actIteObj = weightedPick( itePooArr ); chaValNum = thrValNum; } // What: New Active Item Guard. Why: With no item currently active, a new one must be chosen and start at full charge. How: This draws a weighted pick from itePooArr and resets chaValNum to thrValNum.
 
 
-			const decValNum = ranBetFun( actIteObj.easeMin ?? curPkrObj.easeMin ?? 20, actIteObj.easeMax ?? curPkrObj.easeMax ?? 34 ); // What: Decay Value Number. Why: Every simulated day, the active item's own charge decays by a random amount within its own (or its picker's own) ease range. How: This resolves a random value between actIteObj's own easeMin/easeMax, falling back to curPkrObj's own, then a hardcoded default.
+			const decValNum = ranBetFun( actIteObj.easeMin ?? curPicObj.easeMin ?? 20, actIteObj.easeMax ?? curPicObj.easeMax ?? 34 ); // What: Decay Value Number. Why: Every simulated day, the active item's own charge decays by a random amount within its own (or its picker's own) ease range. How: This resolves a random value between actIteObj's own easeMin/easeMax, falling back to curPicObj's own, then a hardcoded default.
 
 			chaValNum = Math.max( 0, chaValNum - decValNum ); // What: Charge Value Decay. Why: The active item's own charge must never be simulated below 0. How: This subtracts decValNum from chaValNum, floored at 0.
 
 			const depEndBoo = chaValNum <= 0; // What: Depleted End Boolean. Why: The row logged below needs to know whether this simulated day completed a full depletion cycle. How: This is true exactly when chaValNum has reached 0.
 
-			logPicFun( curDatObj, curPkrObj, actIteObj, Math.random() < 0.82, 'auto', null, depEndBoo ); // What: Ease Down Pick Log Call. Why: Every simulated day of an Ease Down streak still needs its own logged row. How: This logs actIteObj, rolling its own done state independently of the charge simulation.
+			logPicFun( curDatObj, curPicObj, actIteObj, Math.random() < 0.82, 'auto', null, depEndBoo ); // What: Ease Down Pick Log Call. Why: Every simulated day of an Ease Down streak still needs its own logged row. How: This logs actIteObj, rolling its own done state independently of the charge simulation.
 
 			if ( depEndBoo ) actIteObj = null; // What: Depleted Release Guard. Why: A fully depleted item must release so the next day can choose a fresh one. How: This clears actIteObj once depEndBoo is true.
 
@@ -736,7 +736,7 @@ function buildPickLog( allIteArr, allPkrArr, onVacFun, totDayNum = 365 ) {
 		}
 
 
-		easStaObj[ curPkrObj.id ] = actIteObj ? { activeItemId : actIteObj.id, charge : chaValNum } : { activeItemId : null, charge : 0 }; // What: Ease State Assignment. Why: The caller needs this picker's own final in-progress state, whatever it ended on. How: This records actIteObj's own id and charge, or a fully-released empty state when nothing is active.
+		easStaObj[ curPicObj.id ] = actIteObj ? { activeItemId : actIteObj.id, charge : chaValNum } : { activeItemId : null, charge : 0 }; // What: Ease State Assignment. Why: The caller needs this picker's own final in-progress state, whatever it ended on. How: This records actIteObj's own id and charge, or a fully-released empty state when nothing is active.
 
 
 	}
@@ -982,9 +982,9 @@ function buiSeeFun() {
 
 
 	const allIteArr = buiIteFun(); // What: All Item Array. Why: Every other builder below needs the full seeded item list to work from. How: This calls buiIteFun once, reused throughout the rest of this function.
-	const allPkrArr = buiPicFun(); // What: All Picker Array. Why: Every other builder below needs the full seeded picker list to work from. How: This calls buiPicFun once, reused throughout the rest of this function.
+	const allPicArr = buiPicFun(); // What: All Picker Array. Why: Every other builder below needs the full seeded picker list to work from. How: This calls buiPicFun once, reused throughout the rest of this function.
 
-	const pkrByIdeObj = Object.fromEntries( allPkrArr.map( ( curPkrObj ) => [ curPkrObj.id, curPkrObj ] ) ); // What: Picker By Identifier Object. Why: Today's own rows below need to look a picker up by id repeatedly. How: This maps allPkrArr into an id-keyed lookup object.
+	const picByIdeObj = Object.fromEntries( allPicArr.map( ( curPicObj ) => [ curPicObj.id, curPicObj ] ) ); // What: Picker By Identifier Object. Why: Today's own rows below need to look a picker up by id repeatedly. How: This maps allPicArr into an id-keyed lookup object.
 	const iteNamFun    = ( tarNamStr ) => allIteArr.find( ( curIteObj ) => curIteObj.name === tarNamStr );   // What: Item Named Function. Why: Today's own rows below are authored by item name for readability, not by id. How: This searches allIteArr for the first item whose own name matches tarNamStr.
 	const todIsoStr    = seedIsoDay( new Date() );                                                           // What: Today Iso String. Why: Every row referencing "today" below needs the same real calendar day. How: This converts the current date via seedIsoDay.
 
@@ -996,22 +996,22 @@ function buiSeeFun() {
 	const vacLogArr = buiVacFun( allIteArr ); // What: Vacation Log Array. Why: The pick-log simulation below needs a real inactive-state log to honor. How: This calls buiVacFun with the seeded items.
 	const onVacFun  = makVacFun( vacLogArr ); // What: On Vacation Function. Why: The pick-log simulation below needs a predicate, not just the raw log rows. How: This builds the predicate via makVacFun from vacLogArr.
 
-	const { rows : hisRowArr, easeState : easStaObj } = buildPickLog( allIteArr, allPkrArr, onVacFun ); // What: History Row Array And Ease State Object. Why: This is about a year of simulated pick history, plus each Ease Down picker's own final in-progress state. How: This destructures buildPickLog's own return value.
+	const { rows : hisRowArr, easeState : easStaObj } = buildPickLog( allIteArr, allPicArr, onVacFun ); // What: History Row Array And Ease State Object. Why: This is about a year of simulated pick history, plus each Ease Down picker's own final in-progress state. How: This destructures buildPickLog's own return value.
 
 
-	for ( const curPkrObj of allPkrArr ) { // What: Ease Down Apply Loop. Why: Every Ease Down picker's own live snapshot must reflect where the simulation above actually left it, not the picker's own static defaults. How: This recharges every item in an Ease Down picker's own pool except the in-progress one, then points the picker at it.
+	for ( const curPicObj of allPicArr ) { // What: Ease Down Apply Loop. Why: Every Ease Down picker's own live snapshot must reflect where the simulation above actually left it, not the picker's own static defaults. How: This recharges every item in an Ease Down picker's own pool except the in-progress one, then points the picker at it.
 
 
-		if ( curPkrObj.mode !== 'ease-down' ) continue; // What: Non-Ease-Down Skip Guard. Why: Only an Ease Down picker needs its own live snapshot adjusted this way. How: This skips straight to the next picker otherwise.
+		if ( curPicObj.mode !== 'ease-down' ) continue; // What: Non-Ease-Down Skip Guard. Why: Only an Ease Down picker needs its own live snapshot adjusted this way. How: This skips straight to the next picker otherwise.
 
 
-		const curStaObj = easStaObj[ curPkrObj.id ] || { activeItemId : null, charge : 0 }; // What: Current State Object And Guard. Why: A picker the simulation never touched (e.g. no eligible items at all) still needs a safe fallback state. How: This falls back to a fully-released empty state when easStaObj has no entry for curPkrObj's own id.
-		const thrValNum = curPkrObj.threshold ?? 100;                                       // What: Threshold Value Number. Why: Every item in this picker's own pool must recharge to this same full value. How: This reads curPkrObj's own threshold, defaulting to 100 when missing.
+		const curStaObj = easStaObj[ curPicObj.id ] || { activeItemId : null, charge : 0 }; // What: Current State Object And Guard. Why: A picker the simulation never touched (e.g. no eligible items at all) still needs a safe fallback state. How: This falls back to a fully-released empty state when easStaObj has no entry for curPicObj's own id.
+		const thrValNum = curPicObj.threshold ?? 100;                                       // What: Threshold Value Number. Why: Every item in this picker's own pool must recharge to this same full value. How: This reads curPicObj's own threshold, defaulting to 100 when missing.
 
 
-		for ( const curIteObj of allIteArr ) if ( curIteObj.pickerId === curPkrObj.id ) curIteObj.value = thrValNum; // What: Recharge Loop. Why: Every item in this picker's own pool starts the live app fully charged, except the in-progress one overwritten directly below. How: This sets curIteObj's own value to thrValNum for every item belonging to curPkrObj.
+		for ( const curIteObj of allIteArr ) if ( curIteObj.pickerId === curPicObj.id ) curIteObj.value = thrValNum; // What: Recharge Loop. Why: Every item in this picker's own pool starts the live app fully charged, except the in-progress one overwritten directly below. How: This sets curIteObj's own value to thrValNum for every item belonging to curPicObj.
 
-		curPkrObj.activeItemId = curStaObj.activeItemId; // What: Active Item Id Assignment. Why: The live picker must point at whichever item the simulation left in progress, if any. How: This copies curStaObj's own activeItemId onto curPkrObj.
+		curPicObj.activeItemId = curStaObj.activeItemId; // What: Active Item Id Assignment. Why: The live picker must point at whichever item the simulation left in progress, if any. How: This copies curStaObj's own activeItemId onto curPicObj.
 
 		if ( curStaObj.activeItemId ) { // What: In-Progress Charge Guard. Why: The in-progress item alone must keep its own partial charge rather than the full recharge applied above. How: This looks the item up again and overwrites its own value with curStaObj's own charge.
 
@@ -1066,12 +1066,12 @@ function buiSeeFun() {
 	const todRowArr = todPikArr.map( ( curPikObj ) => { // What: Today Row Array Map. Why: Every one of today's own picks needs a matching pickLog row too, not just a today.entries row. How: This maps todPikArr into full pickLog-shaped rows.
 
 
-		const curPkrObj = pkrByIdeObj[ curPikObj.pickerId ]; // What: Current Picker Object. Why: This row's own denormalized pickerName/group fields need the real picker looked up. How: This looks curPikObj's own pickerId up in pkrByIdeObj.
+		const curPicObj = picByIdeObj[ curPikObj.pickerId ]; // What: Current Picker Object. Why: This row's own denormalized pickerName/group fields need the real picker looked up. How: This looks curPikObj's own pickerId up in picByIdeObj.
 		const pikTspObj = new Date(); pikTspObj.setHours( 8, 30, 0, 0 ); // What: Pick Timestamp Object. Why: A completed today-row needs a plausible, fixed time of day. How: This is set to 8:30am on today's own real date.
 
 
 
-		return { // What: Today Row Return. Why: This is one row, in the exact shape state.pickLog itself expects, matching this pick's own today.entries counterpart. How: This builds the row from curPikObj/curPkrObj/pikTspObj above.
+		return { // What: Today Row Return. Why: This is one row, in the exact shape state.pickLog itself expects, matching this pick's own today.entries counterpart. How: This builds the row from curPikObj/curPicObj/pikTspObj above.
 
 
 			id          : 'pls_today_' + curPikObj.eid,                            // What: Id. Why: Every row needs its own stable, unique identifier, tied back to its own entry. How: This is prefixed 'pls_today_' plus curPikObj's own eid.
@@ -1080,8 +1080,8 @@ function buiSeeFun() {
 			pickerId    : curPikObj.pickerId,                                     // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from curPikObj's own pickerId.
 			itemId      : curPikObj.itemId,                                       // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from curPikObj's own itemId.
 			itemName    : curPikObj.iteStr,                                       // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This is copied straight from curPikObj's own iteStr.
-			pickerName  : curPkrObj.name,                                         // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from curPkrObj's own name.
-			group       : curPkrObj.group,                                        // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPkrObj's own group.
+			pickerName  : curPicObj.name,                                         // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from curPicObj's own name.
+			group       : curPicObj.group,                                        // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPicObj's own group.
 			done        : curPikObj.donValBoo,                                    // What: Done. Why: Every row must record whether it was actually completed. How: This is copied straight from curPikObj's own donValBoo.
 			completedAt : curPikObj.donValBoo ? pikTspObj.toISOString() : null,   // What: Completed At. Why: Only an actually-completed row has a real completion timestamp. How: This uses pikTspObj's own ISO string only when curPikObj's own donValBoo is true, otherwise null.
 			source      : curPikObj.srcValStr                                     // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from curPikObj's own srcValStr.
@@ -1110,7 +1110,7 @@ function buiSeeFun() {
 
 
 		items           : allIteArr.filter( ( curIteObj ) => !curIteObj.__deleted ),                       // What: Items. Why: A retired item is kept only long enough to seed its own pick-log history above; the live item list itself must exclude it, so Stats renders it as a "deleted" ghost row instead. How: This drops every item flagged __deleted from allIteArr.
-		pickers         : allPkrArr,                                                                        // What: Pickers. Why: Every seeded picker, already fully resolved (schedule, ease-down state, conditional gate) above. How: This is allPkrArr, unchanged.
+		pickers         : allPicArr,                                                                        // What: Pickers. Why: Every seeded picker, already fully resolved (schedule, ease-down state, conditional gate) above. How: This is allPicArr, unchanged.
 		conditionals    : [ // What: Conditionals. Why: The demo Chore-Free Day gate needs seeding here, attached to the weekly-chore picker via its own conditionalId (set inside buiPicFun above). How: This is a single-entry array, in state.conditionals' own shape.
 
 
@@ -1119,7 +1119,7 @@ function buiSeeFun() {
 
 		],
 
-		daily           : { pickerIds : allPkrArr.map( ( curPkrObj ) => curPkrObj.id ), runTime : '04:00', mode : 'auto' }, // What: Daily. Why: The Daily generator needs to know which pickers to run and when; every seeded picker runs daily, auto-triggered at 4am. How: This maps allPkrArr down to just its own ids, paired with a fixed runTime/mode.
+		daily           : { pickerIds : allPicArr.map( ( curPicObj ) => curPicObj.id ), runTime : '04:00', mode : 'auto' }, // What: Daily. Why: The Daily generator needs to know which pickers to run and when; every seeded picker runs daily, auto-triggered at 4am. How: This maps allPicArr down to just its own ids, paired with a fixed runTime/mode.
 		holidays        : HOL_NAM_OBJ.defaultState(),                                                      // What: Holidays. Why: The demo state needs a real, canonical holidays-state shape, same as a fresh install would get. How: This calls HOL_NAM_OBJ's own defaultState.
 		appearance      : { theme : 'ink', customLight : null, customDark : null, autoSystem : false, pickAnim : 'reel', completionStyle : 'confetti', tabPlacement : 'bottom' }, // What: Appearance. Why: The demo state needs a full, valid appearance settings object, same shape a fresh install would get. How: This is the app's own default theme/animation/placement settings.
 		tasks           : [ // What: Tasks. Why: A few manual reminders need seeding atop Today, covering weekly/monthly/interval/once recurrence. How: This is an array of TASKS.defaultTask calls, in state.tasks' own shape.
