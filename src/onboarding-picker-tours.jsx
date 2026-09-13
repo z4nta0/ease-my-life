@@ -1,505 +1,918 @@
-import React from 'react';
-import { emlTouObj } from './eml-tour-bus.js';
-import { Icon } from './ui.jsx';
-import { TutorialIntroModal } from './onboarding-intro-modal.jsx';
-import { GuidedTour } from './onboarding-tour-runner.jsx';
-import { NAV_TAR_OBJ } from './onboarding-targets.jsx';
-import { OB_EXAMPLE, OB_EXTRA_PICKERS } from './onboarding-seed-data.js';
-import { MODES } from './seed.js';
 
-// Every sample picker's own template data, keyed by id — this IS the exact
-// shape NewPickerForm's `initial` prop expects (name/group/mode/items/step),
-// and unlike the reminder samples, nothing seeds a picker with per-field
-// overrides at tour time (see onboarding.jsx's seeding effect: pickers are
-// added from these templates verbatim), so reading the static template here
-// is safe — no live-vs-template divergence to worry about the way the
-// reminder tours had to for daysOfWeek.
-const PICKER_SAMPLES = Object.fromEntries(
-  [OB_EXAMPLE, ...OB_EXTRA_PICKERS].map((p) => [p.id, p])
-);
 
-// Content for the picker mini-tours ("Set up a {picker name} picker"),
-// launched by Play on each still-hidden sample picker's launcher card (see
-// tab-today.jsx's startMiniTour, EntryCard's entry.kind === 'tutorial'
-// branch). All of them share the same intro-modal structure and first
-// paragraph — only the title (the picker's own name) and the second
-// paragraph differ per picker. Keyed by the sample picker id (see
-// onboarding-seed-data.js's OB_EXAMPLE/OB_EXTRA_PICKERS).
-const PICKER_TOUR_BODY_1 = 'Pickers are where the magic happens. They have rules for when and how they should pick from its list of items. There are 5 basic types of pickers: Truly Random, Weighted, Dynamic Weighted, Ease Up and Ease Down. Don’t worry too much about the details right now, as you start to use the app it will become more clear.';
 
-// itemPrefill is the name Step 7's run() stages for the tour's own added
-// item (see buildPickerTourStep7) — a new item distinct from anything
-// already in that sample's own pool, themed to fit. body2/itemPrefill for
-// every non-daily sample here is a first pass, not yet manually verified
-// live the way Daily Chores' own tour was — expect touch-ups once each one
-// gets its own dedicated pass.
-const PICKER_TOUR_COPY = {
-  pkr_ob_daily: {
-    body2: <>This tutorial will guide you through creating a Daily Chores picker. This type of picker is an Ease Up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Do the laundry", you don’t want that task picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>,
-    itemPrefill: 'Mop the floors',
-  },
-  pkr_ob_monthly: {
-    body2: <>This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease Up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 month</b>. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least 1 month but also no later than 2 months. Let’s create one of these now.</>,
-    itemPrefill: 'Wash the windows',
-    // Overrides the generic 7/14-day DEFAULT_EASE (tab-picker.jsx) for just
-    // this tour's own added item — a monthly-cadence picker's own sample
-    // item should look the part instead of a daily/weekly one.
-    itemSoonest: 31,
-    itemLatest: 62,
-    step9Body: <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>,
-  },
-  pkr_ob_coffee: {
-    body2: <>This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is <b>perfect for randomly choosing something, while also making sure that every item is eventually picked and for prioritizing certain items over others</b>. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.</>,
-    itemPrefill: 'Peppermint Mocha',
-  },
-  pkr_ob_dinner: {
-    body2: <>This tutorial will guide you through creating a Dinner picker. This type of picker is an Ease Up and is <b>perfect for something like meals where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Spaghetti and meatballs", you don’t want that meal picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>,
-    itemPrefill: 'Grilled salmon',
-    step8Body: <>This is the name of the meal item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-    step9Body: <>This controls the <b>minimum number of days that a meal item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same meal to be chosen again within a certain timeframe.</>,
-    step10Body: <>This controls the <b>maximum number of days that a meal item must wait before it should be picked again</b>. This is also useful since you usually want a meal to be picked again within a certain timeframe.</>,
-  },
-  pkr_ob_workouts: {
-    body2: <>This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease Up and is <b>perfect for something like workouts where you don’t want the same workout to be picked twice within, say, a few days</b>. e.g. once it picks "Chest", you don’t want that workout item picked again for at least 5 days but also no later than a week. Let’s create one of these now.</>,
-    itemPrefill: 'Cardio',
-    itemSoonest: 3,
-    itemLatest: 6,
-    step8Body: <>This is the name of the workout item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-    step9Body: <>This controls the <b>minimum number of days that a workout item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same workout to be chosen again within a certain timeframe.</>,
-    step10Body: <>This controls the <b>maximum number of days that a workout item must wait before it should be picked again</b>. This is also useful since you usually want a workout to be picked again within a certain timeframe.</>,
-  },
-  pkr_ob_relax: {
-    body2: <>This tutorial will guide you through creating a Relax picker. This type of picker is an Ease Down and is <b>perfect for activities you want to stick with for a few days at a time instead of changing every day</b>. e.g. once it picks "Read a book", that activity will stay as the picked item for at least 5 days but no more than a week before a new activity is chosen. Let’s create one of these now.</>,
-    itemPrefill: 'Take a nap',
-    itemSoonest: 3,
-    itemLatest: 5,
-    step8Body: <>This is the name of the activity item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-    step9Body: <>This controls the <b>minimum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is useful since most activities you want to stick with for a certain timeframe instead of changing every day.</>,
-    step10Body: <>This controls the <b>maximum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is also useful since most activities you don’t want to stay picked past a certain timeframe.</>,
-  },
+
+// #region Imports
+
+import React from 'react'; // What: React. Why: This file's own PickerTour component needs React in scope to compile its JSX and to call React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
+
+
+import { emlTouObj          } from './eml-tour-bus.js';            // What: Ease My Life Tour Object. Why: This publishes the running tour's prefill data for the real create-picker form and clears it again on every exit path. How: This is written to via .set() in bldNewFun's/bldAddFun's own run() and cloTouFun below, and read via .get() inside GuidedTour's own onGoBack handler.
+import { GuidedTour         } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives this picker mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-picker step array.
+import { Icon               } from './ui.jsx';                     // What: Icon. Why: The intro modal needs a recognizable glyph identifying this as a picker tutorial. How: This is rendered inside the intro modal's icon prop below.
+import { MODES              } from './seed.js';                    // What: Modes. Why: The intro modal's own pill needs this picker's own mode label, not its raw mode key. How: This is looked up by picRecObj's own mode to resolve modLabStr below.
+import { NAV_TAR_OBJ        } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Step 1's own body copy is kept in sync with the Pickers page tour's own Step 1, which is built from this object. How: This is not referenced directly in this file's own code, only in NAV_STE_OBJ's own comment explaining that copy-sync relationship; left as an unused import, matching this pass's treatment of other currently-unused bindings elsewhere in this codebase.
+import { OB_EXAMPLE         } from './onboarding-seed-data.js';    // What: Onboarding Example. Why: This is the "Daily Chores" sample picker's own template, one of the entries PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
+import { OB_EXTRA_PICKERS   } from './onboarding-seed-data.js';    // What: Onboarding Extra Pickers. Why: This is every OTHER sample picker's own template, alongside OB_EXAMPLE the full set PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
+import { TutorialIntroModal } from './onboarding-intro-modal.jsx'; // What: Tutorial Intro Modal. Why: Each picker mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this picker's own icon/title/paragraphs/pills.
+
+// #endregion Imports
+
+
+
+/**
+ * onboarding-picker-tours.jsx = Onboarding Picker Tours
+ *
+ * @summary
+ * Content for the picker mini-tours ("Set up a {picker name} picker"),
+ * launched by Play on each still-hidden sample picker's own launcher
+ * card (see tab-today.jsx's own startMiniTour, EntryCard's own
+ * entry.kind === 'tutorial' branch). Every one of these tours shares
+ * the exact same intro-modal structure and first paragraph (FIR_PAR_ELE
+ * below); only the title (the picker's own name) and the second
+ * paragraph differ per picker, keyed by the sample picker's own id (see
+ * onboarding-seed-data.js's own OB_EXAMPLE/OB_EXTRA_PICKERS).
+ *
+ * A tour's own step count and shape vary by the sample picker's own
+ * mode: the Soonest/Latest steps only exist for an ease-up/ease-down
+ * sample, the Weight step only for weighted/dynamic, and the Boost
+ * step only for dynamic. See PickerTour's own isaEasBoo/useWeiBoo/
+ * isaDynBoo below for that gating.
+ *
+ * Mounted at the app level (see app.jsx's own actPicStr), not inside
+ * TabToday the way the reminder mini-tours are: Step 1 navigates to
+ * the Pickers tab, which would unmount TabToday (and this tour along
+ * with it) if it lived there instead. active/selectTab passed into
+ * PickerTour below are therefore the real app-wide ones, not stubs.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
+/**
+ * PIC_SAM_OBJ = Picker Sample Object
+ *
+ * @summary
+ * Every sample picker's own template data, keyed by id. This IS the
+ * exact shape NewPickerForm's own initial prop expects (name/group/
+ * mode/items/step), and unlike the reminder samples, nothing seeds a
+ * picker with per-field overrides at tour time (see onboarding.jsx's
+ * own seeding effect: pickers are added from these templates
+ * verbatim), so reading the static template here is safe. There is no
+ * live-vs-template divergence to worry about the way the reminder
+ * tours had to for daysOfWeek.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const PIC_SAM_OBJ = Object.fromEntries( [ OB_EXAMPLE, ...OB_EXTRA_PICKERS ].map( ( curPicObj ) => [ curPicObj.id, curPicObj ] ) ); // What: Picker Sample Object. Why: Every step below that needs this sample's own template data (name/group/mode/items/step) reads it from here. How: This maps OB_EXAMPLE plus every OB_EXTRA_PICKERS entry down to a [id, template] pair, then folds those pairs into one object.
+
+
+
+const FIR_PAR_ELE = <>Pickers are where the magic happens. They have rules for when and how they should pick from its list of items. There are 5 basic types of pickers: Truly Random, Weighted, Dynamic Weighted, Ease Up and Ease Down. Don’t worry too much about the details right now, as you start to use the app it will become more clear.</>; // What: First Paragraph Element. Why: This is the intro modal's shared opening paragraph, identical for every picker mini-tour. How: This is passed as the first entry of TutorialIntroModal's own paragraphs prop in the render below.
+
+
+
+/**
+ * PIC_COP_OBJ = Picker Copy Object
+ *
+ * @summary
+ * Content for the picker mini-tours ("Set up a {picker name} picker"),
+ * keyed by the sample picker's own id (see onboarding-seed-data.js's
+ * own OB_EXAMPLE/OB_EXTRA_PICKERS). preStr is the name Step 7's own
+ * run() stages for the tour's own added item (see bldAddFun below), a
+ * new item distinct from anything already in that sample's own pool,
+ * themed to fit. bodEle/preStr for every non-daily sample here is a
+ * first pass, not yet manually verified live the way Daily Chores' own
+ * tour was; expect touch-ups once each one gets its own dedicated
+ * pass.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const PIC_COP_OBJ = { // What: Picker Copy Object. Why: Every picker mini-tour's own second intro paragraph, item prefill, and any per-step body override lives here, one entry per sample picker id. How: This is looked up by picIdeStr everywhere a step or the intro modal needs picker-specific copy.
+
+
+	pkr_ob_daily : {
+
+
+		bodEle : <>This tutorial will guide you through creating a Daily Chores picker. This type of picker is an Ease Up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Do the laundry", you don’t want that task picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>, // What: Body Element. Why: This sample's own second intro paragraph explains what a Daily Chores picker is. How: This is rendered as the second entry of TutorialIntroModal's own paragraphs prop.
+		preStr : 'Mop the floors'                                                                                                                                                                                                                                                                                                                                                                                                                                                                    // What: Prefill String. Why: Step 7's own run() stages this as the tour's own added item's name. How: This is read as picCopObj.preStr inside bldAddFun's run() below.
+
+
+	},
+
+	pkr_ob_monthly : {
+
+
+		bodEle : <>This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease Up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 month</b>. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least 1 month but also no later than 2 months. Let’s create one of these now.</>, // What: Body Element. Why: This sample's own second intro paragraph explains what a Monthly Chores picker is. How: This is rendered as the second entry of TutorialIntroModal's own paragraphs prop.
+		preStr : 'Wash the windows',                                                                                                                                                                                                                                                                                                                                                                                                                                                                    // What: Prefill String. Why: Step 7's own run() stages this as the tour's own added item's name. How: This is read as picCopObj.preStr inside bldAddFun's run() below.
+		sooNum : 31,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    // What: Soonest Number. Why: This overrides the generic 7/14-day default drift band for just this tour's own added item; a monthly-cadence picker's own sample item should look the part instead of a daily/weekly one. How: This is read as picCopObj.sooNum inside bldAddFun's run() below, converted into itemEaseMax there.
+		latNum : 62,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    // What: Latest Number. Why: Same reasoning as sooNum, for the slow end of this item's own drift band. How: This is read as picCopObj.latNum inside bldAddFun's run() below, converted into itemEaseMin there.
+		sooEle : <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>                                                                                                                                                                                                                                                     // What: Soonest Element. Why: This overrides bldSooFun's own default body with monthly-specific wording. How: This is read as picCopObj.sooEle inside bldSooFun below, falling back to DEF_SOO_ELE when absent.
+
+
+	},
+
+	pkr_ob_coffee : {
+
+
+		bodEle : <>This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is <b>perfect for randomly choosing something, while also making sure that every item is eventually picked and for prioritizing certain items over others</b>. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.</>, // What: Body Element. Why: This sample's own second intro paragraph explains what a Coffee Creamer picker is. How: This is rendered as the second entry of TutorialIntroModal's own paragraphs prop.
+		preStr : 'Peppermint Mocha'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    // What: Prefill String. Why: Step 7's own run() stages this as the tour's own added item's name. How: This is read as picCopObj.preStr inside bldAddFun's run() below.
+
+
+	},
+
+	pkr_ob_dinner : {
+
+
+		bodEle : <>This tutorial will guide you through creating a Dinner picker. This type of picker is an Ease Up and is <b>perfect for something like meals where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Spaghetti and meatballs", you don’t want that meal picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>, // What: Body Element. Why: This sample's own second intro paragraph explains what a Dinner picker is. How: This is rendered as the second entry of TutorialIntroModal's own paragraphs prop.
+		preStr : 'Grilled salmon',                                                                                                                                                                                                                                                                                                                                                                                                                                                                    // What: Prefill String. Why: Step 7's own run() stages this as the tour's own added item's name. How: This is read as picCopObj.preStr inside bldAddFun's run() below.
+		namEle : <>This is the name of the meal item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,                                                                                                                                                                                                                                                                             // What: Name Element. Why: This overrides bldNamFun's own default body with meal-specific wording. How: This is read as picCopObj.namEle inside bldNamFun below, falling back to DEF_NAM_ELE when absent.
+		sooEle : <>This controls the <b>minimum number of days that a meal item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same meal to be chosen again within a certain timeframe.</>,                                                                                                                                                                                                                                             // What: Soonest Element. Why: This overrides bldSooFun's own default body with meal-specific wording. How: This is read as picCopObj.sooEle inside bldSooFun below, falling back to DEF_SOO_ELE when absent.
+		latEle : <>This controls the <b>maximum number of days that a meal item must wait before it should be picked again</b>. This is also useful since you usually want a meal to be picked again within a certain timeframe.</>                                                                                                                                                                                                                                                                   // What: Latest Element. Why: This overrides bldLatFun's own default body with meal-specific wording. How: This is read as picCopObj.latEle inside bldLatFun below, falling back to DEF_LAT_ELE when absent.
+
+
+	},
+
+	pkr_ob_workouts : {
+
+
+		bodEle : <>This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease Up and is <b>perfect for something like workouts where you don’t want the same workout to be picked twice within, say, a few days</b>. e.g. once it picks "Chest", you don’t want that workout item picked again for at least 5 days but also no later than a week. Let’s create one of these now.</>, // What: Body Element. Why: This sample's own second intro paragraph explains what a Workouts picker is. How: This is rendered as the second entry of TutorialIntroModal's own paragraphs prop.
+		preStr : 'Cardio',                                                                                                                                                                                                                                                                                                                                                                                                                                                                              // What: Prefill String. Why: Step 7's own run() stages this as the tour's own added item's name. How: This is read as picCopObj.preStr inside bldAddFun's run() below.
+		sooNum : 3,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     // What: Soonest Number. Why: This overrides the generic 7/14-day default drift band; a workout picker's own sample item should recharge on a much shorter cadence. How: This is read as picCopObj.sooNum inside bldAddFun's run() below, converted into itemEaseMax there.
+		latNum : 6,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     // What: Latest Number. Why: Same reasoning as sooNum, for the slow end of this item's own drift band. How: This is read as picCopObj.latNum inside bldAddFun's run() below, converted into itemEaseMin there.
+		namEle : <>This is the name of the workout item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,                                                                                                                                                                                                                                                                           // What: Name Element. Why: This overrides bldNamFun's own default body with workout-specific wording. How: This is read as picCopObj.namEle inside bldNamFun below, falling back to DEF_NAM_ELE when absent.
+		sooEle : <>This controls the <b>minimum number of days that a workout item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same workout to be chosen again within a certain timeframe.</>,                                                                                                                                                                                                                                       // What: Soonest Element. Why: This overrides bldSooFun's own default body with workout-specific wording. How: This is read as picCopObj.sooEle inside bldSooFun below, falling back to DEF_SOO_ELE when absent.
+		latEle : <>This controls the <b>maximum number of days that a workout item must wait before it should be picked again</b>. This is also useful since you usually want a workout to be picked again within a certain timeframe.</>                                                                                                                                                                                                                                                             // What: Latest Element. Why: This overrides bldLatFun's own default body with workout-specific wording. How: This is read as picCopObj.latEle inside bldLatFun below, falling back to DEF_LAT_ELE when absent.
+
+
+	},
+
+	pkr_ob_relax : {
+
+
+		bodEle : <>This tutorial will guide you through creating a Relax picker. This type of picker is an Ease Down and is <b>perfect for activities you want to stick with for a few days at a time instead of changing every day</b>. e.g. once it picks "Read a book", that activity will stay as the picked item for at least 5 days but no more than a week before a new activity is chosen. Let’s create one of these now.</>, // What: Body Element. Why: This sample's own second intro paragraph explains what a Relax picker is. How: This is rendered as the second entry of TutorialIntroModal's own paragraphs prop.
+		preStr : 'Take a nap',                                                                                                                                                                                                                                                                                                                                                                                                                                                                          // What: Prefill String. Why: Step 7's own run() stages this as the tour's own added item's name. How: This is read as picCopObj.preStr inside bldAddFun's run() below.
+		sooNum : 3,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     // What: Soonest Number. Why: This overrides the generic 7/14-day default decay band; a Relax picker's own sample item should stick around on a shorter cadence. How: This is read as picCopObj.sooNum inside bldAddFun's run() below, converted into itemEaseMax there.
+		latNum : 5,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     // What: Latest Number. Why: Same reasoning as sooNum, for the slow end of this item's own decay band. How: This is read as picCopObj.latNum inside bldAddFun's run() below, converted into itemEaseMin there.
+		namEle : <>This is the name of the activity item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,                                                                                                                                                                                                                                                                          // What: Name Element. Why: This overrides bldNamFun's own default body with activity-specific wording. How: This is read as picCopObj.namEle inside bldNamFun below, falling back to DEF_NAM_ELE when absent.
+		sooEle : <>This controls the <b>minimum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is useful since most activities you want to stick with for a certain timeframe instead of changing every day.</>,                                                                                                                                                                                                                     // What: Soonest Element. Why: This overrides bldSooFun's own default body with Ease Down/activity-specific wording. How: This is read as picCopObj.sooEle inside bldSooFun below, falling back to DEF_SOO_ELE when absent.
+		latEle : <>This controls the <b>maximum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is also useful since most activities you don’t want to stay picked past a certain timeframe.</>                                                                                                                                                                                                                                       // What: Latest Element. Why: This overrides bldLatFun's own default body with Ease Down/activity-specific wording. How: This is read as picCopObj.latEle inside bldLatFun below, falling back to DEF_LAT_ELE when absent.
+
+
+	}
+
+
 };
 
-// Step 1 is identical for every picker tutorial — just the Pickers nav
-// button itself, requireClick so Next stays disabled and the user has to
-// actually click the real icon to advance. Body copy is kept in sync with
-// the Pickers page tour's own Step 1 (NAV_TAR_OBJ.picker + its
-// buildPageTourStep1 suffix) by explicit request — the step still has to
-// stay on Today (tab: 'today') rather than pre-navigating, so there's
-// something left for the user's own click to do; only the copy is shared,
-// not the step object.
-const PICKER_TOUR_STEP_1 = {
-  sel: '[data-tab="picker"]', tab: 'today',
-  title: 'The Pickers Page',
-  body: <>The Pickers page is <b>where you can create new pickers</b> and can be found using the shuffle icon indicated here. You can also <b>manually run any picker, as well as send a specific item to your todo list</b>, from the Pickers page. Go ahead and click the "Pickers" page's button now.</>,
-  primary: 'Next', back: false, requireClick: true,
+
+
+/**
+ * NAV_STE_OBJ = Nav Step Object
+ *
+ * @summary
+ * Step 1 is identical for every picker tutorial: just the Pickers nav
+ * button itself, requireClick so Next stays disabled and the user has
+ * to actually click the real icon to advance. Body copy is kept in
+ * sync with the Pickers page tour's own Step 1 (NAV_TAR_OBJ.picker
+ * plus its own buildPageTourStep1 suffix, see onboarding-page-
+ * tours.jsx) by explicit request; the step still has to stay on Today
+ * (tab: 'today') rather than pre-navigating, so there is something
+ * left for the user's own click to do. Only the copy is shared, not
+ * the step object itself.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const NAV_STE_OBJ = { // What: Nav Step Object. Why: Every picker tutorial's own Step 1 is this exact same step, highlighting the real Pickers nav button. How: This is spread as-is into every picker's own steObjArr below.
+
+
+	sel          : '[data-tab="picker"]', // What: Selector String. Why: This step highlights the real Pickers nav button. How: GuidedTour spotlights whatever this selector matches.
+	tab          : 'today',               // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	title        : 'The Pickers Page',    // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body         : <>The Pickers page is <b>where you can create new pickers</b> and can be found using the shuffle icon indicated here. You can also <b>manually run any picker, as well as send a specific item to your todo list</b>, from the Pickers page. Go ahead and click the "Pickers" page's button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the Pickers page does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	primary      : 'Next',                // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back         : false,                 // What: Back Boolean. Why: This is every picker tutorial's own very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
+	requireClick : true                    // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+
+
 };
 
-// Lands at the top of the Pickers page (scrollToTop) and highlights the real
-// "+ Add New Picker" tab — requireClick again, same teaching-the-real-
-// interface pattern as the Reminders tours' "+" step. run() publishes the
-// sample's data as the emlTouObj bus's prefill, timed so the real click (which
-// natively opens the form via the button's own onClick, not this run()) ends
-// up mounting NewPickerForm with it already applied — see the long comment
-// on PickerTour below for why this specific ordering matters.
-const buildPickerTourStep2 = (pickerId, state) => ({
-  sel: '.picker-tab--add', tab: 'picker', scrollToTop: true,
-  // "+Add" is the FIRST tab in the strip (tab-picker.jsx), not the last —
-  // no revealHorizontally needed here. It used to sit last, which broke a
-  // Replay Tour once enough real pickers accumulated to push it off the
-  // scrollable end with no horizontal-scroll handling anywhere to reveal it
-  // (bring()'s own scroll math is vertical-only); moving it to the front of
-  // the strip (users had trouble finding it there at all) fixed that same
-  // problem for real usage too, not just this tour.
-  title: 'Create a new picker',
-  body: <>The "Add New Picker" button will <b>open up the form for creating a new picker</b>. Go ahead and click the "Add New Picker" button now.</>,
-  primary: 'Next', back: true, requireClick: true,
-  // suppressAutoOpen: tab-picker.jsx's dormant effect (`if (tour.prefill &&
-  // !creating)`) is meant to stay silent for this tour — see the long
-  // comment on PickerTour below — but its `!creating` check reads a value
-  // from a DIFFERENT, earlier render than the one that eventually sets
-  // `creating` true (this bus update flows through a plain subscriber
-  // callback, outside the click's own React batch, so it commits before the
-  // real button's native handler does). Without this flag the dormant
-  // effect fires first, flips openedByTour to true, and Step 12's onCreate
-  // then treats the picker as a dedup-and-skip revisit instead of actually
-  // creating it.
-  //
-  // existingPickerId/createdFromSample: if this sample tour has already been
-  // finished once before, there's a real picker out there tagged with
-  // createdFromSample === pickerId (see store.jsx's addPicker) — publishing
-  // its id here lets tab-picker.jsx's onCreate UPDATE that same picker in
-  // place (via addPicker's replaceId) instead of creating a brand-new,
-  // name-colliding duplicate. createdFromSample is republished regardless
-  // (even on a genuine first run) so THIS run's picker is tagged for any
-  // future replay to find.
-  run: () => {
-    const existing = state.pickers.find((p) => p.createdFromSample === pickerId);
-    emlTouObj.set({
-      prefill: PICKER_SAMPLES[pickerId], suppressAutoOpen: true,
-      existingPickerId: existing ? existing.id : null,
-      createdFromSample: pickerId,
-    });
-  },
+
+
+/**
+ * bldNewFun = Build New Function
+ *
+ * @summary
+ * Lands at the top of the Pickers page (scrollToTop) and highlights
+ * the real "+ Add New Picker" tab, requireClick again, the same
+ * teaching-the-real-interface pattern as NAV_STE_OBJ above. run()
+ * publishes the sample's own data as the emlTouObj bus's prefill,
+ * timed so the real click (which natively opens the form via the
+ * button's own onClick, not this run()) ends up mounting NewPickerForm
+ * with it already applied. See the design-rationale comment on
+ * PickerTour below for why this specific ordering matters.
+ *
+ * "+Add" is the FIRST tab in the strip (tab-picker.jsx), not the
+ * last; no revealHorizontally is needed here. It used to sit last,
+ * which broke a Replay Tour once enough real pickers accumulated to
+ * push it off the scrollable end with no horizontal-scroll handling
+ * anywhere to reveal it (bring()'s own scroll math is vertical-only).
+ * Moving it to the front of the strip (users had trouble finding it
+ * there at all) fixed that same problem for real usage too, not just
+ * this tour.
+ *
+ * suppressAutoOpen exists because tab-picker.jsx has its own dormant
+ * effect from the original (stashed) create-a-picker tour design
+ * (`if (tour.prefill && !creating)`) that auto-opens the form the
+ * instant prefill appears; without this flag it would wrongly claim
+ * credit for the click this step is teaching. existingPickerId/
+ * createdFromSample let a finished-before run of this same tour
+ * update its own already-created picker in place (via addPicker's own
+ * replaceId) instead of creating a name-colliding duplicate.
+ * createdFromSample is republished regardless (even on a genuine
+ * first run) so THIS run's own picker is tagged for any future replay
+ * to find.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const bldNewFun = ( picIdeStr, state ) => ({ // What: Build New Function. Why: This builds Step 2, the step that highlights the real "+ Add New Picker" tab and stages this sample's own prefill data. How: This returns a step object whose run() publishes picIdeStr's own template onto the shared bus before the real click opens the create-picker form.
+
+
+	sel          : '.picker-tab--add',     // What: Selector String. Why: This step highlights the real "+ Add New Picker" tab. How: GuidedTour spotlights whatever this selector matches.
+	tab          : 'picker',               // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	scrollToTop  : true,                   // What: Scroll To Top Boolean. Why: This step's own target sits at the top of the Pickers page. How: GuidedTour scrolls all the way to 0 for this step instead of just nudging the target into view.
+	title        : 'Create a new picker',  // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body         : <>The "Add New Picker" button will <b>open up the form for creating a new picker</b>. Go ahead and click the "Add New Picker" button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	primary      : 'Next',                 // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back         : true,                   // What: Back Boolean. Why: The user should always be able to return to the previous, Pickers-nav step. How: GuidedTour shows its own Back button whenever this is true.
+	requireClick : true,                   // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+
+	run          : () => { // What: Run Function. Why: This sample's own template needs staging onto the bus before the real click opens the create-picker form. How: This looks up whether this sample was already created before, then publishes the template alongside that lookup's own result.
+
+
+		const exiPicObj = state.pickers.find( ( curPicObj ) => curPicObj.createdFromSample === picIdeStr ); // What: Existing Picker Object. Why: A previously-finished run of this same tour already left a real picker tagged with this sample's own id. How: This searches state.pickers for an entry whose own createdFromSample matches picIdeStr.
+
+		emlTouObj.set({ // What: Prefill Publish Call. Why: tab-picker.jsx's own onCreate reads this in its own bubble-phase handler to prefill (or update in place) the real create-picker form. How: This builds the prefill shape from PIC_SAM_OBJ and the resolved exiPicObj above.
+
+
+			prefill           : PIC_SAM_OBJ[ picIdeStr ], // What: Prefill Field. Why: The real form's own fields need this sample's own template data. How: This reads PIC_SAM_OBJ by picIdeStr straight through.
+			suppressAutoOpen  : true,                     // What: Suppress Auto Open Field. Why: tab-picker.jsx's own dormant auto-open effect must not wrongly claim credit for the click this step is teaching. How: This is read by that effect's own guard, which stays silent whenever this is true.
+			existingPickerId  : exiPicObj ? exiPicObj.id : null, // What: Existing Picker Id Field. Why: A previously-finished run's own real picker must be updated in place, not duplicated. How: This carries exiPicObj's own id through when found, null otherwise.
+			createdFromSample : picIdeStr                 // What: Created From Sample Field. Why: A future replay of this same tour needs to find this run's own picker. How: This tags the prefill with picIdeStr.
+
+
+		});
+
+
+	}
+
+
 });
 
-// Highlights the Name field's whole group (label + description + input) as
-// one region — the first .np-field in the Details step, which is what's
-// showing once Step 2's click opens the form (initial.step === 1 in the
-// sample template keeps it on Details rather than jumping to Items).
-// resumable:false — this and every step through Step 12 only has a target
-// because the create-picker form is open, which a reload doesn't survive
-// (see resumable's own doc comment in onboarding-tour-runner.jsx); Steps
-// 1-2 stay resumable since neither depends on the form already being open.
-const PICKER_TOUR_STEP_3 = {
-  sel: '.np-fields .np-field:first-child', tab: 'picker',
-  title: 'Give it a name',
-  body: <>This is the <b>name of the picker</b> and should be descriptive of the types of items contained in its list of items. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-  primary: 'Next', back: true, resumable: false,
+
+
+/**
+ * NAM_STE_OBJ = Name Step Object
+ *
+ * @summary
+ * Highlights the Name field's whole group (label + description +
+ * input) as one region, the first .np-field in the Details step,
+ * which is what is showing once Step 2's own click opens the form
+ * (initial.step === 1 in the sample template keeps it on Details
+ * rather than jumping to Items). resumable is false: this and every
+ * step through the Create Picker step only has a target because the
+ * create-picker form is open, which a reload does not survive (see
+ * resumable's own doc comment in onboarding-tour-runner.jsx). Only
+ * NAV_STE_OBJ and bldNewFun's own step stay resumable, since neither
+ * depends on the form already being open.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const NAM_STE_OBJ = { // What: Name Step Object. Why: This step highlights the create-picker form's own Name field. How: This is spread as-is into every picker's own steObjArr below.
+
+
+	sel       : '.np-fields .np-field:first-child', // What: Selector String. Why: This step highlights the Name field's whole group. How: GuidedTour spotlights whatever this selector matches.
+	tab       : 'picker',                           // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	title     : 'Give it a name',                   // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body      : <>This is the <b>name of the picker</b> and should be descriptive of the types of items contained in its list of items. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the Name field is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	primary   : 'Next',                             // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back      : true,                               // What: Back Boolean. Why: The user should always be able to return to the previous, "Add New Picker" step. How: GuidedTour shows its own Back button whenever this is true.
+	resumable : false                               // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
+
+
 };
 
-// Highlights the Group field's whole group (label + description + chips) as
-// one region — the second .np-field in the Details step, right after Name.
-const PICKER_TOUR_STEP_4 = {
-  sel: '.np-fields .np-field:nth-child(2)', tab: 'picker',
-  title: 'Attach to a group',
-  body: <>This is the group that the picker will be attached to and <b>controls how pickers are organized on the Today page</b>. You can either select an existing group or create a new one. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
-  primary: 'Next', back: true, resumable: false,
+
+
+const GRO_STE_OBJ = { // What: Group Step Object. Why: This step highlights the create-picker form's own Group field, the second .np-field right after Name. How: This is spread as-is into every picker's own steObjArr below.
+
+
+	sel       : '.np-fields .np-field:nth-child(2)', // What: Selector String. Why: This step highlights the Group field's whole group. How: GuidedTour spotlights whatever this selector matches.
+	tab       : 'picker',                            // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	title     : 'Attach to a group',                 // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body      : <>This is the group that the picker will be attached to and <b>controls how pickers are organized on the Today page</b>. You can either select an existing group or create a new one. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the Group field is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	primary   : 'Next',                              // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back      : true,                                // What: Back Boolean. Why: The user should always be able to return to the previous, Name step. How: GuidedTour shows its own Back button whenever this is true.
+	resumable : false                                // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
+
+
 };
 
-// Highlights ONLY the sample's own mode option — .mode-opt[data-mode="..."]
-// (the data-mode attribute exists purely for this) — rather than the whole
-// .mode-radio list. Deliberately narrow: the click-guard blocks clicks
-// outside a step's target for non-requireClick steps too, so scoping to
-// just this one mode also prevents switching to a different type here,
-// which would break the mode-specific copy/targets later steps assume
-// (Soonest/Latest wording, the Fill row, etc. are all Ease-mode-specific —
-// see the isEase check that conditionally includes Steps 9/10 below).
-// coachAtTop: a single mode option (label + description) can be tall enough
-// on its own to rival a short mobile viewport's whole height — the ease
-// modes' 2-paragraph descriptions are the longest of the 5. Not every
-// sample's selected mode is long enough to actually need this, but there's
-// no real cost to always requesting it (see the flag's own doc comment in
-// onboarding-tour-runner.jsx), so it's set unconditionally here rather than
-// only for the samples currently known to need it.
-const buildPickerTourStep5 = (pickerId) => ({
-  sel: `.np-fields .mode-opt[data-mode="${PICKER_SAMPLES[pickerId].mode}"]`, tab: 'picker',
-  title: 'Select a picker type',
-  body: <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you. Click next when you are ready to move on.</>,
-  primary: 'Next', back: true, resumable: false, coachAtTop: true,
+
+
+/**
+ * bldModFun = Build Mode Function
+ *
+ * @summary
+ * Highlights ONLY the sample's own mode option, .mode-opt[data-
+ * mode="..."] (the data-mode attribute exists purely for this),
+ * rather than the whole .mode-radio list. Deliberately narrow: the
+ * click-guard blocks clicks outside a step's own target for non-
+ * requireClick steps too, so scoping to just this one mode also
+ * prevents switching to a different type here, which would break the
+ * mode-specific copy/targets later steps assume (Soonest/Latest
+ * wording, the Weight/Boost rows, etc. are all mode-specific; see
+ * PickerTour's own isaEasBoo/useWeiBoo/isaDynBoo checks below).
+ *
+ * coachAtTop exists since a single mode option (label + description)
+ * can be tall enough on its own to rival a short mobile viewport's
+ * whole height; the ease modes' own 2-paragraph descriptions are the
+ * longest of the 5. Not every sample's own selected mode is long
+ * enough to actually need this, but there is no real cost to always
+ * requesting it (see the flag's own doc comment in onboarding-tour-
+ * runner.jsx), so it is set unconditionally here rather than only for
+ * the samples currently known to need it.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const bldModFun = ( picIdeStr ) => ({ // What: Build Mode Function. Why: This builds the mode-selection step, scoped to only this sample's own mode option. How: This returns a step object whose own selector is built from PIC_SAM_OBJ's own mode field.
+
+
+	sel        : `.np-fields .mode-opt[data-mode="${ PIC_SAM_OBJ[ picIdeStr ].mode }"]`, // What: Selector String. Why: This step highlights only this sample's own mode option, never the whole list. How: GuidedTour spotlights whatever this selector matches.
+	tab        : 'picker',                                                              // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	title      : 'Select a picker type',                                                // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body       : <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you. Click next when you are ready to move on.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the mode options are. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	primary    : 'Next',                                                                // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back       : true,                                                                  // What: Back Boolean. Why: The user should always be able to return to the previous, Group step. How: GuidedTour shows its own Back button whenever this is true.
+	resumable  : false,                                                                  // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
+	coachAtTop : true                                                                   // What: Coach At Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
+
+
 });
 
-// Highlights the "Add Items" button that advances the form from its Details
-// sub-step to its Items sub-step — .ob-picker-next, a class name left over
-// from the original stashed create-a-picker tour design, reused here as-is
-// since it already targets exactly this button. scrollToBottom since it's
-// always the last thing in the Details footer regardless of how the form
-// got here — reached going forward (scrolled down from filling out fields)
-// or Back from Step 7 (the form just switched back from its Items sub-step,
-// a completely different shape, so whatever scroll position carried over
-// means nothing).
-const PICKER_TOUR_STEP_6 = {
-  sel: '.ob-picker-next', tab: 'picker', scrollToBottom: true,
-  title: 'Add items to this picker',
-  body: <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click the "Add Items" button now.</>,
-  primary: 'Next', back: true, requireClick: true, resumable: false,
-  // The click this run() accompanies swaps the form from Details to its own
-  // (much shorter) Items sub-step IN PLACE, within the same scrollable
-  // container — not a real navigation, so bring() never gets a chance to
-  // animate anything: the instant the shorter content mounts, the browser
-  // auto-clamps the still-scrolled-to-the-bottom-of-the-old-content scroll
-  // position down to whatever's now valid, synchronously and completely
-  // unanimatably, before Step 7's own tour effect ever runs (confirmed live
-  // — .main.scrollTop dropped from ~2960 to ~1060 within 50ms of the click,
-  // with zero scroll calls of ours in between). By the time Step 7's own
-  // bring() checks, the "+ Add Item" target is usually already sitting
-  // wherever that clamp landed, so no scroll fires and the whole transition
-  // reads as an unexplained jump instead of the tour visibly navigating
-  // there. Resetting to the top HERE — before the native click's own
-  // handler swaps the content — sidesteps the clamp entirely (0 is always a
-  // valid scroll position, whatever the new content's height turns out to
-  // be) and leaves a real gap for Step 7's own bring() to smoothly scroll
-  // across instead. Instant, not smooth: this reset needs to be invisible
-  // (same frame as the click, before the old content is even gone) — an
-  // animated scroll here would show as its own, separate upward motion
-  // before the content swap, on top of Step 7's own real one after it.
-  run: () => {
-    const main = document.querySelector('.main');
-    if (main) main.scrollTop = 0;
-  },
+
+
+/**
+ * ITE_STE_OBJ = Items Step Object
+ *
+ * @summary
+ * Highlights the "Add Items" button that advances the form from its
+ * Details sub-step to its Items sub-step, .ob-picker-next, a class
+ * name left over from the original stashed create-a-picker tour
+ * design, reused here as-is since it already targets exactly this
+ * button. scrollToBottom is set since it is always the last thing in
+ * the Details footer regardless of how the form got here, reached
+ * going forward (scrolled down from filling out fields) or Back from
+ * bldNamFun's own step (the form just switched back from its Items
+ * sub-step, a completely different shape, so whatever scroll position
+ * carried over means nothing).
+ *
+ * The click this run() accompanies swaps the form from Details to its
+ * own (much shorter) Items sub-step IN PLACE, within the same
+ * scrollable container, not a real navigation, so bring() never gets
+ * a chance to animate anything: the instant the shorter content
+ * mounts, the browser auto-clamps the still-scrolled-to-the-bottom-
+ * of-the-old-content scroll position down to whatever is now valid,
+ * synchronously and completely unanimatably, before bldAddFun's own
+ * tour effect ever runs (confirmed live: .main.scrollTop dropped from
+ * roughly 2960 to 1060 within 50ms of the click, with zero scroll
+ * calls of ours in between). By the time bldAddFun's own bring()
+ * checks, the "+ Add Item" target is usually already sitting wherever
+ * that clamp landed, so no scroll fires and the whole transition reads
+ * as an unexplained jump instead of the tour visibly navigating there.
+ * Resetting to the top HERE, before the native click's own handler
+ * swaps the content, sidesteps the clamp entirely (0 is always a
+ * valid scroll position, whatever the new content's own height turns
+ * out to be) and leaves a real gap for bldAddFun's own bring() to
+ * smoothly scroll across instead. This reset must be instant, not
+ * smooth: it needs to be invisible (the same frame as the click,
+ * before the old content is even gone), since an animated scroll here
+ * would show as its own, separate upward motion before the content
+ * swap, on top of bldAddFun's own real one after it.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const ITE_STE_OBJ = { // What: Items Step Object. Why: This step highlights the "Add Items" button that advances the form to its Items sub-step. How: This is spread as-is into every picker's own steObjArr below.
+
+
+	sel           : '.ob-picker-next', // What: Selector String. Why: This step highlights the real "Add Items" button. How: GuidedTour spotlights whatever this selector matches.
+	tab           : 'picker',         // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	scrollToBottom : true,             // What: Scroll To Bottom Boolean. Why: This step's own target always sits at the bottom of the Details footer. How: GuidedTour scrolls all the way to the end for this step instead of just nudging the target into view.
+	title         : 'Add items to this picker', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body          : <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click the "Add Items" button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	primary       : 'Next',           // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back          : true,             // What: Back Boolean. Why: The user should always be able to return to the previous, mode-selection step. How: GuidedTour shows its own Back button whenever this is true.
+	requireClick  : true,             // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	resumable     : false,            // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
+
+	run           : () => { // What: Run Function. Why: The scroll position must be reset to the top before the native click swaps the form's own content, so the clamp described above never gets a chance to fire. How: This zeroes .main's own scrollTop when it exists.
+
+
+		const maiEle = document.querySelector( '.main' ); // What: Main Element. Why: This is the app's own shared scroll container whose position needs resetting. How: This looks it up fresh, since it may not exist on every layout.
+
+		if ( maiEle ) maiEle.scrollTop = 0; // What: Main Scroll Reset. Why: This must only run when the element actually exists. How: This zeroes maiEle's own scrollTop.
+
+
+	}
+
+
 };
 
-// Highlights the "+ Add Item" button on the now-showing Items sub-step
-// (reached via Step 6's click) — .pv-additem-btn. run() stages the item's
-// name (and, if this sample overrides them, its Soonest/Latest days too —
-// see pkr_ob_monthly's itemSoonest/itemLatest) on the bus (same timing trick
-// as Step 2's picker-level prefill — fires in the click-guard's capture
-// phase, same batch as addNewDraft's own bubble-phase handler) so the draft
-// item addNewDraft creates matches this sample's own cadence instead of the
-// generic "New item" / 7-14 day defaults.
-const buildPickerTourStep7 = (pickerId) => ({
-  sel: '.pv-additem-btn', tab: 'picker',
-  title: 'Add an item to the picker’s list',
-  body: <>Pickers need a <b>list of items to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click the "Add Item" button now to add a new item to this picker's list of items.</>,
-  primary: 'Next', back: true, requireClick: true, resumable: false,
-  run: () => {
-    const copy = PICKER_TOUR_COPY[pickerId];
-    emlTouObj.set({
-      itemPrefill: copy.itemPrefill,
-      // 100/days is the same days↔drift conversion tab-picker.jsx's own
-      // driftToSoonest/daysToDrift use — kept in sync manually since those
-      // aren't exported (see addNewDraft's read side in tab-picker.jsx).
-      itemEaseMax: copy.itemSoonest ? 100 / copy.itemSoonest : null,
-      itemEaseMin: copy.itemLatest ? 100 / copy.itemLatest : null,
-    });
-  },
+
+
+/**
+ * bldAddFun = Build Add Function
+ *
+ * @summary
+ * Highlights the "+ Add Item" button on the now-showing Items sub-step
+ * (reached via ITE_STE_OBJ's own click), .pv-additem-btn. run() stages
+ * the item's own name (and, if this sample overrides them, its
+ * Soonest/Latest days too, see pkr_ob_monthly's own sooNum/latNum) on
+ * the bus, the same timing trick as bldNewFun's own picker-level
+ * prefill (fires in the click-guard's own capture phase, the same
+ * batch as addNewDraft's own bubble-phase handler), so the draft item
+ * addNewDraft creates matches this sample's own cadence instead of the
+ * generic "New item" / 7-14 day defaults.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const bldAddFun = ( picIdeStr ) => ({ // What: Build Add Function. Why: This builds the step that highlights the real "+ Add Item" button and stages this item's own prefill data. How: This returns a step object whose run() publishes picCopObj's own item fields onto the shared bus.
+
+
+	sel          : '.pv-additem-btn',                  // What: Selector String. Why: This step highlights the real "+ Add Item" button. How: GuidedTour spotlights whatever this selector matches.
+	tab          : 'picker',                           // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	title        : 'Add an item to the picker’s list', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body         : <>Pickers need a <b>list of items to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click the "Add Item" button now to add a new item to this picker's list of items.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	primary      : 'Next',                             // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back         : true,                               // What: Back Boolean. Why: The user should always be able to return to the previous, "Add Items" step. How: GuidedTour shows its own Back button whenever this is true.
+	requireClick : true,                               // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	resumable    : false,                               // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form and its Items sub-step, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
+
+	run          : () => { // What: Run Function. Why: This item's own prefill data needs staging onto the bus before the real click opens the inline item editor. How: This looks up this sample's own copy, then converts its own sooNum/latNum days into the drift values tab-picker.jsx's own editor expects.
+
+
+		const picCopObj = PIC_COP_OBJ[ picIdeStr ]; // What: Picker Copy Object. Why: This item's own prefill name and Soonest/Latest overrides live here. How: This looks up PIC_COP_OBJ by picIdeStr.
+
+		emlTouObj.set({ // What: Item Prefill Publish Call. Why: tab-picker.jsx's own addNewDraft reads this in its own bubble-phase handler to prefill the real inline item editor. How: This builds the prefill shape from picCopObj above.
+
+
+			itemPrefill : picCopObj.preStr,                                       // What: Item Prefill Field. Why: The real editor's own name input needs this item's own prefilled name. How: This reads picCopObj's own preStr straight through.
+			itemEaseMax : picCopObj.sooNum ? 100 / picCopObj.sooNum : null,       // What: Item Ease Max Field. Why: 100/days is the same days-to-drift conversion tab-picker.jsx's own driftToSoonest/daysToDrift use, kept in sync manually since those are not exported. How: This converts picCopObj's own sooNum into a drift value, or null when this sample has no override.
+			itemEaseMin : picCopObj.latNum ? 100 / picCopObj.latNum : null        // What: Item Ease Min Field. Why: Same conversion as itemEaseMax, for the slow end of the drift band. How: This converts picCopObj's own latNum into a drift value, or null when this sample has no override.
+
+
+		});
+
+
+	}
+
+
 });
 
-// Default bodies for Steps 8/9/10 — used whenever PICKER_TOUR_COPY[pickerId]
-// doesn't set its own step8Body/step9Body/step10Body override (e.g. Dinner's
-// "meal item" wording). Kept as named constants rather than inlined so the
-// per-picker fallback (`copy.stepNBody || DEFAULT_STEPN_BODY`) reads clearly.
-const DEFAULT_STEP8_BODY = <>This is the name of the task item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>;
-const DEFAULT_STEP9_BODY = <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>;
-const DEFAULT_STEP10_BODY = <>This controls the <b>maximum number of days that a task item must wait before it should be picked again</b>. This is also useful since most chores need to be done again within a certain timeframe.</>;
 
-// Highlights the item name input inside the inline editor Step 7's click
-// just opened — .rd-name-input, scoped under .pv-additem-wrap since the same
-// class is reused (mutually exclusively at render time) by the existing-
-// picker "add item" flow elsewhere on this tab.
-const buildPickerTourStep8 = (pickerId) => ({
-  sel: '.pv-additem-wrap .rd-name-input', tab: 'picker',
-  title: 'Give it a name',
-  body: PICKER_TOUR_COPY[pickerId].step8Body || DEFAULT_STEP8_BODY,
-  primary: 'Next', back: true, resumable: false,
+
+const DEF_NAM_ELE = <>This is the name of the task item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>; // What: Default Name Element. Why: This is bldNamFun's own fallback body, used whenever a sample's own picCopObj has no namEle override. How: This is read as `picCopObj.namEle || DEF_NAM_ELE` inside bldNamFun below.
+
+const DEF_SOO_ELE = <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>; // What: Default Soonest Element. Why: This is bldSooFun's own fallback body, used whenever a sample's own picCopObj has no sooEle override. How: This is read as `picCopObj.sooEle || DEF_SOO_ELE` inside bldSooFun below.
+
+const DEF_LAT_ELE = <>This controls the <b>maximum number of days that a task item must wait before it should be picked again</b>. This is also useful since most chores need to be done again within a certain timeframe.</>; // What: Default Latest Element. Why: This is bldLatFun's own fallback body, used whenever a sample's own picCopObj has no latEle override. How: This is read as `picCopObj.latEle || DEF_LAT_ELE` inside bldLatFun below.
+
+
+
+const bldNamFun = ( picIdeStr ) => ({ // What: Build Name Function. Why: This builds the step that highlights the item editor's own name input. How: This returns a step object whose body reads picIdeStr's own picCopObj, falling back to DEF_NAM_ELE.
+
+
+	sel       : '.pv-additem-wrap .rd-name-input',            // What: Selector String. Why: This step highlights the item name input inside the inline editor, scoped under .pv-additem-wrap since the same class is reused (mutually exclusively at render time) by the existing-picker "add item" flow elsewhere on this tab. How: GuidedTour spotlights whatever this selector matches.
+	tab       : 'picker',                                     // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	title     : 'Give it a name',                             // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body      : PIC_COP_OBJ[ picIdeStr ].namEle || DEF_NAM_ELE, // What: Body Field. Why: This step's own coach card needs a plain description of what the name field is for, either this sample's own or the generic fallback. How: This reads PIC_COP_OBJ's own namEle, falling back to DEF_NAM_ELE.
+	primary   : 'Next',                                       // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back      : true,                                         // What: Back Boolean. Why: The user should always be able to return to the previous, "Add Item" step. How: GuidedTour shows its own Back button whenever this is true.
+	resumable : false                                         // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
+
+
 });
 
-// Highlights the Soonest/Shortest row — the first .pie-row in the editor's
-// isEase branch. Only meaningful for Ease Up/Ease Down samples (the row
-// doesn't exist at all for Weighted/Dynamic/Random modes, where this same
-// .pie-row position is a Weight stepper instead) — PickerTour only includes
-// this step when the sample's own mode is one of the ease modes. The whole
-// body is per-picker (PICKER_TOUR_COPY[pickerId].step9Body), defaulting to
-// the original Ease Up/"task item"/"week" wording — Daily Chores is the
-// only sample this has been manually verified against so far; Ease Down
-// samples (Relax) reuse the default as a first pass, not yet touched up for
-// the "Shortest" label or ease-down's reversed stays-picked-until-
-// discharged semantics. No new one-way DOM transition happens between Step
-// 8 and here (the editor stays open the whole time), so no onGoBack
-// handling is needed.
-const buildPickerTourStep9 = (pickerId) => ({
-  sel: '.pv-additem-wrap .pie-row:first-child', tab: 'picker',
-  title: 'Set a timeout',
-  body: PICKER_TOUR_COPY[pickerId].step9Body || DEFAULT_STEP9_BODY,
-  primary: 'Next', back: true, resumable: false,
+
+
+/**
+ * bldSooFun = Build Soonest Function
+ *
+ * @summary
+ * Highlights the Soonest/Shortest row, the first .pie-row in the
+ * editor's own isEase branch. Only meaningful for Ease Up/Ease Down
+ * samples (the row does not exist at all for Weighted/Dynamic/Random
+ * modes, where this same .pie-row position is a Weight stepper
+ * instead); PickerTour only includes this step when the sample's own
+ * mode is one of the ease modes (see its own isaEasBoo below). The
+ * whole body is per-picker (picCopObj.sooEle), defaulting to the
+ * original Ease Up/"task item"/"week" wording; Daily Chores is the
+ * only sample this has been manually verified against so far, and
+ * Ease Down samples (Relax) reuse a dedicated sooEle override rather
+ * than the ease-up-flavored default, for the "Shortest" label and
+ * ease-down's reversed stays-picked-until-discharged semantics. No new
+ * one-way DOM transition happens between bldNamFun's own step and
+ * here (the editor stays open the whole time), so no onGoBack handling
+ * is needed.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const bldSooFun = ( picIdeStr ) => ({ // What: Build Soonest Function. Why: This builds the step that highlights the item editor's own Soonest/Shortest row. How: This returns a step object whose body reads picIdeStr's own picCopObj, falling back to DEF_SOO_ELE.
+
+
+	sel       : '.pv-additem-wrap .pie-row:first-child',      // What: Selector String. Why: This step highlights the Soonest/Shortest row, only present for ease-mode samples. How: GuidedTour spotlights whatever this selector matches.
+	tab       : 'picker',                                     // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	title     : 'Set a timeout',                              // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body      : PIC_COP_OBJ[ picIdeStr ].sooEle || DEF_SOO_ELE, // What: Body Field. Why: This step's own coach card needs a plain description of what the Soonest/Shortest row is for, either this sample's own or the generic fallback. How: This reads PIC_COP_OBJ's own sooEle, falling back to DEF_SOO_ELE.
+	primary   : 'Next',                                       // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back      : true,                                         // What: Back Boolean. Why: The user should always be able to return to the previous, name-input step. How: GuidedTour shows its own Back button whenever this is true.
+	resumable : false                                         // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
+
+
 });
 
-// Highlights the Latest/Longest row — the second .pie-row in the editor's
-// isEase branch, right after Soonest/Shortest. Same mode gating, Ease Down
-// caveat, and per-picker step10Body override as Step 9 above. Same
-// reasoning as Step 9: the editor stays open, so no new DOM transition to
-// revert on Back.
-const buildPickerTourStep10 = (pickerId) => ({
-  sel: '.pv-additem-wrap .pie-row:nth-child(2)', tab: 'picker',
-  title: 'Set a maximum wait',
-  body: PICKER_TOUR_COPY[pickerId].step10Body || DEFAULT_STEP10_BODY,
-  primary: 'Next', back: true, resumable: false,
+
+
+const bldLatFun = ( picIdeStr ) => ({ // What: Build Latest Function. Why: This builds the step that highlights the item editor's own Latest/Longest row, the second .pie-row right after Soonest/Shortest, same mode gating and per-picker override as bldSooFun above. How: This returns a step object whose body reads picIdeStr's own picCopObj, falling back to DEF_LAT_ELE.
+
+
+	sel       : '.pv-additem-wrap .pie-row:nth-child(2)',     // What: Selector String. Why: This step highlights the Latest/Longest row, only present for ease-mode samples. How: GuidedTour spotlights whatever this selector matches.
+	tab       : 'picker',                                     // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	title     : 'Set a maximum wait',                         // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body      : PIC_COP_OBJ[ picIdeStr ].latEle || DEF_LAT_ELE, // What: Body Field. Why: This step's own coach card needs a plain description of what the Latest/Longest row is for, either this sample's own or the generic fallback. How: This reads PIC_COP_OBJ's own latEle, falling back to DEF_LAT_ELE.
+	primary   : 'Next',                                       // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back      : true,                                         // What: Back Boolean. Why: The user should always be able to return to the previous, Soonest/Shortest step. How: GuidedTour shows its own Back button whenever this is true.
+	resumable : false                                         // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
+
+
 });
 
-// Highlights the Weight stepper row — the first .pie-row in the editor's
-// usesWeight branch (Weighted/Dynamic modes only; mutually exclusive with
-// the isEase branch above, so reusing the same :first-child position is
-// safe — only one of the two ever renders for a given picker). PickerTour
-// only includes this step when the sample's own mode is Weighted or
-// Dynamic. No new one-way DOM transition happens between Step 8 and here
-// (the editor stays open the whole time), so no onGoBack handling is
-// needed — same reasoning as the isEase steps above.
-const PICKER_TOUR_STEP_WEIGHT = {
-  sel: '.pv-additem-wrap .pie-row:first-child', tab: 'picker',
-  title: 'Give it a weight',
-  body: <>The Weight control allows you to <b>prioritize some items over others</b>. e.g. an item with a weight of 2 is twice as likely to be picked as an item with a weight of 1. That way the pick is still random while allowing you some control over how it works.</>,
-  primary: 'Next', back: true, resumable: false,
+
+
+/**
+ * WEI_STE_OBJ = Weight Step Object
+ *
+ * @summary
+ * Highlights the Weight stepper row, the first .pie-row in the
+ * editor's own usesWeight branch (Weighted/Dynamic modes only,
+ * mutually exclusive with the isEase branch above, so reusing the
+ * same :first-child position is safe since only one of the two ever
+ * renders for a given picker). PickerTour only includes this step
+ * when the sample's own mode is Weighted or Dynamic (see its own
+ * useWeiBoo below). No new one-way DOM transition happens between
+ * bldNamFun's own step and here (the editor stays open the whole
+ * time), so no onGoBack handling is needed, same reasoning as the
+ * isEase steps above.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const WEI_STE_OBJ = { // What: Weight Step Object. Why: This step highlights the item editor's own Weight stepper row. How: This is spread as-is into a Weighted/Dynamic sample's own steObjArr below.
+
+
+	sel       : '.pv-additem-wrap .pie-row:first-child', // What: Selector String. Why: This step highlights the Weight stepper row, only present for Weighted/Dynamic samples. How: GuidedTour spotlights whatever this selector matches.
+	tab       : 'picker',                                // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	title     : 'Give it a weight',                      // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body      : <>The Weight control allows you to <b>prioritize some items over others</b>. e.g. an item with a weight of 2 is twice as likely to be picked as an item with a weight of 1. That way the pick is still random while allowing you some control over how it works.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the Weight row is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	primary   : 'Next',                                  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back      : true,                                    // What: Back Boolean. Why: The user should always be able to return to the previous, name-input step. How: GuidedTour shows its own Back button whenever this is true.
+	resumable : false                                    // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
+
+
 };
 
-// Highlights the Boost row — the second .pie-row, right after Weight, in
-// the editor's isDynamic-only branch (Dynamic mode specifically; unlike
-// Weight, Weighted-mode pickers don't get this row at all). Not
-// interactive (there's no requireClick — the BoostReset control only ever
-// does something once an item has actually accrued a boost, never true for
-// a freshly-created item), just narration, since this value is the core
-// mechanic of how Dynamic Weighted differs from plain Weighted.
-const PICKER_TOUR_STEP_BOOST = {
-  sel: '.pv-additem-wrap .pie-row:nth-child(2)', tab: 'picker',
-  title: 'Boost value',
-  body: <>This is the <b>crucial piece of a Dynamic Weighted picker</b>. Every time an item does not get picked this value will increase, making it more and more likely to be picked. Then when it does get picked this value will reset, making it much less likely to be picked.</>,
-  primary: 'Next', back: true, resumable: false,
+
+
+/**
+ * BOO_STE_OBJ = Boost Step Object
+ *
+ * @summary
+ * Highlights the Boost row, the second .pie-row, right after Weight,
+ * in the editor's own isDynamic-only branch (Dynamic mode
+ * specifically; unlike Weight, Weighted-mode pickers do not get this
+ * row at all). Not interactive (there is no requireClick, since the
+ * BoostReset control only ever does something once an item has
+ * actually accrued a boost, never true for a freshly-created item),
+ * just narration, since this value is the core mechanic of how
+ * Dynamic Weighted differs from plain Weighted.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const BOO_STE_OBJ = { // What: Boost Step Object. Why: This step highlights the item editor's own Boost row. How: This is spread as-is into a Dynamic sample's own steObjArr below.
+
+
+	sel       : '.pv-additem-wrap .pie-row:nth-child(2)', // What: Selector String. Why: This step highlights the Boost row, only present for Dynamic samples. How: GuidedTour spotlights whatever this selector matches.
+	tab       : 'picker',                                 // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	title     : 'Boost value',                            // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body      : <>This is the <b>crucial piece of a Dynamic Weighted picker</b>. Every time an item does not get picked this value will increase, making it more and more likely to be picked. Then when it does get picked this value will reset, making it much less likely to be picked.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the Boost row is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	primary   : 'Next',                                   // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back      : true,                                     // What: Back Boolean. Why: The user should always be able to return to the previous, Weight step. How: GuidedTour shows its own Back button whenever this is true.
+	resumable : false                                     // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
+
+
 };
 
-// Highlights the item editor's Save button — .ob-item-save (tagged
-// alongside .ob-item-cancel, see EntryEditor in tab-today.jsx). requireClick
-// since this closes the editor for good, same real-interface-teaching
-// pattern as Steps 2/6/7.
-const PICKER_TOUR_STEP_11 = {
-  sel: '.ob-item-save', tab: 'picker',
-  title: 'Save this picker item',
-  body: <>This picker item is now complete and can be <b>saved to this picker’s list</b>. Go ahead and click the "Save" button now to save this item to this picker's list of items.</>,
-  primary: 'Next', back: true, requireClick: true, resumable: false,
+
+
+/**
+ * SAV_STE_OBJ = Save Step Object
+ *
+ * @summary
+ * Highlights the item editor's own Save button, .ob-item-save (tagged
+ * alongside .ob-item-cancel, see EntryEditor in tab-today.jsx).
+ * requireClick since this closes the editor for good, the same real-
+ * interface-teaching pattern as bldNewFun/ITE_STE_OBJ/bldAddFun above.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const SAV_STE_OBJ = { // What: Save Step Object. Why: This step highlights the item editor's own Save button. How: This is spread as-is into every picker's own steObjArr below.
+
+
+	sel          : '.ob-item-save',              // What: Selector String. Why: This step highlights the real Save button. How: GuidedTour spotlights whatever this selector matches.
+	tab          : 'picker',                     // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	title        : 'Save this picker item',      // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body         : <>This picker item is now complete and can be <b>saved to this picker’s list</b>. Go ahead and click the "Save" button now to save this item to this picker's list of items.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	primary      : 'Next',                       // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	back         : true,                         // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+	requireClick : true,                         // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	resumable    : false                         // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
+
+
 };
 
-// Highlights the form's real "Create Picker" button — .ob-picker-create
-// (see tab-picker.jsx's np-footer). requireClick + primary:'Done': this is
-// the ONE step where the real target's native click handler (submit, which
-// actually calls actions.addPicker) has to survive finish()'s own side
-// effects (selectTab away from Pickers, unmounting this whole tour) —
-// GuidedTour's onPrimary defers the 'Done'/advance half of a requireClick
-// click by a tick for exactly this reason (see its own comment), so submit()
-// still fires normally in the click's native bubble phase before finish()
-// tears anything down.
-const PICKER_TOUR_STEP_12 = {
-  sel: '.ob-picker-create', tab: 'picker',
-  title: 'Create this picker',
-  body: <>You’re all set! You’ve created this picker and its list of items. All that’s left is to finish creating this picker. Go ahead and <b>click the "Create Picker" button now</b> to create this picker.</>,
-  primary: 'Done', back: true, requireClick: true, resumable: false,
+
+
+/**
+ * CRE_STE_OBJ = Create Step Object
+ *
+ * @summary
+ * Highlights the form's own real "Create Picker" button, .ob-picker-
+ * create (see tab-picker.jsx's own np-footer). requireClick plus
+ * primary:'Done' together mean this is the ONE step where the real
+ * target's own native click handler (submit, which actually calls
+ * actions.addPicker) has to survive finish()'s own side effects
+ * (selectTab away from Pickers, unmounting this whole tour);
+ * GuidedTour's own onPrimary defers the 'Done'/advance half of a
+ * requireClick click by a tick for exactly this reason (see its own
+ * comment), so submit() still fires normally in the click's own native
+ * bubble phase before finish() tears anything down.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the form's own real "Create Picker" button. How: This is spread as-is into every picker's own steObjArr below.
+
+
+	sel          : '.ob-picker-create',       // What: Selector String. Why: This step highlights the real Create Picker button. How: GuidedTour spotlights whatever this selector matches.
+	tab          : 'picker',                  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	title        : 'Create this picker',      // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	body         : <>You’re all set! You’ve created this picker and its list of items. All that’s left is to finish creating this picker. Go ahead and <b>click the "Create Picker" button now</b> to create this picker.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	primary      : 'Done',                    // What: Primary String. Why: This is every picker tutorial's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinish instead of moving to a next step.
+	back         : true,                      // What: Back Boolean. Why: The user should always be able to return to the previous, Save step. How: GuidedTour shows its own Back button whenever this is true.
+	requireClick : true,                      // What: Require Click Boolean. Why: The real click both creates the picker and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
+	resumable    : false                      // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
+
+
 };
 
-// Why Step 2's run() (not, say, Step 1's, or PickerTour's onStart) is where
-// prefill gets published: tab-picker.jsx has its own dormant effect from the
-// original (stashed) create-a-picker tour design — `if (tour.prefill &&
-// !creating) { setCreating(true); setOpenedByTour(true); }` — that
-// auto-opens the form the instant prefill appears. Publishing any earlier
-// (tour start, or even Step 1) would trigger that the moment TabPicker
-// mounts, skipping Step 2 entirely (the form would already be open before
-// the user ever sees "+ Add New Picker" highlighted). run() fires in the
-// click-guard's CAPTURE-phase handling of the same click whose native
-// bubble-phase handler is the button's own `onClick={() => setCreating(true)}`
-// — that ordering (not, as an earlier version of this comment assumed, both
-// landing in one React batch — they don't: the bus's plain-JS subscriber
-// callback commits its own render before the native handler's does) is
-// exactly why run() also sets `suppressAutoOpen: true` — without it, the
-// dormant effect would see `creating` still false on its own earlier render
-// and wrongly claim credit, flipping openedByTour to true (this tour walks
-// Details normally via a real click, unlike the OTHER prefill entry point
-// that comment block still documents, which SHOULD trigger that effect).
-//
-// `pickerId` is the sample picker's id. Mounted at the app level (see
-// app.jsx's activePickerTour), not inside TabToday like ReminderTour —
-// Step 1 navigates to the Pickers tab, which would unmount TabToday (and
-// this along with it) if it lived there instead. active/selectTab are the
-// real app-wide ones as a result, not stubs.
-function PickerTour({ pickerId, state, actions, active, selectTab, onClose }) {
-  const picker = (state.pickers || []).find((p) => p.id === pickerId);
-  const copy = PICKER_TOUR_COPY[pickerId];
-  const modeLabel = ((MODES[picker.mode] || {}).label || picker.mode).toLowerCase();
 
-  // A reload lands here with app.jsx already having re-derived activePickerTour
-  // from the SAME persisted activeTour (that's how this component gets
-  // (re)mounted for pickerId at all) — re-reading it here just decides
-  // whether to skip the intro modal and which (resumable) step to land on.
-  const ob = state.onboarding || {};
-  const resumable = ob.activeTour && ob.activeTour.id === `picker-${pickerId}` ? ob.activeTour : null;
-  const [phase, setPhase] = React.useState(resumable ? 'tour' : 'intro');
 
-  const closeTour = (status) => {
-    // Clear both bus fields regardless of exit path (cancelled/skipped/
-    // finished) — tab-picker.jsx's dormant auto-open effect keys off
-    // tour.prefill's mere presence (`if (tour.prefill && !creating)`), so a
-    // leftover value from THIS tour would silently reopen the create form
-    // with stale sample data the next time TabPicker mounts (e.g. just
-    // revisiting the Pickers tab), same class of bug the Reminders tours'
-    // closeTour already guards against.
-    emlTouObj.set({
-      prefill: null, itemPrefill: null, itemEaseMin: null, itemEaseMax: null,
-      suppressAutoOpen: false, existingPickerId: null, createdFromSample: null,
-    });
-    actions.setChecklistItem(pickerId, { status });
-    onClose();
-  };
+// #region PickerTour
 
-  if (phase === 'intro') {
-    return (
-      <TutorialIntroModal
-        icon={<Icon name="picker" size={54} />}
-        title={`${picker.name} Picker`}
-        paragraphs={[PICKER_TOUR_BODY_1, copy.body2]}
-        pills={['pickers', modeLabel, (picker.group || '').toLowerCase()]}
-        onStart={() => setPhase('tour')}
-        // Mirrors the launcher card's own X button exactly — marks the card
-        // cancelled without touching the underlying sample picker.
-        onSkip={() => closeTour('cancelled')}
-      />
-    );
-  }
+/**
+ * PickerTour = Picker Tour
+ *
+ * @summary
+ * Renders whichever piece of one sample picker's own mini-tour is
+ * currently relevant: the intro modal, or the running GuidedTour.
+ * Mounted at the app level (see app.jsx's own actPicStr), not inside
+ * TabToday the way the reminder mini-tours are: Step 1 navigates to
+ * the Pickers tab, which would unmount TabToday (and this along with
+ * it) if it lived there instead. active/selectTab are therefore the
+ * real app-wide ones, not stubs.
+ *
+ * Why bldNewFun's own run() (not, say, NAV_STE_OBJ's, or PickerTour's
+ * own mount) is where prefill gets published: tab-picker.jsx has its
+ * own dormant effect from the original (stashed) create-a-picker tour
+ * design, `if (tour.prefill && !creating) { setCreating(true);
+ * setOpenedByTour(true); }`, that auto-opens the form the instant
+ * prefill appears. Publishing any earlier (tour start, or even Step 1)
+ * would trigger that the moment TabPicker mounts, skipping Step 2
+ * entirely (the form would already be open before the user ever sees
+ * "+ Add New Picker" highlighted). run() fires in the click-guard's own
+ * CAPTURE-phase handling of the same click whose native bubble-phase
+ * handler is the button's own `onClick={() => setCreating(true)}`,
+ * that ordering (not, as an earlier version of this comment assumed,
+ * both landing in one React batch; they do not, the bus's own plain-JS
+ * subscriber callback commits its own render before the native
+ * handler's does) is exactly why run() also sets
+ * `suppressAutoOpen: true`, without it the dormant effect would see
+ * `creating` still false on its own earlier render and wrongly claim
+ * credit, flipping openedByTour to true (this tour walks Details
+ * normally via a real click, unlike the other prefill entry point
+ * that comment block still documents, which SHOULD trigger that
+ * effect).
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param props.pickerId   - The sample picker's own id, keying both
+ *                          PIC_SAM_OBJ and PIC_COP_OBJ.
+ * @param props.state      - The entire app's own persisted state.
+ * @param props.actions    - The actions that mutate props.state.
+ * @param props.active     - The app's own currently active tab id.
+ * @param props.selectTab  - Switches the app's own active tab.
+ * @param props.onClose    - Clears app.jsx's own actPicStr, ending
+ *                          this mount.
+ *
+ * @returns Either the intro modal (touPhaStr 'intro') or the running
+ * guided tour (touPhaStr 'tour'), depending on this picker's own
+ * phase.
+ *
+ * @example
+ * ```tsx
+ * PickerTour({ pickerId, state, actions, active, selectTab, onClose })
+ * // => <PickerTour />
+ * ```
+ *
+*/
 
-  // Steps 9/10 (Soonest/Latest) only apply to Ease Up/Ease Down samples —
-  // every other mode's item editor doesn't have those rows at all (see the
-  // steps' own comments), so including them there would highlight nothing
-  // and trip the not-found watchdog. The Weight step is the mirror image:
-  // only Weighted/Dynamic samples get it. The Boost step is narrower still
-  // — only Dynamic samples (not plain Weighted) get that row at all.
-  const isEase = picker.mode === 'ease-up' || picker.mode === 'ease-down';
-  const usesWeight = picker.mode === 'weighted' || picker.mode === 'dynamic';
-  const isDynamic = picker.mode === 'dynamic';
-  const steps = [
-    PICKER_TOUR_STEP_1, buildPickerTourStep2(pickerId, state), PICKER_TOUR_STEP_3, PICKER_TOUR_STEP_4,
-    buildPickerTourStep5(pickerId), PICKER_TOUR_STEP_6, buildPickerTourStep7(pickerId), buildPickerTourStep8(pickerId),
-    ...(isEase ? [buildPickerTourStep9(pickerId), buildPickerTourStep10(pickerId)] : []),
-    ...(usesWeight ? [PICKER_TOUR_STEP_WEIGHT] : []),
-    ...(isDynamic ? [PICKER_TOUR_STEP_BOOST] : []),
-    PICKER_TOUR_STEP_11, PICKER_TOUR_STEP_12,
-  ];
+function PickerTour ( { pickerId, state, actions, active, selectTab, onClose } ) {
 
-  return (
-    <GuidedTour
-      tourId={`picker-${pickerId}`}
-      steps={steps}
-      resumeStep={resumable ? resumable.step : 0}
-      actions={actions}
-      active={active}
-      selectTab={selectTab}
-      // Back from Step 7 (index 6, the Items sub-step's "+ Add Item"
-      // button) to Step 6 (index 5, "Add Items") needs the form pushed back
-      // to its Details sub-step first — unlike the Reminders tours' "+"
-      // button, .ob-picker-next's click is a one-way step change inside
-      // NewPickerForm, not a toggle, so without this Step 6's own target
-      // stays gone (the form is still showing Items) and the tour has
-      // nothing to highlight. .ob-picker-details is the form's own "Details"
-      // step-indicator tab — clicking it is the only way to reverse this
-      // from outside the form, which owns that step state locally.
-      onGoBack={(to) => {
-        if (to === 5) {
-          const detailsTab = document.querySelector('.ob-picker-details');
-          if (detailsTab) detailsTab.click();
-        } else if (to === 6) {
-          // Step 7→8's click opened the inline item editor, which is also a
-          // one-way transition (no toggle) — Cancel is the only real-DOM way
-          // to close it back to the bare .pv-additem-btn from outside, same
-          // reasoning as the to===5 branch above.
-          const cancelBtn = document.querySelector('.ob-item-cancel');
-          if (cancelBtn) cancelBtn.click();
-        } else if (to === steps.length - 2) {
-          // Back from the last step (Create Picker) to the second-to-last
-          // (Save this task item) — Step 11's own Save committed the item
-          // into the real list for good (see tab-picker.jsx's own comment on
-          // this), leaving .ob-item-save (Step 11's target) gone with no
-          // real DOM control anywhere that reopens it. steps.length - 2
-          // rather than a hardcoded index: how many steps come before these
-          // last two varies by picker mode (ease-up/down get 2 extra steps,
-          // plain weighted gets 1, dynamic gets 2, truly random gets 0), so
-          // Step 11's own index isn't constant across tours — it's always
-          // exactly 2 before the end though. Bus nonce, same reasoning as
-          // the reset/redo nonces the Pickers PAGE tour's own onGoBack
-          // (onboarding-page-tours.jsx) uses for its own no-real-control
-          // Back cases.
-          emlTouObj.set({ pickerTourReopenItemNonce: (emlTouObj.get().pickerTourReopenItemNonce || 0) + 1 });
-        }
-      }}
-      // Skip (or the not-found watchdog) reads as "the user didn't finish",
-      // distinct both from the intro modal's 'cancelled' and from Step 12's
-      // genuine 'finished' via onFinish below. See onboarding-checklist.js's
-      // status comment.
-      onSkip={() => closeTour('skipped')}
-      onFinish={() => closeTour('finished')}
-    />
-  );
+
+	const picRecObj = ( state.pickers || [] ).find( ( curPicObj ) => curPicObj.id === pickerId ); // What: Picker Record Object. Why: The intro modal and every mode-gating check below need this sample's own live picker record. How: This searches state.pickers for the entry whose own id matches pickerId.
+	const picCopObj = PIC_COP_OBJ[ pickerId ];                                                     // What: Picker Copy Object. Why: The intro modal's own second paragraph needs this sample's own copy. How: This looks up PIC_COP_OBJ by pickerId.
+	const modLabStr = ( ( MODES[ picRecObj.mode ] || {} ).label || picRecObj.mode ).toLowerCase(); // What: Mode Label String. Why: The intro modal's own pill needs a human-readable mode label, not the raw mode key. How: This looks up MODES by picRecObj's own mode, falling back to the raw mode key, then lower-cases the result.
+
+
+
+	const onbStaObj = state.onboarding || {}; // What: Onboarding State Object. Why: A reload lands here with app.jsx already having re-derived actPicStr from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resumable) step to land on. How: This reads state.onboarding, falling back to an empty object.
+	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `picker-${ pickerId }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this picker's own tourId, otherwise null.
+
+	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
+
+
+
+	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Clears both bus fields regardless of exit path (cancelled/skipped/finished), since tab-picker.jsx's own dormant auto-open effect keys off tour.prefill's mere presence, so a leftover value from THIS tour would silently reopen the create form with stale sample data the next time TabPicker mounts. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onClose.
+
+
+		emlTouObj.set({ // What: Prefill Clear Call. Why: A stale prefill left over from this tour must not leak into a future visit to the Pickers tab. How: This resets every field bldNewFun's/bldAddFun's own run() published, back to its own idle value.
+
+
+			prefill           : null,  // What: Prefill Field. Why: The create-picker form must not reopen with stale sample data. How: This clears the field bldNewFun's own run() set.
+			itemPrefill       : null,  // What: Item Prefill Field. Why: The item editor must not reopen with a stale prefilled name. How: This clears the field bldAddFun's own run() set.
+			itemEaseMin       : null,  // What: Item Ease Min Field. Why: Same reasoning as itemPrefill, for the drift band's own slow end. How: This clears the field bldAddFun's own run() set.
+			itemEaseMax       : null,  // What: Item Ease Max Field. Why: Same reasoning as itemPrefill, for the drift band's own fast end. How: This clears the field bldAddFun's own run() set.
+			suppressAutoOpen  : false, // What: Suppress Auto Open Field. Why: A future, non-tour visit to the Pickers tab must not have its own dormant auto-open effect silenced. How: This resets the flag bldNewFun's own run() set.
+			existingPickerId  : null,  // What: Existing Picker Id Field. Why: This must not leak into a future, unrelated create-picker flow. How: This clears the field bldNewFun's own run() set.
+			createdFromSample : null   // What: Created From Sample Field. Why: Same reasoning as existingPickerId. How: This clears the field bldNewFun's own run() set.
+
+
+		});
+
+		actions.setChecklistItem( pickerId, { status : staValStr } ); // What: Checklist Status Update Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this sample's own checklist entry to staValStr.
+
+		onClose(); // What: On Close Call. Why: app.jsx's own actPicStr must be cleared however this tour ends. How: This calls the onClose prop passed down from app.jsx.
+
+
+	};
+
+
+
+	if ( touPhaStr === 'intro' ) { // What: Intro Phase Check. Why: The intro modal must show before any spotlight step ever does. How: This returns TutorialIntroModal below whenever touPhaStr is 'intro'.
+
+
+		return (
+
+
+			<TutorialIntroModal
+				icon={ <Icon name='picker' size={ 54 } /> }
+				title={ `${ picRecObj.name } Picker` }
+				paragraphs={ [ FIR_PAR_ELE, picCopObj.bodEle ] }
+				pills={ [ 'pickers', modLabStr, ( picRecObj.group || '' ).toLowerCase() ] }
+				onStart={ () => setTouPhaStr( 'tour' ) }
+				onSkip={ () => cloTouFun( 'cancelled' ) } // What: On Skip Handler. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying sample picker. How: This calls cloTouFun with 'cancelled'.
+			/> // What: Tutorial Intro Modal Element. Why: This is this sample's own opening screen, shown before any spotlight step ever does. How: This is passed this sample's own icon/title/paragraphs/pills and the onStart/onSkip handlers above.
+
+
+		);
+
+
+	}
+
+
+
+	const isaEasBoo = picRecObj.mode === 'ease-up' || picRecObj.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: The Soonest/Latest steps only apply to Ease Up/Ease Down samples; every other mode's item editor does not have those rows at all. How: This checks picRecObj's own mode against both ease mode keys.
+	const useWeiBoo = picRecObj.mode === 'weighted' || picRecObj.mode === 'dynamic';  // What: Uses Weight Boolean. Why: The Weight step is the mirror image of isaEasBoo; only Weighted/Dynamic samples get it. How: This checks picRecObj's own mode against both weight-using mode keys.
+	const isaDynBoo = picRecObj.mode === 'dynamic';                                  // What: Is-A Dynamic Boolean. Why: The Boost step is narrower still; only Dynamic samples (not plain Weighted) get that row at all. How: This checks picRecObj's own mode against the dynamic mode key.
+
+	const steObjArr = [ // What: Step Object Array. Why: GuidedTour needs this sample's own full ordered step list, varying in length by mode (isaEasBoo/useWeiBoo/isaDynBoo above decide which optional steps are included). How: This concatenates the shared steps with whichever mode-specific ones apply.
+
+
+		NAV_STE_OBJ, bldNewFun( pickerId, state ), NAM_STE_OBJ, GRO_STE_OBJ,
+		bldModFun( pickerId ), ITE_STE_OBJ, bldAddFun( pickerId ), bldNamFun( pickerId ),
+		...( isaEasBoo ? [ bldSooFun( pickerId ), bldLatFun( pickerId ) ] : [] ),
+		...( useWeiBoo ? [ WEI_STE_OBJ ] : [] ),
+		...( isaDynBoo ? [ BOO_STE_OBJ ] : [] ),
+		SAV_STE_OBJ, CRE_STE_OBJ
+
+
+	];
+
+
+
+	return (
+
+
+		<GuidedTour
+			tourId={ `picker-${ pickerId }` }
+			steps={ steObjArr }
+			resumeStep={ resTouObj ? resTouObj.step : 0 }
+			actions={ actions }
+			active={ active }
+			selectTab={ selectTab }
+			onGoBack={ ( tarSteNum ) => { // What: On Go Back Handler. Why: Back from bldAddFun's own step (index 6, the Items sub-step's "+ Add Item" button) to ITE_STE_OBJ's own step (index 5, "Add Items") needs the form pushed back to its Details sub-step first; unlike the Reminders tours' own "+" button, .ob-picker-next's own click is a one-way step change inside NewPickerForm, not a toggle, so without this ITE_STE_OBJ's own target stays gone (the form is still showing Items) and the tour has nothing to highlight. How: This branches on tarSteNum, clicking the real DOM control that reverses whichever one-way transition the tour is backing out of.
+
+
+				if ( tarSteNum === 5 ) { // What: Details Step Back Check. Why: Reversing bldAddFun's own step needs the form pushed back to Details. How: This clicks the form's own "Details" step-indicator tab, the only way to reverse this from outside the form, which owns that step state locally.
+
+
+					const detTabEle = document.querySelector( '.ob-picker-details' ); // What: Details Tab Element. Why: This is the real control that reverses the form's own Details/Items step. How: This looks it up fresh, since it may not exist outside the create-picker form.
+
+					if ( detTabEle ) detTabEle.click(); // What: Details Tab Click. Why: This must only fire when the control actually exists. How: This clicks detTabEle.
+
+
+				}
+
+				else if ( tarSteNum === 6 ) { // What: Item Editor Cancel Check. Why: bldNamFun's own step opened the inline item editor, which is also a one-way transition (no toggle); Cancel is the only real-DOM way to close it back to the bare "+ Add Item" button from outside. How: This clicks the item editor's own Cancel button, same reasoning as the tarSteNum === 5 branch above.
+
+
+					const canButEle = document.querySelector( '.ob-item-cancel' ); // What: Cancel Button Element. Why: This is the real control that closes the inline item editor back to bldAddFun's own step. How: This looks it up fresh, since it may not exist outside an open item editor.
+
+					if ( canButEle ) canButEle.click(); // What: Cancel Button Click. Why: This must only fire when the control actually exists. How: This clicks canButEle.
+
+
+				}
+
+				else if ( tarSteNum === steObjArr.length - 2 ) { // What: Reopen Item Nonce Check. Why: Back from CRE_STE_OBJ's own step to SAV_STE_OBJ's own step has no real DOM control, since SAV_STE_OBJ's own Save already committed the item into the real list for good (see tab-picker.jsx's own comment on this); steObjArr.length - 2 rather than a hardcoded index, since how many steps come before these last two varies by picker mode, but SAV_STE_OBJ's own step is always exactly 2 before the end. How: This publishes a bus nonce, the same reasoning as the Pickers page tour's own onGoBack uses for its own no-real-control Back cases.
+
+
+					emlTouObj.set({ pickerTourReopenItemNonce : ( emlTouObj.get().pickerTourReopenItemNonce || 0 ) + 1 }); // What: Reopen Item Nonce Publish. Why: tab-picker.jsx's own effect watches this field to reopen the just-saved item's own editor. How: This increments the bus's own current pickerTourReopenItemNonce by 1.
+
+
+				}
+
+
+			} }
+			onSkip={ () => cloTouFun( 'skipped' ) } // What: On Skip Handler. Why: Skip (or the not-found watchdog) reads as "the user didn't finish", distinct both from the intro modal's own 'cancelled' and from a genuine 'finished' below. How: This calls cloTouFun with 'skipped'.
+			onFinish={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from CRE_STE_OBJ's own requireClick, after the real click that creates the picker has already reached the button's own handler. How: This calls cloTouFun with 'finished'.
+		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this sample, mounted once its own intro modal has been accepted or resumed into. How: This is passed this sample's own tourId, steObjArr, and the resume/lifecycle plumbing above.
+
+
+	);
+
+
 }
 
+// #endregion PickerTour
+
+
+
 export { PickerTour };
+
+
+
