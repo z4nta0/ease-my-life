@@ -45,12 +45,15 @@
  * dependent completion (a miss makes tomorrow likelier); a completed
  * card resets it, same as ease-up.
  *
- * The exported CONDITIONALS namespace object's own property names
- * (isProbability, isValue, trueOdds, resolveForDay, suppresses,
- * advanceOnCompletion, cardComplete, clamp) are kept stable here even
- * though this file's internal implementation detail names below were
- * renamed, since that object is imported by name across store.jsx,
- * day-log.jsx, and tab-today.jsx.
+ * The exported CON_NAM_OBJ namespace object's own property names are a
+ * cross-file contract read directly by store.jsx, day-log.jsx, and
+ * tab-today.jsx. Its own blast radius (6 external call sites total, all
+ * plain JS resolved at call time, never persisted) was checked first,
+ * the same way CADENCE's was in cadence.js before that one was renamed,
+ * so its external names were swept to match its internal implementation
+ * exactly (modProFun, modValFun, truOddFun, resDayFun, supGatFun,
+ * advValFun, carComFun, claValFun), with every external call site
+ * updated to match.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -99,12 +102,12 @@ function truOddFun( conCurObj ) {
 	if ( conCurObj.mode === 'random' ) return 0.5; // What: Random Mode Guard. Why: A random-mode conditional always resolves at a fixed fifty percent, with no oddsPct or value involved at all. How: This returns 0.5 immediately when conCurObj's own mode is 'random'.
 
 
-	const basPctNum = conCurObj.oddsPct ?? 50;                                                         // What: Base Percentage Number. Why: Every non-random mode starts from the conditional's own configured odds, defaulting to 50 for a legacy conditional with none. How: This reads conCurObj.oddsPct, falling back to 50 when it is nullish.
-	const finPctNum = conCurObj.mode === 'dynamic' ? basPctNum + ( conCurObj.value || 0 ) : basPctNum; // What: Final Percentage Number. Why: A dynamic-mode conditional's own odds climb by its own accrued value (a miss boost), while every other mode stays at its base. How: This adds conCurObj.value on top of basPctNum only when conCurObj's own mode is 'dynamic'.
+	const basPerNum = conCurObj.oddsPct ?? 50;                                                         // What: Base Percentage Number. Why: Every non-random mode starts from the conditional's own configured odds, defaulting to 50 for a legacy conditional with none. How: This reads conCurObj.oddsPct, falling back to 50 when it is nullish.
+	const finPerNum = conCurObj.mode === 'dynamic' ? basPerNum + ( conCurObj.value || 0 ) : basPerNum; // What: Final Percentage Number. Why: A dynamic-mode conditional's own odds climb by its own accrued value (a miss boost), while every other mode stays at its base. How: This adds conCurObj.value on top of basPerNum only when conCurObj's own mode is 'dynamic'.
 
 
 
-	return claValFun( finPctNum, 0, 100 ) / 100; // What: True Odds Return. Why: The caller needs a plain [0, 1] probability, not a raw (and possibly out-of-range) percentage. How: This clamps finPctNum to [0, 100] via claValFun, then divides the result by 100.
+	return claValFun( finPerNum, 0, 100 ) / 100; // What: True Odds Return. Why: The caller needs a plain [0, 1] probability, not a raw (and possibly out-of-range) percentage. How: This clamps finPerNum to [0, 100] via claValFun, then divides the result by 100.
 
 
 }
@@ -159,6 +162,9 @@ function resDayFun( conAllArr ) {
 
 
 			patIdeObj[ conCurObj.id ] = { chargedToday : false }; // What: Frozen Patch Write. Why: An inactive conditional still needs its own per-day charge guard cleared, even though nothing else about it changes. How: This writes just chargedToday:false under conCurObj's own id.
+
+
+
 			continue; // What: Next Conditional Continue. Why: An inactive conditional has nothing further to resolve this iteration. How: This skips the rest of the loop body, moving on to the next conCurObj.
 
 
@@ -258,9 +264,9 @@ function supGatFun( conCurObj ) { return !!( conCurObj && conCurObj.active !== f
 function rolSteFun( conCurObj, thrValNum ) {
 
 
-	const sooCycNum = Math.max( 1, Math.round( thrValNum / ( conCurObj.easeMax ?? 14 ) ) );
-	const latCycNum = Math.max( sooCycNum, Math.round( thrValNum / ( conCurObj.easeMin ?? 7 ) ) );
-	const tarCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );
+	const sooCycNum = Math.max( 1, Math.round( thrValNum / ( conCurObj.easeMax ?? 14 ) ) );        // What: Soonest Cycle Number. Why: The target cycle count must be rolled no sooner than the fastest possible cycle length, derived from easeMax the same way threshold/easeMax already bounds the fastest duration. How: This divides thrValNum by conCurObj's own easeMax (defaulted to 14), rounded and floored at 1 cycle via Math.max.
+	const latCycNum = Math.max( sooCycNum, Math.round( thrValNum / ( conCurObj.easeMin ?? 7 ) ) ); // What: Latest Cycle Number. Why: The target cycle count also needs its own slowest bound, derived from easeMin the same way threshold/easeMin already bounds the slowest duration, and must never resolve below sooCycNum. How: This divides thrValNum by conCurObj's own easeMin (defaulted to 7), rounded, then floored at sooCycNum via Math.max.
+	const tarCycNum = sooCycNum + Math.floor( Math.random() * ( latCycNum - sooCycNum + 1 ) );     // What: Target Cycle Number. Why: Every cycle length within [sooCycNum, latCycNum] must have equal odds, which is what actually avoids the duration bias this function's own summary describes. How: This adds sooCycNum to a random integer offset within the inclusive range.
 
 
 
@@ -318,15 +324,15 @@ function advValFun( conCurObj ) {
 	const thrValNum = conCurObj.threshold ?? 100; // What: Threshold Value Number. Why: Every branch below needs the same resolved charge ceiling, defaulting to 100 for a legacy conditional with none. How: This reads conCurObj.threshold, falling back to 100 when it is nullish.
 
 
-	if ( conCurObj.mode === 'ease-up' ) {
+	if ( conCurObj.mode === 'ease-up' ) { // What: Ease Up Mode Check. Why: An ease-up conditional's own advance needs its own multi-step charge-and-patch build, unlike dynamic's single-line return just below. How: This branches into the charge roll and patch object below whenever conCurObj's own mode is 'ease-up'.
 
 
-		const steValNum = steResFun( conCurObj, thrValNum );
-		const newValNum = claValFun( ( conCurObj.value || 0 ) + steValNum, 0, thrValNum );
+		const steValNum = steResFun( conCurObj, thrValNum );                               // What: Step Value Number. Why: This completion's own advance needs the conditional's already-rolled (or freshly-rolled) fixed step before it can compute a new charge. How: This calls steResFun with conCurObj and thrValNum.
+		const newValNum = claValFun( ( conCurObj.value || 0 ) + steValNum, 0, thrValNum ); // What: New Value Number. Why: The advanced charge must be clamped to [0, thrValNum] so it never over- or under-shoots. How: This adds steValNum onto conCurObj's own current value (defaulting a missing one to 0) and clamps the result via claValFun.
 
 
 
-		return {
+		return { // What: Ease Up Advance Return. Why: The caller needs this completion's own resolved charge, triggered state, and rolled step all landing together as one patch. How: This builds that patch from newValNum, thrValNum, and steValNum.
 
 
 			value        : newValNum,              // What: Value. Why: This completion's own newly-advanced charge must land in the returned patch. How: This carries newValNum through unchanged.
@@ -351,7 +357,7 @@ function advValFun( conCurObj ) {
 	};
 
 
-	if ( conCurObj.mode === 'ease-down' ) {
+	if ( conCurObj.mode === 'ease-down' ) { // What: Ease Down Mode Check. Why: An ease-down conditional's own advance branches between a one-shot refill and an ordinary charge-guard patch, unlike the other modes' single return each. How: This branches into the refill guard and mid-streak return below whenever conCurObj's own mode is 'ease-down'.
 
 
 		if ( !conCurObj.triggered ) return { value : thrValNum, triggered : true, chargedToday : true, chargeStep : rolSteFun( conCurObj, thrValNum ) }; // What: One-Shot Refill Guard. Why: A fully-discharged ease-down conditional starts a brand new streak on its own next dependent completion, which must roll a fresh plan rather than reuse the just-finished one. How: This re-arms conCurObj at full charge only when it is not currently triggered.
@@ -413,15 +419,17 @@ function carComFun( conCurObj ) {
 
 	if ( conCurObj.mode === 'dynamic' ) return { value : 0, triggered : false }; // What: Dynamic Reset Return. Why: Completing the card means the fired day-off was actually handled, so the miss-accrual value resets for the next cycle. How: This zeroes value and clears triggered.
 
-	if ( conCurObj.mode === 'ease-down' ) {
 
 
-		const steValNum = steResFun( conCurObj, thrValNum );
-		const newValNum = claValFun( ( conCurObj.value ?? thrValNum ) - steValNum, 0, thrValNum );
+	if ( conCurObj.mode === 'ease-down' ) { // What: Ease Down Mode Check. Why: Completing an ease-down conditional's own card needs its own multi-step discharge-and-patch build, unlike ease-up/dynamic's single-line returns just above. How: This branches into the discharge roll and patch object below whenever conCurObj's own mode is 'ease-down'.
+
+
+		const steValNum = steResFun( conCurObj, thrValNum );                                       // What: Step Value Number. Why: This card completion's own discharge needs the conditional's already-rolled (or freshly-rolled) fixed step before it can compute a new charge. How: This calls steResFun with conCurObj and thrValNum.
+		const newValNum = claValFun( ( conCurObj.value ?? thrValNum ) - steValNum, 0, thrValNum ); // What: New Value Number. Why: The discharged charge must be clamped to [0, thrValNum] so it never over- or under-shoots. How: This subtracts steValNum from conCurObj's own current value (defaulting a missing one to thrValNum) and clamps the result via claValFun.
 
 
 
-		return {
+		return { // What: Ease Down Discharge Return. Why: The caller needs this card completion's own resolved value, triggered state, and rolled step all landing together as one patch. How: This builds that patch from newValNum and steValNum.
 
 
 			value      : newValNum,     // What: Value. Why: This completion's own newly-discharged value must land in the returned patch. How: This carries newValNum through unchanged.
@@ -445,20 +453,19 @@ function carComFun( conCurObj ) {
 
 
 
-export const CONDITIONALS = { // What: Conditionals Namespace Object. Why: This is the single public entry point store.jsx, day-log.jsx, and tab-today.jsx all import, kept stable in shape even though the implementation names behind each property were renamed. How: This maps each of this file's own internal function names onto the exact public property names those callers already call.
+export const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the single public entry point store.jsx, day-log.jsx, and tab-today.jsx all import, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
 
 
-	isProbability       : modProFun, // What: Is Probability. Why: day-log.jsx checks this to classify a conditional's own mode for display. How: This exposes modProFun under the property name every caller already imports.
-	isValue             : modValFun, // What: Is Value. Why: day-log.jsx and store.jsx both check this to classify a conditional's own mode. How: This exposes modValFun under the property name every caller already imports.
-	trueOdds            : truOddFun, // What: True Odds. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CONDITIONALS' own stable public shape. How: This exposes truOddFun under the property name every caller already imports.
-	resolveForDay       : resDayFun, // What: Resolve For Day. Why: store.jsx calls this once per generate to roll/carry every conditional's own triggered state for the day. How: This exposes resDayFun under the property name every caller already imports.
-	suppresses          : supGatFun, // What: Suppresses. Why: tab-today.jsx calls this to decide whether a dependent picker's own day-off card should show instead of a real pick. How: This exposes supGatFun under the property name every caller already imports.
-	advanceOnCompletion : advValFun, // What: Advance On Completion. Why: store.jsx calls this on a dependent picker's own first completion of the day. How: This exposes advValFun under the property name every caller already imports.
-	cardComplete        : carComFun, // What: Card Complete. Why: store.jsx calls this when a day-off card itself is completed. How: This exposes carComFun under the property name every caller already imports.
-	clamp               : claValFun  // What: Clamp. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CONDITIONALS' own stable public shape. How: This exposes claValFun under the property name every caller already imports.
+	modProFun : modProFun, // What: Mode Probability Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports modProFun under its own matching name.
+	modValFun : modValFun, // What: Mode Value Function. Why: day-log.jsx and store.jsx both check this to classify a conditional's own mode. How: This re-exports modValFun under its own matching name.
+	truOddFun : truOddFun, // What: True Odds Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports truOddFun under its own matching name.
+	resDayFun : resDayFun, // What: Resolve Day Function. Why: store.jsx calls this once per generate to roll/carry every conditional's own triggered state for the day. How: This re-exports resDayFun under its own matching name.
+	supGatFun : supGatFun, // What: Suppress Gate Function. Why: tab-today.jsx calls this to decide whether a dependent picker's own day-off card should show instead of a real pick. How: This re-exports supGatFun under its own matching name.
+	advValFun : advValFun, // What: Advance Value Function. Why: store.jsx calls this on a dependent picker's own first completion of the day. How: This re-exports advValFun under its own matching name.
+	carComFun : carComFun, // What: Card Complete Function. Why: store.jsx calls this when a day-off card itself is completed. How: This re-exports carComFun under its own matching name.
+	claValFun : claValFun  // What: Clamp Value Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports claValFun under its own matching name.
 
 
 };
-
 
 
