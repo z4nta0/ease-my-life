@@ -2991,8 +2991,8 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	*/
 
 	const feaStaObj  = ( state.onboarding && state.onboarding.appFeatures ) || {}; // What: Feature State Object. Why: Every App Features check below needs this same resolved-or-empty map. How: This reads state.onboarding.appFeatures, falling back to an empty object.
-	const fsrFlgBoo  = !!( state.onboarding && state.onboarding.appFeaturesSectionResolved ); // What: Feature-Section-Resolved Flag Boolean. Why: A persisted snapshot, only ever flipped true inside generate() itself, deliberately NOT a live check during the user's ORIGINAL first-ever pass, so finishing the last of the 8 tutorials doesn't yank the whole section out from under them mid-session with no natural boundary; it stays visible, fully checked, until their NEXT real generation. How: This reads state.onboarding.appFeaturesSectionResolved.
-	const fecDonBoo  = !!( state.onboarding && state.onboarding.appFeaturesEverCompleted ); // What: Feature-Ever-Completed Done Boolean. Why: Unlike fsrFlgBoo, this is NEVER reset by Replay Tour, set once alongside it and staying true forever after, same "permanent, one-way" semantics as cheDonBoo itself; it distinguishes "this is the user's ORIGINAL, first-ever pass" from "this is a REPLAY", since both share the identical feaStaObj shape otherwise. How: This reads state.onboarding.appFeaturesEverCompleted.
+	const fsrFlaBoo  = !!( state.onboarding && state.onboarding.appFeaturesSectionResolved ); // What: Feature-Section-Resolved Flag Boolean. Why: A persisted snapshot, only ever flipped true inside generate() itself, deliberately NOT a live check during the user's ORIGINAL first-ever pass, so finishing the last of the 8 tutorials doesn't yank the whole section out from under them mid-session with no natural boundary; it stays visible, fully checked, until their NEXT real generation. How: This reads state.onboarding.appFeaturesSectionResolved.
+	const fecDonBoo  = !!( state.onboarding && state.onboarding.appFeaturesEverCompleted ); // What: Feature-Ever-Completed Done Boolean. Why: Unlike fsrFlaBoo, this is NEVER reset by Replay Tour, set once alongside it and staying true forever after, same "permanent, one-way" semantics as cheDonBoo itself; it distinguishes "this is the user's ORIGINAL, first-ever pass" from "this is a REPLAY", since both share the identical feaStaObj shape otherwise. How: This reads state.onboarding.appFeaturesEverCompleted.
 
 	/**
 	 * shwFeaBoo = Show App Features Boolean
@@ -3000,7 +3000,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * @summary
 	 * The section (and its rail nav entry, gated on this same boolean
 	 * further down) needs a DIFFERENT disappearance rule depending on
-	 * which of the two phases above this is. First-time: fsrFlgBoo stays
+	 * which of the two phases above this is. First-time: fsrFlaBoo stays
 	 * up, fully checked, until the next real generation, so the user gets
 	 * to see it "all done" rather than have it vanish out from under them
 	 * mid-click. Replay: a resolved card already vanishes from the LIST
@@ -3016,7 +3016,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 *
 	*/
 
-	const shwFeaBoo = cheDonBoo && ( fecDonBoo ? APP_FEATURES.some( ( curFeaObj ) => !feaStaObj[ curFeaObj.id ] ) : !fsrFlgBoo ); // What: Show App Features Boolean. Why: See the doc comment just above. How: This branches on fecDonBoo to pick either the live "some still unresolved" check or the negation of the first-time snapshot.
+	const shwFeaBoo = cheDonBoo && ( fecDonBoo ? APP_FEATURES.some( ( curFeaObj ) => !feaStaObj[ curFeaObj.id ] ) : !fsrFlaBoo ); // What: Show App Features Boolean. Why: See the doc comment just above. How: This branches on fecDonBoo to pick either the live "some still unresolved" check or the negation of the first-time snapshot.
 
 	React.useEffect( () => { emlTouObj.set( { showChecklist : shwCheBoo } ); }, [ shwCheBoo ] ); // What: Checklist Bus Publish Effect. Why: reminders.jsx's startAdd needs to hide ANY reminder created while the checklist is up, not just ones a mini-tour itself creates, so a user manually clicking "+" mid-onboarding doesn't clutter the list alongside the still-open launcher cards either (see the unhide side in the generateCardResolved effect further below). How: This republishes shwCheBoo onto the shared tour bus under its own showChecklist field.
 
@@ -4446,7 +4446,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		if ( cheDonBoo && APP_FEATURES.every( ( curFeaObj ) => feaStaObj[ curFeaObj.id ] ) ) { // What: Feature Section Resolve Guard. Why: The App Features section (see shwFeaBoo's own doc comment above) is only allowed to finally disappear here, at a real generation boundary, not the instant the last tutorial resolves; checked fresh on every genFun call (both manual Regenerate and the Daily Generator funnel through this same function) rather than only once, so a generation that happens to land after the very last tutorial finishes is what actually hides it. How: This flips both resolution flags only once every App Feature is already done.
 
 
-			actions.setOnboarding( { appFeaturesSectionResolved : true, appFeaturesEverCompleted : true } ); // What: Set Onboarding Call. Why: fecDonBoo is the permanent half of this pair, see its own doc comment above for why it must never reset alongside fsrFlgBoo on a Replay Tour. How: This writes both flags true.
+			actions.setOnboarding( { appFeaturesSectionResolved : true, appFeaturesEverCompleted : true } ); // What: Set Onboarding Call. Why: fecDonBoo is the permanent half of this pair, see its own doc comment above for why it must never reset alongside fsrFlaBoo on a Replay Tour. How: This writes both flags true.
 
 
 		}

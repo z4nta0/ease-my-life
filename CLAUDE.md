@@ -1593,6 +1593,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     context, e.g. `finPerNum` holding a clamped percentage rather than a
     period or a permission state, disambiguates which word "per" stands
     for in practice)
+  - `flg` → `fla` (Flag)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
