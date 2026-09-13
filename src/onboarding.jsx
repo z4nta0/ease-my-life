@@ -287,9 +287,9 @@ function Onboarding ( { state, actions, active, selectTab } ) {
 	React.useEffect( () => { // What: Seed Samples Effect. Why: Every tour step always needs real content to point at and generate from, and this must re-run on every genuine "flag flips" event (a Replay Tour on an already-mounted app), not just once on initial mount, guarded on the sample ids specifically existing (any status, hidden or not) rather than "the user has any picker at all", since a Replay Tour or an imported backup can leave welcomed false while state.pickers already holds the user's own real, sample-unrelated pickers; a plain "has any picker" check would read that as already-seeded and skip forever, leaving the per-page mini-tours with no sample to ever point at. How: This seeds OB_EXAMPLE plus every OB_EXTRA_PICKERS entry as real pickers, then dynamic-imports the ~650KB precomputed Stats history (irrelevant to everyone past their first run, so kept out of the main bundle) and hydrates its day-offsets into real ISO dates relative to today via hydrateOnboardingStats.
 
 
-		if ( onbStaObj.welcomed || state.pickers.some( ( curPkrObj ) => OB_SAMPLE_PICKER_IDS.includes( curPkrObj.id ) ) ) return; // What: Already Seeded Guard. Why: A welcomed-false state whose samples already exist (from an earlier pass, hidden or not) must never be seeded twice. How: This bails out once welcomed is already true, or once any sample picker id is already present among state.pickers.
+		if ( onbStaObj.welcomed || state.pickers.some( ( curPicObj ) => OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) ) ) return; // What: Already Seeded Guard. Why: A welcomed-false state whose samples already exist (from an earlier pass, hidden or not) must never be seeded twice. How: This bails out once welcomed is already true, or once any sample picker id is already present among state.pickers.
 
-		[ OB_EXAMPLE, ...OB_EXTRA_PICKERS ].forEach( ( curPkrObj ) => actions.addPicker( curPkrObj ) ); // What: Sample Picker Seed Call. Why: Every step of the tour needs a real, generatable picker to point at. How: This adds OB_EXAMPLE and every OB_EXTRA_PICKERS entry exactly like a real, user-created picker.
+		[ OB_EXAMPLE, ...OB_EXTRA_PICKERS ].forEach( ( curPicObj ) => actions.addPicker( curPicObj ) ); // What: Sample Picker Seed Call. Why: Every step of the tour needs a real, generatable picker to point at. How: This adds OB_EXAMPLE and every OB_EXTRA_PICKERS entry exactly like a real, user-created picker.
 
 		import( './onboarding-stats-data.js' ).then( ( { ONBOARDING_STATS } ) => { // What: Stats History Import. Why: The sample reminders themselves are seeded later, at the Generate step's own run() below (unlike picker items, a reminder needs no "generate" to become visible on Today, so seeding it here would show it before the user has generated anything), but this precomputed history is independent of whether the live task exists yet, since log rows are denormalized. How: This dynamic-imports the generated stats-history module once seeding is confirmed necessary.
 
@@ -444,7 +444,7 @@ function Onboarding ( { state, actions, active, selectTab } ) {
 			run     : () => { // What: Run Function. Why: The sample pickers/reminders are not deleted, since the per-page mini-tours will reuse this exact data (and its precomputed Stats history) later, only tucked out of sight. How: This hides every sample picker and every sample task.
 
 
-				OB_SAMPLE_PICKER_IDS.forEach( ( pkrIdeStr ) => actions.updatePicker( pkrIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: A hidden sample still exists for a later mini-tour to reuse, it just should not clutter Today anymore. How: This updates every sample picker id to hidden:true.
+				OB_SAMPLE_PICKER_IDS.forEach( ( picIdeStr ) => actions.updatePicker( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: A hidden sample still exists for a later mini-tour to reuse, it just should not clutter Today anymore. How: This updates every sample picker id to hidden:true.
 
 				OB_TASKS.forEach( ( curTasObj ) => actions.updateTask( curTasObj.id, { hidden : true } ) ); // What: Sample Task Hide Call. Why: A hidden sample reminder still exists for its own mini-tour launcher card to read later. How: This updates every OB_TASKS entry's own id to hidden:true.
 
@@ -494,7 +494,7 @@ function Onboarding ( { state, actions, active, selectTab } ) {
 
 		if ( onbStaObj.dismissed ) return; // What: Dismissed Guard. Why: A replay's own samples are the user's real, already-hidden ones; unhiding them here would leak stale demo data into the real Today list. How: This bails out before touching anything whenever onbStaObj.dismissed is true.
 
-		OB_SAMPLE_PICKER_IDS.forEach( ( pkrIdeStr ) => actions.updatePicker( pkrIdeStr, { hidden : false } ) ); // What: Sample Picker Unhide Call. Why: Every earlier step's own review of the sample pickers should look exactly as it did the first time through. How: This updates every sample picker id back to hidden:false.
+		OB_SAMPLE_PICKER_IDS.forEach( ( picIdeStr ) => actions.updatePicker( picIdeStr, { hidden : false } ) ); // What: Sample Picker Unhide Call. Why: Every earlier step's own review of the sample pickers should look exactly as it did the first time through. How: This updates every sample picker id back to hidden:false.
 
 		if ( tarSteNum === 1 ) { // What: Generate Step Target Check. Why: Sample REMINDERS do not exist yet the very first time the Generate step shows, since its own run() only adds them once its Next actually fires. How: This branch fully removes them instead of hiding them, since a hidden sample would keep the shared bus's own phase reading a tutorial checklist as still relevant here.
 
@@ -578,7 +578,7 @@ function Onboarding ( { state, actions, active, selectTab } ) {
 
 					}
 
-					OB_SAMPLE_PICKER_IDS.forEach( ( pkrIdeStr ) => actions.updatePicker( pkrIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: Skipping reaches the same "tucked out of sight, not deleted" end state the full tour's own Settings step reaches. How: This updates every sample picker id to hidden:true.
+					OB_SAMPLE_PICKER_IDS.forEach( ( picIdeStr ) => actions.updatePicker( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: Skipping reaches the same "tucked out of sight, not deleted" end state the full tour's own Settings step reaches. How: This updates every sample picker id to hidden:true.
 
 					finTouFun(); // What: Finish Tour Call. Why: Skipping still needs the exact same cleanup any other path off the tour performs. How: This flips onbPhaStr to 'off' and clears the shared bus's own prefill field.
 
