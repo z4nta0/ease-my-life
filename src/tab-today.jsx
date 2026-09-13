@@ -1420,7 +1420,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 								size='sm'
 								icon='trash'
 								disabled
-							>Delete</Btn> // What: Btn. Why: This shows the disabled Delete control the wrapping InfoTip explains. How: This never fires, since disabled is always set in this branch.
+							>Delete</Btn>{ /* What: Btn. Why: This shows the disabled Delete control the wrapping InfoTip explains. How: This never fires, since disabled is always set in this branch. */ }
 
 						</InfoTip> // What: Info Tip. Why: A blocked delete still needs to explain itself on hover/tap, not just silently refuse. How: This wraps the disabled Delete button with the fixed floor-explanation text.
 
