@@ -1743,6 +1743,21 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     ...); rather than adding an eleventh meaning to an already-loaded
     code, it was escalated via Phase A to `clcEle` instead, keeping
     `clo`'s own meaning unambiguous everywhere else.
+  - **When even the escalation letters collide, pick a different word
+    entirely rather than force one through**: `tab-today.jsx`'s own
+    `rndOrdRef`/`rndArr` (holding the group order actually rendered to
+    the DOM, so a drag-drop's own DOM-position indices can be resolved
+    against it) truncated Rendered to the common `rnd` abbreviation
+    instead of `rendered`'s own literal first 3 letters, and every
+    Phase A escalation candidate for "Rendered" (`red`, `ree`, `rer`,
+    the word's only 3 distinct later letters) already meant Reduced
+    (`redMotBoo`), Reel (`LoaReeCom`), and Reroll (`onRerFun`)
+    respectively, all in this exact same file. Rather than force
+    through one of those (or Phase B's own literal answer, which
+    happened to land back on `rnd` itself), the word was replaced
+    entirely with its own close synonym "Shown" (`sho`, already an
+    established, unambiguous code elsewhere in this codebase and not
+    used anywhere in this file), giving `shoOrdRef`/`shoArr`.
 - **`id` attributes** follow the same 9-character/3-segment rule as any
   other name, but segment 3 (the "type" segment) describes what KIND OF
   THING the id labels — the element/role it identifies — rather than the

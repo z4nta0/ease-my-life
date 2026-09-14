@@ -3890,7 +3890,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const [ ediModBoo, setEdiModBoo ]     = React.useState( false ); // What: Edit Mode Boolean And Setter. Why: This is the single source of truth for whether the list is currently in Edit Mode. How: This is toggled by togEdiFun/enterEdiFun/exitEdiFun below.
 	const [ banCloBoo, setBanCloBoo ]     = React.useState( false ); // What: Banner Closing Boolean And Setter. Why: See the doc comment just above. How: This is set true right when Edit Mode ends and cleared once the collapse animation finishes.
 	const groDndRef      = React.useRef( null ); // What: Group Dnd Reference. Why: startGroDraFun below needs a handle on the groups wrapper to scope the drag container to. How: This is attached to the .groups-dnd div's own ref prop further down.
-	const rndOrdRef      = React.useRef( [] );   // What: Rendered Order Reference. Why: Drop indices from REORDER are DOM positions, so they must resolve against whatever order the content column was LAST rendered from, not the unpadded blkOrdArr. How: This is written just before the return JSX below and read by startGroDraFun's own onDrop.
+	const shoOrdRef      = React.useRef( [] );   // What: Shown Order Reference. Why: Drop indices from REORDER are DOM positions, so they must resolve against whatever order the content column was LAST rendered from, not the unpadded blkOrdArr. How: This is written just before the return JSX below and read by startGroDraFun's own onDrop.
 	const ordSnpRef      = React.useRef( null ); // What: Order Snapshot Reference. Why: A snapshot taken on entering Edit Mode lets Cancel/Escape discard every drag made during the whole session. How: This is populated by enterEdiFun and read/cleared by exitEdiFun.
 	const [ merPmpObj, setMerPmpObj ] = React.useState( null ); // What: Merge Prompt Object And Setter. Why: A pending group-rename that would MERGE into an existing group is held here until the user confirms. How: This is set by reqRenFun below and read by GroHeaCom's own mergePending prop.
 
@@ -3985,11 +3985,11 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			onStart : () => emlTouObj.set( { dragging : true } ),  // What: On Start Callback. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable Icon" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes dragging:true onto the shared tour bus, a harmless no-op when no tour is mounted.
 			onEnd   : () => emlTouObj.set( { dragging : false } ), // What: On End Callback. Why: The coach must reappear once the gesture ends. How: This publishes dragging:false onto the shared tour bus.
-			onDrop  : ( ordNumArr ) => { // What: On Drop Callback. Why: The actual persisted group order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through rndOrdRef's own rendered order, then merges the result into state.groupOrder.
+			onDrop  : ( ordNumArr ) => { // What: On Drop Callback. Why: The actual persisted group order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through shoOrdRef's own shown order, then merges the result into state.groupOrder.
 
 
-				const rndArr = rndOrdRef.current || [];                          // What: Rendered Array. Why: A drop index is a DOM position, which only makes sense against whatever order was actually rendered. How: This reads rndOrdRef.current, falling back to an empty array.
-				const preArr = ordNumArr.map( ( curIndNum ) => rndArr[ curIndNum ] ).filter( Boolean ); // What: Present Array. Why: This translates the drop's own numeric indices back into real block ids. How: This maps each index through rndArr, dropping any that resolve to nothing.
+				const shoArr = shoOrdRef.current || [];                          // What: Shown Array. Why: A drop index is a DOM position, which only makes sense against whatever order was actually rendered. How: This reads shoOrdRef.current, falling back to an empty array.
+				const preArr = ordNumArr.map( ( curIndNum ) => shoArr[ curIndNum ] ).filter( Boolean ); // What: Present Array. Why: This translates the drop's own numeric indices back into real block ids. How: This maps each index through shoArr, dropping any that resolve to nothing.
 
 				actions.reorderGroups( merOrdFun( state.groupOrder || [], preArr ) ); // What: Reorder Groups Call. Why: This is the actual persisted write. How: This merges preArr's own new order back into the fuller saved order via merOrdFun.
 
@@ -4624,7 +4624,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	}, [ blkOrdArr, newSltByGroObj ] );
 
-	rndOrdRef.current = genBlkOrdArr; // What: Rendered Order Set. Why: startGroDraFun's own onDrop needs to resolve a drop's own DOM-position indices against whatever order was ACTUALLY rendered, which is genBlkOrdArr, not the unpadded blkOrdArr. How: This overwrites rndOrdRef on every render.
+	shoOrdRef.current = genBlkOrdArr; // What: Shown Order Set. Why: startGroDraFun's own onDrop needs to resolve a drop's own DOM-position indices against whatever order was ACTUALLY rendered, which is genBlkOrdArr, not the unpadded blkOrdArr. How: This overwrites shoOrdRef on every render.
 
 	const obEveBus = useEmlTouFun ? useEmlTouFun() : {}; // What: Onboarding Event Bus. Why: Several onboarding-adjacent empty-state/create-flow checks below need to read the shared tour bus's own live fields. How: This calls useEmlTouFun when it exists, otherwise falls back to an empty object.
 
