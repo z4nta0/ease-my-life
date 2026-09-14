@@ -793,7 +793,7 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 	},
 
-	// -- Picker/Conditional Log panel (day-log.jsx's GroupLog), dl-mk-* here
+	// -- Picker/Conditional Log panel (day-log.jsx's GroLogCom), dl-mk-* here
 	// are the same kind of dedicated hooks. Deliberately TWO separate column
 	// groups (picker item rows vs. Conditionals section rows) rather than one
 	// shared set: the Conditionals section has its own full-width "Rested:

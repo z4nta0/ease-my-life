@@ -14,7 +14,7 @@ import { BacFloCom               } from './bg-flourish.jsx';               // Wh
 import { BoostReset              } from './ui.jsx';                        // What: Boost Reset. Why: A dynamic-mode item's inline editor needs a control for resetting its boost value back to 0. How: This is rendered inside EntryEditor's own Boost row.
 import { Btn                     } from './ui.jsx';                        // What: Button. Why: Nearly every action in this file (confirm, cancel, save, merge, generate) is a shared styled button. How: This is used throughout instead of a bare <button> for anything that needs the app's own button styling.
 import { CAD_NAM_OBJ             } from './cadence.js';                    // What: Cadence Namespace Object. Why: Non-daily pickers need period-key math and unit-word phrasing shared with the rest of the app. How: This is called for perKeyFun/comPerFun/uniWorFun throughout generate() and EntryEditor.
-import { Collapse                } from './ui.jsx';                        // What: Collapse. Why: A group's Day Log panel and an entry's inline editor both need an animated expand/collapse wrapper. How: This wraps GroupLog and EntryEditor, gated on whichever key/eid currently owns the open state.
+import { Collapse                } from './ui.jsx';                        // What: Collapse. Why: A group's Day Log panel and an entry's inline editor both need an animated expand/collapse wrapper. How: This wraps GroLogCom and EntryEditor, gated on whichever key/eid currently owns the open state.
 import { CON_NAM_OBJ             } from './conditionals.js';               // What: Conditionals Namespace Object. Why: Day-off suppression during generate() needs the shared conditional-evaluation logic. How: This is called via CON_NAM_OBJ.supGatFun against each picker's own resolved conditional.
 import { createPortal            } from 'react-dom';                       // What: Create Portal. Why: The completion celebration's confetti/sparkle overlay must escape the tab-fade wrapper's own containing block. How: This portals the celebration overlay straight onto document.body.
 import { DayLogChip              } from './day-log.jsx';                   // What: Day Log Chip. Why: Each group header needs a small toggle chip for its own Day Log panel. How: This is rendered inside GroHeaCom next to the group's own done/total count.
@@ -24,7 +24,7 @@ import { FillButton              } from './ui.jsx';                        // Wh
 import { fmtDate                 } from './ui.jsx';                        // What: Format Date. Why: The header's own kicker line needs today's date in the app's shared display format. How: This formats the live now clock value shown next to the streak.
 import { fmtDateLong             } from './ui.jsx';                        // What: Format Date Long. Why: The footer's "List generated on..." line needs the long-form date of the last generation. How: This formats state.today.generatedAt for that footer line.
 import { fmtTime                 } from './ui.jsx';                        // What: Format Time. Why: Both the header's kicker line and the footer's generated-on line need a formatted time of day. How: This formats the live now clock and state.today.generatedAt respectively.
-import { GroupLog                } from './day-log.jsx';                   // What: Group Log. Why: A group's Day Log panel needs to render that group's own picker audit rows. How: This is rendered inside a Collapse, scoped to one group's own name.
+import { GroLogCom               } from './day-log.jsx';                   // What: Group Log Component. Why: A group's Day Log panel needs to render that group's own picker audit rows. How: This is rendered inside a Collapse, scoped to one group's own name.
 import { HelpButton              } from './help-mode.jsx';                 // What: Help Button. Why: Today needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOn.
 import { HelpOverlay             } from './help-mode.jsx';                 // What: Help Overlay. Why: Help mode needs its own coach-mark overlay driven by this tab's own catalog of targets. How: This is rendered once, passed TODAY_HELP_ITEMS and the helpOn/helpExit pair.
 import { HOL_NAM_OBJ             } from './holidays.js';                   // What: Holidays Namespace Object. Why: Both generate()'s own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holidayOn against state.holidays.
@@ -5704,10 +5704,10 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 										/>{ /* What: Group Header Component. Why: Every group needs its own name/rename, count, and progress dashes. How: This is passed curGroObj's own name/counts plus every rename/merge/log handler. */ }
 
 
-										<Collapse open={ opeLogStr === curGroObj.name && !ediModBoo }>{ /* What: Collapse. Why: This group's own Day Log panel should only mount while it is actually open, outside Edit Mode. How: This wraps GroupLog below. */ }
+										<Collapse open={ opeLogStr === curGroObj.name && !ediModBoo }>{ /* What: Collapse. Why: This group's own Day Log panel should only mount while it is actually open, outside Edit Mode. How: This wraps GroLogCom below. */ }
 
 
-											<GroupLog
+											<GroLogCom
 												state={ state }
 												group={ curGroObj.name }
 												onClose={ () => togLogFun( curGroObj.name ) }
