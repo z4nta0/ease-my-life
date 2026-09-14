@@ -1268,9 +1268,9 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 	const shoPulBoo = curSteObj.requireClick && ( !curSteObj.pulseSel || !!document.querySelector( curSteObj.pulseSel ) ); // What: Should Pulse Boolean. Why: See pulseSel's own doc comment in this file's own header above, this defaults to matching requireClick exactly when unset, so every other requireClick step pulses for its whole duration same as before. How: This is true whenever the step requires a click and either names no pulseSel at all, or its own pulseSel currently matches something.
 
-	let coaStyObj, arwClsStr, spoStyObj = null; // What: Coach Style Object, Arrow Class String, And Spotlight Style Object. Why: Exactly one of the two branches below assigns all 3. How: These start uninitialized (spoStyObj explicitly null) and are filled in by whichever branch applies.
+	let coaStyObj, arwClaStr, spoStyObj = null; // What: Coach Style Object, Arrow Class String, And Spotlight Style Object. Why: Exactly one of the two branches below assigns all 3. How: These start uninitialized (spoStyObj explicitly null) and are filled in by whichever branch applies.
 
-	if ( recObj ) { // What: Rect Present Branch. Why: A resolved rect means the target currently exists and both the spot and coach can be laid out. How: This computes spoStyObj/coaStyObj/arwClsStr from the current recObj.
+	if ( recObj ) { // What: Rect Present Branch. Why: A resolved rect means the target currently exists and both the spot and coach can be laid out. How: This computes spoStyObj/coaStyObj/arwClaStr from the current recObj.
 
 
 		const padNum = curSteObj.requireClick ? 0 : 8; // What: Pad Number. Why: See spoPadNum's own comment above inside the position-tracking effect, this is the render-time twin of that same value. How: This is 0 for a requireClick step, otherwise the normal 8px.
@@ -1282,7 +1282,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 		const layObj = coaLayFun( recObj, coaHeiNum, coaWidNum, vpWidNum, vpHeiNum ); // What: Layout Object. Why: This is the same shared math plcTarFun uses imperatively every frame, kept here too as the coach's own first-paint value each step and the eventual React-driven fallback once it catches up. How: This calls coaLayFun with the current recObj, coaHeiNum, and the current viewport/coach sizes; coachAtTop needs no special branch here at all any more, letting it fall through to the exact same below/above logic every other step already uses is what lets the coach flip to sit BELOW the target (arrow up) once there is room, instead of only ever attaching above it, since coachAtTop's own remaining job is upstream of this (skipping decResFun's own padding and giving briTarFun a precise initial scroll target).
 
 		coaStyObj = { top: layObj.top, left: layObj.left }; // What: Coach Style Object Assignment. Why: The rendered .ob-coach div below reads this directly as part of its own inline style. How: This takes layObj's own top/left.
-		arwClsStr = layObj.arrowClass; // What: Arrow Class String Assignment. Why: The rendered .ob-coach div below needs to know which arrow direction class to apply. How: This takes layObj's own arrowClass.
+		arwClaStr = layObj.arrowClass; // What: Arrow Class String Assignment. Why: The rendered .ob-coach div below needs to know which arrow direction class to apply. How: This takes layObj's own arrowClass.
 
 
 	}
@@ -1309,7 +1309,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 			{ !dragging && ( // What: Coach Visibility Check. Why: The coach card must hide entirely during a drag gesture, per dragging's own doc comment above.
 
 
-				<div className={ `ob-coach   ${ arwClsStr }` } ref={ reaCoaRef } style={{ ...coaStyObj, width: coaWidNum, '--ob-ax': arwXNum + 'px' }}>{ /* What: Coach Container Element. Why: This is the real, visible, interactive coach card. How: This positions itself from coaStyObj/coaWidNum/arwXNum and renders its own arrow direction class. */ }
+				<div className={ `ob-coach   ${ arwClaStr }` } ref={ reaCoaRef } style={{ ...coaStyObj, width: coaWidNum, '--ob-ax': arwXNum + 'px' }}>{ /* What: Coach Container Element. Why: This is the real, visible, interactive coach card. How: This positions itself from coaStyObj/coaWidNum/arwXNum and renders its own arrow direction class. */ }
 
 
 					{ !curSteObj.solo && <p className='ob-prog'>Step { curSteNum + 1 } of { totSteNum }</p> }{ /* What: Progress Paragraph Element. Why: Every non-solo step shows its own position in the sequence. How: This renders only when curSteObj.solo is falsy. */ }

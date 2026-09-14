@@ -1653,6 +1653,11 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     in this codebase, Union (`uniRecFun`) and Unique (`uniNamFun`);
     context disambiguates which of the three "uni" stands for)
   - `wrd` → `wor` (Word)
+  - `cls` → `cla` (Class — note `cla` already carries two other meanings
+    in this codebase, Clamp (`claValFun`) and Clause (`tutClaStr`), and
+    this collides with `cla`'s own already-correct existing use for
+    Class too (`extClaStr`); context disambiguates which of the three
+    "cla" stands for)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
