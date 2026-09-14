@@ -1845,6 +1845,16 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     shorthand people reach for; found in `vpWidNum`/`vpHeiNum` across
     `help-mode.jsx`, `ui.jsx`, and `onboarding-tour-runner.jsx`,
     including `onboarding-tour-runner.jsx`'s own `coaLayFun` parameters)
+  - `abv` → `abo` (Above — found in `aboAncNum`/`gapAboNum` in
+    `help-mode.jsx` and `ftsAboBoo` in `onboarding-tour-runner.jsx`)
+  - `spc` → `spa` (Space — found in `spaAboNum`/`spaBelNum` across
+    `help-mode.jsx` and `onboarding-tour-runner.jsx`)
+  - `ctr` → `cen` (Center — found in `cenXNum` (`help-mode.jsx`); `cen`
+    was already the established code for Center elsewhere in this
+    codebase, e.g. `cenBadBoo`)
+  - `arw` → `arr` (Arrow — found in `arrClaStr`/`arrXNum`/`arrClaVal`
+    across `help-mode.jsx` and `arrXFun`/`arrClaStr`/`arrXNum` in
+    `onboarding-tour-runner.jsx`)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

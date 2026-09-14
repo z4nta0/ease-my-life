@@ -797,13 +797,13 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 
 	const vieWidNum = window.innerWidth, vieHeiNum = window.innerHeight, marNum = 8; // What: Viewport/Margin Numbers. Why: Every clamp below needs the current viewport size plus the fixed edge margin the tip should never sit flush against. How: These are read once up front and reused throughout.
 
-	let topNum, arwClaStr, maxHeiNum; // What: Placement Result Numbers. Why: Exactly one of the 3 branches below assigns these, whichever applies. How: These are returned as-is once the branch below has run.
+	let topNum, arrClaStr, maxHeiNum; // What: Placement Result Numbers. Why: Exactly one of the 3 branches below assigns these, whichever applies. How: These are returned as-is once the branch below has run.
 
 
 	if ( tarRecObj.alwaysBelow ) { // What: Always Below Branch. Why: A target spanning nearly the whole viewport itself (the nav tip's own 'side'/'top' placements) has essentially zero room above no matter what. How: This skips the below/above choice entirely and places the tip a fixed 16px below the target.
 
 
-		topNum = tarRecObj.bottom + 16; arwClaStr = 'ob-coach--up';
+		topNum = tarRecObj.bottom + 16; arrClaStr = 'ob-coach--up';
 		maxHeiNum = vieHeiNum - topNum - marNum;
 
 
@@ -812,7 +812,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 	else if ( pinBelYNum != null ) { // What: Pinned Below Branch. Why: Some tips (e.g. Repeat Schedule) must always sit below one fixed Y regardless of which of a form's own optional fields happen to be showing. How: This places the tip a fixed 16px below pinBelYNum instead of the target's own bottom edge.
 
 
-		topNum = pinBelYNum + 16; arwClaStr = 'ob-coach--up';
+		topNum = pinBelYNum + 16; arrClaStr = 'ob-coach--up';
 		maxHeiNum = vieHeiNum - topNum - marNum;
 
 
@@ -822,25 +822,25 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 
 
 		const useBadBoo    = tarRecObj.badgeAnchorTop != null;                          // What: Use Badge Anchor Boolean. Why: A columnGroup member's own badge sits well above tarRecObj.top itself, so an above-placed tip anchored to tarRecObj.top would point its own arrow at empty space instead of the badge. How: This checks whether tarRecObj carries a badgeAnchorTop at all.
-		const abvAncNum    = useBadBoo ? tarRecObj.badgeAnchorTop : tarRecObj.top;      // What: Above Anchor Number. Why: The "flips above" branch below needs one single Y to anchor against, whichever is correct for this target. How: This picks badgeAnchorTop when useBadBoo, otherwise the target's own top edge.
-		const gapAbvNum    = useBadBoo ? 8 : 16;                                        // What: Gap Above Number. Why: The usual 16px breathing room reads as "detached" for a small round badge specifically, so a badge anchor uses a tighter 8px instead. How: This picks 8 when anchored to a badge, otherwise the app's own normal 16px gap.
-		const spcBelNum    = vieHeiNum - tarRecObj.bottom - 16;                          // What: Space Below Number. Why: This is how much room the "below" placement actually has to work with. How: This subtracts the target's own bottom edge and the normal 16px gap from the viewport's own height.
-		const spcAbvNum    = abvAncNum - gapAbvNum - marNum;                            // What: Space Above Number. Why: This is how much room the "above" placement actually has to work with. How: This subtracts gapAbvNum and the edge margin from abvAncNum.
+		const aboAncNum    = useBadBoo ? tarRecObj.badgeAnchorTop : tarRecObj.top;      // What: Above Anchor Number. Why: The "flips above" branch below needs one single Y to anchor against, whichever is correct for this target. How: This picks badgeAnchorTop when useBadBoo, otherwise the target's own top edge.
+		const gapAboNum    = useBadBoo ? 8 : 16;                                        // What: Gap Above Number. Why: The usual 16px breathing room reads as "detached" for a small round badge specifically, so a badge anchor uses a tighter 8px instead. How: This picks 8 when anchored to a badge, otherwise the app's own normal 16px gap.
+		const spaBelNum    = vieHeiNum - tarRecObj.bottom - 16;                          // What: Space Below Number. Why: This is how much room the "below" placement actually has to work with. How: This subtracts the target's own bottom edge and the normal 16px gap from the viewport's own height.
+		const spaAboNum    = aboAncNum - gapAboNum - marNum;                            // What: Space Above Number. Why: This is how much room the "above" placement actually has to work with. How: This subtracts gapAboNum and the edge margin from aboAncNum.
 
-		if ( spcBelNum >= tipHeiNum || spcBelNum >= spcAbvNum ) { // What: Prefer Below Guard. Why: Below wins whenever the full content actually fits there, or whenever below simply has more room than above even if neither fully fits. How: This checks tipHeiNum against spcBelNum first, then compares the two spaces directly.
+		if ( spaBelNum >= tipHeiNum || spaBelNum >= spaAboNum ) { // What: Prefer Below Guard. Why: Below wins whenever the full content actually fits there, or whenever below simply has more room than above even if neither fully fits. How: This checks tipHeiNum against spaBelNum first, then compares the two spaces directly.
 
 
-			topNum = tarRecObj.bottom + 16; arwClaStr = 'ob-coach--up';
+			topNum = tarRecObj.bottom + 16; arrClaStr = 'ob-coach--up';
 			maxHeiNum = vieHeiNum - topNum - marNum;
 
 
 		}
 
-		else { // What: Flip Above Branch. Why: Above only wins once it has genuinely more room than below. How: This places the tip so its own bottom edge sits gapAbvNum clear of abvAncNum, capped to never rise above the edge margin.
+		else { // What: Flip Above Branch. Why: Above only wins once it has genuinely more room than below. How: This places the tip so its own bottom edge sits gapAboNum clear of aboAncNum, capped to never rise above the edge margin.
 
 
-			topNum = Math.max( marNum, abvAncNum - gapAbvNum - tipHeiNum ); arwClaStr = 'ob-coach--down';
-			maxHeiNum = spcAbvNum; // What: Above Max Height. Why: An above-placed tip's own ceiling is the target itself, not the viewport's own bottom edge (reusing the "below" formula here let a clamped top overflow back down through the target). How: This bounds maxHeiNum by spcAbvNum instead.
+			topNum = Math.max( marNum, aboAncNum - gapAboNum - tipHeiNum ); arrClaStr = 'ob-coach--down';
+			maxHeiNum = spaAboNum; // What: Above Max Height. Why: An above-placed tip's own ceiling is the target itself, not the viewport's own bottom edge (reusing the "below" formula here let a clamped top overflow back down through the target). How: This bounds maxHeiNum by spaAboNum instead.
 
 
 		}
@@ -848,13 +848,13 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 
 	}
 
-	const ctrXNum = tarRecObj.left + tarRecObj.width / 2;                         // What: Center X Number. Why: The tip's own arrow always centers on the target's own horizontal midpoint. How: This adds half the target's own width to its left edge.
-	const lefNum  = Math.max( marNum, Math.min( ctrXNum - tipWidNum / 2, vieWidNum - tipWidNum - marNum ) ); // What: Left Number. Why: The tip box itself must clamp within the viewport even while its arrow stays centered on ctrXNum. How: This centers the tip on ctrXNum, then clamps between the edge margin and the viewport's own right-edge margin.
-	const arwXNum = Math.max( 18, Math.min( ctrXNum - lefNum, tipWidNum - 26 ) );  // What: Arrow X Number. Why: The arrow's own horizontal offset inside the tip box must stay clear of the tip's own rounded corners. How: This computes the arrow's position relative to lefNum, clamped to a safe inset range.
+	const cenXNum = tarRecObj.left + tarRecObj.width / 2;                         // What: Center X Number. Why: The tip's own arrow always centers on the target's own horizontal midpoint. How: This adds half the target's own width to its left edge.
+	const lefNum  = Math.max( marNum, Math.min( cenXNum - tipWidNum / 2, vieWidNum - tipWidNum - marNum ) ); // What: Left Number. Why: The tip box itself must clamp within the viewport even while its arrow stays centered on cenXNum. How: This centers the tip on cenXNum, then clamps between the edge margin and the viewport's own right-edge margin.
+	const arrXNum = Math.max( 18, Math.min( cenXNum - lefNum, tipWidNum - 26 ) );  // What: Arrow X Number. Why: The arrow's own horizontal offset inside the tip box must stay clear of the tip's own rounded corners. How: This computes the arrow's position relative to lefNum, clamped to a safe inset range.
 
 
 
-	return { top: topNum, left: lefNum, arrowClass: arwClaStr, arrowX: arwXNum, maxHeight: maxHeiNum }; // What: Placement Return. Why: The caller needs the tip's own final position, arrow direction/offset, and scroll cap all together. How: This builds the shape HelTipCom's own layout effect applies directly.
+	return { top: topNum, left: lefNum, arrowClass: arrClaStr, arrowX: arrXNum, maxHeight: maxHeiNum }; // What: Placement Return. Why: The caller needs the tip's own final position, arrow direction/offset, and scroll cap all together. How: This builds the shape HelTipCom's own layout effect applies directly.
 
 
 }
@@ -903,7 +903,7 @@ function HelTipCom ( { item: iteObj, targetRect: tarRecObj } ) {
 
 	const tipEleRef                     = React.useRef( null );                     // What: Tip Element Reference. Why: The layout effect below needs a handle on the real tip DOM node to measure and position it. How: This is attached to the root coach div's own ref prop below.
 	const [ tipStyObj, setTipStyObj ]   = React.useState( null );                    // What: Tip Style Object And Setter. Why: The tip's own absolute position is not known until after its first mount/measure. How: This starts null (rendered off-screen) and is written by the layout effect below.
-	const [ arwClaStr, setArwClaStr ]   = React.useState( 'ob-coach--up' );          // What: Arrow Class String And Setter. Why: The tip's own arrow direction depends on whether it landed above or below the target. How: This starts pointing up (the "below target" case) and is written by the layout effect below.
+	const [ arrClaStr, setArrClaStr ]   = React.useState( 'ob-coach--up' );          // What: Arrow Class String And Setter. Why: The tip's own arrow direction depends on whether it landed above or below the target. How: This starts pointing up (the "below target" case) and is written by the layout effect below.
 	const [ scrMaxNum, setScrMaxNum ]   = React.useState( null );                    // What: Scroll Max Number And Setter. Why: A scrollable tip needs its own inner cap recomputed alongside its position. How: This starts null (uncapped) and is written by the layout effect below.
 
 	const widStyObj = iteObj.matchTargetWidth && tarRecObj.tipWidth != null ? { width: tarRecObj.tipWidth } : null; // What: Width Style Object. Why: Only a tip whose own catalog item opts in, AND whose target actually computed a tipWidth, should override the usual fixed 280px. How: This reads tarRecObj.tipWidth only under that combined condition, otherwise falls through to no override at all.
@@ -916,10 +916,10 @@ function HelTipCom ( { item: iteObj, targetRect: tarRecObj } ) {
 		if ( !tipCurEle ) return; // What: No Element Guard. Why: The ref may not be attached yet on a very first render. How: This bails out early when there is no tip element to measure.
 
 
-		const { top: topNum, left: lefNum, arrowClass: arwClaVal, arrowX: arwXNum, maxHeight: maxHeiNum } = plaTipFun( tarRecObj, tipCurEle.offsetWidth, tipCurEle.offsetHeight, tarRecObj.pinBelowY ); // What: Placement Result. Why: This is the whole positioning answer for this render. How: This calls plaTipFun with the tip's own real measured size and tarRecObj's own pinBelowY.
+		const { top: topNum, left: lefNum, arrowClass: arrClaVal, arrowX: arrXNum, maxHeight: maxHeiNum } = plaTipFun( tarRecObj, tipCurEle.offsetWidth, tipCurEle.offsetHeight, tarRecObj.pinBelowY ); // What: Placement Result. Why: This is the whole positioning answer for this render. How: This calls plaTipFun with the tip's own real measured size and tarRecObj's own pinBelowY.
 
-		setTipStyObj( { top: topNum, left: lefNum, '--ob-ax': arwXNum + 'px' } ); // What: Tip Style Update. Why: The rendered tip needs its own top/left plus the CSS custom property its own arrow reads. How: This writes the freshly-computed position into tipStyObj.
-		setArwClaStr( arwClaVal );                                               // What: Arrow Class Update. Why: The rendered tip needs its own up/down arrow modifier class. How: This writes arwClaVal into arwClaStr.
+		setTipStyObj( { top: topNum, left: lefNum, '--ob-ax': arrXNum + 'px' } ); // What: Tip Style Update. Why: The rendered tip needs its own top/left plus the CSS custom property its own arrow reads. How: This writes the freshly-computed position into tipStyObj.
+		setArrClaStr( arrClaVal );                                               // What: Arrow Class Update. Why: The rendered tip needs its own up/down arrow modifier class. How: This writes arrClaVal into arrClaStr.
 		setScrMaxNum( iteObj.scrBoo ? maxHeiNum - 28 : null );               // What: Scroll Max Update. Why: A scrollable tip's own inner wrapper must leave room for .ob-coach's own 28px of vertical padding. How: This writes maxHeiNum minus that padding, or null when this item is not scrollable at all.
 
 
@@ -934,10 +934,10 @@ function HelTipCom ( { item: iteObj, targetRect: tarRecObj } ) {
 
 		<div
 			ref={ tipEleRef }
-			className={ ` ob-coach   help-tip   ${ arwClaStr } ` }
+			className={ ` ob-coach   help-tip   ${ arrClaStr } ` }
 			style={{ ...( tipStyObj || { top: -9999, left: -9999 } ), ...widStyObj }}
 			role='tooltip'
-		>{ /* What: Container Help Tip Div Element. Why: This is HelTipCom's own root rendered element, positioned via tipStyObj/widStyObj and pointed via arwClaStr. How: This wraps the inner scroll-capped content below. */ }
+		>{ /* What: Container Help Tip Div Element. Why: This is HelTipCom's own root rendered element, positioned via tipStyObj/widStyObj and pointed via arrClaStr. How: This wraps the inner scroll-capped content below. */ }
 
 
 			<div style={ innStyObj }>{ /* What: Inner Scroll Div Element. Why: The scroll cap must live on an inner wrapper so it never clips the outer box's own arrow. How: This applies innStyObj only while this item is scrollable and a cap has been computed. */ }

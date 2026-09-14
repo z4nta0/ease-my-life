@@ -330,9 +330,9 @@ const coaLayFun = ( recObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ) => { //
 
 	const safTopNum = safTopFun( { forCoaBoo: true } ) + 12; // What: Safe Top Number. Why: The "flip above" branch below must not let the coach rise above the coach's own exclusion floor. How: This calls safTopFun in coach mode (always 0) plus a fixed 12px margin.
 
-	const spcBelNum = vieHeiNum - ( recObj.top + recObj.height ); // What: Space Below Number. Why: The below/above choice needs to know how much room actually exists under the target. How: This subtracts the target's own bottom edge from the viewport's own height.
+	const spaBelNum = vieHeiNum - ( recObj.top + recObj.height ); // What: Space Below Number. Why: The below/above choice needs to know how much room actually exists under the target. How: This subtracts the target's own bottom edge from the viewport's own height.
 
-	if ( spcBelNum >= coaHeiNum + 16 ) return { top: recObj.top + recObj.height + 16, left: lefNum, arrowClass: 'ob-coach--up' }; // What: Below Placement Return. Why: Below is preferred whenever the coach's own height plus its 16px gap actually fits there. How: This returns a layout 16px under the target with an upward-pointing arrow.
+	if ( spaBelNum >= coaHeiNum + 16 ) return { top: recObj.top + recObj.height + 16, left: lefNum, arrowClass: 'ob-coach--up' }; // What: Below Placement Return. Why: Below is preferred whenever the coach's own height plus its 16px gap actually fits there. How: This returns a layout 16px under the target with an upward-pointing arrow.
 
 
 	return { top: Math.max( recObj.top - 16 - coaHeiNum, safTopNum ), left: lefNum, arrowClass: 'ob-coach--down' }; // What: Above Placement Return. Why: This is the fallback once below does not fit. How: This places the coach 16px above the target, clamped down to safTopNum so it never rises past the safe floor.
@@ -340,7 +340,7 @@ const coaLayFun = ( recObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ) => { //
 
 };
 
-const arwXFun = ( recObj, coaLefNum, coaWidNum ) => Math.max( 18, Math.min( recObj.left + recObj.width / 2 - coaLefNum, coaWidNum - 26 ) ); // What: Arrow X Function. Why: The coach's own arrow must stay centered on the target's own horizontal midpoint while never sliding into the coach's own rounded corners. How: This computes that midpoint relative to the coach's own left edge, clamped to a safe inset range.
+const arrXFun = ( recObj, coaLefNum, coaWidNum ) => Math.max( 18, Math.min( recObj.left + recObj.width / 2 - coaLefNum, coaWidNum - 26 ) ); // What: Arrow X Function. Why: The coach's own arrow must stay centered on the target's own horizontal midpoint while never sliding into the coach's own rounded corners. How: This computes that midpoint relative to the coach's own left edge, clamped to a safe inset range.
 
 
 
@@ -984,9 +984,9 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 				const vieHeiNum = window.innerHeight, coaHeiNum = coaHeiRef.current; // What: Viewport Height Number And Coach Height Number. Why: Both fit checks below need the current viewport height and the coach's own latest measured height. How: These are read fresh from window.innerHeight and coaHeiRef.current.
 
 				const ftsBelBoo = vieHeiNum - ( preTopNum + tarRecObj.height ) >= coaHeiNum + 16; // What: Fits Below Boolean. Why: The below placement only works if the coach's own height plus its 16px gap actually fits under the predicted landing position. How: This compares the remaining viewport space under the predicted bottom edge against coaHeiNum + 16.
-				const ftsAbvBoo = preTopNum - 16 - coaHeiNum >= safTopFun( { forCoaBoo: true } ) + 12; // What: Fits Above Boolean. Why: The above placement only works if the coach's own height plus its 16px gap actually fits above the predicted top edge, down to the coach's own safe floor. How: This compares the predicted top edge minus the coach's own space against the safe floor.
+				const ftsAboBoo = preTopNum - 16 - coaHeiNum >= safTopFun( { forCoaBoo: true } ) + 12; // What: Fits Above Boolean. Why: The above placement only works if the coach's own height plus its 16px gap actually fits above the predicted top edge, down to the coach's own safe floor. How: This compares the predicted top edge minus the coach's own space against the safe floor.
 
-				if ( !ftsBelBoo && !ftsAbvBoo ) { // What: No Fit Guard. Why: Reserve space is only ever needed once neither the below nor the above placement actually fits. How: This only enters the reserve branch when both fit checks failed.
+				if ( !ftsBelBoo && !ftsAboBoo ) { // What: No Fit Guard. Why: Reserve space is only ever needed once neither the below nor the above placement actually fits. How: This only enters the reserve branch when both fit checks failed.
 
 
 					resDecBoo = true; // What: Reserve Decided Commit. Why: This decision must only ever happen once per step. How: This flips resDecBoo to true so neither this branch nor decResFun's own later check re-decides it.
@@ -1057,7 +1057,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 				const coaStyObj = reaCoaRef.current.style; // What: Coach Style Object. Why: The layout above must actually be written onto the real DOM element. How: This reads reaCoaRef.current's own live CSSStyleDeclaration.
 
 				coaStyObj.top = layObj.top + 'px'; coaStyObj.left = layObj.left + 'px'; // What: Coach Top/Left Write. Why: The coach must move to exactly where coaLayFun decided. How: This writes both inline style properties directly.
-				coaStyObj.setProperty( '--ob-ax', arwXFun( tarRecObj, layObj.left, coaWidNum ) + 'px' ); // What: Arrow X Custom Property Write. Why: The coach's own CSS arrow reads this custom property to stay centered on the target. How: This sets --ob-ax to the freshly computed arrow offset.
+				coaStyObj.setProperty( '--ob-ax', arrXFun( tarRecObj, layObj.left, coaWidNum ) + 'px' ); // What: Arrow X Custom Property Write. Why: The coach's own CSS arrow reads this custom property to stay centered on the target. How: This sets --ob-ax to the freshly computed arrow offset.
 				reaCoaRef.current.classList.toggle( 'ob-coach--up', layObj.arrowClass === 'ob-coach--up' ); // What: Arrow Up Class Toggle. Why: The coach's own arrow direction must match whichever side coaLayFun picked. How: This toggles the ob-coach--up class based on layObj.arrowClass.
 				reaCoaRef.current.classList.toggle( 'ob-coach--down', layObj.arrowClass === 'ob-coach--down' ); // What: Arrow Down Class Toggle. Why: Same reasoning as the up-class toggle, for the opposite direction. How: This toggles the ob-coach--down class based on layObj.arrowClass.
 
@@ -1276,9 +1276,9 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 	const shoPulBoo = curSteObj.requireClick && ( !curSteObj.pulseSel || !!document.querySelector( curSteObj.pulseSel ) ); // What: Should Pulse Boolean. Why: See pulseSel's own doc comment in this file's own header above, this defaults to matching requireClick exactly when unset, so every other requireClick step pulses for its whole duration same as before. How: This is true whenever the step requires a click and either names no pulseSel at all, or its own pulseSel currently matches something.
 
-	let coaStyObj, arwClaStr, spoStyObj = null; // What: Coach Style Object, Arrow Class String, And Spotlight Style Object. Why: Exactly one of the two branches below assigns all 3. How: These start uninitialized (spoStyObj explicitly null) and are filled in by whichever branch applies.
+	let coaStyObj, arrClaStr, spoStyObj = null; // What: Coach Style Object, Arrow Class String, And Spotlight Style Object. Why: Exactly one of the two branches below assigns all 3. How: These start uninitialized (spoStyObj explicitly null) and are filled in by whichever branch applies.
 
-	if ( recObj ) { // What: Rect Present Branch. Why: A resolved rect means the target currently exists and both the spot and coach can be laid out. How: This computes spoStyObj/coaStyObj/arwClaStr from the current recObj.
+	if ( recObj ) { // What: Rect Present Branch. Why: A resolved rect means the target currently exists and both the spot and coach can be laid out. How: This computes spoStyObj/coaStyObj/arrClaStr from the current recObj.
 
 
 		const padNum = curSteObj.requireClick ? 0 : 8; // What: Pad Number. Why: See spoPadNum's own comment above inside the position-tracking effect, this is the render-time twin of that same value. How: This is 0 for a requireClick step, otherwise the normal 8px.
@@ -1290,14 +1290,14 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 		const layObj = coaLayFun( recObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ); // What: Layout Object. Why: This is the same shared math plcTarFun uses imperatively every frame, kept here too as the coach's own first-paint value each step and the eventual React-driven fallback once it catches up. How: This calls coaLayFun with the current recObj, coaHeiNum, and the current viewport/coach sizes; coachAtTop needs no special branch here at all any more, letting it fall through to the exact same below/above logic every other step already uses is what lets the coach flip to sit BELOW the target (arrow up) once there is room, instead of only ever attaching above it, since coachAtTop's own remaining job is upstream of this (skipping decResFun's own padding and giving briTarFun a precise initial scroll target).
 
 		coaStyObj = { top: layObj.top, left: layObj.left }; // What: Coach Style Object Assignment. Why: The rendered .ob-coach div below reads this directly as part of its own inline style. How: This takes layObj's own top/left.
-		arwClaStr = layObj.arrowClass; // What: Arrow Class String Assignment. Why: The rendered .ob-coach div below needs to know which arrow direction class to apply. How: This takes layObj's own arrowClass.
+		arrClaStr = layObj.arrowClass; // What: Arrow Class String Assignment. Why: The rendered .ob-coach div below needs to know which arrow direction class to apply. How: This takes layObj's own arrowClass.
 
 
 	}
 
 	else return porFun( <div className='ob-tour' aria-live='polite'><div className='ob-dim' />{ meaCoaJsx }</div> ); // What: No Rect Render Guard. Why: The target has not resolved yet (mid-navigation). How: This shows only the dim; the visible coach appears once its target resolves, so no stale/centered flash, but the hidden measurer still needs to be here so its height is ready by the time the target IS found.
 
-	const arwXNum = arwXFun( recObj, coaStyObj.left, coaWidNum ); // What: Arrow X Number. Why: The real, visible coach's own render-time arrow position needs the same math plcTarFun uses imperatively. How: This calls arwXFun with the current recObj and the just-computed coaStyObj.left.
+	const arrXNum = arrXFun( recObj, coaStyObj.left, coaWidNum ); // What: Arrow X Number. Why: The real, visible coach's own render-time arrow position needs the same math plcTarFun uses imperatively. How: This calls arrXFun with the current recObj and the just-computed coaStyObj.left.
 
 
 	return porFun(
@@ -1317,7 +1317,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 			{ !dragging && ( // What: Coach Visibility Check. Why: The coach card must hide entirely during a drag gesture, per dragging's own doc comment above.
 
 
-				<div className={ `ob-coach   ${ arwClaStr }` } ref={ reaCoaRef } style={{ ...coaStyObj, width: coaWidNum, '--ob-ax': arwXNum + 'px' }}>{ /* What: Coach Container Element. Why: This is the real, visible, interactive coach card. How: This positions itself from coaStyObj/coaWidNum/arwXNum and renders its own arrow direction class. */ }
+				<div className={ `ob-coach   ${ arrClaStr }` } ref={ reaCoaRef } style={{ ...coaStyObj, width: coaWidNum, '--ob-ax': arrXNum + 'px' }}>{ /* What: Coach Container Element. Why: This is the real, visible, interactive coach card. How: This positions itself from coaStyObj/coaWidNum/arrXNum and renders its own arrow direction class. */ }
 
 
 					{ !curSteObj.solo && <p className='ob-prog'>Step { curSteNum + 1 } of { totSteNum }</p> }{ /* What: Progress Paragraph Element. Why: Every non-solo step shows its own position in the sequence. How: This renders only when curSteObj.solo is falsy. */ }
