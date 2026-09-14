@@ -278,7 +278,15 @@ function HolEdiCom ( { state, actions } ) {
 					autoComplete='off'
 					aria-label='Name of the day off to add'
 					onChange={ ( chgEveObj ) => setDraNamStr( chgEveObj.target.value ) }
-					onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) addCusFun(); else if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } }
+					onKeyDown={ ( keyEveObj ) => {
+
+
+						if ( keyEveObj.key === 'Enter' ) addCusFun(); // What: Enter Submit Branch. Why: Enter should submit the typed name the same way clicking Add would. How: This calls addCusFun.
+
+						else if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); // What: Escape Blur Branch. Why: Escape should back out of the field without submitting, matching every other text input in this tab. How: This blurs the input via keyEveObj.currentTarget.
+
+
+					} }
 				/>{ /* What: Draft Name Input Element. Why: The user needs a text field to type a new holiday's own name into. How: This is bound to draNamStr, submits on Enter, and blurs on Escape like every other text input in this tab. */ }
 
 				<input

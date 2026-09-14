@@ -2030,7 +2030,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 		}
 
-		if ( isaEdiBoo ) onSavFun( payFrmObj ); else onCreFun( payFrmObj ); // What: Route Call. Why: The finished payload must reach whichever flow this instance is actually running. How: This calls onSavFun for an edit, otherwise onCreFun.
+		if ( isaEdiBoo ) onSavFun( payFrmObj ); // What: Edit Route Branch. Why: An in-progress edit of an existing picker must reach the save flow. How: This calls onSavFun with payFrmObj.
+
+		else onCreFun( payFrmObj ); // What: Create Route Branch. Why: A brand-new picker must reach the create flow instead. How: This calls onCreFun with payFrmObj.
 
 
 	};
@@ -2934,7 +2936,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 										const savIdeStr = newIteObj.id;
 
-										if ( actCloStr === 'save' ) setInsDftStr( savIdeStr ); else dftActObj.removeItem( savIdeStr );
+										if ( actCloStr === 'save' ) setInsDftStr( savIdeStr ); // What: Commit Save Branch. Why: A successful save should commit the newly-inserted item's own draft id so later UI can find it. How: This calls setInsDftStr with savIdeStr.
+
+										else dftActObj.removeItem( savIdeStr ); // What: Discard Draft Branch. Why: Any other closing reason (cancel, etc.) should just discard the in-progress draft item entirely. How: This calls dftActObj.removeItem with savIdeStr.
 
 										setActCloStr( false );
 
@@ -3104,7 +3108,9 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 	React.useEffect( () => {
 
 
-		if ( hlpOnBoo ) seedHelpPickers( state, actions ); else clearHelpPickers( actions ); // What: Seed-Or-Clear Call. Why: The disposable help-mode sample set must exist exactly while help mode is on, and nowhere else. How: This seeds it the instant hlpOnBoo turns true, and clears it the instant it turns false.
+		if ( hlpOnBoo ) seedHelpPickers( state, actions ); // What: Seed Branch. Why: The disposable help-mode sample set must exist the instant help mode turns on. How: This calls seedHelpPickers with the live state/actions.
+
+		else clearHelpPickers( actions ); // What: Clear Branch. Why: The disposable sample set must not linger once help mode turns back off. How: This calls clearHelpPickers with actions.
 
 
 	}, [ hlpOnBoo ] ); // What: Effect Dependency Array. Why: This only needs re-running when help mode itself is toggled. How: hlpOnBoo is the sole trigger.

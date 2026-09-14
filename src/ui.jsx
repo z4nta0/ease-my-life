@@ -1097,7 +1097,9 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 
 	const atcRegFun = () => document.body && document.body.appendChild( livRegEle ); // What: Attach Region Function. Why: The live region does nothing until it's actually in the document. How: This appends livRegEle to document.body, guarded in case body doesn't exist yet.
 
-	if ( document.body ) atcRegFun(); else document.addEventListener( 'DOMContentLoaded', atcRegFun ); // What: Attach Timing Guard. Why: This module can evaluate before document.body exists in some load orders. How: This attaches immediately when body already exists, otherwise waits for DOMContentLoaded.
+	if ( document.body ) atcRegFun(); // What: Immediate Attach Branch. Why: A load order where document.body already exists needs no further waiting. How: This calls atcRegFun immediately.
+
+	else document.addEventListener( 'DOMContentLoaded', atcRegFun ); // What: Deferred Attach Branch. Why: A load order where document.body doesn't exist yet must wait for the DOM to finish parsing. How: This defers atcRegFun until DOMContentLoaded fires.
 
 
 	let annTimNum = null; // What: Announce Timeout Number. Why: A rapid-fire announce() call must debounce against the previous call's own pending timeout. How: This holds the current setTimeout id, cleared and reassigned on every call below.

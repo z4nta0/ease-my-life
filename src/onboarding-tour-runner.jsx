@@ -793,7 +793,15 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 		}
 
-		const advSteFun = () => { if ( curSteObj.primary === 'Done' || curSteObj.solo ) finTouFun(); else navSteFun( curSteNum + 1 ); }; // What: Advance Step Function. Why: solo steps (see their own doc comment in this file's own header above) always finish on their one button regardless of its label, since a solo step is never actually followed by a real "next" step, so relying on primary === 'Done' (every other step's own signal) would send it past the end of the array on a step whose button reads something else, like "Dismiss". How: This calls finTouFun for a 'Done' or solo step, otherwise moves to the next step index.
+		const advSteFun = () => { // What: Advance Step Function. Why: solo steps (see their own doc comment in this file's own header above) always finish on their one button regardless of its label, since a solo step is never actually followed by a real "next" step, so relying on primary === 'Done' (every other step's own signal) would send it past the end of the array on a step whose button reads something else, like "Dismiss". How: This calls finTouFun for a 'Done' or solo step, otherwise moves to the next step index.
+
+
+			if ( curSteObj.primary === 'Done' || curSteObj.solo ) finTouFun(); // What: Finish Branch. Why: A 'Done'-labeled or solo step ends the tour instead of advancing further. How: This calls finTouFun with no arguments.
+
+			else navSteFun( curSteNum + 1 ); // What: Advance Branch. Why: Every other step just moves to the next index in sequence. How: This calls navSteFun with curSteNum + 1.
+
+
+		};
 
 		if ( curSteObj.requireClick && curSteObj.advanceWhen ) { // What: Advance-When Poll Guard. Why: The real click just kicked off something ASYNC whose result is the next step's own target, e.g. the Pickers tour's "Manual Generation" step, where clicking Pick One starts a multi-second spin animation and the Send to Today button (the next step's target) does not exist until it resolves. How: Advancing on the usual immediate timer would move the step index forward before that target exists, and the position-tracking effect's own "target not found yet" fallback would render a bare dim with no coach at all for however long that takes, reading as the tour blanking out mid-click; polling here instead means THIS step's own already-resolved coach and highlight just keep sitting there, unbothered, for the whole wait, and the jump to the next step only happens once its target is actually ready to be found immediately.
 

@@ -1475,7 +1475,15 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 
 	React.useEffect( () => () => { if ( isaNewBoo && !expDonRef.current ) onCanTasFun( oriTasRef.current ); }, [] ); // What: Implicit Close Effect. Why: A brand-new, not-yet-kept reminder should be discarded if its editor closes ANY other way, not just an explicit Cancel. How: This runs only on unmount, discarding the draft only when it was new and nothing explicit already handled the close.
 
-	useEscapeCancel( true, () => { if ( conOpeBoo ) setConOpeBoo( false ); else canNowFun(); } ); // What: Use Escape Cancel. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canNowFun.
+	useEscapeCancel( true, () => { // What: Use Escape Cancel. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canNowFun.
+
+
+		if ( conOpeBoo ) setConOpeBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is up, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conOpeBoo false.
+
+		else canNowFun(); // What: Cancel Edits Branch. Why: With no confirm prompt up, Escape should cancel the live edits like an explicit Cancel click. How: This calls canNowFun.
+
+
+	} );
 
 
 	if ( conOpeBoo ) { // What: Confirm Open Branch. Why: The delete confirm prompt replaces the plain footer entirely while it's up. How: This returns the confirm prompt's own markup instead of falling through to the plain footer below.

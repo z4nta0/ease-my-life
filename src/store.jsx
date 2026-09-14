@@ -1764,6 +1764,7 @@ function migrate( curStaObj ) {
 		}
 
 		if ( !Array.isArray( curStaObj.groupOrder ) ) curStaObj.groupOrder = seeGroArr.slice(); // What: Group-Order Seed. Why: State with no groupOrder at all starts from the natural first-occurrence order computed above. How: This assigns a fresh copy of seeGroArr.
+
 		else for ( const curGroStr of seeGroArr ) if ( !curStaObj.groupOrder.includes( curGroStr ) ) curStaObj.groupOrder.push( curGroStr ); // What: Group-Order Append. Why: An EXISTING groupOrder must keep its own saved order, only gaining any newly-seen group at the end. How: This appends curGroStr only when it isn't already present.
 
 		// What: Reminders-Sentinel Backfill. Why: The Reminders block participates in the same Edit Mode ordering (via the '__reminders' sentinel) and defaults to the front for anyone who hasn't reordered it. How: This unshifts '__reminders' onto groupOrder when it isn't already present.
@@ -2157,7 +2158,9 @@ function useStore( optArgObj ) {
 
 			const curCheObj = { ...( ( curStaObj.onboarding && curStaObj.onboarding.checklist ) || {} ) }; // What: Current Checklist Object. Why: The resolve/unresolve below must patch a COPY, never curStaObj.onboarding.checklist directly. How: This shallow-copies curStaObj's own onboarding.checklist, defaulting to {}.
 
-			if ( patValObj ) curCheObj[ itemId ] = patValObj; else delete curCheObj[ itemId ]; // What: Resolve-Or-Unresolve. Why: A truthy patValObj resolves the item; null/undefined uchecks it back to pending. How: This sets curCheObj[itemId] to patValObj, or deletes the key entirely, depending on which is truthy.
+			if ( patValObj ) curCheObj[ itemId ] = patValObj; // What: Resolve Branch. Why: A truthy patValObj resolves the item, giving it a real value. How: This writes patValObj onto curCheObj[itemId].
+
+			else delete curCheObj[ itemId ]; // What: Unresolve Branch. Why: A falsy patValObj (null/undefined) unchecks the item back to pending. How: This deletes curCheObj[itemId] entirely.
 
 			const nxtStaObj = { ...curStaObj, onboarding : { ...( curStaObj.onboarding || {} ), checklist : curCheObj } }; // What: Next State Object. Why: The caller needs a fresh state with the patched checklist written on. How: This spreads curStaObj with onboarding's own checklist replaced by curCheObj.
 
@@ -2181,7 +2184,9 @@ function useStore( optArgObj ) {
 
 			const appFeaObj = { ...( ( curStaObj.onboarding && curStaObj.onboarding.appFeatures ) || {} ) }; // What: App Features Object. Why: The resolve/unresolve below must patch a COPY, never curStaObj.onboarding.appFeatures directly. How: This shallow-copies curStaObj's own onboarding.appFeatures, defaulting to {}.
 
-			if ( patValObj ) appFeaObj[ itemId ] = patValObj; else delete appFeaObj[ itemId ]; // What: Resolve-Or-Unresolve. Why: A truthy patValObj resolves the item; null/undefined unchecks it back to pending. How: This sets appFeaObj[itemId] to patValObj, or deletes the key entirely, depending on which is truthy.
+			if ( patValObj ) appFeaObj[ itemId ] = patValObj; // What: Resolve Branch. Why: A truthy patValObj resolves the item, giving it a real value. How: This writes patValObj onto appFeaObj[itemId].
+
+			else delete appFeaObj[ itemId ]; // What: Unresolve Branch. Why: A falsy patValObj (null/undefined) unchecks the item back to pending. How: This deletes appFeaObj[itemId] entirely.
 
 
 			return { ...curStaObj, onboarding : { ...( curStaObj.onboarding || {} ), appFeatures : appFeaObj } }; // What: Next State Return. Why: The caller needs a fresh state with the patched appFeatures written on. How: This spreads curStaObj with onboarding's own appFeatures replaced by appFeaObj.

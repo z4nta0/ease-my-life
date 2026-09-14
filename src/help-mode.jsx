@@ -432,7 +432,9 @@ function cliChrFun ( recObj, chrIteArr, eleArr ) {
 
 			const canTopNum = Math.max( top, chrIteObj.recObj.bottom ); // What: Candidate Top Number. Why: This is the natural-direction clamp candidate for a top-anchored chrome item. How: This pushes top down to at least the chrome's own bottom edge.
 
-			if ( bottom - canTopNum > 0 ) top = canTopNum; else bottom = Math.min( bottom, chrIteObj.recObj.top ); // What: Natural Direction Guard. Why: The natural direction only wins when it leaves a real, positive-height rect; otherwise the opposite side is the only real content left. How: This keeps canTopNum when it does, otherwise clamps bottom up to the chrome's own top edge instead.
+			if ( bottom - canTopNum > 0 ) top = canTopNum; // What: Natural Direction Win. Why: The natural direction (pushing the working rect's own top down to the chrome's own bottom edge) wins whenever it still leaves a real, positive-height rect. How: This adopts canTopNum as the new top.
+
+			else bottom = Math.min( bottom, chrIteObj.recObj.top ); // What: Natural Direction Fallback. Why: Once the natural direction would collapse the rect to zero or negative height, the opposite side is the only real content left. How: This clamps bottom up to the chrome's own top edge instead.
 
 
 		}
@@ -442,7 +444,9 @@ function cliChrFun ( recObj, chrIteArr, eleArr ) {
 
 			const canBotNum = Math.min( bottom, chrIteObj.recObj.top ); // What: Candidate Bottom Number. Why: This is the natural-direction clamp candidate for a bottom-anchored chrome item. How: This pulls bottom up to at most the chrome's own top edge.
 
-			if ( canBotNum - top > 0 ) bottom = canBotNum; else top = Math.max( top, chrIteObj.recObj.bottom ); // What: Natural Direction Guard. Why: The natural direction only wins when it leaves a real, positive-height rect; otherwise the opposite side is the only real content left. How: This keeps canBotNum when it does, otherwise clamps top down to the chrome's own bottom edge instead.
+			if ( canBotNum - top > 0 ) bottom = canBotNum; // What: Natural Direction Win. Why: The natural direction (pulling the working rect's own bottom up to the chrome's own top edge) wins whenever it still leaves a real, positive-height rect. How: This adopts canBotNum as the new bottom.
+
+			else top = Math.max( top, chrIteObj.recObj.bottom ); // What: Natural Direction Fallback. Why: Once the natural direction would collapse the rect to zero or negative height, the opposite side is the only real content left. How: This clamps top down to the chrome's own bottom edge instead.
 
 
 		}
@@ -452,7 +456,9 @@ function cliChrFun ( recObj, chrIteArr, eleArr ) {
 
 			const canLefNum = Math.max( left, chrIteObj.recObj.right ); // What: Candidate Left Number. Why: This is the natural-direction clamp candidate for a left-anchored chrome item. How: This pushes left right to at least the chrome's own right edge.
 
-			if ( right - canLefNum > 0 ) left = canLefNum; else right = Math.min( right, chrIteObj.recObj.left ); // What: Natural Direction Guard. Why: The natural direction only wins when it leaves a real, positive-width rect; otherwise the opposite side is the only real content left. How: This keeps canLefNum when it does, otherwise clamps right left to the chrome's own left edge instead.
+			if ( right - canLefNum > 0 ) left = canLefNum; // What: Natural Direction Win. Why: The natural direction (pushing the working rect's own left right to the chrome's own right edge) wins whenever it still leaves a real, positive-width rect. How: This adopts canLefNum as the new left.
+
+			else right = Math.min( right, chrIteObj.recObj.left ); // What: Natural Direction Fallback. Why: Once the natural direction would collapse the rect to zero or negative width, the opposite side is the only real content left. How: This clamps right left to the chrome's own left edge instead.
 
 
 		}
@@ -462,7 +468,9 @@ function cliChrFun ( recObj, chrIteArr, eleArr ) {
 
 			const canRigNum = Math.min( right, chrIteObj.recObj.left ); // What: Candidate Right Number. Why: This is the natural-direction clamp candidate for a right-anchored chrome item. How: This pulls right left to at most the chrome's own left edge.
 
-			if ( canRigNum - left > 0 ) right = canRigNum; else left = Math.max( left, chrIteObj.recObj.right ); // What: Natural Direction Guard. Why: The natural direction only wins when it leaves a real, positive-width rect; otherwise the opposite side is the only real content left. How: This keeps canRigNum when it does, otherwise clamps left right to the chrome's own right edge instead.
+			if ( canRigNum - left > 0 ) right = canRigNum; // What: Natural Direction Win. Why: The natural direction (pulling the working rect's own right left to the chrome's own left edge) wins whenever it still leaves a real, positive-width rect. How: This adopts canRigNum as the new right.
+
+			else left = Math.max( left, chrIteObj.recObj.right ); // What: Natural Direction Fallback. Why: Once the natural direction would collapse the rect to zero or negative width, the opposite side is the only real content left. How: This clamps left right to the chrome's own right edge instead.
 
 
 		}

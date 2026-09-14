@@ -1617,9 +1617,25 @@ function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, acti
 
 	};
 
-	const canFun = () => { if ( isaNewBoo ) onDisFun(); else onCloFun(); }; // What: Cancel Function. Why: Cancelling a brand-new conditional must discard it entirely, while cancelling an existing one just closes without saving. How: This calls onDisFun when isaNewBoo, otherwise onCloFun.
+	const canFun = () => { // What: Cancel Function. Why: Cancelling a brand-new conditional must discard it entirely, while cancelling an existing one just closes without saving. How: This calls onDisFun when isaNewBoo, otherwise onCloFun.
 
-	useEscapeCancel( true, () => { if ( conDelBoo ) setConDelBoo( false ); else canFun(); } ); // What: Use Escape Cancel. Why: Escape should back out of the delete confirm if it's showing, otherwise cancel the edit itself. How: This is always active while this row is mounted.
+
+		if ( isaNewBoo ) onDisFun(); // What: Discard Branch. Why: A brand-new, not-yet-saved conditional has nothing worth keeping, so cancelling it should discard it entirely. How: This calls onDisFun.
+
+		else onCloFun(); // What: Close Branch. Why: An existing conditional's edits should simply be dropped, leaving the saved version untouched. How: This calls onCloFun.
+
+
+	};
+
+	useEscapeCancel( true, () => { // What: Use Escape Cancel. Why: Escape should back out of the delete confirm if it's showing, otherwise cancel the edit itself. How: This is always active while this row is mounted.
+
+
+		if ( conDelBoo ) setConDelBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is showing, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conDelBoo false.
+
+		else canFun(); // What: Cancel Edit Branch. Why: With no confirm prompt up, Escape should cancel the edit like canFun's own explicit Cancel button. How: This calls canFun.
+
+
+	} );
 
 
 	return (
@@ -2032,7 +2048,15 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 										type='button'
 										className='rd-row'
 										aria-expanded={ isaOpnBoo }
-										onClick={ () => { if ( isaOpnBoo ) closEdiFun(); else openEdiFun( cndCurObj ); } }
+										onClick={ () => {
+
+
+											if ( isaOpnBoo ) closEdiFun(); // What: Close Branch. Why: An already-open row's own click should collapse it back down. How: This calls closEdiFun.
+
+											else openEdiFun( cndCurObj ); // What: Open Branch. Why: A closed row's own click should expand its editor. How: This calls openEdiFun with cndCurObj.
+
+
+										} }
 									>{ /* What: Row Button Element. Why: A closed row is a plain clickable control that opens (or closes) its own editor. How: This toggles between openEdiFun and closEdiFun based on isaOpnBoo. */ }
 
 

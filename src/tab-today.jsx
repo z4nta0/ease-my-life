@@ -955,7 +955,15 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 	const canEdiFun = () => { cloWayRef.current = 'cancel'; revStaFun(); if ( !onCancel ) onClose(); }; // What: Cancel Edit Function. Why: An explicit Cancel click needs to mark itself handled, actually revert the item, and (unless the caller owns its own close affordance via onCancel) close this editor. How: This flips cloWayRef, calls revStaFun, then conditionally calls onClose.
 
-	useEscapeCancel( true, () => { if ( conDelBoo ) setConDelBoo( false ); else canEdiFun(); } ); // What: Use Escape Cancel. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canEdiFun.
+	useEscapeCancel( true, () => { // What: Use Escape Cancel. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canEdiFun.
+
+
+		if ( conDelBoo ) setConDelBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is up, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conDelBoo false.
+
+		else canEdiFun(); // What: Cancel Edits Branch. Why: With no confirm prompt up, Escape should cancel the live edits like an explicit Cancel click. How: This calls canEdiFun.
+
+
+	} );
 
 	const savCloFun = () => { cloWayRef.current = 'saved'; onClose(); }; // What: Save Close Function. Why: An explicit Save click needs to mark itself handled and keep the live edits, which are already applied directly (see the header comment above). How: This flips cloWayRef, then calls onClose.
 

@@ -1146,7 +1146,17 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 			const dayEntObj = dayAggMap.get( dayIsoFun( walDatObj ) ); // What: Day Entry Lookup. Why: The current walk cursor's own day needs to be checked against the aggregate map. How: This looks up the cursor's own ISO day in dayAggMap.
 
-			if ( dayEntObj && dayEntObj.done > 0 ) { stkCouNum++; walDatObj.setDate( walDatObj.getDate() - 1 ); } else break; // What: Qualify Or Stop Check. Why: A day with at least one done item extends the streak and continues the walk; anything else ends it. How: This increments and steps back on a qualifying day, otherwise breaks the loop.
+			if ( dayEntObj && dayEntObj.done > 0 ) { // What: Qualify Branch. Why: A day with at least one done item extends the streak and the walk keeps going. How: This increments stkCouNum and steps the cursor back one more day.
+
+
+				stkCouNum++; // What: Streak Increment. Why: A qualifying day counts toward the running streak. How: This increments stkCouNum by one.
+
+				walDatObj.setDate( walDatObj.getDate() - 1 ); // What: Cursor Step Back. Why: The walk must keep checking earlier days while the streak holds. How: This steps walDatObj back one calendar day.
+
+
+			}
+
+			else break; // What: Stop Branch. Why: A day with no done items (or missing entirely) ends the streak right there. How: This breaks out of the backward walk loop.
 
 
 		}
@@ -1343,7 +1353,15 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 			let onBoo = false; // What: On Boolean Accumulator. Why: The replay below needs a running "current state" to update as it walks forward. How: This starts false (active) and is overwritten by each event up to dayIsoStr.
 
-			for ( const eveObj of eveArr ) { if ( eveObj.date <= dayIsoStr ) onBoo = eveObj.on; else break; } // What: Replay Walk Loop. Why: Only events on or before the asked-about day should affect the answer. How: This keeps overwriting onBoo while an event's own date qualifies, stopping at the first one that doesn't.
+			for ( const eveObj of eveArr ) { // What: Replay Walk Loop. Why: Only events on or before the asked-about day should affect the answer. How: This keeps overwriting onBoo while an event's own date qualifies, stopping at the first one that doesn't.
+
+
+				if ( eveObj.date <= dayIsoStr ) onBoo = eveObj.on; // What: Qualifying Event Branch. Why: An event on or before dayIsoStr is the most recent state known as of that day. How: This overwrites onBoo with eveObj's own on value.
+
+				else break; // What: Future Event Stop. Why: Once an event is found still in the future relative to dayIsoStr, every later event (eveArr is chronological) is too. How: This breaks out of the loop immediately.
+
+
+			}
 
 			return onBoo; // What: On At Return. Why: This is the replayed inactive/active state as of dayIsoStr. How: This returns the final onBoo value after the walk above.
 

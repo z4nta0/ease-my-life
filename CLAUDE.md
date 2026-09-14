@@ -1252,6 +1252,32 @@ how short the body is.
 
   }
   ```
+- **This applies just as strictly to a compact, brace-free single-statement
+  chain** — `if`/`else if`/`else` are NEVER allowed to share a physical
+  line with each other, even when every branch is short enough to stay a
+  single statement with no `{ }` block at all. A branch that's genuinely
+  just one statement still doesn't need its own braces (per "###
+  Multi-statement one-line blocks" above), but the `if`/`else if`/`else`
+  keyword itself always starts a fresh line, with exactly 1 blank line
+  before it, the same spacing as the braced case:
+  ```
+  if ( bottom - canTopNum > 0 ) top = canTopNum;
+
+  else bottom = Math.min( bottom, chrIteObj.recObj.top );
+  ```
+  not `if ( bottom - canTopNum > 0 ) top = canTopNum; else bottom =
+  Math.min( bottom, chrIteObj.recObj.top );` all on one line. Reason: an
+  `else` sharing a line with its own `if` is easy to miss entirely on a
+  skim, especially once the line has grown long with a real condition and
+  two real statements. When a comment on the original one-line form
+  covered both branches together, split it into 2 separate comments (one
+  per branch) the normal way a multi-line split gets commented, rather
+  than leaving one branch uncommented. This also forces open anything
+  that was relying on the whole `if`/`else` being a single compact
+  statement to qualify as a one-line function/loop body (see "###
+  Functions" and this section's own "declare + guard" bullet above) —
+  once it's genuinely 2 lines, the enclosing block follows its own normal
+  multi-line padding rules like any other multi-statement body.
 
 ### try/catch statements
 Treated the same as an `if`/`else` chain in every respect: `catch` (and

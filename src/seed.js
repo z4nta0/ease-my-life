@@ -503,7 +503,15 @@ function makVacFun( vacRowArr ) {
 		let curOnBoo = false; // What: Current On Boolean And Guard. Why: The replay below needs a running "currently inactive" flag to update as it walks forward through time. How: This starts false, matching an item's own default active state.
 
 
-		for ( const curRowObj of matRowArr ) { if ( curRowObj.date <= tarIsoStr ) curOnBoo = curRowObj.on; else break; } // What: Replay Loop. Why: Only events up to and including tarIsoStr matter; anything after it hasn't happened yet from the queried day's own perspective. How: This walks matRowArr in order, updating curOnBoo from each event at or before tarIsoStr, stopping at the first event still in the future.
+		for ( const curRowObj of matRowArr ) { // What: Replay Loop. Why: Only events up to and including tarIsoStr matter; anything after it hasn't happened yet from the queried day's own perspective. How: This walks matRowArr in order, updating curOnBoo from each event at or before tarIsoStr, stopping at the first event still in the future.
+
+
+			if ( curRowObj.date <= tarIsoStr ) curOnBoo = curRowObj.on; // What: Qualifying Event Branch. Why: An event on or before tarIsoStr is the most recent state known as of that day. How: This overwrites curOnBoo with curRowObj's own on value.
+
+			else break; // What: Future Event Stop. Why: Once an event is found still in the future relative to tarIsoStr, every later event (matRowArr is chronological) is too. How: This breaks out of the loop immediately.
+
+
+		}
 
 
 
