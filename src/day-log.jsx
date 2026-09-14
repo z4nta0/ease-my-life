@@ -1,7 +1,6 @@
 
 
 
-
 // #region Imports
 
 import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.Fragment) throughout, instead of importing individual named hooks.
@@ -10,8 +9,8 @@ import React from 'react'; // What: React. Why: This is the UI library every com
 import { CAD_NAM_OBJ  } from './cadence.js';      // What: Cadence. Why: An ease-mode item's subline needs CAD_NAM_OBJ.uniWorFun to phrase its range in the picker's own cadence unit (days/weeks/months/years) instead of always "days". How: This is called once inside iteSubFun below.
 import { Collapse     } from './ui.jsx';          // What: Collapse. Why: PicBloCom's own item table only needs to exist in the DOM while its block is actually expanded. How: This wraps that table, driven by PicBloCom's own open/closed state.
 import { CON_NAM_OBJ  } from './conditionals.js'; // What: Conditionals. Why: ConSecCom needs CON_NAM_OBJ.modValFun to know whether a given conditional's own mode even has a value to show. How: This is called once per conditional row inside ConSecCom below.
-import { InfoTip      } from './ui.jsx';          // What: Info Tip. Why: Every truncatable name/label in this file (item, conditional, reminder) needs the shared reveal-on-truncation tooltip. How: This wraps those names/labels throughout PicBloCom, ConSecCom and RemindersLog.
-import { TASKS        } from './tasks.js';        // What: Tasks. Why: RemindersLog needs the reminders engine's own scheduling helpers (anchorDate, visibleToday, isDoneToday, nextEligible, summary). How: These are called throughout RemindersLog below.
+import { InfoTip      } from './ui.jsx';          // What: Info Tip. Why: Every truncatable name/label in this file (item, conditional, reminder) needs the shared reveal-on-truncation tooltip. How: This wraps those names/labels throughout PicBloCom, ConSecCom and RemLogCom.
+import { TASKS        } from './tasks.js';        // What: Tasks. Why: RemLogCom needs the reminders engine's own scheduling helpers (anchorDate, visibleToday, isDoneToday, nextEligible, summary). How: These are called throughout RemLogCom below.
 
 // #endregion Imports
 
@@ -41,8 +40,7 @@ import { TASKS        } from './tasks.js';        // What: Tasks. Why: Reminders
 
 
 
-// What: Iso Day Function. Why: Every log lookup below needs a plain local-timezone "YYYY-MM-DD" key to match against state.pickLog's own date field. How: This shifts a copy of inpDatObj by its own timezone offset before slicing the ISO string down to just the date.
-const isoDayFun = ( inpDatObj = new Date() ) => {
+const isoDayFun = ( inpDatObj = new Date() ) => { // What: Iso Day Function. Why: Every log lookup below needs a plain local-timezone "YYYY-MM-DD" key to match against state.pickLog's own date field. How: This shifts a copy of inpDatObj by its own timezone offset before slicing the ISO string down to just the date.
 
 
 	const adjDatObj = new Date( inpDatObj ); // What: Adjusted Date Object. Why: The timezone shift below must never mutate the caller's own inpDatObj. How: This copies inpDatObj into a fresh, freely-mutable Date.
@@ -62,13 +60,12 @@ const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: Every ease-mode r
 
 
 
-// What: Has Value Function. Why: PicBloCom and ValCelCom both need to know whether a picker's own mode tracks a numeric value at all, since random/weighted modes have nothing to show in the At-generation/After columns. How: This is called with a picker's own mode string.
-const hasValFun = ( modStr ) => {
+const hasValFun = ( picModStr ) => { // What: Has Value Function. Why: PicBloCom and ValCelCom both need to know whether a picker's own mode tracks a numeric value at all, since random/weighted modes have nothing to show in the At-generation/After columns. How: This is called with a picker's own mode string.
 
 
-	const easUpBoo  = modStr === 'ease-up';   // What: Ease Up Boolean. Why: This mode is one of the 3 that track a numeric value. How: This checks modStr against the literal 'ease-up' mode key.
-	const easDowBoo = modStr === 'ease-down'; // What: Ease Down Boolean. Why: This mode is one of the 3 that track a numeric value. How: This checks modStr against the literal 'ease-down' mode key.
-	const dynModBoo = modStr === 'dynamic';   // What: Dynamic Mode Boolean. Why: This mode is one of the 3 that track a numeric value. How: This checks modStr against the literal 'dynamic' mode key.
+	const easUpBoo  = picModStr === 'ease-up';   // What: Ease Up Boolean. Why: This mode is one of the 3 that track a numeric value. How: This checks picModStr against the literal 'ease-up' mode key.
+	const easDowBoo = picModStr === 'ease-down'; // What: Ease Down Boolean. Why: This mode is one of the 3 that track a numeric value. How: This checks picModStr against the literal 'ease-down' mode key.
+	const dynModBoo = picModStr === 'dynamic';   // What: Dynamic Mode Boolean. Why: This mode is one of the 3 that track a numeric value. How: This checks picModStr against the literal 'dynamic' mode key.
 
 	const hasValBoo = easUpBoo || easDowBoo || dynModBoo; // What: Has Value Boolean. Why: The caller only needs one combined answer, not the 3 individual mode checks. How: This is true whenever any one of the 3 value-tracking modes matched.
 
@@ -79,6 +76,8 @@ const hasValFun = ( modStr ) => {
 };
 
 
+
+// #region IcoSetCom
 
 /**
  * IcoSetCom = Icon Set Component
@@ -91,7 +90,7 @@ const hasValFun = ( modStr ) => {
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.icoKeyStr  - Icon Key String: Which shape to render; looked up
- *                           in this component's own pahObj.
+ *                           in this component's own isePatObj.
  * @param props.strWidNum  - String Width Number: The SVG stroke width,
  *                           defaulting to 2.
  *
@@ -104,29 +103,27 @@ const hasValFun = ( modStr ) => {
  *
 */
 
-// #region IcoSetCom
-
 function IcoSetCom ( { icoKeyStr, strWidNum = 2 } ) {
 
 
-	const pahObj = { // What: Path Object. Why: This is the lookup table mapping every icon key this file uses to its own inline SVG shape markup. How: This is indexed below by icoKeyStr to pick which shape the rendered svg actually draws.
+	const isePatObj = { // What: Icon-Shape-Element Path Object. Why: This is the lookup table mapping every icon key this file uses to its own inline SVG shape markup. How: This is indexed below by icoKeyStr to pick which shape the rendered svg actually draws.
 
 
-		log     : <><path d='M3 5h18M3 12h18M3 19h18' /></>, // What: Log Icon. Why: This marks the DayLogChip toggle and every panel's own kicker. How: This draws 3 stacked horizontal lines.
-		shuffle : <><path d='M16 3h5v5' /><path d='M4 20 21 3' /><path d='M21 16v5h-5' /><path d='m15 15 6 6' /><path d='m4 4 5 5' /></>, // What: Shuffle Icon. Why: This marks an auto-picked status. How: This draws a pair of crossing shuffle-style arrows.
-		push    : <><path d='M12 19V5M5 12l7-7 7 7' /></>, // What: Push Icon. Why: This marks a manually pushed/rerolled status. How: This draws an upward arrow.
-		roll    : <><path d='M3 2v6h6' /><path d='M3 8a9 9 0 1 0 3-5' /></>, // What: Roll Icon. Why: This marks a rolled-off status. How: This draws a counter-clockwise arrow.
-		x       : <><path d='M18 6 6 18M6 6l12 12' /></>, // What: X Icon. Why: This marks a skipped status, and a close button. How: This draws a plain X shape.
-		check   : <><path d='M20 6 9 17l-5-5' /></>, // What: Check Icon. Why: This marks a completed status. How: This draws a single checkmark stroke.
-		moon    : <><path d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z' /></>, // What: Moon Icon. Why: This marks a picker resting today under a triggered conditional. How: This draws a crescent moon shape.
-		branch  : <><path d='M4 4v10a4 4 0 0 0 4 4h12' /><path d='m16 14 4 4-4 4' /></>, // What: Branch Icon. Why: This marks the strip listing which pickers a conditional affects. How: This draws a branching arrow shape.
-		clock   : <><path d='M12 8v4l3 3' /><circle cx='12' cy='12' r='9' /></>, // What: Clock Icon. Why: This marks RemindersLog's own kicker. How: This draws a plain clock face.
-		chevron : <><path d='m6 9 6 6 6-6' /></> // What: Chevron Icon. Why: This marks PicBloCom's own expand/collapse toggle. How: This draws a plain downward chevron.
+		logEle : <><path d='M3 5h18M3 12h18M3 19h18' /></>,                                                                              // What: Log Element. Why: This marks the DayLogChip toggle and every panel's own kicker. How: This draws 3 stacked horizontal lines.
+		shuEle : <><path d='M16 3h5v5' /><path d='M4 20 21 3' /><path d='M21 16v5h-5' /><path d='m15 15 6 6' /><path d='m4 4 5 5' /></>, // What: Shuffle Element. Why: This marks an auto-picked status. How: This draws a pair of crossing shuffle-style arrows.
+		pusEle : <><path d='M12 19V5M5 12l7-7 7 7' /></>,                                                                                // What: Push Element. Why: This marks a manually pushed/rerolled status. How: This draws an upward arrow.
+		rolEle : <><path d='M3 2v6h6' /><path d='M3 8a9 9 0 1 0 3-5' /></>,                                                              // What: Roll Element. Why: This marks a rolled-off status. How: This draws a counter-clockwise arrow.
+		xEle   : <><path d='M18 6 6 18M6 6l12 12' /></>,                                                                                 // What: X Element. Why: This marks a skipped status, and a close button. How: This draws a plain X shape.
+		cheEle : <><path d='M20 6 9 17l-5-5' /></>,                                                                                      // What: Check Element. Why: This marks a completed status. How: This draws a single checkmark stroke.
+		mooEle : <><path d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z' /></>,                                                                   // What: Moon Element. Why: This marks a picker resting today under a triggered conditional. How: This draws a crescent moon shape.
+		braEle : <><path d='M4 4v10a4 4 0 0 0 4 4h12' /><path d='m16 14 4 4-4 4' /></>,                                                  // What: Branch Element. Why: This marks the strip listing which pickers a conditional affects. How: This draws a branching arrow shape.
+		clcEle : <><path d='M12 8v4l3 3' /><circle cx='12' cy='12' r='9' /></>,                                                          // What: Clock Element. Why: This marks RemLogCom's own kicker. How: This draws a plain clock face, keyed clcEle (escalated past the usual clo truncation, since clo already heavily means Close throughout this codebase, per the Naming-conflict resolution rule).
+		chvEle : <><path d='m6 9 6 6 6-6' /></>                                                                                          // What: Chevron Element. Why: This marks PicBloCom's own expand/collapse toggle. How: This draws a plain downward chevron, keyed chvEle (escalated past the usual che truncation, since that collides with cheEle just above, per the Naming-conflict resolution rule).
 
 
 	};
 
-	const icoShaEle = pahObj[ icoKeyStr ]; // What: Icon Shape Element. Why: This is the single shape the svg below actually renders. How: This reads pahObj's own entry for icoKeyStr.
+	const icoShaEle = isePatObj[ icoKeyStr ]; // What: Icon Shape Element. Why: This is the single shape the svg below actually renders. How: This reads isePatObj's own entry for icoKeyStr.
 
 
 
@@ -159,6 +156,8 @@ function IcoSetCom ( { icoKeyStr, strWidNum = 2 } ) {
 
 
 
+// #region DayLogChip
+
 /**
  * DayLogChip = Day Log Chip
  *
@@ -183,8 +182,6 @@ function IcoSetCom ( { icoKeyStr, strWidNum = 2 } ) {
  *
 */
 
-// #region DayLogChip
-
 function DayLogChip ( { open, onClick } ) {
 
 
@@ -200,7 +197,7 @@ function DayLogChip ( { open, onClick } ) {
 		>{ /* What: Day Log Toggle Button Element. Why: This is DayLogChip's own single rendered element. How: This shows open as both its "is-on" class and its aria-pressed state, stops the click from also reaching the group header's own onClick, then calls onClick. */ }
 
 
-			<IcoSetCom icoKeyStr='log' />{ /* What: Icon Shape Component. Why: The chip needs a small recognizable log glyph next to its own label. How: This renders IcoSetCom's own "log" shape. */ }
+			<IcoSetCom icoKeyStr='logEle' />{ /* What: Icon Shape Component. Why: The chip needs a small recognizable log glyph next to its own label. How: This renders IcoSetCom's own "log" shape. */ }
 			{ ' Log' }{ /* What: Chip Label Text. Why: The chip needs a plain visible label alongside its own icon. How: This renders the literal text " Log". */ }
 
 
@@ -216,8 +213,10 @@ function DayLogChip ( { open, onClick } ) {
 
 
 
+// #region dayFlaFun
+
 /**
- * dayFlgFun = Day Flags Function
+ * dayFlaFun = Day Flags Function
  *
  * @summary
  * Builds a per-item status-flags map for one picker on one day, purely
@@ -237,76 +236,83 @@ function DayLogChip ( { open, onClick } ) {
  *
  * @returns A Map from itemId to its own { autBoo, pusBoo, rolBoo,
  * skiBoo, comBoo, anyBoo } flags.
- * @see {@link iteFlgMap}
+ * @see {@link iteFlaMap}
  *
  * @example
  * ```ts
- * dayFlgFun(picLogArr, picIdeStr, dayKeyStr) // => iteFlgMap
+ * dayFlaFun(picLogArr, picIdeStr, dayKeyStr) // => iteFlaMap
  * ```
  *
 */
 
-// #region dayFlgFun
-
-function dayFlgFun ( picLogArr, picIdeStr, dayKeyStr ) {
+function dayFlaFun ( picLogArr, picIdeStr, dayKeyStr ) {
 
 
-	const iteFlgMap = new Map(); // What: Item Flags Map. Why: Every matching row below folds into this same per-item accumulator. How: This starts empty and is populated by the loop below, keyed by itemId.
+	const iteFlaMap = new Map(); // What: Item Flags Map. Why: Every matching row below folds into this same per-item accumulator. How: This starts empty and is populated by the loop below, keyed by itemId.
 
-	for ( const logRowObj of ( picLogArr || [] ) ) { // What: Pick Log Row Loop. Why: Every row in picLogArr is a candidate contribution to iteFlgMap. How: This walks picLogArr (or an empty array when it's missing), skipping any row that isn't for this exact picker/day.
+
+	for ( const logRowObj of ( picLogArr || [] ) ) { // What: Pick Log Row Loop. Why: Every row in picLogArr is a candidate contribution to iteFlaMap. How: This walks picLogArr (or an empty array when it's missing), skipping any row that isn't for this exact picker/day.
 
 
 		if ( logRowObj.date !== dayKeyStr || logRowObj.pickerId !== picIdeStr ) continue; // What: Wrong Picker Or Day Guard. Why: Only a row for this exact picker on this exact day belongs in the result at all. How: This skips the rest of this iteration otherwise.
 
-		let iteFlgObj = iteFlgMap.get( logRowObj.itemId ); // What: Item Flags Object. Why: Every row for the same item must fold into the same flags object, not a fresh one each time. How: This reads whatever iteFlgMap already has for logRowObj's own itemId, if anything.
-
-		if ( !iteFlgObj ) { // What: First Row Guard. Why: The very first matching row for an item must create its own fresh flags object. How: This builds and registers a new, all-false iteFlgObj only when none exists yet.
 
 
-			iteFlgObj = { autBoo : false, pusBoo : false, rolBoo : false, skiBoo : false, comBoo : false, anyBoo : false }; // What: Fresh Item Flags Object. Why: Every flag starts false until a real row below sets it. How: This is the initial shape stored into iteFlgMap for a newly-seen item.
-			iteFlgMap.set( logRowObj.itemId, iteFlgObj ); // What: Item Flags Register Call. Why: Every later row for this same item must find and reuse this exact object. How: This stores iteFlgObj under logRowObj's own itemId.
+		let iteFlaObj = iteFlaMap.get( logRowObj.itemId ); // What: Item Flags Object. Why: Every row for the same item must fold into the same flags object, not a fresh one each time. How: This reads whatever iteFlaMap already has for logRowObj's own itemId, if anything.
+
+
+		if ( !iteFlaObj ) { // What: First Row Guard. Why: The very first matching row for an item must create its own fresh flags object. How: This builds and registers a new, all-false iteFlaObj only when none exists yet.
+
+
+			iteFlaObj = { autBoo : false, pusBoo : false, rolBoo : false, skiBoo : false, comBoo : false, anyBoo : false }; // What: Fresh Item Flags Object. Why: Every flag starts false until a real row below sets it. How: This is the initial shape stored into iteFlaMap for a newly-seen item.
+
+			iteFlaMap.set( logRowObj.itemId, iteFlaObj ); // What: Item Flags Register Call. Why: Every later row for this same item must find and reuse this exact object. How: This stores iteFlaObj under logRowObj's own itemId.
 
 
 		}
 
-		iteFlgObj.anyBoo = true; // What: Any Flag Set. Why: The caller needs to distinguish "genuinely no rows" from "rows exist but none of the specific flags below fired". How: This is set true the moment any row at all matched.
 
-		if ( logRowObj.source === 'auto' ) iteFlgObj.autBoo = true; // What: Auto Flag Set. Why: An auto-sourced row means the generator picked this item on its own. How: This flips autBoo true when logRowObj's own source is 'auto'.
+		iteFlaObj.anyBoo = true; // What: Any Flag Set. Why: The caller needs to distinguish "genuinely no rows" from "rows exist but none of the specific flags below fired". How: This is set true the moment any row at all matched.
 
-		if ( logRowObj.source === 'manual' || logRowObj.source === 'reroll' ) iteFlgObj.pusBoo = true; // What: Pushed Flag Set. Why: A manual or reroll row means a person pushed/rerolled this item onto Today. How: This flips pusBoo true when logRowObj's own source is either 'manual' or 'reroll'.
 
-		if ( logRowObj.outcome === 'rejected' ) iteFlgObj.rolBoo = true; // What: Rolled Off Flag Set. Why: A rejected outcome means this item's own value rolled off without being completed. How: This flips rolBoo true when logRowObj's own outcome is 'rejected'.
+		if ( logRowObj.source === 'auto' ) iteFlaObj.autBoo = true; // What: Auto Flag Set. Why: An auto-sourced row means the generator picked this item on its own. How: This flips autBoo true when logRowObj's own source is 'auto'.
 
-		else if ( logRowObj.outcome === 'skipped' ) iteFlgObj.skiBoo = true; // What: Skipped Flag Set. Why: A skipped outcome is a distinct status from a rejected one. How: This flips skiBoo true when logRowObj's own outcome is 'skipped'.
+		if ( logRowObj.source === 'manual' || logRowObj.source === 'reroll' ) iteFlaObj.pusBoo = true; // What: Pushed Flag Set. Why: A manual or reroll row means a person pushed/rerolled this item onto Today. How: This flips pusBoo true when logRowObj's own source is either 'manual' or 'reroll'.
 
-		else if ( logRowObj.done ) iteFlgObj.comBoo = true; // What: Completed Flag Set. Why: A done row (neither rejected nor skipped) means this item was actually completed. How: This flips comBoo true when logRowObj's own done field is truthy.
+		if ( logRowObj.outcome === 'rejected' ) iteFlaObj.rolBoo = true; // What: Rolled Off Flag Set. Why: A rejected outcome means this item's own value rolled off without being completed. How: This flips rolBoo true when logRowObj's own outcome is 'rejected'.
+
+		else if ( logRowObj.outcome === 'skipped' ) iteFlaObj.skiBoo = true; // What: Skipped Flag Set. Why: A skipped outcome is a distinct status from a rejected one. How: This flips skiBoo true when logRowObj's own outcome is 'skipped'.
+
+		else if ( logRowObj.done ) iteFlaObj.comBoo = true; // What: Completed Flag Set. Why: A done row (neither rejected nor skipped) means this item was actually completed. How: This flips comBoo true when logRowObj's own done field is truthy.
 
 
 	}
 
 
 
-	return iteFlgMap; // What: Item Flags Map Return. Why: The caller needs the fully-populated map back. How: This returns iteFlgMap directly.
+	return iteFlaMap; // What: Item Flags Map Return. Why: The caller needs the fully-populated map back. How: This returns iteFlaMap directly.
 
 
 }
 
-// #endregion dayFlgFun
+// #endregion dayFlaFun
 
 
+
+// #region StaChiCom
 
 /**
  * StaChiCom = Status Chip Component
  *
  * @summary
  * Renders the small run of colored status icons for one item, derived
- * from {@link dayFlgFun}'s own per-item flags. Shows an em-dash
+ * from {@link dayFlaFun}'s own per-item flags. Shows an em-dash
  * placeholder when there is nothing to show at all.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.iteFlgObj - Item Flag Object: This item's own flags object from
- *                          {@link dayFlgFun}, or undefined when the item has
+ * @param props.iteFlaObj - Item Flag Object: This item's own flags object from
+ *                          {@link dayFlaFun}, or undefined when the item has
  *                          no pick-log rows today at all.
  *
  * @returns This item's own run of status icon chips, or a placeholder
@@ -314,42 +320,43 @@ function dayFlgFun ( picLogArr, picIdeStr, dayKeyStr ) {
  *
  * @example
  * ```tsx
- * StaChiCom({ iteFlgObj }) // => <StaChiCom />
+ * StaChiCom({ iteFlaObj }) // => <StaChiCom />
  * ```
  *
 */
 
-// #region StaChiCom
-
-function StaChiCom ( { iteFlgObj } ) {
+function StaChiCom ( { iteFlaObj } ) {
 
 
-	if ( !iteFlgObj || !iteFlgObj.anyBoo ) return <span className='dl-none dl-mk-status'>—</span>; // What: No Rows Guard. Why: An item with no pick-log rows today has nothing to show but a placeholder. How: This returns the em-dash placeholder span (a display glyph, not prose) before building any chips below.
+	if ( !iteFlaObj || !iteFlaObj.anyBoo ) return <span className='dl-none dl-mk-status'>—</span>; // What: No Rows Guard. Why: An item with no pick-log rows today has nothing to show but a placeholder. How: This returns the em-dash placeholder span (a display glyph, not prose) before building any chips below.
 
-	const chpArr = []; // What: Chip Array. Why: The checks below each conditionally contribute one chip tuple to this same array. How: This starts empty and is filled in place by the pushes below.
 
-	if ( iteFlgObj.autBoo ) chpArr.push( [ 'auto', 'shuffle', 'Auto-picked', 2 ] );      // What: Auto Chip Push. Why: An auto-picked item needs its own chip. How: This appends a [key, icon, title, width] tuple when autBoo is true.
-	if ( iteFlgObj.pusBoo ) chpArr.push( [ 'push', 'push', 'Pushed', 2.4 ] );            // What: Pushed Chip Push. Why: A pushed item needs its own chip. How: This appends a [key, icon, title, width] tuple when pusBoo is true.
-	if ( iteFlgObj.rolBoo ) chpArr.push( [ 'roll', 'roll', 'Rolled off', 2.2 ] );         // What: Rolled Off Chip Push. Why: A rolled-off item needs its own chip. How: This appends a [key, icon, title, width] tuple when rolBoo is true.
-	if ( iteFlgObj.skiBoo ) chpArr.push( [ 'skip', 'x', 'Skipped', 2.6 ] );               // What: Skipped Chip Push. Why: A skipped item needs its own chip. How: This appends a [key, icon, title, width] tuple when skiBoo is true.
-	if ( iteFlgObj.comBoo ) chpArr.push( [ 'done', 'check', 'Completed', 3 ] );           // What: Completed Chip Push. Why: A completed item needs its own chip. How: This appends a [key, icon, title, width] tuple when comBoo is true.
+
+	const chiTupArr = []; // What: Chip Tuple Array. Why: The checks below each conditionally contribute one chip tuple to this same array. How: This starts empty and is filled in place by the pushes below.
+
+
+	if ( iteFlaObj.autBoo ) chiTupArr.push( [ 'auto', 'shuEle', 'Auto-picked', 2 ] );  // What: Auto Chip Push. Why: An auto-picked item needs its own chip. How: This appends a [key, icon, title, width] tuple when autBoo is true.
+	if ( iteFlaObj.pusBoo ) chiTupArr.push( [ 'push', 'pusEle', 'Pushed', 2.4 ] );     // What: Pushed Chip Push. Why: A pushed item needs its own chip. How: This appends a [key, icon, title, width] tuple when pusBoo is true.
+	if ( iteFlaObj.rolBoo ) chiTupArr.push( [ 'roll', 'rolEle', 'Rolled off', 2.2 ] ); // What: Rolled Off Chip Push. Why: A rolled-off item needs its own chip. How: This appends a [key, icon, title, width] tuple when rolBoo is true.
+	if ( iteFlaObj.skiBoo ) chiTupArr.push( [ 'skip', 'xEle', 'Skipped', 2.6 ] );      // What: Skipped Chip Push. Why: A skipped item needs its own chip. How: This appends a [key, icon, title, width] tuple when skiBoo is true.
+	if ( iteFlaObj.comBoo ) chiTupArr.push( [ 'done', 'cheEle', 'Completed', 3 ] );    // What: Completed Chip Push. Why: A completed item needs its own chip. How: This appends a [key, icon, title, width] tuple when comBoo is true.
 
 
 
 	return (
 
 
-		<span className='dl-status dl-mk-status'>{ /* What: Status Chip Row Span Element. Why: This is StaChiCom's own root element, holding every chip this item earned today. How: This maps chpArr into one small icon span per chip below. */ }
+		<span className='dl-status dl-mk-status'>{ /* What: Status Chip Row Span Element. Why: This is StaChiCom's own root element, holding every chip this item earned today. How: This maps chiTupArr into one small icon span per chip below. */ }
 
 
-			{ chpArr.map( ( [ chpKeyStr, chpIcoStr, chpTitStr, chpWidNum ] ) => ( // What: Chip Map Callback. Why: One small span is needed per earned chip. How: This destructures each chpArr tuple and renders it as a titled icon span, keyed by chpKeyStr.
+			{ chiTupArr.map( ( [ chiKeyStr, chiIcoStr, chiTitStr, chiWidNum ] ) => ( // What: Chip Map Callback. Why: One small span is needed per earned chip. How: This destructures each chiTupArr tuple and renders it as a titled icon span, keyed by chiKeyStr.
 
 
 				<span
-					key={ chpKeyStr }
-					className={ `dl-ico dl-c-${ chpKeyStr }` }
-					title={ chpTitStr }
-				><IcoSetCom icoKeyStr={ chpIcoStr } strWidNum={ chpWidNum } /></span> // What: Status Chip Span Element. Why: Each earned status gets its own small colored icon. How: This renders IcoSetCom for chpIcoStr/chpWidNum, tinted by its own dl-c-{chpKeyStr} modifier class.
+					key={ chiKeyStr }
+					className={ `dl-ico dl-c-${ chiKeyStr }` }
+					title={ chiTitStr }
+				><IcoSetCom icoKeyStr={ chiIcoStr } strWidNum={ chiWidNum } /></span> // What: Status Chip Span Element. Why: Each earned status gets its own small colored icon. How: This renders IcoSetCom for chiIcoStr/chiWidNum, tinted by its own dl-c-{chiKeyStr} modifier class.
 
 
 			) ) }
@@ -366,6 +373,8 @@ function StaChiCom ( { iteFlgObj } ) {
 // #endregion StaChiCom
 
 
+
+// #region iteSubFun
 
 /**
  * iteSubFun = Item Subline Function
@@ -400,27 +409,27 @@ function StaChiCom ( { iteFlgObj } ) {
  *
 */
 
-// #region iteSubFun
-
 function iteSubFun ( picRecObj, iteRecObj, booValNum ) {
 
 
-	const modStr = picRecObj.mode; // What: Mode String. Why: Every branch below decides its own subline shape from this same picker mode. How: This reads picRecObj's own mode once for reuse throughout.
-
-	if ( modStr === 'dynamic' ) { // What: Dynamic Mode Branch. Why: Dynamic is the only mode that also shows a boost alongside its own weight. How: See the design-rationale block above for the full boost/weight relationship.
+	const picModStr = picRecObj.mode; // What: Picker Mode String. Why: Every branch below decides its own subline shape from this same picker mode. How: This reads picRecObj's own mode once for reuse throughout.
 
 
-		const booRndNum = booValNum == null ? null : Math.round( booValNum ); // What: Boost Rounded Number. Why: A raw drift value can carry fractional cycles; only the rounded whole number is ever shown. How: This rounds booValNum, staying null when there is no snapshot at all.
+	if ( picModStr === 'dynamic' ) { // What: Dynamic Mode Branch. Why: Dynamic is the only mode that also shows a boost alongside its own weight. How: See the design-rationale block above for the full boost/weight relationship.
+
+
+		const booRouNum = booValNum == null ? null : Math.round( booValNum ); // What: Boost Rounded Number. Why: A raw drift value can carry fractional cycles; only the rounded whole number is ever shown. How: This rounds booValNum, staying null when there is no snapshot at all.
+
 
 
 		return (
 
 
-			<React.Fragment>{ /* What: Dynamic Subline Fragment Element. Why: This item's own subline needs both a plain weight string and an optional boost span, without an extra wrapping DOM element. How: This renders the weight text, then booRndNum's own boost span when it isn't null. */ }
+			<React.Fragment>{ /* What: Dynamic Subline Fragment Element. Why: This item's own subline needs both a plain weight string and an optional boost span, without an extra wrapping DOM element. How: This renders the weight text, then booRouNum's own boost span when it isn't null. */ }
 
 
 				{ `weight ${ iteRecObj.weight ?? 1 }` }{ /* What: Weight Text. Why: Every dynamic item still shows its own base weight first. How: This renders iteRecObj's own weight, defaulting to 1 for an older item with none set. */ }
-				{ booRndNum == null ? null : <span className={ `dl-boost ${ booRndNum ? '' : 'is-zero' }` }> (+{ booRndNum })</span> }{ /* What: Boost Span Visibility Check. Why: A boost is only ever known at generation time, not for a manually-added item with no snapshot. How: This renders the "(+N)" boost span, muted via its own is-zero class when booRndNum is exactly 0. */ }
+				{ booRouNum == null ? null : <span className={ `dl-boost ${ booRouNum ? '' : 'is-zero' }` }> (+{ booRouNum })</span> }{ /* What: Boost Span Visibility Check. Why: A boost is only ever known at generation time, not for a manually-added item with no snapshot. How: This renders the "(+N)" boost span, muted via its own is-zero class when booRouNum is exactly 0. */ }
 
 
 			</React.Fragment>
@@ -431,23 +440,26 @@ function iteSubFun ( picRecObj, iteRecObj, booValNum ) {
 
 	}
 
-	if ( modStr === 'weighted' ) return `weight ${ iteRecObj.weight ?? 1 }`; // What: Weighted Mode Return. Why: A weighted item's subline is just its own plain weight. How: This reads iteRecObj's own weight, defaulting to 1 for an older item with none set.
 
-	if ( modStr === 'ease-up' || modStr === 'ease-down' ) { // What: Ease Mode Branch. Why: Both ease modes phrase their own subline as a soonest-latest day range instead of a weight. How: This computes that range from iteRecObj's own (or picRecObj's own) ease-min/ease-max.
-
-
-		const easMinNum = iteRecObj.easeMin ?? picRecObj.easeMin ?? 1; // What: Ease Min Number. Why: The range below needs this item's own effective ease-min, falling back to its picker's own. How: This reads iteRecObj's own easeMin, then picRecObj's own, then 1.
-		const easMaxNum = iteRecObj.easeMax ?? picRecObj.easeMax ?? 1; // What: Ease Max Number. Why: The range below needs this item's own effective ease-max, falling back to its picker's own. How: This reads iteRecObj's own easeMax, then picRecObj's own, then 1.
-		const sooDayNum = Math.max( 1, Math.round( THR_VAL_NUM / easMaxNum ) );          // What: Soonest Day Number. Why: This is the earliest day count the range can show. How: This divides THR_VAL_NUM by easMaxNum, floored at 1 whole day.
-		const latDayNum = Math.max( sooDayNum, Math.round( THR_VAL_NUM / easMinNum ) );  // What: Latest Day Number. Why: This is the latest day count the range can show, never earlier than sooDayNum. How: This divides THR_VAL_NUM by easMinNum, floored at sooDayNum itself.
-		const untWrdStr = ( picRecObj.cadence && picRecObj.cadence !== 'daily' ) ? CAD_NAM_OBJ.uniWorFun( picRecObj.cadence, latDayNum ) : 'days'; // What: Unit Word String. Why: A non-daily cadence needs its own scaled unit word (e.g. "weeks") instead of always "days". How: This calls CAD_NAM_OBJ.uniWorFun for a real non-daily cadence, otherwise falls back to the literal word "days".
+	if ( picModStr === 'weighted' ) return `weight ${ iteRecObj.weight ?? 1 }`; // What: Weighted Mode Return. Why: A weighted item's subline is just its own plain weight. How: This reads iteRecObj's own weight, defaulting to 1 for an older item with none set.
 
 
+	if ( picModStr === 'ease-up' || picModStr === 'ease-down' ) { // What: Ease Mode Branch. Why: Both ease modes phrase their own subline as a soonest-latest day range instead of a weight. How: This computes that range from iteRecObj's own (or picRecObj's own) ease-min/ease-max.
 
-		return `range ${ sooDayNum }–${ latDayNum } ${ untWrdStr }`; // What: Ease Range Return. Why: The caller needs the final range string back. How: This joins sooDayNum, latDayNum and untWrdStr with an en dash between the two numbers.
+
+		const easMinNum = iteRecObj.easeMin ?? picRecObj.easeMin ?? 1;                                                                             // What: Ease Min Number. Why: The range below needs this item's own effective ease-min, falling back to its picker's own. How: This reads iteRecObj's own easeMin, then picRecObj's own, then 1.
+		const easMaxNum = iteRecObj.easeMax ?? picRecObj.easeMax ?? 1;                                                                             // What: Ease Max Number. Why: The range below needs this item's own effective ease-max, falling back to its picker's own. How: This reads iteRecObj's own easeMax, then picRecObj's own, then 1.
+		const sooDayNum = Math.max( 1, Math.round( THR_VAL_NUM / easMaxNum ) );                                                                    // What: Soonest Day Number. Why: This is the earliest day count the range can show. How: This divides THR_VAL_NUM by easMaxNum, floored at 1 whole day.
+		const latDayNum = Math.max( sooDayNum, Math.round( THR_VAL_NUM / easMinNum ) );                                                            // What: Latest Day Number. Why: This is the latest day count the range can show, never earlier than sooDayNum. How: This divides THR_VAL_NUM by easMinNum, floored at sooDayNum itself.
+		const uniWorStr = ( picRecObj.cadence && picRecObj.cadence !== 'daily' ) ? CAD_NAM_OBJ.uniWorFun( picRecObj.cadence, latDayNum ) : 'days'; // What: Unit Word String. Why: A non-daily cadence needs its own scaled unit word (e.g. "weeks") instead of always "days". How: This calls CAD_NAM_OBJ.uniWorFun for a real non-daily cadence, otherwise falls back to the literal word "days".
+
+
+
+		return `range ${ sooDayNum }–${ latDayNum } ${ uniWorStr }`; // What: Ease Range Return. Why: The caller needs the final range string back. How: This joins sooDayNum, latDayNum and uniWorStr with an en dash between the two numbers.
 
 
 	}
+
 
 
 	return 'no weight'; // What: No Weight Return. Why: Random mode has no weight or range to show at all. How: This is the final fallback once neither the dynamic, weighted nor ease branches above matched.
@@ -458,6 +470,8 @@ function iteSubFun ( picRecObj, iteRecObj, booValNum ) {
 // #endregion iteSubFun
 
 
+
+// #region conSubFun
 
 /**
  * conSubFun = Conditional Subline Function
@@ -480,16 +494,14 @@ function iteSubFun ( picRecObj, iteRecObj, booValNum ) {
  *
 */
 
-// #region conSubFun
-
 function conSubFun ( conRecObj ) {
 
 
 	if ( conRecObj.mode === 'ease-up' || conRecObj.mode === 'ease-down' ) { // What: Ease Mode Branch. Why: Both ease modes phrase their own subline as a soonest-latest day range. How: This computes that range from conRecObj's own threshold/ease-min/ease-max.
 
 
-		const thrValNum = conRecObj.threshold ?? THR_VAL_NUM;                                // What: Threshold Value Number. Why: This conditional's own range is relative to its own threshold, falling back to the shared default. How: This reads conRecObj's own threshold, or THR_VAL_NUM when it has none set.
-		const sooDayNum = Math.max( 1, Math.round( thrValNum / ( conRecObj.easeMax ?? 14 ) ) ); // What: Soonest Day Number. Why: This is the earliest day count the range can show. How: This divides thrValNum by conRecObj's own easeMax (or 14), floored at 1 whole day.
+		const thrValNum = conRecObj.threshold ?? THR_VAL_NUM;                                          // What: Threshold Value Number. Why: This conditional's own range is relative to its own threshold, falling back to the shared default. How: This reads conRecObj's own threshold, or THR_VAL_NUM when it has none set.
+		const sooDayNum = Math.max( 1, Math.round( thrValNum / ( conRecObj.easeMax ?? 14 ) ) );        // What: Soonest Day Number. Why: This is the earliest day count the range can show. How: This divides thrValNum by conRecObj's own easeMax (or 14), floored at 1 whole day.
 		const latDayNum = Math.max( sooDayNum, Math.round( thrValNum / ( conRecObj.easeMin ?? 7 ) ) ); // What: Latest Day Number. Why: This is the latest day count the range can show, never earlier than sooDayNum. How: This divides thrValNum by conRecObj's own easeMin (or 7), floored at sooDayNum itself.
 
 
@@ -499,9 +511,11 @@ function conSubFun ( conRecObj ) {
 
 	}
 
+
 	if ( conRecObj.mode === 'dynamic' ) return `${ conRecObj.oddsPct ?? 50 }%+ odds`; // What: Dynamic Mode Return. Why: Dynamic odds are a floor rather than a fixed value. How: This reads conRecObj's own oddsPct, defaulting to 50, with a trailing "+" to signal it only ever climbs.
 
 	if ( conRecObj.mode === 'weighted' ) return `${ conRecObj.oddsPct ?? 50 }% odds`; // What: Weighted Mode Return. Why: Weighted odds are a fixed value, unlike dynamic's floor. How: This reads conRecObj's own oddsPct, defaulting to 50.
+
 
 
 	return '50% odds'; // What: Random Mode Return. Why: Random mode always runs at a flat 50/50. How: This is the final fallback once neither the ease, dynamic nor weighted branches above matched.
@@ -512,6 +526,8 @@ function conSubFun ( conRecObj ) {
 // #endregion conSubFun
 
 
+
+// #region ValCelCom
 
 /**
  * ValCelCom = Value Cells Component
@@ -550,8 +566,6 @@ function conSubFun ( conRecObj ) {
  *
 */
 
-// #region ValCelCom
-
 function ValCelCom ( { hasValBoo, genValNum, aftValNum, offValNum = 0 } ) {
 
 
@@ -579,11 +593,13 @@ function ValCelCom ( { hasValBoo, genValNum, aftValNum, offValNum = 0 } ) {
 
 	}
 
-	const effGenNum = Math.round( genValNum ) + offValNum;  // What: Effective Generation Number. Why: This is the actual effective pick weight at generation time. How: This rounds genValNum and adds offValNum (0 for a non-dynamic row).
-	const effAftNum = Math.round( aftValNum ) + offValNum;  // What: Effective After Number. Why: This is the actual effective pick weight after whatever happened today. How: This rounds aftValNum and adds offValNum (0 for a non-dynamic row).
-	const delValNum = effAftNum - effGenNum;                // What: Delta Value Number. Why: The middle cell shows the actual change, not either raw value. How: This subtracts effGenNum from effAftNum; offValNum cancels out of this difference either way.
-	const treClsStr = delValNum > 0 ? 'up' : delValNum < 0 ? 'down' : 'flat';                                 // What: Trend Class String. Why: The delta cell's own color/direction styling depends on which way delValNum moved. How: This picks 'up'/'down'/'flat' from delValNum's own sign.
-	const disTexStr = delValNum === 0 ? '—' : ( delValNum > 0 ? `+${ delValNum }` : `${ delValNum }` );       // What: Display Text String. Why: The delta cell needs its own signed text, or a flat placeholder at exactly 0. How: This renders the em-dash placeholder at 0, otherwise a "+"-prefixed or plain signed number.
+
+
+	const effGenNum = Math.round( genValNum ) + offValNum;                                              // What: Effective Generation Number. Why: This is the actual effective pick weight at generation time. How: This rounds genValNum and adds offValNum (0 for a non-dynamic row).
+	const effAftNum = Math.round( aftValNum ) + offValNum;                                              // What: Effective After Number. Why: This is the actual effective pick weight after whatever happened today. How: This rounds aftValNum and adds offValNum (0 for a non-dynamic row).
+	const delValNum = effAftNum - effGenNum;                                                            // What: Delta Value Number. Why: The middle cell shows the actual change, not either raw value. How: This subtracts effGenNum from effAftNum; offValNum cancels out of this difference either way.
+	const treClaStr = delValNum > 0 ? 'up' : delValNum < 0 ? 'down' : 'flat';                           // What: Trend Class String. Why: The delta cell's own color/direction styling depends on which way delValNum moved. How: This picks 'up'/'down'/'flat' from delValNum's own sign.
+	const disTexStr = delValNum === 0 ? '—' : ( delValNum > 0 ? `+${ delValNum }` : `${ delValNum }` ); // What: Display Text String. Why: The delta cell needs its own signed text, or a flat placeholder at exactly 0. How: This renders the em-dash placeholder at 0, otherwise a "+"-prefixed or plain signed number.
 
 
 
@@ -595,7 +611,7 @@ function ValCelCom ( { hasValBoo, genValNum, aftValNum, offValNum = 0 } ) {
 
 			<span className='dl-val dl-mk-atgen r'>{ effGenNum }</span>{ /* What: At Generation Value Span Element. Why: This is the row's own value as it stood at generation time. How: This renders effGenNum directly. */ }
 
-			<span className={ `dl-delta dl-mk-delta ${ treClsStr } r` }>{ disTexStr }</span>{ /* What: Delta Value Span Element. Why: This is the row's own signed change since generation. How: This renders disTexStr, tinted by its own treClsStr direction class. */ }
+			<span className={ `dl-delta dl-mk-delta ${ treClaStr } r` }>{ disTexStr }</span>{ /* What: Delta Value Span Element. Why: This is the row's own signed change since generation. How: This renders disTexStr, tinted by its own treClaStr direction class. */ }
 
 			<span className='dl-val dl-after dl-mk-after r'>{ effAftNum }</span>{ /* What: After Value Span Element. Why: This is the row's own current value. How: This renders effAftNum directly. */ }
 
@@ -612,8 +628,7 @@ function ValCelCom ( { hasValBoo, genValNum, aftValNum, offValNum = 0 } ) {
 
 
 
-// What: Format Time Function. Why: Both GroupLog's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
-const forTimFun = ( isoStr ) => {
+const forTimFun = ( isoStr ) => { // What: Format Time Function. Why: Both GroLogCom's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
 
 
 	try { return new Date( isoStr ).toLocaleTimeString( [], { hour : 'numeric', minute : '2-digit' } ); } // What: Format Attempt. Why: An otherwise-valid isoStr should render as a plain local time. How: This builds a Date from isoStr and formats it with no seconds.
@@ -624,6 +639,8 @@ const forTimFun = ( isoStr ) => {
 };
 
 
+
+// #region TabHeaCom
 
 /**
  * TabHeaCom = Table Head Component
@@ -646,8 +663,6 @@ const forTimFun = ( isoStr ) => {
  * ```
  *
 */
-
-// #region TabHeaCom
 
 function TabHeaCom ( { heaLabStr = 'Item' } ) {
 
@@ -685,6 +700,8 @@ function TabHeaCom ( { heaLabStr = 'Item' } ) {
 
 
 
+// #region PicBloCom
+
 /**
  * PicBloCom = Picker Block Component
  *
@@ -716,38 +733,38 @@ function TabHeaCom ( { heaLabStr = 'Item' } ) {
  *
 */
 
-// #region PicBloCom
-
 function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 
 
 	const [ bloOpeBoo, setBloOpeBoo ] = React.useState( true ); // What: Block Open Boolean And Setter. Why: This picker's own item table starts expanded, but can be collapsed independently of every other picker's own block. How: This is flipped by the header button's own onClick below.
 
 	const picIteArr = appStaObj.items.filter( ( iteRecObj ) => iteRecObj.pickerId === picRecObj.id ); // What: Picker Item Array. Why: Every row below is one of this picker's own items, not the whole app's. How: This filters appStaObj's own items down to picRecObj's own id.
-	const iteFlgMap = dayFlgFun( appStaObj.pickLog, picRecObj.id, dayKeyStr );                        // What: Item Flags Map Call. Why: Every item row below needs its own today's-events flags. How: This calls dayFlgFun for this exact picker/day.
+	const iteFlaMap = dayFlaFun( appStaObj.pickLog, picRecObj.id, dayKeyStr );                        // What: Item Flags Map Call. Why: Every item row below needs its own today's-events flags. How: This calls dayFlaFun for this exact picker/day.
 	const genIteObj = ( appStaObj.today.genLog && appStaObj.today.genLog.items ) || {};               // What: Generation Item Object. Why: The value cells below need each item's own at-generation snapshot. How: This reads appStaObj's own today.genLog.items, or an empty object when there is none yet.
-	const hasRowBoo = iteFlgMap.size > 0;                                                             // What: Has Row Boolean. Why: A manual override on an otherwise-suppressed picker must still render its real table, not the static rested row. How: This is true once any item earned at least one flag today.
+	const hasRowBoo = iteFlaMap.size > 0;                                                             // What: Has Row Boolean. Why: A manual override on an otherwise-suppressed picker must still render its real table, not the static rested row. How: This is true once any item earned at least one flag today.
 
 	const modLabObj = { // What: Mode Label Object. Why: The header pill below needs a human-friendly label for picRecObj's own mode key. How: This is indexed just below by picRecObj's own mode.
 
 
-		'ease-up'   : 'Ease Up',
-		'ease-down' : 'Ease Down',
-		dynamic     : 'Dynamic Weighted',
-		weighted    : 'Weighted',
-		random      : 'Truly Random'
+		'ease-up'   : 'Ease Up',          // What: Ease Up Entry. Why: An ease-up picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'ease-up'.
+		'ease-down' : 'Ease Down',        // What: Ease Down Entry. Why: An ease-down picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'ease-down'.
+		'dynamic'   : 'Dynamic Weighted', // What: Dynamic Entry. Why: A dynamic picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'dynamic'.
+		'weighted'  : 'Weighted',         // What: Weighted Entry. Why: A weighted picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'weighted'.
+		'random'    : 'Truly Random'      // What: Random Entry. Why: A random picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'random'.
 
 
 	};
 
-	const modLabStr = modLabObj[ picRecObj.mode ] || picRecObj.mode; // What: Mode Label String. Why: The header pill below needs the final resolved label. How: This reads modLabObj's own entry for picRecObj's own mode, falling back to the raw mode key for an unknown one.
+	const modLabStr = modLabObj[ picRecObj.mode ] || picRecObj.mode;                // What: Mode Label String. Why: The header pill below needs the final resolved label. How: This reads modLabObj's own entry for picRecObj's own mode, falling back to the raw mode key for an unknown one.
 	const neuModBoo = picRecObj.mode === 'weighted' || picRecObj.mode === 'random'; // What: Neutral Mode Boolean. Why: These 2 modes get a visually neutral pill instead of a tinted one. How: This checks picRecObj's own mode against both literal keys.
+
 
 
 	if ( !hasRowBoo && isaSupBoo ) { // What: Suppressed Rest Guard. Why: A picker suppressed today with no manual-override rows renders as a single static rested row instead of its full table. How: This checks both conditions before returning the rested-row branch below.
 
 
 		const conRecObj = ( appStaObj.conditionals || [] ).find( ( curConObj ) => curConObj.id === picRecObj.conditionalId ); // What: Conditional Record Object. Why: The rested row below names which conditional actually suppressed this picker. How: This finds appStaObj's own conditional matching picRecObj's own conditionalId.
+
 
 
 		return (
@@ -776,7 +793,7 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 					<span className='dl-rest'>{ /* What: Rest Span Element. Why: This groups the rested icon/text with which conditional caused it. How: This renders the "Rested" strip plus conRecObj's own name when found. */ }
 
 
-						<span className='dl-rest-l1'><IcoSetCom icoKeyStr='moon' />Rested</span>{ /* What: Rest Label Span Element. Why: This is the actual "rested today" indicator. How: This renders a moon glyph plus the literal text "Rested". */ }
+						<span className='dl-rest-l1'><IcoSetCom icoKeyStr='mooEle' />Rested</span>{ /* What: Rest Label Span Element. Why: This is the actual "rested today" indicator. How: This renders a moon glyph plus the literal text "Rested". */ }
 
 						{ conRecObj && <span className='dl-rest-cond'>{ conRecObj.name }</span> }{ /* What: Rest Conditional Visibility Check. Why: Naming which conditional caused the rest is only possible when one was actually found. How: This renders conRecObj's own name only while conRecObj is truthy. */ }
 
@@ -795,7 +812,9 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 
 	}
 
-	const donCouNum = picIteArr.filter( ( iteRecObj ) => ( iteFlgMap.get( iteRecObj.id ) || {} ).comBoo ).length; // What: Done Count Number. Why: The header's own summary strip shows how many items are already completed today. How: This counts picIteArr entries whose own iteFlgMap flags (or an empty fallback) have comBoo set.
+
+
+	const donCouNum = picIteArr.filter( ( iteRecObj ) => ( iteFlaMap.get( iteRecObj.id ) || {} ).comBoo ).length; // What: Done Count Number. Why: The header's own summary strip shows how many items are already completed today. How: This counts picIteArr entries whose own iteFlaMap flags (or an empty fallback) have comBoo set.
 
 
 
@@ -813,7 +832,7 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 			>{ /* What: Block Header Button Element. Why: The whole header is the actual expand/collapse control. How: This flips bloOpeBoo on click and reflects it via aria-expanded. */ }
 
 
-				<span className='dl-chev'><IcoSetCom icoKeyStr='chevron' /></span>{ /* What: Chevron Span Element. Why: A chevron glyph signals this header is expandable. How: This renders IcoSetCom's own "chevron" shape, rotated via CSS from bloOpeBoo's own is-closed class above. */ }
+				<span className='dl-chev'><IcoSetCom icoKeyStr='chvEle' /></span>{ /* What: Chevron Span Element. Why: A chevron glyph signals this header is expandable. How: This renders IcoSetCom's own "chevron" shape, rotated via CSS from bloOpeBoo's own is-closed class above. */ }
 
 
 				<span className='dl-name-mode'>{ /* What: Name Mode Span Element. Why: The picker's own name and mode pill are grouped together. How: This renders picRecObj's own name plus its modLabStr pill. */ }
@@ -835,7 +854,7 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 
 					<span>{ picIteArr.length } item{ picIteArr.length === 1 ? '' : 's' }</span>{ /* What: Item Count Span Element. Why: The header always shows how many items this picker has. How: This renders picIteArr's own length, pluralized. */ }
 
-					{ donCouNum > 0 && <span className='dl-dchip'><IcoSetCom icoKeyStr='check' strWidNum={ 3 } /><span>{ donCouNum } done</span></span> } { /* What: Done Chip Visibility Check. Why: The done chip only makes sense once at least 1 item is actually completed. How: This renders the chip only while donCouNum is positive. */ }
+					{ donCouNum > 0 && <span className='dl-dchip'><IcoSetCom icoKeyStr='cheEle' strWidNum={ 3 } /><span>{ donCouNum } done</span></span> } { /* What: Done Chip Visibility Check. Why: The done chip only makes sense once at least 1 item is actually completed. How: This renders the chip only while donCouNum is positive. */ }
 
 
 				</span>
@@ -857,9 +876,10 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 					{ picIteArr.map( ( iteRecObj ) => { // What: Item Row Map Callback. Why: One row is needed per item in picIteArr. How: This builds each row's own flags, done state and value-mode check before returning its JSX below.
 
 
-						const iteFlgObj = iteFlgMap.get( iteRecObj.id );                        // What: Item Flags Object. Why: This row's own status chips and done state both read from the same flags object. How: This reads iteFlgMap's own entry for iteRecObj's own id.
-						const iteDonBoo = iteFlgObj && iteFlgObj.comBoo;                          // What: Item Done Boolean. Why: A completed item gets its own is-done row styling. How: This is true only when iteFlgObj exists and its own comBoo flag is set.
-						const hasValBoo = hasValFun( picRecObj.mode ) && !iteRecObj.vacation;      // What: Has Value Boolean. Why: An item on vacation never shows a value, even under a value-tracking mode. How: This combines hasValFun's own mode check with iteRecObj's own vacation flag.
+						const iteFlaObj = iteFlaMap.get( iteRecObj.id );                      // What: Item Flags Object. Why: This row's own status chips and done state both read from the same flags object. How: This reads iteFlaMap's own entry for iteRecObj's own id.
+						const iteDonBoo = iteFlaObj && iteFlaObj.comBoo;                      // What: Item Done Boolean. Why: A completed item gets its own is-done row styling. How: This is true only when iteFlaObj exists and its own comBoo flag is set.
+						const hasValBoo = hasValFun( picRecObj.mode ) && !iteRecObj.vacation; // What: Has Value Boolean. Why: An item on vacation never shows a value, even under a value-tracking mode. How: This combines hasValFun's own mode check with iteRecObj's own vacation flag.
+
 
 
 						return (
@@ -894,7 +914,7 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 
 								{ iteRecObj.vacation // What: Vacation Status Check. Why: A vacationing item shows a plain "Inactive" label instead of the normal status chips. How: This renders the inactive span for a vacationing item, StaChiCom otherwise.
 									? <span className='dl-status dl-mk-status'><span className='dl-vac'>Inactive</span></span>
-									: <StaChiCom iteFlgObj={ iteFlgObj } /> }
+									: <StaChiCom iteFlaObj={ iteFlaObj } /> }
 
 
 							</div>
@@ -924,6 +944,8 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 
 
 
+// #region ConSecCom
+
 /**
  * ConSecCom = Conditional Section Component
  *
@@ -939,28 +961,25 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
  * @param props.appStaObj - App State Object: The whole app state object.
  * @param props.picGroArr - Picker Group Array: Every picker in the current
  *                          group.
- * @param props.dayKeyStr - Day Key String: Today's own "YYYY-MM-DD" key, from
- *                          {@link isoDayFun}.
  *
  * @returns This group's own conditionals section, or null once it has
  * none.
  *
  * @example
  * ```tsx
- * ConSecCom({ appStaObj, picGroArr, dayKeyStr }) // => <ConSecCom />
+ * ConSecCom({ appStaObj, picGroArr }) // => <ConSecCom />
  * ```
  *
 */
 
-// #region ConSecCom
-
-function ConSecCom ( { appStaObj, picGroArr, dayKeyStr } ) {
+function ConSecCom ( { appStaObj, picGroArr } ) {
 
 
-	const conIdArr = [ ...new Set( picGroArr.filter( ( picRecObj ) => picRecObj.conditionalId ).map( ( picRecObj ) => picRecObj.conditionalId ) ) ]; // What: Conditional Id Array. Why: This section only needs the unique conditional ids actually attached to this group's own pickers. How: This maps picGroArr down to its own conditionalId values, deduped via a Set.
-	const conRecArr = ( appStaObj.conditionals || [] ).filter( ( conRecObj ) => conIdArr.includes( conRecObj.id ) ); // What: Conditional Record Array. Why: The table below needs the real conditional records, not just their ids. How: This filters appStaObj's own conditionals down to conIdArr's own membership.
+	const conIdeArr = [ ...new Set( picGroArr.filter( ( picRecObj ) => picRecObj.conditionalId ).map( ( picRecObj ) => picRecObj.conditionalId ) ) ]; // What: Conditional Identifier Array. Why: This section only needs the unique conditional ids actually attached to this group's own pickers. How: This maps picGroArr down to its own conditionalId values, deduped via a Set.
+	const conRecArr = ( appStaObj.conditionals || [] ).filter( ( conRecObj ) => conIdeArr.includes( conRecObj.id ) );                                 // What: Conditional Record Array. Why: The table below needs the real conditional records, not just their ids. How: This filters appStaObj's own conditionals down to conIdeArr's own membership.
 
 	if ( !conRecArr.length ) return null; // What: No Conditionals Guard. Why: A group with no attached conditionals at all needs no section here. How: This returns null before building any of the table below.
+
 
 	const genConObj = ( appStaObj.today.genLog && appStaObj.today.genLog.conds ) || {}; // What: Generation Conditional Object. Why: The value cells below need each conditional's own at-generation snapshot. How: This reads appStaObj's own today.genLog.conds, or an empty object when there is none yet.
 
@@ -993,24 +1012,24 @@ function ConSecCom ( { appStaObj, picGroArr, dayKeyStr } ) {
 
 
 					const attNamArr = appStaObj.pickers.filter( ( picRecObj ) => picRecObj.conditionalId === conRecObj.id && !picRecObj.hidden ).map( ( picRecObj ) => picRecObj.name ); // What: Attached Name Array. Why: The affected-pickers strip below needs just the visible attached pickers' own names. How: This filters appStaObj's own pickers down to this conditional's own id, excluding a hidden one, then maps to their own name.
-					const triBoo    = !!( conRecObj.active !== false && conRecObj.triggered );                                                                                          // What: Triggered Boolean. Why: Both the pill and the affected-pickers wording below depend on whether this conditional actually fired today. How: This is true only when conRecObj is active and its own triggered flag is set.
-					const hasValBoo = CON_NAM_OBJ.modValFun( conRecObj.mode );                                                                                                            // What: Has Value Boolean. Why: Some conditional modes track no value at all. How: This asks CON_NAM_OBJ.modValFun for conRecObj's own mode.
+					const triFlaBoo = CON_NAM_OBJ.supGatFun( conRecObj );                                                                                                                // What: Triggered Flag Boolean. Why: Both the pill and the affected-pickers wording below depend on whether this conditional actually fired today. How: This calls CON_NAM_OBJ.supGatFun, the same shared active-and-triggered check every other suppression decision in the app uses.
+					const hasValBoo = CON_NAM_OBJ.modValFun( conRecObj.mode );                                                                                                           // What: Has Value Boolean. Why: Some conditional modes track no value at all. How: This asks CON_NAM_OBJ.modValFun for conRecObj's own mode.
 					const genSnaObj = genConObj[ conRecObj.id ];                                                                                                                         // What: Generation Snapshot Object. Why: The value cells below need this conditional's own at-generation snapshot, if any. How: This reads genConObj's own entry for conRecObj's own id.
 					const neuModBoo = conRecObj.mode === 'weighted' || conRecObj.mode === 'random';                                                                                      // What: Neutral Mode Boolean. Why: These 2 modes get a visually neutral pill instead of a tinted one. How: This checks conRecObj's own mode against both literal keys.
 
 					const modLabObj = { // What: Mode Label Object. Why: The row's own mode pill needs a human-friendly label for conRecObj's own mode key. How: This is indexed just below by conRecObj's own mode.
 
 
-						'ease-up'   : 'Ease Up',
-						'ease-down' : 'Ease Down',
-						dynamic     : 'Dynamic Weighted',
-						weighted    : 'Weighted',
-						random      : 'Truly Random'
+						'ease-up'   : 'Ease Up',          // What: Ease Up Entry. Why: An ease-up conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'ease-up'.
+						'ease-down' : 'Ease Down',        // What: Ease Down Entry. Why: An ease-down conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'ease-down'.
+						'dynamic'   : 'Dynamic Weighted', // What: Dynamic Entry. Why: A dynamic conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'dynamic'.
+						'weighted'  : 'Weighted',         // What: Weighted Entry. Why: A weighted conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'weighted'.
+						'random'    : 'Truly Random'      // What: Random Entry. Why: A random conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'random'.
 
 
 					};
 
-					const modLabStr = modLabObj[ conRecObj.mode ] || conRecObj.mode; // What: Mode Label String. Why: The row's own mode pill needs the final resolved label. How: This reads modLabObj's own entry for conRecObj's own mode, falling back to the raw mode key for an unknown one.
+					const modLabStr = modLabObj[ conRecObj.mode ] || conRecObj.mode;                                                                                                 // What: Mode Label String. Why: The row's own mode pill needs the final resolved label. How: This reads modLabObj's own entry for conRecObj's own mode, falling back to the raw mode key for an unknown one.
 					const attJsxArr = attNamArr.map( ( curNamStr, curIndNum ) => <React.Fragment key={ curNamStr }>{ curIndNum ? ', ' : '' }<b>{ curNamStr }</b></React.Fragment> ); // What: Attached Jsx Array. Why: Both branches of the affected-pickers strip below need this exact same comma-joined name list. How: This maps attNamArr into one comma-prefixed bold name per entry, computed once for reuse.
 
 
@@ -1059,7 +1078,7 @@ function ConSecCom ( { appStaObj, picGroArr, dayKeyStr } ) {
 								<span className='dl-status dl-mk-status'>{ /* What: Conditional Status Span Element. Why: The last column shows whether this conditional actually fired today. How: This renders the triggered/not-triggered pill below. */ }
 
 
-									<span className={ `dl-st-pill ${ triBoo ? 'dl-st-trig' : 'dl-st-nottrig' }` }>{ triBoo ? 'Triggered' : 'Not triggered' }</span>{ /* What: Triggered Pill Span Element. Why: This is the actual triggered/not-triggered indicator. How: This renders its own text/class from triBoo. */ }
+									<span className={ `dl-st-pill ${ triFlaBoo ? 'dl-st-trig' : 'dl-st-nottrig' }` }>{ triFlaBoo ? 'Triggered' : 'Not triggered' }</span>{ /* What: Triggered Pill Span Element. Why: This is the actual triggered/not-triggered indicator. How: This renders its own text/class from triFlaBoo. */ }
 
 
 								</span>
@@ -1068,12 +1087,12 @@ function ConSecCom ( { appStaObj, picGroArr, dayKeyStr } ) {
 							</div>
 
 
-							<div className='dl-cond-aff'>{ /* What: Conditional Affected Div Element. Why: This strip names which pickers this conditional actually governs. How: This renders a branch glyph plus attJsxArr, worded differently depending on triBoo. */ }
+							<div className='dl-cond-aff'>{ /* What: Conditional Affected Div Element. Why: This strip names which pickers this conditional actually governs. How: This renders a branch glyph plus attJsxArr, worded differently depending on triFlaBoo. */ }
 
 
-								<IcoSetCom icoKeyStr='branch' />{ /* What: Icon Shape Component. Why: This strip needs a small branch glyph marking it as a "this affects these" note. How: This renders IcoSetCom's own "branch" shape. */ }
+								<IcoSetCom icoKeyStr='braEle' />{ /* What: Icon Shape Component. Why: This strip needs a small branch glyph marking it as a "this affects these" note. How: This renders IcoSetCom's own "branch" shape. */ }
 
-								{ triBoo // What: Triggered Wording Check. Why: A triggered conditional rests its attached pickers, a not-triggered one lets them run normally. How: This renders one of 2 differently-worded spans depending on triBoo.
+								{ triFlaBoo // What: Triggered Wording Check. Why: A triggered conditional rests its attached pickers, a not-triggered one lets them run normally. How: This renders one of 2 differently-worded spans depending on triFlaBoo.
 									? <span>Rested: { attJsxArr }</span>
 									: <span>Attached: { attJsxArr } (ran normally)</span> }
 
@@ -1105,41 +1124,43 @@ function ConSecCom ( { appStaObj, picGroArr, dayKeyStr } ) {
 
 
 
+// #region GroLogCom
+
 /**
- * GroupLog = Group Log
+ * GroLogCom = Group Log Component
  *
  * @summary
  * The whole log panel for one group (or the Reminders section calling
- * through {@link RemindersLog} instead), opened inline beneath its own
+ * through {@link RemLogCom} instead), opened inline beneath its own
  * header. Renders the shared key/legend, ConSecCom's own conditionals
  * section, then one PicBloCom per picker in the group, in the group's
  * own saved picker order.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state   - State: The whole app state object.
- * @param props.group   - Group: Which group this panel covers.
- * @param props.onClose - On Close: Called when the panel's own close button is
- *                        pressed; omitted entirely suppresses that button.
+ * @param props.state     - State: The whole app state object.
+ * @param props.groNamStr - Group Name String: Which group this panel covers.
+ * @param props.onClose   - On Close: Called when the panel's own close button
+ *                          is pressed; omitted entirely suppresses that
+ *                          button.
  *
  * @returns This group's own full log panel.
  *
  * @example
  * ```tsx
- * GroupLog({ state, group, onClose }) // => <GroupLog />
+ * GroLogCom({ state, groNamStr, onClose }) // => <GroLogCom />
  * ```
  *
 */
 
-// #region GroupLog
-
-function GroupLog ( { state, group, onClose } ) {
+function GroLogCom ( { state, groNamStr, onClose } ) {
 
 
-	const dayKeyStr = isoDayFun(); // What: Day Key String. Why: Every lookup below (conditionals, pickers, items) is scoped to today's own date key. How: This calls isoDayFun with no argument, defaulting to right now.
-	const grpPicArr = state.pickers.filter( ( picRecObj ) => ( picRecObj.group || 'Other' ) === group && !picRecObj.hidden ); // What: Group Picker Array. Why: This panel only ever shows the pickers actually belonging to this exact group. How: This filters state's own pickers down to a matching (or defaulted) group, excluding a hidden one.
-	const picOrdArr = ( state.pickerOrder && state.pickerOrder[ group ] ) || []; // What: Picker Order Array. Why: The sort below needs this group's own saved manual order, if any. How: This reads state's own pickerOrder entry for group, or an empty array when there is none.
-	const sorPicArr = grpPicArr.slice().sort( ( aPicObj, bPicObj ) => { // What: Sorted Picker Array. Why: This panel renders pickers in the group's own saved order, not whatever order state.pickers happens to hold. How: This sorts a defensive copy of grpPicArr by each picker's own position in picOrdArr.
+	const dayKeyStr = isoDayFun();                                                                                                // What: Day Key String. Why: Every lookup below (conditionals, pickers, items) is scoped to today's own date key. How: This calls isoDayFun with no argument, defaulting to right now.
+	const groPicArr = state.pickers.filter( ( picRecObj ) => ( picRecObj.group || 'Other' ) === groNamStr && !picRecObj.hidden ); // What: Group Picker Array. Why: This panel only ever shows the pickers actually belonging to this exact group. How: This filters state's own pickers down to a matching (or defaulted) group, excluding a hidden one.
+	const picOrdArr = ( state.pickerOrder && state.pickerOrder[ groNamStr ] ) || [];                                              // What: Picker Order Array. Why: The sort below needs this group's own saved manual order, if any. How: This reads state's own pickerOrder entry for groNamStr, or an empty array when there is none.
+
+	const sorPicArr = groPicArr.slice().sort( ( aPicObj, bPicObj ) => { // What: Sorted Picker Array. Why: This panel renders pickers in the group's own saved order, not whatever order state.pickers happens to hold. How: This sorts a defensive copy of groPicArr by each picker's own position in picOrdArr.
 
 
 		const aOrdNum = picOrdArr.indexOf( aPicObj.id ); // What: A Order Number. Why: The comparison below needs aPicObj's own position in picOrdArr. How: This reads picOrdArr's own indexOf for aPicObj's own id.
@@ -1152,16 +1173,20 @@ function GroupLog ( { state, group, onClose } ) {
 
 	} );
 
+
+
 	const cheSupFun = ( picRecObj ) => { // What: Check Suppressed Function. Why: PicBloCom needs to know, per picker, whether a triggered conditional suppresses it today. How: This finds picRecObj's own conditional (if any) and checks whether it is currently active and triggered.
 
 
 		if ( !picRecObj.conditionalId ) return false; // What: No Conditional Guard. Why: A picker with no attached conditional at all can never be suppressed. How: This returns false immediately when picRecObj's own conditionalId is missing.
 
+
+
 		const conRecObj = ( state.conditionals || [] ).find( ( curConObj ) => curConObj.id === picRecObj.conditionalId ); // What: Conditional Record Object. Why: The return below needs the real conditional record, not just its id. How: This finds state's own conditional matching picRecObj's own conditionalId.
 
 
 
-		return !!( conRecObj && conRecObj.active !== false && conRecObj.triggered ); // What: Suppressed Return. Why: The caller needs one combined answer. How: This is true only when conRecObj exists, is active, and its own triggered flag is set.
+		return CON_NAM_OBJ.supGatFun( conRecObj ); // What: Suppressed Return. Why: The caller needs one combined answer. How: This calls CON_NAM_OBJ.supGatFun, which already tolerates a nullish conRecObj on its own.
 
 
 	};
@@ -1171,18 +1196,18 @@ function GroupLog ( { state, group, onClose } ) {
 	return (
 
 
-		<div className='dl-panel'>{ /* What: Group Log Panel Div Element. Why: This is GroupLog's own root element. How: This renders the panel header, the shared key/legend, and the conditionals/pickers body below. */ }
+		<div className='dl-panel'>{ /* What: Group Log Panel Div Element. Why: This is GroLogCom's own root element. How: This renders the panel header, the shared key/legend, and the conditionals/pickers body below. */ }
 
 
 			<div className='dl-panel-h'>{ /* What: Panel Header Div Element. Why: This groups the panel's own kicker with its optional close button. How: This renders the kicker span plus onClose's own button when provided. */ }
 
 
-				<span className='dl-kicker'>{ /* What: Kicker Span Element. Why: The panel names which group it covers and when it was generated. How: This renders a log glyph plus group and forTimFun's own formatted time. */ }
+				<span className='dl-kicker'>{ /* What: Kicker Span Element. Why: The panel names which group it covers and when it was generated. How: This renders a log glyph plus groNamStr and forTimFun's own formatted time. */ }
 
 
-					<IcoSetCom icoKeyStr='log' />{ /* What: Icon Shape Component. Why: The kicker needs a small recognizable log glyph. How: This renders IcoSetCom's own "log" shape. */ }
+					<IcoSetCom icoKeyStr='logEle' />{ /* What: Icon Shape Component. Why: The kicker needs a small recognizable log glyph. How: This renders IcoSetCom's own "log" shape. */ }
 
-					<span>{ group } log · generated { forTimFun( state.today.generatedAt ) }</span>{ /* What: Kicker Text Span Element. Why: The kicker's own text names the group and generation time. How: This renders group plus forTimFun's own result for state's own today.generatedAt. */ }
+					<span>{ groNamStr } log · generated { forTimFun( state.today.generatedAt ) }</span>{ /* What: Kicker Text Span Element. Why: The kicker's own text names the group and generation time. How: This renders groNamStr plus forTimFun's own result for state's own today.generatedAt. */ }
 
 
 				</span>
@@ -1196,7 +1221,7 @@ function GroupLog ( { state, group, onClose } ) {
 						className='dl-close'
 						aria-label='Close log'
 						onClick={ onClose }
-					><IcoSetCom icoKeyStr='x' strWidNum={ 2 } /></button> // What: Close Button Element. Why: This is the panel's own dismiss control. How: This calls onClose directly on click.
+					><IcoSetCom icoKeyStr='xEle' strWidNum={ 2 } /></button> // What: Close Button Element. Why: This is the panel's own dismiss control. How: This calls onClose directly on click.
 
 
 				) }
@@ -1213,15 +1238,15 @@ function GroupLog ( { state, group, onClose } ) {
 				<span className='dl-key-items'>{ /* What: Key Items Span Element. Why: All 5 legend entries are grouped as one inline run. How: This renders one dl-ki span per possible status chip. */ }
 
 
-					<span className='dl-ki'><span className='dl-ico dl-c-auto'><IcoSetCom icoKeyStr='shuffle' /></span><b>Auto-picked</b></span>{ /* What: Auto Key Item Span Element. Why: The legend needs an entry explaining the auto-picked chip. How: This renders the shuffle glyph plus its own bold label. */ }
+					<span className='dl-ki'><span className='dl-ico dl-c-auto'><IcoSetCom icoKeyStr='shuEle' /></span><b>Auto-picked</b></span>{ /* What: Auto Key Item Span Element. Why: The legend needs an entry explaining the auto-picked chip. How: This renders the shuffle glyph plus its own bold label. */ }
 
-					<span className='dl-ki'><span className='dl-ico dl-c-push'><IcoSetCom icoKeyStr='push' strWidNum={ 2.4 } /></span><b>Pushed</b></span>{ /* What: Pushed Key Item Span Element. Why: The legend needs an entry explaining the pushed chip. How: This renders the push glyph plus its own bold label. */ }
+					<span className='dl-ki'><span className='dl-ico dl-c-push'><IcoSetCom icoKeyStr='pusEle' strWidNum={ 2.4 } /></span><b>Pushed</b></span>{ /* What: Pushed Key Item Span Element. Why: The legend needs an entry explaining the pushed chip. How: This renders the push glyph plus its own bold label. */ }
 
-					<span className='dl-ki'><span className='dl-ico dl-c-roll'><IcoSetCom icoKeyStr='roll' strWidNum={ 2.2 } /></span><b>Rolled off</b></span>{ /* What: Rolled Off Key Item Span Element. Why: The legend needs an entry explaining the rolled-off chip. How: This renders the roll glyph plus its own bold label. */ }
+					<span className='dl-ki'><span className='dl-ico dl-c-roll'><IcoSetCom icoKeyStr='rolEle' strWidNum={ 2.2 } /></span><b>Rolled off</b></span>{ /* What: Rolled Off Key Item Span Element. Why: The legend needs an entry explaining the rolled-off chip. How: This renders the roll glyph plus its own bold label. */ }
 
-					<span className='dl-ki'><span className='dl-ico dl-c-skip'><IcoSetCom icoKeyStr='x' strWidNum={ 2.6 } /></span><b>Skipped</b></span>{ /* What: Skipped Key Item Span Element. Why: The legend needs an entry explaining the skipped chip. How: This renders the x glyph plus its own bold label. */ }
+					<span className='dl-ki'><span className='dl-ico dl-c-skip'><IcoSetCom icoKeyStr='xEle' strWidNum={ 2.6 } /></span><b>Skipped</b></span>{ /* What: Skipped Key Item Span Element. Why: The legend needs an entry explaining the skipped chip. How: This renders the x glyph plus its own bold label. */ }
 
-					<span className='dl-ki'><span className='dl-ico dl-c-done'><IcoSetCom icoKeyStr='check' strWidNum={ 3 } /></span><b>Completed</b></span>{ /* What: Completed Key Item Span Element. Why: The legend needs an entry explaining the completed chip. How: This renders the check glyph plus its own bold label. */ }
+					<span className='dl-ki'><span className='dl-ico dl-c-done'><IcoSetCom icoKeyStr='cheEle' strWidNum={ 3 } /></span><b>Completed</b></span>{ /* What: Completed Key Item Span Element. Why: The legend needs an entry explaining the completed chip. How: This renders the check glyph plus its own bold label. */ }
 
 
 				</span>
@@ -1233,7 +1258,7 @@ function GroupLog ( { state, group, onClose } ) {
 			<div className='dl-body'>{ /* What: Group Body Div Element. Why: This groups the conditionals section with every picker block below it. How: This renders ConSecCom followed by one PicBloCom per sorPicArr entry. */ }
 
 
-				<ConSecCom appStaObj={ state } picGroArr={ sorPicArr } dayKeyStr={ dayKeyStr } />{ /* What: Conditional Section Component. Why: This group's own attached conditionals (if any) render above its pickers. How: This passes state, the sorted picker array and today's own day key straight through. */ }
+				<ConSecCom appStaObj={ state } picGroArr={ sorPicArr } />{ /* What: Conditional Section Component. Why: This group's own attached conditionals (if any) render above its pickers. How: This passes state and the sorted picker array straight through; ConSecCom needs no day key since it reads today's own generation snapshot directly, not a per-day pick-log scan. */ }
 
 
 				{ sorPicArr.map( ( picRecObj ) => ( // What: Picker Block Map Callback. Why: One block is needed per picker in sorPicArr. How: This renders PicBloCom for each, passing whether cheSupFun finds it suppressed today.
@@ -1245,7 +1270,7 @@ function GroupLog ( { state, group, onClose } ) {
 						picRecObj={ picRecObj }
 						dayKeyStr={ dayKeyStr }
 						isaSupBoo={ cheSupFun( picRecObj ) }
-					/>
+					/> // What: Picker Block Component. Why: This renders one picker's own full log block for today. How: This is keyed by picRecObj's own id, passed state, picRecObj, dayKeyStr, and cheSupFun's own suppressed check.
 
 
 				) ) }
@@ -1262,9 +1287,11 @@ function GroupLog ( { state, group, onClose } ) {
 
 }
 
-// #endregion GroupLog
+// #endregion GroLogCom
 
 
+
+// #region forDueFun
 
 /**
  * forDueFun = Format Due Function
@@ -1290,21 +1317,26 @@ function GroupLog ( { state, group, onClose } ) {
  *
 */
 
-// #region forDueFun
-
 function forDueFun ( dueDatObj, dayKeyStr ) {
 
 
 	if ( !dueDatObj ) return 'No upcoming'; // What: No Upcoming Guard. Why: A reminder with no real next occurrence at all needs its own plain label. How: This returns immediately when dueDatObj is falsy.
 
+
+
 	const [ yeaNum, monNum, domNum ] = dayKeyStr.split( '-' ).map( Number ); // What: Reference Date Parts. Why: The midnight-stripped reference date below needs its own year/month/day numbers. How: This splits dayKeyStr on its dashes and parses each part as a Number.
-	const curMidObj = new Date( yeaNum, monNum - 1, domNum );                // What: Current Midnight Object. Why: The day-count below must compare 2 midnights, not 2 arbitrary times of day. How: This builds a local Date at midnight from yeaNum/monNum/domNum.
+
+	const curMidObj = new Date( yeaNum, monNum - 1, domNum );                                         // What: Current Midnight Object. Why: The day-count below must compare 2 midnights, not 2 arbitrary times of day. How: This builds a local Date at midnight from yeaNum/monNum/domNum.
 	const dueMidObj = new Date( dueDatObj.getFullYear(), dueDatObj.getMonth(), dueDatObj.getDate() ); // What: Due Midnight Object. Why: The day-count below must compare 2 midnights, not 2 arbitrary times of day. How: This builds a local Date at midnight from dueDatObj's own year/month/day.
-	const dayDifNum = Math.round( ( dueMidObj - curMidObj ) / 86400000 );    // What: Day Difference Number. Why: The branches below phrase their own label from a whole day count, not a raw millisecond difference. How: This subtracts curMidObj from dueMidObj and divides by the number of milliseconds in a day.
+	const dayDifNum = Math.round( ( dueMidObj - curMidObj ) / 86400000 );                             // What: Day Difference Number. Why: The branches below phrase their own label from a whole day count, not a raw millisecond difference. How: This subtracts curMidObj from dueMidObj and divides by the number of milliseconds in a day.
+
 
 	if ( dayDifNum <= 1 ) return 'Due tomorrow'; // What: Due Tomorrow Return. Why: 0 or 1 day out reads better as "tomorrow" than a bare day count. How: This returns once dayDifNum falls at or below 1.
 
+
+
 	if ( dayDifNum <= 13 ) return `Due in ${ dayDifNum } days`; // What: Due In Days Return. Why: Up to 2 weeks out still reads well as a relative count. How: This returns once dayDifNum falls at or below 13.
+
 
 
 	return 'Due ' + dueDatObj.toLocaleDateString( 'en-US', { month : 'short', day : 'numeric' } ); // What: Due Date Return. Why: Further out than 2 weeks reads better as a plain calendar date than a large day count. How: This formats dueDatObj as e.g. "Due Jun 12".
@@ -1316,8 +1348,10 @@ function forDueFun ( dueDatObj, dayKeyStr ) {
 
 
 
+// #region RemLogCom
+
 /**
- * RemindersLog = Reminders Log
+ * RemLogCom = Reminders Log Component
  *
  * @summary
  * The Reminders section's own log panel, listing every non-hidden
@@ -1338,22 +1372,22 @@ function forDueFun ( dueDatObj, dayKeyStr ) {
  *
  * @example
  * ```tsx
- * RemindersLog({ state, onClose }) // => <RemindersLog />
+ * RemLogCom({ state, onClose }) // => <RemLogCom />
  * ```
  *
 */
 
-// #region RemindersLog
-
-function RemindersLog ( { state, onClose } ) {
+function RemLogCom ( { state, onClose } ) {
 
 
-	const ancDatObj = TASKS.anchorDate( state.today && state.today.generatedAt ); // What: Anchor Date Object. Why: Every lookup below must use the same frozen anchor the Reminders section above this panel already used. How: This calls TASKS.anchorDate with state's own today.generatedAt, if any.
-	const dayKeyStr = isoDayFun( ancDatObj );                                     // What: Day Key String. Why: The skipped-lookup below needs a plain date key to match against, scoped to ancDatObj rather than live "now". How: This calls isoDayFun with ancDatObj.
-	const tasListArr = ( state.tasks || [] ).filter( ( curTasObj ) => !curTasObj.hidden ); // What: Task List Array. Why: A hidden task/reminder never belongs in this log at all. How: This filters state's own tasks down to the non-hidden ones.
+	const ancDatObj = TASKS.anchorDate( state.today && state.today.generatedAt );                       // What: Anchor Date Object. Why: Every lookup below must use the same frozen anchor the Reminders section above this panel already used. How: This calls TASKS.anchorDate with state's own today.generatedAt, if any.
+	const dayKeyStr = isoDayFun( ancDatObj );                                                           // What: Day Key String. Why: The skipped-lookup below needs a plain date key to match against, scoped to ancDatObj rather than live "now". How: This calls isoDayFun with ancDatObj.
+	const tasListArr = ( state.tasks || [] ).filter( ( curTasObj ) => !curTasObj.hidden );              // What: Task List Array. Why: A hidden task/reminder never belongs in this log at all. How: This filters state's own tasks down to the non-hidden ones.
 	const visTasArr = TASKS.visibleToday( state.tasks, state.reminderOpts, state.holidays, ancDatObj ); // What: Visible Task Array. Why: The status below needs to know which tasks are actually due today. How: This calls TASKS.visibleToday with state's own tasks/reminderOpts/holidays and ancDatObj.
-	const visIdSet = new Set( visTasArr.map( ( curTasObj ) => curTasObj.id ) );   // What: Visible Id Set. Why: The status below needs a fast membership check, not a repeated array scan. How: This maps visTasArr down to just its own ids.
-	const skiIdSet = new Set( // What: Skipped Id Set. Why: The status below needs to know which tasks were manually skipped specifically today. How: This filters state's own reminderSkipLog down to today's own rows, then maps to their own taskId.
+	const visIdeSet = new Set( visTasArr.map( ( curTasObj ) => curTasObj.id ) );                        // What: Visible Identifier Set. Why: The status below needs a fast membership check, not a repeated array scan. How: This maps visTasArr down to just its own ids.
+
+
+	const skiIdeSet = new Set( // What: Skipped Identifier Set. Why: The status below needs to know which tasks were manually skipped specifically today. How: This filters state's own reminderSkipLog down to today's own rows, then maps to their own taskId.
 
 
 		( state.reminderSkipLog || [] )
@@ -1363,47 +1397,55 @@ function RemindersLog ( { state, onClose } ) {
 
 	);
 
-	const remRowArr = tasListArr.map( ( curTasObj ) => { // What: Reminder Row Map Callback. Why: One display row is needed per task/reminder in tasListArr. How: This computes each row's own status and (once not-yet-due) its own due label before returning its shape below.
+
+	const remRowArr = tasListArr.map( ( curTasObj ) => { // What: Reminder Row Array. Why: One display row is needed per task/reminder in tasListArr. How: This computes each row's own status and (once not-yet-due) its own due label before returning its shape below.
 
 
 		const tasDonBoo = TASKS.isDoneToday( curTasObj, ancDatObj ); // What: Task Done Boolean. Why: A done task always outranks every other status below. How: This calls TASKS.isDoneToday for curTasObj/ancDatObj.
 
-		let staStr = 'notdue'; // What: Status String And Fallthrough. Why: Every task starts as not-yet-due until one of the checks below says otherwise. How: This is overwritten by whichever of the 3 checks below matches first.
+		let rowStaStr = 'notdue'; // What: Row Status String And Fallthrough. Why: Every task starts as not-yet-due until one of the checks below says otherwise. How: This is overwritten by whichever of the 3 checks below matches first.
 
-		if ( tasDonBoo ) staStr = 'done'; // What: Done Status Check. Why: Done always wins over every other status. How: This sets staStr to 'done' once tasDonBoo is true.
 
-		else if ( skiIdSet.has( curTasObj.id ) ) staStr = 'skip'; // What: Skip Status Check. Why: A manually-skipped task (that wasn't also done) is its own distinct status. How: This sets staStr to 'skip' once curTasObj's own id is in skiIdSet.
+		if ( tasDonBoo ) rowStaStr = 'done'; // What: Done Status Check. Why: Done always wins over every other status. How: This sets rowStaStr to 'done' once tasDonBoo is true.
 
-		else if ( visIdSet.has( curTasObj.id ) ) staStr = 'due'; // What: Due Status Check. Why: A currently-visible task (neither done nor skipped) is due today. How: This sets staStr to 'due' once curTasObj's own id is in visIdSet.
+		else if ( skiIdeSet.has( curTasObj.id ) ) rowStaStr = 'skip'; // What: Skip Status Check. Why: A manually-skipped task (that wasn't also done) is its own distinct status. How: This sets rowStaStr to 'skip' once curTasObj's own id is in skiIdeSet.
 
-		let dueStr = null; // What: Due String And Fallthrough. Why: Only a genuinely not-yet-due task ever gets a relative due label at all. How: This stays null unless the guard below overwrites it.
+		else if ( visIdeSet.has( curTasObj.id ) ) rowStaStr = 'due'; // What: Due Status Check. Why: A currently-visible task (neither done nor skipped) is due today. How: This sets rowStaStr to 'due' once curTasObj's own id is in visIdeSet.
 
-		if ( staStr === 'notdue' ) { // What: Not Due Guard. Why: A relative due label only makes sense for a task that is neither done, skipped, nor due today. How: This computes and assigns dueStr only while staStr is still 'notdue'.
+
+
+		let dueLabStr = null; // What: Due Label String And Fallthrough. Why: Only a genuinely not-yet-due task ever gets a relative due label at all. How: This stays null unless the guard below overwrites it.
+
+
+		if ( rowStaStr === 'notdue' ) { // What: Not Due Guard. Why: A relative due label only makes sense for a task that is neither done, skipped, nor due today. How: This computes and assigns dueLabStr only while rowStaStr is still 'notdue'.
 
 
 			const nexDatObj = TASKS.nextEligible( curTasObj, state.reminderOpts, state.holidays, ancDatObj, true ); // What: Next Date Object. Why: This is the raw next-occurrence Date forDueFun below needs, honoring an active manual skip so the label reflects when the reminder actually reappears. How: This calls TASKS.nextEligible with respectSkipUntil set true.
-			dueStr = forDueFun( nexDatObj, dayKeyStr ); // What: Due String Assign. Why: The row below needs the final short relative label, not the raw Date. How: This calls forDueFun with nexDatObj and dayKeyStr.
+
+			dueLabStr = forDueFun( nexDatObj, dayKeyStr ); // What: Due Label String Assign. Why: The row below needs the final short relative label, not the raw Date. How: This calls forDueFun with nexDatObj and dayKeyStr.
 
 
 		}
 
 
 
-		return { tasObj : curTasObj, staStr : staStr, dueStr : dueStr, wheStr : TASKS.summary( curTasObj ) }; // What: Reminder Row Return. Why: The render below needs exactly these 4 fields per row. How: This bundles curTasObj alongside its own computed staStr/dueStr and TASKS.summary's own schedule text.
+		return { tasObj : curTasObj, rowStaStr : rowStaStr, dueLabStr : dueLabStr, wheStr : TASKS.summary( curTasObj ) }; // What: Reminder Row Return. Why: The render below needs exactly these 4 fields per row. How: This bundles curTasObj alongside its own computed rowStaStr/dueLabStr and TASKS.summary's own schedule text.
 
 
 	} );
 
-	const staRanObj = { done : 0, due : 1, skip : 2, notdue : 3 }; // What: Status Rank Object. Why: The sort below needs a numeric priority per status to order the rows sensibly. How: This is indexed just below by each row's own staStr.
 
-	remRowArr.sort( ( aRowObj, bRowObj ) => ( staRanObj[ aRowObj.staStr ] - staRanObj[ bRowObj.staStr ] ) || ( aRowObj.tasObj.name < bRowObj.tasObj.name ? -1 : 1 ) ); // What: Reminder Row Sort Call. Why: Rows should group by status first, then alphabetically within a status. How: This sorts remRowArr by staRanObj's own rank difference, falling back to a plain name comparison when ranks tie.
+
+	const staRanObj = { done : 0, due : 1, skip : 2, notdue : 3 }; // What: Status Rank Object. Why: The sort below needs a numeric priority per status to order the rows sensibly. How: This is indexed just below by each row's own rowStaStr.
+
+	remRowArr.sort( ( aRowObj, bRowObj ) => ( staRanObj[ aRowObj.rowStaStr ] - staRanObj[ bRowObj.rowStaStr ] ) || ( aRowObj.tasObj.name < bRowObj.tasObj.name ? -1 : 1 ) ); // What: Reminder Row Sort Call. Why: Rows should group by status first, then alphabetically within a status. How: This sorts remRowArr by staRanObj's own rank difference, falling back to a plain name comparison when ranks tie.
 
 
 
 	return (
 
 
-		<div className='dl-panel'>{ /* What: Reminders Log Panel Div Element. Why: This is RemindersLog's own root element. How: This renders the panel header plus the reminder rows body below. */ }
+		<div className='dl-panel'>{ /* What: Reminders Log Panel Div Element. Why: This is RemLogCom's own root element. How: This renders the panel header plus the reminder rows body below. */ }
 
 
 			<div className='dl-panel-h'>{ /* What: Panel Header Div Element. Why: This groups the panel's own kicker with its optional close button. How: This renders the kicker span plus onClose's own button when provided. */ }
@@ -1412,7 +1454,7 @@ function RemindersLog ( { state, onClose } ) {
 				<span className='dl-kicker'>{ /* What: Kicker Span Element. Why: The panel names which anchor date this snapshot covers. How: This renders a clock glyph plus ancDatObj's own formatted weekday/date. */ }
 
 
-					<IcoSetCom icoKeyStr='clock' />{ /* What: Icon Shape Component. Why: The kicker needs a small recognizable clock glyph. How: This renders IcoSetCom's own "clock" shape. */ }
+					<IcoSetCom icoKeyStr='clcEle' />{ /* What: Icon Shape Component. Why: The kicker needs a small recognizable clock glyph. How: This renders IcoSetCom's own "clock" shape. */ }
 
 					<span>Reminders log · { ancDatObj.toLocaleDateString( 'en-US', { weekday : 'short', month : 'short', day : 'numeric' } ) }</span>{ /* What: Kicker Text Span Element. Why: The kicker's own text names which day this snapshot covers. How: This formats ancDatObj as e.g. "Wed, Jun 12". */ }
 
@@ -1428,7 +1470,7 @@ function RemindersLog ( { state, onClose } ) {
 						className='dl-close'
 						aria-label='Close log'
 						onClick={ onClose }
-					><IcoSetCom icoKeyStr='x' strWidNum={ 2 } /></button> // What: Close Button Element. Why: This is the panel's own dismiss control. How: This calls onClose directly on click.
+					><IcoSetCom icoKeyStr='xEle' strWidNum={ 2 } /></button> // What: Close Button Element. Why: This is the panel's own dismiss control. How: This calls onClose directly on click.
 
 
 				) }
@@ -1444,13 +1486,13 @@ function RemindersLog ( { state, onClose } ) {
 
 
 				{ remRowArr.length === 0 && <div className='dl-empty'>No reminders yet.</div> }{ /* What: Empty Reminders Visibility Check. Why: No non-hidden tasks at all needs an explanatory row instead of an empty table. How: This renders only while remRowArr's own length is 0. */ }
-				{ remRowArr.map( ( { tasObj, staStr, dueStr, wheStr } ) => ( // What: Reminder Row Map Callback. Why: One row is needed per remRowArr entry. How: This destructures each row and renders its own name/when/status cells.
+				{ remRowArr.map( ( { tasObj, rowStaStr, dueLabStr, wheStr } ) => ( // What: Reminder Row Map Callback. Why: One row is needed per remRowArr entry. How: This destructures each row and renders its own name/when/status cells.
 
 
 					<div
 						key={ tasObj.id }
-						className={ `dl-rt-row ${ staStr === 'done' ? 'is-done' : staStr === 'due' ? 'is-due' : staStr === 'notdue' ? 'is-notdue' : '' }` }
-					>{ /* What: Reminder Row Div Element. Why: This is one task/reminder's own full row. How: This toggles its own is-done/is-due/is-notdue classes from staStr. */ }
+						className={ `dl-rt-row ${ rowStaStr === 'done' ? 'is-done' : rowStaStr === 'due' ? 'is-due' : rowStaStr === 'notdue' ? 'is-notdue' : '' }` }
+					>{ /* What: Reminder Row Div Element. Why: This is one task/reminder's own full row. How: This toggles its own is-done/is-due/is-notdue classes from rowStaStr. */ }
 
 
 						<InfoTip
@@ -1461,16 +1503,16 @@ function RemindersLog ( { state, onClose } ) {
 
 						<span className='dl-r-when dl-mk-rwhen'>{ wheStr }</span>{ /* What: Reminder When Span Element. Why: Every row shows its own plain schedule summary. How: This renders wheStr directly. */ }
 
-						<span className='dl-r-st dl-mk-rst'>{ /* What: Reminder Status Span Element. Why: The last column shows this row's own current status, differently per staStr. How: This renders one of 4 status variants below, matched on staStr. */ }
+						<span className='dl-r-st dl-mk-rst'>{ /* What: Reminder Status Span Element. Why: The last column shows this row's own current status, differently per rowStaStr. How: This renders one of 4 status variants below, matched on rowStaStr. */ }
 
 
-							{ staStr === 'done' && ( // What: Done Status Visibility Check. Why: A done row shows its own check icon plus a Done pill. How: This renders only while staStr is 'done'.
+							{ rowStaStr === 'done' && ( // What: Done Status Visibility Check. Why: A done row shows its own check icon plus a Done pill. How: This renders only while rowStaStr is 'done'.
 
 
 								<React.Fragment>{ /* What: Done Status Fragment Element. Why: The check icon and its own Done pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
-									<span className='dl-ico dl-c-done'><IcoSetCom icoKeyStr='check' strWidNum={ 3 } /></span>{ /* What: Done Icon Span Element. Why: A done row's own status needs a recognizable check glyph before its pill. How: This renders IcoSetCom's own "check" shape. */ }
+									<span className='dl-ico dl-c-done'><IcoSetCom icoKeyStr='cheEle' strWidNum={ 3 } /></span>{ /* What: Done Icon Span Element. Why: A done row's own status needs a recognizable check glyph before its pill. How: This renders IcoSetCom's own "check" shape. */ }
 
 									<span className='dl-st-pill dl-st-done'>Done</span>{ /* What: Done Pill Span Element. Why: The done row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Done". */ }
 
@@ -1478,14 +1520,14 @@ function RemindersLog ( { state, onClose } ) {
 								</React.Fragment>
 
 							) }
-							{ staStr === 'due' && <span className='dl-st-pill dl-st-due'>Due today</span> }{ /* What: Due Status Visibility Check. Why: A due-today row shows a plain Due pill. How: This renders only while staStr is 'due'. */ }
-							{ staStr === 'skip' && ( // What: Skip Status Visibility Check. Why: A skipped row shows its own x icon plus a Skipped pill. How: This renders only while staStr is 'skip'.
+							{ rowStaStr === 'due' && <span className='dl-st-pill dl-st-due'>Due today</span> }{ /* What: Due Status Visibility Check. Why: A due-today row shows a plain Due pill. How: This renders only while rowStaStr is 'due'. */ }
+							{ rowStaStr === 'skip' && ( // What: Skip Status Visibility Check. Why: A skipped row shows its own x icon plus a Skipped pill. How: This renders only while rowStaStr is 'skip'.
 
 
 								<React.Fragment>{ /* What: Skip Status Fragment Element. Why: The x icon and its own Skipped pill are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
-									<span className='dl-ico dl-c-skip'><IcoSetCom icoKeyStr='x' strWidNum={ 2.6 } /></span>{ /* What: Skip Icon Span Element. Why: A skipped row's own status needs a recognizable x glyph before its pill. How: This renders IcoSetCom's own "x" shape. */ }
+									<span className='dl-ico dl-c-skip'><IcoSetCom icoKeyStr='xEle' strWidNum={ 2.6 } /></span>{ /* What: Skip Icon Span Element. Why: A skipped row's own status needs a recognizable x glyph before its pill. How: This renders IcoSetCom's own "x" shape. */ }
 
 									<span className='dl-st-pill dl-st-skip'>Skipped</span>{ /* What: Skip Pill Span Element. Why: The skipped row's own status needs a plain, fixed label alongside its icon. How: This renders the literal text "Skipped". */ }
 
@@ -1493,7 +1535,7 @@ function RemindersLog ( { state, onClose } ) {
 								</React.Fragment>
 
 							) }
-							{ staStr === 'notdue' && <span className='dl-st-not'>{ dueStr }</span> }{ /* What: Not Due Status Visibility Check. Why: A not-yet-due row shows its own relative due label instead of a pill. How: This renders only while staStr is 'notdue'. */ }
+							{ rowStaStr === 'notdue' && <span className='dl-st-not'>{ dueLabStr }</span> }{ /* What: Not Due Status Visibility Check. Why: A not-yet-due row shows its own relative due label instead of a pill. How: This renders only while rowStaStr is 'notdue'. */ }
 
 
 						</span>
@@ -1516,11 +1558,10 @@ function RemindersLog ( { state, onClose } ) {
 
 }
 
-// #endregion RemindersLog
+// #endregion RemLogCom
 
 
 
-export { DayLogChip, GroupLog, RemindersLog }; // What: Named Exports. Why: tab-today.jsx and reminders.jsx both import these 3 by name; every other binding in this file is internal-only. How: This re-exports the 3 components declared above, unrenamed since they are each an external contract those 2 callers already depend on.
-
+export { DayLogChip, GroLogCom, RemLogCom }; // What: Named Exports. Why: tab-today.jsx and reminders.jsx both import these 3 by name; every other binding in this file is internal-only. How: This re-exports the 3 components declared above. GroLogCom's and RemLogCom's own names were each swept to a proper component-type name after checking their own blast radius was small (a single consumer apiece, tab-today.jsx and reminders.jsx respectively); DayLogChip stays unrenamed as an external contract for now.
 
 
