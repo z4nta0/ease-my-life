@@ -1963,11 +1963,11 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 		if ( ind !== tarIndNum ) return it; // What: Other Row Guard. Why: Only the exact row being edited should change. How: This returns every other row untouched.
 
-		const clpValNum = Math.max( 1, Math.min( 100, rawValNum || 1 ) ); // What: Clamped Value Number. Why: A raw drift number must always stay within the valid [1, 100] range. How: This clamps rawValNum, falling back to 1 for a falsy input.
+		const claValNum = Math.max( 1, Math.min( 100, rawValNum || 1 ) ); // What: Clamped Value Number. Why: A raw drift number must always stay within the valid [1, 100] range. How: This clamps rawValNum, falling back to 1 for a falsy input.
 
-		if ( whiEndStr === 'min' ) return { ...it, easeMin : clpValNum, easeMax : Math.max( it.easeMax, clpValNum ) }; // What: Min Branch Return. Why: Editing the min end must not let easeMax fall below it. How: This sets easeMin to clpValNum and raises easeMax if needed.
+		if ( whiEndStr === 'min' ) return { ...it, easeMin : claValNum, easeMax : Math.max( it.easeMax, claValNum ) }; // What: Min Branch Return. Why: Editing the min end must not let easeMax fall below it. How: This sets easeMin to claValNum and raises easeMax if needed.
 
-		return { ...it, easeMax : clpValNum, easeMin : Math.min( it.easeMin, clpValNum ) }; // What: Max Branch Return. Why: Editing the max end must not let easeMin exceed it. How: This sets easeMax to clpValNum and lowers easeMin if needed.
+		return { ...it, easeMax : claValNum, easeMin : Math.min( it.easeMin, claValNum ) }; // What: Max Branch Return. Why: Editing the max end must not let easeMin exceed it. How: This sets easeMax to claValNum and lowers easeMin if needed.
 
 
 	}) );

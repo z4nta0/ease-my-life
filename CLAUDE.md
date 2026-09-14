@@ -1804,6 +1804,16 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - `ovf` → `ove` (Overflow — found in `ownOveStr`/`ancOveStr`/`oveRigBoo`
     in `help-mode.jsx` and `oveBelNum`/`oveStyStr` across
     `tab-settings.jsx` and `tab-picker.jsx`)
+  - `clp` → `cli` (Clip — found in `cliRecObj` across `help-mode.jsx` and
+    `onboarding-tour-runner.jsx`; `cli` was already the established code
+    for Clip elsewhere in this codebase, e.g. `cliHorFun`, `cliChrFun`)
+  - `clp` → `cla` (Clamp — a second, distinct miscorrection sharing the
+    same wrong `clp` spelling as the Clip case above, found in
+    `claValNum` (`tab-picker.jsx`), a clamped ease-drift value; `cla` is
+    already the established code for Clamp elsewhere in this codebase
+    (`claValFun`, `claPadFun`), though note `cla` also separately means
+    Clause (`tutClaStr`) and Class (`extClaStr`); context disambiguates
+    which of the three "cla" stands for)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

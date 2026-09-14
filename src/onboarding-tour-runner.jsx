@@ -613,13 +613,13 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 		eleArr.forEach( ( curEle ) => { // What: Element Union Loop. Why: Every matched element contributes to the overall union. How: This walks eleArr, folding each element's own clipped rect into the accumulator numbers above.
 
 
-			const clpRecObj = cliHorFun( curEle.getBoundingClientRect(), curEle ); // What: Clipped Rect Object. Why: A scrolled-away portion of this element must not stretch the union. How: This runs curEle's own bounding rect through cliHorFun.
+			const cliRecObj = cliHorFun( curEle.getBoundingClientRect(), curEle ); // What: Clipped Rect Object. Why: A scrolled-away portion of this element must not stretch the union. How: This runs curEle's own bounding rect through cliHorFun.
 
-			if ( !clpRecObj ) return; // What: Fully Clipped Guard. Why: An element clipped away entirely contributes nothing to the union. How: This skips the rest of this iteration when cliHorFun returned null.
+			if ( !cliRecObj ) return; // What: Fully Clipped Guard. Why: An element clipped away entirely contributes nothing to the union. How: This skips the rest of this iteration when cliHorFun returned null.
 
 
-			topNum = Math.min( topNum, clpRecObj.top ); lefNum = Math.min( lefNum, clpRecObj.left ); // What: Top/Left Fold. Why: The union's own top-left corner is whichever edge is furthest out among every element seen so far. How: This narrows topNum/lefNum to the smaller of the running value and this element's own edge.
-			rigNum = Math.max( rigNum, clpRecObj.right ); botNum = Math.max( botNum, clpRecObj.bottom ); // What: Right/Bottom Fold. Why: The union's own bottom-right corner is whichever edge is furthest out among every element seen so far. How: This widens rigNum/botNum to the larger of the running value and this element's own edge.
+			topNum = Math.min( topNum, cliRecObj.top ); lefNum = Math.min( lefNum, cliRecObj.left ); // What: Top/Left Fold. Why: The union's own top-left corner is whichever edge is furthest out among every element seen so far. How: This narrows topNum/lefNum to the smaller of the running value and this element's own edge.
+			rigNum = Math.max( rigNum, cliRecObj.right ); botNum = Math.max( botNum, cliRecObj.bottom ); // What: Right/Bottom Fold. Why: The union's own bottom-right corner is whichever edge is furthest out among every element seen so far. How: This widens rigNum/botNum to the larger of the running value and this element's own edge.
 
 
 		} );
