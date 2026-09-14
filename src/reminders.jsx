@@ -19,7 +19,7 @@ import { OB_CHECKLIST          } from './onboarding-checklist.js'; // What: Onbo
 import { OB_REMINDER_CARD_TEXT } from './onboarding-seed-data.js'; // What: Onboarding Reminder Card Text. Why: A still-hidden sample reminder's own mini-tour launcher card needs copy distinct from its real schedule summary. How: This is looked up by sample task id inside RemCarCom's own isaTutBoo branch.
 import { OB_SAMPLE_TASK_IDS    } from './onboarding-seed-data.js'; // What: Onboarding Sample Task Identifiers. Why: Only the Welcome Tour's own seeded sample reminders should ever render as a mini-tour launcher card. How: This is checked against a hidden task's own id inside ReminderSection's tutTasArr filter.
 import { reduceMotion          } from './ui.jsx';                  // What: Reduce Motion. Why: A user who prefers reduced motion should get an instant close, skip, or remove instead of a timed animation. How: This is checked before every staged animation throughout this file.
-import { RemindersLog          } from './day-log.jsx';             // What: Reminders Log. Why: The Reminders section's own header chip opens this exact audit panel. How: This is rendered inside ReminderSection, gated on logOpen.
+import { RemLogCom             } from './day-log.jsx';             // What: Reminders Log Component. Why: The Reminders section's own header chip opens this exact audit panel. How: This is rendered inside ReminderSection, gated on logOpen.
 import { SortSelect            } from './ui.jsx';                  // What: Sort Select. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in ReminderManager, driven by ITE_SOR_ARR.
 import { TASKS                 } from './tasks.js';                // What: Tasks. Why: Every due-ness, visibility, summary, and schedule computation in this file defers to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout every component below.
 import { useEscapeCancel       } from './ui.jsx';                  // What: Use Escape Cancel. Why: Both the quick-add form and EdiFooCom's own confirm flow need Escape to discard in-progress edits. How: This is called once each in EdiFooCom and ReminderSection.
@@ -2432,13 +2432,13 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 
 			</header>
 
-			{ !editMode && ( // What: Log Panel Visibility Check. Why: The day-log panel only makes sense outside Edit Mode. How: This renders the Collapse-wrapped RemindersLog only while editMode is false.
+			{ !editMode && ( // What: Log Panel Visibility Check. Why: The day-log panel only makes sense outside Edit Mode. How: This renders the Collapse-wrapped RemLogCom only while editMode is false.
 
 
 				<Collapse open={ !!logOpen }>
 
 
-					<RemindersLog state={ state } onClose={ onToggleLog } />
+					<RemLogCom state={ state } onClose={ onToggleLog } />
 
 
 				</Collapse>

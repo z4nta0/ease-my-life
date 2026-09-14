@@ -750,7 +750,7 @@ const TODAY_HELP_ITEMS = [ // What: Today Help Items Array. Why: This is the on-
 
 	},
 
-	// -- Reminders Log panel (day-log.jsx's RemindersLog), dl-mk-r* classes
+	// -- Reminders Log panel (day-log.jsx's RemLogCom), dl-mk-r* classes
 	// are dedicated selector hooks, kept separate from the visually-styled
 	// .dl-r-name/.dl-r-when/.dl-r-st classes so adding them to the header row
 	// (alongside the data rows, for one column-spanning highlight) doesn't
