@@ -621,28 +621,28 @@ function applyEntryPending( curStaObj, curEntObj ) {
 
 	const nowIsoStr = new Date().toISOString(); // What: Now Iso String. Why: A picked-and-bumped item needs a real completion timestamp. How: This reads the current instant as an ISO string.
 
-	const nxtIteArr = curStaObj.items.map( ( curIteObj ) => { // What: Next Item Array. Why: Every item must be checked for a staged update or a pick bump before the caller gets a fresh items array. How: This maps curStaObj.items, applying updIdeMap's own patch and/or the pick bump to a touched item, leaving everything else unchanged.
+	const nexIteArr = curStaObj.items.map( ( curIteObj ) => { // What: Next Item Array. Why: Every item must be checked for a staged update or a pick bump before the caller gets a fresh items array. How: This maps curStaObj.items, applying updIdeMap's own patch and/or the pick bump to a touched item, leaving everything else unchanged.
 
 
 		if ( !touIdeSet.has( curIteObj.id ) ) return curIteObj; // What: Untouched-Item Guard. Why: An item this pending payload never mentions must pass through unchanged. How: This returns curIteObj unchanged when it isn't in touIdeSet.
 
 		const matUpdObj = updIdeMap.get( curIteObj.id ); // What: Matched Update Object And Guard. Why: This item may or may not have its own staged value/weight/chargeStep patch. How: This looks up curIteObj's own id in updIdeMap, undefined when only pickedId touched it.
-		const nxtIteObj = { ...curIteObj }; // What: Next Item Object. Why: The patch below must not mutate curIteObj itself. How: This starts as a shallow copy of curIteObj.
+		const nexIteObj = { ...curIteObj }; // What: Next Item Object. Why: The patch below must not mutate curIteObj itself. How: This starts as a shallow copy of curIteObj.
 
-		if ( matUpdObj ) { // What: Staged Patch Application. Why: Only the fields actually present on matUpdObj are meant to change. How: This conditionally overwrites value/weight/chargeStep on nxtIteObj when each key is present on matUpdObj.
+		if ( matUpdObj ) { // What: Staged Patch Application. Why: Only the fields actually present on matUpdObj are meant to change. How: This conditionally overwrites value/weight/chargeStep on nexIteObj when each key is present on matUpdObj.
 
 
-			if ( 'value' in matUpdObj ) nxtIteObj.value = matUpdObj.value;           // What: Value Patch. Why: An updates row only sometimes carries a new value. How: This applies matUpdObj's own value only when the key is present.
-			if ( 'weight' in matUpdObj ) nxtIteObj.weight = matUpdObj.weight;       // What: Weight Patch. Why: An updates row only sometimes carries a new weight. How: This applies matUpdObj's own weight only when the key is present.
-			if ( 'chargeStep' in matUpdObj ) nxtIteObj.chargeStep = matUpdObj.chargeStep; // What: Charge Step Patch. Why: An updates row only sometimes carries a new chargeStep. How: This applies matUpdObj's own chargeStep only when the key is present.
+			if ( 'value' in matUpdObj ) nexIteObj.value = matUpdObj.value;           // What: Value Patch. Why: An updates row only sometimes carries a new value. How: This applies matUpdObj's own value only when the key is present.
+			if ( 'weight' in matUpdObj ) nexIteObj.weight = matUpdObj.weight;       // What: Weight Patch. Why: An updates row only sometimes carries a new weight. How: This applies matUpdObj's own weight only when the key is present.
+			if ( 'chargeStep' in matUpdObj ) nexIteObj.chargeStep = matUpdObj.chargeStep; // What: Charge Step Patch. Why: An updates row only sometimes carries a new chargeStep. How: This applies matUpdObj's own chargeStep only when the key is present.
 
 
 		}
 
-		if ( curIteObj.id === curPenObj.pickedId && curPenObj.bumpPick ) { nxtIteObj.picks = ( curIteObj.picks || 0 ) + 1; nxtIteObj.lastPicked = nowIsoStr; } // What: Pick Bump Guard. Why: Only the actually-picked item, and only when bumpPick was requested, gets its own picks/lastPicked bumped. How: This increments picks and stamps lastPicked on nxtIteObj when both conditions hold.
+		if ( curIteObj.id === curPenObj.pickedId && curPenObj.bumpPick ) { nexIteObj.picks = ( curIteObj.picks || 0 ) + 1; nexIteObj.lastPicked = nowIsoStr; } // What: Pick Bump Guard. Why: Only the actually-picked item, and only when bumpPick was requested, gets its own picks/lastPicked bumped. How: This increments picks and stamps lastPicked on nexIteObj when both conditions hold.
 
 
-		return nxtIteObj; // What: Next Item Return. Why: The caller needs this item's own patched copy. How: This returns nxtIteObj, built above.
+		return nexIteObj; // What: Next Item Return. Why: The caller needs this item's own patched copy. How: This returns nexIteObj, built above.
 
 
 	} );
@@ -653,18 +653,18 @@ function applyEntryPending( curStaObj, curEntObj ) {
 		? ( curStaObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId ) || {} ).activeItemId
 		: undefined;
 
-	const nxtPicArr = havPicPatBoo // What: Next Picker Array. Why: Only a pending payload carrying pickerPatch (e.g. Ease Down's activeItemId) needs any picker actually rewritten. How: This patches curEntObj's own picker with pickerPatch's own fields, else passes pickers through unchanged.
+	const nexPicArr = havPicPatBoo // What: Next Picker Array. Why: Only a pending payload carrying pickerPatch (e.g. Ease Down's activeItemId) needs any picker actually rewritten. How: This patches curEntObj's own picker with pickerPatch's own fields, else passes pickers through unchanged.
 		? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === curEntObj.pickerId ? { ...curPicObj, ...curPenObj.pickerPatch } : curPicObj )
 		: curStaObj.pickers;
 
-	const nxtLogArr = curPenObj.depletedEnd // What: Next Pick-Log Array. Why: depletedEnd is a value consequence, so it's only recorded on the live log row once the pending payload is actually applied. How: This flags the live (no outcome) row sharing curEntObj's own eid, else passes pickLog through unchanged.
+	const nexLogArr = curPenObj.depletedEnd // What: Next Pick-Log Array. Why: depletedEnd is a value consequence, so it's only recorded on the live log row once the pending payload is actually applied. How: This flags the live (no outcome) row sharing curEntObj's own eid, else passes pickLog through unchanged.
 		? ( curStaObj.pickLog || [] ).map( ( curRowObj ) => ( curRowObj.eid === curEntObj.eid && !curRowObj.outcome ) ? { ...curRowObj, depletedEnd : true } : curRowObj )
 		: ( curStaObj.pickLog || [] );
 
 
-	return { // What: Applied Pending Result Return. Why: The caller (toggleDone) needs the patched arrays plus a revert snapshot to stash on the entry. How: This bundles nxtIteArr/nxtPicArr/nxtLogArr with a revert object capturing revIteArr/preActIde/the entry's own pickerId.
+	return { // What: Applied Pending Result Return. Why: The caller (toggleDone) needs the patched arrays plus a revert snapshot to stash on the entry. How: This bundles nexIteArr/nexPicArr/nexLogArr with a revert object capturing revIteArr/preActIde/the entry's own pickerId.
 
-		items : nxtIteArr, pickers : nxtPicArr, pickLog : nxtLogArr,
+		items : nexIteArr, pickers : nexPicArr, pickLog : nexLogArr,
 		revert : { items : revIteArr, activeItemId : preActIde, pickerId : curEntObj.pickerId }
 
 	};
@@ -714,7 +714,7 @@ function revertEntryPending( curStaObj, curEntObj ) {
 
 	const revIdeMap = new Map( curRevObj.items.map( ( curSnpObj ) => [ curSnpObj.id, curSnpObj ] ) ); // What: Revert Identifier Map. Why: The items map below needs O(1) lookup of each item's own pre-apply snapshot. How: This maps every curRevObj.items row by its own id.
 
-	const nxtIteArr = curStaObj.items.map( ( curIteObj ) => { // What: Next Item Array. Why: Every item must be checked for a matching snapshot to restore. How: This maps curStaObj.items, restoring a matched item's own value/weight/picks/lastPicked/chargeStep, else leaving it unchanged.
+	const nexIteArr = curStaObj.items.map( ( curIteObj ) => { // What: Next Item Array. Why: Every item must be checked for a matching snapshot to restore. How: This maps curStaObj.items, restoring a matched item's own value/weight/picks/lastPicked/chargeStep, else leaving it unchanged.
 
 
 		const matRevObj = revIdeMap.get( curIteObj.id ); // What: Matched Revert Object And Guard. Why: Only items this snapshot actually covers get restored. How: This looks up curIteObj's own id in revIdeMap, undefined when it wasn't touched.
@@ -727,15 +727,15 @@ function revertEntryPending( curStaObj, curEntObj ) {
 
 	} );
 
-	const nxtPicArr = ( curRevObj.activeItemId !== undefined ) // What: Next Picker Array. Why: Only a snapshot that actually recorded a previous activeItemId needs any picker rewritten back. How: This restores curRevObj's own pickerId's activeItemId, else passes pickers through unchanged.
+	const nexPicArr = ( curRevObj.activeItemId !== undefined ) // What: Next Picker Array. Why: Only a snapshot that actually recorded a previous activeItemId needs any picker rewritten back. How: This restores curRevObj's own pickerId's activeItemId, else passes pickers through unchanged.
 		? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === curRevObj.pickerId ? { ...curPicObj, activeItemId : curRevObj.activeItemId } : curPicObj )
 		: curStaObj.pickers;
 
-	const nxtLogArr = ( curStaObj.pickLog || [] ).map( ( curRowObj ) => // What: Next Pick-Log Array. Why: A reverted day no longer counts as ending an Ease Down depletion streak. How: This strips depletedEnd back to false on the live (no outcome) row sharing curEntObj's own eid.
+	const nexLogArr = ( curStaObj.pickLog || [] ).map( ( curRowObj ) => // What: Next Pick-Log Array. Why: A reverted day no longer counts as ending an Ease Down depletion streak. How: This strips depletedEnd back to false on the live (no outcome) row sharing curEntObj's own eid.
 		( curRowObj.eid === curEntObj.eid && !curRowObj.outcome ) ? { ...curRowObj, depletedEnd : false } : curRowObj );
 
 
-	return { items : nxtIteArr, pickers : nxtPicArr, pickLog : nxtLogArr }; // What: Reverted Result Return. Why: The caller (toggleDone/skipEntry/setEntryItem) needs the restored arrays. How: This bundles nxtIteArr/nxtPicArr/nxtLogArr together.
+	return { items : nexIteArr, pickers : nexPicArr, pickLog : nexLogArr }; // What: Reverted Result Return. Why: The caller (toggleDone/skipEntry/setEntryItem) needs the restored arrays. How: This bundles nexIteArr/nexPicArr/nexLogArr together.
 
 
 }
@@ -765,7 +765,7 @@ function revertEntryPending( curStaObj, curEntObj ) {
  *
  * @param curStaObj - Current State Object: The current state, read (not
  *                    mutated) for its own pickers/conditionals.
- * @param nxtEntArr - Next Entry Array: today.entries AFTER this toggle has
+ * @param nexEntArr - Next Entry Array: today.entries AFTER this toggle has
  *                    already been applied to it, used to count dependent
  *                    completions.
  * @param togEntObj - Toggle Entry Object: The entry that was just toggled.
@@ -782,7 +782,7 @@ function revertEntryPending( curStaObj, curEntObj ) {
  *
 */
 
-function applyConditionalToggle( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
+function applyConditionalToggle( curStaObj, nexEntArr, togEntObj, nowDoneBoo ) {
 
 
 	const curCndArr = curStaObj.conditionals || []; // What: Current Conditionals Array And Guard. Why: Every branch below reads/maps over the live conditionals list. How: This reads curStaObj's own conditionals, defaulting to empty.
@@ -832,7 +832,7 @@ function applyConditionalToggle( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
 
 	if ( !cndIdeStr ) return curCndArr; // What: No-Conditional Guard. Why: An ungated picker's entry has no dependent conditional to charge. How: This returns curCndArr unchanged when cndIdeStr is falsy.
 
-	const depDonNum = nxtEntArr.filter( ( curEntObj ) => { // What: Dependent Done Number. Why: The charging edge below only fires on the FIRST dependent completion of the day, so every OTHER done dependent entry for this same conditional must be counted. How: This counts entries (excluding day-off cards) whose own picker shares cndIdeStr and are done.
+	const depDonNum = nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Number. Why: The charging edge below only fires on the FIRST dependent completion of the day, so every OTHER done dependent entry for this same conditional must be counted. How: This counts entries (excluding day-off cards) whose own picker shares cndIdeStr and are done.
 
 
 		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
@@ -909,7 +909,7 @@ function applyConditionalToggle( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
  *
  * @param curStaObj - Current State Object: The current state, read (not
  *                    mutated) for its own pickers/conditionals/conditionalLog.
- * @param nxtEntArr - Next Entry Array: today.entries AFTER this toggle has
+ * @param nexEntArr - Next Entry Array: today.entries AFTER this toggle has
  *                    already been applied to it, used to count dependent
  *                    completions.
  * @param togEntObj - Toggle Entry Object: The entry that was just toggled.
@@ -926,7 +926,7 @@ function applyConditionalToggle( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
  *
 */
 
-function applyConditionalLog( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
+function applyConditionalLog( curStaObj, nexEntArr, togEntObj, nowDoneBoo ) {
 
 
 	const curLogArr = curStaObj.conditionalLog || []; // What: Current Log Array. Why: Every branch below either returns this untouched or derives a new array from it. How: This reads curStaObj's own conditionalLog, defaulting to empty.
@@ -964,7 +964,7 @@ function applyConditionalLog( curStaObj, nxtEntArr, togEntObj, nowDoneBoo ) {
 	const curDayStr = isoDayFun(); // What: Current Day String. Why: A conditionalLog row is keyed by conditional id plus this exact calendar day. How: This reads today's own isoDayFun().
 	const exiRowObj = curLogArr.find( ( curRowObj ) => curRowObj.condId === cndIdeStr && curRowObj.date === curDayStr ); // What: Existing Row Object And Guard. Why: Only one row per conditional per cycle is ever kept. How: This looks up an existing row sharing cndIdeStr and curDayStr.
 
-	const depDonFun = () => nxtEntArr.filter( ( curEntObj ) => { // What: Dependent Done Function. Why: Both branches below need to know how many dependent entries for this exact conditional are currently done. How: This counts entries (excluding day-off cards) whose own picker shares cndIdeStr and are done.
+	const depDonFun = () => nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Function. Why: Both branches below need to know how many dependent entries for this exact conditional are currently done. How: This counts entries (excluding day-off cards) whose own picker shares cndIdeStr and are done.
 
 
 		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
@@ -1554,20 +1554,20 @@ function migrate( curStaObj ) {
 		curStaObj.conditionals = curStaObj.conditionals.map( ( curCndObj ) => { // What: Conditional Split-And-Odds Map. Why: Every conditional needs both migrations applied, in order, before it's usable under the new shape. How: This applies the active/triggered split, then the weight-to-oddsPct migration, to each conditional.
 
 
-			let nxtCndObj = ( 'triggered' in curCndObj ) ? curCndObj : { ...curCndObj, triggered : !!curCndObj.active, active : true }; // What: Split Conditional And Guard. Why: A conditional already carrying its own triggered field is already past this migration. How: This passes curCndObj through unchanged when triggered already exists, else derives it from the old active value.
+			let nexCndObj = ( 'triggered' in curCndObj ) ? curCndObj : { ...curCndObj, triggered : !!curCndObj.active, active : true }; // What: Split Conditional And Guard. Why: A conditional already carrying its own triggered field is already past this migration. How: This passes curCndObj through unchanged when triggered already exists, else derives it from the old active value.
 
-			if ( !( 'oddsPct' in nxtCndObj ) ) { // What: Odds-Percentage Migrate Guard. Why: Only a conditional still missing oddsPct needs its old weight-ratio odds converted. How: This derives oddsPct from nxtCndObj's own weight, clamped to the 10-90 range in steps of 10.
+			if ( !( 'oddsPct' in nexCndObj ) ) { // What: Odds-Percentage Migrate Guard. Why: Only a conditional still missing oddsPct needs its old weight-ratio odds converted. How: This derives oddsPct from nexCndObj's own weight, clamped to the 10-90 range in steps of 10.
 
 
-				const wgtValNum = nxtCndObj.weight ?? 1; // What: Weight Value Number. Why: The odds formula below needs this conditional's own old weight, defaulting to 1 when absent. How: This reads nxtCndObj.weight, defaulting via ??.
+				const wgtValNum = nexCndObj.weight ?? 1; // What: Weight Value Number. Why: The odds formula below needs this conditional's own old weight, defaulting to 1 when absent. How: This reads nexCndObj.weight, defaulting via ??.
 
-				nxtCndObj = { ...nxtCndObj, oddsPct : Math.min( 90, Math.max( 10, Math.round( ( wgtValNum / ( wgtValNum + 1 ) ) * 10 ) * 10 ) ) }; // What: Odds-Percentage Set. Why: The caller needs a direct percentage replacing the old ratio-weight scheme. How: This converts wgtValNum via w/(w+1), rounds to the nearest 10, then clamps to [10,90].
+				nexCndObj = { ...nexCndObj, oddsPct : Math.min( 90, Math.max( 10, Math.round( ( wgtValNum / ( wgtValNum + 1 ) ) * 10 ) * 10 ) ) }; // What: Odds-Percentage Set. Why: The caller needs a direct percentage replacing the old ratio-weight scheme. How: This converts wgtValNum via w/(w+1), rounds to the nearest 10, then clamps to [10,90].
 
 
 			}
 
 
-			return nxtCndObj; // What: Migrated Conditional Return. Why: The map above needs the fully-migrated conditional. How: This returns nxtCndObj, built above.
+			return nexCndObj; // What: Migrated Conditional Return. Why: The map above needs the fully-migrated conditional. How: This returns nexCndObj, built above.
 
 
 		} );
@@ -1630,25 +1630,25 @@ function migrate( curStaObj ) {
 
 		curStaObj.pickers = curStaObj.pickers.map( ( curPicObj ) => {
 
-			const nxtPicObj = { ...curPicObj }; // What: Next Picker Object. Why: Every backfill below patches a copy, never curPicObj itself. How: This starts as a shallow copy of curPicObj.
+			const nexPicObj = { ...curPicObj }; // What: Next Picker Object. Why: Every backfill below patches a copy, never curPicObj itself. How: This starts as a shallow copy of curPicObj.
 
-			if ( !Array.isArray( nxtPicObj.daysOfWeek ) ) nxtPicObj.daysOfWeek = [ 0, 1, 2, 3, 4, 5, 6 ]; // What: Days-Of-Week Backfill. Why: A picker with no schedule override at all still needs an explicit "every day" default. How: This backfills daysOfWeek to every weekday when it isn't already an array.
+			if ( !Array.isArray( nexPicObj.daysOfWeek ) ) nexPicObj.daysOfWeek = [ 0, 1, 2, 3, 4, 5, 6 ]; // What: Days-Of-Week Backfill. Why: A picker with no schedule override at all still needs an explicit "every day" default. How: This backfills daysOfWeek to every weekday when it isn't already an array.
 
-			// What: Weekly-Anchor Enforce. Why: For weekly cadence, the anchor day must always be one of the allowed days, backfilling state saved before this rule existed. How: This calls CAD_NAM_OBJ.enfWeeFun to fold nxtPicObj's own anchor into its daysOfWeek.
-			if ( CAD_NAM_OBJ ) nxtPicObj.daysOfWeek = CAD_NAM_OBJ.enfWeeFun( nxtPicObj );
+			// What: Weekly-Anchor Enforce. Why: For weekly cadence, the anchor day must always be one of the allowed days, backfilling state saved before this rule existed. How: This calls CAD_NAM_OBJ.enfWeeFun to fold nexPicObj's own anchor into its daysOfWeek.
+			if ( CAD_NAM_OBJ ) nexPicObj.daysOfWeek = CAD_NAM_OBJ.enfWeeFun( nexPicObj );
 
-			if ( typeof nxtPicObj.skipHolidays !== 'boolean' ) nxtPicObj.skipHolidays = false; // What: Skip-Holidays Backfill. Why: Every picker needs an explicit holiday-skipping flag. How: This backfills skipHolidays to false when it isn't already a boolean.
+			if ( typeof nexPicObj.skipHolidays !== 'boolean' ) nexPicObj.skipHolidays = false; // What: Skip-Holidays Backfill. Why: Every picker needs an explicit holiday-skipping flag. How: This backfills skipHolidays to false when it isn't already a boolean.
 
 			// What: Avoid-Duplicates Backfill. Why: The avoid-duplicate-item-names flag was added later. How: This backfills avoidDuplicates to false when it isn't already a boolean.
-			if ( typeof nxtPicObj.avoidDuplicates !== 'boolean' ) nxtPicObj.avoidDuplicates = false;
+			if ( typeof nexPicObj.avoidDuplicates !== 'boolean' ) nexPicObj.avoidDuplicates = false;
 
-			// What: Picker-Cadence Normalize. Why: Picker Cadence (surfacing anchor + display unit) was added later; old state defaults to 'daily' (the original behavior) with sensible anchors. How: This calls CAD_NAM_OBJ.norCadFun and merges its own result onto nxtPicObj when nxtPicObj's own cadence isn't already a real one.
-			if ( !CAD_NAM_OBJ.isaCadFun( nxtPicObj.cadence ) ) Object.assign( nxtPicObj, CAD_NAM_OBJ.norCadFun( nxtPicObj ) );
+			// What: Picker-Cadence Normalize. Why: Picker Cadence (surfacing anchor + display unit) was added later; old state defaults to 'daily' (the original behavior) with sensible anchors. How: This calls CAD_NAM_OBJ.norCadFun and merges its own result onto nexPicObj when nexPicObj's own cadence isn't already a real one.
+			if ( !CAD_NAM_OBJ.isaCadFun( nexPicObj.cadence ) ) Object.assign( nexPicObj, CAD_NAM_OBJ.norCadFun( nexPicObj ) );
 
-			if ( typeof nxtPicObj.hidden !== 'boolean' ) nxtPicObj.hidden = false; // What: Hidden-Flag Backfill. Why: Every picker needs an explicit hidden flag, same reasoning as the tasks backfill above. How: This backfills hidden to false when it isn't already a boolean.
+			if ( typeof nexPicObj.hidden !== 'boolean' ) nexPicObj.hidden = false; // What: Hidden-Flag Backfill. Why: Every picker needs an explicit hidden flag, same reasoning as the tasks backfill above. How: This backfills hidden to false when it isn't already a boolean.
 
 
-			return nxtPicObj; // What: Normalized Picker Return. Why: The map above needs the fully-backfilled picker. How: This returns nxtPicObj, built above.
+			return nexPicObj; // What: Normalized Picker Return. Why: The map above needs the fully-backfilled picker. How: This returns nexPicObj, built above.
 
 
 		} );
@@ -2162,18 +2162,18 @@ function useStore( optArgObj ) {
 
 			else delete curCheObj[ itemId ]; // What: Unresolve Branch. Why: A falsy patValObj (null/undefined) unchecks the item back to pending. How: This deletes curCheObj[itemId] entirely.
 
-			const nxtStaObj = { ...curStaObj, onboarding : { ...( curStaObj.onboarding || {} ), checklist : curCheObj } }; // What: Next State Object. Why: The caller needs a fresh state with the patched checklist written on. How: This spreads curStaObj with onboarding's own checklist replaced by curCheObj.
+			const nexStaObj = { ...curStaObj, onboarding : { ...( curStaObj.onboarding || {} ), checklist : curCheObj } }; // What: Next State Object. Why: The caller needs a fresh state with the patched checklist written on. How: This spreads curStaObj with onboarding's own checklist replaced by curCheObj.
 
-			if ( !OB_CHECKLIST.readyToGenerate( curStaObj ) && OB_CHECKLIST.readyToGenerate( nxtStaObj ) ) { // What: Ready-To-Generate Edge Guard. Why: tab-today.jsx's own auto-scroll needs to know the EXACT moment readiness just flipped on, not merely that it's on now. How: This flags generateScrollPending only when curStaObj was not-yet-ready and nxtStaObj now is.
+			if ( !OB_CHECKLIST.readyToGenerate( curStaObj ) && OB_CHECKLIST.readyToGenerate( nexStaObj ) ) { // What: Ready-To-Generate Edge Guard. Why: tab-today.jsx's own auto-scroll needs to know the EXACT moment readiness just flipped on, not merely that it's on now. How: This flags generateScrollPending only when curStaObj was not-yet-ready and nexStaObj now is.
 
 
-				nxtStaObj.onboarding.generateScrollPending = true; // What: Generate-Scroll-Pending Flag Set. Why: TabToday consumes (and clears) this the next time it renders with it true, per its own migrate() comment. How: This flips nxtStaObj.onboarding.generateScrollPending to true.
+				nexStaObj.onboarding.generateScrollPending = true; // What: Generate-Scroll-Pending Flag Set. Why: TabToday consumes (and clears) this the next time it renders with it true, per its own migrate() comment. How: This flips nexStaObj.onboarding.generateScrollPending to true.
 
 
 			}
 
 
-			return nxtStaObj; // What: Next State Return. Why: The caller needs the fully-patched state. How: This returns nxtStaObj, built above.
+			return nexStaObj; // What: Next State Return. Why: The caller needs the fully-patched state. How: This returns nexStaObj, built above.
 
 
 		} ),
@@ -2225,39 +2225,39 @@ function useStore( optArgObj ) {
 
 			const updIdeMap = new Map( resValObj.updates.map( ( curUpdObj ) => [ curUpdObj.id, curUpdObj ] ) ); // What: Update Identifier Map. Why: The items map below needs O(1) lookup of each touched item's own update row. How: This maps every resValObj.updates row by its own id.
 
-			const nxtIteArr = curStaObj.items.map( ( curIteObj ) => { // What: Next Item Array. Why: Every item must be checked for a staged update or the pick bump. How: This maps curStaObj.items, applying updIdeMap's own patch and/or the pick bump to a touched item, leaving everything else unchanged.
+			const nexIteArr = curStaObj.items.map( ( curIteObj ) => { // What: Next Item Array. Why: Every item must be checked for a staged update or the pick bump. How: This maps curStaObj.items, applying updIdeMap's own patch and/or the pick bump to a touched item, leaving everything else unchanged.
 
 
 				const matUpdObj = updIdeMap.get( curIteObj.id ); // What: Matched Update Object And Guard. Why: An item this result never mentions has nothing to apply. How: This looks up curIteObj's own id in updIdeMap, undefined when absent.
 
 				if ( !matUpdObj ) return curIteObj; // What: No-Update Guard. Why: An untouched item passes through unchanged. How: This returns curIteObj unchanged when matUpdObj is falsy.
 
-				const nxtIteObj = { ...curIteObj }; // What: Next Item Object. Why: The patch below must not mutate curIteObj itself. How: This starts as a shallow copy of curIteObj.
+				const nexIteObj = { ...curIteObj }; // What: Next Item Object. Why: The patch below must not mutate curIteObj itself. How: This starts as a shallow copy of curIteObj.
 
-				if ( 'value' in matUpdObj ) nxtIteObj.value = matUpdObj.value;   // What: Value Patch. Why: An update row only sometimes carries a new drift/charge value. How: This applies matUpdObj's own value only when the key is present.
-				if ( 'weight' in matUpdObj ) nxtIteObj.weight = matUpdObj.weight; // What: Weight Patch. Why: An update row only sometimes carries a new ease-down fairness weight. How: This applies matUpdObj's own weight only when the key is present.
+				if ( 'value' in matUpdObj ) nexIteObj.value = matUpdObj.value;   // What: Value Patch. Why: An update row only sometimes carries a new drift/charge value. How: This applies matUpdObj's own value only when the key is present.
+				if ( 'weight' in matUpdObj ) nexIteObj.weight = matUpdObj.weight; // What: Weight Patch. Why: An update row only sometimes carries a new ease-down fairness weight. How: This applies matUpdObj's own weight only when the key is present.
 
-				if ( resValObj.picked && resValObj.picked.id === curIteObj.id ) { // What: Pick Bump Guard. Why: Only the item resValObj itself reports as picked gets its own picks/lastPicked bumped. How: This increments picks and stamps lastPicked on nxtIteObj when curIteObj matches resValObj.picked.
+				if ( resValObj.picked && resValObj.picked.id === curIteObj.id ) { // What: Pick Bump Guard. Why: Only the item resValObj itself reports as picked gets its own picks/lastPicked bumped. How: This increments picks and stamps lastPicked on nexIteObj when curIteObj matches resValObj.picked.
 
 
-					nxtIteObj.picks = ( curIteObj.picks || 0 ) + 1;             // What: Picks Increment. Why: A real pick must be reflected in this item's own running pick count. How: This increments curIteObj's own picks, defaulting to 0.
-					nxtIteObj.lastPicked = new Date().toISOString();           // What: Last-Picked Stamp. Why: A real pick must be reflected in this item's own last-picked timestamp. How: This stamps the current instant's own ISO string.
+					nexIteObj.picks = ( curIteObj.picks || 0 ) + 1;             // What: Picks Increment. Why: A real pick must be reflected in this item's own running pick count. How: This increments curIteObj's own picks, defaulting to 0.
+					nexIteObj.lastPicked = new Date().toISOString();           // What: Last-Picked Stamp. Why: A real pick must be reflected in this item's own last-picked timestamp. How: This stamps the current instant's own ISO string.
 
 
 				}
 
 
-				return nxtIteObj; // What: Next Item Return. Why: The caller needs this item's own patched copy. How: This returns nxtIteObj, built above.
+				return nexIteObj; // What: Next Item Return. Why: The caller needs this item's own patched copy. How: This returns nexIteObj, built above.
 
 
 			} );
 
-			const nxtPicArr = resValObj.pickerPatch // What: Next Picker Array. Why: Only a result carrying its own pickerPatch (e.g. Ease Down's activeItemId) needs any picker actually rewritten. How: This patches pickerId's own picker with pickerPatch's own fields, else passes pickers through unchanged.
+			const nexPicArr = resValObj.pickerPatch // What: Next Picker Array. Why: Only a result carrying its own pickerPatch (e.g. Ease Down's activeItemId) needs any picker actually rewritten. How: This patches pickerId's own picker with pickerPatch's own fields, else passes pickers through unchanged.
 				? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === pickerId ? { ...curPicObj, ...resValObj.pickerPatch } : curPicObj )
 				: curStaObj.pickers;
 
 
-			return { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }; // What: Next State Return. Why: The caller needs the patched items/pickers written onto a fresh state. How: This spreads curStaObj with items/pickers replaced.
+			return { ...curStaObj, items : nexIteArr, pickers : nexPicArr }; // What: Next State Return. Why: The caller needs the patched items/pickers written onto a fresh state. How: This spreads curStaObj with items/pickers replaced.
 
 
 		} ),
@@ -2330,16 +2330,16 @@ function useStore( optArgObj ) {
 			const hasDofBoo = easDwnBoo && cndIdeStr && // What: Has Day-Off Boolean. Why: An ease-down picker that's currently suppressed behind its own day-off card must NOT have that card silently replaced by this manual override. How: This is true only when this is ease-down, gated, and today already shows a live day-off card for that same conditional.
 				curStaObj.today.entries.some( ( curEntObj ) => curEntObj.kind === 'dayoff' && curEntObj.conditionalId === cndIdeStr );
 
-			const nxtEntArr = ( easDwnBoo && !hasDofBoo ) // What: Next Entry Array. Why: Ease Down normally REPLACES its own picker's existing entry; the day-off-card exception instead ADDS an extra entry alongside the still-showing card. How: This filters out this picker's own prior entry (unless the exception applies) before appending newEntObj.
+			const nexEntArr = ( easDwnBoo && !hasDofBoo ) // What: Next Entry Array. Why: Ease Down normally REPLACES its own picker's existing entry; the day-off-card exception instead ADDS an extra entry alongside the still-showing card. How: This filters out this picker's own prior entry (unless the exception applies) before appending newEntObj.
 				? [ ...curStaObj.today.entries.filter( ( curEntObj ) => curEntObj.pickerId !== pickerId ), newEntObj ]
 				: [ ...curStaObj.today.entries, newEntObj ];
 
-			const nxtLogArr = easDwnBoo // What: Next Pick-Log Array. Why: A replaced Ease Down entry must not leave its own prior log row behind under the same eid. How: This drops any earlier row sharing eid before appending logRowObj, only for ease-down; every other mode simply appends.
+			const nexLogArr = easDwnBoo // What: Next Pick-Log Array. Why: A replaced Ease Down entry must not leave its own prior log row behind under the same eid. How: This drops any earlier row sharing eid before appending logRowObj, only for ease-down; every other mode simply appends.
 				? [ ...( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.eid !== eid ), logRowObj ]
 				: [ ...( curStaObj.pickLog || [] ), logRowObj ];
 
 
-			return { ...curStaObj, today : { ...curStaObj.today, entries : nxtEntArr }, pickLog : nxtLogArr }; // What: Next State Return. Why: The caller needs the new entry and its own log row written onto a fresh state. How: This spreads curStaObj with today.entries and pickLog replaced.
+			return { ...curStaObj, today : { ...curStaObj.today, entries : nexEntArr }, pickLog : nexLogArr }; // What: Next State Return. Why: The caller needs the new entry and its own log row written onto a fresh state. How: This spreads curStaObj with today.entries and pickLog replaced.
 
 
 		} ),
@@ -2363,34 +2363,34 @@ function useStore( optArgObj ) {
 
 
 			const curEntObj = curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === eid ); // What: Current Entry Object And Guard. Why: The undo-then-restage flow below needs to know whether this entry was already completed. How: This looks up eid in curStaObj.today.entries.
-			let nxtIteArr = curStaObj.items, nxtPicArr = curStaObj.pickers, nxtLogArr = curStaObj.pickLog || []; // What: Next Item/Picker/Pick-Log Arrays And Guard. Why: These default to the unchanged state and are only replaced below when an already-completed entry needs its own pending undone first. How: This starts at curStaObj's own current arrays.
+			let nexIteArr = curStaObj.items, nexPicArr = curStaObj.pickers, nexLogArr = curStaObj.pickLog || []; // What: Next Item/Picker/Pick-Log Arrays And Guard. Why: These default to the unchanged state and are only replaced below when an already-completed entry needs its own pending undone first. How: This starts at curStaObj's own current arrays.
 
 			if ( curEntObj && curEntObj.done && curEntObj.revert ) { // What: Already-Done Undo Guard. Why: A re-roll always lands not-done, so an already-completed entry's own staged mutation must be undone first. How: This calls revertEntryPending and adopts its own result when curEntObj is done and carries a revert snapshot.
 
 
 				const resValObj = revertEntryPending( { ...curStaObj }, curEntObj ); // What: Result Value Object. Why: revertEntryPending returns the restored items/pickers/pickLog together. How: This calls revertEntryPending with a shallow copy of curStaObj and curEntObj.
 
-				nxtIteArr = resValObj.items; nxtPicArr = resValObj.pickers; nxtLogArr = resValObj.pickLog; // What: Restored Arrays Adopt. Why: Every downstream line below must build on the RESTORED arrays, not the still-applied ones. How: This destructures resValObj's own items/pickers/pickLog onto the outer let bindings.
+				nexIteArr = resValObj.items; nexPicArr = resValObj.pickers; nexLogArr = resValObj.pickLog; // What: Restored Arrays Adopt. Why: Every downstream line below must build on the RESTORED arrays, not the still-applied ones. How: This destructures resValObj's own items/pickers/pickLog onto the outer let bindings.
 
 
 			}
 
-			const curRowObj = nxtLogArr.find( ( logFinObj ) => logFinObj.eid === eid && !logFinObj.outcome ); // What: Current Row Object And Guard. Why: The live log row (if any) is where this eid's own current pickerId can still be read from. How: This finds the one row sharing eid with no outcome yet.
+			const curRowObj = nexLogArr.find( ( logFinObj ) => logFinObj.eid === eid && !logFinObj.outcome ); // What: Current Row Object And Guard. Why: The live log row (if any) is where this eid's own current pickerId can still be read from. How: This finds the one row sharing eid with no outcome yet.
 			const pickerId = curRowObj ? curRowObj.pickerId // What: Picker Id. Why: The fresh reroll log row below needs a pickerId, preferring the live log row's own, falling back to the live entry's own. How: This reads curRowObj's own pickerId, else the matching today.entries row's own pickerId.
 				: ( curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === eid ) || {} ).pickerId;
 
-			let nxtLogArr2 = nxtLogArr.map( ( logMapObj ) => // What: Next Pick-Log Array (Rejected). Why: The rolled-away row must be marked rejected, keeping its own itemId, before the fresh reroll row is appended. How: This flags the live row sharing eid as outcome:'rejected'.
+			let nexLogArr2 = nexLogArr.map( ( logMapObj ) => // What: Next Pick-Log Array (Rejected). Why: The rolled-away row must be marked rejected, keeping its own itemId, before the fresh reroll row is appended. How: This flags the live row sharing eid as outcome:'rejected'.
 				( logMapObj.eid === eid && !logMapObj.outcome ) ? { ...logMapObj, outcome : 'rejected' } : logMapObj );
 
-			if ( pickerId ) nxtLogArr2.push( logRowFun( { ...curStaObj, items : nxtIteArr }, { eid, pickerId, itemId, source : 'reroll' } ) ); // What: Reroll Row Append. Why: Only when a pickerId could actually be resolved does a fresh reroll row make sense to log. How: This pushes a new logRowFun row with source:'reroll' onto nxtLogArr2.
+			if ( pickerId ) nexLogArr2.push( logRowFun( { ...curStaObj, items : nexIteArr }, { eid, pickerId, itemId, source : 'reroll' } ) ); // What: Reroll Row Append. Why: Only when a pickerId could actually be resolved does a fresh reroll row make sense to log. How: This pushes a new logRowFun row with source:'reroll' onto nexLogArr2.
 
 
 			return { // What: Next State Return. Why: The caller needs the entry re-pointed at itemId (not-done, not-skipped, freshly staged), plus the updated log. How: This spreads curStaObj with items/pickers/today.entries/pickLog all replaced.
 
-				...curStaObj, items : nxtIteArr, pickers : nxtPicArr,
+				...curStaObj, items : nexIteArr, pickers : nexPicArr,
 				today : { ...curStaObj.today, entries : curStaObj.today.entries.map( ( entMapObj ) =>
 					entMapObj.eid === eid ? { ...entMapObj, itemId, done : false, skipped : false, pending : penArgObj || null, revert : null } : entMapObj ) },
-				pickLog : nxtLogArr2
+				pickLog : nexLogArr2
 
 			};
 
@@ -2435,21 +2435,21 @@ function useStore( optArgObj ) {
 
 			} ) );
 
-			const nxtEntArr = [ ...carEntArr, ...frsEntArr ]; // What: Next Entry Array. Why: The new today.entries list is exactly the carried entries plus the freshly-built ones. How: This concatenates carEntArr and frsEntArr.
+			const nexEntArr = [ ...carEntArr, ...frsEntArr ]; // What: Next Entry Array. Why: The new today.entries list is exactly the carried entries plus the freshly-built ones. How: This concatenates carEntArr and frsEntArr.
 
 			const newRowArr = frsEntArr.filter( ( curEntObj ) => !curEntObj.kind && curEntObj.pickerId ).map( ( curEntObj ) => // What: New Row Array. Why: Only a real (non-day-off-card) fresh entry needs its own auto pick-log row; depletedEnd is deliberately NOT written here, since it's a value consequence recorded only on completion. How: This builds one logRowFun row per qualifying fresh entry, source:'auto'.
 				logRowFun( curStaObj, { eid : curEntObj.eid, pickerId : curEntObj.pickerId, itemId : curEntObj.itemId, source : 'auto', date : curDayStr } ) );
 
-			const nxtLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.date !== curDayStr || carEidSet.has( curRowObj.eid ) ).concat( newRowArr ); // What: Next Pick-Log Array. Why: The generator owns today, so every OTHER row logged today (auto or manual) must be dropped, except a carried entry's own still-live row. How: This keeps every row not dated today (or belonging to a carried eid), then appends newRowArr.
+			const nexLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.date !== curDayStr || carEidSet.has( curRowObj.eid ) ).concat( newRowArr ); // What: Next Pick-Log Array. Why: The generator owns today, so every OTHER row logged today (auto or manual) must be dropped, except a carried entry's own still-live row. How: This keeps every row not dated today (or belonging to a carried eid), then appends newRowArr.
 
-			const nxtTodObj = { ...curStaObj.today, entries : nxtEntArr }; // What: Next Today Object. Why: The caller needs a fresh today object carrying the new entries. How: This spreads curStaObj.today with entries replaced by nxtEntArr.
+			const nexTodObj = { ...curStaObj.today, entries : nexEntArr }; // What: Next Today Object. Why: The caller needs a fresh today object carrying the new entries. How: This spreads curStaObj.today with entries replaced by nexEntArr.
 
-			if ( optArgObj && optArgObj.resetStreak ) nxtTodObj.streakClaimed = false; // What: Streak-Claimed Reset Guard. Why: Only the scheduled auto-run (never a manual Regenerate) starts the new period unclaimed, per the design-rationale comment above. How: This sets nxtTodObj.streakClaimed to false only when optArgObj.resetStreak is truthy.
+			if ( optArgObj && optArgObj.resetStreak ) nexTodObj.streakClaimed = false; // What: Streak-Claimed Reset Guard. Why: Only the scheduled auto-run (never a manual Regenerate) starts the new period unclaimed, per the design-rationale comment above. How: This sets nexTodObj.streakClaimed to false only when optArgObj.resetStreak is truthy.
 
-			const nxtTasArr = ( curStaObj.tasks || [] ).filter( ( curTasObj ) => !TASKS.isCompletedOnce( curTasObj ) ); // What: Next Task Array. Why: Every Generate also drops completed one-time reminders outright, rather than waiting for a future reload/day-change. How: This keeps every task TASKS.isCompletedOnce reports false for.
+			const nexTasArr = ( curStaObj.tasks || [] ).filter( ( curTasObj ) => !TASKS.isCompletedOnce( curTasObj ) ); // What: Next Task Array. Why: Every Generate also drops completed one-time reminders outright, rather than waiting for a future reload/day-change. How: This keeps every task TASKS.isCompletedOnce reports false for.
 
 
-			return { ...curStaObj, today : nxtTodObj, pickLog : nxtLogArr, tasks : nxtTasArr }; // What: Next State Return. Why: The caller needs today/pickLog/tasks all replaced on a fresh state. How: This spreads curStaObj with the 3 fields replaced.
+			return { ...curStaObj, today : nexTodObj, pickLog : nexLogArr, tasks : nexTasArr }; // What: Next State Return. Why: The caller needs today/pickLog/tasks all replaced on a fresh state. How: This spreads curStaObj with the 3 fields replaced.
 
 
 		} ),
@@ -2463,12 +2463,12 @@ function useStore( optArgObj ) {
 			setAppStaObj( ( curStaObj ) => {
 
 				const patByIdObj = CON_NAM_OBJ.resDayFun( curStaObj.conditionals || [] ); // What: Patch By Id Object. Why: CON_NAM_OBJ itself decides each conditional's own per-day patch (or none). How: This calls CON_NAM_OBJ.resDayFun with curStaObj's own conditionals.
-				const nxtCndArr = ( curStaObj.conditionals || [] ).map( ( curCndObj ) => ( { ...curCndObj, ...patByIdObj[ curCndObj.id ] } ) ); // What: Next Conditionals Array. Why: Every conditional gets its own matching patch (if any) merged on. How: This maps every conditional, spreading in patByIdObj's own entry for its id.
+				const nexCndArr = ( curStaObj.conditionals || [] ).map( ( curCndObj ) => ( { ...curCndObj, ...patByIdObj[ curCndObj.id ] } ) ); // What: Next Conditionals Array. Why: Every conditional gets its own matching patch (if any) merged on. How: This maps every conditional, spreading in patByIdObj's own entry for its id.
 
-				resCndArr = nxtCndArr; // What: Resolved Array Capture. Why: The outer resCndArr must be set from inside this updater, the only place nxtCndArr actually exists. How: This assigns nxtCndArr onto the closed-over resCndArr.
+				resCndArr = nexCndArr; // What: Resolved Array Capture. Why: The outer resCndArr must be set from inside this updater, the only place nexCndArr actually exists. How: This assigns nexCndArr onto the closed-over resCndArr.
 
 
-				return { ...curStaObj, conditionals : nxtCndArr }; // What: Next State Return. Why: The caller needs conditionals replaced on a fresh state. How: This spreads curStaObj with conditionals replaced by nxtCndArr.
+				return { ...curStaObj, conditionals : nexCndArr }; // What: Next State Return. Why: The caller needs conditionals replaced on a fresh state. How: This spreads curStaObj with conditionals replaced by nexCndArr.
 
 
 			} );
@@ -2526,43 +2526,43 @@ function useStore( optArgObj ) {
 
 			const nowDoneBoo = !curEntObj.done; // What: Now Done Boolean. Why: Every branch below needs to know which direction this toggle is heading. How: This is the logical negation of curEntObj's own current done state.
 
-			let nxtIteArr = curStaObj.items, nxtPicArr = curStaObj.pickers, nxtLogArr = curStaObj.pickLog || [], nxtRevObj = null; // What: Next Item/Picker/Pick-Log Arrays And Revert Object, And Guard. Why: These default to the unchanged state and are only replaced by whichever branch below actually fires. How: This starts at curStaObj's own current arrays, with nxtRevObj starting null.
+			let nexIteArr = curStaObj.items, nexPicArr = curStaObj.pickers, nexLogArr = curStaObj.pickLog || [], nexRevObj = null; // What: Next Item/Picker/Pick-Log Arrays And Revert Object, And Guard. Why: These default to the unchanged state and are only replaced by whichever branch below actually fires. How: This starts at curStaObj's own current arrays, with nexRevObj starting null.
 
 			if ( nowDoneBoo ) { // What: Apply Branch. Why: Marking DONE is what actually applies curEntObj's own staged pending mutation. How: This calls applyEntryPending and adopts its own result, including the revert snapshot it returns.
 
 
 				const resValObj = applyEntryPending( { ...curStaObj }, curEntObj ); // What: Result Value Object. Why: applyEntryPending returns the patched arrays plus a fresh revert snapshot together. How: This calls applyEntryPending with a shallow copy of curStaObj and curEntObj.
 
-				nxtIteArr = resValObj.items; nxtPicArr = resValObj.pickers; nxtLogArr = resValObj.pickLog; nxtRevObj = resValObj.revert; // What: Applied Arrays Adopt. Why: Every downstream line below must build on the PATCHED arrays, with the fresh revert snapshot staged on the entry itself. How: This destructures resValObj's own items/pickers/pickLog/revert onto the outer let bindings.
+				nexIteArr = resValObj.items; nexPicArr = resValObj.pickers; nexLogArr = resValObj.pickLog; nexRevObj = resValObj.revert; // What: Applied Arrays Adopt. Why: Every downstream line below must build on the PATCHED arrays, with the fresh revert snapshot staged on the entry itself. How: This destructures resValObj's own items/pickers/pickLog/revert onto the outer let bindings.
 
 
 			}
 
-			else { // What: Revert Branch. Why: Un-marking DONE must undo exactly whatever the apply branch above staged, using the entry's own prior revert snapshot. How: This calls revertEntryPending and adopts its own result, clearing nxtRevObj back to null.
+			else { // What: Revert Branch. Why: Un-marking DONE must undo exactly whatever the apply branch above staged, using the entry's own prior revert snapshot. How: This calls revertEntryPending and adopts its own result, clearing nexRevObj back to null.
 
 
 				const resValObj = revertEntryPending( { ...curStaObj }, curEntObj ); // What: Result Value Object. Why: revertEntryPending returns the restored arrays together. How: This calls revertEntryPending with a shallow copy of curStaObj and curEntObj.
 
-				nxtIteArr = resValObj.items; nxtPicArr = resValObj.pickers; nxtLogArr = resValObj.pickLog; nxtRevObj = null; // What: Reverted Arrays Adopt. Why: An un-done entry no longer carries any revert snapshot of its own. How: This destructures resValObj's own items/pickers/pickLog onto the outer let bindings, and nulls nxtRevObj.
+				nexIteArr = resValObj.items; nexPicArr = resValObj.pickers; nexLogArr = resValObj.pickLog; nexRevObj = null; // What: Reverted Arrays Adopt. Why: An un-done entry no longer carries any revert snapshot of its own. How: This destructures resValObj's own items/pickers/pickLog onto the outer let bindings, and nulls nexRevObj.
 
 
 			}
 
-			const nxtEntArr = curStaObj.today.entries.map( ( entMapObj ) => // What: Next Entry Array. Why: Only the toggled entry's own done/skipped/revert fields actually change. How: This maps today.entries, patching the one entry matching eid.
-				entMapObj.eid === eid ? { ...entMapObj, done : nowDoneBoo, skipped : false, revert : nxtRevObj } : entMapObj );
+			const nexEntArr = curStaObj.today.entries.map( ( entMapObj ) => // What: Next Entry Array. Why: Only the toggled entry's own done/skipped/revert fields actually change. How: This maps today.entries, patching the one entry matching eid.
+				entMapObj.eid === eid ? { ...entMapObj, done : nowDoneBoo, skipped : false, revert : nexRevObj } : entMapObj );
 
 			// What: Conditional Consequences Resolve. Why: A charge on the first dependent completion, or a day-off card reset/discharge, must be resolved against the ALREADY-toggled entries list. How: This calls applyConditionalToggle then applyConditionalLog, both against the patched items/pickers.
-			const nxtCndArr = applyConditionalToggle( { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }, nxtEntArr, curEntObj, nowDoneBoo );
-			const nxtCndLogArr = applyConditionalLog( { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }, nxtEntArr, curEntObj, nowDoneBoo );
+			const nexCndArr = applyConditionalToggle( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, nowDoneBoo );
+			const nexCndLogArr = applyConditionalLog( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, nowDoneBoo );
 
-			nxtLogArr = nxtLogArr.map( ( curRowObj ) => ( curRowObj.eid === eid && !curRowObj.outcome ) // What: Live Log Row Toggle. Why: Only the live (active, non-rejected/non-skipped) row for this eid ever toggles its own done/completedAt. How: This stamps done/completedAt on the one matching row, leaving every other row untouched.
+			nexLogArr = nexLogArr.map( ( curRowObj ) => ( curRowObj.eid === eid && !curRowObj.outcome ) // What: Live Log Row Toggle. Why: Only the live (active, non-rejected/non-skipped) row for this eid ever toggles its own done/completedAt. How: This stamps done/completedAt on the one matching row, leaving every other row untouched.
 				? { ...curRowObj, done : nowDoneBoo, completedAt : nowDoneBoo ? new Date().toISOString() : null }
 				: curRowObj );
 
-			const { streak, streakClaimed } = reconcileStreak( { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }, nxtEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Toggling any entry can flip whether today counts as fully done. How: This calls reconcileStreak against the already-patched items/pickers and the already-toggled entries.
+			const { streak, streakClaimed } = reconcileStreak( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Toggling any entry can flip whether today counts as fully done. How: This calls reconcileStreak against the already-patched items/pickers and the already-toggled entries.
 
 
-			return { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr, conditionals : nxtCndArr, conditionalLog : nxtCndLogArr, streak, today : { ...curStaObj.today, entries : nxtEntArr, streakClaimed }, pickLog : nxtLogArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
+			return { ...curStaObj, items : nexIteArr, pickers : nexPicArr, conditionals : nexCndArr, conditionalLog : nexCndLogArr, streak, today : { ...curStaObj.today, entries : nexEntArr, streakClaimed }, pickLog : nexLogArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
 
 
 		} ),
@@ -2585,34 +2585,34 @@ function useStore( optArgObj ) {
 
 
 			const curEntObj = curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === eid ); // What: Current Entry Object And Guard. Why: The undo-before-skip branch below needs to know whether this entry was already completed. How: This looks up eid in curStaObj.today.entries.
-			let nxtIteArr = curStaObj.items, nxtPicArr = curStaObj.pickers, nxtLogArr = curStaObj.pickLog || []; // What: Next Item/Picker/Pick-Log Arrays And Guard. Why: These default to the unchanged state and are only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj's own current arrays.
+			let nexIteArr = curStaObj.items, nexPicArr = curStaObj.pickers, nexLogArr = curStaObj.pickLog || []; // What: Next Item/Picker/Pick-Log Arrays And Guard. Why: These default to the unchanged state and are only replaced below when an already-done entry needs its own pending undone first. How: This starts at curStaObj's own current arrays.
 
 			if ( curEntObj && curEntObj.done && curEntObj.revert ) { // What: Already-Done Undo Guard. Why: A skipped entry is no longer a completion, so any staged mutation it already applied must be undone first. How: This calls revertEntryPending and adopts its own result.
 
 
 				const resValObj = revertEntryPending( { ...curStaObj }, curEntObj ); // What: Result Value Object. Why: revertEntryPending returns the restored items/pickers/pickLog together. How: This calls revertEntryPending with a shallow copy of curStaObj and curEntObj.
 
-				nxtIteArr = resValObj.items; nxtPicArr = resValObj.pickers; nxtLogArr = resValObj.pickLog; // What: Restored Arrays Adopt. Why: Every downstream line below must build on the RESTORED arrays. How: This destructures resValObj's own items/pickers/pickLog onto the outer let bindings.
+				nexIteArr = resValObj.items; nexPicArr = resValObj.pickers; nexLogArr = resValObj.pickLog; // What: Restored Arrays Adopt. Why: Every downstream line below must build on the RESTORED arrays. How: This destructures resValObj's own items/pickers/pickLog onto the outer let bindings.
 
 
 			}
 
-			const nxtEntArr = curStaObj.today.entries.filter( ( entFilObj ) => entFilObj.eid !== eid ); // What: Next Entry Array. Why: A skipped entry is removed from today entirely, not merely marked. How: This filters out the one entry matching eid.
+			const nexEntArr = curStaObj.today.entries.filter( ( entFilObj ) => entFilObj.eid !== eid ); // What: Next Entry Array. Why: A skipped entry is removed from today entirely, not merely marked. How: This filters out the one entry matching eid.
 
-			const nxtCndArr = ( curEntObj && curEntObj.done ) // What: Next Conditionals Array. Why: A completed entry being skipped is no longer a completion, so any conditional charge/discharge it drove must be reverted. How: This calls applyConditionalToggle with nowDone:false only when curEntObj was actually done, else passes conditionals through unchanged.
-				? applyConditionalToggle( { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }, nxtEntArr, curEntObj, false )
+			const nexCndArr = ( curEntObj && curEntObj.done ) // What: Next Conditionals Array. Why: A completed entry being skipped is no longer a completion, so any conditional charge/discharge it drove must be reverted. How: This calls applyConditionalToggle with nowDone:false only when curEntObj was actually done, else passes conditionals through unchanged.
+				? applyConditionalToggle( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, false )
 				: ( curStaObj.conditionals || [] );
-			const nxtCndLogArr = ( curEntObj && curEntObj.done ) // What: Next Conditional-Log Array. Why: The matching cycle's own log row must be un-recorded too, for the same reason as nxtCndArr above. How: This calls applyConditionalLog with nowDone:false only when curEntObj was actually done, else passes conditionalLog through unchanged.
-				? applyConditionalLog( { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }, nxtEntArr, curEntObj, false )
+			const nexCndLogArr = ( curEntObj && curEntObj.done ) // What: Next Conditional-Log Array. Why: The matching cycle's own log row must be un-recorded too, for the same reason as nexCndArr above. How: This calls applyConditionalLog with nowDone:false only when curEntObj was actually done, else passes conditionalLog through unchanged.
+				? applyConditionalLog( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, false )
 				: ( curStaObj.conditionalLog || [] );
 
-			nxtLogArr = nxtLogArr.map( ( curRowObj ) => // What: Live Log Row Skip. Why: The live row for this eid must be marked skipped (never overwriting an already-rejected row from an earlier re-roll). How: This flags the matching row outcome:'skipped', done:false, completedAt:null.
+			nexLogArr = nexLogArr.map( ( curRowObj ) => // What: Live Log Row Skip. Why: The live row for this eid must be marked skipped (never overwriting an already-rejected row from an earlier re-roll). How: This flags the matching row outcome:'skipped', done:false, completedAt:null.
 				( curRowObj.eid === eid && curRowObj.outcome !== 'rejected' ) ? { ...curRowObj, outcome : 'skipped', done : false, completedAt : null } : curRowObj );
 
-			const { streak, streakClaimed } = reconcileStreak( { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr }, nxtEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Removing an entry from today can flip whether today counts as fully done. How: This calls reconcileStreak against the already-patched items/pickers and the already-filtered entries.
+			const { streak, streakClaimed } = reconcileStreak( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Removing an entry from today can flip whether today counts as fully done. How: This calls reconcileStreak against the already-patched items/pickers and the already-filtered entries.
 
 
-			return { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr, conditionals : nxtCndArr, conditionalLog : nxtCndLogArr, streak, today : { ...curStaObj.today, entries : nxtEntArr, streakClaimed }, pickLog : nxtLogArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
+			return { ...curStaObj, items : nexIteArr, pickers : nexPicArr, conditionals : nexCndArr, conditionalLog : nexCndLogArr, streak, today : { ...curStaObj.today, entries : nexEntArr, streakClaimed }, pickLog : nexLogArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
 
 
 		} ),
@@ -2638,26 +2638,26 @@ function useStore( optArgObj ) {
 			const abnIfActFun = ( picArgArr, iteArgArr, iteIdsArr ) => { // What: Abandon-If-Active Function. Why: Both branches below (single item, whole picker) share this same abandon-in-progress-streak logic. How: This walks iteIdsArr, and for any item that's some ease-down picker's own activeItemId, nulls that pointer and recharges the item to full.
 
 
-				let nxtPicArr = picArgArr, nxtIteArr = iteArgArr; // What: Next Picker/Item Arrays And Guard. Why: The loop below folds its own patch onto these on each iteration that actually finds a match. How: This starts at picArgArr/iteArgArr, the caller's own current arrays.
+				let nexPicArr = picArgArr, nexIteArr = iteArgArr; // What: Next Picker/Item Arrays And Guard. Why: The loop below folds its own patch onto these on each iteration that actually finds a match. How: This starts at picArgArr/iteArgArr, the caller's own current arrays.
 
 
-				for ( const curIteIdeStr of iteIdsArr ) { // What: Abandon Loop. Why: Every touched item id must be checked for whether it's currently some ease-down picker's own in-progress item. How: This iterates iteIdsArr, patching nxtPicArr/nxtIteArr only for a genuine match.
+				for ( const curIteIdeStr of iteIdsArr ) { // What: Abandon Loop. Why: Every touched item id must be checked for whether it's currently some ease-down picker's own in-progress item. How: This iterates iteIdsArr, patching nexPicArr/nexIteArr only for a genuine match.
 
 
-					const curPicObj = nxtPicArr.find( ( picFinObj ) => picFinObj.mode === 'ease-down' && picFinObj.activeItemId === curIteIdeStr ); // What: Current Picker Object And Guard. Why: Only an ease-down picker currently working down exactly this item needs anything abandoned. How: This looks for a picker whose own mode is 'ease-down' and activeItemId matches curIteIdeStr.
+					const curPicObj = nexPicArr.find( ( picFinObj ) => picFinObj.mode === 'ease-down' && picFinObj.activeItemId === curIteIdeStr ); // What: Current Picker Object And Guard. Why: Only an ease-down picker currently working down exactly this item needs anything abandoned. How: This looks for a picker whose own mode is 'ease-down' and activeItemId matches curIteIdeStr.
 
 					if ( !curPicObj ) continue; // What: No-Match Skip Guard. Why: An item not currently in progress for any picker needs nothing abandoned. How: This skips to the next id when curPicObj wasn't found.
 
 					const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: An abandoned item must recharge back to this exact threshold, as if it were never touched. How: This reads curPicObj's own threshold, defaulting to 100.
 
-					nxtPicArr = nxtPicArr.map( ( curPicObj2 ) => curPicObj2.id === curPicObj.id ? { ...curPicObj2, activeItemId : null } : curPicObj2 ); // What: Picker Pointer Null. Why: The abandoned picker must no longer point at this item as its own in-progress one. How: This nulls activeItemId on the one matching picker.
-					nxtIteArr = nxtIteArr.map( ( curIteObj ) => curIteObj.id === curIteIdeStr ? { ...curIteObj, value : thrValNum } : curIteObj );         // What: Item Recharge. Why: An abandoned streak must recharge to full, never counting toward Spent. How: This sets the one matching item's own value to thrValNum.
+					nexPicArr = nexPicArr.map( ( curPicObj2 ) => curPicObj2.id === curPicObj.id ? { ...curPicObj2, activeItemId : null } : curPicObj2 ); // What: Picker Pointer Null. Why: The abandoned picker must no longer point at this item as its own in-progress one. How: This nulls activeItemId on the one matching picker.
+					nexIteArr = nexIteArr.map( ( curIteObj ) => curIteObj.id === curIteIdeStr ? { ...curIteObj, value : thrValNum } : curIteObj );         // What: Item Recharge. Why: An abandoned streak must recharge to full, never counting toward Spent. How: This sets the one matching item's own value to thrValNum.
 
 
 				}
 
 
-				return { pickers : nxtPicArr, items : nxtIteArr }; // What: Abandon Result Return. Why: The caller needs both patched arrays back together. How: This bundles nxtPicArr/nxtIteArr.
+				return { pickers : nexPicArr, items : nexIteArr }; // What: Abandon Result Return. Why: The caller needs both patched arrays back together. How: This bundles nexPicArr/nexIteArr.
 
 
 			};
@@ -2668,13 +2668,13 @@ function useStore( optArgObj ) {
 				const curIteObj = curStaObj.items.find( ( iteFinObj ) => iteFinObj.id === tarIdeStr ); // What: Current Item Object And Guard. Why: The vacationLog row below needs to know the item's own vacation state BEFORE this toggle. How: This looks up tarIdeStr in curStaObj.items.
 				const onValBoo = curIteObj ? !curIteObj.vacation : true; // What: On Value Boolean. Why: The vacationLog row records whether the item just went ON (inactive) or OFF (active again). How: This is curIteObj's own negated vacation flag, else true when curIteObj is somehow missing.
 
-				let nxtIteArr = curStaObj.items.map( ( curIteObj2 ) => curIteObj2.id === tarIdeStr ? { ...curIteObj2, vacation : !curIteObj2.vacation } : curIteObj2 ); // What: Next Item Array. Why: Only the one matching item's own vacation flag actually flips. How: This maps curStaObj.items, negating vacation on the one matching item.
-				let nxtPicArr = curStaObj.pickers; // What: Next Picker Array And Guard. Why: This only changes below when the item just went inactive and needs its own in-progress streak abandoned. How: This starts at curStaObj's own current pickers.
+				let nexIteArr = curStaObj.items.map( ( curIteObj2 ) => curIteObj2.id === tarIdeStr ? { ...curIteObj2, vacation : !curIteObj2.vacation } : curIteObj2 ); // What: Next Item Array. Why: Only the one matching item's own vacation flag actually flips. How: This maps curStaObj.items, negating vacation on the one matching item.
+				let nexPicArr = curStaObj.pickers; // What: Next Picker Array And Guard. Why: This only changes below when the item just went inactive and needs its own in-progress streak abandoned. How: This starts at curStaObj's own current pickers.
 
-				if ( onValBoo ) ( { pickers : nxtPicArr, items : nxtIteArr } = abnIfActFun( nxtPicArr, nxtIteArr, [ tarIdeStr ] ) ); // What: Abandon-If-Active Call Guard. Why: Only going INTO vacation (not coming back out of it) can abandon an in-progress streak. How: This calls abnIfActFun and destructures its own result back onto nxtPicArr/nxtIteArr, only when onValBoo is true.
+				if ( onValBoo ) ( { pickers : nexPicArr, items : nexIteArr } = abnIfActFun( nexPicArr, nexIteArr, [ tarIdeStr ] ) ); // What: Abandon-If-Active Call Guard. Why: Only going INTO vacation (not coming back out of it) can abandon an in-progress streak. How: This calls abnIfActFun and destructures its own result back onto nexPicArr/nexIteArr, only when onValBoo is true.
 
 
-				return { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr, // What: Single-Item Return. Why: The caller needs the patched arrays plus a fresh vacationLog row recording this exact transition. How: This spreads curStaObj with items/pickers replaced and appends one row to vacationLog.
+				return { ...curStaObj, items : nexIteArr, pickers : nexPicArr, // What: Single-Item Return. Why: The caller needs the patched arrays plus a fresh vacationLog row recording this exact transition. How: This spreads curStaObj with items/pickers replaced and appends one row to vacationLog.
 
 					vacationLog : [ ...( curStaObj.vacationLog || [] ), { itemId : tarIdeStr, date : curDayStr, on : onValBoo } ] };
 
@@ -2682,21 +2682,21 @@ function useStore( optArgObj ) {
 			}
 
 			const ownIteArr = curStaObj.items.filter( ( curIteObj ) => curIteObj.pickerId === tarIdeStr ); // What: Owned Item Array. Why: The whole-picker branch needs every item this picker actually owns. How: This filters curStaObj.items to those whose own pickerId matches tarIdeStr.
-			const nxtVacBoo = !( ownIteArr.length && ownIteArr.every( ( curIteObj ) => curIteObj.vacation ) ); // What: Next Vacation Boolean. Why: A picker's own toggle flips to the OPPOSITE of "every owned item is already inactive" (so a mixed state turns everything ON first). How: This negates whether ownIteArr is non-empty and every item in it is already vacation:true.
-			const chgIteArr = ownIteArr.filter( ( curIteObj ) => curIteObj.vacation !== nxtVacBoo ); // What: Changed Item Array. Why: Only an item whose own vacation flag actually differs from nxtVacBoo needs a vacationLog row of its own. How: This filters ownIteArr to items whose own vacation doesn't already match nxtVacBoo.
+			const nexVacBoo = !( ownIteArr.length && ownIteArr.every( ( curIteObj ) => curIteObj.vacation ) ); // What: Next Vacation Boolean. Why: A picker's own toggle flips to the OPPOSITE of "every owned item is already inactive" (so a mixed state turns everything ON first). How: This negates whether ownIteArr is non-empty and every item in it is already vacation:true.
+			const chgIteArr = ownIteArr.filter( ( curIteObj ) => curIteObj.vacation !== nexVacBoo ); // What: Changed Item Array. Why: Only an item whose own vacation flag actually differs from nexVacBoo needs a vacationLog row of its own. How: This filters ownIteArr to items whose own vacation doesn't already match nexVacBoo.
 
-			let nxtIteArr = curStaObj.items.map( ( curIteObj ) => curIteObj.pickerId === tarIdeStr ? { ...curIteObj, vacation : nxtVacBoo } : curIteObj ); // What: Next Item Array. Why: Every item owned by this picker gets the same new vacation state. How: This maps curStaObj.items, setting vacation:nxtVacBoo on every item owned by tarIdeStr.
-			let nxtPicArr = curStaObj.pickers; // What: Next Picker Array And Guard. Why: This only changes below when the picker's own items just went inactive and need their own in-progress streaks abandoned. How: This starts at curStaObj's own current pickers.
+			let nexIteArr = curStaObj.items.map( ( curIteObj ) => curIteObj.pickerId === tarIdeStr ? { ...curIteObj, vacation : nexVacBoo } : curIteObj ); // What: Next Item Array. Why: Every item owned by this picker gets the same new vacation state. How: This maps curStaObj.items, setting vacation:nexVacBoo on every item owned by tarIdeStr.
+			let nexPicArr = curStaObj.pickers; // What: Next Picker Array And Guard. Why: This only changes below when the picker's own items just went inactive and need their own in-progress streaks abandoned. How: This starts at curStaObj's own current pickers.
 
-			if ( nxtVacBoo ) ( { pickers : nxtPicArr, items : nxtIteArr } = abnIfActFun( nxtPicArr, nxtIteArr, chgIteArr.map( ( curIteObj ) => curIteObj.id ) ) ); // What: Abandon-If-Active Call Guard. Why: Only going INTO vacation can abandon an in-progress streak, same reasoning as the single-item branch above. How: This calls abnIfActFun (over just the CHANGED items) and destructures its own result, only when nxtVacBoo is true.
+			if ( nexVacBoo ) ( { pickers : nexPicArr, items : nexIteArr } = abnIfActFun( nexPicArr, nexIteArr, chgIteArr.map( ( curIteObj ) => curIteObj.id ) ) ); // What: Abandon-If-Active Call Guard. Why: Only going INTO vacation can abandon an in-progress streak, same reasoning as the single-item branch above. How: This calls abnIfActFun (over just the CHANGED items) and destructures its own result, only when nexVacBoo is true.
 
 
 			return { // What: Whole-Picker Return. Why: The caller needs the patched arrays plus one fresh vacationLog row per actually-changed item. How: This spreads curStaObj with items/pickers replaced and appends chgIteArr's own rows to vacationLog.
 
 				...curStaObj,
-				items : nxtIteArr,
-				pickers : nxtPicArr,
-				vacationLog : [ ...( curStaObj.vacationLog || [] ), ...chgIteArr.map( ( curIteObj ) => ( { itemId : curIteObj.id, date : curDayStr, on : nxtVacBoo } ) ) ]
+				items : nexIteArr,
+				pickers : nexPicArr,
+				vacationLog : [ ...( curStaObj.vacationLog || [] ), ...chgIteArr.map( ( curIteObj ) => ( { itemId : curIteObj.id, date : curDayStr, on : nexVacBoo } ) ) ]
 
 			};
 
@@ -2952,7 +2952,7 @@ function useStore( optArgObj ) {
 				const finPicObj = { ...newPicObj, name : finNamStr }; // What: Final Picker Object. Why: The picker actually written to state must carry the de-duplicated name, not the raw one. How: This spreads newPicObj with name replaced by finNamStr.
 
 				// What: Next Picker-Ids Array. Why: includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list. How: This adds picIdeStr when includeInDaily and it isn't already present, else removes it.
-				const nxtPidArr = includeInDaily
+				const nexPidArr = includeInDaily
 					? ( curStaObj.daily.pickerIds.includes( picIdeStr ) ? curStaObj.daily.pickerIds : [ ...curStaObj.daily.pickerIds, picIdeStr ] )
 					: curStaObj.daily.pickerIds.filter( ( curPidStr ) => curPidStr !== picIdeStr );
 
@@ -2968,7 +2968,7 @@ function useStore( optArgObj ) {
 						? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === replaceId ? finPicObj : curPicObj )
 						: [ ...curStaObj.pickers, finPicObj ],
 					conditionals : madCndObj ? [ ...( curStaObj.conditionals || [] ), madCndObj ] : ( curStaObj.conditionals || [] ),
-					daily : { ...curStaObj.daily, pickerIds : nxtPidArr }
+					daily : { ...curStaObj.daily, pickerIds : nexPidArr }
 
 				};
 
@@ -3054,11 +3054,11 @@ function useStore( optArgObj ) {
 				? { weight : 1, value : 0, easeMin : PICKERS.DEFAULT_EASE.easeMin, easeMax : PICKERS.DEFAULT_EASE.easeMax }
 				: { weight : 1, value : 0 };
 
-			const nxtIteArr = modChgBoo // What: Next Item Array. Why: Only an ACTUAL mode change resets this picker's own items; an unchanged mode leaves every item's own tuning untouched. How: This maps curStaObj.items, merging modDefObj onto every item owned by pickerId, only when modChgBoo is true.
+			const nexIteArr = modChgBoo // What: Next Item Array. Why: Only an ACTUAL mode change resets this picker's own items; an unchanged mode leaves every item's own tuning untouched. How: This maps curStaObj.items, merging modDefObj onto every item owned by pickerId, only when modChgBoo is true.
 				? curStaObj.items.map( ( curIteObj ) => curIteObj.pickerId === pickerId ? { ...curIteObj, ...modDefObj } : curIteObj )
 				: curStaObj.items;
 
-			const nxtPidArr = includeInDaily // What: Next Picker-Ids Array. Why: includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list, same as addPicker's own resolution. How: This adds pickerId when includeInDaily and it isn't already present, else removes it.
+			const nexPidArr = includeInDaily // What: Next Picker-Ids Array. Why: includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list, same as addPicker's own resolution. How: This adds pickerId when includeInDaily and it isn't already present, else removes it.
 				? ( curStaObj.daily.pickerIds.includes( pickerId ) ? curStaObj.daily.pickerIds : [ ...curStaObj.daily.pickerIds, pickerId ] )
 				: curStaObj.daily.pickerIds.filter( ( curPidStr ) => curPidStr !== pickerId );
 
@@ -3066,10 +3066,10 @@ function useStore( optArgObj ) {
 			return { // What: Next State Return. Why: The caller needs items/pickers/conditionals/daily all updated together. How: This spreads curStaObj, replacing each field with the values resolved above.
 
 				...curStaObj,
-				items : nxtIteArr,
+				items : nexIteArr,
 				pickers : curStaObj.pickers.map( ( picMapObj ) => picMapObj.id === pickerId ? finPicObj : picMapObj ),
 				conditionals : madCndObj ? [ ...( curStaObj.conditionals || [] ), madCndObj ] : ( curStaObj.conditionals || [] ),
-				daily : { ...curStaObj.daily, pickerIds : nxtPidArr }
+				daily : { ...curStaObj.daily, pickerIds : nexPidArr }
 
 			};
 
@@ -3090,17 +3090,17 @@ function useStore( optArgObj ) {
 		removeItem : ( tarIdeStr ) => setAppStaObj( ( curStaObj ) => {
 
 
-			const nxtIteArr = curStaObj.items.filter( ( curIteObj ) => curIteObj.id !== tarIdeStr ); // What: Next Item Array. Why: The removed item must actually be gone from state.items. How: This filters out the one matching tarIdeStr.
-			const nxtEntArr = ( curStaObj.today.entries || [] ).filter( ( curEntObj ) => curEntObj.itemId !== tarIdeStr ); // What: Next Entry Array. Why: A removed item can no longer have a live Today entry pointing at it. How: This filters out every entry whose own itemId matches tarIdeStr.
+			const nexIteArr = curStaObj.items.filter( ( curIteObj ) => curIteObj.id !== tarIdeStr ); // What: Next Item Array. Why: The removed item must actually be gone from state.items. How: This filters out the one matching tarIdeStr.
+			const nexEntArr = ( curStaObj.today.entries || [] ).filter( ( curEntObj ) => curEntObj.itemId !== tarIdeStr ); // What: Next Entry Array. Why: A removed item can no longer have a live Today entry pointing at it. How: This filters out every entry whose own itemId matches tarIdeStr.
 
 			const curDayStr = isoDayFun(); // What: Current Day String. Why: The pick-log purge below only drops TODAY's own rows, keeping history intact. How: This reads isoDayFun().
-			const nxtLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => !( curRowObj.itemId === tarIdeStr && curRowObj.date === curDayStr ) ); // What: Next Pick-Log Array. Why: Only today's own live rows for this item are dropped; historical rows survive (their own denormalized name preserves past stats, like reminderLog does). How: This filters out rows matching both tarIdeStr and curDayStr.
+			const nexLogArr = ( curStaObj.pickLog || [] ).filter( ( curRowObj ) => !( curRowObj.itemId === tarIdeStr && curRowObj.date === curDayStr ) ); // What: Next Pick-Log Array. Why: Only today's own live rows for this item are dropped; historical rows survive (their own denormalized name preserves past stats, like reminderLog does). How: This filters out rows matching both tarIdeStr and curDayStr.
 
-			const { streak, streakClaimed } = reconcileStreak( curStaObj, nxtEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Removing an item can drop entries off today, which can flip whether today counts as fully done. How: This calls reconcileStreak against the already-filtered entries.
-			const nxtPicArr = curStaObj.pickers.map( ( curPicObj ) => curPicObj.activeItemId === tarIdeStr ? { ...curPicObj, activeItemId : null } : curPicObj ); // What: Next Picker Array. Why: A removed item that was some ease-down picker's own in-progress item must no longer be pointed at. How: This nulls activeItemId on any picker that was pointing at tarIdeStr.
+			const { streak, streakClaimed } = reconcileStreak( curStaObj, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Removing an item can drop entries off today, which can flip whether today counts as fully done. How: This calls reconcileStreak against the already-filtered entries.
+			const nexPicArr = curStaObj.pickers.map( ( curPicObj ) => curPicObj.activeItemId === tarIdeStr ? { ...curPicObj, activeItemId : null } : curPicObj ); // What: Next Picker Array. Why: A removed item that was some ease-down picker's own in-progress item must no longer be pointed at. How: This nulls activeItemId on any picker that was pointing at tarIdeStr.
 
 
-			return { ...curStaObj, items : nxtIteArr, pickers : nxtPicArr, streak, pickLog : nxtLogArr, today : { ...curStaObj.today, entries : nxtEntArr, streakClaimed } }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/streak/pickLog/today all replaced.
+			return { ...curStaObj, items : nexIteArr, pickers : nexPicArr, streak, pickLog : nexLogArr, today : { ...curStaObj.today, entries : nexEntArr, streakClaimed } }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/streak/pickLog/today all replaced.
 
 
 		} ),
@@ -3190,12 +3190,12 @@ function useStore( optArgObj ) {
 			const sibNamArr = curStaObj.tasks.filter( ( curTasObj ) => curTasObj.id !== tasIdeStr && !curTasObj.hidden ).map( ( curTasObj ) => curTasObj.name ); // What: Sibling Name Array. Why: The de-duplication below must exclude both this task itself and every hidden (invisible) reminder. How: This filters curStaObj.tasks down to visible siblings, then maps to their own names.
 			const nmdTasObj = { ...finTasObj, name : uniNamFun( finTasObj.name, sibNamArr ) }; // What: Named Task Object. Why: The task actually written must carry its own de-duplicated name. How: This spreads finTasObj with name replaced by uniNamFun's own result.
 
-			const nxtTasArr = fields.replaceId // What: Next Task Array. Why: A replace updates the one matching task in place; a fresh add prepends the new one. How: This maps in nmdTasObj for the matching id when fields.replaceId was given, else prepends nmdTasObj.
+			const nexTasArr = fields.replaceId // What: Next Task Array. Why: A replace updates the one matching task in place; a fresh add prepends the new one. How: This maps in nmdTasObj for the matching id when fields.replaceId was given, else prepends nmdTasObj.
 				? curStaObj.tasks.map( ( curTasObj ) => curTasObj.id === tasIdeStr ? nmdTasObj : curTasObj )
 				: [ nmdTasObj, ...curStaObj.tasks ];
 
 
-			return { ...curStaObj, tasks : nxtTasArr }; // What: Next State Return. Why: The caller needs tasks replaced on a fresh state. How: This spreads curStaObj with tasks replaced by nxtTasArr.
+			return { ...curStaObj, tasks : nexTasArr }; // What: Next State Return. Why: The caller needs tasks replaced on a fresh state. How: This spreads curStaObj with tasks replaced by nexTasArr.
 
 
 		} ),
@@ -3326,7 +3326,7 @@ function useStore( optArgObj ) {
 			const couModStr = mode === 'dark' ? 'light' : 'dark'; // What: Counter Mode String. Why: This names the opposite mode for clarity alongside couKeyStr, even though nothing below currently reads it. How: This picks the opposite of mode.
 
 			const savColObj = { ...colors, derived : false }; // What: Saved Colors Object. Why: A directly-saved slot is by definition NOT auto-derived from its own counterpart. How: This spreads colors with derived explicitly set false.
-			const nxtApeObj = { // What: Next Appearance Object. Why: The caller needs this slot saved and immediately activated as the live theme. How: This spreads curStaObj's own appearance, writing savColObj under keyNamStr and setting theme to keyNamStr.
+			const nexApeObj = { // What: Next Appearance Object. Why: The caller needs this slot saved and immediately activated as the live theme. How: This spreads curStaObj's own appearance, writing savColObj under keyNamStr and setting theme to keyNamStr.
 
 
 				...( curStaObj.appearance || {} ),
@@ -3335,12 +3335,12 @@ function useStore( optArgObj ) {
 
 			};
 
-			const couSlotObj = nxtApeObj[ couKeyStr ]; // What: Counter Slot Object And Guard. Why: The auto-derive check below needs to know whether the counterpart slot already has a real, manually-derived value. How: This reads nxtApeObj's own counterpart slot.
+			const couSlotObj = nexApeObj[ couKeyStr ]; // What: Counter Slot Object And Guard. Why: The auto-derive check below needs to know whether the counterpart slot already has a real, manually-derived value. How: This reads nexApeObj's own counterpart slot.
 
-			if ( !couSlotObj || couSlotObj.derived !== false ) { // What: Auto-Derive Guard. Why: Only a counterpart that's missing, or ITSELF still auto-derived, should be overwritten; a real manual edit (derived:false) must never be clobbered. How: This rewrites nxtApeObj's own counterpart slot only when this condition holds.
+			if ( !couSlotObj || couSlotObj.derived !== false ) { // What: Auto-Derive Guard. Why: Only a counterpart that's missing, or ITSELF still auto-derived, should be overwritten; a real manual edit (derived:false) must never be clobbered. How: This rewrites nexApeObj's own counterpart slot only when this condition holds.
 
 
-				nxtApeObj[ couKeyStr ] = { // What: Counterpart Slot Write. Why: The counterpart needs its own bg/text/accent inverted from the slot that was just saved, keeping any existing name. How: This spreads the prior counterpart slot (or {}), overriding bg/text/accent via invColFun and flagging derived:true.
+				nexApeObj[ couKeyStr ] = { // What: Counterpart Slot Write. Why: The counterpart needs its own bg/text/accent inverted from the slot that was just saved, keeping any existing name. How: This spreads the prior counterpart slot (or {}), overriding bg/text/accent via invColFun and flagging derived:true.
 
 					...( couSlotObj || {} ), // What: Existing Name Keep Spread. Why: A counterpart slot's own name (if it had one) shouldn't be lost just because its colors are being re-derived. How: This spreads couSlotObj (or {}) first, so bg/text/accent/derived below still win.
 					bg : invColFun( colors.bg ), text : invColFun( colors.text ), accent : invColFun( colors.accent ),
@@ -3352,7 +3352,7 @@ function useStore( optArgObj ) {
 			}
 
 
-			return { ...curStaObj, appearance : nxtApeObj }; // What: Next State Return. Why: The caller needs appearance replaced on a fresh state. How: This spreads curStaObj with appearance replaced by nxtApeObj.
+			return { ...curStaObj, appearance : nexApeObj }; // What: Next State Return. Why: The caller needs appearance replaced on a fresh state. How: This spreads curStaObj with appearance replaced by nexApeObj.
 
 
 		} ),
@@ -3385,19 +3385,19 @@ function useStore( optArgObj ) {
 				? { bg : '#1e2230', text : '#f2f3f6', accent : '#7da4ff' }
 				: { bg : '#fcfbf9', text : '#242629', accent : '#3360a8' } );
 
-			const nxtApeObj = { ...( curStaObj.appearance || {} ), [ keyNamStr ] : { ...curColObj, name, nameDerived : false } }; // What: Next Appearance Object. Why: This slot's own colors are kept, but its name is now explicitly set (nameDerived:false, since a direct rename is never itself derived). How: This spreads curStaObj's own appearance, writing the renamed slot under keyNamStr.
+			const nexApeObj = { ...( curStaObj.appearance || {} ), [ keyNamStr ] : { ...curColObj, name, nameDerived : false } }; // What: Next Appearance Object. Why: This slot's own colors are kept, but its name is now explicitly set (nameDerived:false, since a direct rename is never itself derived). How: This spreads curStaObj's own appearance, writing the renamed slot under keyNamStr.
 
-			const couSlotObj = nxtApeObj[ couKeyStr ]; // What: Counter Slot Object And Guard. Why: The auto-rename check below needs to know whether the counterpart's own name was already set directly. How: This reads nxtApeObj's own counterpart slot.
+			const couSlotObj = nexApeObj[ couKeyStr ]; // What: Counter Slot Object And Guard. Why: The auto-rename check below needs to know whether the counterpart's own name was already set directly. How: This reads nexApeObj's own counterpart slot.
 
-			if ( !couSlotObj || couSlotObj.nameDerived !== false ) { // What: Auto-Rename Guard. Why: Only a counterpart whose own name is missing, or ITSELF still auto-derived, should be renamed along with this one. How: This rewrites nxtApeObj's own counterpart slot only when this condition holds.
+			if ( !couSlotObj || couSlotObj.nameDerived !== false ) { // What: Auto-Rename Guard. Why: Only a counterpart whose own name is missing, or ITSELF still auto-derived, should be renamed along with this one. How: This rewrites nexApeObj's own counterpart slot only when this condition holds.
 
-				nxtApeObj[ couKeyStr ] = { ...( couSlotObj || sedDefObj ), name, nameDerived : true }; // What: Counterpart Slot Rename. Why: The counterpart needs the same name, flagged as auto-derived rather than a direct user choice. How: This spreads the prior counterpart slot (or sedDefObj) with name/nameDerived overridden.
+				nexApeObj[ couKeyStr ] = { ...( couSlotObj || sedDefObj ), name, nameDerived : true }; // What: Counterpart Slot Rename. Why: The counterpart needs the same name, flagged as auto-derived rather than a direct user choice. How: This spreads the prior counterpart slot (or sedDefObj) with name/nameDerived overridden.
 
 
 			}
 
 
-			return { ...curStaObj, appearance : nxtApeObj }; // What: Next State Return. Why: The caller needs appearance replaced on a fresh state. How: This spreads curStaObj with appearance replaced by nxtApeObj.
+			return { ...curStaObj, appearance : nexApeObj }; // What: Next State Return. Why: The caller needs appearance replaced on a fresh state. How: This spreads curStaObj with appearance replaced by nexApeObj.
 
 
 		} ),
@@ -3429,15 +3429,15 @@ function useStore( optArgObj ) {
 			const curAncObj = TASKS.anchorDate( curStaObj.today && curStaObj.today.generatedAt ); // What: Current Anchor Object. Why: Every day-comparison below must be pinned to the last generation's own day, not live "now". How: This calls TASKS.anchorDate with today's own generatedAt.
 			const curDayStr = TASKS.isoOf( curAncObj ); // What: Current Day String. Why: Both the lastDone stamp and the completion-log row below need this exact ISO day. How: This calls TASKS.isoOf with curAncObj.
 			const wasDoneBoo = TASKS.isDoneToday( curTasObj, curAncObj ); // What: Was Done Boolean. Why: Every branch below depends on which direction this toggle is heading. How: This calls TASKS.isDoneToday with curTasObj and curAncObj.
-			const nxtTasArr = curStaObj.tasks.map( ( curTasObj2 ) => // What: Next Task Array. Why: Only the toggled task's own lastDone actually changes. How: This maps curStaObj.tasks, setting lastDone to null (un-checking) or curDayStr (completing) on the one matching task.
+			const nexTasArr = curStaObj.tasks.map( ( curTasObj2 ) => // What: Next Task Array. Why: Only the toggled task's own lastDone actually changes. How: This maps curStaObj.tasks, setting lastDone to null (un-checking) or curDayStr (completing) on the one matching task.
 				curTasObj2.id === tarIdeStr ? { ...curTasObj2, lastDone : wasDoneBoo ? null : curDayStr } : curTasObj2 );
 
-			let nxtLogArr = curStaObj.reminderLog || []; // What: Next Reminder-Log Array And Guard. Why: Both branches below patch this same array, one way or the other. How: This starts at curStaObj's own current reminderLog.
+			let nexLogArr = curStaObj.reminderLog || []; // What: Next Reminder-Log Array And Guard. Why: Both branches below patch this same array, one way or the other. How: This starts at curStaObj's own current reminderLog.
 
 			if ( wasDoneBoo ) { // What: Un-Check Branch. Why: Un-checking must void today's own completion row for this reminder. How: This filters out the one row matching taskId and curDayStr.
 
 
-				nxtLogArr = nxtLogArr.filter( ( curRowObj ) =>
+				nexLogArr = nexLogArr.filter( ( curRowObj ) =>
 					!( curRowObj.taskId === tarIdeStr && TASKS.isoOf( new Date( curRowObj.completedAt ) ) === curDayStr ) );
 
 
@@ -3446,7 +3446,7 @@ function useStore( optArgObj ) {
 			else { // What: Complete Branch. Why: Completing must append a fresh completion row for this reminder. How: This appends one row shaped to state.reminderLog's own contract.
 
 
-				nxtLogArr = [ ...nxtLogArr, {
+				nexLogArr = [ ...nexLogArr, {
 
 					rowId : 'rl_' + Math.random().toString( 36 ).slice( 2, 9 ),
 					taskId : tarIdeStr,
@@ -3459,10 +3459,10 @@ function useStore( optArgObj ) {
 
 			}
 
-			const { streak, streakClaimed } = reconcileStreak( curStaObj, curStaObj.today.entries, nxtTasArr ); // What: Streak Reconcile. Why: Toggling a reminder can flip whether today counts as fully done. How: This calls reconcileStreak against curStaObj's own current entries and the already-toggled nxtTasArr.
+			const { streak, streakClaimed } = reconcileStreak( curStaObj, curStaObj.today.entries, nexTasArr ); // What: Streak Reconcile. Why: Toggling a reminder can flip whether today counts as fully done. How: This calls reconcileStreak against curStaObj's own current entries and the already-toggled nexTasArr.
 
 
-			return { ...curStaObj, streak, tasks : nxtTasArr, reminderLog : nxtLogArr, today : { ...curStaObj.today, streakClaimed } }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with streak/tasks/reminderLog/today all replaced.
+			return { ...curStaObj, streak, tasks : nexTasArr, reminderLog : nexLogArr, today : { ...curStaObj.today, streakClaimed } }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with streak/tasks/reminderLog/today all replaced.
 
 
 		} ),
@@ -3476,12 +3476,12 @@ function useStore( optArgObj ) {
 
 				if ( curPicObj.id !== pickerId ) return curPicObj; // What: Non-Matching Guard. Why: Every other picker is untouched by this patch. How: This returns curPicObj unchanged when its own id doesn't match pickerId.
 
-				const nxtPicObj = { ...curPicObj, ...patValObj }; // What: Next Picker Object. Why: The patch itself must land before daysOfWeek is re-derived from it. How: This spreads curPicObj with patValObj merged on.
+				const nexPicObj = { ...curPicObj, ...patValObj }; // What: Next Picker Object. Why: The patch itself must land before daysOfWeek is re-derived from it. How: This spreads curPicObj with patValObj merged on.
 
-				nxtPicObj.daysOfWeek = CAD_NAM_OBJ.enfWeeFun( nxtPicObj ); // What: Days-Of-Week Re-Derive. Why: A cadence/anchorDow/daysOfWeek change must keep the weekly-cadence anchor day selected in the Days control. How: This calls CAD_NAM_OBJ.enfWeeFun against nxtPicObj's own just-patched fields.
+				nexPicObj.daysOfWeek = CAD_NAM_OBJ.enfWeeFun( nexPicObj ); // What: Days-Of-Week Re-Derive. Why: A cadence/anchorDow/daysOfWeek change must keep the weekly-cadence anchor day selected in the Days control. How: This calls CAD_NAM_OBJ.enfWeeFun against nexPicObj's own just-patched fields.
 
 
-				return nxtPicObj; // What: Next Picker Return. Why: The map above needs the fully-patched picker. How: This returns nxtPicObj, built above.
+				return nexPicObj; // What: Next Picker Return. Why: The map above needs the fully-patched picker. How: This returns nexPicObj, built above.
 
 
 			} )
@@ -3516,31 +3516,31 @@ function useStore( optArgObj ) {
 
 
 			const othGroArr = [ ...new Set( curStaObj.pickers.filter( ( curPicObj ) => curPicObj.group && curPicObj.group !== oldName ).map( ( curPicObj ) => curPicObj.group ) ) ]; // What: Other Group Array. Why: The normalizer needs every OTHER existing group name to detect a same-name collision (a merge). How: This collects the distinct group of every picker not already in oldName.
-			const nxtNamStr = ( normalizeGroupName && normalizeGroupName( rawNew, othGroArr ) ) || String( rawNew || '' ).trim(); // What: Next Name String. Why: The normalizer both tidies rawNew and reuses an existing collision's own exact casing. How: This calls normalizeGroupName with othGroArr, else falls back to a plain trim.
+			const nexNamStr = ( normalizeGroupName && normalizeGroupName( rawNew, othGroArr ) ) || String( rawNew || '' ).trim(); // What: Next Name String. Why: The normalizer both tidies rawNew and reuses an existing collision's own exact casing. How: This calls normalizeGroupName with othGroArr, else falls back to a plain trim.
 
-			if ( !nxtNamStr || nxtNamStr === oldName ) return curStaObj; // What: No-Op Guard. Why: An empty result, or a name that didn't actually change, has nothing to rename. How: This returns curStaObj unchanged when either holds.
+			if ( !nexNamStr || nexNamStr === oldName ) return curStaObj; // What: No-Op Guard. Why: An empty result, or a name that didn't actually change, has nothing to rename. How: This returns curStaObj unchanged when either holds.
 
-			const nxtPicArr = curStaObj.pickers.map( ( curPicObj ) => curPicObj.group === oldName ? { ...curPicObj, group : nxtNamStr } : curPicObj ); // What: Next Picker Array. Why: Every picker that belonged to oldName must now belong to nxtNamStr. How: This maps curStaObj.pickers, rewriting group on every matching picker.
+			const nexPicArr = curStaObj.pickers.map( ( curPicObj ) => curPicObj.group === oldName ? { ...curPicObj, group : nexNamStr } : curPicObj ); // What: Next Picker Array. Why: Every picker that belonged to oldName must now belong to nexNamStr. How: This maps curStaObj.pickers, rewriting group on every matching picker.
 
-			let nxtOrdArr = ( curStaObj.groupOrder || [] ).map( ( curGroStr ) => curGroStr === oldName ? nxtNamStr : curGroStr ); // What: Next Order Array And Guard. Why: The display-order slot itself must follow the rename too. How: This maps groupOrder, replacing oldName with nxtNamStr.
+			let nexOrdArr = ( curStaObj.groupOrder || [] ).map( ( curGroStr ) => curGroStr === oldName ? nexNamStr : curGroStr ); // What: Next Order Array And Guard. Why: The display-order slot itself must follow the rename too. How: This maps groupOrder, replacing oldName with nexNamStr.
 
-			nxtOrdArr = nxtOrdArr.filter( ( curGroStr, curIndNum ) => nxtOrdArr.indexOf( curGroStr ) === curIndNum ); // What: Merge De-Duplicate. Why: A MERGE (renaming onto an existing group) would otherwise leave 2 entries for the same name in groupOrder. How: This keeps only each group name's own first occurrence.
+			nexOrdArr = nexOrdArr.filter( ( curGroStr, curIndNum ) => nexOrdArr.indexOf( curGroStr ) === curIndNum ); // What: Merge De-Duplicate. Why: A MERGE (renaming onto an existing group) would otherwise leave 2 entries for the same name in groupOrder. How: This keeps only each group name's own first occurrence.
 
-			const nxtPodObj = { ...curStaObj.pickerOrder }; // What: Next Picker-Order Object. Why: The per-group row order must be remapped (and merged, on a collision) the same way groupOrder itself was above. How: This starts as a shallow copy of curStaObj.pickerOrder, patched below.
+			const nexPodObj = { ...curStaObj.pickerOrder }; // What: Next Picker-Order Object. Why: The per-group row order must be remapped (and merged, on a collision) the same way groupOrder itself was above. How: This starts as a shallow copy of curStaObj.pickerOrder, patched below.
 
-			if ( nxtPodObj[ oldName ] ) { // What: Old-Key Remap Guard. Why: Only a group that actually had its own saved row order needs remapping at all. How: This merges oldName's own order into nxtNamStr's own (deduped), then drops the old key entirely.
+			if ( nexPodObj[ oldName ] ) { // What: Old-Key Remap Guard. Why: Only a group that actually had its own saved row order needs remapping at all. How: This merges oldName's own order into nexNamStr's own (deduped), then drops the old key entirely.
 
 
-				const exiIdeArr = nxtPodObj[ nxtNamStr ] || []; // What: Existing Identifier Array. Why: A MERGE must append oldName's own order onto whatever nxtNamStr already had, not overwrite it. How: This reads nxtPodObj's own current entry for nxtNamStr, defaulting to empty.
+				const exiIdeArr = nexPodObj[ nexNamStr ] || []; // What: Existing Identifier Array. Why: A MERGE must append oldName's own order onto whatever nexNamStr already had, not overwrite it. How: This reads nexPodObj's own current entry for nexNamStr, defaulting to empty.
 
-				nxtPodObj[ nxtNamStr ] = exiIdeArr.concat( nxtPodObj[ oldName ].filter( ( curIdeStr ) => !exiIdeArr.includes( curIdeStr ) ) ); // What: Merged Order Write. Why: Every id from oldName's own order must join nxtNamStr's own, without duplicating one already present. How: This concatenates exiIdeArr with oldName's own order filtered to non-duplicates.
-				delete nxtPodObj[ oldName ]; // What: Old Key Drop. Why: oldName no longer exists as a group, so its own pickerOrder key must be removed entirely. How: This deletes nxtPodObj's own oldName key.
+				nexPodObj[ nexNamStr ] = exiIdeArr.concat( nexPodObj[ oldName ].filter( ( curIdeStr ) => !exiIdeArr.includes( curIdeStr ) ) ); // What: Merged Order Write. Why: Every id from oldName's own order must join nexNamStr's own, without duplicating one already present. How: This concatenates exiIdeArr with oldName's own order filtered to non-duplicates.
+				delete nexPodObj[ oldName ]; // What: Old Key Drop. Why: oldName no longer exists as a group, so its own pickerOrder key must be removed entirely. How: This deletes nexPodObj's own oldName key.
 
 
 			}
 
 
-			return { ...curStaObj, pickers : nxtPicArr, groupOrder : nxtOrdArr, pickerOrder : nxtPodObj }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with pickers/groupOrder/pickerOrder all replaced.
+			return { ...curStaObj, pickers : nexPicArr, groupOrder : nexOrdArr, pickerOrder : nexPodObj }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with pickers/groupOrder/pickerOrder all replaced.
 
 
 		} ),
@@ -3549,12 +3549,12 @@ function useStore( optArgObj ) {
 		renamePageTours : ( rawNew ) => setAppStaObj( ( curStaObj ) => {
 
 
-			const nxtNamStr = ( normalizeGroupName && normalizeGroupName( rawNew ) ) || String( rawNew || '' ).trim(); // What: Next Name String. Why: The write below needs a tidied, real name. How: This calls normalizeGroupName, else falls back to a plain trim.
+			const nexNamStr = ( normalizeGroupName && normalizeGroupName( rawNew ) ) || String( rawNew || '' ).trim(); // What: Next Name String. Why: The write below needs a tidied, real name. How: This calls normalizeGroupName, else falls back to a plain trim.
 
-			if ( !nxtNamStr ) return curStaObj; // What: Empty-Name Guard. Why: An empty result has nothing meaningful to write. How: This returns curStaObj unchanged when nxtNamStr is falsy.
+			if ( !nexNamStr ) return curStaObj; // What: Empty-Name Guard. Why: An empty result has nothing meaningful to write. How: This returns curStaObj unchanged when nexNamStr is falsy.
 
 
-			return { ...curStaObj, onboarding : { ...( curStaObj.onboarding || {} ), pageToursName : nxtNamStr } }; // What: Next State Return. Why: The caller needs pageToursName replaced on a fresh state. How: This spreads curStaObj's own onboarding with pageToursName replaced.
+			return { ...curStaObj, onboarding : { ...( curStaObj.onboarding || {} ), pageToursName : nexNamStr } }; // What: Next State Return. Why: The caller needs pageToursName replaced on a fresh state. How: This spreads curStaObj's own onboarding with pageToursName replaced.
 
 
 		} ),
@@ -3589,12 +3589,12 @@ function useStore( optArgObj ) {
 
 
 			const curHolObj = curStaObj.holidays || HOL_NAM_OBJ.defaultState(); // What: Current Holidays Object. Why: The toggle below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
-			const nxtDisArr = curHolObj.disabled.includes( key ) // What: Next Disabled Array. Why: Toggling off removes key from disabled; toggling on (re-enabling) adds it. How: This filters key out when already present, else appends it.
+			const nexDisArr = curHolObj.disabled.includes( key ) // What: Next Disabled Array. Why: Toggling off removes key from disabled; toggling on (re-enabling) adds it. How: This filters key out when already present, else appends it.
 				? curHolObj.disabled.filter( ( curKeyStr ) => curKeyStr !== key )
 				: [ ...curHolObj.disabled, key ];
 
 
-			return { ...curStaObj, holidays : { ...curHolObj, disabled : nxtDisArr } }; // What: Next State Return. Why: The caller needs disabled replaced on a fresh holidays object. How: This spreads curHolObj with disabled replaced by nxtDisArr.
+			return { ...curStaObj, holidays : { ...curHolObj, disabled : nexDisArr } }; // What: Next State Return. Why: The caller needs disabled replaced on a fresh holidays object. How: This spreads curHolObj with disabled replaced by nexDisArr.
 
 
 		} ),
@@ -3668,10 +3668,10 @@ function useStore( optArgObj ) {
 
 			const curColObj = ( curStaObj.ui && curStaObj.ui.controlsCollapsed ) || {}; // What: Current Collapsed Object. Why: The flip below needs the live collapse-state map, or an empty fallback. How: This reads curStaObj's own ui.controlsCollapsed, defaulting to {}.
 			const curValBoo = curColObj[ secIdeStr ] === undefined ? defColBoo : curColObj[ secIdeStr ]; // What: Current Value Boolean. Why: A section with no saved value yet starts from its own caller-supplied default, not always false. How: This reads curColObj's own secIdeStr entry, falling back to defColBoo when it's undefined.
-			const nxtColObj = { ...curColObj, [ secIdeStr ] : !curValBoo }; // What: Next Collapsed Object. Why: The caller needs exactly this one section's own collapse state flipped. How: This spreads curColObj, negating secIdeStr's own entry.
+			const nexColObj = { ...curColObj, [ secIdeStr ] : !curValBoo }; // What: Next Collapsed Object. Why: The caller needs exactly this one section's own collapse state flipped. How: This spreads curColObj, negating secIdeStr's own entry.
 
 
-			return { ...curStaObj, ui : { ...( curStaObj.ui || {} ), controlsCollapsed : nxtColObj } }; // What: Next State Return. Why: The caller needs controlsCollapsed replaced on a fresh ui object. How: This spreads curStaObj's own ui with controlsCollapsed replaced by nxtColObj.
+			return { ...curStaObj, ui : { ...( curStaObj.ui || {} ), controlsCollapsed : nexColObj } }; // What: Next State Return. Why: The caller needs controlsCollapsed replaced on a fresh ui object. How: This spreads curStaObj's own ui with controlsCollapsed replaced by nexColObj.
 
 
 		} ),

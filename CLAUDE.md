@@ -1855,6 +1855,15 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - `arw` → `arr` (Arrow — found in `arrClaStr`/`arrXNum`/`arrClaVal`
     across `help-mode.jsx` and `arrXFun`/`arrClaStr`/`arrXNum` in
     `onboarding-tour-runner.jsx`)
+  - `nxt` → `nex` (Next — a very widely recurring miscorrection, found in
+    `nexRecObj` (`help-mode.jsx`), `nexDayArr` (`tab-picker.jsx`),
+    `nexSetObj` (`tab-today.jsx`), and dozens of distinct `nexXxxArr`/
+    `nexXxxObj`/`nexXxxStr`/`nexXxxBoo` names throughout `store.jsx`,
+    where it is the file's own dominant convention for "the next state"
+    passed to every action's own setter; `nex` was already the
+    established correct code elsewhere in this codebase, e.g.
+    `nexMapObj` (`help-mode.jsx`, sitting right next to the wrong
+    `nxtRecObj` in the same file))
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

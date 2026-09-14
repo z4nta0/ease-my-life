@@ -3499,14 +3499,14 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		if ( remIdeSet.has( entIdeStr ) ) return; // What: Already Removing Guard. Why: A row already mid-removal must not be re-triggered by a second click. How: This bails out early when entIdeStr is already in remIdeSet.
 
 
-		setRemIdeSet( ( curSetObj ) => { const nxtSetObj = new Set( curSetObj ); nxtSetObj.add( entIdeStr ); return nxtSetObj; } ); // What: Removing Id Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of remIdeSet.
+		setRemIdeSet( ( curSetObj ) => { const nexSetObj = new Set( curSetObj ); nexSetObj.add( entIdeStr ); return nexSetObj; } ); // What: Removing Id Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of remIdeSet.
 
 		setTimeout( () => { // What: Skip Settle Timeout. Why: The actual data removal must wait for the collapse animation to finish playing. How: This runs after skpAniMsNum, matching the CSS animation's own duration.
 
 
 			actions.skipEntry( entIdeStr ); // What: Skip Entry Call. Why: This is the actual removal, applied only once the animation has had time to play. How: This calls actions.skipEntry with entIdeStr.
 
-			setRemIdeSet( ( curSetObj ) => { const nxtSetObj = new Set( curSetObj ); nxtSetObj.delete( entIdeStr ); return nxtSetObj; } ); // What: Removing Id Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of remIdeSet.
+			setRemIdeSet( ( curSetObj ) => { const nexSetObj = new Set( curSetObj ); nexSetObj.delete( entIdeStr ); return nexSetObj; } ); // What: Removing Id Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of remIdeSet.
 
 
 		}, skpAniMsNum );
@@ -3525,14 +3525,14 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		if ( remIdeSet.has( entIdeStr ) ) return; // What: Already Removing Guard. Why: A row already mid-removal must not be re-triggered by a second click. How: This bails out early when entIdeStr is already in remIdeSet.
 
 
-		setRemIdeSet( ( curSetObj ) => { const nxtSetObj = new Set( curSetObj ); nxtSetObj.add( entIdeStr ); return nxtSetObj; } ); // What: Removing Id Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of remIdeSet.
+		setRemIdeSet( ( curSetObj ) => { const nexSetObj = new Set( curSetObj ); nexSetObj.add( entIdeStr ); return nexSetObj; } ); // What: Removing Id Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of remIdeSet.
 
 		setTimeout( () => { // What: Delete Settle Timeout. Why: The actual item removal must wait for the collapse animation to finish playing. How: This runs after skpAniMsNum, matching the CSS animation's own duration.
 
 
 			actions.removeItem( iteIdeStr ); // What: Remove Item Call. Why: This is the actual removal, applied only once the animation has had time to play. How: This calls actions.removeItem with iteIdeStr.
 
-			setRemIdeSet( ( curSetObj ) => { const nxtSetObj = new Set( curSetObj ); nxtSetObj.delete( entIdeStr ); return nxtSetObj; } ); // What: Removing Id Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of remIdeSet.
+			setRemIdeSet( ( curSetObj ) => { const nexSetObj = new Set( curSetObj ); nexSetObj.delete( entIdeStr ); return nexSetObj; } ); // What: Removing Id Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of remIdeSet.
 
 
 		}, skpAniMsNum );
@@ -3570,7 +3570,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		if ( rolIdeSet.has( entRecObj.eid ) ) return; // What: Already Rolling Guard. Why: A row already mid-flip must not be re-triggered by a second click. How: This bails out early when entRecObj's own eid is already in rolIdeSet.
 
 
-		setRolIdeSet( ( curSetObj ) => { const nxtSetObj = new Set( curSetObj ); nxtSetObj.add( entRecObj.eid ); return nxtSetObj; } ); // What: Rolling Id Add. Why: The card needs to start its own flip animation immediately. How: This adds entRecObj's own eid into a fresh copy of rolIdeSet.
+		setRolIdeSet( ( curSetObj ) => { const nexSetObj = new Set( curSetObj ); nexSetObj.add( entRecObj.eid ); return nexSetObj; } ); // What: Rolling Id Add. Why: The card needs to start its own flip animation immediately. How: This adds entRecObj's own eid into a fresh copy of rolIdeSet.
 
 		setTimeout( () => { // What: Flip Apex Timeout. Why: The pick happens at the midpoint of the flip (when the card is fully upside-down), so the new content rolls in continuing the same direction. How: This runs at half of rolAniMsNum, computing and staging the new pick.
 
@@ -3589,13 +3589,13 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 					const curFndIndNum = eliArr.findIndex( ( curIteObj ) => curIteObj.id === entRecObj.itemId ); // What: Current Found Index Number. Why: The next candidate is found relative to whichever one is currently picked. How: This finds entRecObj's own itemId within eliArr.
-					const nxtIteObj    = eliArr[ ( curFndIndNum + 1 ) % eliArr.length ];                          // What: Next Item Object. Why: This is the actual next candidate to roll to, wrapping back to the front once the end is reached. How: This indexes eliArr one past curFndIndNum, modulo its own length.
-					const resObj       = PICKERS.pick( picRecObj, state.items, { forceItemId : nxtIteObj.id } );   // What: Result Object. Why: Forcing the specific next item still needs to run through the real picking engine so its own value/pending mutations compute correctly. How: This calls PICKERS.pick with forceItemId set to nxtIteObj's own id.
+					const nexIteObj    = eliArr[ ( curFndIndNum + 1 ) % eliArr.length ];                          // What: Next Item Object. Why: This is the actual next candidate to roll to, wrapping back to the front once the end is reached. How: This indexes eliArr one past curFndIndNum, modulo its own length.
+					const resObj       = PICKERS.pick( picRecObj, state.items, { forceItemId : nexIteObj.id } );   // What: Result Object. Why: Forcing the specific next item still needs to run through the real picking engine so its own value/pending mutations compute correctly. How: This calls PICKERS.pick with forceItemId set to nexIteObj's own id.
 
-					actions.setEntryItem( entRecObj.eid, nxtIteObj.id, { // What: Set Entry Item Call. Why: This stages the new pick's own value/weight mutation as pending, applied only once the entry is marked done, preserving the "nothing changes until you actually do it" contract. How: This writes nxtIteObj's own id plus resObj's own updates/pickerPatch/depletedEnd.
+					actions.setEntryItem( entRecObj.eid, nexIteObj.id, { // What: Set Entry Item Call. Why: This stages the new pick's own value/weight mutation as pending, applied only once the entry is marked done, preserving the "nothing changes until you actually do it" contract. How: This writes nexIteObj's own id plus resObj's own updates/pickerPatch/depletedEnd.
 
 						updates : resObj.updates, pickerPatch : resObj.pickerPatch,
-						depletedEnd : resObj.depletedEnd, pickedId : nxtIteObj.id, bumpPick : true
+						depletedEnd : resObj.depletedEnd, pickedId : nexIteObj.id, bumpPick : true
 
 					} );
 
@@ -3632,7 +3632,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		setTimeout( () => { // What: Flip End Timeout. Why: The rolling flag must clear once the flip's own full animation has actually finished, not just at its apex. How: This runs after the full rolAniMsNum, clearing entRecObj's own eid from rolIdeSet.
 
 
-			setRolIdeSet( ( curSetObj ) => { const nxtSetObj = new Set( curSetObj ); nxtSetObj.delete( entRecObj.eid ); return nxtSetObj; } );
+			setRolIdeSet( ( curSetObj ) => { const nexSetObj = new Set( curSetObj ); nexSetObj.delete( entRecObj.eid ); return nexSetObj; } );
 
 
 		}, rolAniMsNum );
@@ -4359,7 +4359,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		 *
 		*/
 
-		const nxtEntArr = [ // What: Next Entry Array. Why: This is the exact new today.entries this generation produces. How: This concatenates every carried entry, day-off card, empty-ease card, and fresh pick (staged as pending) into one array.
+		const nexEntArr = [ // What: Next Entry Array. Why: This is the exact new today.entries this generation produces. How: This concatenates every carried entry, day-off card, empty-ease card, and fresh pick (staged as pending) into one array.
 
 			...carEntArr,
 			...dofCarArr,
@@ -4394,7 +4394,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		*/
 
 		const kepEidSet = new Set( carEntArr.map( ( curCarObj ) => curCarObj._carry ? curCarObj.entry.eid : curCarObj.eid ) ); // What: Kept Eid Set. Why: A carried entry's own eid must never be treated as departing. How: This reads each carEntArr member's own eid (unwrapping the _carry marker where needed).
-		const nxtDofSet = new Set( dofCarArr.map( ( curDofObj ) => curDofObj.conditionalId ) ); // What: Next Dayoff Set. Why: A day-off card's own departure is judged by whether its conditional still produces one, not by eid. How: This collects every fresh day-off card's own conditionalId.
+		const nexDofSet = new Set( dofCarArr.map( ( curDofObj ) => curDofObj.conditionalId ) ); // What: Next Dayoff Set. Why: A day-off card's own departure is judged by whether its conditional still produces one, not by eid. How: This collects every fresh day-off card's own conditionalId.
 
 		const depEidArr = ( state.today.entries || [] ) // What: Departing Eid Array. Why: This is the actual list of eids about to be removed, needing their own exit animation first. How: This filters every current entry down to the ones matching neither exclusion above.
 			.filter( ( curEntObj ) => {
@@ -4402,7 +4402,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 				if ( kepEidSet.has( curEntObj.eid ) ) return false;
 
-				if ( curEntObj.kind === 'dayoff' ) return !nxtDofSet.has( curEntObj.conditionalId );
+				if ( curEntObj.kind === 'dayoff' ) return !nexDofSet.has( curEntObj.conditionalId );
 
 				return !( curEntObj.pickerId && genMapRef.current && genMapRef.current[ curEntObj.pickerId ] );
 
@@ -4448,7 +4448,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		}
 
-		actions.replaceTodayEntries( nxtEntArr, { resetStreak : isaAutBoo } ); // What: Replace Today Entries Call. Why: This is the actual commit, writing nxtEntArr as the new state.today.entries. How: This calls actions.replaceTodayEntries, resetting the streak claim only for an auto-run.
+		actions.replaceTodayEntries( nexEntArr, { resetStreak : isaAutBoo } ); // What: Replace Today Entries Call. Why: This is the actual commit, writing nexEntArr as the new state.today.entries. How: This calls actions.replaceTodayEntries, resetting the streak claim only for an auto-run.
 		actions.markGenerated(); // What: Mark Generated Call. Why: state.today.generatedAt (and every anchor/count derived from it) needs to reflect this fresh generation. How: This calls actions.markGenerated.
 
 		if ( cheDonBoo && APP_FEATURES.every( ( curFeaObj ) => feaStaObj[ curFeaObj.id ] ) ) { // What: Feature Section Resolve Guard. Why: The App Features section (see shwFeaBoo's own doc comment above) is only allowed to finally disappear here, at a real generation boundary, not the instant the last tutorial resolves; checked fresh on every genFun call (both manual Regenerate and the Daily Generator funnel through this same function) rather than only once, so a generation that happens to land after the very last tutorial finishes is what actually hides it. How: This flips both resolution flags only once every App Feature is already done.
