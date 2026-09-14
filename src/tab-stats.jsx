@@ -2264,13 +2264,13 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								    value, same as any other empty mode. */ }
 								{ [
 
-									...exiModArr.map( ( modStr ) => ( { // What: Mode Entry Mapping. Why: Every real mode in use needs its own pill entry with a matching count/click handler before the combined list is sorted. How: This maps each exiModArr entry to a small { key, name, count, isOn, onClick } shape.
+									...exiModArr.map( ( picModStr ) => ( { // What: Mode Entry Mapping. Why: Every real mode in use needs its own pill entry with a matching count/click handler before the combined list is sorted. How: This maps each exiModArr entry to a small { key, name, count, isOn, onClick } shape.
 
 
-										key : modStr, name : MODES[ modStr ].label,
-										count : picLisArr.filter( ( picObj ) => picObj.mode === modStr && !picObj.hidden ).length,
-										isOn : typFilStr === modStr,
-										onClick : () => setTypFilStr( modStr )
+										key : picModStr, name : MODES[ picModStr ].label,
+										count : picLisArr.filter( ( picObj ) => picObj.mode === picModStr && !picObj.hidden ).length,
+										isOn : typFilStr === picModStr,
+										onClick : () => setTypFilStr( picModStr )
 
 
 									})),

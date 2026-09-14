@@ -143,21 +143,21 @@ const CIS_OPT_ARR = [
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param modStr - Mode String: The picker's own current mode key.
+ * @param picModStr - Picker Mode String: The picker's own current mode key.
  *
  * @returns An array of { keyStr, labStr } sort options for that mode.
  *
  * @example
  * ```ts
- * pisOptFun(modStr) // => array of { keyStr, labStr } sort options
+ * pisOptFun(picModStr) // => array of { keyStr, labStr } sort options
  * ```
  *
 */
 
-function pisOptFun ( modStr ) {
+function pisOptFun ( picModStr ) {
 
 
-	const optArr = [ // What: Options Array. Why: Every mode shares at least the Name sort. How: This starts with the 2 Name entries every mode gets, then more are pushed below depending on modStr.
+	const optArr = [ // What: Options Array. Why: Every mode shares at least the Name sort. How: This starts with the 2 Name entries every mode gets, then more are pushed below depending on picModStr.
 
 
 		{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Key String. Why: This is every mode's own default sort. How: SortSelect reads this against the picker's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
@@ -167,10 +167,10 @@ function pisOptFun ( modStr ) {
 	];
 
 
-	if ( modStr === 'ease-up' || modStr === 'ease-down' ) {
+	if ( picModStr === 'ease-up' || picModStr === 'ease-down' ) {
 
 
-		const ranLabStr = modStr === 'ease-down' ? 'Shortest' : 'Soonest'; // What: Range Label String. Why: The Range sort's own label reads differently for ease-up vs ease-down, matching the item editor's own Soonest/Shortest wording. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
+		const ranLabStr = picModStr === 'ease-down' ? 'Shortest' : 'Soonest'; // What: Range Label String. Why: The Range sort's own label reads differently for ease-up vs ease-down, matching the item editor's own Soonest/Shortest wording. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
 
 
 		optArr.push( { keyStr : 'count-asc', labStr : 'Charge (Low to High)' }, { keyStr : 'count-desc', labStr : 'Charge (High to Low)' } ); // What: Charge Options Push. Why: Ease modes reuse the generic count field to mean charge. How: This appends both charge sort directions.
@@ -179,13 +179,13 @@ function pisOptFun ( modStr ) {
 
 	}
 
-	else if ( modStr === 'weighted' || modStr === 'dynamic' ) {
+	else if ( picModStr === 'weighted' || picModStr === 'dynamic' ) {
 
 
 		optArr.push( { keyStr : 'count-asc', labStr : 'Weight (Low to High)' }, { keyStr : 'count-desc', labStr : 'Weight (High to Low)' } ); // What: Weight Options Push. Why: Weighted/dynamic modes reuse the generic count field to mean weight. How: This appends both weight sort directions.
 
 
-		if ( modStr === 'dynamic' ) optArr.push( { keyStr : 'boost-asc', labStr : 'Boost (Low to High)' }, { keyStr : 'boost-desc', labStr : 'Boost (High to Low)' } ); // What: Boost Options Guard. Why: Only dynamic (not plain weighted) has a meaningful boost value. How: This appends both boost sort directions only when modStr is 'dynamic'.
+		if ( picModStr === 'dynamic' ) optArr.push( { keyStr : 'boost-asc', labStr : 'Boost (Low to High)' }, { keyStr : 'boost-desc', labStr : 'Boost (High to Low)' } ); // What: Boost Options Guard. Why: Only dynamic (not plain weighted) has a meaningful boost value. How: This appends both boost sort directions only when picModStr is 'dynamic'.
 
 
 	}
