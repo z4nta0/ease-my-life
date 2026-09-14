@@ -1840,6 +1840,11 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     (`claValFun`, `claPadFun`), though note `cla` also separately means
     Clause (`tutClaStr`) and Class (`extClaStr`); context disambiguates
     which of the three "cla" stands for)
+  - `vp` → `vie` (Viewport — a 2-letter abbreviation rather than the
+    usual wrong-3-letter case, since "vp" is the common real-world
+    shorthand people reach for; found in `vpWidNum`/`vpHeiNum` across
+    `help-mode.jsx`, `ui.jsx`, and `onboarding-tour-runner.jsx`,
+    including `onboarding-tour-runner.jsx`'s own `coaLayFun` parameters)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

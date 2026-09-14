@@ -795,7 +795,7 @@ function badRecFun ( tarRecObj, cenBoo ) {
 function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 
 
-	const vpWidNum = window.innerWidth, vpHeiNum = window.innerHeight, marNum = 8; // What: Viewport/Margin Numbers. Why: Every clamp below needs the current viewport size plus the fixed edge margin the tip should never sit flush against. How: These are read once up front and reused throughout.
+	const vieWidNum = window.innerWidth, vieHeiNum = window.innerHeight, marNum = 8; // What: Viewport/Margin Numbers. Why: Every clamp below needs the current viewport size plus the fixed edge margin the tip should never sit flush against. How: These are read once up front and reused throughout.
 
 	let topNum, arwClaStr, maxHeiNum; // What: Placement Result Numbers. Why: Exactly one of the 3 branches below assigns these, whichever applies. How: These are returned as-is once the branch below has run.
 
@@ -804,7 +804,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 
 
 		topNum = tarRecObj.bottom + 16; arwClaStr = 'ob-coach--up';
-		maxHeiNum = vpHeiNum - topNum - marNum;
+		maxHeiNum = vieHeiNum - topNum - marNum;
 
 
 	}
@@ -813,7 +813,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 
 
 		topNum = pinBelYNum + 16; arwClaStr = 'ob-coach--up';
-		maxHeiNum = vpHeiNum - topNum - marNum;
+		maxHeiNum = vieHeiNum - topNum - marNum;
 
 
 	}
@@ -824,14 +824,14 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 		const useBadBoo    = tarRecObj.badgeAnchorTop != null;                          // What: Use Badge Anchor Boolean. Why: A columnGroup member's own badge sits well above tarRecObj.top itself, so an above-placed tip anchored to tarRecObj.top would point its own arrow at empty space instead of the badge. How: This checks whether tarRecObj carries a badgeAnchorTop at all.
 		const abvAncNum    = useBadBoo ? tarRecObj.badgeAnchorTop : tarRecObj.top;      // What: Above Anchor Number. Why: The "flips above" branch below needs one single Y to anchor against, whichever is correct for this target. How: This picks badgeAnchorTop when useBadBoo, otherwise the target's own top edge.
 		const gapAbvNum    = useBadBoo ? 8 : 16;                                        // What: Gap Above Number. Why: The usual 16px breathing room reads as "detached" for a small round badge specifically, so a badge anchor uses a tighter 8px instead. How: This picks 8 when anchored to a badge, otherwise the app's own normal 16px gap.
-		const spcBelNum    = vpHeiNum - tarRecObj.bottom - 16;                          // What: Space Below Number. Why: This is how much room the "below" placement actually has to work with. How: This subtracts the target's own bottom edge and the normal 16px gap from the viewport's own height.
+		const spcBelNum    = vieHeiNum - tarRecObj.bottom - 16;                          // What: Space Below Number. Why: This is how much room the "below" placement actually has to work with. How: This subtracts the target's own bottom edge and the normal 16px gap from the viewport's own height.
 		const spcAbvNum    = abvAncNum - gapAbvNum - marNum;                            // What: Space Above Number. Why: This is how much room the "above" placement actually has to work with. How: This subtracts gapAbvNum and the edge margin from abvAncNum.
 
 		if ( spcBelNum >= tipHeiNum || spcBelNum >= spcAbvNum ) { // What: Prefer Below Guard. Why: Below wins whenever the full content actually fits there, or whenever below simply has more room than above even if neither fully fits. How: This checks tipHeiNum against spcBelNum first, then compares the two spaces directly.
 
 
 			topNum = tarRecObj.bottom + 16; arwClaStr = 'ob-coach--up';
-			maxHeiNum = vpHeiNum - topNum - marNum;
+			maxHeiNum = vieHeiNum - topNum - marNum;
 
 
 		}
@@ -849,7 +849,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
 	}
 
 	const ctrXNum = tarRecObj.left + tarRecObj.width / 2;                         // What: Center X Number. Why: The tip's own arrow always centers on the target's own horizontal midpoint. How: This adds half the target's own width to its left edge.
-	const lefNum  = Math.max( marNum, Math.min( ctrXNum - tipWidNum / 2, vpWidNum - tipWidNum - marNum ) ); // What: Left Number. Why: The tip box itself must clamp within the viewport even while its arrow stays centered on ctrXNum. How: This centers the tip on ctrXNum, then clamps between the edge margin and the viewport's own right-edge margin.
+	const lefNum  = Math.max( marNum, Math.min( ctrXNum - tipWidNum / 2, vieWidNum - tipWidNum - marNum ) ); // What: Left Number. Why: The tip box itself must clamp within the viewport even while its arrow stays centered on ctrXNum. How: This centers the tip on ctrXNum, then clamps between the edge margin and the viewport's own right-edge margin.
 	const arwXNum = Math.max( 18, Math.min( ctrXNum - lefNum, tipWidNum - 26 ) );  // What: Arrow X Number. Why: The arrow's own horizontal offset inside the tip box must stay clear of the tip's own rounded corners. How: This computes the arrow's position relative to lefNum, clamped to a safe inset range.
 
 
@@ -1415,8 +1415,8 @@ function HelpOverlay ( { active, items, onExit } ) {
 	if ( !active ) return null; // What: Inactive Guard. Why: Nothing at all should render while help mode itself is off. How: This returns null before building any of the JSX below.
 
 
-	const vpWidNum  = window.innerWidth;                                                                              // What: Viewport Width Number. Why: The SVG mask below needs the current viewport width to fully cover the screen. How: This reads window.innerWidth once per render.
-	const vpHeiNum  = window.innerHeight;                                                                             // What: Viewport Height Number. Why: The SVG mask below needs the current viewport height to fully cover the screen. How: This reads window.innerHeight once per render.
+	const vieWidNum  = window.innerWidth;                                                                              // What: Viewport Width Number. Why: The SVG mask below needs the current viewport width to fully cover the screen. How: This reads window.innerWidth once per render.
+	const vieHeiNum  = window.innerHeight;                                                                             // What: Viewport Height Number. Why: The SVG mask below needs the current viewport height to fully cover the screen. How: This reads window.innerHeight once per render.
 	const recEntArr = Object.entries( recMapObj );                                                                    // What: Rect Entries Array. Why: Both the mask cutouts and the rendered highlight spots below need to walk every current [id, rect] pair. How: This converts recMapObj into a plain array via Object.entries.
 	const basIdeStr = opeIdeStr ? opeIdeStr.split( '::' )[ 0 ] : null;                                                // What: Base Identifier String. Why: opeIdeStr can be a perElement sub-id, so the catalog lookup below needs the id with any "::N" suffix stripped off. How: This splits opeIdeStr on '::' and keeps just the first segment.
 	const opeIteObj = basIdeStr ? allIteArr.find( ( curIteObj ) => curIteObj.ideStr === basIdeStr ) : null;               // What: Open Item Object. Why: The open tip needs the catalog item whose titStr/bodEle every perElement instance shares. How: This finds the one entry in allIteArr whose own ideStr matches basIdeStr.
@@ -1431,15 +1431,15 @@ function HelpOverlay ( { active, items, onExit } ) {
 
 			<svg
 				className='help-dim-svg'
-				height={ vpHeiNum }
-				width={ vpWidNum }
+				height={ vieHeiNum }
+				width={ vieWidNum }
 			>{ /* What: Help Dim Svg Element. Why: This paints the single dim layer with cutouts for every currently-highlighted target. How: This wraps a <mask> defining the cutouts and a full-viewport <rect> filled through that mask below. */ }
 
 
 				<mask id='help-mask'>{ /* What: Help Mask Element. Why: One shared SVG mask lets arbitrarily many cutouts coexist in a single dim layer, instead of the guided tour's own single-spotlight box-shadow trick. How: This paints a full white rect, then one black rounded-rect per highlighted target/toggle button below. */ }
 
 
-					<rect fill='#fff' height={ vpHeiNum } width={ vpWidNum } x='0' y='0' />{ /* What: Mask Base Rect Element. Why: A fully-white base means "dim everything" by default, before any cutouts punch through it. How: This is a plain full-viewport white rect. */ }
+					<rect fill='#fff' height={ vieHeiNum } width={ vieWidNum } x='0' y='0' />{ /* What: Mask Base Rect Element. Why: A fully-white base means "dim everything" by default, before any cutouts punch through it. How: This is a plain full-viewport white rect. */ }
 
 					{ recEntArr.map( ( [ curIdeStr, curRecObj ] ) => { // What: Mask Cutout Map. Why: Every currently-highlighted target needs its own black cutout rect, shaped and padded to match how it is actually rendered on top. How: This maps recEntArr, reading each rect's own shape/pad fields.
 
@@ -1484,7 +1484,7 @@ function HelpOverlay ( { active, items, onExit } ) {
 
 				</mask>
 
-				<rect className='help-dim-fill' height={ vpHeiNum } mask='url(#help-mask)' width={ vpWidNum } x='0' y='0' />{ /* What: Help Dim Fill Rect Element. Why: This is the actual visible dim layer, its own cutouts coming entirely from the mask above. How: This is a full-viewport rect filled through url(#help-mask). */ }
+				<rect className='help-dim-fill' height={ vieHeiNum } mask='url(#help-mask)' width={ vieWidNum } x='0' y='0' />{ /* What: Help Dim Fill Rect Element. Why: This is the actual visible dim layer, its own cutouts coming entirely from the mask above. How: This is a full-viewport rect filled through url(#help-mask). */ }
 
 
 			</svg>

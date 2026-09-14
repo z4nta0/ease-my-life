@@ -323,14 +323,14 @@ const safBotFun = () => { // What: Safe Bottom Function. Why: A bottom-anchored 
  *
 */
 
-const coaLayFun = ( recObj, coaHeiNum, coaWidNum, vpWidNum, vpHeiNum ) => { // What: Coach Layout Function. Why: This is the one shared answer for where the coach sits relative to a clamped highlight rect. How: This prefers below the target, flipping above it only once there is no room below.
+const coaLayFun = ( recObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ) => { // What: Coach Layout Function. Why: This is the one shared answer for where the coach sits relative to a clamped highlight rect. How: This prefers below the target, flipping above it only once there is no room below.
 
 
-	const lefNum = Math.max( 12, Math.min( recObj.left, vpWidNum - coaWidNum - 12 ) ); // What: Left Number. Why: The coach must never sit flush against either viewport edge. How: This clamps the target's own left edge between a 12px margin and the coach's own width from the right edge.
+	const lefNum = Math.max( 12, Math.min( recObj.left, vieWidNum - coaWidNum - 12 ) ); // What: Left Number. Why: The coach must never sit flush against either viewport edge. How: This clamps the target's own left edge between a 12px margin and the coach's own width from the right edge.
 
 	const safTopNum = safTopFun( { forCoaBoo: true } ) + 12; // What: Safe Top Number. Why: The "flip above" branch below must not let the coach rise above the coach's own exclusion floor. How: This calls safTopFun in coach mode (always 0) plus a fixed 12px margin.
 
-	const spcBelNum = vpHeiNum - ( recObj.top + recObj.height ); // What: Space Below Number. Why: The below/above choice needs to know how much room actually exists under the target. How: This subtracts the target's own bottom edge from the viewport's own height.
+	const spcBelNum = vieHeiNum - ( recObj.top + recObj.height ); // What: Space Below Number. Why: The below/above choice needs to know how much room actually exists under the target. How: This subtracts the target's own bottom edge from the viewport's own height.
 
 	if ( spcBelNum >= coaHeiNum + 16 ) return { top: recObj.top + recObj.height + 16, left: lefNum, arrowClass: 'ob-coach--up' }; // What: Below Placement Return. Why: Below is preferred whenever the coach's own height plus its 16px gap actually fits there. How: This returns a layout 16px under the target with an upward-pointing arrow.
 
@@ -981,9 +981,9 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 			if ( !curSteObj.coachAtTop && !resDecBoo && preTopNum != null ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the exact same fits-below/fits-above checks decResFun itself uses below, so this can never disagree with what decResFun would have decided anyway, just decided proactively instead of reactively; this replaces the loop's own decResFun (unchanged) used to be the only place this got decided, which meant a visibly separate second "jump then re-scroll" once it found the overlap, this step's target genuinely overlapping the coach at its settled position is exactly the case reproduced live and reported as jank.
 
 
-				const vpHeiNum = window.innerHeight, coaHeiNum = coaHeiRef.current; // What: Viewport Height Number And Coach Height Number. Why: Both fit checks below need the current viewport height and the coach's own latest measured height. How: These are read fresh from window.innerHeight and coaHeiRef.current.
+				const vieHeiNum = window.innerHeight, coaHeiNum = coaHeiRef.current; // What: Viewport Height Number And Coach Height Number. Why: Both fit checks below need the current viewport height and the coach's own latest measured height. How: These are read fresh from window.innerHeight and coaHeiRef.current.
 
-				const ftsBelBoo = vpHeiNum - ( preTopNum + tarRecObj.height ) >= coaHeiNum + 16; // What: Fits Below Boolean. Why: The below placement only works if the coach's own height plus its 16px gap actually fits under the predicted landing position. How: This compares the remaining viewport space under the predicted bottom edge against coaHeiNum + 16.
+				const ftsBelBoo = vieHeiNum - ( preTopNum + tarRecObj.height ) >= coaHeiNum + 16; // What: Fits Below Boolean. Why: The below placement only works if the coach's own height plus its 16px gap actually fits under the predicted landing position. How: This compares the remaining viewport space under the predicted bottom edge against coaHeiNum + 16.
 				const ftsAbvBoo = preTopNum - 16 - coaHeiNum >= safTopFun( { forCoaBoo: true } ) + 12; // What: Fits Above Boolean. Why: The above placement only works if the coach's own height plus its 16px gap actually fits above the predicted top edge, down to the coach's own safe floor. How: This compares the predicted top edge minus the coach's own space against the safe floor.
 
 				if ( !ftsBelBoo && !ftsAbvBoo ) { // What: No Fit Guard. Why: Reserve space is only ever needed once neither the below nor the above placement actually fits. How: This only enters the reserve branch when both fit checks failed.
@@ -1051,9 +1051,9 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 			if ( reaCoaRef.current ) { // What: Real Coach Ref Guard. Why: Same reasoning as the render function's own coach position: during briTarFun's (now smooth) scroll, the render function's OWN coach position (driven by the recObj React state set below, once per animation frame) lags a render/commit cycle behind the browser's own scroll animation and visibly stutters instead of gliding. How: Writing directly to the DOM here keeps the coach locked to the highlight, frame for frame; the render function still computes the same layout as a fallback for the coach's first paint each step (before this has run at all) and as the eventual React-driven value once it catches up.
 
 
-				const vpWidNum = window.innerWidth, vpHeiNum = window.innerHeight; // What: Viewport Width Number And Viewport Height Number. Why: The layout math below needs the current viewport size. How: These are read fresh from window on every call.
-				const coaWidNum = Math.min( 300, vpWidNum - 24 ); // What: Coach Width Number. Why: The coach's own width must clamp to the viewport on a narrow screen. How: This caps the usual 300px width to the viewport minus a 24px margin.
-				const layObj = coaLayFun( tarRecObj, coaHeiRef.current, coaWidNum, vpWidNum, vpHeiNum ); // What: Layout Object. Why: This is the single shared placement math also used by the render function's own first-paint fallback. How: This calls coaLayFun with the current target rect, the coach's own latest measured height, and the current viewport/coach sizes.
+				const vieWidNum = window.innerWidth, vieHeiNum = window.innerHeight; // What: Viewport Width Number And Viewport Height Number. Why: The layout math below needs the current viewport size. How: These are read fresh from window on every call.
+				const coaWidNum = Math.min( 300, vieWidNum - 24 ); // What: Coach Width Number. Why: The coach's own width must clamp to the viewport on a narrow screen. How: This caps the usual 300px width to the viewport minus a 24px margin.
+				const layObj = coaLayFun( tarRecObj, coaHeiRef.current, coaWidNum, vieWidNum, vieHeiNum ); // What: Layout Object. Why: This is the single shared placement math also used by the render function's own first-paint fallback. How: This calls coaLayFun with the current target rect, the coach's own latest measured height, and the current viewport/coach sizes.
 				const coaStyObj = reaCoaRef.current.style; // What: Coach Style Object. Why: The layout above must actually be written onto the real DOM element. How: This reads reaCoaRef.current's own live CSSStyleDeclaration.
 
 				coaStyObj.top = layObj.top + 'px'; coaStyObj.left = layObj.left + 'px'; // What: Coach Top/Left Write. Why: The coach must move to exactly where coaLayFun decided. How: This writes both inline style properties directly.
@@ -1092,11 +1092,11 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 			resDecBoo = true; // What: Reserve Decided Commit. Why: This decision must only ever happen once per step. How: This flips resDecBoo to true.
 
-			const vpHeiNum = window.innerHeight; // What: Viewport Height Number. Why: The fit checks below need the current viewport height. How: This reads window.innerHeight fresh.
+			const vieHeiNum = window.innerHeight; // What: Viewport Height Number. Why: The fit checks below need the current viewport height. How: This reads window.innerHeight fresh.
 
 			const coaHeiNum = coaHeiRef.current; // What: Coach Height Number. Why: This must read coaHeiRef.current, not a closed-over value, since a narrower coach (small/mobile screens) wraps the same body text over more lines and renders taller, so the fixed COA_HEI_NUM guess under-reserved there specifically, this step fitting "above" by the estimate but not in reality, with the coach ending up overlapping the highlight's top edge anyway. How: This reads the ref's own current value fresh.
 
-			if ( vpHeiNum - ( tarRecObj.top + tarRecObj.height ) >= coaHeiNum + 16 ) return; // What: Fits Below Return. Why: No reserve is needed once the coach's own height plus its 16px gap already fits below the target. How: This returns whenever that check passes, leaving resTopNum at its already-0 default.
+			if ( vieHeiNum - ( tarRecObj.top + tarRecObj.height ) >= coaHeiNum + 16 ) return; // What: Fits Below Return. Why: No reserve is needed once the coach's own height plus its 16px gap already fits below the target. How: This returns whenever that check passes, leaving resTopNum at its already-0 default.
 
 			if ( tarRecObj.top - 16 - coaHeiNum >= safTopFun( { forCoaBoo: true } ) + 12 ) return; // What: Fits Above Return. Why: No reserve is needed once the coach's own height plus its 16px gap already fits above the target either. How: This returns whenever that check passes, leaving resTopNum at its already-0 default.
 
@@ -1221,9 +1221,9 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 	const totSteNum = steps.length; // What: Total Step Number. Why: The progress line below needs the total step count. How: This reads steps.length once per render.
 
-	const vpWidNum = window.innerWidth, vpHeiNum = window.innerHeight; // What: Viewport Width Number And Viewport Height Number. Why: The coach's own sizing below needs the current viewport dimensions. How: These are read fresh from window on every render.
+	const vieWidNum = window.innerWidth, vieHeiNum = window.innerHeight; // What: Viewport Width Number And Viewport Height Number. Why: The coach's own sizing below needs the current viewport dimensions. How: These are read fresh from window on every render.
 
-	const coaWidNum = Math.min( 300, vpWidNum - 24 ); // What: Coach Width Number. Why: The coach's own width must clamp to the viewport on a narrow screen. How: This caps the usual 300px width to the viewport minus a 24px margin.
+	const coaWidNum = Math.min( 300, vieWidNum - 24 ); // What: Coach Width Number. Why: The coach's own width must clamp to the viewport on a narrow screen. How: This caps the usual 300px width to the viewport minus a 24px margin.
 
 	const meaCoaJsx = ( // What: Measurer Coach JSX. Why: This is a hidden clone of the coach, rendered off-screen the moment a step's content is known, BEFORE its target (and so recObj) resolves, unlike the real coach below; its only job is to give meaCoaRef's own layout effect something to measure early enough for decResFun (which runs inside the position-tracking effect, as soon as the target is first found, before the real coach exists in the DOM at all) to see this step's REAL height instead of a stale one measured off whatever the previous, possibly shorter, step happened to be.
 
@@ -1287,7 +1287,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 		spoStyObj = { top: recObj.top - padNum, left: recObj.left - padNum, width: recObj.width + padNum * 2, height: recObj.height + padNum * 2, transition: 'none' }; // What: Spotlight Style Object Assignment. Why: The rendered .ob-spot div below reads this directly as its own inline style. How: This pads recObj outward by padNum on every side and disables any CSS transition, since plcTarFun already animates position imperatively every frame.
 
-		const layObj = coaLayFun( recObj, coaHeiNum, coaWidNum, vpWidNum, vpHeiNum ); // What: Layout Object. Why: This is the same shared math plcTarFun uses imperatively every frame, kept here too as the coach's own first-paint value each step and the eventual React-driven fallback once it catches up. How: This calls coaLayFun with the current recObj, coaHeiNum, and the current viewport/coach sizes; coachAtTop needs no special branch here at all any more, letting it fall through to the exact same below/above logic every other step already uses is what lets the coach flip to sit BELOW the target (arrow up) once there is room, instead of only ever attaching above it, since coachAtTop's own remaining job is upstream of this (skipping decResFun's own padding and giving briTarFun a precise initial scroll target).
+		const layObj = coaLayFun( recObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ); // What: Layout Object. Why: This is the same shared math plcTarFun uses imperatively every frame, kept here too as the coach's own first-paint value each step and the eventual React-driven fallback once it catches up. How: This calls coaLayFun with the current recObj, coaHeiNum, and the current viewport/coach sizes; coachAtTop needs no special branch here at all any more, letting it fall through to the exact same below/above logic every other step already uses is what lets the coach flip to sit BELOW the target (arrow up) once there is room, instead of only ever attaching above it, since coachAtTop's own remaining job is upstream of this (skipping decResFun's own padding and giving briTarFun a precise initial scroll target).
 
 		coaStyObj = { top: layObj.top, left: layObj.left }; // What: Coach Style Object Assignment. Why: The rendered .ob-coach div below reads this directly as part of its own inline style. How: This takes layObj's own top/left.
 		arwClaStr = layObj.arrowClass; // What: Arrow Class String Assignment. Why: The rendered .ob-coach div below needs to know which arrow direction class to apply. How: This takes layObj's own arrowClass.
