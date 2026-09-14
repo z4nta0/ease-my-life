@@ -1801,6 +1801,9 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     (`onGriDowFun`), though note `gri` also separately means Grid in
     `bg-flourish.jsx` (`plaGriFun`), an unrelated multi-meaning segment
     in a different file with no collision risk between the two)
+  - `ovf` → `ove` (Overflow — found in `ownOveStr`/`ancOveStr`/`oveRigBoo`
+    in `help-mode.jsx` and `oveBelNum`/`oveStyStr` across
+    `tab-settings.jsx` and `tab-picker.jsx`)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

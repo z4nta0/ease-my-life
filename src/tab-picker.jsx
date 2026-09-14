@@ -544,9 +544,9 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 			if ( !addWraEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
 
-			const ovfBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
 
-			if ( ovfBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + ovfBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
 
 
 		}) );
@@ -595,9 +595,9 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 			if ( !addWraEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
 
-			const ovfBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
 
-			if ( ovfBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + ovfBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
 
 
 		}) );
@@ -1551,9 +1551,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 			if ( !dlyBlkEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
 
-			const ovfBelNum = dlyBlkEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the block actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the block's own bottom edge.
+			const oveBelNum = dlyBlkEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the block actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the block's own bottom edge.
 
-			if ( ovfBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + ovfBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing block needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing block needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
 
 
 		}, reduceMotion() ? 0 : 320 );
@@ -1675,9 +1675,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 			while ( curWlkEle && curWlkEle !== document.body ) { // What: Ancestor Walk Loop. Why: The nearest ACTUALLY-scrollable ancestor (not just any parent) is what needs scrolling. How: This checks each ancestor's own computed overflow-y and real scroll height before deciding it's the one.
 
 
-				const ovfStyStr = getComputedStyle( curWlkEle ).overflowY; // What: Overflow Style String. Why: Only an ancestor whose own CSS actually allows scrolling is a real candidate. How: This reads the computed overflowY value for curWlkEle.
+				const oveStyStr = getComputedStyle( curWlkEle ).overflowY; // What: Overflow Style String. Why: Only an ancestor whose own CSS actually allows scrolling is a real candidate. How: This reads the computed overflowY value for curWlkEle.
 
-				if ( ( ovfStyStr === 'auto' || ovfStyStr === 'scroll' ) && curWlkEle.scrollHeight > curWlkEle.clientHeight ) { curWlkEle.scrollTo({ top : 0, behavior : reduceMotion() ? 'auto' : 'smooth' }); return; } // What: Scrollable Ancestor Found Guard. Why: The first genuinely-scrollable ancestor found is the one that actually needs resetting. How: This scrolls it to the top and returns immediately, skipping every further ancestor.
+				if ( ( oveStyStr === 'auto' || oveStyStr === 'scroll' ) && curWlkEle.scrollHeight > curWlkEle.clientHeight ) { curWlkEle.scrollTo({ top : 0, behavior : reduceMotion() ? 'auto' : 'smooth' }); return; } // What: Scrollable Ancestor Found Guard. Why: The first genuinely-scrollable ancestor found is the one that actually needs resetting. How: This scrolls it to the top and returns immediately, skipping every further ancestor.
 
 				curWlkEle = curWlkEle.parentElement; // What: Walk Advance. Why: No scrollable ancestor was found yet, so the search continues one level up. How: This reassigns curWlkEle to its own parent.
 
@@ -1812,9 +1812,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 			if ( !addWraEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
 
-			const ovfBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
 
-			if ( ovfBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + ovfBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
 
 
 		}) );
@@ -1841,9 +1841,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 			if ( !addWraEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
 
-			const ovfBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
+			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
 
-			if ( ovfBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + ovfBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
 
 
 		}) );

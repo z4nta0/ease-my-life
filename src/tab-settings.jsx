@@ -512,9 +512,9 @@ function ConSupCom ( { state, actions } ) {
 			// Bring the form's bottom into view (with a little breathing room),
 			// but never scroll past its top, so the "Having problems?" row stays
 			// visible too when the form is short enough to fit alongside it.
-			const ovfBelNum = frmRecObj.bottom - visBotNum + 24; // What: Overflow Below Number. Why: Only a form that actually overflows past the visible bottom edge needs any scrolling at all. How: This is the form's own bottom minus the visible bottom edge, plus 24px of breathing room.
+			const oveBelNum = frmRecObj.bottom - visBotNum + 24; // What: Overflow Below Number. Why: Only a form that actually overflows past the visible bottom edge needs any scrolling at all. How: This is the form's own bottom minus the visible bottom edge, plus 24px of breathing room.
 
-			if ( ovfBelNum > 0 ) scrConEle.scrollTo( { top : scrConEle.scrollTop + ovfBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' } ); // What: Scroll Into View Call. Why: The form should only actually be scrolled when it truly overflows below the fold. How: This scrolls the container down by exactly the overflow amount, animated unless reduced motion is preferred.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo( { top : scrConEle.scrollTop + oveBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' } ); // What: Scroll Into View Call. Why: The form should only actually be scrolled when it truly overflows below the fold. How: This scrolls the container down by exactly the overflow amount, animated unless reduced motion is preferred.
 
 
 		}, 360 );
