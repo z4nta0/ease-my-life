@@ -376,8 +376,8 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 		pilNodArr.forEach( ( pilCurEle ) => { // What: Pill Animate Loop. Why: Every pill needs its own individual FLIP tween (or fade-in, if newly pinned), since each may have moved a different distance. How: This computes each pill's own delta from firMapObj and plays the matching animation.
 
 
-			const pilIdStr = pilCurEle.dataset.cid;   // What: Pill Id String. Why: firMapObj is keyed by each pill's own conditional id, not the DOM node itself. How: This reads the pill's own data-cid attribute.
-			const preXNum  = firMapObj.get( pilIdStr ); // What: Previous X Number. Why: A FLIP tween needs to know where this exact pill sat before the reorder. How: This looks up pilIdStr in firMapObj, undefined if this pill is brand new.
+			const pilIdeStr = pilCurEle.dataset.cid;   // What: Pill Identifier String. Why: firMapObj is keyed by each pill's own conditional id, not the DOM node itself. How: This reads the pill's own data-cid attribute.
+			const preXNum  = firMapObj.get( pilIdeStr ); // What: Previous X Number. Why: A FLIP tween needs to know where this exact pill sat before the reorder. How: This looks up pilIdeStr in firMapObj, undefined if this pill is brand new.
 			const newXNum  = pilCurEle.offsetLeft;      // What: New X Number. Why: The tween's own end point is wherever the pill actually landed after the reorder. How: This reads the pill's own current offsetLeft.
 
 

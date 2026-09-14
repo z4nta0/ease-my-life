@@ -1666,6 +1666,11 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     already the established, heavily-used code for Close elsewhere
     (`cloAddFun`, `cloTimRef`, `onCloConFun`, ...), so these were
     renamed to match rather than left as a fourth "cls" variant)
+  - `id` → `ide` (Identifier — this one drifts to a 2-letter segment
+    instead of the usual wrong-3-letter case, since "id" is the common
+    real-world abbreviation people reach for; found in `conIdArr`,
+    `pilIdStr`, `skiIdSet`, and `visIdSet` across `day-log.jsx` and
+    `tab-data.jsx`, all fixed to their own 3-letter `ide` segment)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
