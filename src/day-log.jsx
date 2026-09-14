@@ -441,7 +441,9 @@ function iteSubFun ( picRecObj, iteRecObj, booValNum ) {
 	}
 
 
+
 	if ( picModStr === 'weighted' ) return `weight ${ iteRecObj.weight ?? 1 }`; // What: Weighted Mode Return. Why: A weighted item's subline is just its own plain weight. How: This reads iteRecObj's own weight, defaulting to 1 for an older item with none set.
+
 
 
 	if ( picModStr === 'ease-up' || picModStr === 'ease-down' ) { // What: Ease Mode Branch. Why: Both ease modes phrase their own subline as a soonest-latest day range instead of a weight. How: This computes that range from iteRecObj's own (or picRecObj's own) ease-min/ease-max.
@@ -512,7 +514,10 @@ function conSubFun ( conRecObj ) {
 	}
 
 
+
 	if ( conRecObj.mode === 'dynamic' ) return `${ conRecObj.oddsPct ?? 50 }%+ odds`; // What: Dynamic Mode Return. Why: Dynamic odds are a floor rather than a fixed value. How: This reads conRecObj's own oddsPct, defaulting to 50, with a trailing "+" to signal it only ever climbs.
+
+
 
 	if ( conRecObj.mode === 'weighted' ) return `${ conRecObj.oddsPct ?? 50 }% odds`; // What: Weighted Mode Return. Why: Weighted odds are a fixed value, unlike dynamic's floor. How: This reads conRecObj's own oddsPct, defaulting to 50.
 
@@ -978,7 +983,9 @@ function ConSecCom ( { appStaObj, picGroArr } ) {
 	const conIdeArr = [ ...new Set( picGroArr.filter( ( picRecObj ) => picRecObj.conditionalId ).map( ( picRecObj ) => picRecObj.conditionalId ) ) ]; // What: Conditional Identifier Array. Why: This section only needs the unique conditional ids actually attached to this group's own pickers. How: This maps picGroArr down to its own conditionalId values, deduped via a Set.
 	const conRecArr = ( appStaObj.conditionals || [] ).filter( ( conRecObj ) => conIdeArr.includes( conRecObj.id ) );                                 // What: Conditional Record Array. Why: The table below needs the real conditional records, not just their ids. How: This filters appStaObj's own conditionals down to conIdeArr's own membership.
 
+
 	if ( !conRecArr.length ) return null; // What: No Conditionals Guard. Why: A group with no attached conditionals at all needs no section here. How: This returns null before building any of the table below.
+
 
 
 	const genConObj = ( appStaObj.today.genLog && appStaObj.today.genLog.conds ) || {}; // What: Generation Conditional Object. Why: The value cells below need each conditional's own at-generation snapshot. How: This reads appStaObj's own today.genLog.conds, or an empty object when there is none yet.

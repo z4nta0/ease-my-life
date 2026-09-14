@@ -314,9 +314,14 @@ function isaAncFun( picCadObj, cheDatObj = new Date() ) {
 
 	if ( curCadStr === 'daily' ) return true; // What: Daily Case Return. Why: Daily has no anchor at all, so every day counts as one. How: This returns true unconditionally for the daily case.
 
+
+
 	if ( curCadStr === 'weekly' ) return cheDatObj.getDay() === ( picCadObj.anchorDow ?? cheDatObj.getDay() ); // What: Weekly Case Return. Why: A weekly cadence's own anchor day is whichever weekday anchorDow names. How: This compares cheDatObj's own weekday against picCadObj's own anchorDow, defaulted to cheDatObj's own weekday (a no-op match) when missing.
 
+
+
 	if ( curCadStr === 'monthly' ) return cheDatObj.getDate() === tdmResFun( picCadObj, cheDatObj.getFullYear(), cheDatObj.getMonth() + 1, 'anchorDom' ); // What: Monthly Case Return. Why: A monthly cadence's own anchor day is whatever tdmResFun resolves for this month. How: This compares cheDatObj's own date-of-month against tdmResFun's own resolved target.
+
 
 
 	if ( curCadStr === 'yearly' ) { // What: Yearly Case Check. Why: A yearly cadence needs its own multi-step resolution, checking the anchor month first and only then the anchor day within it, unlike the other cadences' plain one-line comparisons. How: This branches into the wrong-month guard and tdmResFun's own day resolution below whenever curCadStr is 'yearly'.
@@ -382,6 +387,7 @@ function perStaFun( picCadObj, cheDatObj = new Date() ) {
 	if ( curCadStr === 'daily' ) return midDatObj; // What: Daily Case Return. Why: Daily has no anchor, so every day is its own period, starting at its own midnight. How: This returns midDatObj directly.
 
 
+
 	if ( curCadStr === 'weekly' ) { // What: Weekly Case Check. Why: A weekly period's own start needs stepping back to the most recent anchor weekday, a multi-step calculation unlike daily's direct return. How: This branches into the anchor-weekday step-back below whenever curCadStr is 'weekly'.
 
 
@@ -405,7 +411,9 @@ function perStaFun( picCadObj, cheDatObj = new Date() ) {
 
 		const curTarNum = tdmResFun( picCadObj, midDatObj.getFullYear(), midDatObj.getMonth() + 1, 'anchorDom' ); // What: Current Target Number. Why: This month's own anchor day-of-month must be known before deciding whether midDatObj has already passed it. How: This calls tdmResFun for midDatObj's own year and month.
 
+
 		if ( midDatObj.getDate() >= curTarNum ) return new Date( midDatObj.getFullYear(), midDatObj.getMonth(), curTarNum ); // What: Current Month Guard. Why: Once midDatObj has reached (or passed) this month's own anchor day, that day itself is the period start. How: This returns that anchor date directly when midDatObj's own date is already at or past curTarNum.
+
 
 
 		const preMonObj = new Date( midDatObj.getFullYear(), midDatObj.getMonth() - 1, 1 );                       // What: Previous Month Object. Why: Before this month's own anchor day, the period actually started back in the previous month. How: This builds a Date for the 1st of the month before midDatObj's own.
@@ -426,7 +434,9 @@ function perStaFun( picCadObj, cheDatObj = new Date() ) {
 		const curTarNum = tdmResFun( picCadObj, midDatObj.getFullYear(), monIndNum + 1, 'anchorDay' ); // What: Current Target Number. Why: This year's own anchor day within anchorMonth must be known before deciding whether midDatObj has already passed it. How: This calls tdmResFun for midDatObj's own year and monIndNum.
 		const curAncObj = new Date( midDatObj.getFullYear(), monIndNum, curTarNum );                   // What: Current Anchor Object. Why: The guard below needs a real Date to compare midDatObj against, not just a day number. How: This builds that Date from midDatObj's own year, monIndNum, and curTarNum.
 
+
 		if ( midDatObj >= curAncObj ) return curAncObj; // What: Current Year Guard. Why: Once midDatObj has reached (or passed) this year's own anchor date, that date itself is the period start. How: This returns curAncObj directly when midDatObj is already at or past it.
+
 
 
 		const preYeaNum = midDatObj.getFullYear() - 1;                                   // What: Previous Year Number. Why: Before this year's own anchor date, the period actually started back in the previous year. How: This subtracts 1 from midDatObj's own year.
@@ -516,6 +526,7 @@ function comPerFun( picCadObj, picLogArr, cheDatObj = new Date() ) {
 	if ( ( picCadObj.cadence || 'daily' ) === 'daily' ) return false; // What: Daily Cadence Guard. Why: Daily pickers are handled entirely by a separate legacy path, not this period-based check. How: This returns false early whenever picCadObj's own (defaulted) cadence is 'daily'.
 
 
+
 	const staIsoStr = perKeyFun( picCadObj, cheDatObj ); // What: Start Iso String. Why: A pick-log row's own date must be compared against the current period's start as a plain string. How: This calls perKeyFun once and reuses the result below.
 
 
@@ -565,7 +576,10 @@ function sumCadFun( picCadObj ) {
 
 	if ( curCadStr === 'daily' ) return 'Daily'; // What: Daily Case Return. Why: A daily cadence has no anchor to summarize at all. How: This returns the plain label unconditionally.
 
+
+
 	if ( curCadStr === 'weekly' ) return 'Weekly · ' + DAY_FUL_ARR[ picCadObj.anchorDow ?? 0 ]; // What: Weekly Case Return. Why: A weekly cadence's own summary names its anchor weekday. How: This looks picCadObj's own anchorDow (defaulted to Sunday) up in DAY_FUL_ARR.
+
 
 
 	if ( curCadStr === 'monthly' ) { // What: Monthly Case Check. Why: A monthly cadence's own summary branches on dateMode, a multi-line ternary unlike the other cadences' plain one-line returns. How: This branches into the nth-weekday-versus-plain-date summary below whenever curCadStr is 'monthly'.
@@ -702,11 +716,13 @@ function enfWeeFun( picCadObj ) {
 
 	const dowSetArr = Array.isArray( picCadObj && picCadObj.daysOfWeek ) ? picCadObj.daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ]; // What: Dow Set Array. Why: A missing or malformed daysOfWeek must still fall back to every day allowed. How: This keeps picCadObj's own daysOfWeek only when it's a real array, defaulting to all 7 days otherwise.
 
+
 	if ( !picCadObj || ( picCadObj.cadence || 'daily' ) !== 'weekly' ) return dowSetArr; // What: Non-Weekly Guard. Why: This enforcement only applies to a weekly cadence at all. How: This returns dowSetArr unchanged when picCadObj is missing or not weekly.
 
 
 
 	const ancDowNum = Number.isInteger( picCadObj.anchorDow ) ? picCadObj.anchorDow : null; // What: Anchor Dow Number. Why: The check below needs a real anchor day to compare against, not a possibly-missing one. How: This reads picCadObj's own anchorDow only when it's a real integer, null otherwise.
+
 
 	if ( ancDowNum === null || dowSetArr.includes( ancDowNum ) ) return dowSetArr; // What: Already-Included Guard. Why: With no real anchor day, or one already inside dowSetArr, there is nothing to add. How: This returns dowSetArr unchanged in either case.
 

@@ -102,6 +102,7 @@ function truOddFun( conCurObj ) {
 	if ( conCurObj.mode === 'random' ) return 0.5; // What: Random Mode Guard. Why: A random-mode conditional always resolves at a fixed fifty percent, with no oddsPct or value involved at all. How: This returns 0.5 immediately when conCurObj's own mode is 'random'.
 
 
+
 	const basPerNum = conCurObj.oddsPct ?? 50;                                                         // What: Base Percentage Number. Why: Every non-random mode starts from the conditional's own configured odds, defaulting to 50 for a legacy conditional with none. How: This reads conCurObj.oddsPct, falling back to 50 when it is nullish.
 	const finPerNum = conCurObj.mode === 'dynamic' ? basPerNum + ( conCurObj.value || 0 ) : basPerNum; // What: Final Percentage Number. Why: A dynamic-mode conditional's own odds climb by its own accrued value (a miss boost), while every other mode stays at its base. How: This adds conCurObj.value on top of basPerNum only when conCurObj's own mode is 'dynamic'.
 
@@ -318,7 +319,10 @@ function advValFun( conCurObj ) {
 
 	if ( !conCurObj || conCurObj.active === false || !modValFun( conCurObj.mode ) ) return null; // What: Ineligible Guard. Why: There is nothing to advance for a missing conditional, a disabled one, or a probability-family one, which never charges at all. How: This returns null immediately when any of those three hold.
 
+
+
 	if ( conCurObj.chargedToday ) return null; // What: Already Charged Guard. Why: Value only advances once per day, no matter how many dependent completions happen after the first. How: This returns null immediately when conCurObj's own chargedToday guard is already set.
+
 
 
 	const thrValNum = conCurObj.threshold ?? 100; // What: Threshold Value Number. Why: Every branch below needs the same resolved charge ceiling, defaulting to 100 for a legacy conditional with none. How: This reads conCurObj.threshold, falling back to 100 when it is nullish.
@@ -347,6 +351,7 @@ function advValFun( conCurObj ) {
 	}
 
 
+
 	if ( conCurObj.mode === 'dynamic' ) return { // What: Dynamic Miss Accrual Return. Why: A dynamic conditional's own odds should climb after a completion that means today's roll did not fire. How: This adds a fixed 10 percentage points onto conCurObj's own value.
 
 
@@ -355,6 +360,7 @@ function advValFun( conCurObj ) {
 
 
 	};
+
 
 
 	if ( conCurObj.mode === 'ease-down' ) { // What: Ease Down Mode Check. Why: An ease-down conditional's own advance branches between a one-shot refill and an ordinary charge-guard patch, unlike the other modes' single return each. How: This branches into the refill guard and mid-streak return below whenever conCurObj's own mode is 'ease-down'.
@@ -412,10 +418,13 @@ function carComFun( conCurObj ) {
 	if ( !conCurObj ) return null; // What: No Conditional Guard. Why: There is nothing to reset or discharge for a conditional that does not exist. How: This returns null immediately when conCurObj is nullish.
 
 
+
 	const thrValNum = conCurObj.threshold ?? 100; // What: Threshold Value Number. Why: Every branch below needs the same resolved charge ceiling, defaulting to 100 for a legacy conditional with none. How: This reads conCurObj.threshold, falling back to 100 when it is nullish.
 
 
 	if ( conCurObj.mode === 'ease-up' ) return { value : 0, triggered : false, chargeStep : rolSteFun( conCurObj, thrValNum ) }; // What: Ease Up Reset Return. Why: Completing the card both resets this cycle and rolls a fresh plan for the next one, mirroring pickers.js's own reset-on-pick behavior. How: This zeroes value, clears triggered, and rolls a brand new chargeStep via rolSteFun.
+
+
 
 	if ( conCurObj.mode === 'dynamic' ) return { value : 0, triggered : false }; // What: Dynamic Reset Return. Why: Completing the card means the fired day-off was actually handled, so the miss-accrual value resets for the next cycle. How: This zeroes value and clears triggered.
 

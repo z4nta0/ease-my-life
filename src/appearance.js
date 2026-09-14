@@ -195,6 +195,7 @@ function appPalFun( palResObj, theKeyStr ) {
 	document.body.dataset.palette = theKeyStr || 'custom'; // What: Palette Dataset Write. Why: Some CSS keys off which specific palette is active, not just its raw token values. How: This writes the resolved theme key, or 'custom' if none was given, onto body's own dataset.
 
 
+
 	syncTinFun( palResObj.bacStr ); // What: Status Bar Tint Sync Call. Why: An installed PWA's status bar should follow the newly-applied background color too. How: This hands the resolved background color to syncTinFun.
 
 
@@ -246,6 +247,7 @@ function toHexFun( cssColStr ) {
 		if ( window.CSS && CSS.supports && !CSS.supports( 'color', cssColStr ) ) return null; // What: Unsupported Color Guard. Why: Some very old browsers may not recognize a given color syntax at all, such as oklch(). How: This bails out early with null when the CSS.supports API exists and reports the color as unparseable.
 
 
+
 		if ( !__tinProObj ) { // What: No Probe Object Check. Why: The scratch canvas 2D context only needs to be created once, ever. How: This gates the creation block below so it only runs on the very first call.
 
 
@@ -258,6 +260,7 @@ function toHexFun( cssColStr ) {
 
 
 		if ( !__tinProObj ) return null; // What: No Probe Guard. Why: Without a working 2D context there is no way to resolve the color at all. How: This bails out with null when canvas 2D support is unavailable.
+
 
 
 		__tinProObj.fillStyle = '#000000'; // What: Fill Style Reset. Why: fillStyle silently ignores an invalid assignment rather than throwing, so a stale previous value could otherwise be mistaken for a successful parse. How: This resets fillStyle to a known value before attempting the real assignment below.
@@ -317,12 +320,15 @@ function syncTinFun( bacColStr ) {
 
 	const hexResStr = toHexFun( bacColStr ); // What: Hex Result String. Why: A <meta name="theme-color"> tag's content must be a color the UA will definitely parse. How: This resolves the given background color down to a plain hex string.
 
+
 	if ( !hexResStr ) return; // What: No Hex Guard. Why: There is nothing safe to write if the color could not be resolved. How: This bails out early, leaving whatever theme-color tag already exists untouched.
+
 
 
 	const metTagLis = document.querySelectorAll( 'meta[name="theme-color"]' ); // What: Meta Tag List. Why: index.html ships a light/dark pair of theme-color tags, both of which need collapsing down to one. How: This finds every existing theme-color meta tag, in document order.
 
 	let priMetEle = null; // What: Primary Meta Element And Setter. Why: Exactly one theme-color tag should survive; every other one gets removed below. How: This starts null and is assigned the first tag found in the loop that follows.
+
 
 	for ( const metCurEle of metTagLis ) { // What: Meta Tag Loop. Why: Every existing theme-color tag must be visited once, to keep the first and discard the rest. How: This iterates metTagLis in document order.
 
@@ -489,17 +495,23 @@ export function resTheFun( appSetObj, sysDarBoo ) {
 
 	const theKeyStr = appSetObj.theme || 'ink'; // What: Theme Key String. Why: Very old/incomplete persisted states might not have a theme field at all. How: This falls back to 'ink' when appSetObj.theme is missing.
 
+
 	if ( !appSetObj.autoSystem ) return theKeyStr; // What: No Auto System Guard. Why: With "System preference" off, the user's own explicit choice always wins outright. How: This returns the resolved theme key as-is, skipping the counterpart lookup entirely.
+
 
 
 	const curPaiObj = THE_PAI_OBJ[ theKeyStr ]; // What: Current Pair Object. Why: Only a theme with a known light/dark counterpart can auto-switch at all. How: This looks up the resolved theme key in THE_PAI_OBJ.
 
+
 	if ( !curPaiObj ) return theKeyStr; // What: No Pair Guard. Why: A theme key with no known counterpart (should not normally happen) has nothing to switch to. How: This falls back to the resolved theme key unchanged.
+
 
 
 	const wanKeyStr = sysDarBoo ? curPaiObj.drkStr : curPaiObj.ligStr; // What: Wanted Key String. Why: This is the counterpart the OS's current preference actually calls for. How: This picks curPaiObj's dark or light side based on sysDarBoo.
 
+
 	if ( wanKeyStr === 'customDark' && !appSetObj.customDark ) return theKeyStr; // What: No Custom Dark Guard. Why: Auto-switching to a custom slot that was never set up would apply a broken, empty palette. How: This falls back to the resolved theme key unchanged when customDark is wanted but missing.
+
 
 	if ( wanKeyStr === 'customLight' && !appSetObj.customLight ) return theKeyStr; // What: No Custom Light Guard. Why: Same reasoning as the customDark guard above, for the light custom slot. How: This falls back to the resolved theme key unchanged when customLight is wanted but missing.
 

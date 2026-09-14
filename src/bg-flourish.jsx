@@ -276,6 +276,7 @@ function eveSpaFun( minValNum, maxValNum, couValNum ) {
 	if ( couValNum <= 1 ) return [ minValNum ]; // What: Single Value Guard. Why: A step can't be computed with fewer than 2 points, and a single point should just be the minimum. How: This returns a one-element array early when couValNum doesn't call for a real spread.
 
 
+
 	const steValNum = ( maxValNum - minValNum ) / ( couValNum - 1 ); // What: Step Value Number. Why: This is the fixed increment between each consecutive returned value. How: This divides the full range by one less than the requested count.
 
 
@@ -583,6 +584,7 @@ function useFloIteFun( tabIdeStr, meaEleRef ) {
 
 
 		if ( floCacMap.has( tabIdeStr ) ) { setFloIteObj( floCacMap.get( tabIdeStr ) ); return; } // What: Cache Hit Guard. Why: A tab generated earlier in this session must not be regenerated. How: This applies the cached entry directly and bails out of the rest of the effect.
+
 
 
 		const meaCurEle = meaEleRef.current;                         // What: Measure Current Element. Why: This is the actual DOM node whose real size the grid is generated against. How: This is read once from meaEleRef.current and reused for every measurement below.

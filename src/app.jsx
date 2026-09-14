@@ -102,11 +102,13 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 			const navCurEle = navEleRef.current; // What: Nav Current Element. Why: This gives a stable local reference to the live nav DOM node for this measurement pass. How: This is read once from navEleRef.current and reused for the querySelector and rect calls below.
 
+
 			if ( !navCurEle ) return; // What: Nav Missing Guard. Why: The ref may not be attached yet, such as before the first render commits. How: This bails out of the measurement early when there is no nav element to measure against.
 
 
 
 			const butActEle = navCurEle.querySelector( '.tabbtn.is-on' ); // What: Button Active Element. Why: This is the specific tab button the indicator needs to sit under. How: This is found via a CSS query for the "is-on" class inside the nav.
+
 
 			if ( !butActEle ) { setIndRecObj( null ); return; } // What: No Active Button Guard. Why: No tab is currently marked active, such as mid-transition. How: This clears the indicator to hide it and bails out of the rest of the measurement.
 
@@ -152,6 +154,7 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 
 			if ( resObsObj ) resObsObj.disconnect(); // What: Resize Observer Teardown Guard. Why: This should only disconnect if an observer was actually created. How: This stops the observer from watching the nav element.
+
 
 
 			window.removeEventListener( 'resize', meaPosFun ); // What: Window Resize Listener Teardown. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same function reference that was registered.
@@ -572,6 +575,7 @@ function AppRooCom () {
 		setRaiOpeBoo( false ); // What: Rail Close Call. Why: Selecting a tab should always close an open rail drawer. How: This forces raiOpeBoo to false regardless of its prior value.
 
 
+
 		if ( maiEleRef.current ) maiEleRef.current.scrollTop = 0; // What: Scroll Reset Guard. Why: The shared main scroller would otherwise keep the previous tab's scroll position. How: This zeroes the scroll position of the main element, if it's currently mounted.
 
 
@@ -591,6 +595,8 @@ function AppRooCom () {
 
 
 		if ( typeof matchMedia !== 'function' ) return; // What: No MatchMedia Guard. Why: Some environments (or very old browsers) may not support matchMedia at all. How: This bails out of the effect entirely when matchMedia isn't available, leaving sysDarBoo at its initial value.
+
+
 
 		const medQueObj   = matchMedia( '(prefers-color-scheme: dark)' );       // What: Media Query Object. Why: The same query used for the initial value must be reused here so the listener matches. How: This is the live MediaQueryList that the change listener below attaches to.
 		const onDarChaFun = ( chaEveObj ) => setSysDarBoo( chaEveObj.matches ); // What: On Dark Change Function. Why: The OS's own light/dark setting can change at any time while the app is open. How: This updates sysDarBoo to the media query's current match state whenever it fires a change event.
@@ -653,11 +659,13 @@ function AppRooCom () {
 
 		const prePlaStr = prePlaRef.current; // What: Previous Placement String. Why: Detecting an actual change requires comparing against what was last recorded, not just the current value.
 
+
 		if ( prePlaStr === tabPlaStr ) return; // What: No Change Guard. Why: The whole ghost/enter animation should only run when the placement actually changed. How: This bails out of the effect early when the previous and current placement are identical.
 
 
 
 		prePlaRef.current = tabPlaStr; // What: Previous Placement Update. Why: The next run of this effect needs to compare against the placement that's current now. How: This overwrites prePlaRef with the newly-confirmed placement.
+
 
 		if ( reduceMotion && reduceMotion() ) return; // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't see the ghost/enter animation at all. How: This bails out of the effect, skipping the animation entirely, when the shared reduceMotion check reports true.
 
