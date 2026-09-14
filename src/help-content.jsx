@@ -38,55 +38,54 @@ import { Icon } from './ui.jsx'; // What: Icon. Why: Several items' own body cop
  * CLAUDE.md); a leading comment directly above a specific item still
  * explains anything genuinely unique to that one item instead:
  * 
- * - `ideStr` (String): this item's own unique key, letting HelpOverlay
- *   (help-mode.jsx) track which one is currently open; read back as
- *   part of the React key when rendering this item's own badge/tip,
- *   and compared against its own open-id state.
- * 
- * - `selStr` (String): which on-page element(s) this item highlights;
- *   passed through help-mode.jsx's own finTarFun, a comma-separated-
- *   fallback matcher tried left to right until one alternative
+ * - `ideStr` (String): Identifier String is this item's own unique key,
+ *   letting HelpOverlay (help-mode.jsx) track which one is currently open;
+ *   read back as part of the React key when rendering this item's own
+ *   badge/tip, and compared against its own open-id state.
+ *
+ * - `selStr` (String): Selector String determines which on-page element(s)
+ *   this item highlights; passed through help-mode.jsx's own finTarFun, a
+ *   comma-separated-fallback matcher tried left to right until one alternative
  *   matches a visible element.
- * 
- * - `shaStr` (String or Function, optional): overrides the default
- *   CSS-border-radius shape detection, for a target whose round
- *   appearance comes from something else (an inner SVG shape, or a
- *   computed union with no single source element of its own); passed
- *   to help-mode.jsx's own shaRadFun, or called directly when it is a
- *   function.
- * 
- * - `titStr` (String or Function): the tip's own heading; a function
- *   is used when the heading depends on something only known at open
- *   time (a live DOM value, or a matched element's own name), called
- *   by help-mode.jsx's HelTipCom with the item's own target rect.
- * 
- * - `bodEle` (Element or Function): the tip's own explanatory copy,
- *   rendered as-is by HelTipCom; a function is used for the same
+ *
+ * - `shaStr` (String or Function, optional): Shape String overrides the
+ *   default CSS-border-radius shape detection, for a target whose round
+ *   appearance comes from something else (an inner SVG shape, or a computed
+ *   union with no single source element of its own); passed to help-mode.jsx's
+ *   own shaRadFun, or called directly when it is a function.
+ *
+ * - `titStr` (String or Function): Title String is the tip's own heading; a
+ *   function is used when the heading depends on something only known at open
+ *   time (a live DOM value, or a matched element's own name), called by
+ *   help-mode.jsx's HelTipCom with the item's own target rect.
+ *
+ * - `bodEle` (Element or Function): Body Element is the tip's own explanatory
+ *   copy, rendered as-is by HelTipCom; a function is used for the same
  *   open-time-dependent reason titStr's own function form is.
- * 
- * - `padXNum` / `padYNum` (Number, optional): overrides the default
- *   highlight padding on one axis, for a specific target whose
- *   highlight would otherwise overlap a neighboring element (see that
+ *
+ * - `padXNum` / `padYNum` (Number, optional): Pad X Number and Pad Y Number
+ *   override the default highlight padding on one axis, for a specific target
+ *   whose highlight would otherwise overlap a neighboring element (see that
  *   item's own leading comment for the exact reasoning); read by
  *   help-mode.jsx's claPadFun/badRecFun.
- * 
- * - `scrBoo` (Boolean, optional): caps the open tip's own height and
- *   scrolls its content internally instead of overflowing past the
- *   target, for a body tall enough to overlap it on a short viewport;
- *   read by help-mode.jsx's own placement math (plaTipFun).
- * 
- * - `groStr` (String, optional): marks this item as one column of a
- *   shared table-style row; HelpOverlay groups every item sharing the
- *   same groStr and snaps their highlights flush edge-to-edge, with
- *   no gap or overlap between them.
- * 
- * - `mulBoo` (Boolean, optional): renders one badge per matched
- *   element instead of unioning them into a single highlight, for a
+ *
+ * - `scrBoo` (Boolean, optional): Scroll Boolean caps the open tip's own
+ *   height and scrolls its content internally instead of overflowing past the
+ *   target, for a body tall enough to overlap it on a short viewport; read by
+ *   help-mode.jsx's own placement math (plaTipFun).
+ *
+ * - `groStr` (String, optional): Group String marks this item as one column of
+ *   a shared table-style row; HelpOverlay groups every item sharing the same
+ *   groStr and snaps their highlights flush edge-to-edge, with no gap or
+ *   overlap between them.
+ *
+ * - `mulBoo` (Boolean, optional): Multiple Boolean renders one badge per
+ *   matched element instead of unioning them into a single highlight, for a
  *   selector that can match more than one element on the page at once.
  *
- * - `labStr` (String, optional): a secondary selector read within the
- *   matched element to pull a live label (its own text, or an input's
- *   own value) into this item's own title function, rather than using
+ * - `labStr` (String, optional): Label String is a secondary selector read
+ *   within the matched element to pull a live label (its own text, or an
+ *   input's own value) into this item's own title function, rather than using
  *   one fixed string.
  *
  * @author z4nta0 <https://github.com/z4nta0>
