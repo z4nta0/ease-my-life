@@ -36,15 +36,16 @@ const subCalSet = new Set(); // What: Subscriber Callback Set. Why: Every mounte
 
 
 
-export const emlTouObj = { // What: Ease My Life Tour Object. Why: This is the bus's own whole public API, the single shared object every consuming module reads and writes through. How: This exposes get/set/subscribe, each closing over the module-private curBusObj/subCalSet declared above.
+export const emlTouObj = { // What: Ease-My-Life Tour Object. Why: This is the bus's own whole public API, the single shared object every consuming module reads and writes through. How: This exposes get/set/subscribe, each closing over the module-private curBusObj/subCalSet declared above.
 
 
-	get       : () => curBusObj, // What: Get. Why: A caller needs to read the bus's current state synchronously, without waiting on a subscription. How: This returns curBusObj directly.
+	get : () => curBusObj, // What: Get. Why: A caller needs to read the bus's current state synchronously, without waiting on a subscription. How: This returns curBusObj directly.
 
-	set       : ( patDatObj ) => { // What: Set. Why: A caller needs to merge new fields into the bus's state and notify every subscriber of the change. How: This replaces curBusObj with a shallow merge of itself and patDatObj, then calls every subscribed callback with the freshly-merged value.
+	set : ( patDatObj ) => { // What: Set. Why: A caller needs to merge new fields into the bus's state and notify every subscriber of the change. How: This replaces curBusObj with a shallow merge of itself and patDatObj, then calls every subscribed callback with the freshly-merged value.
 
 
-		curBusObj = { ...curBusObj, ...patDatObj };                    // What: Current Bus Object Update. Why: The merged fields need to actually become the bus's own new live state before anyone is notified of them. How: This spreads the previous curBusObj followed by patDatObj, so patDatObj's own fields win on conflict.
+		curBusObj = { ...curBusObj, ...patDatObj }; // What: Current Bus Object Update. Why: The merged fields need to actually become the bus's own new live state before anyone is notified of them. How: This spreads the previous curBusObj followed by patDatObj, so patDatObj's own fields win on conflict.
+
 		subCalSet.forEach( ( subCalFun ) => subCalFun( curBusObj ) ); // What: Subscriber Notify Loop. Why: Every subscribed callback must see the freshly-merged state, not the value from before this call. How: This calls each callback currently in subCalSet with the just-updated curBusObj.
 
 
@@ -70,7 +71,7 @@ export const emlTouObj = { // What: Ease My Life Tour Object. Why: This is the b
 // #region useEmlTouFun
 
 /**
- * useEmlTouFun = Use Ease My Life Tour Function
+ * useEmlTouFun = Use Ease-My-Life Tour Function
  *
  * @summary
  * Subscribes the calling component to the shared tour bus (emlTouObj)
@@ -117,6 +118,5 @@ export function useEmlTouFun() {
 }
 
 // #endregion useEmlTouFun
-
 
 

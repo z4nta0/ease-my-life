@@ -952,6 +952,18 @@ don't invent one for anything else yet:
   in that specific object, same computation used for `style` objects and
   named imports elsewhere in this doc. This applies per-object — a nested
   object's own alignment is computed independently from its parent's.
+  - **This only applies within a tightly-grouped run of properties (0
+    blank lines between them)**, the same "run" concept used for
+    consecutive `const`/`let` declarations elsewhere in this doc.
+    Properties separated by a blank line (the normal case for a
+    multi-line property, per the 1-blank/2-blank padding rule above)
+    are NOT forced to align with each other across that gap — each such
+    property's own `:` just gets its ordinary single space, no padding.
+    E.g. `emlTouObj`'s own `get`/`set`/`subscribe` properties in
+    `eml-tour-bus.js` sit 1 blank line apart from each other (each is
+    its own multi-line arrow function), so none of them pad to match
+    the others' width, unlike a tight run of one-line properties with
+    no blanks between them, which still aligns as before.
 - A one-line array literal — including a destructuring array binding like
   `const [ indRecObj, setIndRecObj ] = React.useState( null );` — gets a
   space directly after `[` and directly before `]` when it has at least one
@@ -1708,6 +1720,19 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   consistently across all 39 call sites of `Collapse`'s own `open` prop
   plus `DayLogChip`'s own `open`), and React's own hooks (`useState`,
   `useRef`, `useLayoutEffect`, `useEffect`, `useCallback`, ...).
+- **Generic JS API-shape exemption**: separately from the React/DOM
+  exemptions above, a hand-rolled object that deliberately mirrors a
+  well-known, generic (non-React) API shape keeps that shape's own
+  conventional method names bare too, the same reasoning as the
+  React-convention exemptions just applied to a different convention
+  family. Example: `eml-tour-bus.js`'s own `emlTouObj` is a minimal
+  observable/store (the same shape as `Map`'s `get`/`set`, or a Redux
+  store's `getState`/`subscribe`), so its own `get`, `set`, and
+  `subscribe` properties stay bare rather than becoming e.g. `getFun`/
+  `setFun`/`subFun`. This is judged case by case, same as any other
+  "Undefined case" here, not a blanket exemption for the words "get"/
+  "set"/"subscribe" wherever they appear (an unrelated local variable
+  named `set` would still need the normal treatment).
 - **"on"-prefix pattern**: a custom callback prop/handler that isn't the
   exact standard `onChange` keeps the "on" prefix (since "on" itself is
   standard convention) and applies the normal 9-character/3-segment rule
