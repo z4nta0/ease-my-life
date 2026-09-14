@@ -13,7 +13,7 @@ import { Card                    } from './ui.jsx';                  // What: Ca
 import { CelebrationPreviewStage } from './settings-previews.jsx';   // What: Celebration Preview Stage. Why: The completion-celebration style picker needs a live preview the user can play. How: This is rendered inside the Completion Celebration card, driven by celStyStr/celTokNum.
 import { Collapse                } from './ui.jsx';                  // What: Collapse. Why: The contact-support form and the pending import/reset confirmations all need to expand/collapse in place. How: This wraps the contact-support form's own Card, gated on its own open boolean.
 import { HelpButton              } from './help-mode.jsx';           // What: Help Button. Why: This tab needs its own toggle for entering/exiting help mode, like every other tab. How: This is rendered in the header, toggling helModBoo.
-import { HelpOverlay             } from './help-mode.jsx';           // What: Help Overlay. Why: Help mode needs its own dimmed overlay plus tooltips layered above this tab's real content. How: This is rendered once, driven by helModBoo and SETTINGS_HELP_ITEMS.
+import { HelpOverlay             } from './help-mode.jsx';           // What: Help Overlay. Why: Help mode needs its own dimmed overlay plus tooltips layered above this tab's real content. How: This is rendered once, driven by helModBoo and SET_HEL_ARR.
 import { HOL_NAM_OBJ             } from './holidays.js';             // What: Holidays Namespace Object. Why: The Holidays section needs both a default holidays-state shape and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.defaultState() and HOL_NAM_OBJ.computeForYear() inside HolEdiCom.
 import { Icon                    } from './ui.jsx';                  // What: Icon. Why: A handful of controls (the custom-holiday delete button, the brand-mark logo) need a small glyph. How: This is rendered with a specific name/size prop wherever a glyph is needed.
 import { InfoTip                 } from './ui.jsx';                  // What: Info Tip. Why: A disabled Export/Reset button still needs to explain why it is disabled. How: This wraps those buttons, given a label prop with the explanation.
@@ -24,7 +24,7 @@ import { PickerAnimStage         } from './settings-previews.jsx';   // What: Pi
 import { PWA                     } from './pwa.js';                  // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isStandalone()/canInstall()/installState()/promptInstall()/requestPersistOnce() methods.
 import { reduceMotion            } from './ui.jsx';                  // What: Reduce Motion. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
 import { Segmented               } from './reminders.jsx';           // What: Segmented. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
-import { SETTINGS_HELP_ITEMS     } from './help-content.jsx';        // What: Settings Help Items. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelpOverlay.
+import { SET_HEL_ARR             } from './help-content.jsx';        // What: Settings Help Array. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelpOverlay.
 import { STORAGE                 } from './storage.js';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own status()/readPersisted() methods.
 import { useEscapeCancel         } from './ui.jsx';                  // What: Use Escape Cancel. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
 
@@ -2197,9 +2197,9 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 			<HelpOverlay
 				active={ helModBoo }
-				items={ SETTINGS_HELP_ITEMS }
+				items={ SET_HEL_ARR }
 				onExit={ helExiFun }
-			/>{ /* What: Help Overlay. Why: This tab needs its own help-mode overlay, like every other tab. How: This is driven by helModBoo and SETTINGS_HELP_ITEMS. */ }
+			/>{ /* What: Help Overlay. Why: This tab needs its own help-mode overlay, like every other tab. How: This is driven by helModBoo and SET_HEL_ARR. */ }
 
 			<header className='stat-h'>{ /* What: Stat H Header Element. Why: Every tab shares this same header shape: a kicker row, a brand lockup, and an intro paragraph. How: This wraps the kicker/help-button row, the brand mark plus title, and the intro paragraph. */ }
 

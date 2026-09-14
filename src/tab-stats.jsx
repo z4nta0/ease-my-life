@@ -9,13 +9,13 @@ import React from 'react'; // What: React. Why: This is the UI library the whole
 import { CAD_NAM_OBJ            } from './cadence.js';          // What: Cadence. Why: A cadence-scoped picker's run gaps need relabeling into real period words instead of raw day counts. How: This is called via CAD_NAM_OBJ.uniWorFun to turn a day/period count into "week"/"month"/"year" wording.
 import { Card                   } from './ui.jsx';              // What: Card. Why: Every stat card on this page shares the same rounded container chrome. How: This wraps each headline/breakdown/heatmap block rendered below.
 import { HelpButton             } from './help-mode.jsx';       // What: Help Button. Why: This page needs its own header toggle for entering and leaving help mode. How: This is rendered in the header, flipping helOnBoo on click.
-import { HelpOverlay            } from './help-mode.jsx';       // What: Help Overlay. Why: Help mode needs a dimmed overlay with per-element tooltips layered above the real page. How: This is rendered while helOnBoo is true, fed STATS_HELP_ITEMS as its copy source.
+import { HelpOverlay            } from './help-mode.jsx';       // What: Help Overlay. Why: Help mode needs a dimmed overlay with per-element tooltips layered above the real page. How: This is rendered while helOnBoo is true, fed STA_HEL_ARR as its copy source.
 import { hideHelpStatsHistory   } from './help-sample-data.js'; // What: Hide Help Stats History. Why: The real hidden sample pickers borrowed for help mode must be re-hidden once help mode ends. How: This is called whenever helOnBoo turns false, and again on unmount.
 import { Icon                   } from './ui.jsx';              // What: Icon. Why: Several small glyphs (sort-direction arrows, the streak flame) are needed throughout this page. How: This is rendered with a specific name and size wherever one of those glyphs is shown.
 import { InfoTip                } from './ui.jsx';              // What: Info Tip. Why: The Spent metric's "no completed cycle yet" case needs a small inline explanation. How: This renders a "?" bubble with its own label text next to that N/A value.
 import { MODES                  } from './seed.js';             // What: Modes. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up by a picker's own mode key throughout the page.
 import { Pill                   } from './ui.jsx';              // What: Pill. Why: The single-picker header needs a small labelled pill showing the picker's own mode. How: This renders that pill, toned as 'mode'.
-import { STATS_HELP_ITEMS       } from './help-content.jsx';    // What: Stats Help Items. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelpOverlay.
+import { STA_HEL_ARR            } from './help-content.jsx';    // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelpOverlay.
 import { TASKS                  } from './tasks.js';            // What: Tasks. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TASKS.normalizeOpts on the raw persisted reminderOpts.
 import { unhideHelpStatsHistory } from './help-sample-data.js'; // What: Unhide Help Stats History. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helOnBoo turns true, as long as the page tour doesn't already own the same samples.
 import { useEmlTouFun           } from './onboarding.jsx';      // What: Use Ease My Life Tour. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's reserveTop field.
@@ -2016,9 +2016,9 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 			<HelpOverlay
 				active={ helOnBoo }
-				items={ STATS_HELP_ITEMS }
+				items={ STA_HEL_ARR }
 				onExit={ helExiFun }
-			/>{ /* What: Help Overlay. Why: Help mode needs its own dimmed tooltip layer above the real page. How: This renders active only while helOnBoo is true, fed this page's own STATS_HELP_ITEMS copy. */ }
+			/>{ /* What: Help Overlay. Why: Help mode needs its own dimmed tooltip layer above the real page. How: This renders active only while helOnBoo is true, fed this page's own STA_HEL_ARR copy. */ }
 
 			<header className='stat-h'>{ /* What: Header Element. Why: This groups the page's own kicker/help toggle, brand mark, title, and subtitle. How: This renders as a semantic header landmark above the filters/body wrapper. */ }
 

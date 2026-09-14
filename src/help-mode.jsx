@@ -8,7 +8,7 @@ import React from 'react'; // What: React. Why: This is the UI library HelpButto
 
 
 import { createPortal } from 'react-dom'; // What: Create Portal. Why: The dim layer, highlight spots, badges and the open tip must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with HelpOverlay's own JSX and document.body inside its return.
-import { Icon         } from './ui.jsx';  // What: Icon. Why: The navigation help item's own body renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own body JSX.
+import { Icon         } from './ui.jsx';  // What: Icon. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
 
 // #endregion Imports
 
@@ -551,7 +551,7 @@ function claPadFun ( recObj, padXNum, padYNum, chrIteArr, eleArr ) {
 
 
 
-// What: Pad Margin Number. Why: This is the extra margin drawn around every highlighted target's own rect by default. How: This is read as the fallback whenever a help item does not supply its own padX/padY override, and is also used directly by shaRadFun's own pill-radius math below.
+// What: Pad Margin Number. Why: This is the extra margin drawn around every highlighted target's own rect by default. How: This is read as the fallback whenever a help item does not supply its own padXNum/padYNum override, and is also used directly by shaRadFun's own pill-radius math below.
 const PAD_MAR_NUM = 8;
 
 // What: Default Radius Number. Why: A multi-element union (a clustered group of buttons) has no one shape of its own to read, so it falls back to this plain rounded-rect radius instead of averaging several unrelated corner radii together; this also matches the app's own --r-md CSS token. How: This is returned by shaRadFun whenever no more specific radius can be computed.
@@ -867,7 +867,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
  * a time. iteObj.matchTargetWidth (e.g. the nav tip, once it grew to 5
  * paragraphs) sizes the tip to tarRecObj.tipWidth instead of the usual
  * fixed 280px, applied as an inline style so it already wins by the
- * time offsetWidth first measures it. iteObj.scrollable caps the tip
+ * time offsetWidth first measures it. iteObj.scrBoo caps the tip
  * to whatever vertical room plaTipFun found and scrolls internally
  * past that instead of overflowing the viewport; it is applied to an
  * inner wrapper rather than the outer .ob-coach box itself, since
@@ -912,10 +912,10 @@ function HelTipCom ( { item: iteObj, targetRect: tarRecObj } ) {
 
 		setTipStyObj( { top: topNum, left: lefNum, '--ob-ax': arwXNum + 'px' } ); // What: Tip Style Update. Why: The rendered tip needs its own top/left plus the CSS custom property its own arrow reads. How: This writes the freshly-computed position into tipStyObj.
 		setArwClaStr( arwClaVal );                                               // What: Arrow Class Update. Why: The rendered tip needs its own up/down arrow modifier class. How: This writes arwClaVal into arwClaStr.
-		setScrMaxNum( iteObj.scrollable ? maxHeiNum - 28 : null );               // What: Scroll Max Update. Why: A scrollable tip's own inner wrapper must leave room for .ob-coach's own 28px of vertical padding. How: This writes maxHeiNum minus that padding, or null when this item is not scrollable at all.
+		setScrMaxNum( iteObj.scrBoo ? maxHeiNum - 28 : null );               // What: Scroll Max Update. Why: A scrollable tip's own inner wrapper must leave room for .ob-coach's own 28px of vertical padding. How: This writes maxHeiNum minus that padding, or null when this item is not scrollable at all.
 
 
-	}, [ tarRecObj, iteObj.matchTargetWidth, iteObj.scrollable ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the target it is anchored to moves or resizes, or whenever the item's own width/scroll behavior could change. How: tarRecObj changing means a new position is needed, and iteObj.matchTargetWidth/iteObj.scrollable changing means the sizing rules themselves changed.
+	}, [ tarRecObj, iteObj.matchTargetWidth, iteObj.scrBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the target it is anchored to moves or resizes, or whenever the item's own width/scroll behavior could change. How: tarRecObj changing means a new position is needed, and iteObj.matchTargetWidth/iteObj.scrBoo changing means the sizing rules themselves changed.
 
 
 	const innStyObj = scrMaxNum != null ? { maxHeight: scrMaxNum, overflowY: 'auto' } : null; // What: Inner Style Object. Why: Only a scrollable item's own inner wrapper needs a capped height and its own scrollbar. How: This builds the style object only while scrMaxNum holds a real cap.
@@ -935,9 +935,9 @@ function HelTipCom ( { item: iteObj, targetRect: tarRecObj } ) {
 			<div style={ innStyObj }>{ /* What: Inner Scroll Div Element. Why: The scroll cap must live on an inner wrapper so it never clips the outer box's own arrow. How: This applies innStyObj only while this item is scrollable and a cap has been computed. */ }
 
 
-				<p className='help-tip-title'>{ typeof iteObj.title === 'function' ? iteObj.title( tarRecObj ) : iteObj.title }</p>{ /* What: Help Tip Title Element. Why: A function title (e.g. the Charge Controls items) reads something off the live DOM at open time instead of baking in a value that could be wrong for a different picker's own setting. How: This calls iteObj.title with tarRecObj when it is a function, otherwise renders it directly. */ }
+				<p className='help-tip-title'>{ typeof iteObj.titStr === 'function' ? iteObj.titStr( tarRecObj ) : iteObj.titStr }</p>{ /* What: Help Tip Title Element. Why: A function title (e.g. the Charge Controls items) reads something off the live DOM at open time instead of baking in a value that could be wrong for a different picker's own setting. How: This calls iteObj.titStr with tarRecObj when it is a function, otherwise renders it directly. */ }
 
-				<div className='ob-body'>{ typeof iteObj.body === 'function' ? iteObj.body() : iteObj.body }</div>{ /* What: Ob Body Div Element. Why: Same reasoning as the title above applies to a function body. How: This calls iteObj.body when it is a function, otherwise renders it directly. */ }
+				<div className='ob-body'>{ typeof iteObj.bodEle === 'function' ? iteObj.bodEle() : iteObj.bodEle }</div>{ /* What: Ob Body Div Element. Why: Same reasoning as the title above applies to a function body. How: This calls iteObj.bodEle when it is a function, otherwise renders it directly. */ }
 
 
 			</div>
@@ -966,7 +966,7 @@ function HelTipCom ( { item: iteObj, targetRect: tarRecObj } ) {
  * each page's own catalog has to remember to add. One shared
  * badge/tip covers the whole bar rather than one per button, the same
  * reasoning behind clustering e.g. a card's Re-roll/Skip/Edit under
- * one badge. padY of 7 makes the highlight flush with the tab bar's
+ * one badge. padYNum of 7 makes the highlight flush with the tab bar's
  * own outer edge on 'bottom' placement; scrollable caps the body to
  * whatever room is found on 'side' placement, where the target can
  * span most of the viewport's own height; alwaysBelowSel covers both
@@ -974,7 +974,7 @@ function HelTipCom ( { item: iteObj, targetRect: tarRecObj } ) {
  * fits-below check can otherwise flip to "above" on a short viewport
  * and cover the navbar entirely. The tab bar is a true pill only on
  * 'bottom' placement; 'side' stacks its 5 buttons into a nearly-square
- * union, so its own shape function only applies the true-pill radius
+ * union, so its own shaStr function only applies the true-pill radius
  * once the box is meaningfully elongated, falling back to the app's
  * normal small corner radius otherwise.
  *
@@ -985,15 +985,15 @@ function HelTipCom ( { item: iteObj, targetRect: tarRecObj } ) {
 const NAV_HEL_OBJ = {
 
 
-	id               : '__nav',
-	sel              : '[data-tab]',
+	ideStr           : '__nav',
+	selStr           : '[data-tab]',
 	matchTargetWidth : true,
 	matchWidthSel    : '.tabbar',
-	padY             : 7,
-	scrollable       : true,
+	padYNum          : 7,
+	scrBoo           : true,
 	alwaysBelowSel   : '.tabbar--side, .tabbar--top',
 
-	shape : ( widNum, heiNum ) => { // What: Shape Function. Why: A multi-element union like the nav bar has no single source element's own border-radius to read. How: This computes a true-pill radius only once the box is meaningfully elongated, matching 'bottom'/'top' placement but not 'side'.
+	shaStr : ( widNum, heiNum ) => { // What: Shape Function. Why: A multi-element union like the nav bar has no single source element's own border-radius to read. How: This computes a true-pill radius only once the box is meaningfully elongated, matching 'bottom'/'top' placement but not 'side'.
 
 
 		const shoNum = Math.min( widNum, heiNum ); // What: Short Number. Why: The elongation check and the pill radius itself both need to know which dimension is smaller. How: This takes the smaller of widNum/heiNum.
@@ -1006,9 +1006,9 @@ const NAV_HEL_OBJ = {
 
 	},
 
-	title : 'Navigation',
+	titStr : 'Navigation',
 
-	body : ( // What: Body Expression. Why: This is NAV_HEL_OBJ's own tip content, one column per tab. How: This maps a small local tab-description array, reusing each tab's own real nav icon so it can never drift from the real button.
+	bodEle : ( // What: Body Expression. Why: This is NAV_HEL_OBJ's own tip content, one column per tab. How: This maps a small local tab-description array, reusing each tab's own real nav icon so it can never drift from the real button.
 
 
 		<>
@@ -1060,10 +1060,10 @@ const NAV_HEL_OBJ = {
 
 const RAI_HAN_OBJ = {
 
-	id    : '__railHandle',
-	sel   : '.rail-handle',
-	title : 'Sidebar Toggle',
-	body  : <>This button will open the app's navigation, allowing you to navigate to the app's other pages.</>
+	ideStr : '__railHandle',
+	selStr : '.rail-handle',
+	titStr : 'Sidebar Toggle',
+	bodEle : <>This button will open the app's navigation, allowing you to navigate to the app's other pages.</>
 
 };
 
@@ -1075,15 +1075,15 @@ const RAI_HAN_OBJ = {
  * HelpOverlay = Help Overlay
  *
  * @summary
- * items is [{ id, sel, title, body, ... }], where sel follows the
- * guided tour's own comma-fallback convention and can match several
- * elements at once, the same way a tour step's sel can; the whole
- * group shares one badge and one tip, positioned off their combined
- * union, the same "union of matched elements" idea {@link uniRecFun}
- * uses. onExit fires when the user asks to leave help mode entirely
- * (Escape with no tip open, or a second Escape after one closes),
- * since the parent is the one that actually flips its own active
- * state back off in response.
+ * items is [{ ideStr, selStr, titStr, bodEle, ... }], where selStr
+ * follows the guided tour's own comma-fallback convention and can
+ * match several elements at once, the same way a tour step's sel can;
+ * the whole group shares one badge and one tip, positioned off their
+ * combined union, the same "union of matched elements" idea
+ * {@link uniRecFun} uses. onExit fires when the user asks to leave
+ * help mode entirely (Escape with no tip open, or a second Escape
+ * after one closes), since the parent is the one that actually flips
+ * its own active state back off in response.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1130,14 +1130,14 @@ function HelpOverlay ( { active, items, onExit } ) {
 			.map( ( { chrEle, sidStr, selStr } ) => { const recObj = chrEle.getBoundingClientRect(); return { recObj, sidStr : sidStr === 'auto' ? detEdgFun( recObj ) : sidStr, chrEle, selStr }; } )
 			.filter( ( chrIteObj ) => chrIteObj.sidStr );
 
-		allIteArr.forEach( ( curIteObj ) => { // What: Item Rect Loop. Why: Every catalog item's own current rect must be measured fresh this frame. How: This walks allIteArr, branching on perElement/firstOnly before falling through to the ordinary single-union case.
+		allIteArr.forEach( ( curIteObj ) => { // What: Item Rect Loop. Why: Every catalog item's own current rect must be measured fresh this frame. How: This walks allIteArr, branching on mulBoo/firstOnly before falling through to the ordinary single-union case.
 
 
-			let eleArr = finTarFun( curIteObj.sel ); // What: Element Array. Why: A catalog item's own selector might currently match nothing at all (e.g. a conditional row that is not rendered right now). How: This runs curIteObj's own sel through finTarFun.
+			let eleArr = finTarFun( curIteObj.selStr ); // What: Element Array. Why: A catalog item's own selector might currently match nothing at all (e.g. a conditional row that is not rendered right now). How: This runs curIteObj's own selStr through finTarFun.
 
 			if ( !eleArr.length ) return; // What: No Match Guard. Why: An item with no currently-matched elements has nothing to highlight this frame. How: This skips the rest of this iteration once eleArr is empty.
 
-			if ( curIteObj.perElement ) { // What: Per Element Branch. Why: Some items (every group's own Log button, every card's own actions) need one badge per matched element instead of unioning them into one. How: This gives each matched element its own synthesized sub-id and its own independently-clipped rect.
+			if ( curIteObj.mulBoo ) { // What: Per Element Branch. Why: Some items (every group's own Log button, every card's own actions) need one badge per matched element instead of unioning them into one. How: This gives each matched element its own synthesized sub-id and its own independently-clipped rect.
 
 
 				eleArr.forEach( ( curEle, curIndNum ) => { // What: Per Element Loop. Why: Every one of this item's own matched elements needs its own rect computed and stored under its own sub-id. How: This walks eleArr, writing one nexMapObj entry per element.
@@ -1157,15 +1157,15 @@ function HelpOverlay ( { active, items, onExit } ) {
 
 					if ( !Number.isFinite( widNum ) || !Number.isFinite( heiNum ) ) return; // What: Finite Guard. Why: A degenerate rect must never reach the SVG mask below as an Infinity-valued rect. How: This skips this element once either dimension is not a finite number.
 
-					const shpObj = shaRadFun( curEle, widNum + PAD_MAR_NUM * 2, heiNum + PAD_MAR_NUM * 2, curIteObj.shape ); // What: Shape Object. Why: Each perElement instance reads its own border-radius independently. How: This calls shaRadFun with curEle's own padded box size.
+					const shpObj = shaRadFun( curEle, widNum + PAD_MAR_NUM * 2, heiNum + PAD_MAR_NUM * 2, curIteObj.shaStr ); // What: Shape Object. Why: Each perElement instance reads its own border-radius independently. How: This calls shaRadFun with curEle's own padded box size.
 
-					const labStr = curIteObj.labelSel // What: Label String. Why: A perElement conditional/reminder/item row's own title should read as "{its own name} Conditional" rather than one generic title shared by every instance. How: This reads text (or an input's own value, for a row currently open/editing) from within curEle only, when curIteObj.labelSel is set.
-						? ( curEle.querySelector( curIteObj.labelSel )?.textContent || curEle.querySelector( curIteObj.labelSel )?.value )
+					const curLabStr = curIteObj.labStr // What: Current Label String. Why: A perElement conditional/reminder/item row's own title should read as "{its own name} Conditional" rather than one generic title shared by every instance. How: This reads text (or an input's own value, for a row currently open/editing) from within curEle only, when curIteObj.labStr is set.
+						? ( curEle.querySelector( curIteObj.labStr )?.textContent || curEle.querySelector( curIteObj.labStr )?.value )
 						: undefined;
 
-					const padObj = claPadFun( recObj, curIteObj.padX ?? PAD_MAR_NUM, curIteObj.padY ?? PAD_MAR_NUM, chrIteArr, [ curEle ] ); // What: Pad Object. Why: This element's own surviving per-side padding must be computed the same way as the ordinary single-union case below. How: This calls claPadFun with curIteObj's own padX/padY override, or the flat default.
+					const padObj = claPadFun( recObj, curIteObj.padXNum ?? PAD_MAR_NUM, curIteObj.padYNum ?? PAD_MAR_NUM, chrIteArr, [ curEle ] ); // What: Pad Object. Why: This element's own surviving per-side padding must be computed the same way as the ordinary single-union case below. How: This calls claPadFun with curIteObj's own padXNum/padYNum override, or the flat default.
 
-					nexMapObj[ `${ curIteObj.id }::${ curIndNum }` ] = { ...recObj, width: widNum, height: heiNum, shape: shpObj, ...padObj, label: labStr }; // What: Sub Id Map Write. Why: Each perElement instance is stored under its own synthesized sub-id, all sharing the parent item's own title/body when opened. How: This writes the merged rect/shape/pad/label into nexMapObj.
+					nexMapObj[ `${ curIteObj.ideStr }::${ curIndNum }` ] = { ...recObj, width: widNum, height: heiNum, shape: shpObj, ...padObj, label: curLabStr }; // What: Sub Id Map Write. Why: Each perElement instance is stored under its own synthesized sub-id, all sharing the parent item's own titStr/bodEle when opened. How: This writes the merged rect/shape/pad/label into nexMapObj.
 
 
 				} );
@@ -1187,12 +1187,12 @@ function HelpOverlay ( { active, items, onExit } ) {
 
 			recObj = { ...clpRecObj, width: clpRecObj.right - clpRecObj.left, height: clpRecObj.bottom - clpRecObj.top }; // What: Finalized Rect Object. Why: Every later step in this branch needs the clipped rect's own derived width/height alongside its edges. How: This spreads clpRecObj and adds width/height back on.
 
-			const padXNum = curIteObj.padX ?? PAD_MAR_NUM; // What: Pad X Number. Why: The shape function branch below needs this item's own resolved horizontal pad, not just the flat default. How: This reads curIteObj's own padX override, or the flat default.
-			const padYNum = curIteObj.padY ?? PAD_MAR_NUM; // What: Pad Y Number. Why: The shape function branch below needs this item's own resolved vertical pad, not just the flat default. How: This reads curIteObj's own padY override, or the flat default.
+			const padXNum = curIteObj.padXNum ?? PAD_MAR_NUM; // What: Pad X Number. Why: The shape function branch below needs this item's own resolved horizontal pad, not just the flat default. How: This reads curIteObj's own padXNum override, or the flat default.
+			const padYNum = curIteObj.padYNum ?? PAD_MAR_NUM; // What: Pad Y Number. Why: The shape function branch below needs this item's own resolved vertical pad, not just the flat default. How: This reads curIteObj's own padYNum override, or the flat default.
 
-			const shpObj = typeof curIteObj.shape === 'function' // What: Shape Object. Why: A multi-element union like the nav bar has no single source element's own border-radius to read, so its own shape function (passed the box's own padded dimensions) computes a radius directly instead. How: This calls curIteObj.shape when it is a function; otherwise a single-element union still reads a real border-radius via shaRadFun, and anything wider falls back to no shape at all.
-				? curIteObj.shape( recObj.width + padXNum * 2, recObj.height + padYNum * 2 )
-				: ( eleArr.length === 1 ? shaRadFun( eleArr[ 0 ], recObj.width + PAD_MAR_NUM * 2, recObj.height + PAD_MAR_NUM * 2, curIteObj.shape ) : null );
+			const shpObj = typeof curIteObj.shaStr === 'function' // What: Shape Object. Why: A multi-element union like the nav bar has no single source element's own border-radius to read, so its own shape function (passed the box's own padded dimensions) computes a radius directly instead. How: This calls curIteObj.shaStr when it is a function; otherwise a single-element union still reads a real border-radius via shaRadFun, and anything wider falls back to no shape at all.
+				? curIteObj.shaStr( recObj.width + padXNum * 2, recObj.height + padYNum * 2 )
+				: ( eleArr.length === 1 ? shaRadFun( eleArr[ 0 ], recObj.width + PAD_MAR_NUM * 2, recObj.height + PAD_MAR_NUM * 2, curIteObj.shaStr ) : null );
 
 			const matWidEle = curIteObj.matchWidthSel ? document.querySelector( curIteObj.matchWidthSel ) : null; // What: Match Width Element. Why: matchWidthSel sizes the open tip to a DIFFERENT element's own width than whatever is highlighted, e.g. the nav tip's own .tabbar container. How: This looks matchWidthSel up directly, independent of eleArr.
 
@@ -1205,18 +1205,18 @@ function HelpOverlay ( { active, items, onExit } ) {
 
 			const padObj = claPadFun( recObj, padXNum, padYNum, chrIteArr, eleArr ); // What: Pad Object. Why: This item's own surviving per-side padding must be computed the same way as the perElement branch above. How: This calls claPadFun with the same padXNum/padYNum already resolved above.
 
-			nexMapObj[ curIteObj.id ] = { ...recObj, shape: shpObj, tipWidth: tipWidNum, pinBelowY: pinBelYNum, alwaysBelow: alwBelBoo, scrollable: !!curIteObj.scrollable, ...padObj }; // What: Item Map Write. Why: The rendered overlay reads this exact merged shape back for its own mask cutout, highlight spot, badge, and (once opened) its own tip. How: This writes the finalized rect plus every derived field into nexMapObj.
+			nexMapObj[ curIteObj.ideStr ] = { ...recObj, shape: shpObj, tipWidth: tipWidNum, pinBelowY: pinBelYNum, alwaysBelow: alwBelBoo, scrollable: !!curIteObj.scrBoo, ...padObj }; // What: Item Map Write. Why: The rendered overlay reads this exact merged shape back for its own mask cutout, highlight spot, badge, and (once opened) its own tip. How: This writes the finalized rect plus every derived field into nexMapObj.
 
 
 		} );
 
 		const groMapObj = {}; // What: Group Map Object. Why: columnGroup items (the Day Log panel's per-column highlights) need their own siblings gathered together before they can be snapped edge-to-edge below. How: This starts empty and is filled by the loop directly below.
 
-		allIteArr.forEach( ( curIteObj ) => { // What: Group Gather Loop. Why: Only an item that both declares a columnGroup AND actually has a rect this frame belongs in a group. How: This pushes curIteObj's own id into groMapObj under its own columnGroup key.
+		allIteArr.forEach( ( curIteObj ) => { // What: Group Gather Loop. Why: Only an item that both declares a columnGroup AND actually has a rect this frame belongs in a group. How: This pushes curIteObj's own ideStr into groMapObj under its own groStr key.
 
-			if ( !curIteObj.columnGroup || !nexMapObj[ curIteObj.id ] ) return; // What: Not Grouped Guard. Why: An item with no columnGroup, or one that found nothing this frame, contributes to no group at all. How: This skips this item once either condition fails.
+			if ( !curIteObj.groStr || !nexMapObj[ curIteObj.ideStr ] ) return; // What: Not Grouped Guard. Why: An item with no groStr, or one that found nothing this frame, contributes to no group at all. How: This skips this item once either condition fails.
 
-			( groMapObj[ curIteObj.columnGroup ] || ( groMapObj[ curIteObj.columnGroup ] = [] ) ).push( curIteObj.id ); // What: Group Push. Why: Every member of the same columnGroup must end up in the same array, in whatever order they were encountered. How: This lazily creates the group's own array on first use, then pushes this item's own id.
+			( groMapObj[ curIteObj.groStr ] || ( groMapObj[ curIteObj.groStr ] = [] ) ).push( curIteObj.ideStr ); // What: Group Push. Why: Every member of the same groStr must end up in the same array, in whatever order they were encountered. How: This lazily creates the group's own array on first use, then pushes this item's own ideStr.
 
 
 		} );
@@ -1352,7 +1352,7 @@ function HelpOverlay ( { active, items, onExit } ) {
 
 			if ( clkEveObj.target.closest( '.help-badge, .help-tip, .help-btn, .tabbar, .ob-tour' ) ) return true; // What: Exempt Chrome Guard. Why: Navigating away (the tab bar) must still work while help mode is up, and a guided tour walking through this exact feature owns its own clicks already. How: This allows the click through once it lands inside any of these 5 always-exempt regions.
 
-			return allIteArr.some( ( curIteObj ) => finTarFun( curIteObj.sel ).some( ( curEle ) => curEle.contains( clkEveObj.target ) ) ); // What: Tagged Element Check. Why: A click on any currently-highlighted target itself must also be allowed through. How: This checks whether the click's own target falls inside any catalog item's own currently-matched elements.
+			return allIteArr.some( ( curIteObj ) => finTarFun( curIteObj.selStr ).some( ( curEle ) => curEle.contains( clkEveObj.target ) ) ); // What: Tagged Element Check. Why: A click on any currently-highlighted target itself must also be allowed through. How: This checks whether the click's own target falls inside any catalog item's own currently-matched elements.
 
 
 		};
@@ -1411,7 +1411,7 @@ function HelpOverlay ( { active, items, onExit } ) {
 	const vpHeiNum  = window.innerHeight;                                                                             // What: Viewport Height Number. Why: The SVG mask below needs the current viewport height to fully cover the screen. How: This reads window.innerHeight once per render.
 	const recEntArr = Object.entries( recMapObj );                                                                    // What: Rect Entries Array. Why: Both the mask cutouts and the rendered highlight spots below need to walk every current [id, rect] pair. How: This converts recMapObj into a plain array via Object.entries.
 	const basIdeStr = opeIdeStr ? opeIdeStr.split( '::' )[ 0 ] : null;                                                // What: Base Identifier String. Why: opeIdeStr can be a perElement sub-id, so the catalog lookup below needs the id with any "::N" suffix stripped off. How: This splits opeIdeStr on '::' and keeps just the first segment.
-	const opeIteObj = basIdeStr ? allIteArr.find( ( curIteObj ) => curIteObj.id === basIdeStr ) : null;               // What: Open Item Object. Why: The open tip needs the catalog item whose title/body every perElement instance shares. How: This finds the one entry in allIteArr whose own id matches basIdeStr.
+	const opeIteObj = basIdeStr ? allIteArr.find( ( curIteObj ) => curIteObj.ideStr === basIdeStr ) : null;               // What: Open Item Object. Why: The open tip needs the catalog item whose titStr/bodEle every perElement instance shares. How: This finds the one entry in allIteArr whose own ideStr matches basIdeStr.
 	const opeRecObj = opeIdeStr ? recMapObj[ opeIdeStr ] : null;                                                      // What: Open Rect Object. Why: The open tip needs the FULL id's own rect, not the base id's. How: This looks opeIdeStr straight up in recMapObj.
 
 
@@ -1517,16 +1517,16 @@ function HelpOverlay ( { active, items, onExit } ) {
 			{ allIteArr.flatMap( ( curIteObj ) => { // What: Badge Flat Map. Why: Every catalog item contributes 0 or more badges, one per perElement sub-id or exactly one for the ordinary union case. How: This flat-maps allIteArr into a single flat array of rendered badge buttons.
 
 
-				const badIdeArr = curIteObj.perElement // What: Badge Identifier Array. Why: perElement items have no single recMapObj[id]; one badge per synthesized sub-id instead. How: This filters recMapObj's own keys down to this item's own sub-ids, or falls back to its own single id when it has a rect at all.
-					? Object.keys( recMapObj ).filter( ( curKeyStr ) => curKeyStr.startsWith( `${ curIteObj.id }::` ) )
-					: ( recMapObj[ curIteObj.id ] ? [ curIteObj.id ] : [] );
+				const badIdeArr = curIteObj.mulBoo // What: Badge Identifier Array. Why: perElement items have no single recMapObj[id]; one badge per synthesized sub-id instead. How: This filters recMapObj's own keys down to this item's own sub-ids, or falls back to its own single id when it has a rect at all.
+					? Object.keys( recMapObj ).filter( ( curKeyStr ) => curKeyStr.startsWith( `${ curIteObj.ideStr }::` ) )
+					: ( recMapObj[ curIteObj.ideStr ] ? [ curIteObj.ideStr ] : [] );
 
 				return badIdeArr.map( ( curIdeStr ) => { // What: Badge Id Map. Why: Every id this item resolved to above needs its own rendered badge button. How: This maps badIdeArr, reading each one's own current rect back out of recMapObj.
 
 
 					const curRecObj = recMapObj[ curIdeStr ]; // What: Current Rect Object. Why: The badge's own position and its title function (if any) both need this id's own current rect. How: This reads curIdeStr straight out of recMapObj.
-					const badRecObj = badRecFun( curRecObj, !!curIteObj.columnGroup ); // What: Badge Rect Object. Why: The badge itself renders at its own anchor point, not at the highlighted target's own position. How: This calls badRecFun, centering only when this item is part of a columnGroup.
-					const badLabStr = typeof curIteObj.title === 'function' ? curIteObj.title( curRecObj ) : ( typeof curIteObj.title === 'string' ? curIteObj.title : 'More info' ); // What: Badge Label String. Why: The badge's own accessible name should reflect a dynamic title (e.g. reading a picker's own cadence unit) when curIteObj.title is a function. How: This calls curIteObj.title with curRecObj when it is a function, uses it directly when it is a string, otherwise falls back to a generic label.
+					const badRecObj = badRecFun( curRecObj, !!curIteObj.groStr ); // What: Badge Rect Object. Why: The badge itself renders at its own anchor point, not at the highlighted target's own position. How: This calls badRecFun, centering only when this item is part of a columnGroup.
+					const badLabStr = typeof curIteObj.titStr === 'function' ? curIteObj.titStr( curRecObj ) : ( typeof curIteObj.titStr === 'string' ? curIteObj.titStr : 'More info' ); // What: Badge Label String. Why: The badge's own accessible name should reflect a dynamic title (e.g. reading a picker's own cadence unit) when curIteObj.titStr is a function. How: This calls curIteObj.titStr with curRecObj when it is a function, uses it directly when it is a string, otherwise falls back to a generic label.
 
 
 					return (

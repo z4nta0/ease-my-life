@@ -355,6 +355,29 @@ decision is captured for next time instead of getting re-asked later.
   `return () => {...}` cleanup, `.map((x) => ...)`, ...) — those get
   commented normally, same as everything else. Other exceptions will turn
   up rarely; handle them case by case as they're found.
+  - **Repeated-shape object literals**: when a file defines MANY object
+    literals that all share the exact same property shape (a catalog
+    of near-identical config/data entries), and a given property's own
+    What/Why/How is always the exact same boilerplate text (or one of
+    a small, fixed set of variants, e.g. "String" vs "Function") no
+    matter which specific object it sits on, document that shape and
+    its variants ONCE in the file's own top-level comment instead of
+    repeating the identical text on every single instance. Verify this
+    condition actually holds first (grep every instance of the property
+    across the file and confirm they really do collapse to a small,
+    genuinely fixed set of texts) rather than assuming it from a few
+    examples. Once documented, every per-item line for one of those
+    shared fields gets NO trailing comment at all. This does NOT cover
+    a leading comment already sitting above one specific instance that
+    explains something genuinely unique to that instance (e.g., why
+    one particular item needs a specific pad-override amount) — that
+    stays exactly where it is, since it was never the repeated
+    boilerplate this exception targets. See `help-content.jsx`'s own
+    header comment for the reference example: it documents its shared
+    `{ ideStr, selStr, shaStr?, titStr, bodEle, padXNum?, padYNum?,
+    scrBoo?, groStr?, mulBoo?, labStr? }` catalog-item shape once, and
+    none of its 210 individual items repeat those same 11 fields' own
+    boilerplate comments.
   - **Exception to the closing-bracket exemption**: a React hook call's
     closing line that carries a dependency array (`}, [ a, b, c ] );`)
     DOES get a comment, even though it's otherwise just a closing bracket
@@ -364,6 +387,63 @@ decision is captured for next time instead of getting re-asked later.
     ```
     }, [ actIdeStr, tabPlaStr, raiOpeBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever a change to one of these values could move or resize the active tab's indicator target. How: actIdeStr changes which button is marked active, tabPlaStr changes the tab bar's placement and therefore its whole layout, and raiOpeBoo toggling the rail open or closed can resize the nav itself.
     ```
+- **A leading comment block that actually mixes 2+ distinct, unrelated
+  topics** (most commonly found in older free-form comment blocks that
+  predate this doc's one-line comment rule, where several separate
+  notes about the same upcoming target were run together across many
+  `//` lines with no blank line between them): first separate out any
+  topic that is specifically about ONE property's own value/behavior
+  (see the next bullet below for what to do with those). Whatever
+  topics remain (genuinely about the item's own overall identity,
+  selector design, or history, not any one property) collapse to ONE
+  physical line overall, each keeping its own leading `// ` marker
+  inline, one after another on that same line, rather than spreading
+  across separate lines with blank lines between them. E.g. `// First
+  topic's own sentence(s). // Second topic's own sentence(s).` all as
+  one line. This keeps each topic visually recognizable as its own
+  distinct note (the `// ` marker still catches the eye, including
+  under the editor's soft-wrap, Alt+Z/Option+Z) without the extra
+  vertical space separate lines would cost. A block that turns out to
+  be genuinely ONE cohesive topic merely spanning several `//` lines
+  still gets joined into a single line the same way, just without any
+  internal `// ` markers beyond the one at the very start. Judge
+  cohesion by content, not by the presence/absence of existing blank
+  lines within the block, since these predate any real structure.
+- **A topic that is specifically about one property's own value or
+  implementation quirk** (e.g. "padXNum: 4 exists because...", "mulBoo
+  is true because...", "titStr/bodEle are functions because...") moves
+  out of the leading position entirely and becomes a normal trailing
+  comment on that property's own line instead, right after its value —
+  NOT column-aligned with sibling properties' own `:` (per the
+  Repeated-shape-object-literals exception above, most of these objects
+  have no per-property comments at all normally, so a real one here
+  should stay glued close rather than pushed out to some far-right
+  aligned column where it could go unnoticed). If the same topic
+  explains 2+ properties at once (e.g. one explanation covering why
+  BOTH `titStr` and `bodEle` are functions), copy the identical comment
+  text onto each of those properties' own lines rather than picking
+  just one. See `help-content.jsx`'s own `editMode` item for the
+  reference example: `padXNum`'s own override reasoning sits after
+  `padXNum`'s own value, and the "title/body are functions..."
+  explanation is copied verbatim after both `titStr` and `bodEle`.
+  - **Exception — a property-specific topic that actually explains
+    SEVERAL SIBLING ITEMS at once**, not just the one item it happens
+    to sit above (recognizable because one or more of those sibling
+    items share the exact same property value with no comment of their
+    own — the giveaway that the explanation was always meant to cover
+    the whole group): this stays in the leading position above the
+    first item of the group, unmoved, exactly like an item-identity
+    topic would. Moving it down to just the first item's own property
+    line would incorrectly imply the other, uncommented siblings have
+    no stated reason for sharing that same value. E.g. `groupGrip`'s
+    own leading comment ("These three only exist in the DOM while Edit
+    Mode is on... mulBoo is true on all three because...") covers
+    `mulBoo` across `groupGrip`/`cardGrip`/`groupNameEdit` together,
+    since the latter two carry `mulBoo: true` with no comment of their
+    own; splitting "mulBoo is true..." down to just `groupGrip`'s own
+    line would have orphaned the other two. Before moving any
+    property-specific topic down, check whether a sibling item shares
+    that same value with no comment before assuming it's safe to move.
 - **Placement**: a single-line statement's comment goes at the very end of
   the line, one space after the line's own trailing `;` (or just one space
   after whatever the line ends with, if it doesn't need a `;` — e.g. a
@@ -747,7 +827,7 @@ comments in `src/bg-flourish.jsx` for the reference examples.
 A collapsible fold region uses the editor-standard `// #region <Name>` /
 `// #endregion <Name>` marker pair (recognized by VS Code and other
 editors for code folding), wrapped tightly around the specific unit it
-covers. Three cases are defined so far; more may be added later, but
+covers. Four cases are defined so far; more may be added later, but
 don't invent one for anything else yet:
 - **Custom function declarations**: the exact same `function Name(...) {}`
   case covered by "### Custom function declaration comments" above always
@@ -850,6 +930,33 @@ don't invent one for anything else yet:
     line count already existed OUTSIDE the whole candidate range (before
     its first line, after its last line) stays exactly as it was, now
     bracketing the markers instead of the content directly.
+- **A themed cluster of entries inside a top-level array literal** (a
+  catalog/config array whose entries correspond to a real, user-facing
+  grouping — e.g. every help-catalog item belonging to one page section
+  or one step of a multi-step form) can also get its own named region,
+  the same judgment-call process as the function-body cluster above
+  (propose a grouping and a name, confirm it, never a mechanical scan).
+  This is the array-literal counterpart of that case: same naming
+  convention (`<Name>` a short, plain-English, Title Case description,
+  e.g. `// #region Create A Picker Form Step 1`), same 1-blank-line
+  spacing between each marker and the content it wraps. It does NOT
+  require the function-body case's own 25-line/3-blank-gap thresholds,
+  since array entries are already naturally 1-blank-separated siblings
+  rather than statements that need a 3-blank gap to prove they're a
+  genuinely distinct topic; the grouping itself (does this run of
+  entries really correspond to one real, user-facing section) is the
+  judgment call instead. Between an `#endregion` and the very next
+  `#region` when two regions sit back to back, use 3 blank lines instead
+  of the array's own normal 1-blank inter-entry spacing, the same
+  "unrelated" tier as two genuinely distinct top-level topics, since
+  that's exactly what two different named sections are: `},` / blank /
+  `#endregion Name A` / 3 blanks / `#region Name B` / blank / `{`. See
+  `help-content.jsx`'s own
+  `Create A Picker Form Step 1`/`Step 2` and `Appearance`/`Daily
+  Generator`/`Holidays`/`Data Control`/`Account`/`About`/`Legal` regions
+  for the reference examples. Not every array needs this: only apply it
+  where a file's own catalog genuinely groups into distinct, nameable,
+  real sections, the same restraint as the function-body case.
 
 ### Quotes
 - Use `'single quotes'` for every string literal, including JSX attribute
@@ -958,12 +1065,13 @@ don't invent one for anything else yet:
     Properties separated by a blank line (the normal case for a
     multi-line property, per the 1-blank/2-blank padding rule above)
     are NOT forced to align with each other across that gap — each such
-    property's own `:` just gets its ordinary single space, no padding.
-    E.g. `emlTouObj`'s own `get`/`set`/`subscribe` properties in
-    `eml-tour-bus.js` sit 1 blank line apart from each other (each is
-    its own multi-line arrow function), so none of them pad to match
-    the others' width, unlike a tight run of one-line properties with
-    no blanks between them, which still aligns as before.
+    property's own `:` just gets its ordinary single space, no padding,
+    even when every property involved is plainly a field of the same
+    record. E.g. `emlTouObj`'s own `get`/`set`/`subscribe` properties in
+    `eml-tour-bus.js` sit 1 blank line apart from each other and don't
+    align with each other, and a help-catalog item's own `id`/`sel`/
+    `title` in `help-content.jsx` do NOT pad to match a blank-separated
+    `body` below them, even though all 4 are fields of the same item.
 - A one-line array literal — including a destructuring array binding like
   `const [ indRecObj, setIndRecObj ] = React.useState( null );` — gets a
   space directly after `[` and directly before `]` when it has at least one
@@ -1915,6 +2023,22 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     without resolving the collision, stop and ask the user what to do —
     don't guess a different word unprompted the way the general rule's
     final fallback does.
+  - **Atomic single-letter axis qualifier**: some properties are
+    inherently a base concept PLUS a single-letter axis/index (X vs Y
+    being the common case) that has no "first 3 letters" to take, since
+    it isn't a word being truncated at all. Rather than force it into
+    one 3-letter segment (which would either drop the axis entirely, or
+    produce a non-word like reversing the axis and word together),
+    attach the literal single letter directly after the truncated base
+    word, before the type segment, breaking the strict 6-character
+    count as a deliberate, documented exception — e.g. a catalog item's
+    own horizontal/vertical highlight-padding override in
+    `help-content.jsx` became `padXNum`/`padYNum` (Pad + X/Y + Number),
+    not a compressed `xpaNum`/`ypaNum`. This is the property-name
+    equivalent of the general rule's own Initialism-compression and
+    Under-length-first-word-padding exceptions: a last resort for when
+    the concept genuinely can't survive a clean 2-segment compression,
+    not a shortcut to reach for whenever a name feels like a squeeze.
   - **Exemption**: this rule only applies to an object whose property
     names are entirely OUR OWN invention — both the write site and every
     read site are code we control, so renaming is free (e.g. the

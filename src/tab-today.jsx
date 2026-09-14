@@ -26,7 +26,7 @@ import { fmtDateLong             } from './ui.jsx';                        // Wh
 import { fmtTime                 } from './ui.jsx';                        // What: Format Time. Why: Both the header's kicker line and the footer's generated-on line need a formatted time of day. How: This formats the live now clock and state.today.generatedAt respectively.
 import { GroLogCom               } from './day-log.jsx';                   // What: Group Log Component. Why: A group's Day Log panel needs to render that group's own picker audit rows. How: This is rendered inside a Collapse, scoped to one group's own name.
 import { HelpButton              } from './help-mode.jsx';                 // What: Help Button. Why: Today needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOn.
-import { HelpOverlay             } from './help-mode.jsx';                 // What: Help Overlay. Why: Help mode needs its own coach-mark overlay driven by this tab's own catalog of targets. How: This is rendered once, passed TODAY_HELP_ITEMS and the helpOn/helpExit pair.
+import { HelpOverlay             } from './help-mode.jsx';                 // What: Help Overlay. Why: Help mode needs its own coach-mark overlay driven by this tab's own catalog of targets. How: This is rendered once, passed TOD_HEL_ARR and the helpOn/helpExit pair.
 import { HOL_NAM_OBJ             } from './holidays.js';                   // What: Holidays Namespace Object. Why: Both generate()'s own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holidayOn against state.holidays.
 import { Icon                    } from './ui.jsx';                        // What: Icon. Why: Nearly every card/button in this file needs a small named glyph alongside its label. How: This is rendered throughout, given a name and a size.
 import { InfoTip                 } from './ui.jsx';                        // What: Info Tip. Why: A disabled action (a locked re-roll, a blocked tutorial, a disabled Regenerate) still needs to explain itself on hover/tap. How: This wraps whichever control needs an explanatory label throughout this file.
@@ -45,7 +45,7 @@ import { ReminderSection         } from './reminders.jsx';                 // Wh
 import { ReminderTour            } from './onboarding-reminder-tours.jsx'; // What: Reminder Tour. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while actMinTouObj holds a 'reminder' kind entry.
 import { REORDER                 } from './reorder.js';                    // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REORDER.startDrag inside startGroupDrag/startItemDrag.
 import { TASKS                   } from './tasks.js';                      // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for anchorDate/visibleToday/isDoneToday/optsFor/isCompletedOnce.
-import { TODAY_HELP_ITEMS        } from './help-content.jsx';              // What: Today Help Items. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelpOverlay.
+import { TOD_HEL_ARR             } from './help-content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelpOverlay.
 import { useEmlTouFun            } from './onboarding.jsx';                // What: Use Ease My Life Tour. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
 import { useEscapeCancel         } from './ui.jsx';                        // What: Use Escape Cancel. Why: EntryEditor's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntryEditor with a handler that checks confirmDel first.
 
@@ -2821,7 +2821,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * Local, resets to off on every remount (tab switch), which is
 	 * exactly the "navigating away closes it, the page you land on
 	 * doesn't inherit it" behavior the design called for. Content lives
-	 * in help-content.jsx's TODAY_HELP_ITEMS rather than inline here,
+	 * in help-content.jsx's TOD_HEL_ARR rather than inline here,
 	 * same as every other tab; Today needs no disposable sample data
 	 * seeded for it, since every target it points at either is always-
 	 * present UI chrome or gracefully renders no badge if the user has no
@@ -5013,9 +5013,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			<HelpOverlay
 				active={ hlpOnBoo }
-				items={ TODAY_HELP_ITEMS }
+				items={ TOD_HEL_ARR }
 				onExit={ hlpExiFun }
-			/>{ /* What: Help Overlay. Why: Today needs its own coach-mark overlay driven by TODAY_HELP_ITEMS. How: This is rendered whenever hlpOnBoo is true, closed via hlpExiFun. */ }
+			/>{ /* What: Help Overlay. Why: Today needs its own coach-mark overlay driven by TOD_HEL_ARR. How: This is rendered whenever hlpOnBoo is true, closed via hlpExiFun. */ }
 
 
 			<header
