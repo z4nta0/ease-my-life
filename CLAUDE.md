@@ -1658,6 +1658,14 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     this collides with `cla`'s own already-correct existing use for
     Class too (`extClaStr`); context disambiguates which of the three
     "cla" stands for)
+  - `cls` → `clo` (Close/Closing — a second, distinct miscorrection
+    sharing the same wrong `cls` spelling as the Class case above, found
+    across `clsGroFun`/`clsIdeStr`/`savClsFun` (`tab-data.jsx`),
+    `clsImpFun`/`clsResFun` (`tab-settings.jsx`), `clsWayRef`
+    (`tab-today.jsx`), and `ediClsBoo` (`tab-picker.jsx`); `clo` is
+    already the established, heavily-used code for Close elsewhere
+    (`cloAddFun`, `cloTimRef`, `onCloConFun`, ...), so these were
+    renamed to match rather than left as a fourth "cls" variant)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

@@ -1947,7 +1947,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	// conditionals, reminders, groups, or accrued any pick/completion history.
 	const hasDatBoo = !!( ( state.pickers && state.pickers.length ) || ( state.items && state.items.length ) || ( state.conditionals && state.conditionals.length ) || ( state.tasks && state.tasks.length ) || ( state.pickLog && state.pickLog.length ) || ( state.conditionalLog && state.conditionalLog.length ) || ( state.groups && state.groups.length ) ); // What: Has Data Boolean. Why: Both the Export and Reset rows need to know whether there is actually anything to export/reset at all. How: This is true whenever any one of the 7 listed collections is non-empty.
 
-	const clsResFun = () => { // What: Close Reset Confirm Function. Why: Backing out of the reset confirmation (via Cancel or Escape) needs the same leave-then-unmount handling as every other confirm here. How: This flags focus for restoration, then either closes immediately (reduced motion) or plays the leave animation first.
+	const cloResFun = () => { // What: Close Reset Confirm Function. Why: Backing out of the reset confirmation (via Cancel or Escape) needs the same leave-then-unmount handling as every other confirm here. How: This flags focus for restoration, then either closes immediately (reduced motion) or plays the leave animation first.
 
 
 		resFocRef.current = true; // What: Reset Focus Flag Set. Why: The focus-restore effect below needs to know this specific close was a real "back out" rather than a successful reset. How: This flags resFocRef true, consumed once conResBoo actually flips back to false.
@@ -1963,7 +1963,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	};
 
 	// Escape backs out of the reset confirmation, like the other confirms.
-	useEscapeCancel( conResBoo && !resLeaBoo, clsResFun ); // What: Escape Cancel Subscription. Why: Every confirmation in this tab backs out on Escape, and the reset confirm is no exception. How: This calls useEscapeCancel, active only while the confirm is open and not already leaving, invoking clsResFun.
+	useEscapeCancel( conResBoo && !resLeaBoo, cloResFun ); // What: Escape Cancel Subscription. Why: Every confirmation in this tab backs out on Escape, and the reset confirm is no exception. How: This calls useEscapeCancel, active only while the confirm is open and not already leaving, invoking cloResFun.
 
 	React.useEffect( () => { // What: Reset Focus Effect. Why: Focus must follow the swap between the Reset button and the confirm pair in both directions, since the element under it is unmounted/remounted each time. How: This focuses the confirm's own Reset button on open, or restores focus to the row's own Reset button on a deliberate close.
 
@@ -2108,7 +2108,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	};
 
 
-	const clsImpFun = () => { // What: Close Import Confirm Function. Why: Backing out of (or completing) the import confirmation needs the same leave-then-unmount handling as the reset confirmation. How: This flags focus for restoration, then either closes immediately (reduced motion) or plays the leave animation first.
+	const cloImpFun = () => { // What: Close Import Confirm Function. Why: Backing out of (or completing) the import confirmation needs the same leave-then-unmount handling as the reset confirmation. How: This flags focus for restoration, then either closes immediately (reduced motion) or plays the leave animation first.
 
 
 		// Focus restore is driven by a commit-watching effect below, not from
@@ -2138,7 +2138,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 		announce( 'Backup imported.' ); // What: Import Success Announce Call. Why: A screen-reader user needs to hear the success too, not just see it. How: This announces the same fixed success message.
 
-		clsImpFun(); // What: Confirm Close Call. Why: A completed import should close the confirmation the same way cancelling it does. How: This calls clsImpFun to play the leave animation and eventually unmount the confirm pair.
+		cloImpFun(); // What: Confirm Close Call. Why: A completed import should close the confirmation the same way cancelling it does. How: This calls cloImpFun to play the leave animation and eventually unmount the confirm pair.
 
 
 	};
@@ -2150,7 +2150,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 		announce( 'Import cancelled.' ); // What: Import Cancelled Announce Call. Why: A screen-reader user needs to hear the cancellation too, not just see the row close. How: This announces a fixed cancellation message.
 
-		clsImpFun(); // What: Confirm Close Call. Why: A cancelled import should close the confirmation the same way a completed one does. How: This calls clsImpFun to play the leave animation and eventually unmount the confirm pair.
+		cloImpFun(); // What: Confirm Close Call. Why: A cancelled import should close the confirmation the same way a completed one does. How: This calls cloImpFun to play the leave animation and eventually unmount the confirm pair.
 
 
 	};
@@ -3165,8 +3165,8 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 										<Btn
 											kind='ghost'
 											size='sm'
-											onClick={ clsResFun }
-										>Cancel</Btn>{ /* What: Btn. Why: The confirmation needs an explicit way to back out without resetting. How: This calls clsResFun when clicked. */ }
+											onClick={ cloResFun }
+										>Cancel</Btn>{ /* What: Btn. Why: The confirmation needs an explicit way to back out without resetting. How: This calls cloResFun when clicked. */ }
 
 
 									</div>

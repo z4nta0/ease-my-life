@@ -938,9 +938,9 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 
 	const oriIteRef = React.useRef( item ); // What: Original Item Reference. Why: Cancel (or an implicit close) needs to restore the item exactly as it was when this editor opened. How: This snapshots item once, on mount, never updated afterward.
-	const clsWayRef = React.useRef( null ); // What: Close Way Reference. Why: A caller with its OWN close affordance outside this component (e.g. the Data tab row's own collapse chevron) can call the exposed keep() first so that affordance reads as "done, keep this" rather than an implicit close; this distinguishes 'saved'/'cancel' (closed explicitly) from null (still open, so an implicit close such as a tab switch or reload should discard the unsaved live edits). How: This is written by every explicit action below and read by the pagehide/unmount effect further down.
+	const cloWayRef = React.useRef( null ); // What: Close Way Reference. Why: A caller with its OWN close affordance outside this component (e.g. the Data tab row's own collapse chevron) can call the exposed keep() first so that affordance reads as "done, keep this" rather than an implicit close; this distinguishes 'saved'/'cancel' (closed explicitly) from null (still open, so an implicit close such as a tab switch or reload should discard the unsaved live edits). How: This is written by every explicit action below and read by the pagehide/unmount effect further down.
 
-	React.useImperativeHandle( forRefObj, () => ( { keep : () => { clsWayRef.current = 'saved'; } } ) ); // What: Imperative Handle Publish. Why: An external close affordance needs a way to mark this editor's own edits as already-handled before it closes. How: This exposes a single keep method that just flips clsWayRef to 'saved'.
+	React.useImperativeHandle( forRefObj, () => ( { keep : () => { cloWayRef.current = 'saved'; } } ) ); // What: Imperative Handle Publish. Why: An external close affordance needs a way to mark this editor's own edits as already-handled before it closes. How: This exposes a single keep method that just flips cloWayRef to 'saved'.
 
 
 	const revStaFun = () => { // What: Revert State Function. Why: Cancel and an implicit close both need to restore the item to its pre-edit snapshot. How: This calls onCancel with oriIteRef's own snapshot when the caller supplied one, otherwise writes the snapshot straight back via actions.replaceItem.
@@ -953,11 +953,11 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 	};
 
-	const canEdiFun = () => { clsWayRef.current = 'cancel'; revStaFun(); if ( !onCancel ) onClose(); }; // What: Cancel Edit Function. Why: An explicit Cancel click needs to mark itself handled, actually revert the item, and (unless the caller owns its own close affordance via onCancel) close this editor. How: This flips clsWayRef, calls revStaFun, then conditionally calls onClose.
+	const canEdiFun = () => { cloWayRef.current = 'cancel'; revStaFun(); if ( !onCancel ) onClose(); }; // What: Cancel Edit Function. Why: An explicit Cancel click needs to mark itself handled, actually revert the item, and (unless the caller owns its own close affordance via onCancel) close this editor. How: This flips cloWayRef, calls revStaFun, then conditionally calls onClose.
 
 	useEscapeCancel( true, () => { if ( conDelBoo ) setConDelBoo( false ); else canEdiFun(); } ); // What: Use Escape Cancel. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canEdiFun.
 
-	const savCloFun = () => { clsWayRef.current = 'saved'; onClose(); }; // What: Save Close Function. Why: An explicit Save click needs to mark itself handled and keep the live edits, which are already applied directly (see the header comment above). How: This flips clsWayRef, then calls onClose.
+	const savCloFun = () => { cloWayRef.current = 'saved'; onClose(); }; // What: Save Close Function. Why: An explicit Save click needs to mark itself handled and keep the live edits, which are already applied directly (see the header comment above). How: This flips cloWayRef, then calls onClose.
 
 
 	/**
@@ -1003,12 +1003,12 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 	};
 
-	React.useEffect( () => { // What: Discard Guard Effect. Why: An editor left open through a tab switch or reload should discard its own unsaved live edits, matching the "nothing changes until you actually save" expectation every other inline editor in the app follows. How: This disarms window.__editGuard on mount, restores the warm mirror directly on pagehide, and arms __editGuard to revert on an ordinary unmount, in both cases only when clsWayRef is still null (nothing explicit already handled the close).
+	React.useEffect( () => { // What: Discard Guard Effect. Why: An editor left open through a tab switch or reload should discard its own unsaved live edits, matching the "nothing changes until you actually save" expectation every other inline editor in the app follows. How: This disarms window.__editGuard on mount, restores the warm mirror directly on pagehide, and arms __editGuard to revert on an ordinary unmount, in both cases only when cloWayRef is still null (nothing explicit already handled the close).
 
 
 		window.__editGuard.disarm(); // What: Edit Guard Disarm. Why: A stale armed guard from a PREVIOUS editor instance must not fire against this fresh one. How: This clears whatever revert thunk __editGuard was last armed with.
 
-		const onHidFun = () => { if ( !clsWayRef.current ) resStoFun(); }; // What: On Hide Function. Why: A pagehide (the tab closing or backgrounding) needs its own direct storage restore, since a React unmount effect may not get to run in time. How: This calls resStoFun only when clsWayRef is still null.
+		const onHidFun = () => { if ( !cloWayRef.current ) resStoFun(); }; // What: On Hide Function. Why: A pagehide (the tab closing or backgrounding) needs its own direct storage restore, since a React unmount effect may not get to run in time. How: This calls resStoFun only when cloWayRef is still null.
 
 		window.addEventListener( 'pagehide', onHidFun ); // What: Pagehide Subscribe Call. Why: The discard needs to happen the moment the page is actually hidden, not on some later tick. How: This registers onHidFun to run on that event.
 
@@ -1018,13 +1018,13 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 			window.removeEventListener( 'pagehide', onHidFun ); // What: Pagehide Listener Teardown. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onHidFun reference that was added above.
 
-			if ( !clsWayRef.current ) window.__editGuard.arm( revStaFun ); // What: Edit Guard Arm. Why: The NEXT editor instance's own disarm (above) is what actually cancels this, so arming here is what makes an ordinary unmount revert at all. How: This arms __editGuard with revStaFun only when clsWayRef is still null.
+			if ( !cloWayRef.current ) window.__editGuard.arm( revStaFun ); // What: Edit Guard Arm. Why: The NEXT editor instance's own disarm (above) is what actually cancels this, so arming here is what makes an ordinary unmount revert at all. How: This arms __editGuard with revStaFun only when cloWayRef is still null.
 
 
 		};
 
 
-	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to run once, on mount, since clsWayRef/oriIteRef/revStaFun are all stable for this editor instance's whole lifetime. How: An empty array means this never re-subscribes.
+	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to run once, on mount, since cloWayRef/oriIteRef/revStaFun are all stable for this editor instance's whole lifetime. How: An empty array means this never re-subscribes.
 
 
 	// #region Mode-Derived Display Values

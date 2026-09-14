@@ -421,7 +421,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 
 	const [ newGroBoo, setNewGroBoo ] = React.useState( false ); // What: New Group Boolean And Setter. Why: The Group selector's own inline "+ New Group" create mode needs an on/off flag. How: This is flipped true by the "+ New Group" pill and closed by closeNewGroup below.
-	const [ pilRetBoo, setPilRetBoo ] = React.useState( false ); // What: Pill Returning Boolean And Setter. Why: The "+ New Group" pill needs to know when it's mid-return-animation after the input closes. How: This is set true by clsGroFun and cleared 200ms later.
+	const [ pilRetBoo, setPilRetBoo ] = React.useState( false ); // What: Pill Returning Boolean And Setter. Why: The "+ New Group" pill needs to know when it's mid-return-animation after the input closes. How: This is set true by cloGroFun and cleared 200ms later.
 	const [ newGroStr, setNewGroStr ] = React.useState( '' );    // What: New Group String And Setter. Why: The inline input needs its own in-progress text, separate from any real group name. How: This is read on blur/Enter and normalized into a real group by cmtGroFun.
 	const newGroRef                   = React.useRef( null );    // What: New Group Reference. Why: The inline input must be focused the instant it mounts. How: This is attached to the input's own ref prop and focused by the effect below.
 	const groPilRef                   = React.useRef( null );    // What: Group Pill Reference. Why: Both the scroll-edge-fade effect and the "keep scrolled to the end while growing" effect below need the live pill row element. How: This is attached to the pill row's own ref prop.
@@ -576,7 +576,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 	}, [ allGroArr, picObj.group ] ); // What: Effect Dependency Array. Why: The choice list only needs recomputing when the available groups or the picker's own current group changes. How: allGroArr covers a group being added/removed elsewhere; picObj.group covers this picker's own selection changing.
 
 
-	const clsGroFun = () => { // What: Close Group Function. Why: Both a commit and a cancel need the exact same teardown: unmount the input, clear its text, and play the "+ New Group" pill's own return animation. How: This closes newGroBoo, clears newGroStr, and flags pilRetBoo for 200ms.
+	const cloGroFun = () => { // What: Close Group Function. Why: Both a commit and a cancel need the exact same teardown: unmount the input, clear its text, and play the "+ New Group" pill's own return animation. How: This closes newGroBoo, clears newGroStr, and flags pilRetBoo for 200ms.
 
 
 		setNewGroBoo( false );                          // What: New Group Close Call. Why: This unmounts the inline input immediately. How: This sets newGroBoo to false.
@@ -594,12 +594,12 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 		if ( tidNamStr ) actObj.updatePicker( picObj.id, { group : tidNamStr } ); // What: Update Picker Guard. Why: An empty or otherwise invalid typed name should not create a group at all. How: This only commits the picker's own group when tidNamStr is truthy.
 
-		clsGroFun(); // What: Close Group Call. Why: A commit still needs the same teardown every close does. How: This runs the shared close routine after the update above.
+		cloGroFun(); // What: Close Group Call. Why: A commit still needs the same teardown every close does. How: This runs the shared close routine after the update above.
 
 
 	};
 
-	const canGroFun = () => { clsGroFun(); }; // What: Cancel Group Function. Why: Escape (or the cancel button) should discard the typed text without creating anything. How: This just runs the shared close routine, with no update call.
+	const canGroFun = () => { cloGroFun(); }; // What: Cancel Group Function. Why: Escape (or the cancel button) should discard the typed text without creating anything. How: This just runs the shared close routine, with no update call.
 
 
 	const snpRef = React.useRef( { // What: Snapshot Reference. Why: Controls opening (this component mounting) is the moment every field must be remembered, so Cancel can revert every change made while it was open. How: This freezes a shallow copy of the picker, every one of its items, and its own daily-generator membership, captured once on mount.
@@ -632,7 +632,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 	const donRef = React.useRef( null ); // What: Done Reference. Why: The mount-cleanup effect below needs to know, at unmount time, whether the user already closed explicitly (Cancel or Save) or is closing implicitly (tab-switch/reload). How: This starts null and is set to 'cancel' or 'saved' by the matching handler.
 	const canFun    = () => { donRef.current = 'cancel'; revStaFun(); onColFun(); }; // What: Cancel Function. Why: Cancel is an explicit close that must also revert every change. How: This marks donRef, reverts state, then collapses Controls.
-	const savClsFun = () => { donRef.current = 'saved'; onColFun(); };              // What: Save Close Function. Why: Save is an explicit close that keeps every change already committed live. How: This marks donRef, then simply collapses Controls without reverting anything.
+	const savCloFun = () => { donRef.current = 'saved'; onColFun(); };              // What: Save Close Function. Why: Save is an explicit close that keeps every change already committed live. How: This marks donRef, then simply collapses Controls without reverting anything.
 
 	const resStoFun = () => { // What: Restore Storage Function. Why: An implicit close (reload) must not let unsaved edits survive in the warm localStorage mirror, even though the live store already has them. How: This synchronously rewrites the mirrored picker/items/daily entry back to the snapshot taken on mount.
 
@@ -1521,7 +1521,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 							<Btn kind='ghost' size='sm' onClick={ canFun }>Cancel</Btn>{ /* What: Btn. Why: This discards every change made since Controls opened. How: This calls canFun on click. */ }
 
-							<Btn kind='ghost' size='sm' onClick={ savClsFun }>Save</Btn>{ /* What: Btn. Why: This keeps every change made since Controls opened. How: This calls savClsFun on click. */ }
+							<Btn kind='ghost' size='sm' onClick={ savCloFun }>Save</Btn>{ /* What: Btn. Why: This keeps every change made since Controls opened. How: This calls savCloFun on click. */ }
 
 						</div>
 
@@ -1740,7 +1740,7 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 	const [ opnIdeStr, setOpnIdeStr ] = React.useState( null ); // What: Open Identifier String And Setter. Why: Only one conditional's own row can be expanded for editing at a time. How: This holds whichever conditional's own id is currently open, or null.
 	const [ drfObj, setDrfObj ]       = React.useState( null ); // What: Draft Object And Setter. Why: The open row's own in-progress, not-yet-committed field values need somewhere to live. How: This is populated by openEdiFun and cleared by closEdiFun.
 	const [ penObj, setPenObj ]       = React.useState( null ); // What: Pending Object And Setter. Why: A brand-new conditional is held locally, not written to the store, until Save. How: This holds the brand-new conditional's own object while it's still unsaved.
-	const [ clsIdeStr, setClsIdeStr ] = React.useState( null ); // What: Closing Identifier String And Setter. Why: A deleted conditional's own row must finish its collapse-shut animation before actually being removed. How: This holds whichever conditional's own id is currently mid-delete-animation.
+	const [ cloIdeStr, setCloIdeStr ] = React.useState( null ); // What: Closing Identifier String And Setter. Why: A deleted conditional's own row must finish its collapse-shut animation before actually being removed. How: This holds whichever conditional's own id is currently mid-delete-animation.
 
 
 	const useCouFun = ( cidStr ) => picArr.filter( ( picCurObj ) => picCurObj.conditionalId === cidStr && !picCurObj.hidden ).length; // What: Use Count Function. Why: Every conditional's own row needs to show how many (non-hidden) pickers currently use it. How: This counts every picker whose own conditionalId matches cidStr.
@@ -1788,12 +1788,12 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 	const delAniFun = ( cidStr ) => { // What: Delete Animated Function. Why: Deleting an existing conditional should collapse its card shut before actually removing it from the store. How: This runs the removal immediately when motion is reduced, otherwise defers it by 300ms while the row plays its own collapse.
 
 
-		const donFun = () => { actObj.removeConditional( cidStr ); setClsIdeStr( null ); setDrfObj( null ); setOpnIdeStr( null ); }; // What: Done Function. Why: The actual removal and every piece of open/closing state need to clear together, whenever this finally runs. How: This is called either immediately or after the deferred timeout below.
+		const donFun = () => { actObj.removeConditional( cidStr ); setCloIdeStr( null ); setDrfObj( null ); setOpnIdeStr( null ); }; // What: Done Function. Why: The actual removal and every piece of open/closing state need to clear together, whenever this finally runs. How: This is called either immediately or after the deferred timeout below.
 
 		if ( reduceMotion() ) { donFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This calls donFun synchronously and returns early.
 
 
-		setClsIdeStr( cidStr ); // What: Closing Id Set. Why: The editor must stay mounted (via closingId) through its own collapse animation instead of unmounting immediately. How: This flags cidStr as the row currently mid-delete-animation.
+		setCloIdeStr( cidStr ); // What: Closing Id Set. Why: The editor must stay mounted (via closingId) through its own collapse animation instead of unmounting immediately. How: This flags cidStr as the row currently mid-delete-animation.
 
 		setOpnIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its Collapse to animate shut. How: This clears opnIdeStr.
 
@@ -2055,7 +2055,7 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 
 								<Collapse open={ isaOpnBoo }>{ /* What: Collapse. Why: This row's own editor only needs to exist while it's actually open (or animating shut). How: This opens only while isaOpnBoo is true. */ }
 
-									{ drfObj && ( isaOpnBoo || isaPenBoo || clsIdeStr === cndCurObj.id ) && ( // What: Editor Mount Check. Why: The editor must also stay mounted while pending or mid-delete-animation, not only while strictly open. How: This renders CndEdiCom only while a draft exists and one of the 3 conditions holds.
+									{ drfObj && ( isaOpnBoo || isaPenBoo || cloIdeStr === cndCurObj.id ) && ( // What: Editor Mount Check. Why: The editor must also stay mounted while pending or mid-delete-animation, not only while strictly open. How: This renders CndEdiCom only while a draft exists and one of the 3 conditions holds.
 
 
 										<CndEdiCom

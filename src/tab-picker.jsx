@@ -555,9 +555,9 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	};
 	// What: Editing Item String And Setter. Why: An existing pool item's own edit slot reuses the exact same below-the-list interface as "+ Add Item", just populated from a real item and wired to the REAL actions instead of a draft. How: This holds the id of whichever existing item currently has its editor open, or null.
 	const [ ediIteStr, setEdiIteStr ] = React.useState( null );
-	const [ ediClsBoo, setEdiClsBoo ] = React.useState( false ); // What: Editing Closing Boolean And Setter. Why: Closing an existing item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation and consumed by the editor's own onAnimationEnd handler below.
+	const [ ediCloBoo, setEdiCloBoo ] = React.useState( false ); // What: Editing Closing Boolean And Setter. Why: Closing an existing item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation and consumed by the editor's own onAnimationEnd handler below.
 	const [ ediNamStr, setEdiNamStr ] = React.useState( '' ); // What: Editing Name String And Setter. Why: The name input inside the existing-item editor needs its own live-typed value. How: This is seeded from the item's own name in opnEdiFun and written to the store on blur.
-	// What: Deleted-Under-Editor Effect. Why: An item can be deleted out from under its own open editor (the row's own trash icon stays reachable while editing, see the render's own null-guard below), and that guard alone only stops THIS render from crashing; without also clearing ediIteStr here, it would stay set forever, permanently tripping strEdiFun's own "one editor at a time" guard against ever opening another. How: This watches for the currently-edited item vanishing from state.items and clears both ediIteStr and ediClsBoo the moment it does.
+	// What: Deleted-Under-Editor Effect. Why: An item can be deleted out from under its own open editor (the row's own trash icon stays reachable while editing, see the render's own null-guard below), and that guard alone only stops THIS render from crashing; without also clearing ediIteStr here, it would stay set forever, permanently tripping strEdiFun's own "one editor at a time" guard against ever opening another. How: This watches for the currently-edited item vanishing from state.items and clears both ediIteStr and ediCloBoo the moment it does.
 	React.useEffect( () => {
 
 
@@ -566,7 +566,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 			setEdiIteStr( null ); // What: Clear Editing Call. Why: There's nothing left to edit once the item itself is gone. How: This resets ediIteStr to null.
 
-			setEdiClsBoo( false ); // What: Clear Closing Call. Why: A stale closing flag must not linger for whatever opens next. How: This resets ediClsBoo to false.
+			setEdiCloBoo( false ); // What: Clear Closing Call. Why: A stale closing flag must not linger for whatever opens next. How: This resets ediCloBoo to false.
 
 
 		}
@@ -616,7 +616,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 			pndEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the current one finishes closing. How: This stores tarIdeStr for the closing editor's own onAnimationEnd handler to pick up.
 
-			setEdiClsBoo( true ); // What: Start Closing Call. Why: This is what actually plays the current editor's own out-animation. How: This flips ediClsBoo, consumed by the editor's own onAnimationEnd handler below.
+			setEdiCloBoo( true ); // What: Start Closing Call. Why: This is what actually plays the current editor's own out-animation. How: This flips ediCloBoo, consumed by the editor's own onAnimationEnd handler below.
 
 			return; // What: Early Return. Why: The requested edit must wait for the closing animation, not open immediately. How: This exits strEdiFun without calling opnEdiFun yet.
 
@@ -1291,12 +1291,12 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 
 								<div
-									className={ ` pv-newitem rd-item is-editing   ${ ediClsBoo ? 'is-closing' : '' } ` }
+									className={ ` pv-newitem rd-item is-editing   ${ ediCloBoo ? 'is-closing' : '' } ` }
 									onAnimationEnd={ ( aniEveObj ) => {
 
-										if ( !ediClsBoo || aniEveObj.target !== aniEveObj.currentTarget ) return;
+										if ( !ediCloBoo || aniEveObj.target !== aniEveObj.currentTarget ) return;
 
-										setEdiClsBoo( false );
+										setEdiCloBoo( false );
 
 										setEdiIteStr( null );
 
@@ -1336,7 +1336,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 											item={ ediLivObj }
 											picker={ picker }
 											actions={ actions }
-											onClose={ () => setEdiClsBoo( true ) }
+											onClose={ () => setEdiCloBoo( true ) }
 										/>
 
 									</div>
@@ -1731,7 +1731,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 	const addWraRef = React.useRef( null ); // What: Add Wrap Reference. Why: Both the new-item and edit-item flows render into this same below-the-list slot, which needs a stable handle so it can be scrolled into view. How: This is attached to the .pv-additem-wrap div's own ref prop, below.
 	// What: Editing Item String And Setter. Why: Editing an already-added draft item mirrors the live Pickers tab's own ediIteStr/opnEdiFun/strEdiFun exactly (see PicVieCom above), just bound to pooIteArr + dftActObj instead of the real store. How: This holds the id of whichever committed draft item currently has its editor open, or null.
 	const [ ediIteStr, setEdiIteStr ] = React.useState( null );
-	const [ ediClsBoo, setEdiClsBoo ] = React.useState( false ); // What: Editing Closing Boolean And Setter. Why: Closing a committed draft item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation.
+	const [ ediCloBoo, setEdiCloBoo ] = React.useState( false ); // What: Editing Closing Boolean And Setter. Why: Closing a committed draft item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation.
 	const pndEdiRef = React.useRef( null ); // What: Pending Edit Reference. Why: Switching straight from the new-item form (or a different item's editor) into this one must not silently drop the request. How: This holds the target id to reopen once whatever's currently closing finishes.
 	// What: Editing Snapshot Reference. Why: Switching directly between two draft items' editors needs an explicit revert, for the exact same reason PicVieCom's own ediSnaRef does (EntryEditor's own unmount-triggered revert would be disarmed by the very next EntryEditor's mount effect before it ever fires). How: This holds a snapshot of whichever draft item opnDftFun last opened.
 	const ediSnaRef = React.useRef( null );
@@ -1862,7 +1862,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 
 			pndEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the current one finishes closing. How: This stores tarIdeStr for the closing editor's own onAnimationEnd handler to pick up.
 
-			setEdiClsBoo( true ); // What: Start Closing Call. Why: This is what actually plays the current editor's own out-animation. How: This flips ediClsBoo.
+			setEdiCloBoo( true ); // What: Start Closing Call. Why: This is what actually plays the current editor's own out-animation. How: This flips ediCloBoo.
 
 			return; // What: Early Return. Why: The requested edit must wait for the closing animation, not open immediately. How: This exits strDftFun without calling opnDftFun yet.
 
@@ -2846,12 +2846,12 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 
 
 									<div
-										className={ ` pv-newitem rd-item is-editing   ${ ediClsBoo ? 'is-closing' : '' } ` }
+										className={ ` pv-newitem rd-item is-editing   ${ ediCloBoo ? 'is-closing' : '' } ` }
 										onAnimationEnd={ ( aniEveObj ) => {
 
-											if ( !ediClsBoo || aniEveObj.target !== aniEveObj.currentTarget ) return;
+											if ( !ediCloBoo || aniEveObj.target !== aniEveObj.currentTarget ) return;
 
-											setEdiClsBoo( false );
+											setEdiCloBoo( false );
 
 											setEdiIteStr( null );
 
@@ -2891,7 +2891,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 												picker={ dftPicObj }
 												actions={ dftActObj }
 												items={ pooIteArr }
-												onClose={ () => setEdiClsBoo( true ) }
+												onClose={ () => setEdiCloBoo( true ) }
 											/>
 
 										</div>
