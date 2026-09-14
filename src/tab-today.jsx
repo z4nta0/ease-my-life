@@ -5709,7 +5709,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 											<GroLogCom
 												state={ state }
-												group={ curGroObj.name }
+												groNamStr={ curGroObj.name }
 												onClose={ () => togLogFun( curGroObj.name ) }
 											/>{ /* What: Group Log. Why: This renders curGroObj's own picker audit rows. How: This is passed curGroObj's own name and a close handler that re-toggles it shut. */ }
 
