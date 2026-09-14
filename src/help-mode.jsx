@@ -1210,28 +1210,28 @@ function HelpOverlay ( { active, items, onExit } ) {
 
 		} );
 
-		const grpMapObj = {}; // What: Group Map Object. Why: columnGroup items (the Day Log panel's per-column highlights) need their own siblings gathered together before they can be snapped edge-to-edge below. How: This starts empty and is filled by the loop directly below.
+		const groMapObj = {}; // What: Group Map Object. Why: columnGroup items (the Day Log panel's per-column highlights) need their own siblings gathered together before they can be snapped edge-to-edge below. How: This starts empty and is filled by the loop directly below.
 
-		allIteArr.forEach( ( curIteObj ) => { // What: Group Gather Loop. Why: Only an item that both declares a columnGroup AND actually has a rect this frame belongs in a group. How: This pushes curIteObj's own id into grpMapObj under its own columnGroup key.
+		allIteArr.forEach( ( curIteObj ) => { // What: Group Gather Loop. Why: Only an item that both declares a columnGroup AND actually has a rect this frame belongs in a group. How: This pushes curIteObj's own id into groMapObj under its own columnGroup key.
 
 			if ( !curIteObj.columnGroup || !nexMapObj[ curIteObj.id ] ) return; // What: Not Grouped Guard. Why: An item with no columnGroup, or one that found nothing this frame, contributes to no group at all. How: This skips this item once either condition fails.
 
-			( grpMapObj[ curIteObj.columnGroup ] || ( grpMapObj[ curIteObj.columnGroup ] = [] ) ).push( curIteObj.id ); // What: Group Push. Why: Every member of the same columnGroup must end up in the same array, in whatever order they were encountered. How: This lazily creates the group's own array on first use, then pushes this item's own id.
+			( groMapObj[ curIteObj.columnGroup ] || ( groMapObj[ curIteObj.columnGroup ] = [] ) ).push( curIteObj.id ); // What: Group Push. Why: Every member of the same columnGroup must end up in the same array, in whatever order they were encountered. How: This lazily creates the group's own array on first use, then pushes this item's own id.
 
 
 		} );
 
-		Object.values( grpMapObj ).forEach( ( grpIdeArr ) => { // What: Group Snap Loop. Why: Each column's own union naturally shrinks to just its content's width, leaving dead gaps between neighbors; this snaps every group's own members edge-to-edge instead. How: This walks each columnGroup's own member ids, adjusting their shared rects in place.
+		Object.values( groMapObj ).forEach( ( groIdeArr ) => { // What: Group Snap Loop. Why: Each column's own union naturally shrinks to just its content's width, leaving dead gaps between neighbors; this snaps every group's own members edge-to-edge instead. How: This walks each columnGroup's own member ids, adjusting their shared rects in place.
 
 
-			const grpTopNum = Math.min( ...grpIdeArr.map( ( curIdeStr ) => nexMapObj[ curIdeStr ].top ) );    // What: Group Top Number. Why: Every member of the group must share one continuous table height rather than some columns overhanging their shorter siblings. How: This takes the smallest top among every member's own current rect.
-			const grpBotNum = Math.max( ...grpIdeArr.map( ( curIdeStr ) => nexMapObj[ curIdeStr ].bottom ) ); // What: Group Bottom Number. Why: Same reasoning as grpTopNum, for the bottom edge. How: This takes the largest bottom among every member's own current rect.
+			const groTopNum = Math.min( ...groIdeArr.map( ( curIdeStr ) => nexMapObj[ curIdeStr ].top ) );    // What: Group Top Number. Why: Every member of the group must share one continuous table height rather than some columns overhanging their shorter siblings. How: This takes the smallest top among every member's own current rect.
+			const groBotNum = Math.max( ...groIdeArr.map( ( curIdeStr ) => nexMapObj[ curIdeStr ].bottom ) ); // What: Group Bottom Number. Why: Same reasoning as groTopNum, for the bottom edge. How: This takes the largest bottom among every member's own current rect.
 
-			grpIdeArr.forEach( ( curIdeStr ) => { nexMapObj[ curIdeStr ].top = grpTopNum; nexMapObj[ curIdeStr ].bottom = grpBotNum; nexMapObj[ curIdeStr ].height = grpBotNum - grpTopNum; } ); // What: Vertical Snap. Why: Every member's own rect must actually reflect the shared top/bottom/height just computed. How: This overwrites each member's own top/bottom/height in place.
+			groIdeArr.forEach( ( curIdeStr ) => { nexMapObj[ curIdeStr ].top = groTopNum; nexMapObj[ curIdeStr ].bottom = groBotNum; nexMapObj[ curIdeStr ].height = groBotNum - groTopNum; } ); // What: Vertical Snap. Why: Every member's own rect must actually reflect the shared top/bottom/height just computed. How: This overwrites each member's own top/bottom/height in place.
 
-			grpIdeArr.sort( ( aIdeStr, bIdeStr ) => nexMapObj[ aIdeStr ].left - nexMapObj[ bIdeStr ].left ); // What: Left To Right Sort. Why: The horizontal snap below needs each member's own left neighbor known, which only works once the group is ordered left to right. How: This sorts grpIdeArr in place by each member's own current left edge.
+			groIdeArr.sort( ( aIdeStr, bIdeStr ) => nexMapObj[ aIdeStr ].left - nexMapObj[ bIdeStr ].left ); // What: Left To Right Sort. Why: The horizontal snap below needs each member's own left neighbor known, which only works once the group is ordered left to right. How: This sorts groIdeArr in place by each member's own current left edge.
 
-			grpIdeArr.forEach( ( curIdeStr, curIndNum ) => { // What: Horizontal Snap Loop. Why: Interior boundaries between neighboring columns must meet at the exact midpoint between them, with no gap and no overlap. How: This walks grpIdeArr in left-to-right order, adjusting each member's own left/right in place.
+			groIdeArr.forEach( ( curIdeStr, curIndNum ) => { // What: Horizontal Snap Loop. Why: Interior boundaries between neighboring columns must meet at the exact midpoint between them, with no gap and no overlap. How: This walks groIdeArr in left-to-right order, adjusting each member's own left/right in place.
 
 
 				const curRecObj = nexMapObj[ curIdeStr ]; // What: Current Rect Object. Why: This member's own rect is read and mutated repeatedly below. How: This is a direct reference into nexMapObj, so mutating it here mutates the map itself.
@@ -1240,7 +1240,7 @@ function HelpOverlay ( { active, items, onExit } ) {
 
 				if ( curIndNum === 0 ) curRecObj.left -= PAD_MAR_NUM; // What: First Column Guard. Why: Only the group's own leftmost outer edge should get normal breathing room, since it has no left neighbor to snap flush against. How: This subtracts the flat pad margin from curRecObj's own left only on the first iteration.
 
-				if ( curIndNum === grpIdeArr.length - 1 ) { // What: Last Column Guard. Why: The group's own rightmost outer edge also needs normal breathing room, since it has no right neighbor either. How: This adds the flat pad margin to curRecObj's own right only on the last iteration.
+				if ( curIndNum === groIdeArr.length - 1 ) { // What: Last Column Guard. Why: The group's own rightmost outer edge also needs normal breathing room, since it has no right neighbor either. How: This adds the flat pad margin to curRecObj's own right only on the last iteration.
 
 
 					curRecObj.right += PAD_MAR_NUM;
@@ -1251,7 +1251,7 @@ function HelpOverlay ( { active, items, onExit } ) {
 				else { // What: Interior Boundary Branch. Why: Every other boundary is shared, touching ground between this member and its own right neighbor. How: This computes the exact midpoint between the two and snaps both edges to it.
 
 
-					const nxtRecObj = nexMapObj[ grpIdeArr[ curIndNum + 1 ] ]; // What: Next Rect Object. Why: The midpoint below needs this member's own right neighbor's rect. How: This reads the next id in grpIdeArr's own sorted order.
+					const nxtRecObj = nexMapObj[ groIdeArr[ curIndNum + 1 ] ]; // What: Next Rect Object. Why: The midpoint below needs this member's own right neighbor's rect. How: This reads the next id in groIdeArr's own sorted order.
 					const midNum    = ( curRecObj.right + nxtRecObj.left ) / 2; // What: Midpoint Number. Why: This is the exact shared boundary both neighbors must snap to. How: This averages curRecObj's own right and nxtRecObj's own left.
 
 					curRecObj.right = midNum; nxtRecObj.left = midNum; // What: Boundary Snap. Why: Both neighbors must end up sharing the exact same boundary, touching with no gap and no overlap. How: This writes midNum onto both curRecObj.right and nxtRecObj.left.

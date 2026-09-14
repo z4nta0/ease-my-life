@@ -1671,6 +1671,16 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     real-world abbreviation people reach for; found in `conIdArr`,
     `pilIdStr`, `skiIdSet`, and `visIdSet` across `day-log.jsx` and
     `tab-data.jsx`, all fixed to their own 3-letter `ide` segment)
+  - `grp` → `gro` (Group — found across 33 identifiers spanning 7 files;
+    `gro` was already the established correct code for Group elsewhere
+    in this codebase, e.g. `GroLogCom`, `GroHeaCom`, `curGroObj`)
+  - `grp` → `gri` (Grip — a second, distinct miscorrection sharing the
+    same wrong `grp` spelling as the Group case above, found in
+    `grpCurEle` (`tab-today.jsx`), a drag-handle grip element; `gri` is
+    already the established code for Grip in that same file
+    (`onGriDowFun`), though note `gri` also separately means Grid in
+    `bg-flourish.jsx` (`plaGriFun`), an unrelated multi-meaning segment
+    in a different file with no collision risk between the two)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

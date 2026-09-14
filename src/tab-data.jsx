@@ -2138,8 +2138,8 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 
 	const touObj    = useEmlTouFun();                                                                  // What: Tour Object. Why: Several controls below must disable themselves or highlight during specific onboarding tour steps. How: This reads the shared tour event bus's own phase/tourId/step fields.
-	const disGrpBoo = touObj.phase === 'tour' && touObj.tourId === 'page-explore_data' && touObj.step === 1; // What: Disable Group Boolean. Why: Narrating what the Group filter does is the point of this tour step; letting it actually change would strand a later step's own target. How: This is true only during page-explore_data's own Step 1.
-	const disShwBoo = touObj.phase === 'tour' && touObj.tourId === 'page-explore_data' && touObj.step === 3; // What: Disable Show Boolean. Why: Same reasoning as disGrpBoo, for the Show filter row. How: This is true only during page-explore_data's own Step 3.
+	const disGroBoo = touObj.phase === 'tour' && touObj.tourId === 'page-explore_data' && touObj.step === 1; // What: Disable Group Boolean. Why: Narrating what the Group filter does is the point of this tour step; letting it actually change would strand a later step's own target. How: This is true only during page-explore_data's own Step 1.
+	const disShwBoo = touObj.phase === 'tour' && touObj.tourId === 'page-explore_data' && touObj.step === 3; // What: Disable Show Boolean. Why: Same reasoning as disGroBoo, for the Show filter row. How: This is true only during page-explore_data's own Step 3.
 	const disCrtBoo = touObj.phase === 'tour' && touObj.tourId === 'page-explore_data' && touObj.step === 6; // What: Disable Create Boolean. Why: Step 7 only points at the Create Picker button; actually clicking it would open a whole new draft form the tour knows nothing about and never cleans up. How: This is true only during page-explore_data's own Step 6.
 
 
@@ -2219,7 +2219,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	const [ conDelObj, setConDelObj ] = React.useState( null ); // What: Confirm Delete Object And Setter. Why: Both items and pickers share one inline delete-confirmation slot. How: This holds a { kind : 'item' | 'picker', id } shape, or null when nothing is confirming.
 
 
-	const [ filGrpStr, setFilGrpStr ] = React.useState( 'all' ); // What: Filter Group String And Setter. Why: The Group filter row narrows which pickers appear below, mirroring the Pickers + Stats tabs; both default to "All". How: This is committed by the Group pill row and read throughout this component.
+	const [ filGroStr, setFilGroStr ] = React.useState( 'all' ); // What: Filter Group String And Setter. Why: The Group filter row narrows which pickers appear below, mirroring the Pickers + Stats tabs; both default to "All". How: This is committed by the Group pill row and read throughout this component.
 	const [ filTypStr, setFilTypStr ] = React.useState( 'all' ); // What: Filter Type String And Setter. Why: The Type filter row narrows by picker mode, and also carries the Conditionals/Reminders sentinel scope values. How: This is committed by the Type pill row and read throughout this component.
 	const [ curScoStr, setCurScoStr ] = React.useState( 'all' ); // What: Current Scope String And Setter. Why: The Show row's own active box needs its own selection state, independent of (but reconciled with) the other 2 filters. How: This is committed by onSelect below and read throughout this component.
 	const [ filCndStr, setFilCndStr ] = React.useState( 'all' ); // What: Filter Conditional String And Setter. Why: The Conditionals filter row narrows pickers to those gated by one chosen conditional. How: This is committed by the Conditionals pill row and read throughout this component.
@@ -2265,7 +2265,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 
 			name          : '',
-			group         : filGrpStr !== 'all' ? filGrpStr : '',
+			group         : filGroStr !== 'all' ? filGroStr : '',
 			mode          : isaRelBoo ? filTypStr : 'random',
 			conditionalId : filCndStr !== 'all' ? filCndStr : null,
 			items         : [],
@@ -2350,12 +2350,12 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 		picArr.filter( ( picCurObj ) =>
 			!picCurObj.hidden &&
-			( filGrpStr === 'all' || picCurObj.group === filGrpStr ) &&
+			( filGroStr === 'all' || picCurObj.group === filGroStr ) &&
 			( filCndStr === 'all' || picCurObj.conditionalId === filCndStr ) &&
 			( filTypStr === 'all' || picCurObj.mode === filTypStr ) )
 
 
-	), [ picArr, filGrpStr, filCndStr, filTypStr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when the picker list or any one of the 3 active filters changes. How: Each of these 4 values independently affects which pickers pass the filter above.
+	), [ picArr, filGroStr, filCndStr, filTypStr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when the picker list or any one of the 3 active filters changes. How: Each of these 4 values independently affects which pickers pass the filter above.
 
 	const cndIteArr = staAppObj.conditionals || []; // What: Conditional Item Array. Why: Several filter rows and section counts below need the full conditional list. How: This reads staAppObj.conditionals, falling back to an empty array.
 	const cndCouFun = ( cidStr ) => picArr.filter( ( picCurObj ) => picCurObj.conditionalId === cidStr && !picCurObj.hidden ).length; // What: Conditional Count Function. Why: The Conditionals filter row's own per-pill count needs how many (non-hidden) pickers use each one. How: This counts every picker whose own conditionalId matches cidStr.
@@ -2372,44 +2372,44 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 		].sort( ( aEntObj, bEntObj ) => aEntObj.name.localeCompare( bEntObj.name ) );
 
-		const dfltFilBoo = filGrpStr === 'all' && filTypStr === 'all'; // What: Default Filter Boolean. Why: "All" only needs pinning first when every filter is still at its default, or (see below) a real filter still leaves 2+ entries in view. How: This checks both filGrpStr and filTypStr are 'all'.
+		const dfltFilBoo = filGroStr === 'all' && filTypStr === 'all'; // What: Default Filter Boolean. Why: "All" only needs pinning first when every filter is still at its default, or (see below) a real filter still leaves 2+ entries in view. How: This checks both filGroStr and filTypStr are 'all'.
 
 
 		return ( dfltFilBoo || resArr.length >= 2 ) ? [ { scope : 'all', name : 'All' }, ...resArr ] : resArr; // What: Show Entry Return. Why: A lone remaining entry would make "All" a redundant duplicate of that one card. How: This pins "All" first whenever dfltFilBoo holds or resArr still has 2+ entries, otherwise returns resArr as-is.
 
 
-	}, [ filGrpStr, filTypStr, cndIteArr.length, visPicArr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when a filter changes or the underlying conditional/picker lists themselves change. How: Each of these 4 values independently affects which entries appear or how many there are.
+	}, [ filGroStr, filTypStr, cndIteArr.length, visPicArr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when a filter changes or the underlying conditional/picker lists themselves change. How: Each of these 4 values independently affects which entries appear or how many there are.
 
 	const shwAllBoo = shwEntArr.some( ( entCurObj ) => entCurObj.scope === 'all' ); // What: Show All Boolean. Why: The Show row's own render needs to know whether an "All" card is actually present this render. How: This checks shwEntArr for a 'all' scope entry.
 
 
-	const preFilRef = React.useRef( { statGroup : filGrpStr, condFilter : filCndStr, typeFilter : filTypStr } ); // What: Previous Filter Reference. Why: Landing on the Show row's own first card needs to detect an ACTUAL filter change, not just any render. How: This starts at the initial filter values and is updated by the effect below.
+	const preFilRef = React.useRef( { statGroup : filGroStr, condFilter : filCndStr, typeFilter : filTypStr } ); // What: Previous Filter Reference. Why: Landing on the Show row's own first card needs to detect an ACTUAL filter change, not just any render. How: This starts at the initial filter values and is updated by the effect below.
 
 	React.useEffect( () => { // What: Scope Coherence Effect. Why: The active scope must always land on the Show row's own first card whenever any filter changes, not only once the OLD scope happens to fall out of view entirely. How: This detects a filter change (or the current scope no longer being a valid entry) and resets curScoStr to shwEntArr's own first entry.
 
 
-		const chgBoo = preFilRef.current.statGroup !== filGrpStr || preFilRef.current.condFilter !== filCndStr || preFilRef.current.typeFilter !== filTypStr; // What: Changed Boolean. Why: This is the actual "did a filter change since last render" check. How: This compares every one of the 3 tracked filters against their own previous values.
+		const chgBoo = preFilRef.current.statGroup !== filGroStr || preFilRef.current.condFilter !== filCndStr || preFilRef.current.typeFilter !== filTypStr; // What: Changed Boolean. Why: This is the actual "did a filter change since last render" check. How: This compares every one of the 3 tracked filters against their own previous values.
 
-		preFilRef.current = { statGroup : filGrpStr, condFilter : filCndStr, typeFilter : filTypStr }; // What: Previous Filter Update. Why: The next run of this effect needs to compare against the filters that are current now. How: This overwrites preFilRef with the freshly-read values.
+		preFilRef.current = { statGroup : filGroStr, condFilter : filCndStr, typeFilter : filTypStr }; // What: Previous Filter Update. Why: The next run of this effect needs to compare against the filters that are current now. How: This overwrites preFilRef with the freshly-read values.
 
 		if ( chgBoo || !shwEntArr.some( ( entCurObj ) => entCurObj.scope === curScoStr ) ) setCurScoStr( shwEntArr[ 0 ] ? shwEntArr[ 0 ].scope : 'all' ); // What: Reset Scope Guard. Why: Either an actual filter change, or the current scope simply no longer existing in the row, both call for landing on the first card. How: This sets curScoStr to shwEntArr's own first entry (or 'all' if the row is somehow empty).
 
 
-	}, [ filGrpStr, filCndStr, filTypStr, shwEntArr, curScoStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever any filter changes, the entry list itself changes, or the current scope changes (so its own no-longer-valid check stays accurate). How: Every one of these 5 values can affect whether curScoStr needs resetting.
+	}, [ filGroStr, filCndStr, filTypStr, shwEntArr, curScoStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever any filter changes, the entry list itself changes, or the current scope changes (so its own no-longer-valid check stays accurate). How: Every one of these 5 values can affect whether curScoStr needs resetting.
 
 
 	const selScoFun = ( nexScoStr ) => setCurScoStr( nexScoStr ); // What: Select Scope Function. Why: The boxes' own click behavior is a stub for now, ready to wire up later; selection state itself still needs to update. How: This just commits nexScoStr as the new curScoStr.
 
 
-	const grpRowRef = React.useRef( null ); // What: Group Row Reference. Why: The scroll-edge-fade effect below needs a handle on the Group filter row's own scrollable element. How: This is attached to that row's own ref prop.
-	const typRowRef = React.useRef( null ); // What: Type Row Reference. Why: Same reasoning as grpRowRef, for the Type filter row. How: This is attached to that row's own ref prop.
-	const scoRowRef = React.useRef( null ); // What: Scope Row Reference. Why: Same reasoning as grpRowRef, for the Show row. How: This is attached to that row's own ref prop.
-	const cndRowRef = React.useRef( null ); // What: Conditional Row Reference. Why: Same reasoning as grpRowRef, for the Conditionals filter row. How: This is attached to that row's own ref prop.
+	const groRowRef = React.useRef( null ); // What: Group Row Reference. Why: The scroll-edge-fade effect below needs a handle on the Group filter row's own scrollable element. How: This is attached to that row's own ref prop.
+	const typRowRef = React.useRef( null ); // What: Type Row Reference. Why: Same reasoning as groRowRef, for the Type filter row. How: This is attached to that row's own ref prop.
+	const scoRowRef = React.useRef( null ); // What: Scope Row Reference. Why: Same reasoning as groRowRef, for the Show row. How: This is attached to that row's own ref prop.
+	const cndRowRef = React.useRef( null ); // What: Conditional Row Reference. Why: Same reasoning as groRowRef, for the Conditionals filter row. How: This is attached to that row's own ref prop.
 
 	React.useEffect( () => { // What: Filter Rows Fade Effect. Why: Every filter row shares the same scroll-edge-fade affordance as the Stats tab. How: This wires up at-start/at-end tracking for whichever of the 4 rows are currently mounted, and tears every one down on cleanup.
 
 
-		const rowEleArr = [ grpRowRef.current, typRowRef.current, scoRowRef.current, cndRowRef.current ].filter( Boolean ); // What: Row Element Array. Why: Not every row is always mounted (e.g. a single-group app has no Group row at all). How: This collects only the currently-mounted refs.
+		const rowEleArr = [ groRowRef.current, typRowRef.current, scoRowRef.current, cndRowRef.current ].filter( Boolean ); // What: Row Element Array. Why: Not every row is always mounted (e.g. a single-group app has no Group row at all). How: This collects only the currently-mounted refs.
 
 		const clnFunArr = rowEleArr.map( ( rowCurEle ) => { // What: Cleanup Function Array. Why: Every row needs its own independent wiring and its own independent teardown. How: This maps each row element to its own cleanup function, collected for the effect's own return below.
 
@@ -2446,7 +2446,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 		return () => clnFunArr.forEach( ( clnCurFun ) => clnCurFun() ); // What: Effect Cleanup Return. Why: Every row's own individual cleanup must actually run. How: This calls every function collected in clnFunArr.
 
 
-	}, [ picArr.length, filGrpStr, filTypStr, exiModArr.length, visPicArr.length, curScoStr, cndIteArr.length, filCndStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or resize a row, which can change whether it overflows at all. How: Each value independently affects one or more of the 4 rows' own layout.
+	}, [ picArr.length, filGroStr, filTypStr, exiModArr.length, visPicArr.length, curScoStr, cndIteArr.length, filCndStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or resize a row, which can change whether it overflows at all. How: Each value independently affects one or more of the 4 rows' own layout.
 
 
 	const togSecFun = ( secIdeStr ) => actObj.toggleControlsCollapsed( secIdeStr, true ); // What: Toggle Section Function. Why: Every picker card defaults collapsed, so its own toggle needs that default baked in. How: This calls toggleControlsCollapsed with defaultCollapsed true.
@@ -2625,7 +2625,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 						<div
 							className='picker-groups stat-scope-groups'
-							ref={ grpRowRef }
+							ref={ groRowRef }
 							role='tablist'
 							aria-label='Filter pickers by group'
 						>{ /* What: Group Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every existing group. How: This renders the All pill, then maps exiGroArr to one pill each. */ }
@@ -2634,14 +2634,14 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 							<button
 								type='button'
 								role='tab'
-								className={ ` picker-group-pill   ${ filGrpStr === 'all' ? 'is-on' : '' } ` }
-								disabled={ disGrpBoo }
-								aria-selected={ filGrpStr === 'all' }
-								onClick={ () => setFilGrpStr( 'all' ) }
+								className={ ` picker-group-pill   ${ filGroStr === 'all' ? 'is-on' : '' } ` }
+								disabled={ disGroBoo }
+								aria-selected={ filGroStr === 'all' }
+								onClick={ () => setFilGroStr( 'all' ) }
 							>
 								All
 								<span className='picker-group-count'>{ picArr.filter( ( picCurObj ) => !picCurObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: The All pill needs its own live total. How: This counts every non-hidden picker. */ }
-							</button>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the group filter entirely. How: This sets filGrpStr to 'all' on click, disabled during the matching tour step. */ }
+							</button>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the group filter entirely. How: This sets filGroStr to 'all' on click, disabled during the matching tour step. */ }
 
 							{ exiGroArr.map( ( groCurStr ) => ( // What: Group Pill Map. Why: One pill is needed per existing group. How: This maps exiGroArr to one tab-role button each, keyed by its own name.
 
@@ -2650,14 +2650,14 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 									key={ groCurStr }
 									type='button'
 									role='tab'
-									className={ ` picker-group-pill   ${ filGrpStr === groCurStr ? 'is-on' : '' } ` }
-									disabled={ disGrpBoo }
-									aria-selected={ filGrpStr === groCurStr }
-									onClick={ () => setFilGrpStr( groCurStr ) }
+									className={ ` picker-group-pill   ${ filGroStr === groCurStr ? 'is-on' : '' } ` }
+									disabled={ disGroBoo }
+									aria-selected={ filGroStr === groCurStr }
+									onClick={ () => setFilGroStr( groCurStr ) }
 								>
 									{ groCurStr }
 									<span className='picker-group-count'>{ picArr.filter( ( picCurObj ) => picCurObj.group === groCurStr && !picCurObj.hidden ).length }</span>{ /* What: Group Count Span Element. Why: Every group pill needs its own live count. How: This counts every non-hidden picker whose own group matches groCurStr. */ }
-								</button> // What: Group Pill Button Element. Why: Clicking a pill narrows the list to just that group. How: This sets filGrpStr to groCurStr on click, disabled during the matching tour step.
+								</button> // What: Group Pill Button Element. Why: Clicking a pill narrows the list to just that group. How: This sets filGroStr to groCurStr on click, disabled during the matching tour step.
 
 
 							) ) }
@@ -2691,7 +2691,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 								type='button'
 								role='tab'
 								className={ ` picker-group-pill   ${ filTypStr === 'all' ? 'is-on' : '' } ` }
-								disabled={ disGrpBoo }
+								disabled={ disGroBoo }
 								aria-selected={ filTypStr === 'all' }
 								onClick={ () => setFilTypStr( 'all' ) }
 							>
@@ -2732,7 +2732,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 										type='button'
 										role='tab'
 										className={ ` picker-group-pill   ${ filEntObj.isOn ? 'is-on' : '' } ` }
-										disabled={ disGrpBoo }
+										disabled={ disGroBoo }
 										aria-selected={ filEntObj.isOn }
 										onClick={ filEntObj.onClick }
 									>
@@ -2771,7 +2771,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 								type='button'
 								role='tab'
 								className={ ` picker-group-pill   ${ filCndStr === 'all' ? 'is-on' : '' } ` }
-								disabled={ disGrpBoo }
+								disabled={ disGroBoo }
 								aria-selected={ filCndStr === 'all' }
 								onClick={ () => setFilCndStr( 'all' ) }
 							>
@@ -2787,13 +2787,13 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 									type='button'
 									role='tab'
 									className={ ` picker-group-pill   ${ filCndStr === cndCurObj.id ? 'is-on' : '' } ` }
-									disabled={ disGrpBoo }
+									disabled={ disGroBoo }
 									aria-selected={ filCndStr === cndCurObj.id }
-									onClick={ () => { setFilCndStr( cndCurObj.id ); setFilGrpStr( 'all' ); setFilTypStr( 'all' ); } }
+									onClick={ () => { setFilCndStr( cndCurObj.id ); setFilGroStr( 'all' ); setFilTypStr( 'all' ); } }
 								>
 									{ cndCurObj.name }
 									<span className='picker-group-count'>{ cndCouFun( cndCurObj.id ) }</span>{ /* What: Conditional Count Span Element. Why: Every conditional pill needs its own live usage count. How: This calls cndCouFun for cndCurObj.id. */ }
-								</button> // What: Conditional Pill Button Element. Why: Clicking a pill narrows the list to pickers gated by just that conditional, resetting the other 2 filters. How: This commits filCndStr, resets filGrpStr/filTypStr, disabled during the matching tour step.
+								</button> // What: Conditional Pill Button Element. Why: Clicking a pill narrows the list to pickers gated by just that conditional, resetting the other 2 filters. How: This commits filCndStr, resets filGroStr/filTypStr, disabled during the matching tour step.
 
 
 							) ) }
@@ -2813,7 +2813,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 					<span className='stat-filter-lbl'>Show</span>{ /* What: Show Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Show". */ }
 
 					<div
-						key={ filGrpStr + '|' + filTypStr }
+						key={ filGroStr + '|' + filTypStr }
 						className='picker-tabs stat-scope-tabs'
 						ref={ scoRowRef }
 					>{ /* What: Show Boxes Div Element. Why: This is the actual box rail, re-keyed on filter change so its own entrance animation replays. How: This renders the All box (when present) then maps shwEntArr's own remaining entries to one box each. */ }
@@ -2887,7 +2887,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 			</div>
 
 			<div
-				key={ filGrpStr + '::' + curScoStr + '::' + filCndStr }
+				key={ filGroStr + '::' + curScoStr + '::' + filCndStr }
 				className='data-list'
 			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed on filter/scope change so section entrance animations replay. How: This renders an empty-state message when nothing matches, otherwise every entry in rdrEntArr plus the Create Picker trigger. */ }
 

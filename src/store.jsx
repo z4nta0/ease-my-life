@@ -1693,9 +1693,9 @@ function migrate( curStaObj ) {
 				if ( curPicObj.group ) { // What: Group Tidy Guard. Why: A picker with no group at all has nothing to tidy. How: This normalizes curPicObj.group only when it's truthy.
 
 
-					const nrmGrpStr = normalizeGroupName( curPicObj.group ); // What: Normalized Group String And Guard. Why: The normalizer may decline to return anything for an unusual input. How: This calls normalizeGroupName on curPicObj's own group.
+					const nrmGroStr = normalizeGroupName( curPicObj.group ); // What: Normalized Group String And Guard. Why: The normalizer may decline to return anything for an unusual input. How: This calls normalizeGroupName on curPicObj's own group.
 
-					if ( nrmGrpStr ) curPicObj.group = nrmGrpStr; // What: Group Tidy Write. Why: Only a genuine normalized result should overwrite the picker's own group. How: This writes nrmGrpStr back onto curPicObj.group when it's truthy.
+					if ( nrmGroStr ) curPicObj.group = nrmGroStr; // What: Group Tidy Write. Why: Only a genuine normalized result should overwrite the picker's own group. How: This writes nrmGroStr back onto curPicObj.group when it's truthy.
 
 
 				}
@@ -1716,8 +1716,8 @@ function migrate( curStaObj ) {
 			// What: Group-Order Normalize. Why: Stored order structures must land on the same normalized group names the tidy pass above just applied to every picker. How: This maps every groupOrder entry through normalizeGroupName, except the 2 fixed sentinels which are never real group names.
 			if ( Array.isArray( curStaObj.groupOrder ) ) {
 
-				curStaObj.groupOrder = curStaObj.groupOrder.map( ( curGrpStr ) => (
-					( curGrpStr === '__reminders' || curGrpStr === '__pageTours' ) ? curGrpStr : ( normalizeGroupName( curGrpStr ) || curGrpStr )
+				curStaObj.groupOrder = curStaObj.groupOrder.map( ( curGroStr ) => (
+					( curGroStr === '__reminders' || curGroStr === '__pageTours' ) ? curGroStr : ( normalizeGroupName( curGroStr ) || curGroStr )
 				) );
 
 
@@ -1729,10 +1729,10 @@ function migrate( curStaObj ) {
 				const rmpOrdObj = {}; // What: Remapped Order Object And Guard. Why: The loop below needs somewhere to accumulate the re-keyed pickerOrder. How: This starts empty and is filled by the loop directly below.
 
 
-				for ( const [ curGrpStr, picIdeArr ] of Object.entries( curStaObj.pickerOrder ) ) { // What: Picker-Order Remap Loop. Why: Every old group key must be normalized and merged into rmpOrdObj before it replaces curStaObj's own pickerOrder. How: This iterates curStaObj.pickerOrder's own entries, concatenating each onto its own normalized key's bucket.
+				for ( const [ curGroStr, picIdeArr ] of Object.entries( curStaObj.pickerOrder ) ) { // What: Picker-Order Remap Loop. Why: Every old group key must be normalized and merged into rmpOrdObj before it replaces curStaObj's own pickerOrder. How: This iterates curStaObj.pickerOrder's own entries, concatenating each onto its own normalized key's bucket.
 
 
-					const nrmKeyStr = normalizeGroupName( curGrpStr ) || curGrpStr; // What: Normalized Key String. Why: The new pickerOrder must be keyed the same way groupOrder now is. How: This normalizes curGrpStr, falling back to itself when the normalizer declines.
+					const nrmKeyStr = normalizeGroupName( curGroStr ) || curGroStr; // What: Normalized Key String. Why: The new pickerOrder must be keyed the same way groupOrder now is. How: This normalizes curGroStr, falling back to itself when the normalizer declines.
 
 					rmpOrdObj[ nrmKeyStr ] = ( rmpOrdObj[ nrmKeyStr ] || [] ).concat( picIdeArr ); // What: Remapped Bucket Concat. Why: 2 old keys that normalize to the same new key must have their own picker-id lists merged, not overwrite each other. How: This concatenates picIdeArr onto whatever's already filed under nrmKeyStr.
 
@@ -1747,42 +1747,42 @@ function migrate( curStaObj ) {
 
 		}
 
-		const seeGrpArr = [];  // What: Seen Group Array And Guard. Why: The loop below needs to record each group's own first-occurrence order exactly once. How: This starts empty and is pushed into (without duplicates) by the loop directly below.
-		const ideByGrpObj = {}; // What: Ids-By-Group Object And Guard. Why: The loop below needs to bucket every picker's own id under its own group. How: This starts empty and is filled by the loop directly below.
+		const seeGroArr = [];  // What: Seen Group Array And Guard. Why: The loop below needs to record each group's own first-occurrence order exactly once. How: This starts empty and is pushed into (without duplicates) by the loop directly below.
+		const ideByGroObj = {}; // What: Ids-By-Group Object And Guard. Why: The loop below needs to bucket every picker's own id under its own group. How: This starts empty and is filled by the loop directly below.
 
 
-		for ( const curPicObj of curStaObj.pickers ) { // What: Group/Bucket Fill Loop. Why: Every picker must contribute its own group (once) to seeGrpArr and its own id to ideByGrpObj's matching bucket. How: This iterates curStaObj.pickers, updating both structures per picker.
+		for ( const curPicObj of curStaObj.pickers ) { // What: Group/Bucket Fill Loop. Why: Every picker must contribute its own group (once) to seeGroArr and its own id to ideByGroObj's matching bucket. How: This iterates curStaObj.pickers, updating both structures per picker.
 
 
-			const curGrpStr = curPicObj.group || 'Other'; // What: Current Group String. Why: A picker with no group at all still needs a real bucket to file under. How: This reads curPicObj's own group, defaulting to 'Other'.
+			const curGroStr = curPicObj.group || 'Other'; // What: Current Group String. Why: A picker with no group at all still needs a real bucket to file under. How: This reads curPicObj's own group, defaulting to 'Other'.
 
-			if ( !seeGrpArr.includes( curGrpStr ) ) seeGrpArr.push( curGrpStr ); // What: First-Occurrence Push Guard. Why: Each group must appear in seeGrpArr exactly once, in its own first-seen order. How: This pushes curGrpStr only when it isn't already present.
+			if ( !seeGroArr.includes( curGroStr ) ) seeGroArr.push( curGroStr ); // What: First-Occurrence Push Guard. Why: Each group must appear in seeGroArr exactly once, in its own first-seen order. How: This pushes curGroStr only when it isn't already present.
 
-			( ideByGrpObj[ curGrpStr ] = ideByGrpObj[ curGrpStr ] || [] ).push( curPicObj.id ); // What: Bucket Push. Why: This picker's own id must join every other picker already filed under the same group. How: This creates curGrpStr's own bucket on first use, then pushes curPicObj.id into it.
+			( ideByGroObj[ curGroStr ] = ideByGroObj[ curGroStr ] || [] ).push( curPicObj.id ); // What: Bucket Push. Why: This picker's own id must join every other picker already filed under the same group. How: This creates curGroStr's own bucket on first use, then pushes curPicObj.id into it.
 
 
 		}
 
-		if ( !Array.isArray( curStaObj.groupOrder ) ) curStaObj.groupOrder = seeGrpArr.slice(); // What: Group-Order Seed. Why: State with no groupOrder at all starts from the natural first-occurrence order computed above. How: This assigns a fresh copy of seeGrpArr.
-		else for ( const curGrpStr of seeGrpArr ) if ( !curStaObj.groupOrder.includes( curGrpStr ) ) curStaObj.groupOrder.push( curGrpStr ); // What: Group-Order Append. Why: An EXISTING groupOrder must keep its own saved order, only gaining any newly-seen group at the end. How: This appends curGrpStr only when it isn't already present.
+		if ( !Array.isArray( curStaObj.groupOrder ) ) curStaObj.groupOrder = seeGroArr.slice(); // What: Group-Order Seed. Why: State with no groupOrder at all starts from the natural first-occurrence order computed above. How: This assigns a fresh copy of seeGroArr.
+		else for ( const curGroStr of seeGroArr ) if ( !curStaObj.groupOrder.includes( curGroStr ) ) curStaObj.groupOrder.push( curGroStr ); // What: Group-Order Append. Why: An EXISTING groupOrder must keep its own saved order, only gaining any newly-seen group at the end. How: This appends curGroStr only when it isn't already present.
 
 		// What: Reminders-Sentinel Backfill. Why: The Reminders block participates in the same Edit Mode ordering (via the '__reminders' sentinel) and defaults to the front for anyone who hasn't reordered it. How: This unshifts '__reminders' onto groupOrder when it isn't already present.
 		if ( !curStaObj.groupOrder.includes( '__reminders' ) ) curStaObj.groupOrder.unshift( '__reminders' );
 
 		if ( !curStaObj.pickerOrder || typeof curStaObj.pickerOrder !== 'object' ) curStaObj.pickerOrder = {}; // What: Picker-Order Object Backfill. Why: A pickerOrder that isn't already a plain object needs a fresh one before the loop below can write into it. How: This resets curStaObj.pickerOrder to {} when it fails either check.
 
-		for ( const curGrpStr of seeGrpArr ) { // What: Per-Group Order Reconcile Loop. Why: Every seen group needs its own pickerOrder entry reconciled: real picker ids plus any surviving synthetic day-off/charging ids, deduped, with newly-seen pickers appended. How: This rebuilds curStaObj.pickerOrder[curGrpStr] for every group in seeGrpArr.
+		for ( const curGroStr of seeGroArr ) { // What: Per-Group Order Reconcile Loop. Why: Every seen group needs its own pickerOrder entry reconciled: real picker ids plus any surviving synthetic day-off/charging ids, deduped, with newly-seen pickers appended. How: This rebuilds curStaObj.pickerOrder[curGroStr] for every group in seeGroArr.
 
 
-			const vldIdeSet = new Set( ideByGrpObj[ curGrpStr ] ); // What: Valid Identifier Set. Why: The filter below needs fast membership checks against this group's own real picker ids. How: This wraps ideByGrpObj's own bucket for curGrpStr in a Set.
+			const vldIdeSet = new Set( ideByGroObj[ curGroStr ] ); // What: Valid Identifier Set. Why: The filter below needs fast membership checks against this group's own real picker ids. How: This wraps ideByGroObj's own bucket for curGroStr in a Set.
 			const seeIdeSet = new Set(); // What: Seen Identifier Set And Guard. Why: The filter below must defensively dedupe, self-healing any older corrupted order. How: This starts empty and is filled as the filter below runs.
 
-			const exiOrdArr = ( Array.isArray( curStaObj.pickerOrder[ curGrpStr ] ) ? curStaObj.pickerOrder[ curGrpStr ] : [] ) // What: Existing Order Array. Why: A saved order must be kept when present, dropping anything no longer valid and any duplicate. How: This keeps ids that are either a real current picker or a surviving synthetic 'dayoff_' id, each only once.
+			const exiOrdArr = ( Array.isArray( curStaObj.pickerOrder[ curGroStr ] ) ? curStaObj.pickerOrder[ curGroStr ] : [] ) // What: Existing Order Array. Why: A saved order must be kept when present, dropping anything no longer valid and any duplicate. How: This keeps ids that are either a real current picker or a surviving synthetic 'dayoff_' id, each only once.
 				.filter( ( curIdeStr ) => ( vldIdeSet.has( curIdeStr ) || String( curIdeStr ).startsWith( 'dayoff_' ) ) && !seeIdeSet.has( curIdeStr ) && seeIdeSet.add( curIdeStr ) );
 
-			for ( const curIdeStr of ideByGrpObj[ curGrpStr ] ) if ( !exiOrdArr.includes( curIdeStr ) ) exiOrdArr.push( curIdeStr ); // What: Newly-Seen Append. Why: A picker not yet present in the saved order (new since last save) must still be appended at the end. How: This pushes curIdeStr onto exiOrdArr only when it isn't already present.
+			for ( const curIdeStr of ideByGroObj[ curGroStr ] ) if ( !exiOrdArr.includes( curIdeStr ) ) exiOrdArr.push( curIdeStr ); // What: Newly-Seen Append. Why: A picker not yet present in the saved order (new since last save) must still be appended at the end. How: This pushes curIdeStr onto exiOrdArr only when it isn't already present.
 
-			curStaObj.pickerOrder[ curGrpStr ] = exiOrdArr; // What: Per-Group Order Writeback. Why: The reconciled order must actually replace whatever curStaObj.pickerOrder[curGrpStr] held before. How: This assigns exiOrdArr onto curStaObj.pickerOrder[curGrpStr].
+			curStaObj.pickerOrder[ curGroStr ] = exiOrdArr; // What: Per-Group Order Writeback. Why: The reconciled order must actually replace whatever curStaObj.pickerOrder[curGroStr] held before. How: This assigns exiOrdArr onto curStaObj.pickerOrder[curGroStr].
 
 
 		}
@@ -3510,16 +3510,16 @@ function useStore( optArgObj ) {
 		renameGroup : ( oldName, rawNew ) => setAppStaObj( ( curStaObj ) => {
 
 
-			const othGrpArr = [ ...new Set( curStaObj.pickers.filter( ( curPicObj ) => curPicObj.group && curPicObj.group !== oldName ).map( ( curPicObj ) => curPicObj.group ) ) ]; // What: Other Group Array. Why: The normalizer needs every OTHER existing group name to detect a same-name collision (a merge). How: This collects the distinct group of every picker not already in oldName.
-			const nxtNamStr = ( normalizeGroupName && normalizeGroupName( rawNew, othGrpArr ) ) || String( rawNew || '' ).trim(); // What: Next Name String. Why: The normalizer both tidies rawNew and reuses an existing collision's own exact casing. How: This calls normalizeGroupName with othGrpArr, else falls back to a plain trim.
+			const othGroArr = [ ...new Set( curStaObj.pickers.filter( ( curPicObj ) => curPicObj.group && curPicObj.group !== oldName ).map( ( curPicObj ) => curPicObj.group ) ) ]; // What: Other Group Array. Why: The normalizer needs every OTHER existing group name to detect a same-name collision (a merge). How: This collects the distinct group of every picker not already in oldName.
+			const nxtNamStr = ( normalizeGroupName && normalizeGroupName( rawNew, othGroArr ) ) || String( rawNew || '' ).trim(); // What: Next Name String. Why: The normalizer both tidies rawNew and reuses an existing collision's own exact casing. How: This calls normalizeGroupName with othGroArr, else falls back to a plain trim.
 
 			if ( !nxtNamStr || nxtNamStr === oldName ) return curStaObj; // What: No-Op Guard. Why: An empty result, or a name that didn't actually change, has nothing to rename. How: This returns curStaObj unchanged when either holds.
 
 			const nxtPicArr = curStaObj.pickers.map( ( curPicObj ) => curPicObj.group === oldName ? { ...curPicObj, group : nxtNamStr } : curPicObj ); // What: Next Picker Array. Why: Every picker that belonged to oldName must now belong to nxtNamStr. How: This maps curStaObj.pickers, rewriting group on every matching picker.
 
-			let nxtOrdArr = ( curStaObj.groupOrder || [] ).map( ( curGrpStr ) => curGrpStr === oldName ? nxtNamStr : curGrpStr ); // What: Next Order Array And Guard. Why: The display-order slot itself must follow the rename too. How: This maps groupOrder, replacing oldName with nxtNamStr.
+			let nxtOrdArr = ( curStaObj.groupOrder || [] ).map( ( curGroStr ) => curGroStr === oldName ? nxtNamStr : curGroStr ); // What: Next Order Array And Guard. Why: The display-order slot itself must follow the rename too. How: This maps groupOrder, replacing oldName with nxtNamStr.
 
-			nxtOrdArr = nxtOrdArr.filter( ( curGrpStr, curIndNum ) => nxtOrdArr.indexOf( curGrpStr ) === curIndNum ); // What: Merge De-Duplicate. Why: A MERGE (renaming onto an existing group) would otherwise leave 2 entries for the same name in groupOrder. How: This keeps only each group name's own first occurrence.
+			nxtOrdArr = nxtOrdArr.filter( ( curGroStr, curIndNum ) => nxtOrdArr.indexOf( curGroStr ) === curIndNum ); // What: Merge De-Duplicate. Why: A MERGE (renaming onto an existing group) would otherwise leave 2 entries for the same name in groupOrder. How: This keeps only each group name's own first occurrence.
 
 			const nxtPodObj = { ...curStaObj.pickerOrder }; // What: Next Picker-Order Object. Why: The per-group row order must be remapped (and merged, on a collision) the same way groupOrder itself was above. How: This starts as a shallow copy of curStaObj.pickerOrder, patched below.
 
@@ -3643,17 +3643,17 @@ function useStore( optArgObj ) {
 		 *
 		*/
 
-		// What: Reorder Groups Action. Why: Edit Mode needs to persist a fresh group display order after a drag. How: This copies ordGrpArr onto groupOrder.
-		reorderGroups : ( ordGrpArr ) => setAppStaObj( ( curStaObj ) => ( { ...curStaObj, groupOrder : ordGrpArr.slice() } ) ),
+		// What: Reorder Groups Action. Why: Edit Mode needs to persist a fresh group display order after a drag. How: This copies ordGroArr onto groupOrder.
+		reorderGroups : ( ordGroArr ) => setAppStaObj( ( curStaObj ) => ( { ...curStaObj, groupOrder : ordGroArr.slice() } ) ),
 
 		// What: Reorder Pickers-In-Group Action. Why: Edit Mode needs to persist a fresh per-group row order after a drag. How: This copies picIdeArr onto pickerOrder's own entry for group.
 		reorderPickersInGroup : ( group, picIdeArr ) => setAppStaObj( ( curStaObj ) => ( {
 			...curStaObj, pickerOrder : { ...curStaObj.pickerOrder, [ group ] : picIdeArr.slice() }
 		} ) ),
 
-		// What: Set Today-Order Action. Why: This is the bulk restore Edit Mode's own "Cancel" uses to revert both order structures to their entry snapshot at once. How: This copies ordGrpArr onto groupOrder and deep-clones ordPicObj onto pickerOrder.
-		setTodayOrder : ( ordGrpArr, ordPicObj ) => setAppStaObj( ( curStaObj ) => ( {
-			...curStaObj, groupOrder : ordGrpArr.slice(),
+		// What: Set Today-Order Action. Why: This is the bulk restore Edit Mode's own "Cancel" uses to revert both order structures to their entry snapshot at once. How: This copies ordGroArr onto groupOrder and deep-clones ordPicObj onto pickerOrder.
+		setTodayOrder : ( ordGroArr, ordPicObj ) => setAppStaObj( ( curStaObj ) => ( {
+			...curStaObj, groupOrder : ordGroArr.slice(),
 			pickerOrder : JSON.parse( JSON.stringify( ordPicObj ) )
 		} ) ),
 

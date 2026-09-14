@@ -3968,8 +3968,8 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 		const wrpCurEle = groDndRef.current;               // What: Wrapper Current Element. Why: This is the drag container REORDER needs. How: This reads groDndRef.current.
-		const grpCurEle = ptdEveObj.currentTarget;          // What: Grip Current Element. Why: REORDER needs the actual grip element that received the pointerdown. How: This reads ptdEveObj.currentTarget.
-		const secCurEle = grpCurEle.closest( '.group-section' ); // What: Section Current Element. Why: REORDER needs the whole draggable row (the group's own section), not just its grip. How: This walks up from grpCurEle to its nearest .group-section ancestor.
+		const griCurEle = ptdEveObj.currentTarget;          // What: Grip Current Element. Why: REORDER needs the actual grip element that received the pointerdown. How: This reads ptdEveObj.currentTarget.
+		const secCurEle = griCurEle.closest( '.group-section' ); // What: Section Current Element. Why: REORDER needs the whole draggable row (the group's own section), not just its grip. How: This walks up from griCurEle to its nearest .group-section ancestor.
 
 		if ( !wrpCurEle || !secCurEle || !REORDER ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
 
@@ -3980,7 +3980,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			container   : wrpCurEle,
 			itemSelector : '.group-section',
 			handleEl    : secCurEle,
-			gripEl      : grpCurEle,
+			gripEl      : griCurEle,
 			scroller    : mnScrRef.current?.closest( '.main' ),
 
 			onStart : () => emlTouObj.set( { dragging : true } ),  // What: On Start Callback. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable Icon" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes dragging:true onto the shared tour bus, a harmless no-op when no tour is mounted.
@@ -4005,9 +4005,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const startIteDraFun = ( ptdEveObj, curGroObj ) => { // What: Start Item Drag Function. Why: This is the actual pointerdown handler behind every EntCarCom's own grip within a group. How: This resolves the drag container/handle, then hands off to REORDER.startDrag with the item-specific drop callback.
 
 
-		const grpCurEle = ptdEveObj.currentTarget;         // What: Grip Current Element. Why: REORDER needs the actual grip element that received the pointerdown. How: This reads ptdEveObj.currentTarget.
-		const lisCurEle = grpCurEle.closest( '.today-list' ); // What: List Current Element. Why: This is the drag container REORDER needs, scoped to this one group's own list. How: This walks up from grpCurEle to its nearest .today-list ancestor.
-		const carCurEle = grpCurEle.closest( '.today-card' ); // What: Card Current Element. Why: REORDER needs the whole draggable row (the item's own card), not just its grip. How: This walks up from grpCurEle to its nearest .today-card ancestor.
+		const griCurEle = ptdEveObj.currentTarget;         // What: Grip Current Element. Why: REORDER needs the actual grip element that received the pointerdown. How: This reads ptdEveObj.currentTarget.
+		const lisCurEle = griCurEle.closest( '.today-list' ); // What: List Current Element. Why: This is the drag container REORDER needs, scoped to this one group's own list. How: This walks up from griCurEle to its nearest .today-list ancestor.
+		const carCurEle = griCurEle.closest( '.today-card' ); // What: Card Current Element. Why: REORDER needs the whole draggable row (the item's own card), not just its grip. How: This walks up from griCurEle to its nearest .today-card ancestor.
 
 		if ( !lisCurEle || !carCurEle || !REORDER ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
 
@@ -4018,7 +4018,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			container   : lisCurEle,
 			itemSelector : '.today-card',
 			handleEl    : carCurEle,
-			gripEl      : grpCurEle,
+			gripEl      : griCurEle,
 			scroller    : mnScrRef.current?.closest( '.main' ),
 
 			onStart : () => emlTouObj.set( { dragging : true } ),  // What: On Start Callback. Why: Same reasoning as startGroDraFun's own onStart above. How: This publishes dragging:true onto the shared tour bus.

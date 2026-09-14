@@ -1267,10 +1267,10 @@ function TheSecCom ( { state, actions } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.grpNamStr  - Group Name String: The native radio group's own
+ * @param props.groNamStr  - Group Name String: The native radio group's own
  *                           `name` attribute, keeping its rows mutually
  *                           exclusive.
- * @param props.grpLabStr  - Group Label String: The group's own accessible
+ * @param props.groLabStr  - Group Label String: The group's own accessible
  *                           name, applied to a visually-hidden legend since
  *                           the section's real heading, just above and outside
  *                           this component, already shows the same text.
@@ -1291,12 +1291,12 @@ function TheSecCom ( { state, actions } ) {
  *
  * @example
  * ```tsx
- * StyRadCom({ grpNamStr, grpLabStr, radOptArr, value, onChange, ... }) // => <StyRadCom />
+ * StyRadCom({ groNamStr, groLabStr, radOptArr, value, onChange, ... }) // => <StyRadCom />
  * ```
  *
 */
 
-function StyRadCom ( { groupName : grpNamStr, groupLabel : grpLabStr, options : radOptArr, value, onChange, onPreview : onPreStyFun, previewDisabled : preDisBoo } ) {
+function StyRadCom ( { groupName : groNamStr, groupLabel : groLabStr, options : radOptArr, value, onChange, onPreview : onPreStyFun, previewDisabled : preDisBoo } ) {
 
 
 
@@ -1313,7 +1313,7 @@ function StyRadCom ( { groupName : grpNamStr, groupLabel : grpLabStr, options : 
 		<fieldset className='style-radio-fieldset'>{ /* What: Style Radio Fieldset Element. Why: A native radio group needs a real fieldset/legend pairing for assistive tech, even though the legend itself stays visually hidden. How: This wraps the visually-hidden legend and the radio rows below. */ }
 
 
-			<legend className='visually-hidden'>{ grpLabStr }</legend>{ /* What: Style Radio Legend Element. Why: The group still needs a real accessible name, even with no visible legend text. How: This renders grpLabStr, hidden visually but still exposed to assistive tech. */ }
+			<legend className='visually-hidden'>{ groLabStr }</legend>{ /* What: Style Radio Legend Element. Why: The group still needs a real accessible name, even with no visible legend text. How: This renders groLabStr, hidden visually but still exposed to assistive tech. */ }
 
 			<div className='rd-mode-radio'>{ /* What: Radio Mode Div Element. Why: The actual rows need their own shared layout wrapper, reused from the Data tab's own picker-mode selector. How: This maps radOptArr into one label/row per option. */ }
 
@@ -1336,7 +1336,7 @@ function StyRadCom ( { groupName : grpNamStr, groupLabel : grpLabStr, options : 
 
 							<input
 								type='radio'
-								name={ grpNamStr }
+								name={ groNamStr }
 								checked={ optOnBoo }
 								onChange={ () => onChange( optCurObj.value ) }
 							/>{ /* What: Radio Option Input Element. Why: This is the actual native control backing the row's own selected state. How: This is checked while optOnBoo is true and selects this option's value on change. */ }

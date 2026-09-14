@@ -656,14 +656,14 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	// What: Editing Open Boolean And Setter. Why: Editing this picker's own Details reuses PicForCom's Details step, pre-filled from its current settings, in place of the normal run/pool view. How: This is NOT an early return: every hook above still needs to run every render regardless of ediOpnBoo, so the branch only happens at the very end, where this component actually returns its JSX.
 	const [ ediOpnBoo, setEdiOpnBoo ] = React.useState( false );
 	// What: Edit Existing Groups Array. Why: This is the same distinct-groups memo TabPicker itself computes, duplicated here rather than threaded down as a prop, since it's only needed while this one picker's own edit form is open. How: This walks state.pickers collecting each visible picker's own group name once, then alphabetizes them.
-	const ediGrpArr = React.useMemo( () => {
+	const ediGroArr = React.useMemo( () => {
 
 
-		const seeGrpArr = []; // What: Seen Group Array. Why: The loop below needs an accumulator to collect each distinct group name into. How: This starts empty and is pushed to by the loop.
+		const seeGroArr = []; // What: Seen Group Array. Why: The loop below needs an accumulator to collect each distinct group name into. How: This starts empty and is pushed to by the loop.
 
-		for ( const curPicObj of state.pickers ) if ( curPicObj.group && !curPicObj.hidden && !seeGrpArr.includes( curPicObj.group ) ) seeGrpArr.push( curPicObj.group ); // What: Collect Groups Loop. Why: Every visible picker's own group name (if it has one, and isn't already collected) belongs in the result. How: This walks state.pickers, pushing each new group name onto seeGrpArr.
+		for ( const curPicObj of state.pickers ) if ( curPicObj.group && !curPicObj.hidden && !seeGroArr.includes( curPicObj.group ) ) seeGroArr.push( curPicObj.group ); // What: Collect Groups Loop. Why: Every visible picker's own group name (if it has one, and isn't already collected) belongs in the result. How: This walks state.pickers, pushing each new group name onto seeGroArr.
 
-		return seeGrpArr.sort( ( a, b ) => a.localeCompare( b ) ); // What: Sorted Groups Return. Why: The group chips should read in a stable, predictable order. How: This returns seeGrpArr sorted alphabetically.
+		return seeGroArr.sort( ( a, b ) => a.localeCompare( b ) ); // What: Sorted Groups Return. Why: The group chips should read in a stable, predictable order. How: This returns seeGroArr sorted alphabetically.
 
 
 	}, [ state.pickers ] ); // What: Effect Dependency Array. Why: The group list only needs recomputing when the pickers list itself changes. How: state.pickers is what the loop above actually reads.
@@ -686,7 +686,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 		nthOrdinal      : picker.nthOrdinal,
 		nthWeekday      : picker.nthWeekday
 
-		// What: Deliberately Omitted Group Field. Why: `group` specifically means "prefill the inline ADD-A-NEW-GROUP sub-form" (see PicForCom's own addingGroup/newGroup state), which would be wrong here: this picker's group already exists (it's necessarily in ediGrpArr, since that list is derived from state.pickers including this picker itself), so it should land on that EXISTING pill instead. How: initialGroup (passed at the return below) is the prop that does that, same as the create flow's own group-filter prefill.
+		// What: Deliberately Omitted Group Field. Why: `group` specifically means "prefill the inline ADD-A-NEW-GROUP sub-form" (see PicForCom's own addingGroup/newGroup state), which would be wrong here: this picker's group already exists (it's necessarily in ediGroArr, since that list is derived from state.pickers including this picker itself), so it should land on that EXISTING pill instead. How: initialGroup (passed at the return below) is the prop that does that, same as the create flow's own group-filter prefill.
 
 
 	};
@@ -785,9 +785,9 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 			<PicForCom
 				isaEdiBoo
 				conObjArr={ state.conditionals || [] }
-				exiGrpArr={ ediGrpArr }
+				exiGroArr={ ediGroArr }
 				iniFrmObj={ ediIniObj }
-				iniGrpStr={ picker.group }
+				iniGroStr={ picker.group }
 				onCnlFun={ () => setEdiOpnBoo( false ) }
 				onSavFun={ ( payFrmObj ) => { actions.commitPickerEdit( picker.id, payFrmObj ); setEdiOpnBoo( false ); } }
 			/> // What: Picker Form Component. Why: Editing reuses PicForCom's own Details step instead of a separate edit form. How: This is passed this picker's own current settings as ediIniObj, and routes Save through actions.commitPickerEdit.
@@ -1471,9 +1471,9 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.exiGrpArr - Existing Group Array: Every distinct group name
+ * @param props.exiGroArr - Existing Group Array: Every distinct group name
  *                          already in use, offered as chips.
- * @param props.iniGrpStr - Initial Group String: A group name to prefill the
+ * @param props.iniGroStr - Initial Group String: A group name to prefill the
  *                          picker onto, without opening the add-a-new-group
  *                          sub-form.
  * @param props.conObjArr - Conditional Object Array: Every existing
@@ -1503,12 +1503,12 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
  *
  * @example
  * ```tsx
- * PicForCom({ exiGrpArr, iniGrpStr, conObjArr, onCnlFun, onCreFun, onSavFun, iniFrmObj, opeTouBoo, isaEdiBoo }) // => <PicForCom />
+ * PicForCom({ exiGroArr, iniGroStr, conObjArr, onCnlFun, onCreFun, onSavFun, iniFrmObj, opeTouBoo, isaEdiBoo }) // => <PicForCom />
  * ```
  *
 */
 
-function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun, onSavFun, iniFrmObj, opeTouBoo, isaEdiBoo } ) {
+function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun, onSavFun, iniFrmObj, opeTouBoo, isaEdiBoo } ) {
 
 
 	const touBusObj = useEmlTouFun(); // What: Tour Bus Object. Why: advStpFun needs to know whether a guided tour (of any kind) is currently driving the page, so it can skip its own scroll-to-top when a picker mini-tour is mid-flight. How: This subscribes to the shared tour event bus.
@@ -1530,9 +1530,9 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 
 
 	}, [] ); // What: Effect Dependency Array. Why: This only ever needs to run once, on mount. How: An empty array means it never re-runs.
-	const [ selGrpStr, setSelGrpStr ] = React.useState( iniGrpStr || exiGrpArr[ 0 ] || '' ); // What: Selected Group String And Setter. Why: This is which existing group chip is currently chosen. How: This starts from iniGrpStr, or the first existing group, or empty.
-	const [ addGrpBoo, setAddGrpBoo ] = React.useState( ( iniFrmObj && iniFrmObj.group ) ? true : exiGrpArr.length === 0 ); // What: Adding Group Boolean And Setter. Why: The inline "New Group" sub-form is its own mode, distinct from picking an existing chip. How: This starts open when a prefill explicitly stages a new group name, or when there are no existing groups to choose from at all.
-	const [ newGrpStr, setNewGrpStr ] = React.useState( ( iniFrmObj && iniFrmObj.group ) || '' ); // What: New Group String And Setter. Why: This is the live-typed value of the inline "New Group" sub-form. How: This starts from a prefilled group name, or empty.
+	const [ selGroStr, setSelGroStr ] = React.useState( iniGroStr || exiGroArr[ 0 ] || '' ); // What: Selected Group String And Setter. Why: This is which existing group chip is currently chosen. How: This starts from iniGroStr, or the first existing group, or empty.
+	const [ addGroBoo, setAddGroBoo ] = React.useState( ( iniFrmObj && iniFrmObj.group ) ? true : exiGroArr.length === 0 ); // What: Adding Group Boolean And Setter. Why: The inline "New Group" sub-form is its own mode, distinct from picking an existing chip. How: This starts open when a prefill explicitly stages a new group name, or when there are no existing groups to choose from at all.
+	const [ newGroStr, setNewGroStr ] = React.useState( ( iniFrmObj && iniFrmObj.group ) || '' ); // What: New Group String And Setter. Why: This is the live-typed value of the inline "New Group" sub-form. How: This starts from a prefilled group name, or empty.
 	const [ selModStr, setSelModStr ] = React.useState( ( iniFrmObj && iniFrmObj.mode ) || 'random' ); // What: Selected Mode String And Setter. Why: This is which picker mode is currently chosen. How: This starts from a prefilled mode, or 'random'.
 	// What: Include Daily Boolean And Setter. Why: Whether this picker is included when the user taps Regenerate on Today. How: This defaults on, matching existing behavior for newly-created pickers, unless editing an existing one, which prefills its own current membership.
 	const [ incDlyBoo, setIncDlyBoo ] = React.useState( ( iniFrmObj && 'includeInDaily' in iniFrmObj ) ? iniFrmObj.includeInDaily : true );
@@ -1694,8 +1694,8 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 
 	};
 
-	const effGrpStr = addGrpBoo ? normalizeGroupName( newGrpStr, exiGrpArr ) : selGrpStr; // What: Effective Group String. Why: The picker's own real group is whichever of the two group controls (existing chip or new-group input) is currently active. How: This normalizes newGrpStr when addGrpBoo is on, otherwise it's just selGrpStr directly.
-	const detRdyBoo = !!( newNamStr.trim() && effGrpStr && selModStr ); // What: Details Ready Boolean. Why: Both steps' own footer buttons need to know whether Step 1's own required fields are actually complete. How: This requires a non-blank trimmed name, a real effective group, and a chosen mode.
+	const effGroStr = addGroBoo ? normalizeGroupName( newGroStr, exiGroArr ) : selGroStr; // What: Effective Group String. Why: The picker's own real group is whichever of the two group controls (existing chip or new-group input) is currently active. How: This normalizes newGroStr when addGroBoo is on, otherwise it's just selGroStr directly.
+	const detRdyBoo = !!( newNamStr.trim() && effGroStr && selModStr ); // What: Details Ready Boolean. Why: Both steps' own footer buttons need to know whether Step 1's own required fields are actually complete. How: This requires a non-blank trimmed name, a real effective group, and a chosen mode.
 	const shoWgtBoo = selModStr === 'weighted' || selModStr === 'dynamic'; // What: Show Weight Boolean. Why: Weight is a lever only for these two modes; random/ease-* ignore it entirely, so the control stays hidden elsewhere to avoid asking for something irrelevant. How: This gates the weight column throughout Step 2.
 	const isaEasBoo = selModStr === 'ease-up' || selModStr === 'ease-down'; // What: Is-An Ease Boolean. Why: Only these two modes use the easeMin/easeMax drift band at all. How: This gates the ease controls throughout Step 2.
 
@@ -1983,7 +1983,7 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 
 
 			name            : capStrFun( newNamStr.trim() ),
-			group           : effGrpStr,
+			group           : effGroStr,
 			mode            : selModStr,
 			includeInDaily  : incDlyBoo,
 			daysOfWeek      : runDowArr,
@@ -2151,40 +2151,40 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 
 					<p className='np-help'>Pickers are clustered into groups on your todo list, like &ldquo;Chores&rdquo; or &ldquo;Food&rdquo;, so that related picks sit together. You may choose an existing group or create a new one.</p>{ /* What: Group Help Paragraph Element. Why: A first-time user needs to understand what a group actually does before choosing one. How: This renders a fixed explanatory sentence. */ }
 
-					<div className='np-groups'>{ /* What: Groups Div Element. Why: Every existing group chip plus the "New Group" chip sit in one row. How: This maps exiGrpArr to one chip each, then appends the fixed "New Group" chip. */ }
+					<div className='np-groups'>{ /* What: Groups Div Element. Why: Every existing group chip plus the "New Group" chip sit in one row. How: This maps exiGroArr to one chip each, then appends the fixed "New Group" chip. */ }
 
 
-						{ exiGrpArr.map( ( curGrpStr ) => ( // What: Group Chip List Render. Why: Every existing group needs its own selectable chip. How: This maps exiGrpArr to one button per curGrpStr.
+						{ exiGroArr.map( ( curGroStr ) => ( // What: Group Chip List Render. Why: Every existing group needs its own selectable chip. How: This maps exiGroArr to one button per curGroStr.
 
 
 							<button
-								key={ curGrpStr }
+								key={ curGroStr }
 								type='button'
-								className={ ` np-chip   ${ !addGrpBoo && selGrpStr === curGrpStr ? 'is-on' : '' } ` }
-								onClick={ () => { setAddGrpBoo( false ); setSelGrpStr( curGrpStr ); } }
+								className={ ` np-chip   ${ !addGroBoo && selGroStr === curGroStr ? 'is-on' : '' } ` }
+								onClick={ () => { setAddGroBoo( false ); setSelGroStr( curGroStr ); } }
 							>
 
-								{ curGrpStr }
+								{ curGroStr }
 
-							</button> // What: Button. Why: Tapping an existing group chip should select it and close the new-group sub-form. How: This clears addGrpBoo and writes curGrpStr into selGrpStr.
+							</button> // What: Button. Why: Tapping an existing group chip should select it and close the new-group sub-form. How: This clears addGroBoo and writes curGroStr into selGroStr.
 
 
 						)) }
 
 						<button
 							type='button'
-							className={ ` np-chip np-chip--new   ${ addGrpBoo ? 'is-on' : '' } ` }
-							onClick={ () => setAddGrpBoo( true ) }
+							className={ ` np-chip np-chip--new   ${ addGroBoo ? 'is-on' : '' } ` }
+							onClick={ () => setAddGroBoo( true ) }
 						>
 
 							<Icon name='plus' size={ 13 } /> New Group
 
-						</button>{ /* What: Button. Why: The user needs an explicit way to open the inline new-group sub-form. How: This flips addGrpBoo true. */ }
+						</button>{ /* What: Button. Why: The user needs an explicit way to open the inline new-group sub-form. How: This flips addGroBoo true. */ }
 
 
 					</div>
 
-					<Collapse open={ addGrpBoo }>
+					<Collapse open={ addGroBoo }>
 
 						<input
 							className='np-input np-input--sm'
@@ -2194,11 +2194,11 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 							placeholder='Name the new group'
 							aria-label='New group name'
 							autoComplete='off'
-							value={ newGrpStr }
-							onChange={ ( chgEveObj ) => setNewGrpStr( chgEveObj.target.value ) }
+							value={ newGroStr }
+							onChange={ ( chgEveObj ) => setNewGroStr( chgEveObj.target.value ) }
 						/>
 
-					</Collapse>{ /* What: Collapse. Why: The new-group input only needs to exist while addGrpBoo is actually on. How: This animates the input open/closed around that boolean. */ }
+					</Collapse>{ /* What: Collapse. Why: The new-group input only needs to exist while addGroBoo is actually on. How: This animates the input open/closed around that boolean. */ }
 
 
 				</div>
@@ -2550,27 +2550,27 @@ function PicForCom ( { exiGrpArr, iniGrpStr, conObjArr = [], onCnlFun, onCreFun,
 
 
 						const needNamBoo = !newNamStr.trim(); // What: Need Name Boolean. Why: The guidance text needs to know specifically whether the name field is the one still missing. How: This is true whenever the trimmed name is empty.
-						const needGrpBoo = !effGrpStr; // What: Need Group Boolean. Why: The guidance text needs to know specifically whether the group field is the one still missing. How: This is true whenever effGrpStr resolves to nothing.
+						const needGroBoo = !effGroStr; // What: Need Group Boolean. Why: The guidance text needs to know specifically whether the group field is the one still missing. How: This is true whenever effGroStr resolves to nothing.
 
 						if ( isaEdiBoo ) { // What: Edit Guidance Branch. Why: An edit's own missing-field wording differs slightly from create's. How: This covers the (ordinarily unreachable, since an existing picker already has both) case of the user clearing either field while editing.
 
 
-							if ( needNamBoo && needGrpBoo ) return 'A picker name and group are both required.'; // What: Both Missing Return. Why: Both fields being blank needs its own combined sentence. How: This is the first, most specific case checked.
+							if ( needNamBoo && needGroBoo ) return 'A picker name and group are both required.'; // What: Both Missing Return. Why: Both fields being blank needs its own combined sentence. How: This is the first, most specific case checked.
 
 							if ( needNamBoo ) return 'A picker name is required.'; // What: Name Missing Return. Why: Only the name being blank needs its own sentence. How: This is checked once the combined case above is ruled out.
 
-							if ( needGrpBoo ) return 'A group name is required.'; // What: Group Missing Return. Why: Only the group being blank needs its own sentence. How: This is checked once both prior cases are ruled out.
+							if ( needGroBoo ) return 'A group name is required.'; // What: Group Missing Return. Why: Only the group being blank needs its own sentence. How: This is checked once both prior cases are ruled out.
 
 							return 'Everything looks good, click Save to save this picker’s new settings.'; // What: Ready Return. Why: Neither field is missing, so the user is ready to save. How: This is the final fallback once every missing-field case above is ruled out.
 
 
 						}
 
-						if ( needNamBoo && needGrpBoo ) return 'A picker name and group are both required before advancing to the next step to create items for the picker’s list.'; // What: Both Missing Return. Why: Both fields being blank needs its own combined sentence for the create flow. How: This is the first, most specific case checked.
+						if ( needNamBoo && needGroBoo ) return 'A picker name and group are both required before advancing to the next step to create items for the picker’s list.'; // What: Both Missing Return. Why: Both fields being blank needs its own combined sentence for the create flow. How: This is the first, most specific case checked.
 
 						if ( needNamBoo ) return 'A picker name is required before advancing to the next step to create items for the picker’s list.'; // What: Name Missing Return. Why: Only the name being blank needs its own sentence for the create flow. How: This is checked once the combined case above is ruled out.
 
-						if ( needGrpBoo ) return 'A group name is required before advancing to the next step to create items for the picker’s list.'; // What: Group Missing Return. Why: Only the group being blank needs its own sentence for the create flow. How: This is checked once both prior cases are ruled out.
+						if ( needGroBoo ) return 'A group name is required before advancing to the next step to create items for the picker’s list.'; // What: Group Missing Return. Why: Only the group being blank needs its own sentence for the create flow. How: This is checked once both prior cases are ruled out.
 
 						return <React.Fragment>Up next, create items to be included in this picker&rsquo;s list.</React.Fragment>; // What: Ready Return. Why: Neither field is missing, so the user is ready to advance to Step 2. How: This is the final fallback once every missing-field case above is ruled out.
 
@@ -3095,7 +3095,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 	) );
 	const [ creOpnBoo, setCreOpnBoo ] = React.useState( false ); // What: Create Open Boolean And Setter. Why: This is whether PicForCom is currently showing in place of PicVieCom. How: This is flipped by the Add New Picker tab and cleared once a picker is created or the form is cancelled.
-	const [ grpFilStr, setGrpFilStr ] = React.useState( 'all' ); // What: Group Filter String And Setter. Why: This is which group pill is currently narrowing the Show row. How: This starts on 'all' and is set by the Group filter row below.
+	const [ groFilStr, setGroFilStr ] = React.useState( 'all' ); // What: Group Filter String And Setter. Why: This is which group pill is currently narrowing the Show row. How: This starts on 'all' and is set by the Group filter row below.
 	const [ typFilStr, setTypFilStr ] = React.useState( 'all' ); // What: Type Filter String And Setter. Why: This is which mode pill is currently narrowing the Show row. How: This starts on 'all' and is set by the Type filter row below.
 	const actPicObj = state.pickers.find( ( p ) => p.id === actPicStr ); // What: Active Picker Object. Why: PicVieCom needs the actual current picker record, not just its id. How: This looks up actPicStr in state.pickers.
 	// What: Help On Boolean And Setter. Why: Help mode (see help-mode.jsx) needs real pickers of every mode plus a conditional-gated one to point at, so a disposable copy set is seeded the moment it turns on and torn down the moment it turns off (see help-sample-data.js's own header comment for why this is a SEPARATE disposable namespace from the page tour's own `pt_`-prefixed copies). How: This is toggled by HelpButton below.
@@ -3140,7 +3140,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 		if ( touBusObj.startCreate && !creOpnBoo ) { // What: Start Create Guard. Why: Only a genuinely-staged empty-state prefill, with nothing already open, should trigger this. How: This checks both conditions before doing anything.
 
 
-			const stgPldObj = exiGrpArr.length === 0 ? { ...touBusObj.startCreate, group : 'Chores' } : touBusObj.startCreate; // What: Staged Payload Object. Why: A brand-new install with no groups at all should land the empty-state picker in a sensible default group. How: This adds group:'Chores' only when exiGrpArr is empty, otherwise passing the staged prefill through unchanged.
+			const stgPldObj = exiGroArr.length === 0 ? { ...touBusObj.startCreate, group : 'Chores' } : touBusObj.startCreate; // What: Staged Payload Object. Why: A brand-new install with no groups at all should land the empty-state picker in a sensible default group. How: This adds group:'Chores' only when exiGroArr is empty, otherwise passing the staged prefill through unchanged.
 
 			setEmpIniObj( stgPldObj ); // What: Prefill Store Call. Why: PicForCom needs this exact shape as its own iniFrmObj prop. How: This writes stgPldObj into empIniObj.
 
@@ -3152,17 +3152,17 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 		}
 
 
-	}, [ touBusObj.startCreate ] ); // What: Effect Dependency Array. Why: Only a genuine change to this exact staged signal should re-run this. How: touBusObj.startCreate is the sole trigger; exiGrpArr/creOpnBoo are read fresh from the closure each time it fires.
+	}, [ touBusObj.startCreate ] ); // What: Effect Dependency Array. Why: Only a genuine change to this exact staged signal should re-run this. How: touBusObj.startCreate is the sole trigger; exiGroArr/creOpnBoo are read fresh from the closure each time it fires.
 
 	// What: Existing Group Array. Why: Distinct group names, alphabetical, offered as chips in the form and as the group filter bar above the picker strip ("All" itself is a separate, always-first pill rendered outside this list). How: This walks state.pickers collecting each visible picker's own group name once, then alphabetizes them.
-	const exiGrpArr = React.useMemo( () => {
+	const exiGroArr = React.useMemo( () => {
 
 
-		const seeGrpArr = []; // What: Seen Group Array. Why: The loop below needs an accumulator to collect each distinct group name into. How: This starts empty and is pushed to by the loop.
+		const seeGroArr = []; // What: Seen Group Array. Why: The loop below needs an accumulator to collect each distinct group name into. How: This starts empty and is pushed to by the loop.
 
-		for ( const curPicObj of state.pickers ) if ( curPicObj.group && !curPicObj.hidden && !seeGrpArr.includes( curPicObj.group ) ) seeGrpArr.push( curPicObj.group ); // What: Collect Groups Loop. Why: Every visible picker's own group name (if it has one, and isn't already collected) belongs in the result. How: This walks state.pickers, pushing each new group name onto seeGrpArr.
+		for ( const curPicObj of state.pickers ) if ( curPicObj.group && !curPicObj.hidden && !seeGroArr.includes( curPicObj.group ) ) seeGroArr.push( curPicObj.group ); // What: Collect Groups Loop. Why: Every visible picker's own group name (if it has one, and isn't already collected) belongs in the result. How: This walks state.pickers, pushing each new group name onto seeGroArr.
 
-		return seeGrpArr.sort( ( a, b ) => a.localeCompare( b ) ); // What: Sorted Groups Return. Why: The group chips should read in a stable, predictable order. How: This returns seeGrpArr sorted alphabetically.
+		return seeGroArr.sort( ( a, b ) => a.localeCompare( b ) ); // What: Sorted Groups Return. Why: The group chips should read in a stable, predictable order. How: This returns seeGroArr sorted alphabetically.
 
 
 	}, [ state.pickers ] ); // What: Effect Dependency Array. Why: The group list only needs recomputing when the pickers list itself changes. How: state.pickers is what the loop above actually reads.
@@ -3180,16 +3180,16 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 	}, [ state.pickers ] ); // What: Effect Dependency Array. Why: The mode list only needs recomputing when the pickers list itself changes. How: state.pickers is what the loop above actually reads.
 
-	// What: Visible Picker Array. Why: The picker strip is scoped to the selected group AND type, independent filters ("all" on either leaves that axis unfiltered); hidden pickers (see store.jsx's `hidden` flag) never appear here. How: This filters state.pickers against grpFilStr/typFilStr, each independently gated by its own "all" check.
+	// What: Visible Picker Array. Why: The picker strip is scoped to the selected group AND type, independent filters ("all" on either leaves that axis unfiltered); hidden pickers (see store.jsx's `hidden` flag) never appear here. How: This filters state.pickers against groFilStr/typFilStr, each independently gated by its own "all" check.
 	const visPicArr = React.useMemo( () => (
 
 		state.pickers.filter( ( p ) => !p.hidden
 
-			&& ( grpFilStr === 'all' || p.group === grpFilStr )
+			&& ( groFilStr === 'all' || p.group === groFilStr )
 
 			&& ( typFilStr === 'all' || p.mode === typFilStr ) )
 
-	), [ state.pickers, grpFilStr, typFilStr ] );
+	), [ state.pickers, groFilStr, typFilStr ] );
 	// What: Sorted Visible Picker Array. Why: This is the same alphabetical order the Show row itself renders in below, reused so "jump to the first card" always agrees with what's actually shown first, not visPicArr's own storage-array order. How: This sorts a copy of visPicArr by name.
 	const srtPicArr = React.useMemo( () => (
 
@@ -3198,30 +3198,30 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 	), [ visPicArr ] );
 
 	// What: Previous Filters Reference. Why: The selection-coherence effect below needs to remember the last-seen filter values across renders to detect an actual filter change, distinct from the picker list itself changing for some unrelated reason. How: This starts at the current filters and is updated by that effect whenever either one changes.
-	const preFilRef = React.useRef({ groupFilter : grpFilStr, typeFilter : typFilStr });
+	const preFilRef = React.useRef({ groupFilter : groFilStr, typeFilter : typFilStr });
 	// What: Selection Coherence Effect. Why: Either filter itself just changing should always land on the first card in the new Show row, matching it exactly rather than only reacting once the OLD selection happens to fall out of view (e.g. switching from a wide group to a narrower one that still happens to contain the same active picker used to leave it stranded, not jumped to the new first card); the picker list changing for some unrelated reason (e.g. the active picker got deleted) should only jump when the current selection actually became invalid. How: This computes filChgBoo by comparing against preFilRef, then jumps to srtPicArr's own first entry whenever either that or an invalid selection applies.
 	React.useEffect( () => {
 
 
 		if ( creOpnBoo ) return; // What: Creating Guard. Why: The create form has no "selection" of its own to keep coherent. How: This bails out entirely while creOpnBoo is true.
 
-		const filChgBoo = preFilRef.current.groupFilter !== grpFilStr || preFilRef.current.typeFilter !== typFilStr; // What: Filter Changed Boolean. Why: The jump-to-first behavior below depends specifically on whether a filter itself just changed. How: This compares both current filter values against what preFilRef last recorded.
+		const filChgBoo = preFilRef.current.groupFilter !== groFilStr || preFilRef.current.typeFilter !== typFilStr; // What: Filter Changed Boolean. Why: The jump-to-first behavior below depends specifically on whether a filter itself just changed. How: This compares both current filter values against what preFilRef last recorded.
 
-		preFilRef.current = { groupFilter : grpFilStr, typeFilter : typFilStr }; // What: Previous Filters Update. Why: The next run of this effect needs to compare against the filters that are current now. How: This overwrites preFilRef with both current filter values.
+		preFilRef.current = { groupFilter : groFilStr, typeFilter : typFilStr }; // What: Previous Filters Update. Why: The next run of this effect needs to compare against the filters that are current now. How: This overwrites preFilRef with both current filter values.
 
 		if ( filChgBoo || !visPicArr.some( ( p ) => p.id === actPicStr ) ) setActPicStr( srtPicArr[ 0 ]?.id ); // What: Jump To First Guard. Why: Either a genuine filter change, or the current selection no longer being visible at all, should land on the new first card. How: This writes srtPicArr's own first entry's id into actPicStr.
 
 
-	}, [ grpFilStr, typFilStr, visPicArr, srtPicArr, actPicStr, creOpnBoo ] ); // What: Effect Dependency Array. Why: This must re-check whenever any of these could change what "coherent" means. How: grpFilStr/typFilStr are the filters themselves, visPicArr/srtPicArr are what they produce, actPicStr is the current selection, and creOpnBoo gates whether this applies at all.
+	}, [ groFilStr, typFilStr, visPicArr, srtPicArr, actPicStr, creOpnBoo ] ); // What: Effect Dependency Array. Why: This must re-check whenever any of these could change what "coherent" means. How: groFilStr/typFilStr are the filters themselves, visPicArr/srtPicArr are what they produce, actPicStr is the current selection, and creOpnBoo gates whether this applies at all.
 
-	// What: Scroll-Aware Edge Fades Design Note. Why: The tab strip, and the Group/Type filter rails, all need the same at-start/at-end mask-gradient behavior so each one's own fade only shows on the side that has more content. How: tabRailRef/grpRailRef/typRailRef below are attached to those three rails; the effect right after wires up a shared scroll+resize listener for whichever of them are actually mounted.
+	// What: Scroll-Aware Edge Fades Design Note. Why: The tab strip, and the Group/Type filter rails, all need the same at-start/at-end mask-gradient behavior so each one's own fade only shows on the side that has more content. How: tabRailRef/groRailRef/typRailRef below are attached to those three rails; the effect right after wires up a shared scroll+resize listener for whichever of them are actually mounted.
 	const tabRailRef = React.useRef( null );
-	const grpRailRef = React.useRef( null );
+	const groRailRef = React.useRef( null );
 	const typRailRef = React.useRef( null );
 	React.useEffect( () => {
 
 
-		const vldRalArr = [ tabRailRef.current, grpRailRef.current, typRailRef.current ].filter( Boolean ); // What: Valid Rail Array. Why: Only whichever rails are actually mounted right now (the Group/Type rows can be entirely absent) should get listeners. How: This filters out any null ref.
+		const vldRalArr = [ tabRailRef.current, groRailRef.current, typRailRef.current ].filter( Boolean ); // What: Valid Rail Array. Why: Only whichever rails are actually mounted right now (the Group/Type rows can be entirely absent) should get listeners. How: This filters out any null ref.
 
 		const clnFunArr = vldRalArr.map( ( curRalEle ) => { // What: Cleanup Function Array. Why: Each rail needs its own independent listener/observer pair, and its own independent teardown. How: This maps each element to a closure removing exactly its own listener and disconnecting its own observer.
 
@@ -3256,7 +3256,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 		return () => clnFunArr.forEach( ( curClnFun ) => curClnFun() ); // What: Effect Cleanup Return. Why: Every rail's own cleanup must actually run when this effect re-runs or unmounts. How: This calls every function collected in clnFunArr.
 
 
-	}, [ state.pickers.length, exiGrpArr.length, exiModArr.length, grpFilStr, typFilStr, visPicArr.length ] ); // What: Effect Dependency Array. Why: Any of these can change whether a rail's own content actually overflows, requiring the fades to be recomputed. How: state.pickers.length/exiGrpArr.length/exiModArr.length/visPicArr.length all reflect content-size changes, and grpFilStr/typFilStr reflect the Show row's own content changing under a new filter.
+	}, [ state.pickers.length, exiGroArr.length, exiModArr.length, groFilStr, typFilStr, visPicArr.length ] ); // What: Effect Dependency Array. Why: Any of these can change whether a rail's own content actually overflows, requiring the fades to be recomputed. How: state.pickers.length/exiGroArr.length/exiModArr.length/visPicArr.length all reflect content-size changes, and groFilStr/typFilStr reflect the Show row's own content changing under a new filter.
 
 	const scrTopFun = () => { // What: Scroll Top Function. Why: Both cnlCreFun below and the successful-create flow need to scroll the shared .main container back to the top. How: This queries for .main directly and scrolls it, if found.
 
@@ -3395,7 +3395,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 			<div className='stat-filters ob-picker-content'>{ /* What: Filters Div Element. Why: The Group row, the Type row, and the Show row all belong to one shared filter block the Pickers page tour can target together. How: This wraps every stat-filter-row below. */ }
 
 
-				{ exiGrpArr.length > 1 && ( // What: Group Row Check. Why: A single-group install has nothing to actually filter by. How: This renders the whole Group filter row only once more than one distinct group exists.
+				{ exiGroArr.length > 1 && ( // What: Group Row Check. Why: A single-group install has nothing to actually filter by. How: This renders the whole Group filter row only once more than one distinct group exists.
 
 
 					<div className='stat-filter-row'>{ /* What: Group Filter Row Div Element. Why: The "Group" label and its own pill rail sit side by side. How: This wraps stat-filter-lbl and the picker-groups rail. */ }
@@ -3403,16 +3403,16 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 						<span className='stat-filter-lbl'>Group</span>{ /* What: Group Filter Label Span Element. Why: The rail below needs a readable label. How: This renders the literal word "Group". */ }
 
-						<div className='picker-groups' ref={ grpRailRef } role='tablist' aria-label='Filter pickers by group'>{ /* What: Group Rail Div Element. Why: Every distinct group plus the fixed "All" pill need a horizontally-scrolling tab list. How: This wraps the "All" pill and one pill per entry in exiGrpArr. */ }
+						<div className='picker-groups' ref={ groRailRef } role='tablist' aria-label='Filter pickers by group'>{ /* What: Group Rail Div Element. Why: Every distinct group plus the fixed "All" pill need a horizontally-scrolling tab list. How: This wraps the "All" pill and one pill per entry in exiGroArr. */ }
 
 
 							<button
 								type='button'
-								className={ ` picker-group-pill   ${ grpFilStr === 'all' ? 'is-on' : '' } ` }
+								className={ ` picker-group-pill   ${ groFilStr === 'all' ? 'is-on' : '' } ` }
 								role='tab'
-								aria-selected={ grpFilStr === 'all' }
-								onClick={ () => { setGrpFilStr( 'all' ); setCreOpnBoo( false ); setActPicStr( state.pickers.find( ( p ) => !p.hidden )?.id ); } }
-							>{ /* What: All Group Pill Button Element. Why: The user needs a way to clear the Group filter back to unfiltered. How: This resets grpFilStr to 'all', closes the create form, and jumps to the first visible picker. */ }
+								aria-selected={ groFilStr === 'all' }
+								onClick={ () => { setGroFilStr( 'all' ); setCreOpnBoo( false ); setActPicStr( state.pickers.find( ( p ) => !p.hidden )?.id ); } }
+							>{ /* What: All Group Pill Button Element. Why: The user needs a way to clear the Group filter back to unfiltered. How: This resets groFilStr to 'all', closes the create form, and jumps to the first visible picker. */ }
 
 
 								All
@@ -3422,28 +3422,28 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 							</button>
 
-							{ exiGrpArr.map( ( curGrpStr ) => { // What: Group Pill List Render. Why: Every existing group needs its own selectable filter pill with its own count. How: This maps exiGrpArr to one button per curGrpStr.
+							{ exiGroArr.map( ( curGroStr ) => { // What: Group Pill List Render. Why: Every existing group needs its own selectable filter pill with its own count. How: This maps exiGroArr to one button per curGroStr.
 
 
-								const picCouNum = state.pickers.filter( ( p ) => p.group === curGrpStr && !p.hidden ).length; // What: Picker Count Number. Why: Each group pill needs to show how many visible pickers actually belong to it. How: This counts state.pickers matching both curGrpStr and visibility.
+								const picCouNum = state.pickers.filter( ( p ) => p.group === curGroStr && !p.hidden ).length; // What: Picker Count Number. Why: Each group pill needs to show how many visible pickers actually belong to it. How: This counts state.pickers matching both curGroStr and visibility.
 
 								return (
 
 
 									<button
-										key={ curGrpStr }
+										key={ curGroStr }
 										type='button'
-										className={ ` picker-group-pill   ${ grpFilStr === curGrpStr ? 'is-on' : '' } ` }
+										className={ ` picker-group-pill   ${ groFilStr === curGroStr ? 'is-on' : '' } ` }
 										role='tab'
-										aria-selected={ grpFilStr === curGrpStr }
-										onClick={ () => setGrpFilStr( curGrpStr ) }
+										aria-selected={ groFilStr === curGroStr }
+										onClick={ () => setGroFilStr( curGroStr ) }
 									>
 
-										{ curGrpStr }
+										{ curGroStr }
 
 										<span className='picker-group-count'>{ picCouNum }</span>
 
-									</button> // What: Button. Why: Tapping a group pill should narrow the Show row down to just that group. How: This writes curGrpStr into grpFilStr.
+									</button> // What: Button. Why: Tapping a group pill should narrow the Show row down to just that group. How: This writes curGroStr into groFilStr.
 
 
 								);
@@ -3530,7 +3530,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 					<span className='stat-filter-lbl'>Show</span>{ /* What: Show Filter Label Span Element. Why: The rail below needs a readable label. How: This renders the literal word "Show". */ }
 
-					<div className='picker-tabs' ref={ tabRailRef } key={ grpFilStr + '|' + typFilStr }>{ /* What: Picker Tabs Div Element. Why: The Add New Picker tab plus one tab per currently-visible picker need a horizontally-scrolling rail; re-keying by the two filters together replays each tab's own stagger-in animation whenever the filtered set changes. How: This wraps the Add New Picker tab and one tab per entry in srtPicArr. */ }
+					<div className='picker-tabs' ref={ tabRailRef } key={ groFilStr + '|' + typFilStr }>{ /* What: Picker Tabs Div Element. Why: The Add New Picker tab plus one tab per currently-visible picker need a horizontally-scrolling rail; re-keying by the two filters together replays each tab's own stagger-in animation whenever the filtered set changes. How: This wraps the Add New Picker tab and one tab per entry in srtPicArr. */ }
 
 
 						{ tutProBoo ? ( // What: Tutorials In Progress Check. Why: Distinct from disAddBoo below, this tooltip's wording ("until all tutorials are completed") would be misleading during a Replay of the Pickers page tour, which runs AFTER the checklist finishes, when tutProBoo is always false, so that case still falls through to the plain disabled button with no tooltip. How: This renders a disabled, explanatory InfoTip instead of the real button while the guided checklist is still in progress.
@@ -3603,9 +3603,9 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 					? ( <PicForCom
 							conObjArr={ state.conditionals || [] }
-							exiGrpArr={ exiGrpArr }
+							exiGroArr={ exiGroArr }
 							iniFrmObj={ touBusObj.prefill || empIniObj || null }
-							iniGrpStr={ grpFilStr === 'all' ? '' : grpFilStr }
+							iniGroStr={ groFilStr === 'all' ? '' : groFilStr }
 							opeTouBoo={ opeTouBoo }
 							onCnlFun={ () => { setOpeTouBoo( false ); setEmpIniObj( null ); cnlCreFun(); } }
 							onCreFun={ ( payFrmObj ) => { // What: On Create Function. Why: A successful create must reconcile with whatever the guided-tour checklist expects, then land the user on the freshly-made picker. How: This dedupes an onboarding revisit by name, tags a tour-created picker for later replay matching, then advances the selection once the created id comes back.
