@@ -1076,15 +1076,15 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 	const sooLabStr = isaDowBoo ? 'Shortest' : 'Soonest'; // What: Soonest Label String. Why: The Soonest row's own heading text differs by direction. How: This picks 'Shortest' for ease-down, 'Soonest' otherwise.
 	const latLabStr = isaDowBoo ? 'Longest' : 'Latest';   // What: Latest Label String. Why: The Latest row's own heading text differs by direction. How: This picks 'Longest' for ease-down, 'Latest' otherwise.
 
-	const uniWrdFun = ( couNum ) => CAD_NAM_OBJ.uniWorFun( picker && picker.cadence, couNum ); // What: Unit Word Function. Why: Every day count below needs a correctly-pluralized cadence unit word next to it. How: This calls CAD_NAM_OBJ.uniWorFun with the picker's own cadence and couNum.
+	const uniWorFun = ( couNum ) => CAD_NAM_OBJ.uniWorFun( picker && picker.cadence, couNum ); // What: Unit Word Function. Why: Every day count below needs a correctly-pluralized cadence unit word next to it. How: This calls CAD_NAM_OBJ.uniWorFun with the picker's own cadence and couNum.
 
 	const sooSubEle = isaDowBoo // What: Soonest Sub Element. Why: The Soonest/Shortest row's own subtitle phrasing differs by direction. How: This renders "stays picked N days minimum" for ease-down, or "N days until pickable again" otherwise.
-		? <>stays picked <strong>{ sooDayNum } { uniWrdFun( sooDayNum ) }</strong> minimum</>
-		: <><strong>{ sooDayNum } { uniWrdFun( sooDayNum ) }</strong> until pickable again</>;
+		? <>stays picked <strong>{ sooDayNum } { uniWorFun( sooDayNum ) }</strong> minimum</>
+		: <><strong>{ sooDayNum } { uniWorFun( sooDayNum ) }</strong> until pickable again</>;
 
 	const latSubEle = isaDowBoo // What: Latest Sub Element. Why: The Latest/Longest row's own subtitle phrasing differs by direction. How: This renders "stays picked N days maximum" for ease-down, or "N days until pick is mandatory" otherwise.
-		? <>stays picked <strong>{ latDayNum } { uniWrdFun( latDayNum ) }</strong> maximum</>
-		: <><strong>{ latDayNum } { uniWrdFun( latDayNum ) }</strong> until pick is mandatory</>;
+		? <>stays picked <strong>{ latDayNum } { uniWorFun( latDayNum ) }</strong> maximum</>
+		: <><strong>{ latDayNum } { uniWorFun( latDayNum ) }</strong> until pick is mandatory</>;
 
 	// #endregion Ease Band Resolution
 
@@ -1149,7 +1149,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 								<span
 									className='pie-sub set-sub-fade'
-									key={ `${ isaDowBoo }-${ sooDayNum }-${ uniWrdFun( sooDayNum ) }` }
+									key={ `${ isaDowBoo }-${ sooDayNum }-${ uniWorFun( sooDayNum ) }` }
 								>{ sooSubEle }</span>{ /* What: Subtitle Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders sooSubEle, keyed by direction/value/unit-word together. */ }
 
 
@@ -1167,7 +1167,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 									ariaLabel={ `${ sooLabStr } for ${ item.name }` }
 								/>{ /* What: Number Stepper. Why: This is the actual editable control for the Soonest/Shortest day count. How: This is passed sooDayNum and setSooFun, clamped to [1, 60]. */ }
 
-								<span className='np-ease-unit'>{ uniWrdFun( sooDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWrdFun's own result for sooDayNum. */ }
+								<span className='np-ease-unit'>{ uniWorFun( sooDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for sooDayNum. */ }
 
 
 							</div>
@@ -1200,7 +1200,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 								<span
 									className='pie-sub set-sub-fade'
-									key={ `${ isaDowBoo }-${ latDayNum }-${ uniWrdFun( latDayNum ) }` }
+									key={ `${ isaDowBoo }-${ latDayNum }-${ uniWorFun( latDayNum ) }` }
 								>{ latSubEle }</span>{ /* What: Subtitle Span Element. Why: The live day count/unit-word combination needs its own fade-replace key so a change visibly refreshes. How: This renders latSubEle, keyed by direction/value/unit-word together. */ }
 
 
@@ -1218,7 +1218,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 									ariaLabel={ `${ latLabStr } for ${ item.name }` }
 								/>{ /* What: Number Stepper. Why: This is the actual editable control for the Latest/Longest day count. How: This is passed latDayNum and setLatFun, clamped to [1, 90]. */ }
 
-								<span className='np-ease-unit'>{ uniWrdFun( latDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWrdFun's own result for latDayNum. */ }
+								<span className='np-ease-unit'>{ uniWorFun( latDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for latDayNum. */ }
 
 
 							</div>

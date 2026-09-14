@@ -1070,7 +1070,18 @@ how short the body is.
   all, like two sibling `clearTimeout(...)` calls) follows the rule above
   instead.
 
-### if/else and while statements
+### if/else, while, and for statements
+- **This section covers `for` loops identically to `if`/`while`** — every
+  rule below (multi-line body padding, and the gap before the statement
+  itself, governed by "### General relatedness tiering" below the same
+  way it governs the gap before an `if`/`while`) applies to a `for` loop
+  with no special-casing. A `for` loop immediately following a plain
+  declaration it reads from (e.g. `const iteFlaMap = new Map(); ... for
+  ( const logRowObj of picLogArr ) {`) is the ordinary "Somewhat related"
+  (2 blank lines) declare-then-block case, the same as a declaration
+  immediately followed by an `if` block would be, not the "Related" (1
+  blank line) tier a plain declaration run gets from "### Variable
+  declarations" above.
 - Same padding as functions — 2 blank lines after the opening `{` and 2
   before the closing `}` — but only when the block actually spans multiple
   lines. A one-line body with a single statement (`if ( !navCurEle )
@@ -1181,6 +1192,25 @@ catch ( e ) {
   continue;`) is exempt from the "3 before" rule the same way a fused
   early-return guard is. `continue` never takes a value, so the
   multi-line/parenthesized-return bullet has no equivalent case for it.
+- **A single-line exit guard always gets 3 blank lines AFTER it, even
+  though it's exempt from the 3-blank rule BEFORE it.** `if (cond)
+  return;`, `if (cond) return <value>;` (a guard that returns an actual
+  value, e.g. a fallback/placeholder, rather than a bare `return;`),
+  `if (cond) continue;`, and `if (cond) break;` each hand control out of
+  the enclosing function/loop the moment they fire, the same hard
+  control-flow boundary a standalone `return`/`continue` already gets 3
+  blank lines for, just written compactly on one line instead of its own
+  block. Whatever code follows such a guard only ever runs once every one
+  of those exits has already been ruled out, so it is never "related" to
+  the guard in the ordinary tiering sense, regardless of what it actually
+  does next; this overrides whatever the General relatedness tiering
+  below would otherwise assign. Examples: `if ( logRowObj.date !==
+  dayKeyStr || logRowObj.pickerId !== picIdeStr ) continue;` in
+  `dayFlaFun`, and `if ( !iteFlaObj || !iteFlaObj.anyBoo ) return <span
+  className='dl-none dl-mk-status'>—</span>;` in `StaChiCom` (both
+  `day-log.jsx`), each get 3 blank lines before the next line, not the 1
+  an ordinary relatedness guess might otherwise assign just because
+  neighboring lines touch the same data.
 
 ### JSX
 - No space after `<`/`</` or before `>`/`/>` on any element, including a
@@ -1385,6 +1415,21 @@ attribute) are ordered into these 8 tiers, top to bottom:
     relatedness tiering resumes, UNLESS what follows is itself the start
     of a same-operation statement run (see the bullet below), which gets
     its own fresh 0-blank grouping instead of reverting to 1-blank.
+  - **This 0-blank rule is strictly for a fresh `const`/`let`
+    declaration — a plain reassignment of an already-declared variable
+    (no `const`/`let` keyword at all, e.g. `iteFlaObj = { ... };`
+    reassigning a `let` declared earlier) is NOT a declaration for this
+    rule's own purposes, even when it sits directly next to a call that
+    consumes it and superficially looks like the same "declare, then use
+    it" shape.** That pairing falls back to plain "### General
+    relatedness tiering" below instead, which most commonly lands on
+    Related (1 blank line) via its own "a value used on the very next
+    line" case: e.g. `iteFlaObj = { autBoo : false, ... };` immediately
+    followed by `iteFlaMap.set( logRowObj.itemId, iteFlaObj );` in
+    `dayFlaFun` (`day-log.jsx`) gets exactly 1 blank line between them,
+    not 0, since the reassignment and the `.set()` call are two
+    genuinely different kinds of statement (an assignment, then a method
+    call) even though they're tightly related.
 - **A run of consecutive statement-calls that all perform the same
   repeated operation on different data gets 0 blank lines between them
   too** (e.g. 8 back-to-back `rooStyObj.setProperty(...)` calls, one per
@@ -1594,6 +1639,20 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     period or a permission state, disambiguates which word "per" stands
     for in practice)
   - `flg` → `fla` (Flag)
+  - `chp` → `chi` (Chip — note this collides with `chi` already meaning
+    Child (`chiMouBoo`/`setChiMouBoo` in `ui.jsx`'s `Collapse`); a name's
+    own surrounding context, e.g. `chiTupArr` holding chip tuples in a
+    status-chip renderer rather than anything about mounted children,
+    disambiguates which word "chi" stands for in practice)
+  - `rnd` → `rou` (Round/Rounded — note this collides with `rou` already
+    meaning Roulette (`rouRemNum` in `pickers.js`'s own weighted-pick
+    algorithm); a name's own surrounding context, e.g. `booRouNum`
+    holding a rounded boost value rather than anything about a roulette
+    wheel, disambiguates which word "rou" stands for in practice)
+  - `unt` → `uni` (Unit — note `uni` already carries two other meanings
+    in this codebase, Union (`uniRecFun`) and Unique (`uniNamFun`);
+    context disambiguates which of the three "uni" stands for)
+  - `wrd` → `wor` (Word)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

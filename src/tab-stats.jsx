@@ -378,7 +378,7 @@ function HeaLegCom () {
  * @param props.totIteNum - Total Item Number: The full, unpaged item count.
  * @param props.onChange  - On Change: Called with the next 0-indexed page on
  *                          an arrow tap.
- * @param props.untStr    - Unit String: Unit word shown after the total;
+ * @param props.uniStr    - Unit String: Unit word shown after the total;
  *                          defaults to 'items'.
  * @param props.alwShoBoo - Always Show Boolean: Forces the pager to render
  *                          even when everything fits on one page; defaults to
@@ -395,7 +395,7 @@ function HeaLegCom () {
  *
 */
 
-function PagNavCom ( { curPagNum, pagSizNum, totIteNum, onChange, untStr = 'items', alwShoBoo = false } ) {
+function PagNavCom ( { curPagNum, pagSizNum, totIteNum, onChange, uniStr = 'items', alwShoBoo = false } ) {
 
 
 	const pagCouNum = Math.max( 1, Math.ceil( totIteNum / pagSizNum ) ); // What: Page Count Number. Why: The arrows need to know how many pages actually exist so the last page's next arrow can disable itself. How: This divides totIteNum by pagSizNum, rounding up, floored at 1 even for an empty list.
@@ -417,7 +417,7 @@ function PagNavCom ( { curPagNum, pagSizNum, totIteNum, onChange, untStr = 'item
 			<span className='pager-range'>{ /* What: Range Span Element. Why: The pager needs one combined "1-10 of N items" readout. How: This renders staIteNum, an en dash, endIteNum, "of", totIteNum, and the optional unit word. */ }
 
 
-				{ staIteNum }&ndash;{ endIteNum } <span className='pager-of'>of</span> { totIteNum }{ untStr ? ` ${ untStr }` : '' }
+				{ staIteNum }&ndash;{ endIteNum } <span className='pager-of'>of</span> { totIteNum }{ uniStr ? ` ${ uniStr }` : '' }
 
 
 			</span>
@@ -1733,9 +1733,9 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 	// values are already period counts and need no conversion).
 	const PER_DAY_OBJ = { weekly : 7, monthly : 30, yearly : 365 };            // What: Per Day Object. Why: Converting a raw calendar-day count into cadence periods needs each cadence's own approximate period length. How: This is looked up by staCadStr below.
 	const perDayNum   = PER_DAY_OBJ[ staCadStr ] || 1;                        // What: Per Day Number. Why: cadDisFun below needs this scoped picker's own approximate days-per-period value. How: This looks staCadStr up in PER_DAY_OBJ, falling back to 1 for a daily picker.
-	const uniForFun   = ( untModStr, untNum ) => isaCadBoo // What: Unit For Function. Why: A day-count metric's own unit word depends on both the picker's cadence and whether the value is singular or plural. How: This defers to CAD_NAM_OBJ.uniWorFun for a cadenced picker, otherwise pluralizes the literal word "day".
-		? CAD_NAM_OBJ.uniWorFun( staCadStr, untNum )
-		: ( untNum === 1 ? 'day' : 'days' );
+	const uniForFun   = ( uniModStr, uniNum ) => isaCadBoo // What: Unit For Function. Why: A day-count metric's own unit word depends on both the picker's cadence and whether the value is singular or plural. How: This defers to CAD_NAM_OBJ.uniWorFun for a cadenced picker, otherwise pluralizes the literal word "day".
+		? CAD_NAM_OBJ.uniWorFun( staCadStr, uniNum )
+		: ( uniNum === 1 ? 'day' : 'days' );
 
 	// Plural unit word for the eligible-mode toggle labels (weeks/months/
 	// years).
@@ -1749,12 +1749,12 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 	// (forced ".0") so eligible and calendar line up; a daily picker keeps
 	// its existing whole-day display via dlyDayNum. Returns
 	// { num (string), word }.
-	const cadDisFun = ( rawDayNum, untModStr, dlyDayNum ) => { // What: Cadence Display Function. Why: Every day-count metric's own value column needs this same conversion, so it's centralized once instead of repeated per metric. How: This converts rawDayNum into cadence periods for a cadenced picker, otherwise passing dlyDayNum straight through.
+	const cadDisFun = ( rawDayNum, uniModStr, dlyDayNum ) => { // What: Cadence Display Function. Why: Every day-count metric's own value column needs this same conversion, so it's centralized once instead of repeated per metric. How: This converts rawDayNum into cadence periods for a cadenced picker, otherwise passing dlyDayNum straight through.
 
 
 		if ( !isaCadBoo ) return { num : String( dlyDayNum ), word : ( dlyDayNum === 1 ? 'day' : 'days' ) }; // What: Daily Return. Why: A daily picker's own value column already has its own whole-day formatting computed by the caller. How: This returns dlyDayNum as-is, with a simple singular/plural "day"/"days" word.
 
-		const perNum = untModStr === 'calendar' ? rawDayNum / perDayNum : rawDayNum; // What: Period Number. Why: A calendar-mode raw day count must be converted into periods before display; an eligible-mode one is already in periods. How: This divides by perDayNum only in calendar mode.
+		const perNum = uniModStr === 'calendar' ? rawDayNum / perDayNum : rawDayNum; // What: Period Number. Why: A calendar-mode raw day count must be converted into periods before display; an eligible-mode one is already in periods. How: This divides by perDayNum only in calendar mode.
 
 		return { num : ( Math.round( perNum * 10 ) / 10 ).toFixed( 1 ), word : CAD_NAM_OBJ.uniWorFun( staCadStr, perNum ) }; // What: Cadence Return. Why: A cadenced picker's own value column always shows one forced decimal place, with a matching singular/plural unit word. How: This rounds perNum to one decimal and asks CAD_NAM_OBJ.uniWorFun for the matching word.
 
@@ -1762,10 +1762,10 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 	};
 
 	// Human label for "last picked", in the active unit.
-	const lasForFun = ( dayNum, untModStr ) => { // What: Last Format Function. Why: The Last Picked metric's own value column needs a distinct "ago"-phrased label rather than the plain cadDisFun format. How: This special-cases zero (as "Most recent"), otherwise phrasing a cadence-aware or literal "N days ago" string.
+	const lasForFun = ( dayNum, uniModStr ) => { // What: Last Format Function. Why: The Last Picked metric's own value column needs a distinct "ago"-phrased label rather than the plain cadDisFun format. How: This special-cases zero (as "Most recent"), otherwise phrasing a cadence-aware or literal "N days ago" string.
 
 
-		if ( untModStr === 'eligible' ) { // What: Eligible Mode Branch. Why: Eligible-mode "last picked" is already a period count, phrased differently from the calendar branch below. How: This special-cases zero, then a cadenced or plain "ago" phrase.
+		if ( uniModStr === 'eligible' ) { // What: Eligible Mode Branch. Why: Eligible-mode "last picked" is already a period count, phrased differently from the calendar branch below. How: This special-cases zero, then a cadenced or plain "ago" phrase.
 
 
 			if ( dayNum === 0 ) return 'Most recent';
@@ -1820,10 +1820,10 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 		// soonDayNum/lateDayNum are period counts; relabel in the picker's
 		// own cadence unit.
-		const untWrdStr = ( ( scpPicObj && scpPicObj.cadence ) || 'daily' ) !== 'daily' // What: Unit Word String. Why: A cadenced picker's own band suffix must relabel from raw days into its own period word. How: This asks CAD_NAM_OBJ.uniWorFun for lateDayNum's own word, or falls back to the literal "days".
+		const uniWorStr = ( ( scpPicObj && scpPicObj.cadence ) || 'daily' ) !== 'daily' // What: Unit Word String. Why: A cadenced picker's own band suffix must relabel from raw days into its own period word. How: This asks CAD_NAM_OBJ.uniWorFun for lateDayNum's own word, or falls back to the literal "days".
 			? CAD_NAM_OBJ.uniWorFun( scpPicObj.cadence, lateDayNum ) : 'days';
 
-		return `range ${ soonDayNum }–${ lateDayNum } ${ untWrdStr }`; // What: Range Suffix Return. Why: This is the finished "range X-Y unit" string rendered under the item's own name. How: This joins the two computed bounds with an en dash and the resolved unit word.
+		return `range ${ soonDayNum }–${ lateDayNum } ${ uniWorStr }`; // What: Range Suffix Return. Why: This is the finished "range X-Y unit" string rendered under the item's own name. How: This joins the two computed bounds with an en dash and the resolved unit word.
 
 
 	}, [ easUpwBoo, easDowBoo, scpPicObj ] ); // What: Effect Dependency Array. Why: This callback's own identity only needs to change when either ease-mode flag or the scoped picker itself changes. How: Each is read directly inside the function body above.
@@ -3190,7 +3190,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 											pagSizNum={ REM_SIZ_NUM }
 											totIteNum={ remBreArr.length }
 											onChange={ setRemIndNum }
-											untStr={ remMetStr === 'skipped' ? 'skipped' : 'completed' }
+											uniStr={ remMetStr === 'skipped' ? 'skipped' : 'completed' }
 											alwShoBoo
 										/>{ /* What: Pager Navigation Component. Why: A breakdown list longer than one page needs its own pager to move through it. How: This is fed the current safe page/size/total, always showing itself via alwShoBoo since this card's own list is often long. */ }
 

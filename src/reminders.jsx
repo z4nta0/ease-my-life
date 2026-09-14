@@ -503,7 +503,7 @@ function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
 
 
 		const nexLabStr = nexDatFun( visResObj.next, tasRecObj.repeat === 'annual' ); // What: Next Label String. Why: Both remaining branches below name the next day the reminder WILL appear, whenever one is known. How: This calls nexDatFun against visResObj's own next date, always including the year for an annual reminder.
-		const kndWrdStr = TASKS.isRecurring( tasRecObj ) ? 'recurring' : 'one-time';   // What: Kind Word String. Why: The settings-cause branch below needs to name whether it's talking about a recurring or one-time item. How: This picks the word based on TASKS.isRecurring.
+		const kndWorStr = TASKS.isRecurring( tasRecObj ) ? 'recurring' : 'one-time';   // What: Kind Word String. Why: The settings-cause branch below needs to name whether it's talking about a recurring or one-time item. How: This picks the word based on TASKS.isRecurring.
 
 		let bodTexEle; // What: Body Text Element. Why: The actual advisory sentence depends on which of the 3 branches below applies, assigned in exactly one of them. How: This is declared here and read by the shared return at the end of this branch.
 
@@ -513,7 +513,7 @@ function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
 		if ( reaPhrStr ) { // What: Settings Cause Branch. Why: A weekend/holiday exclusion is the most common cause and covers both possibilities in one sentence. How: This names both the item kind and the joined reason phrase.
 
 
-			bodTexEle = <>Because Reminders are set to <strong>not show { kndWrdStr } items on { reaPhrStr }</strong>, this item will not show up in your todo list today.</>;
+			bodTexEle = <>Because Reminders are set to <strong>not show { kndWorStr } items on { reaPhrStr }</strong>, this item will not show up in your todo list today.</>;
 
 
 		}
