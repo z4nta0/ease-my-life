@@ -1295,7 +1295,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	// -- Add New Conditional (ConditionalControls, inline in the create flow)
+	// -- Add New Conditional (CodConCom, inline in the create flow)
 	{
 
 
@@ -2122,7 +2122,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	// #region Conditionals Manager
 
-	// Each conditional gets its own highlight/tooltip, not just the section as a whole. The per-type controls (Type/Weight/Odds/Boost/Charge Controls/Active) reuse the EXACT same selectors as the Pickers-page create-flow verbatim: ConditionalControls is the same shared component either way (this tab passes variant="inline" instead of the default 'card', but that only swaps a wrapper class neither selector touches), so there was nothing to re-derive, see PIC_HEL_ARR's own newCond* entries for the original comments on each of these.
+	// Each conditional gets its own highlight/tooltip, not just the section as a whole. The per-type controls (Type/Weight/Odds/Boost/Charge Controls/Active) reuse the EXACT same selectors as the Pickers-page create-flow verbatim: CodConCom is the same shared component either way (this tab passes variant="inline" instead of the default 'card', but that only swaps a wrapper class neither selector touches), so there was nothing to re-derive, see PIC_HEL_ARR's own newCond* entries for the original comments on each of these.
 	{
 
 
@@ -2161,20 +2161,20 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// hideName is set on ConditionalControls here, so the name field lives on the ROW itself (same .rd-name-input shape as a picker item's own row), not inside the shared controls component.
+	// hideName is set on CodConCom here, so the name field lives on the ROW itself (same .rd-name-input shape as a picker item's own row), not inside the shared controls component.
 	{
 
 
 		ideStr  : 'dataCondName',
 		selStr  : '.cnd-manager .rd-item.is-editing .rd-name-input',
 		titStr  : 'Conditional Name',
-		padYNum : 0, // padYNum:0, the row and whatever's directly below it (the first ConditionalControls field) stack with zero gap, same as everywhere else on this page.
+		padYNum : 0, // padYNum:0, the row and whatever's directly below it (the first CodConCom field) stack with zero gap, same as everywhere else on this page.
 		bodEle  : <>This is the name field for this conditional, you can rename it here.</>,
 
 
 	},
 
-	// Reused verbatim from PIC_HEL_ARR's newCondCardText, same ConditionalControls markup either way, missed when the other newCond* entries were copied over for this pass. // padYNum:0, .cnd-controls--inline (the variant used here, unlike the Pickers-page card variant) has gap:0 between fields, so this bleeds into its neighbors above/below without it.
+	// Reused verbatim from PIC_HEL_ARR's newCondCardText, same CodConCom markup either way, missed when the other newCond* entries were copied over for this pass. // padYNum:0, .cnd-controls--inline (the variant used here, unlike the Pickers-page card variant) has gap:0 between fields, so this bleeds into its neighbors above/below without it.
 	{
 
 

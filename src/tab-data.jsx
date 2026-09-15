@@ -13,8 +13,8 @@ import { clePicFun                } from './help-sample-data.js';     // What: C
 import { cleTasFun                } from './help-sample-data.js';     // What: Clear Tasks Function. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabData's own unmount cleanup.
 import { Collapse                 } from './ui.jsx';                  // What: Collapse. Why: Nearly every disclosure in this file (picker cards, Controls, Items, conditional rows, item rows) shares the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
 import { compareSortEntries       } from './ui.jsx';                  // What: Compare Sort Entries. Why: Every sortable list in this file (sections, conditional items, picker items) shares the same sort-key vocabulary. How: This is called once per comparison inside each list's own Array.prototype.sort.
-import { ConditionalControls      } from './tab-conditional.jsx';     // What: Conditional Controls. Why: ConEdiCom reuses the exact same "type + settings" editor the Pickers create-flow uses, so both stay in sync. How: This is rendered inside ConEdiCom as its own Controls alias.
-import { conditionalDraftDefault  } from './tab-conditional.jsx';     // What: Conditional Draft Default. Why: A brand-new conditional started from ConManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
+import { CodConCom                } from './tab-conditional.jsx';     // What: Conditional Control Component. Why: ConEdiCom reuses the exact same "type + settings" editor the Pickers create-flow uses, so both stay in sync. How: This is rendered directly inside ConEdiCom below.
+import { conDrfFun                } from './tab-conditional.jsx';     // What: Conditional Draft Function. Why: A brand-new conditional started from ConManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
 import { DAT_HEL_ARR              } from './help-content.jsx';        // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelOveCom's own items prop.
 import { EntryEditor              } from './tab-today.jsx';           // What: Entry Editor. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
 import { FillButton               } from './ui.jsx';                  // What: Fill Button. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
@@ -1556,7 +1556,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
  * The editor body for one conditional, rendered inside ConManCom's own
  * collapsible row. The draft itself is owned by ConManCom (so the row
  * can host the inline name input the same way a picker item's own row
- * does); this component just renders ConditionalControls against it and
+ * does); this component just renders CodConCom against it and
  * supplies Save/Cancel/Delete. Save normalizes the name (Title Case
  * tidy) and is blocked on a collision, mirroring the Pickers
  * create-flow's own guard. Cancel discards a brand-new conditional or
@@ -1586,7 +1586,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
  * @param props.onDelete  - On Delete: Deletes this existing conditional.
  *
  * @returns This conditional's own editor body: any name error, the
- * shared ConditionalControls fields, and the footer.
+ * shared CodConCom fields, and the footer.
  *
  * @example
  * ```tsx
@@ -1598,7 +1598,6 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 function ConEdiCom ( { cond : conObj, draft : drfObj, setDraft : setDrfObj, actions : actObj, isNew : isaNewBoo, nameError : namErrStr, tidyName : tidNamStr, onClose : onCloFun, onDiscard : onDisFun, onSaveNew : onSavNewFun, onDelete : onDelFun } ) {
 
 
-	const CodConCom = ConditionalControls; // What: Conditional Control Component. Why: This scopes ConditionalControls under a name matching this file's own component-naming convention, without renaming the actual import. How: This is rendered directly as a JSX tag below.
 	const [ conDelBoo, setConDelBoo ] = React.useState( false ); // What: Confirm Delete Boolean And Setter. Why: Deleting an existing conditional needs an inline confirm step before it actually happens. How: This is flipped true by the Delete button and read below to swap in the confirm row.
 
 
@@ -1950,7 +1949,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 
 
-								const nexDrfObj = conditionalDraftDefault( '', conIteArr.map( ( conCurObj ) => conCurObj.name ) ); // What: Next Draft Object. Why: A brand-new conditional needs a sensible starting draft, with a name that won't collide with any existing one. How: This calls the shared conditionalDraftDefault helper.
+								const nexDrfObj = conDrfFun( '', conIteArr.map( ( conCurObj ) => conCurObj.name ) ); // What: Next Draft Object. Why: A brand-new conditional needs a sensible starting draft, with a name that won't collide with any existing one. How: This calls the shared conDrfFun helper.
 								const nexIdeStr = 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 );                                // What: Next Identifier String. Why: The brand-new draft needs its own id immediately, even before it's ever written to the store. How: This generates a short random id with a 'cnd_' prefix.
 								const nexObj    = { ...nexDrfObj, id : nexIdeStr };                                                     // What: Next Object. Why: The draft object itself needs to carry its own freshly-generated id. How: This spreads nexDrfObj with id set to nexIdeStr.
 

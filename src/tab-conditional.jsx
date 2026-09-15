@@ -10,7 +10,7 @@ import { BoostReset               } from './ui.jsx';     // What: Boost Reset. W
 import { Collapse                 } from './ui.jsx';     // What: Collapse. Why: Every mode's own settings subsection needs to animate open and closed as the selected mode changes. How: This wraps the mode hint text and every per-mode settings block throughout this file.
 import { FillButton               } from './ui.jsx';     // What: Fill Button. Why: The ease-up and ease-down modes both need a manual full-charge control. How: This is rendered once per direction in the ease-mode settings block below.
 import { MODES                    } from './seed.js';    // What: Modes. Why: The mode radio below must offer the exact same options and labels as the picker editor's own mode radio. How: This is walked via Object.entries to render one radio option per mode.
-import { norConFun                } from './pickers.js'; // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conditionalDraftDefault below.
+import { norConFun                } from './pickers.js'; // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conDrfFun below.
 import { NumStepper                } from './ui.jsx';    // What: Number Stepper. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered once per bound in the ease-mode settings block below.
 
 // #endregion Imports
@@ -21,7 +21,7 @@ import { NumStepper                } from './ui.jsx';    // What: Number Stepper
  * tab-conditional.jsx = Tab Conditional User Interface
  *
  * @summary
- * ConditionalControls is the reusable "type + settings" editor for a
+ * CodConCom is the reusable "type + settings" editor for a
  * single conditional, bound to a plain draft object via onChange. It is
  * rendered in two places: the Pickers create-flow and the Data tab's
  * own conditional editor (ConditionalEditor in tab-data.jsx). It
@@ -32,13 +32,11 @@ import { NumStepper                } from './ui.jsx';    // What: Number Stepper
  * steppers plus a Fill/Refill button for the ease modes), plus a name
  * field, the day-off replacement card text, and an Active toggle.
  *
- * The exported ConditionalControls and conditionalDraftDefault names,
- * and ConditionalControls' own draft/onChange/nameError/variant/
- * hideName props, are a cross-file contract read directly by
- * tab-picker.jsx and tab-data.jsx. They are deliberately left unrenamed
- * for now, their own deliberate decision distinct from the component-
- * identity renames already completed elsewhere this pass (e.g.
- * reminders.jsx's own SegConCom).
+ * CodConCom and conDrfFun were renamed to their own 9-char names this
+ * pass, rippled into every one of their consumer files (tab-picker.jsx
+ * and tab-data.jsx). CodConCom's own draft/onChange/nameError/variant/
+ * hideName props are left unrenamed for now, their own deliberate
+ * decision distinct from the component-identity rename just completed.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -71,10 +69,10 @@ const RAN_NOT_STR = 'Truly Random conditionals have no options and function like
 
 
 
-// #region ConditionalControls
+// #region CodConCom
 
 /**
- * ConditionalControls = Conditional Controls
+ * CodConCom = Conditional Control Component
  *
  * @summary
  * See this file's own header comment above for the full picture of
@@ -104,12 +102,12 @@ const RAN_NOT_STR = 'Truly Random conditionals have no options and function like
  *
  * @example
  * ```tsx
- * ConditionalControls({ draft, onChange, nameError, variant, hideName }) // => <ConditionalControls />
+ * CodConCom({ draft, onChange, nameError, variant, hideName }) // => <CodConCom />
  * ```
  *
 */
 
-function ConditionalControls ( { draft, onChange, nameError, variant = 'card', hideName = false } ) {
+function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = false } ) {
 
 
 	const insIdeStr = React.useId(); // What: Instance Identifier String. Why: This component is reused in more than one place at once (see the file header comment), so its own field ids and the mode radio's own name must never collide across instances. How: This calls React.useId() once per mount, prefixed onto every id/name below.
@@ -186,7 +184,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 	return (
 
 
-		<div className={ `cnd-controls   ${ isaInlBoo ? 'cnd-controls--inline' : '' }` }>{ /* What: Controls Container Div Element. Why: This is ConditionalControls' own root element, holding every field and settings block below. How: This renders as a plain div, switching to the tighter inline layout via a modifier class when isaInlBoo is true. */ }
+		<div className={ `cnd-controls   ${ isaInlBoo ? 'cnd-controls--inline' : '' }` }>{ /* What: Controls Container Div Element. Why: This is CodConCom' own root element, holding every field and settings block below. How: This renders as a plain div, switching to the tighter inline layout via a modifier class when isaInlBoo is true. */ }
 
 
 			{ !hideName && ( // What: Name Field Visibility Check. Why: The caller can opt out of the whole name field via hideName. How: This renders the name field only while hideName is false.
@@ -664,16 +662,16 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 }
 
-// #endregion ConditionalControls
+// #endregion CodConCom
 
 
 
-export { ConditionalControls }; // What: Named Exports. Why: tab-picker.jsx and tab-data.jsx both render this as the shared conditional editor. How: This re-exports ConditionalControls; every other binding in this file is internal-only.
+export { CodConCom }; // What: Named Exports. Why: tab-picker.jsx and tab-data.jsx both render this as the shared conditional editor. How: This re-exports CodConCom; every other binding in this file is internal-only.
 
 
 
 /**
- * conditionalDraftDefault = Conditional Draft Default
+ * conDrfFun = Conditional Draft Function
  *
  * @summary
  * Builds the default draft for a brand-new conditional, named
@@ -695,12 +693,12 @@ export { ConditionalControls }; // What: Named Exports. Why: tab-picker.jsx and 
  *
  * @example
  * ```ts
- * conditionalDraftDefault(picNamStr, exiNamArr) // => default draft object
+ * conDrfFun(picNamStr, exiNamArr) // => default draft object
  * ```
  *
 */
 
-export const conditionalDraftDefault = ( picNamStr, exiNamArr = [] ) => { // What: Conditional Draft Default Body. Why: A brand-new conditional needs a sensible starting draft rather than a blank one. How: This resolves a free "{Picker} Conditional N" name, then returns it alongside every other field's own default value.
+export const conDrfFun = ( picNamStr, exiNamArr = [] ) => { // What: Conditional Draft Function Body. Why: A brand-new conditional needs a sensible starting draft rather than a blank one. How: This resolves a free "{Picker} Conditional N" name, then returns it alongside every other field's own default value.
 
 
 	const norPicStr = ( norConFun( picNamStr ) || '' ).trim();                             // What: Normalize Picker String. Why: The default name's own picker-name prefix should be tidied the same way a typed name is. How: This calls norConFun against picNamStr, falling back to an empty string when it returns nothing.

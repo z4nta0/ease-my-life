@@ -11,8 +11,8 @@ import { CAD_NAM_OBJ              } from './cadence.js';              // What: C
 import { CadConCom                } from './cadence-control.jsx';     // What: Cadence Control. Why: This is the shared editor for a picker's cadence settings. How: This is rendered inside PicForCom's daily-schedule block, wired to the local cadence state.
 import { clePicFun                } from './help-sample-data.js';     // What: Clear Pickers Function. Why: Help mode's disposable sample pickers/conditionals must be torn down the moment help mode turns off or this tab unmounts. How: This is called from TabPicker's own help-mode effect and its unmount cleanup.
 import { Collapse                 } from './ui.jsx';                  // What: Collapse. Why: Several optional sections need an animated expand/collapse instead of an abrupt show/hide. How: This wraps the add-group input, the conditional-attach block, and the daily-schedule block, each gated on its own open boolean.
-import { ConditionalControls      } from './tab-conditional.jsx';     // What: Conditional Controls. Why: Attaching a brand-new inline conditional needs the same editor the Data tab uses. How: This is rendered inside PicForCom's conditional-attach block, wired to the local condDraft state.
-import { conditionalDraftDefault  } from './tab-conditional.jsx';     // What: Conditional Draft Default. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This is called whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
+import { CodConCom                } from './tab-conditional.jsx';     // What: Conditional Control Component. Why: Attaching a brand-new inline conditional needs the same editor the Data tab uses. How: This is rendered inside PicForCom's conditional-attach block, wired to the local condDraft state.
+import { conDrfFun                } from './tab-conditional.jsx';     // What: Conditional Draft Function. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This is called whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
 import { EntryEditor              } from './tab-today.jsx';           // What: Entry Editor. Why: Adding or editing a pool item reuses the exact same weight/ease editor the Today tab uses. How: This is rendered inline below the pool list, wired to either the real store actions or a local draft-item actions object.
 import { emlTouObj                } from './onboarding.jsx';          // What: Ease My Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill, and written via emlTouObj.set() to clear a staged empty-state prefill.
 import { HelButCom               } from './help-mode.jsx';           // What: Help Button Component. Why: This page needs its own toggle for entering/exiting help mode. How: This is rendered in the page header, wired to the local helpOn boolean.
@@ -1589,7 +1589,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 	// What: Conditional On Boolean And Setter. Why: An optional conditional gate; when on, the user attaches an existing conditional or creates a fresh inline one. How: This starts on only when editing an existing picker that already has one attached.
 	const [ conOnBoo, setConOnBoo ] = React.useState( !!( iniFrmObj && iniFrmObj.conditionalId ) );
 	const [ conSelStr, setConSelStr ] = React.useState( ( iniFrmObj && iniFrmObj.conditionalId ) || null ); // What: Conditional Selected String And Setter. Why: This holds which conditional is chosen: an existing id, the literal 'new', or null. How: This starts from a prefilled conditionalId, or null.
-	const [ conDftObj, setConDftObj ] = React.useState( () => conditionalDraftDefault( '' ) ); // What: Conditional Draft Object And Setter. Why: Creating a fresh inline conditional needs its own draft shape to edit. How: This starts from the shared default, seeded with an empty name until the user actually opens the "Add New Conditional" pill.
+	const [ conDftObj, setConDftObj ] = React.useState( () => conDrfFun( '' ) ); // What: Conditional Draft Object And Setter. Why: Creating a fresh inline conditional needs its own draft shape to edit. How: This starts from the shared default, seeded with an empty name until the user actually opens the "Add New Conditional" pill.
 	const [ conTouBoo, setConTouBoo ] = React.useState( false ); // What: Conditional Touched Boolean And Setter. Why: A name collision error should only surface once the user has actually tried to submit with one. How: This is flipped true by subFrmFun when a collision blocks submission.
 	// What: Conditional Tidy String. Why: Create-new requires a UNIQUE name; normalizing first, then comparing against existing conditionals (which are stored normalized), is what actually detects a real collision, not just a surface-level text match. How: This runs conDftObj's own name through the shared normalizer.
 	const conTidStr = norConFun( conDftObj.name ) || '';
@@ -2296,7 +2296,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 					<Collapse open={ conOnBoo }>
 
-						<div className='cnd-attach'>{ /* What: Conditional Attach Div Element. Why: The pill rail and the inline new-conditional editor form one block. How: This wraps cnd-rail and the Collapse around ConditionalControls. */ }
+						<div className='cnd-attach'>{ /* What: Conditional Attach Div Element. Why: The pill rail and the inline new-conditional editor form one block. How: This wraps cnd-rail and the Collapse around CodConCom. */ }
 
 
 							<div className='cnd-rail picker-groups at-start at-end' ref={ raiCalFun }>{ /* What: Conditional Rail Div Element. Why: Every existing conditional plus the "Add New" pill need a horizontally-scrolling rail. How: This wraps one pill per sorted entry in conObjArr, then the fixed "Add New Conditional" pill. */ }
@@ -2337,7 +2337,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 								<button
 									type='button'
 									className={ ` cnd-pill cnd-pill--new   ${ conSelStr === 'new' ? 'is-on' : '' } ` }
-									onClick={ () => { setConSelStr( 'new' ); setConDftObj( conditionalDraftDefault( newNamStr.trim(), conObjArr.map( ( c ) => c.name ) ) ); } }
+									onClick={ () => { setConSelStr( 'new' ); setConDftObj( conDrfFun( newNamStr.trim(), conObjArr.map( ( c ) => c.name ) ) ); } }
 								>
 
 									<Icon name='plus' size={ 16 } />
@@ -2351,9 +2351,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 							<Collapse open={ conSelStr === 'new' }>
 
-								<ConditionalControls draft={ conDftObj } onChange={ setConDftObj } nameError={ conErrStr } />
+								<CodConCom draft={ conDftObj } onChange={ setConDftObj } nameError={ conErrStr } />
 
-							</Collapse>{ /* What: Collapse. Why: The inline new-conditional editor only needs to exist while conSelStr is actually 'new'. How: This animates ConditionalControls open/closed around that check. */ }
+							</Collapse>{ /* What: Collapse. Why: The inline new-conditional editor only needs to exist while conSelStr is actually 'new'. How: This animates CodConCom open/closed around that check. */ }
 
 
 						</div>
