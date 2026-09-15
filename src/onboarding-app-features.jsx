@@ -773,9 +773,9 @@ function appFeatureBlockedReason ( feaIdeStr, state ) {
  * currently relevant: the intro modal, or the running GuidedTour. Mounted at
  * the app level (see app.jsx's own actFeaStr), reads real persisted state and
  * calls real actions.* methods (see store.jsx), same overall shape as
- * PageTour in onboarding-page-tours.jsx.
+ * PagTouCom in onboarding-page-tours.jsx.
  *
- * Unlike PageTour, most features here have no extra steps yet beyond the
+ * Unlike PagTouCom, most features here have no extra steps yet beyond the
  * shared Step 1 (see bldSteFun above), and the feat_highlights feature skips
  * Step 1 entirely since its own target, the real help-highlight toggle,
  * already sits on the current page with nothing to navigate to first.
@@ -807,7 +807,7 @@ function AppFeatureTour ( { feaIdeStr, state, actions, active, selectTab, onCloF
 
 
 	const feaRecObj = APP_FEATURES.find( ( curFeaObj ) => curFeaObj.id === feaIdeStr ); // What: Feature Record Object. Why: This feature's own page/title/body/pills/time are read off its own APP_FEATURES entry. How: This searches APP_FEATURES for the entry whose own id matches feaIdeStr.
-	// Same resumable pattern as PageTour, see its own comment.
+	// Same resumable pattern as PagTouCom, see its own comment.
 	const onbStaObj = state.onboarding || {}; // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeAppFeature already re-derived from this SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resumable) step to land on. How: This reads state.onboarding, falling back to an empty object.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `appfeature-${ feaIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this feature's own tourId, otherwise null.
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
@@ -1015,10 +1015,10 @@ function AppFeatureTour ( { feaIdeStr, state, actions, active, selectTab, onCloF
  * onboarding-tour-runner.jsx), which hides the step counter and Skip/Back,
  * showing one full-width "Dismiss" button instead. Mounted directly from
  * TabToday rather than lifted to app.jsx like
- * AppFeatureTour/PageTour/PickerTour are: unlike those, this never navigates
+ * AppFeatureTour/PagTouCom/PickerTour are: unlike those, this never navigates
  * to another tab (the whole point is the section already on screen), so it
  * doesn't need real cross-tab selectTab/active plumbing, active='today'/a
- * no-op selectTab is enough, the same pattern PageTour itself used before
+ * no-op selectTab is enough, the same pattern PagTouCom itself used before
  * Pickers/Stats/Data/Settings tours needed it to actually leave Today.
  *
  * @author z4nta0 <https://github.com/z4nta0>

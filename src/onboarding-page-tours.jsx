@@ -4,17 +4,17 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This file's own PageTour component needs React in scope to compile its JSX and to call React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
+import React from 'react'; // What: React. Why: This file's own PagTouCom component needs React in scope to compile its JSX and to call React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
 
 
-import { emlTouObj              } from './onboarding.jsx';             // What: Ease My Life Tour Object. Why: This publishes/reads bus nonces the Pickers-page onGoBack handler uses to reset or redo an in-flight picker-form animation. How: This is read via .get() and written via .set() inside PageTour's own onGoBack below.
+import { emlTouObj              } from './onboarding.jsx';             // What: Ease My Life Tour Object. Why: This publishes/reads bus nonces the Pickers-page onGoBack handler uses to reset or redo an in-flight picker-form animation. How: This is read via .get() and written via .set() inside PagTouCom's own onGoBack below.
 import { GuidedTour             } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each page mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-page step array.
 import { hydrateOnboardingStats } from './onboarding-seed-data.js';    // What: Hydrate Onboarding Stats. Why: The Stats tour's own borrowed sample history needs converting from its static template shape into real pickLog rows. How: This is called inside unhHisFun below, passed ONBOARDING_STATS.
 import { Icon                   } from './ui.jsx';                     // What: Icon. Why: The intro modal needs a recognizable glyph matching the current page. How: This is rendered inside the intro modal's icon prop below.
 import { NAV_TAR_OBJ            } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Every page tour's own Step 1 and its own intro-modal fallback copy read this shared nav-button catalog. How: This is looked up by a page key everywhere this file needs the real nav button's own selector/title/body.
 import { OB_EXAMPLE             } from './onboarding-seed-data.js';    // What: Onboarding Example. Why: This is the "Daily Chores" sample picker's own template, one of the entries PAG_SAM_ARR below carries, and its own id is the Stats tour's own preselected picker. How: This is spread into PAG_SAM_ARR below and read directly for PRE_PIC_STR.
 import { OB_EXTRA_PICKERS       } from './onboarding-seed-data.js';    // What: Onboarding Extra Pickers. Why: This is every OTHER sample picker's own template, alongside OB_EXAMPLE the full set PAG_SAM_ARR below carries. How: This is spread into PAG_SAM_ARR below.
-import { OB_PAGE_TOURS          } from './onboarding-checklist.js';    // What: Onboarding Page Tours. Why: PageTour below needs this page tour's own id/page/label manifest entry. How: This is searched by pageId inside PageTour below.
+import { OB_PAGE_TOURS          } from './onboarding-checklist.js';    // What: Onboarding Page Tours. Why: PagTouCom below needs this page tour's own id/page/label manifest entry. How: This is searched by pagIdeStr inside PagTouCom below.
 import { OB_SAMPLE_PICKER_IDS   } from './onboarding-seed-data.js';    // What: Onboarding Sample Picker Ids. Why: The Stats tour needs to unhide/rehide every real sample picker (not a disposable copy) for its own duration. How: This is iterated by unhHisFun/hidHisFun below.
 import { OB_TASKS               } from './onboarding-seed-data.js';    // What: Onboarding Tasks. Why: The Data tour needs real reminders to point at, seeded/cleared as disposable copies the same way PAG_SAM_ARR is for pickers. How: This is iterated by seeTasFun/cleTasFun below.
 import { IntModCom              } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each page mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this page's own icon/title/paragraphs/pills.
@@ -76,7 +76,7 @@ import { IntModCom              } from './onboarding-intro-modal.jsx'; // What: 
  *
 */
 
-const PAG_COP_OBJ = { // What: Page Copy Object. Why: PageTour's own intro modal reads this by pagIdeStr for its title/body/pills, falling back to navTarObj's own content when a page has no entry here. How: This is looked up by pagIdeStr inside PageTour below.
+const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro modal reads this by pagIdeStr for its title/body/pills, falling back to navTarObj's own content when a page has no entry here. How: This is looked up by pagIdeStr inside PagTouCom below.
 
 
 	explore_today : {
@@ -225,7 +225,7 @@ const neeCopFun = ( pagIdeStr ) => pagIdeStr === 'explore_pickers' || pagIdeStr 
  * seePicFun = Seed Picker Function
  *
  * @summary
- * Fired from Step 1's run() (see PageTour below), between the nav
+ * Fired from Step 1's run() (see PagTouCom below), between the nav
  * click and Step 2 ever mounting, the same "prepare what the NEXT step
  * needs" timing already used elsewhere in this file (e.g. Today's own
  * Step 5 staging Step 6's rename input). Guarded by existence so
@@ -880,7 +880,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: bldSteFun below spreads
  * disappears behind the input. Lets a Back to the groupGrip step reset
  * the input to a genuine no-op edit (draft === name) rather than an
  * actual rename, without this module otherwise needing to know the
- * live app state (PageTour itself is only ever passed `actions`, not
+ * live app state (PagTouCom itself is only ever passed `actions`, not
  * `state`, for this purpose).
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -988,7 +988,7 @@ const forNamFun = ( actions ) => { // What: Force Name Function. Why: A click ra
  *
 */
 
-const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why: PageTour below needs this page's own full ordered step array beyond Step 1. How: This branches on pagIdeStr, spreading the matching target catalog's entries with this flow's own navigation flags.
+const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why: PagTouCom below needs this page's own full ordered step array beyond Step 1. How: This branches on pagIdeStr, spreading the matching target catalog's entries with this flow's own navigation flags.
 
 
 	if ( pagIdeStr === 'explore_pickers' ) { // What: Pickers Branch Check. Why: The Pickers tour's own steps only apply to this one page tour. How: This returns its own step array whenever pagIdeStr matches.
@@ -1200,10 +1200,10 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
 
 
 
-// #region PageTour
+// #region PagTouCom
 
 /**
- * PageTour = Page Tour
+ * PagTouCom = Page Tour Component
  *
  * @summary
  * Renders whichever piece of one page's own mini-tour is currently
@@ -1215,53 +1215,54 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.pageId    - Page Id: This page tour's own checklist id (e.g.
- *                          'explore_today'), keying PAG_COP_OBJ and bldSteFun.
+ * @param props.pagIdeStr - Page Identifier String: This page tour's own
+ *                          checklist id (e.g. 'explore_today'), keying
+ *                          PAG_COP_OBJ and bldSteFun.
  * @param props.state     - State: The entire app's own persisted state.
  * @param props.actions   - Actions: The actions that mutate props.state.
  * @param props.active    - Active: The app's own currently active tab id.
  * @param props.selectTab - Select Tab: Switches the app's own active tab.
- * @param props.onClose   - On Close: Clears app.jsx's own actPagStr, ending
- *                          this mount.
+ * @param props.onCloFun  - On Close Function: Clears app.jsx's own
+ *                          actPagStr, ending this mount.
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running
  * guided tour (touPhaStr 'tour'), depending on this page's own phase.
  *
  * @example
  * ```tsx
- * PageTour({ pageId, state, actions, active, selectTab, onClose })
- * // => <PageTour />
+ * PagTouCom({ pagIdeStr, state, actions, active, selectTab, onCloFun })
+ * // => <PagTouCom />
  * ```
  *
 */
 
-function PageTour ( { pageId, state, actions, active, selectTab, onClose } ) {
+function PagTouCom ( { pagIdeStr, state, actions, active, selectTab, onCloFun } ) {
 
 
-	const tourRecObj = OB_PAGE_TOURS.find( ( curTouObj ) => curTouObj.id === pageId ); // What: Tour Record Object. Why: This page's own real page key/label are read off its own OB_PAGE_TOURS manifest entry. How: This searches OB_PAGE_TOURS for the entry whose own id matches pageId.
+	const tourRecObj = OB_PAGE_TOURS.find( ( curTouObj ) => curTouObj.id === pagIdeStr ); // What: Tour Record Object. Why: This page's own real page key/label are read off its own OB_PAGE_TOURS manifest entry. How: This searches OB_PAGE_TOURS for the entry whose own id matches pagIdeStr.
 	const navTarObj = NAV_TAR_OBJ[ tourRecObj.page ]; // What: Nav Target Object. Why: The intro modal's own fallback title/body come from the shared nav-button catalog. How: This looks up NAV_TAR_OBJ by tourRecObj's own page.
-	const pagCopObj = PAG_COP_OBJ[ pageId ]; // What: Page Copy Object. Why: The intro modal's own title/body/pills prefer this page's own dedicated copy when it has one. How: This looks up PAG_COP_OBJ by pageId.
+	const pagCopObj = PAG_COP_OBJ[ pagIdeStr ]; // What: Page Copy Object. Why: The intro modal's own title/body/pills prefer this page's own dedicated copy when it has one. How: This looks up PAG_COP_OBJ by pagIdeStr.
 
 
 
 	const onbStaObj = state.onboarding || {}; // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeMiniTour already re-derived from this SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resumable) step to land on. How: This reads state.onboarding, falling back to an empty object.
-	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `page-${ pageId }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this page's own tourId, otherwise null.
+	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `page-${ pagIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this page's own tourId, otherwise null.
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
 
 
 
-	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Discards this tour's own disposable sample copies/borrowed history the moment it ends, however it ends, harmless no-op paths included. How: This branches on pageId to run whichever cleanup that page's own tour needs, then updates the checklist and calls onClose.
+	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Discards this tour's own disposable sample copies/borrowed history the moment it ends, however it ends, harmless no-op paths included. How: This branches on pagIdeStr to run whichever cleanup that page's own tour needs, then updates the checklist and calls onCloFun.
 
 
-		if ( neeCopFun( pageId ) ) clePicFun( actions ); // What: Picker Copy Cleanup Call. Why: The Pickers/Data tours must never leave a disposable picker copy behind. How: This calls clePicFun whenever neeCopFun says this page needed copies.
+		if ( neeCopFun( pagIdeStr ) ) clePicFun( actions ); // What: Picker Copy Cleanup Call. Why: The Pickers/Data tours must never leave a disposable picker copy behind. How: This calls clePicFun whenever neeCopFun says this page needed copies.
 
-		else if ( pageId === 'explore_stats' ) hidHisFun( actions ); // What: Sample History Hide Call. Why: The Stats tour must re-hide the real samples it borrowed. How: This calls hidHisFun only for the Stats page.
+		else if ( pagIdeStr === 'explore_stats' ) hidHisFun( actions ); // What: Sample History Hide Call. Why: The Stats tour must re-hide the real samples it borrowed. How: This calls hidHisFun only for the Stats page.
 
-		if ( pageId === 'explore_data' ) cleTasFun( actions ); // What: Task Copy Cleanup Call. Why: The Data tour must never leave a disposable reminder copy behind. How: This calls cleTasFun only for the Data page.
+		if ( pagIdeStr === 'explore_data' ) cleTasFun( actions ); // What: Task Copy Cleanup Call. Why: The Data tour must never leave a disposable reminder copy behind. How: This calls cleTasFun only for the Data page.
 
-		actions.setChecklistItem( pageId, { status : staValStr } ); // What: Checklist Status Update Call. Why: This page's own Today launcher card reads this to know whether to keep showing itself. How: This updates this page's own checklist entry to staValStr.
+		actions.setChecklistItem( pagIdeStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: This page's own Today launcher card reads this to know whether to keep showing itself. How: This updates this page's own checklist entry to staValStr.
 
-		onClose(); // What: On Close Call. Why: app.jsx's own actPagStr must be cleared however this tour ends. How: This calls the onClose prop passed down from app.jsx.
+		onCloFun(); // What: On Close Call. Why: app.jsx's own actPagStr must be cleared however this tour ends. How: This calls the onCloFun prop passed down from app.jsx.
 
 
 	};
@@ -1294,25 +1295,25 @@ function PageTour ( { pageId, state, actions, active, selectTab, onClose } ) {
 
 
 		<GuidedTour
-			tourId={ `page-${ pageId }` }
+			tourId={ `page-${ pagIdeStr }` }
 			steps={ [
 				buildPageTourStep1( tourRecObj.page,
-					pageId === 'explore_data' ? () => { seePicFun( state, actions ); seeTasFun( state, actions ); } : // What: Data Run Branch. Why: The Data tour's own Step 1 must seed BOTH disposable picker and reminder copies before its later steps can point at them. How: This calls both seePicFun and seeTasFun when pageId is 'explore_data'.
-					neeCopFun( pageId ) ? () => seePicFun( state, actions ) : // What: Pickers Run Branch. Why: The Pickers tour's own Step 1 only needs disposable picker copies. How: This calls seePicFun when neeCopFun says this page needs copies.
-					pageId === 'explore_stats' ? () => unhHisFun( state, actions ) : // What: Stats Run Branch. Why: The Stats tour's own Step 1 instead needs the real samples unhidden. How: This calls unhHisFun when pageId is 'explore_stats'.
+					pagIdeStr === 'explore_data' ? () => { seePicFun( state, actions ); seeTasFun( state, actions ); } : // What: Data Run Branch. Why: The Data tour's own Step 1 must seed BOTH disposable picker and reminder copies before its later steps can point at them. How: This calls both seePicFun and seeTasFun when pagIdeStr is 'explore_data'.
+					neeCopFun( pagIdeStr ) ? () => seePicFun( state, actions ) : // What: Pickers Run Branch. Why: The Pickers tour's own Step 1 only needs disposable picker copies. How: This calls seePicFun when neeCopFun says this page needs copies.
+					pagIdeStr === 'explore_stats' ? () => unhHisFun( state, actions ) : // What: Stats Run Branch. Why: The Stats tour's own Step 1 instead needs the real samples unhidden. How: This calls unhHisFun when pagIdeStr is 'explore_stats'.
 					undefined, // What: Default Run Branch. Why: Today/Settings touch neither pickers nor reminders, so Step 1 needs no side effect at all. How: This passes undefined as buildPageTourStep1's own runSteFun for every other page.
 					'Next',
 					tourRecObj.label ),
-				...bldSteFun( pageId, actions )
+				...bldSteFun( pagIdeStr, actions )
 			] }
 			resumeStep={ resTouObj ? resTouObj.step : 0 }
 			actions={ actions }
 			active={ active }
 			selectTab={ selectTab }
-			onGoBack={ ( tarSteNum ) => { // What: On Go Back Handler. Why: A real, one-way UI transition (the Pickers tour's own pick animation, or Today's own Edit Mode) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on pageId first, then on tarSteNum, driving whichever real DOM control or bus nonce reverses that specific transition.
+			onGoBack={ ( tarSteNum ) => { // What: On Go Back Handler. Why: A real, one-way UI transition (the Pickers tour's own pick animation, or Today's own Edit Mode) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on pagIdeStr first, then on tarSteNum, driving whichever real DOM control or bus nonce reverses that specific transition.
 
 
-				if ( pageId === 'explore_pickers' ) { // What: Pickers Back Branch Check. Why: Only the Pickers tour's own steps have this one-way pick-animation state to reverse. How: This branches on pageId matching 'explore_pickers'.
+				if ( pagIdeStr === 'explore_pickers' ) { // What: Pickers Back Branch Check. Why: Only the Pickers tour's own steps have this one-way pick-animation state to reverse. How: This branches on pagIdeStr matching 'explore_pickers'.
 
 
 					if ( tarSteNum === 3 ) { // What: Add Tab Scroll Check. Why: Back from Picker Selection to Create New Pickers must undo Picker Selection's own scroll-into-view, which can scroll .picker-tabs rightward past the Add tab (the first tab in the row) if there are enough pickers to overflow it. How: This scrolls .picker-tabs back to its own left edge.
@@ -1354,7 +1355,7 @@ function PageTour ( { pageId, state, actions, active, selectTab, onClose } ) {
 
 				}
 
-				if ( pageId !== 'explore_today' ) return; // What: Today Branch Guard. Why: Only the Today tour's own steps have Edit Mode/rename state to reverse. How: This returns early whenever pageId isn't 'explore_today'.
+				if ( pagIdeStr !== 'explore_today' ) return; // What: Today Branch Guard. Why: Only the Today tour's own steps have Edit Mode/rename state to reverse. How: This returns early whenever pagIdeStr isn't 'explore_today'.
 
 				if ( tarSteNum === 3 ) { // What: Edit Mode Toggle Check. Why: Back from Group Grip to Edit Mode must toggle Edit Mode back off via its own real control, since the .foot-editmode target only exists while it's off. How: This clicks whichever real Edit Mode toggle/Cancel control is currently visible.
 
@@ -1387,7 +1388,7 @@ function PageTour ( { pageId, state, actions, active, selectTab, onClose } ) {
 
 				if ( canButEle ) canButEle.click(); // What: Cancel Button Click. Why: This must only fire when the control actually exists. How: This clicks canButEle.
 
-				cloTouFun( 'skipped' ); // What: Close Tour Call. Why: This funnels Skip through the same cleanup any other exit path off this tour uses. How: This clears the disposable copies/borrowed history, updates the checklist to 'skipped', and calls onClose.
+				cloTouFun( 'skipped' ); // What: Close Tour Call. Why: This funnels Skip through the same cleanup any other exit path off this tour uses. How: This clears the disposable copies/borrowed history, updates the checklist to 'skipped', and calls onCloFun.
 
 
 			} }
@@ -1400,11 +1401,11 @@ function PageTour ( { pageId, state, actions, active, selectTab, onClose } ) {
 
 }
 
-// #endregion PageTour
+// #endregion PagTouCom
 
 
 
-export { PageTour, buildPageTourStep1 }; // What: Named Exports. Why: app.jsx renders PageTour directly, and onboarding-app-features.jsx reuses buildPageTourStep1 verbatim for its own App Features tours. How: This re-exports both bindings unchanged from their own module.
+export { PagTouCom, buildPageTourStep1 }; // What: Named Exports. Why: app.jsx renders PagTouCom directly, and onboarding-app-features.jsx reuses buildPageTourStep1 verbatim for its own App Features tours. How: This re-exports both bindings unchanged from their own module.
 
 
 
