@@ -620,7 +620,7 @@ function Onboarding ( { state, actions, active, selectTab } ) {
 
 
 
-export { Onboarding };
+export { Onboarding }; // What: Named Exports. Why: app.jsx renders this as the first-run welcome modal and its own driven tour. How: This re-exports Onboarding; every other binding in this file is internal-only.
 
 
 

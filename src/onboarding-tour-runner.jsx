@@ -1381,7 +1381,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 
 
-export { GuidedTour, goToTodayTop };
+export { GuidedTour, goToTodayTop }; // What: Named Exports. Why: Every onboarding-*-tours.jsx module renders GuidedTour as its own shared tour engine, and onboarding.jsx calls goToTodayTop directly to reset scroll position. How: This re-exports the 2 declared above; every other binding in this file is internal-only.
 
 
 

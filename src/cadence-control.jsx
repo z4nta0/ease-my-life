@@ -633,6 +633,6 @@ function CadConCom ( { value, onChange } ) {
 
 
 
-export { CadConCom, CAD_OPT_ARR };
+export { CadConCom, CAD_OPT_ARR }; // What: Named Exports. Why: tab-picker.jsx renders CadConCom for its own cadence editor, and tab-data.jsx reads CAD_OPT_ARR for its own daily-cadence summary text; every other binding in this file is internal-only. How: This re-exports the 2 declared above.
 
 

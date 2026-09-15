@@ -910,7 +910,7 @@ function PickerTour ( { pickerId, state, actions, active, selectTab, onClose } )
 
 
 
-export { PickerTour };
+export { PickerTour }; // What: Named Exports. Why: app.jsx renders this as the Pickers page's own guided tour. How: This re-exports PickerTour; every other binding in this file is internal-only.
 
 
 

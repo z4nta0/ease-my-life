@@ -668,7 +668,7 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 
 
 
-export { ConditionalControls };
+export { ConditionalControls }; // What: Named Exports. Why: tab-picker.jsx and tab-data.jsx both render this as the shared conditional editor. How: This re-exports ConditionalControls; every other binding in this file is internal-only.
 
 
 

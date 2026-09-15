@@ -763,7 +763,7 @@ function BacFloCom( { tabId : tabIdeStr, measureRef : meaEleRef } ) {
 
 
 
-export { BacFloCom };
+export { BacFloCom }; // What: Named Exports. Why: app.jsx and tab-today.jsx both render this behind their own tab content. How: This re-exports BacFloCom; every other binding in this file is internal-only.
 
 
 

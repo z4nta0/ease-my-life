@@ -6173,7 +6173,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 
-export { TabToday, EntryEditor };
+export { TabToday, EntryEditor }; // What: Named Exports. Why: app.jsx renders TabToday as the Today tab itself, and tab-picker.jsx/tab-data.jsx both reuse EntryEditor as the shared item-editing row. How: This re-exports the 2 declared above; every other binding in this file is internal-only.
 
 
 

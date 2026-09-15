@@ -927,6 +927,6 @@ function AppRooCom () {
 
 
 
-export { AppRooCom };
+export { AppRooCom }; // What: Named Exports. Why: main.jsx is the sole consumer, mounting this as the app's whole root. How: This re-exports AppRooCom; every other binding in this file is internal-only.
 
 

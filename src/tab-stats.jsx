@@ -3724,7 +3724,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 
 
-export { TabStats };
+export { TabStats }; // What: Named Exports. Why: app.jsx renders this as the Stats tab itself. How: This re-exports TabStats; every other binding in this file is internal-only.
 
 
 

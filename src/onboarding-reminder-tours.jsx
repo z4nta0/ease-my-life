@@ -466,7 +466,7 @@ function ReminderTour ( { variant, state, actions, closeReminderForm, onClose } 
 
 
 
-export { ReminderTour };
+export { ReminderTour }; // What: Named Exports. Why: tab-today.jsx renders this as the Reminders section's own guided tour. How: This re-exports ReminderTour; every other binding in this file is internal-only.
 
 
 

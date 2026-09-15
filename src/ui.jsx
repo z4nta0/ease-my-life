@@ -1658,7 +1658,7 @@ function freezeEditedRow ( sorLisArr, opeIdeVal, newIdeVal, frzRowRef ) {
 
 
 // What: Named Exports. Why: Every tab file imports these shared UI primitives by name rather than through a namespace object. How: This re-exports every non-inline-exported binding declared in this file (reduceMotion, useEscapeCancel, and announce are already exported directly at their own declarations above).
-export { Icon, Btn, Card, Collapse, Pill, ProgressBar, NumStepper, InfoTip, WeekdayChips, BoostReset, FillButton, fmtDate, fmtDateLong, fmtTime, compareSortEntries, SortSelect, freezeEditedRow };
+export { Icon, Btn, Card, Collapse, Pill, ProgressBar, NumStepper, InfoTip, WeekdayChips, BoostReset, FillButton, fmtDate, fmtDateLong, fmtTime, compareSortEntries, SortSelect, freezeEditedRow }; // What: Named Exports. Why: This is the shared UI primitives module; every tab and several other shared modules import one or more of these by name. How: This re-exports all 17 declared above; every other binding in this file is internal-only.
 
 
 
