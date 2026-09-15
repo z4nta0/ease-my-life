@@ -42,7 +42,7 @@ import { OB_SAMPLE_TASK_IDS      } from './onboarding-seed-data.js';       // Wh
 import { PICKERS                 } from './pickers.js';                    // What: Pickers Namespace Object. Why: Picking, re-rolling, and reading a picker's own eligibility/average-ease all funnel through this shared namespace. How: This is called throughout generate()/handleReroll/EntryEditor for pick/easeEligible/avgEase.
 import { reduceMotion            } from './ui.jsx';                        // What: Reduce Motion. Why: Nearly every animated sequence in this file (celebration, reel cascade, card flip, scroll) needs to skip or shorten itself for a user who prefers reduced motion. How: This is checked throughout as a plain function call.
 import { ReminderSection         } from './reminders.jsx';                 // What: Reminder Section. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genBlockOrder.
-import { ReminderTour            } from './onboarding-reminder-tours.jsx'; // What: Reminder Tour. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while actMinTouObj holds a 'reminder' kind entry.
+import { RemTouCom               } from './onboarding-reminder-tours.jsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while actMinTouObj holds a 'reminder' kind entry.
 import { REORDER                 } from './reorder.js';                    // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REORDER.startDrag inside startGroupDrag/startItemDrag.
 import { TASKS                   } from './tasks.js';                      // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for anchorDate/visibleToday/isDoneToday/optsFor/isCompletedOnce.
 import { TOD_HEL_ARR             } from './help-content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
@@ -4723,7 +4723,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * silently vanishing, mirroring app.jsx's own seeding. activeTour.id
 	 * only encodes the variant ('reminder-once'/'reminder-recurring'),
 	 * not the task id, so it is mapped back via the same taskId pairing
-	 * ReminderTour's own variant prop uses below.
+	 * RemTouCom's own varKeyStr prop uses below.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -6142,16 +6142,16 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			</div>
 
 
-			{ actMinTouObj && actMinTouObj.kind === 'reminder' && ( // What: Reminder Mini-Tour Check. Why: A running mini-tour only mounts ReminderTour when it's actually a reminder-kind tour. How: This renders ReminderTour only while actMinTouObj holds a value and its own kind is 'reminder'.
+			{ actMinTouObj && actMinTouObj.kind === 'reminder' && ( // What: Reminder Mini-Tour Check. Why: A running mini-tour only mounts RemTouCom when it's actually a reminder-kind tour. How: This renders RemTouCom only while actMinTouObj holds a value and its own kind is 'reminder'.
 
 
-				<ReminderTour
-					variant={ actMinTouObj.id === 'tk_ob_meds' ? 'once' : 'recurring' }
+				<RemTouCom
+					varKeyStr={ actMinTouObj.id === 'tk_ob_meds' ? 'once' : 'recurring' }
 					state={ state }
 					actions={ actions }
-					closeReminderForm={ () => setActiveEditor( ( curValStr ) => curValStr === 'reminder-add' ? null : curValStr ) }
-					onClose={ () => setActMinTouObj( null ) }
-				/> // What: Reminder Tour. Why: A reminder mini-tour never leaves Today, so it renders directly here. How: This is passed which variant to run plus a close handler that clears actMinTouObj.
+					onCloFrmFun={ () => setActiveEditor( ( curValStr ) => curValStr === 'reminder-add' ? null : curValStr ) }
+					onCloFun={ () => setActMinTouObj( null ) }
+				/> // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it renders directly here. How: This is passed which variant to run plus a close handler that clears actMinTouObj.
 
 			) }
 			{ shwFeaIntBoo && ( // What: App Features Intro Check. Why: The one-time intro tip only belongs once, right when it first becomes relevant. How: This renders AppFeaturesIntroTip only while shwFeaIntBoo is true.
