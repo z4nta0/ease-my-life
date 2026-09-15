@@ -345,7 +345,7 @@ const arrXFun = ( recObj, coaLefNum, coaWidNum ) => Math.max( 18, Math.min( recO
 
 
 /**
- * goToTodayTop = Go To Today Top
+ * TodTopFun = Today Top Function
  *
  * @summary
  * Shared by every tour's Skip action (both the intro modal's and, once
@@ -359,7 +359,7 @@ const arrXFun = ( recObj, coaLefNum, coaWidNum ) => Math.max( 18, Math.min( recO
  *
 */
 
-const goToTodayTop = ( active, selectTab ) => { // What: Go To Today Top. Why: Every tour ending (Skip, Done, or the not-found watchdog) needs to land the user back on a pristine, top-scrolled Today. How: This switches to Today if needed, then scrolls both the app's own scroller and the window to 0.
+const TodTopFun = ( active, selectTab ) => { // What: Today Top Function. Why: Every tour ending (Skip, Done, or the not-found watchdog) needs to land the user back on a pristine, top-scrolled Today. How: This switches to Today if needed, then scrolls both the app's own scroller and the window to 0.
 
 
 	if ( active !== 'today' ) selectTab( 'today' ); // What: Today Switch Guard. Why: A tour can end from any tab, but the landing spot is always Today. How: This only calls selectTab when the active tab is not already Today.
@@ -491,7 +491,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 		onFinish(); // What: Finish Callback. Why: The caller needs its own completion hook to fire before this component tears itself down. How: This calls the onFinish prop with no arguments.
 
-		goToTodayTop( active, selectTab ); // What: Today Landing. Why: A finished tour should always end on a pristine Today, regardless of which tab/scroll position its last step left things in. How: This calls the shared goToTodayTop helper with the current active tab and selectTab.
+		TodTopFun( active, selectTab ); // What: Today Landing. Why: A finished tour should always end on a pristine Today, regardless of which tab/scroll position its last step left things in. How: This calls the shared TodTopFun helper with the current active tab and selectTab.
 
 
 	}, [ onFinish, active, selectTab ] ); // What: Effect Dependency Array. Why: This callback must re-close over a fresh onFinish whenever the prop itself changes, and over fresh active/selectTab so the landing logic always targets the current tab state. How: onFinish is the completion hook being called, active is read to decide whether a tab switch is needed, and selectTab is the function that performs it.
@@ -507,7 +507,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 		supGuaRef.current = false; // What: Guard Suppression Release. Why: The suppression above must only cover onSkip/onFinish's own synthetic clicks, not any real click the user makes afterward. How: This flips supGuaRef.current back off immediately after the call above returns.
 
-		goToTodayTop( active, selectTab ); // What: Today Landing. Why: A skipped tour should always end on a pristine Today too, same as a finished one. How: This calls the shared goToTodayTop helper with the current active tab and selectTab.
+		TodTopFun( active, selectTab ); // What: Today Landing. Why: A skipped tour should always end on a pristine Today too, same as a finished one. How: This calls the shared TodTopFun helper with the current active tab and selectTab.
 
 
 	};
@@ -897,7 +897,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 		};
 
-		const scrAmtFun = ( scrEle, dltYNum ) => { // What: Scroll By Amount Function. Why: A step that jumps to a different part of the page, or, via briTarFun's own content-grew re-trigger and decResFun's own follow-up correction below, mid-step too, should read as the tour visibly navigating there rather than an unexplained cut. How: This is smooth unless prefers-reduced-motion, and is deliberately NOT applied to goToTodayTop (the tour-END reset on Skip/Done), which is a closing reset, not a "here's the next thing" step transition, and already fires alongside a tab switch back to Today, staying an instant cut by design.
+		const scrAmtFun = ( scrEle, dltYNum ) => { // What: Scroll By Amount Function. Why: A step that jumps to a different part of the page, or, via briTarFun's own content-grew re-trigger and decResFun's own follow-up correction below, mid-step too, should read as the tour visibly navigating there rather than an unexplained cut. How: This is smooth unless prefers-reduced-motion, and is deliberately NOT applied to TodTopFun (the tour-END reset on Skip/Done), which is a closing reset, not a "here's the next thing" step transition, and already fires alongside a tab switch back to Today, staying an instant cut by design.
 
 
 			const optObj = { top: dltYNum, behavior: reduceMotion() ? 'auto' : 'smooth' }; // What: Scroll Options Object. Why: Both branches below need the same behavior choice. How: This builds one shared options object from dltYNum and the current reduced-motion preference.
@@ -1381,7 +1381,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 
 
-export { GuidedTour, goToTodayTop }; // What: Named Exports. Why: Every onboarding-*-tours.jsx module renders GuidedTour as its own shared tour engine, and onboarding.jsx calls goToTodayTop directly to reset scroll position. How: This re-exports the 2 declared above; every other binding in this file is internal-only.
+export { GuidedTour, TodTopFun }; // What: Named Exports. Why: Every onboarding-*-tours.jsx module renders GuidedTour as its own shared tour engine, and onboarding.jsx calls TodTopFun directly to reset scroll position. How: This re-exports the 2 declared above; every other binding in this file is internal-only.
 
 
 

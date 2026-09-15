@@ -7,7 +7,7 @@ import React from 'react'; // What: React. Why: This file's own Onboarding compo
 
 
 import { emlTouObj              } from './eml-tour-bus.js';              // What: Ease My Life Tour Object. Why: This is the shared observable tour bus other tabs read to react to the Welcome Tour without a context provider. How: This is written to via .set() at a few points below and re-exported for existing importers.
-import { goToTodayTop           } from './onboarding-tour-runner.jsx';   // What: Go To Today Top. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkip handler below.
+import { TodTopFun              } from './onboarding-tour-runner.jsx';   // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkip handler below.
 import { GuidedTour             } from './onboarding-tour-runner.jsx';   // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives the Welcome Tour once the intro modal is accepted. How: This is rendered while onbPhaStr is 'tour', passed this file's own step array and side effects.
 import { hydStaFun              } from './onboarding-seed-data.js';      // What: Hydrate Stats Function. Why: The precomputed sample history stores day-offsets, not real dates. How: This converts those offsets into real ISO dates relative to today inside the seeding effect below.
 import { NAV_TAR_OBJ            } from './onboarding-targets.jsx';      // What: Nav Target Object. Why: Four of this tour's steps just spotlight a nav button, sharing the same selector/copy as each page's own future mini-tour. How: This is spread into the Pickers/Stats/Data/Settings step objects below.
@@ -582,7 +582,7 @@ function Onboarding ( { state, actions, active, selectTab } ) {
 
 					finTouFun(); // What: Finish Tour Call. Why: Skipping still needs the exact same cleanup any other path off the tour performs. How: This flips onbPhaStr to 'off' and clears the shared bus's own prefill field.
 
-					goToTodayTop( active, selectTab ); // What: Today Landing Call. Why: Skipping should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This switches to Today if needed and scrolls both the app's own scroller and the window to 0.
+					TodTopFun( active, selectTab ); // What: Today Landing Call. Why: Skipping should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This switches to Today if needed and scrolls both the app's own scroller and the window to 0.
 
 
 				} }

@@ -4859,7 +4859,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		 * A double rAF, not a direct call, since the last checklist item
 		 * is very often resolved by a tour's own Skip/Done, and EVERY
 		 * tour funnels both through onboarding-tour-runner.jsx's
-		 * goToTodayTop, which forces main.scrollTop back to 0 via its OWN
+		 * TodTopFun, which forces main.scrollTop back to 0 via its OWN
 		 * requestAnimationFrame, already queued by the time this effect
 		 * runs. A single rAF here would land in the same frame and race
 		 * it (losing, depending on exact scheduling); deferring one frame
