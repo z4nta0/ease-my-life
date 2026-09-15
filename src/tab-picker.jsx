@@ -49,7 +49,7 @@ import { WeekdayChips             } from './ui.jsx';                  // What: W
  * into the settled end state, since the pick itself is already decided
  * before this component ever mounts. Reused as-is by the Settings tab's
  * own animation-style preview (see settings-previews.jsx's
- * PickerAnimStage), which is why `forceMotion` exists: an explicit Play
+ * PicAniCom), which is why `forceMotion` exists: an explicit Play
  * press there should still show the animation even under a reduced-
  * motion preference.
  *
@@ -194,7 +194,7 @@ function PickerStrip ( { candidates, picked, style, onDone, forceMotion } ) {
 	}, [ picked ] ); // What: Effect Dependency Array. Why: A fresh cycle must only start when a genuinely new pick arrives. How: picked changing is the sole trigger; the other values this effect reads (lenCanNum, aniOffBoo, staPosNum, onDone) are intentionally excluded since they're derived from the same render and don't themselves signal a new cycle.
 
 
-	if ( aniOffBoo ) { // What: Reduced Motion Render Branch. Why: One calm end-state is shown for every style when animation is off, matching what PickerAnimStage shows for the Settings preview. How: This returns the settled dissolve frame directly, skipping every style-specific branch below.
+	if ( aniOffBoo ) { // What: Reduced Motion Render Branch. Why: One calm end-state is shown for every style when animation is off, matching what PicAniCom shows for the Settings preview. How: This returns the settled dissolve frame directly, skipping every style-specific branch below.
 
 
 
@@ -367,7 +367,7 @@ function PickerStrip ( { candidates, picked, style, onDone, forceMotion } ) {
 
 
 
-export { PickerStrip }; // What: Picker Strip Export. Why: settings-previews.jsx's own PickerAnimStage reuses this exact component for the Settings tab's animation-style preview. How: This re-exports PickerStrip as a plain named export, unchanged.
+export { PickerStrip }; // What: Picker Strip Export. Why: settings-previews.jsx's own PicAniCom reuses this exact component for the Settings tab's animation-style preview. How: This re-exports PickerStrip as a plain named export, unchanged.
 
 
 

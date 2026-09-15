@@ -6,8 +6,8 @@
 import React from 'react'; // What: React. Why: This is the UI library both of this file's components are built on. How: This is used directly (React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
 
 
-import { Icon        } from './ui.jsx';         // What: Icon. Why: The celebration preview's mock done-cards need the same check glyph the real Today list uses on a completed card. How: This is rendered inside CelebrationPreviewStage's mock card rows, given the 'check' icon name.
-import { PickerStrip } from './tab-picker.jsx'; // What: Picker Strip. Why: The picker-animation preview must show the exact reel/spotlight/dissolve cycle the real Pickers tab renders, not a separate copy of it. How: This is rendered directly inside PickerAnimStage once the user has pressed Play at least once.
+import { Icon        } from './ui.jsx';         // What: Icon. Why: The celebration preview's mock done-cards need the same check glyph the real Today list uses on a completed card. How: This is rendered inside CelPreCom's mock card rows, given the 'check' icon name.
+import { PickerStrip } from './tab-picker.jsx'; // What: Picker Strip. Why: The picker-animation preview must show the exact reel/spotlight/dissolve cycle the real Pickers tab renders, not a separate copy of it. How: This is rendered directly inside PicAniCom once the user has pressed Play at least once.
 
 // #endregion Imports
 
@@ -19,10 +19,10 @@ import { PickerStrip } from './tab-picker.jsx'; // What: Picker Strip. Why: The 
  * @summary
  * Renders the Settings tab's Appearance preview stages: two components
  * that let the user PLAY the selected effect directly inside Settings
- * rather than only read about it. CelebrationPreviewStage is a dedicated
+ * rather than only read about it. CelPreCom is a dedicated
  * box, sized like the Today cards area, that fires the real ripple/
  * confetti/sparkle celebration over a small set of mock done-cards.
- * PickerAnimStage reuses the real PickerStrip component (the exact
+ * PicAniCom reuses the real PickerStrip component (the exact
  * reel/spotlight/dissolve cycle the Pickers tab itself renders) over a
  * small set of mock candidates.
  *
@@ -60,7 +60,7 @@ const PRE_CAN_ARR = [ // What: Preview Candidate Array. Why: The picker-animatio
 
 
 
-const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview needs a few mock "done" cards for the ripple/confetti/sparkle effects to visibly act on, mirroring the Today list rather than the progress ring. How: This is mapped inside CelebrationPreviewStage to render one mock .today-card row per entry.
+const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview needs a few mock "done" cards for the ripple/confetti/sparkle effects to visibly act on, mirroring the Today list rather than the progress ring. How: This is mapped inside CelPreCom to render one mock .today-card row per entry.
 
 
 	{ ideStr : 'pc1', picStr : 'Morning', namStr : 'Make the bed'      }, // What: Identifier String. Why: Every rendered mock card needs a stable, unique React key. How: This is used directly as the card row's own key. // What: Picker String. Why: A real Today card always names the picker an item came from. How: This is rendered inside the card's own meta-picker span. // What: Name String. Why: A real Today card always shows the item's own name. How: This is rendered inside the card's own name line.
@@ -72,48 +72,48 @@ const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview 
 
 
 
-// #region CelebrationPreviewStage
+// #region CelPreCom
 
 /**
- * CelebrationPreviewStage = Celebration Preview Stage
+ * CelPreCom = Celebration Preview Component
  *
  * @summary
  * Renders a dedicated preview box, sized like the Today cards area, that
  * plays the real ripple/confetti/sparkle celebration effect over a small
- * set of mock done-cards. Bumping the token prop replays the effect; the
- * effect always plays at full motion, since an explicit Play press is
- * itself the user's own consent to see it, even under a system reduced-
- * motion preference.
+ * set of mock done-cards. Bumping the repTokNum prop replays the effect;
+ * the effect always plays at full motion, since an explicit Play press
+ * is itself the user's own consent to see it, even under a system
+ * reduced-motion preference.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.style - Style: Which celebration style to play: 'ripple',
- *                      'confetti', or 'sparkle'.
- * @param props.token - Token: A monotonically-increasing counter; bumping it
- *                      replays the effect.
+ * @param props.styKeyStr - Style Key String: Which celebration style to
+ *                          play: 'ripple', 'confetti', or 'sparkle'.
+ * @param props.repTokNum - Replay Token Number: A monotonically-increasing
+ *                          counter; bumping it replays the effect.
  *
  * @returns The preview stage: the mock done-cards row plus whichever
  * particles the current effect has staged on top of it.
  *
  * @example
  * ```tsx
- * CelebrationPreviewStage({ style, token }) // => <CelebrationPreviewStage />
+ * CelPreCom({ styKeyStr, repTokNum }) // => <CelPreCom />
  * ```
  *
 */
 
-function CelebrationPreviewStage ( { style : styStr, token : tokNum } ) {
+function CelPreCom ( { styKeyStr, repTokNum } ) {
 
 
 	const carConRef                   = React.useRef( null ); // What: Card Container Reference. Why: The ripple style animates the real DOM card elements directly, so it needs a stable handle on their shared wrapper to query into. How: This is attached via the mock cards row's own ref prop below and read inside the replay effect.
-	const [ parIteArr, setParIteArr ] = React.useState( [] ); // What: Particle Item Array And Setter. Why: The confetti/sparkle styles need a list of already-rolled particle items to render. How: This starts empty and is populated by the replay effect below whenever tokNum bumps.
-	const firMouRef                   = React.useRef( true );  // What: First Mount Reference. Why: The very first render must not immediately replay the effect just because tokNum already holds a defined starting value. How: This starts true and is flipped false the first time the effect below runs, gating the early return that skips that first run.
+	const [ parIteArr, setParIteArr ] = React.useState( [] ); // What: Particle Item Array And Setter. Why: The confetti/sparkle styles need a list of already-rolled particle items to render. How: This starts empty and is populated by the replay effect below whenever repTokNum bumps.
+	const firMouRef                   = React.useRef( true );  // What: First Mount Reference. Why: The very first render must not immediately replay the effect just because repTokNum already holds a defined starting value. How: This starts true and is flipped false the first time the effect below runs, gating the early return that skips that first run.
 
 
-	React.useEffect( () => { // What: Replay Effect. Why: Bumping tokNum is Settings' own explicit "Play" trigger, and this is what actually restarts the ripple exhale cascade and/or rolls a fresh batch of confetti/sparkle particles. How: This skips its own first run on mount, then (depending on styStr) restarts the card exhale animation, rolls new particles, or clears them, always tearing down its own timeouts on cleanup.
+	React.useEffect( () => { // What: Replay Effect. Why: Bumping repTokNum is Settings' own explicit "Play" trigger, and this is what actually restarts the ripple exhale cascade and/or rolls a fresh batch of confetti/sparkle particles. How: This skips its own first run on mount, then (depending on styKeyStr) restarts the card exhale animation, rolls new particles, or clears them, always tearing down its own timeouts on cleanup.
 
 
-		if ( firMouRef.current ) { firMouRef.current = false; return; } // What: First Mount Guard. Why: The effect must not fire just because the component mounted; only an actual tokNum bump (a real Play press) should replay anything. How: This flips firMouRef false and bails out, but only on this component's very first effect run.
+		if ( firMouRef.current ) { firMouRef.current = false; return; } // What: First Mount Guard. Why: The effect must not fire just because the component mounted; only an actual repTokNum bump (a real Play press) should replay anything. How: This flips firMouRef false and bails out, but only on this component's very first effect run.
 
 
 		const redMotBoo = false;                                                                                     // What: Reduced Motion Boolean. Why: Pressing Play is itself an explicit request to SEE the animation, so this preview must always play at full motion regardless of the OS's own reduced-motion preference. How: This is hardcoded false rather than read from a real media query, unlike the app's own animations elsewhere.
@@ -122,7 +122,7 @@ function CelebrationPreviewStage ( { style : styStr, token : tokNum } ) {
 		let ripCleTmo; // What: Ripple Clear Timeout. Why: The ripple branch below may schedule a cleanup timeout that this same effect's own cleanup function later needs to be able to cancel. How: This starts undefined and is assigned only inside the ripple branch below.
 
 
-		if ( !redMotBoo && styStr === 'ripple' ) {
+		if ( !redMotBoo && styKeyStr === 'ripple' ) {
 
 
 			carEleArr.forEach( ( carCurEle, iteIndNum ) => { // What: Ripple Start Loop. Why: Every mock card needs its own staggered exhale animation restarted, matching the real Today list's own cascade. How: This iterates carEleArr, giving each card a delay proportional to its own position before re-triggering its 'is-exhaling' class.
@@ -174,13 +174,13 @@ function CelebrationPreviewStage ( { style : styStr, token : tokNum } ) {
 		}
 
 
-		if ( styStr === 'confetti' ) {
+		if ( styKeyStr === 'confetti' ) {
 
 
 			setParIteArr( Array.from( { length : 26 }, ( _, iteIndNum ) => ( { // What: Confetti Particle Roll. Why: The confetti style needs a fresh batch of randomly-scattered pieces every time it replays. How: This builds 26 particle items, each with its own random angle, distance, rotation, delay, and opacity.
 
 
-				ideStr : 'c' + tokNum + '_' + iteIndNum,                   // What: Identifier String. Why: Each rendered piece needs a stable, unique React key. How: This concatenates a 'c' tag, the current tokNum, and this item's own index into one string.
+				ideStr : 'c' + repTokNum + '_' + iteIndNum,                   // What: Identifier String. Why: Each rendered piece needs a stable, unique React key. How: This concatenates a 'c' tag, the current repTokNum, and this item's own index into one string.
 				kinStr : 'confetti',                                       // What: Kind String. Why: The renderer below needs to know which of the two particle shapes this item is. How: This is checked against 'confetti' when choosing between the <i> and <span> markup.
 				angNum : Math.round( Math.random() * 360 ),                // What: Angle Number. Why: Each piece needs its own random direction to fly outward in. How: This is a random integer degree value read by the '--angle' custom property.
 				disNum : 70 + Math.random() * 150,                         // What: Distance Number. Why: Each piece needs its own random travel distance. How: This is a random pixel value read by the '--dist' custom property.
@@ -194,13 +194,13 @@ function CelebrationPreviewStage ( { style : styStr, token : tokNum } ) {
 
 		}
 
-		else if ( styStr === 'sparkle' ) {
+		else if ( styKeyStr === 'sparkle' ) {
 
 
 			setParIteArr( Array.from( { length : 22 }, ( _, iteIndNum ) => ( { // What: Sparkle Particle Roll. Why: The sparkle style needs a fresh batch of randomly-placed glints every time it replays. How: This builds 22 particle items, each with its own random position and delay.
 
 
-				ideStr : 's' + tokNum + '_' + iteIndNum,   // What: Identifier String. Why: Each rendered piece needs a stable, unique React key. How: This concatenates an 's' tag, the current tokNum, and this item's own index into one string.
+				ideStr : 's' + repTokNum + '_' + iteIndNum,   // What: Identifier String. Why: Each rendered piece needs a stable, unique React key. How: This concatenates an 's' tag, the current repTokNum, and this item's own index into one string.
 				kinStr : 'sparkle',                         // What: Kind String. Why: The renderer below needs to know which of the two particle shapes this item is. How: This is checked against 'confetti' (falling through to sparkle otherwise) when choosing between the <i> and <span> markup.
 				lefNum : Math.round( Math.random() * 100 ), // What: Left Number. Why: Each glint needs its own random horizontal position within the stage. How: This is a random percentage value applied as this piece's own left offset.
 				topNum : Math.round( Math.random() * 100 ), // What: Top Number. Why: Each glint needs its own random vertical position within the stage. How: This is a random percentage value applied as this piece's own top offset.
@@ -235,14 +235,14 @@ function CelebrationPreviewStage ( { style : styStr, token : tokNum } ) {
 		};
 
 
-	}, [ tokNum ] ); // What: Effect Dependency Array. Why: This must only replay when tokNum itself bumps, a real Play press, never merely because styStr changed on its own, since switching the style dropdown without pressing Play should not retrigger anything. How: tokNum is the only value this effect's own change-detection is built around.
+	}, [ repTokNum ] ); // What: Effect Dependency Array. Why: This must only replay when repTokNum itself bumps, a real Play press, never merely because styKeyStr changed on its own, since switching the style dropdown without pressing Play should not retrigger anything. How: repTokNum is the only value this effect's own change-detection is built around.
 
 
 
 	return (
 
 
-		<div className='celeb-preview-stage motion-ok'>{ /* What: Celebration Preview Stage Div Element. Why: This is CelebrationPreviewStage's own root element, sized to match the Today cards area so the preview reads as a faithful copy. How: This wraps the mock done-cards row and the particle overlay that plays on top of it. */ }
+		<div className='celeb-preview-stage motion-ok'>{ /* What: Celebration Preview Stage Div Element. Why: This is CelPreCom's own root element, sized to match the Today cards area so the preview reads as a faithful copy. How: This wraps the mock done-cards row and the particle overlay that plays on top of it. */ }
 
 
 			<div
@@ -362,31 +362,33 @@ function CelebrationPreviewStage ( { style : styStr, token : tokNum } ) {
 
 }
 
-// #endregion CelebrationPreviewStage
+// #endregion CelPreCom
 
 
 
-// #region PickerAnimStage
+// #region PicAniCom
 
 /**
- * PickerAnimStage = Picker Animation Stage
+ * PicAniCom = Picker Animation Component
  *
  * @summary
  * Renders a preview box that reuses the real PickerStrip component to
  * play its reel/spotlight/dissolve cycle over a small, fixed set of mock
  * candidates. Shows a static fallback (the fixed landing candidate's own
- * name) until the token prop first becomes greater than 0; bumping it
- * again afterward remounts PickerStrip and replays the cycle. The cycle
- * is always forced to play at full motion, since an explicit Play press
- * is itself the user's own consent to see it.
+ * name) until the repTokNum prop first becomes greater than 0; bumping
+ * it again afterward remounts PickerStrip and replays the cycle. The
+ * cycle is always forced to play at full motion, since an explicit Play
+ * press is itself the user's own consent to see it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.style - Style: Which of PickerStrip's own animation styles to
- *                      preview: 'reel', 'spotlight', or 'dissolve'.
- * @param props.token - Token: A monotonically-increasing counter; the cycle
- *                      only plays once this first becomes greater than 0, and
- *                      bumping it again replays the cycle.
+ * @param props.styKeyStr - Style Key String: Which of PickerStrip's own
+ *                          animation styles to preview: 'reel',
+ *                          'spotlight', or 'dissolve'.
+ * @param props.repTokNum - Replay Token Number: A monotonically-increasing
+ *                          counter; the cycle only plays once this first
+ *                          becomes greater than 0, and bumping it again
+ *                          replays the cycle.
  *
  * @returns Either the live PickerStrip cycle (once Play has been pressed
  * at least once) or a static preview of the fixed landing candidate's
@@ -394,12 +396,12 @@ function CelebrationPreviewStage ( { style : styStr, token : tokNum } ) {
  *
  * @example
  * ```tsx
- * PickerAnimStage({ style, token }) // => <PickerAnimStage />
+ * PicAniCom({ styKeyStr, repTokNum }) // => <PicAniCom />
  * ```
  *
 */
 
-function PickerAnimStage ( { style : styStr, token : tokNum } ) {
+function PicAniCom ( { styKeyStr, repTokNum } ) {
 
 
 	const picCanObj = PRE_CAN_ARR[ 2 ]; // What: Picked Candidate Object. Why: The preview always needs to land on the same predictable candidate so its own copy stays truthful regardless of which run this is. How: This reads the 3rd mock candidate from PRE_CAN_ARR as a fixed, deterministic landing spot.
@@ -409,22 +411,22 @@ function PickerAnimStage ( { style : styStr, token : tokNum } ) {
 	return (
 
 
-		<div className='pickanim-preview-stage motion-ok'>{ /* What: Picker Animation Stage Div Element. Why: This is PickerAnimStage's own root element, matching the Pickers tab's real stage sizing so the preview reads as a faithful copy. How: This renders either the live PickerStrip cycle or a static fallback, based on whether Play has been pressed. */ }
+		<div className='pickanim-preview-stage motion-ok'>{ /* What: Picker Animation Stage Div Element. Why: This is PicAniCom's own root element, matching the Pickers tab's real stage sizing so the preview reads as a faithful copy. How: This renders either the live PickerStrip cycle or a static fallback, based on whether Play has been pressed. */ }
 
 
-			{ tokNum > 0 ? ( // What: Play Pressed Check. Why: The real cycle animation should only mount once the user has actually pressed Play at least once. How: This renders PickerStrip while tokNum is greater than 0, a static preview of the landing candidate's own name otherwise.
+			{ repTokNum > 0 ? ( // What: Play Pressed Check. Why: The real cycle animation should only mount once the user has actually pressed Play at least once. How: This renders PickerStrip while repTokNum is greater than 0, a static preview of the landing candidate's own name otherwise.
 
 
 				<PickerStrip
-					key={ tokNum }
+					key={ repTokNum }
 					candidates={ PRE_CAN_ARR }
 					picked={ picCanObj }
-					style={ styStr }
+					style={ styKeyStr }
 					forceMotion
 				/> // What: Picker Strip. Why: This plays the real reel/spotlight/dissolve cycle so the preview shows the actual animation, not a mockup of it. How: This is remounted (via its own key) on every replay, forced to play even under reduced motion since this is an explicit Play press.
 
 
-			) : ( // What: Static Pick Branch. Why: Before Play is first pressed, the stage still needs something meaningful to show instead of the cycling strip. How: This renders the else branch, taken while tokNum is still 0.
+			) : ( // What: Static Pick Branch. Why: Before Play is first pressed, the stage still needs something meaningful to show instead of the cycling strip. How: This renders the else branch, taken while repTokNum is still 0.
 
 
 				<span className='pickanim-preview-pick'>{ picCanObj.name }</span> // What: Picker Preview Pick Span Element. Why: Before Play is first pressed, the stage still needs to show something meaningful. How: This renders the fixed landing candidate's own name as a static placeholder.
@@ -441,11 +443,11 @@ function PickerAnimStage ( { style : styStr, token : tokNum } ) {
 
 }
 
-// #endregion PickerAnimStage
+// #endregion PicAniCom
 
 
 
-export { CelebrationPreviewStage, PickerAnimStage }; // What: Named Exports. Why: tab-settings.jsx renders both as the live previews for its own Completion Celebration and Picker Animation style pickers. How: This re-exports the 2 declared above; every other binding in this file is internal-only.
+export { CelPreCom, PicAniCom }; // What: Named Exports. Why: tab-settings.jsx renders both as the live previews for its own Completion Celebration and Picker Animation style pickers. How: This re-exports the 2 declared above; every other binding in this file is internal-only.
 
 
 

@@ -10,7 +10,7 @@ import { announce                } from './ui.jsx';                  // What: An
 import { APP_NAM_OBJ             } from './appearance.js';           // What: Appearance Namespace Object. Why: The Theme section needs to look up each built-in theme's own preview colors. How: This is read as APP_NAM_OBJ.PAL_SET_OBJ[key] when rendering each preset theme row.
 import { Btn                     } from './ui.jsx';                  // What: Btn. Why: Nearly every action in this tab (contact support, install, export/import/reset, replay tour, view legal docs) is triggered from this shared button component. How: This is rendered throughout the tab with varying kind/size/icon props.
 import { Card                    } from './ui.jsx';                  // What: Card. Why: Every section's own controls sit inside this shared bordered container. How: This wraps the contents of nearly every set-subsection and set-section below.
-import { CelebrationPreviewStage } from './settings-previews.jsx';   // What: Celebration Preview Stage. Why: The completion-celebration style picker needs a live preview the user can play. How: This is rendered inside the Completion Celebration card, driven by celStyStr/celTokNum.
+import { CelPreCom               } from './settings-previews.jsx';   // What: Celebration Preview Component. Why: The completion-celebration style picker needs a live preview the user can play. How: This is rendered inside the Completion Celebration card, driven by celStyStr/celTokNum.
 import { Collapse                } from './ui.jsx';                  // What: Collapse. Why: The contact-support form and the pending import/reset confirmations all need to expand/collapse in place. How: This wraps the contact-support form's own Card, gated on its own open boolean.
 import { HelButCom              } from './help-mode.jsx';           // What: Help Button Component. Why: This tab needs its own toggle for entering/exiting help mode, like every other tab. How: This is rendered in the header, toggling helModBoo.
 import { HelOveCom             } from './help-mode.jsx';           // What: Help Overlay Component. Why: Help mode needs its own dimmed overlay plus tooltips layered above this tab's real content. How: This is rendered once, driven by helModBoo and SET_HEL_ARR.
@@ -20,7 +20,7 @@ import { InfoTip                 } from './ui.jsx';                  // What: In
 import { LegModCom               } from './legal-docs.jsx';          // What: Legal Modal Component. Why: The Legal section's View buttons need somewhere to actually show the Privacy Policy/Terms of Service text. How: This is rendered once, driven by legDocStr, and closed by clearing that state back to null.
 import { NOT_NAM_OBJ             } from './notify.js';               // What: Notification Namespace Object. Why: The Daily generator's notify-me row needs to read/request the browser's notification permission. How: This is called via its own permission()/askOnce()/request()/subscribe() methods, kept as this exact external name since it broke production once before under a rename.
 import { OB_SAMPLE_PICKER_IDS    } from './onboarding-seed-data.js'; // What: Onboarding Sample Picker Ids. Why: Replaying the welcome tour needs to tell a real, established account apart from one still holding only seeded sample pickers. How: This is checked against state.pickers to decide whether to self-heal stale onboarding flags before the tour starts.
-import { PickerAnimStage         } from './settings-previews.jsx';   // What: Picker Animation Stage. Why: The picker-animation style picker needs a live preview the user can play. How: This is rendered inside the Picker Animation card, driven by picPreStr/picTokNum.
+import { PicAniCom               } from './settings-previews.jsx';   // What: Picker Animation Component. Why: The picker-animation style picker needs a live preview the user can play. How: This is rendered inside the Picker Animation card, driven by picPreStr/picTokNum.
 import { PWA                     } from './pwa.js';                  // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isStandalone()/canInstall()/installState()/promptInstall()/requestPersistOnce() methods.
 import { reduceMotion            } from './ui.jsx';                  // What: Reduce Motion. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
 import { SegConCom               } from './reminders.jsx';           // What: Segment Control Component. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
@@ -1465,18 +1465,18 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	const helExiFun = React.useCallback( () => setHelModBoo( false ), [] ); // What: Help Exit Function. Why: HelOveCom needs a stable callback to call when the user exits help mode from inside the overlay itself. How: This clears helModBoo; memoized with an empty dependency array since it only ever closes over a stable setter.
 	// Appearance preview stages: bumping a token replays; celStyStr/picPreStr
 	// hold which style is currently showing (null = idle, selector visible).
-	const [ celTokNum, setCelTokNum ] = React.useState( 0 ); // What: Celebration Token Number And Setter. Why: CelebrationPreviewStage needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plyCelFun and passed straight through as CelebrationPreviewStage's own token prop.
-	const [ celStyStr, setCelStyStr ] = React.useState( 'confetti' ); // What: Celebration Style String And Setter. Why: The preview stage needs to know which specific style to actually play. How: This is set by plyCelFun and passed straight through as CelebrationPreviewStage's own style prop.
-	const [ picTokNum, setPicTokNum ] = React.useState( 0 ); // What: Picker Token Number And Setter. Why: PickerAnimStage needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plyPikFun and passed straight through as PickerAnimStage's own token prop.
-	const [ picPreStr, setPicPreStr ] = React.useState( null ); // What: Picker Preview String And Setter. Why: The picker-animation stage should keep showing whichever style was last previewed, not the selected style, once its own cycle finishes. How: This is set by plyPikFun and, while non-null, overrides the selected pickAnim value passed to PickerAnimStage.
+	const [ celTokNum, setCelTokNum ] = React.useState( 0 ); // What: Celebration Token Number And Setter. Why: CelPreCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plyCelFun and passed straight through as CelPreCom's own repTokNum prop.
+	const [ celStyStr, setCelStyStr ] = React.useState( 'confetti' ); // What: Celebration Style String And Setter. Why: The preview stage needs to know which specific style to actually play. How: This is set by plyCelFun and passed straight through as CelPreCom's own styKeyStr prop.
+	const [ picTokNum, setPicTokNum ] = React.useState( 0 ); // What: Picker Token Number And Setter. Why: PicAniCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plyPikFun and passed straight through as PicAniCom's own repTokNum prop.
+	const [ picPreStr, setPicPreStr ] = React.useState( null ); // What: Picker Preview String And Setter. Why: The picker-animation stage should keep showing whichever style was last previewed, not the selected style, once its own cycle finishes. How: This is set by plyPikFun and, while non-null, overrides the selected pickAnim value passed to PicAniCom.
 	const picPreTmo = React.useRef( null ); // What: Picker Preview Timeout. Why: A rapid second Preview press should not leave 2 overlapping timers around from an earlier press. How: This holds whichever timeout id plyPikFun most recently scheduled, cleared on unmount below.
-	const plyCelFun = ( newStyStr ) => { setCelStyStr( newStyStr ); setCelTokNum( ( tokCurNum ) => tokCurNum + 1 ); }; // What: Play Celebration Function. Why: Pressing Preview on a celebration style option needs to both select and immediately replay that style. How: This sets celStyStr to newStyStr, then bumps celTokNum to trigger CelebrationPreviewStage's own replay effect.
-	const plyPikFun = ( newStyStr ) => { // What: Play Pick Function. Why: Pressing Preview on a picker-animation style option needs to both select and immediately replay that style. How: This clears any pending revert timeout, then sets picPreStr and bumps picTokNum to trigger PickerAnimStage's own remount.
+	const plyCelFun = ( newStyStr ) => { setCelStyStr( newStyStr ); setCelTokNum( ( tokCurNum ) => tokCurNum + 1 ); }; // What: Play Celebration Function. Why: Pressing Preview on a celebration style option needs to both select and immediately replay that style. How: This sets celStyStr to newStyStr, then bumps celTokNum to trigger CelPreCom's own replay effect.
+	const plyPikFun = ( newStyStr ) => { // What: Play Pick Function. Why: Pressing Preview on a picker-animation style option needs to both select and immediately replay that style. How: This clears any pending revert timeout, then sets picPreStr and bumps picTokNum to trigger PicAniCom's own remount.
 
 
 		clearTimeout( picPreTmo.current ); // What: Preview Timeout Clear. Why: A rapid second Preview press must not let an earlier press's own stale timeout fire later and revert this fresh preview. How: This cancels whichever timeout picPreTmo currently holds, if any.
 
-		setPicPreStr( newStyStr ); setPicTokNum( ( tokCurNum ) => tokCurNum + 1 ); // What: Preview State And Replay Trigger. Why: This is the actual preview activation, selecting the style and bumping the token PickerAnimStage remounts on. How: This sets picPreStr to newStyStr and increments picTokNum.
+		setPicPreStr( newStyStr ); setPicTokNum( ( tokCurNum ) => tokCurNum + 1 ); // What: Preview State And Replay Trigger. Why: This is the actual preview activation, selecting the style and bumping the token PicAniCom remounts on. How: This sets picPreStr to newStyStr and increments picTokNum.
 
 		// The strip runs ~2s. Leave `picPreStr` holding the previewed style after
 		// it ends (don't revert to the selected style) so the stage keeps the
@@ -2465,7 +2465,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 							<Card
 								padded={ false }
 								className='style-radio-card'
-							>{ /* What: Celebration Style Card. Why: The style picker and its live preview stage need a shared, unpadded bordered container. How: This wraps StyRadCom and CelebrationPreviewStage together. */ }
+							>{ /* What: Celebration Style Card. Why: The style picker and its live preview stage need a shared, unpadded bordered container. How: This wraps StyRadCom and CelPreCom together. */ }
 
 
 								<StyRadCom
@@ -2486,10 +2486,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									onPreview={ plyCelFun }
 								/>{ /* What: Style Radio Component. Why: This is the actual celebration-style picker. How: This is bound to the persisted completionStyle, saving via actions.setCompletionStyle and previewing via plyCelFun. */ }
 
-								<CelebrationPreviewStage
-									style={ celStyStr }
-									token={ celTokNum }
-								/>{ /* What: Celebration Preview Stage. Why: The user should be able to actually watch each celebration style before committing to it. How: This plays celStyStr, replaying every time celTokNum bumps. */ }
+								<CelPreCom
+									styKeyStr={ celStyStr }
+									repTokNum={ celTokNum }
+								/>{ /* What: Celebration Preview Component. Why: The user should be able to actually watch each celebration style before committing to it. How: This plays celStyStr, replaying every time celTokNum bumps. */ }
 
 
 							</Card>
@@ -2509,7 +2509,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 							<Card
 								padded={ false }
 								className='style-radio-card'
-							>{ /* What: Picker Animation Card. Why: The style picker and its live preview stage need a shared, unpadded bordered container. How: This wraps StyRadCom and PickerAnimStage together. */ }
+							>{ /* What: Picker Animation Card. Why: The style picker and its live preview stage need a shared, unpadded bordered container. How: This wraps StyRadCom and PicAniCom together. */ }
 
 
 								<StyRadCom
@@ -2530,10 +2530,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									onPreview={ plyPikFun }
 								/>{ /* What: Style Radio Component. Why: This is the actual picker-animation style picker. How: This is bound to the persisted pickAnim, saving via actions.setPickAnim (clearing any stale preview first) and previewing via plyPikFun. */ }
 
-								<PickerAnimStage
-									style={ picPreStr || ( state.appearance && state.appearance.pickAnim ) || 'reel' }
-									token={ picTokNum }
-								/>{ /* What: Picker Animation Stage. Why: The user should be able to actually watch each picker-animation style before committing to it. How: This plays picPreStr while a preview is active, otherwise the selected pickAnim, replaying every time picTokNum bumps. */ }
+								<PicAniCom
+									styKeyStr={ picPreStr || ( state.appearance && state.appearance.pickAnim ) || 'reel' }
+									repTokNum={ picTokNum }
+								/>{ /* What: Picker Animation Component. Why: The user should be able to actually watch each picker-animation style before committing to it. How: This plays picPreStr while a preview is active, otherwise the selected pickAnim, replaying every time picTokNum bumps. */ }
 
 
 							</Card>
