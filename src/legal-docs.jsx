@@ -1047,6 +1047,7 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 	}, [ legDocStr ] ); // What: Effect Dependency Array. Why: This effect must re-run every time a different document (or no document) is requested. How: legDocStr changes both whether the modal is shown at all and which document's own title/body renders inside it.
 
 
+
 	if ( !legDocStr ) return null; // What: No Document Render Guard. Why: LegModCom renders nothing at all until a document is actually requested. How: This returns null before any of the JSX below runs.
 
 
@@ -1124,6 +1125,5 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 
 
 export { LegModCom }; // What: Named Export. Why: tab-settings.jsx imports this by this exact name. How: This re-exports LegModCom by name, rippled into tab-settings.jsx's own import and JSX usage in the same pass.
-
 
 
