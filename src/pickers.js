@@ -17,15 +17,16 @@
  *
  * The exported PICKERS namespace object's own property names (pick,
  * readiness, easeEligible, modeEligible, EASE_TOL, avgEase,
- * DEFAULT_EASE), the three exported name normalizers
- * (normalizeGroupName, normalizePickerName, normalizeConditionalName),
- * and the { picked, updates, cycleCandidates, depletedEnd, pickerPatch }
- * return shape itself are all a cross-file contract read directly by
- * store.jsx, tab-today.jsx, tab-picker.jsx, tab-data.jsx, and
- * tab-conditional.jsx. They are deliberately left unrenamed on this
- * formatting pass; renaming any of them needs its own cross-file pass,
- * the same way appearance.js's own exported bindings were deferred on
- * its own first single-file formatting pass.
+ * DEFAULT_EASE) and the { picked, updates, cycleCandidates, depletedEnd,
+ * pickerPatch } return shape itself are a cross-file contract read
+ * directly by store.jsx, tab-today.jsx, tab-picker.jsx, tab-data.jsx,
+ * and tab-conditional.jsx. They are deliberately left unrenamed for
+ * now; renaming any of them needs its own cross-file pass, the same
+ * way appearance.js's own exported bindings were deferred on its own
+ * first single-file formatting pass. The three name normalizers
+ * (norGroFun, norPicFun, norConFun) were swept to their own 9-char
+ * names, with every one of those same 5 consumer files updated in the
+ * same pass, since the blast radius was small and non-persisted.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -80,10 +81,10 @@ function titCasFun( rawNamStr ) {
 
 
 
-// #region normalizeGroupName
+// #region norGroFun
 
 /**
- * normalizeGroupName = Normalize Group Name
+ * norGroFun = Normalize Group Function
  *
  * @summary
  * Title Cases a user-typed group name via {@link titCasFun}, then, if it
@@ -107,12 +108,12 @@ function titCasFun( rawNamStr ) {
  *
  * @example
  * ```ts
- * normalizeGroupName(rawNamStr, exiGroArr) // => resolved group name
+ * norGroFun(rawNamStr, exiGroArr) // => resolved group name
  * ```
  *
 */
 
-function normalizeGroupName( rawNamStr, exiGroArr ) {
+function norGroFun( rawNamStr, exiGroArr ) {
 
 
 	const titNamStr = titCasFun( rawNamStr ); // What: Titled Name String. Why: Every further step below needs the already Title Cased version of rawNamStr to compare and possibly return. How: This calls titCasFun once and reuses the result throughout.
@@ -137,18 +138,18 @@ function normalizeGroupName( rawNamStr, exiGroArr ) {
 
 }
 
-// #endregion normalizeGroupName
+// #endregion norGroFun
 
 
 
-// #region normalizePickerName
+// #region norPicFun
 
 /**
- * normalizePickerName = Normalize Picker Name
+ * norPicFun = Normalize Picker Function
  *
  * @summary
  * Title Cases a user-typed picker name via {@link titCasFun}. Unlike
- * {@link normalizeGroupName}, this never reuses an existing spelling on a
+ * {@link norGroFun}, this never reuses an existing spelling on a
  * case-insensitive match, since pickers are distinct entities; a
  * same-name collision is instead resolved by the store appending a "(2)"
  * suffix at its own call site.
@@ -163,27 +164,27 @@ function normalizeGroupName( rawNamStr, exiGroArr ) {
  *
  * @example
  * ```ts
- * normalizePickerName(rawNamStr) // => tidied picker name
+ * norPicFun(rawNamStr) // => tidied picker name
  * ```
  *
 */
 
-function normalizePickerName( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidied Picker Name Body. Why: A picker name only ever needs the shared Title Case tidy-up, with no collision-reuse step. How: This is a thin wrapper straight over titCasFun.
+function norPicFun( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidied Picker Name Body. Why: A picker name only ever needs the shared Title Case tidy-up, with no collision-reuse step. How: This is a thin wrapper straight over titCasFun.
 
-// #endregion normalizePickerName
+// #endregion norPicFun
 
 
 
-// #region normalizeConditionalName
+// #region norConFun
 
 /**
- * normalizeConditionalName = Normalize Conditional Name
+ * norConFun = Normalize Conditional Function
  *
  * @summary
  * Title Cases a user-typed conditional name via {@link titCasFun}, the
- * same tidy-up {@link normalizePickerName} applies. Collision handling
+ * same tidy-up {@link norPicFun} applies. Collision handling
  * (reusing an existing conditional on an exact case-insensitive match) is
- * left to the call site, mirroring how {@link normalizeGroupName}'s own
+ * left to the call site, mirroring how {@link norGroFun}'s own
  * reuse step works for groups.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -196,18 +197,18 @@ function normalizePickerName( rawNamStr ) { return titCasFun( rawNamStr ); } // 
  *
  * @example
  * ```ts
- * normalizeConditionalName(rawNamStr) // => tidied conditional name
+ * norConFun(rawNamStr) // => tidied conditional name
  * ```
  *
 */
 
-function normalizeConditionalName( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidied Conditional Name Body. Why: A conditional name only ever needs the shared Title Case tidy-up; collision reuse happens at the call site instead. How: This is a thin wrapper straight over titCasFun.
+function norConFun( rawNamStr ) { return titCasFun( rawNamStr ); } // What: Tidied Conditional Name Body. Why: A conditional name only ever needs the shared Title Case tidy-up; collision reuse happens at the call site instead. How: This is a thin wrapper straight over titCasFun.
 
-// #endregion normalizeConditionalName
+// #endregion norConFun
 
 
 
-export { normalizeConditionalName, normalizeGroupName, normalizePickerName }; // What: Named Exports. Why: store.jsx, tab-picker.jsx, tab-conditional.jsx, tab-data.jsx, and tab-today.jsx all import these three normalizers individually, by these exact names. How: This re-exports all three; their own names are deliberately left unrenamed here since renaming them ripples into every one of those files (see this file's own header comment).
+export { norConFun, norGroFun, norPicFun }; // What: Named Exports. Why: store.jsx, tab-picker.jsx, tab-conditional.jsx, tab-data.jsx, and tab-today.jsx all import these three normalizers individually, by these exact names. How: This re-exports all three under their own newly-renamed names, already rippled into every one of those files.
 
 
 

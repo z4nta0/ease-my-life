@@ -30,7 +30,7 @@ import { HelOveCom             } from './help-mode.jsx';                 // What
 import { HOL_NAM_OBJ             } from './holidays.js';                   // What: Holidays Namespace Object. Why: Both generate()'s own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holDatFun against state.holidays.
 import { Icon                    } from './ui.jsx';                        // What: Icon. Why: Nearly every card/button in this file needs a small named glyph alongside its label. How: This is rendered throughout, given a name and a size.
 import { InfoTip                 } from './ui.jsx';                        // What: Info Tip. Why: A disabled action (a locked re-roll, a blocked tutorial, a disabled Regenerate) still needs to explain itself on hover/tap. How: This wraps whichever control needs an explanatory label throughout this file.
-import { normalizeGroupName      } from './pickers.js';                    // What: Normalize Group Name. Why: A typed group rename/Page Tours rename needs the same normalization real picker groups already get. How: This is called inside requestRenameGroup and pageToursNameCollision.
+import { norGroFun               } from './pickers.js';                    // What: Normalize Group Function. Why: A typed group rename/Page Tours rename needs the same normalization real picker groups already get. How: This is called inside requestRenameGroup and pageToursNameCollision.
 import { NOT_NAM_OBJ             } from './notify.js';                     // What: Notification Namespace Object. Why: An auto-generated list should still fire a best-effort system notification. How: This is called via NOT_NAM_OBJ.generated() right after an auto run, its result deliberately ignored.
 import { NumStepper              } from './ui.jsx';                        // What: Number Stepper. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered twice inside EntryEditor's own ease rows.
 import { OB_CHECKLIST            } from './onboarding-checklist.js';       // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called throughout for entryFor/status/realPickerCount/readyToGenerate/othersRemaining/tutorialsInProgress.
@@ -3038,7 +3038,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		if ( !trmValStr ) return null; // What: Empty Value Guard. Why: An empty rename has nothing to collide with. How: This returns null early when trmValStr is empty.
 
 
-		const tarNamStr = normalizeGroupName( trmValStr ) || trmValStr;                                             // What: Target Name String. Why: The typed name needs the same normalization a real group name would get before comparison. How: This calls normalizeGroupName, falling back to the raw trimmed value if normalization returns nothing.
+		const tarNamStr = norGroFun( trmValStr ) || trmValStr;                                             // What: Target Name String. Why: The typed name needs the same normalization a real group name would get before comparison. How: This calls norGroFun, falling back to the raw trimmed value if normalization returns nothing.
 		const exiGroArr = [ ...new Set( state.pickers.filter( ( curPicObj ) => curPicObj.group ).map( ( curPicObj ) => curPicObj.group ) ) ]; // What: Existing Group Array. Why: The collision check needs every real group name currently in use. How: This deduplicates every picker's own group field via a Set.
 
 		exiGroArr.push( 'Reminders' ); // What: Reminders Name Push. Why: "Reminders" is the other fixed section header that isn't itself a real group, and still must not collide. How: This appends the literal string 'Reminders' to exiGroArr.
@@ -3906,7 +3906,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 		const othGroArr = [ ...new Set( state.pickers.filter( ( curPicObj ) => curPicObj.group && curPicObj.group !== oldNamStr ).map( ( curPicObj ) => curPicObj.group ) ) ]; // What: Other Group Array. Why: The collision check below needs every OTHER real group name, excluding the one being renamed. How: This deduplicates every non-matching picker's own group field via a Set.
-		const tarNamStr = normalizeGroupName( rawNewStr, othGroArr ); // What: Target Name String. Why: This is the actual normalized candidate name. How: This calls normalizeGroupName with rawNewStr and othGroArr.
+		const tarNamStr = norGroFun( rawNewStr, othGroArr ); // What: Target Name String. Why: This is the actual normalized candidate name. How: This calls norGroFun with rawNewStr and othGroArr.
 
 		if ( !tarNamStr || tarNamStr === oldNamStr ) return; // What: No-Op Guard. Why: An empty or unchanged normalized name has nothing to rename. How: This bails out early when either condition holds.
 

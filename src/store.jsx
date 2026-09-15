@@ -10,9 +10,9 @@ import { CAD_NAM_OBJ               } from './cadence.js';               // What:
 import { CLEAN_STATE               } from './seed.js';                 // What: Clean State. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called by loadState and by the reset action below.
 import { CON_NAM_OBJ               } from './conditionals.js';         // What: Conditionals. Why: Day-off gate resolution/advancement logic lives here, not in this file. How: This is called from resolveConditionalsForDay and from applyConditionalToggle below.
 import { HOL_NAM_OBJ               } from './holidays.js';             // What: Holidays Namespace Object. Why: The holiday list backfill and the holiday-editing actions both need the canonical empty holidays shape. How: This is called (defStaFun) from migrate and from the holiday actions below.
-import { normalizeConditionalName  } from './pickers.js';              // What: Normalize Conditional Name. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicker and commitPickerEdit below.
-import { normalizeGroupName        } from './pickers.js';              // What: Normalize Group Name. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called from migrate and from renameGroup/renamePageTours below.
-import { normalizePickerName       } from './pickers.js';              // What: Normalize Picker Name. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from migrate, addPicker, commitPickerEdit, and renamePicker below.
+import { norConFun                 } from './pickers.js';              // What: Normalize Conditional Function. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicker and commitPickerEdit below.
+import { norGroFun                 } from './pickers.js';              // What: Normalize Group Function. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called from migrate and from renameGroup/renamePageTours below.
+import { norPicFun                 } from './pickers.js';              // What: Normalize Picker Function. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from migrate, addPicker, commitPickerEdit, and renamePicker below.
 import { OB_CHECKLIST              } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (readyToGenerate) from setChecklistItem below.
 import { OB_SAMPLE_PICKER_IDS      } from './onboarding-seed-data.js'; // What: Onboarding Sample Picker Ids. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicker below.
 import { PICKERS                   } from './pickers.js';              // What: Pickers. Why: The item-authoring/editing actions need this module's own ease-band averaging and per-mode defaults. How: This is called (avgEase/DEFAULT_EASE) from addItem and commitPickerEdit below.
@@ -1684,7 +1684,7 @@ function migrate( curStaObj ) {
 	if ( curStaObj && Array.isArray( curStaObj.pickers ) ) {
 
 
-		if ( normalizeGroupName ) { // What: Name-Tidy Guard. Why: The tidy/normalize pass below only makes sense when the normalizer itself is actually available. How: This runs the whole tidy pass only when normalizeGroupName is truthy.
+		if ( norGroFun ) { // What: Name-Tidy Guard. Why: The tidy/normalize pass below only makes sense when the normalizer itself is actually available. How: This runs the whole tidy pass only when norGroFun is truthy.
 
 
 			curStaObj.pickers.forEach( ( curPicObj ) => { // What: Picker Tidy Loop. Why: Every picker's own group and name need the same Title-Case tidy applied in place. How: This normalizes curPicObj.group and curPicObj.name, each only when the normalizer actually returns something.
@@ -1693,17 +1693,17 @@ function migrate( curStaObj ) {
 				if ( curPicObj.group ) { // What: Group Tidy Guard. Why: A picker with no group at all has nothing to tidy. How: This normalizes curPicObj.group only when it's truthy.
 
 
-					const nrmGroStr = normalizeGroupName( curPicObj.group ); // What: Normalized Group String And Guard. Why: The normalizer may decline to return anything for an unusual input. How: This calls normalizeGroupName on curPicObj's own group.
+					const nrmGroStr = norGroFun( curPicObj.group ); // What: Normalized Group String And Guard. Why: The normalizer may decline to return anything for an unusual input. How: This calls norGroFun on curPicObj's own group.
 
 					if ( nrmGroStr ) curPicObj.group = nrmGroStr; // What: Group Tidy Write. Why: Only a genuine normalized result should overwrite the picker's own group. How: This writes nrmGroStr back onto curPicObj.group when it's truthy.
 
 
 				}
 
-				if ( curPicObj.name && normalizePickerName ) { // What: Name Tidy Guard. Why: A picker with no name, or with no normalizer available, has nothing to tidy. How: This normalizes curPicObj.name only when both are truthy.
+				if ( curPicObj.name && norPicFun ) { // What: Name Tidy Guard. Why: A picker with no name, or with no normalizer available, has nothing to tidy. How: This normalizes curPicObj.name only when both are truthy.
 
 
-					const nrmNamStr = normalizePickerName( curPicObj.name ); // What: Normalized Name String And Guard. Why: The normalizer may decline to return anything for an unusual input. How: This calls normalizePickerName on curPicObj's own name.
+					const nrmNamStr = norPicFun( curPicObj.name ); // What: Normalized Name String And Guard. Why: The normalizer may decline to return anything for an unusual input. How: This calls norPicFun on curPicObj's own name.
 
 					if ( nrmNamStr ) curPicObj.name = nrmNamStr; // What: Name Tidy Write. Why: Only a genuine normalized result should overwrite the picker's own name. How: This writes nrmNamStr back onto curPicObj.name when it's truthy.
 
@@ -1713,11 +1713,11 @@ function migrate( curStaObj ) {
 
 			} );
 
-			// What: Group-Order Normalize. Why: Stored order structures must land on the same normalized group names the tidy pass above just applied to every picker. How: This maps every groupOrder entry through normalizeGroupName, except the 2 fixed sentinels which are never real group names.
+			// What: Group-Order Normalize. Why: Stored order structures must land on the same normalized group names the tidy pass above just applied to every picker. How: This maps every groupOrder entry through norGroFun, except the 2 fixed sentinels which are never real group names.
 			if ( Array.isArray( curStaObj.groupOrder ) ) {
 
 				curStaObj.groupOrder = curStaObj.groupOrder.map( ( curGroStr ) => (
-					( curGroStr === '__reminders' || curGroStr === '__pageTours' ) ? curGroStr : ( normalizeGroupName( curGroStr ) || curGroStr )
+					( curGroStr === '__reminders' || curGroStr === '__pageTours' ) ? curGroStr : ( norGroFun( curGroStr ) || curGroStr )
 				) );
 
 
@@ -1732,7 +1732,7 @@ function migrate( curStaObj ) {
 				for ( const [ curGroStr, picIdeArr ] of Object.entries( curStaObj.pickerOrder ) ) { // What: Picker-Order Remap Loop. Why: Every old group key must be normalized and merged into rmpOrdObj before it replaces curStaObj's own pickerOrder. How: This iterates curStaObj.pickerOrder's own entries, concatenating each onto its own normalized key's bucket.
 
 
-					const nrmKeyStr = normalizeGroupName( curGroStr ) || curGroStr; // What: Normalized Key String. Why: The new pickerOrder must be keyed the same way groupOrder now is. How: This normalizes curGroStr, falling back to itself when the normalizer declines.
+					const nrmKeyStr = norGroFun( curGroStr ) || curGroStr; // What: Normalized Key String. Why: The new pickerOrder must be keyed the same way groupOrder now is. How: This normalizes curGroStr, falling back to itself when the normalizer declines.
 
 					rmpOrdObj[ nrmKeyStr ] = ( rmpOrdObj[ nrmKeyStr ] || [] ).concat( picIdeArr ); // What: Remapped Bucket Concat. Why: 2 old keys that normalize to the same new key must have their own picker-id lists merged, not overwrite each other. How: This concatenates picIdeArr onto whatever's already filed under nrmKeyStr.
 
@@ -2872,7 +2872,7 @@ function useStore( optArgObj ) {
 
 
 				id : 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 ),
-				name : ( normalizeConditionalName && normalizeConditionalName( newConditional.name ) ) || newConditional.name || 'Conditional', mode : newConditional.mode || 'random',
+				name : ( norConFun && norConFun( newConditional.name ) ) || newConditional.name || 'Conditional', mode : newConditional.mode || 'random',
 				cardText : newConditional.cardText || 'Day off',
 				value : newConditional.mode === 'ease-down' ? ( newConditional.threshold ?? 100 ) : ( newConditional.value ?? 0 ),
 				weight : newConditional.weight ?? 1, oddsPct : newConditional.oddsPct ?? 50,
@@ -2945,8 +2945,8 @@ function useStore( optArgObj ) {
 				 *
 				*/
 
-				const finNamStr = OB_SAMPLE_PICKER_IDS.includes( id ) ? ( normalizePickerName( name ) || name ) : uniNamFun(
-					normalizePickerName( name ) || name,
+				const finNamStr = OB_SAMPLE_PICKER_IDS.includes( id ) ? ( norPicFun( name ) || name ) : uniNamFun(
+					norPicFun( name ) || name,
 					curStaObj.pickers.filter( ( curPicObj ) => !curPicObj.hidden && curPicObj.id !== picIdeStr ).map( ( curPicObj ) => curPicObj.name )
 				);
 				const finPicObj = { ...newPicObj, name : finNamStr }; // What: Final Picker Object. Why: The picker actually written to state must carry the de-duplicated name, not the raw one. How: This spreads newPicObj with name replaced by finNamStr.
@@ -3011,7 +3011,7 @@ function useStore( optArgObj ) {
 
 			const modChgBoo = mode !== curPicObj.mode; // What: Mode Changed Boolean. Why: Only an actual mode change triggers the item-defaults reset further below. How: This is true when the new mode differs from curPicObj's own current one.
 			const finNamStr = uniNamFun( // What: Final Name String. Why: The committed picker still needs its own name tidied and de-duplicated against every OTHER visible picker. How: This calls uniNamFun with the tidied name against every sibling picker's own name, excluding itself.
-				normalizePickerName( name ) || name,
+				norPicFun( name ) || name,
 				curStaObj.pickers.filter( ( picFilObj ) => !picFilObj.hidden && picFilObj.id !== pickerId ).map( ( picFilObj ) => picFilObj.name )
 			);
 
@@ -3019,7 +3019,7 @@ function useStore( optArgObj ) {
 
 
 				id : 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 ),
-				name : normalizeConditionalName( newConditional.name ) || newConditional.name || 'Conditional', mode : newConditional.mode || 'random',
+				name : norConFun( newConditional.name ) || newConditional.name || 'Conditional', mode : newConditional.mode || 'random',
 				cardText : newConditional.cardText || 'Day off',
 				value : newConditional.mode === 'ease-down' ? ( newConditional.threshold ?? 100 ) : ( newConditional.value ?? 0 ),
 				weight : newConditional.weight ?? 1, oddsPct : newConditional.oddsPct ?? 50,
@@ -3501,7 +3501,7 @@ function useStore( optArgObj ) {
 
 
 			const sibNamArr = curStaObj.pickers.filter( ( curPicObj ) => curPicObj.id !== pickerId ).map( ( curPicObj ) => curPicObj.name ); // What: Sibling Name Array. Why: A picker name only needs to be unique among every OTHER picker. How: This filters curStaObj.pickers to every picker but the one being renamed, then maps to their own names.
-			const tdyNamStr = ( normalizePickerName && normalizePickerName( name ) ) || name; // What: Tidied Name String. Why: The name must be normalized to Title Case before the collision check below. How: This calls normalizePickerName when available, else falls back to the raw name.
+			const tdyNamStr = ( norPicFun && norPicFun( name ) ) || name; // What: Tidied Name String. Why: The name must be normalized to Title Case before the collision check below. How: This calls norPicFun when available, else falls back to the raw name.
 			const uniNamStr = uniNamFun( tdyNamStr, sibNamArr ); // What: Unique Name String. Why: The write below needs the actual de-duplicated name to apply. How: This calls uniNamFun with tdyNamStr and sibNamArr.
 
 
@@ -3516,7 +3516,7 @@ function useStore( optArgObj ) {
 
 
 			const othGroArr = [ ...new Set( curStaObj.pickers.filter( ( curPicObj ) => curPicObj.group && curPicObj.group !== oldName ).map( ( curPicObj ) => curPicObj.group ) ) ]; // What: Other Group Array. Why: The normalizer needs every OTHER existing group name to detect a same-name collision (a merge). How: This collects the distinct group of every picker not already in oldName.
-			const nexNamStr = ( normalizeGroupName && normalizeGroupName( rawNew, othGroArr ) ) || String( rawNew || '' ).trim(); // What: Next Name String. Why: The normalizer both tidies rawNew and reuses an existing collision's own exact casing. How: This calls normalizeGroupName with othGroArr, else falls back to a plain trim.
+			const nexNamStr = ( norGroFun && norGroFun( rawNew, othGroArr ) ) || String( rawNew || '' ).trim(); // What: Next Name String. Why: The normalizer both tidies rawNew and reuses an existing collision's own exact casing. How: This calls norGroFun with othGroArr, else falls back to a plain trim.
 
 			if ( !nexNamStr || nexNamStr === oldName ) return curStaObj; // What: No-Op Guard. Why: An empty result, or a name that didn't actually change, has nothing to rename. How: This returns curStaObj unchanged when either holds.
 
@@ -3549,7 +3549,7 @@ function useStore( optArgObj ) {
 		renamePageTours : ( rawNew ) => setAppStaObj( ( curStaObj ) => {
 
 
-			const nexNamStr = ( normalizeGroupName && normalizeGroupName( rawNew ) ) || String( rawNew || '' ).trim(); // What: Next Name String. Why: The write below needs a tidied, real name. How: This calls normalizeGroupName, else falls back to a plain trim.
+			const nexNamStr = ( norGroFun && norGroFun( rawNew ) ) || String( rawNew || '' ).trim(); // What: Next Name String. Why: The write below needs a tidied, real name. How: This calls norGroFun, else falls back to a plain trim.
 
 			if ( !nexNamStr ) return curStaObj; // What: Empty-Name Guard. Why: An empty result has nothing meaningful to write. How: This returns curStaObj unchanged when nexNamStr is falsy.
 

@@ -10,7 +10,7 @@ import { BoostReset               } from './ui.jsx';     // What: Boost Reset. W
 import { Collapse                 } from './ui.jsx';     // What: Collapse. Why: Every mode's own settings subsection needs to animate open and closed as the selected mode changes. How: This wraps the mode hint text and every per-mode settings block throughout this file.
 import { FillButton               } from './ui.jsx';     // What: Fill Button. Why: The ease-up and ease-down modes both need a manual full-charge control. How: This is rendered once per direction in the ease-mode settings block below.
 import { MODES                    } from './seed.js';    // What: Modes. Why: The mode radio below must offer the exact same options and labels as the picker editor's own mode radio. How: This is walked via Object.entries to render one radio option per mode.
-import { normalizeConditionalName } from './pickers.js'; // What: Normalize Conditional Name. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conditionalDraftDefault below.
+import { norConFun                } from './pickers.js'; // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conditionalDraftDefault below.
 import { NumStepper                } from './ui.jsx';    // What: Number Stepper. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered once per bound in the ease-mode settings block below.
 
 // #endregion Imports
@@ -212,9 +212,9 @@ function ConditionalControls ( { draft, onChange, nameError, variant = 'card', h
 						onBlur={ ( bluEveObj ) => {
 
 
-							const norNamStr = normalizeConditionalName( bluEveObj.target.value ); // What: Normalize Name String. Why: A typed name should be tidied to the same casing rule pickers use, once the field loses focus. How: This calls normalizeConditionalName against the input's own current value.
+							const norNamStr = norConFun( bluEveObj.target.value ); // What: Normalize Name String. Why: A typed name should be tidied to the same casing rule pickers use, once the field loses focus. How: This calls norConFun against the input's own current value.
 
-							if ( norNamStr ) patSetFun( { name : norNamStr } ); // What: Tidy Name Patch Guard. Why: An empty or whitespace-only typed name has nothing worth tidying into place. How: This only patches draft.name when normalizeConditionalName actually returned something.
+							if ( norNamStr ) patSetFun( { name : norNamStr } ); // What: Tidy Name Patch Guard. Why: An empty or whitespace-only typed name has nothing worth tidying into place. How: This only patches draft.name when norConFun actually returned something.
 
 
 						} }
@@ -703,7 +703,7 @@ export { ConditionalControls }; // What: Named Exports. Why: tab-picker.jsx and 
 export const conditionalDraftDefault = ( picNamStr, exiNamArr = [] ) => { // What: Conditional Draft Default Body. Why: A brand-new conditional needs a sensible starting draft rather than a blank one. How: This resolves a free "{Picker} Conditional N" name, then returns it alongside every other field's own default value.
 
 
-	const norPicStr = ( normalizeConditionalName( picNamStr ) || '' ).trim();                             // What: Normalize Picker String. Why: The default name's own picker-name prefix should be tidied the same way a typed name is. How: This calls normalizeConditionalName against picNamStr, falling back to an empty string when it returns nothing.
+	const norPicStr = ( norConFun( picNamStr ) || '' ).trim();                             // What: Normalize Picker String. Why: The default name's own picker-name prefix should be tidied the same way a typed name is. How: This calls norConFun against picNamStr, falling back to an empty string when it returns nothing.
 	const basNamStr = ( norPicStr ? norPicStr + ' ' : '' ) + 'Conditional';                                // What: Base Name String. Why: Every candidate name below is built from this same "{Picker} Conditional" prefix. How: This prepends norPicStr (plus a trailing space) when one exists, otherwise starts from "Conditional" alone.
 	const takNamSet = new Set( exiNamArr.map( ( exiOneStr ) => ( exiOneStr || '' ).trim().toLowerCase() ) ); // What: Taken Name Set. Why: Finding a free N below needs a case-insensitive lookup of every name already in use. How: This lowercases and trims every entry of exiNamArr into a Set.
 

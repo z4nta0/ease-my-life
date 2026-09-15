@@ -24,8 +24,8 @@ import { HelOveCom              } from './help-mode.jsx';           // What: Hel
 import { Icon                     } from './ui.jsx';                  // What: Icon. Why: Nearly every button and row in this file needs a recognizable glyph. How: This is rendered throughout every component below.
 import { InfoTip                  } from './ui.jsx';                  // What: Info Tip. Why: A disabled control or a truncated pill still needs to explain itself on demand. How: This wraps disabled add buttons and truncatable type/group labels throughout this file.
 import { MODES                    } from './seed.js';                 // What: Modes. Why: Every picker/conditional mode's own label and hint text comes from this shared catalog. How: This is read throughout PicConCom, ConManCom, and TabData for mode labels and the mode radio group.
-import { normalizeConditionalName } from './pickers.js';              // What: Normalize Conditional Name. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
-import { normalizeGroupName       } from './pickers.js';              // What: Normalize Group Name. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
+import { norConFun                } from './pickers.js';              // What: Normalize Conditional Function. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
+import { norGroFun                } from './pickers.js';              // What: Normalize Group Function. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
 import { OB_CHECKLIST             } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: Several add/edit controls in this file must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutorialsInProgress throughout TabData and ConManCom.
 import { PICKERS                  } from './pickers.js';              // What: Pickers. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PICKERS.avgEase.
 import { reduceMotion             } from './ui.jsx';                  // What: Reduce Motion. Why: A user who prefers reduced motion shouldn't see any of this file's own FLIP/scroll/collapse animations. How: This is checked before every animation throughout this file.
@@ -590,7 +590,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 	const cmtGroFun = () => { // What: Commit Group Function. Why: Pressing Enter (or clicking the checkmark) should actually create/select the typed group, not just close the input. How: This normalizes the typed name and, if valid, updates the picker's own group before closing.
 
 
-		const tidNamStr = normalizeGroupName( newGroStr, groChoArr ); // What: Tidy Name String. Why: A typed group name needs the same tidy-casing/collision handling every other group name gets. How: This calls the shared normalizeGroupName helper against the current choice list.
+		const tidNamStr = norGroFun( newGroStr, groChoArr ); // What: Tidy Name String. Why: A typed group name needs the same tidy-casing/collision handling every other group name gets. How: This calls the shared norGroFun helper against the current choice list.
 
 		if ( tidNamStr ) actObj.updatePicker( picObj.id, { group : tidNamStr } ); // What: Update Picker Guard. Why: An empty or otherwise invalid typed name should not create a group at all. How: This only commits the picker's own group when tidNamStr is truthy.
 
@@ -1836,7 +1836,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 	};
 
 
-	const tidNamStr = ( drfObj && normalizeConditionalName( drfObj.name ) ) || ''; // What: Tidy Name String. Why: Every save/collision-check below needs the draft's own name already normalized to the app's tidy-casing rule. How: This calls normalizeConditionalName on drfObj.name when a draft exists, empty string otherwise.
+	const tidNamStr = ( drfObj && norConFun( drfObj.name ) ) || ''; // What: Tidy Name String. Why: Every save/collision-check below needs the draft's own name already normalized to the app's tidy-casing rule. How: This calls norConFun on drfObj.name when a draft exists, empty string otherwise.
 	const namErrStr = drfObj && !tidNamStr // What: Name Error String. Why: The open row's own editor needs a specific validation message whenever its name is empty or collides with another conditional. How: This checks emptiness first, then a case-insensitive collision against every OTHER conditional, null when the name is valid.
 		? 'Enter a name for this conditional.'
 		: drfObj && conIteArr.some( ( conCurObj ) => conCurObj.id !== opnIdeStr && ( conCurObj.name || '' ).toLowerCase() === tidNamStr.toLowerCase() )
