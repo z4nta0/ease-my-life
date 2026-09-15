@@ -10,14 +10,14 @@ import { CAD_NAM_OBJ            } from './cadence.js';          // What: Cadence
 import { Card                   } from './ui.jsx';              // What: Card. Why: Every stat card on this page shares the same rounded container chrome. How: This wraps each headline/breakdown/heatmap block rendered below.
 import { HelButCom             } from './help-mode.jsx';       // What: Help Button Component. Why: This page needs its own header toggle for entering and leaving help mode. How: This is rendered in the header, flipping helOnBoo on click.
 import { HelOveCom            } from './help-mode.jsx';       // What: Help Overlay Component. Why: Help mode needs a dimmed overlay with per-element tooltips layered above the real page. How: This is rendered while helOnBoo is true, fed STA_HEL_ARR as its copy source.
-import { hideHelpStatsHistory   } from './help-sample-data.js'; // What: Hide Help Stats History. Why: The real hidden sample pickers borrowed for help mode must be re-hidden once help mode ends. How: This is called whenever helOnBoo turns false, and again on unmount.
+import { hidHisFun              } from './help-sample-data.js'; // What: Hide History Function. Why: The real hidden sample pickers borrowed for help mode must be re-hidden once help mode ends. How: This is called whenever helOnBoo turns false, and again on unmount.
 import { Icon                   } from './ui.jsx';              // What: Icon. Why: Several small glyphs (sort-direction arrows, the streak flame) are needed throughout this page. How: This is rendered with a specific name and size wherever one of those glyphs is shown.
 import { InfoTip                } from './ui.jsx';              // What: Info Tip. Why: The Spent metric's "no completed cycle yet" case needs a small inline explanation. How: This renders a "?" bubble with its own label text next to that N/A value.
 import { MODES                  } from './seed.js';             // What: Modes. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up by a picker's own mode key throughout the page.
 import { Pill                   } from './ui.jsx';              // What: Pill. Why: The single-picker header needs a small labelled pill showing the picker's own mode. How: This renders that pill, toned as 'mode'.
 import { STA_HEL_ARR            } from './help-content.jsx';    // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelOveCom.
 import { TASKS                  } from './tasks.js';            // What: Tasks. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TASKS.normalizeOpts on the raw persisted reminderOpts.
-import { unhideHelpStatsHistory } from './help-sample-data.js'; // What: Unhide Help Stats History. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helOnBoo turns true, as long as the page tour doesn't already own the same samples.
+import { unhHisFun              } from './help-sample-data.js'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helOnBoo turns true, as long as the page tour doesn't already own the same samples.
 import { useEmlTouFun           } from './onboarding.jsx';      // What: Use Ease My Life Tour. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's reserveTop field.
 
 // #endregion Imports
@@ -521,14 +521,14 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 		if ( staTouBoo ) return; // What: Tour Ownership Guard. Why: Hiding the samples out from under the page tour would break its own Step 1 reveal. How: This bails out of the whole effect while the Stats page tour is active.
 
-		if ( helOnBoo ) unhideHelpStatsHistory( state, actions ); // What: Unhide Samples Call. Why: Entering help mode needs real history to show. How: This reveals the borrowed hidden sample pickers.
+		if ( helOnBoo ) unhHisFun( state, actions ); // What: Unhide Samples Call. Why: Entering help mode needs real history to show. How: This reveals the borrowed hidden sample pickers.
 
-		else hideHelpStatsHistory( actions ); // What: Hide Samples Call. Why: Leaving help mode must not leave the borrowed samples permanently visible. How: This re-hides them.
+		else hidHisFun( actions ); // What: Hide Samples Call. Why: Leaving help mode must not leave the borrowed samples permanently visible. How: This re-hides them.
 
 
 	}, [ helOnBoo, staTouBoo ] ); // What: Effect Dependency Array. Why: This must re-run whenever help mode itself toggles, or whenever tour ownership of the samples changes. How: helOnBoo drives the actual show/hide, staTouBoo gates whether this effect is allowed to act at all.
 
-	React.useEffect( () => () => hideHelpStatsHistory( actions ), [] ); // What: Unmount Cleanup Effect. Why: The borrowed samples must not stay revealed if this page unmounts while help mode happens to still be on. How: This registers a cleanup-only effect that hides the samples on unmount, with no setup of its own.
+	React.useEffect( () => () => hidHisFun( actions ), [] ); // What: Unmount Cleanup Effect. Why: The borrowed samples must not stay revealed if this page unmounts while help mode happens to still be on. How: This registers a cleanup-only effect that hides the samples on unmount, with no setup of its own.
 
 	// #endregion Page Tour And Help Mode
 

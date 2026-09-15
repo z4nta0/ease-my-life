@@ -9,7 +9,7 @@ import React from 'react'; // What: React. Why: This is the UI library every com
 import { Btn                      } from './ui.jsx';                  // What: Button. Why: Every action in this file needs a consistently-styled clickable control. How: This is rendered wherever a styled button is needed, across the live picker view, the edit form, and the create form.
 import { CAD_NAM_OBJ              } from './cadence.js';              // What: Cadence. Why: This is the namespace of pure functions this file uses to normalize and edit a picker's own cadence. How: This is called for CAD_NAM_OBJ.norCadFun/enfWeeFun/locTipFun/uniWorFun throughout PicForCom.
 import { CadConCom                } from './cadence-control.jsx';     // What: Cadence Control. Why: This is the shared editor for a picker's cadence settings. How: This is rendered inside PicForCom's daily-schedule block, wired to the local cadence state.
-import { clearHelpPickers         } from './help-sample-data.js';     // What: Clear Help Pickers. Why: Help mode's disposable sample pickers/conditionals must be torn down the moment help mode turns off or this tab unmounts. How: This is called from TabPicker's own help-mode effect and its unmount cleanup.
+import { clePicFun                } from './help-sample-data.js';     // What: Clear Pickers Function. Why: Help mode's disposable sample pickers/conditionals must be torn down the moment help mode turns off or this tab unmounts. How: This is called from TabPicker's own help-mode effect and its unmount cleanup.
 import { Collapse                 } from './ui.jsx';                  // What: Collapse. Why: Several optional sections need an animated expand/collapse instead of an abrupt show/hide. How: This wraps the add-group input, the conditional-attach block, and the daily-schedule block, each gated on its own open boolean.
 import { ConditionalControls      } from './tab-conditional.jsx';     // What: Conditional Controls. Why: Attaching a brand-new inline conditional needs the same editor the Data tab uses. How: This is rendered inside PicForCom's conditional-attach block, wired to the local condDraft state.
 import { conditionalDraftDefault  } from './tab-conditional.jsx';     // What: Conditional Draft Default. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This is called whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
@@ -28,7 +28,7 @@ import { PIC_HEL_ARR              } from './help-content.jsx';        // What: P
 import { PICKERS                  } from './pickers.js';              // What: Pickers. Why: This is the namespace of pure picking-engine functions this file drives every actual pick through. How: This is called throughout for PICKERS.pick/readiness/modeEligible/avgEase.
 import { ProgressBar              } from './ui.jsx';                  // What: Progress Bar. Why: A pool item's drift value needs a visual readiness bar, not just a raw number. How: This is rendered inside the pool row's InfoTip alongside the raw value.
 import { reduceMotion             } from './ui.jsx';                  // What: Reduce Motion. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
-import { seedHelpPickers          } from './help-sample-data.js';     // What: Seed Help Pickers. Why: Help mode needs real pickers of every mode, plus a conditional-gated one, to point its tooltips at. How: This is called the moment help mode turns on.
+import { sedPicFun                } from './help-sample-data.js';     // What: Seed Pickers Function. Why: Help mode needs real pickers of every mode, plus a conditional-gated one, to point its tooltips at. How: This is called the moment help mode turns on.
 import { useEmlTouFun             } from './onboarding.jsx';          // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
 import { WeekdayChips             } from './ui.jsx';                  // What: Weekday Chips. Why: The daily-schedule block needs a 7-day picker for which weekdays a picker may run on. How: This is rendered in PicForCom's schedule block, wired to the local daysOfWeek state.
 
@@ -3108,14 +3108,14 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 	React.useEffect( () => {
 
 
-		if ( hlpOnBoo ) seedHelpPickers( state, actions ); // What: Seed Branch. Why: The disposable help-mode sample set must exist the instant help mode turns on. How: This calls seedHelpPickers with the live state/actions.
+		if ( hlpOnBoo ) sedPicFun( state, actions ); // What: Seed Branch. Why: The disposable help-mode sample set must exist the instant help mode turns on. How: This calls sedPicFun with the live state/actions.
 
-		else clearHelpPickers( actions ); // What: Clear Branch. Why: The disposable sample set must not linger once help mode turns back off. How: This calls clearHelpPickers with actions.
+		else clePicFun( actions ); // What: Clear Branch. Why: The disposable sample set must not linger once help mode turns back off. How: This calls clePicFun with actions.
 
 
 	}, [ hlpOnBoo ] ); // What: Effect Dependency Array. Why: This only needs re-running when help mode itself is toggled. How: hlpOnBoo is the sole trigger.
-	// What: Unmount Cleanup Effect. Why: A tab switch away from Pickers with help mode still on needs its own cleanup, since the effect above's own cleanup only fires on a DEPENDENCY change, not on unmount. How: This is unconditional and harmless if nothing was ever seeded, since clearHelpPickers's own removePicker/removeConditional calls are no-ops against ids that don't exist.
-	React.useEffect( () => () => clearHelpPickers( actions ), [] );
+	// What: Unmount Cleanup Effect. Why: A tab switch away from Pickers with help mode still on needs its own cleanup, since the effect above's own cleanup only fires on a DEPENDENCY change, not on unmount. How: This is unconditional and harmless if nothing was ever seeded, since clePicFun's own removePicker/removeConditional calls are no-ops against ids that don't exist.
+	React.useEffect( () => () => clePicFun( actions ), [] );
 	const touBusObj = useEmlTouFun ? useEmlTouFun() : { prefill : null, startCreate : null }; // What: Tour Bus Object. Why: This page needs the shared tour bus to stage a prefilled create form and to gate several buttons during the guided walkthroughs. How: This subscribes via useEmlTouFun, or falls back to an inert stub if that hook somehow isn't available.
 	const isaTouBoo = touBusObj.phase === 'tour'; // What: Is-A Tour Boolean. Why: Every gate below needs to know a tour is actually running before it even checks which one. How: This is reused as the shared first operand of every tour-gating boolean that follows.
 
