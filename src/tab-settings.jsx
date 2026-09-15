@@ -1774,7 +1774,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	// Permission is asked exactly once, from the run-time change gesture: that
 	// is the moment the user has shown they care when the generator runs, and
 	// a denied prompt can't be re-shown by us.
-	const [ notPerStr, setNotPerStr ] = React.useState( () => ( NOT_NAM_OBJ ? NOT_NAM_OBJ.permission() : 'unsupported' ) ); // What: Notification Permission String And Setter. Why: The notify-me row needs the browser's own current notification permission to decide which of its 3 states to show. How: This starts from an immediate NOT_NAM_OBJ.permission() check, then is kept in sync by the effect below.
+	const [ notPerStr, setNotPerStr ] = React.useState( () => ( NOT_NAM_OBJ ? NOT_NAM_OBJ.perCheFun() : 'unsupported' ) ); // What: Notification Permission String And Setter. Why: The notify-me row needs the browser's own current notification permission to decide which of its 3 states to show. How: This starts from an immediate NOT_NAM_OBJ.perCheFun() check, then is kept in sync by the effect below.
 
 	React.useEffect( () => { // What: Notification Permission Subscribe Effect. Why: notPerStr needs to update live if permission changes outside this row's own controls, such as via the browser's own site settings. How: This subscribes to NOT_NAM_OBJ's own change notifications and cleans up on unmount.
 
@@ -1783,7 +1783,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 
-		return NOT_NAM_OBJ.subscribe( () => setNotPerStr( NOT_NAM_OBJ.permission() ) ); // What: Permission Subscribe Return. Why: This both wires up the live subscription and returns its own unsubscribe function for cleanup. How: This calls NOT_NAM_OBJ.subscribe with a handler that refreshes notPerStr, returning the subscription's own teardown function directly.
+		return NOT_NAM_OBJ.subAddFun( () => setNotPerStr( NOT_NAM_OBJ.perCheFun() ) ); // What: Permission Subscribe Return. Why: This both wires up the live subscription and returns its own unsubscribe function for cleanup. How: This calls NOT_NAM_OBJ.subAddFun with a handler that refreshes notPerStr, returning the subscription's own teardown function directly.
 
 
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to subscribe once, on mount. How: An empty array means it never re-subscribes; NOT_NAM_OBJ itself is a stable module-level import.
@@ -1793,12 +1793,12 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 		actions.setDailyRunTime( newTimStr ); // What: Run Time Save Call. Why: This is the actual persisted setting the Daily generator reads to know when to run. How: This calls actions.setDailyRunTime with newTimStr.
 
-		if ( NOT_NAM_OBJ ) NOT_NAM_OBJ.askOnce().then( () => setNotPerStr( NOT_NAM_OBJ.permission() ) ); // What: Ask Once Call. Why: This specific gesture is the one moment this app ever asks for notification permission unprompted. How: This calls NOT_NAM_OBJ.askOnce, refreshing notPerStr once it resolves.
+		if ( NOT_NAM_OBJ ) NOT_NAM_OBJ.askOncFun().then( () => setNotPerStr( NOT_NAM_OBJ.perCheFun() ) ); // What: Ask Once Call. Why: This specific gesture is the one moment this app ever asks for notification permission unprompted. How: This calls NOT_NAM_OBJ.askOncFun, refreshing notPerStr once it resolves.
 
 
 	};
 
-	const enaNotFun = () => { if ( NOT_NAM_OBJ ) NOT_NAM_OBJ.request().then( () => setNotPerStr( NOT_NAM_OBJ.permission() ) ); }; // What: Enable Notification Function. Why: The notify-me row's own explicit Enable button needs a direct way to (re-)request permission. How: This calls NOT_NAM_OBJ.request, refreshing notPerStr once it resolves.
+	const enaNotFun = () => { if ( NOT_NAM_OBJ ) NOT_NAM_OBJ.reqPerFun().then( () => setNotPerStr( NOT_NAM_OBJ.perCheFun() ) ); }; // What: Enable Notification Function. Why: The notify-me row's own explicit Enable button needs a direct way to (re-)request permission. How: This calls NOT_NAM_OBJ.reqPerFun, refreshing notPerStr once it resolves.
 
 	// #endregion Daily Generator Notifications
 

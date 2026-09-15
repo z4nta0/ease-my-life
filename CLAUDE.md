@@ -495,6 +495,20 @@ decision is captured for next time instead of getting re-asked later.
   every comment's `//` starts at the same column — computed from the
   longest line in that run, same mechanism used for colon/import
   alignment elsewhere in this doc.
+  - **Exception — length mismatch too wide to align**: skip this
+    alignment for the whole run when the longest line's own code portion
+    (everything before its own `//`) is more than 100 characters longer
+    than the shortest line's own code portion in that same run. Padding
+    across a gap that wide produces a huge empty gulf on the shorter
+    lines that hurts readability more than unaligned comments would;
+    past that point, each line's own comment just sits one space after
+    its own code instead, unaligned with its neighbors. This is most
+    commonly found among a tightly-grouped run of one-line function
+    declarations (see "### Variable declarations" above) whose own
+    bodies happen to vary a lot in length, e.g. `padZerFun`/`locDayFun`
+    in `notify.js`, where forcing alignment would have padded
+    `padZerFun`'s own comment out by 73 extra spaces to reach
+    `locDayFun`'s own, much longer line.
 - **Structure — every comment is exactly one line**, following this exact
   template: `// What: <Name Expansion Or Short Descriptive Purpose, Title
   Cased>. Why: <a terse but complete sentence explaining why this exists>.
@@ -1178,6 +1192,26 @@ don't invent one for anything else yet:
 
   });
   ```
+- **Exception to the exception — an exported namespace object always goes
+  multi-line at 2+ properties, even though its own values are always bare
+  identifiers** (the explicit `originalName : internalName` mapping this
+  same doc's own Naming Conventions section requires) and would otherwise
+  qualify as the "simple config-style object" case just above. This
+  object is a file's whole public API surface, likely to grow over time
+  and worth keeping easy to scan/diff one property at a time, unlike a
+  genuine fixed-shape config entry like `TAB_OBJ_ARR`'s own rows. See
+  `CAD_NAM_OBJ` (`cadence.js`), `CON_NAM_OBJ` (`conditionals.js`),
+  `TASKS` (`tasks.js`), `STORAGE` (`storage.js`), `NOT_NAM_OBJ`
+  (`notify.js`), and `PICKERS` (`pickers.js`) for the reference examples:
+  each property still gets its own specific What/Why/How comment (never
+  one shared comment covering the whole object) and both its own
+  property-name column (aligning the `:`) AND its own internal-name
+  value column are padded to line up, the same two-column alignment
+  `holidays.js`'s own `HOL_NAM_OBJ` already used (there coincidentally
+  invisible since every property name equals its own value verbatim) —
+  pad the value column (plus its trailing comma, absent only on the
+  last entry) to the width of the longest value in the object, the same
+  computation used for the property-name column itself.
 
 ### Parentheses spacing (declarations, calls, control-flow)
 - A non-empty parenthesized list gets a space directly after `(` and
@@ -1358,7 +1392,33 @@ block's own body still gets the standard 2-blank-line padding from
   or more statements, it must become a real multi-line block instead,
   padded like any other (2 blank lines after `{`, 2 before `}`), with
   the same guard-clause-ending-in-`return` exception staying compact
-  regardless (e.g. `catch ( e ) { setErrBoo( true ); return; }`).
+  regardless (e.g. `catch ( e ) { setErrBoo( true ); return; }`). This is
+  independent of the "own line" rule above: `catch` never shares a
+  physical line with `try`'s own closing `}` (no `} catch (e) {}`)
+  regardless of whether either block's own body is compact or
+  multi-line — a compact `try { ... }` is still followed by `catch` on
+  its own fresh line below, per the reference examples throughout
+  storage.js (e.g. `ownKeyFun`).
+- **One `try`/`catch` statement is always separated from the next `try`/
+  `catch` statement by 3 blank lines — the "unrelated" tier — regardless
+  of what the general relatedness tiering would otherwise assign.** Two
+  separate try/catch statements are always genuinely distinct pieces of
+  error-handling behavior, even when they sit right next to each other
+  doing conceptually similar things (e.g. two independent cleanup calls
+  in the same click handler, or a service-worker attempt immediately
+  followed by its own page-level fallback attempt): each one's own catch
+  handles a DIFFERENT failure mode for a DIFFERENT operation, so they
+  never collapse to a lower tier the way, say, two sibling `useState`
+  calls might. This applies whether the try/catch pair involved is
+  compact or fully multi-line, and stacks with (doesn't replace) the
+  normal blank-line rule between a `try`'s own closing `}`/compact line
+  and its OWN `catch` (still 1 blank line, per the intro above) — the
+  3-blank rule is specifically about the gap AFTER one statement's own
+  `catch` and BEFORE the next statement's own `try`. See `genNotFun` in
+  `notify.js` for the reference example: its service-worker attempt's
+  `catch` and the page-level fallback's own `try` get 3 blank lines
+  between them, and so do the `window.focus()`/`pagNotObj.close()`
+  cleanup pair inside that fallback's own click handler.
 ```
 try {
 
@@ -2322,13 +2382,16 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   externally, then verify the export object explicitly maps EACH one
   (`realName : internalName`), never bare.
   - **Exception**: `cadence.js`'s own `CAD_NAM_OBJ` (originally
-    `CADENCE`) and `conditionals.js`'s own `CON_NAM_OBJ` (originally
-    `CONDITIONALS`) both deliberately swept their external property
-    names to match their internal implementation exactly (e.g.
-    `normalize` → `norCadFun`, `isCadence` → `isaCadFun` for the
-    former; `cardComplete` → `carComFun`, `advanceOnCompletion` →
-    `advValFun` for the latter), with every external call site (~60
-    across 7 consumer files for CAD_NAM_OBJ, 6 across 3 for CON_NAM_OBJ)
+    `CADENCE`), `conditionals.js`'s own `CON_NAM_OBJ` (originally
+    `CONDITIONALS`), and `notify.js`'s own `NOT_NAM_OBJ` all deliberately
+    swept their external property names to match their internal
+    implementation exactly (e.g. `normalize` → `norCadFun`, `isCadence`
+    → `isaCadFun` for the first; `cardComplete` → `carComFun`,
+    `advanceOnCompletion` → `advValFun` for the second; `permission` →
+    `perCheFun`, `subscribe` → `subAddFun`, `askOnce` → `askOncFun`,
+    `request` → `reqPerFun`, `generated` → `genNotFun` for the third),
+    with every external call site (~60 across 7 consumer files for
+    CAD_NAM_OBJ, 6 across 3 for CON_NAM_OBJ, 6 across 2 for NOT_NAM_OBJ)
     updated in the same pass. This was a deliberate, fully-swept rename,
     not a case of the shorthand danger above: the blast radius was
     checked first for each (every call site is plain JS, resolved at

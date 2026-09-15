@@ -1,7 +1,6 @@
 
 
 
-
 /**
  * notify.js = Local Notification Module
  *
@@ -35,7 +34,25 @@ const ASK_KEY_STR = 'easemylife.notifyasked'; // What: Ask Key String. Why: This
 
 
 const subLisSet = new Set(); // What: Subscriber Listener Set. Why: This holds every callback that wants to hear about a permission change, most notably the Settings page's own permission-state display. How: This is added to by subAddFun and iterated by broSubFun below.
-const broSubFun = () => { for ( const lisCurFun of subLisSet ) { try { lisCurFun(); } catch ( e ) {} } };                                                                                                // What: Broadcast Subscriber Function. Why: Every subscriber needs to hear about a permission change the moment askOncFun/reqPerFun resolve one. How: This calls every function currently in subLisSet, swallowing any individual subscriber's own error so one bad listener can't block the rest.
+
+
+const broSubFun = () => { // What: Broadcast Subscriber Function. Why: Every subscriber needs to hear about a permission change the moment askOncFun/reqPerFun resolve one. How: This calls every function currently in subLisSet, swallowing any individual subscriber's own error so one bad listener can't block the rest.
+
+
+	for ( const lisCurFun of subLisSet ) { // What: Subscriber Loop. Why: Every current subscriber must be notified, not just the first one. How: This iterates subLisSet, calling each entry in its own guarded try/catch below.
+
+
+		try { lisCurFun(); } // What: Subscriber Call Try. Why: This is the actual notification each subscriber exists to receive. How: This invokes lisCurFun with no arguments.
+
+		catch ( e ) {} // What: Subscriber Call Guard. Why: One bad listener throwing must not stop the rest of subLisSet from being notified. How: This silently swallows any error lisCurFun itself threw.
+
+
+	}
+
+
+};
+
+
 const subAddFun = ( lisCalFun ) => { // What: Subscribe Add Function. Why: A caller (the Settings page) needs a way to register for permission-change broadcasts and later unregister again. How: This adds the given callback to subLisSet and hands back its own removal function.
 
 
@@ -50,19 +67,35 @@ const subAddFun = ( lisCalFun ) => { // What: Subscribe Add Function. Why: A cal
 
 
 
-const notSupFun = () => typeof window.Notification === 'function'; // What: Notification Support Function. Why: Every other function below needs to know whether the browser has the Notification API at all before doing anything else with it. How: This checks that window.Notification exists and is itself a function.
+const notSupFun = () => typeof window.Notification === 'function';                 // What: Notification Support Function. Why: Every other function below needs to know whether the browser has the Notification API at all before doing anything else with it. How: This checks that window.Notification exists and is itself a function.
 const perCheFun = () => ( notSupFun() ? Notification.permission : 'unsupported' ); // What: Permission Check Function. Why: Callers (the Settings page's own display) need the current permission state without caring whether the API even exists. How: This reports Notification.permission when supported, or the literal string 'unsupported' otherwise.
 
 
 
-const padZerFun = ( rawValNum ) => String( rawValNum ).padStart( 2, '0' ); // What: Pad Zero Function. Why: A local-day string needs its month/day components zero-padded to 2 digits each. How: This stringifies the given number and left-pads it with '0' to a length of 2.
+const padZerFun = ( rawValNum ) => String( rawValNum ).padStart( 2, '0' );                                                                          // What: Pad Zero Function. Why: A local-day string needs its month/day components zero-padded to 2 digits each. How: This stringifies the given number and left-pads it with '0' to a length of 2.
 const locDayFun = ( dayDatObj ) => `${ dayDatObj.getFullYear() }-${ padZerFun( dayDatObj.getMonth() + 1 ) }-${ padZerFun( dayDatObj.getDate() ) }`; // What: Local Day Function. Why: The once-per-day guard needs a stable, comparable string for "today" in the user's own local time zone. How: This builds a YYYY-MM-DD string from the given Date's own local year/month/day, zero-padding month and day via padZerFun.
 
 
 
-const stoGetFun = ( stoKeyStr ) => { try { return localStorage.getItem( stoKeyStr ); } catch ( e ) { return null; } }; // What: Storage Get Function. Why: localStorage can throw in some contexts (private browsing, a full quota), and a failed read should never crash the caller. How: This wraps getItem in a try/catch, returning null on any failure instead of throwing.
-const stoSetFun = ( stoKeyStr, stoValStr ) => { try { localStorage.setItem( stoKeyStr, stoValStr ); } catch ( e ) {} }; // What: Storage Set Function. Why: Same reasoning as stoGetFun above, for writes: a failed write should never crash the caller. How: This wraps setItem in a try/catch, silently doing nothing on any failure.
+const stoGetFun = ( stoKeyStr ) => { // What: Storage Get Function. Why: localStorage can throw in some contexts (private browsing, a full quota), and a failed read should never crash the caller. How: This wraps getItem in a try/catch, returning null on any failure instead of throwing.
 
+
+	try { return localStorage.getItem( stoKeyStr ); } // What: Storage Get Try. Why: This is the actual read this function exists to perform. How: This returns whatever getItem resolves to for stoKeyStr, including null when the key isn't set.
+
+	catch ( e ) { return null; } // What: Storage Get Guard. Why: A private-mode or full-quota localStorage can throw on read. How: This returns null instead of letting the error propagate.
+
+
+};
+
+const stoSetFun = ( stoKeyStr, stoValStr ) => { // What: Storage Set Function. Why: Same reasoning as stoGetFun above, for writes: a failed write should never crash the caller. How: This wraps setItem in a try/catch, silently doing nothing on any failure.
+
+
+	try { localStorage.setItem( stoKeyStr, stoValStr ); } // What: Storage Set Try. Why: This is the actual write this function exists to perform. How: This calls setItem with stoKeyStr and stoValStr.
+
+	catch ( e ) {} // What: Storage Set Guard. Why: A private-mode or full-quota localStorage can throw on write. How: This silently does nothing instead of letting the error propagate.
+
+
+};
 
 
 const askCheFun = () => !!stoGetFun( ASK_KEY_STR ); // What: Ask Check Function. Why: askOncFun below must only ever prompt once, ever, regardless of how the previous prompt was answered. How: This reports whether the one-time "asked" flag has already been written.
@@ -115,11 +148,14 @@ async function askOncFun() {
 
 
 
-	try { perResStr = await Notification.requestPermission(); } catch ( e ) { /* older API */ } // What: Request Permission Try. Why: A very old browser's callback-style requestPermission could throw when called with no callback argument at all. How: This awaits the modern Promise-returning form and falls back to leaving perResStr at its default value on any error.
+	try { perResStr = await Notification.requestPermission(); } // What: Request Permission Try. Why: A very old browser's callback-style requestPermission could throw when called with no callback argument at all. How: This awaits the modern Promise-returning form and falls back to leaving perResStr at its default value on any error.
+
+	catch ( e ) { /* older API */ } // What: Request Permission Guard. Why: A very old browser's callback-style requestPermission could throw when called with no callback argument at all. How: This leaves perResStr at its default value instead of letting the error propagate.
 
 
 
 	if ( perResStr !== 'default' ) stoSetFun( ASK_KEY_STR, '1' ); // What: Ask Flag Write Guard. Why: The one-time "asked" flag must only be burned once the user has actually answered the prompt; a dismissal leaves the permission at 'default' and should still be askable later. How: This writes the flag only when perResStr resolved to something other than 'default'.
+
 
 	broSubFun(); // What: Broadcast Subscriber Call. Why: Every subscriber (the Settings page's own permission-state display) needs to hear about this potential permission change. How: This calls broSubFun with no arguments, notifying every current subscriber.
 
@@ -177,7 +213,11 @@ async function reqPerFun() {
 
 
 
-	try { if ( perResStr === 'default' ) perResStr = await Notification.requestPermission(); } catch ( e ) {} // What: Request Permission Try. Why: A prompt should only actually be shown when the permission is still 'default'; a browser that has already denied it will just ignore this call anyway. How: This awaits the modern Promise-returning form only when needed, leaving perResStr unchanged on any error.
+	try { if ( perResStr === 'default' ) perResStr = await Notification.requestPermission(); } // What: Request Permission Try. Why: A prompt should only actually be shown when the permission is still 'default'; a browser that has already denied it will just ignore this call anyway. How: This awaits the modern Promise-returning form only when needed, leaving perResStr unchanged on any error.
+
+	catch ( e ) {} // What: Request Permission Guard. Why: The modern Promise-returning form could still throw in some edge case. How: This leaves perResStr unchanged instead of letting the error propagate.
+
+
 
 	broSubFun(); // What: Broadcast Subscriber Call. Why: Every subscriber (the Settings page's own permission-state display) needs to hear about this potential permission change. How: This calls broSubFun with no arguments, notifying every current subscriber.
 
@@ -236,11 +276,13 @@ async function genNotFun() {
 
 	const appVisBoo = document.visibilityState === 'visible' && document.hasFocus(); // What: App Visible Boolean. Why: A notification for a page the user is already looking at is pure noise. How: This is true only when the tab is both the visible one and actually focused.
 
+
 	if ( appVisBoo ) return false; // What: App Visible Guard. Why: The whole point of appVisBoo above is to skip showing a notification while it's true. How: This returns early without showing anything when the app is already front and center.
 
 
 
 	const curDayStr = locDayFun( new Date() ); // What: Current Day String. Why: The once-per-day guard below needs today's own local-day string to compare against. How: This calls locDayFun with a freshly-constructed Date for right now.
+
 
 	if ( stoGetFun( DAY_KEY_STR ) === curDayStr ) return false; // What: Already Notified Guard. Why: This local day must not notify more than once, even across a page reload. How: This compares the persisted last-notified day against curDayStr and returns early on a match.
 
@@ -251,14 +293,15 @@ async function genNotFun() {
 
 
 	const notTitStr = 'Your life is ready to be eased!'; // What: Notification Title String. Why: This is the fixed headline shown on every daily-generation notification. How: This is handed to both the service-worker and page-level notification paths below.
+
 	const notOptObj = { // What: Notification Options Object. Why: This is the fixed set of options shown on every daily-generation notification. How: This is handed to both the service-worker and page-level notification paths below; its own property names are the Notification API's own contract, not this codebase's invention, so they are left as-is.
 
 
 		body               : 'Your personalized list for today is ready. Click here to open it.', // What: Body. Why: This is the notification's own secondary line of text, read directly by the browser's Notification API. How: This tells the user their list is ready and that clicking opens it.
-		icon               : 'assets/icon-192.png',                                                // What: Icon. Why: This is the notification's own large icon image, read directly by the browser's Notification API. How: This points at the app's own 192px icon asset.
-		badge              : 'assets/icon-192.png',                                                // What: Badge. Why: This is the notification's own small monochrome status-bar badge image, read directly by the browser's Notification API. How: This reuses the same 192px icon asset as the badge source.
-		tag                : 'eml-daily-' + curDayStr,                                              // What: Tag. Why: A shared tag collapses duplicate notifications from multiple open tabs into one, read directly by the browser's Notification API. How: This combines a fixed prefix with curDayStr so only same-day notifications collapse together.
-		requireInteraction : false                                                                  // What: Require Interaction. Why: This notification should dismiss itself normally rather than staying pinned, read directly by the browser's Notification API. How: This is fixed false, since nothing about this notification requires the user to act on it.
+		icon               : 'assets/icon-192.png',                                               // What: Icon. Why: This is the notification's own large icon image, read directly by the browser's Notification API. How: This points at the app's own 192px icon asset.
+		badge              : 'assets/icon-192.png',                                               // What: Badge. Why: This is the notification's own small monochrome status-bar badge image, read directly by the browser's Notification API. How: This reuses the same 192px icon asset as the badge source.
+		tag                : 'eml-daily-' + curDayStr,                                            // What: Tag. Why: A shared tag collapses duplicate notifications from multiple open tabs into one, read directly by the browser's Notification API. How: This combines a fixed prefix with curDayStr so only same-day notifications collapse together.
+		requireInteraction : false                                                                // What: Require Interaction. Why: This notification should dismiss itself normally rather than staying pinned, read directly by the browser's Notification API. How: This is fixed false, since nothing about this notification requires the user to act on it.
 
 
 	};
@@ -295,17 +338,25 @@ async function genNotFun() {
 	catch ( e ) { /* fall through to the page-level constructor */ } // What: Service Worker Attempt Catch. Why: Any failure in the service-worker path should fall through to the page-level constructor instead of failing the whole function. How: This swallows the error and lets execution continue past the try block.
 
 
-	try {
+
+	try { // What: Page Notification Attempt. Why: This is the fallback path for a browser that lacks (or hasn't registered) a service worker, so the page-level Notification constructor is used directly. How: This constructs the notification, wires its click handler, and reports success, falling through to the catch below on any failure.
 
 
 		const pagNotObj = new Notification( notTitStr, notOptObj ); // What: Page Notification Object. Why: This is the fallback path for a browser that lacks (or hasn't registered) a service worker. How: This constructs a page-level Notification directly from the fixed title/options.
 
+
 		pagNotObj.onclick = () => { // What: Page Notification Click Handler. Why: Clicking the notification should focus the existing window, never regenerate, since the list it's about has already been built. How: This is assigned once, right after construction, and runs the 2 cleanup calls below on click.
 
 
-			try { window.focus(); } catch ( e ) {} // What: Window Focus Attempt. Why: Focusing the existing tab is the actual point of clicking the notification. How: This calls window.focus() and swallows any error some browsers may throw here.
+			try { window.focus(); } // What: Window Focus Attempt. Why: Focusing the existing tab is the actual point of clicking the notification. How: This calls window.focus() and swallows any error some browsers may throw here.
 
-			try { pagNotObj.close(); } catch ( e ) {} // What: Notification Close Attempt. Why: The notification should dismiss itself once clicked. How: This calls pagNotObj's own close() and swallows any error the same way.
+			catch ( e ) {} // What: Window Focus Guard. Why: Some browsers may throw when focusing a window in certain contexts. How: This silently swallows any error window.focus() itself threw.
+
+
+
+			try { pagNotObj.close(); } // What: Notification Close Attempt. Why: The notification should dismiss itself once clicked. How: This calls pagNotObj's own close() and swallows any error the same way.
+
+			catch ( e ) {} // What: Notification Close Guard. Why: Some browsers may throw when closing an already-dismissed notification. How: This silently swallows any error pagNotObj.close() itself threw.
 
 
 		};
@@ -317,7 +368,7 @@ async function genNotFun() {
 
 	}
 
-	catch ( e ) {
+	catch ( e ) { // What: Page Notification Catch. Why: Both notification paths having failed means the day claimed earlier must be released so a later attempt can still try. How: This releases the claimed day and reports failure.
 
 
 		if ( stoGetFun( DAY_KEY_STR ) === curDayStr ) stoSetFun( DAY_KEY_STR, '' ); // What: Day Release Guard. Why: Both notification paths having failed means a later attempt should still be allowed to notify for this same day. How: This clears the claimed day back out, but only if nothing else has already claimed a different one since.
@@ -336,6 +387,18 @@ async function genNotFun() {
 
 
 
-export const NOT_NAM_OBJ = { supported : notSupFun, permission : perCheFun, askOnce : askOncFun, request : reqPerFun, generated : genNotFun, asked : askCheFun, subscribe : subAddFun }; // What: Notification Namespace Object. Why: This bundles every one of this module's public operations behind one object, giving callers a single import surface; tab-settings.jsx/tab-today.jsx call these exact external names (permission/askOnce/request/subscribe/generated), so they must map explicitly rather than shorthand, which would silently rename the external API to this file's own internal names. How: This maps each original external name to its own renamed internal implementation.
+export const NOT_NAM_OBJ = { // What: Notification Namespace Object. Why: This bundles every one of this module's public operations behind one object, giving callers a single import surface, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
+
+
+	notSupFun : notSupFun, // What: Notification Support Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of NOT_NAM_OBJ's own stable public shape. How: This re-exports notSupFun under its own matching name.
+	perCheFun : perCheFun, // What: Permission Check Function. Why: tab-settings.jsx's own notify-me row reads this to decide which of its 3 states to show. How: This re-exports perCheFun under its own matching name.
+	askOncFun : askOncFun, // What: Ask Once Function. Why: tab-settings.jsx calls this from the run-time input's own onChange handler, the one moment this app ever asks for notification permission unprompted. How: This re-exports askOncFun under its own matching name.
+	reqPerFun : reqPerFun, // What: Request Permission Function. Why: tab-settings.jsx's own explicit Enable button calls this to (re-)request permission. How: This re-exports reqPerFun under its own matching name.
+	genNotFun : genNotFun, // What: Generated Notification Function. Why: tab-today.jsx calls this right after an automatic daily-list generation completes. How: This re-exports genNotFun under its own matching name.
+	askCheFun : askCheFun, // What: Ask Check Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of NOT_NAM_OBJ's own stable public shape. How: This re-exports askCheFun under its own matching name.
+	subAddFun : subAddFun  // What: Subscribe Add Function. Why: tab-settings.jsx's own permission-state display needs to hear about live permission changes. How: This re-exports subAddFun under its own matching name.
+
+
+};
 
 

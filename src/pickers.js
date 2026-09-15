@@ -907,6 +907,18 @@ const modEliFun = ( iteRecObj, pikRecObj ) => { // What: Mode Eligible Function.
 
 
 
-export const PICKERS = { pick : pikIteFun, readiness : reaValFun, easeEligible : easEliFun, modeEligible : modEliFun, EASE_TOL : EAS_TOL_NUM, avgEase : aveEasFun, DEFAULT_EASE : DEF_EAS_OBJ }; // What: Pickers Namespace Object. Why: store.jsx, tab-today.jsx, and tab-picker.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on, deliberately left unrenamed (see this file's own header comment).
+export const PICKERS = { // What: Pickers Namespace Object. Why: store.jsx, tab-today.jsx, and tab-picker.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on, deliberately left unrenamed (see this file's own header comment).
+
+
+	pick         : pikIteFun,   // What: Pick Function. Why: tab-today.jsx and tab-picker.jsx both call this to actually pick a new item from a picker's own pool. How: This re-exports pikIteFun under its own matching name.
+	readiness    : reaValFun,   // What: Readiness Function. Why: tab-picker.jsx reads this for a pool item's own readiness value. How: This re-exports reaValFun under its own matching name.
+	easeEligible : easEliFun,   // What: Ease Eligible Function. Why: tab-today.jsx checks this to decide whether an ease-mode item is currently eligible to be picked. How: This re-exports easEliFun under its own matching name.
+	modeEligible : modEliFun,   // What: Mode Eligible Function. Why: tab-picker.jsx checks this for a pool item's own mode-specific eligibility. How: This re-exports modEliFun under its own matching name.
+	EASE_TOL     : EAS_TOL_NUM, // What: Ease Tolerance Number. Why: Nothing outside this file currently reads this directly, but it stays exported as part of PICKERS' own stable public shape. How: This re-exports EAS_TOL_NUM under its own matching name.
+	avgEase      : aveEasFun,   // What: Average Ease Function. Why: store.jsx, tab-today.jsx, and tab-picker.jsx all call this for a picker's own average ease-band value. How: This re-exports aveEasFun under its own matching name.
+	DEFAULT_EASE : DEF_EAS_OBJ  // What: Default Ease Object. Why: store.jsx reads this for a fresh item's own starting ease-band shape. How: This re-exports DEF_EAS_OBJ under its own matching name.
+
+
+};
 
 
