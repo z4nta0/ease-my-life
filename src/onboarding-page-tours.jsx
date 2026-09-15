@@ -846,7 +846,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: bldSteFun below spreads
 	groupGrip : {
 
 
-		// Scoped to the Reminders section specifically (.rem-section, its own distinguishing class, every OTHER group section shares plain .group-section) since .group-grip itself isn't unique: one renders per section once editMode is on (see reminders.jsx's ReminderSection and tab-today.jsx's GroupHeader, which share this exact class/aria-label).
+		// Scoped to the Reminders section specifically (.rem-section, its own distinguishing class, every OTHER group section shares plain .group-section) since .group-grip itself isn't unique: one renders per section once editMode is on (see reminders.jsx's RemSecCom and tab-today.jsx's GroupHeader, which share this exact class/aria-label).
 		sel   : '.rem-section .group-grip', // What: Selector String. Why: This step highlights the Reminders section's own drag handle specifically. How: GuidedTour spotlights whatever this selector matches.
 		title : 'Movable Icon',
 		body  : <>This will <b>allow you to move an entire group section to a different position in the todo list or move item positions within a group’s section</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now. Click Next when you are ready to move on.</>

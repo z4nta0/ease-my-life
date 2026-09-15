@@ -29,7 +29,7 @@ import { norGroFun                } from './pickers.js';              // What: N
 import { OB_CHECKLIST             } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: Several add/edit controls in this file must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutorialsInProgress throughout TabData and ConManCom.
 import { PICKERS                  } from './pickers.js';              // What: Pickers. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PICKERS.avgEase.
 import { reduceMotion             } from './ui.jsx';                  // What: Reduce Motion. Why: A user who prefers reduced motion shouldn't see any of this file's own FLIP/scroll/collapse animations. How: This is checked before every animation throughout this file.
-import { ReminderManager          } from './reminders.jsx';           // What: Reminder Manager. Why: The Reminders section of this tab is a full, separately-maintained editor. How: This is rendered once, in place of a picker card, whenever the Reminders scope is shown.
+import { RemManCom                } from './reminders.jsx';           // What: Reminder Manager Component. Why: The Reminders section of this tab is a full, separately-maintained editor. How: This is rendered once, in place of a picker card, whenever the Reminders scope is shown.
 import { sedPicFun                } from './help-sample-data.js';     // What: Seed Pickers Function. Why: Help mode needs a real picker of every mode to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
 import { sedTasFun                } from './help-sample-data.js';     // What: Seed Tasks Function. Why: Help mode needs real reminders of every recurrence kind to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
 import { SortSelect               } from './ui.jsx';                  // What: Sort Select. Why: Every sortable list in this file needs the same sort control. How: This is rendered for sections, conditional items, and each picker's own item list.
@@ -51,7 +51,7 @@ import { WeekdayChips             } from './ui.jsx';                  // What: W
  * A picker's own "how it picks / when it runs / item controls" settings
  * (PicConCom) live here rather than in a separate Settings screen, so
  * everything about one picker sits behind one card. Conditionals
- * (ConManCom/ConEdiCom) and Reminders (ReminderManager, a separately
+ * (ConManCom/ConEdiCom) and Reminders (RemManCom, a separately
  * maintained module) render as sibling sections above the picker cards.
  * The global "days off" holiday list itself still lives in Settings.
  *
@@ -2929,12 +2929,12 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 				) }
 
-				{ rdrEntArr.map( ( entCurObj, pkIndNum ) => { // What: Rendered Entry Map. Why: One card is needed per section entry, plus (last) the in-progress draft. How: This branches on entCurObj.kind, rendering ConManCom/ReminderManager directly or a full picker card otherwise.
+				{ rdrEntArr.map( ( entCurObj, pkIndNum ) => { // What: Rendered Entry Map. Why: One card is needed per section entry, plus (last) the in-progress draft. How: This branches on entCurObj.kind, rendering ConManCom/RemManCom directly or a full picker card otherwise.
 
 
 					if ( entCurObj.kind === 'conditionals' ) return <ConManCom key='cnd-shown' state={ staAppObj } actions={ actObj } />; // What: Conditionals Branch Return. Why: The Conditionals section is its own separately-maintained manager, not a picker card. How: This renders ConManCom directly, keyed statically since only one can ever exist.
 
-					if ( entCurObj.kind === 'reminders' ) return <ReminderManager key='rem-shown' state={ staAppObj } actions={ actObj } />; // What: Reminders Branch Return. Why: The Reminders section is its own separately-maintained manager, not a picker card. How: This renders ReminderManager directly, keyed statically since only one can ever exist.
+					if ( entCurObj.kind === 'reminders' ) return <RemManCom key='rem-shown' state={ staAppObj } actions={ actObj } />; // What: Reminders Branch Return. Why: The Reminders section is its own separately-maintained manager, not a picker card. How: This renders RemManCom directly, keyed statically since only one can ever exist.
 
 
 					const picCurObj  = entCurObj.pk;                                                                    // What: Picker Current Object. Why: Every remaining branch below is a real picker card and needs its own record. How: This reads entCurObj.pk.

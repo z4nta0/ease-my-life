@@ -23,7 +23,7 @@ import { OB_SAMPLE_PICKER_IDS    } from './onboarding-seed-data.js'; // What: On
 import { PickerAnimStage         } from './settings-previews.jsx';   // What: Picker Animation Stage. Why: The picker-animation style picker needs a live preview the user can play. How: This is rendered inside the Picker Animation card, driven by picPreStr/picTokNum.
 import { PWA                     } from './pwa.js';                  // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isStandalone()/canInstall()/installState()/promptInstall()/requestPersistOnce() methods.
 import { reduceMotion            } from './ui.jsx';                  // What: Reduce Motion. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
-import { Segmented               } from './reminders.jsx';           // What: Segmented. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
+import { SegConCom               } from './reminders.jsx';           // What: Segment Control Component. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
 import { SET_HEL_ARR             } from './help-content.jsx';        // What: Settings Help Array. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelOveCom.
 import { STORAGE                 } from './storage.js';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own status()/readPersisted() methods.
 import { useEscapeCancel         } from './ui.jsx';                  // What: Use Escape Cancel. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
@@ -2552,7 +2552,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 							<Card>{ /* What: Layout Card. Why: The placement row needs the same bordered container as every other row in this tab. How: This wraps the placement row below. */ }
 
 
-								<div className='set-data-row'>{ /* What: Layout Row Div Element. Why: The label/description and the Segmented control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Segmented control. */ }
+								<div className='set-data-row'>{ /* What: Layout Row Div Element. Why: The label/description and the SegConCom control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the SegConCom control. */ }
 
 
 									<div className='set-data-info'>{ /* What: Layout Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the control. How: This wraps the name span and the description span. */ }
@@ -2580,20 +2580,20 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 									</div>
 
-									<Segmented
-										options={ [
+									<SegConCom
+										optIteArr={ [
 
 
-											{ keyStr : 'bottom', labStr : 'Bottom' }, // What: Key String. Why: This is the tab bar's own default placement. How: Segmented compares this against the current tabPlacement and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
-											{ keyStr : 'side',   labStr : 'Side' },   // What: Key String. Why: This puts the tab bar in a vertical rail instead. How: Segmented compares this against the current tabPlacement and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
-											{ keyStr : 'top',    labStr : 'Top' }     // What: Key String. Why: This puts the tab bar above the page content instead. How: Segmented compares this against the current tabPlacement and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+											{ keyStr : 'bottom', labStr : 'Bottom' }, // What: Key String. Why: This is the tab bar's own default placement. How: SegConCom compares this against the current tabPlacement and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+											{ keyStr : 'side',   labStr : 'Side' },   // What: Key String. Why: This puts the tab bar in a vertical rail instead. How: SegConCom compares this against the current tabPlacement and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+											{ keyStr : 'top',    labStr : 'Top' }     // What: Key String. Why: This puts the tab bar above the page content instead. How: SegConCom compares this against the current tabPlacement and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 
 
 										] }
 										value={ ( state.appearance && state.appearance.tabPlacement ) || 'bottom' }
 										ariaLabel='Tab bar placement'
 										onChange={ actions.setTabPlacement }
-									/>{ /* What: Segmented. Why: This is the actual 3-way exclusive control for the tab-bar placement. How: This is bound to the persisted tabPlacement, saving via actions.setTabPlacement. */ }
+									/>{ /* What: Segment Control Component. Why: This is the actual 3-way exclusive control for the tab-bar placement. How: This is bound to the persisted tabPlacement, saving via actions.setTabPlacement. */ }
 
 
 								</div>

@@ -36,9 +36,9 @@ import { NumStepper                } from './ui.jsx';    // What: Number Stepper
  * and ConditionalControls' own draft/onChange/nameError/variant/
  * hideName props, are a cross-file contract read directly by
  * tab-picker.jsx and tab-data.jsx. They are deliberately left unrenamed
- * on this formatting pass, the same way Segmented's own options/value/
- * onChange/ariaLabel/describedBy props were left unrenamed in
- * reminders.jsx for the identical reason.
+ * for now, their own deliberate decision distinct from the component-
+ * identity renames already completed elsewhere this pass (e.g.
+ * reminders.jsx's own SegConCom).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

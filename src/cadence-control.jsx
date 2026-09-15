@@ -6,7 +6,7 @@
 import { CAD_NAM_OBJ } from './cadence.js';    // What: Cadence. Why: Every cadence field this component reads or writes (mode, anchors, dateMode, nthOrdinal, nthWeekday) is normalized and summarized through this one domain namespace instead of duplicating that logic locally. How: This is called below for its own norCadFun and tipMesFun entries.
 import { Collapse    } from './ui.jsx';        // What: Collapse. Why: The anchor subsection needs to animate open and closed as the selected cadence changes, instead of snapping. How: This wraps the whole non-daily anchor block below, gated on the current cadence.
 import { InfoTip     } from './ui.jsx';        // What: Info Tip. Why: Every cadence row's own "?" control needs an explanatory tooltip beside its label. How: This is rendered once per cadence row below, fed by CAD_NAM_OBJ's own tipMesFun copy.
-import { Segmented   } from './reminders.jsx'; // What: Segmented. Why: The top-level cadence picker and the monthly/yearly Date-vs-Weekday picker both need the same animated segmented control. How: This is rendered once for the cadence choice and once more inside each of the monthly and yearly subsections.
+import { SegConCom   } from './reminders.jsx'; // What: Segment Control Component. Why: The top-level cadence picker and the monthly/yearly Date-vs-Weekday picker both need the same animated segmented control. How: This is rendered once for the cadence choice and once more inside each of the monthly and yearly subsections.
 
 // #endregion Imports
 
@@ -26,14 +26,15 @@ import { Segmented   } from './reminders.jsx'; // What: Segmented. Why: The top-
  * controls (tab-data.jsx), committing every change through a single
  * onChange(patch) callback; the caller owns the actual persisted
  * value and decides how a patch gets merged into it. Reuses the
- * Segmented control and the Reminders scheduling styles (rem-*, cad-*)
+ * SegConCom control and the Reminders scheduling styles (rem-*, cad-*)
  * rather than defining its own.
  *
  * The exported CadConCom name and its own value/onChange props are
  * a cross-file contract read directly by tab-picker.jsx, and stay
- * unrenamed for that reason, the same way reminders.jsx's own Segmented
- * options/value/onChange/ariaLabel/describedBy props were left
- * unrenamed. CAD_OPT_ARR (originally named CAD_OPTS) was also read by
+ * unrenamed for that reason. reminders.jsx's own SegConCom (this
+ * file's own animated segmented control) has since had its own
+ * options prop renamed to optIteArr, rippled into every call site
+ * below. CAD_OPT_ARR (originally named CAD_OPTS) was also read by
  * tab-data.jsx, but was renamed anyway with tab-data.jsx's own import
  * and usage updated to match in the same pass, since the array's own
  * property names (key/label/sub) still follow no naming rule at all and
@@ -48,14 +49,14 @@ import { Segmented   } from './reminders.jsx'; // What: Segmented. Why: The top-
 
 
 
-const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence picker below needs one option per cadence, each carrying its own live sub-explanation; tab-data.jsx also reads this same array directly for its own cadence-summary lookup. How: This is passed as the top Segmented's own options prop below.
+const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence picker below needs one option per cadence, each carrying its own live sub-explanation; tab-data.jsx also reads this same array directly for its own cadence-summary lookup. How: This is passed as the top SegConCom's own optIteArr prop below.
 
 
 	{
 
 
-		keyStr : 'daily',                                                                 // What: Key String. Why: This is the value the top Segmented compares against norCadObj.cadence and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		labStr : 'Daily',                                                                 // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'daily',                                                                 // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Daily',                                                                 // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>surfaces <strong>every day</strong> it runs (the standard behavior)</> // What: Sub Element. Why: This is the live sub-explanation shown under the cadence picker while 'daily' is selected. How: CadConCom looks this up by norCadObj.cadence and renders it as curSubEle.
 
 
@@ -64,8 +65,8 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 	{
 
 
-		keyStr : 'weekly',                                                                                                                                // What: Key String. Why: This is the value the top Segmented compares against norCadObj.cadence and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		labStr : 'Weekly',                                                                                                                                // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'weekly',                                                                                                                                // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Weekly',                                                                                                                                // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>surfaces <strong>once a week</strong>, on the weekday you choose below, after which the pick will persist until marked as completed</> // What: Sub Element. Why: This is the live sub-explanation shown under the cadence picker while 'weekly' is selected. How: CadConCom looks this up by norCadObj.cadence and renders it as curSubEle.
 
 
@@ -74,8 +75,8 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 	{
 
 
-		keyStr : 'monthly',                                                                                                                            // What: Key String. Why: This is the value the top Segmented compares against norCadObj.cadence and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		labStr : 'Monthly',                                                                                                                            // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'monthly',                                                                                                                            // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Monthly',                                                                                                                            // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>surfaces <strong>once a month</strong>, on the day you choose below, after which the pick will persist until marked as completed</> // What: Sub Element. Why: This is the live sub-explanation shown under the cadence picker while 'monthly' is selected. How: CadConCom looks this up by norCadObj.cadence and renders it as curSubEle.
 
 
@@ -84,8 +85,8 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 	{
 
 
-		keyStr : 'yearly',                                                                                                                             // What: Key String. Why: This is the value the top Segmented compares against norCadObj.cadence and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		labStr : 'Yearly',                                                                                                                             // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'yearly',                                                                                                                             // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Yearly',                                                                                                                             // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>surfaces <strong>once a year</strong>, on the date you choose below, after which the pick will persist until marked as completed</> // What: Sub Element. Why: This is the live sub-explanation shown under the cadence picker while 'yearly' is selected. How: CadConCom looks this up by norCadObj.cadence and renders it as curSubEle.
 
 
@@ -96,11 +97,11 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 
 
 
-const DAT_MOD_ARR = [ // What: Date Mode Array. Why: The monthly and yearly subsections below both offer the same Date-vs-Weekday choice, driven by one shared Segmented control. How: This is passed as that Segmented's own options prop in both subsections below.
+const DAT_MOD_ARR = [ // What: Date Mode Array. Why: The monthly and yearly subsections below both offer the same Date-vs-Weekday choice, driven by one shared SegConCom control. How: This is passed as that SegConCom's own optIteArr prop in both subsections below.
 
 
-	{ keyStr : 'date',       labStr : 'Date'    }, // What: Key String. Why: This is the default day-of-month/day targeting mode's own value. How: Segmented compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
-	{ keyStr : 'nthWeekday', labStr : 'Weekday' }  // What: Key String. Why: This lets the user target e.g. "the 2nd Tuesday" instead of a fixed day number. How: Segmented compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+	{ keyStr : 'date',       labStr : 'Date'    }, // What: Key String. Why: This is the default day-of-month/day targeting mode's own value. How: SegConCom compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+	{ keyStr : 'nthWeekday', labStr : 'Weekday' }  // What: Key String. Why: This lets the user target e.g. "the 2nd Tuesday" instead of a fixed day number. How: SegConCom compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 
 
 ];
@@ -177,7 +178,7 @@ function CadConCom ( { value, onChange } ) {
 		<div className='cad-ctl'>{ /* What: Controls Container Div Element. Why: This is CadConCom's own root element, holding the cadence picker and, for every mode but daily, the matching anchor subsection. How: This renders as a plain div; every field below commits through setPatFun. */ }
 
 
-			<div className='rem-field'>{ /* What: Cadence Field Div Element. Why: This groups the cadence picker's own label and its own Segmented control as one field, matching the Reminders editor's own field layout. How: This wraps the flabel-wrap block and the top Segmented below. */ }
+			<div className='rem-field'>{ /* What: Cadence Field Div Element. Why: This groups the cadence picker's own label and its own SegConCom control as one field, matching the Reminders editor's own field layout. How: This wraps the flabel-wrap block and the top SegConCom below. */ }
 
 
 				<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The field's own label and live summary need to sit together as one visual unit. How: This wraps the label span and the fading summary span below. */ }
@@ -210,12 +211,12 @@ function CadConCom ( { value, onChange } ) {
 				</div>
 
 
-				<Segmented
-					options={ CAD_OPT_ARR }
+				<SegConCom
+					optIteArr={ CAD_OPT_ARR }
 					value={ norCadObj.cadence }
 					ariaLabel='Cadence'
 					onChange={ ( cadKeyStr ) => setPatFun( { cadence : cadKeyStr } ) }
-				/>{ /* What: Segmented. Why: This is the actual top-level cadence picker. How: This commits the clicked cadence key straight through setPatFun. */ }
+				/>{ /* What: Segment Control Component. Why: This is the actual top-level cadence picker. How: This commits the clicked cadence key straight through setPatFun. */ }
 
 
 			</div>
@@ -295,7 +296,7 @@ function CadConCom ( { value, onChange } ) {
 					{ norCadObj.cadence === 'monthly' && ( // What: Monthly Visibility Check. Why: Only the monthly cadence's own anchor subsection belongs here. How: This renders it only while norCadObj.cadence is 'monthly'.
 
 
-						<div className='rem-field'>{ /* What: Monthly Field Div Element. Why: This groups every monthly-specific control as one anchor subsection. How: This renders the field label/summary, the Date/Weekday Segmented, whichever detail row matches it, and a clamp hint. */ }
+						<div className='rem-field'>{ /* What: Monthly Field Div Element. Why: This groups every monthly-specific control as one anchor subsection. How: This renders the field label/summary, the Date/Weekday SegConCom, whichever detail row matches it, and a clamp hint. */ }
 
 
 							<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the fading summary span below. */ }
@@ -322,12 +323,12 @@ function CadConCom ( { value, onChange } ) {
 							</div>
 
 
-							<Segmented
-								options={ DAT_MOD_ARR }
+							<SegConCom
+								optIteArr={ DAT_MOD_ARR }
 								value={ norCadObj.dateMode }
 								ariaLabel='Day selection'
 								onChange={ ( modKeyStr ) => setPatFun( { dateMode : modKeyStr } ) }
-							/>{ /* What: Segmented. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
+							/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
 
 							{ norCadObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The monthly detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday selects while norCadObj.dateMode is 'nthWeekday', the plain day-of-month select otherwise.
 
@@ -434,7 +435,7 @@ function CadConCom ( { value, onChange } ) {
 					{ norCadObj.cadence === 'yearly' && ( // What: Yearly Visibility Check. Why: Only the yearly cadence's own anchor subsection belongs here. How: This renders it only while norCadObj.cadence is 'yearly'.
 
 
-						<div className='rem-field'>{ /* What: Yearly Field Div Element. Why: This groups every yearly-specific control as one anchor subsection. How: This renders the field label/summary, the Date/Weekday Segmented, whichever detail row matches it, and a clamp hint. */ }
+						<div className='rem-field'>{ /* What: Yearly Field Div Element. Why: This groups every yearly-specific control as one anchor subsection. How: This renders the field label/summary, the Date/Weekday SegConCom, whichever detail row matches it, and a clamp hint. */ }
 
 
 							<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the fading summary span below. */ }
@@ -461,12 +462,12 @@ function CadConCom ( { value, onChange } ) {
 							</div>
 
 
-							<Segmented
-								options={ DAT_MOD_ARR }
+							<SegConCom
+								optIteArr={ DAT_MOD_ARR }
 								value={ norCadObj.dateMode }
 								ariaLabel='Day selection'
 								onChange={ ( modKeyStr ) => setPatFun( { dateMode : modKeyStr } ) }
-							/>{ /* What: Segmented. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
+							/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
 
 							{ norCadObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The yearly detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday-plus-month selects while norCadObj.dateMode is 'nthWeekday', the plain month-plus-day selects otherwise.
 

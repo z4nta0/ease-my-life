@@ -1911,7 +1911,7 @@ function flushState( curStaObj ) {
  * hidden flag backfilled in migrate above) don't count toward, or
  * block, the streak, same as if that picker didn't exist. Reminders
  * are checked against the last generation's own anchor date (not live
- * "now"), so this must always agree with whatever ReminderSection is
+ * "now"), so this must always agree with whatever RemSecCom is
  * actually showing right now.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -1939,7 +1939,7 @@ function reconcileStreak( curStaObj, entArgArr, tasArgArr ) {
 	const hidPicSet = new Set( ( curStaObj.pickers || [] ).filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: The visible-entries filter below needs fast membership checks against every hidden picker's own id. How: This collects the id of every picker whose own hidden flag is true.
 	const vsbEntArr = ( entArgArr || [] ).filter( ( curEntObj ) => !curEntObj.pickerId || !hidPicSet.has( curEntObj.pickerId ) ); // What: Visible Entry Array. Why: An entry belonging to a hidden picker must not count toward, or block, the streak. How: This keeps every entry with no pickerId at all, or whose pickerId isn't in hidPicSet.
 
-	const curAncObj = TASKS.anchorDate( curStaObj.today && curStaObj.today.generatedAt ); // What: Current Anchor Object. Why: Reminder eligibility below must be pinned to the last generation's own day, matching whatever ReminderSection is actually showing right now. How: This calls TASKS.anchorDate with today's own generatedAt.
+	const curAncObj = TASKS.anchorDate( curStaObj.today && curStaObj.today.generatedAt ); // What: Current Anchor Object. Why: Reminder eligibility below must be pinned to the last generation's own day, matching whatever RemSecCom is actually showing right now. How: This calls TASKS.anchorDate with today's own generatedAt.
 	const vsbTasArr = TASKS.visibleToday( tasArgArr, curStaObj.reminderOpts, curStaObj.holidays, curAncObj ); // What: Visible Task Array. Why: Only a reminder actually shown today can participate in the streak at all. How: This calls TASKS.visibleToday with curAncObj as the anchor.
 	const strTasArr = vsbTasArr.filter( ( curTasObj ) => TASKS.optsFor( curTasObj, curStaObj.reminderOpts ).streak ); // What: Streak Task Array. Why: Only a reminder whose own type has the streak switch on actually counts. How: This filters vsbTasArr to those TASKS.optsFor reports streak:true for.
 

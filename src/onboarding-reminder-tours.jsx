@@ -171,7 +171,7 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share t
  *
  * Also scoped to '.seg[aria-label="Repeat"]' specifically, not just '.rem-
  * quickadd-wrap', since Monthly/Yearly's own Date/Weekday toggle below is a
- * second, nested Segmented control ('aria-label="Day selection"'); without
+ * second, nested SegConCom control ('aria-label="Day selection"'); without
  * that extra scoping, finTarFun's own querySelectorAll would match its pills
  * too the moment one of those repeat kinds is selected, unioning the highlight
  * down to include that whole control as well.

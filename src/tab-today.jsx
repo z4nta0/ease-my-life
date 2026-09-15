@@ -41,7 +41,7 @@ import { OB_SAMPLE_PICKER_IDS    } from './onboarding-seed-data.js';       // Wh
 import { OB_SAMPLE_TASK_IDS      } from './onboarding-seed-data.js';       // What: Onboarding Sample Task Ids Array. Why: Every count/filter that distinguishes a real reminder from a sample one needs this fixed id list. How: This is checked with .includes throughout TabToday's own tutorial-task counts.
 import { PICKERS                 } from './pickers.js';                    // What: Pickers Namespace Object. Why: Picking, re-rolling, and reading a picker's own eligibility/average-ease all funnel through this shared namespace. How: This is called throughout generate()/handleReroll/EntryEditor for pick/easeEligible/avgEase.
 import { reduceMotion            } from './ui.jsx';                        // What: Reduce Motion. Why: Nearly every animated sequence in this file (celebration, reel cascade, card flip, scroll) needs to skip or shorten itself for a user who prefers reduced motion. How: This is checked throughout as a plain function call.
-import { ReminderSection         } from './reminders.jsx';                 // What: Reminder Section. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genBlockOrder.
+import { RemSecCom               } from './reminders.jsx';                 // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genBlockOrder.
 import { RemTouCom               } from './onboarding-reminder-tours.jsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while actMinTouObj holds a 'reminder' kind entry.
 import { REORDER                 } from './reorder.js';                    // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REORDER.startDrag inside startGroupDrag/startItemDrag.
 import { TASKS                   } from './tasks.js';                      // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for anchorDate/visibleToday/isDoneToday/optsFor/isCompletedOnce.
@@ -2919,7 +2919,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * exclusions; the ring only counts reminders whose type has "include
 	 * in completion ring" on. Pinned to the last generation (not live
 	 * "now"), via TASKS.anchorDate, so these totals always agree with
-	 * what ReminderSection is actually showing.
+	 * what RemSecCom is actually showing.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -3158,12 +3158,12 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	// activeEditor/setActiveEditor: a picker item's inline editor
 	// (`item:<eid>`), a reminder's inline editor, or its quick-add form
-	// (owned by ReminderSection, passed down below) all read/write this
+	// (owned by RemSecCom, passed down below) all read/write this
 	// same lifted slot, so opening any one of them collapses whichever of
 	// the others was open (each already discards its own unsaved edits on
 	// collapse/unmount, see EntryEditor's own discard-guard effect and
-	// ReminderSection's own plain local draft state).
-	const [ activeEditor, setActiveEditor ] = React.useState( null ); // What: Active Editor String And Setter. Why: See the comment just above. How: This is read/written by every inline editor this tab renders, directly or via ReminderSection.
+	// RemSecCom's own plain local draft state).
+	const [ activeEditor, setActiveEditor ] = React.useState( null ); // What: Active Editor String And Setter. Why: See the comment just above. How: This is read/written by every inline editor this tab renders, directly or via RemSecCom.
 
 	const [ opeLogStr, setOpeLogStr ] = React.useState( null ); // What: Open Log String And Setter. Why: Only one group's (or the Reminders block's) Day Log panel may be open at a time. How: This holds whichever single key is currently open, or null.
 	const togLogFun = ( logKeyStr ) => setOpeLogStr( ( curKeyStr ) => curKeyStr === logKeyStr ? null : logKeyStr ); // What: Toggle Log Function. Why: Clicking an already-open group's own chip should close it, not just re-open it. How: This flips opeLogStr to null when logKeyStr is already open, otherwise to logKeyStr.
@@ -4050,8 +4050,8 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const [ genMapObj, setGenMapObj ] = React.useState( null ); // What: Generate Map Object And Setter. Why: Every LoaCarCom rendered during a regeneration needs its own live { status, kind, candidates, ... } record to read from. How: This is populated by genFun below and cleared once the cascade finishes.
 
 	const [ lvgEidArr, setLvgEidArr ] = React.useState( () => new Set() ); // What: Leaving Entry Id Array And Setter. Why: A regenerate can drop an entry entirely (its own picker produced no new pick, e.g. its last eligible item just went inactive) without a loader card to cover it, so without this it would sit untouched through the whole generation and then blink out; this flags it to play the normal removal animation instead. How: This is staged by genFun below right before the commit and cleared right after.
-	const [ lvgTasSet, setLvgTasSet ] = React.useState( () => new Set() ); // What: Leaving Task Set And Setter. Why: A completed one-time reminder a Generate is about to purge needs the same played-out removal animation, on the reminder card itself, before actions.replaceTodayEntries actually removes it. How: This is staged by genFun below and cleared right after, and is passed straight through to ReminderSection as its own leavingTaskIds prop.
-	const [ arvTasSet, setArvTasSet ] = React.useState( () => new Set() ); // What: Arriving Task Set And Setter. Why: A reminder a Generate just made newly visible (its day arrived but the generator hadn't run yet) needs to play an entrance instead of just popping in. How: This is staged by genFun below and cleared shortly after, and is passed straight through to ReminderSection as its own arrivingTaskIds prop.
+	const [ lvgTasSet, setLvgTasSet ] = React.useState( () => new Set() ); // What: Leaving Task Set And Setter. Why: A completed one-time reminder a Generate is about to purge needs the same played-out removal animation, on the reminder card itself, before actions.replaceTodayEntries actually removes it. How: This is staged by genFun below and cleared right after, and is passed straight through to RemSecCom as its own leavingTaskIds prop.
+	const [ arvTasSet, setArvTasSet ] = React.useState( () => new Set() ); // What: Arriving Task Set And Setter. Why: A reminder a Generate just made newly visible (its day arrived but the generator hadn't run yet) needs to play an entrance instead of just popping in. How: This is staged by genFun below and cleared shortly after, and is passed straight through to RemSecCom as its own arrivingTaskIds prop.
 	const genBusRef    = React.useRef( false ); // What: Generate Busy Reference. Why: genFun's own re-entrancy guard needs a value that updates synchronously, unlike React state. How: This is set true at genFun's own start and false at its own end.
 	const genMapRef    = React.useRef( null );  // What: Generate Map Reference. Why: The departing-entry computation inside genFun needs to read the live generate map synchronously, without waiting for a state update to land. How: This mirrors genMapObj, written by genFun alongside every setGenMapObj call.
 
@@ -4429,7 +4429,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		 *
 		*/
 
-		const oldDueArr = TASKS.visibleToday( state.tasks, state.reminderOpts, state.holidays, remAncObj ); // What: Old Due Array. Why: This is exactly what ReminderSection is showing right now, before this generation's own anchor shift. How: This calls TASKS.visibleToday with the PRE-generate remAncObj.
+		const oldDueArr = TASKS.visibleToday( state.tasks, state.reminderOpts, state.holidays, remAncObj ); // What: Old Due Array. Why: This is exactly what RemSecCom is showing right now, before this generation's own anchor shift. How: This calls TASKS.visibleToday with the PRE-generate remAncObj.
 		const depTasArr = oldDueArr.filter( ( curTasObj ) => TASKS.isCompletedOnce( curTasObj ) ).map( ( curTasObj ) => curTasObj.id ); // What: Departing Task Array. Why: A completed one-time reminder is about to be purged and needs its own exit animation first. How: This filters oldDueArr down to completed-once entries, then maps to just their ids.
 
 		const oldDueSet = new Set( oldDueArr.map( ( curTasObj ) => curTasObj.id ) );                                              // What: Old Due Set. Why: The arrival diff below needs a fast membership check against the PRE-generate visible set. How: This collects every oldDueArr entry's own id.
@@ -4441,7 +4441,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			if ( depEidArr.length ) setLvgEidArr( new Set( depEidArr ) ); // What: Leaving Entry Stage. Why: EntCarCom's own isaRemBoo prop needs this set to know which rows are departing. How: This publishes depEidArr into lvgEidArr.
 
-			if ( depTasArr.length ) setLvgTasSet( new Set( depTasArr ) ); // What: Leaving Task Stage. Why: ReminderSection's own leavingTaskIds prop needs this set to know which reminders are departing. How: This publishes depTasArr into lvgTasSet.
+			if ( depTasArr.length ) setLvgTasSet( new Set( depTasArr ) ); // What: Leaving Task Stage. Why: RemSecCom's own leavingTaskIds prop needs this set to know which reminders are departing. How: This publishes depTasArr into lvgTasSet.
 
 			await new Promise( ( resFun ) => setTimeout( resFun, 260 ) ); // What: Departure Settle Wait. Why: The exit animations above need real time to actually play before the commit below. How: This awaits a fixed 260ms.
 
@@ -5596,7 +5596,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 									return (
 
 
-										<ReminderSection
+										<RemSecCom
 											key='__reminders'
 											state={ state }
 											actions={ actions }
@@ -5612,7 +5612,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 											onUncheckTutorial={ uncTutFun }
 											checklistExiting={ cheExiBoo }
 											sectionRef={ ( curEle ) => { secRefObj.current[ '__reminders' ] = curEle; } }
-										/> // What: Reminder Section. Why: This is the whole Reminders block, sharing every reorder/editor/mini-tour mechanism the rest of Today uses. How: This is passed every relevant piece of local state/handlers, keyed by the '__reminders' sentinel.
+										/> // What: Reminder Section Component. Why: This is the whole Reminders block, sharing every reorder/editor/mini-tour mechanism the rest of Today uses. How: This is passed every relevant piece of local state/handlers, keyed by the '__reminders' sentinel.
 
 									);
 

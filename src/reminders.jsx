@@ -9,20 +9,20 @@ import React from 'react'; // What: React. Why: Every component in this file is 
 
 import { Btn                   } from './ui.jsx';                  // What: Btn. Why: Every editor footer and quick-add form needs its own Cancel/Save/Delete buttons. How: This is rendered throughout EdiFooCom and the quick-add footer below.
 import { Collapse              } from './ui.jsx';                  // What: Collapse. Why: Every schedule subsection, log panel, and inline editor needs to animate open and closed instead of snapping. How: This wraps the anchor hint, the Reminders log, and every inline editor's own open state throughout this file.
-import { compareSortEntries    } from './ui.jsx';                  // What: Compare Sort Entries. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside ReminderManager's own sorTasArr sort.
-import { DayLogChip            } from './day-log.jsx';             // What: Day Log Chip. Why: The Reminders section's own header needs the same show-today's-log toggle chip as every other group. How: This is rendered in ReminderSection's header, gated on onToggleLog being supplied.
+import { compareSortEntries    } from './ui.jsx';                  // What: Compare Sort Entries. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside RemManCom's own sorTasArr sort.
+import { DayLogChip            } from './day-log.jsx';             // What: Day Log Chip. Why: The Reminders section's own header needs the same show-today's-log toggle chip as every other group. How: This is rendered in RemSecCom's header, gated on onToggleLog being supplied.
 import { emlTouObj             } from './eml-tour-bus.js';         // What: Ease My Life Tour Object. Why: A reminder mini-tour publishes prefill data and reads the live draft's own repeat kind through this shared bus. How: This is read via .get() in staAddFun and written to via .set() below.
 import { freezeEditedRow       } from './ui.jsx';                  // What: Freeze Edited Row. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
-import { Icon                  } from './ui.jsx';                  // What: Icon. Why: Every reminder row, card, and button needs a recognizable glyph. How: This is rendered throughout RemCarCom, ReminderSection, and ReminderManager.
-import { InfoTip               } from './ui.jsx';                  // What: Info Tip. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add buttons in ReminderSection and ReminderManager.
+import { Icon                  } from './ui.jsx';                  // What: Icon. Why: Every reminder row, card, and button needs a recognizable glyph. How: This is rendered throughout RemCarCom, RemSecCom, and RemManCom.
+import { InfoTip               } from './ui.jsx';                  // What: Info Tip. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add buttons in RemSecCom and RemManCom.
 import { OB_CHECKLIST          } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: Both add-reminder entry points must stay disabled while any onboarding tutorial is still in progress. How: This is read via its own tutorialsInProgress and entryFor helpers.
 import { OB_REMINDER_CARD_TEXT } from './onboarding-seed-data.js'; // What: Onboarding Reminder Card Text. Why: A still-hidden sample reminder's own mini-tour launcher card needs copy distinct from its real schedule summary. How: This is looked up by sample task id inside RemCarCom's own isaTutBoo branch.
-import { OB_SAMPLE_TASK_IDS    } from './onboarding-seed-data.js'; // What: Onboarding Sample Task Identifiers. Why: Only the Welcome Tour's own seeded sample reminders should ever render as a mini-tour launcher card. How: This is checked against a hidden task's own id inside ReminderSection's tutTasArr filter.
+import { OB_SAMPLE_TASK_IDS    } from './onboarding-seed-data.js'; // What: Onboarding Sample Task Identifiers. Why: Only the Welcome Tour's own seeded sample reminders should ever render as a mini-tour launcher card. How: This is checked against a hidden task's own id inside RemSecCom's tutTasArr filter.
 import { reduceMotion          } from './ui.jsx';                  // What: Reduce Motion. Why: A user who prefers reduced motion should get an instant close, skip, or remove instead of a timed animation. How: This is checked before every staged animation throughout this file.
-import { RemLogCom             } from './day-log.jsx';             // What: Reminders Log Component. Why: The Reminders section's own header chip opens this exact audit panel. How: This is rendered inside ReminderSection, gated on logOpen.
-import { SortSelect            } from './ui.jsx';                  // What: Sort Select. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in ReminderManager, driven by ITE_SOR_ARR.
+import { RemLogCom             } from './day-log.jsx';             // What: Reminders Log Component. Why: The Reminders section's own header chip opens this exact audit panel. How: This is rendered inside RemSecCom, gated on logOpen.
+import { SortSelect            } from './ui.jsx';                  // What: Sort Select. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
 import { TASKS                 } from './tasks.js';                // What: Tasks. Why: Every due-ness, visibility, summary, and schedule computation in this file defers to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout every component below.
-import { useEscapeCancel       } from './ui.jsx';                  // What: Use Escape Cancel. Why: Both the quick-add form and EdiFooCom's own confirm flow need Escape to discard in-progress edits. How: This is called once each in EdiFooCom and ReminderSection.
+import { useEscapeCancel       } from './ui.jsx';                  // What: Use Escape Cancel. Why: Both the quick-add form and EdiFooCom's own confirm flow need Escape to discard in-progress edits. How: This is called once each in EdiFooCom and RemSecCom.
 import { WeekdayChips          } from './ui.jsx';                  // What: Weekday Chips. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This is rendered inside SchEdiCom's own weekly schedule subsection.
 
 // #endregion Imports
@@ -34,13 +34,13 @@ import { WeekdayChips          } from './ui.jsx';                  // What: Week
  *
  * @summary
  * Shared components for manual, statically-scheduled tasks (reminders),
- * rendered in two places: Today's ReminderSection (the list atop Today,
- * plus its own quick-add form) and Data's ReminderManager (full
+ * rendered in two places: Today's RemSecCom (the list atop Today,
+ * plus its own quick-add form) and Data's RemManCom (full
  * management, including the scheduling editor). All scheduling logic
  * lives in tasks.js (TASKS); this file is presentation plus small
  * local form state only.
  *
- * The exported ReminderSection, ReminderManager, and Segmented names
+ * The exported RemSecCom, RemManCom, and SegConCom names
  * are a cross-file contract read directly by tab-today.jsx, tab-data.jsx,
  * cadence-control.jsx, and tab-settings.jsx. They are deliberately left
  * unrenamed on this formatting pass, the same way tasks.js's own TASKS
@@ -52,14 +52,14 @@ import { WeekdayChips          } from './ui.jsx';                  // What: Week
 
 
 
-const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat control needs one entry per schedule kind, each with its own live sub-explanation. How: This is passed as Segmented's own options prop from SchEdiCom below.
+const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat control needs one entry per schedule kind, each with its own live sub-explanation. How: This is passed as SegConCom's own optIteArr prop from SchEdiCom below.
 
 
 	{
 
 
-		keyStr : 'once', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		labStr : 'Once', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'once', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Once', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>until marked as completed</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'once' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -68,8 +68,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		keyStr : 'interval',      // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		labStr : 'Every N days', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'interval',      // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Every N days', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>as often as specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'interval' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -78,8 +78,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		keyStr : 'weekly', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		labStr : 'Weekly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'weekly', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Weekly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>on the days specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'weekly' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -88,8 +88,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		keyStr : 'monthly', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		labStr : 'Monthly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'monthly', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Monthly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>every month as specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'monthly' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -98,8 +98,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		keyStr : 'annual', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: Segmented reads this against value and passes it to onChange.
-		labStr : 'Yearly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+		keyStr : 'annual', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Yearly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>every year as specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'annual' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -110,10 +110,10 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 
 
 
-// #region Segmented
+// #region SegConCom
 
 /**
- * Segmented = Segmented
+ * SegConCom = Segment Control Component
  *
  * @summary
  * A generic animated segmented control: a single accent "thumb" slides
@@ -125,36 +125,37 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.options     - Options: The array of { keyStr, labStr } entries
- *                            this control renders one button per; also read
- *                            directly by cadence-control.jsx and
- *                            tab-settings.jsx when they build their own option
- *                            arrays for this same component.
- * @param props.value        - Value: The currently-selected entry's own key.
- * @param props.onChange     - On Change: Called with the clicked entry's own
- *                             key.
- * @param props.ariaLabel    - Aria Label: The control's own accessible group
- *                             label.
- * @param props.describedBy  - Described By: An optional id of an external
- *                             element (an advisory note) that describes this
- *                             control.
+ * @param props.optIteArr   - Option Item Array: The array of { keyStr,
+ *                            labStr } entries this control renders one
+ *                            button per; also read directly by
+ *                            cadence-control.jsx and tab-settings.jsx
+ *                            when they build their own option arrays for
+ *                            this same component.
+ * @param props.value       - Value: The currently-selected entry's own key.
+ * @param props.onChange    - On Change: Called with the clicked entry's own
+ *                            key.
+ * @param props.ariaLabel   - Aria Label: The control's own accessible group
+ *                            label.
+ * @param props.describedBy - Described By: An optional id of an external
+ *                            element (an advisory note) that describes this
+ *                            control.
  *
  * @returns The segmented control's own group element, including the
- * sliding thumb span and one button per entry in props.options.
+ * sliding thumb span and one button per entry in props.optIteArr.
  *
  * @example
  * ```tsx
- * Segmented({ options, value, onChange, ariaLabel, describedBy }) // => <Segmented />
+ * SegConCom({ optIteArr, value, onChange, ariaLabel, describedBy }) // => <SegConCom />
  * ```
  *
 */
 
-function Segmented ( { options, value, onChange, ariaLabel, describedBy } ) {
+function SegConCom ( { optIteArr, value, onChange, ariaLabel, describedBy } ) {
 
 
 	const segEleRef = React.useRef( null ); // What: Segment Element Reference. Why: plaThuFun needs a handle on the actual group DOM node to query and measure it. How: This is attached via the group div's own ref prop below.
 	const thuEleRef = React.useRef( null ); // What: Thumb Element Reference. Why: plaThuFun needs a handle on the sliding thumb span to move and resize it. How: This is attached via the thumb span's own ref prop below.
-	const preIndRef = React.useRef( options.findIndex( ( optConObj ) => optConObj.keyStr === value ) ); // What: Previous Index Reference. Why: plaThuFun needs to know which direction the selection just moved in, to decide which edge of the thumb leads the animation. How: This starts at the initially-selected entry's own index and is updated at the end of every plaThuFun run.
+	const preIndRef = React.useRef( optIteArr.findIndex( ( optConObj ) => optConObj.keyStr === value ) ); // What: Previous Index Reference. Why: plaThuFun needs to know which direction the selection just moved in, to decide which edge of the thumb leads the animation. How: This starts at the initially-selected entry's own index and is updated at the end of every plaThuFun run.
 
 
 	const plaThuFun = React.useCallback( ( aniMovBoo ) => { // What: Place Thumb Function. Why: This centralizes measuring the active button and moving/resizing the thumb span to match it, with or without an animated transition. How: This is called by both layout effects below, once on every selection/resize and once (with animation) on every value change.
@@ -173,9 +174,9 @@ function Segmented ( { options, value, onChange, ariaLabel, describedBy } ) {
 
 
 
-		const curIndNum = options.findIndex( ( optConObj ) => optConObj.keyStr === value ); // What: Current Index Number. Why: This is compared against the previous index to decide which direction the thumb is moving. How: This looks up the currently-selected entry's own position in options.
+		const curIndNum = optIteArr.findIndex( ( optConObj ) => optConObj.keyStr === value ); // What: Current Index Number. Why: This is compared against the previous index to decide which direction the thumb is moving. How: This looks up the currently-selected entry's own position in optIteArr.
 		const movDirNum = curIndNum - preIndRef.current;                                  // What: Move Direction Number. Why: A positive value means the selection moved right, negative means left, deciding which edge of the thumb leads. How: This subtracts the previous index from curIndNum.
-		const redMotBoo = window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches; // What: Reduced Motion Boolean. Why: A user who prefers reduced motion shouldn't see the thumb glide between options. How: This safely checks matchMedia support before querying the prefers-reduced-motion media query's current match state.
+		const redMotBoo = window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches; // What: Reduced Motion Boolean. Why: A user who prefers reduced motion shouldn't see the thumb glide between optIteArr. How: This safely checks matchMedia support before querying the prefers-reduced-motion media query's current match state.
 
 
 		if ( !aniMovBoo || redMotBoo ) { // What: No-Animation Branch. Why: Either the caller explicitly asked for an instant placement, or the user prefers reduced motion. How: This clears the thumb's own transition so the move below applies instantly.
@@ -211,7 +212,7 @@ function Segmented ( { options, value, onChange, ariaLabel, describedBy } ) {
 		preIndRef.current = curIndNum; // What: Previous Index Update. Why: The next call to plaThuFun needs to compare against the index that's current now. How: This overwrites preIndRef with curIndNum.
 
 
-	}, [ value, options ] ); // What: Effect Dependency Array. Why: plaThuFun must be recreated whenever either the selected value or the option set itself changes, since both affect which button is "active". How: value decides which button matches, options decides the whole set plaThuFun searches.
+	}, [ value, optIteArr ] ); // What: Effect Dependency Array. Why: plaThuFun must be recreated whenever either the selected value or the option set itself changes, since both affect which button is "active". How: value decides which button matches, optIteArr decides the whole set plaThuFun searches.
 
 
 	React.useLayoutEffect( () => { plaThuFun( true ); }, [ value ] ); // What: Selection Change Effect. Why: A genuine value change should animate the thumb to its new position. How: This calls plaThuFun with animation enabled whenever value itself changes.
@@ -252,7 +253,7 @@ function Segmented ( { options, value, onChange, ariaLabel, describedBy } ) {
 			role='group'
 			aria-label={ ariaLabel }
 			aria-describedby={ describedBy }
-		>{ /* What: Segment Group Element. Why: This is Segmented's own root element, holding the sliding thumb and every option button. How: This renders as a group landmark, its own aria-label/aria-describedby passed straight through from props. */ }
+		>{ /* What: Segment Group Element. Why: This is SegConCom's own root element, holding the sliding thumb and every option button. How: This renders as a group landmark, its own aria-label/aria-describedby passed straight through from props. */ }
 
 
 			<span
@@ -262,7 +263,7 @@ function Segmented ( { options, value, onChange, ariaLabel, describedBy } ) {
 			></span>{ /* What: Thumb Span Element. Why: This is the small sliding pill plaThuFun positions and sizes via direct style writes. How: This starts with no inline position at all, until the first layout effect above places it. */ }
 
 
-			{ options.map( ( optConObj ) => ( // What: Option Button List Render. Why: One button is needed per configured option, and the set of options is data, not hardcoded markup. How: This maps options to one button element per entry, keyed by its own keyStr.
+			{ optIteArr.map( ( optConObj ) => ( // What: Option Button List Render. Why: One button is needed per configured option, and the option set itself is data, not hardcoded markup. How: This maps optIteArr to one button element per entry, keyed by its own keyStr.
 
 
 				<button
@@ -286,7 +287,7 @@ function Segmented ( { options, value, onChange, ariaLabel, describedBy } ) {
 
 }
 
-// #endregion Segmented
+// #endregion SegConCom
 
 
 
@@ -623,11 +624,11 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 	const dayAbbArr = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ];                                                                          // What: Day Abbreviation Array. Why: The weekly summary needs a short weekday name for a multi-day list. How: This is indexed by daysOfWeek entries in the weekly subsection below.
 	const dayFulArr = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];                                            // What: Day Full Array. Why: The weekly single-day and monthly/annual Nth-weekday summaries need the full weekday name. How: This is indexed by daysOfWeek/nthWeekday entries throughout this function.
 
-	const datModArr = [ // What: Date Mode Array. Why: The monthly and annual subsections both offer the same Date-vs-Weekday choice, driven by one shared Segmented control. How: This is passed as that Segmented's own options prop in both subsections below.
+	const datModArr = [ // What: Date Mode Array. Why: The monthly and annual subsections both offer the same Date-vs-Weekday choice, driven by one shared SegConCom control. How: This is passed as that SegConCom's own optIteArr prop in both subsections below.
 
 
-		{ key : 'date',       label : 'Date' },    // What: Plain Date Option. Why: This is the default day-of-month/day targeting mode. How: Segmented reads this entry the same way as any other options entry.
-		{ key : 'nthWeekday', label : 'Weekday' }  // What: Nth-Weekday Option. Why: This lets the user target e.g. "the 2nd Tuesday" instead of a fixed day number. How: Segmented reads this entry the same way as any other options entry.
+		{ key : 'date',       label : 'Date' },    // What: Plain Date Option. Why: This is the default day-of-month/day targeting mode. How: SegConCom reads this entry the same way as any other options entry.
+		{ key : 'nthWeekday', label : 'Weekday' }  // What: Nth-Weekday Option. Why: This lets the user target e.g. "the 2nd Tuesday" instead of a fixed day number. How: SegConCom reads this entry the same way as any other options entry.
 
 
 	];
@@ -1000,7 +1001,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 				{ curRepStr === 'monthly' && ( // What: Monthly Day Visibility Check. Why: This is the monthly kind's own second, independent subsection, targeting which day of the month. How: This renders it only while curRepStr is 'monthly', right after the frequency subsection above.
 
 
-					<div className='rem-field'>{ /* What: Monthly Day Field Div Element. Why: This groups the Date/Weekday mode toggle and its own detail controls as one schedule subsection. How: This renders Segmented plus whichever detail row matches the current dateMode. */ }
+					<div className='rem-field'>{ /* What: Monthly Day Field Div Element. Why: This groups the Date/Weekday mode toggle and its own detail controls as one schedule subsection. How: This renders SegConCom plus whichever detail row matches the current dateMode. */ }
 
 
 						<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
@@ -1023,13 +1024,13 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 						</div>
 
-						<Segmented
-							options={ datModArr }
+						<SegConCom
+							optIteArr={ datModArr }
 							value={ tasRecObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' }
 							ariaLabel='Day selection'
 							describedBy={ schPlaNot }
 							onChange={ ( modKeyStr ) => updPatFun( { dateMode : modKeyStr } ) }
-						/>{ /* What: Segmented. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRecObj's new dateMode. */ }
+						/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRecObj's new dateMode. */ }
 
 
 						{ tasRecObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The monthly detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday selects while tasRecObj.dateMode is 'nthWeekday', the plain day-of-month select otherwise.
@@ -1178,7 +1179,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 				{ curRepStr === 'annual' && ( // What: Annual Date Visibility Check. Why: This is the annual kind's own second, independent subsection, targeting which date each year. How: This renders it only while curRepStr is 'annual', right after the frequency subsection above.
 
 
-					<div className='rem-field'>{ /* What: Annual Date Field Div Element. Why: This groups the Date/Weekday mode toggle and its own detail controls as one schedule subsection. How: This renders Segmented plus whichever detail row matches the current dateMode. */ }
+					<div className='rem-field'>{ /* What: Annual Date Field Div Element. Why: This groups the Date/Weekday mode toggle and its own detail controls as one schedule subsection. How: This renders SegConCom plus whichever detail row matches the current dateMode. */ }
 
 
 						<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
@@ -1201,13 +1202,13 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 						</div>
 
-						<Segmented
-							options={ datModArr }
+						<SegConCom
+							optIteArr={ datModArr }
 							value={ tasRecObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' }
 							ariaLabel='Day selection'
 							describedBy={ schPlaNot }
 							onChange={ ( modKeyStr ) => updPatFun( { dateMode : modKeyStr } ) }
-						/>{ /* What: Segmented. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRecObj's new dateMode. */ }
+						/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRecObj's new dateMode. */ }
 
 
 						{ tasRecObj.dateMode === 'nthWeekday' ? ( // What: Nth-Weekday Mode Check. Why: The annual detail row's own shape depends on which date-targeting mode is selected. How: This renders the ordinal-plus-weekday-plus-month selects while tasRecObj.dateMode is 'nthWeekday', the plain month-plus-day selects otherwise.
@@ -1354,13 +1355,13 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 				</div>
 
 
-				<Segmented
-					options={ REP_OPT_ARR }
+				<SegConCom
+					optIteArr={ REP_OPT_ARR }
 					value={ tasRecObj.repeat }
 					ariaLabel='Repeat'
 					describedBy={ setPlaNot }
 					onChange={ ( modKeyStr ) => updPatFun( { repeat : modKeyStr, interval : modKeyStr === 'interval' ? 2 : 1 } ) } // What: Repeat Change Handler. Why: interval is shared across interval/weekly/monthly/annual (each its own "every N ___"), so switching kind resets it to that kind's own sensible default instead of carrying over a number that meant something else a moment ago. How: This commits the new repeat kind plus a matching default interval.
-				/>{ /* What: Segmented. Why: This is the actual Repeat kind picker. How: This renders one button per REP_OPT_ARR entry, committing both repeat and a reset interval on change. */ }
+				/>{ /* What: Segment Control Component. Why: This is the actual Repeat kind picker. How: This renders one button per REP_OPT_ARR entry, committing both repeat and a reset interval on change. */ }
 
 
 				{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kndValStr='settings' notIdeStr={ setPlaNot } /> }{ /* What: Repeat Visibility Check. Why: A settings-based mismatch (weekends/holidays/skipUntil) belongs next to this row rather than the schedule subsection below. How: This renders VisNotCom, gated on kndValStr 'settings', only while staAppObj was actually passed. */ }
@@ -2016,17 +2017,18 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 
-// #region ReminderSection
+// #region RemSecCom
 
 /**
- * ReminderSection = ReminderSection
+ * RemSecCom = Reminder Section Component
  *
  * @summary
  * Today: the Reminders section (list + inline edit + quick add). This
  * is a cross-file contract read directly by tab-today.jsx, which
  * passes every prop below by these exact names; they are deliberately
- * left unrenamed on this formatting pass, the same way Segmented's own
- * prop names were left unrenamed.
+ * left unrenamed for now, their own deliberate decision distinct from
+ * the RemSecCom/RemManCom/SegConCom component-identity renames already
+ * completed this pass.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -2065,12 +2067,12 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
  *
  * @example
  * ```tsx
- * ReminderSection({ state, actions, sectionRef, editMode, ... }) // => <ReminderSection />
+ * RemSecCom({ state, actions, sectionRef, editMode, ... }) // => <RemSecCom />
  * ```
  *
 */
 
-function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, arrivingTaskIds, activeEditor, setActiveEditor, onPlayTutorial, onUncheckTutorial, checklistExiting } ) {
+function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, arrivingTaskIds, activeEditor, setActiveEditor, onPlayTutorial, onUncheckTutorial, checklistExiting } ) {
 
 
 	const ancDatObj = TASKS.anchorDate( state.today && state.today.generatedAt ); // What: Anchor Date Object. Why: A reminder due on a new day shouldn't appear until the generator actually runs on/after that day, exactly like picker entries. How: This calls TASKS.anchorDate against state's own last generation timestamp.
@@ -2318,7 +2320,7 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 	return (
 
 
-		<section className='group-section rem-section' ref={ sectionRef }>{ /* What: Group Section Element. Why: This is ReminderSection's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the today-list below. */ }
+		<section className='group-section rem-section' ref={ sectionRef }>{ /* What: Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the today-list below. */ }
 
 
 			<header className={ `group-h ${ editMode ? 'is-reorderable' : '' }` }>{ /* What: Group Header Element. Why: This groups the section's own name/count/log-chip on the left and its progress/add-button on the right. How: This renders group-h-l and rem-h-r below, marking itself reorderable while editMode is on. */ }
@@ -2746,7 +2748,7 @@ function ReminderSection ( { state, actions, sectionRef, editMode, onGripDown, l
 
 }
 
-// #endregion ReminderSection
+// #endregion RemSecCom
 
 
 
@@ -3058,32 +3060,32 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
  *
 */
 
-const ITE_SOR_ARR = [ // What: Item Sort Array. Why: ReminderManager's own Items list sort control needs one entry per supported sort. How: This is passed as SortSelect's own options prop from ReminderManager below.
+const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list sort control needs one entry per supported sort. How: This is passed as SortSelect's own options prop from RemManCom below.
 
 
-	{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Key String. Why: This is the section's own default sort. How: SortSelect reads this against ReminderManager's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }, // What: Key String. Why: This is the reverse of the default sort. How: SortSelect reads this against ReminderManager's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'type-asc',  labStr : 'Type (A–Z)' }, // What: Key String. Why: Type (One-time vs Recurring) is the only other text-like field reminders have. How: SortSelect reads this against ReminderManager's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'type-desc', labStr : 'Type (Z–A)' }, // What: Key String. Why: This is the reverse of the type sort. How: SortSelect reads this against ReminderManager's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'date-asc',  labStr : 'Soonest' },    // What: Key String. Why: Date sorts by each reminder's own next eligible occurrence. How: SortSelect reads this against ReminderManager's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'date-desc', labStr : 'Latest' }      // What: Key String. Why: This is the reverse of the date sort. How: SortSelect reads this against ReminderManager's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Key String. Why: This is the section's own default sort. How: SortSelect reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }, // What: Key String. Why: This is the reverse of the default sort. How: SortSelect reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'type-asc',  labStr : 'Type (A–Z)' }, // What: Key String. Why: Type (One-time vs Recurring) is the only other text-like field reminders have. How: SortSelect reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'type-desc', labStr : 'Type (Z–A)' }, // What: Key String. Why: This is the reverse of the type sort. How: SortSelect reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'date-asc',  labStr : 'Soonest' },    // What: Key String. Why: Date sorts by each reminder's own next eligible occurrence. How: SortSelect reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'date-desc', labStr : 'Latest' }      // What: Key String. Why: This is the reverse of the date sort. How: SortSelect reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
 
 
 ];
 
 
 
-// #region ReminderManager
+// #region RemManCom
 
 /**
- * ReminderManager = ReminderManager
+ * RemManCom = Reminder Manager Component
  *
  * @summary
  * Data tab: full reminder management. This is a cross-file contract
  * read directly by tab-data.jsx, which passes every prop below by
- * these exact names; they are deliberately left unrenamed on this
- * formatting pass, the same way Segmented's and ReminderSection's own
- * prop names were left unrenamed.
+ * these exact names; they are deliberately left unrenamed for now,
+ * their own deliberate decision distinct from the RemManCom/RemSecCom/
+ * SegConCom component-identity renames already completed this pass.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -3099,12 +3101,12 @@ const ITE_SOR_ARR = [ // What: Item Sort Array. Why: ReminderManager's own Items
  *
  * @example
  * ```tsx
- * ReminderManager({ state, actions, hidden }) // => <ReminderManager />
+ * RemManCom({ state, actions, hidden }) // => <RemManCom />
  * ```
  *
 */
 
-function ReminderManager ( { state, actions, hidden } ) {
+function RemManCom ( { state, actions, hidden } ) {
 
 
 	const [ opeIdeStr, setOpeIdeStr ] = React.useState( null ); // What: Open Identifier String And Setter. Why: This tracks which reminder's own row is currently expanded into its editor. How: This is compared against each row's own id throughout the render below.
@@ -3202,7 +3204,7 @@ function ReminderManager ( { state, actions, hidden } ) {
 	const colSubMap    = ( state.ui && state.ui.controlsCollapsed ) || {}; // What: Collapsed Sub Map. Why: The Controls and Items sub-panels each remember their own collapse state independently of the main section and of each other. How: This reads the same state's own ui.controlsCollapsed, kept as a separate read for its own 2 sub-keys below.
 	const conColBoo    = !!colSubMap[ '__reminders' ];                     // What: Controls Collapsed Boolean. Why: The Controls disclosure defaults OPEN, so absent means open. How: This checks colSubMap's own '__reminders' entry.
 	const iteColBoo    = !!colSubMap[ '__reminders:items' ];               // What: Items Collapsed Boolean. Why: The Items disclosure likewise defaults open. How: This checks colSubMap's own '__reminders:items' entry.
-	const tutProBoo    = OB_CHECKLIST.tutorialsInProgress( state );        // What: Tutorial Progress Boolean. Why: "New reminder" is a second, independent path to a real reminder, reachable from this page, and must stay disabled during any onboarding tutorial the same way ReminderSection's own add button does. How: This calls OB_CHECKLIST.tutorialsInProgress against state.
+	const tutProBoo    = OB_CHECKLIST.tutorialsInProgress( state );        // What: Tutorial Progress Boolean. Why: "New reminder" is a second, independent path to a real reminder, reachable from this page, and must stay disabled during any onboarding tutorial the same way RemSecCom's own add button does. How: This calls OB_CHECKLIST.tutorialsInProgress against state.
 
 
 	const addEdiFun = () => { // What: Add Edit Function. Why: "New reminder" needs to create a real, minimal reminder AND immediately open its own editor, ensuring both the main section and the Items disclosure are expanded to actually show it. How: This mints a fresh id, adds the task, stages every relevant "just added"/open/insert flag, and expands whichever section is currently collapsed.
@@ -3231,7 +3233,7 @@ function ReminderManager ( { state, actions, hidden } ) {
 		<section
 			className='cat cat--reminders cat--enter'
 			style={ hidden ? { display : 'none' } : undefined }
-		>{ /* What: Category Section Element. Why: This is ReminderManager's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the Collapse-wrapped body below. */ }
+		>{ /* What: Category Section Element. Why: This is RemManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the Collapse-wrapped body below. */ }
 
 
 			<header className='cat-h'>{ /* What: Category Header Element. Why: The whole header is one clickable disclosure toggling the main section. How: This wraps the single toggle button below. */ }
@@ -3383,7 +3385,7 @@ function ReminderManager ( { state, actions, hidden } ) {
 									className='rd-add is-tour-disabled'
 									action='New reminder'
 									label='This button is disabled until all tutorials are completed.'
-								>{ /* What: Info Tip. Why: This is a second, independent path to a real reminder, so it must stay disabled during any onboarding tutorial the same way ReminderSection's own add button does. How: This wraps the plus icon and label text, standing in for the real button below. */ }
+								>{ /* What: Info Tip. Why: This is a second, independent path to a real reminder, so it must stay disabled during any onboarding tutorial the same way RemSecCom's own add button does. How: This wraps the plus icon and label text, standing in for the real button below. */ }
 
 
 									<Icon
@@ -3677,11 +3679,11 @@ function ReminderManager ( { state, actions, hidden } ) {
 
 }
 
-// #endregion ReminderManager
+// #endregion RemManCom
 
 
 
-export { ReminderManager, ReminderSection, Segmented }; // What: Named Exports. Why: tab-data.jsx/cadence-control.jsx/tab-settings.jsx import these 3 by these exact names; every other binding in this file is internal-only. How: This re-exports the 3 components declared above, unrenamed since they are each an external contract those callers already depend on.
+export { RemManCom, RemSecCom, SegConCom }; // What: Named Exports. Why: tab-data.jsx/cadence-control.jsx/tab-settings.jsx import these 3 by these exact names. How: This re-exports the 3 components declared above under their own newly-renamed names, already rippled into every one of those files. RemManCom/RemSecCom's own remaining prop families (sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, arrivingTaskIds, activeEditor, setActiveEditor, onPlayTutorial, onUncheckTutorial, checklistExiting, hidden) are deliberately left unrenamed for now, their own deliberate decision distinct from the component identity rename just completed.
 
 
 
