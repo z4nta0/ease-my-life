@@ -671,7 +671,6 @@ function PriPolCom () {
 function TerSerCom () {
 
 
-
 	return (
 
 
@@ -943,50 +942,53 @@ function TerSerCom () {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.legDocStr - Legal Document String: Which document to show,
- *                          or null to render nothing.
- * @param props.onCloFun  - On Close Function: Called once the close
- *                          animation (or the instant reduced-motion path)
- *                          finishes.
+ * @param props.legDocStr   - Legal Document String: Which document to show, or
+ *                            null to render nothing.
+ * @param props.onCloModFun - On Close Modal Function: Called once the close
+ *                            animation (or the instant reduced-motion path)
+ *                            finishes.
  *
  * @returns The modal's own backdrop-and-panel markup, or null while
  * legDocStr is null.
  *
  * @example
  * ```tsx
- * LegModCom({ legDocStr: legalDoc, onCloFun: () => setLegalDoc(null) }) // => <LegModCom />
+ * LegModCom({ legDocStr: legalDoc, onCloModFun: () => setLegalDoc(null) }) // => <LegModCom />
  * ```
  *
 */
 
-function LegModCom ( { legDocStr, onCloFun } ) {
+function LegModCom ( { legDocStr, onCloModFun } ) {
 
 
-	const panEleRef                   = React.useRef( null );   // What: Panel Element Reference. Why: This gives the effect below a handle on the panel so it can be focused on open. How: This is attached via the panel div's ref prop and read inside the open/close effect.
+	const panEleRef                   = React.useRef( null );    // What: Panel Element Reference. Why: This gives the effect below a handle on the panel so it can be focused on open. How: This is attached via the panel div's ref prop and read inside the open/close effect.
 	const [ modCloBoo, setModCloBoo ] = React.useState( false ); // What: Modal Closing Boolean And Setter. Why: This flags the closing-animation window so the backdrop/panel can swap to their own "is-closing" class. How: This is set true by modDisFun and read in both className expressions below.
 
 
-	const modDisFun = () => { // What: Modal Dismiss Function. Why: Every dismissal path (Esc, backdrop click, close button) needs the same reduced-motion check and the same delayed onCloFun. How: This calls onCloFun immediately when reduced motion is preferred, otherwise plays the closing animation for 200ms first.
+	const modDisFun = () => { // What: Modal Dismiss Function. Why: Every dismissal path (Esc, backdrop click, close button) needs the same reduced-motion check and the same delayed onCloModFun. How: This calls onCloModFun immediately when reduced motion is preferred, otherwise plays the closing animation for 200ms first.
 
 
-		if ( redMotFun && redMotFun() ) { onCloFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should not see the closing animation at all. How: This calls onCloFun immediately and skips the animated path below.
+		if ( redMotFun && redMotFun() ) { onCloModFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should not see the closing animation at all. How: This calls onCloModFun immediately and skips the animated path below.
 
 
 
 		setModCloBoo( true ); // What: Closing State Start Call. Why: This flips both the backdrop and panel into their own "is-closing" class. How: This is read by the className expressions on the backdrop and panel divs below.
 
-		setTimeout( () => { // What: Delayed Close Call. Why: onCloFun must not fire until the closing animation has actually finished playing. How: This waits 200ms, matching the CSS transition duration, before resetting modCloBoo and calling onCloFun.
+
+
+		setTimeout( () => { // What: Delayed Close Call. Why: onCloModFun must not fire until the closing animation has actually finished playing. How: This waits 200ms, matching the CSS transition duration, before resetting modCloBoo and calling onCloModFun.
 
 
 			setModCloBoo( false ); // What: Closing State Clear Call. Why: The next open should not inherit this close's own "is-closing" class. How: This resets modCloBoo back to its default false value.
 
-			onCloFun(); // What: Deferred Close Call. Why: The caller needs to actually clear legDocStr once the closing animation has finished playing. How: This calls the onCloFun prop passed in from LegModCom's own caller.
+			onCloModFun(); // What: Deferred Close Call. Why: The caller needs to actually clear legDocStr once the closing animation has finished playing. How: This calls the onCloModFun prop passed in from LegModCom's own caller.
 
 
 		}, 200 );
 
 
 	};
+
 
 
 	React.useEffect( () => { // What: Open State Effect. Why: Every time legDocStr changes to a real value, the modal needs its own Esc listener, its own scroll lock, and its own initial focus, all torn back down on close. How: This subscribes a keydown listener, freezes the app's own main scroller, focuses the panel, and returns a cleanup that reverses all three.
@@ -997,6 +999,7 @@ function LegModCom ( { legDocStr, onCloFun } ) {
 
 
 		setModCloBoo( false ); // What: Closing Reset Call. Why: A fresh open should never start mid-closing-animation. How: This clears any stale true value left over from a previous close.
+
 
 
 		const onKeyEscFun = ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) modDisFun(); }; // What: On Key Escape Function. Why: Esc must dismiss the modal from anywhere on the page while it is open. How: This calls modDisFun only when the pressed key is Escape.
@@ -1024,14 +1027,15 @@ function LegModCom ( { legDocStr, onCloFun } ) {
 
 			document.removeEventListener( 'keydown', onKeyEscFun ); // What: Escape Listener Teardown. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onKeyEscFun reference that was registered.
 
+
 			clearTimeout( focDelTmo ); // What: Focus Timeout Teardown. Why: A pending focus call must not fire after this effect has already cleaned up. How: This cancels focDelTmo, matching the setTimeout above.
+
 
 			if ( maiScrEle ) { // What: Scroll Restore Guard. Why: The scroller must end up exactly as it was before this modal opened, but only when the scroller actually existed to lock in the first place. How: This wraps the two restore writes below in a single existence check.
 
 
 				maiScrEle.style.overflow = preOveStr; // What: Overflow Restore Call. Why: The scroller's own inline overflow must go back to whatever it was before this modal locked it. How: This writes preOveStr back onto the scroller's own style.
-
-				maiScrEle.scrollTop = scrTopNum; // What: Scroll Position Restore Call. Why: The scroller must end up at the exact same offset it was showing before this modal opened. How: This writes scrTopNum back onto the scroller's own scrollTop.
+				maiScrEle.scrollTop      = scrTopNum; // What: Scroll Position Restore Call. Why: The scroller must end up at the exact same offset it was showing before this modal opened. How: This writes scrTopNum back onto the scroller's own scrollTop.
 
 
 			}

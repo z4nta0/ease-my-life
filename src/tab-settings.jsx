@@ -3468,7 +3468,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 			<LegModCom
 				legDocStr={ legDocStr }
-				onCloFun={ () => setLegDocStr( null ) }
+				onCloModFun={ () => setLegDocStr( null ) }
 			/>{ /* What: Legal Modal Component. Why: Both Legal rows above need somewhere to actually show their own document text. How: This shows whichever document legDocStr names, or nothing while it is null, and clears it on close. */ }
 
 
