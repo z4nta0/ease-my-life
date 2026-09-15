@@ -39,7 +39,7 @@ import { Icon } from './ui.jsx'; // What: Icon. Why: Several items' own body cop
  * explains anything genuinely unique to that one item instead:
  * 
  * - `ideStr` (String): Identifier String is this item's own unique key,
- *   letting HelpOverlay (help-mode.jsx) track which one is currently open;
+ *   letting HelOveCom (help-mode.jsx) track which one is currently open;
  *   read back as part of the React key when rendering this item's own
  *   badge/tip, and compared against its own open-id state.
  *
@@ -75,7 +75,7 @@ import { Icon } from './ui.jsx'; // What: Icon. Why: Several items' own body cop
  *   help-mode.jsx's own placement math (plaTipFun).
  *
  * - `groStr` (String, optional): Group String marks this item as one column of
- *   a shared table-style row; HelpOverlay groups every item sharing the same
+ *   a shared table-style row; HelOveCom groups every item sharing the same
  *   groStr and snaps their highlights flush edge-to-edge, with no gap or
  *   overlap between them.
  *
@@ -94,7 +94,7 @@ import { Icon } from './ui.jsx'; // What: Icon. Why: Several items' own body cop
 
 
 
-const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help catalog for the Today tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-today.jsx and passed to HelpOverlay as its own items prop, prepended there with the shared nav/rail items every page gets.
+const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help catalog for the Today tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-today.jsx and passed to HelOveCom as its own helIteArr prop, prepended there with the shared nav/rail items every page gets.
 
 
 	// #region Today Header
@@ -914,7 +914,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 
 
-const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand help catalog for the Pickers tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-picker.jsx and passed to HelpOverlay as its own items prop.
+const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand help catalog for the Pickers tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-picker.jsx and passed to HelOveCom as its own helIteArr prop.
 
 
 	// #region Pickers Header
@@ -1585,7 +1585,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 
 
-const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help catalog for the Stats tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-stats.jsx and passed to HelpOverlay as its own items prop.
+const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help catalog for the Stats tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-stats.jsx and passed to HelOveCom as its own helIteArr prop.
 
 
 	// #region Stats Header
@@ -2043,7 +2043,7 @@ const STA_HEL_ARR = [ // What: Stats Help Array. Why: This is the on-demand help
 
 
 
-const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help catalog for the Data tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-data.jsx and passed to HelpOverlay as its own items prop.
+const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help catalog for the Data tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-data.jsx and passed to HelOveCom as its own helIteArr prop.
 
 
 	// #region Data Header
@@ -3049,7 +3049,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 
 
-const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand help catalog for the Settings tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-settings.jsx and passed to HelpOverlay as its own items prop.
+const SET_HEL_ARR = [ // What: Settings Help Array. Why: This is the on-demand help catalog for the Settings tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-settings.jsx and passed to HelOveCom as its own helIteArr prop.
 
 
 	// #region Settings Header

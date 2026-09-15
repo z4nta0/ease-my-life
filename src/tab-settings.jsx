@@ -12,8 +12,8 @@ import { Btn                     } from './ui.jsx';                  // What: Bt
 import { Card                    } from './ui.jsx';                  // What: Card. Why: Every section's own controls sit inside this shared bordered container. How: This wraps the contents of nearly every set-subsection and set-section below.
 import { CelebrationPreviewStage } from './settings-previews.jsx';   // What: Celebration Preview Stage. Why: The completion-celebration style picker needs a live preview the user can play. How: This is rendered inside the Completion Celebration card, driven by celStyStr/celTokNum.
 import { Collapse                } from './ui.jsx';                  // What: Collapse. Why: The contact-support form and the pending import/reset confirmations all need to expand/collapse in place. How: This wraps the contact-support form's own Card, gated on its own open boolean.
-import { HelpButton              } from './help-mode.jsx';           // What: Help Button. Why: This tab needs its own toggle for entering/exiting help mode, like every other tab. How: This is rendered in the header, toggling helModBoo.
-import { HelpOverlay             } from './help-mode.jsx';           // What: Help Overlay. Why: Help mode needs its own dimmed overlay plus tooltips layered above this tab's real content. How: This is rendered once, driven by helModBoo and SET_HEL_ARR.
+import { HelButCom              } from './help-mode.jsx';           // What: Help Button Component. Why: This tab needs its own toggle for entering/exiting help mode, like every other tab. How: This is rendered in the header, toggling helModBoo.
+import { HelOveCom             } from './help-mode.jsx';           // What: Help Overlay Component. Why: Help mode needs its own dimmed overlay plus tooltips layered above this tab's real content. How: This is rendered once, driven by helModBoo and SET_HEL_ARR.
 import { HOL_NAM_OBJ             } from './holidays.js';             // What: Holidays Namespace Object. Why: The Holidays section needs both a default holidays-state shape and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.defaultState() and HOL_NAM_OBJ.computeForYear() inside HolEdiCom.
 import { Icon                    } from './ui.jsx';                  // What: Icon. Why: A handful of controls (the custom-holiday delete button, the brand-mark logo) need a small glyph. How: This is rendered with a specific name/size prop wherever a glyph is needed.
 import { InfoTip                 } from './ui.jsx';                  // What: Info Tip. Why: A disabled Export/Reset button still needs to explain why it is disabled. How: This wraps those buttons, given a label prop with the explanation.
@@ -24,7 +24,7 @@ import { PickerAnimStage         } from './settings-previews.jsx';   // What: Pi
 import { PWA                     } from './pwa.js';                  // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isStandalone()/canInstall()/installState()/promptInstall()/requestPersistOnce() methods.
 import { reduceMotion            } from './ui.jsx';                  // What: Reduce Motion. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
 import { Segmented               } from './reminders.jsx';           // What: Segmented. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
-import { SET_HEL_ARR             } from './help-content.jsx';        // What: Settings Help Array. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelpOverlay.
+import { SET_HEL_ARR             } from './help-content.jsx';        // What: Settings Help Array. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelOveCom.
 import { STORAGE                 } from './storage.js';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own status()/readPersisted() methods.
 import { useEscapeCancel         } from './ui.jsx';                  // What: Use Escape Cancel. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
 
@@ -1461,8 +1461,8 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	// Help mode (see help-mode.jsx); every section here is static UI chrome, no
 	// data-dependent content, so unlike Pickers/Data/Stats no disposable sample
 	// data needs seeding.
-	const [ helModBoo, setHelModBoo ] = React.useState( false ); // What: Help Mode Boolean And Setter. Why: This whole tab needs one shared flag for whether help mode is currently active. How: This gates HelpOverlay below and is toggled by the header's own HelpButton.
-	const helExiFun = React.useCallback( () => setHelModBoo( false ), [] ); // What: Help Exit Function. Why: HelpOverlay needs a stable callback to call when the user exits help mode from inside the overlay itself. How: This clears helModBoo; memoized with an empty dependency array since it only ever closes over a stable setter.
+	const [ helModBoo, setHelModBoo ] = React.useState( false ); // What: Help Mode Boolean And Setter. Why: This whole tab needs one shared flag for whether help mode is currently active. How: This gates HelOveCom below and is toggled by the header's own HelButCom.
+	const helExiFun = React.useCallback( () => setHelModBoo( false ), [] ); // What: Help Exit Function. Why: HelOveCom needs a stable callback to call when the user exits help mode from inside the overlay itself. How: This clears helModBoo; memoized with an empty dependency array since it only ever closes over a stable setter.
 	// Appearance preview stages: bumping a token replays; celStyStr/picPreStr
 	// hold which style is currently showing (null = idle, selector visible).
 	const [ celTokNum, setCelTokNum ] = React.useState( 0 ); // What: Celebration Token Number And Setter. Why: CelebrationPreviewStage needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plyCelFun and passed straight through as CelebrationPreviewStage's own token prop.
@@ -2203,24 +2203,24 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 		>{ /* What: Tab Settings Div Element. Why: This is TabSettings's own root element, giving the scroll-spy effect a handle to find its nearest '.main' ancestor. How: This wraps the header, the section rail plus right-hand pane, and the Legal modal. */ }
 
 
-			<HelpOverlay
-				active={ helModBoo }
-				items={ SET_HEL_ARR }
-				onExit={ helExiFun }
-			/>{ /* What: Help Overlay. Why: This tab needs its own help-mode overlay, like every other tab. How: This is driven by helModBoo and SET_HEL_ARR. */ }
+			<HelOveCom
+				actModBoo={ helModBoo }
+				helIteArr={ SET_HEL_ARR }
+				onCloAllFun={ helExiFun }
+			/>{ /* What: Help Overlay Component. Why: This tab needs its own help-mode overlay, like every other tab. How: This is driven by helModBoo and SET_HEL_ARR. */ }
 
 			<header className='stat-h'>{ /* What: Stat H Header Element. Why: Every tab shares this same header shape: a kicker row, a brand lockup, and an intro paragraph. How: This wraps the kicker/help-button row, the brand mark plus title, and the intro paragraph. */ }
 
 
-				<div className='kicker-row'>{ /* What: Kicker Row Div Element. Why: The section kicker and the help toggle share one row. How: This wraps the kicker span and the HelpButton. */ }
+				<div className='kicker-row'>{ /* What: Kicker Row Div Element. Why: The section kicker and the help toggle share one row. How: This wraps the kicker span and the HelButCom. */ }
 
 
 					<div className='kicker stat-h-kicker'>Settings</div>{ /* What: Kicker Div Element. Why: Every tab's header names itself with this same small kicker label. How: This renders the fixed text "Settings". */ }
 
-					<HelpButton
-						active={ helModBoo }
+					<HelButCom
+						actModBoo={ helModBoo }
 						onClick={ () => setHelModBoo( ( modCurBoo ) => !modCurBoo ) }
-					/>{ /* What: Help Button. Why: This tab needs its own toggle for entering/exiting help mode. How: This flips helModBoo when clicked. */ }
+					/>{ /* What: Help Button Component. Why: This tab needs its own toggle for entering/exiting help mode. How: This flips helModBoo when clicked. */ }
 
 
 				</div>

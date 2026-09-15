@@ -15,12 +15,12 @@ import { Collapse                 } from './ui.jsx';                  // What: C
 import { compareSortEntries       } from './ui.jsx';                  // What: Compare Sort Entries. Why: Every sortable list in this file (sections, conditional items, picker items) shares the same sort-key vocabulary. How: This is called once per comparison inside each list's own Array.prototype.sort.
 import { ConditionalControls      } from './tab-conditional.jsx';     // What: Conditional Controls. Why: CndEdiCom reuses the exact same "type + settings" editor the Pickers create-flow uses, so both stay in sync. How: This is rendered inside CndEdiCom as its own Controls alias.
 import { conditionalDraftDefault  } from './tab-conditional.jsx';     // What: Conditional Draft Default. Why: A brand-new conditional started from CndManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
-import { DAT_HEL_ARR              } from './help-content.jsx';        // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelpOverlay's own items prop.
+import { DAT_HEL_ARR              } from './help-content.jsx';        // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelOveCom's own items prop.
 import { EntryEditor              } from './tab-today.jsx';           // What: Entry Editor. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
 import { FillButton               } from './ui.jsx';                  // What: Fill Button. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
 import { freezeEditedRow          } from './ui.jsx';                  // What: Freeze Edited Row. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This is called once per picker's item list, given the sorted list and the currently-open item id.
-import { HelpButton               } from './help-mode.jsx';           // What: Help Button. Why: This tab needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOnBoo.
-import { HelpOverlay              } from './help-mode.jsx';           // What: Help Overlay. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is rendered once, driven by helpOnBoo and DAT_HEL_ARR.
+import { HelButCom               } from './help-mode.jsx';           // What: Help Button Component. Why: This tab needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOnBoo.
+import { HelOveCom              } from './help-mode.jsx';           // What: Help Overlay Component. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is rendered once, driven by helpOnBoo and DAT_HEL_ARR.
 import { Icon                     } from './ui.jsx';                  // What: Icon. Why: Nearly every button and row in this file needs a recognizable glyph. How: This is rendered throughout every component below.
 import { InfoTip                  } from './ui.jsx';                  // What: Info Tip. Why: A disabled control or a truncated pill still needs to explain itself on demand. How: This wraps disabled add buttons and truncatable type/group labels throughout this file.
 import { MODES                    } from './seed.js';                 // What: Modes. Why: Every picker/conditional mode's own label and hint text comes from this shared catalog. How: This is read throughout PicConCom, CndManCom, and TabData for mode labels and the mode radio group.
@@ -2180,8 +2180,8 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	const hetRowBoo = touObj.phase === 'tour' && touObj.tourId === 'appfeature-feat_edit_item' && touObj.step === 5; // What: Highlight Edit-Tour Row Boolean. Why: Step 6 targets each item row's own .rd-item wrapper, using per-side borders rather than a shared outline. How: This is true only during Step 5.
 
 
-	const [ helOpnBoo, setHelOpnBoo ] = React.useState( false );          // What: Help Open Boolean And Setter. Why: Help mode needs its own on/off state, matching every other tab's own help toggle. How: This is flipped by HelpButton and read by HelpOverlay/the seed effect below.
-	const helExiFun                   = React.useCallback( () => setHelOpnBoo( false ), [] ); // What: Help Exit Function. Why: HelpOverlay needs a stable close handler that doesn't change identity on every render. How: This just sets helOpnBoo false.
+	const [ helOpnBoo, setHelOpnBoo ] = React.useState( false );          // What: Help Open Boolean And Setter. Why: Help mode needs its own on/off state, matching every other tab's own help toggle. How: This is flipped by HelButCom and read by HelOveCom/the seed effect below.
+	const helExiFun                   = React.useCallback( () => setHelOpnBoo( false ), [] ); // What: Help Exit Function. Why: HelOveCom needs a stable close handler that doesn't change identity on every render. How: This just sets helOpnBoo false.
 
 	React.useEffect( () => { // What: Help Seed Effect. Why: Help mode needs real pickers of every mode and reminders of every recurrence kind to show a representative "view and edit" section, but only while it's actually on. How: This seeds both disposable sample sets on, and clears both off.
 
@@ -2542,15 +2542,15 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 		<div className='tab tab--data'>{ /* What: Tab Div Element. Why: This is TabData's own root element. How: This wraps the help overlay, header, filters, sort bar, and list below. */ }
 
 
-			<HelpOverlay active={ helOpnBoo } items={ DAT_HEL_ARR } onExit={ helExiFun } />{ /* What: Help Overlay. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is driven by helOpnBoo and this tab's own DAT_HEL_ARR catalog. */ }
+			<HelOveCom actModBoo={ helOpnBoo } helIteArr={ DAT_HEL_ARR } onCloAllFun={ helExiFun } />{ /* What: Help Overlay Component. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is driven by helOpnBoo and this tab's own DAT_HEL_ARR catalog. */ }
 
 			<header className='stat-h'>{ /* What: Header Element. Why: This tab's own kicker, brand link, and lead paragraphs all belong in one landmark. How: This wraps the kicker row and the lead/warning paragraphs below. */ }
 
 
-				<div className='kicker-row'>{ /* What: Kicker Row Div Element. Why: The kicker label and the help toggle belong on the same line. How: This wraps the kicker div and HelpButton below. */ }
+				<div className='kicker-row'>{ /* What: Kicker Row Div Element. Why: The kicker label and the help toggle belong on the same line. How: This wraps the kicker div and HelButCom below. */ }
 
 					<div className='kicker stat-h-kicker'>Data</div>{ /* What: Kicker Div Element. Why: Every tab needs its own small kicker label above the title. How: This renders the literal text "Data". */ }
-					<HelpButton active={ helOpnBoo } onClick={ () => setHelOpnBoo( ( preBoo ) => !preBoo ) } />{ /* What: Help Button. Why: This tab needs the same help-mode toggle every other tab exposes. How: This flips helOpnBoo on click. */ }
+					<HelButCom actModBoo={ helOpnBoo } onClick={ () => setHelOpnBoo( ( preBoo ) => !preBoo ) } />{ /* What: Help Button Component. Why: This tab needs the same help-mode toggle every other tab exposes. How: This flips helOpnBoo on click. */ }
 
 				</div>
 

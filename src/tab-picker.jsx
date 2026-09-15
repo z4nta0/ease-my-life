@@ -15,8 +15,8 @@ import { ConditionalControls      } from './tab-conditional.jsx';     // What: C
 import { conditionalDraftDefault  } from './tab-conditional.jsx';     // What: Conditional Draft Default. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This is called whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
 import { EntryEditor              } from './tab-today.jsx';           // What: Entry Editor. Why: Adding or editing a pool item reuses the exact same weight/ease editor the Today tab uses. How: This is rendered inline below the pool list, wired to either the real store actions or a local draft-item actions object.
 import { emlTouObj                } from './onboarding.jsx';          // What: Ease My Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill, and written via emlTouObj.set() to clear a staged empty-state prefill.
-import { HelpButton               } from './help-mode.jsx';           // What: Help Button. Why: This page needs its own toggle for entering/exiting help mode. How: This is rendered in the page header, wired to the local helpOn boolean.
-import { HelpOverlay              } from './help-mode.jsx';           // What: Help Overlay. Why: Help mode needs its own highlighted-tooltip overlay layered above the page. How: This is rendered once, fed this page's own PIC_HEL_ARR.
+import { HelButCom               } from './help-mode.jsx';           // What: Help Button Component. Why: This page needs its own toggle for entering/exiting help mode. How: This is rendered in the page header, wired to the local helpOn boolean.
+import { HelOveCom              } from './help-mode.jsx';           // What: Help Overlay Component. Why: Help mode needs its own highlighted-tooltip overlay layered above the page. How: This is rendered once, fed this page's own PIC_HEL_ARR.
 import { Icon                     } from './ui.jsx';                  // What: Icon. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
 import { InfoTip                  } from './ui.jsx';                  // What: Info Tip. Why: Several controls need an explanatory tooltip on hover/focus. How: This wraps the weight/value pills and the disabled Send/Delete buttons, given the tooltip's own label text.
 import { MODES                    } from './seed.js';                 // What: Modes. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read throughout to show the active mode's label/hint and to render the mode-choice radio list.
@@ -24,7 +24,7 @@ import { normalizeConditionalName } from './pickers.js';              // What: N
 import { normalizeGroupName       } from './pickers.js';              // What: Normalize Group Name. Why: A newly-typed group name must be normalized the same way the store itself normalizes group names. How: This is called on the new-group input's value to compute the picker's effective group.
 import { OB_CHECKLIST             } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: The Add New Picker button must stay disabled while the guided-tour checklist is still in progress. How: This is checked via OB_CHECKLIST.tutorialsInProgress against the shared state.
 import { Pill                     } from './ui.jsx';                  // What: Pill. Why: Small status labels need a consistent pill styling. How: This wraps the mode name, the 'inactive' tag, and the 'not yet'/'spent' tag.
-import { PIC_HEL_ARR              } from './help-content.jsx';        // What: Picker Help Array. Why: Help mode needs this page's own list of highlighted elements and their explanations. How: This is passed straight through to HelpOverlay.
+import { PIC_HEL_ARR              } from './help-content.jsx';        // What: Picker Help Array. Why: Help mode needs this page's own list of highlighted elements and their explanations. How: This is passed straight through to HelOveCom.
 import { PICKERS                  } from './pickers.js';              // What: Pickers. Why: This is the namespace of pure picking-engine functions this file drives every actual pick through. How: This is called throughout for PICKERS.pick/readiness/modeEligible/avgEase.
 import { ProgressBar              } from './ui.jsx';                  // What: Progress Bar. Why: A pool item's drift value needs a visual readiness bar, not just a raw number. How: This is rendered inside the pool row's InfoTip alongside the raw value.
 import { reduceMotion             } from './ui.jsx';                  // What: Reduce Motion. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
@@ -3102,9 +3102,9 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 	const [ groFilStr, setGroFilStr ] = React.useState( 'all' ); // What: Group Filter String And Setter. Why: This is which group pill is currently narrowing the Show row. How: This starts on 'all' and is set by the Group filter row below.
 	const [ typFilStr, setTypFilStr ] = React.useState( 'all' ); // What: Type Filter String And Setter. Why: This is which mode pill is currently narrowing the Show row. How: This starts on 'all' and is set by the Type filter row below.
 	const actPicObj = state.pickers.find( ( p ) => p.id === actPicStr ); // What: Active Picker Object. Why: PicVieCom needs the actual current picker record, not just its id. How: This looks up actPicStr in state.pickers.
-	// What: Help On Boolean And Setter. Why: Help mode (see help-mode.jsx) needs real pickers of every mode plus a conditional-gated one to point at, so a disposable copy set is seeded the moment it turns on and torn down the moment it turns off (see help-sample-data.js's own header comment for why this is a SEPARATE disposable namespace from the page tour's own `pt_`-prefixed copies). How: This is toggled by HelpButton below.
+	// What: Help On Boolean And Setter. Why: Help mode (see help-mode.jsx) needs real pickers of every mode plus a conditional-gated one to point at, so a disposable copy set is seeded the moment it turns on and torn down the moment it turns off (see help-sample-data.js's own header comment for why this is a SEPARATE disposable namespace from the page tour's own `pt_`-prefixed copies). How: This is toggled by HelButCom below.
 	const [ hlpOnBoo, setHlpOnBoo ] = React.useState( false );
-	const hlpExtFun = React.useCallback( () => setHlpOnBoo( false ), [] ); // What: Help Exit Function. Why: HelpOverlay needs a stable callback to close itself with. How: This just sets hlpOnBoo false.
+	const hlpExtFun = React.useCallback( () => setHlpOnBoo( false ), [] ); // What: Help Exit Function. Why: HelOveCom needs a stable callback to close itself with. How: This just sets hlpOnBoo false.
 	React.useEffect( () => {
 
 
@@ -3293,7 +3293,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 		<div className='tab tab--picker'>{ /* What: Tab Picker Div Element. Why: This is TabPicker's own root, holding the help overlay, the header, and the body (filters, Show row, and the active create/view content). How: This wraps every piece of the whole Pickers page. */ }
 
 
-			<HelpOverlay active={ hlpOnBoo } items={ PIC_HEL_ARR } onExit={ hlpExtFun } />{ /* What: Help Overlay. Why: This page needs its own highlighted-tooltip walkthrough. How: This is fed PIC_HEL_ARR and stays mounted regardless of hlpOnBoo, gating its own visibility internally. */ }
+			<HelOveCom actModBoo={ hlpOnBoo } helIteArr={ PIC_HEL_ARR } onCloAllFun={ hlpExtFun } />{ /* What: Help Overlay Component. Why: This page needs its own highlighted-tooltip walkthrough. How: This is fed PIC_HEL_ARR and stays mounted regardless of hlpOnBoo, gating its own visibility internally. */ }
 
 			<header className='picker-h-head'>{ /* What: Header Element. Why: The kicker/help row, the brand lead, and the intro paragraph form one page header. How: This wraps those three pieces. */ }
 
@@ -3303,7 +3303,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 					<div className='kicker'>Pickers</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the page's own heading below. How: This renders the literal word "Pickers". */ }
 
-					<HelpButton active={ hlpOnBoo } onClick={ () => setHlpOnBoo( ( o ) => !o ) } />{ /* What: Help Button. Why: The user needs a way to toggle this page's own help mode. How: This flips hlpOnBoo on click. */ }
+					<HelButCom actModBoo={ hlpOnBoo } onClick={ () => setHlpOnBoo( ( o ) => !o ) } />{ /* What: Help Button Component. Why: The user needs a way to toggle this page's own help mode. How: This flips hlpOnBoo on click. */ }
 
 
 				</div>

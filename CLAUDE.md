@@ -59,6 +59,23 @@ soft-wrap it in a terminal; that's display only, not a real line break).
   not fragments, matching the code-comment convention exactly, as terse
   as they can be while staying descriptive, the same balance the code
   comments strike.
+  - **Don't re-enumerate the file list, and describe kinds of changes,
+    not individual ones.** The commit's own touched-file list is already
+    visible via ordinary git tooling (`git show --stat`, `git log`, any
+    host's own diff view), so the `How:` doesn't need to repeat it. Name
+    a specific file only when doing so adds real narrative value a file
+    list alone wouldn't (where a pattern was first discovered, a
+    deliberate asymmetry like "X's own instance is held for its own
+    later commit"); once a list would otherwise run past 3-4 names with
+    nothing distinguishing them, collapse it to a collective phrase
+    instead ("across every already-reviewed file it recurred in",
+    "throughout the codebase"). This applies doubly to a large
+    single-file review-pass commit: describe the KINDS of changes made
+    (a handful of miscorrection renames, several dozen missing per-line
+    comments filled in, a couple of return-shape restructurings, ...),
+    not an exhaustive list of every individual identifier or line
+    touched — a reader wanting that level of detail reads the diff
+    itself, the same reason the file list itself is left to git.
 - **Catch-all**: on the rare occasion a commit genuinely can't be split
   cleanly enough to produce one cohesive `What:`, don't force an
   artificial split or a dishonest name. Use the best reasonably-nameable
@@ -1325,6 +1342,18 @@ catch ( e ) {
   `return (\n  <div>...</div>\n);`) additionally follows the function
   padding rule for its own content: 2 blank lines after the opening `(` and
   2 before the closing `)`.
+- **A `return` that returns JSX directly (`return ( <div>...</div> );`)
+  needs no comment of its own** — the JSDoc's own `@returns` already
+  documents what the function returns, and every element inside the JSX
+  already gets its own comment, so a comment on the bare `return (` line
+  itself would just repeat one or the other. This is NOT the same as a
+  `return` that calls a real function, passing the JSX as one of its
+  arguments (`return createPortal( <div>...</div>, document.body );`) —
+  that line is a genuine function call with its own behavior/arguments
+  worth explaining (why THIS function, why these arguments), not merely
+  "returning JSX", so it still gets a normal trailing/attached comment
+  like any other multi-line construct. See `HelOveCom`'s own `return
+  createPortal(` in `help-mode.jsx` for the reference example.
 - Single-line early-return guards (`if (!btn) { setInd(null); return; }`)
   are exempt from the "3 before" rule entirely — they're not a standalone
   return statement, just an inline guard, so they follow the ordinary
@@ -1840,6 +1869,13 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     (`claValFun`, `claPadFun`), though note `cla` also separately means
     Clause (`tutClaStr`) and Class (`extClaStr`); context disambiguates
     which of the three "cla" stands for)
+  - `ovl` → `ove` (Overlap — found in `horOveBoo`/`verOveBoo`
+    (`help-mode.jsx`); note this collides with `ove` already meaning
+    Overflow just above, and separately with `ove` meaning Overlay in
+    `HelOveCom` (`help-mode.jsx`, exported and used across every
+    tab-*.jsx file); context (a `Com`-suffixed component vs. a
+    `Str`/`Boo`-suffixed value) disambiguates which of the three "ove"
+    stands for)
   - `vp` → `vie` (Viewport — a 2-letter abbreviation rather than the
     usual wrong-3-letter case, since "vp" is the common real-world
     shorthand people reach for; found in `vpWidNum`/`vpHeiNum` across
@@ -2102,6 +2138,28 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     Under-length-first-word-padding exceptions: a last resort for when
     the concept genuinely can't survive a clean 2-segment compression,
     not a shortcut to reach for whenever a name feels like a squeeze.
+  - **Full-word variant of the same exception**: the identical reasoning
+    applies when the second concept IS a genuine truncatable word rather
+    than a bare axis letter, e.g. a per-side padding amount needing
+    "which side" (Top/Bottom/Left/Right) alongside "this is padding" and
+    a real type. Truncate that word to its own normal 3 letters (same as
+    any other segment) and keep the type segment too, breaking the
+    6-character budget up to the full 9 rather than dropping the type
+    segment to force a fit. E.g. `help-mode.jsx`'s own `claPadFun` return
+    shape became `padTopNum`/`padBotNum`/`padLefNum`/`padRigNum` (Pad +
+    Top/Bot/Lef/Rig + Number), not a 6-char `padBot`/`padLef`/`padRig`
+    missing a type segment entirely, and not a bare `topNum`/`botNum`/
+    `leftNum`/`rigNum` dropping "Pad", which would have collided in
+    MEANING (not literal spelling) with the same object's own unrelated
+    `top`/`left`/`right`/`bottom` rect-edge fields (kept bare under the
+    `style={{...}}` exemption below) — losing "Pad" would make it
+    genuinely ambiguous which of the two a bare `topNum` referred to.
+    This full-word variant conveniently often already matches whatever
+    a reading local variable independently converged on naming itself
+    (see the "local variable sharing a property's own identity" bullet
+    below) — worth checking for that kind of existing convergence before
+    picking a name, since matching it removes any rename at the read
+    site entirely.
   - **Exemption**: this rule only applies to an object whose property
     names are entirely OUR OWN invention — both the write site and every
     read site are code we control, so renaming is free (e.g. the
