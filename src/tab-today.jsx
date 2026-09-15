@@ -6,48 +6,48 @@
 import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useMemo, React.useCallback, React.forwardRef, React.useImperativeHandle, React.Fragment) throughout, instead of importing individual named hooks.
 
 
-import { APP_FEATURE_PAGE_LABELS } from './onboarding-app-features.jsx';   // What: App Feature Page Labels. Why: Each App Features card needs the display name of the page it lives on. How: This looks up feature.page to label an AppFeatureCard's own meta row.
-import { APP_FEATURES            } from './onboarding-app-features.jsx';   // What: App Features. Why: This is the fixed catalog of App Features tutorial cards rendered once the checklist concludes. How: This is mapped over to render one AppFeatureCard per entry and to compute the section's own done/total counts.
-import { appFeatureBlockedReason } from './onboarding-app-features.jsx';   // What: App Feature Blocked Reason. Why: An App Feature tutorial can require an earlier one first, and the card needs to explain why it is not yet startable. How: This is called per feature id against state to get a blocking reason string, or null when it is startable.
-import { AppFeaturesIntroTip     } from './onboarding-app-features.jsx';   // What: App Features Intro Tip. Why: The App Features section needs a one-time "One Last Thing..." intro the first time it is shown. How: This is rendered once showAppFeaturesIntro is true, passed actions so it can mark itself seen.
-import { BacFloCom               } from './bg-flourish.jsx';               // What: Background Flourish Component. Why: The decorative background glyphs render behind Today's own centered column too, same as every other tab. How: This is passed Today's own body ref and the fixed 'today' tab id.
-import { BooResCom               } from './ui.jsx';                        // What: Boost Reset Component. Why: A dynamic-mode item's inline editor needs a control for resetting its boost value back to 0. How: This is rendered inside EntryEditor's own Boost row.
-import { ButBasCom               } from './ui.jsx';                        // What: Button Base Component. Why: Nearly every action in this file (confirm, cancel, save, merge, generate) is a shared styled button. How: This is used throughout instead of a bare <button> for anything that needs the app's own button styling.
-import { CAD_NAM_OBJ             } from './cadence.js';                    // What: Cadence Namespace Object. Why: Non-daily pickers need period-key math and unit-word phrasing shared with the rest of the app. How: This is called for perKeyFun/comPerFun/uniWorFun throughout generate() and EntryEditor.
-import { ColDisCom               } from './ui.jsx';                        // What: Collapse Disclosure Component. Why: A group's Day Log panel and an entry's inline editor both need an animated expand/collapse wrapper. How: This wraps GroLogCom and EntryEditor, gated on whichever key/eid currently owns the open state.
-import { CON_NAM_OBJ             } from './conditionals.js';               // What: Conditionals Namespace Object. Why: Day-off suppression during generate() needs the shared conditional-evaluation logic. How: This is called via CON_NAM_OBJ.supGatFun against each picker's own resolved conditional.
-import { createPortal            } from 'react-dom';                       // What: Create Portal. Why: The completion celebration's confetti/sparkle overlay must escape the tab-fade wrapper's own containing block. How: This portals the celebration overlay straight onto document.body.
-import { DayLogChip              } from './day-log.jsx';                   // What: Day Log Chip. Why: Each group header needs a small toggle chip for its own Day Log panel. How: This is rendered inside GroHeaCom next to the group's own done/total count.
-import { emlTouObj               } from './onboarding.jsx';                // What: Ease My Life Tour Object. Why: Several onboarding-adjacent features (checklist visibility, drag-hiding the tour coach, starting a create-picker flow) need to publish onto the shared tour event bus. How: This is written to directly (never read here) via its own .set method.
-import { EUR_WAR_STR             } from './constants.js';                  // What: Ease-Up-Range Warning String. Why: An ease-up item's Soonest/Latest row needs its own explanatory warning text. How: This is passed as an InfTipCom's own label prop inside EntryEditor.
-import { FilButCom               } from './ui.jsx';                        // What: Fill Button Component. Why: Ease-up and ease-down items each need a button that instantly fills the item to its threshold. How: This is rendered inside EntryEditor's own Fill/Refill row, labeled per direction.
-import { forDatFun               } from './ui.jsx';                        // What: Format Date Function. Why: The header's own kicker line needs today's date in the app's shared display format. How: This formats the live now clock value shown next to the streak.
-import { forLonFun               } from './ui.jsx';                        // What: Format Long Function. Why: The footer's "List generated on..." line needs the long-form date of the last generation. How: This formats state.today.generatedAt for that footer line.
-import { forTimFun               } from './ui.jsx';                        // What: Format Time Function. Why: Both the header's kicker line and the footer's generated-on line need a formatted time of day. How: This formats the live now clock and state.today.generatedAt respectively.
-import { GroLogCom               } from './day-log.jsx';                   // What: Group Log Component. Why: A group's Day Log panel needs to render that group's own picker audit rows. How: This is rendered inside a ColDisCom, scoped to one group's own name.
-import { HelButCom               } from './help-mode.jsx';                 // What: Help Button Component. Why: Today needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOn.
-import { HelOveCom               } from './help-mode.jsx';                 // What: Help Overlay Component. Why: Help mode needs its own coach-mark overlay driven by this tab's own catalog of targets. How: This is rendered once, passed TOD_HEL_ARR and the helpOn/helpExit pair.
-import { HOL_NAM_OBJ             } from './holidays.js';                   // What: Holidays Namespace Object. Why: Both generate()'s own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holDatFun against state.holidays.
-import { IcoSvgCom               } from './ui.jsx';                        // What: Icon Svg Component. Why: Nearly every card/button in this file needs a small named glyph alongside its label. How: This is rendered throughout, given a name and a size.
-import { InfTipCom               } from './ui.jsx';                        // What: Info Tip Component. Why: A disabled action (a locked re-roll, a blocked tutorial, a disabled Regenerate) still needs to explain itself on hover/tap. How: This wraps whichever control needs an explanatory label throughout this file.
-import { norGroFun               } from './pickers.js';                    // What: Normalize Group Function. Why: A typed group rename/Page Tours rename needs the same normalization real picker groups already get. How: This is called inside requestRenameGroup and pageToursNameCollision.
-import { NOT_NAM_OBJ             } from './notify.js';                     // What: Notification Namespace Object. Why: An auto-generated list should still fire a best-effort system notification. How: This is called via NOT_NAM_OBJ.genNotFun() right after an auto run, its result deliberately ignored.
-import { NumSteCom               } from './ui.jsx';                        // What: Numeric Stepper Component. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered twice inside EntryEditor's own ease rows.
-import { OB_CHECKLIST            } from './onboarding-checklist.js';       // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called throughout for entryFor/status/realPickerCount/readyToGenerate/othersRemaining/tutorialsInProgress.
-import { OB_GENERATE_ITEM_ID     } from './onboarding-checklist.js';       // What: Onboarding Generate Item Id. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to OB_CHECKLIST.entryFor/setChecklistItem wherever that specific card is read or resolved.
-import { OB_PAGE_TOURS           } from './onboarding-checklist.js';       // What: Onboarding Page Tours Array. Why: The Page Tours section needs its own fixed manifest of tour cards, separate from sample pickers/tasks. How: This is mapped over to render one PagTouCom per entry and to compute that section's own counts.
-import { OB_PICKER_CARD_TIME     } from './onboarding-seed-data.js';       // What: Onboarding Picker Card Time Object. Why: A still-hidden sample picker's launcher card needs a manually-timed estimate to show next to its own name. How: This is looked up by picker id inside EntCarCom's own tutorial branch.
-import { OB_SAMPLE_PICKER_IDS    } from './onboarding-seed-data.js';       // What: Onboarding Sample Picker Ids Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout groEntFun and TabToday's own counts.
-import { OB_SAMPLE_TASK_IDS      } from './onboarding-seed-data.js';       // What: Onboarding Sample Task Ids Array. Why: Every count/filter that distinguishes a real reminder from a sample one needs this fixed id list. How: This is checked with .includes throughout TabToday's own tutorial-task counts.
-import { PICKERS                 } from './pickers.js';                    // What: Pickers Namespace Object. Why: Picking, re-rolling, and reading a picker's own eligibility/average-ease all funnel through this shared namespace. How: This is called throughout generate()/handleReroll/EntryEditor for pick/easeEligible/avgEase.
-import { redMotFun               } from './ui.jsx';                        // What: Reduce Motion Function. Why: Nearly every animated sequence in this file (celebration, reel cascade, card flip, scroll) needs to skip or shorten itself for a user who prefers reduced motion. How: This is checked throughout as a plain function call.
-import { RemSecCom               } from './reminders.jsx';                 // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genBlockOrder.
-import { RemTouCom               } from './onboarding-reminder-tours.jsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while actMinTouObj holds a 'reminder' kind entry.
-import { REORDER                 } from './reorder.js';                    // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REORDER.startDrag inside startGroupDrag/startItemDrag.
-import { TASKS                   } from './tasks.js';                      // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for anchorDate/visibleToday/isDoneToday/optsFor/isCompletedOnce.
-import { TOD_HEL_ARR             } from './help-content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
-import { useEmlTouFun            } from './onboarding.jsx';                // What: Use Ease My Life Tour. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
-import { useEscCanFun            } from './ui.jsx';                        // What: Use Escape Cancel Function. Why: EntryEditor's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntryEditor with a handler that checks confirmDel first.
+import { APP_FEA_ARR          } from './onboarding-app-features.jsx';   // What: App Feature Array. Why: This is the fixed catalog of App Features tutorial cards rendered once the checklist concludes. How: This is mapped over to render one AppFeatureCard per entry and to compute the section's own done/total counts.
+import { BacFloCom            } from './bg-flourish.jsx';               // What: Background Flourish Component. Why: The decorative background glyphs render behind Today's own centered column too, same as every other tab. How: This is passed Today's own body ref and the fixed 'today' tab id.
+import { bloReaFun            } from './onboarding-app-features.jsx';   // What: Blocked Reason Function. Why: An App Feature tutorial can require an earlier one first, and the card needs to explain why it is not yet startable. How: This is called per feature id against state to get a blocking reason string, or null when it is startable.
+import { BooResCom            } from './ui.jsx';                        // What: Boost Reset Component. Why: A dynamic-mode item's inline editor needs a control for resetting its boost value back to 0. How: This is rendered inside EntryEditor's own Boost row.
+import { ButBasCom            } from './ui.jsx';                        // What: Button Base Component. Why: Nearly every action in this file (confirm, cancel, save, merge, generate) is a shared styled button. How: This is used throughout instead of a bare <button> for anything that needs the app's own button styling.
+import { CAD_NAM_OBJ          } from './cadence.js';                    // What: Cadence Namespace Object. Why: Non-daily pickers need period-key math and unit-word phrasing shared with the rest of the app. How: This is called for perKeyFun/comPerFun/uniWorFun throughout generate() and EntryEditor.
+import { ColDisCom            } from './ui.jsx';                        // What: Collapse Disclosure Component. Why: A group's Day Log panel and an entry's inline editor both need an animated expand/collapse wrapper. How: This wraps GroLogCom and EntryEditor, gated on whichever key/eid currently owns the open state.
+import { CON_NAM_OBJ          } from './conditionals.js';               // What: Conditionals Namespace Object. Why: Day-off suppression during generate() needs the shared conditional-evaluation logic. How: This is called via CON_NAM_OBJ.supGatFun against each picker's own resolved conditional.
+import { createPortal         } from 'react-dom';                       // What: Create Portal. Why: The completion celebration's confetti/sparkle overlay must escape the tab-fade wrapper's own containing block. How: This portals the celebration overlay straight onto document.body.
+import { DayLogChip           } from './day-log.jsx';                   // What: Day Log Chip. Why: Each group header needs a small toggle chip for its own Day Log panel. How: This is rendered inside GroHeaCom next to the group's own done/total count.
+import { emlTouObj            } from './onboarding.jsx';                // What: Ease My Life Tour Object. Why: Several onboarding-adjacent features (checklist visibility, drag-hiding the tour coach, starting a create-picker flow) need to publish onto the shared tour event bus. How: This is written to directly (never read here) via its own .set method.
+import { EUR_WAR_STR          } from './constants.js';                  // What: Ease-Up-Range Warning String. Why: An ease-up item's Soonest/Latest row needs its own explanatory warning text. How: This is passed as an InfTipCom's own label prop inside EntryEditor.
+import { FeaTipCom            } from './onboarding-app-features.jsx';   // What: Feature Tip Component. Why: The App Features section needs a one-time "One Last Thing..." intro the first time it is shown. How: This is rendered once showAppFeaturesIntro is true, passed actions so it can mark itself seen.
+import { FilButCom            } from './ui.jsx';                        // What: Fill Button Component. Why: Ease-up and ease-down items each need a button that instantly fills the item to its threshold. How: This is rendered inside EntryEditor's own Fill/Refill row, labeled per direction.
+import { forDatFun            } from './ui.jsx';                        // What: Format Date Function. Why: The header's own kicker line needs today's date in the app's shared display format. How: This formats the live now clock value shown next to the streak.
+import { forLonFun            } from './ui.jsx';                        // What: Format Long Function. Why: The footer's "List generated on..." line needs the long-form date of the last generation. How: This formats state.today.generatedAt for that footer line.
+import { forTimFun            } from './ui.jsx';                        // What: Format Time Function. Why: Both the header's kicker line and the footer's generated-on line need a formatted time of day. How: This formats the live now clock and state.today.generatedAt respectively.
+import { GroLogCom            } from './day-log.jsx';                   // What: Group Log Component. Why: A group's Day Log panel needs to render that group's own picker audit rows. How: This is rendered inside a ColDisCom, scoped to one group's own name.
+import { HelButCom            } from './help-mode.jsx';                 // What: Help Button Component. Why: Today needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOn.
+import { HelOveCom            } from './help-mode.jsx';                 // What: Help Overlay Component. Why: Help mode needs its own coach-mark overlay driven by this tab's own catalog of targets. How: This is rendered once, passed TOD_HEL_ARR and the helpOn/helpExit pair.
+import { HOL_NAM_OBJ          } from './holidays.js';                   // What: Holidays Namespace Object. Why: Both generate()'s own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holDatFun against state.holidays.
+import { IcoSvgCom            } from './ui.jsx';                        // What: Icon Svg Component. Why: Nearly every card/button in this file needs a small named glyph alongside its label. How: This is rendered throughout, given a name and a size.
+import { InfTipCom            } from './ui.jsx';                        // What: Info Tip Component. Why: A disabled action (a locked re-roll, a blocked tutorial, a disabled Regenerate) still needs to explain itself on hover/tap. How: This wraps whichever control needs an explanatory label throughout this file.
+import { norGroFun            } from './pickers.js';                    // What: Normalize Group Function. Why: A typed group rename/Page Tours rename needs the same normalization real picker groups already get. How: This is called inside requestRenameGroup and pageToursNameCollision.
+import { NOT_NAM_OBJ          } from './notify.js';                     // What: Notification Namespace Object. Why: An auto-generated list should still fire a best-effort system notification. How: This is called via NOT_NAM_OBJ.genNotFun() right after an auto run, its result deliberately ignored.
+import { NumSteCom            } from './ui.jsx';                        // What: Numeric Stepper Component. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered twice inside EntryEditor's own ease rows.
+import { OB_CHECKLIST         } from './onboarding-checklist.js';       // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called throughout for entryFor/status/realPickerCount/readyToGenerate/othersRemaining/tutorialsInProgress.
+import { OB_GENERATE_ITEM_ID  } from './onboarding-checklist.js';       // What: Onboarding Generate Item Id. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to OB_CHECKLIST.entryFor/setChecklistItem wherever that specific card is read or resolved.
+import { OB_PAGE_TOURS        } from './onboarding-checklist.js';       // What: Onboarding Page Tours Array. Why: The Page Tours section needs its own fixed manifest of tour cards, separate from sample pickers/tasks. How: This is mapped over to render one PagTouCom per entry and to compute that section's own counts.
+import { OB_PICKER_CARD_TIME  } from './onboarding-seed-data.js';       // What: Onboarding Picker Card Time Object. Why: A still-hidden sample picker's launcher card needs a manually-timed estimate to show next to its own name. How: This is looked up by picker id inside EntCarCom's own tutorial branch.
+import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';       // What: Onboarding Sample Picker Ids Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout groEntFun and TabToday's own counts.
+import { OB_SAMPLE_TASK_IDS   } from './onboarding-seed-data.js';       // What: Onboarding Sample Task Ids Array. Why: Every count/filter that distinguishes a real reminder from a sample one needs this fixed id list. How: This is checked with .includes throughout TabToday's own tutorial-task counts.
+import { PAG_LAB_OBJ          } from './onboarding-app-features.jsx';   // What: Page Label Object. Why: Each App Features card needs the display name of the page it lives on. How: This looks up feature.page to label an AppFeatureCard's own meta row.
+import { PICKERS              } from './pickers.js';                    // What: Pickers Namespace Object. Why: Picking, re-rolling, and reading a picker's own eligibility/average-ease all funnel through this shared namespace. How: This is called throughout generate()/handleReroll/EntryEditor for pick/easeEligible/avgEase.
+import { redMotFun            } from './ui.jsx';                        // What: Reduce Motion Function. Why: Nearly every animated sequence in this file (celebration, reel cascade, card flip, scroll) needs to skip or shorten itself for a user who prefers reduced motion. How: This is checked throughout as a plain function call.
+import { RemSecCom            } from './reminders.jsx';                 // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genBlockOrder.
+import { RemTouCom            } from './onboarding-reminder-tours.jsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while actMinTouObj holds a 'reminder' kind entry.
+import { REORDER              } from './reorder.js';                    // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REORDER.startDrag inside startGroupDrag/startItemDrag.
+import { TASKS                } from './tasks.js';                      // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for anchorDate/visibleToday/isDoneToday/optsFor/isCompletedOnce.
+import { TOD_HEL_ARR          } from './help-content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
+import { useEmlTouFun         } from './onboarding.jsx';                // What: Use Ease My Life Tour. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
+import { useEscCanFun         } from './ui.jsx';                        // What: Use Escape Cancel Function. Why: EntryEditor's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntryEditor with a handler that checks confirmDel first.
 
 // #endregion Imports
 
@@ -2611,7 +2611,7 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 
 
 	const tutDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.appFeatures && staAppObj.onboarding.appFeatures[ feaRecObj.id ] ); // What: Tutorial Done Boolean. Why: A resolved App Feature card renders/behaves differently from a pending one. How: This reads staAppObj's own onboarding.appFeatures map for feaRecObj's own id.
-	const blkRsnStr = !tutDonBoo ? appFeatureBlockedReason( feaRecObj.id, staAppObj ) : null; // What: Blocked Reason String. Why: A still-pending card can require an earlier one first, and needs its own explanation string when it does. How: This calls appFeatureBlockedReason only while tutDonBoo is false, otherwise null.
+	const blkRsnStr = !tutDonBoo ? bloReaFun( feaRecObj.id, staAppObj ) : null; // What: Blocked Reason String. Why: A still-pending card can require an earlier one first, and needs its own explanation string when it does. How: This calls bloReaFun only while tutDonBoo is false, otherwise null.
 
 	const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this feature, unless it is currently blocked. How: This checks the actions-area exclusion and the blocked guard first, then dispatches to onUncFeaFun or onPlaTutFun based on tutDonBoo.
 
@@ -2708,7 +2708,7 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 				<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The feature's own page label and its optional time estimate sit together. How: This wraps the page-label span and, when one exists, the time estimate. */ }
 
 
-					<span className='meta-picker'>{ APP_FEATURE_PAGE_LABELS[ feaRecObj.page ] }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRecObj's own page in APP_FEATURE_PAGE_LABELS. */ }
+					<span className='meta-picker'>{ PAG_LAB_OBJ[ feaRecObj.page ] }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRecObj's own page in PAG_LAB_OBJ. */ }
 
 
 					{ feaRecObj.time && ( // What: Time Estimate Check. Why: Not every App Feature card has a manually-timed estimate. How: This renders the dot/time pair only while feaRecObj's own time is set.
@@ -3024,7 +3024,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 *
 	*/
 
-	const shwFeaBoo = cheDonBoo && ( fecDonBoo ? APP_FEATURES.some( ( curFeaObj ) => !feaStaObj[ curFeaObj.id ] ) : !fsrFlaBoo ); // What: Show App Features Boolean. Why: See the doc comment just above. How: This branches on fecDonBoo to pick either the live "some still unresolved" check or the negation of the first-time snapshot.
+	const shwFeaBoo = cheDonBoo && ( fecDonBoo ? APP_FEA_ARR.some( ( curFeaObj ) => !feaStaObj[ curFeaObj.id ] ) : !fsrFlaBoo ); // What: Show App Features Boolean. Why: See the doc comment just above. How: This branches on fecDonBoo to pick either the live "some still unresolved" check or the negation of the first-time snapshot.
 
 	React.useEffect( () => { emlTouObj.set( { showChecklist : shwCheBoo } ); }, [ shwCheBoo ] ); // What: Checklist Bus Publish Effect. Why: reminders.jsx's startAdd needs to hide ANY reminder created while the checklist is up, not just ones a mini-tour itself creates, so a user manually clicking "+" mid-onboarding doesn't clutter the list alongside the still-open launcher cards either (see the unhide side in the generateCardResolved effect further below). How: This republishes shwCheBoo onto the shared tour bus under its own showChecklist field.
 
@@ -3850,7 +3850,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * App Features Intro = App Features Intro Tip Timing Rationale
 	 *
 	 * @summary
-	 * AppFeaturesIntroTip is shown exactly once, the first time the App
+	 * FeaTipCom is shown exactly once, the first time the App
 	 * Features section is on screen with a real generation already
 	 * behind it. shwFeaBoo alone (gated on cheDonBoo) already guarantees
 	 * a generation happened, since the closing checklist item IS the
@@ -4451,7 +4451,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		actions.replaceTodayEntries( nexEntArr, { resetStreak : isaAutBoo } ); // What: Replace Today Entries Call. Why: This is the actual commit, writing nexEntArr as the new state.today.entries. How: This calls actions.replaceTodayEntries, resetting the streak claim only for an auto-run.
 		actions.markGenerated(); // What: Mark Generated Call. Why: state.today.generatedAt (and every anchor/count derived from it) needs to reflect this fresh generation. How: This calls actions.markGenerated.
 
-		if ( cheDonBoo && APP_FEATURES.every( ( curFeaObj ) => feaStaObj[ curFeaObj.id ] ) ) { // What: Feature Section Resolve Guard. Why: The App Features section (see shwFeaBoo's own doc comment above) is only allowed to finally disappear here, at a real generation boundary, not the instant the last tutorial resolves; checked fresh on every genFun call (both manual Regenerate and the Daily Generator funnel through this same function) rather than only once, so a generation that happens to land after the very last tutorial finishes is what actually hides it. How: This flips both resolution flags only once every App Feature is already done.
+		if ( cheDonBoo && APP_FEA_ARR.every( ( curFeaObj ) => feaStaObj[ curFeaObj.id ] ) ) { // What: Feature Section Resolve Guard. Why: The App Features section (see shwFeaBoo's own doc comment above) is only allowed to finally disappear here, at a real generation boundary, not the instant the last tutorial resolves; checked fresh on every genFun call (both manual Regenerate and the Daily Generator funnel through this same function) rather than only once, so a generation that happens to land after the very last tutorial finishes is what actually hides it. How: This flips both resolution flags only once every App Feature is already done.
 
 
 			actions.setOnboarding( { appFeaturesSectionResolved : true, appFeaturesEverCompleted : true } ); // What: Set Onboarding Call. Why: fecDonBoo is the permanent half of this pair, see its own doc comment above for why it must never reset alongside fsrFlaBoo on a Replay Tour. How: This writes both flags true.
@@ -5480,7 +5480,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 										<span className='rail-count'>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
-											<span>{ APP_FEATURES.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.id ] ).length }</span><span className='rail-of'>/{ APP_FEATURES.length }</span>
+											<span>{ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.id ] ).length }</span><span className='rail-of'>/{ APP_FEA_ARR.length }</span>
 
 										</span>
 
@@ -5847,18 +5847,18 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 							<section
 								ref={ ( curEle ) => { secRefObj.current[ '__appFeatures' ] = curEle; } }
 								className='group-section af-section'
-							>{ /* What: App Features Section Element. Why: This is the whole App Features block's own root. How: This renders GroHeaCom plus one AppFeaCom per still-relevant APP_FEATURES entry. */ }
+							>{ /* What: App Features Section Element. Why: This is the whole App Features block's own root. How: This renders GroHeaCom plus one AppFeaCom per still-relevant APP_FEA_ARR entry. */ }
 
 
 								<GroHeaCom
 									name='App Features'
-									doneCount={ APP_FEATURES.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.id ] ).length }
-									total={ APP_FEATURES.length }
+									doneCount={ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.id ] ).length }
+									total={ APP_FEA_ARR.length }
 									editMode={ false }
 								/>{ /* What: Group Header Component. Why: App Features shares the exact same header chrome as a real group, but is never itself reorderable. How: This is passed a fixed name plus its own live done/total counts. */ }
 
 
-								<div className='today-list'>{ /* What: App Features List Div Element. Why: Every still-relevant feature card shares this one list column. How: This maps the filtered APP_FEATURES list to one AppFeaCom per entry. */ }
+								<div className='today-list'>{ /* What: App Features List Div Element. Why: Every still-relevant feature card shares this one list column. How: This maps the filtered APP_FEA_ARR list to one AppFeaCom per entry. */ }
 
 									{ /* During a replay (fecDonBoo), a resolved card drops out the
 									    instant it resolves instead of sticking around with an Undo
@@ -5867,7 +5867,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 									    replay-continuation cards. The ORIGINAL first-time pass is
 									    unaffected: every card stays until the whole section resolves
 									    together at the next real generation. */ }
-									{ APP_FEATURES.filter( ( curFeaObj ) => !( fecDonBoo && feaStaObj[ curFeaObj.id ] ) ).map( ( curFeaObj ) => ( // What: App Feature Card List Render. Why: Every still-relevant feature needs its own card; a resolved one during replay drops out immediately instead of lingering with an Undo toggle. How: This maps APP_FEATURES, filtered per the design note above, to one AppFeaCom per entry, keyed by its own id.
+									{ APP_FEA_ARR.filter( ( curFeaObj ) => !( fecDonBoo && feaStaObj[ curFeaObj.id ] ) ).map( ( curFeaObj ) => ( // What: App Feature Card List Render. Why: Every still-relevant feature needs its own card; a resolved one during replay drops out immediately instead of lingering with an Undo toggle. How: This maps APP_FEA_ARR, filtered per the design note above, to one AppFeaCom per entry, keyed by its own id.
 
 
 										<AppFeaCom
@@ -6155,9 +6155,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 				/> // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it renders directly here. How: This is passed which variant to run plus a close handler that clears actMinTouObj.
 
 			) }
-			{ shwFeaIntBoo && ( // What: App Features Intro Check. Why: The one-time intro tip only belongs once, right when it first becomes relevant. How: This renders AppFeaturesIntroTip only while shwFeaIntBoo is true.
+			{ shwFeaIntBoo && ( // What: App Features Intro Check. Why: The one-time intro tip only belongs once, right when it first becomes relevant. How: This renders FeaTipCom only while shwFeaIntBoo is true.
 
-				<AppFeaturesIntroTip actions={ actions } /> // What: App Features Intro Tip. Why: The App Features section needs its own one-time "One Last Thing..." intro. How: This renders only while shwFeaIntBoo is true.
+				<FeaTipCom actions={ actions } /> // What: App Features Intro Tip. Why: The App Features section needs its own one-time "One Last Thing..." intro. How: This renders only while shwFeaIntBoo is true.
 
 			) }
 
