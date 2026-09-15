@@ -1587,26 +1587,26 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 	}, [ cadCurObj.cadence, cadCurObj.anchorDow ] ); // What: Effect Dependency Array. Why: Only these two fields of cadCurObj can ever change which day must be locked on. How: cadCurObj.cadence decides whether locking applies at all, and cadCurObj.anchorDow decides which day.
 	// What: Conditional On Boolean And Setter. Why: An optional conditional gate; when on, the user attaches an existing conditional or creates a fresh inline one. How: This starts on only when editing an existing picker that already has one attached.
-	const [ cndOnBoo, setCndOnBoo ] = React.useState( !!( iniFrmObj && iniFrmObj.conditionalId ) );
-	const [ cndSelStr, setCndSelStr ] = React.useState( ( iniFrmObj && iniFrmObj.conditionalId ) || null ); // What: Conditional Selected String And Setter. Why: This holds which conditional is chosen: an existing id, the literal 'new', or null. How: This starts from a prefilled conditionalId, or null.
-	const [ cndDftObj, setCndDftObj ] = React.useState( () => conditionalDraftDefault( '' ) ); // What: Conditional Draft Object And Setter. Why: Creating a fresh inline conditional needs its own draft shape to edit. How: This starts from the shared default, seeded with an empty name until the user actually opens the "Add New Conditional" pill.
-	const [ cndTouBoo, setCndTouBoo ] = React.useState( false ); // What: Conditional Touched Boolean And Setter. Why: A name collision error should only surface once the user has actually tried to submit with one. How: This is flipped true by subFrmFun when a collision blocks submission.
-	// What: Conditional Tidy String. Why: Create-new requires a UNIQUE name; normalizing first, then comparing against existing conditionals (which are stored normalized), is what actually detects a real collision, not just a surface-level text match. How: This runs cndDftObj's own name through the shared normalizer.
-	const cndTidStr = normalizeConditionalName( cndDftObj.name ) || '';
-	const cndColBoo = cndOnBoo && cndSelStr === 'new' && // What: Conditional Collides Boolean. Why: Reuse is the deliberate act of tapping an existing pill, not a silent name match, so only the create-new path can ever collide. How: This checks cndTidStr against every existing conditional's own name, case-insensitively.
+	const [ conOnBoo, setConOnBoo ] = React.useState( !!( iniFrmObj && iniFrmObj.conditionalId ) );
+	const [ conSelStr, setConSelStr ] = React.useState( ( iniFrmObj && iniFrmObj.conditionalId ) || null ); // What: Conditional Selected String And Setter. Why: This holds which conditional is chosen: an existing id, the literal 'new', or null. How: This starts from a prefilled conditionalId, or null.
+	const [ conDftObj, setConDftObj ] = React.useState( () => conditionalDraftDefault( '' ) ); // What: Conditional Draft Object And Setter. Why: Creating a fresh inline conditional needs its own draft shape to edit. How: This starts from the shared default, seeded with an empty name until the user actually opens the "Add New Conditional" pill.
+	const [ conTouBoo, setConTouBoo ] = React.useState( false ); // What: Conditional Touched Boolean And Setter. Why: A name collision error should only surface once the user has actually tried to submit with one. How: This is flipped true by subFrmFun when a collision blocks submission.
+	// What: Conditional Tidy String. Why: Create-new requires a UNIQUE name; normalizing first, then comparing against existing conditionals (which are stored normalized), is what actually detects a real collision, not just a surface-level text match. How: This runs conDftObj's own name through the shared normalizer.
+	const conTidStr = normalizeConditionalName( conDftObj.name ) || '';
+	const conColBoo = conOnBoo && conSelStr === 'new' && // What: Conditional Collides Boolean. Why: Reuse is the deliberate act of tapping an existing pill, not a silent name match, so only the create-new path can ever collide. How: This checks conTidStr against every existing conditional's own name, case-insensitively.
 
-		conObjArr.some( ( c ) => ( c.name || '' ).toLowerCase() === cndTidStr.toLowerCase() );
+		conObjArr.some( ( c ) => ( c.name || '' ).toLowerCase() === conTidStr.toLowerCase() );
 
-	const cndErrStr = cndColBoo // What: Conditional Error String. Why: The name field needs a concrete, actionable message once a collision is actually detected. How: This names the colliding conditional directly and suggests reusing it instead.
+	const conErrStr = conColBoo // What: Conditional Error String. Why: The name field needs a concrete, actionable message once a collision is actually detected. How: This names the colliding conditional directly and suggests reusing it instead.
 
-		? `A conditional named “${ cndTidStr }” already exists. Choose a different name, or select it from the list above to reuse it.`
+		? `A conditional named “${ conTidStr }” already exists. Choose a different name, or select it from the list above to reuse it.`
 
 		: null;
 
 	// What: Conditional Rail Cleanup Reference. Why: The edge-fade cue on the conditional rail (matching the app's other horizontal rails) needs its own teardown function remembered across callback-ref re-invocations. How: This holds whatever cleanup function raiCalFun most recently registered, run and cleared at the top of every subsequent call.
 	const raiCleRef = React.useRef( null );
 	const raiNodRef = React.useRef( null ); // What: Rail Node Reference. Why: The scroll-to-start effect below needs to read back the same DOM node raiCalFun most recently attached to. How: This mirrors whatever element is currently mounted, or null while the rail itself isn't rendered.
-	// What: Rail Callback Function. Why: Collapse (below) mounts this rail one render AFTER cndOnBoo flips true (it stages its own `render` state first), so a plain useEffect keyed on cndOnBoo would fire while the ref is still null and never get another chance to run once the rail actually appears; a callback ref, which fires exactly when the DOM node attaches, plus a ResizeObserver, which re-fires whenever conditionals are added/removed and the rail's content width changes, sidesteps that race entirely. How: This registers a scroll listener and a ResizeObserver on whatever element the rail's own ref prop attaches to below, tearing down the previous ones first.
+	// What: Rail Callback Function. Why: Collapse (below) mounts this rail one render AFTER conOnBoo flips true (it stages its own `render` state first), so a plain useEffect keyed on conOnBoo would fire while the ref is still null and never get another chance to run once the rail actually appears; a callback ref, which fires exactly when the DOM node attaches, plus a ResizeObserver, which re-fires whenever conditionals are added/removed and the rail's content width changes, sidesteps that race entirely. How: This registers a scroll listener and a ResizeObserver on whatever element the rail's own ref prop attaches to below, tearing down the previous ones first.
 	const raiCalFun = React.useCallback( ( raiCurEle ) => {
 
 
@@ -1641,17 +1641,17 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 
 	}, [] ); // What: Effect Dependency Array. Why: This callback ref never needs to change identity; the element it receives is a normal parameter, not a dependency. How: An empty array means React never has to detach and reattach it across renders.
-	React.useEffect( () => { // What: Scroll To Start Effect. Why: Selecting a conditional pins it to the front of the rail (see the sort in the render below), so the rail should scroll back to the start to bring it into view, same idea as the Data tab's own attached-conditional pin. How: This scrolls raiNodRef's own current element back to its start whenever cndSelStr changes to a real, non-'new' selection.
+	React.useEffect( () => { // What: Scroll To Start Effect. Why: Selecting a conditional pins it to the front of the rail (see the sort in the render below), so the rail should scroll back to the start to bring it into view, same idea as the Data tab's own attached-conditional pin. How: This scrolls raiNodRef's own current element back to its start whenever conSelStr changes to a real, non-'new' selection.
 
 
 		const raiCurEle = raiNodRef.current; // What: Rail Current Element. Why: The scroll call below needs the actual live DOM node. How: This reads raiNodRef.current once.
 
-		if ( !raiCurEle || cndSelStr == null || cndSelStr === 'new' ) return; // What: No Real Selection Guard. Why: Only picking a REAL existing conditional should trigger this scroll; neither an unmounted rail nor the 'new' pill (which has nothing to scroll to) should. How: This bails out unless a real element exists and cndSelStr is a genuine id.
+		if ( !raiCurEle || conSelStr == null || conSelStr === 'new' ) return; // What: No Real Selection Guard. Why: Only picking a REAL existing conditional should trigger this scroll; neither an unmounted rail nor the 'new' pill (which has nothing to scroll to) should. How: This bails out unless a real element exists and conSelStr is a genuine id.
 
 		if ( raiCurEle.scrollLeft > 1 ) raiCurEle.scrollTo({ left : 0, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: A rail that's already at its start needs no animation at all. How: This scrolls back to the start only when it's actually scrolled away from it.
 
 
-	}, [ cndSelStr ] ); // What: Effect Dependency Array. Why: Only a genuine change to which conditional is selected should trigger this scroll. How: cndSelStr is the sole value this effect's own guard checks.
+	}, [ conSelStr ] ); // What: Effect Dependency Array. Why: Only a genuine change to which conditional is selected should trigger this scroll. How: conSelStr is the sole value this effect's own guard checks.
 
 	// What: Pool Item Array And Setter. Why: Step 2's own pool; each item is { name, weight }, weight only mattering for weighted/dynamic modes and only editable inline then. How: This is a fresh pool (Option B, not a pick-from-library), starting from a prefilled items list, or empty; other defaults (drift value, ease knobs) are applied at commit time.
 	const [ pooIteArr, setPooIteArr ] = React.useState( ( iniFrmObj && iniFrmObj.items ) || [] );
@@ -1977,7 +1977,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 		if ( !detRdyBoo || ( !isaEdiBoo && !enoIteBoo ) ) return; // What: Not Ready Guard. Why: Neither flow can submit until Step 1's own fields are complete, and creating additionally needs at least 2 real items. How: This bails out unless both conditions hold for the active flow.
 
-		if ( cndOnBoo && cndSelStr === 'new' && cndColBoo ) { setCndTouBoo( true ); return; } // What: Name Collision Guard. Why: A colliding new-conditional name must surface its own error instead of silently submitting. How: This flips cndTouBoo (revealing cndErrStr) and bails out.
+		if ( conOnBoo && conSelStr === 'new' && conColBoo ) { setConTouBoo( true ); return; } // What: Name Collision Guard. Why: A colliding new-conditional name must surface its own error instead of silently submitting. How: This flips conTouBoo (revealing conErrStr) and bails out.
 
 		const payFrmObj = { // What: Payload Form Object. Why: Both onCreFun and onSavFun expect this exact shared shape. How: This gathers every Step 1 field that both flows always send.
 
@@ -1996,18 +1996,18 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 		if ( !isaEdiBoo ) payFrmObj.items = pooIteArr; // What: Items Attach Guard. Why: Only a fresh create actually needs to send a full items array; an edit's own items are managed elsewhere. How: This attaches pooIteArr to payFrmObj only while isaEdiBoo is false.
 
 		// What: Conditional Attach Note. Why: Create-new names are unique by validation above, so no silent reuse happens here; edit explicitly clears the field (conditionalId: null) when turned off, since unlike a fresh create, this can also DETACH one the picker already had, so there's no bare "just omit the field" default to fall back on. How: The three branches below cover attaching an existing conditional, attaching a fresh inline one, or explicitly detaching on edit.
-		if ( cndOnBoo && cndSelStr === 'new' ) {
+		if ( conOnBoo && conSelStr === 'new' ) {
 
 
-			payFrmObj.newConditional = { ...cndDftObj, name : cndTidStr || 'Conditional' }; // What: New Conditional Attach. Why: A freshly-created inline conditional needs its own draft shape sent through, under its own tidied name. How: This spreads cndDftObj and overwrites its name with cndTidStr (or a bare fallback).
+			payFrmObj.newConditional = { ...conDftObj, name : conTidStr || 'Conditional' }; // What: New Conditional Attach. Why: A freshly-created inline conditional needs its own draft shape sent through, under its own tidied name. How: This spreads conDftObj and overwrites its name with conTidStr (or a bare fallback).
 
 
 		}
 
-		else if ( cndOnBoo && cndSelStr ) {
+		else if ( conOnBoo && conSelStr ) {
 
 
-			payFrmObj.conditionalId = cndSelStr; // What: Existing Conditional Attach. Why: Reusing an existing conditional only needs its own id sent through. How: This writes cndSelStr directly onto payFrmObj.conditionalId.
+			payFrmObj.conditionalId = conSelStr; // What: Existing Conditional Attach. Why: Reusing an existing conditional only needs its own id sent through. How: This writes conSelStr directly onto payFrmObj.conditionalId.
 
 
 		}
@@ -2280,21 +2280,21 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 						<button
 							type='button'
-							className={ ` switch   ${ cndOnBoo ? 'is-on' : '' } ` }
+							className={ ` switch   ${ conOnBoo ? 'is-on' : '' } ` }
 							role='switch'
-							aria-checked={ cndOnBoo }
+							aria-checked={ conOnBoo }
 							aria-label='Attach a conditional'
-							onClick={ () => setCndOnBoo( ( v ) => !v ) }
+							onClick={ () => setConOnBoo( ( v ) => !v ) }
 						>
 
 							<i />
 
-						</button>{ /* What: Button. Why: This is the actual on/off control for the conditional attachment. How: This flips cndOnBoo on click. */ }
+						</button>{ /* What: Button. Why: This is the actual on/off control for the conditional attachment. How: This flips conOnBoo on click. */ }
 
 
 					</div>
 
-					<Collapse open={ cndOnBoo }>
+					<Collapse open={ conOnBoo }>
 
 						<div className='cnd-attach'>{ /* What: Conditional Attach Div Element. Why: The pill rail and the inline new-conditional editor form one block. How: This wraps cnd-rail and the Collapse around ConditionalControls. */ }
 
@@ -2303,30 +2303,30 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 
 								{ /* What: Conditional Sort Design Note. Why: The rail reads alphabetically, except the currently-selected conditional (once the user has picked one) pins to the front. How: This is the same "selected stays first" convention as the Data tab's own rail. */ }
-								{ [ ...conObjArr ].sort( ( a, b ) => { // What: Sorted Conditional List Render. Why: The rail needs a stable order with the active selection pinned to the front. How: This sorts alphabetically, except a or b matching cndSelStr is forced to the very front.
+								{ [ ...conObjArr ].sort( ( a, b ) => { // What: Sorted Conditional List Render. Why: The rail needs a stable order with the active selection pinned to the front. How: This sorts alphabetically, except a or b matching conSelStr is forced to the very front.
 
 
-									if ( a.id === cndSelStr ) return -1; // What: A Pinned Guard. Why: The currently-selected conditional must sort before everything else. How: This returns -1 whenever a is the selection.
+									if ( a.id === conSelStr ) return -1; // What: A Pinned Guard. Why: The currently-selected conditional must sort before everything else. How: This returns -1 whenever a is the selection.
 
-									if ( b.id === cndSelStr ) return 1; // What: B Pinned Guard. Why: Same reasoning as above, for the other comparison side. How: This returns 1 whenever b is the selection.
+									if ( b.id === conSelStr ) return 1; // What: B Pinned Guard. Why: Same reasoning as above, for the other comparison side. How: This returns 1 whenever b is the selection.
 
 									return a.name.localeCompare( b.name ); // What: Alphabetical Fallback Return. Why: Every other pair sorts by plain alphabetical name. How: This delegates to String.localeCompare.
 
 
-								} ).map( ( curCndObj ) => (
+								} ).map( ( curConObj ) => (
 
 
 									<button
-										key={ curCndObj.id }
+										key={ curConObj.id }
 										type='button'
-										className={ ` cnd-pill   ${ cndSelStr === curCndObj.id ? 'is-on' : '' } ` }
-										onClick={ () => setCndSelStr( curCndObj.id ) }
-									>{ /* What: Conditional Pill Button Element. Why: Every existing conditional needs its own selectable pill showing its name and mode. How: This selects curCndObj.id on click. */ }
+										className={ ` cnd-pill   ${ conSelStr === curConObj.id ? 'is-on' : '' } ` }
+										onClick={ () => setConSelStr( curConObj.id ) }
+									>{ /* What: Conditional Pill Button Element. Why: Every existing conditional needs its own selectable pill showing its name and mode. How: This selects curConObj.id on click. */ }
 
 
-										<span className='cnd-pill-name'>{ curCndObj.name }</span>{ /* What: Pill Name Span Element. Why: The pill needs its own readable name. How: This renders curCndObj.name. */ }
+										<span className='cnd-pill-name'>{ curConObj.name }</span>{ /* What: Pill Name Span Element. Why: The pill needs its own readable name. How: This renders curConObj.name. */ }
 
-										<span className='cnd-pill-mode'>{ ( MODES[ curCndObj.mode ] || {} ).label || curCndObj.mode }</span>{ /* What: Pill Mode Span Element. Why: The pill also needs to show which mode the conditional itself runs under. How: This looks up the mode's own label in MODES, falling back to the raw mode string. */ }
+										<span className='cnd-pill-mode'>{ ( MODES[ curConObj.mode ] || {} ).label || curConObj.mode }</span>{ /* What: Pill Mode Span Element. Why: The pill also needs to show which mode the conditional itself runs under. How: This looks up the mode's own label in MODES, falling back to the raw mode string. */ }
 
 
 									</button>
@@ -2336,29 +2336,29 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 								<button
 									type='button'
-									className={ ` cnd-pill cnd-pill--new   ${ cndSelStr === 'new' ? 'is-on' : '' } ` }
-									onClick={ () => { setCndSelStr( 'new' ); setCndDftObj( conditionalDraftDefault( newNamStr.trim(), conObjArr.map( ( c ) => c.name ) ) ); } }
+									className={ ` cnd-pill cnd-pill--new   ${ conSelStr === 'new' ? 'is-on' : '' } ` }
+									onClick={ () => { setConSelStr( 'new' ); setConDftObj( conditionalDraftDefault( newNamStr.trim(), conObjArr.map( ( c ) => c.name ) ) ); } }
 								>
 
 									<Icon name='plus' size={ 16 } />
 
 									<span className='cnd-pill-name'>Add New Conditional</span>
 
-								</button>{ /* What: Button. Why: The user needs an explicit way to open the inline new-conditional editor. How: This selects the 'new' pill and seeds cndDftObj from the shared default, pre-filled with this picker's own name. */ }
+								</button>{ /* What: Button. Why: The user needs an explicit way to open the inline new-conditional editor. How: This selects the 'new' pill and seeds conDftObj from the shared default, pre-filled with this picker's own name. */ }
 
 
 							</div>
 
-							<Collapse open={ cndSelStr === 'new' }>
+							<Collapse open={ conSelStr === 'new' }>
 
-								<ConditionalControls draft={ cndDftObj } onChange={ setCndDftObj } nameError={ cndErrStr } />
+								<ConditionalControls draft={ conDftObj } onChange={ setConDftObj } nameError={ conErrStr } />
 
-							</Collapse>{ /* What: Collapse. Why: The inline new-conditional editor only needs to exist while cndSelStr is actually 'new'. How: This animates ConditionalControls open/closed around that check. */ }
+							</Collapse>{ /* What: Collapse. Why: The inline new-conditional editor only needs to exist while conSelStr is actually 'new'. How: This animates ConditionalControls open/closed around that check. */ }
 
 
 						</div>
 
-					</Collapse>{ /* What: Collapse. Why: The whole conditional-attach block only needs to exist while cndOnBoo is actually on. How: This animates cnd-attach open/closed around that boolean. */ }
+					</Collapse>{ /* What: Collapse. Why: The whole conditional-attach block only needs to exist while conOnBoo is actually on. How: This animates cnd-attach open/closed around that boolean. */ }
 
 
 				</div>
@@ -2588,9 +2588,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 					{ isaEdiBoo
 
-						? <Btn kind='primary' icon='check' disabled={ !detRdyBoo || cndColBoo } onClick={ subFrmFun }>Save</Btn> // What: Button. Why: Editing only ever has one step, so this button both validates and commits. How: This calls subFrmFun directly, disabled until detRdyBoo holds and no conditional name collides.
+						? <Btn kind='primary' icon='check' disabled={ !detRdyBoo || conColBoo } onClick={ subFrmFun }>Save</Btn> // What: Button. Why: Editing only ever has one step, so this button both validates and commits. How: This calls subFrmFun directly, disabled until detRdyBoo holds and no conditional name collides.
 
-						: <Btn kind='primary' icon='chev' className='ob-picker-next' disabled={ !detRdyBoo || cndColBoo } onClick={ advStpFun }>Add Items</Btn> // What: Button. Why: Creating still has an Items step to fill in. How: This calls advStpFun to advance, disabled under the same conditions as the edit Save button above.
+						: <Btn kind='primary' icon='chev' className='ob-picker-next' disabled={ !detRdyBoo || conColBoo } onClick={ advStpFun }>Add Items</Btn> // What: Button. Why: Creating still has an Items step to fill in. How: This calls advStpFun to advance, disabled under the same conditions as the edit Save button above.
 
 					}
 
@@ -3027,7 +3027,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 							kind='primary'
 							icon='check'
 							className='ob-picker-create'
-							disabled={ !enoIteBoo || cndColBoo }
+							disabled={ !enoIteBoo || conColBoo }
 							onClick={ subFrmFun }
 						>Create Picker</Btn>{ /* What: Button. Why: This is the actual final commit for a brand-new picker. How: This calls subFrmFun, disabled until enoIteBoo holds and no conditional name collides. */ }
 

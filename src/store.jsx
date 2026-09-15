@@ -785,41 +785,41 @@ function revertEntryPending( curStaObj, curEntObj ) {
 function applyConditionalToggle( curStaObj, nexEntArr, togEntObj, nowDoneBoo ) {
 
 
-	const curCndArr = curStaObj.conditionals || []; // What: Current Conditionals Array And Guard. Why: Every branch below reads/maps over the live conditionals list. How: This reads curStaObj's own conditionals, defaulting to empty.
+	const curConArr = curStaObj.conditionals || []; // What: Current Conditionals Array And Guard. Why: Every branch below reads/maps over the live conditionals list. How: This reads curStaObj's own conditionals, defaulting to empty.
 
-	if ( !curCndArr.length ) return curCndArr; // What: No-Conditionals Guard. Why: An app with no conditionals at all has nothing to resolve. How: This returns curCndArr unchanged when it's empty.
+	if ( !curConArr.length ) return curConArr; // What: No-Conditionals Guard. Why: An app with no conditionals at all has nothing to resolve. How: This returns curConArr unchanged when it's empty.
 
-	const cndModObj = CON_NAM_OBJ; // What: Conditional Module Object. Why: Every branch below repeatedly calls into this module's own resolution helpers. How: This aliases the imported CON_NAM_OBJ namespace for brevity below.
+	const conModObj = CON_NAM_OBJ; // What: Conditional Module Object. Why: Every branch below repeatedly calls into this module's own resolution helpers. How: This aliases the imported CON_NAM_OBJ namespace for brevity below.
 
-	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card entry's own completion drives its conditional's carComFun instead of the dependent-picker charging logic below. How: This maps curCndArr, resolving only the one matching conditional.
-
-
-		return curCndArr.map( ( curCndObj ) => {
+	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card entry's own completion drives its conditional's carComFun instead of the dependent-picker charging logic below. How: This maps curConArr, resolving only the one matching conditional.
 
 
-			if ( curCndObj.id !== togEntObj.conditionalId ) return curCndObj; // What: Non-Matching Guard. Why: Every other conditional is untouched by this card's own toggle. How: This returns curCndObj unchanged when its own id doesn't match.
+		return curConArr.map( ( curConObj ) => {
+
+
+			if ( curConObj.id !== togEntObj.conditionalId ) return curConObj; // What: Non-Matching Guard. Why: Every other conditional is untouched by this card's own toggle. How: This returns curConObj unchanged when its own id doesn't match.
 
 			if ( nowDoneBoo ) { // What: Now-Done Branch. Why: Completing the card is what actually drives its own mode-specific completion effect. How: This calls carComFun and snapshots the pre-effect fields into _cardPrev before applying its own patch.
 
 
-				const patValObj = cndModObj.carComFun( curCndObj ); // What: Patch Value Object And Guard. Why: Some modes (probability) treat completion as informational only, returning no patch. How: This calls cndModObj's own carComFun on curCndObj.
+				const patValObj = conModObj.carComFun( curConObj ); // What: Patch Value Object And Guard. Why: Some modes (probability) treat completion as informational only, returning no patch. How: This calls conModObj's own carComFun on curConObj.
 
-				if ( !patValObj ) return curCndObj; // What: No-Patch Guard. Why: A probability-mode card has nothing to actually mutate on completion. How: This returns curCndObj unchanged when patValObj is falsy.
+				if ( !patValObj ) return curConObj; // What: No-Patch Guard. Why: A probability-mode card has nothing to actually mutate on completion. How: This returns curConObj unchanged when patValObj is falsy.
 
 
-				return { ...curCndObj, _cardPrev : { value : curCndObj.value, triggered : curCndObj.triggered, chargeStep : curCndObj.chargeStep }, ...patValObj }; // What: Applied Card Patch Return. Why: The caller needs curCndObj patched, with its own pre-effect fields snapshotted for undo. How: This spreads curCndObj, its own _cardPrev snapshot, then patValObj's own fields.
+				return { ...curConObj, _cardPrev : { value : curConObj.value, triggered : curConObj.triggered, chargeStep : curConObj.chargeStep }, ...patValObj }; // What: Applied Card Patch Return. Why: The caller needs curConObj patched, with its own pre-effect fields snapshotted for undo. How: This spreads curConObj, its own _cardPrev snapshot, then patValObj's own fields.
 
 
 			}
 
-			const preSnpObj = curCndObj._cardPrev; // What: Previous Snapshot Object And Guard. Why: Un-completing the card only makes sense if it actually recorded a snapshot to restore. How: This reads curCndObj's own _cardPrev field.
+			const preSnpObj = curConObj._cardPrev; // What: Previous Snapshot Object And Guard. Why: Un-completing the card only makes sense if it actually recorded a snapshot to restore. How: This reads curConObj's own _cardPrev field.
 
-			if ( !preSnpObj ) return curCndObj; // What: No-Snapshot Guard. Why: A card that was never completed (or already reverted) has nothing to restore. How: This returns curCndObj unchanged when preSnpObj is falsy.
+			if ( !preSnpObj ) return curConObj; // What: No-Snapshot Guard. Why: A card that was never completed (or already reverted) has nothing to restore. How: This returns curConObj unchanged when preSnpObj is falsy.
 
-			const { _cardPrev, ...remFieObj } = curCndObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _cardPrev snapshot. How: This destructures _cardPrev off curCndObj, keeping every other field in remFieObj.
+			const { _cardPrev, ...remFieObj } = curConObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _cardPrev snapshot. How: This destructures _cardPrev off curConObj, keeping every other field in remFieObj.
 
 
-			return { ...remFieObj, value : preSnpObj.value, triggered : preSnpObj.triggered, chargeStep : preSnpObj.chargeStep }; // What: Restored Card Return. Why: The caller needs curCndObj's own pre-completion fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargeStep from preSnpObj.
+			return { ...remFieObj, value : preSnpObj.value, triggered : preSnpObj.triggered, chargeStep : preSnpObj.chargeStep }; // What: Restored Card Return. Why: The caller needs curConObj's own pre-completion fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargeStep from preSnpObj.
 
 
 		} );
@@ -828,11 +828,11 @@ function applyConditionalToggle( curStaObj, nexEntArr, togEntObj, nowDoneBoo ) {
 	}
 
 	const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === togEntObj.pickerId ); // What: Current Picker Object And Guard. Why: A dependent entry's own conditional is looked up through its picker, not the entry itself. How: This looks up togEntObj's own pickerId in curStaObj.pickers.
-	const cndIdeStr = curPicObj && curPicObj.conditionalId; // What: Conditional Identifier String And Guard. Why: An entry whose picker has no conditionalId gates nothing. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
+	const conIdeStr = curPicObj && curPicObj.conditionalId; // What: Conditional Identifier String And Guard. Why: An entry whose picker has no conditionalId gates nothing. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
 
-	if ( !cndIdeStr ) return curCndArr; // What: No-Conditional Guard. Why: An ungated picker's entry has no dependent conditional to charge. How: This returns curCndArr unchanged when cndIdeStr is falsy.
+	if ( !conIdeStr ) return curConArr; // What: No-Conditional Guard. Why: An ungated picker's entry has no dependent conditional to charge. How: This returns curConArr unchanged when conIdeStr is falsy.
 
-	const depDonNum = nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Number. Why: The charging edge below only fires on the FIRST dependent completion of the day, so every OTHER done dependent entry for this same conditional must be counted. How: This counts entries (excluding day-off cards) whose own picker shares cndIdeStr and are done.
+	const depDonNum = nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Number. Why: The charging edge below only fires on the FIRST dependent completion of the day, so every OTHER done dependent entry for this same conditional must be counted. How: This counts entries (excluding day-off cards) whose own picker shares conIdeStr and are done.
 
 
 		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
@@ -840,44 +840,44 @@ function applyConditionalToggle( curStaObj, nexEntArr, togEntObj, nowDoneBoo ) {
 		const matPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
 
 
-		return matPicObj && matPicObj.conditionalId === cndIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares cndIdeStr.
+		return matPicObj && matPicObj.conditionalId === conIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares conIdeStr.
 
 
 	} ).length;
 
 
-	return curCndArr.map( ( curCndObj ) => { // What: Charged Conditionals Return. Why: Only the one matching value-mode conditional can advance or revert here. How: This maps curCndArr, resolving the charging/reverting edges for the matching conditional only.
+	return curConArr.map( ( curConObj ) => { // What: Charged Conditionals Return. Why: Only the one matching value-mode conditional can advance or revert here. How: This maps curConArr, resolving the charging/reverting edges for the matching conditional only.
 
 
-		if ( curCndObj.id !== cndIdeStr || !cndModObj.modValFun( curCndObj.mode ) ) return curCndObj; // What: Non-Matching Guard. Why: Every other conditional, and a non-value-mode match, is untouched here. How: This returns curCndObj unchanged when either condition holds.
+		if ( curConObj.id !== conIdeStr || !conModObj.modValFun( curConObj.mode ) ) return curConObj; // What: Non-Matching Guard. Why: Every other conditional, and a non-value-mode match, is untouched here. How: This returns curConObj unchanged when either condition holds.
 
-		if ( nowDoneBoo && depDonNum === 1 && !curCndObj.chargedToday ) { // What: Charging-Edge Branch. Why: The FIRST dependent completion of an as-yet-uncharged day is what actually advances the conditional's own value. How: This calls advValFun and snapshots the pre-effect fields into _chargePrev before applying its own patch.
-
-
-			const patValObj = cndModObj.advValFun( curCndObj ); // What: Patch Value Object And Guard. Why: Some modes may decline to advance at all. How: This calls cndModObj's own advValFun on curCndObj.
-
-			if ( !patValObj ) return curCndObj; // What: No-Patch Guard. Why: A decline to advance leaves curCndObj with nothing to mutate. How: This returns curCndObj unchanged when patValObj is falsy.
+		if ( nowDoneBoo && depDonNum === 1 && !curConObj.chargedToday ) { // What: Charging-Edge Branch. Why: The FIRST dependent completion of an as-yet-uncharged day is what actually advances the conditional's own value. How: This calls advValFun and snapshots the pre-effect fields into _chargePrev before applying its own patch.
 
 
-			return { ...curCndObj, _chargePrev : { value : curCndObj.value, triggered : curCndObj.triggered, chargedToday : curCndObj.chargedToday, chargeStep : curCndObj.chargeStep }, ...patValObj }; // What: Applied Charge Patch Return. Why: The caller needs curCndObj patched, with its own pre-effect fields snapshotted for undo. How: This spreads curCndObj, its own _chargePrev snapshot, then patValObj's own fields.
+			const patValObj = conModObj.advValFun( curConObj ); // What: Patch Value Object And Guard. Why: Some modes may decline to advance at all. How: This calls conModObj's own advValFun on curConObj.
+
+			if ( !patValObj ) return curConObj; // What: No-Patch Guard. Why: A decline to advance leaves curConObj with nothing to mutate. How: This returns curConObj unchanged when patValObj is falsy.
 
 
-		}
-
-		if ( !nowDoneBoo && depDonNum === 0 && curCndObj._chargePrev ) { // What: Reverting-Edge Branch. Why: Once the LAST dependent completion of the day is un-done, the earlier charge must be undone too. How: This restores curCndObj's own pre-charge fields from _chargePrev.
-
-
-			const preSnpObj = curCndObj._chargePrev; // What: Previous Snapshot Object. Why: The restoration below needs the exact pre-charge fields recorded earlier. How: This reads curCndObj's own _chargePrev field.
-			const { _chargePrev, ...remFieObj } = curCndObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _chargePrev snapshot. How: This destructures _chargePrev off curCndObj, keeping every other field in remFieObj.
-
-
-			return { ...remFieObj, value : preSnpObj.value, triggered : preSnpObj.triggered, chargedToday : preSnpObj.chargedToday, chargeStep : preSnpObj.chargeStep }; // What: Restored Charge Return. Why: The caller needs curCndObj's own pre-charge fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargedToday/chargeStep from preSnpObj.
+			return { ...curConObj, _chargePrev : { value : curConObj.value, triggered : curConObj.triggered, chargedToday : curConObj.chargedToday, chargeStep : curConObj.chargeStep }, ...patValObj }; // What: Applied Charge Patch Return. Why: The caller needs curConObj patched, with its own pre-effect fields snapshotted for undo. How: This spreads curConObj, its own _chargePrev snapshot, then patValObj's own fields.
 
 
 		}
 
+		if ( !nowDoneBoo && depDonNum === 0 && curConObj._chargePrev ) { // What: Reverting-Edge Branch. Why: Once the LAST dependent completion of the day is un-done, the earlier charge must be undone too. How: This restores curConObj's own pre-charge fields from _chargePrev.
 
-		return curCndObj; // What: Unchanged Conditional Return. Why: Neither edge condition applied, so curCndObj passes through untouched. How: This returns curCndObj as-is.
+
+			const preSnpObj = curConObj._chargePrev; // What: Previous Snapshot Object. Why: The restoration below needs the exact pre-charge fields recorded earlier. How: This reads curConObj's own _chargePrev field.
+			const { _chargePrev, ...remFieObj } = curConObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _chargePrev snapshot. How: This destructures _chargePrev off curConObj, keeping every other field in remFieObj.
+
+
+			return { ...remFieObj, value : preSnpObj.value, triggered : preSnpObj.triggered, chargedToday : preSnpObj.chargedToday, chargeStep : preSnpObj.chargeStep }; // What: Restored Charge Return. Why: The caller needs curConObj's own pre-charge fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargedToday/chargeStep from preSnpObj.
+
+
+		}
+
+
+		return curConObj; // What: Unchanged Conditional Return. Why: Neither edge condition applied, so curConObj passes through untouched. How: This returns curConObj as-is.
 
 
 	} );
@@ -930,41 +930,41 @@ function applyConditionalLog( curStaObj, nexEntArr, togEntObj, nowDoneBoo ) {
 
 
 	const curLogArr = curStaObj.conditionalLog || []; // What: Current Log Array. Why: Every branch below either returns this untouched or derives a new array from it. How: This reads curStaObj's own conditionalLog, defaulting to empty.
-	const curCndArr = curStaObj.conditionals || []; // What: Current Conditionals Array And Guard. Why: The lookups below need the live conditionals list. How: This reads curStaObj's own conditionals, defaulting to empty.
+	const curConArr = curStaObj.conditionals || []; // What: Current Conditionals Array And Guard. Why: The lookups below need the live conditionals list. How: This reads curStaObj's own conditionals, defaulting to empty.
 
-	if ( !curCndArr.length ) return curLogArr; // What: No-Conditionals Guard. Why: An app with no conditionals at all has nothing to log. How: This returns curLogArr unchanged when curCndArr is empty.
+	if ( !curConArr.length ) return curLogArr; // What: No-Conditionals Guard. Why: An app with no conditionals at all has nothing to log. How: This returns curLogArr unchanged when curConArr is empty.
 
-	let cndIdeStr = null, trgValBoo = null; // What: Conditional Identifier And Triggered Value, And Guard. Why: Both branches below need somewhere to record which conditional (if any) this toggle concerns, and whether it counts as triggered. How: This starts both null and is set by whichever branch below actually matches.
-
-
-	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card's own completion always logs as triggered. How: This sets cndIdeStr/trgValBoo directly from togEntObj.
+	let conIdeStr = null, trgValBoo = null; // What: Conditional Identifier And Triggered Value, And Guard. Why: Both branches below need somewhere to record which conditional (if any) this toggle concerns, and whether it counts as triggered. How: This starts both null and is set by whichever branch below actually matches.
 
 
-		cndIdeStr = togEntObj.conditionalId; trgValBoo = true;
+	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card's own completion always logs as triggered. How: This sets conIdeStr/trgValBoo directly from togEntObj.
+
+
+		conIdeStr = togEntObj.conditionalId; trgValBoo = true;
 
 
 	}
 
-	else if ( togEntObj.pickerId ) { // What: Dependent Picker Branch. Why: A dependent entry's own conditional is looked up through its picker, and always logs as not-yet-triggered. How: This looks up the picker and, if gated, sets cndIdeStr/trgValBoo.
+	else if ( togEntObj.pickerId ) { // What: Dependent Picker Branch. Why: A dependent entry's own conditional is looked up through its picker, and always logs as not-yet-triggered. How: This looks up the picker and, if gated, sets conIdeStr/trgValBoo.
 
 
 		const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === togEntObj.pickerId ); // What: Current Picker Object And Guard. Why: Only a gated picker's entry logs anything at all. How: This looks up togEntObj's own pickerId in curStaObj.pickers.
 
-		if ( curPicObj && curPicObj.conditionalId ) { cndIdeStr = curPicObj.conditionalId; trgValBoo = false; } // What: Gated-Picker Guard. Why: An ungated picker's entry logs nothing. How: This sets cndIdeStr/trgValBoo only when curPicObj exists and carries a conditionalId.
+		if ( curPicObj && curPicObj.conditionalId ) { conIdeStr = curPicObj.conditionalId; trgValBoo = false; } // What: Gated-Picker Guard. Why: An ungated picker's entry logs nothing. How: This sets conIdeStr/trgValBoo only when curPicObj exists and carries a conditionalId.
 
 
 	}
 
-	if ( !cndIdeStr ) return curLogArr; // What: No-Match Guard. Why: Neither branch above found a conditional to log against. How: This returns curLogArr unchanged when cndIdeStr is still null.
+	if ( !conIdeStr ) return curLogArr; // What: No-Match Guard. Why: Neither branch above found a conditional to log against. How: This returns curLogArr unchanged when conIdeStr is still null.
 
-	const curCndObj = curCndArr.find( ( cndFinObj ) => cndFinObj.id === cndIdeStr ); // What: Current Conditional Object And Guard. Why: An inactive conditional must log nothing at all. How: This looks up cndIdeStr in curCndArr.
+	const curConObj = curConArr.find( ( conFinObj ) => conFinObj.id === conIdeStr ); // What: Current Conditional Object And Guard. Why: An inactive conditional must log nothing at all. How: This looks up conIdeStr in curConArr.
 
-	if ( !curCndObj || curCndObj.active === false ) return curLogArr; // What: Inactive Guard. Why: An inactive conditional (or one that vanished) runs no logic and logs nothing. How: This returns curLogArr unchanged when curCndObj is missing or explicitly inactive.
+	if ( !curConObj || curConObj.active === false ) return curLogArr; // What: Inactive Guard. Why: An inactive conditional (or one that vanished) runs no logic and logs nothing. How: This returns curLogArr unchanged when curConObj is missing or explicitly inactive.
 
 	const curDayStr = isoDayFun(); // What: Current Day String. Why: A conditionalLog row is keyed by conditional id plus this exact calendar day. How: This reads today's own isoDayFun().
-	const exiRowObj = curLogArr.find( ( curRowObj ) => curRowObj.condId === cndIdeStr && curRowObj.date === curDayStr ); // What: Existing Row Object And Guard. Why: Only one row per conditional per cycle is ever kept. How: This looks up an existing row sharing cndIdeStr and curDayStr.
+	const exiRowObj = curLogArr.find( ( curRowObj ) => curRowObj.condId === conIdeStr && curRowObj.date === curDayStr ); // What: Existing Row Object And Guard. Why: Only one row per conditional per cycle is ever kept. How: This looks up an existing row sharing conIdeStr and curDayStr.
 
-	const depDonFun = () => nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Function. Why: Both branches below need to know how many dependent entries for this exact conditional are currently done. How: This counts entries (excluding day-off cards) whose own picker shares cndIdeStr and are done.
+	const depDonFun = () => nexEntArr.filter( ( curEntObj ) => { // What: Dependent Done Function. Why: Both branches below need to know how many dependent entries for this exact conditional are currently done. How: This counts entries (excluding day-off cards) whose own picker shares conIdeStr and are done.
 
 
 		if ( curEntObj.kind === 'dayoff' || !curEntObj.done ) return false; // What: Non-Dependent Guard. Why: A day-off card, or an entry that isn't done, never counts as a dependent completion. How: This excludes both cases from the count.
@@ -972,7 +972,7 @@ function applyConditionalLog( curStaObj, nexEntArr, togEntObj, nowDoneBoo ) {
 		const matPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === curEntObj.pickerId ); // What: Matched Picker Object And Guard. Why: Only an entry whose own picker shares this exact conditional counts. How: This looks up curEntObj's own pickerId in curStaObj.pickers.
 
 
-		return matPicObj && matPicObj.conditionalId === cndIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares cndIdeStr.
+		return matPicObj && matPicObj.conditionalId === conIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares conIdeStr.
 
 
 	} ).length;
@@ -985,7 +985,7 @@ function applyConditionalLog( curStaObj, nexEntArr, togEntObj, nowDoneBoo ) {
 		if ( !trgValBoo && depDonFun() !== 1 ) return curLogArr; // What: First-Dependent Guard. Why: An untriggered cycle only logs on its FIRST dependent completion, not every subsequent one. How: This returns curLogArr unchanged when trgValBoo is false and depDonFun() isn't exactly 1.
 
 
-		return [ ...curLogArr, { id : nclIdeFun(), condId : cndIdeStr, date : curDayStr, triggered : trgValBoo, mode : curCndObj.mode, name : curCndObj.name } ]; // What: Appended Row Return. Why: The caller needs this cycle's own new row appended. How: This appends one row shaped to state.conditionalLog's own contract.
+		return [ ...curLogArr, { id : nclIdeFun(), condId : conIdeStr, date : curDayStr, triggered : trgValBoo, mode : curConObj.mode, name : curConObj.name } ]; // What: Appended Row Return. Why: The caller needs this cycle's own new row appended. How: This appends one row shaped to state.conditionalLog's own contract.
 
 
 	}
@@ -995,7 +995,7 @@ function applyConditionalLog( curStaObj, nexEntArr, togEntObj, nowDoneBoo ) {
 	if ( !trgValBoo && depDonFun() > 0 ) return curLogArr; // What: Still-Confirmed Guard. Why: Another dependent completion still stands, so this cycle's own row must stay. How: This returns curLogArr unchanged when trgValBoo is false and depDonFun() is still above 0.
 
 
-	return curLogArr.filter( ( curRowObj ) => !( curRowObj.condId === cndIdeStr && curRowObj.date === curDayStr ) ); // What: Row-Removed Return. Why: The confirming completion is gone, so this cycle's own row must be dropped. How: This filters out the one row sharing cndIdeStr and curDayStr.
+	return curLogArr.filter( ( curRowObj ) => !( curRowObj.condId === conIdeStr && curRowObj.date === curDayStr ) ); // What: Row-Removed Return. Why: The confirming completion is gone, so this cycle's own row must be dropped. How: This filters out the one row sharing conIdeStr and curDayStr.
 
 
 }
@@ -1551,23 +1551,23 @@ function migrate( curStaObj ) {
 	if ( curStaObj && Array.isArray( curStaObj.conditionals ) ) {
 
 
-		curStaObj.conditionals = curStaObj.conditionals.map( ( curCndObj ) => { // What: Conditional Split-And-Odds Map. Why: Every conditional needs both migrations applied, in order, before it's usable under the new shape. How: This applies the active/triggered split, then the weight-to-oddsPct migration, to each conditional.
+		curStaObj.conditionals = curStaObj.conditionals.map( ( curConObj ) => { // What: Conditional Split-And-Odds Map. Why: Every conditional needs both migrations applied, in order, before it's usable under the new shape. How: This applies the active/triggered split, then the weight-to-oddsPct migration, to each conditional.
 
 
-			let nexCndObj = ( 'triggered' in curCndObj ) ? curCndObj : { ...curCndObj, triggered : !!curCndObj.active, active : true }; // What: Split Conditional And Guard. Why: A conditional already carrying its own triggered field is already past this migration. How: This passes curCndObj through unchanged when triggered already exists, else derives it from the old active value.
+			let nexConObj = ( 'triggered' in curConObj ) ? curConObj : { ...curConObj, triggered : !!curConObj.active, active : true }; // What: Split Conditional And Guard. Why: A conditional already carrying its own triggered field is already past this migration. How: This passes curConObj through unchanged when triggered already exists, else derives it from the old active value.
 
-			if ( !( 'oddsPct' in nexCndObj ) ) { // What: Odds-Percentage Migrate Guard. Why: Only a conditional still missing oddsPct needs its old weight-ratio odds converted. How: This derives oddsPct from nexCndObj's own weight, clamped to the 10-90 range in steps of 10.
+			if ( !( 'oddsPct' in nexConObj ) ) { // What: Odds-Percentage Migrate Guard. Why: Only a conditional still missing oddsPct needs its old weight-ratio odds converted. How: This derives oddsPct from nexConObj's own weight, clamped to the 10-90 range in steps of 10.
 
 
-				const wgtValNum = nexCndObj.weight ?? 1; // What: Weight Value Number. Why: The odds formula below needs this conditional's own old weight, defaulting to 1 when absent. How: This reads nexCndObj.weight, defaulting via ??.
+				const wgtValNum = nexConObj.weight ?? 1; // What: Weight Value Number. Why: The odds formula below needs this conditional's own old weight, defaulting to 1 when absent. How: This reads nexConObj.weight, defaulting via ??.
 
-				nexCndObj = { ...nexCndObj, oddsPct : Math.min( 90, Math.max( 10, Math.round( ( wgtValNum / ( wgtValNum + 1 ) ) * 10 ) * 10 ) ) }; // What: Odds-Percentage Set. Why: The caller needs a direct percentage replacing the old ratio-weight scheme. How: This converts wgtValNum via w/(w+1), rounds to the nearest 10, then clamps to [10,90].
+				nexConObj = { ...nexConObj, oddsPct : Math.min( 90, Math.max( 10, Math.round( ( wgtValNum / ( wgtValNum + 1 ) ) * 10 ) * 10 ) ) }; // What: Odds-Percentage Set. Why: The caller needs a direct percentage replacing the old ratio-weight scheme. How: This converts wgtValNum via w/(w+1), rounds to the nearest 10, then clamps to [10,90].
 
 
 			}
 
 
-			return nexCndObj; // What: Migrated Conditional Return. Why: The map above needs the fully-migrated conditional. How: This returns nexCndObj, built above.
+			return nexConObj; // What: Migrated Conditional Return. Why: The map above needs the fully-migrated conditional. How: This returns nexConObj, built above.
 
 
 		} );
@@ -2326,9 +2326,9 @@ function useStore( optArgObj ) {
 			const newEntObj = { eid, pickerId, itemId, done : false, skipped : false, pending : penValObj, revert : null }; // What: New Entry Object. Why: This is the actual Today entry being added, in today.entries' own shape. How: This bundles eid/pickerId/itemId with a fresh not-done/not-skipped state and penValObj as its own pending.
 			const logRowObj = logRowFun( curStaObj, { eid, pickerId, itemId, source : 'manual' } ); // What: Log Row Object. Why: A manual send must be reflected in the pick log too, denormalized the same way every other pick is. How: This calls logRowFun with source:'manual'.
 
-			const cndIdeStr = curPicObj && curPicObj.conditionalId; // What: Conditional Identifier String. Why: The day-off-card check below needs to know which conditional (if any) gates this picker. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
-			const hasDofBoo = easDwnBoo && cndIdeStr && // What: Has Day-Off Boolean. Why: An ease-down picker that's currently suppressed behind its own day-off card must NOT have that card silently replaced by this manual override. How: This is true only when this is ease-down, gated, and today already shows a live day-off card for that same conditional.
-				curStaObj.today.entries.some( ( curEntObj ) => curEntObj.kind === 'dayoff' && curEntObj.conditionalId === cndIdeStr );
+			const conIdeStr = curPicObj && curPicObj.conditionalId; // What: Conditional Identifier String. Why: The day-off-card check below needs to know which conditional (if any) gates this picker. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
+			const hasDofBoo = easDwnBoo && conIdeStr && // What: Has Day-Off Boolean. Why: An ease-down picker that's currently suppressed behind its own day-off card must NOT have that card silently replaced by this manual override. How: This is true only when this is ease-down, gated, and today already shows a live day-off card for that same conditional.
+				curStaObj.today.entries.some( ( curEntObj ) => curEntObj.kind === 'dayoff' && curEntObj.conditionalId === conIdeStr );
 
 			const nexEntArr = ( easDwnBoo && !hasDofBoo ) // What: Next Entry Array. Why: Ease Down normally REPLACES its own picker's existing entry; the day-off-card exception instead ADDS an extra entry alongside the still-showing card. How: This filters out this picker's own prior entry (unless the exception applies) before appending newEntObj.
 				? [ ...curStaObj.today.entries.filter( ( curEntObj ) => curEntObj.pickerId !== pickerId ), newEntObj ]
@@ -2458,60 +2458,60 @@ function useStore( optArgObj ) {
 		resolveConditionalsForDay : () => {
 
 
-			let resCndArr = null; // What: Resolved Conditionals Array And Guard. Why: The caller needs the resolved array back directly, not only via the next render's own state. How: This starts null and is captured inside the setAppStaObj updater below.
+			let resConArr = null; // What: Resolved Conditionals Array And Guard. Why: The caller needs the resolved array back directly, not only via the next render's own state. How: This starts null and is captured inside the setAppStaObj updater below.
 
 			setAppStaObj( ( curStaObj ) => {
 
 				const patByIdObj = CON_NAM_OBJ.resDayFun( curStaObj.conditionals || [] ); // What: Patch By Id Object. Why: CON_NAM_OBJ itself decides each conditional's own per-day patch (or none). How: This calls CON_NAM_OBJ.resDayFun with curStaObj's own conditionals.
-				const nexCndArr = ( curStaObj.conditionals || [] ).map( ( curCndObj ) => ( { ...curCndObj, ...patByIdObj[ curCndObj.id ] } ) ); // What: Next Conditionals Array. Why: Every conditional gets its own matching patch (if any) merged on. How: This maps every conditional, spreading in patByIdObj's own entry for its id.
+				const nexConArr = ( curStaObj.conditionals || [] ).map( ( curConObj ) => ( { ...curConObj, ...patByIdObj[ curConObj.id ] } ) ); // What: Next Conditionals Array. Why: Every conditional gets its own matching patch (if any) merged on. How: This maps every conditional, spreading in patByIdObj's own entry for its id.
 
-				resCndArr = nexCndArr; // What: Resolved Array Capture. Why: The outer resCndArr must be set from inside this updater, the only place nexCndArr actually exists. How: This assigns nexCndArr onto the closed-over resCndArr.
+				resConArr = nexConArr; // What: Resolved Array Capture. Why: The outer resConArr must be set from inside this updater, the only place nexConArr actually exists. How: This assigns nexConArr onto the closed-over resConArr.
 
 
-				return { ...curStaObj, conditionals : nexCndArr }; // What: Next State Return. Why: The caller needs conditionals replaced on a fresh state. How: This spreads curStaObj with conditionals replaced by nexCndArr.
+				return { ...curStaObj, conditionals : nexConArr }; // What: Next State Return. Why: The caller needs conditionals replaced on a fresh state. How: This spreads curStaObj with conditionals replaced by nexConArr.
 
 
 			} );
 
 
-			return resCndArr; // What: Resolved Conditionals Return. Why: The generator needs the resolved array synchronously, not just via the next render. How: This returns resCndArr, captured above.
+			return resConArr; // What: Resolved Conditionals Return. Why: The generator needs the resolved array synchronously, not just via the next render. How: This returns resConArr, captured above.
 
 
 		},
 
-		// What: Add Conditional Action. Why: This creates a brand-new conditional (a day-off gate) from the Data tab's own authoring form. How: This builds a full conditional object from cndArgObj's own fields (defaulting every field not given) and prepends it onto conditionals.
-		addConditional : ( cndArgObj ) => setAppStaObj( ( curStaObj ) => ( {
+		// What: Add Conditional Action. Why: This creates a brand-new conditional (a day-off gate) from the Data tab's own authoring form. How: This builds a full conditional object from conArgObj's own fields (defaulting every field not given) and prepends it onto conditionals.
+		addConditional : ( conArgObj ) => setAppStaObj( ( curStaObj ) => ( {
 
 
 			...curStaObj, conditionals : [ {
 
-				id : cndArgObj.id || ( 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 ) ),
-				name : cndArgObj.name || 'Conditional', mode : cndArgObj.mode || 'ease-up',
-				cardText : cndArgObj.cardText || 'Day off', value : cndArgObj.mode === 'ease-down' ? ( cndArgObj.threshold ?? 100 ) : 0,
-				weight : cndArgObj.weight ?? 1, oddsPct : cndArgObj.oddsPct ?? 50,
+				id : conArgObj.id || ( 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 ) ),
+				name : conArgObj.name || 'Conditional', mode : conArgObj.mode || 'ease-up',
+				cardText : conArgObj.cardText || 'Day off', value : conArgObj.mode === 'ease-down' ? ( conArgObj.threshold ?? 100 ) : 0,
+				weight : conArgObj.weight ?? 1, oddsPct : conArgObj.oddsPct ?? 50,
 				// What: Active/Triggered Defaults. Why: active means enabled (not inactive); triggered means currently firing, defaulting true only for ease-down (which starts "charged"). How: This honors an explicit value when given, else applies each field's own default.
-				active : cndArgObj.active !== undefined ? cndArgObj.active : true,
-				triggered : cndArgObj.triggered !== undefined ? cndArgObj.triggered : ( cndArgObj.mode === 'ease-down' ),
-				easeMin : cndArgObj.easeMin ?? 7, easeMax : cndArgObj.easeMax ?? 14,
-				threshold : cndArgObj.threshold ?? 100, chargedToday : false
+				active : conArgObj.active !== undefined ? conArgObj.active : true,
+				triggered : conArgObj.triggered !== undefined ? conArgObj.triggered : ( conArgObj.mode === 'ease-down' ),
+				easeMin : conArgObj.easeMin ?? 7, easeMax : conArgObj.easeMax ?? 14,
+				threshold : conArgObj.threshold ?? 100, chargedToday : false
 
 			}, ...( curStaObj.conditionals || [] ) ]
 
 
 		} ) ),
 
-		// What: Update Conditional Action. Why: Callers need to patch one existing conditional's own fields in place, without touching any other. How: This merges patValObj onto the one conditional whose own id matches cndIdeStr.
-		updateConditional : ( cndIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => ( {
+		// What: Update Conditional Action. Why: Callers need to patch one existing conditional's own fields in place, without touching any other. How: This merges patValObj onto the one conditional whose own id matches conIdeStr.
+		updateConditional : ( conIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => ( {
 
-			...curStaObj, conditionals : ( curStaObj.conditionals || [] ).map( ( curCndObj ) => curCndObj.id === cndIdeStr ? { ...curCndObj, ...patValObj } : curCndObj )
+			...curStaObj, conditionals : ( curStaObj.conditionals || [] ).map( ( curConObj ) => curConObj.id === conIdeStr ? { ...curConObj, ...patValObj } : curConObj )
 
 		} ) ),
 
 		// What: Remove Conditional Action. Why: Deleting a conditional must also detach it from every picker that was gated by it, so nothing references a now-gone id. How: This filters the conditional out, and nulls conditionalId on every picker that pointed at it.
-		removeConditional : ( cndIdeStr ) => setAppStaObj( ( curStaObj ) => ( {
+		removeConditional : ( conIdeStr ) => setAppStaObj( ( curStaObj ) => ( {
 
-			...curStaObj, conditionals : ( curStaObj.conditionals || [] ).filter( ( curCndObj ) => curCndObj.id !== cndIdeStr ),
-			pickers : curStaObj.pickers.map( ( curPicObj ) => curPicObj.conditionalId === cndIdeStr ? { ...curPicObj, conditionalId : null } : curPicObj )
+			...curStaObj, conditionals : ( curStaObj.conditionals || [] ).filter( ( curConObj ) => curConObj.id !== conIdeStr ),
+			pickers : curStaObj.pickers.map( ( curPicObj ) => curPicObj.conditionalId === conIdeStr ? { ...curPicObj, conditionalId : null } : curPicObj )
 
 		} ) ),
 
@@ -2552,8 +2552,8 @@ function useStore( optArgObj ) {
 				entMapObj.eid === eid ? { ...entMapObj, done : nowDoneBoo, skipped : false, revert : nexRevObj } : entMapObj );
 
 			// What: Conditional Consequences Resolve. Why: A charge on the first dependent completion, or a day-off card reset/discharge, must be resolved against the ALREADY-toggled entries list. How: This calls applyConditionalToggle then applyConditionalLog, both against the patched items/pickers.
-			const nexCndArr = applyConditionalToggle( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, nowDoneBoo );
-			const nexCndLogArr = applyConditionalLog( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, nowDoneBoo );
+			const nexConArr = applyConditionalToggle( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, nowDoneBoo );
+			const nexConLogArr = applyConditionalLog( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, nowDoneBoo );
 
 			nexLogArr = nexLogArr.map( ( curRowObj ) => ( curRowObj.eid === eid && !curRowObj.outcome ) // What: Live Log Row Toggle. Why: Only the live (active, non-rejected/non-skipped) row for this eid ever toggles its own done/completedAt. How: This stamps done/completedAt on the one matching row, leaving every other row untouched.
 				? { ...curRowObj, done : nowDoneBoo, completedAt : nowDoneBoo ? new Date().toISOString() : null }
@@ -2562,7 +2562,7 @@ function useStore( optArgObj ) {
 			const { streak, streakClaimed } = reconcileStreak( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Toggling any entry can flip whether today counts as fully done. How: This calls reconcileStreak against the already-patched items/pickers and the already-toggled entries.
 
 
-			return { ...curStaObj, items : nexIteArr, pickers : nexPicArr, conditionals : nexCndArr, conditionalLog : nexCndLogArr, streak, today : { ...curStaObj.today, entries : nexEntArr, streakClaimed }, pickLog : nexLogArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
+			return { ...curStaObj, items : nexIteArr, pickers : nexPicArr, conditionals : nexConArr, conditionalLog : nexConLogArr, streak, today : { ...curStaObj.today, entries : nexEntArr, streakClaimed }, pickLog : nexLogArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
 
 
 		} ),
@@ -2599,10 +2599,10 @@ function useStore( optArgObj ) {
 
 			const nexEntArr = curStaObj.today.entries.filter( ( entFilObj ) => entFilObj.eid !== eid ); // What: Next Entry Array. Why: A skipped entry is removed from today entirely, not merely marked. How: This filters out the one entry matching eid.
 
-			const nexCndArr = ( curEntObj && curEntObj.done ) // What: Next Conditionals Array. Why: A completed entry being skipped is no longer a completion, so any conditional charge/discharge it drove must be reverted. How: This calls applyConditionalToggle with nowDone:false only when curEntObj was actually done, else passes conditionals through unchanged.
+			const nexConArr = ( curEntObj && curEntObj.done ) // What: Next Conditionals Array. Why: A completed entry being skipped is no longer a completion, so any conditional charge/discharge it drove must be reverted. How: This calls applyConditionalToggle with nowDone:false only when curEntObj was actually done, else passes conditionals through unchanged.
 				? applyConditionalToggle( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, false )
 				: ( curStaObj.conditionals || [] );
-			const nexCndLogArr = ( curEntObj && curEntObj.done ) // What: Next Conditional-Log Array. Why: The matching cycle's own log row must be un-recorded too, for the same reason as nexCndArr above. How: This calls applyConditionalLog with nowDone:false only when curEntObj was actually done, else passes conditionalLog through unchanged.
+			const nexConLogArr = ( curEntObj && curEntObj.done ) // What: Next Conditional-Log Array. Why: The matching cycle's own log row must be un-recorded too, for the same reason as nexConArr above. How: This calls applyConditionalLog with nowDone:false only when curEntObj was actually done, else passes conditionalLog through unchanged.
 				? applyConditionalLog( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curEntObj, false )
 				: ( curStaObj.conditionalLog || [] );
 
@@ -2612,7 +2612,7 @@ function useStore( optArgObj ) {
 			const { streak, streakClaimed } = reconcileStreak( { ...curStaObj, items : nexIteArr, pickers : nexPicArr }, nexEntArr, curStaObj.tasks ); // What: Streak Reconcile. Why: Removing an entry from today can flip whether today counts as fully done. How: This calls reconcileStreak against the already-patched items/pickers and the already-filtered entries.
 
 
-			return { ...curStaObj, items : nexIteArr, pickers : nexPicArr, conditionals : nexCndArr, conditionalLog : nexCndLogArr, streak, today : { ...curStaObj.today, entries : nexEntArr, streakClaimed }, pickLog : nexLogArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
+			return { ...curStaObj, items : nexIteArr, pickers : nexPicArr, conditionals : nexConArr, conditionalLog : nexConLogArr, streak, today : { ...curStaObj.today, entries : nexEntArr, streakClaimed }, pickLog : nexLogArr }; // What: Next State Return. Why: Every affected field must land together on one fresh state. How: This spreads curStaObj with items/pickers/conditionals/conditionalLog/streak/today/pickLog all replaced.
 
 
 		} ),
@@ -2868,7 +2868,7 @@ function useStore( optArgObj ) {
 
 			} ) );
 
-			const madCndObj = newConditional ? { // What: Made Conditional Object. Why: A brand-new inline conditional (authored inline in this same form) needs its own fresh id minted here so the picker below can attach to it. How: This builds a full conditional object from newConditional's own fields, mirroring addConditional's own defaults.
+			const madConObj = newConditional ? { // What: Made Conditional Object. Why: A brand-new inline conditional (authored inline in this same form) needs its own fresh id minted here so the picker below can attach to it. How: This builds a full conditional object from newConditional's own fields, mirroring addConditional's own defaults.
 
 
 				id : 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 ),
@@ -2898,8 +2898,8 @@ function useStore( optArgObj ) {
 				avoidDuplicates : !!avoidDuplicates,
 				// What: Picker-Cadence Normalize Spread. Why: The surfacing anchor + display unit must be resolved (and defaulted) the same way for every picker. How: This spreads CAD_NAM_OBJ.norCadFun's own result over newPicObj.
 				...CAD_NAM_OBJ.norCadFun( { cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ),
-				// What: Conditional Id Resolve. Why: A freshly-made inline conditional wins over an explicitly-passed existing one. How: This prefers madCndObj's own id, else conditionalId, else null.
-				conditionalId : madCndObj ? madCndObj.id : ( conditionalId || null ),
+				// What: Conditional Id Resolve. Why: A freshly-made inline conditional wins over an explicitly-passed existing one. How: This prefers madConObj's own id, else conditionalId, else null.
+				conditionalId : madConObj ? madConObj.id : ( conditionalId || null ),
 				// What: Hidden Flag. Why: tab-picker.jsx passes true while the mini-tour checklist is up (mirrors reminders.jsx's own startAdd) so a picker created during onboarding stays out of the real list until the closing Generate step. How: This is copied straight from the hidden parameter (defaulting false).
 				hidden,
 				// What: Created-From-Sample Spread. Why: This links back to the sample template a mini-tour-created picker was built from (see onboarding-checklist.js); ignored everywhere else in the app. How: This spreads createdFromSample only when it was actually given.
@@ -2967,7 +2967,7 @@ function useStore( optArgObj ) {
 					pickers : replaceId
 						? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === replaceId ? finPicObj : curPicObj )
 						: [ ...curStaObj.pickers, finPicObj ],
-					conditionals : madCndObj ? [ ...( curStaObj.conditionals || [] ), madCndObj ] : ( curStaObj.conditionals || [] ),
+					conditionals : madConObj ? [ ...( curStaObj.conditionals || [] ), madConObj ] : ( curStaObj.conditionals || [] ),
 					daily : { ...curStaObj.daily, pickerIds : nexPidArr }
 
 				};
@@ -3015,7 +3015,7 @@ function useStore( optArgObj ) {
 				curStaObj.pickers.filter( ( picFilObj ) => !picFilObj.hidden && picFilObj.id !== pickerId ).map( ( picFilObj ) => picFilObj.name )
 			);
 
-			const madCndObj = newConditional ? { // What: Made Conditional Object. Why: A brand-new inline conditional authored inline in this same edit form needs its own fresh id, mirroring addPicker's own madCndObj. How: This builds a full conditional object from newConditional's own fields.
+			const madConObj = newConditional ? { // What: Made Conditional Object. Why: A brand-new inline conditional authored inline in this same edit form needs its own fresh id, mirroring addPicker's own madConObj. How: This builds a full conditional object from newConditional's own fields.
 
 
 				id : 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 ),
@@ -3042,8 +3042,8 @@ function useStore( optArgObj ) {
 				skipHolidays : !!skipHolidays,
 				avoidDuplicates : !!avoidDuplicates,
 				...CAD_NAM_OBJ.norCadFun( { cadence, anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday } ),
-				// What: Conditional Id Resolve. Why: Unlike addPicker's own create-only flow, this can also DETACH a conditional the picker already had, so there's no bare "keep the old one" default to fall back on here. How: This prefers madCndObj's own id, else the given conditionalId, else null.
-				conditionalId : madCndObj ? madCndObj.id : ( conditionalId || null )
+				// What: Conditional Id Resolve. Why: Unlike addPicker's own create-only flow, this can also DETACH a conditional the picker already had, so there's no bare "keep the old one" default to fall back on here. How: This prefers madConObj's own id, else the given conditionalId, else null.
+				conditionalId : madConObj ? madConObj.id : ( conditionalId || null )
 
 			};
 
@@ -3068,7 +3068,7 @@ function useStore( optArgObj ) {
 				...curStaObj,
 				items : nexIteArr,
 				pickers : curStaObj.pickers.map( ( picMapObj ) => picMapObj.id === pickerId ? finPicObj : picMapObj ),
-				conditionals : madCndObj ? [ ...( curStaObj.conditionals || [] ), madCndObj ] : ( curStaObj.conditionals || [] ),
+				conditionals : madConObj ? [ ...( curStaObj.conditionals || [] ), madConObj ] : ( curStaObj.conditionals || [] ),
 				daily : { ...curStaObj.daily, pickerIds : nexPidArr }
 
 			};
@@ -3627,10 +3627,10 @@ function useStore( optArgObj ) {
 
 
 			const iteValObj = {}; ( curStaObj.items || [] ).forEach( ( curIteObj ) => { iteValObj[ curIteObj.id ] = curIteObj.value; } ); // What: Item Values Object And Guard. Why: The Day Log needs every item's own value AS OF right now, keyed by id. How: This starts empty and is filled by recording every item's own current value.
-			const cndValObj = {}; ( curStaObj.conditionals || [] ).forEach( ( curCndObj ) => { cndValObj[ curCndObj.id ] = { value : curCndObj.value, triggered : curCndObj.triggered }; } ); // What: Conditional Values Object And Guard. Why: The Day Log needs every conditional's own value/triggered state AS OF right now, keyed by id. How: This starts empty and is filled by recording each conditional's own current value/triggered.
+			const conValObj = {}; ( curStaObj.conditionals || [] ).forEach( ( curConObj ) => { conValObj[ curConObj.id ] = { value : curConObj.value, triggered : curConObj.triggered }; } ); // What: Conditional Values Object And Guard. Why: The Day Log needs every conditional's own value/triggered state AS OF right now, keyed by id. How: This starts empty and is filled by recording each conditional's own current value/triggered.
 
 
-			return { ...curStaObj, today : { ...curStaObj.today, generatedAt : new Date().toISOString(), genLog : { items : iteValObj, conds : cndValObj } } }; // What: Next State Return. Why: The caller needs a fresh generatedAt timestamp plus the snapshot genLog written onto today. How: This spreads curStaObj.today with generatedAt/genLog replaced.
+			return { ...curStaObj, today : { ...curStaObj.today, generatedAt : new Date().toISOString(), genLog : { items : iteValObj, conds : conValObj } } }; // What: Next State Return. Why: The caller needs a fresh generatedAt timestamp plus the snapshot genLog written onto today. How: This spreads curStaObj.today with generatedAt/genLog replaced.
 
 
 		} ),

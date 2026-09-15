@@ -1160,7 +1160,7 @@ function buiSeeFun() {
 		},
 		pickLog         : pikLogArr,                                                                        // What: Pick Log. Why: The demo state needs the full assembled pick history built above. How: This is pikLogArr, resolved above.
 		vacationLog     : vacLogArr,                                                                        // What: Vacation Log. Why: The demo state needs the seeded inactive-state log built above. How: This is vacLogArr, resolved above.
-		conditionalLog  : buiCndFun(),                                                                      // What: Conditional Log. Why: The demo Chore-Free Day gate needs its own year of trigger history. How: This calls buiCndFun.
+		conditionalLog  : buiConFun(),                                                                      // What: Conditional Log. Why: The demo Chore-Free Day gate needs its own year of trigger history. How: This calls buiConFun.
 		streak          : 11,                                                                               // What: Streak. Why: The demo state needs a headline streak count consistent with buildPickLog's own forced-active last 10 days. How: This is a fixed literal, matching that simulation's own design.
 		onboarding      : { welcomed : true, dismissed : true }                                             // What: Onboarding. Why: The demo/sample-data build already has pickers and history seeded, so it must never trigger onboarding. How: This marks onboarding as both welcomed and dismissed.
 
@@ -1182,10 +1182,10 @@ export { weightedPick, seedIsoDay, buildPickLog }; // What: Named Exports. Why: 
 
 
 
-// #region buiCndFun
+// #region buiConFun
 
 /**
- * buiCndFun = Build Conditional Function
+ * buiConFun = Build Conditional Function
  *
  * @summary
  * Builds about 1 year of trigger history for the demo ease-up
@@ -1203,15 +1203,15 @@ export { weightedPick, seedIsoDay, buildPickLog }; // What: Named Exports. Why: 
  *
  * @example
  * ```ts
- * buiCndFun() // => array of conditionalLog rows
+ * buiConFun() // => array of conditionalLog rows
  * ```
  *
 */
 
-function buiCndFun() {
+function buiConFun() {
 
 
-	const cndRowArr = []; // What: Conditional Row Array And Guard. Why: Every row built by addCndFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
+	const conRowArr = []; // What: Conditional Row Array And Guard. Why: Every row built by addConFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
 
 	const todMidObj = new Date(); // What: Today Midnight Object. Why: Every simulated week below is computed relative to this same anchor. How: This is read as "now" and then floored to midnight on the next line.
 
@@ -1222,14 +1222,14 @@ function buiCndFun() {
 	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every row needs its own unique id, and nothing else in this scope tracks that count. How: This starts at 0 and is incremented once per row created below.
 
 
-	const addCndFun = ( bacDayNum, trgValBoo ) => { // What: Add Conditional Function. Why: Every simulated cycle below shares the same row-building logic. How: This resolves bacDayNum into a real ISO date, then pushes one conditionalLog row onto cndRowArr.
+	const addConFun = ( bacDayNum, trgValBoo ) => { // What: Add Conditional Function. Why: Every simulated cycle below shares the same row-building logic. How: This resolves bacDayNum into a real ISO date, then pushes one conditionalLog row onto conRowArr.
 
 
 		const curDatObj = new Date( todMidObj ); curDatObj.setDate( todMidObj.getDate() - bacDayNum ); // What: Current Date Object. Why: Every row needs its own resolved real date. How: This copies todMidObj, then moves it back bacDayNum days.
 
 
 
-		cndRowArr.push({ id : 'clseed_' + ( seqCouNum++ ).toString( 36 ), condId : 'cnd_chorefree', date : seedIsoDay( curDatObj ), triggered : trgValBoo, mode : 'ease-up', name : 'Chore Free Day' }); // What: Conditional Row Push. Why: This is one simulated row, in the exact shape state.conditionalLog itself expects. How: This builds the row from bacDayNum/trgValBoo plus a few fixed fields matching the demo gate's own identity.
+		conRowArr.push({ id : 'clseed_' + ( seqCouNum++ ).toString( 36 ), condId : 'cnd_chorefree', date : seedIsoDay( curDatObj ), triggered : trgValBoo, mode : 'ease-up', name : 'Chore Free Day' }); // What: Conditional Row Push. Why: This is one simulated row, in the exact shape state.conditionalLog itself expects. How: This builds the row from bacDayNum/trgValBoo plus a few fixed fields matching the demo gate's own identity.
 
 
 	};
@@ -1248,21 +1248,21 @@ function buiCndFun() {
 		const isaFirBoo = wksSinNum >= 5 && ( wksSinNum >= 6 || wekIndNum % 2 === 0 ); // What: Is-A Fire Boolean. Why: The gate should fire every 4 to 6 weeks, not on a perfectly fixed schedule. How: This is true once wksSinNum reaches 5, guaranteed by 6, with a coin-flip at exactly 5 to vary the exact week.
 
 
-		if ( isaFirBoo ) { addCndFun( bacDayNum, true ); wksSinNum = 0; } // What: Fire Guard. Why: A firing cycle must both log itself as triggered and reset the weeks-since counter. How: This logs a triggered row and resets wksSinNum to 0.
+		if ( isaFirBoo ) { addConFun( bacDayNum, true ); wksSinNum = 0; } // What: Fire Guard. Why: A firing cycle must both log itself as triggered and reset the weeks-since counter. How: This logs a triggered row and resets wksSinNum to 0.
 
-		else addCndFun( bacDayNum, false ); // What: Non-Fire Branch. Why: Every other completed cycle logs as a normal, non-triggered row. How: This logs a non-triggered row for this simulated week.
+		else addConFun( bacDayNum, false ); // What: Non-Fire Branch. Why: Every other completed cycle logs as a normal, non-triggered row. How: This logs a non-triggered row for this simulated week.
 
 
 	}
 
 
 
-	return cndRowArr; // What: Conditional Row Array Return. Why: The caller needs the finished seeded conditional trigger history. How: This returns cndRowArr, built above.
+	return conRowArr; // What: Conditional Row Array Return. Why: The caller needs the finished seeded conditional trigger history. How: This returns conRowArr, built above.
 
 
 }
 
-// #endregion buiCndFun
+// #endregion buiConFun
 
 
 

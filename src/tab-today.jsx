@@ -4137,8 +4137,8 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		const dowNum      = genNowDat.getDay();                                     // What: Day Of Week Number. Why: A picker's own daysOfWeek gate is checked against this. How: This reads genNowDat.getDay().
 		const holTodBoo   = HOL_NAM_OBJ.holidayOn( state.holidays, genNowDat );      // What: Holiday Today Boolean. Why: A picker's own skipHolidays gate is checked against this. How: This calls HOL_NAM_OBJ.holidayOn with state.holidays and genNowDat.
 
-		const cndArr    = actions.resolveConditionalsForDay() || state.conditionals || []; // What: Conditional Array. Why: Phase A resolves every conditional's own `triggered` for today up front, before the per-picker loop below needs to read it. How: This calls actions.resolveConditionalsForDay, falling back to state.conditionals or an empty array.
-		const cndByIdMap = new Map( cndArr.map( ( curCndObj ) => [ curCndObj.id, curCndObj ] ) );   // What: Conditional By Id Map. Why: The per-picker loop below needs a fast lookup from a picker's own conditionalId to its resolved conditional. How: This maps cndArr down to an id-keyed Map.
+		const conArr    = actions.resolveConditionalsForDay() || state.conditionals || []; // What: Conditional Array. Why: Phase A resolves every conditional's own `triggered` for today up front, before the per-picker loop below needs to read it. How: This calls actions.resolveConditionalsForDay, falling back to state.conditionals or an empty array.
+		const conByIdMap = new Map( conArr.map( ( curConObj ) => [ curConObj.id, curConObj ] ) );   // What: Conditional By Id Map. Why: The per-picker loop below needs a fast lookup from a picker's own conditionalId to its resolved conditional. How: This maps conArr down to an id-keyed Map.
 
 		const exiByPicMap = new Map(); // What: Existing By Picker Map. Why: Existing live pick/charging entries are the source of truth for cadence carry/suppress decisions, since they persist across days until a regenerate. How: This is populated by the loop just below.
 
@@ -4232,26 +4232,26 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			 *
 			*/
 
-			const cndRecObj = picRecObj.conditionalId ? cndByIdMap.get( picRecObj.conditionalId ) : null; // What: Conditional Record Object. Why: This is the resolved conditional this picker's own suppression check reads. How: This looks up picRecObj's own conditionalId in cndByIdMap, or null when it has none.
+			const conRecObj = picRecObj.conditionalId ? conByIdMap.get( picRecObj.conditionalId ) : null; // What: Conditional Record Object. Why: This is the resolved conditional this picker's own suppression check reads. How: This looks up picRecObj's own conditionalId in conByIdMap, or null when it has none.
 
-			if ( CON_NAM_OBJ.supGatFun( cndRecObj ) ) { // What: Suppressed Branch. Why: See the doc comment just above. How: This surfaces (or skips, if already shown) a day-off card, then always continues past the pick attempt below.
-
-
-				if ( !carShnSet.has( cndRecObj.id ) ) { // What: First Hit Guard. Why: Only the first picker suppressed by this exact conditional should surface its own card. How: This runs the push below only the first time cndRecObj's own id is seen.
+			if ( CON_NAM_OBJ.supGatFun( conRecObj ) ) { // What: Suppressed Branch. Why: See the doc comment just above. How: This surfaces (or skips, if already shown) a day-off card, then always continues past the pick attempt below.
 
 
-					carShnSet.add( cndRecObj.id ); // What: Card Shown Add. Why: Every LATER picker suppressed by this same conditional must not surface a second card. How: This adds cndRecObj's own id to carShnSet.
+				if ( !carShnSet.has( conRecObj.id ) ) { // What: First Hit Guard. Why: Only the first picker suppressed by this exact conditional should surface its own card. How: This runs the push below only the first time conRecObj's own id is seen.
 
-					const carTexStr = cndRecObj.cardText || cndRecObj.name; // What: Card Text String. Why: The day-off card needs its own display text. How: This reads cndRecObj.cardText, falling back to its own name.
 
-					dofCarArr.push( { kind : 'dayoff', conditionalId : cndRecObj.id, cardText : carTexStr, group : picRecObj.group || 'Other',
+					carShnSet.add( conRecObj.id ); // What: Card Shown Add. Why: Every LATER picker suppressed by this same conditional must not surface a second card. How: This adds conRecObj's own id to carShnSet.
 
-						pickerName : picRecObj.name, condName : cndRecObj.name,
+					const carTexStr = conRecObj.cardText || conRecObj.name; // What: Card Text String. Why: The day-off card needs its own display text. How: This reads conRecObj.cardText, falling back to its own name.
+
+					dofCarArr.push( { kind : 'dayoff', conditionalId : conRecObj.id, cardText : carTexStr, group : picRecObj.group || 'Other',
+
+						pickerName : picRecObj.name, condName : conRecObj.name,
 						...( picCadStr !== 'daily' ? { periodKey : cadNsObj.perKeyFun( picRecObj, genNowDat ) } : {} )
 
 					} ); // What: Dayoff Card Push. Why: This is the actual card the commit step below turns into a real entry. How: This builds the full day-off record, tagging a period key only for a non-daily picker.
 
-					ordSltArr.push( { pickerId : curPicIdeStr, info : { kind : 'dayoff', candidates : [], cardText : carTexStr, conditionalId : cndRecObj.id } } ); // What: Ordered Slot Push. Why: The day-off card still needs its own animation slot, in encounter order alongside every pick. How: This pushes a { pickerId, info } pair keyed by curPicIdeStr.
+					ordSltArr.push( { pickerId : curPicIdeStr, info : { kind : 'dayoff', candidates : [], cardText : carTexStr, conditionalId : conRecObj.id } } ); // What: Ordered Slot Push. Why: The day-off card still needs its own animation slot, in encounter order alongside every pick. How: This pushes a { pickerId, info } pair keyed by curPicIdeStr.
 
 
 				}

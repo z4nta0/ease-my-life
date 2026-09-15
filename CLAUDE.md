@@ -1900,6 +1900,40 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     established correct code elsewhere in this codebase, e.g.
     `nexMapObj` (`help-mode.jsx`, sitting right next to the wrong
     `nxtRecObj` in the same file))
+  - `cnd` → `con` (Conditional — another very widely recurring
+    miscorrection, touching dozens of distinct `conXxxObj`/`conXxxArr`/
+    `conXxxStr`/`conXxxBoo`/`conXxxFun` names plus 2 component aliases
+    across `store.jsx`, `tab-data.jsx`, `tab-picker.jsx`, `tab-today.jsx`,
+    `seed.js`, and `help-sample-data.js`. **Known blind spot**: a plain
+    substring/word-boundary grep for this one is easy to under-scope,
+    since a name that begins DIRECTLY with `cnd`/`Cnd` (no other segment
+    before it, e.g. `cndOnBoo`, `cndCurObj`, `CndEdiCom`) doesn't match a
+    regex that requires a leading character before the pattern, the
+    exact miss that happened here on a first pass; re-grep with a
+    pattern that also allows zero characters before the target substring
+    when auditing for this or any future miscorrection. `con` was
+    already the established, deliberate code for Conditional in
+    `conditionals.js`'s own exported
+    `CON_NAM_OBJ` (originally `CONDITIONALS`), so this sweep brings
+    every other file in line with that existing choice. Note `con`
+    already carried 3 other meanings before this one (Config/
+    Configuration via `cfg`→`con` above, Control via `ctl`→`con` above,
+    and Confirm, e.g. `tab-data.jsx`'s own `conDelBoo`/`setConDelBoo`),
+    making it a genuinely heavily-overloaded segment now; a name's own
+    surrounding context (the other segments, and which file/module it
+    sits in) disambiguates which of the 4 meanings "con" stands for in
+    practice. **A single genuine self-collision surfaced from this
+    sweep**: `tab-data.jsx`'s own `CndConCom` (a local alias, `const
+    CndConCom = ConditionalControls;`) already used `Con` for its own
+    segment 2 (Control), so renaming segment 1 (Conditional) to `Con`
+    the normal way would have produced `ConConCom`, the same code
+    twice in one name. Resolved via the general Naming-conflict
+    escalation's Phase A on segment 1: keep `Co`, then take
+    "Conditional"'s own 4th letter (`d`, since the 3rd letter `n` was
+    already ruled out) instead of the literal first-3-letters `Con`,
+    giving `CodConCom`. `cod` is otherwise used sparingly elsewhere
+    (`holidays.js`'s own `couCodStr`/`regCodStr`, meaning Code), with
+    no collision risk against this file's own segments)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

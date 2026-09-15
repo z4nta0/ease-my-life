@@ -6,15 +6,15 @@
 import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useMemo, React.useEffect, React.useCallback, React.useLayoutEffect, React.Fragment) throughout, instead of importing individual named hooks.
 
 
-import { Btn                      } from './ui.jsx';                  // What: Btn. Why: Every inline confirm/cancel/save action in this file's editors needs a consistently-styled button. How: This is rendered throughout PicConCom, CndEdiCom, and TabData's own footers.
+import { Btn                      } from './ui.jsx';                  // What: Btn. Why: Every inline confirm/cancel/save action in this file's editors needs a consistently-styled button. How: This is rendered throughout PicConCom, ConEdiCom, and TabData's own footers.
 import { CAD_NAM_OBJ              } from './cadence.js';              // What: Cadence. Why: PicConCom needs the shared cadence math/summary helpers to render its own "how often" tip and select options. How: This is called throughout PicConCom for tipMesFun/sumCadFun/dimCouFun/uniWorFun/locTipFun.
 import { CAD_OPT_ARR              } from './cadence-control.jsx';     // What: Cadence Options Array. Why: PicConCom's own daily-cadence summary needs the same daily-cadence sub-explanation CadConCom itself uses. How: This is looked up by key 'daily' inside PicConCom's cadence-summary block.
 import { clearHelpPickers         } from './help-sample-data.js';     // What: Clear Help Pickers. Why: Help mode's disposable sample pickers must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabData's own unmount cleanup.
 import { clearHelpTasks           } from './help-sample-data.js';     // What: Clear Help Tasks. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabData's own unmount cleanup.
 import { Collapse                 } from './ui.jsx';                  // What: Collapse. Why: Nearly every disclosure in this file (picker cards, Controls, Items, conditional rows, item rows) shares the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
 import { compareSortEntries       } from './ui.jsx';                  // What: Compare Sort Entries. Why: Every sortable list in this file (sections, conditional items, picker items) shares the same sort-key vocabulary. How: This is called once per comparison inside each list's own Array.prototype.sort.
-import { ConditionalControls      } from './tab-conditional.jsx';     // What: Conditional Controls. Why: CndEdiCom reuses the exact same "type + settings" editor the Pickers create-flow uses, so both stay in sync. How: This is rendered inside CndEdiCom as its own Controls alias.
-import { conditionalDraftDefault  } from './tab-conditional.jsx';     // What: Conditional Draft Default. Why: A brand-new conditional started from CndManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
+import { ConditionalControls      } from './tab-conditional.jsx';     // What: Conditional Controls. Why: ConEdiCom reuses the exact same "type + settings" editor the Pickers create-flow uses, so both stay in sync. How: This is rendered inside ConEdiCom as its own Controls alias.
+import { conditionalDraftDefault  } from './tab-conditional.jsx';     // What: Conditional Draft Default. Why: A brand-new conditional started from ConManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
 import { DAT_HEL_ARR              } from './help-content.jsx';        // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelOveCom's own items prop.
 import { EntryEditor              } from './tab-today.jsx';           // What: Entry Editor. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
 import { FillButton               } from './ui.jsx';                  // What: Fill Button. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
@@ -23,10 +23,10 @@ import { HelButCom               } from './help-mode.jsx';           // What: He
 import { HelOveCom              } from './help-mode.jsx';           // What: Help Overlay Component. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is rendered once, driven by helpOnBoo and DAT_HEL_ARR.
 import { Icon                     } from './ui.jsx';                  // What: Icon. Why: Nearly every button and row in this file needs a recognizable glyph. How: This is rendered throughout every component below.
 import { InfoTip                  } from './ui.jsx';                  // What: Info Tip. Why: A disabled control or a truncated pill still needs to explain itself on demand. How: This wraps disabled add buttons and truncatable type/group labels throughout this file.
-import { MODES                    } from './seed.js';                 // What: Modes. Why: Every picker/conditional mode's own label and hint text comes from this shared catalog. How: This is read throughout PicConCom, CndManCom, and TabData for mode labels and the mode radio group.
-import { normalizeConditionalName } from './pickers.js';              // What: Normalize Conditional Name. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on CndManCom's own in-progress draft name.
+import { MODES                    } from './seed.js';                 // What: Modes. Why: Every picker/conditional mode's own label and hint text comes from this shared catalog. How: This is read throughout PicConCom, ConManCom, and TabData for mode labels and the mode radio group.
+import { normalizeConditionalName } from './pickers.js';              // What: Normalize Conditional Name. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
 import { normalizeGroupName       } from './pickers.js';              // What: Normalize Group Name. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
-import { OB_CHECKLIST             } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: Several add/edit controls in this file must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutorialsInProgress throughout TabData and CndManCom.
+import { OB_CHECKLIST             } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: Several add/edit controls in this file must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutorialsInProgress throughout TabData and ConManCom.
 import { PICKERS                  } from './pickers.js';              // What: Pickers. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PICKERS.avgEase.
 import { reduceMotion             } from './ui.jsx';                  // What: Reduce Motion. Why: A user who prefers reduced motion shouldn't see any of this file's own FLIP/scroll/collapse animations. How: This is checked before every animation throughout this file.
 import { ReminderManager          } from './reminders.jsx';           // What: Reminder Manager. Why: The Reminders section of this tab is a full, separately-maintained editor. How: This is rendered once, in place of a picker card, whenever the Reminders scope is shown.
@@ -34,7 +34,7 @@ import { seedHelpPickers          } from './help-sample-data.js';     // What: S
 import { seedHelpTasks            } from './help-sample-data.js';     // What: Seed Help Tasks. Why: Help mode needs real reminders of every recurrence kind to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
 import { SortSelect               } from './ui.jsx';                  // What: Sort Select. Why: Every sortable list in this file needs the same sort control. How: This is rendered for sections, conditional items, and each picker's own item list.
 import { useEmlTouFun             } from './onboarding.jsx';          // What: Use Ease My Life Tour. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's phase/tourId/step fields.
-import { useEscapeCancel          } from './ui.jsx';                  // What: Use Escape Cancel. Why: CndEdiCom's Escape key must cancel the current edit (or back out of a delete confirm) the same way every other editor in the app does. How: This is called once inside CndEdiCom.
+import { useEscapeCancel          } from './ui.jsx';                  // What: Use Escape Cancel. Why: ConEdiCom's Escape key must cancel the current edit (or back out of a delete confirm) the same way every other editor in the app does. How: This is called once inside ConEdiCom.
 import { WeekdayChips             } from './ui.jsx';                  // What: Weekday Chips. Why: PicConCom's own Days control needs the same weekday multi-select every other schedule editor uses. How: This is rendered inside PicConCom's "When it runs" group.
 
 // #endregion Imports
@@ -51,7 +51,7 @@ import { WeekdayChips             } from './ui.jsx';                  // What: W
  * A picker's own "how it picks / when it runs / item controls" settings
  * (PicConCom) live here rather than in a separate Settings screen, so
  * everything about one picker sits behind one card. Conditionals
- * (CndManCom/CndEdiCom) and Reminders (ReminderManager, a separately
+ * (ConManCom/ConEdiCom) and Reminders (ReminderManager, a separately
  * maintained module) render as sibling sections above the picker cards.
  * The global "days off" holiday list itself still lives in Settings.
  *
@@ -84,13 +84,13 @@ const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditiona
  * CIS_OPT_ARR = Conditional-Item-Sort Options Array
  *
  * @summary
- * Sort options for CndManCom's own conditional list, extrapolated from
+ * Sort options for ConManCom's own conditional list, extrapolated from
  * SEC_SOR_ARR's own vocabulary but adapted to what a single conditional
  * actually has. Odds (not "Weight", despite the picker-item-sort analog
  * being called that) because a conditional's own `weight` field is
  * vestigial; its real weighted/dynamic trigger-likelihood knob is
  * `oddsPct`, which its own editor calls Odds (see conditionalOdds in
- * CndManCom and conditionals.js' own trueOdds). Boost (dynamic only)
+ * ConManCom and conditionals.js' own trueOdds). Boost (dynamic only)
  * and Range (the ease band's soonest/shortest end) are each meaningful
  * for only some modes; on every other row they are irrelevant rather
  * than genuinely missing, so compareSortEntries always sorts them to
@@ -104,18 +104,18 @@ const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditiona
 const CIS_OPT_ARR = [
 
 
-	{ keyStr : 'name-asc',    labStr : 'Name (A–Z)' },          // What: Key String. Why: This is the conditional list's own default sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'name-desc',   labStr : 'Name (Z–A)' },          // What: Key String. Why: This is the reverse of the default sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'type-asc',    labStr : 'Type (A–Z)' },          // What: Key String. Why: Type is each conditional's own mode label. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'type-desc',   labStr : 'Type (Z–A)' },          // What: Key String. Why: This is the reverse of the type sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'odds-asc',    labStr : 'Odds (Low to High)' },  // What: Key String. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'odds-desc',   labStr : 'Odds (High to Low)' },  // What: Key String. Why: This is the reverse of the odds sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'boost-asc',   labStr : 'Boost (Low to High)' }, // What: Key String. Why: Only a dynamic conditional has a meaningful boost value. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'boost-desc',  labStr : 'Boost (High to Low)' }, // What: Key String. Why: This is the reverse of the boost sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'range-asc',   labStr : 'Range (Low to High)' }, // What: Key String. Why: Only an ease-up/ease-down conditional has a meaningful soonest/shortest band. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'range-desc',  labStr : 'Range (High to Low)' }, // What: Key String. Why: This is the reverse of the range sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'active-asc',  labStr : 'Active to Inactive' },  // What: Key String. Why: Every conditional has its own active/inactive state. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'active-desc', labStr : 'Inactive to Active' }   // What: Key String. Why: This is the reverse of the active sort. How: SortSelect reads this against CndManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'name-asc',    labStr : 'Name (A–Z)' },          // What: Key String. Why: This is the conditional list's own default sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'name-desc',   labStr : 'Name (Z–A)' },          // What: Key String. Why: This is the reverse of the default sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'type-asc',    labStr : 'Type (A–Z)' },          // What: Key String. Why: Type is each conditional's own mode label. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'type-desc',   labStr : 'Type (Z–A)' },          // What: Key String. Why: This is the reverse of the type sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'odds-asc',    labStr : 'Odds (Low to High)' },  // What: Key String. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'odds-desc',   labStr : 'Odds (High to Low)' },  // What: Key String. Why: This is the reverse of the odds sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'boost-asc',   labStr : 'Boost (Low to High)' }, // What: Key String. Why: Only a dynamic conditional has a meaningful boost value. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'boost-desc',  labStr : 'Boost (High to Low)' }, // What: Key String. Why: This is the reverse of the boost sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'range-asc',   labStr : 'Range (Low to High)' }, // What: Key String. Why: Only an ease-up/ease-down conditional has a meaningful soonest/shortest band. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'range-desc',  labStr : 'Range (High to Low)' }, // What: Key String. Why: This is the reverse of the range sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'active-asc',  labStr : 'Active to Inactive' },  // What: Key String. Why: Every conditional has its own active/inactive state. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'active-desc', labStr : 'Inactive to Active' }   // What: Key String. Why: This is the reverse of the active sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
 
 
 ];
@@ -266,7 +266,7 @@ function pisOptFun ( picModStr ) {
  *
 */
 
-function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dailyIds : daiIdeArr, allGroups : allGroArr, conditionals : cndIteArr = [], actions : actObj, onCollapse : onColFun, onRequestDelete : onReqDelFun, isNewDraft : isaNewBoo, itemsSectionOpen : iteSecBoo, hasOpenNewItem : hasNewBoo, onOpenItemsSection : onOpnSecFun, onSaveNew : onSavNewFun, onCancelNew : onCanNewFun } ) {
+function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dailyIds : daiIdeArr, allGroups : allGroArr, conditionals : conIteArr = [], actions : actObj, onCollapse : onColFun, onRequestDelete : onReqDelFun, isNewDraft : isaNewBoo, itemsSectionOpen : iteSecBoo, hasOpenNewItem : hasNewBoo, onOpenItemsSection : onOpnSecFun, onSaveNew : onSavNewFun, onCancelNew : onCanNewFun } ) {
 
 
 	const isaEasBoo = picObj.mode === 'ease-up' || picObj.mode === 'ease-down'; // What: Is-A Ease Boolean. Why: Several sections below (Item Controls' own Fill/Refill, the item sort options) only apply to an ease-mode picker. How: This is true whenever picObj.mode is 'ease-up' or 'ease-down'.
@@ -295,7 +295,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 		: 'Everything looks good, click Add Items to continue.';
 	const ftrActFun = shoSavBoo ? onSavNewFun : onOpnSecFun; // What: Footer Action Function. Why: The footer button's own click handler depends on whether it currently reads "Save" or "Add Items". How: This picks onSavNewFun once shoSavBoo is true, onOpnSecFun otherwise.
 
-	const [ cndOnBoo, setCndOnBoo ] = React.useState( !!picObj.conditionalId ); // What: Conditional On Boolean And Setter. Why: The "Attach a conditional" toggle needs its own on/off state, seeded from whether this picker already has one attached. How: This starts true when picObj.conditionalId is already set, and is flipped by the switch button below.
+	const [ conOnBoo, setConOnBoo ] = React.useState( !!picObj.conditionalId ); // What: Conditional On Boolean And Setter. Why: The "Attach a conditional" toggle needs its own on/off state, seeded from whether this picker already has one attached. How: This starts true when picObj.conditionalId is already set, and is flipped by the switch button below.
 
 
 	const raiCleRef = React.useRef( null ); // What: Rail Cleanup Reference. Why: The rail's own scroll/resize wiring needs to be torn down and rebuilt on every reattach. How: This holds whichever cleanup function the last attachment registered.
@@ -354,7 +354,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 	}, [] ); // What: Effect Dependency Array. Why: raiRefFun only closes over refs and stable functions it defines itself, none of which ever change identity. How: An empty array means React never needs to recreate this callback.
 
-	const attCndObj = cndIteArr.find( ( cndCurObj ) => cndCurObj.id === picObj.conditionalId ) || null; // What: Attached Conditional Object. Why: The schedule summary below needs the actual conditional record this picker currently points at. How: This looks up picObj.conditionalId in cndIteArr, or null when none matches.
+	const attConObj = conIteArr.find( ( conCurObj ) => conCurObj.id === picObj.conditionalId ) || null; // What: Attached Conditional Object. Why: The schedule summary below needs the actual conditional record this picker currently points at. How: This looks up picObj.conditionalId in conIteArr, or null when none matches.
 
 
 	const flpFirRef = React.useRef( new Map() ); // What: Flip First Reference. Why: The FLIP reorder animation below needs each pill's PREVIOUS x position to compute how far it moved. How: This starts as an empty map and is repopulated every time the layout effect runs.
@@ -417,7 +417,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 		if ( raiCurEle.scrollLeft > 1 ) raiCurEle.scrollTo( { left : 0, behavior : redMotBoo ? 'auto' : 'smooth' } ); // What: Rail Scroll Reset Guard. Why: A pin-to-front reorder means the top pill is now at the rail's own start, which should be visible. How: This glides the rail back to its own left edge whenever it wasn't already there.
 
 
-	}, [ picObj.conditionalId, cndOnBoo, cndIteArr.length ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the attached conditional changes, the toggle flips, or the available conditionals themselves change count. How: picObj.conditionalId is the actual reorder trigger; cndOnBoo covers the rail appearing/disappearing; cndIteArr.length covers a conditional being added or removed elsewhere.
+	}, [ picObj.conditionalId, conOnBoo, conIteArr.length ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever the attached conditional changes, the toggle flips, or the available conditionals themselves change count. How: picObj.conditionalId is the actual reorder trigger; conOnBoo covers the rail appearing/disappearing; conIteArr.length covers a conditional being added or removed elsewhere.
 
 
 	const [ newGroBoo, setNewGroBoo ] = React.useState( false ); // What: New Group Boolean And Setter. Why: The Group selector's own inline "+ New Group" create mode needs an on/off flag. How: This is flipped true by the "+ New Group" pill and closed by closeNewGroup below.
@@ -917,38 +917,38 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 						<span className='sched-line-lbl'>Attach a conditional</span>{ /* What: Conditional Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Attach a conditional". */ }
 
 						<span className='sched-line-sub'>{ /* What: Conditional Sub Span Element. Why: The row needs a live one-line explanation of the current state. How: This renders whichever of the 2 explanations below matches whether a conditional is attached. */ }
-							{ attCndObj
-								? <>triggering rules provided by <strong>{ attCndObj.name }</strong> will prevent this picker from running</>
+							{ attConObj
+								? <>triggering rules provided by <strong>{ attConObj.name }</strong> will prevent this picker from running</>
 								: <>picker <strong>will always run</strong>, attaching a conditional will provide a trigger to prevent it from running</> }
 						</span>
 
 					</span>
 
 					<button
-						className={ ` switch   ${ cndOnBoo ? 'is-on' : '' } ` }
+						className={ ` switch   ${ conOnBoo ? 'is-on' : '' } ` }
 						role='switch'
-						aria-checked={ cndOnBoo }
+						aria-checked={ conOnBoo }
 						aria-label='Attach a conditional'
-						onClick={ () => setCndOnBoo( ( preValBoo ) => {
+						onClick={ () => setConOnBoo( ( preValBoo ) => {
 
 							const nexValBoo = !preValBoo; // What: Next Value Boolean. Why: The toggle's own next state is simply the opposite of its current one. How: This negates preValBoo.
 
 							if ( !nexValBoo && picObj.conditionalId ) actObj.updatePicker( picObj.id, { conditionalId : null } ); // What: Detach Conditional Guard. Why: Turning the toggle off must also actually detach whatever conditional was attached. How: This clears conditionalId only when the toggle is turning off and one was actually set.
 
-							return nexValBoo; // What: Next Value Return. Why: setCndOnBoo needs the toggle's own new state back. How: This returns nexValBoo.
+							return nexValBoo; // What: Next Value Return. Why: setConOnBoo needs the toggle's own new state back. How: This returns nexValBoo.
 
 						} ) }
-					><i /></button>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for attaching a conditional. How: This flips cndOnBoo and, when turning off, clears the picker's own conditionalId. */ }
+					><i /></button>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for attaching a conditional. How: This flips conOnBoo and, when turning off, clears the picker's own conditionalId. */ }
 
 
 				</div>
 
-				<Collapse open={ cndOnBoo }>{ /* What: Collapse. Why: The conditional rail only needs to exist while the toggle is on. How: This opens only while cndOnBoo is true. */ }
+				<Collapse open={ conOnBoo }>{ /* What: Collapse. Why: The conditional rail only needs to exist while the toggle is on. How: This opens only while conOnBoo is true. */ }
 
 					<div className='rd-cnd-rail-row'>{ /* What: Rail Row Div Element. Why: The conditional rail (or its empty-state message) needs its own row. How: This wraps whichever of the 2 branches below applies. */ }
 
 
-						{ cndIteArr.length ? ( // What: Has Conditionals Check. Why: The rail only makes sense once at least one conditional exists. How: This renders the rail when cndIteArr has entries, otherwise an empty-state message.
+						{ conIteArr.length ? ( // What: Has Conditionals Check. Why: The rail only makes sense once at least one conditional exists. How: This renders the rail when conIteArr has entries, otherwise an empty-state message.
 
 
 							<div
@@ -957,29 +957,29 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 							>{ /* What: Conditional Rail Div Element. Why: This is the actual scrollable pill rail, alphabetical except the attached conditional pins to the front. How: This maps every conditional (sorted per pk.conditionalId first, then by name) to one pill each. */ }
 
 
-								{ [ ...cndIteArr ].sort( ( aCndObj, bCndObj ) => {
+								{ [ ...conIteArr ].sort( ( aConObj, bConObj ) => {
 
-									if ( aCndObj.id === picObj.conditionalId ) return -1; // What: Attached First Guard. Why: The currently-attached conditional always pins to the front. How: This sorts aCndObj ahead whenever it's the attached one.
+									if ( aConObj.id === picObj.conditionalId ) return -1; // What: Attached First Guard. Why: The currently-attached conditional always pins to the front. How: This sorts aConObj ahead whenever it's the attached one.
 
-									if ( bCndObj.id === picObj.conditionalId ) return 1; // What: Attached First Guard. Why: Same reasoning as above, for the other comparison side. How: This sorts bCndObj ahead whenever it's the attached one.
+									if ( bConObj.id === picObj.conditionalId ) return 1; // What: Attached First Guard. Why: Same reasoning as above, for the other comparison side. How: This sorts bConObj ahead whenever it's the attached one.
 
-									return aCndObj.name.localeCompare( bCndObj.name ); // What: Alphabetical Fallback Return. Why: Every other pair sorts alphabetically by name. How: This compares aCndObj.name against bCndObj.name.
+									return aConObj.name.localeCompare( bConObj.name ); // What: Alphabetical Fallback Return. Why: Every other pair sorts alphabetically by name. How: This compares aConObj.name against bConObj.name.
 
-								} ).map( ( cndCurObj ) => ( // What: Conditional Pill Map. Why: One pill is needed per existing conditional. How: This maps the sorted list to one button each, keyed by its own id.
+								} ).map( ( conCurObj ) => ( // What: Conditional Pill Map. Why: One pill is needed per existing conditional. How: This maps the sorted list to one button each, keyed by its own id.
 
 
 									<button
-										key={ cndCurObj.id }
+										key={ conCurObj.id }
 										type='button'
-										data-cid={ cndCurObj.id }
-										className={ ` cnd-pill   ${ picObj.conditionalId === cndCurObj.id ? 'is-on' : '' } ` }
-										onClick={ () => actObj.updatePicker( picObj.id, { conditionalId : cndCurObj.id } ) }
+										data-cid={ conCurObj.id }
+										className={ ` cnd-pill   ${ picObj.conditionalId === conCurObj.id ? 'is-on' : '' } ` }
+										onClick={ () => actObj.updatePicker( picObj.id, { conditionalId : conCurObj.id } ) }
 									>
-										<span className='cnd-pill-name'>{ cndCurObj.name }</span>{ /* What: Pill Name Span Element. Why: Every conditional pill needs its own visible name. How: This renders cndCurObj's own name. */ }
+										<span className='cnd-pill-name'>{ conCurObj.name }</span>{ /* What: Pill Name Span Element. Why: Every conditional pill needs its own visible name. How: This renders conCurObj's own name. */ }
 
-										<span className='cnd-pill-mode'>{ ( MODES[ cndCurObj.mode ] || {} ).label || cndCurObj.mode }</span>{ /* What: Pill Mode Span Element. Why: Every conditional pill also shows its own mode label. How: This looks up cndCurObj's own mode in MODES, falling back to the raw mode key. */ }
+										<span className='cnd-pill-mode'>{ ( MODES[ conCurObj.mode ] || {} ).label || conCurObj.mode }</span>{ /* What: Pill Mode Span Element. Why: Every conditional pill also shows its own mode label. How: This looks up conCurObj's own mode in MODES, falling back to the raw mode key. */ }
 
-									</button> // What: Conditional Pill Button Element. Why: Clicking a pill attaches that conditional to this picker. How: This marks itself "is-on" when it matches picObj.conditionalId and commits cndCurObj.id on click.
+									</button> // What: Conditional Pill Button Element. Why: Clicking a pill attaches that conditional to this picker. How: This marks itself "is-on" when it matches picObj.conditionalId and commits conCurObj.id on click.
 
 
 								) ) }
@@ -988,7 +988,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 							</div>
 
 
-						) : ( // What: No Conditionals Branch. Why: With no conditionals to attach, the rail is replaced by a plain explanatory message. How: This renders the else branch, taken while cndIteArr is empty.
+						) : ( // What: No Conditionals Branch. Why: With no conditionals to attach, the rail is replaced by a plain explanatory message. How: This renders the else branch, taken while conIteArr is empty.
 
 
 							<p className='rd-cnd-empty'>No conditionals yet. Create one in the Conditionals section below, then attach it here.</p>
@@ -1547,14 +1547,14 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 
 
-// #region CndEdiCom
+// #region ConEdiCom
 
 /**
- * CndEdiCom = Conditional Editor Component
+ * ConEdiCom = Conditional Editor Component
  *
  * @summary
- * The editor body for one conditional, rendered inside CndManCom's own
- * collapsible row. The draft itself is owned by CndManCom (so the row
+ * The editor body for one conditional, rendered inside ConManCom's own
+ * collapsible row. The draft itself is owned by ConManCom (so the row
  * can host the inline name input the same way a picker item's own row
  * does); this component just renders ConditionalControls against it and
  * supplies Save/Cancel/Delete. Save normalizes the name (Title Case
@@ -1590,15 +1590,15 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
  *
  * @example
  * ```tsx
- * CndEdiCom({ cond, draft, setDraft, actions, ... }) // => <CndEdiCom />
+ * ConEdiCom({ cond, draft, setDraft, actions, ... }) // => <ConEdiCom />
  * ```
  *
 */
 
-function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, actions : actObj, isNew : isaNewBoo, nameError : namErrStr, tidyName : tidNamStr, onClose : onCloFun, onDiscard : onDisFun, onSaveNew : onSavNewFun, onDelete : onDelFun } ) {
+function ConEdiCom ( { cond : conObj, draft : drfObj, setDraft : setDrfObj, actions : actObj, isNew : isaNewBoo, nameError : namErrStr, tidyName : tidNamStr, onClose : onCloFun, onDiscard : onDisFun, onSaveNew : onSavNewFun, onDelete : onDelFun } ) {
 
 
-	const CndConCom = ConditionalControls; // What: Conditional Control Component. Why: This scopes ConditionalControls under a name matching this file's own component-naming convention, without renaming the actual import. How: This is rendered directly as a JSX tag below.
+	const CodConCom = ConditionalControls; // What: Conditional Control Component. Why: This scopes ConditionalControls under a name matching this file's own component-naming convention, without renaming the actual import. How: This is rendered directly as a JSX tag below.
 	const [ conDelBoo, setConDelBoo ] = React.useState( false ); // What: Confirm Delete Boolean And Setter. Why: Deleting an existing conditional needs an inline confirm step before it actually happens. How: This is flipped true by the Delete button and read below to swap in the confirm row.
 
 
@@ -1607,10 +1607,10 @@ function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, acti
 
 		if ( namErrStr ) return; // What: Name Error Guard. Why: An invalid or colliding name must never be committed. How: This bails out of Save entirely while namErrStr holds a message.
 
-		if ( onSavNewFun ) { onSavNewFun(); return; } // What: New Save Guard. Why: A brand-new conditional's own commit (including its animated collapse+add) is owned by CndManCom, not this component. How: This delegates to onSavNewFun and returns early when it's set.
+		if ( onSavNewFun ) { onSavNewFun(); return; } // What: New Save Guard. Why: A brand-new conditional's own commit (including its animated collapse+add) is owned by ConManCom, not this component. How: This delegates to onSavNewFun and returns early when it's set.
 
 
-		actObj.updateConditional( cndObj.id, { ...drfObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's edits only take effect once actually committed. How: This writes every draft field, with name replaced by its tidied form.
+		actObj.updateConditional( conObj.id, { ...drfObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's edits only take effect once actually committed. How: This writes every draft field, with name replaced by its tidied form.
 
 		onCloFun(); // What: Close Call. Why: A successful save should also close this row. How: This calls onCloFun after the update above.
 
@@ -1641,7 +1641,7 @@ function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, acti
 	return (
 
 
-		<div className='rd-edit rd-edit--cnd'>{ /* What: Editor Div Element. Why: This is CndEdiCom's own root element. How: This wraps the rd-ctl-body div below. */ }
+		<div className='rd-edit rd-edit--cnd'>{ /* What: Editor Div Element. Why: This is ConEdiCom's own root element. How: This wraps the rd-ctl-body div below. */ }
 
 
 			<div className='rd-ctl-body'>{ /* What: Controls Body Div Element. Why: The name error, the shared Controls fields, and the footer all belong in one grouped body. How: This wraps the 3 pieces below. */ }
@@ -1649,7 +1649,7 @@ function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, acti
 
 				{ namErrStr && <p className='np-error rd-cnd-name-err'>{ namErrStr }</p> }{ /* What: Name Error Check. Why: An invalid/colliding name needs an inline warning right above the fields. How: This renders the message only while namErrStr holds one. */ }
 
-				<CndConCom draft={ drfObj } onChange={ setDrfObj } variant='inline' hideName />{ /* What: Conditional Control Component. Why: Every non-name field (type + settings) is edited through the exact same control the Pickers create-flow uses. How: This is passed the current draft, committing every change back via setDrfObj. */ }
+				<CodConCom draft={ drfObj } onChange={ setDrfObj } variant='inline' hideName />{ /* What: Conditional Control Component. Why: Every non-name field (type + settings) is edited through the exact same control the Pickers create-flow uses. How: This is passed the current draft, committing every change back via setDrfObj. */ }
 
 				<div className='rd-ctl-group rd-ctl-group--foot'>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the delete confirm) needs its own bottom group. How: This renders whichever of the 2 footer states below matches conDelBoo. */ }
 
@@ -1660,7 +1660,7 @@ function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, acti
 						<div key='confirm' className='rd-ctl-confirm'>{ /* What: Delete Confirm Div Element. Why: The confirm message and its own Cancel/Delete buttons need their own grouped row. How: This wraps the confirm message and the rem-del-actions row below. */ }
 
 
-							<div className='confirm-msg'>Delete the &ldquo;{ cndObj.name }&rdquo; conditional? Pickers using it will be detached. This can&rsquo;t be undone.</div>{ /* What: Confirm Msg Div Element. Why: A destructive action needs an explicit, specific warning before it happens. How: This names the conditional and states that any picker using it will be detached. */ }
+							<div className='confirm-msg'>Delete the &ldquo;{ conObj.name }&rdquo; conditional? Pickers using it will be detached. This can&rsquo;t be undone.</div>{ /* What: Confirm Msg Div Element. Why: A destructive action needs an explicit, specific warning before it happens. How: This names the conditional and states that any picker using it will be detached. */ }
 
 							<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel and Delete buttons need their own row. How: This wraps both Btn instances below. */ }
 
@@ -1711,17 +1711,17 @@ function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, acti
 
 }
 
-// #endregion CndEdiCom
+// #endregion ConEdiCom
 
 
 
-// #region CndManCom
+// #region ConManCom
 
 /**
- * CndManCom = Conditionals Manager Component
+ * ConManCom = Conditionals Manager Component
  *
  * @summary
- * Lists every conditional as a collapsible card whose body is CndEdiCom.
+ * Lists every conditional as a collapsible card whose body is ConEdiCom.
  * Edits are live (updateConditional). A brand-new conditional is held
  * LOCALLY (not written to the store) until Save, so a reload or
  * tab-switch mid-create discards it, mirroring the "nothing committed
@@ -1741,15 +1741,15 @@ function CndEdiCom ( { cond : cndObj, draft : drfObj, setDraft : setDrfObj, acti
  *
  * @example
  * ```tsx
- * CndManCom({ state, actions }) // => <CndManCom />
+ * ConManCom({ state, actions }) // => <ConManCom />
  * ```
  *
 */
 
-function CndManCom ( { state : staAppObj, actions : actObj } ) {
+function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 
-	const cndIteArr = staAppObj.conditionals || []; // What: Conditional Item Array. Why: Every render needs the current list of conditionals to display. How: This reads staAppObj.conditionals, falling back to an empty array.
+	const conIteArr = staAppObj.conditionals || []; // What: Conditional Item Array. Why: Every render needs the current list of conditionals to display. How: This reads staAppObj.conditionals, falling back to an empty array.
 	const picArr    = staAppObj.pickers || [];       // What: Picker Array. Why: The "N pickers" usage count per conditional needs every picker to check against. How: This reads staAppObj.pickers, falling back to an empty array.
 
 
@@ -1766,25 +1766,25 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 	const secOpnBoo = colMapObj[ '__conditionals' ] === false;                 // What: Section Open Boolean. Why: This section defaults COLLAPSED (absent means collapsed), unlike its own nested disclosures. How: This is true only when the persisted entry is explicitly false.
 
 
-	const cndRngFun = ( cndCurObj ) => ( cndCurObj.mode === 'ease-up' || cndCurObj.mode === 'ease-down' ) // What: Conditional Range Function. Why: Ease-mode conditionals expose a sortable Range value, the same soonest/latest-band math their own editor uses, collapsed to its near end. How: This computes it only for ease-up/ease-down, null otherwise.
-		? Math.max( 1, Math.round( ( cndCurObj.threshold ?? 100 ) / ( cndCurObj.easeMax ?? 14 ) ) )
+	const conRngFun = ( conCurObj ) => ( conCurObj.mode === 'ease-up' || conCurObj.mode === 'ease-down' ) // What: Conditional Range Function. Why: Ease-mode conditionals expose a sortable Range value, the same soonest/latest-band math their own editor uses, collapsed to its near end. How: This computes it only for ease-up/ease-down, null otherwise.
+		? Math.max( 1, Math.round( ( conCurObj.threshold ?? 100 ) / ( conCurObj.easeMax ?? 14 ) ) )
 		: null;
-	const cndOddFun = ( cndCurObj ) => ( cndCurObj.mode === 'weighted' || cndCurObj.mode === 'dynamic' ) ? ( cndCurObj.oddsPct ?? 50 ) : null; // What: Conditional Odds Function. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds, not their own vestigial weight field. How: This reads cndCurObj.oddsPct only for those 2 modes, null otherwise.
-	const cndBstFun = ( cndCurObj ) => ( cndCurObj.mode === 'dynamic' ) ? ( cndCurObj.value ?? 0 ) : null;                                    // What: Conditional Boost Function. Why: Only a dynamic conditional has a meaningful boost value, the same value field ease modes reuse for charge. How: This reads cndCurObj.value only for 'dynamic', null otherwise.
+	const conOddFun = ( conCurObj ) => ( conCurObj.mode === 'weighted' || conCurObj.mode === 'dynamic' ) ? ( conCurObj.oddsPct ?? 50 ) : null; // What: Conditional Odds Function. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds, not their own vestigial weight field. How: This reads conCurObj.oddsPct only for those 2 modes, null otherwise.
+	const conBstFun = ( conCurObj ) => ( conCurObj.mode === 'dynamic' ) ? ( conCurObj.value ?? 0 ) : null;                                    // What: Conditional Boost Function. Why: Only a dynamic conditional has a meaningful boost value, the same value field ease modes reuse for charge. How: This reads conCurObj.value only for 'dynamic', null otherwise.
 
 	const iteSorStr = ( staAppObj.ui && staAppObj.ui.dataSort && staAppObj.ui.dataSort.conditionals ) || 'name-asc'; // What: Item Sort String. Why: This section's own list needs its own persisted sort choice. How: This reads staAppObj.ui.dataSort.conditionals, falling back to 'name-asc'.
-	const sorCndArr = [ ...cndIteArr ].sort( ( aCndObj, bCndObj ) => compareSortEntries( // What: Sorted Conditional Array. Why: The rendered list needs to actually be in iteSorStr's own order. How: This builds a matching sort-entry shape for both sides and delegates the comparison to compareSortEntries.
+	const sorConArr = [ ...conIteArr ].sort( ( aConObj, bConObj ) => compareSortEntries( // What: Sorted Conditional Array. Why: The rendered list needs to actually be in iteSorStr's own order. How: This builds a matching sort-entry shape for both sides and delegates the comparison to compareSortEntries.
 
-		{ name : aCndObj.name, type : ( MODES[ aCndObj.mode ] || {} ).label || aCndObj.mode, group : null, count : null,
-			range : cndRngFun( aCndObj ), odds : cndOddFun( aCndObj ), boost : cndBstFun( aCndObj ), isActive : aCndObj.active !== false },
-		{ name : bCndObj.name, type : ( MODES[ bCndObj.mode ] || {} ).label || bCndObj.mode, group : null, count : null,
-			range : cndRngFun( bCndObj ), odds : cndOddFun( bCndObj ), boost : cndBstFun( bCndObj ), isActive : bCndObj.active !== false },
+		{ name : aConObj.name, type : ( MODES[ aConObj.mode ] || {} ).label || aConObj.mode, group : null, count : null,
+			range : conRngFun( aConObj ), odds : conOddFun( aConObj ), boost : conBstFun( aConObj ), isActive : aConObj.active !== false },
+		{ name : bConObj.name, type : ( MODES[ bConObj.mode ] || {} ).label || bConObj.mode, group : null, count : null,
+			range : conRngFun( bConObj ), odds : conOddFun( bConObj ), boost : conBstFun( bConObj ), isActive : bConObj.active !== false },
 		iteSorStr
 
 	) );
 
 
-	const openEdiFun  = ( cndCurObj ) => { setPenObj( null ); setDrfObj( { ...cndCurObj } ); setOpnIdeStr( cndCurObj.id ); };   // What: Open Editor Function. Why: Opening an existing conditional's row needs a fresh draft copy and no pending flag. How: This seeds drfObj from cndCurObj and opens its own row.
+	const openEdiFun  = ( conCurObj ) => { setPenObj( null ); setDrfObj( { ...conCurObj } ); setOpnIdeStr( conCurObj.id ); };   // What: Open Editor Function. Why: Opening an existing conditional's row needs a fresh draft copy and no pending flag. How: This seeds drfObj from conCurObj and opens its own row.
 	const closEdiFun  = () => { setPenObj( null ); setDrfObj( null ); setOpnIdeStr( null ); };                                 // What: Close Editor Function. Why: Closing a row (without any special animation) just clears every piece of open-row state. How: This clears penObj, drfObj, and opnIdeStr together.
 
 
@@ -1839,7 +1839,7 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 	const tidNamStr = ( drfObj && normalizeConditionalName( drfObj.name ) ) || ''; // What: Tidy Name String. Why: Every save/collision-check below needs the draft's own name already normalized to the app's tidy-casing rule. How: This calls normalizeConditionalName on drfObj.name when a draft exists, empty string otherwise.
 	const namErrStr = drfObj && !tidNamStr // What: Name Error String. Why: The open row's own editor needs a specific validation message whenever its name is empty or collides with another conditional. How: This checks emptiness first, then a case-insensitive collision against every OTHER conditional, null when the name is valid.
 		? 'Enter a name for this conditional.'
-		: drfObj && cndIteArr.some( ( cndCurObj ) => cndCurObj.id !== opnIdeStr && ( cndCurObj.name || '' ).toLowerCase() === tidNamStr.toLowerCase() )
+		: drfObj && conIteArr.some( ( conCurObj ) => conCurObj.id !== opnIdeStr && ( conCurObj.name || '' ).toLowerCase() === tidNamStr.toLowerCase() )
 		? `A conditional named “${ tidNamStr }” already exists. Choose a different name.`
 		: null;
 
@@ -1886,7 +1886,7 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 	return (
 
 
-		<section className='cat cat--enter cnd-manager'>{ /* What: Category Section Element. Why: This is CndManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the Collapse-wrapped body below. */ }
+		<section className='cat cat--enter cnd-manager'>{ /* What: Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the Collapse-wrapped body below. */ }
 
 
 			<header className='cat-h'>{ /* What: Category Header Element. Why: Every section shares the same header shape (chevron + name + count). How: This wraps the collapse-toggle button below. */ }
@@ -1908,9 +1908,9 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 
 						<span className='cat-count'>{ /* What: Category Count Span Element. Why: The active/total count needs 3 separate elements (see styles2.css) rather than one text run. How: This wraps the active count, the "of" separator, and the total count below. */ }
 
-							<span className='cat-count-n'>{ cndIteArr.filter( ( cndCurObj ) => cndCurObj.active !== false ).length }</span>{ /* What: Count N Span Element. Why: The active conditional count needs its own element. How: This counts every conditional whose own active field isn't explicitly false. */ }
+							<span className='cat-count-n'>{ conIteArr.filter( ( conCurObj ) => conCurObj.active !== false ).length }</span>{ /* What: Count N Span Element. Why: The active conditional count needs its own element. How: This counts every conditional whose own active field isn't explicitly false. */ }
 							<span className='cat-count-of'>of</span>{ /* What: Count Of Span Element. Why: The separator between the active and total counts needs its own element. How: This renders the literal text "of". */ }
-							<span className='cat-count-n'>{ cndIteArr.length }</span>{ /* What: Count N Span Element. Why: The total conditional count needs its own element. How: This renders cndIteArr's own length. */ }
+							<span className='cat-count-n'>{ conIteArr.length }</span>{ /* What: Count N Span Element. Why: The total conditional count needs its own element. How: This renders conIteArr's own length. */ }
 
 						</span>
 
@@ -1950,7 +1950,7 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 
 
 
-								const nexDrfObj = conditionalDraftDefault( '', cndIteArr.map( ( cndCurObj ) => cndCurObj.name ) ); // What: Next Draft Object. Why: A brand-new conditional needs a sensible starting draft, with a name that won't collide with any existing one. How: This calls the shared conditionalDraftDefault helper.
+								const nexDrfObj = conditionalDraftDefault( '', conIteArr.map( ( conCurObj ) => conCurObj.name ) ); // What: Next Draft Object. Why: A brand-new conditional needs a sensible starting draft, with a name that won't collide with any existing one. How: This calls the shared conditionalDraftDefault helper.
 								const nexIdeStr = 'cnd_' + Math.random().toString( 36 ).slice( 2, 8 );                                // What: Next Identifier String. Why: The brand-new draft needs its own id immediately, even before it's ever written to the store. How: This generates a short random id with a 'cnd_' prefix.
 								const nexObj    = { ...nexDrfObj, id : nexIdeStr };                                                     // What: Next Object. Why: The draft object itself needs to carry its own freshly-generated id. How: This spreads nexDrfObj with id set to nexIdeStr.
 
@@ -1967,7 +1967,7 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 
 					) }
 
-					{ !cndIteArr.length && !penObj && ( // What: Empty State Check. Why: A genuinely empty list needs its own explanatory message instead of an empty body. How: This renders only while there are no conditionals at all and none is currently being created.
+					{ !conIteArr.length && !penObj && ( // What: Empty State Check. Why: A genuinely empty list needs its own explanatory message instead of an empty body. How: This renders only while there are no conditionals at all and none is currently being created.
 
 
 						<p className='rd-cnd-empty'>No conditionals yet. Add one here, then attach it to any picker.</p>
@@ -1975,7 +1975,7 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 
 					) }
 
-					{ cndIteArr.length > 1 && ( // What: Multiple Conditionals Check. Why: A sort control is only useful once there's more than one conditional to sort. How: This renders SortSelect only while cndIteArr has 2 or more entries.
+					{ conIteArr.length > 1 && ( // What: Multiple Conditionals Check. Why: A sort control is only useful once there's more than one conditional to sort. How: This renders SortSelect only while conIteArr has 2 or more entries.
 
 
 						<SortSelect
@@ -1989,19 +1989,19 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 
 					) }
 
-					{ ( penObj ? [ penObj, ...sorCndArr ] : sorCndArr ).map( ( cndCurObj ) => { // What: Conditional Row Map. Why: A brand-new pending conditional renders first, ahead of every sorted existing one. How: This maps the combined list to one collapsible row each.
+					{ ( penObj ? [ penObj, ...sorConArr ] : sorConArr ).map( ( conCurObj ) => { // What: Conditional Row Map. Why: A brand-new pending conditional renders first, ahead of every sorted existing one. How: This maps the combined list to one collapsible row each.
 
 
-						const isaPenBoo = !!penObj && cndCurObj.id === penObj.id;                                     // What: Is-A Pending Boolean. Why: The pending row needs slightly different editor treatment (isNew) than an existing one. How: This is true only for the one row matching penObj's own id.
-						const isaOpnBoo = opnIdeStr === cndCurObj.id;                                                 // What: Is-A Open Boolean. Why: Every row needs to know whether IT SPECIFICALLY is the currently-open one. How: This compares cndCurObj.id against opnIdeStr.
-						const useCouNum = useCouFun( cndCurObj.id );                                                  // What: Use Count Number. Why: Every row's own closed-state summary shows how many pickers currently use it. How: This calls useCouFun for cndCurObj.id.
+						const isaPenBoo = !!penObj && conCurObj.id === penObj.id;                                     // What: Is-A Pending Boolean. Why: The pending row needs slightly different editor treatment (isNew) than an existing one. How: This is true only for the one row matching penObj's own id.
+						const isaOpnBoo = opnIdeStr === conCurObj.id;                                                 // What: Is-A Open Boolean. Why: Every row needs to know whether IT SPECIFICALLY is the currently-open one. How: This compares conCurObj.id against opnIdeStr.
+						const useCouNum = useCouFun( conCurObj.id );                                                  // What: Use Count Number. Why: Every row's own closed-state summary shows how many pickers currently use it. How: This calls useCouFun for conCurObj.id.
 
 
 						return (
 
 
 							<div
-								key={ cndCurObj.id }
+								key={ conCurObj.id }
 								ref={ isaOpnBoo ? opnRowRef : undefined }
 								className={ ` rd-item   ${ isaOpnBoo ? 'is-editing' : '' } ` }
 							>{ /* What: Row Div Element. Why: Every conditional needs its own collapsible row wrapper. How: This marks itself "is-editing" while isaOpnBoo is true, and captures opnRowRef only while it's the open row. */ }
@@ -2053,7 +2053,7 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 
 											if ( isaOpnBoo ) closEdiFun(); // What: Close Branch. Why: An already-open row's own click should collapse it back down. How: This calls closEdiFun.
 
-											else openEdiFun( cndCurObj ); // What: Open Branch. Why: A closed row's own click should expand its editor. How: This calls openEdiFun with cndCurObj.
+											else openEdiFun( conCurObj ); // What: Open Branch. Why: A closed row's own click should expand its editor. How: This calls openEdiFun with conCurObj.
 
 
 										} }
@@ -2062,10 +2062,10 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 
 										<span className='rd-main'>{ /* What: Main Span Element. Why: The name and its own summary line belong together. How: This wraps the name and sched spans below. */ }
 
-											<span className='rd-name'>{ cndCurObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible name. How: This renders cndCurObj's own name. */ }
-											<span className='rd-sched'>{ ( MODES[ cndCurObj.mode ] || {} ).label || cndCurObj.mode }
+											<span className='rd-name'>{ conCurObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible name. How: This renders conCurObj's own name. */ }
+											<span className='rd-sched'>{ ( MODES[ conCurObj.mode ] || {} ).label || conCurObj.mode }
 												{ ' · ' }{ useCouNum } { useCouNum === 1 ? 'picker' : 'pickers' }
-												{ cndCurObj.active === false ? ' · inactive' : '' }</span>{ /* What: Sched Span Element. Why: The closed row's own summary needs mode, usage count, and active state in one line. How: This joins the mode label, the picker count, and an inactive suffix when applicable. */ }
+												{ conCurObj.active === false ? ' · inactive' : '' }</span>{ /* What: Sched Span Element. Why: The closed row's own summary needs mode, usage count, and active state in one line. How: This joins the mode label, the picker count, and an inactive suffix when applicable. */ }
 
 										</span>
 
@@ -2079,11 +2079,11 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 
 								<Collapse open={ isaOpnBoo }>{ /* What: Collapse. Why: This row's own editor only needs to exist while it's actually open (or animating shut). How: This opens only while isaOpnBoo is true. */ }
 
-									{ drfObj && ( isaOpnBoo || isaPenBoo || cloIdeStr === cndCurObj.id ) && ( // What: Editor Mount Check. Why: The editor must also stay mounted while pending or mid-delete-animation, not only while strictly open. How: This renders CndEdiCom only while a draft exists and one of the 3 conditions holds.
+									{ drfObj && ( isaOpnBoo || isaPenBoo || cloIdeStr === conCurObj.id ) && ( // What: Editor Mount Check. Why: The editor must also stay mounted while pending or mid-delete-animation, not only while strictly open. How: This renders ConEdiCom only while a draft exists and one of the 3 conditions holds.
 
 
-										<CndEdiCom
-											cond={ cndCurObj }
+										<ConEdiCom
+											cond={ conCurObj }
 											draft={ drfObj }
 											setDraft={ setDrfObj }
 											actions={ actObj }
@@ -2091,10 +2091,10 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 											nameError={ namErrStr }
 											tidyName={ tidNamStr }
 											onClose={ closEdiFun }
-											onDelete={ () => delAniFun( cndCurObj.id ) }
+											onDelete={ () => delAniFun( conCurObj.id ) }
 											onSaveNew={ isaPenBoo ? ( () => saveNewAniFun( tidNamStr ) ) : undefined }
-											onDiscard={ isaPenBoo ? closNewAniFun : ( () => { const remIdeStr = cndCurObj.id; closEdiFun(); actObj.removeConditional( remIdeStr ); } ) }
-										/> // What: CndEdiCom. Why: This is the actual editor body for this one conditional. How: This is passed the live conditional, its draft, and every handler this row needs.
+											onDiscard={ isaPenBoo ? closNewAniFun : ( () => { const remIdeStr = conCurObj.id; closEdiFun(); actObj.removeConditional( remIdeStr ); } ) }
+										/> // What: ConEdiCom. Why: This is the actual editor body for this one conditional. How: This is passed the live conditional, its draft, and every handler this row needs.
 
 
 									) }
@@ -2124,7 +2124,7 @@ function CndManCom ( { state : staAppObj, actions : actObj } ) {
 
 }
 
-// #endregion CndManCom
+// #endregion ConManCom
 
 
 
@@ -2246,7 +2246,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	const [ filGroStr, setFilGroStr ] = React.useState( 'all' ); // What: Filter Group String And Setter. Why: The Group filter row narrows which pickers appear below, mirroring the Pickers + Stats tabs; both default to "All". How: This is committed by the Group pill row and read throughout this component.
 	const [ filTypStr, setFilTypStr ] = React.useState( 'all' ); // What: Filter Type String And Setter. Why: The Type filter row narrows by picker mode, and also carries the Conditionals/Reminders sentinel scope values. How: This is committed by the Type pill row and read throughout this component.
 	const [ curScoStr, setCurScoStr ] = React.useState( 'all' ); // What: Current Scope String And Setter. Why: The Show row's own active box needs its own selection state, independent of (but reconciled with) the other 2 filters. How: This is committed by onSelect below and read throughout this component.
-	const [ filCndStr, setFilCndStr ] = React.useState( 'all' ); // What: Filter Conditional String And Setter. Why: The Conditionals filter row narrows pickers to those gated by one chosen conditional. How: This is committed by the Conditionals pill row and read throughout this component.
+	const [ filConStr, setFilConStr ] = React.useState( 'all' ); // What: Filter Conditional String And Setter. Why: The Conditionals filter row narrows pickers to those gated by one chosen conditional. How: This is committed by the Conditionals pill row and read throughout this component.
 
 	const picArr = staAppObj.pickers || []; // What: Picker Array. Why: Nearly every filter/list computation below needs the full picker list to start from. How: This reads staAppObj.pickers, falling back to an empty array.
 
@@ -2291,7 +2291,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 			name          : '',
 			group         : filGroStr !== 'all' ? filGroStr : '',
 			mode          : isaRelBoo ? filTypStr : 'random',
-			conditionalId : filCndStr !== 'all' ? filCndStr : null,
+			conditionalId : filConStr !== 'all' ? filConStr : null,
 			items         : [],
 			hidden        : true
 
@@ -2375,14 +2375,14 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 		picArr.filter( ( picCurObj ) =>
 			!picCurObj.hidden &&
 			( filGroStr === 'all' || picCurObj.group === filGroStr ) &&
-			( filCndStr === 'all' || picCurObj.conditionalId === filCndStr ) &&
+			( filConStr === 'all' || picCurObj.conditionalId === filConStr ) &&
 			( filTypStr === 'all' || picCurObj.mode === filTypStr ) )
 
 
-	), [ picArr, filGroStr, filCndStr, filTypStr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when the picker list or any one of the 3 active filters changes. How: Each of these 4 values independently affects which pickers pass the filter above.
+	), [ picArr, filGroStr, filConStr, filTypStr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when the picker list or any one of the 3 active filters changes. How: Each of these 4 values independently affects which pickers pass the filter above.
 
-	const cndIteArr = staAppObj.conditionals || []; // What: Conditional Item Array. Why: Several filter rows and section counts below need the full conditional list. How: This reads staAppObj.conditionals, falling back to an empty array.
-	const cndCouFun = ( cidStr ) => picArr.filter( ( picCurObj ) => picCurObj.conditionalId === cidStr && !picCurObj.hidden ).length; // What: Conditional Count Function. Why: The Conditionals filter row's own per-pill count needs how many (non-hidden) pickers use each one. How: This counts every picker whose own conditionalId matches cidStr.
+	const conIteArr = staAppObj.conditionals || []; // What: Conditional Item Array. Why: Several filter rows and section counts below need the full conditional list. How: This reads staAppObj.conditionals, falling back to an empty array.
+	const conCouFun = ( cidStr ) => picArr.filter( ( picCurObj ) => picCurObj.conditionalId === cidStr && !picCurObj.hidden ).length; // What: Conditional Count Function. Why: The Conditionals filter row's own per-pill count needs how many (non-hidden) pickers use each one. How: This counts every picker whose own conditionalId matches cidStr.
 
 
 	const shwEntArr = React.useMemo( () => { // What: Show Entry Array. Why: The Show row's own actual rendered order (and "jump to the first card" logic below) both need one shared source of truth. How: This builds Conditionals/Reminders/every visible picker, sorted together, then optionally pins an "All" entry first.
@@ -2390,7 +2390,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 		const resArr = [ // What: Rest Array. Why: Conditionals/Reminders/every visible picker all sort together alphabetically, after any pinned "All" entry. How: This spreads in a Conditionals entry, a Reminders entry, and every visPicArr entry, each only when applicable, then sorts the combined list.
 
-			...( ( filTypStr === 'all' || filTypStr === 'conditionals' ) && cndIteArr.length > 0 ? [ { scope : 'conditionals', name : 'Conditionals' } ] : []),
+			...( ( filTypStr === 'all' || filTypStr === 'conditionals' ) && conIteArr.length > 0 ? [ { scope : 'conditionals', name : 'Conditionals' } ] : []),
 			...( filTypStr === 'all' || filTypStr === 'reminders' ? [ { scope : 'reminders', name : 'Reminders' } ] : []),
 			...visPicArr.map( ( picCurObj ) => ( { scope : picCurObj.id, name : picCurObj.name } ) )
 
@@ -2402,24 +2402,24 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 		return ( dfltFilBoo || resArr.length >= 2 ) ? [ { scope : 'all', name : 'All' }, ...resArr ] : resArr; // What: Show Entry Return. Why: A lone remaining entry would make "All" a redundant duplicate of that one card. How: This pins "All" first whenever dfltFilBoo holds or resArr still has 2+ entries, otherwise returns resArr as-is.
 
 
-	}, [ filGroStr, filTypStr, cndIteArr.length, visPicArr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when a filter changes or the underlying conditional/picker lists themselves change. How: Each of these 4 values independently affects which entries appear or how many there are.
+	}, [ filGroStr, filTypStr, conIteArr.length, visPicArr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when a filter changes or the underlying conditional/picker lists themselves change. How: Each of these 4 values independently affects which entries appear or how many there are.
 
 	const shwAllBoo = shwEntArr.some( ( entCurObj ) => entCurObj.scope === 'all' ); // What: Show All Boolean. Why: The Show row's own render needs to know whether an "All" card is actually present this render. How: This checks shwEntArr for a 'all' scope entry.
 
 
-	const preFilRef = React.useRef( { statGroup : filGroStr, condFilter : filCndStr, typeFilter : filTypStr } ); // What: Previous Filter Reference. Why: Landing on the Show row's own first card needs to detect an ACTUAL filter change, not just any render. How: This starts at the initial filter values and is updated by the effect below.
+	const preFilRef = React.useRef( { statGroup : filGroStr, condFilter : filConStr, typeFilter : filTypStr } ); // What: Previous Filter Reference. Why: Landing on the Show row's own first card needs to detect an ACTUAL filter change, not just any render. How: This starts at the initial filter values and is updated by the effect below.
 
 	React.useEffect( () => { // What: Scope Coherence Effect. Why: The active scope must always land on the Show row's own first card whenever any filter changes, not only once the OLD scope happens to fall out of view entirely. How: This detects a filter change (or the current scope no longer being a valid entry) and resets curScoStr to shwEntArr's own first entry.
 
 
-		const chgBoo = preFilRef.current.statGroup !== filGroStr || preFilRef.current.condFilter !== filCndStr || preFilRef.current.typeFilter !== filTypStr; // What: Changed Boolean. Why: This is the actual "did a filter change since last render" check. How: This compares every one of the 3 tracked filters against their own previous values.
+		const chgBoo = preFilRef.current.statGroup !== filGroStr || preFilRef.current.condFilter !== filConStr || preFilRef.current.typeFilter !== filTypStr; // What: Changed Boolean. Why: This is the actual "did a filter change since last render" check. How: This compares every one of the 3 tracked filters against their own previous values.
 
-		preFilRef.current = { statGroup : filGroStr, condFilter : filCndStr, typeFilter : filTypStr }; // What: Previous Filter Update. Why: The next run of this effect needs to compare against the filters that are current now. How: This overwrites preFilRef with the freshly-read values.
+		preFilRef.current = { statGroup : filGroStr, condFilter : filConStr, typeFilter : filTypStr }; // What: Previous Filter Update. Why: The next run of this effect needs to compare against the filters that are current now. How: This overwrites preFilRef with the freshly-read values.
 
 		if ( chgBoo || !shwEntArr.some( ( entCurObj ) => entCurObj.scope === curScoStr ) ) setCurScoStr( shwEntArr[ 0 ] ? shwEntArr[ 0 ].scope : 'all' ); // What: Reset Scope Guard. Why: Either an actual filter change, or the current scope simply no longer existing in the row, both call for landing on the first card. How: This sets curScoStr to shwEntArr's own first entry (or 'all' if the row is somehow empty).
 
 
-	}, [ filGroStr, filCndStr, filTypStr, shwEntArr, curScoStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever any filter changes, the entry list itself changes, or the current scope changes (so its own no-longer-valid check stays accurate). How: Every one of these 5 values can affect whether curScoStr needs resetting.
+	}, [ filGroStr, filConStr, filTypStr, shwEntArr, curScoStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever any filter changes, the entry list itself changes, or the current scope changes (so its own no-longer-valid check stays accurate). How: Every one of these 5 values can affect whether curScoStr needs resetting.
 
 
 	const selScoFun = ( nexScoStr ) => setCurScoStr( nexScoStr ); // What: Select Scope Function. Why: The boxes' own click behavior is a stub for now, ready to wire up later; selection state itself still needs to update. How: This just commits nexScoStr as the new curScoStr.
@@ -2428,12 +2428,12 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	const groRowRef = React.useRef( null ); // What: Group Row Reference. Why: The scroll-edge-fade effect below needs a handle on the Group filter row's own scrollable element. How: This is attached to that row's own ref prop.
 	const typRowRef = React.useRef( null ); // What: Type Row Reference. Why: Same reasoning as groRowRef, for the Type filter row. How: This is attached to that row's own ref prop.
 	const scoRowRef = React.useRef( null ); // What: Scope Row Reference. Why: Same reasoning as groRowRef, for the Show row. How: This is attached to that row's own ref prop.
-	const cndRowRef = React.useRef( null ); // What: Conditional Row Reference. Why: Same reasoning as groRowRef, for the Conditionals filter row. How: This is attached to that row's own ref prop.
+	const conRowRef = React.useRef( null ); // What: Conditional Row Reference. Why: Same reasoning as groRowRef, for the Conditionals filter row. How: This is attached to that row's own ref prop.
 
 	React.useEffect( () => { // What: Filter Rows Fade Effect. Why: Every filter row shares the same scroll-edge-fade affordance as the Stats tab. How: This wires up at-start/at-end tracking for whichever of the 4 rows are currently mounted, and tears every one down on cleanup.
 
 
-		const rowEleArr = [ groRowRef.current, typRowRef.current, scoRowRef.current, cndRowRef.current ].filter( Boolean ); // What: Row Element Array. Why: Not every row is always mounted (e.g. a single-group app has no Group row at all). How: This collects only the currently-mounted refs.
+		const rowEleArr = [ groRowRef.current, typRowRef.current, scoRowRef.current, conRowRef.current ].filter( Boolean ); // What: Row Element Array. Why: Not every row is always mounted (e.g. a single-group app has no Group row at all). How: This collects only the currently-mounted refs.
 
 		const clnFunArr = rowEleArr.map( ( rowCurEle ) => { // What: Cleanup Function Array. Why: Every row needs its own independent wiring and its own independent teardown. How: This maps each row element to its own cleanup function, collected for the effect's own return below.
 
@@ -2470,14 +2470,14 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 		return () => clnFunArr.forEach( ( clnCurFun ) => clnCurFun() ); // What: Effect Cleanup Return. Why: Every row's own individual cleanup must actually run. How: This calls every function collected in clnFunArr.
 
 
-	}, [ picArr.length, filGroStr, filTypStr, exiModArr.length, visPicArr.length, curScoStr, cndIteArr.length, filCndStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or resize a row, which can change whether it overflows at all. How: Each value independently affects one or more of the 4 rows' own layout.
+	}, [ picArr.length, filGroStr, filTypStr, exiModArr.length, visPicArr.length, curScoStr, conIteArr.length, filConStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or resize a row, which can change whether it overflows at all. How: Each value independently affects one or more of the 4 rows' own layout.
 
 
 	const togSecFun = ( secIdeStr ) => actObj.toggleControlsCollapsed( secIdeStr, true ); // What: Toggle Section Function. Why: Every picker card defaults collapsed, so its own toggle needs that default baked in. How: This calls toggleControlsCollapsed with defaultCollapsed true.
 
 
-	const shwRemBoo = ( filTypStr === 'all' || filTypStr === 'reminders' ) && filCndStr === 'all' && ( curScoStr === 'all' || curScoStr === 'reminders' ); // What: Show Reminders Boolean. Why: Reminders is its own scope and isn't part of any picker group/mode, so it only appears when the type filter is "All" (or itself), unfiltered by conditional, at the matching scope. How: This combines all 3 conditions with &&.
-	const shwCndBoo = ( filTypStr === 'all' || filTypStr === 'conditionals' ) && filCndStr === 'all' // What: Show Conditionals Boolean. Why: The Conditionals manager is shown even with none created, since it's the only place to create one; gating on existence would make it unreachable from a clean state. How: This combines the same 3-condition shape as shwRemBoo.
+	const shwRemBoo = ( filTypStr === 'all' || filTypStr === 'reminders' ) && filConStr === 'all' && ( curScoStr === 'all' || curScoStr === 'reminders' ); // What: Show Reminders Boolean. Why: Reminders is its own scope and isn't part of any picker group/mode, so it only appears when the type filter is "All" (or itself), unfiltered by conditional, at the matching scope. How: This combines all 3 conditions with &&.
+	const shwConBoo = ( filTypStr === 'all' || filTypStr === 'conditionals' ) && filConStr === 'all' // What: Show Conditionals Boolean. Why: The Conditionals manager is shown even with none created, since it's the only place to create one; gating on existence would make it unreachable from a clean state. How: This combines the same 3-condition shape as shwRemBoo.
 		&& ( curScoStr === 'all' || curScoStr === 'conditionals' );
 	const shwPicArr = ( curScoStr === 'reminders' || curScoStr === 'conditionals' ) // What: Shown Picker Array. Why: The rendered picker cards are visPicArr narrowed once more by the active scope. How: This is empty at the Reminders/Conditionals scopes, every visPicArr entry at 'all', or just the one matching picker otherwise.
 		? []
@@ -2511,7 +2511,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 		const entArr = []; // What: Entry Array. Why: The pushes below need somewhere to collect one entry per visible section. How: This starts empty and is conditionally pushed to just below.
 
-		if ( shwCndBoo ) entArr.push( { kind : 'conditionals', name : 'Conditionals', type : 'Conditionals', group : null, count : cndIteArr.length, isActive : null } ); // What: Conditionals Entry Push. Why: Group/Active have no meaning for Conditionals as a WHOLE section. How: This pushes a null group/isActive entry, with count as the total conditional count.
+		if ( shwConBoo ) entArr.push( { kind : 'conditionals', name : 'Conditionals', type : 'Conditionals', group : null, count : conIteArr.length, isActive : null } ); // What: Conditionals Entry Push. Why: Group/Active have no meaning for Conditionals as a WHOLE section. How: This pushes a null group/isActive entry, with count as the total conditional count.
 		if ( shwRemBoo ) entArr.push( { kind : 'reminders', name : 'Reminders', type : 'Reminders', group : null, count : remCouNum, isActive : null } );        // What: Reminders Entry Push. Why: Same reasoning as the Conditionals entry above, for Reminders. How: This pushes a null group/isActive entry, with count as remCouNum.
 
 		for ( const picCurObj of shwPicArr ) { // What: Picker Entry Loop. Why: Every shown picker needs its own entry in the same comparable shape. How: This looks up each picker's own precomputed metadata from picSecMap.
@@ -2528,7 +2528,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 		return entArr.sort( ( aEntObj, bEntObj ) => compareSortEntries( aEntObj, bEntObj, secSorStr ) ); // What: Entry Array Return. Why: The rendered list needs to actually be in secSorStr's own order. How: This sorts entArr via compareSortEntries.
 
 
-	}, [ shwCndBoo, shwRemBoo, shwPicArr, picSecMap, cndIteArr.length, remCouNum, secSorStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or reorder a section. How: Each value independently affects the entry list or its own sort order.
+	}, [ shwConBoo, shwRemBoo, shwPicArr, picSecMap, conIteArr.length, remCouNum, secSorStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or reorder a section. How: Each value independently affects the entry list or its own sort order.
 
 
 	const drfPicObj = newDrfStr ? picArr.find( ( picCurObj ) => picCurObj.id === newDrfStr ) : null;                      // What: Draft Picker Object. Why: The draft's own card, appended last below, needs the live picker record itself, not just its id. How: This looks up newDrfStr in picArr, or null when there's no draft.
@@ -2695,7 +2695,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 				) }
 
-				{ ( exiModArr.length > 1 || cndIteArr.length > 0 ) && ( // What: Type Row Check. Why: A single-mode app with no conditionals has nothing meaningful to filter by type. How: This renders the Type row only while there's more than one mode or at least one conditional.
+				{ ( exiModArr.length > 1 || conIteArr.length > 0 ) && ( // What: Type Row Check. Why: A single-mode app with no conditionals has nothing meaningful to filter by type. How: This renders the Type row only while there's more than one mode or at least one conditional.
 
 
 					<div className='stat-filter-row'>{ /* What: Type Filter Row Div Element. Why: The Type label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
@@ -2732,10 +2732,10 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 									isOn    : filTypStr === modCurStr,
 									onClick : () => setFilTypStr( modCurStr )
 								} ) ),
-								...( cndIteArr.length > 0 ? [ {
+								...( conIteArr.length > 0 ? [ {
 									key     : 'conditionals',
 									name    : 'Conditionals',
-									count   : cndIteArr.length,
+									count   : conIteArr.length,
 									isOn    : filTypStr === 'conditionals',
 									onClick : () => { setFilTypStr( 'conditionals' ); selScoFun( 'conditionals' ); }
 								} ] : []),
@@ -2775,7 +2775,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 				) }
 
-				{ cndIteArr.length > 0 && ( // What: Conditional Row Check. Why: A conditional-free app has nothing to filter by conditional. How: This renders the Conditionals row only while cndIteArr has at least one entry.
+				{ conIteArr.length > 0 && ( // What: Conditional Row Check. Why: A conditional-free app has nothing to filter by conditional. How: This renders the Conditionals row only while conIteArr has at least one entry.
 
 
 					<div className='stat-filter-row'>{ /* What: Conditional Filter Row Div Element. Why: The Conditionals label and its own pill rail belong together. How: This wraps the lbl span and the pill rail below. */ }
@@ -2785,7 +2785,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 						<div
 							className='picker-groups stat-scope-groups stat-scope-groups--cond'
-							ref={ cndRowRef }
+							ref={ conRowRef }
 							role='tablist'
 							aria-label='Filter pickers by conditional'
 						>{ /* What: Conditional Pills Div Element. Why: This is the actual scrollable tablist of "All" plus every conditional. How: This renders the All pill, then maps the alphabetized conditional list to one pill each. */ }
@@ -2794,30 +2794,30 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 							<button
 								type='button'
 								role='tab'
-								className={ ` picker-group-pill   ${ filCndStr === 'all' ? 'is-on' : '' } ` }
+								className={ ` picker-group-pill   ${ filConStr === 'all' ? 'is-on' : '' } ` }
 								disabled={ disGroBoo }
-								aria-selected={ filCndStr === 'all' }
-								onClick={ () => setFilCndStr( 'all' ) }
+								aria-selected={ filConStr === 'all' }
+								onClick={ () => setFilConStr( 'all' ) }
 							>
 								All
 								<span className='picker-group-count'>{ picArr.length }</span>{ /* What: Conditional Count Span Element. Why: The All pill needs its own live total. How: This is picArr's own total length. */ }
-							</button>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the conditional filter entirely. How: This sets filCndStr to 'all' on click, disabled during the matching tour step. */ }
+							</button>{ /* What: All Pill Button Element. Why: This is the always-first choice, clearing the conditional filter entirely. How: This sets filConStr to 'all' on click, disabled during the matching tour step. */ }
 
-							{ [ ...cndIteArr ].sort( ( aCndObj, bCndObj ) => aCndObj.name.localeCompare( bCndObj.name ) ).map( ( cndCurObj ) => ( // What: Conditional Pill Map. Why: One pill is needed per existing conditional, alphabetical. How: This maps the sorted list to one tab-role button each, keyed by its own id.
+							{ [ ...conIteArr ].sort( ( aConObj, bConObj ) => aConObj.name.localeCompare( bConObj.name ) ).map( ( conCurObj ) => ( // What: Conditional Pill Map. Why: One pill is needed per existing conditional, alphabetical. How: This maps the sorted list to one tab-role button each, keyed by its own id.
 
 
 								<button
-									key={ cndCurObj.id }
+									key={ conCurObj.id }
 									type='button'
 									role='tab'
-									className={ ` picker-group-pill   ${ filCndStr === cndCurObj.id ? 'is-on' : '' } ` }
+									className={ ` picker-group-pill   ${ filConStr === conCurObj.id ? 'is-on' : '' } ` }
 									disabled={ disGroBoo }
-									aria-selected={ filCndStr === cndCurObj.id }
-									onClick={ () => { setFilCndStr( cndCurObj.id ); setFilGroStr( 'all' ); setFilTypStr( 'all' ); } }
+									aria-selected={ filConStr === conCurObj.id }
+									onClick={ () => { setFilConStr( conCurObj.id ); setFilGroStr( 'all' ); setFilTypStr( 'all' ); } }
 								>
-									{ cndCurObj.name }
-									<span className='picker-group-count'>{ cndCouFun( cndCurObj.id ) }</span>{ /* What: Conditional Count Span Element. Why: Every conditional pill needs its own live usage count. How: This calls cndCouFun for cndCurObj.id. */ }
-								</button> // What: Conditional Pill Button Element. Why: Clicking a pill narrows the list to pickers gated by just that conditional, resetting the other 2 filters. How: This commits filCndStr, resets filGroStr/filTypStr, disabled during the matching tour step.
+									{ conCurObj.name }
+									<span className='picker-group-count'>{ conCouFun( conCurObj.id ) }</span>{ /* What: Conditional Count Span Element. Why: Every conditional pill needs its own live usage count. How: This calls conCouFun for conCurObj.id. */ }
+								</button> // What: Conditional Pill Button Element. Why: Clicking a pill narrows the list to pickers gated by just that conditional, resetting the other 2 filters. How: This commits filConStr, resets filGroStr/filTypStr, disabled during the matching tour step.
 
 
 							) ) }
@@ -2862,7 +2862,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 						{ [ // What: Show Entry Build. Why: Everything after "All" sorts together alphabetically by its own displayed name, rather than Conditionals/Reminders being pinned. How: This builds one entry per applicable Conditionals/Reminders/picker, then sorts and maps them below.
 
-							...( ( filTypStr === 'all' || filTypStr === 'conditionals' ) && cndIteArr.length > 0
+							...( ( filTypStr === 'all' || filTypStr === 'conditionals' ) && conIteArr.length > 0
 								? [ { key : 'conditionals', name : 'Conditionals', modLabStr : 'Gates', isOn : curScoStr === 'conditionals', onClick : () => selScoFun( 'conditionals' ) } ]
 								: []),
 							...( filTypStr === 'all' || filTypStr === 'reminders'
@@ -2911,12 +2911,12 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 			</div>
 
 			<div
-				key={ filGroStr + '::' + curScoStr + '::' + filCndStr }
+				key={ filGroStr + '::' + curScoStr + '::' + filConStr }
 				className='data-list'
 			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed on filter/scope change so section entrance animations replay. How: This renders an empty-state message when nothing matches, otherwise every entry in rdrEntArr plus the Create Picker trigger. */ }
 
 
-				{ !shwCndBoo && !shwRemBoo && shwPicArr.length === 0 && ( // What: Empty State Check. Why: Every filter combined leaving nothing at all needs its own explanatory message. How: This renders only while all 3 sections are absent.
+				{ !shwConBoo && !shwRemBoo && shwPicArr.length === 0 && ( // What: Empty State Check. Why: Every filter combined leaving nothing at all needs its own explanatory message. How: This renders only while all 3 sections are absent.
 
 
 					<div className='data-empty'>{ /* What: Empty Div Element. Why: The empty-state title and its own explanation belong together. How: This wraps both paragraphs below. */ }
@@ -2929,10 +2929,10 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 				) }
 
-				{ rdrEntArr.map( ( entCurObj, pkIndNum ) => { // What: Rendered Entry Map. Why: One card is needed per section entry, plus (last) the in-progress draft. How: This branches on entCurObj.kind, rendering CndManCom/ReminderManager directly or a full picker card otherwise.
+				{ rdrEntArr.map( ( entCurObj, pkIndNum ) => { // What: Rendered Entry Map. Why: One card is needed per section entry, plus (last) the in-progress draft. How: This branches on entCurObj.kind, rendering ConManCom/ReminderManager directly or a full picker card otherwise.
 
 
-					if ( entCurObj.kind === 'conditionals' ) return <CndManCom key='cnd-shown' state={ staAppObj } actions={ actObj } />; // What: Conditionals Branch Return. Why: The Conditionals section is its own separately-maintained manager, not a picker card. How: This renders CndManCom directly, keyed statically since only one can ever exist.
+					if ( entCurObj.kind === 'conditionals' ) return <ConManCom key='cnd-shown' state={ staAppObj } actions={ actObj } />; // What: Conditionals Branch Return. Why: The Conditionals section is its own separately-maintained manager, not a picker card. How: This renders ConManCom directly, keyed statically since only one can ever exist.
 
 					if ( entCurObj.kind === 'reminders' ) return <ReminderManager key='rem-shown' state={ staAppObj } actions={ actObj } />; // What: Reminders Branch Return. Why: The Reminders section is its own separately-maintained manager, not a picker card. How: This renders ReminderManager directly, keyed statically since only one can ever exist.
 
