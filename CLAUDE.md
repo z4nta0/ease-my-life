@@ -1469,6 +1469,18 @@ catch ( e ) {
   exclusive `{actIdeStr === 'x' && <TabX />}` branches selecting a page) is
   usually "related" (1), not the 3-blank-line default reserved for
   genuinely different elements.
+- **A heading element (`<h1>` through `<h6>`) always signifies the start of
+  a new section**, so it gets 3 blank lines before it — the "unrelated"
+  tier — overriding whatever the general sibling-relatedness tiering above
+  would otherwise assign, even when the heading reads as topically
+  connected to whatever precedes it or follows a visually-similar sibling.
+  - **Exception**: a heading that is the very first thing inside its own
+    enclosing block (the first child of a JSX return, a fragment, a
+    conditional branch, ...) is not preceded by anything of its own to
+    separate from, so it follows the ordinary "first thing inside an
+    opening tag/bracket" padding instead (2 blank lines), the same
+    exception every other multi-line construct already gets for its own
+    first entry.
 
 ### Attribute/prop ordering
 Every JSX element's attributes/props (native DOM/SVG elements AND custom

@@ -2473,6 +2473,9 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 
 							<span className='kicker'>Picker</span>{ /* What: Picker Kicker Span Element. Why: This block needs its own small label naming what it identifies. How: This renders the literal word "Picker". */ }
+
+
+
 							<h2 className='picker-title'>{ scpPicObj.name }</h2>{ /* What: Picker Title Element. Why: The scoped picker's own name is the headline of this identity block. How: This renders scpPicObj.name. */ }
 							<PilTagCom tone='mode'>{ ( MODES[ scpPicObj.mode ] || {} ).label || scpPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own MODES label, falling back to the raw mode key. */ }
 

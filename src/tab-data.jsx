@@ -1903,6 +1903,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 					<span className='cat-h-main'>{ /* What: Header Main Span Element. Why: The section's own name and live count belong together. How: This wraps the h2 and the count span below. */ }
 
+
 						<h2 className='cat-name'>Conditionals</h2>{ /* What: Category Name Element. Why: Every section needs its own visible name. How: This renders the literal text "Conditionals". */ }
 
 						<span className='cat-count'>{ /* What: Category Count Span Element. Why: The active/total count needs 3 separate elements (see styles2.css) rather than one text run. How: This wraps the active count, the "of" separator, and the total count below. */ }
@@ -2621,6 +2622,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 					<div className='section-h'>{ /* What: Section Header Div Element. Why: The page's own title needs its own wrapper. How: This wraps the h1 below. */ }
 
+
 						<h1 className='section-title'>The knobs and levers, that <span className='stat-title-accent'>ease</span> your life.</h1>{ /* What: Section Title Element. Why: Every tab needs its own page title. How: This renders the literal title text, with "ease" set off in its own accent span. */ }
 
 					</div>
@@ -3052,6 +3054,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 									<span className={ ` chev   ${ secOpnBoo ? 'is-open' : '' } ` }><IcoSvgCom name='chev' size={ 14 } /></span>{ /* What: Chevron Span Element. Why: The card's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
 
 									<span className='cat-h-main'>{ /* What: Header Main Span Element. Why: The picker's own name and live count belong together. How: This wraps the h2 and the count span below. */ }
+
 
 										<h2 className='cat-name'>{ picCurObj.name }</h2>{ /* What: Category Name Element. Why: Every card needs its own visible name. How: This renders picCurObj's own name. */ }
 

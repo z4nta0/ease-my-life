@@ -5174,6 +5174,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 							</button>
 
 
+
 							<h1 className='today-title'>{ /* What: Today Title Heading Element. Why: The default hero line and the "all done" celebratory line swap visibility based on isaCplBoo, but both stay mounted so the swap can animate. How: This renders both title-state spans below, keyed so the done state re-plays its per-word reveal on every fresh completion. */ }
 
 

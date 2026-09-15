@@ -813,6 +813,8 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 					<div className='kicker'>Picker</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the picker's own name. How: This renders the literal word "Picker". */ }
 
+
+
 					<h2 className='picker-title'>{ picker.name }</h2>{ /* What: Title Heading Element. Why: The picker's own name is this view's main heading. How: This renders picker.name. */ }
 
 					<PilTagCom tone='mode'>{ modInfObj.label }</PilTagCom>{ /* What: Pill Tag Component. Why: The picker's own mode reads as a small status pill beside its name. How: This renders modInfObj.label inside the shared PilTagCom component. */ }
@@ -2050,6 +2052,8 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 				<div>
 
 					<div className='kicker'>{ isaEdiBoo ? 'Editing' : 'New picker' }</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the heading below. How: This renders "Editing" or "New picker" depending on isaEdiBoo. */ }
+
+
 
 					<h2 className='picker-title'>{ isaEdiBoo ? ( newNamStr.trim() || 'Editing picker' ) : 'Create a picker' }</h2>{ /* What: Title Heading Element. Why: This form's own main heading should reflect whatever the user has typed so far while editing. How: This shows the live-typed name (or a fallback) while editing, otherwise a fixed create-mode heading. */ }
 
@@ -3382,6 +3386,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 					</button>
 
 					<div className='section-h'>{ /* What: Section Header Div Element. Why: The page's own main heading needs its own wrapper for layout. How: This wraps section-title. */ }
+
 
 						<h1 className='section-title'><span className='picker-title-accent'>Easing</span> your life, one pick at a time.</h1>{ /* What: Title Heading Element. Why: Every tab needs its own main heading. How: This renders a fixed heading with its first word given its own accent-colored span. */ }
 

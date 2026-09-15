@@ -2353,6 +2353,9 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 
 					) }
+
+
+
 					<h2 className='group-name'>Reminders</h2>{ /* What: Group Name Heading Element. Why: This is the section's own fixed title, matching every other Today group's own heading. How: This renders the literal text "Reminders". */ }
 
 					<span className='group-count'>{ /* What: Group Count Span Element. Why: The done and total counts read together as one "N of M" unit. How: This wraps the done span and the "of M" span below. */ }

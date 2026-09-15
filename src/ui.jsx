@@ -281,6 +281,8 @@ const SecTitCom = ( { kicker, title, sub } ) => (
 
 		{ kicker && <div className='kicker'>{ kicker }</div> }{ /* What: Kicker Visibility Check. Why: Not every section has a kicker line above its title. How: This renders the kicker div only while the kicker prop holds a value. */ }
 
+
+
 		<h1 className='section-title'>{ title }</h1>{ /* What: Section Title Element. Why: This is the section's own required heading text. How: This renders the title prop as an h1. */ }
 
 		{ sub && <p className='section-sub'>{ sub }</p> }{ /* What: Sub Visibility Check. Why: Not every section has a supporting sub line below its title. How: This renders the sub paragraph only while the sub prop holds a value. */ }
