@@ -10,7 +10,7 @@ import { emlTouObj          } from './eml-tour-bus.js';            // What: Ease
 import { GuidedTour         } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each reminder mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-variant step array.
 import { Icon               } from './ui.jsx';                     // What: Icon. Why: The intro modal needs a recognizable glyph matching the current variant. How: This is rendered inside the intro modal's icon prop below.
 import { OB_TASKS           } from './onboarding-seed-data.js';    // What: Onboarding Tasks. Why: A reload can land on this tour before the live sample task has been re-derived from state.tasks. How: This is searched as the fallback template lookup in bldAddFun's run() below.
-import { TutorialIntroModal } from './onboarding-intro-modal.jsx'; // What: Tutorial Intro Modal. Why: Each reminder mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this file's own per-variant copy.
+import { IntModCom          } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each reminder mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this file's own per-variant copy.
 import { useEmlTouFun       } from './eml-tour-bus.js';            // What: Use Ease My Life Tour. Why: The recurring tour's own Step 4 needs to read the live draft's current schedule type off the shared bus. How: This is called once to subscribe to the bus and read its own draftRepeat field.
 
 // #endregion Imports
@@ -36,7 +36,7 @@ import { useEmlTouFun       } from './eml-tour-bus.js';            // What: Use 
 
 
 
-const FIR_PAR_ELE = <>Reminders can be thought of as <b>what a normal task would be in a typical todo list app</b>, since not all tasks can be randomly selected. Taking out the trash for pickup, as an example, since this must be done on a set day every week.</>; // What: First Paragraph Element. Why: This is the intro modal's shared opening paragraph, identical for both tour variants. How: This is passed as the first entry of TutorialIntroModal's own paragraphs prop in the render below.
+const FIR_PAR_ELE = <>Reminders can be thought of as <b>what a normal task would be in a typical todo list app</b>, since not all tasks can be randomly selected. Taking out the trash for pickup, as an example, since this must be done on a set day every week.</>; // What: First Paragraph Element. Why: This is the intro modal's shared opening paragraph, identical for both tour variants. How: This is passed as the first entry of IntModCom's own paragraphs prop in the render below.
 
 
 
@@ -48,8 +48,8 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour variant needs
 
 		ideStr : 'tk_ob_meds',                                                                                                                                                                                                                         // What: Identifier String. Why: This ties the 'once' variant to its own sample reminder. How: This is read back against state.tasks/OB_TASKS by bldAddFun's run() below and against the checklist by cloTouFun.
 		icoStr : 'pin',                                                                                                                                                                                                                                // What: Icon String. Why: The intro modal needs a glyph matching this variant. How: This is passed to Icon's own name prop in the render below.
-		titStr : 'One-Time Reminders',                                                                                                                                                                                                                 // What: Title String. Why: The intro modal needs a heading naming this variant. How: This is rendered as TutorialIntroModal's own title prop.
-		bodStr : 'One-time reminders are simple one off things that need to get done and will never show up again once they are marked as completed in your todo list. e.g. pickup precription or pickup dry cleaning. Let’s create one of these now.' // What: Body String. Why: This variant's own second intro paragraph explains what a one-time reminder is. How: This is rendered as the second entry of TutorialIntroModal's own paragraphs prop.
+		titStr : 'One-Time Reminders',                                                                                                                                                                                                                 // What: Title String. Why: The intro modal needs a heading naming this variant. How: This is rendered as IntModCom's own title prop.
+		bodStr : 'One-time reminders are simple one off things that need to get done and will never show up again once they are marked as completed in your todo list. e.g. pickup precription or pickup dry cleaning. Let’s create one of these now.' // What: Body String. Why: This variant's own second intro paragraph explains what a one-time reminder is. How: This is rendered as the second entry of IntModCom's own paragraphs prop.
 
 
 	},
@@ -59,8 +59,8 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour variant needs
 
 		ideStr : 'tk_ob_trash',                                                                                                                                                        // What: Identifier String. Why: This ties the 'recurring' variant to its own sample reminder. How: This is read back against state.tasks/OB_TASKS by bldAddFun's run() below and against the checklist by cloTouFun.
 		icoStr : 'calendar',                                                                                                                                                           // What: Icon String. Why: The intro modal needs a glyph matching this variant. How: This is passed to Icon's own name prop in the render below.
-		titStr : 'Recurring Reminders',                                                                                                                                                // What: Title String. Why: The intro modal needs a heading naming this variant. How: This is rendered as TutorialIntroModal's own title prop.
-		bodStr : 'Recurring tasks are things that need to get done on a set schedule. e.g. take trash out for pickup (weekly) or get the mail (daily). Let’s create one of these now.' // What: Body String. Why: This variant's own second intro paragraph explains what a recurring reminder is. How: This is rendered as the second entry of TutorialIntroModal's own paragraphs prop.
+		titStr : 'Recurring Reminders',                                                                                                                                                // What: Title String. Why: The intro modal needs a heading naming this variant. How: This is rendered as IntModCom's own title prop.
+		bodStr : 'Recurring tasks are things that need to get done on a set schedule. e.g. take trash out for pickup (weekly) or get the mail (daily). Let’s create one of these now.' // What: Body String. Why: This variant's own second intro paragraph explains what a recurring reminder is. How: This is rendered as the second entry of IntModCom's own paragraphs prop.
 
 
 	}
@@ -396,13 +396,13 @@ function ReminderTour ( { variant, state, actions, closeReminderForm, onClose } 
 
 
 
-	if ( touPhaStr === 'intro' ) { // What: Intro Phase Check. Why: The intro modal must show before any spotlight step ever does. How: This returns TutorialIntroModal below whenever touPhaStr is 'intro'.
+	if ( touPhaStr === 'intro' ) { // What: Intro Phase Check. Why: The intro modal must show before any spotlight step ever does. How: This returns IntModCom below whenever touPhaStr is 'intro'.
 
 
 		return (
 
 
-			<TutorialIntroModal
+			<IntModCom
 				icon={ <Icon name={ varCopObj.icoStr } size={ 54 } /> }
 				title={ varCopObj.titStr }
 				paragraphs={ [ FIR_PAR_ELE, varCopObj.bodStr ] }

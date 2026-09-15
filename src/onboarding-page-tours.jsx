@@ -17,7 +17,7 @@ import { OB_EXTRA_PICKERS       } from './onboarding-seed-data.js';    // What: 
 import { OB_PAGE_TOURS          } from './onboarding-checklist.js';    // What: Onboarding Page Tours. Why: PageTour below needs this page tour's own id/page/label manifest entry. How: This is searched by pageId inside PageTour below.
 import { OB_SAMPLE_PICKER_IDS   } from './onboarding-seed-data.js';    // What: Onboarding Sample Picker Ids. Why: The Stats tour needs to unhide/rehide every real sample picker (not a disposable copy) for its own duration. How: This is iterated by unhHisFun/hidHisFun below.
 import { OB_TASKS               } from './onboarding-seed-data.js';    // What: Onboarding Tasks. Why: The Data tour needs real reminders to point at, seeded/cleared as disposable copies the same way PAG_SAM_ARR is for pickers. How: This is iterated by seeTasFun/cleTasFun below.
-import { TutorialIntroModal     } from './onboarding-intro-modal.jsx'; // What: Tutorial Intro Modal. Why: Each page mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this page's own icon/title/paragraphs/pills.
+import { IntModCom              } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each page mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this page's own icon/title/paragraphs/pills.
 
 // #endregion Imports
 
@@ -82,9 +82,9 @@ const PAG_COP_OBJ = { // What: Page Copy Object. Why: PageTour's own intro modal
 	explore_today : {
 
 
-		titStr : 'Today Page', // What: Title String. Why: The intro modal needs a heading naming this page. How: This is rendered as TutorialIntroModal's own title prop.
-		bodEle : <>This tutorial will take you on a quick tour of the Today page, in order to <b>highlight important elements and functionality</b>.</>, // What: Body Element. Why: The intro modal needs a plain description of what this tour covers. How: This is rendered as the sole entry of TutorialIntroModal's own paragraphs prop.
-		pilArr : [ 'page tour', 'today page', 'todo list' ] // What: Pills Array. Why: The intro modal's own pill row needs 3 short tags describing this tour. How: This is rendered as TutorialIntroModal's own pills prop.
+		titStr : 'Today Page', // What: Title String. Why: The intro modal needs a heading naming this page. How: This is rendered as IntModCom's own title prop.
+		bodEle : <>This tutorial will take you on a quick tour of the Today page, in order to <b>highlight important elements and functionality</b>.</>, // What: Body Element. Why: The intro modal needs a plain description of what this tour covers. How: This is rendered as the sole entry of IntModCom's own paragraphs prop.
+		pilArr : [ 'page tour', 'today page', 'todo list' ] // What: Pills Array. Why: The intro modal's own pill row needs 3 short tags describing this tour. How: This is rendered as IntModCom's own pills prop.
 
 
 	},
@@ -1268,12 +1268,12 @@ function PageTour ( { pageId, state, actions, active, selectTab, onClose } ) {
 
 
 
-	if ( touPhaStr === 'intro' ) { // What: Intro Phase Check. Why: The intro modal must show before any spotlight step ever does. How: This returns TutorialIntroModal below whenever touPhaStr is 'intro'.
+	if ( touPhaStr === 'intro' ) { // What: Intro Phase Check. Why: The intro modal must show before any spotlight step ever does. How: This returns IntModCom below whenever touPhaStr is 'intro'.
 
 
 		return (
 
-			<TutorialIntroModal
+			<IntModCom
 				icon={ <Icon name={ tourRecObj.page } size={ 54 } /> }
 				title={ ( pagCopObj && pagCopObj.titStr ) || navTarObj.title }
 				paragraphs={ [ ( pagCopObj && pagCopObj.bodEle ) || navTarObj.body ] }

@@ -10,7 +10,7 @@ import React from 'react'; // What: React. Why: This file's own AppFeatureTour a
 import { buildPageTourStep1 } from './onboarding-page-tours.jsx';  // What: Build Page Tour Step 1. Why: Every App Feature tour reuses this exact shared Step 1, the real nav-button highlight, as its own opening step. How: This is called inside AppFeatureTour below, passed this feature's own page, an optional run side effect, and a primary button label.
 import { GuidedTour         } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each App Feature tutorial once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-feature step array.
 import { Icon                } from './ui.jsx';                    // What: Icon. Why: The intro modal needs a recognizable glyph matching the current feature's own page. How: This is rendered inside the intro modal's icon prop below.
-import { TutorialIntroModal } from './onboarding-intro-modal.jsx'; // What: Tutorial Intro Modal. Why: Each App Feature tutorial opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this feature's own icon/title/paragraphs/pills.
+import { IntModCom          } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each App Feature tutorial opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this feature's own icon/title/paragraphs/pills.
 
 // #endregion Imports
 
@@ -101,9 +101,9 @@ const APP_FEATURES = [
 		id    : 'feat_manual_pick',                     // What: Id. Why: This uniquely identifies this feature, keying state.onboarding.appFeatures and this tour's own GuidedTour tourId. How: AppFeatureTour below searches APP_FEATURES for the entry whose own id matches its own feaIdeStr prop.
 		page  : 'picker',                               // What: Page. Why: This says which real nav tab this feature's own Step 1 highlights. How: buildPageTourStep1 below reads this to find the matching NAV_TAR_OBJ entry.
 		label : 'Make your first manual pick',           // What: Label. Why: The launcher card on Today needs this feature's own visible title. How: tab-today.jsx renders this directly as the card's own name.
-		title : 'Manual Picks',                          // What: Title. Why: The intro modal needs a heading naming this tutorial. How: This is rendered as TutorialIntroModal's own title prop.
-		body  : <>This tutorial will show you <b>how to manually run one of your pickers and send its result straight to your todo list</b>, without waiting for the next automatic generation.</>, // What: Body. Why: The intro modal needs a plain description of what this tutorial covers. How: This is rendered as the sole entry of TutorialIntroModal's own paragraphs prop.
-		pills : [ 'pickers page', 'run a picker', 'manual pick' ], // What: Pills. Why: The intro modal's own pill row needs 3 short tags describing this tutorial. How: This is rendered as TutorialIntroModal's own pills prop.
+		title : 'Manual Picks',                          // What: Title. Why: The intro modal needs a heading naming this tutorial. How: This is rendered as IntModCom's own title prop.
+		body  : <>This tutorial will show you <b>how to manually run one of your pickers and send its result straight to your todo list</b>, without waiting for the next automatic generation.</>, // What: Body. Why: The intro modal needs a plain description of what this tutorial covers. How: This is rendered as the sole entry of IntModCom's own paragraphs prop.
+		pills : [ 'pickers page', 'run a picker', 'manual pick' ], // What: Pills. Why: The intro modal's own pill row needs 3 short tags describing this tutorial. How: This is rendered as IntModCom's own pills prop.
 
 		// Real, user-confirmed estimate (same convention as OB_PAGE_TOURS' own time field in onboarding-checklist.js). Only this feature has real step-by-step content built out so far, the rest stay untimed until they do too.
 		time  : '1 min' // What: Time. Why: The launcher card shows this next to its label when present. How: tab-today.jsx renders feature.time directly whenever it's truthy.
@@ -844,12 +844,12 @@ function AppFeatureTour ( { feaIdeStr, state, actions, active, selectTab, onCloF
 
 
 
-	if ( touPhaStr === 'intro' ) { // What: Intro Phase Check. Why: The intro modal must show before any spotlight step ever does. How: This returns TutorialIntroModal below whenever touPhaStr is 'intro'.
+	if ( touPhaStr === 'intro' ) { // What: Intro Phase Check. Why: The intro modal must show before any spotlight step ever does. How: This returns IntModCom below whenever touPhaStr is 'intro'.
 
 
 		return (
 
-			<TutorialIntroModal
+			<IntModCom
 				icon={ feaIdeStr === 'feat_highlights'
 					? <span className='ob-wmark-help'>i</span>
 					: <Icon name={ feaRecObj.page } size={ 54 } /> }

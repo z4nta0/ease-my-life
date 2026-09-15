@@ -4,20 +4,20 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This is the UI library TutorialIntroModal is built on. How: This is used directly (React.useRef, React.useEffect) inside the component below.
+import React from 'react'; // What: React. Why: This is the UI library IntModCom is built on. How: This is used directly (React.useRef, React.useEffect) inside the component below.
 
 
-import { createPortal } from 'react-dom'; // What: Create Portal. Why: The modal must render into <body> so it lays over the whole app instead of being clipped by an ancestor's own overflow/stacking context. How: This is called with the modal's own JSX and document.body inside TutorialIntroModal's return.
+import { createPortal } from 'react-dom'; // What: Create Portal. Why: The modal must render into <body> so it lays over the whole app instead of being clipped by an ancestor's own overflow/stacking context. How: This is called with the modal's own JSX and document.body inside IntModCom's return.
 import { reduceMotion } from './ui.jsx';  // What: Reduce Motion.  Why: A user who prefers reduced motion should not see the card's own slide-in entrance animation. How: This is called below to decide whether the "ob-in" entrance class is applied.
 
 // #endregion Imports
 
 
 
-// #region TutorialIntroModal
+// #region IntModCom
 
 /**
- * TutorialIntroModal = Tutorial Intro Modal
+ * IntModCom = Intro Modal Component
  *
  * @summary
  * This is the generic intro modal shown before any guided tour, the
@@ -58,12 +58,12 @@ import { reduceMotion } from './ui.jsx';  // What: Reduce Motion.  Why: A user w
  *
  * @example
  * ```tsx
- * TutorialIntroModal({ icon, title, ... }) // => <TutorialIntroModal />
+ * IntModCom({ icon, title, ... }) // => <IntModCom />
  * ```
  *
 */
 
-function TutorialIntroModal ( { icon, title, paragraphs, pills, onStart, onSkip, startLabel = 'Get started', skipLabel = 'Skip' } ) {
+function IntModCom ( { icon, title, paragraphs, pills, onStart, onSkip, startLabel = 'Get started', skipLabel = 'Skip' } ) {
 
 
 	const redMotBoo = reduceMotion && reduceMotion(); // What: Reduced Motion Boolean. Why: The card's own slide-in entrance animation should be skipped when the user prefers reduced motion. How: This calls the shared reduceMotion() check, guarded so a missing import is also tolerated.
@@ -154,11 +154,11 @@ function TutorialIntroModal ( { icon, title, paragraphs, pills, onStart, onSkip,
 
 }
 
-// #endregion TutorialIntroModal
+// #endregion IntModCom
 
 
 
-export { TutorialIntroModal }; // What: Named Export. Why: onboarding.jsx, onboarding-app-features.jsx, onboarding-page-tours.jsx, onboarding-picker-tours.jsx, and onboarding-reminder-tours.jsx all import this by this exact name. How: This re-exports TutorialIntroModal as-is, deliberately left unrenamed since renaming it would ripple into every one of those not-yet-reformatted files.
+export { IntModCom }; // What: Named Export. Why: onboarding.jsx, onboarding-app-features.jsx, onboarding-page-tours.jsx, onboarding-picker-tours.jsx, and onboarding-reminder-tours.jsx all import this by this exact name. How: This re-exports IntModCom by name, rippled into every one of those files' own import and JSX usage in the same pass.
 
 
 

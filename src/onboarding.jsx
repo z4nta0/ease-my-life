@@ -16,7 +16,7 @@ import { OB_EXTRA_PICKERS       } from './onboarding-seed-data.js';      // What
 import { OB_SAMPLE_PICKER_IDS   } from './onboarding-seed-data.js';      // What: Onboarding Sample Picker Ids. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read by the settings step's run() and by bacSteFun below.
 import { OB_SAMPLE_TASK_IDS     } from './onboarding-seed-data.js';      // What: Onboarding Sample Task Ids. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actions.addTask below.
 import { OB_TASKS               } from './onboarding-seed-data.js';      // What: Onboarding Tasks. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actions.addTask by the Generate step's own run() and by the intro modal's onSkip below.
-import { TutorialIntroModal     } from './onboarding-intro-modal.jsx';   // What: Tutorial Intro Modal. Why: The Welcome Tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while onbPhaStr is 'welcome', passed this file's own copy and labels.
+import { IntModCom              } from './onboarding-intro-modal.jsx';   // What: Intro Modal Component. Why: The Welcome Tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while onbPhaStr is 'welcome', passed this file's own copy and labels.
 import { useEmlTouFun           } from './eml-tour-bus.js';              // What: Use Ease My Life Tour. Why: Other tabs (app.jsx, tab-today.jsx, tab-picker.jsx, tab-stats.jsx) subscribe to the shared tour bus through this hook. How: This is re-exported below rather than called directly in this file.
 
 // #endregion Imports
@@ -34,7 +34,7 @@ export { emlTouObj, useEmlTouFun }; // What: Named Exports. Why: The bus itself 
  * The first-run welcome modal plus a guided spotlight tour that actually
  * drives the app itself: each coach card's own primary button performs
  * the step, so the user can do it themselves or let the tour do it for
- * them. Both the modal (TutorialIntroModal) and the spotlight walkthrough
+ * them. Both the modal (IntModCom) and the spotlight walkthrough
  * (GuidedTour, onboarding-tour-runner.jsx) are generic, shared
  * components; this file only supplies the Welcome Tour's own content and
  * the handful of side effects specific to it (seeding sample data,
@@ -521,13 +521,13 @@ function Onboarding ( { state, actions, active, selectTab } ) {
 
 	if ( onbPhaStr === 'off' ) return null; // What: Off Guard. Why: Nothing should render once the Welcome Tour has finished or was never triggered at all. How: This returns null early whenever onbPhaStr is 'off'.
 
-	if ( onbPhaStr === 'welcome' ) { // What: Welcome Phase Check. Why: The intro modal must show before any spotlight step ever does. How: This returns the TutorialIntroModal below whenever onbPhaStr is 'welcome'.
+	if ( onbPhaStr === 'welcome' ) { // What: Welcome Phase Check. Why: The intro modal must show before any spotlight step ever does. How: This returns the IntModCom below whenever onbPhaStr is 'welcome'.
 
 
 		return (
 
 
-			<TutorialIntroModal
+			<IntModCom
 				icon={ <svg viewBox='8 8 528 528' fill='none'><path style={{ fill : 'currentColor', stroke : 'currentColor' }} d={ BRA_MAR_STR } strokeWidth='8' strokeLinecap='round' strokeLinejoin='round' /></svg> }
 				title='Welcome to Ease My Life'
 				paragraphs={ [
@@ -544,7 +544,7 @@ function Onboarding ( { state, actions, active, selectTab } ) {
 				pills={ [ 'todo list', 'pickers', 'reminders' ] }
 				startLabel='Take the quick tour'
 				skipLabel='I’ll explore myself'
-				onStart={ () => { // What: On Start Handler. Why: Accepting the tour needs to switch to Today, persist that the welcome modal is done, and hand off to the running GuidedTour, all as one action. How: This is called when TutorialIntroModal's own primary button is activated.
+				onStart={ () => { // What: On Start Handler. Why: Accepting the tour needs to switch to Today, persist that the welcome modal is done, and hand off to the running GuidedTour, all as one action. How: This is called when IntModCom's own primary button is activated.
 
 
 					selectTab( 'today' ); // What: Today Switch Call. Why: The tour should always begin its walkthrough from the Today tab. How: This switches the app's own active tab to 'today'.
