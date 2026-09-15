@@ -421,7 +421,7 @@ const SET_SEC_ARR = [ // What: Settings Section Array. Why: This drives both the
 
 
 
-const SUPPORT_EMAIL = 'support@easemylife.app'; // What: Support Email. Why: This is the fallback address shown when the in-app form fails to send. How: This is rendered in the failure message and copied by cpyAdrFun.
+const SUPPORT_EMAIL = 'support@easemylife.app'; // What: Support Email. Why: This is the fallback address shown when the in-app form fails to send. How: This is rendered in the failure message and copied by copAdrFun.
 
 
 
@@ -480,7 +480,7 @@ function ConSupCom ( { state, actions } ) {
 	const [ senAtNum, setSenAtNum ] = React.useState( 0 ); // What: Sent At Number And Setter. Why: A successful send needs both a truthy flag and a fresh React key to replay the "sent" note if the user sends a second message later. How: This is set to Date.now() on a successful send and used as both the visibility check and the key below.
 	const [ shwErrBoo, setShwErrBoo ] = React.useState( false ); // What: Show Error Boolean And Setter. Why: Pressing Send with an empty field needs to surface a validation message. How: This is set true by sndFrmFun's own guard and cleared on every subsequent send attempt.
 	const [ sndFalBoo, setSndFalBoo ] = React.useState( false ); // What: Send Failed Boolean And Setter. Why: A failed POST needs to surface the fallback address instead of leaving the user stuck. How: This is set inside sndFrmFun's own catch handler.
-	const [ adrCpdBoo, setAdrCpdBoo ] = React.useState( false ); // What: Address Copied Boolean And Setter. Why: The fallback "Copy address" button needs to confirm the copy actually happened. How: This is set true by cpyAdrFun and cleared 2400ms later.
+	const [ adrCpdBoo, setAdrCpdBoo ] = React.useState( false ); // What: Address Copied Boolean And Setter. Why: The fallback "Copy address" button needs to confirm the copy actually happened. How: This is set true by copAdrFun and cleared 2400ms later.
 	// Honeypot. Bots fill every field they find; humans never see this one, so a
 	// non-empty value means we silently accept and drop the submission.
 	const [ botFieStr, setBotFieStr ] = React.useState( '' ); // What: Bot Field String And Setter. Why: A spam bot filling this hidden field is the signal a real human never would. How: This is posted alongside the real fields and left for Netlify's own spam filtering to act on.
@@ -544,15 +544,15 @@ function ConSupCom ( { state, actions } ) {
 	};
 
 
-	const cpyAdrFun = () => { // What: Copy Address Function. Why: The fallback row lets a user copy the support address with one click instead of selecting it by hand. How: This writes SUPPORT_EMAIL to the clipboard when available, confirming success for 2400ms.
+	const copAdrFun = () => { // What: Copy Address Function. Why: The fallback row lets a user copy the support address with one click instead of selecting it by hand. How: This writes SUPPORT_EMAIL to the clipboard when available, confirming success for 2400ms.
 
 
-		const cpyDonFun = () => { setAdrCpdBoo( true ); setTimeout( () => setAdrCpdBoo( false ), 2400 ); }; // What: Copy Done Function. Why: A successful copy needs to show a brief confirmation, then revert. How: This flips adrCpdBoo true, then false again 2400ms later.
+		const copDonFun = () => { setAdrCpdBoo( true ); setTimeout( () => setAdrCpdBoo( false ), 2400 ); }; // What: Copy Done Function. Why: A successful copy needs to show a brief confirmation, then revert. How: This flips adrCpdBoo true, then false again 2400ms later.
 
 		try {
 
 
-			if ( navigator.clipboard && navigator.clipboard.writeText ) navigator.clipboard.writeText( SUPPORT_EMAIL ).then( cpyDonFun, () => {} ); // What: Clipboard Write Attempt. Why: The Clipboard API is not universally available, and a rejected promise here should not surface as an error. How: This writes SUPPORT_EMAIL to the clipboard when the API exists, silently ignoring a rejection.
+			if ( navigator.clipboard && navigator.clipboard.writeText ) navigator.clipboard.writeText( SUPPORT_EMAIL ).then( copDonFun, () => {} ); // What: Clipboard Write Attempt. Why: The Clipboard API is not universally available, and a rejected promise here should not surface as an error. How: This writes SUPPORT_EMAIL to the clipboard when the API exists, silently ignoring a rejection.
 
 
 		}
@@ -818,8 +818,8 @@ function ConSupCom ( { state, actions } ) {
 								<Btn
 									kind='ghost'
 									size='sm'
-									onClick={ cpyAdrFun }
-								>{ adrCpdBoo ? 'Copied' : 'Copy address' }</Btn> // What: Btn. Why: This lets the user copy the fallback address without selecting it by hand. How: This calls cpyAdrFun when clicked, and its own label reflects adrCpdBoo.
+									onClick={ copAdrFun }
+								>{ adrCpdBoo ? 'Copied' : 'Copy address' }</Btn> // What: Btn. Why: This lets the user copy the fallback address without selecting it by hand. How: This calls copAdrFun when clicked, and its own label reflects adrCpdBoo.
 
 
 							) }

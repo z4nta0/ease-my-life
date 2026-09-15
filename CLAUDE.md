@@ -1974,6 +1974,12 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     giving `CodConCom`. `cod` is otherwise used sparingly elsewhere
     (`holidays.js`'s own `couCodStr`/`regCodStr`, meaning Code), with
     no collision risk against this file's own segments)
+  - `cpy` → `cop` (Copy — found in `cpyIdeStr` (`help-sample-data.js`)
+    and `cpyAdrFun`/`cpyDonFun` (`tab-settings.jsx`); `cop` was already
+    the established, heavily-used code for Copy elsewhere in this
+    codebase, e.g. `copIdeStr`/`neeCopFun`/`picCopFun`/`tasCopFun`
+    (`onboarding-page-tours.jsx`), `datCopObj` (`seed.js`/`store.jsx`),
+    and `PAG_COP_OBJ`/`PIC_COP_OBJ`/`REP_COP_OBJ`/`VAR_COP_OBJ`)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
@@ -2066,6 +2072,31 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     less-essential word, keep 2 concepts + a real type" resolution from
     the base rule still applies whenever it doesn't lose something
     genuinely load-bearing.
+- **Dropping a domain-context word an exported function's own import path
+  already conveys**: a function that needs 3+ real words (a verb plus a
+  multi-word target) can drop a word that names the whole MODULE's own
+  domain, rather than compressing everything into an initialism, when
+  every real caller already sees that context for free at the import
+  site (`import { sedPicFun } from './help-sample-data.js'` already says
+  "this is help-mode sample data" before the function's own name has to
+  say it again). This is judged case by case like any other resolution
+  here, not a blanket license to drop context: it only applies to a word
+  that's redundant with the DEFINING FILE's own name/purpose, never to a
+  word that distinguishes this function from a sibling in the SAME file.
+  Example: `help-sample-data.js`'s own `seedHelpPickers`/`clearHelpPickers`/
+  `seedHelpTasks`/`clearHelpTasks`/`unhideHelpStatsHistory`/
+  `hideHelpStatsHistory` each had a verb, "Help", and a 1-2 word target
+  (Pickers/Tasks/Stats+History) — 3-4 real concepts, one segment too many.
+  "Help" was dropped from every one of them (redundant with the file
+  they're all defined in and imported from), and the History pair's own
+  "Stats" was dropped too (redundant with "History" in context), giving
+  `sedPicFun`/`clePicFun`/`sedTasFun`/`cleTasFun`/`unhHisFun`/`hidHisFun`.
+  "Seed" itself needed its own separate escalation (see the general
+  Naming-conflict resolution below) once truncated: literal `See`
+  collides in MEANING with `tab-picker.jsx`'s own already-established
+  `see` = Seen (`seeGroArr`/`seeModSet`), so Phase A's own "keep first 2
+  letters, escalate the 3rd character" landed on `Sed` (seed's own 4th
+  letter) instead.
 - **Under-length first-word padding**: the opposite problem from
   initialism compression — some segment 1 words are naturally SHORTER
   than 3 letters (e.g. "is", for a boolean naturally phrased "is
