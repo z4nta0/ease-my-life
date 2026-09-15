@@ -89,7 +89,7 @@ const CHE_ITE_ARR = [ // What: Checklist Item Array. Why: This is the full, flat
 
 
 	...OB_SAMPLE_PICKER_IDS.map( ( picIdeStr ) => ( { id : picIdeStr, kind : 'sample', entityKind : 'picker' } ) ), // What: Sample Picker Entries. Why: Every seeded sample picker needs its own 'sample' checklist entry so it can be resolved (finished/skipped/cancelled) independently. How: This maps OB_SAMPLE_PICKER_IDS down to one { id, kind, entityKind } object per sample picker id.
-	...OB_SAMPLE_TASK_IDS.map( ( tskIdeStr ) => ( { id : tskIdeStr, kind : 'sample', entityKind : 'task' } ) ),   // What: Sample Task Entries. Why: Every seeded sample task needs its own 'sample' checklist entry, same reasoning as the picker entries above. How: This maps OB_SAMPLE_TASK_IDS down to one { id, kind, entityKind } object per sample task id.
+	...OB_SAMPLE_TASK_IDS.map( ( tasIdeStr ) => ( { id : tasIdeStr, kind : 'sample', entityKind : 'task' } ) ),   // What: Sample Task Entries. Why: Every seeded sample task needs its own 'sample' checklist entry, same reasoning as the picker entries above. How: This maps OB_SAMPLE_TASK_IDS down to one { id, kind, entityKind } object per sample task id.
 	...OB_PAGE_TOURS.map( ( touConObj ) => ( { id : touConObj.id, kind : 'pageTour' } ) ),                       // What: Page Tour Entries. Why: Every page tour needs its own checklist entry too, even though it has no sample data of its own to finish/skip/cancel. How: This maps OB_PAGE_TOURS down to one { id, kind } object per page tour entry, keyed by that tour's own id.
 	{ id : OB_GENERATE_ITEM_ID, kind : 'generate' }                                                              // What: Generate Entry. Why: The single closing Generate card needs its own checklist entry, the same as every other item. How: This is a single { id, kind } object, keyed by the fixed OB_GENERATE_ITEM_ID above.
 
@@ -310,7 +310,7 @@ function tutProFun ( appStaObj ) {
 
 
 	const maiTouBoo = appStaObj.pickers.some( ( curPicObj ) => curPicObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) ) // What: Main-Tour-Ended Boolean. Why: The mini-tour checklist phase only starts once the Welcome Tour's own last step has actually hidden at least one sample. How: This checks appStaObj.pickers and appStaObj.tasks for any still-hidden sample, either one being enough.
-		|| ( appStaObj.tasks || [] ).some( ( curTskObj ) => curTskObj.hidden && OB_SAMPLE_TASK_IDS.includes( curTskObj.id ) ); // What: Main-Tour-Ended Boolean Continuation. Why: A hidden sample task counts exactly the same as a hidden sample picker for this check. How: This is the second half of the || above, guarded by a fallback empty array since appStaObj.tasks may be missing on an old save.
+		|| ( appStaObj.tasks || [] ).some( ( curTasObj ) => curTasObj.hidden && OB_SAMPLE_TASK_IDS.includes( curTasObj.id ) ); // What: Main-Tour-Ended Boolean Continuation. Why: A hidden sample task counts exactly the same as a hidden sample picker for this check. How: This is the second half of the || above, guarded by a fallback empty array since appStaObj.tasks may be missing on an old save.
 
 
 

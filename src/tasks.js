@@ -216,7 +216,7 @@ function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskInpObj - Task Input Object: The (possibly partial) task fields to
+ * @param tasInpObj - Task Input Object: The (possibly partial) task fields to
  *                    default against, defaulting to an empty object for a
  *                    brand new draft with nothing set yet.
  *
@@ -225,41 +225,41 @@ function nwmDayFun( yeaValNum, monOneNum, nthValNum, weeValNum ) {
  *
  * @example
  * ```ts
- * defTasFun(tskInpObj) // => a fully-defaulted task record
+ * defTasFun(tasInpObj) // => a fully-defaulted task record
  * ```
  *
 */
 
-function defTasFun( tskInpObj = {} ) {
+function defTasFun( tasInpObj = {} ) {
 
 
-	const curDatObj = new Date(); // What: Current Date Object. Why: Every date-based default below (daysOfWeek, dayOfMonth, nthWeekday, month, day, plus the onceDate/anchor/createdAt calls to curIsoFun) falls back to today's own value when tskInpObj has nothing set. How: This is read once and reused across the whole return object below.
+	const curDatObj = new Date(); // What: Current Date Object. Why: Every date-based default below (daysOfWeek, dayOfMonth, nthWeekday, month, day, plus the onceDate/anchor/createdAt calls to curIsoFun) falls back to today's own value when tasInpObj has nothing set. How: This is read once and reused across the whole return object below.
 
 
 
-	return { // What: Default Task Object Return. Why: Every caller (a brand new draft, an onboarding sample, a persisted record passing back through this function) needs this exact same fully-backfilled shape. How: This builds the object below from tskInpObj's own existing fields, falling back to curDatObj/curIsoFun wherever one is missing.
+	return { // What: Default Task Object Return. Why: Every caller (a brand new draft, an onboarding sample, a persisted record passing back through this function) needs this exact same fully-backfilled shape. How: This builds the object below from tasInpObj's own existing fields, falling back to curDatObj/curIsoFun wherever one is missing.
 
 
-		id             : tskInpObj.id || 'tk_' + Math.random().toString( 36 ).slice( 2, 8 ),           // What: Id. Why: Every task needs a stable identifier, generated fresh when tskInpObj carries none of its own. How: This keeps tskInpObj's own id when given, otherwise mints a random 'tk_' prefixed one.
-		name           : tskInpObj.name || '',                                                          // What: Name. Why: A brand new draft still needs a defined (if empty) name field to bind an input to. How: This keeps tskInpObj's own name when given, otherwise falls back to an empty string.
-		repeat         : tskInpObj.repeat || 'once',                                                     // What: Repeat. Why: Every task needs one of the 5 recognized schedule kinds; a brand new draft defaults to the simplest one. How: This keeps tskInpObj's own repeat when given, otherwise falls back to 'once'.
-		daysOfWeek     : Array.isArray( tskInpObj.daysOfWeek ) ? tskInpObj.daysOfWeek : [ curDatObj.getDay() ], // What: Days Of Week. Why: A weekly task needs at least one selected weekday to start from. How: This keeps tskInpObj's own daysOfWeek only when it's a real array, defaulting to today's own weekday otherwise.
-		interval       : tskInpObj.interval || ( tskInpObj.repeat === 'interval' ? 2 : 1 ),              // What: Interval. Why: Shared by interval/weekly/monthly/annual, each its own "every N ___"; only 'interval' itself defaults to 2, every other kind to 1 (see this function's own @summary above). How: This keeps tskInpObj's own interval when given, otherwise picks 2 or 1 based on tskInpObj's own repeat.
-		anchor         : tskInpObj.anchor || curIsoFun(),                                                // What: Anchor. Why: Weekly/interval/monthly/annual all count their own "every N" cadence from this date. How: This keeps tskInpObj's own anchor when given, otherwise defaults to today via curIsoFun.
-		dateMode       : tskInpObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date',                    // What: Date Mode. Why: Monthly/annual need to know whether a plain date or an Nth-weekday rule decides the due day. How: This keeps 'nthWeekday' only when tskInpObj already says so, 'date' otherwise.
-		dayOfMonth     : tskInpObj.dayOfMonth || curDatObj.getDate(),                                    // What: Day Of Month. Why: A monthly task in plain-date mode needs a target day-of-month. How: This keeps tskInpObj's own dayOfMonth when given, otherwise defaults to today's own date.
-		nthOrdinal     : tskInpObj.nthOrdinal || 1,                                                      // What: Nth Ordinal. Why: Nth-weekday mode (monthly or annual) needs which occurrence (1st through 5th) to target. How: This keeps tskInpObj's own nthOrdinal when given, otherwise defaults to 1.
-		nthWeekday     : tskInpObj.nthWeekday ?? curDatObj.getDay(),                                     // What: Nth Weekday. Why: Nth-weekday mode also needs which weekday to target. How: This keeps tskInpObj's own nthWeekday when it's a real value, otherwise defaults to today's own weekday.
-		month          : tskInpObj.month || curDatObj.getMonth() + 1,                                    // What: Month. Why: An annual task needs its own target month. How: This keeps tskInpObj's own month when given, otherwise defaults to today's own 1-indexed month.
-		day            : tskInpObj.day || curDatObj.getDate(),                                           // What: Day. Why: An annual task in plain-date mode needs a target day within its own month. How: This keeps tskInpObj's own day when given, otherwise defaults to today's own date.
-		onceDate       : tskInpObj.onceDate || curIsoFun(),                                              // What: Once Date. Why: A one-time task's own due window starts here (today by default), and setting a future date defers it. How: This keeps tskInpObj's own onceDate when given, otherwise defaults to today via curIsoFun.
-		lastDone       : tskInpObj.lastDone ?? null,                                                     // What: Last Done. Why: Every task needs a defined (if empty) completion marker for isaDueFun/isaDonFun to read. How: This keeps tskInpObj's own lastDone when given, otherwise defaults to null.
-		skipUntil      : tskInpObj.skipUntil ?? null,                                                    // What: Skip Until. Why: Every task needs a defined (if empty) manual-skip marker for visTodFun/todVisFun to read. How: This keeps tskInpObj's own skipUntil when given, otherwise defaults to null.
-		createdAt      : tskInpObj.createdAt || curIsoFun(),                                             // What: Created At. Why: Weekly/interval fall back to this as their own anchor when none is set, and dueTodFun's own sort uses it to order same-day additions. How: This keeps tskInpObj's own createdAt when given, otherwise defaults to today via curIsoFun.
-		hidden         : !!tskInpObj.hidden,                                                             // What: Hidden. Why: A task created mid-mini-tour-checklist needs to stay out of dueTodFun's own list until the checklist's own closing Generate step. How: This coerces tskInpObj's own hidden to a real boolean.
+		id             : tasInpObj.id || 'tk_' + Math.random().toString( 36 ).slice( 2, 8 ),           // What: Id. Why: Every task needs a stable identifier, generated fresh when tasInpObj carries none of its own. How: This keeps tasInpObj's own id when given, otherwise mints a random 'tk_' prefixed one.
+		name           : tasInpObj.name || '',                                                          // What: Name. Why: A brand new draft still needs a defined (if empty) name field to bind an input to. How: This keeps tasInpObj's own name when given, otherwise falls back to an empty string.
+		repeat         : tasInpObj.repeat || 'once',                                                     // What: Repeat. Why: Every task needs one of the 5 recognized schedule kinds; a brand new draft defaults to the simplest one. How: This keeps tasInpObj's own repeat when given, otherwise falls back to 'once'.
+		daysOfWeek     : Array.isArray( tasInpObj.daysOfWeek ) ? tasInpObj.daysOfWeek : [ curDatObj.getDay() ], // What: Days Of Week. Why: A weekly task needs at least one selected weekday to start from. How: This keeps tasInpObj's own daysOfWeek only when it's a real array, defaulting to today's own weekday otherwise.
+		interval       : tasInpObj.interval || ( tasInpObj.repeat === 'interval' ? 2 : 1 ),              // What: Interval. Why: Shared by interval/weekly/monthly/annual, each its own "every N ___"; only 'interval' itself defaults to 2, every other kind to 1 (see this function's own @summary above). How: This keeps tasInpObj's own interval when given, otherwise picks 2 or 1 based on tasInpObj's own repeat.
+		anchor         : tasInpObj.anchor || curIsoFun(),                                                // What: Anchor. Why: Weekly/interval/monthly/annual all count their own "every N" cadence from this date. How: This keeps tasInpObj's own anchor when given, otherwise defaults to today via curIsoFun.
+		dateMode       : tasInpObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date',                    // What: Date Mode. Why: Monthly/annual need to know whether a plain date or an Nth-weekday rule decides the due day. How: This keeps 'nthWeekday' only when tasInpObj already says so, 'date' otherwise.
+		dayOfMonth     : tasInpObj.dayOfMonth || curDatObj.getDate(),                                    // What: Day Of Month. Why: A monthly task in plain-date mode needs a target day-of-month. How: This keeps tasInpObj's own dayOfMonth when given, otherwise defaults to today's own date.
+		nthOrdinal     : tasInpObj.nthOrdinal || 1,                                                      // What: Nth Ordinal. Why: Nth-weekday mode (monthly or annual) needs which occurrence (1st through 5th) to target. How: This keeps tasInpObj's own nthOrdinal when given, otherwise defaults to 1.
+		nthWeekday     : tasInpObj.nthWeekday ?? curDatObj.getDay(),                                     // What: Nth Weekday. Why: Nth-weekday mode also needs which weekday to target. How: This keeps tasInpObj's own nthWeekday when it's a real value, otherwise defaults to today's own weekday.
+		month          : tasInpObj.month || curDatObj.getMonth() + 1,                                    // What: Month. Why: An annual task needs its own target month. How: This keeps tasInpObj's own month when given, otherwise defaults to today's own 1-indexed month.
+		day            : tasInpObj.day || curDatObj.getDate(),                                           // What: Day. Why: An annual task in plain-date mode needs a target day within its own month. How: This keeps tasInpObj's own day when given, otherwise defaults to today's own date.
+		onceDate       : tasInpObj.onceDate || curIsoFun(),                                              // What: Once Date. Why: A one-time task's own due window starts here (today by default), and setting a future date defers it. How: This keeps tasInpObj's own onceDate when given, otherwise defaults to today via curIsoFun.
+		lastDone       : tasInpObj.lastDone ?? null,                                                     // What: Last Done. Why: Every task needs a defined (if empty) completion marker for isaDueFun/isaDonFun to read. How: This keeps tasInpObj's own lastDone when given, otherwise defaults to null.
+		skipUntil      : tasInpObj.skipUntil ?? null,                                                    // What: Skip Until. Why: Every task needs a defined (if empty) manual-skip marker for visTodFun/todVisFun to read. How: This keeps tasInpObj's own skipUntil when given, otherwise defaults to null.
+		createdAt      : tasInpObj.createdAt || curIsoFun(),                                             // What: Created At. Why: Weekly/interval fall back to this as their own anchor when none is set, and dueTodFun's own sort uses it to order same-day additions. How: This keeps tasInpObj's own createdAt when given, otherwise defaults to today via curIsoFun.
+		hidden         : !!tasInpObj.hidden,                                                             // What: Hidden. Why: A task created mid-mini-tour-checklist needs to stay out of dueTodFun's own list until the checklist's own closing Generate step. How: This coerces tasInpObj's own hidden to a real boolean.
 
-		// What: Created From Sample Spread. Why: Set only when a task is created by finishing a mini-tour, linking back to the sample template it was built from (see onboarding-checklist.js); ignored everywhere else in the app. How: This spreads in a createdFromSample field only when tskInpObj actually carries one, adding nothing otherwise.
-		...( tskInpObj.createdFromSample ? { createdFromSample : tskInpObj.createdFromSample } : {} )
+		// What: Created From Sample Spread. Why: Set only when a task is created by finishing a mini-tour, linking back to the sample template it was built from (see onboarding-checklist.js); ignored everywhere else in the app. How: This spreads in a createdFromSample field only when tasInpObj actually carries one, adding nothing otherwise.
+		...( tasInpObj.createdFromSample ? { createdFromSample : tasInpObj.createdFromSample } : {} )
 
 
 	};
@@ -277,45 +277,45 @@ function defTasFun( tskInpObj = {} ) {
  * isaDueFun = Is-A Due Function
  *
  * @summary
- * Is tskRecObj due on cheDatObj? Dispatches per its own repeat kind;
+ * Is tasRecObj due on cheDatObj? Dispatches per its own repeat kind;
  * see this file's own header comment for each kind's full schedule
  * semantics.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - Task Record Object: The task/reminder record being
+ * @param tasRecObj - Task Record Object: The task/reminder record being
  *                    checked.
  * @param cheDatObj - Check Date Object: The date to check due-ness against,
  *                    defaulting to right now.
  *
- * @returns Whether tskRecObj is due on cheDatObj, per its own repeat
+ * @returns Whether tasRecObj is due on cheDatObj, per its own repeat
  * kind's rule.
  *
  * @example
  * ```ts
- * isaDueFun(tskRecObj, cheDatObj) // => true or false
+ * isaDueFun(tasRecObj, cheDatObj) // => true or false
  * ```
  *
 */
 
-function isaDueFun( tskRecObj, cheDatObj = new Date() ) {
+function isaDueFun( tasRecObj, cheDatObj = new Date() ) {
 
 
-	const todIsoStr = isoDatFun( cheDatObj ); // What: Today Iso String. Why: The 'once' case below compares tskRecObj's own onceDate/lastDone against cheDatObj as a plain string. How: This converts cheDatObj via isoDatFun.
+	const todIsoStr = isoDatFun( cheDatObj ); // What: Today Iso String. Why: The 'once' case below compares tasRecObj's own onceDate/lastDone against cheDatObj as a plain string. How: This converts cheDatObj via isoDatFun.
 
 
 
-	switch ( tskRecObj.repeat ) { // What: Repeat Switch. Why: Each of the 5 schedule kinds has its own completely different due-ness rule. How: This branches on tskRecObj's own repeat field, falling back to false for anything unrecognized.
+	switch ( tasRecObj.repeat ) { // What: Repeat Switch. Why: Each of the 5 schedule kinds has its own completely different due-ness rule. How: This branches on tasRecObj's own repeat field, falling back to false for anything unrecognized.
 
 
 		case 'once': { // What: Once Case Block. Why: A one-time task is due every day (from an optional future onceDate) until completed, then still shown the day it's completed. How: This defers to onceDate first, then checks lastDone.
 
 
-			if ( tskRecObj.onceDate && todIsoStr < tskRecObj.onceDate ) return false; // What: Deferred Start Guard. Why: An onceDate in the future defers the whole due window instead of starting it immediately. How: This returns false while todIsoStr hasn't reached tskRecObj's own onceDate yet (a safe plain string comparison, since both sides are 'YYYY-MM-DD').
+			if ( tasRecObj.onceDate && todIsoStr < tasRecObj.onceDate ) return false; // What: Deferred Start Guard. Why: An onceDate in the future defers the whole due window instead of starting it immediately. How: This returns false while todIsoStr hasn't reached tasRecObj's own onceDate yet (a safe plain string comparison, since both sides are 'YYYY-MM-DD').
 
 
 
-			return !tskRecObj.lastDone || tskRecObj.lastDone === todIsoStr; // What: Once Case Return. Why: The task stays due until completed, but the day it's completed it still shows (checked) rather than disappearing mid-day. How: This returns true when lastDone is unset, or when it exactly matches today.
+			return !tasRecObj.lastDone || tasRecObj.lastDone === todIsoStr; // What: Once Case Return. Why: The task stays due until completed, but the day it's completed it still shows (checked) rather than disappearing mid-day. How: This returns true when lastDone is unset, or when it exactly matches today.
 
 
 		}
@@ -323,14 +323,14 @@ function isaDueFun( tskRecObj, cheDatObj = new Date() ) {
 		case 'weekly': { // What: Weekly Case Block. Why: A weekly task is due only on its own chosen weekdays, gated further by an every-N-weeks anchor. How: This guards on daysOfWeek membership first, then defers to eveNthFun for the N-week gate.
 
 
-			if ( !( tskRecObj.daysOfWeek || [] ).includes( cheDatObj.getDay() ) ) return false; // What: Weekday Membership Guard. Why: A weekly task never fires on a day outside its own chosen set at all. How: This returns false when cheDatObj's own weekday is absent from tskRecObj's own daysOfWeek.
+			if ( !( tasRecObj.daysOfWeek || [] ).includes( cheDatObj.getDay() ) ) return false; // What: Weekday Membership Guard. Why: A weekly task never fires on a day outside its own chosen set at all. How: This returns false when cheDatObj's own weekday is absent from tasRecObj's own daysOfWeek.
 
 
-			const itvCouNum = Math.max( 1, tskRecObj.interval || 1 ); // What: Interval Count Number. Why: The every-N-weeks gate below needs a real, floor-1 interval count. How: This reads tskRecObj's own interval, floored at 1.
+			const itvCouNum = Math.max( 1, tasRecObj.interval || 1 ); // What: Interval Count Number. Why: The every-N-weeks gate below needs a real, floor-1 interval count. How: This reads tasRecObj's own interval, floored at 1.
 
 
 
-			return eveNthFun( itvCouNum, Math.floor( difDayFun( tskRecObj.anchor || tskRecObj.createdAt, cheDatObj ) / 7 ) ); // What: Weekly Case Return. Why: Weeks are counted as rolling 7-day blocks from the anchor, not calendar (Sun-Sat) weeks; every day within the same block counts as the same "week", the same non-calendar-aligned convention interval (days) already uses. How: This divides the anchor-to-cheDatObj day difference by 7 and checks it against itvCouNum via eveNthFun.
+			return eveNthFun( itvCouNum, Math.floor( difDayFun( tasRecObj.anchor || tasRecObj.createdAt, cheDatObj ) / 7 ) ); // What: Weekly Case Return. Why: Weeks are counted as rolling 7-day blocks from the anchor, not calendar (Sun-Sat) weeks; every day within the same block counts as the same "week", the same non-calendar-aligned convention interval (days) already uses. How: This divides the anchor-to-cheDatObj day difference by 7 and checks it against itvCouNum via eveNthFun.
 
 
 		}
@@ -338,8 +338,8 @@ function isaDueFun( tskRecObj, cheDatObj = new Date() ) {
 		case 'interval': { // What: Interval Case Block. Why: An interval task is due every flat N days from its own anchor, with no weekday/month concept at all. How: This computes the day difference and checks it's both non-negative and evenly divisible by N.
 
 
-			const itvCouNum = Math.max( 1, tskRecObj.interval || 1 );                                 // What: Interval Count Number. Why: The divisibility check below needs a real, floor-1 interval count. How: This reads tskRecObj's own interval, floored at 1.
-			const delDayNum = difDayFun( tskRecObj.anchor || tskRecObj.createdAt, cheDatObj );          // What: Delta Day Number. Why: The divisibility check below needs the actual day count since the anchor. How: This calls difDayFun once and reuses the result.
+			const itvCouNum = Math.max( 1, tasRecObj.interval || 1 );                                 // What: Interval Count Number. Why: The divisibility check below needs a real, floor-1 interval count. How: This reads tasRecObj's own interval, floored at 1.
+			const delDayNum = difDayFun( tasRecObj.anchor || tasRecObj.createdAt, cheDatObj );          // What: Delta Day Number. Why: The divisibility check below needs the actual day count since the anchor. How: This calls difDayFun once and reuses the result.
 
 
 
@@ -351,17 +351,17 @@ function isaDueFun( tskRecObj, cheDatObj = new Date() ) {
 		case 'monthly': { // What: Monthly Case Block. Why: A monthly task is due every N months from its own anchor, on either a plain day-of-month or an Nth-weekday rule. How: This guards on the every-N-months gate first, then branches on dateMode for the actual target day.
 
 
-			const itvCouNum = Math.max( 1, tskRecObj.interval || 1 ); // What: Interval Count Number. Why: The every-N-months gate immediately below needs a real, floor-1 interval count. How: This reads tskRecObj's own interval, floored at 1.
+			const itvCouNum = Math.max( 1, tasRecObj.interval || 1 ); // What: Interval Count Number. Why: The every-N-months gate immediately below needs a real, floor-1 interval count. How: This reads tasRecObj's own interval, floored at 1.
 
-			if ( !eveNthFun( itvCouNum, difMonFun( tskRecObj.anchor || tskRecObj.createdAt, cheDatObj ) ) ) return false; // What: Every-N-Months Guard. Why: A monthly task on, say, an every-3-months cadence must skip the 2 months in between entirely. How: This returns false when the anchor-to-cheDatObj month difference doesn't satisfy eveNthFun.
+			if ( !eveNthFun( itvCouNum, difMonFun( tasRecObj.anchor || tasRecObj.createdAt, cheDatObj ) ) ) return false; // What: Every-N-Months Guard. Why: A monthly task on, say, an every-3-months cadence must skip the 2 months in between entirely. How: This returns false when the anchor-to-cheDatObj month difference doesn't satisfy eveNthFun.
 
 
 
-			if ( tskRecObj.dateMode === 'nthWeekday' ) return cheDatObj.getDate() === nwmDayFun( cheDatObj.getFullYear(), cheDatObj.getMonth() + 1, tskRecObj.nthOrdinal || 1, tskRecObj.nthWeekday ?? 0 ); // What: Nth-Weekday Mode Guard. Why: In this mode the target day is whichever Nth weekday nwmDayFun resolves for cheDatObj's own month, not a plain day-of-month at all. How: This returns that comparison directly, short-circuiting the plain-date branch below.
+			if ( tasRecObj.dateMode === 'nthWeekday' ) return cheDatObj.getDate() === nwmDayFun( cheDatObj.getFullYear(), cheDatObj.getMonth() + 1, tasRecObj.nthOrdinal || 1, tasRecObj.nthWeekday ?? 0 ); // What: Nth-Weekday Mode Guard. Why: In this mode the target day is whichever Nth weekday nwmDayFun resolves for cheDatObj's own month, not a plain day-of-month at all. How: This returns that comparison directly, short-circuiting the plain-date branch below.
 
 
 			const dimValNum = dimCouFun( cheDatObj.getFullYear(), cheDatObj.getMonth() + 1 ); // What: Days-In-Month Value Number. Why: A plain-date target must clamp to however many real days cheDatObj's own month actually has. How: This calls dimCouFun for cheDatObj's own year and month.
-			const tarDayNum = Math.min( tskRecObj.dayOfMonth || 1, dimValNum );               // What: Target Day Number. Why: This is the actual target day-of-month, clamped so e.g. a 31st target still resolves in a 30-day month. How: This clamps tskRecObj's own dayOfMonth against dimValNum.
+			const tarDayNum = Math.min( tasRecObj.dayOfMonth || 1, dimValNum );               // What: Target Day Number. Why: This is the actual target day-of-month, clamped so e.g. a 31st target still resolves in a 30-day month. How: This clamps tasRecObj's own dayOfMonth against dimValNum.
 
 
 
@@ -373,21 +373,21 @@ function isaDueFun( tskRecObj, cheDatObj = new Date() ) {
 		case 'annual': { // What: Annual Case Block. Why: An annual task is due every N years from its own anchor, within one fixed month, on either a plain day or an Nth-weekday rule. How: This guards on the target month first, then the every-N-years gate, then branches on dateMode for the actual target day.
 
 
-			if ( cheDatObj.getMonth() + 1 !== tskRecObj.month ) return false; // What: Wrong Month Guard. Why: An annual task can never be due outside its own single target month. How: This returns false when cheDatObj's own month doesn't match tskRecObj's own month.
+			if ( cheDatObj.getMonth() + 1 !== tasRecObj.month ) return false; // What: Wrong Month Guard. Why: An annual task can never be due outside its own single target month. How: This returns false when cheDatObj's own month doesn't match tasRecObj's own month.
 
 
 
-			const itvCouNum = Math.max( 1, tskRecObj.interval || 1 ); // What: Interval Count Number. Why: The every-N-years gate immediately below needs a real, floor-1 interval count. How: This reads tskRecObj's own interval, floored at 1.
+			const itvCouNum = Math.max( 1, tasRecObj.interval || 1 ); // What: Interval Count Number. Why: The every-N-years gate immediately below needs a real, floor-1 interval count. How: This reads tasRecObj's own interval, floored at 1.
 
-			if ( !eveNthFun( itvCouNum, difYeaFun( tskRecObj.anchor || tskRecObj.createdAt, cheDatObj ) ) ) return false; // What: Every-N-Years Guard. Why: An annual task on, say, an every-3-years cadence must skip the 2 years in between entirely. How: This returns false when the anchor-to-cheDatObj year difference doesn't satisfy eveNthFun.
-
-
-
-			if ( tskRecObj.dateMode === 'nthWeekday' ) return cheDatObj.getDate() === nwmDayFun( cheDatObj.getFullYear(), tskRecObj.month, tskRecObj.nthOrdinal || 1, tskRecObj.nthWeekday ?? 0 ); // What: Nth-Weekday Mode Guard. Why: In this mode the target day is whichever Nth weekday nwmDayFun resolves within tskRecObj's own target month, not a plain day at all. How: This returns that comparison directly, short-circuiting the plain-date branch below.
+			if ( !eveNthFun( itvCouNum, difYeaFun( tasRecObj.anchor || tasRecObj.createdAt, cheDatObj ) ) ) return false; // What: Every-N-Years Guard. Why: An annual task on, say, an every-3-years cadence must skip the 2 years in between entirely. How: This returns false when the anchor-to-cheDatObj year difference doesn't satisfy eveNthFun.
 
 
-			const dimValNum = dimCouFun( cheDatObj.getFullYear(), tskRecObj.month ); // What: Days-In-Month Value Number. Why: A plain-date target must clamp to however many real days the target month actually has this year (Feb 29 in a leap year, Feb 28 otherwise). How: This calls dimCouFun for cheDatObj's own year and tskRecObj's own month.
-			const tarDayNum = Math.min( tskRecObj.day || 1, dimValNum );             // What: Target Day Number. Why: This is the actual target day, clamped so e.g. a Feb 29th target still resolves in a common year. How: This clamps tskRecObj's own day against dimValNum.
+
+			if ( tasRecObj.dateMode === 'nthWeekday' ) return cheDatObj.getDate() === nwmDayFun( cheDatObj.getFullYear(), tasRecObj.month, tasRecObj.nthOrdinal || 1, tasRecObj.nthWeekday ?? 0 ); // What: Nth-Weekday Mode Guard. Why: In this mode the target day is whichever Nth weekday nwmDayFun resolves within tasRecObj's own target month, not a plain day at all. How: This returns that comparison directly, short-circuiting the plain-date branch below.
+
+
+			const dimValNum = dimCouFun( cheDatObj.getFullYear(), tasRecObj.month ); // What: Days-In-Month Value Number. Why: A plain-date target must clamp to however many real days the target month actually has this year (Feb 29 in a leap year, Feb 28 otherwise). How: This calls dimCouFun for cheDatObj's own year and tasRecObj's own month.
+			const tarDayNum = Math.min( tasRecObj.day || 1, dimValNum );             // What: Target Day Number. Why: This is the actual target day, clamped so e.g. a Feb 29th target still resolves in a common year. How: This clamps tasRecObj's own day against dimValNum.
 
 
 
@@ -414,25 +414,25 @@ function isaDueFun( tskRecObj, cheDatObj = new Date() ) {
  * isaDonFun = Is-A Done Function
  *
  * @summary
- * Has tskRecObj's own occurrence on cheDatObj already been completed?
+ * Has tasRecObj's own occurrence on cheDatObj already been completed?
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - Task Record Object: The task/reminder record being
+ * @param tasRecObj - Task Record Object: The task/reminder record being
  *                    checked.
  * @param cheDatObj - Check Date Object: The date to check completion against,
  *                    defaulting to right now.
  *
- * @returns Whether tskRecObj's own lastDone exactly matches cheDatObj.
+ * @returns Whether tasRecObj's own lastDone exactly matches cheDatObj.
  *
  * @example
  * ```ts
- * isaDonFun(tskRecObj, cheDatObj) // => true or false
+ * isaDonFun(tasRecObj, cheDatObj) // => true or false
  * ```
  *
 */
 
-function isaDonFun( tskRecObj, cheDatObj = new Date() ) { return !!tskRecObj.lastDone && tskRecObj.lastDone === isoDatFun( cheDatObj ); } // What: Is-A Done Body. Why: Every caller (Today's checkbox state, streak reconciliation) needs a single boolean answer, not lastDone's own raw string. How: This compares tskRecObj's own lastDone against cheDatObj's own iso string.
+function isaDonFun( tasRecObj, cheDatObj = new Date() ) { return !!tasRecObj.lastDone && tasRecObj.lastDone === isoDatFun( cheDatObj ); } // What: Is-A Done Body. Why: Every caller (Today's checkbox state, streak reconciliation) needs a single boolean answer, not lastDone's own raw string. How: This compares tasRecObj's own lastDone against cheDatObj's own iso string.
 
 // #endregion isaDonFun
 
@@ -448,22 +448,22 @@ function isaDonFun( tskRecObj, cheDatObj = new Date() ) { return !!tskRecObj.las
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - Task Record Object: The task/reminder record being
+ * @param tasRecObj - Task Record Object: The task/reminder record being
  *                    checked.
  * @param cheDatObj - Check Date Object: The date to check staleness against,
  *                    defaulting to right now.
  *
- * @returns Whether tskRecObj is a 'once' task completed on some day
+ * @returns Whether tasRecObj is a 'once' task completed on some day
  * other than cheDatObj.
  *
  * @example
  * ```ts
- * isaStaFun(tskRecObj, cheDatObj) // => true or false
+ * isaStaFun(tasRecObj, cheDatObj) // => true or false
  * ```
  *
 */
 
-function isaStaFun( tskRecObj, cheDatObj = new Date() ) { return tskRecObj.repeat === 'once' && tskRecObj.lastDone && tskRecObj.lastDone !== isoDatFun( cheDatObj ); } // What: Is-A Stale Body. Why: store.jsx's own migrate() calls this to drop one-time tasks that have already served their purpose. How: This checks tskRecObj is a completed 'once' task whose own lastDone isn't cheDatObj's own date.
+function isaStaFun( tasRecObj, cheDatObj = new Date() ) { return tasRecObj.repeat === 'once' && tasRecObj.lastDone && tasRecObj.lastDone !== isoDatFun( cheDatObj ); } // What: Is-A Stale Body. Why: store.jsx's own migrate() calls this to drop one-time tasks that have already served their purpose. How: This checks tasRecObj is a completed 'once' task whose own lastDone isn't cheDatObj's own date.
 
 // #endregion isaStaFun
 
@@ -481,26 +481,26 @@ function isaStaFun( tskRecObj, cheDatObj = new Date() ) { return tskRecObj.repea
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - Task Record Object: The task/reminder record being
+ * @param tasRecObj - Task Record Object: The task/reminder record being
  *                    checked.
  *
- * @returns Whether tskRecObj is a 'once' task with any lastDone at all.
+ * @returns Whether tasRecObj is a 'once' task with any lastDone at all.
  *
  * @example
  * ```ts
- * isaComFun(tskRecObj) // => true or false
+ * isaComFun(tasRecObj) // => true or false
  * ```
  *
 */
 
-function isaComFun( tskRecObj ) { return tskRecObj.repeat === 'once' && !!tskRecObj.lastDone; } // What: Is-A Completed Body. Why: store.jsx's own Generate action calls this to drop a one-time task the moment it's done, same day included. How: This checks tskRecObj is a 'once' task with any lastDone value at all.
+function isaComFun( tasRecObj ) { return tasRecObj.repeat === 'once' && !!tasRecObj.lastDone; } // What: Is-A Completed Body. Why: store.jsx's own Generate action calls this to drop a one-time task the moment it's done, same day included. How: This checks tasRecObj is a 'once' task with any lastDone value at all.
 
 // #endregion isaComFun
 
 
 
-const DAY_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]; // What: Day Full Array. Why: sumTskFun's own weekly/monthly/annual Nth-weekday summaries need the full weekday name to display. How: This is indexed by daysOfWeek/nthWeekday entries throughout sumTskFun below.
-const DAY_ABB_ARR = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ]; // What: Day Abbreviation Array. Why: sumTskFun's own weekly multi-day and annual Nth-weekday summaries need a short weekday name to display. How: This is indexed by daysOfWeek/nthWeekday entries throughout sumTskFun below.
+const DAY_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]; // What: Day Full Array. Why: sumTasFun's own weekly/monthly/annual Nth-weekday summaries need the full weekday name to display. How: This is indexed by daysOfWeek/nthWeekday entries throughout sumTasFun below.
+const DAY_ABB_ARR = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ]; // What: Day Abbreviation Array. Why: sumTasFun's own weekly multi-day and annual Nth-weekday summaries need a short weekday name to display. How: This is indexed by daysOfWeek/nthWeekday entries throughout sumTasFun below.
 
 
 
@@ -546,10 +546,10 @@ function ordSufFun( ordValNum ) {
 
 
 
-// #region sumTskFun
+// #region sumTasFun
 
 /**
- * sumTskFun = Summary Task Function
+ * sumTasFun = Summary Task Function
  *
  * @summary
  * Short human label for a task/reminder's own schedule, e.g. 'Every
@@ -557,32 +557,32 @@ function ordSufFun( ordValNum ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - Task Record Object: The task/reminder whose schedule is
+ * @param tasRecObj - Task Record Object: The task/reminder whose schedule is
  *                    being summarized.
  *
  * @returns The short human summary string.
  *
  * @example
  * ```ts
- * sumTskFun(tskRecObj) // => summary string
+ * sumTasFun(tasRecObj) // => summary string
  * ```
  *
 */
 
-function sumTskFun( tskRecObj ) {
+function sumTasFun( tasRecObj ) {
 
 
-	switch ( tskRecObj.repeat ) { // What: Repeat Switch. Why: Each of the 5 schedule kinds has its own completely different summary shape. How: This branches on tskRecObj's own repeat field, falling back to an empty string for anything unrecognized.
+	switch ( tasRecObj.repeat ) { // What: Repeat Switch. Why: Each of the 5 schedule kinds has its own completely different summary shape. How: This branches on tasRecObj's own repeat field, falling back to an empty string for anything unrecognized.
 
 
 		case 'once': { // What: Once Case Block. Why: onceDate defaults to today (defTasFun), so only a genuinely future date changes the label; today-or-past reads as plain "One-Time", same as before this control existed. How: This guards on that first, then formats the future date when it applies.
 
 
-			if ( !tskRecObj.onceDate || tskRecObj.onceDate <= curIsoFun() ) return 'One-Time'; // What: Plain Label Guard. Why: A missing or already-arrived onceDate needs no extra wording at all. How: This returns the plain label when onceDate is unset or not yet in the future.
+			if ( !tasRecObj.onceDate || tasRecObj.onceDate <= curIsoFun() ) return 'One-Time'; // What: Plain Label Guard. Why: A missing or already-arrived onceDate needs no extra wording at all. How: This returns the plain label when onceDate is unset or not yet in the future.
 
 
 
-			const [ yeaNum, monNum, dayNum ] = tskRecObj.onceDate.split( '-' ).map( Number );                                       // What: Year Month Day Destructure. Why: A locale-formatted date label needs a real Date instance, not the raw ISO string. How: This splits tskRecObj's own onceDate on '-' and maps each segment through Number.
+			const [ yeaNum, monNum, dayNum ] = tasRecObj.onceDate.split( '-' ).map( Number );                                       // What: Year Month Day Destructure. Why: A locale-formatted date label needs a real Date instance, not the raw ISO string. How: This splits tasRecObj's own onceDate on '-' and maps each segment through Number.
 			const datLabStr = new Date( yeaNum, monNum - 1, dayNum ).toLocaleDateString( 'en-US', { month : 'short', day : 'numeric' } ); // What: Date Label String. Why: This is the actual short, locale-formatted date the label displays. How: This builds a Date from the 3 destructured parts and formats it.
 
 
@@ -595,8 +595,8 @@ function sumTskFun( tskRecObj ) {
 		case 'weekly': { // What: Weekly Case Block. Why: A weekly summary reads very differently depending on whether interval is 1 (a plain day-name label) or greater (an "every N weeks" label with a secondary day clause). How: This sorts daysOfWeek once, then branches entirely on itvCouNum.
 
 
-			const dowSetArr = [ ...( tskRecObj.daysOfWeek || [] ) ].sort( ( dowOneNum, dowTwoNum ) => dowOneNum - dowTwoNum ); // What: Dow Set Array. Why: Every branch below reads daysOfWeek in ascending order, so a stray unsorted save doesn't produce a scrambled label. How: This spreads and sorts tskRecObj's own daysOfWeek numerically.
-			const itvCouNum = Math.max( 1, tskRecObj.interval || 1 );                                                          // What: Interval Count Number. Why: This decides which of the 2 branches below applies. How: This reads tskRecObj's own interval, floored at 1.
+			const dowSetArr = [ ...( tasRecObj.daysOfWeek || [] ) ].sort( ( dowOneNum, dowTwoNum ) => dowOneNum - dowTwoNum ); // What: Dow Set Array. Why: Every branch below reads daysOfWeek in ascending order, so a stray unsorted save doesn't produce a scrambled label. How: This spreads and sorts tasRecObj's own daysOfWeek numerically.
+			const itvCouNum = Math.max( 1, tasRecObj.interval || 1 );                                                          // What: Interval Count Number. Why: This decides which of the 2 branches below applies. How: This reads tasRecObj's own interval, floored at 1.
 
 
 			if ( itvCouNum === 1 ) { // What: Plain Weekly Branch. Why: The common every-1-week case reads as a plain day-name label with no "every N weeks" prefix at all. How: This chains 5 mutually exclusive day-set shapes, falling back to a raw comma list.
@@ -661,7 +661,7 @@ function sumTskFun( tskRecObj ) {
 		case 'interval': { // What: Interval Case Block. Why: An interval summary is just the plain "every N days" phrase, singularized for N of 1. How: This floors interval at 1 and picks between the 2 phrasings.
 
 
-			const itvCouNum = Math.max( 1, tskRecObj.interval || 1 ); // What: Interval Count Number. Why: This decides both the phrasing and the interpolated count below. How: This reads tskRecObj's own interval, floored at 1.
+			const itvCouNum = Math.max( 1, tasRecObj.interval || 1 ); // What: Interval Count Number. Why: This decides both the phrasing and the interpolated count below. How: This reads tasRecObj's own interval, floored at 1.
 
 
 
@@ -673,11 +673,11 @@ function sumTskFun( tskRecObj ) {
 		case 'monthly': { // What: Monthly Case Block. Why: A monthly summary joins an "every N months" unit phrase with either an Nth-weekday clause or a plain ordinal day clause. How: This computes both pieces then joins them with a middle dot.
 
 
-			const itvCouNum = Math.max( 1, tskRecObj.interval || 1 );                        // What: Interval Count Number. Why: This decides both the unit phrasing and the interpolated count below. How: This reads tskRecObj's own interval, floored at 1.
+			const itvCouNum = Math.max( 1, tasRecObj.interval || 1 );                        // What: Interval Count Number. Why: This decides both the unit phrasing and the interpolated count below. How: This reads tasRecObj's own interval, floored at 1.
 			const unitLabStr = itvCouNum === 1 ? 'Monthly' : `Every ${ itvCouNum } months`;    // What: Unit Label String. Why: A plain monthly cadence reads better as "Monthly" than "Every 1 months". How: This picks the singular phrasing only when itvCouNum is exactly 1.
-			const dayLabStr = tskRecObj.dateMode === 'nthWeekday' // What: Day Label String. Why: The day clause reads completely differently depending on dateMode. How: This branches on tskRecObj's own dateMode, naming either an Nth-weekday or a plain ordinal day.
-				? `${ ordSufFun( tskRecObj.nthOrdinal || 1 ) } ${ DAY_FUL_ARR[ tskRecObj.nthWeekday ?? 0 ] }`
-				: ordSufFun( tskRecObj.dayOfMonth || 1 );
+			const dayLabStr = tasRecObj.dateMode === 'nthWeekday' // What: Day Label String. Why: The day clause reads completely differently depending on dateMode. How: This branches on tasRecObj's own dateMode, naming either an Nth-weekday or a plain ordinal day.
+				? `${ ordSufFun( tasRecObj.nthOrdinal || 1 ) } ${ DAY_FUL_ARR[ tasRecObj.nthWeekday ?? 0 ] }`
+				: ordSufFun( tasRecObj.dayOfMonth || 1 );
 
 
 
@@ -689,12 +689,12 @@ function sumTskFun( tskRecObj ) {
 		case 'annual': { // What: Annual Case Block. Why: An annual summary joins an "every N years" unit phrase with either an Nth-weekday-of-month clause or a plain month/day clause. How: This computes all 3 pieces then joins the unit and day clauses with a middle dot.
 
 
-			const itvCouNum = Math.max( 1, tskRecObj.interval || 1 );                     // What: Interval Count Number. Why: This decides both the unit phrasing and the interpolated count below. How: This reads tskRecObj's own interval, floored at 1.
+			const itvCouNum = Math.max( 1, tasRecObj.interval || 1 );                     // What: Interval Count Number. Why: This decides both the unit phrasing and the interpolated count below. How: This reads tasRecObj's own interval, floored at 1.
 			const unitLabStr = itvCouNum === 1 ? 'Yearly' : `Every ${ itvCouNum } years`;   // What: Unit Label String. Why: A plain annual cadence reads better as "Yearly" than "Every 1 years". How: This picks the singular phrasing only when itvCouNum is exactly 1.
-			const monAbbStr = new Date( 2001, ( tskRecObj.month || 1 ) - 1, 1 ).toLocaleDateString( 'en-US', { month : 'short' } ); // What: Month Abbreviation String. Why: The Nth-weekday branch below needs a short month name to name the target month. How: This builds a throwaway Date (year 2001 is arbitrary) from tskRecObj's own month and formats it.
-			const dayLabStr = tskRecObj.dateMode === 'nthWeekday' // What: Day Label String. Why: The day clause reads completely differently depending on dateMode. How: This branches on tskRecObj's own dateMode, naming either an Nth-weekday-of-month or a plain month/day via the locale's own short date formatting.
-				? `${ ordSufFun( tskRecObj.nthOrdinal || 1 ) } ${ DAY_ABB_ARR[ tskRecObj.nthWeekday ?? 0 ] } of ${ monAbbStr }`
-				: new Date( 2001, ( tskRecObj.month || 1 ) - 1, tskRecObj.day || 1 ).toLocaleDateString( 'en-US', { month : 'short', day : 'numeric' } );
+			const monAbbStr = new Date( 2001, ( tasRecObj.month || 1 ) - 1, 1 ).toLocaleDateString( 'en-US', { month : 'short' } ); // What: Month Abbreviation String. Why: The Nth-weekday branch below needs a short month name to name the target month. How: This builds a throwaway Date (year 2001 is arbitrary) from tasRecObj's own month and formats it.
+			const dayLabStr = tasRecObj.dateMode === 'nthWeekday' // What: Day Label String. Why: The day clause reads completely differently depending on dateMode. How: This branches on tasRecObj's own dateMode, naming either an Nth-weekday-of-month or a plain month/day via the locale's own short date formatting.
+				? `${ ordSufFun( tasRecObj.nthOrdinal || 1 ) } ${ DAY_ABB_ARR[ tasRecObj.nthWeekday ?? 0 ] } of ${ monAbbStr }`
+				: new Date( 2001, ( tasRecObj.month || 1 ) - 1, tasRecObj.day || 1 ).toLocaleDateString( 'en-US', { month : 'short', day : 'numeric' } );
 
 
 
@@ -711,7 +711,7 @@ function sumTskFun( tskRecObj ) {
 
 }
 
-// #endregion sumTskFun
+// #endregion sumTasFun
 
 
 
@@ -729,38 +729,38 @@ function sumTskFun( tskRecObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskListArr - Task List Array: The full list of task/reminder records
+ * @param tasListArr - Task List Array: The full list of task/reminder records
  *                     to filter.
  * @param cheDatObj  - Check Date Object: The date to check due-ness against,
  *                     defaulting to right now.
  *
- * @returns The due, non-hidden subset of tskListArr, sorted one-time
+ * @returns The due, non-hidden subset of tasListArr, sorted one-time
  * first, then newest createdAt first.
  *
  * @example
  * ```ts
- * dueTodFun(tskListArr, cheDatObj) // => array of due task records
+ * dueTodFun(tasListArr, cheDatObj) // => array of due task records
  * ```
  *
 */
 
-function dueTodFun( tskListArr, cheDatObj = new Date() ) {
+function dueTodFun( tasListArr, cheDatObj = new Date() ) {
 
 
-	return ( tskListArr || [] ) // What: Due Today Return. Why: The caller needs the due, non-hidden subset in a stable, predictable order. How: This filters out hidden and not-due entries, then sorts one-time first, newest-added first within each group.
+	return ( tasListArr || [] ) // What: Due Today Return. Why: The caller needs the due, non-hidden subset in a stable, predictable order. How: This filters out hidden and not-due entries, then sorts one-time first, newest-added first within each group.
 
-		.filter( ( curTskObj ) => !curTskObj.hidden && isaDueFun( curTskObj, cheDatObj ) ) // What: Due Filter. Why: Only a non-hidden, currently-due task belongs in this list at all. How: This keeps only entries where hidden is falsy and isaDueFun returns true.
+		.filter( ( curTasObj ) => !curTasObj.hidden && isaDueFun( curTasObj, cheDatObj ) ) // What: Due Filter. Why: Only a non-hidden, currently-due task belongs in this list at all. How: This keeps only entries where hidden is falsy and isaDueFun returns true.
 
-		.sort( ( tskAObj, tskBObj ) => { // What: Stable Sort. Why: One-time tasks read as more urgent than recurring ones, and within either group, the most recently added should surface first. How: This compares the 2 records' own repeat/createdAt fields below.
-
-
-			if ( tskAObj.repeat === 'once' && tskBObj.repeat !== 'once' ) return -1; // What: A-First Case Return. Why: A one-time task always outranks a recurring one. How: This returns -1 (A first) when only tskAObj is 'once'.
-
-			if ( tskBObj.repeat === 'once' && tskAObj.repeat !== 'once' ) return 1; // What: B-First Case Return. Why: Same reasoning as above, mirrored. How: This returns 1 (B first) when only tskBObj is 'once'.
+		.sort( ( tasAObj, tasBObj ) => { // What: Stable Sort. Why: One-time tasks read as more urgent than recurring ones, and within either group, the most recently added should surface first. How: This compares the 2 records' own repeat/createdAt fields below.
 
 
+			if ( tasAObj.repeat === 'once' && tasBObj.repeat !== 'once' ) return -1; // What: A-First Case Return. Why: A one-time task always outranks a recurring one. How: This returns -1 (A first) when only tasAObj is 'once'.
 
-			return tskAObj.createdAt < tskBObj.createdAt ? 1 : -1; // What: Newest-First Fallback Return. Why: Within the same urgency group, the most recently added task should surface first. How: This returns 1 (B first) when tskAObj's own createdAt sorts earlier, -1 otherwise.
+			if ( tasBObj.repeat === 'once' && tasAObj.repeat !== 'once' ) return 1; // What: B-First Case Return. Why: Same reasoning as above, mirrored. How: This returns 1 (B first) when only tasBObj is 'once'.
+
+
+
+			return tasAObj.createdAt < tasBObj.createdAt ? 1 : -1; // What: Newest-First Fallback Return. Why: Within the same urgency group, the most recently added task should surface first. How: This returns 1 (B first) when tasAObj's own createdAt sorts earlier, -1 otherwise.
 
 
 		} );
@@ -863,7 +863,7 @@ function norOptFun( remOptObj ) {
 
 
 
-const isaRecFun = ( tskRecObj ) => tskRecObj.repeat !== 'once'; // What: Is-A Recurring Function. Why: optForFun/visTodFun/todVisFun all need to know which of the 2 option classes governs a given task. How: This is true for any repeat kind other than 'once'.
+const isaRecFun = ( tasRecObj ) => tasRecObj.repeat !== 'once'; // What: Is-A Recurring Function. Why: optForFun/visTodFun/todVisFun all need to know which of the 2 option classes governs a given task. How: This is true for any repeat kind other than 'once'.
 
 
 
@@ -873,33 +873,33 @@ const isaRecFun = ( tskRecObj ) => tskRecObj.repeat !== 'once'; // What: Is-A Re
  * optForFun = Options For Function
  *
  * @summary
- * The option set (once or recurring) actually governing tskRecObj.
+ * The option set (once or recurring) actually governing tasRecObj.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - Task Record Object: The task/reminder whose governing
+ * @param tasRecObj - Task Record Object: The task/reminder whose governing
  *                    options are wanted.
  * @param remOptObj - Reminder Option Object: The raw reminderOpts state to
  *                    normalize and choose from.
  *
- * @returns tskRecObj's own governing options object, either
+ * @returns tasRecObj's own governing options object, either
  * remOptObj's normalized once or recurring class.
  *
  * @example
  * ```ts
- * optForFun(tskRecObj, remOptObj) // => { streak, ring, stats, ... }
+ * optForFun(tasRecObj, remOptObj) // => { streak, ring, stats, ... }
  * ```
  *
 */
 
-function optForFun( tskRecObj, remOptObj ) {
+function optForFun( tasRecObj, remOptObj ) {
 
 
-	const optNorObj = norOptFun( remOptObj ); // What: Options Normalized Object. Why: tskRecObj's own class must be read from the fully-shaped, defaulted options, not a possibly-partial raw remOptObj. How: This calls norOptFun once and reuses the result.
+	const optNorObj = norOptFun( remOptObj ); // What: Options Normalized Object. Why: tasRecObj's own class must be read from the fully-shaped, defaulted options, not a possibly-partial raw remOptObj. How: This calls norOptFun once and reuses the result.
 
 
 
-	return isaRecFun( tskRecObj ) ? optNorObj.recurring : optNorObj.once; // What: Options For Return. Why: The caller needs whichever single class actually governs tskRecObj. How: This picks optNorObj's own recurring or once class based on isaRecFun.
+	return isaRecFun( tasRecObj ) ? optNorObj.recurring : optNorObj.once; // What: Options For Return. Why: The caller needs whichever single class actually governs tasRecObj. How: This picks optNorObj's own recurring or once class based on isaRecFun.
 
 
 }
@@ -920,7 +920,7 @@ function optForFun( tskRecObj, remOptObj ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskListArr - Task List Array: The full list of task/reminder records
+ * @param tasListArr - Task List Array: The full list of task/reminder records
  *                     to filter.
  * @param remOptObj  - Reminder Option Object: The raw reminderOpts state
  *                     governing weekend/ holiday participation.
@@ -929,17 +929,17 @@ function optForFun( tskRecObj, remOptObj ) {
  * @param cheDatObj  - Check Date Object: The date to check visibility against,
  *                     defaulting to right now.
  *
- * @returns The subset of tskListArr that's both due and not excluded
+ * @returns The subset of tasListArr that's both due and not excluded
  * on cheDatObj.
  *
  * @example
  * ```ts
- * visTodFun(tskListArr, remOptObj, holStaObj, cheDatObj) // => array
+ * visTodFun(tasListArr, remOptObj, holStaObj, cheDatObj) // => array
  * ```
  *
 */
 
-function visTodFun( tskListArr, remOptObj, holStaObj, cheDatObj = new Date() ) {
+function visTodFun( tasListArr, remOptObj, holStaObj, cheDatObj = new Date() ) {
 
 
 	const isaWkdBoo = cheDatObj.getDay() === 0 || cheDatObj.getDay() === 6;                       // What: Is-A Weekend Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
@@ -948,16 +948,16 @@ function visTodFun( tskListArr, remOptObj, holStaObj, cheDatObj = new Date() ) {
 
 
 
-	return dueTodFun( tskListArr, cheDatObj ).filter( ( curTskObj ) => { // What: Visible Today Return. Why: A task can be due yet still hidden, by its own class's switches or a manual skip. How: This filters dueTodFun's own result down further, per curTskObj's own governing options.
+	return dueTodFun( tasListArr, cheDatObj ).filter( ( curTasObj ) => { // What: Visible Today Return. Why: A task can be due yet still hidden, by its own class's switches or a manual skip. How: This filters dueTodFun's own result down further, per curTasObj's own governing options.
 
 
-		const optNorObj = optForFun( curTskObj, remOptObj ); // What: Options Normalized Object. Why: The 3 guards below all read from curTskObj's own governing class. How: This calls optForFun once per task and reuses the result.
+		const optNorObj = optForFun( curTasObj, remOptObj ); // What: Options Normalized Object. Why: The 3 guards below all read from curTasObj's own governing class. How: This calls optForFun once per task and reuses the result.
 
 		if ( optNorObj.excludeWeekends && isaWkdBoo ) return false; // What: Weekend Exclusion Guard. Why: This class has opted out of showing on a weekend, and today is one. How: This returns false when both conditions hold.
 
 		if ( optNorObj.excludeHolidays && isaHolBoo ) return false; // What: Holiday Exclusion Guard. Why: This class has opted out of showing on a holiday, and today is one. How: This returns false when both conditions hold.
 
-		if ( curTskObj.skipUntil && cheIsoStr < curTskObj.skipUntil ) return false; // What: Manual Skip Guard. Why: The user manually skipped curTskObj until a later date that hasn't arrived yet. How: This returns false while cheIsoStr hasn't reached curTskObj's own skipUntil.
+		if ( curTasObj.skipUntil && cheIsoStr < curTasObj.skipUntil ) return false; // What: Manual Skip Guard. Why: The user manually skipped curTasObj until a later date that hasn't arrived yet. How: This returns false while cheIsoStr hasn't reached curTasObj's own skipUntil.
 
 
 
@@ -979,21 +979,21 @@ function visTodFun( tskListArr, remOptObj, holStaObj, cheDatObj = new Date() ) {
  * todVisFun = Today Visibility Function
  *
  * @summary
- * Will tskRecObj show on Today, and if not, WHY and when will it?
+ * Will tasRecObj show on Today, and if not, WHY and when will it?
  * Separates 2 causes because they mean different things to the user:
  * 'schedule' means the repeat rule simply doesn't land on today, and
  * nothing is wrong, it will appear on its own day; 'weekends'/
- * 'holidays' means tskRecObj IS due today but its own class's
+ * 'holidays' means tasRecObj IS due today but its own class's
  * participation switch hides it, which is surprising, especially for
  * a one-time task with no later occurrence of its own; 'skipUntil'
  * means the user manually skipped it. The returned next is the first
- * day tskRecObj will actually appear (schedule AND exclusions
+ * day tasRecObj will actually appear (schedule AND exclusions
  * honored), or null if nothing qualifies within nexEliFun's own search
  * horizon.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj - Task Record Object: The task/reminder being checked.
+ * @param tasRecObj - Task Record Object: The task/reminder being checked.
  * @param remOptObj - Reminder Option Object: The raw reminderOpts state
  *                    governing weekend/ holiday participation.
  * @param holStaObj - Holiday State Object: The persisted holidays state to
@@ -1007,15 +1007,15 @@ function visTodFun( tskListArr, remOptObj, holStaObj, cheDatObj = new Date() ) {
  *
  * @example
  * ```ts
- * todVisFun(tskRecObj, remOptObj, holStaObj, cheDatObj) // => advisory
+ * todVisFun(tasRecObj, remOptObj, holStaObj, cheDatObj) // => advisory
  * ```
  *
 */
 
-function todVisFun( tskRecObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
+function todVisFun( tasRecObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
 
 
-	const optNorObj = optForFun( tskRecObj, remOptObj );                    // What: Options Normalized Object. Why: The 2 exclusion checks further below both read from tskRecObj's own governing class. How: This calls optForFun once and reuses the result.
+	const optNorObj = optForFun( tasRecObj, remOptObj );                    // What: Options Normalized Object. Why: The 2 exclusion checks further below both read from tasRecObj's own governing class. How: This calls optForFun once and reuses the result.
 	const isaWkdBoo = cheDatObj.getDay() === 0 || cheDatObj.getDay() === 6; // What: Is-A Weekend Boolean. Why: The weekend-exclusion check further below needs to know whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
 	const holInfObj = HOL_NAM_OBJ && HOL_NAM_OBJ.holidayInfoOn // What: Holiday Info Object. Why: A caller distinguishing a built-in holiday from a custom one needs the full record, not just its name; an older HOL_NAM_OBJ shape only ever exposed holidayOn (name only), so the richer holidayInfoOn is preferred when present. This whole expression is deliberately left as one guarded chain rather than split into separate always-evaluated consts, since HOL_NAM_OBJ.holidayOn must never be called before HOL_NAM_OBJ itself is confirmed to exist. How: This calls holidayInfoOn directly when it exists, otherwise rebuilds a name-only record from holidayOn when that finds a match, or lands on null when neither one does.
 		? HOL_NAM_OBJ.holidayInfoOn( holStaObj, cheDatObj )
@@ -1030,20 +1030,20 @@ function todVisFun( tskRecObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
 			}
 			: null );
 	const isaHolBoo = !!holInfObj;   // What: Is-A Holiday Boolean. Why: The holiday-exclusion check further below only needs a plain boolean, not the full record. How: This coerces holInfObj to a real boolean.
-	const cheIsoStr = isoDatFun( cheDatObj ); // What: Check Iso String. Why: The manual-skip check further below compares tskRecObj's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDatFun.
+	const cheIsoStr = isoDatFun( cheDatObj ); // What: Check Iso String. Why: The manual-skip check further below compares tasRecObj's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDatFun.
 	const cauValArr = []; // What: Cause Value Array. Why: More than one exclusion can apply on the same day (e.g. both an excluded weekend and an excluded holiday), and naming only the first would leave the user turning off one setting while the task still doesn't appear. How: This starts empty and is pushed to below, one entry per applicable cause.
 
 
-	if ( !isaDueFun( tskRecObj, cheDatObj ) ) cauValArr.push( 'schedule' ); // What: Schedule Cause Push. Why: A task that isn't even due today has nothing else worth checking; every exclusion below only makes sense for an already-due task. How: This pushes 'schedule' and skips the else branch entirely via isaDueFun's own result.
+	if ( !isaDueFun( tasRecObj, cheDatObj ) ) cauValArr.push( 'schedule' ); // What: Schedule Cause Push. Why: A task that isn't even due today has nothing else worth checking; every exclusion below only makes sense for an already-due task. How: This pushes 'schedule' and skips the else branch entirely via isaDueFun's own result.
 
-	else { // What: Due-Today Else Block. Why: Only once tskRecObj is confirmed due does checking its own weekend/holiday/skip exclusions make sense. How: This pushes 0 or more of 'weekends'/'holidays'/'skipUntil', any combination of which can apply at once.
+	else { // What: Due-Today Else Block. Why: Only once tasRecObj is confirmed due does checking its own weekend/holiday/skip exclusions make sense. How: This pushes 0 or more of 'weekends'/'holidays'/'skipUntil', any combination of which can apply at once.
 
 
 		if ( optNorObj.excludeWeekends && isaWkdBoo ) cauValArr.push( 'weekends' ); // What: Weekends Cause Push. Why: This class has opted out of showing on a weekend, and today is one. How: This pushes 'weekends' when both conditions hold.
 
 		if ( optNorObj.excludeHolidays && isaHolBoo ) cauValArr.push( 'holidays' ); // What: Holidays Cause Push. Why: This class has opted out of showing on a holiday, and today is one. How: This pushes 'holidays' when both conditions hold.
 
-		if ( tskRecObj.skipUntil && cheIsoStr < tskRecObj.skipUntil ) cauValArr.push( 'skipUntil' ); // What: Skip-Until Cause Push. Why: The user manually skipped tskRecObj until a later date that hasn't arrived yet. How: This pushes 'skipUntil' while cheIsoStr hasn't reached tskRecObj's own skipUntil.
+		if ( tasRecObj.skipUntil && cheIsoStr < tasRecObj.skipUntil ) cauValArr.push( 'skipUntil' ); // What: Skip-Until Cause Push. Why: The user manually skipped tasRecObj until a later date that hasn't arrived yet. How: This pushes 'skipUntil' while cheIsoStr hasn't reached tasRecObj's own skipUntil.
 
 
 	}
@@ -1055,12 +1055,12 @@ function todVisFun( tskRecObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
 	return { // What: Today Visibility Return. Why: The caller needs the full advisory shape described in this function's own @summary above. How: This builds one plain object from every value computed above.
 
 
-		visible       : !priCauStr,                                                                 // What: Visible. Why: The caller's simplest possible question is whether tskRecObj shows at all. How: This is true only when priCauStr is null.
+		visible       : !priCauStr,                                                                 // What: Visible. Why: The caller's simplest possible question is whether tasRecObj shows at all. How: This is true only when priCauStr is null.
 		cause         : priCauStr,                                                                  // What: Cause. Why: The caller needs the single primary reason, for routing an advisory note to the right control. How: This is priCauStr, computed above.
 		causes        : cauValArr,                                                                  // What: Causes. Why: A caller wording a fuller note (more than one cause can apply at once) needs the complete set. How: This is cauValArr, computed above.
 		holidayName   : holInfObj ? holInfObj.name : null,                                          // What: Holiday Name. Why: A caller wording itself around a specific holiday needs its own display name. How: This reads holInfObj's own name when holInfObj exists, null otherwise.
 		holidayCustom : holInfObj ? !!holInfObj.custom : false,                                     // What: Holiday Custom. Why: A caller needs to distinguish "the Christmas Day holiday" from "your Family Day custom holiday" in its own wording. How: This coerces holInfObj's own custom flag when holInfObj exists, false otherwise.
-		next          : priCauStr ? nexEliFun( tskRecObj, remOptObj, holStaObj, cheDatObj, true ) : null // What: Next. Why: A caller offering "it'll show again on ..." only needs to compute that (a real search) when tskRecObj isn't visible at all. How: This calls nexEliFun only when priCauStr is set, null otherwise.
+		next          : priCauStr ? nexEliFun( tasRecObj, remOptObj, holStaObj, cheDatObj, true ) : null // What: Next. Why: A caller offering "it'll show again on ..." only needs to compute that (a real search) when tasRecObj isn't visible at all. How: This calls nexEliFun only when priCauStr is set, null otherwise.
 
 
 	};
@@ -1078,19 +1078,19 @@ function todVisFun( tskRecObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
  * nexEliFun = Next Eligible Function
  *
  * @summary
- * The first date on/after tomorrow when tskRecObj would naturally
+ * The first date on/after tomorrow when tasRecObj would naturally
  * appear again, honoring both its own schedule AND its class's
  * weekend/holiday exclusions. Powers the "Skip until ..." action.
  * resSkiBoo, when true, also skips any day before an already-active
  * skipUntil; it's OFF by default since the "Skip until ..." action
  * calls this to find the next natural occurrence to skip TO, where the
  * current skipUntil must be ignored or it could never advance. A
- * caller describing when tskRecObj will actually REAPPEAR (the editor
+ * caller describing when tasRecObj will actually REAPPEAR (the editor
  * advisory, the day log) must pass true.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tskRecObj  - Task Record Object: The task/reminder to search a next
+ * @param tasRecObj  - Task Record Object: The task/reminder to search a next
  *                     occurrence for.
  * @param remOptObj  - Reminder Option Object: The raw reminderOpts state
  *                     governing weekend/ holiday participation.
@@ -1107,21 +1107,21 @@ function todVisFun( tskRecObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
  *
  * @example
  * ```ts
- * nexEliFun(tskRecObj, remOptObj, holStaObj, fromDatObj, resSkiBoo) // => Date or null
+ * nexEliFun(tasRecObj, remOptObj, holStaObj, fromDatObj, resSkiBoo) // => Date or null
  * ```
  *
 */
 
-function nexEliFun( tskRecObj, remOptObj, holStaObj, fromDatObj = new Date(), resSkiBoo = false ) {
+function nexEliFun( tasRecObj, remOptObj, holStaObj, fromDatObj = new Date(), resSkiBoo = false ) {
 
 
-	const optNorObj = optForFun( tskRecObj, remOptObj );                                                 // What: Options Normalized Object. Why: The weekend/holiday exclusion guards inside the loop below both read from tskRecObj's own governing class. How: This calls optForFun once and reuses the result.
+	const optNorObj = optForFun( tasRecObj, remOptObj );                                                 // What: Options Normalized Object. Why: The weekend/holiday exclusion guards inside the loop below both read from tasRecObj's own governing class. How: This calls optForFun once and reuses the result.
 	const basDatObj = new Date( fromDatObj.getFullYear(), fromDatObj.getMonth(), fromDatObj.getDate() ); // What: Base Date Object. Why: Every candidate day stepped through below is relative to fromDatObj with its own time-of-day stripped. How: This rebuilds a Date from fromDatObj's own year/month/day alone.
-	const itvCouNum = Math.max( 1, tskRecObj.interval || 1 );                                            // What: Interval Count Number. Why: The search horizon below needs to scale with a sparse "every N ___" schedule, or it could fail to find its own next occurrence. How: This reads tskRecObj's own interval, floored at 1.
-	const horDayNum = tskRecObj.repeat === 'annual' ? itvCouNum * 366 + 366 // What: Horizon Day Number. Why: 1100 days (~3 years) comfortably covers the old max (annual, interval 1) but not a large "every N weeks/months/years", and a one-time task's own onceDate has no upper bound (a plain date picker), so a far-future pick needs its own horizon or this function would falsely report "this will never show". How: This picks a horizon sized to tskRecObj's own repeat kind and interval, or (for 'once') the distance to its own onceDate plus 30 days of slack.
-		: tskRecObj.repeat === 'monthly' ? itvCouNum * 31 + 31
-		: tskRecObj.repeat === 'weekly' ? itvCouNum * 7 + 7
-		: ( tskRecObj.repeat === 'once' && tskRecObj.onceDate ) ? Math.round( ( parIsoFun( tskRecObj.onceDate ) - basDatObj ) / 86400000 ) + 30
+	const itvCouNum = Math.max( 1, tasRecObj.interval || 1 );                                            // What: Interval Count Number. Why: The search horizon below needs to scale with a sparse "every N ___" schedule, or it could fail to find its own next occurrence. How: This reads tasRecObj's own interval, floored at 1.
+	const horDayNum = tasRecObj.repeat === 'annual' ? itvCouNum * 366 + 366 // What: Horizon Day Number. Why: 1100 days (~3 years) comfortably covers the old max (annual, interval 1) but not a large "every N weeks/months/years", and a one-time task's own onceDate has no upper bound (a plain date picker), so a far-future pick needs its own horizon or this function would falsely report "this will never show". How: This picks a horizon sized to tasRecObj's own repeat kind and interval, or (for 'once') the distance to its own onceDate plus 30 days of slack.
+		: tasRecObj.repeat === 'monthly' ? itvCouNum * 31 + 31
+		: tasRecObj.repeat === 'weekly' ? itvCouNum * 7 + 7
+		: ( tasRecObj.repeat === 'once' && tasRecObj.onceDate ) ? Math.round( ( parIsoFun( tasRecObj.onceDate ) - basDatObj ) / 86400000 ) + 30
 		: 1100;
 	const horValNum = Math.max( 1100, horDayNum ); // What: Horizon Value Number. Why: The loop below needs a single floored-at-1100 day count to actually iterate up to. How: This floors horDayNum at 1100.
 
@@ -1133,9 +1133,9 @@ function nexEliFun( tskRecObj, remOptObj, holStaObj, fromDatObj = new Date(), re
 
 		curDatObj.setDate( basDatObj.getDate() + dayOffNum ); // What: Current Date Step. Why: This is the actual step to today's candidate day. How: This mutates curDatObj in place to basDatObj's own date plus dayOffNum.
 
-		if ( !isaDueFun( tskRecObj, curDatObj ) ) continue; // What: Not-Due Guard. Why: A candidate day tskRecObj isn't even due on can never be the next eligible one. How: This skips to the next iteration when isaDueFun returns false.
+		if ( !isaDueFun( tasRecObj, curDatObj ) ) continue; // What: Not-Due Guard. Why: A candidate day tasRecObj isn't even due on can never be the next eligible one. How: This skips to the next iteration when isaDueFun returns false.
 
-		if ( resSkiBoo && tskRecObj.skipUntil && isoDatFun( curDatObj ) < tskRecObj.skipUntil ) continue; // What: Active Skip Guard. Why: When resSkiBoo is honored, a day still inside an active skipUntil window can't be the next eligible one either. How: This skips to the next iteration when all 3 conditions hold.
+		if ( resSkiBoo && tasRecObj.skipUntil && isoDatFun( curDatObj ) < tasRecObj.skipUntil ) continue; // What: Active Skip Guard. Why: When resSkiBoo is honored, a day still inside an active skipUntil window can't be the next eligible one either. How: This skips to the next iteration when all 3 conditions hold.
 
 		const isaWkdBoo = curDatObj.getDay() === 0 || curDatObj.getDay() === 6; // What: Is-A Weekend Boolean. Why: The weekend-exclusion guard right below needs to know whether curDatObj itself falls on a weekend. How: This checks curDatObj's own weekday against Sunday (0) and Saturday (6).
 
@@ -1161,7 +1161,7 @@ function nexEliFun( tskRecObj, remOptObj, holStaObj, fromDatObj = new Date(), re
 
 
 
-const TSK_RPT_ARR = [ 'once', 'weekly', 'interval', 'monthly', 'annual' ]; // What: Task Repeat Array. Why: This is the fixed set of valid repeat values every task's own repeat field must fall back to one of. How: This is re-exported as TASKS.REPEATS below, read by the editor's own repeat-kind dropdown.
+const TAS_RPT_ARR = [ 'once', 'weekly', 'interval', 'monthly', 'annual' ]; // What: Task Repeat Array. Why: This is the fixed set of valid repeat values every task's own repeat field must fall back to one of. How: This is re-exported as TASKS.REPEATS below, read by the editor's own repeat-kind dropdown.
 
 
 
@@ -1173,7 +1173,7 @@ export const TASKS = { // What: Tasks Namespace Object. Why: store.jsx, reminder
 	isDoneToday     : isaDonFun, // What: Is Done Today. Why: Callers check whether a task's own occurrence is already completed by this exact name. How: This re-exports isaDonFun under its original external property name.
 	isStaleOnce     : isaStaFun, // What: Is Stale Once. Why: store.jsx's own migrate() drops a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its original external property name.
 	isCompletedOnce : isaComFun, // What: Is Completed Once. Why: Callers drop a same-day completed one-time task by this exact name. How: This re-exports isaComFun under its original external property name.
-	summary         : sumTskFun, // What: Summary. Why: Callers need a task's own human-readable schedule summary by this exact name. How: This re-exports sumTskFun under its original external property name.
+	summary         : sumTasFun, // What: Summary. Why: Callers need a task's own human-readable schedule summary by this exact name. How: This re-exports sumTasFun under its original external property name.
 	dueToday        : dueTodFun, // What: Due Today. Why: Callers need the due, non-hidden, stably-sorted task list by this exact name. How: This re-exports dueTodFun under its original external property name.
 	defaultOpts     : defOptFun, // What: Default Opts. Why: Callers need the canonical default participation-options shape by this exact name. How: This re-exports defOptFun under its original external property name.
 	normalizeOpts   : norOptFun, // What: Normalize Opts. Why: store.jsx's own migrate() and every opts-reading caller need a fully-shaped options object by this exact name. How: This re-exports norOptFun under its original external property name.
@@ -1185,7 +1185,7 @@ export const TASKS = { // What: Tasks Namespace Object. Why: store.jsx, reminder
 	isoToday        : curIsoFun, // What: Iso Today. Why: Callers need today's own ISO date string by this exact name. How: This re-exports curIsoFun under its original external property name.
 	isoOf           : isoDatFun, // What: Iso Of. Why: Callers need an arbitrary date's own ISO string by this exact name. How: This re-exports isoDatFun under its original external property name.
 	anchorDate      : ancDatFun, // What: Anchor Date. Why: Callers need the generator-anchored "what day is it" Date by this exact name. How: This re-exports ancDatFun under its original external property name.
-	REPEATS         : TSK_RPT_ARR // What: Repeats. Why: Callers (a task's own repeat-kind dropdown) need the fixed list of valid repeat option values. How: This re-exports TSK_RPT_ARR under its original external property name.
+	REPEATS         : TAS_RPT_ARR // What: Repeats. Why: Callers (a task's own repeat-kind dropdown) need the fixed list of valid repeat option values. How: This re-exports TAS_RPT_ARR under its original external property name.
 
 
 };
