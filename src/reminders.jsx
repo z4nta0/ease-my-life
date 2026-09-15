@@ -3689,4 +3689,3 @@ function RemManCom ( { state, actions, hidden } ) {
 export { RemManCom, RemSecCom, SegConCom }; // What: Named Exports. Why: tab-data.jsx/cadence-control.jsx/tab-settings.jsx import these 3 by these exact names. How: This re-exports the 3 components declared above under their own newly-renamed names, already rippled into every one of those files. RemManCom/RemSecCom's own remaining prop families (sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, arrivingTaskIds, activeEditor, setActiveEditor, onPlayTutorial, onUncheckTutorial, checklistExiting, hidden) are deliberately left unrenamed for now, their own deliberate decision distinct from the component identity rename just completed.
 
 
-

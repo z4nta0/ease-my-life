@@ -2477,5 +2477,3 @@ export const ONBOARDING_STATS = {
 };
 
 
-
-

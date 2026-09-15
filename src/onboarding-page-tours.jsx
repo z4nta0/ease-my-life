@@ -1408,4 +1408,3 @@ function PagTouCom ( { pagIdeStr, state, actions, active, selectTab, onCloFun } 
 export { PagTouCom, buildPageTourStep1 }; // What: Named Exports. Why: app.jsx renders PagTouCom directly, and onboarding-app-features.jsx reuses buildPageTourStep1 verbatim for its own App Features tours. How: This re-exports both bindings unchanged from their own module.
 
 
-

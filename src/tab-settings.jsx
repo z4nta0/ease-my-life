@@ -3487,4 +3487,3 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 export { TabSettings }; // What: Named Export. Why: app.jsx imports this by this exact name. How: This re-exports TabSettings as-is; every other binding in this file is internal-only.
 
 
-

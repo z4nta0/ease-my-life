@@ -335,11 +335,19 @@ decision is captured for next time instead of getting re-asked later.
   spaces regardless, since it isn't indentation at all.
 
 ### File boundaries
-- Every file starts with exactly 3 blank lines before its first real line,
-  and ends with exactly 3 blank lines after its last real line. When the
-  file's imports are wrapped in a `// #region Imports` marker (see
+- Every file starts with exactly 3 blank lines before its first real line.
+  When the file's imports are wrapped in a `// #region Imports` marker (see
   "### Sectioning / fold regions" below), that marker counts as the first
   real line for this purpose.
+- Every file ends with exactly 2 blank lines after its last real line, not
+  3 — deliberately asymmetric with the start-of-file rule above. VS Code
+  (and most, if not all, other editors) automatically ensures a file ends
+  with a trailing newline, which silently adds one more empty row on top
+  of whatever was actually written; a file whose own written content ends
+  in 3 blank lines therefore actually shows 4 once saved. Writing 2 blank
+  lines accounts for that automatic extra row, landing on the same
+  3-empty-row visual result the start-of-file rule specifies, without
+  actually being 3 blank lines in the file's own written content.
 
 ### Top-level (module scope)
 - Between any two distinct top-level declarations (a comment block, a

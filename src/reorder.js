@@ -553,4 +553,3 @@ function staDraFun ( dowEveObj, draConObj ) {
 export const REORDER = { startDrag : staDraFun }; // What: Reorder Namespace Object. Why: tab-today.jsx's own (not yet reformatted) call sites read REORDER.startDrag by that exact literal name. How: This re-exports the freshly-renamed staDraFun under its original external property name, leaving every existing caller unchanged.
 
 
-

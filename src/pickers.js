@@ -910,4 +910,3 @@ const modEliFun = ( iteRecObj, pikRecObj ) => { // What: Mode Eligible Function.
 export const PICKERS = { pick : pikIteFun, readiness : reaValFun, easeEligible : easEliFun, modeEligible : modEliFun, EASE_TOL : EAS_TOL_NUM, avgEase : aveEasFun, DEFAULT_EASE : DEF_EAS_OBJ }; // What: Pickers Namespace Object. Why: store.jsx, tab-today.jsx, and tab-picker.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on, deliberately left unrenamed (see this file's own header comment).
 
 
-

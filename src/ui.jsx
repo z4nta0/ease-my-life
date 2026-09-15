@@ -1663,4 +1663,3 @@ function freEdiFun ( sorLisArr, opeIdeVal, newIdeVal, frzRowRef ) {
 export { IcoSvgCom, ButBasCom, CarSurCom, ColDisCom, PilTagCom, ProBarCom, NumSteCom, InfTipCom, WeeChiCom, BooResCom, FilButCom, forDatFun, forLonFun, forTimFun, sorEntFun, SorSelCom, freEdiFun }; // What: Named Exports. Why: This is the shared UI primitives module; every tab and several other shared modules import one or more of these by name. How: This re-exports all 17 declared above; every other binding in this file is internal-only.
 
 
-

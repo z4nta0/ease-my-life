@@ -72,4 +72,3 @@ Promise.race( [ // What: Boot Race Array. Why: Gating the mount on storage init 
 ] ).then( bootAppFun, bootAppFun ); // What: Boot Promise Then Call. Why: bootAppFun must run exactly once no matter which side of the race settled first. How: This passes bootAppFun as both the fulfillment and rejection handler, treating a hung/slow IndexedDB the same as a successful init.
 
 
-
