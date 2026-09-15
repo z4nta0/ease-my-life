@@ -99,8 +99,8 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 const DAT_MOD_ARR = [ // What: Date Mode Array. Why: The monthly and yearly subsections below both offer the same Date-vs-Weekday choice, driven by one shared Segmented control. How: This is passed as that Segmented's own options prop in both subsections below.
 
 
-	{ keyStr : 'date',       labStr : 'Date' },   // What: Key String. Why: This is the default day-of-month/day targeting mode's own value. How: Segmented compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
-	{ keyStr : 'nthWeekday', labStr : 'Weekday' } // What: Key String. Why: This lets the user target e.g. "the 2nd Tuesday" instead of a fixed day number. How: Segmented compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+	{ keyStr : 'date',       labStr : 'Date'    }, // What: Key String. Why: This is the default day-of-month/day targeting mode's own value. How: Segmented compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
+	{ keyStr : 'nthWeekday', labStr : 'Weekday' }  // What: Key String. Why: This lets the user target e.g. "the 2nd Tuesday" instead of a fixed day number. How: Segmented compares this against the current dateMode and writes it back on selection. // What: Label String. Why: This is the segmented control's own visible button text for this option. How: Segmented renders this as the button's own text content.
 
 
 ];

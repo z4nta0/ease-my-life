@@ -1111,11 +1111,11 @@ const NAV_HEL_OBJ = {
 
 			{ [
 
-				{ icoStr: 'today',    labStr: 'Today',    desStr: 'This is the main page of the app and contains your auto-generated daily todo list.' },
-				{ icoStr: 'picker',   labStr: 'Pickers',  desStr: 'This is where you can manually run a picker to generate a task and then push it to the Today page\'s todo list. This is also where you can create new pickers and their items.' },
-				{ icoStr: 'stats',    labStr: 'Stats',    desStr: 'This is where you can view all of the statistics for everything that you have created. That includes conditionals, reminder items, pickers and picker items. You can see how many times an item has been picked, items\' pick frequency, and much more.' },
-				{ icoStr: 'data',     labStr: 'Data',     desStr: 'This is where you can view and edit everything that you have created. You can also create new conditionals, new reminders items and new picker items.' },
-				{ icoStr: 'settings', labStr: 'Settings', desStr: 'This is where you can customize the app, adjust the daily generator, edit which holidays are observed, control your data, install the app, get app information and view legal documents.' }
+				{ icoStr : 'today',    labStr : 'Today',    desStr : 'This is the main page of the app and contains your auto-generated daily todo list.' },
+				{ icoStr : 'picker',   labStr : 'Pickers',  desStr : 'This is where you can manually run a picker to generate a task and then push it to the Today page\'s todo list. This is also where you can create new pickers and their items.' },
+				{ icoStr : 'stats',    labStr : 'Stats',    desStr : 'This is where you can view all of the statistics for everything that you have created. That includes conditionals, reminder items, pickers and picker items. You can see how many times an item has been picked, items\' pick frequency, and much more.' },
+				{ icoStr : 'data',     labStr : 'Data',     desStr : 'This is where you can view and edit everything that you have created. You can also create new conditionals, new reminders items and new picker items.' },
+				{ icoStr : 'settings', labStr : 'Settings', desStr : 'This is where you can customize the app, adjust the daily generator, edit which holidays are observed, control your data, install the app, get app information and view legal documents.' }
 
 			].map( ( curTabObj ) => (
 

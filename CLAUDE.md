@@ -1102,6 +1102,46 @@ don't invent one for anything else yet:
   parts too — e.g. every entry's closing `}` in a config array, or the
   `&&`/tag-name padding across parallel `{x === 'a' && <TabA .../>}`
   branches — computed from the longest entry's needed width.
+  - **A stack of adjacent one-line object literals** (each entry small
+    enough to stay on its own single line rather than needing the
+    "2+ properties" multi-line split below) gets this treatment applied
+    property-by-property, left to right: pad each property's own
+    `value,` (or `value` with no comma, for whichever property sits last
+    in a given row) so the NEXT property starts at the same column
+    across every row, computed from the widest row at that position —
+    the same mechanism as column-aligning a run of plain object
+    properties elsewhere in this doc, just applied across sibling ROWS
+    instead of down one object's own properties. This still applies even
+    when the rows don't all share the exact same property set — e.g. one
+    entry ends after 3 properties while its neighbors carry a 4th, each
+    with a genuinely different name (`daysOfWeek` on one row, `interval`
+    on the next). Align by POSITION in that case too, treating whatever
+    sits in a given slot as that slot's own column regardless of whether
+    the property name matches its neighbors': the goal is a clean visual
+    table, not literally aligning identical keys. Finally, pad the
+    closing `}` itself to a shared column the same way, so shorter rows
+    get trailing spaces before their own `}`/`},`. See
+    `help-sample-data.js`'s own `TAS_SAM_ARR` for the reference example,
+    where `id`/`name`/`repeat` line up across all 5 entries and each
+    entry's own differently-named 4th field (`daysOfWeek`/`interval`/
+    `dayOfMonth`/`month`+`day`) still lines up by position, closing `}`
+    included.
+    - **Exception — stop aligning before a long/paragraph-length
+      property.** Once a row's own value for a given property is
+      genuinely prose-length (a sentence or more, varying wildly in
+      length row to row, as opposed to a short string/number that just
+      happens to differ a little), padding every shorter row's closing
+      `}` out to match the single longest one would mean tens or
+      hundreds of meaningless trailing spaces, which hurts readability
+      instead of helping it. Align every property up through the last
+      one whose values stay short across every row, then leave that
+      long property and the closing `}` completely unaligned/natural,
+      each row ending wherever its own value happens to end. See
+      `help-mode.jsx`'s own small inline nav-tip array (`icoStr`/
+      `labStr`/`desStr`, the `NAV_HEL_OBJ` tip's own tab-description
+      catalog): `icoStr` and `labStr` line up across all 5 rows, but
+      `desStr` (a full sentence or more per row) and the closing `}`
+      after it are left natural.
 - An object literal with 2+ properties gets split to one property per line
   — even if it would otherwise still fit on one line character-count-wise
   — whenever at least one property's value is a non-trivial expression
