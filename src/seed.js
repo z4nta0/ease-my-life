@@ -268,10 +268,10 @@ function buiPicFun() {
 
 
 
-// #region seedIsoDay
+// #region seeIsoFun
 
 /**
- * seedIsoDay = Seed Iso Day
+ * seeIsoFun = Seed Iso Function
  *
  * @summary
  * Produces the same local-timezone-adjusted ISO day string as
@@ -287,12 +287,12 @@ function buiPicFun() {
  *
  * @example
  * ```ts
- * seedIsoDay(datRawObj) // => 'YYYY-MM-DD'
+ * seeIsoFun(datRawObj) // => 'YYYY-MM-DD'
  * ```
  *
 */
 
-function seedIsoDay( datRawObj ) {
+function seeIsoFun( datRawObj ) {
 
 
 	const datCopObj = new Date( datRawObj ); // What: Date Copy Object. Why: The given date must not be mutated by the timezone shift below. How: This constructs a fresh Date instance from datRawObj.
@@ -306,14 +306,14 @@ function seedIsoDay( datRawObj ) {
 
 }
 
-// #endregion seedIsoDay
+// #endregion seeIsoFun
 
 
 
-// #region weightedPick
+// #region picWeiFun
 
 /**
- * weightedPick = Weighted Pick
+ * picWeiFun = Pick Weighted Function
  *
  * @summary
  * Picks one random item from a pool, weighted by each item's own
@@ -327,12 +327,12 @@ function seedIsoDay( datRawObj ) {
  *
  * @example
  * ```ts
- * weightedPick(itePooArr) // => chosen item object
+ * picWeiFun(itePooArr) // => chosen item object
  * ```
  *
 */
 
-function weightedPick( itePooArr ) {
+function picWeiFun( itePooArr ) {
 
 
 	const totWeiNum = itePooArr.reduce( ( sumWeiNum, curIteObj ) => sumWeiNum + ( curIteObj.weight || 1 ), 0 ); // What: Total Weight Number. Why: The random draw below needs the combined weight of the whole pool to scale against. How: This sums every item's own weight, defaulting a missing weight to 1.
@@ -357,7 +357,7 @@ function weightedPick( itePooArr ) {
 
 }
 
-// #endregion weightedPick
+// #endregion picWeiFun
 
 
 
@@ -400,7 +400,7 @@ function buiVacFun( allIteArr ) {
 	todMidObj.setHours( 0, 0, 0, 0 ); // What: Today Midnight Hours Reset. Why: Only the calendar day matters for the day-offset arithmetic below, not the current time of day. How: This zeroes out todMidObj's own hours/minutes/seconds/milliseconds in place.
 
 
-	const dayAgoFun = ( dayAgoNum ) => { // What: Day Ago Function. Why: Every row below needs to turn a plain days-back count into a real ISO date string. How: This subtracts dayAgoNum days from todMidObj and converts the result via seedIsoDay.
+	const dayAgoFun = ( dayAgoNum ) => { // What: Day Ago Function. Why: Every row below needs to turn a plain days-back count into a real ISO date string. How: This subtracts dayAgoNum days from todMidObj and converts the result via seeIsoFun.
 
 
 		const offDatObj = new Date( todMidObj ); // What: Offset Date Object. Why: todMidObj itself must not be mutated by the offset below. How: This constructs a fresh copy of todMidObj to offset in place instead.
@@ -409,7 +409,7 @@ function buiVacFun( allIteArr ) {
 
 
 
-		return seedIsoDay( offDatObj ); // What: Offset Iso Day Return. Why: Every row below needs a plain ISO date string, not a Date instance. How: This converts the offset date via seedIsoDay.
+		return seeIsoFun( offDatObj ); // What: Offset Iso Day Return. Why: Every row below needs a plain ISO date string, not a Date instance. How: This converts the offset date via seeIsoFun.
 
 
 	};
@@ -531,10 +531,10 @@ function makVacFun( vacRowArr ) {
 
 
 
-// #region buildPickLog
+// #region picLogFun
 
 /**
- * buildPickLog = Build Pick Log
+ * picLogFun = Pick Log Function
  *
  * @summary
  * Builds about 1 year of per-pick history (Stats reads this directly,
@@ -564,12 +564,12 @@ function makVacFun( vacRowArr ) {
  *
  * @example
  * ```ts
- * buildPickLog(allIteArr, allPicArr, onVacFun, 365) // => { rows, easeState }
+ * picLogFun(allIteArr, allPicArr, onVacFun, 365) // => { rows, easeState }
  * ```
  *
 */
 
-function buildPickLog( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
+function picLogFun( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 
 
 	const picRowArr = []; // What: Pick Row Array And Guard. Why: Every row built by logPicFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
@@ -604,7 +604,7 @@ function buildPickLog( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 
 			id          : 'pls_' + ( seqCouNum++ ).toString( 36 ),                                    // What: Id. Why: Every row needs its own stable, unique identifier. How: This mints one from a running counter, prefixed 'pls_'.
 			eid         : null,                                                                       // What: Entry Id. Why: A simulated historical row was never a live Today entry, so it has no entry to reference. How: This is always null for a row built by this simulation.
-			date        : seedIsoDay( datValObj ),                                                     // What: Date. Why: Stats groups and filters rows by their own calendar day. How: This converts datValObj via seedIsoDay.
+			date        : seeIsoFun( datValObj ),                                                     // What: Date. Why: Stats groups and filters rows by their own calendar day. How: This converts datValObj via seeIsoFun.
 			pickerId    : curPicObj.id,                                                                // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from curPicObj's own id.
 			itemId      : curIteObj.id,                                                                // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from curIteObj's own id.
 			itemName    : curIteObj.name,                                                              // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This is copied straight from curIteObj's own name.
@@ -643,13 +643,13 @@ function buildPickLog( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 			if ( Array.isArray( curPicObj.daysOfWeek ) && !curPicObj.daysOfWeek.includes( curDowNum ) ) continue; // What: Schedule Skip Guard. Why: A picker not scheduled for this simulated day's own weekday must not pick at all today. How: This skips the picker when its own daysOfWeek excludes curDowNum.
 
 
-			const dayIsoStr = seedIsoDay( curDatObj ); // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via seedIsoDay.
+			const dayIsoStr = seeIsoFun( curDatObj ); // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via seeIsoFun.
 			const itePooArr = ( picPooObj[ curPicObj.id ] || [] ).filter( ( curIteObj ) => !onVacFun( curIteObj.id, dayIsoStr ) ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible for it. How: This filters curPicObj's own pool down to items onVacFun does not report inactive.
 
 			if ( !itePooArr.length ) continue; // What: Empty Pool Guard. Why: A picker with nothing eligible today (e.g. every item currently inactive) cannot pick at all. How: This skips to the next picker when itePooArr is empty.
 
 
-			const curIteObj = weightedPick( itePooArr ); // What: Current Item Object. Why: This is the item this simulated day's own pick actually lands on. How: This draws one item from itePooArr, weighted by each item's own weight.
+			const curIteObj = picWeiFun( itePooArr ); // What: Current Item Object. Why: This is the item this simulated day's own pick actually lands on. How: This draws one item from itePooArr, weighted by each item's own weight.
 
 			if ( itePooArr.length > 1 && Math.random() < 0.2 ) { // What: Reroll Simulation Guard. Why: About 20% of real days involve the user rerolling once or twice before settling, and that history should be visible too. How: This only simulates a reroll when there is more than one eligible item and a 20% roll succeeds.
 
@@ -718,7 +718,7 @@ function buildPickLog( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 			if ( isaOffFun( dayIndNum ) ) continue; // What: Off Day Guard. Why: A day rolled fully off has no decay tick either. How: This skips straight to the next day when isaOffFun reports true.
 
 
-			const dayIsoStr = seedIsoDay( curDatObj ); // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via seedIsoDay.
+			const dayIsoStr = seeIsoFun( curDatObj ); // What: Day Iso String. Why: The inactive-state filter below needs a plain comparable date string, not a Date instance. How: This converts curDatObj via seeIsoFun.
 			const itePooArr = ( picPooObj[ curPicObj.id ] || [] ).filter( ( curIteObj ) => !onVacFun( curIteObj.id, dayIsoStr ) ); // What: Item Pool Array And Guard. Why: An item inactive on this simulated day must not be eligible to become (or remain) active. How: This filters curPicObj's own pool down to items onVacFun does not report inactive.
 
 			if ( !itePooArr.length ) { actIteObj = null; continue; } // What: Empty Pool Guard. Why: With nothing eligible today, any in-progress item must be abandoned rather than kept active. How: This clears actIteObj and skips to the next day.
@@ -728,7 +728,7 @@ function buildPickLog( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 
 			if ( actIteObj && Math.random() < 0.05 ) actIteObj = null; // What: Random Abandon Guard. Why: A real user occasionally rerolls or manually abandons an in-progress Ease Down item before it fully depletes. How: This clears actIteObj on a 5% roll, simulating that abandonment.
 
-			if ( !actIteObj ) { actIteObj = weightedPick( itePooArr ); chaValNum = thrValNum; } // What: New Active Item Guard. Why: With no item currently active, a new one must be chosen and start at full charge. How: This draws a weighted pick from itePooArr and resets chaValNum to thrValNum.
+			if ( !actIteObj ) { actIteObj = picWeiFun( itePooArr ); chaValNum = thrValNum; } // What: New Active Item Guard. Why: With no item currently active, a new one must be chosen and start at full charge. How: This draws a weighted pick from itePooArr and resets chaValNum to thrValNum.
 
 
 			const decValNum = ranBetFun( actIteObj.easeMin ?? curPicObj.easeMin ?? 20, actIteObj.easeMax ?? curPicObj.easeMax ?? 34 ); // What: Decay Value Number. Why: Every simulated day, the active item's own charge decays by a random amount within its own (or its picker's own) ease range. How: This resolves a random value between actIteObj's own easeMin/easeMax, falling back to curPicObj's own, then a hardcoded default.
@@ -757,7 +757,7 @@ function buildPickLog( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 
 }
 
-// #endregion buildPickLog
+// #endregion picLogFun
 
 
 
@@ -995,7 +995,7 @@ function buiSeeFun() {
 
 	const picByIdeObj = Object.fromEntries( allPicArr.map( ( curPicObj ) => [ curPicObj.id, curPicObj ] ) ); // What: Picker By Identifier Object. Why: Today's own rows below need to look a picker up by id repeatedly. How: This maps allPicArr into an id-keyed lookup object.
 	const iteNamFun    = ( tarNamStr ) => allIteArr.find( ( curIteObj ) => curIteObj.name === tarNamStr );   // What: Item Named Function. Why: Today's own rows below are authored by item name for readability, not by id. How: This searches allIteArr for the first item whose own name matches tarNamStr.
-	const todIsoStr    = seedIsoDay( new Date() );                                                           // What: Today Iso String. Why: Every row referencing "today" below needs the same real calendar day. How: This converts the current date via seedIsoDay.
+	const todIsoStr    = seeIsoFun( new Date() );                                                           // What: Today Iso String. Why: Every row referencing "today" below needs the same real calendar day. How: This converts the current date via seeIsoFun.
 
 	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every one of today's own entries needs its own unique eid, and nothing else in this scope tracks that count. How: This starts at 0 and is incremented once per call to makEidFun below.
 
@@ -1005,7 +1005,7 @@ function buiSeeFun() {
 	const vacLogArr = buiVacFun( allIteArr ); // What: Vacation Log Array. Why: The pick-log simulation below needs a real inactive-state log to honor. How: This calls buiVacFun with the seeded items.
 	const onVacFun  = makVacFun( vacLogArr ); // What: On Vacation Function. Why: The pick-log simulation below needs a predicate, not just the raw log rows. How: This builds the predicate via makVacFun from vacLogArr.
 
-	const { rows : hisRowArr, easeState : easStaObj } = buildPickLog( allIteArr, allPicArr, onVacFun ); // What: History Row Array And Ease State Object. Why: This is about a year of simulated pick history, plus each Ease Down picker's own final in-progress state. How: This destructures buildPickLog's own return value.
+	const { rows : hisRowArr, easeState : easStaObj } = picLogFun( allIteArr, allPicArr, onVacFun ); // What: History Row Array And Ease State Object. Why: This is about a year of simulated pick history, plus each Ease Down picker's own final in-progress state. How: This destructures picLogFun's own return value.
 
 
 	for ( const curPicObj of allPicArr ) { // What: Ease Down Apply Loop. Why: Every Ease Down picker's own live snapshot must reflect where the simulation above actually left it, not the picker's own static defaults. How: This recharges every item in an Ease Down picker's own pool except the in-progress one, then points the picker at it.
@@ -1103,8 +1103,8 @@ function buiSeeFun() {
 
 
 
-	const friIteObj  = allIteArr.find( ( curIteObj ) => curIteObj.name === 'Fridge wipe-down' ); // What: Fridge Item Object And Guard. Why: This item's own history needs one further deterministic adjustment below (see friRetStr), on top of what buiVacFun/buildPickLog already simulated. How: This looks the item up by its own known name.
-	const friRetStr  = (() => { const retDatObj = new Date(); retDatObj.setHours( 0, 0, 0, 0 ); retDatObj.setDate( retDatObj.getDate() - 5 ); return seedIsoDay( retDatObj ); })(); // What: Fridge Return String. Why: The filter directly below needs this exact same return date buiVacFun already used for this item's own "returned recently" scenario. How: This resolves the ISO date 5 days ago, matching buiVacFun's own hardcoded value for this item.
+	const friIteObj  = allIteArr.find( ( curIteObj ) => curIteObj.name === 'Fridge wipe-down' ); // What: Fridge Item Object And Guard. Why: This item's own history needs one further deterministic adjustment below (see friRetStr), on top of what buiVacFun/picLogFun already simulated. How: This looks the item up by its own known name.
+	const friRetStr  = (() => { const retDatObj = new Date(); retDatObj.setHours( 0, 0, 0, 0 ); retDatObj.setDate( retDatObj.getDate() - 5 ); return seeIsoFun( retDatObj ); })(); // What: Fridge Return String. Why: The filter directly below needs this exact same return date buiVacFun already used for this item's own "returned recently" scenario. How: This resolves the ISO date 5 days ago, matching buiVacFun's own hardcoded value for this item.
 
 
 	const pikLogArr = hisRowArr // What: Pick Log Array. Why: This is the final assembled pickLog: the simulated year of history, with the Fridge wipe-down item's own post-return picks deliberately dropped, plus today's own rows appended. How: This filters hisRowArr, then concatenates todRowArr onto it.
@@ -1161,7 +1161,7 @@ function buiSeeFun() {
 		pickLog         : pikLogArr,                                                                        // What: Pick Log. Why: The demo state needs the full assembled pick history built above. How: This is pikLogArr, resolved above.
 		vacationLog     : vacLogArr,                                                                        // What: Vacation Log. Why: The demo state needs the seeded inactive-state log built above. How: This is vacLogArr, resolved above.
 		conditionalLog  : buiConFun(),                                                                      // What: Conditional Log. Why: The demo Chore-Free Day gate needs its own year of trigger history. How: This calls buiConFun.
-		streak          : 11,                                                                               // What: Streak. Why: The demo state needs a headline streak count consistent with buildPickLog's own forced-active last 10 days. How: This is a fixed literal, matching that simulation's own design.
+		streak          : 11,                                                                               // What: Streak. Why: The demo state needs a headline streak count consistent with picLogFun's own forced-active last 10 days. How: This is a fixed literal, matching that simulation's own design.
 		onboarding      : { welcomed : true, dismissed : true }                                             // What: Onboarding. Why: The demo/sample-data build already has pickers and history seeded, so it must never trigger onboarding. How: This marks onboarding as both welcomed and dismissed.
 
 
@@ -1178,7 +1178,7 @@ export const SEED = buiSeeFun; // What: Seed. Why: Every consumer expecting a de
 
 
 
-export { weightedPick, seedIsoDay, buildPickLog }; // What: Named Exports. Why: scripts/build-onboarding-stats.mjs reuses this exact simulation to precompute the Welcome Tour's own sample history offline (a much smaller picker/item list, same algorithm). How: This re-exports all 3 functions by name.
+export { picWeiFun, seeIsoFun, picLogFun }; // What: Named Exports. Why: scripts/build-onboarding-stats.mjs reuses this exact simulation to precompute the Welcome Tour's own sample history offline (a much smaller picker/item list, same algorithm). How: This re-exports all 3 functions by name.
 
 
 
@@ -1229,7 +1229,7 @@ function buiConFun() {
 
 
 
-		conRowArr.push({ id : 'clseed_' + ( seqCouNum++ ).toString( 36 ), condId : 'cnd_chorefree', date : seedIsoDay( curDatObj ), triggered : trgValBoo, mode : 'ease-up', name : 'Chore Free Day' }); // What: Conditional Row Push. Why: This is one simulated row, in the exact shape state.conditionalLog itself expects. How: This builds the row from bacDayNum/trgValBoo plus a few fixed fields matching the demo gate's own identity.
+		conRowArr.push({ id : 'clseed_' + ( seqCouNum++ ).toString( 36 ), condId : 'cnd_chorefree', date : seeIsoFun( curDatObj ), triggered : trgValBoo, mode : 'ease-up', name : 'Chore Free Day' }); // What: Conditional Row Push. Why: This is one simulated row, in the exact shape state.conditionalLog itself expects. How: This builds the row from bacDayNum/trgValBoo plus a few fixed fields matching the demo gate's own identity.
 
 
 	};
@@ -1294,7 +1294,7 @@ function buiConFun() {
 function buiCleFun() {
 
 
-	const todIsoStr = seedIsoDay( new Date() ); // What: Today Iso String. Why: The clean state's own today.date field still needs a real calendar day, even with nothing else seeded. How: This converts the current date via seedIsoDay.
+	const todIsoStr = seeIsoFun( new Date() ); // What: Today Iso String. Why: The clean state's own today.date field still needs a real calendar day, even with nothing else seeded. How: This converts the current date via seeIsoFun.
 
 
 
