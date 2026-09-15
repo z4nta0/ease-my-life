@@ -7,17 +7,17 @@
 import React from 'react'; // What: React. Why: This file's own PagTouCom component needs React in scope to compile its JSX and to call React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
 
 
-import { emlTouObj              } from './onboarding.jsx';             // What: Ease My Life Tour Object. Why: This publishes/reads bus nonces the Pickers-page onGoBack handler uses to reset or redo an in-flight picker-form animation. How: This is read via .get() and written via .set() inside PagTouCom's own onGoBack below.
-import { GuidedTour             } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each page mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-page step array.
-import { hydStaFun              } from './onboarding-seed-data.js';    // What: Hydrate Stats Function. Why: The Stats tour's own borrowed sample history needs converting from its static template shape into real pickLog rows. How: This is called inside unhHisFun below, passed ONBOARDING_STATS.
-import { Icon                   } from './ui.jsx';                     // What: Icon. Why: The intro modal needs a recognizable glyph matching the current page. How: This is rendered inside the intro modal's icon prop below.
-import { NAV_TAR_OBJ            } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Every page tour's own Step 1 and its own intro-modal fallback copy read this shared nav-button catalog. How: This is looked up by a page key everywhere this file needs the real nav button's own selector/title/body.
-import { OB_EXAMPLE             } from './onboarding-seed-data.js';    // What: Onboarding Example. Why: This is the "Daily Chores" sample picker's own template, one of the entries PAG_SAM_ARR below carries, and its own id is the Stats tour's own preselected picker. How: This is spread into PAG_SAM_ARR below and read directly for PRE_PIC_STR.
-import { OB_EXTRA_PICKERS       } from './onboarding-seed-data.js';    // What: Onboarding Extra Pickers. Why: This is every OTHER sample picker's own template, alongside OB_EXAMPLE the full set PAG_SAM_ARR below carries. How: This is spread into PAG_SAM_ARR below.
-import { OB_PAGE_TOURS          } from './onboarding-checklist.js';    // What: Onboarding Page Tours. Why: PagTouCom below needs this page tour's own id/page/label manifest entry. How: This is searched by pagIdeStr inside PagTouCom below.
-import { OB_SAMPLE_PICKER_IDS   } from './onboarding-seed-data.js';    // What: Onboarding Sample Picker Ids. Why: The Stats tour needs to unhide/rehide every real sample picker (not a disposable copy) for its own duration. How: This is iterated by unhHisFun/hidHisFun below.
-import { OB_TASKS               } from './onboarding-seed-data.js';    // What: Onboarding Tasks. Why: The Data tour needs real reminders to point at, seeded/cleared as disposable copies the same way PAG_SAM_ARR is for pickers. How: This is iterated by seeTasFun/cleTasFun below.
-import { IntModCom              } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each page mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this page's own icon/title/paragraphs/pills.
+import { emlTouObj            } from './onboarding.jsx';             // What: Ease My Life Tour Object. Why: This publishes/reads bus nonces the Pickers-page onGoBack handler uses to reset or redo an in-flight picker-form animation. How: This is read via .get() and written via .set() inside PagTouCom's own onGoBack below.
+import { GuidedTour           } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each page mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-page step array.
+import { hydStaFun            } from './onboarding-seed-data.js';    // What: Hydrate Stats Function. Why: The Stats tour's own borrowed sample history needs converting from its static template shape into real pickLog rows. How: This is called inside unhHisFun below, passed ONBOARDING_STATS.
+import { IcoSvgCom            } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current page. How: This is rendered inside the intro modal's icon prop below.
+import { IntModCom            } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each page mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this page's own icon/title/paragraphs/pills.
+import { NAV_TAR_OBJ          } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Every page tour's own Step 1 and its own intro-modal fallback copy read this shared nav-button catalog. How: This is looked up by a page key everywhere this file needs the real nav button's own selector/title/body.
+import { OB_EXAMPLE           } from './onboarding-seed-data.js';    // What: Onboarding Example. Why: This is the "Daily Chores" sample picker's own template, one of the entries PAG_SAM_ARR below carries, and its own id is the Stats tour's own preselected picker. How: This is spread into PAG_SAM_ARR below and read directly for PRE_PIC_STR.
+import { OB_EXTRA_PICKERS     } from './onboarding-seed-data.js';    // What: Onboarding Extra Pickers. Why: This is every OTHER sample picker's own template, alongside OB_EXAMPLE the full set PAG_SAM_ARR below carries. How: This is spread into PAG_SAM_ARR below.
+import { OB_PAGE_TOURS        } from './onboarding-checklist.js';    // What: Onboarding Page Tours. Why: PagTouCom below needs this page tour's own id/page/label manifest entry. How: This is searched by pagIdeStr inside PagTouCom below.
+import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';    // What: Onboarding Sample Picker Ids. Why: The Stats tour needs to unhide/rehide every real sample picker (not a disposable copy) for its own duration. How: This is iterated by unhHisFun/hidHisFun below.
+import { OB_TASKS             } from './onboarding-seed-data.js';    // What: Onboarding Tasks. Why: The Data tour needs real reminders to point at, seeded/cleared as disposable copies the same way PAG_SAM_ARR is for pickers. How: This is iterated by seeTasFun/cleTasFun below.
 
 // #endregion Imports
 
@@ -1275,7 +1275,7 @@ function PagTouCom ( { pagIdeStr, state, actions, active, selectTab, onCloFun } 
 		return (
 
 			<IntModCom
-				icon={ <Icon name={ tourRecObj.page } size={ 54 } /> }
+				icon={ <IcoSvgCom name={ tourRecObj.page } size={ 54 } /> }
 				title={ ( pagCopObj && pagCopObj.titStr ) || navTarObj.title }
 				paragraphs={ [ ( pagCopObj && pagCopObj.bodEle ) || navTarObj.body ] }
 				pills={ ( pagCopObj && pagCopObj.pilArr ) || [ 'page tour', tourRecObj.label.toLowerCase() ] }

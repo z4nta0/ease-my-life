@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { reduceMotion } from './ui.jsx'; // What: Reduce Motion. Why: The palette cross-fade should be skipped for a user who prefers reduced motion. How: This is called inside appPalFun to gate the theme-animating class toggle.
+import { redMotFun } from './ui.jsx'; // What: Reduce Motion Function. Why: The palette cross-fade should be skipped for a user who prefers reduced motion. How: This is called inside appPalFun to gate the theme-animating class toggle.
 
 // #endregion Imports
 
@@ -162,7 +162,7 @@ function appPalFun( palResObj, theKeyStr ) {
 	__lasPalStr = palSigStr; // What: Last Palette String Update. Why: The next call needs to compare against what is current now. How: This overwrites __lasPalStr with the freshly-computed signature.
 
 
-	if ( __palAppBoo && palChaBoo && !reduceMotion() ) { // What: Cross-Fade Trigger Check. Why: The cross-fade should only play when a palette had already been applied before, the resolved colors actually changed, and the user doesn't prefer reduced motion. How: This gates the class-add/timeout block below on all three conditions holding at once.
+	if ( __palAppBoo && palChaBoo && !redMotFun() ) { // What: Cross-Fade Trigger Check. Why: The cross-fade should only play when a palette had already been applied before, the resolved colors actually changed, and the user doesn't prefer reduced motion. How: This gates the class-add/timeout block below on all three conditions holding at once.
 
 
 		const docRooEle = document.documentElement; // What: Document Root Element. Why: The cross-fade class toggles on the root element, which is what the app's CSS transition rules key off. How: This is read once and reused for both the add and remove below.

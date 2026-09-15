@@ -6,36 +6,36 @@
 import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useMemo, React.useEffect, React.useCallback, React.useLayoutEffect, React.Fragment) throughout, instead of importing individual named hooks.
 
 
-import { Btn                      } from './ui.jsx';                  // What: Btn. Why: Every inline confirm/cancel/save action in this file's editors needs a consistently-styled button. How: This is rendered throughout PicConCom, ConEdiCom, and TabData's own footers.
-import { CAD_NAM_OBJ              } from './cadence.js';              // What: Cadence. Why: PicConCom needs the shared cadence math/summary helpers to render its own "how often" tip and select options. How: This is called throughout PicConCom for tipMesFun/sumCadFun/dimCouFun/uniWorFun/locTipFun.
-import { CAD_OPT_ARR              } from './cadence-control.jsx';     // What: Cadence Options Array. Why: PicConCom's own daily-cadence summary needs the same daily-cadence sub-explanation CadConCom itself uses. How: This is looked up by key 'daily' inside PicConCom's cadence-summary block.
-import { clePicFun                } from './help-sample-data.js';     // What: Clear Pickers Function. Why: Help mode's disposable sample pickers must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabData's own unmount cleanup.
-import { cleTasFun                } from './help-sample-data.js';     // What: Clear Tasks Function. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabData's own unmount cleanup.
-import { Collapse                 } from './ui.jsx';                  // What: Collapse. Why: Nearly every disclosure in this file (picker cards, Controls, Items, conditional rows, item rows) shares the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
-import { compareSortEntries       } from './ui.jsx';                  // What: Compare Sort Entries. Why: Every sortable list in this file (sections, conditional items, picker items) shares the same sort-key vocabulary. How: This is called once per comparison inside each list's own Array.prototype.sort.
-import { CodConCom                } from './tab-conditional.jsx';     // What: Conditional Control Component. Why: ConEdiCom reuses the exact same "type + settings" editor the Pickers create-flow uses, so both stay in sync. How: This is rendered directly inside ConEdiCom below.
-import { conDrfFun                } from './tab-conditional.jsx';     // What: Conditional Draft Function. Why: A brand-new conditional started from ConManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
-import { DAT_HEL_ARR              } from './help-content.jsx';        // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelOveCom's own items prop.
-import { EntryEditor              } from './tab-today.jsx';           // What: Entry Editor. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
-import { FillButton               } from './ui.jsx';                  // What: Fill Button. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
-import { freezeEditedRow          } from './ui.jsx';                  // What: Freeze Edited Row. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This is called once per picker's item list, given the sorted list and the currently-open item id.
-import { HelButCom               } from './help-mode.jsx';           // What: Help Button Component. Why: This tab needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOnBoo.
-import { HelOveCom              } from './help-mode.jsx';           // What: Help Overlay Component. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is rendered once, driven by helpOnBoo and DAT_HEL_ARR.
-import { Icon                     } from './ui.jsx';                  // What: Icon. Why: Nearly every button and row in this file needs a recognizable glyph. How: This is rendered throughout every component below.
-import { InfoTip                  } from './ui.jsx';                  // What: Info Tip. Why: A disabled control or a truncated pill still needs to explain itself on demand. How: This wraps disabled add buttons and truncatable type/group labels throughout this file.
-import { MODES                    } from './seed.js';                 // What: Modes. Why: Every picker/conditional mode's own label and hint text comes from this shared catalog. How: This is read throughout PicConCom, ConManCom, and TabData for mode labels and the mode radio group.
-import { norConFun                } from './pickers.js';              // What: Normalize Conditional Function. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
-import { norGroFun                } from './pickers.js';              // What: Normalize Group Function. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
-import { OB_CHECKLIST             } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: Several add/edit controls in this file must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutorialsInProgress throughout TabData and ConManCom.
-import { PICKERS                  } from './pickers.js';              // What: Pickers. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PICKERS.avgEase.
-import { reduceMotion             } from './ui.jsx';                  // What: Reduce Motion. Why: A user who prefers reduced motion shouldn't see any of this file's own FLIP/scroll/collapse animations. How: This is checked before every animation throughout this file.
-import { RemManCom                } from './reminders.jsx';           // What: Reminder Manager Component. Why: The Reminders section of this tab is a full, separately-maintained editor. How: This is rendered once, in place of a picker card, whenever the Reminders scope is shown.
-import { sedPicFun                } from './help-sample-data.js';     // What: Seed Pickers Function. Why: Help mode needs a real picker of every mode to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
-import { sedTasFun                } from './help-sample-data.js';     // What: Seed Tasks Function. Why: Help mode needs real reminders of every recurrence kind to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
-import { SortSelect               } from './ui.jsx';                  // What: Sort Select. Why: Every sortable list in this file needs the same sort control. How: This is rendered for sections, conditional items, and each picker's own item list.
-import { useEmlTouFun             } from './onboarding.jsx';          // What: Use Ease My Life Tour. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's phase/tourId/step fields.
-import { useEscapeCancel          } from './ui.jsx';                  // What: Use Escape Cancel. Why: ConEdiCom's Escape key must cancel the current edit (or back out of a delete confirm) the same way every other editor in the app does. How: This is called once inside ConEdiCom.
-import { WeekdayChips             } from './ui.jsx';                  // What: Weekday Chips. Why: PicConCom's own Days control needs the same weekday multi-select every other schedule editor uses. How: This is rendered inside PicConCom's "When it runs" group.
+import { ButBasCom    } from './ui.jsx';                  // What: Button Base Component. Why: Every inline confirm/cancel/save action in this file's editors needs a consistently-styled button. How: This is rendered throughout PicConCom, ConEdiCom, and TabData's own footers.
+import { CAD_NAM_OBJ  } from './cadence.js';              // What: Cadence. Why: PicConCom needs the shared cadence math/summary helpers to render its own "how often" tip and select options. How: This is called throughout PicConCom for tipMesFun/sumCadFun/dimCouFun/uniWorFun/locTipFun.
+import { CAD_OPT_ARR  } from './cadence-control.jsx';     // What: Cadence Options Array. Why: PicConCom's own daily-cadence summary needs the same daily-cadence sub-explanation CadConCom itself uses. How: This is looked up by key 'daily' inside PicConCom's cadence-summary block.
+import { clePicFun    } from './help-sample-data.js';     // What: Clear Pickers Function. Why: Help mode's disposable sample pickers must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabData's own unmount cleanup.
+import { cleTasFun    } from './help-sample-data.js';     // What: Clear Tasks Function. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helpOnBoo turns off and on TabData's own unmount cleanup.
+import { CodConCom    } from './tab-conditional.jsx';     // What: Conditional Control Component. Why: ConEdiCom reuses the exact same "type + settings" editor the Pickers create-flow uses, so both stay in sync. How: This is rendered directly inside ConEdiCom below.
+import { ColDisCom    } from './ui.jsx';                  // What: Collapse Disclosure Component. Why: Nearly every disclosure in this file (picker cards, Controls, Items, conditional rows, item rows) shares the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
+import { conDrfFun    } from './tab-conditional.jsx';     // What: Conditional Draft Function. Why: A brand-new conditional started from ConManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
+import { DAT_HEL_ARR  } from './help-content.jsx';        // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelOveCom's own items prop.
+import { EntryEditor  } from './tab-today.jsx';           // What: Entry Editor. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
+import { FilButCom    } from './ui.jsx';                  // What: Fill Button Component. Why: An ease-up/ease-down picker's Item Controls need the same Fill/Refill-all control Today's own boost tools use. How: This is rendered inside PicConCom's Item Controls group.
+import { freEdiFun    } from './ui.jsx';                  // What: Freeze Edited Function. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This is called once per picker's item list, given the sorted list and the currently-open item id.
+import { HelButCom    } from './help-mode.jsx';           // What: Help Button Component. Why: This tab needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOnBoo.
+import { HelOveCom    } from './help-mode.jsx';           // What: Help Overlay Component. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is rendered once, driven by helpOnBoo and DAT_HEL_ARR.
+import { IcoSvgCom    } from './ui.jsx';                  // What: Icon Svg Component. Why: Nearly every button and row in this file needs a recognizable glyph. How: This is rendered throughout every component below.
+import { InfTipCom    } from './ui.jsx';                  // What: Info Tip Component. Why: A disabled control or a truncated pill still needs to explain itself on demand. How: This wraps disabled add buttons and truncatable type/group labels throughout this file.
+import { MODES        } from './seed.js';                 // What: Modes. Why: Every picker/conditional mode's own label and hint text comes from this shared catalog. How: This is read throughout PicConCom, ConManCom, and TabData for mode labels and the mode radio group.
+import { norConFun    } from './pickers.js';              // What: Normalize Conditional Function. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
+import { norGroFun    } from './pickers.js';              // What: Normalize Group Function. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
+import { OB_CHECKLIST } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: Several add/edit controls in this file must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutorialsInProgress throughout TabData and ConManCom.
+import { PICKERS      } from './pickers.js';              // What: Pickers. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PICKERS.avgEase.
+import { redMotFun    } from './ui.jsx';                  // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see any of this file's own FLIP/scroll/collapse animations. How: This is checked before every animation throughout this file.
+import { RemManCom    } from './reminders.jsx';           // What: Reminder Manager Component. Why: The Reminders section of this tab is a full, separately-maintained editor. How: This is rendered once, in place of a picker card, whenever the Reminders scope is shown.
+import { sedPicFun    } from './help-sample-data.js';     // What: Seed Pickers Function. Why: Help mode needs a real picker of every mode to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
+import { sedTasFun    } from './help-sample-data.js';     // What: Seed Tasks Function. Why: Help mode needs real reminders of every recurrence kind to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
+import { sorEntFun    } from './ui.jsx';                  // What: Sort Entries Function. Why: Every sortable list in this file (sections, conditional items, picker items) shares the same sort-key vocabulary. How: This is called once per comparison inside each list's own Array.prototype.sort.
+import { SorSelCom    } from './ui.jsx';                  // What: Sort Select Component. Why: Every sortable list in this file needs the same sort control. How: This is rendered for sections, conditional items, and each picker's own item list.
+import { useEmlTouFun } from './onboarding.jsx';          // What: Use Ease My Life Tour. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's phase/tourId/step fields.
+import { useEscCanFun } from './ui.jsx';                  // What: Use Escape Cancel Function. Why: ConEdiCom's Escape key must cancel the current edit (or back out of a delete confirm) the same way every other editor in the app does. How: This is called once inside ConEdiCom.
+import { WeeChiCom    } from './ui.jsx';                  // What: Weekday Chip Component. Why: PicConCom's own Days control needs the same weekday multi-select every other schedule editor uses. How: This is rendered inside PicConCom's "When it runs" group.
 
 // #endregion Imports
 
@@ -61,19 +61,19 @@ import { WeekdayChips             } from './ui.jsx';                  // What: W
 
 
 
-const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditionals/Reminders/picker-card list needs one sort entry per supported key. How: This is passed as SortSelect's own options prop in TabData's own data-sort-bar.
+const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditionals/Reminders/picker-card list needs one sort entry per supported key. How: This is passed as SorSelCom's own options prop in TabData's own data-sort-bar.
 
 
-	{ keyStr : 'name-asc',    labStr : 'Name (A–Z)' },               // What: Key String. Why: This is the section list's own default sort. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'name-desc',   labStr : 'Name (Z–A)' },               // What: Key String. Why: This is the reverse of the default sort. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'type-asc',    labStr : 'Type (A–Z)' },               // What: Key String. Why: Type is each section's own mode/kind label. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'type-desc',   labStr : 'Type (Z–A)' },               // What: Key String. Why: This is the reverse of the type sort. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'group-asc',   labStr : 'Group (A–Z)' },              // What: Key String. Why: Group only applies to a picker card, not Conditionals/Reminders as a whole. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'group-desc',  labStr : 'Group (Z–A)' },              // What: Key String. Why: This is the reverse of the group sort. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'count-asc',   labStr : 'Item Count (Low to High)' }, // What: Key String. Why: Every section (Conditionals/Reminders/a picker) has some notion of how many entries it holds. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'count-desc',  labStr : 'Item Count (High to Low)' }, // What: Key String. Why: This is the reverse of the item-count sort. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'active-asc',  labStr : 'Active to Inactive' },       // What: Key String. Why: Only a picker card has a meaningful active/inactive state. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'active-desc', labStr : 'Inactive to Active' }        // What: Key String. Why: This is the reverse of the active sort. How: SortSelect reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'name-asc',    labStr : 'Name (A–Z)' },               // What: Key String. Why: This is the section list's own default sort. How: SorSelCom reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'name-desc',   labStr : 'Name (Z–A)' },               // What: Key String. Why: This is the reverse of the default sort. How: SorSelCom reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'type-asc',    labStr : 'Type (A–Z)' },               // What: Key String. Why: Type is each section's own mode/kind label. How: SorSelCom reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'type-desc',   labStr : 'Type (Z–A)' },               // What: Key String. Why: This is the reverse of the type sort. How: SorSelCom reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'group-asc',   labStr : 'Group (A–Z)' },              // What: Key String. Why: Group only applies to a picker card, not Conditionals/Reminders as a whole. How: SorSelCom reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'group-desc',  labStr : 'Group (Z–A)' },              // What: Key String. Why: This is the reverse of the group sort. How: SorSelCom reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'count-asc',   labStr : 'Item Count (Low to High)' }, // What: Key String. Why: Every section (Conditionals/Reminders/a picker) has some notion of how many entries it holds. How: SorSelCom reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'count-desc',  labStr : 'Item Count (High to Low)' }, // What: Key String. Why: This is the reverse of the item-count sort. How: SorSelCom reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'active-asc',  labStr : 'Active to Inactive' },       // What: Key String. Why: Only a picker card has a meaningful active/inactive state. How: SorSelCom reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'active-desc', labStr : 'Inactive to Active' }        // What: Key String. Why: This is the reverse of the active sort. How: SorSelCom reads this against TabData's own sectionSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
 
 
 ];
@@ -93,7 +93,7 @@ const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditiona
  * ConManCom and conditionals.js' own trueOdds). Boost (dynamic only)
  * and Range (the ease band's soonest/shortest end) are each meaningful
  * for only some modes; on every other row they are irrelevant rather
- * than genuinely missing, so compareSortEntries always sorts them to
+ * than genuinely missing, so sorEntFun always sorts them to
  * the bottom regardless of direction instead of flipping to the top on
  * a "High to Low" sort the way a truly missing value would.
  *
@@ -104,18 +104,18 @@ const SEC_SOR_ARR = [ // What: Section Sort Array. Why: The top-level Conditiona
 const CIS_OPT_ARR = [
 
 
-	{ keyStr : 'name-asc',    labStr : 'Name (A–Z)' },          // What: Key String. Why: This is the conditional list's own default sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'name-desc',   labStr : 'Name (Z–A)' },          // What: Key String. Why: This is the reverse of the default sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'type-asc',    labStr : 'Type (A–Z)' },          // What: Key String. Why: Type is each conditional's own mode label. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'type-desc',   labStr : 'Type (Z–A)' },          // What: Key String. Why: This is the reverse of the type sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'odds-asc',    labStr : 'Odds (Low to High)' },  // What: Key String. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'odds-desc',   labStr : 'Odds (High to Low)' },  // What: Key String. Why: This is the reverse of the odds sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'boost-asc',   labStr : 'Boost (Low to High)' }, // What: Key String. Why: Only a dynamic conditional has a meaningful boost value. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'boost-desc',  labStr : 'Boost (High to Low)' }, // What: Key String. Why: This is the reverse of the boost sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'range-asc',   labStr : 'Range (Low to High)' }, // What: Key String. Why: Only an ease-up/ease-down conditional has a meaningful soonest/shortest band. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'range-desc',  labStr : 'Range (High to Low)' }, // What: Key String. Why: This is the reverse of the range sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'active-asc',  labStr : 'Active to Inactive' },  // What: Key String. Why: Every conditional has its own active/inactive state. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'active-desc', labStr : 'Inactive to Active' }   // What: Key String. Why: This is the reverse of the active sort. How: SortSelect reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'name-asc',    labStr : 'Name (A–Z)' },          // What: Key String. Why: This is the conditional list's own default sort. How: SorSelCom reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'name-desc',   labStr : 'Name (Z–A)' },          // What: Key String. Why: This is the reverse of the default sort. How: SorSelCom reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'type-asc',    labStr : 'Type (A–Z)' },          // What: Key String. Why: Type is each conditional's own mode label. How: SorSelCom reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'type-desc',   labStr : 'Type (Z–A)' },          // What: Key String. Why: This is the reverse of the type sort. How: SorSelCom reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'odds-asc',    labStr : 'Odds (Low to High)' },  // What: Key String. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds. How: SorSelCom reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'odds-desc',   labStr : 'Odds (High to Low)' },  // What: Key String. Why: This is the reverse of the odds sort. How: SorSelCom reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'boost-asc',   labStr : 'Boost (Low to High)' }, // What: Key String. Why: Only a dynamic conditional has a meaningful boost value. How: SorSelCom reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'boost-desc',  labStr : 'Boost (High to Low)' }, // What: Key String. Why: This is the reverse of the boost sort. How: SorSelCom reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'range-asc',   labStr : 'Range (Low to High)' }, // What: Key String. Why: Only an ease-up/ease-down conditional has a meaningful soonest/shortest band. How: SorSelCom reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'range-desc',  labStr : 'Range (High to Low)' }, // What: Key String. Why: This is the reverse of the range sort. How: SorSelCom reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'active-asc',  labStr : 'Active to Inactive' },  // What: Key String. Why: Every conditional has its own active/inactive state. How: SorSelCom reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'active-desc', labStr : 'Inactive to Active' }   // What: Key String. Why: This is the reverse of the active sort. How: SorSelCom reads this against ConManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
 
 
 ];
@@ -160,8 +160,8 @@ function pisOptFun ( picModStr ) {
 	const optArr = [ // What: Options Array. Why: Every mode shares at least the Name sort. How: This starts with the 2 Name entries every mode gets, then more are pushed below depending on picModStr.
 
 
-		{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Key String. Why: This is every mode's own default sort. How: SortSelect reads this against the picker's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-		{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }  // What: Key String. Why: This is the reverse of the default sort. How: SortSelect reads this against the picker's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+		{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Key String. Why: This is every mode's own default sort. How: SorSelCom reads this against the picker's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+		{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }  // What: Key String. Why: This is the reverse of the default sort. How: SorSelCom reads this against the picker's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
 
 
 	];
@@ -236,7 +236,7 @@ function pisOptFun ( picModStr ) {
  *                                    conditional rail; defaults to an empty
  *                                    array.
  * @param props.actions             - Actions: {@link useStore}
- * @param props.onCollapse          - On Collapse: Collapses this picker's own
+ * @param props.onCollapse          - On ColDisCom: Collapses this picker's own
  *                                    Controls disclosure.
  * @param props.onRequestDelete     - On Request Delete: Deletes this picker,
  *                                    in place of the default
@@ -286,7 +286,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 	const shoSavBoo = isaNewBoo && iteSecBoo && iteArr.length >= 2 && !hasNewBoo;               // What: Show Save Boolean. Why: The footer button only becomes a real "Save" once the Items section is open, holds at least 2 items, and none is still an unsaved brand-new row. How: This combines all 4 conditions with &&.
 	const ftrLabStr = shoSavBoo ? 'Save' : 'Add Items';                                        // What: Footer Label String. Why: The footer button's own visible text depends on whether it's ready to save yet. How: This picks 'Save' once shoSavBoo is true, 'Add Items' otherwise.
 	const ftrDisBoo = shoSavBoo ? false : ( neeNamBoo || neeGroBoo || iteSecBoo );              // What: Footer Disabled Boolean. Why: The footer button stays disabled until every prerequisite for its current label is satisfied. How: This is never disabled once shoSavBoo is true, otherwise disabled while name/group is missing or the Items section is already open.
-	const ftrTipStr = neeNamBoo && neeGroBoo ? 'A picker name and group are both required.' // What: Footer Tip String. Why: The disabled button's own InfoTip needs a specific reason for whichever prerequisite is still unmet. How: This chains through every prerequisite in the same priority order the footer itself checks them.
+	const ftrTipStr = neeNamBoo && neeGroBoo ? 'A picker name and group are both required.' // What: Footer Tip String. Why: The disabled button's own InfTipCom needs a specific reason for whichever prerequisite is still unmet. How: This chains through every prerequisite in the same priority order the footer itself checks them.
 		: neeNamBoo ? 'A picker name is required.'
 		: neeGroBoo ? 'A group name is required.'
 		: ( iteSecBoo && iteArr.length < 2 ) ? `${ 2 - iteArr.length } more ${ 2 - iteArr.length === 1 ? 'item' : 'items' } needed.`
@@ -364,13 +364,13 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 		const raiCurEle = raiNodRef.current; // What: Rail Current Element. Why: There is nothing to animate before the rail itself has mounted. How: This reads the live node raiRefFun last wrote.
 
-		if ( !raiCurEle ) return; // What: No Rail Guard. Why: The rail may not be mounted yet, such as while its own Collapse is still closed. How: This bails out of the effect early when there is no rail element to measure.
+		if ( !raiCurEle ) return; // What: No Rail Guard. Why: The rail may not be mounted yet, such as while its own ColDisCom is still closed. How: This bails out of the effect early when there is no rail element to measure.
 
 
 
 		const firMapObj = flpFirRef.current;                               // What: First Map Object. Why: This is the map of each pill's own previous x position, read and then overwritten below. How: This is read once from flpFirRef.current and reused throughout this effect run.
 		const pilNodArr = [ ...raiCurEle.querySelectorAll( '.cnd-pill' ) ]; // What: Pill Node Array. Why: Every currently-rendered pill needs to be measured and possibly animated. How: This queries every '.cnd-pill' element inside the rail and spreads the NodeList into a real array.
-		const redMotBoo = reduceMotion();                                  // What: Reduce Motion Boolean. Why: A user who prefers reduced motion should never see this FLIP tween. How: This is checked once per run and read by every pill below.
+		const redMotBoo = redMotFun();                                  // What: Reduce Motion Boolean. Why: A user who prefers reduced motion should never see this FLIP tween. How: This is checked once per run and read by every pill below.
 
 
 		pilNodArr.forEach( ( pilCurEle ) => { // What: Pill Animate Loop. Why: Every pill needs its own individual FLIP tween (or fade-in, if newly pinned), since each may have moved a different distance. How: This computes each pill's own delta from firMapObj and plays the matching animation.
@@ -442,7 +442,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 		const preMapObj = groFlpRef.current;                                        // What: Previous Map Object. Why: A FLIP tween needs each pill's own position from before this render's reorder. How: This reads whatever the previous run of this effect recorded.
 
 
-		if ( preMapObj && !reduceMotion() ) { // What: Has Previous Guard. Why: The very first run has nothing to compare against, and a reduced-motion user should never see this tween. How: This only attempts to animate once a previous snapshot exists and motion isn't reduced.
+		if ( preMapObj && !redMotFun() ) { // What: Has Previous Guard. Why: The very first run has nothing to compare against, and a reduced-motion user should never see this tween. How: This only attempts to animate once a previous snapshot exists and motion isn't reduced.
 
 
 			pilNodArr.forEach( ( pilCurEle ) => { // What: Pill Animate Loop. Why: Every pill needs its own individual tween, since each may have moved a different distance (or none at all). How: This computes each pill's own delta from preMapObj and plays a matching transform.
@@ -469,7 +469,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 		groFlpRef.current = nexMapObj; // What: Group Flip Update. Why: This run's own positions must replace whatever the previous run recorded. How: This overwrites groFlpRef.current with nexMapObj.
 
 
-		if ( groCurEle.scrollLeft > 1 ) groCurEle.scrollTo( { left : 0, behavior : reduceMotion() ? 'auto' : 'smooth' } ); // What: Group Scroll Reset Guard. Why: A pin-to-front reorder means the selected group is now the leftmost pill, which should be visible. How: This glides the row back to its own left edge whenever it wasn't already there.
+		if ( groCurEle.scrollLeft > 1 ) groCurEle.scrollTo( { left : 0, behavior : redMotFun() ? 'auto' : 'smooth' } ); // What: Group Scroll Reset Guard. Why: A pin-to-front reorder means the selected group is now the leftmost pill, which should be visible. How: This glides the row back to its own left edge whenever it wasn't already there.
 
 
 	}, [ picObj.group ] ); // What: Effect Dependency Array. Why: The group pills only ever need to reorder when the picker's own selected group actually changes. How: picObj.group is the single value this effect's own change-detection is built around.
@@ -802,7 +802,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 									aria-label='Create group'
 									onClick={ cmtGroFun }
 								>
-									<Icon name='check' size={ 14 } />{ /* What: Icon. Why: The confirm button needs a recognizable checkmark glyph. How: This renders the 'check' icon at a fixed size. */ }
+									<IcoSvgCom name='check' size={ 14 } />{ /* What: Icon Svg Component. Why: The confirm button needs a recognizable checkmark glyph. How: This renders the 'check' icon at a fixed size. */ }
 								</button>{ /* What: New Group Ok Button Element. Why: This is the explicit "create this group" affordance beside the input. How: This is disabled while newGroStr is empty and calls cmtGroFun on click. */ }
 
 								<button
@@ -811,7 +811,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 									aria-label='Cancel'
 									onClick={ canGroFun }
 								>
-									<Icon name='x' size={ 14 } />{ /* What: Icon. Why: The cancel button needs a recognizable close glyph. How: This renders the 'x' icon at a fixed size. */ }
+									<IcoSvgCom name='x' size={ 14 } />{ /* What: Icon Svg Component. Why: The cancel button needs a recognizable close glyph. How: This renders the 'x' icon at a fixed size. */ }
 								</button>{ /* What: New Group Cancel Button Element. Why: This is the explicit "discard this group" affordance beside the input. How: This calls canGroFun on click. */ }
 
 
@@ -826,7 +826,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 								className={ ` picker-group-pill   picker-group-pill--new   ${ pilRetBoo ? 'is-returning' : '' } ` }
 								onClick={ () => setNewGroBoo( true ) }
 							>
-								<Icon name='plus' size={ 13 } />{ /* What: Icon. Why: The trigger pill needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } New Group
+								<IcoSvgCom name='plus' size={ 13 } />{ /* What: Icon Svg Component. Why: The trigger pill needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } New Group
 							</button> // What: New Group Trigger Button Element. Why: This is the affordance that opens the inline create control. How: This opens newGroBoo on click, and plays its own return animation via pilRetBoo after a prior close.
 
 
@@ -873,18 +873,18 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 								<span className='rd-mode-dot' aria-hidden='true'></span>{ /* What: Mode Dot Span Element. Why: The custom radio dot is drawn purely with CSS rather than the native control. How: This is an empty, decorative, screen-reader-hidden span. */ }
 
-								<span className='rd-mode-text'>{ /* What: Mode Text Span Element. Why: The mode's own name and its expandable hint need to sit together beside the radio dot. How: This wraps the name span and the Collapse-wrapped hint below. */ }
+								<span className='rd-mode-text'>{ /* What: Mode Text Span Element. Why: The mode's own name and its expandable hint need to sit together beside the radio dot. How: This wraps the name span and the ColDisCom-wrapped hint below. */ }
 
 
 									<span className='rd-mode-name'>{ modValObj.label }</span>{ /* What: Mode Name Span Element. Why: Every mode needs its own visible name. How: This renders modValObj's own label. */ }
 
-									<Collapse open={ modOnBoo } instant={ isaNewBoo }>{ /* What: Collapse. Why: The hint expands/collapses on selection change, so the old row's hint folds away while the new one grows. How: This opens only for the currently-selected mode, instant (no animation) for a brand-new draft. */ }
+									<ColDisCom open={ modOnBoo } instant={ isaNewBoo }>{ /* What: Collapse Disclosure Component. Why: The hint expands/collapses on selection change, so the old row's hint folds away while the new one grows. How: This opens only for the currently-selected mode, instant (no animation) for a brand-new draft. */ }
 
 										{ Array.isArray( modValObj.hint ) // What: Hint Content Check. Why: A mode's own hint can be either one paragraph or several. How: This maps every paragraph to its own span when hint is an array, otherwise renders the single hint directly.
 											? modValObj.hint.map( ( parCurStr, parIndNum ) => <span key={ parIndNum } className='rd-mode-hint'>{ parCurStr }</span> )
 											: <span className='rd-mode-hint'>{ modValObj.hint }</span> }
 
-									</Collapse>
+									</ColDisCom>
 
 
 								</span>
@@ -943,7 +943,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 				</div>
 
-				<Collapse open={ conOnBoo }>{ /* What: Collapse. Why: The conditional rail only needs to exist while the toggle is on. How: This opens only while conOnBoo is true. */ }
+				<ColDisCom open={ conOnBoo }>{ /* What: Collapse Disclosure Component. Why: The conditional rail only needs to exist while the toggle is on. How: This opens only while conOnBoo is true. */ }
 
 					<div className='rd-cnd-rail-row'>{ /* What: Rail Row Div Element. Why: The conditional rail (or its empty-state message) needs its own row. How: This wraps whichever of the 2 branches below applies. */ }
 
@@ -999,7 +999,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 					</div>
 
-				</Collapse>
+				</ColDisCom>
 
 				<div className='sched-line'>{ /* What: Daily Line Div Element. Why: The daily-generator membership toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. */ }
 
@@ -1035,7 +1035,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 				</div>
 
-				<Collapse open={ inDaiBoo }>{ /* What: Collapse. Why: The full cadence/days/holiday schedule only makes sense while this picker is actually in the daily generator. How: This opens only while inDaiBoo is true. */ }
+				<ColDisCom open={ inDaiBoo }>{ /* What: Collapse Disclosure Component. Why: The full cadence/days/holiday schedule only makes sense while this picker is actually in the daily generator. How: This opens only while inDaiBoo is true. */ }
 
 					<React.Fragment>{ /* What: Schedule Fragment Element. Why: The 3 schedule rows below are true siblings with no shared wrapper of their own. How: This groups the cadence, days, and holiday rows without adding an extra DOM node. */ }
 
@@ -1046,7 +1046,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 							<span className='sched-line-label'>{ /* What: Cadence Label Span Element. Why: The row's own name/help tip and live explanation belong together. How: This wraps the lbl row and sub span below. */ }
 
 								<span className='sched-line-lbl pie-lbl-row'>How often?
-									<InfoTip className='pie-help pie-help--sm' label={ CAD_NAM_OBJ.tipMesFun( picObj.cadence ) }>?</InfoTip>{ /* What: Info Tip. Why: The cadence choice needs a fuller explanation available on demand. How: This shows CAD_NAM_OBJ's own tip text for the picker's current cadence. */ }
+									<InfTipCom className='pie-help pie-help--sm' label={ CAD_NAM_OBJ.tipMesFun( picObj.cadence ) }>?</InfTipCom>{ /* What: Info Tip Component. Why: The cadence choice needs a fuller explanation available on demand. How: This shows CAD_NAM_OBJ's own tip text for the picker's current cadence. */ }
 								</span>
 
 								<span
@@ -1284,7 +1284,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 						</div>
 
-						<div className='sched-line'>{ /* What: Days Line Div Element. Why: The weekday multi-select needs its own labeled row. How: This wraps the label/sub text and the WeekdayChips control below. */ }
+						<div className='sched-line'>{ /* What: Days Line Div Element. Why: The weekday multi-select needs its own labeled row. How: This wraps the label/sub text and the WeeChiCom control below. */ }
 
 
 							<span className='sched-line-label'>{ /* What: Days Label Span Element. Why: The row's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
@@ -1302,13 +1302,13 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 							</span>
 
-							<WeekdayChips
+							<WeeChiCom
 								value={ picObj.daysOfWeek || [ 0, 1, 2, 3, 4, 5, 6 ] }
 								size='sm'
 								lockedDay={ picObj.cadence === 'weekly' ? ( picObj.anchorDow ?? 0 ) : null }
 								lockedTip={ picObj.cadence === 'weekly' ? CAD_NAM_OBJ.locTipFun( picObj.anchorDow ?? 0 ) : '' }
 								onChange={ ( dayArrArg ) => actObj.updatePicker( picObj.id, { daysOfWeek : dayArrArg } ) }
-							/>{ /* What: Weekday Chips. Why: This is the actual multi-select for which weekdays this picker runs on. How: This locks the anchor weekday when picObj.cadence is 'weekly', otherwise every day is freely toggleable. */ }
+							/>{ /* What: Weekday Chips Component. Why: This is the actual multi-select for which weekdays this picker runs on. How: This locks the anchor weekday when picObj.cadence is 'weekly', otherwise every day is freely toggleable. */ }
 
 
 						</div>
@@ -1344,13 +1344,13 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 					</React.Fragment>
 
-				</Collapse>
+				</ColDisCom>
 
-				<Collapse open={ !inDaiBoo }>{ /* What: Collapse. Why: The "runs on demand only" note only makes sense while this picker is NOT in the daily generator. How: This opens only while inDaiBoo is false. */ }
+				<ColDisCom open={ !inDaiBoo }>{ /* What: Collapse Disclosure Component. Why: The "runs on demand only" note only makes sense while this picker is NOT in the daily generator. How: This opens only while inDaiBoo is false. */ }
 
 					<div className='sched-off-note'>Runs on demand only &mdash; not in the daily generator.</div>
 
-				</Collapse>
+				</ColDisCom>
 
 
 			</div>
@@ -1388,7 +1388,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 				</div>
 
-				<Collapse open={ isaEasBoo }>{ /* What: Collapse. Why: Fill/Refill only makes sense for an ease-mode picker. How: This opens only while isaEasBoo is true. */ }
+				<ColDisCom open={ isaEasBoo }>{ /* What: Collapse Disclosure Component. Why: Fill/Refill only makes sense for an ease-mode picker. How: This opens only while isaEasBoo is true. */ }
 
 					<div className={ ` ease-config   ${ isaDowBoo ? 'ease-config--down' : 'ease-config--up' } ` }>{ /* What: Ease Config Div Element. Why: Help mode needs a pure selector hook to give this section mode-specific copy (Fill vs. Refill). How: This wraps whichever of the 2 mode-specific rows below matches picObj.mode. */ }
 
@@ -1396,7 +1396,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 						{ picObj.mode === 'ease-up' && ( // What: Ease Up Check. Why: Only ease-up gets the "Fill" wording and action. How: This renders the Fill row only while picObj.mode is 'ease-up'.
 
 
-							<div className='pie-row'>{ /* What: Fill Row Div Element. Why: The Fill label/summary and its button need their own row. How: This wraps the rowlabel div and the FillButton below. */ }
+							<div className='pie-row'>{ /* What: Fill Row Div Element. Why: The Fill label/summary and its button need their own row. How: This wraps the rowlabel div and the FilButCom below. */ }
 
 
 								<div className='pie-rowlabel'>{ /* What: Fill Rowlabel Div Element. Why: The Fill label and its live summary belong together. How: This wraps the lbl and sub spans below. */ }
@@ -1407,11 +1407,11 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 								</div>
 
-								<FillButton
+								<FilButCom
 									label='Fill all'
 									disabled={ iteArr.length > 0 && iteArr.every( ( iteCurObj ) => ( iteCurObj.value ?? 0 ) >= ( picObj.threshold ?? 100 ) ) }
 									onClick={ () => actObj.refillPicker( picObj.id ) }
-								/>{ /* What: Fill Button. Why: This is the actual bulk-charge action for an ease-up picker. How: This is disabled once every item is already at threshold, and calls refillPicker on click. */ }
+								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-up picker. How: This is disabled once every item is already at threshold, and calls refillPicker on click. */ }
 
 
 							</div>
@@ -1422,7 +1422,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 						{ picObj.mode === 'ease-down' && ( // What: Ease Down Check. Why: Only ease-down gets the "Refill" wording and action. How: This renders the Refill row only while picObj.mode is 'ease-down'.
 
 
-							<div className='pie-row'>{ /* What: Refill Row Div Element. Why: The Refill label/summary and its button need their own row. How: This wraps the rowlabel div and the FillButton below. */ }
+							<div className='pie-row'>{ /* What: Refill Row Div Element. Why: The Refill label/summary and its button need their own row. How: This wraps the rowlabel div and the FilButCom below. */ }
 
 
 								<div className='pie-rowlabel'>{ /* What: Refill Rowlabel Div Element. Why: The Refill label and its live summary belong together. How: This wraps the lbl and sub spans below. */ }
@@ -1433,11 +1433,11 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 								</div>
 
-								<FillButton
+								<FilButCom
 									label='Refill all'
 									disabled={ iteArr.length > 0 && iteArr.every( ( iteCurObj ) => ( iteCurObj.value ?? 0 ) >= ( picObj.threshold ?? 100 ) ) }
 									onClick={ () => actObj.refillPicker( picObj.id ) }
-								/>{ /* What: Fill Button. Why: This is the actual bulk-charge action for an ease-down picker. How: This is disabled once every item is already at threshold, and calls refillPicker on click. */ }
+								/>{ /* What: Fill Button Component. Why: This is the actual bulk-charge action for an ease-down picker. How: This is disabled once every item is already at threshold, and calls refillPicker on click. */ }
 
 
 							</div>
@@ -1448,7 +1448,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 					</div>
 
-				</Collapse>
+				</ColDisCom>
 
 
 			</div>
@@ -1464,11 +1464,11 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 						<div className='confirm-msg'>Delete the &ldquo;{ picObj.name }&rdquo; picker? This will also delete its { iteArr.length } { iteArr.length === 1 ? 'item' : 'items' }. This can&rsquo;t be undone.</div>{ /* What: Confirm Msg Div Element. Why: A destructive action needs an explicit, specific warning before it happens. How: This names the picker and states exactly how many items will also be deleted. */ }
 
-						<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel and Delete buttons need their own row. How: This wraps both Btn instances below. */ }
+						<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel and Delete buttons need their own row. How: This wraps both ButBasCom instances below. */ }
 
-							<Btn kind='ghost' size='sm' onClick={ () => setConDelBoo( false ) }>Cancel</Btn>{ /* What: Btn. Why: Backing out of the confirm should not delete anything. How: This just closes the confirm row. */ }
+							<ButBasCom kind='ghost' size='sm' onClick={ () => setConDelBoo( false ) }>Cancel</ButBasCom>{ /* What: Button Base Component. Why: Backing out of the confirm should not delete anything. How: This just closes the confirm row. */ }
 
-							<Btn kind='danger' size='sm' onClick={ () => ( onReqDelFun ? onReqDelFun() : actObj.removePicker( picObj.id ) ) }>Delete</Btn>{ /* What: Btn. Why: This is the actual, final destructive action. How: This calls onReqDelFun when the caller wants to animate the removal itself, otherwise removes the picker directly. */ }
+							<ButBasCom kind='danger' size='sm' onClick={ () => ( onReqDelFun ? onReqDelFun() : actObj.removePicker( picObj.id ) ) }>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final destructive action. How: This calls onReqDelFun when the caller wants to animate the removal itself, otherwise removes the picker directly. */ }
 
 						</div>
 
@@ -1482,25 +1482,25 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 					<div key='foot-new' className='rd-ctl-foot-row rd-ctl-foot-row--new'>{ /* What: New Footer Row Div Element. Why: The new-draft footer's own Cancel/Save buttons need their own row. How: This wraps the rem-foot-right div below. */ }
 
 
-						<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: The Cancel and Save buttons anchor to the footer's own right edge. How: This wraps the Btn and InfoTip-wrapped Btn below. */ }
+						<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: The Cancel and Save buttons anchor to the footer's own right edge. How: This wraps the ButBasCom and InfTipCom-wrapped ButBasCom below. */ }
 
 
-							<Btn
+							<ButBasCom
 								kind='ghost'
 								size='sm'
 								onClick={ () => { donRef.current = 'cancel'; onCanNewFun(); } }
-							>Cancel</Btn>{ /* What: Btn. Why: A brand-new draft's Cancel discards the whole thing rather than reverting to a blank snapshot; donRef is marked first so the implicit-close guard doesn't ALSO try to revert it. How: This marks donRef then calls onCanNewFun. */ }
+							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: A brand-new draft's Cancel discards the whole thing rather than reverting to a blank snapshot; donRef is marked first so the implicit-close guard doesn't ALSO try to revert it. How: This marks donRef then calls onCanNewFun. */ }
 
-							<InfoTip label={ ftrTipStr }>{ /* What: Info Tip. Why: The footer button's own current disabled reason (or confirmation once ready) needs to be available on demand. How: This shows ftrTipStr, wrapping the Btn below. */ }
+							<InfTipCom label={ ftrTipStr }>{ /* What: Info Tip Component. Why: The footer button's own current disabled reason (or confirmation once ready) needs to be available on demand. How: This shows ftrTipStr, wrapping the ButBasCom below. */ }
 
-								<Btn
+								<ButBasCom
 									kind='primary'
 									size='sm'
 									disabled={ ftrDisBoo }
 									onClick={ ftrDisBoo ? undefined : () => { donRef.current = 'saved'; ftrActFun(); } }
-								>{ ftrLabStr }</Btn>{ /* What: Btn. Why: This is the new-draft footer's own primary action, reading "Add Items" or "Save" depending on progress. How: This marks donRef then calls ftrActFun, disabled per ftrDisBoo. */ }
+								>{ ftrLabStr }</ButBasCom>{ /* What: Button Base Component. Why: This is the new-draft footer's own primary action, reading "Add Items" or "Save" depending on progress. How: This marks donRef then calls ftrActFun, disabled per ftrDisBoo. */ }
 
-							</InfoTip>
+							</InfTipCom>
 
 
 						</div>
@@ -1512,16 +1512,16 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 				) : ( // What: Normal Footer Check. Why: An existing, non-draft picker gets the full Delete/Cancel/Save footer. How: This is the fallback branch once neither conDelBoo nor isaNewBoo applies.
 
 
-					<div key='foot' className='rd-ctl-foot-row'>{ /* What: Foot Row Div Element. Why: Delete (left) and Cancel/Save (right) both belong in the same footer row. How: This wraps the Delete Btn and the rem-foot-right div below. */ }
+					<div key='foot' className='rd-ctl-foot-row'>{ /* What: Foot Row Div Element. Why: Delete (left) and Cancel/Save (right) both belong in the same footer row. How: This wraps the Delete ButBasCom and the rem-foot-right div below. */ }
 
 
-						<Btn kind='danger' size='sm' icon='trash' onClick={ () => setConDelBoo( true ) }>Delete</Btn>{ /* What: Btn. Why: This opens the inline delete confirm rather than deleting immediately. How: This sets conDelBoo true on click. */ }
+						<ButBasCom kind='danger' size='sm' icon='trash' onClick={ () => setConDelBoo( true ) }>Delete</ButBasCom>{ /* What: Button Base Component. Why: This opens the inline delete confirm rather than deleting immediately. How: This sets conDelBoo true on click. */ }
 
-						<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save anchor to the footer's own right edge. How: This wraps both Btn instances below. */ }
+						<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save anchor to the footer's own right edge. How: This wraps both ButBasCom instances below. */ }
 
-							<Btn kind='ghost' size='sm' onClick={ canFun }>Cancel</Btn>{ /* What: Btn. Why: This discards every change made since Controls opened. How: This calls canFun on click. */ }
+							<ButBasCom kind='ghost' size='sm' onClick={ canFun }>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every change made since Controls opened. How: This calls canFun on click. */ }
 
-							<Btn kind='ghost' size='sm' onClick={ savCloFun }>Save</Btn>{ /* What: Btn. Why: This keeps every change made since Controls opened. How: This calls savCloFun on click. */ }
+							<ButBasCom kind='ghost' size='sm' onClick={ savCloFun }>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps every change made since Controls opened. How: This calls savCloFun on click. */ }
 
 						</div>
 
@@ -1626,7 +1626,7 @@ function ConEdiCom ( { cond : conObj, draft : drfObj, setDraft : setDrfObj, acti
 
 	};
 
-	useEscapeCancel( true, () => { // What: Use Escape Cancel. Why: Escape should back out of the delete confirm if it's showing, otherwise cancel the edit itself. How: This is always active while this row is mounted.
+	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should back out of the delete confirm if it's showing, otherwise cancel the edit itself. How: This is always active while this row is mounted.
 
 
 		if ( conDelBoo ) setConDelBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is showing, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conDelBoo false.
@@ -1661,11 +1661,11 @@ function ConEdiCom ( { cond : conObj, draft : drfObj, setDraft : setDrfObj, acti
 
 							<div className='confirm-msg'>Delete the &ldquo;{ conObj.name }&rdquo; conditional? Pickers using it will be detached. This can&rsquo;t be undone.</div>{ /* What: Confirm Msg Div Element. Why: A destructive action needs an explicit, specific warning before it happens. How: This names the conditional and states that any picker using it will be detached. */ }
 
-							<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel and Delete buttons need their own row. How: This wraps both Btn instances below. */ }
+							<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel and Delete buttons need their own row. How: This wraps both ButBasCom instances below. */ }
 
-								<Btn kind='ghost' size='sm' onClick={ () => setConDelBoo( false ) }>Cancel</Btn>{ /* What: Btn. Why: Backing out of the confirm should not delete anything. How: This just closes the confirm row. */ }
+								<ButBasCom kind='ghost' size='sm' onClick={ () => setConDelBoo( false ) }>Cancel</ButBasCom>{ /* What: Button Base Component. Why: Backing out of the confirm should not delete anything. How: This just closes the confirm row. */ }
 
-								<Btn kind='danger' size='sm' onClick={ () => onDelFun() }>Delete</Btn>{ /* What: Btn. Why: This is the actual, final destructive action. How: This calls onDelFun on click. */ }
+								<ButBasCom kind='danger' size='sm' onClick={ () => onDelFun() }>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final destructive action. How: This calls onDelFun on click. */ }
 
 							</div>
 
@@ -1676,16 +1676,16 @@ function ConEdiCom ( { cond : conObj, draft : drfObj, setDraft : setDrfObj, acti
 					) : ( // What: Plain Foot Branch. Why: With no delete confirmation pending, the normal Delete/Cancel/Save footer belongs here instead. How: This renders the else branch, taken while conDelBoo is false.
 
 
-						<div key='foot' className='rd-ctl-foot-row'>{ /* What: Foot Row Div Element. Why: Delete (left, existing conditionals only) and Cancel/Save (right) both belong in the same footer row. How: This conditionally renders the Delete Btn, then the rem-foot-right div below. */ }
+						<div key='foot' className='rd-ctl-foot-row'>{ /* What: Foot Row Div Element. Why: Delete (left, existing conditionals only) and Cancel/Save (right) both belong in the same footer row. How: This conditionally renders the Delete ButBasCom, then the rem-foot-right div below. */ }
 
 
-							{ !isaNewBoo && <Btn kind='danger' size='sm' icon='trash' onClick={ () => setConDelBoo( true ) }>Delete</Btn> }{ /* What: Btn. Why: A brand-new, not-yet-saved conditional has nothing to delete yet. How: This opens the inline delete confirm, rendered only while isaNewBoo is false. */ }
+							{ !isaNewBoo && <ButBasCom kind='danger' size='sm' icon='trash' onClick={ () => setConDelBoo( true ) }>Delete</ButBasCom> }{ /* What: Button Base Component. Why: A brand-new, not-yet-saved conditional has nothing to delete yet. How: This opens the inline delete confirm, rendered only while isaNewBoo is false. */ }
 
-							<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save anchor to the footer's own right edge. How: This wraps both Btn instances below. */ }
+							<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save anchor to the footer's own right edge. How: This wraps both ButBasCom instances below. */ }
 
-								<Btn kind='ghost' size='sm' onClick={ canFun }>Cancel</Btn>{ /* What: Btn. Why: This discards a brand-new conditional or closes an existing one's edits. How: This calls canFun on click. */ }
+								<ButBasCom kind='ghost' size='sm' onClick={ canFun }>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards a brand-new conditional or closes an existing one's edits. How: This calls canFun on click. */ }
 
-								<Btn kind='ghost' size='sm' disabled={ !!namErrStr } onClick={ savFun }>Save</Btn>{ /* What: Btn. Why: This commits the draft's own fields. How: This calls savFun on click, disabled while namErrStr holds a message. */ }
+								<ButBasCom kind='ghost' size='sm' disabled={ !!namErrStr } onClick={ savFun }>Save</ButBasCom>{ /* What: Button Base Component. Why: This commits the draft's own fields. How: This calls savFun on click, disabled while namErrStr holds a message. */ }
 
 							</div>
 
@@ -1772,7 +1772,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 	const conBstFun = ( conCurObj ) => ( conCurObj.mode === 'dynamic' ) ? ( conCurObj.value ?? 0 ) : null;                                    // What: Conditional Boost Function. Why: Only a dynamic conditional has a meaningful boost value, the same value field ease modes reuse for charge. How: This reads conCurObj.value only for 'dynamic', null otherwise.
 
 	const iteSorStr = ( staAppObj.ui && staAppObj.ui.dataSort && staAppObj.ui.dataSort.conditionals ) || 'name-asc'; // What: Item Sort String. Why: This section's own list needs its own persisted sort choice. How: This reads staAppObj.ui.dataSort.conditionals, falling back to 'name-asc'.
-	const sorConArr = [ ...conIteArr ].sort( ( aConObj, bConObj ) => compareSortEntries( // What: Sorted Conditional Array. Why: The rendered list needs to actually be in iteSorStr's own order. How: This builds a matching sort-entry shape for both sides and delegates the comparison to compareSortEntries.
+	const sorConArr = [ ...conIteArr ].sort( ( aConObj, bConObj ) => sorEntFun( // What: Sorted Conditional Array. Why: The rendered list needs to actually be in iteSorStr's own order. How: This builds a matching sort-entry shape for both sides and delegates the comparison to sorEntFun.
 
 		{ name : aConObj.name, type : ( MODES[ aConObj.mode ] || {} ).label || aConObj.mode, group : null, count : null,
 			range : conRngFun( aConObj ), odds : conOddFun( aConObj ), boost : conBstFun( aConObj ), isActive : aConObj.active !== false },
@@ -1790,10 +1790,10 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 	const closNewAniFun = () => { // What: Close New Animated Function. Why: Cancelling a brand-new conditional should collapse its row first (so it visibly animates shut) before actually dropping it, rather than unmounting it instantly. How: This closes the row immediately when motion is reduced, otherwise defers the state drop by 300ms.
 
 
-		if ( reduceMotion() ) { setOpnIdeStr( null ); setDrfObj( null ); setPenObj( null ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly, not mid-animation. How: This clears every piece of state synchronously and returns early.
+		if ( redMotFun() ) { setOpnIdeStr( null ); setDrfObj( null ); setPenObj( null ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly, not mid-animation. How: This clears every piece of state synchronously and returns early.
 
 
-		setOpnIdeStr( null ); // What: Row Collapse Call. Why: The editor itself must stay mounted (still holding drfObj/penObj) so its own Collapse can actually animate shut. How: This only closes the row's own open flag, not the draft/pending state yet.
+		setOpnIdeStr( null ); // What: Row Collapse Call. Why: The editor itself must stay mounted (still holding drfObj/penObj) so its own ColDisCom can actually animate shut. How: This only closes the row's own open flag, not the draft/pending state yet.
 
 		setTimeout( () => { setDrfObj( null ); setPenObj( null ); }, 300 ); // What: Deferred Drop Call. Why: The draft/pending state must survive until the collapse animation actually finishes. How: This clears both 300ms later, matching the collapse animation's own duration.
 
@@ -1805,12 +1805,12 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 		const donFun = () => { actObj.removeConditional( cidStr ); setCloIdeStr( null ); setDrfObj( null ); setOpnIdeStr( null ); }; // What: Done Function. Why: The actual removal and every piece of open/closing state need to clear together, whenever this finally runs. How: This is called either immediately or after the deferred timeout below.
 
-		if ( reduceMotion() ) { donFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This calls donFun synchronously and returns early.
+		if ( redMotFun() ) { donFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This calls donFun synchronously and returns early.
 
 
 		setCloIdeStr( cidStr ); // What: Closing Id Set. Why: The editor must stay mounted (via closingId) through its own collapse animation instead of unmounting immediately. How: This flags cidStr as the row currently mid-delete-animation.
 
-		setOpnIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its Collapse to animate shut. How: This clears opnIdeStr.
+		setOpnIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its ColDisCom to animate shut. How: This clears opnIdeStr.
 
 		setTimeout( donFun, 300 ); // What: Deferred Removal Call. Why: The actual store removal must wait until the collapse animation finishes. How: This calls donFun 300ms later, matching the collapse animation's own duration.
 
@@ -1824,10 +1824,10 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 		const cmtFun = () => { actObj.addConditional( payObj ); setDrfObj( null ); setPenObj( null ); }; // What: Commit Function. Why: The actual store write and clearing the local-only draft/pending state need to happen together. How: This is called either immediately or after the deferred timeout below.
 
 
-		if ( reduceMotion() ) { setOpnIdeStr( null ); cmtFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This closes the row and commits synchronously, then returns early.
+		if ( redMotFun() ) { setOpnIdeStr( null ); cmtFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This closes the row and commits synchronously, then returns early.
 
 
-		setOpnIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its Collapse to animate shut before the commit below lands. How: This clears opnIdeStr.
+		setOpnIdeStr( null ); // What: Row Collapse Call. Why: Collapsing the row's own open state is what actually triggers its ColDisCom to animate shut before the commit below lands. How: This clears opnIdeStr.
 
 		setTimeout( cmtFun, 300 ); // What: Deferred Commit Call. Why: The actual store write must wait until the collapse animation finishes. How: This calls cmtFun 300ms later, matching the collapse animation's own duration.
 
@@ -1860,7 +1860,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 	const opnRowRef = React.useRef( null ); // What: Open Row Reference. Why: A brand-new conditional's own "+ Add a conditional" click needs a handle on the resulting row so it can be scrolled into view. How: This is attached to whichever row is currently open.
 
-	React.useEffect( () => { // What: Scroll Into View Effect. Why: A freshly-created conditional's own form should scroll into view once its Collapse has actually finished opening. How: This waits 300ms (matching the Collapse open animation) before scrolling, or scrolls instantly under reduced motion.
+	React.useEffect( () => { // What: Scroll Into View Effect. Why: A freshly-created conditional's own form should scroll into view once its ColDisCom has actually finished opening. How: This waits 300ms (matching the ColDisCom open animation) before scrolling, or scrolls instantly under reduced motion.
 
 
 		if ( !opnIdeStr || !penObj || !opnRowRef.current ) return; // What: Not Applicable Guard. Why: Only a brand-new (pending), currently-open row with a mounted ref needs this scroll. How: This bails out whenever any of the 3 conditions isn't met.
@@ -1868,10 +1868,10 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 		const rowCurEle = opnRowRef.current; // What: Row Current Element. Why: The scroll call below needs a stable local reference to the live row node. How: This reads opnRowRef.current once and reuses it.
 
-		if ( reduceMotion() ) { rowCurEle.scrollIntoView( { behavior : 'auto', block : 'nearest' } ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this scroll happen instantly, not after a delay. How: This scrolls immediately and returns early.
+		if ( redMotFun() ) { rowCurEle.scrollIntoView( { behavior : 'auto', block : 'nearest' } ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this scroll happen instantly, not after a delay. How: This scrolls immediately and returns early.
 
 
-		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), 300 ); // What: Scroll Timeout Number. Why: The Collapse open animation (.26s) needs to finish growing the editor before the scroll starts, or it would scroll to the wrong final position. How: This schedules the smooth scroll 300ms out.
+		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), 300 ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (.26s) needs to finish growing the editor before the scroll starts, or it would scroll to the wrong final position. How: This schedules the smooth scroll 300ms out.
 
 
 		return () => clearTimeout( scrTimNum ); // What: Effect Cleanup Return. Why: A stale scroll must not fire after this effect re-runs (e.g. a different row opens) or the component unmounts. How: This cancels scrTimNum.
@@ -1885,7 +1885,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 	return (
 
 
-		<section className='cat cat--enter cnd-manager'>{ /* What: Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the Collapse-wrapped body below. */ }
+		<section className='cat cat--enter cnd-manager'>{ /* What: Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. */ }
 
 
 			<header className='cat-h'>{ /* What: Category Header Element. Why: Every section shares the same header shape (chevron + name + count). How: This wraps the collapse-toggle button below. */ }
@@ -1899,7 +1899,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 				>{ /* What: Header Left Button Element. Why: This is the actual clickable control for expanding/collapsing the whole section. How: This toggles the section's own persisted collapse state, defaulting collapsed. */ }
 
 
-					<span className={ ` chev   ${ secOpnBoo ? 'is-open' : '' } ` }><Icon name='chev' size={ 14 } /></span>{ /* What: Chevron Span Element. Why: The section's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
+					<span className={ ` chev   ${ secOpnBoo ? 'is-open' : '' } ` }><IcoSvgCom name='chev' size={ 14 } /></span>{ /* What: Chevron Span Element. Why: The section's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
 
 					<span className='cat-h-main'>{ /* What: Header Main Span Element. Why: The section's own name and live count belong together. How: This wraps the h2 and the count span below. */ }
 
@@ -1921,21 +1921,21 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 			</header>
 
-			<Collapse open={ secOpnBoo }>{ /* What: Collapse. Why: The whole section's own body only needs to exist while it's actually expanded. How: This opens only while secOpnBoo is true. */ }
+			<ColDisCom open={ secOpnBoo }>{ /* What: Collapse Disclosure Component. Why: The whole section's own body only needs to exist while it's actually expanded. How: This opens only while secOpnBoo is true. */ }
 
 				<div className='cat-body'>{ /* What: Category Body Div Element. Why: The add control, the empty-state message, the sort control, and every conditional row all belong in one body. How: This wraps every piece below. */ }
 
 
-					{ OB_CHECKLIST.tutorialsInProgress( staAppObj ) ? ( // What: Tutorials In Progress Check. Why: The add control must stay disabled (with an explanatory tip) while the Welcome Tour's own checklist is still in progress. How: This renders a disabled InfoTip-wrapped control in that state, otherwise the real button.
+					{ OB_CHECKLIST.tutorialsInProgress( staAppObj ) ? ( // What: Tutorials In Progress Check. Why: The add control must stay disabled (with an explanatory tip) while the Welcome Tour's own checklist is still in progress. How: This renders a disabled InfTipCom-wrapped control in that state, otherwise the real button.
 
 
-						<InfoTip
+						<InfTipCom
 							className='rd-add is-tour-disabled'
 							action='Add a conditional'
 							label='This button is disabled until all tutorials are completed.'
 						>
-							<Icon name='plus' size={ 13 } />{ /* What: Icon. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add a conditional
-						</InfoTip> // What: Info Tip. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses.
+							<IcoSvgCom name='plus' size={ 13 } />{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add a conditional
+						</InfTipCom> // What: Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses.
 
 
 					) : ( // What: Add Button Branch. Why: Outside the guided checklist, the real working Add control belongs here instead. How: This renders the else branch, taken while the checklist isn't in progress.
@@ -1960,7 +1960,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 							} }
 						>
-							<Icon name='plus' size={ 13 } />{ /* What: Icon. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add a conditional
+							<IcoSvgCom name='plus' size={ 13 } />{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add a conditional
 						</button> // What: Add Button Element. Why: This is the only place a brand-new conditional can be started. How: This seeds a fresh local-only draft and opens its own row.
 
 
@@ -1974,16 +1974,16 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 					) }
 
-					{ conIteArr.length > 1 && ( // What: Multiple Conditionals Check. Why: A sort control is only useful once there's more than one conditional to sort. How: This renders SortSelect only while conIteArr has 2 or more entries.
+					{ conIteArr.length > 1 && ( // What: Multiple Conditionals Check. Why: A sort control is only useful once there's more than one conditional to sort. How: This renders SorSelCom only while conIteArr has 2 or more entries.
 
 
-						<SortSelect
+						<SorSelCom
 							id='cnd-item-sort'
 							label='Sort'
 							options={ CIS_OPT_ARR }
 							value={ iteSorStr }
 							onChange={ ( keyValStr ) => actObj.setDataSort( 'conditionals', keyValStr ) }
-						/> // What: Sort Select. Why: This is the actual control for reordering the conditional list. How: This commits the chosen key as this section's own persisted conditionals sort.
+						/> // What: Sort Select Component. Why: This is the actual control for reordering the conditional list. How: This commits the chosen key as this section's own persisted conditionals sort.
 
 
 					) }
@@ -2032,7 +2032,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 										<button type='button' className='rd-chev' aria-label='Collapse' onClick={ keeCloFun }>{ /* What: Chevron Button Element. Why: The chevron is its own real button (not a decoration) since the row itself can no longer be one while editing. How: This calls keeCloFun, the same "deliberate close" handler used elsewhere. */ }
 
-											<span className='chev is-open'><Icon name='chev' size={ 14 } />{ /* What: Icon. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }</span>
+											<span className='chev is-open'><IcoSvgCom name='chev' size={ 14 } />{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }</span>
 
 										</button>
 
@@ -2068,7 +2068,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 										</span>
 
-										<span className='rd-chev'><span className={ ` chev   ${ isaOpnBoo ? 'is-open' : '' } ` }><Icon name='chev' size={ 14 } /></span></span>{ /* What: Chevron Span Element. Why: The closed row's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
+										<span className='rd-chev'><span className={ ` chev   ${ isaOpnBoo ? 'is-open' : '' } ` }><IcoSvgCom name='chev' size={ 14 } /></span></span>{ /* What: Chevron Span Element. Why: The closed row's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
 
 
 									</button>
@@ -2076,7 +2076,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 								) }
 
-								<Collapse open={ isaOpnBoo }>{ /* What: Collapse. Why: This row's own editor only needs to exist while it's actually open (or animating shut). How: This opens only while isaOpnBoo is true. */ }
+								<ColDisCom open={ isaOpnBoo }>{ /* What: Collapse Disclosure Component. Why: This row's own editor only needs to exist while it's actually open (or animating shut). How: This opens only while isaOpnBoo is true. */ }
 
 									{ drfObj && ( isaOpnBoo || isaPenBoo || cloIdeStr === conCurObj.id ) && ( // What: Editor Mount Check. Why: The editor must also stay mounted while pending or mid-delete-animation, not only while strictly open. How: This renders ConEdiCom only while a draft exists and one of the 3 conditions holds.
 
@@ -2098,7 +2098,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 									) }
 
-								</Collapse>
+								</ColDisCom>
 
 
 							</div>
@@ -2112,7 +2112,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 
 				</div>
 
-			</Collapse>
+			</ColDisCom>
 
 
 		</section>
@@ -2199,7 +2199,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	const newIteRef                   = React.useRef( null );   // What: New Item Reference. Why: A brand-new, not-yet-kept item needs to be tracked so Cancel can discard the whole add instead of reverting to an empty snapshot. How: This holds whichever item's own id was just created, cleared once it's kept.
 	const [ insIteStr, setInsIteStr ] = React.useState( null ); // What: Insert Item String And Setter. Why: A just-inserted row needs to play its own slide-in entrance exactly once. How: This holds whichever item's own id should currently play that entrance.
 	const opnEdiRef                   = React.useRef( null );   // What: Open Editor Reference. Why: The open item's own row header (outside IteEdiCom) needs to call its own .keep() before closing, so an explicit close never gets treated as an implicit revert. How: This holds whichever IteEdiCom instance is currently open.
-	const frzIndRef                   = React.useRef( null );   // What: Frozen Index Reference. Why: freezeEditedRow needs one shared ref across every picker's own item list (only one item can be open at a time). How: This is passed straight through to freezeEditedRow below.
+	const frzIndRef                   = React.useRef( null );   // What: Frozen Index Reference. Why: freEdiFun needs one shared ref across every picker's own item list (only one item can be open at a time). How: This is passed straight through to freEdiFun below.
 
 
 	const preOpnRef = React.useRef( null ); // What: Previous Open Reference. Why: The insert-entrance replay effect below needs to compare against whichever item was open on the PREVIOUS render. How: This starts null and is updated by the effect below on every change.
@@ -2218,7 +2218,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 	const opnRowRef = React.useRef( null ); // What: Open Row Reference. Why: A brand-new item's own "+ Add" click needs a handle on the resulting row so it can be scrolled into view. How: This is attached to whichever row is currently open.
 
-	React.useEffect( () => { // What: Scroll Into View Effect. Why: A freshly-created item's own form should scroll into view once its Collapse has actually finished opening, pinned right below the sort control rather than the top of a possibly-tall list. How: This waits 300ms (matching the Collapse open animation) before scrolling, or scrolls instantly under reduced motion.
+	React.useEffect( () => { // What: Scroll Into View Effect. Why: A freshly-created item's own form should scroll into view once its ColDisCom has actually finished opening, pinned right below the sort control rather than the top of a possibly-tall list. How: This waits 300ms (matching the ColDisCom open animation) before scrolling, or scrolls instantly under reduced motion.
 
 
 		if ( !opnIteStr || newIteRef.current !== opnIteStr || !opnRowRef.current ) return; // What: Not Applicable Guard. Why: Only a brand-new, currently-open item with a mounted ref needs this scroll. How: This bails out whenever any of the 3 conditions isn't met.
@@ -2226,10 +2226,10 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 		const rowCurEle = opnRowRef.current; // What: Row Current Element. Why: The scroll call below needs a stable local reference to the live row node. How: This reads opnRowRef.current once and reuses it.
 
-		if ( reduceMotion() ) { rowCurEle.scrollIntoView( { behavior : 'auto', block : 'nearest' } ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this scroll happen instantly. How: This scrolls immediately and returns early.
+		if ( redMotFun() ) { rowCurEle.scrollIntoView( { behavior : 'auto', block : 'nearest' } ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this scroll happen instantly. How: This scrolls immediately and returns early.
 
 
-		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), 300 ); // What: Scroll Timeout Number. Why: The Collapse open animation (.26s) needs to finish growing the editor before the scroll starts. How: This schedules the smooth scroll 300ms out.
+		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), 300 ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (.26s) needs to finish growing the editor before the scroll starts. How: This schedules the smooth scroll 300ms out.
 
 
 		return () => clearTimeout( scrTimNum ); // What: Effect Cleanup Return. Why: A stale scroll must not fire after this effect re-runs or the component unmounts. How: This cancels scrTimNum.
@@ -2250,14 +2250,14 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	const picArr = staAppObj.pickers || []; // What: Picker Array. Why: Nearly every filter/list computation below needs the full picker list to start from. How: This reads staAppObj.pickers, falling back to an empty array.
 
 	const [ remPicStr, setRemPicStr ] = React.useState( null ); // What: Removing Picker String And Setter. Why: A deleted picker's own card needs to finish its collapse+fade-out animation before actually being removed. How: This holds whichever picker's own id is currently mid-removal-animation.
-	const delPicFun = ( pikIdeStr ) => { if ( reduceMotion() ) { actObj.removePicker( pikIdeStr ); return; } setRemPicStr( pikIdeStr ); }; // What: Delete Picker Function. Why: A user who prefers reduced motion should see the removal happen instantly instead of animating. How: This removes the picker directly under reduced motion, otherwise just flags it for the animated removal (finished by the card's own onAnimationEnd below).
+	const delPicFun = ( pikIdeStr ) => { if ( redMotFun() ) { actObj.removePicker( pikIdeStr ); return; } setRemPicStr( pikIdeStr ); }; // What: Delete Picker Function. Why: A user who prefers reduced motion should see the removal happen instantly instead of animating. How: This removes the picker directly under reduced motion, otherwise just flags it for the animated removal (finished by the card's own onAnimationEnd below).
 
 
 	const [ newDrfStr, setNewDrfStr ]   = React.useState( null );  // What: New Draft String And Setter. Why: The "Create Picker" trigger creates a REAL (but hidden) picker immediately; only its id is held here, since the card below always reads the LIVE picker from staAppObj.pickers, same as any other card. How: This is set by strNewFun and cleared by canNewFun/savNewFun.
 	const [ drfIteBoo, setDrfIteBoo ]   = React.useState( false ); // What: Draft Items Boolean And Setter. Why: The draft's own Items section starts closed, unlike a real picker's default-open one, since there's nothing to add to yet. How: This is toggled by the footer's "Add Items" button or the Items section's own header.
-	const [ penAutBoo, setPenAutBoo ]   = React.useState( false ); // What: Pending Auto Boolean And Setter. Why: The footer's first "Add Items" click should ALSO land straight in a ready-to-type new-item form, but PicConCom's own Items Collapse only starts mounting children one render after drfIteBoo flips, so this defers the auto-add by one effect tick. How: This is flagged true by onOpnSecFun and consumed by the effect below.
+	const [ penAutBoo, setPenAutBoo ]   = React.useState( false ); // What: Pending Auto Boolean And Setter. Why: The footer's first "Add Items" click should ALSO land straight in a ready-to-type new-item form, but PicConCom's own Items ColDisCom only starts mounting children one render after drfIteBoo flips, so this defers the auto-add by one effect tick. How: This is flagged true by onOpnSecFun and consumed by the effect below.
 
-	React.useEffect( () => { // What: Pending Auto Add Effect. Why: Deferring the auto-add by one render lets both the reveal and the new item's own open state land in the SAME next render, instead of racing the Collapse's own child-mount delay. How: This creates a brand-new item and opens it, exactly once per penAutBoo flip.
+	React.useEffect( () => { // What: Pending Auto Add Effect. Why: Deferring the auto-add by one render lets both the reveal and the new item's own open state land in the SAME next render, instead of racing the ColDisCom's own child-mount delay. How: This creates a brand-new item and opens it, exactly once per penAutBoo flip.
 
 
 		if ( !penAutBoo ) return; // What: Not Pending Guard. Why: This effect should do nothing until specifically flagged. How: This bails out early while penAutBoo is false.
@@ -2332,7 +2332,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 		if ( !newDrfStr || !drfCrdRef.current ) return; // What: Not Applicable Guard. Why: Only an actual, mounted draft card needs this scroll. How: This bails out when either condition fails.
 
-		drfCrdRef.current.scrollIntoView( { behavior : reduceMotion() ? 'auto' : 'smooth', block : 'start' } ); // What: Draft Scroll Call. Why: This is the actual scroll-to-top-of-viewport action. How: This scrolls instantly under reduced motion, smoothly otherwise.
+		drfCrdRef.current.scrollIntoView( { behavior : redMotFun() ? 'auto' : 'smooth', block : 'start' } ); // What: Draft Scroll Call. Why: This is the actual scroll-to-top-of-viewport action. How: This scrolls instantly under reduced motion, smoothly otherwise.
 
 
 	}, [ newDrfStr ] ); // What: Effect Dependency Array. Why: This only ever needs to run when a brand-new draft actually appears. How: newDrfStr is the single value this effect's own guard is built around.
@@ -2505,7 +2505,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	}, [ shwPicArr, staAppObj.items ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when the shown pickers or the app's own items change. How: Both values independently affect the computed metadata.
 
 	const secSorStr = ( staAppObj.ui && staAppObj.ui.dataSort && staAppObj.ui.dataSort.sections ) || 'name-asc'; // What: Section Sort String. Why: The top-level section list needs its own persisted sort choice. How: This reads staAppObj.ui.dataSort.sections, falling back to 'name-asc'.
-	const secEntArr = React.useMemo( () => { // What: Section Entry Array. Why: Conditionals/Reminders/every shown picker all need a common comparable shape before they can be sorted together. How: This builds one entry per visible section, then sorts the combined list via compareSortEntries.
+	const secEntArr = React.useMemo( () => { // What: Section Entry Array. Why: Conditionals/Reminders/every shown picker all need a common comparable shape before they can be sorted together. How: This builds one entry per visible section, then sorts the combined list via sorEntFun.
 
 
 		const entArr = []; // What: Entry Array. Why: The pushes below need somewhere to collect one entry per visible section. How: This starts empty and is conditionally pushed to just below.
@@ -2524,7 +2524,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 		}
 
 
-		return entArr.sort( ( aEntObj, bEntObj ) => compareSortEntries( aEntObj, bEntObj, secSorStr ) ); // What: Entry Array Return. Why: The rendered list needs to actually be in secSorStr's own order. How: This sorts entArr via compareSortEntries.
+		return entArr.sort( ( aEntObj, bEntObj ) => sorEntFun( aEntObj, bEntObj, secSorStr ) ); // What: Entry Array Return. Why: The rendered list needs to actually be in secSorStr's own order. How: This sorts entArr via sorEntFun.
 
 
 	}, [ shwConBoo, shwRemBoo, shwPicArr, picSecMap, conIteArr.length, remCouNum, secSorStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or reorder a section. How: Each value independently affects the entry list or its own sort order.
@@ -2897,15 +2897,15 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 			</div>
 
-			<div className='data-sort-bar'>{ /* What: Sort Bar Div Element. Why: The section sort control needs its own row, separate from the filter rows above. How: This wraps SortSelect below. */ }
+			<div className='data-sort-bar'>{ /* What: Sort Bar Div Element. Why: The section sort control needs its own row, separate from the filter rows above. How: This wraps SorSelCom below. */ }
 
-				<SortSelect
+				<SorSelCom
 					id='data-section-sort'
 					label='Sort'
 					options={ SEC_SOR_ARR }
 					value={ secSorStr }
 					onChange={ ( keyValStr ) => actObj.setDataSort( 'sections', keyValStr ) }
-				/>{ /* What: Sort Select. Why: This is the actual control for reordering Conditionals/Reminders/every picker card below. How: This commits the chosen key as this page's own persisted sections sort. */ }
+				/>{ /* What: Sort Select Component. Why: This is the actual control for reordering Conditionals/Reminders/every picker card below. How: This commits the chosen key as this page's own persisted sections sort. */ }
 
 			</div>
 
@@ -2952,13 +2952,13 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 					const iteSorStr = ( staAppObj.ui && staAppObj.ui.dataSort && staAppObj.ui.dataSort[ picCurObj.id ] ) || 'name-asc'; // What: Item Sort String. Why: Every picker's own item list needs its own persisted sort choice. How: This reads staAppObj.ui.dataSort at this picker's own id, falling back to 'name-asc'.
 					const flbEasObj = isaEasBoo ? PICKERS.avgEase( iteArr, picCurObj.id ) : null;                                       // What: Fallback Ease Object. Why: An item with no ease band of its own falls back to the same average the picking engine itself uses. How: This is computed once per card, shared by both the sort entries and every item row below.
 
-					const iteEntFun = ( iteCurObj ) => { // What: Item Entry Function. Why: Every item needs the same comparable shape before compareSortEntries can sort them. How: This builds a { name, type, group, count, range, boost, isActive } entry per item, mode-dependent per pickerItemSortOptions.
+					const iteEntFun = ( iteCurObj ) => { // What: Item Entry Function. Why: Every item needs the same comparable shape before sorEntFun can sort them. How: This builds a { name, type, group, count, range, boost, isActive } entry per item, mode-dependent per pickerItemSortOptions.
 
 
 						const easMaxNum = iteCurObj.easeMax ?? flbEasObj?.easeMax ?? 20; // What: Ease Max Number. Why: The Range field below needs this item's own (or the fallback) ease-max value. How: This reads iteCurObj.easeMax, falling back to flbEasObj's own easeMax, then a hardcoded 20.
 
 
-						return { // What: Item Entry Return. Why: compareSortEntries needs one comparable shape per item, mode-dependent fields included. How: This builds that entry from iteCurObj plus the resolved isaEasBoo/useWgtBoo/easMaxNum context above.
+						return { // What: Item Entry Return. Why: sorEntFun needs one comparable shape per item, mode-dependent fields included. How: This builds that entry from iteCurObj plus the resolved isaEasBoo/useWgtBoo/easMaxNum context above.
 
 							name     : iteCurObj.name,
 							type     : null,
@@ -2973,8 +2973,8 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 					};
 
-					const sorIteArr = [ ...iteArr ].sort( ( aIteObj, bIteObj ) => compareSortEntries( iteEntFun( aIteObj ), iteEntFun( bIteObj ), iteSorStr ) ); // What: Sorted Item Array. Why: The rendered item list needs to actually be in iteSorStr's own order. How: This sorts a copy of iteArr via compareSortEntries.
-					const dspIteArr = freezeEditedRow( sorIteArr, opnIteStr, newIteRef.current, frzIndRef );                                                     // What: Display Item Array. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This calls the shared freezeEditedRow helper.
+					const sorIteArr = [ ...iteArr ].sort( ( aIteObj, bIteObj ) => sorEntFun( iteEntFun( aIteObj ), iteEntFun( bIteObj ), iteSorStr ) ); // What: Sorted Item Array. Why: The rendered item list needs to actually be in iteSorStr's own order. How: This sorts a copy of iteArr via sorEntFun.
+					const dspIteArr = freEdiFun( sorIteArr, opnIteStr, newIteRef.current, frzIndRef );                                                     // What: Display Item Array. Why: An item mid-edit must not visually jump position if its own sort key changes underneath it. How: This calls the shared freEdiFun helper.
 
 					const strAddFun = () => { // What: Start Add Function. Why: This is the "+ Add to X" button's own action, factored out so a brand-new draft's "Add Items" footer button can trigger the exact same first-item flow. How: This creates a fresh item and opens its own editor.
 
@@ -3031,7 +3031,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 								}
 
 							} }
-						>{ /* What: Category Section Element. Why: This is one picker's own top-level card, matching every other Data tab category's own outer landmark. How: This plays the removal animation via remPicStr/onAnimationEnd, and renders the header + Collapse-wrapped body below. */ }
+						>{ /* What: Category Section Element. Why: This is one picker's own top-level card, matching every other Data tab category's own outer landmark. How: This plays the removal animation via remPicStr/onAnimationEnd, and renders the header + ColDisCom-wrapped body below. */ }
 
 
 							<header
@@ -3049,7 +3049,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 								>{ /* What: Header Left Button Element. Why: This is the actual clickable control for expanding/collapsing the card. How: This is disabled for a draft (always expanded) or during the guarded tour step. */ }
 
 
-									<span className={ ` chev   ${ secOpnBoo ? 'is-open' : '' } ` }><Icon name='chev' size={ 14 } /></span>{ /* What: Chevron Span Element. Why: The card's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
+									<span className={ ` chev   ${ secOpnBoo ? 'is-open' : '' } ` }><IcoSvgCom name='chev' size={ 14 } /></span>{ /* What: Chevron Span Element. Why: The card's own open/closed state needs a visible directional indicator. How: This rotates via the 'is-open' class and renders the shared chevron icon. */ }
 
 									<span className='cat-h-main'>{ /* What: Header Main Span Element. Why: The picker's own name and live count belong together. How: This wraps the h2 and the count span below. */ }
 
@@ -3069,10 +3069,10 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 								<span className='cat-h-right'>{ /* What: Header Right Span Element. Why: The type/group tags and the active toggle need one grouped slot so a narrow viewport can stack them together in place, freeing width for the name. How: This wraps the tags span and the vac-toggle button below. */ }
 
 
-									<span className='cat-h-tags'>{ /* What: Header Tags Span Element. Why: The type and group pills need their own fixed-width columns so they line up across every card regardless of text length. How: This wraps 2 InfoTip-wrapped labels below. */ }
+									<span className='cat-h-tags'>{ /* What: Header Tags Span Element. Why: The type and group pills need their own fixed-width columns so they line up across every card regardless of text length. How: This wraps 2 InfTipCom-wrapped labels below. */ }
 
-										<InfoTip className='cat-mode-label' label={ MODES[ picCurObj.mode ].label } truncationOnly>{ MODES[ picCurObj.mode ].label }</InfoTip>{ /* What: Info Tip. Why: A long mode label like "Dynamic Weighted" can still truncate at this width; also read by help-mode's own pickerRow entry to build its "{type} Picker" badge title. How: This reveals the full label on demand only when it's actually truncated. */ }
-										<InfoTip className='cat-group' label={ picCurObj.group } truncationOnly>{ picCurObj.group }</InfoTip>{ /* What: Info Tip. Why: A long group name can also still truncate at this width. How: This reveals the full name on demand only when it's actually truncated. */ }
+										<InfTipCom className='cat-mode-label' label={ MODES[ picCurObj.mode ].label } truncationOnly>{ MODES[ picCurObj.mode ].label }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label like "Dynamic Weighted" can still truncate at this width; also read by help-mode's own pickerRow entry to build its "{type} Picker" badge title. How: This reveals the full label on demand only when it's actually truncated. */ }
+										<InfTipCom className='cat-group' label={ picCurObj.group } truncationOnly>{ picCurObj.group }</InfTipCom>{ /* What: Info Tip Component. Why: A long group name can also still truncate at this width. How: This reveals the full name on demand only when it's actually truncated. */ }
 
 									</span>
 
@@ -3083,7 +3083,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 										title='Active toggle for all items in this picker'
 										onClick={ ( clkEveObj ) => { clkEveObj.stopPropagation(); actObj.toggleVacation( picCurObj.id, 'picker' ); } }
 									>
-										<Icon name={ allVacBoo ? 'moon' : 'sparkle' } size={ 14 } />{ /* What: Icon. Why: The bulk active/inactive toggle needs a recognizable glyph reflecting its own current state. How: This renders 'moon' while allVacBoo, 'sparkle' otherwise. */ }
+										<IcoSvgCom name={ allVacBoo ? 'moon' : 'sparkle' } size={ 14 } />{ /* What: Icon Svg Component. Why: The bulk active/inactive toggle needs a recognizable glyph reflecting its own current state. How: This renders 'moon' while allVacBoo, 'sparkle' otherwise. */ }
 										<span key={ allVacBoo ? 'inactive' : 'active' } className='set-sub-fade'>{ allVacBoo ? 'Inactive' : 'Active' }</span>{ /* What: Toggle Label Span Element. Why: The toggle also needs its own live text, cross-faded via its own key change. How: This renders "Inactive" while allVacBoo, "Active" otherwise. */ }
 									</button>{ /* What: Vacation Toggle Button Element. Why: This is the actual bulk active/inactive control for every item in this picker at once. How: This stops the click from also toggling the card's own collapse, then calls toggleVacation. */ }
 
@@ -3093,7 +3093,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 							</header>
 
-							<Collapse open={ secOpnBoo } instant={ isaDrfBoo }>{ /* What: Collapse. Why: The card's own body (Controls + Items) only needs to exist while it's actually expanded, instant (no animation) for a brand-new draft. How: This opens per secOpnBoo. */ }
+							<ColDisCom open={ secOpnBoo } instant={ isaDrfBoo }>{ /* What: Collapse Disclosure Component. Why: The card's own body (Controls + Items) only needs to exist while it's actually expanded, instant (no animation) for a brand-new draft. How: This opens per secOpnBoo. */ }
 
 								<div className='cat-body'>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures both belong in one grouped body. How: This wraps both nested disclosures below. */ }
 
@@ -3108,7 +3108,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 
 										<span className='rd-ctl-l'>{ /* What: Controls Left Span Element. Why: The chevron and the "Controls" kicker belong together. How: This wraps both spans below. */ }
-											<span className={ ` chev   ${ conColBoo ? '' : 'is-open' } ` }><Icon name='chev' size={ 12 } />{ /* What: Icon. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }</span>
+											<span className={ ` chev   ${ conColBoo ? '' : 'is-open' } ` }><IcoSvgCom name='chev' size={ 12 } />{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }</span>
 											<span className='kicker'>Controls</span>
 										</span>
 
@@ -3117,7 +3117,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 									</button>
 
-									<Collapse open={ !conColBoo } instant={ isaDrfBoo }>{ /* What: Collapse. Why: PicConCom itself is expensive/stateful enough that it only needs to exist while the Controls disclosure is actually open. How: This opens per !conColBoo. */ }
+									<ColDisCom open={ !conColBoo } instant={ isaDrfBoo }>{ /* What: Collapse Disclosure Component. Why: PicConCom itself is expensive/stateful enough that it only needs to exist while the Controls disclosure is actually open. How: This opens per !conColBoo. */ }
 
 										<PicConCom
 											picker={ picCurObj }
@@ -3137,7 +3137,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 											onCancelNew={ canNewFun }
 										/>{ /* What: PicConCom. Why: This is this picker's own full Controls body. How: This is passed the live picker/items/schedule fields and every handler this card's own draft lifecycle needs. */ }
 
-									</Collapse>
+									</ColDisCom>
 
 									<button
 										type='button'
@@ -3149,7 +3149,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 
 										<span className='rd-ctl-l'>
-											<span className={ ` chev   ${ iteColBoo ? '' : 'is-open' } ` }><Icon name='chev' size={ 12 } />{ /* What: Icon. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }</span>
+											<span className={ ` chev   ${ iteColBoo ? '' : 'is-open' } ` }><IcoSvgCom name='chev' size={ 12 } />{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }</span>
 											<span className='kicker'>Items</span>
 										</span>
 
@@ -3158,43 +3158,43 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 									</button>
 
-									<Collapse open={ !iteColBoo }>{ /* What: Collapse. Why: The item rows themselves only need to exist while the Items disclosure is actually open. How: This opens per !iteColBoo. */ }
+									<ColDisCom open={ !iteColBoo }>{ /* What: Collapse Disclosure Component. Why: The item rows themselves only need to exist while the Items disclosure is actually open. How: This opens per !iteColBoo. */ }
 
 										<React.Fragment>{ /* What: Items Fragment Element. Why: The add button, the sort control, and every item row are true siblings with no shared wrapper of their own. How: This groups all 3 pieces without adding an extra DOM node. */ }
 
 
-											{ tutProBoo ? ( // What: Tutorial Progress Check. Why: The add control must stay disabled (with an explanatory tip) while the Welcome Tour's own checklist is still in progress. How: This renders a disabled InfoTip-wrapped control in that state, otherwise the real button.
+											{ tutProBoo ? ( // What: Tutorial Progress Check. Why: The add control must stay disabled (with an explanatory tip) while the Welcome Tour's own checklist is still in progress. How: This renders a disabled InfTipCom-wrapped control in that state, otherwise the real button.
 
 
-												<InfoTip
+												<InfTipCom
 													className='rd-add is-tour-disabled'
 													action={ `Add to ${ picCurObj.name.toLowerCase() }` }
 													label='This button is disabled until all tutorials are completed.'
 												>
-													<Icon name='plus' size={ 13 } />{ /* What: Icon. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
-												</InfoTip> // What: Info Tip. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses.
+													<IcoSvgCom name='plus' size={ 13 } />{ /* What: Icon Svg Component. Why: The disabled add control still needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
+												</InfTipCom> // What: Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses.
 
 
 											) : ( // What: Add Button Branch. Why: Outside the guided checklist, the real working Add-item control belongs here instead. How: This renders the else branch, taken while tutProBoo is false.
 
 
 												<button className='rd-add' disabled={ detAddBoo } onClick={ strAddFun }>
-													<Icon name='plus' size={ 13 } />{ /* What: Icon. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
+													<IcoSvgCom name='plus' size={ 13 } />{ /* What: Icon Svg Component. Why: The add control needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Add to { picCurObj.name.toLowerCase() }
 												</button> // What: Add Button Element. Why: This is the actual "create a brand-new item" affordance. How: This calls strAddFun on click, disabled during the guarded tour step.
 
 
 											) }
 
-											{ iteArr.length > 1 && ( // What: Multiple Items Check. Why: A sort control is only useful once there's more than one item to sort. How: This renders SortSelect only while iteArr has 2 or more entries.
+											{ iteArr.length > 1 && ( // What: Multiple Items Check. Why: A sort control is only useful once there's more than one item to sort. How: This renders SorSelCom only while iteArr has 2 or more entries.
 
 
-												<SortSelect
+												<SorSelCom
 													id={ `item-sort-${ picCurObj.id }` }
 													label='Sort'
 													options={ pisOptFun( picCurObj.mode ) }
 													value={ iteSorStr }
 													onChange={ ( keyValStr ) => actObj.setDataSort( picCurObj.id, keyValStr ) }
-												/> // What: Sort Select. Why: This is the actual control for reordering this picker's own item list, mode-dependent per pisOptFun. How: This commits the chosen key as this picker's own persisted item sort.
+												/> // What: Sort Select Component. Why: This is the actual control for reordering this picker's own item list, mode-dependent per pisOptFun. How: This commits the chosen key as this picker's own persisted item sort.
 
 
 											) }
@@ -3259,7 +3259,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 																	aria-label='Collapse'
 																	onClick={ () => keeCloFun( iteCurObj.id ) }
 																>
-																	<Icon name='chev' size={ 16 } />{ /* What: Icon. Why: The chevron button needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }
+																	<IcoSvgCom name='chev' size={ 16 } />{ /* What: Icon Svg Component. Why: The chevron button needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }
 																</button>{ /* What: Chevron Button Element. Why: The chevron is its own real button (not a decoration) since the row itself can no longer be one while editing. How: This calls keeCloFun, the same "deliberate close" handler IteEdiCom's own Save uses. */ }
 
 
@@ -3283,7 +3283,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 																</span>
 
 																<span className='rd-chev chev' aria-hidden='true'>
-																	<Icon name='chev' size={ 16 } />{ /* What: Icon. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }
+																	<IcoSvgCom name='chev' size={ 16 } />{ /* What: Icon Svg Component. Why: The chevron span needs its own recognizable directional glyph. How: This renders the 'chev' icon at a fixed size. */ }
 																</span>
 
 
@@ -3292,7 +3292,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 														) }
 
-														<Collapse open={ iteOpnBoo }>{ /* What: Collapse. Why: This row's own editor only needs to exist while it's actually open. How: This opens only while iteOpnBoo is true. */ }
+														<ColDisCom open={ iteOpnBoo }>{ /* What: Collapse Disclosure Component. Why: This row's own editor only needs to exist while it's actually open. How: This opens only while iteOpnBoo is true. */ }
 
 															<div className='rd-edit'>{ /* What: Edit Div Element. Why: IteEdiCom needs its own wrapper matching every other editor body in this file. How: This wraps IteEdiCom below. */ }
 
@@ -3340,7 +3340,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 																		setOpnIteStr( ( curStr ) => curStr === iteCurObj.id ? null : curStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opnIteStr only when it currently equals iteCurObj.id.
 
-																		if ( reduceMotion() ) { actObj.removeItem( remIdeStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This removes the item directly and returns early.
+																		if ( redMotFun() ) { actObj.removeItem( remIdeStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly. How: This removes the item directly and returns early.
 
 																		setTimeout( () => actObj.removeItem( remIdeStr ), 280 ); // What: Deferred Remove Call. Why: The actual store removal must wait until the row's own collapse animation finishes. How: This calls removeItem 280ms later.
 
@@ -3349,7 +3349,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 															</div>
 
-														</Collapse>
+														</ColDisCom>
 
 
 													</div>
@@ -3363,12 +3363,12 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 										</React.Fragment>
 
-									</Collapse>
+									</ColDisCom>
 
 
 								</div>
 
-							</Collapse>
+							</ColDisCom>
 
 
 						</section>
@@ -3383,7 +3383,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 
 					<button type='button' className='cat-create-btn' disabled={ disCrtBoo } onClick={ strNewFun }>
-						<Icon name='plus' size={ 14 } />{ /* What: Icon. Why: The create control needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Create Picker
+						<IcoSvgCom name='plus' size={ 14 } />{ /* What: Icon Svg Component. Why: The create control needs a recognizable "add" glyph beside its own label. How: This renders the 'plus' icon at a fixed size. */ } Create Picker
 					</button> // What: Create Button Element. Why: This is the only place a brand-new picker can be started from this tab. How: This calls strNewFun on click, disabled during the guarded tour step.
 
 

@@ -6,17 +6,17 @@
 import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useLayoutEffect, React.useCallback, React.useEffect, React.forwardRef, React.Fragment) throughout, instead of importing individual named hooks.
 
 
-import { createPortal } from 'react-dom'; // What: Create Portal. Why: InfoTip's floating tooltip must render into <body> so it is clamped to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with the tooltip's JSX and document.body inside InfoTip's return.
+import { createPortal } from 'react-dom'; // What: Create Portal. Why: InfTipCom's floating tooltip must render into <body> so it is clamped to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with the tooltip's JSX and document.body inside InfTipCom's return.
 
 // #endregion Imports
 
 
 
-let announce; // What: announce. Why: The real implementation is only built once the IIFE further down in this file runs, but this exported binding must exist and be assignable before that. How: This starts undefined and is overwritten inside the announce-setup IIFE below.
+let annStaFun; // What: Announce Status Function. Why: The real implementation is only built once the IIFE further down in this file runs, but this exported binding must exist and be assignable before that. How: This starts undefined and is overwritten inside the annStaFun-setup IIFE below.
 
 
 
-export { announce }; // What: announce. Why: Nearly every tab needs to speak a transient status to screen readers after an action. How: This re-exports the same module-level binding declared just above, whose real value is assigned later in this file.
+export { annStaFun }; // What: Announce Status Function. Why: Nearly every tab needs to speak a transient status to screen readers after an action. How: This re-exports the same module-level binding declared just above, whose real value is assigned later in this file.
 
 
 
@@ -25,12 +25,12 @@ export { announce }; // What: announce. Why: Nearly every tab needs to speak a t
  *
  * @summary
  * Every small, reusable rendering/behavior building block the app's five
- * tabs share: icons, buttons, cards, the animated Collapse disclosure,
+ * tabs share: icons, buttons, cards, the animated ColDisCom disclosure,
  * pills, the weekday chip row, progress bars, the numeric stepper, the
- * custom InfoTip tooltip, date/time formatters, the animated BoostReset
+ * custom InfTipCom tooltip, date/time formatters, the animated BooResCom
  * lever, the reduced-motion check, the shared Escape-to-cancel stack, the
  * screen-reader live region, the cross-editor edit-guard coordinator, the
- * FillButton lever, and the Data tab's shared sort comparator/select/row-
+ * FilButCom lever, and the Data tab's shared sort comparator/select/row-
  * freezing helpers. None of this owns any app-specific domain logic; it is
  * imported by nearly every other file in src/.
  *
@@ -40,7 +40,7 @@ export { announce }; // What: announce. Why: Nearly every tab needs to speak a t
 
 
 
-const Icon = ( { name, size = 18 } ) => { // What: Icon. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up name in pahObj and renders the matching SVG shape at the given size.
+const IcoSvgCom = ( { name, size = 18 } ) => { // What: Icon Svg Component. Why: Every tab button, list row, and control across the app needs a small recognizable glyph. How: This looks up name in pahObj and renders the matching SVG shape at the given size.
 
 
 	const pahObj = { // What: Path Object. Why: This is the lookup table mapping every icon name to its own inline SVG shape markup. How: This is indexed below by the name prop to pick which shape the rendered svg actually draws.
@@ -92,7 +92,7 @@ const Icon = ( { name, size = 18 } ) => { // What: Icon. Why: Every tab button, 
 			viewBox='0 0 24 24'
 			width={ size }
 			aria-hidden='true'
-		>{ /* What: Icon Svg Element. Why: This is Icon's own single rendered element, sized and stroked identically for every glyph. How: This renders whichever shape pahObj[name] resolves to. */ }
+		>{ /* What: Icon Svg Element. Why: This is IcoSvgCom's own single rendered element, sized and stroked identically for every glyph. How: This renders whichever shape pahObj[name] resolves to. */ }
 
 
 			{ pahObj[ name ] }
@@ -108,18 +108,18 @@ const Icon = ( { name, size = 18 } ) => { // What: Icon. Why: Every tab button, 
 
 
 
-// What: Btn. Why: forwardRef lets a caller restore focus to a button after an action that hands focus away (see the Settings export/import confirmations). How: This forwards ref onto the real <button> element, applies the kind/size modifier classes plus any caller className, and spreads every other passed prop through.
-const Btn = React.forwardRef( ( { children, kind = 'ghost', size = 'md', icon, className = '', ...resProObj }, ref ) => (
+// What: Button Base Component. Why: forwardRef lets a caller restore focus to a button after an action that hands focus away (see the Settings export/import confirmations). How: This forwards ref onto the real <button> element, applies the kind/size modifier classes plus any caller className, and spreads every other passed prop through.
+const ButBasCom = React.forwardRef( ( { children, kind = 'ghost', size = 'md', icon, className = '', ...resProObj }, ref ) => (
 
 
 	<button
 		ref={ ref }
 		className={ `btn btn--${ kind } btn--${ size } ${ className }` }
 		{ ...resProObj }
-	>{ /* What: Btn Button Element. Why: This is Btn's own root rendered element, a real <button> so it keeps native semantics/keyboard behavior. How: This applies the kind/size modifier classes plus any caller className, forwards ref, and spreads every other passed prop (onClick, disabled, aria-*, ...) directly onto the DOM node. */ }
+	>{ /* What: Base Button Element. Why: This is ButBasCom's own root rendered element, a real <button> so it keeps native semantics/keyboard behavior. How: This applies the kind/size modifier classes plus any caller className, forwards ref, and spreads every other passed prop (onClick, disabled, aria-*, ...) directly onto the DOM node. */ }
 
 
-		{ icon && <Icon name={ icon } size={ size === 'sm' ? 14 : 16 } /> }{ /* What: Icon Visibility Check. Why: An icon is optional, only some Btn callers pass one. How: This renders an Icon sized down for the "sm" size, only while the icon prop holds a name. */ }
+		{ icon && <IcoSvgCom name={ icon } size={ size === 'sm' ? 14 : 16 } /> }{ /* What: Icon Visibility Check. Why: An icon is optional, only some ButBasCom callers pass one. How: This renders an IcoSvgCom sized down for the "sm" size, only while the icon prop holds a name. */ }
 
 		{ children }
 
@@ -131,13 +131,13 @@ const Btn = React.forwardRef( ( { children, kind = 'ghost', size = 'md', icon, c
 
 
 
-const Card = ( { children, padded = true, className = '', ...resProObj } ) => ( // What: Card. Why: Card is the shared surface/panel wrapper used throughout every tab. How: This renders a div with the padded/className modifier classes, spreading every other passed prop onto the DOM node.
+const CarSurCom = ( { children, padded = true, className = '', ...resProObj } ) => ( // What: Card Surface Component. Why: CarSurCom is the shared surface/panel wrapper used throughout every tab. How: This renders a div with the padded/className modifier classes, spreading every other passed prop onto the DOM node.
 
 
 	<div
 		className={ `card ${ padded ? 'card--p' : ''} ${ className }` }
 		{ ...resProObj }
-	>{ /* What: Card Div Element. Why: This is Card's own root rendered element. How: This applies the padded/className modifier classes, spreads any other passed props, and renders whatever children the caller passed. */ }
+	>{ /* What: Surface Div Element. Why: This is CarSurCom's own root rendered element. How: This applies the padded/className modifier classes, spreads any other passed props, and renders whatever children the caller passed. */ }
 
 
 		{ children }
@@ -150,10 +150,10 @@ const Card = ( { children, padded = true, className = '', ...resProObj } ) => ( 
 
 
 
-// #region Collapse
+// #region ColDisCom
 
 /**
- * Collapse = Collapse
+ * ColDisCom = Collapse Disclosure Component
  *
  * @summary
  * Animated disclosure. Wraps children in a grid whose single row
@@ -180,12 +180,12 @@ const Card = ( { children, padded = true, className = '', ...resProObj } ) => ( 
  *
  * @example
  * ```tsx
- * Collapse({ open, children, className, instant }) // => <Collapse />
+ * ColDisCom({ open, children, className, instant }) // => <ColDisCom />
  * ```
  *
 */
 
-function Collapse ( { open, children, className = '', instant = false } ) {
+function ColDisCom ( { open, children, className = '', instant = false } ) {
 
 
 	const [ chiMouBoo, setChiMouBoo ] = React.useState( open );            // What: Child Mounted Boolean And Setter. Why: Children must stay in the DOM through the close animation and unmount only once it finishes. How: This starts matching the initial open value and is flipped by the effects below.
@@ -198,9 +198,9 @@ function Collapse ( { open, children, className = '', instant = false } ) {
 		if ( open ) { setChiMouBoo( true ); return; } // What: Open Mount Guard. Why: Expanding is handled by the next effect below; this one only needs to ensure the child is mounted first. How: This mounts the child and bails out of the rest of this effect.
 
 
-		setExpStaBoo( false ); // What: Collapse Trigger. Why: Closing must animate the grid row back to 0fr before anything unmounts. How: This flips expStaBoo false, which the JSX below reflects as the "is-open" class being removed.
+		setExpStaBoo( false ); // What: ColDisCom Trigger. Why: Closing must animate the grid row back to 0fr before anything unmounts. How: This flips expStaBoo false, which the JSX below reflects as the "is-open" class being removed.
 
-		if ( reduceMotion && reduceMotion() ) setChiMouBoo( false ); // What: Reduced Motion Unmount Guard. Why: transitionend never fires without a real transition, so nothing else would ever unmount the child. How: This unmounts the child immediately when the user prefers reduced motion.
+		if ( redMotFun && redMotFun() ) setChiMouBoo( false ); // What: Reduced Motion Unmount Guard. Why: transitionend never fires without a real transition, so nothing else would ever unmount the child. How: This unmounts the child immediately when the user prefers reduced motion.
 
 
 	}, [ open ] ); // What: Effect Dependency Array. Why: This effect only needs to re-run when the open prop itself changes. How: open is read directly inside the guard above.
@@ -254,10 +254,10 @@ function Collapse ( { open, children, className = '', instant = false } ) {
 		<div
 			className={ `collapse ${ expStaBoo ? 'is-open' : '' } ${ className }` }
 			onTransitionEnd={ onTraEndFun }
-		>{ /* What: Collapse Div Element. Why: This is Collapse's own root wrapper, whose CSS grid-template-rows transition drives the whole expand/collapse animation. How: This toggles the "is-open" class per expStaBoo and reacts to its own transitionend via onTraEndFun. */ }
+		>{ /* What: Disclosure Div Element. Why: This is ColDisCom's own root wrapper, whose CSS grid-template-rows transition drives the whole expand/collapse animation. How: This toggles the "is-open" class per expStaBoo and reacts to its own transitionend via onTraEndFun. */ }
 
 
-			<div className='collapse-inner'>{ children }</div>{ /* What: Collapse Inner Div Element. Why: The fade+slide-on-content animation needs its own inner element separate from the row-height transition on the outer div. How: This wraps whatever children the caller passed. */ }
+			<div className='collapse-inner'>{ children }</div>{ /* What: Disclosure Inner Div Element. Why: The fade+slide-on-content animation needs its own inner element separate from the row-height transition on the outer div. How: This wraps whatever children the caller passed. */ }
 
 
 		</div>
@@ -268,7 +268,7 @@ function Collapse ( { open, children, className = '', instant = false } ) {
 
 }
 
-// #endregion Collapse
+// #endregion ColDisCom
 
 
 
@@ -293,24 +293,24 @@ const SecTitCom = ( { kicker, title, sub } ) => (
 
 
 
-// What: Pill. Why: Stats/Pickers/Data all need the same small colored label to tag a mode or status. How: This renders a span whose "pill--{tone}" modifier class picks the actual color/style, defaulting to a neutral tone.
-const Pill = ( { children, tone = 'default' } ) => (
+// What: Pill Tag Component. Why: Stats/Pickers/Data all need the same small colored label to tag a mode or status. How: This renders a span whose "pill--{tone}" modifier class picks the actual color/style, defaulting to a neutral tone.
+const PilTagCom = ( { children, tone = 'default' } ) => (
 
 
-	<span className={ `pill pill--${ tone }` }>{ children }</span> // What: Pill Span Element. Why: This is Pill's own single rendered element. How: This applies the tone modifier class and renders whatever children the caller passed.
+	<span className={ `pill pill--${ tone }` }>{ children }</span> // What: Tag Span Element. Why: This is PilTagCom's own single rendered element. How: This applies the tone modifier class and renders whatever children the caller passed.
 
 
 );
 
 
 
-const WEE_LAB_ARR = [ 'S', 'M', 'T', 'W', 'T', 'F', 'S' ];                                                                     // What: Week Label Array. Why: Each weekday chip needs a single-letter visible label. How: This is mapped over by WeekdayChips below, indexed by day number (0=Sun).
-const WEE_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]; // What: Week Full Array. Why: Each chip's own accessible name/title needs the full weekday name, not just its single-letter label. How: This is indexed by day number inside WeekdayChips below.
+const WEE_LAB_ARR = [ 'S', 'M', 'T', 'W', 'T', 'F', 'S' ];                                                                     // What: Week Label Array. Why: Each weekday chip needs a single-letter visible label. How: This is mapped over by WeeChiCom below, indexed by day number (0=Sun).
+const WEE_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]; // What: Week Full Array. Why: Each chip's own accessible name/title needs the full weekday name, not just its single-letter label. How: This is indexed by day number inside WeeChiCom below.
 
 
 
 /**
- * WeekdayChips = WeekdayChips
+ * WeeChiCom = Weekday Chip Component
  *
  * @summary
  * A row of 7 toggle chips (Sun...Sat). value is an array of day
@@ -319,7 +319,7 @@ const WEE_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'F
  * turned off.
  *
  * lockedDay (0-6, or null) pins one day ON: a weekly-cadence picker's
- * anchor day must stay selected, so that chip renders as an InfoTip
+ * anchor day must stay selected, so that chip renders as an InfTipCom
  * instead of a toggle. It still looks selected, but tapping explains
  * why it can't be turned off rather than silently doing nothing.
  * lockedTip is that explanation.
@@ -328,8 +328,8 @@ const WEE_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'F
  *
 */
 
-// What: WeekdayChips. Why: See the design-rationale block above. How: This renders one chip per weekday, locked (InfoTip) or toggleable (button) depending on lockedDay.
-const WeekdayChips = ( { value, onChange, size = 'md', lockedDay = null, lockedTip = '', describedBy } ) => {
+// What: Weekday Chip Component. Why: See the design-rationale block above. How: This renders one chip per weekday, locked (InfTipCom) or toggleable (button) depending on lockedDay.
+const WeeChiCom = ( { value, onChange, size = 'md', lockedDay = null, lockedTip = '', describedBy } ) => {
 
 
 	const togDayFun = ( dayIndNum ) => { // What: Toggle Day Function. Why: Clicking an unlocked chip needs to add or remove that single day from the selection, while keeping at least one day selected. How: This flips dayIndNum's membership in value, re-sorts the result, and calls onChange unless doing so would leave the week empty.
@@ -360,20 +360,20 @@ const WeekdayChips = ( { value, onChange, size = 'md', lockedDay = null, lockedT
 		>{ /* What: Container Dow Chips Div Element. Why: This groups all 7 weekday toggle chips as one accessible group. How: This renders one chip per WEE_LAB_ARR entry below, locked or toggleable depending on lockedDay. */ }
 
 
-			{ WEE_LAB_ARR.map( ( labChrStr, dayIndNum ) => { // What: Weekday Chip Map. Why: One chip is needed per day of the week. How: This maps WEE_LAB_ARR to either a locked InfoTip chip or a toggleable button chip, keyed by dayIndNum.
+			{ WEE_LAB_ARR.map( ( labChrStr, dayIndNum ) => { // What: Weekday Chip Map. Why: One chip is needed per day of the week. How: This maps WEE_LAB_ARR to either a locked InfTipCom chip or a toggleable button chip, keyed by dayIndNum.
 
 
 				const onDayBoo = value.includes( dayIndNum ); // What: On Day Boolean. Why: Both chip variants below need to know whether this day is currently selected. How: This checks value's own membership for dayIndNum.
 
 
-				if ( dayIndNum === lockedDay ) return ( // What: Locked Day Check. Why: A locked day (e.g. a weekly picker's anchor day) can't be toggled off and needs an explanation instead. How: This renders an InfoTip chip instead of a button when dayIndNum matches lockedDay.
+				if ( dayIndNum === lockedDay ) return ( // What: Locked Day Check. Why: A locked day (e.g. a weekly picker's anchor day) can't be toggled off and needs an explanation instead. How: This renders an InfTipCom chip instead of a button when dayIndNum matches lockedDay.
 
 
-					<InfoTip
+					<InfTipCom
 						key={ dayIndNum }
 						className={ `dow-chip is-on is-locked ${ size === 'sm' ? 'dow-chip--sm' : '' }` }
 						label={ lockedTip }
-					>{ labChrStr }</InfoTip> // What: Locked Day Chip Element. Why: This looks selected like any other "on" chip, but tapping explains why it can't be turned off instead of silently doing nothing. How: This renders as an InfoTip whose trigger is the day's own single-letter label.
+					>{ labChrStr }</InfTipCom> // What: Locked Day Chip Element. Why: This looks selected like any other "on" chip, but tapping explains why it can't be turned off instead of silently doing nothing. How: This renders as an InfTipCom whose trigger is the day's own single-letter label.
 
 
 				);
@@ -438,8 +438,8 @@ const weeSumFun = ( daySelArr ) => {
 
 
 
-// What: ProgressBar. Why: Every group header and Stats card needs the same visual dash-bar to show completion progress. How: This renders a track div plus a filled <i>, whose width is the clamped value/max ratio driven by the tone modifier class.
-const ProgressBar = ( { value, max = 1, tone = 'accent' } ) => (
+// What: Progress Bar Component. Why: Every group header and Stats card needs the same visual dash-bar to show completion progress. How: This renders a track div plus a filled <i>, whose width is the clamped value/max ratio driven by the tone modifier class.
+const ProBarCom = ( { value, max = 1, tone = 'accent' } ) => (
 
 
 	<div className={ `prog prog--${ tone }` }>{ /* What: Progress Track Div Element. Why: This is the fixed-width background track the filled bar sits inside. How: This applies the tone modifier class and wraps the filled <i> below. */ }
@@ -455,10 +455,10 @@ const ProgressBar = ( { value, max = 1, tone = 'accent' } ) => (
 
 
 
-// #region NumStepper
+// #region NumSteCom
 
 /**
- * NumStepper = NumStepper
+ * NumSteCom = Numeric Stepper Component
  *
  * @summary
  * A -/[editable number]/+ stepper. The value can be typed directly
@@ -480,12 +480,12 @@ const ProgressBar = ( { value, max = 1, tone = 'accent' } ) => (
  *
  * @example
  * ```tsx
- * NumStepper({ value, min, max, onSet, ariaLabel }) // => <NumStepper />
+ * NumSteCom({ value, min, max, onSet, ariaLabel }) // => <NumSteCom />
  * ```
  *
 */
 
-function NumStepper ( { value, min = 1, max = 99, onSet, ariaLabel } ) {
+function NumSteCom ( { value, min = 1, max = 99, onSet, ariaLabel } ) {
 
 
 	const [ texValStr, setTexValStr ] = React.useState( String( value ) ); // What: Text Value String And Setter. Why: The value must be typeable as free text, not just steppable, so a separate string buffer is needed alongside the real numeric value. How: This starts mirroring the initial value and is kept in sync by the effect below and overwritten locally while the user types.
@@ -556,12 +556,12 @@ function NumStepper ( { value, min = 1, max = 99, onSet, ariaLabel } ) {
 
 }
 
-// #endregion NumStepper
+// #endregion NumSteCom
 
 
 
 /**
- * InfoTip = InfoTip
+ * InfTipCom = Info Tip Component
  *
  * @summary
  * Custom tooltip. Unlike the native title attribute, this one is
@@ -592,7 +592,7 @@ function NumStepper ( { value, min = 1, max = 99, onSet, ariaLabel } ) {
  * reveal. Watched via ResizeObserver on the trigger itself rather than
  * a window resize listener: a column can narrow (or a name can stop
  * fitting) for reasons that never fire resize, e.g. a sibling row's
- * Collapse animation later adding a scrollbar that shaves a few px off
+ * ColDisCom animation later adding a scrollbar that shaves a few px off
  * every row's width, and only observing the element's own box catches
  * all of those, not just an outer-viewport size change.
  *
@@ -600,8 +600,8 @@ function NumStepper ( { value, min = 1, max = 99, onSet, ariaLabel } ) {
  *
 */
 
-// What: InfoTip. Why: See the design-rationale block above. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
-const InfoTip = ( { children, label, className = '', action = null, truncationOnly = false } ) => {
+// What: Info Tip Component. Why: See the design-rationale block above. How: This tracks its own open/position/truncation state and renders either an inert span or the full interactive trigger plus its portaled tooltip below.
+const InfTipCom = ( { children, label, className = '', action = null, truncationOnly = false } ) => {
 
 
 	const [ tipOpeBoo, setTipOpeBoo ] = React.useState( false );                                     // What: Tip Open Boolean And Setter. Why: This tracks whether the floating tooltip is currently showing. How: This is flipped by the pointer/keyboard handlers below and read by the render's own portal guard.
@@ -834,8 +834,8 @@ const InfoTip = ( { children, label, className = '', action = null, truncationOn
 
 
 
-// What: fmtDate. Why: Every date shown compactly across the app (Today's header, Stats rows, ...) needs the same short weekday/month/day format. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString.
-const fmtDate = ( isoDatStr ) => {
+// What: Format Date Function. Why: Every date shown compactly across the app (Today's header, Stats rows, ...) needs the same short weekday/month/day format. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString.
+const forDatFun = ( isoDatStr ) => {
 
 
 	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
@@ -849,8 +849,8 @@ const fmtDate = ( isoDatStr ) => {
 
 
 
-// What: fmtDateLong. Why: A few spots (long-form date displays) need the full weekday name instead of the short 3-letter one. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString with a long weekday.
-const fmtDateLong = ( isoDatStr ) => {
+// What: Format Long Function. Why: A few spots (long-form date displays) need the full weekday name instead of the short 3-letter one. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleDateString with a long weekday.
+const forLonFun = ( isoDatStr ) => {
 
 
 	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
@@ -864,8 +864,8 @@ const fmtDateLong = ( isoDatStr ) => {
 
 
 
-// What: fmtTime. Why: A few spots need a plain "3:42 PM" style time with no seconds. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleTimeString.
-const fmtTime = ( isoDatStr ) => {
+// What: Format Time Function. Why: A few spots need a plain "3:42 PM" style time with no seconds. How: This builds a Date from isoDatStr (or now, when omitted) and formats it via toLocaleTimeString.
+const forTimFun = ( isoDatStr ) => {
 
 
 	const parDatObj = isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parsed Date Object. Why: Every caller may pass an ISO string or omit it entirely for "right now". How: This constructs a Date from isoDatStr when given, otherwise the current moment.
@@ -879,10 +879,10 @@ const fmtTime = ( isoDatStr ) => {
 
 
 
-// #region BoostReset
+// #region BooResCom
 
 /**
- * BoostReset = BoostReset
+ * BooResCom = Boost Reset Component
  *
  * @summary
  * The dynamic-mode "+N" Boost value plus its Reset lever. Clicking
@@ -904,12 +904,12 @@ const fmtTime = ( isoDatStr ) => {
  *
  * @example
  * ```tsx
- * BoostReset({ value, suffix, onReset }) // => <BoostReset />
+ * BooResCom({ value, suffix, onReset }) // => <BooResCom />
  * ```
  *
 */
 
-function BoostReset ( { value, suffix = '', onReset } ) {
+function BooResCom ( { value, suffix = '', onReset } ) {
 
 
 	const [ dspValNum, setDspValNum ] = React.useState( value ); // What: Display Value Number And Setter. Why: The shown number needs to animate independently of the real committed value while a reset is ticking down. How: This starts mirroring value and is driven by doResFun's own tick loop while a reset animation is running.
@@ -926,7 +926,7 @@ function BoostReset ( { value, suffix = '', onReset } ) {
 
 		if ( !value ) return; // What: No Value Guard. Why: There is nothing to reset when the boost is already at 0. How: This bails out before touching onReset or starting any animation.
 
-		if ( reduceMotion && reduceMotion() ) { onReset(); setDspValNum( 0 ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't see the ticking-down animation. How: This commits the reset and snaps the shown number straight to 0, skipping the tick loop entirely.
+		if ( redMotFun && redMotFun() ) { onReset(); setDspValNum( 0 ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't see the ticking-down animation. How: This commits the reset and snaps the shown number straight to 0, skipping the tick loop entirely.
 
 
 		const staValNum = value;                                            // What: Start Value Number. Why: The tick loop below needs the original boost value to ease down from, even after onReset below changes the real value to 0. How: This captures value before it changes.
@@ -986,21 +986,21 @@ function BoostReset ( { value, suffix = '', onReset } ) {
 
 }
 
-// #endregion BoostReset
+// #endregion BooResCom
 
 
 
-// What: reduceMotion. Why: JS-driven animations (rAF tweens, Element.animate, smooth scrolls) must check this since the CSS media query alone never reaches them. How: This reports whether the OS's prefers-reduced-motion media query currently matches reduce.
-export const reduceMotion = () => !!( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches );
+// What: Reduce Motion Function. Why: JS-driven animations (rAF tweens, Element.animate, smooth scrolls) must check this since the CSS media query alone never reaches them. How: This reports whether the OS's prefers-reduced-motion media query currently matches reduce.
+export const redMotFun = () => !!( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches );
 
 
 
-window.__escStack = window.__escStack || []; // What: Escape Stack Global. Why: Multiple inline editors can be open across different components at once, and only the innermost one should react to Escape. How: This is a plain array of { run } entries, pushed/spliced by every useEscapeCancel call below and read by the document-level listener further down.
+window.__escStack = window.__escStack || []; // What: Escape Stack Global. Why: Multiple inline editors can be open across different components at once, and only the innermost one should react to Escape. How: This is a plain array of { run } entries, pushed/spliced by every useEscCanFun call below and read by the document-level listener further down.
 
 
 
 /**
- * useEscapeCancel = useEscapeCancel
+ * useEscCanFun = Use Escape Cancel Function
  *
  * @summary
  * Escape cancels the innermost open inline editor/add-form. Registered
@@ -1015,8 +1015,8 @@ window.__escStack = window.__escStack || []; // What: Escape Stack Global. Why: 
  *
 */
 
-// What: useEscapeCancel. Why: See the design-rationale block above. How: This registers/deregisters a stack entry while active, wired to always call whatever handler was most recently passed.
-export const useEscapeCancel = function useEscapeCancel ( active, handler ) {
+// What: Use Escape Cancel Function. Why: See the design-rationale block above. How: This registers/deregisters a stack entry while active, wired to always call whatever handler was most recently passed.
+export const useEscCanFun = function useEscCanFun ( active, handler ) {
 
 
 	const hndFunRef = React.useRef( handler ); // What: Handler Function Reference. Why: The registered stack entry must always call the latest handler, not whichever one was passed on the render that first mounted it. How: This is created once from the initial handler and overwritten on every render below.
@@ -1083,7 +1083,7 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 
 
 
-// What: announce Setup IIFE. Why: The live region must be created exactly once, at module load, since a region that mounts together with its own text is announced unreliably (or not at all) in several browser/screen-reader pairs. How: This builds the live region, attaches it to <body> (immediately or on DOMContentLoaded), and assigns the real implementation into the module-level announce binding declared at the top of this file.
+// What: annStaFun Setup IIFE. Why: The live region must be created exactly once, at module load, since a region that mounts together with its own text is announced unreliably (or not at all) in several browser/screen-reader pairs. How: This builds the live region, attaches it to <body> (immediately or on DOMContentLoaded), and assigns the real implementation into the module-level annStaFun binding declared at the top of this file.
 (() => {
 
 
@@ -1091,7 +1091,7 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 
 	livRegEle.className = 'sr-live';                 // What: Live Region Class Name. Why: CSS needs a selector to visually hide this element while keeping it in the accessibility tree. How: This sets the class the app's stylesheet targets.
 	livRegEle.setAttribute( 'role', 'status' );       // What: Live Region Role Attribute. Why: This tells assistive tech that this element carries transient status updates. How: This sets the standard ARIA role.
-	livRegEle.setAttribute( 'aria-live', 'polite' );  // What: Live Region Live Attribute. Why: A default politeness level is needed before any real announce() call can override it per-call. How: This starts the region at "polite", overwritten per-call below.
+	livRegEle.setAttribute( 'aria-live', 'polite' );  // What: Live Region Live Attribute. Why: A default politeness level is needed before any real annStaFun() call can override it per-call. How: This starts the region at "polite", overwritten per-call below.
 	livRegEle.setAttribute( 'aria-atomic', 'true' );  // What: Live Region Atomic Attribute. Why: A screen reader should read the whole message, not just whatever text node changed. How: This tells assistive tech to treat content changes as replacing the whole region.
 
 
@@ -1102,13 +1102,13 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 	else document.addEventListener( 'DOMContentLoaded', atcRegFun ); // What: Deferred Attach Branch. Why: A load order where document.body doesn't exist yet must wait for the DOM to finish parsing. How: This defers atcRegFun until DOMContentLoaded fires.
 
 
-	let annTimNum = null; // What: Announce Timeout Number. Why: A rapid-fire announce() call must debounce against the previous call's own pending timeout. How: This holds the current setTimeout id, cleared and reassigned on every call below.
+	let annTimNum = null; // What: Announce Timeout Number. Why: A rapid-fire annStaFun() call must debounce against the previous call's own pending timeout. How: This holds the current setTimeout id, cleared and reassigned on every call below.
 
 
-	announce = ( mesTexStr, mesOptObj ) => { // What: announce. Why: This is the actual exported implementation, assigned into the module-level announce binding declared at the top of this file. How: This updates the region's own politeness, clears its text, then sets the new text on the next tick so the change is reliably detected.
+	annStaFun = ( mesTexStr, mesOptObj ) => { // What: Announce Status Function. Why: This is the actual exported implementation, assigned into the module-level annStaFun binding declared at the top of this file. How: This updates the region's own politeness, clears its text, then sets the new text on the next tick so the change is reliably detected.
 
 
-		if ( !mesTexStr ) return; // What: No Message Guard. Why: There is nothing useful to announce for an empty/falsy message. How: This bails out without touching the region at all.
+		if ( !mesTexStr ) return; // What: No Message Guard. Why: There is nothing useful to annStaFun for an empty/falsy message. How: This bails out without touching the region at all.
 
 		livRegEle.setAttribute( 'aria-live', ( mesOptObj && mesOptObj.assertive ) ? 'assertive' : 'polite' ); // What: Live Attribute Update. Why: Some announcements (e.g. an error) need to interrupt immediately rather than wait politely. How: This sets assertive only when mesOptObj explicitly asks for it, polite otherwise.
 
@@ -1198,10 +1198,10 @@ window.__editGuard = window.__editGuard || { // What: Edit Guard Global. Why: Th
 
 
 
-// #region FillButton
+// #region FilButCom
 
 /**
- * FillButton = FillButton
+ * FilButCom = Fill Button Component
  *
  * @summary
  * The ghost "Fill / Refill / Fill all / Refill all" lever for ease
@@ -1219,17 +1219,17 @@ window.__editGuard = window.__editGuard || { // What: Edit Guard Global. Why: Th
  * @param props.disabled - Disabled: Whether this lever is currently
  *                         unavailable (e.g. already at full charge).
  *
- * @returns The lever rendered as a Btn, with its own spin-on-click
+ * @returns The lever rendered as a ButBasCom, with its own spin-on-click
  * behavior layered on top.
  *
  * @example
  * ```tsx
- * FillButton({ label, onClick, disabled }) // => <FillButton />
+ * FilButCom({ label, onClick, disabled }) // => <FilButCom />
  * ```
  *
 */
 
-function FillButton ( { label, onClick, disabled } ) {
+function FilButCom ( { label, onClick, disabled } ) {
 
 
 	const [ spnAniBoo, setSpnAniBoo ] = React.useState( false ); // What: Spin Animate Boolean And Setter. Why: The refresh icon's own spin is purely decorative feedback, layered on top of the real Fill/Refill action. How: This is started on a live click (unless reduced motion) and cleared once the CSS spin animation finishes.
@@ -1238,31 +1238,31 @@ function FillButton ( { label, onClick, disabled } ) {
 	return (
 
 
-		<Btn
+		<ButBasCom
 			className={ spnAniBoo ? 'is-spinning' : '' }
 			kind='ghost'
 			size='sm'
 			icon='refresh'
 			disabled={ disabled }
-			onClick={ () => { // What: On Click Handler. Why: A disabled FillButton must be fully inert, and clicking a live one should spin the icon (unless reduced motion) before performing the real action. How: This guards on disabled, conditionally starts the spin, then always calls the caller's own onClick.
+			onClick={ () => { // What: On Click Handler. Why: A disabled FilButCom must be fully inert, and clicking a live one should spin the icon (unless reduced motion) before performing the real action. How: This guards on disabled, conditionally starts the spin, then always calls the caller's own onClick.
 
 
 				if ( disabled ) return; // What: Disabled Guard. Why: A disabled button must not spin or fire its own action at all. How: This bails out before touching spnAniBoo or calling onClick.
 
-				if ( !reduceMotion() ) setSpnAniBoo( true ); // What: Spin Start Guard. Why: The spin is purely decorative feedback, skipped entirely under reduced motion. How: This starts the spin animation only when reduceMotion() reports false.
+				if ( !redMotFun() ) setSpnAniBoo( true ); // What: Spin Start Guard. Why: The spin is purely decorative feedback, skipped entirely under reduced motion. How: This starts the spin animation only when redMotFun() reports false.
 
 				onClick(); // What: On Click Call. Why: This is the actual Fill/Refill action the caller owns. How: This invokes the passed-in onClick handler unconditionally once the guards above pass.
 
 
 			} }
 			onAnimationEnd={ () => setSpnAniBoo( false ) }
-		>{ /* What: Fill Button Element. Why: This is FillButton's own rendered control, reusing Btn for consistent button chrome. How: This shows the spin class while spnAniBoo is true, is fully inert while disabled, and clears the spin on its own CSS animation finishing. */ }
+		>{ /* What: Fill Button Element. Why: This is FilButCom's own rendered control, reusing ButBasCom for consistent button chrome. How: This shows the spin class while spnAniBoo is true, is fully inert while disabled, and clears the spin on its own CSS animation finishing. */ }
 
 
 			{ label }
 
 
-		</Btn>
+		</ButBasCom>
 
 
 	);
@@ -1270,14 +1270,14 @@ function FillButton ( { label, onClick, disabled } ) {
 
 }
 
-// #endregion FillButton
+// #endregion FilButCom
 
 
 
-// #region compareSortEntries
+// #region sorEntFun
 
 /**
- * compareSortEntries = compareSortEntries
+ * sorEntFun = Sort Entries Function
  *
  * @summary
  * Shared sort vocabulary for the Data tab's section list (Conditionals
@@ -1317,12 +1317,12 @@ function FillButton ( { label, onClick, disabled } ) {
  *
  * @example
  * ```ts
- * compareSortEntries(rowAObj, rowBObj, sorKeyStr) // => -1 | 0 | 1
+ * sorEntFun(rowAObj, rowBObj, sorKeyStr) // => -1 | 0 | 1
  * ```
  *
 */
 
-function compareSortEntries ( rowAObj, rowBObj, sorKeyStr ) {
+function sorEntFun ( rowAObj, rowBObj, sorKeyStr ) {
 
 
 	const [ fieNamStr, sorDirStr ] = sorKeyStr.split( '-' ); // What: Field Name String And Direction String. Why: Every sort key packs both which field to compare and which way, joined by a dash. How: This splits sorKeyStr once into the two pieces every branch below reads.
@@ -1485,14 +1485,14 @@ function compareSortEntries ( rowAObj, rowBObj, sorKeyStr ) {
 
 }
 
-// #endregion compareSortEntries
+// #endregion sorEntFun
 
 
 
-// #region SortSelect
+// #region SorSelCom
 
 /**
- * SortSelect = SortSelect
+ * SorSelCom = Sort Select Component
  *
  * @summary
  * A small labeled select reused for every sort control on the Data
@@ -1513,12 +1513,12 @@ function compareSortEntries ( rowAObj, rowBObj, sorKeyStr ) {
  *
  * @example
  * ```tsx
- * SortSelect({ id, label, options, value, onChange }) // => <SortSelect />
+ * SorSelCom({ id, label, options, value, onChange }) // => <SorSelCom />
  * ```
  *
 */
 
-function SortSelect ( { id, label, options, value, onChange } ) {
+function SorSelCom ( { id, label, options, value, onChange } ) {
 
 
 	return (
@@ -1560,14 +1560,14 @@ function SortSelect ( { id, label, options, value, onChange } ) {
 
 }
 
-// #endregion SortSelect
+// #endregion SorSelCom
 
 
 
-// #region freezeEditedRow
+// #region freEdiFun
 
 /**
- * freezeEditedRow = freezeEditedRow
+ * freEdiFun = Freeze Edited Function
  *
  * @summary
  * Keeps whichever row is currently open for editing from jumping
@@ -1605,12 +1605,12 @@ function SortSelect ( { id, label, options, value, onChange } ) {
  *
  * @example
  * ```ts
- * freezeEditedRow(sorLisArr, opeIdeVal, newIdeVal, frzRowRef) // => reordered array
+ * freEdiFun(sorLisArr, opeIdeVal, newIdeVal, frzRowRef) // => reordered array
  * ```
  *
 */
 
-function freezeEditedRow ( sorLisArr, opeIdeVal, newIdeVal, frzRowRef ) {
+function freEdiFun ( sorLisArr, opeIdeVal, newIdeVal, frzRowRef ) {
 
 
 	if ( opeIdeVal == null ) { // What: No Open Row Guard. Why: With nothing currently open for editing, there is no frozen position to maintain at all. How: This clears any stale frozen record and returns the live sorted list completely unmodified.
@@ -1653,12 +1653,12 @@ function freezeEditedRow ( sorLisArr, opeIdeVal, newIdeVal, frzRowRef ) {
 
 }
 
-// #endregion freezeEditedRow
+// #endregion freEdiFun
 
 
 
-// What: Named Exports. Why: Every tab file imports these shared UI primitives by name rather than through a namespace object. How: This re-exports every non-inline-exported binding declared in this file (reduceMotion, useEscapeCancel, and announce are already exported directly at their own declarations above).
-export { Icon, Btn, Card, Collapse, Pill, ProgressBar, NumStepper, InfoTip, WeekdayChips, BoostReset, FillButton, fmtDate, fmtDateLong, fmtTime, compareSortEntries, SortSelect, freezeEditedRow }; // What: Named Exports. Why: This is the shared UI primitives module; every tab and several other shared modules import one or more of these by name. How: This re-exports all 17 declared above; every other binding in this file is internal-only.
+// What: Named Exports. Why: Every tab file imports these shared UI primitives by name rather than through a namespace object. How: This re-exports every non-inline-exported binding declared in this file (redMotFun, useEscCanFun, and annStaFun are already exported directly at their own declarations above).
+export { IcoSvgCom, ButBasCom, CarSurCom, ColDisCom, PilTagCom, ProBarCom, NumSteCom, InfTipCom, WeeChiCom, BooResCom, FilButCom, forDatFun, forLonFun, forTimFun, sorEntFun, SorSelCom, freEdiFun }; // What: Named Exports. Why: This is the shared UI primitives module; every tab and several other shared modules import one or more of these by name. How: This re-exports all 17 declared above; every other binding in this file is internal-only.
 
 
 

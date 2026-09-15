@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { Icon } from './ui.jsx'; // What: Icon. Why: Several items' own body copy renders a small inline icon next to a button's own label, so a reader can match the tip back to the real control. How: This is rendered inside body JSX throughout this file's own catalogs (e.g. Card Actions, Picker Items).
+import { IcoSvgCom } from './ui.jsx'; // What: Icon Svg Component. Why: Several items' own body copy renders a small inline icon next to a button's own label, so a reader can match the tip back to the real control. How: This is rendered inside body JSX throughout this file's own catalogs (e.g. Card Actions, Picker Items).
 
 // #endregion Imports
 
@@ -279,7 +279,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	// Reminders and picker-generated entries share the same .today-card-actions markup but not the same buttons (reminders have no Re-Roll, there's nothing to re-roll TO, it's a fixed task, not a random pick), so this needs two separate items rather than one shared description. Also excludes day-off and charging cards, both render a .today-card-actions row too, but with Re-Roll and/or Edit genuinely disabled (the app's own InfoTip there says "This action is disabled for this type of item"), which this tip's copy doesn't describe. mulBoo is true on both because every OTHER card gets its own badge; a single shared one could land on a card whose buttons happen to be in an unusual state, or just not be near wherever the user actually scrolled to.
+	// Reminders and picker-generated entries share the same .today-card-actions markup but not the same buttons (reminders have no Re-Roll, there's nothing to re-roll TO, it's a fixed task, not a random pick), so this needs two separate items rather than one shared description. Also excludes day-off and charging cards, both render a .today-card-actions row too, but with Re-Roll and/or Edit genuinely disabled (the app's own InfTipCom there says "This action is disabled for this type of item"), which this tip's copy doesn't describe. mulBoo is true on both because every OTHER card gets its own badge; a single shared one could land on a card whose buttons happen to be in an unusual state, or just not be near wherever the user actually scrolled to.
 	{
 
 
@@ -293,19 +293,19 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 			<>
 				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
-					<div className='help-nav-label'><Icon name='refresh' size={14} /><b>Re-Roll:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><IcoSvgCom name='refresh' size={14} /><b>Re-Roll:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button swaps this item for a different one from the same picker, without waiting for the next generation.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
 
 				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
-					<div className='help-nav-label'><Icon name='skip' size={14} /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><IcoSvgCom name='skip' size={14} /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
 
 				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
-					<div className='help-nav-label'><Icon name='edit' size={14} /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><IcoSvgCom name='edit' size={14} /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
@@ -330,13 +330,13 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 			<>
 				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
-					<div className='help-nav-label'><Icon name='skip' size={14} /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><IcoSvgCom name='skip' size={14} /><b>Skip:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button removes this item from your todo list without completing it and updates the progress ring's total count accordingly.</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
 
 				<div className='help-nav-item'>{ /* What: Body Container Div Element. Why: This groups related lines of this help item's own explanatory copy into one visual block. How: This is rendered as-is inside the tip. */ }
-					<div className='help-nav-label'><Icon name='edit' size={14} /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
+					<div className='help-nav-label'><IcoSvgCom name='edit' size={14} /><b>Edit:</b></div>{ /* What: Body Label Div Element. Why: This pairs an icon with a bold action name inside its own group. How: This is rendered as-is inside the tip. */ }
 
 					<p>This button adjusts this item's properties. That includes its name, schedule (reminders only), values (pickers only) and active toggle (pickers only).</p>{ /* What: Body Paragraph Element. Why: This is one line of this help item's own explanatory copy. How: This is rendered as-is inside the tip. */ }
 				</div>
@@ -348,7 +348,7 @@ const TOD_HEL_ARR = [ // What: Today Help Array. Why: This is the on-demand help
 
 	},
 
-	// A day-off card (a conditional's triggered "rest" state) is excluded from cardActionsPicker above since it doesn't have the normal 3-button set, but unlike a charging card (where Re-Roll/Skip/Edit are ALL genuinely disabled, nothing real to highlight), a day-off card's own Skip IS a real, working button, only Re-Roll and Edit are disabled there. `button` (not .icon-btn generally) specifically targets that one real button, the disabled Re-Roll/Edit are InfoTip's own <span> root, not a <button>, so this selector can't accidentally catch them.
+	// A day-off card (a conditional's triggered "rest" state) is excluded from cardActionsPicker above since it doesn't have the normal 3-button set, but unlike a charging card (where Re-Roll/Skip/Edit are ALL genuinely disabled, nothing real to highlight), a day-off card's own Skip IS a real, working button, only Re-Roll and Edit are disabled there. `button` (not .icon-btn generally) specifically targets that one real button, the disabled Re-Roll/Edit are InfTipCom's own <span> root, not a <button>, so this selector can't accidentally catch them.
 	{
 
 
@@ -1068,7 +1068,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 		bodEle : (
 
 
-			<>This lists all of the items that are in this picker's pool, including their values (if applicable). The <span className='help-inline-icon'><Icon name='calendar' size={13} /></span> Send to Today button will send the item to your todo list on the Today page, the <span className='help-inline-icon'><Icon name='edit' size={13} /></span> Edit button will allow you to edit the item's properties and the <span className='help-inline-icon'><Icon name='trash' size={13} /></span> Delete button will delete the item after asking for confirmation.</>
+			<>This lists all of the items that are in this picker's pool, including their values (if applicable). The <span className='help-inline-icon'><IcoSvgCom name='calendar' size={13} /></span> Send to Today button will send the item to your todo list on the Today page, the <span className='help-inline-icon'><IcoSvgCom name='edit' size={13} /></span> Edit button will allow you to edit the item's properties and the <span className='help-inline-icon'><IcoSvgCom name='trash' size={13} /></span> Delete button will delete the item after asking for confirmation.</>
 
 
 		),
@@ -1283,7 +1283,7 @@ const PIC_HEL_ARR = [ // What: Picker Help Array. Why: This is the on-demand hel
 
 	},
 
-	// Only present once the toggle above is on (the whole .cnd-attach block is a Collapse), findTargets naturally won't match anything while it's closed, no visibility check needed here.
+	// Only present once the toggle above is on (the whole .cnd-attach block is a ColDisCom), findTargets naturally won't match anything while it's closed, no visibility check needed here.
 	{
 
 
@@ -2574,7 +2574,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// mulBoo is true because each expanded picker gets its own Controls/Items pair (more than one can be open at once). Same .rd-ctl class and :nth-of-type split as the Reminders manager's own pair above. .cat-body is a descendant, not a direct child, of .cat, it's wrapped in its own <Collapse> div (unlike .cat-h, which isn't). // padYNum:0, .rd-ctl touches its neighbor with only a hairline border.
+	// mulBoo is true because each expanded picker gets its own Controls/Items pair (more than one can be open at once). Same .rd-ctl class and :nth-of-type split as the Reminders manager's own pair above. .cat-body is a descendant, not a direct child, of .cat, it's wrapped in its own <ColDisCom> div (unlike .cat-h, which isn't). // padYNum:0, .rd-ctl touches its neighbor with only a hairline border.
 	{
 
 
@@ -2820,7 +2820,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// Split by section type (three separate entries, each named for its own context) rather than one shared "Item Sort", Conditionals/Reminders/pickers all render the exact same SortSelect markup (ui.jsx) inside their own .cat-body, so the selectors below key off each section's own distinguishing class/attribute instead: .cnd-manager (Conditionals), .cat--reminders (Reminders), and a picker section's own data-picker-id (set only there, unlike a plain className check, which would need :not() exclusions against the other two instead). // mulBoo is true because every expanded section's own sort control gets its own badge, since more than one can be visible (and set to a different order) at once, matters most for pickers, where several can be expanded together.
+	// Split by section type (three separate entries, each named for its own context) rather than one shared "Item Sort", Conditionals/Reminders/pickers all render the exact same SorSelCom markup (ui.jsx) inside their own .cat-body, so the selectors below key off each section's own distinguishing class/attribute instead: .cnd-manager (Conditionals), .cat--reminders (Reminders), and a picker section's own data-picker-id (set only there, unlike a plain className check, which would need :not() exclusions against the other two instead). // mulBoo is true because every expanded section's own sort control gets its own badge, since more than one can be visible (and set to a different order) at once, matters most for pickers, where several can be expanded together.
 	{
 
 

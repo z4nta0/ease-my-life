@@ -7,10 +7,10 @@ import React from 'react'; // What: React. Why: This is the UI library GuidedTou
 
 
 import { createPortal } from 'react-dom';         // What: Create Portal. Why: The dim layer, spotlight and coach card must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with GuidedTour's own JSX and document.body inside the porFun helper below.
-import { emlTouObj    } from './eml-tour-bus.js';  // What: Ease My Life Tour Object. Why: This publishes the running tour's phase/step/tourId/reserveTop/wantRailOpen fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
-import { InfoTip      } from './ui.jsx';           // What: Info Tip. Why: A requireClick step's disabled Next button needs a hover/tap hint explaining why it can't be clicked yet. How: This wraps that disabled button in the render output below.
-import { reduceMotion } from './ui.jsx';           // What: Reduce Motion. Why: A user who prefers reduced motion should get an instant scroll instead of a smooth one. How: This is checked inside briTarFun's own scroll calls below.
-import { useEmlTouFun } from './eml-tour-bus.js';  // What: Use Ease My Life Tour Function. Why: GuidedTour needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own dragging field.
+import { emlTouObj    } from './eml-tour-bus.js'; // What: Ease My Life Tour Object. Why: This publishes the running tour's phase/step/tourId/reserveTop/wantRailOpen fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
+import { InfTipCom    } from './ui.jsx';          // What: Info Tip Component. Why: A requireClick step's disabled Next button needs a hover/tap hint explaining why it can't be clicked yet. How: This wraps that disabled button in the render output below.
+import { redMotFun    } from './ui.jsx';          // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant scroll instead of a smooth one. How: This is checked inside briTarFun's own scroll calls below.
+import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour Function. Why: GuidedTour needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own dragging field.
 
 // #endregion Imports
 
@@ -900,7 +900,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 		const scrAmtFun = ( scrEle, dltYNum ) => { // What: Scroll By Amount Function. Why: A step that jumps to a different part of the page, or, via briTarFun's own content-grew re-trigger and decResFun's own follow-up correction below, mid-step too, should read as the tour visibly navigating there rather than an unexplained cut. How: This is smooth unless prefers-reduced-motion, and is deliberately NOT applied to TodTopFun (the tour-END reset on Skip/Done), which is a closing reset, not a "here's the next thing" step transition, and already fires alongside a tab switch back to Today, staying an instant cut by design.
 
 
-			const optObj = { top: dltYNum, behavior: reduceMotion() ? 'auto' : 'smooth' }; // What: Scroll Options Object. Why: Both branches below need the same behavior choice. How: This builds one shared options object from dltYNum and the current reduced-motion preference.
+			const optObj = { top: dltYNum, behavior: redMotFun() ? 'auto' : 'smooth' }; // What: Scroll Options Object. Why: Both branches below need the same behavior choice. How: This builds one shared options object from dltYNum and the current reduced-motion preference.
 
 			if ( scrEle === document.scrollingElement || scrEle === document.documentElement ) window.scrollBy( optObj ); // What: Window Scroll By. Why: The document's own scroller is addressed through window, not the element itself. How: This calls window.scrollBy when scrEle is the document's own scroller.
 
@@ -925,7 +925,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 			if ( curSteObj.scrollToTop ) { // What: Scroll-To-Top Guard. Why: A step whose target starts right at the top of the page anyway (e.g. a full-list review step) should scroll all the way up rather than just nudging it into view, keeping everything visible from the top instead of opening mid-scroll.
 
 
-				const optObj = { top: 0, behavior: reduceMotion() ? 'auto' : 'smooth' }; // What: Scroll Options Object. Why: Both branches below need the same behavior choice. How: This builds one shared options object.
+				const optObj = { top: 0, behavior: redMotFun() ? 'auto' : 'smooth' }; // What: Scroll Options Object. Why: Both branches below need the same behavior choice. How: This builds one shared options object.
 
 				if ( scrEle === document.scrollingElement || scrEle === document.documentElement ) window.scrollTo( optObj ); // What: Window Scroll To. Why: The document's own scroller is addressed through window. How: This calls window.scrollTo when scrEle is the document's own scroller.
 
@@ -939,7 +939,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 			if ( curSteObj.scrollToBottom ) { // What: Scroll-To-Bottom Guard. Why: The symmetric case: a step whose target always sits at the very bottom of its page/form (e.g. a footer "next" button), where scrolling by pad math alone can undershoot after the surrounding content just changed shape (e.g. a form switching back from a longer sub-step to a shorter one), landing short of the target instead of reaching it.
 
 
-				const behStr = reduceMotion() ? 'auto' : 'smooth'; // What: Behavior String. Why: Both branches below need the same behavior choice. How: This resolves the reduced-motion preference once.
+				const behStr = redMotFun() ? 'auto' : 'smooth'; // What: Behavior String. Why: Both branches below need the same behavior choice. How: This resolves the reduced-motion preference once.
 
 				if ( scrEle === document.scrollingElement || scrEle === document.documentElement ) window.scrollTo( { top: document.documentElement.scrollHeight, behavior: behStr } ); // What: Window Scroll To Bottom. Why: The document's own scroller is addressed through window. How: This scrolls the window all the way to documentElement's own scrollHeight.
 
@@ -1340,9 +1340,9 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 
 						) }
-						{ curSteObj.requireClick ? ( // What: Require-Click Check. Why: A requireClick step needs its Next button disabled and explained instead of the normal clickable one. How: This renders the InfoTip-wrapped disabled button while curSteObj.requireClick is true.
+						{ curSteObj.requireClick ? ( // What: Require-Click Check. Why: A requireClick step needs its Next button disabled and explained instead of the normal clickable one. How: This renders the InfTipCom-wrapped disabled button while curSteObj.requireClick is true.
 
-							<InfoTip label='Please click the indicated element in order to advance.'>{ /* What: Require-Click Info Tip Element. Why: A requireClick step's Next button is disabled, and the user needs to be told why. How: This wraps the disabled button below with a hover/tap hint. */ }
+							<InfTipCom label='Please click the indicated element in order to advance.'>{ /* What: Require-Click Info Tip Element. Why: A requireClick step's Next button is disabled, and the user needs to be told why. How: This wraps the disabled button below with a hover/tap hint. */ }
 
 
 								<button className='ob-next' disabled>
@@ -1350,7 +1350,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 								</button>{ /* What: Disabled Next Button Element. Why: The user must click the highlighted target itself to advance, not this button. How: This renders curSteObj.primary plus a trailing arrow glyph unless the step is 'Done' or solo, always disabled. */ }
 
 
-							</InfoTip>
+							</InfTipCom>
 
 						) : ( // What: Normal Next Branch. Why: A step without requireClick just needs the plain clickable button. How: This renders the else branch, taken while curSteObj.requireClick is false.
 
@@ -1358,7 +1358,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 								{ curSteObj.primary }{ ( curSteObj.primary !== 'Done' && !curSteObj.solo ) ? ' ›' : '' }
 							</button>
 
-						) }{ /* What: Next/Done Button Ternary. Why: A requireClick step swaps the interactive button for the disabled/InfoTip-wrapped one above. How: This picks between the two based on curSteObj.requireClick, calling priActFun on click for the enabled case. */ }
+						) }{ /* What: Next/Done Button Ternary. Why: A requireClick step swaps the interactive button for the disabled/InfTipCom-wrapped one above. How: This picks between the two based on curSteObj.requireClick, calling priActFun on click for the enabled case. */ }
 
 
 					</div>

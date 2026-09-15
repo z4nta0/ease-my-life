@@ -11,28 +11,28 @@ import { APP_FEATURES            } from './onboarding-app-features.jsx';   // Wh
 import { appFeatureBlockedReason } from './onboarding-app-features.jsx';   // What: App Feature Blocked Reason. Why: An App Feature tutorial can require an earlier one first, and the card needs to explain why it is not yet startable. How: This is called per feature id against state to get a blocking reason string, or null when it is startable.
 import { AppFeaturesIntroTip     } from './onboarding-app-features.jsx';   // What: App Features Intro Tip. Why: The App Features section needs a one-time "One Last Thing..." intro the first time it is shown. How: This is rendered once showAppFeaturesIntro is true, passed actions so it can mark itself seen.
 import { BacFloCom               } from './bg-flourish.jsx';               // What: Background Flourish Component. Why: The decorative background glyphs render behind Today's own centered column too, same as every other tab. How: This is passed Today's own body ref and the fixed 'today' tab id.
-import { BoostReset              } from './ui.jsx';                        // What: Boost Reset. Why: A dynamic-mode item's inline editor needs a control for resetting its boost value back to 0. How: This is rendered inside EntryEditor's own Boost row.
-import { Btn                     } from './ui.jsx';                        // What: Button. Why: Nearly every action in this file (confirm, cancel, save, merge, generate) is a shared styled button. How: This is used throughout instead of a bare <button> for anything that needs the app's own button styling.
+import { BooResCom               } from './ui.jsx';                        // What: Boost Reset Component. Why: A dynamic-mode item's inline editor needs a control for resetting its boost value back to 0. How: This is rendered inside EntryEditor's own Boost row.
+import { ButBasCom               } from './ui.jsx';                        // What: Button Base Component. Why: Nearly every action in this file (confirm, cancel, save, merge, generate) is a shared styled button. How: This is used throughout instead of a bare <button> for anything that needs the app's own button styling.
 import { CAD_NAM_OBJ             } from './cadence.js';                    // What: Cadence Namespace Object. Why: Non-daily pickers need period-key math and unit-word phrasing shared with the rest of the app. How: This is called for perKeyFun/comPerFun/uniWorFun throughout generate() and EntryEditor.
-import { Collapse                } from './ui.jsx';                        // What: Collapse. Why: A group's Day Log panel and an entry's inline editor both need an animated expand/collapse wrapper. How: This wraps GroLogCom and EntryEditor, gated on whichever key/eid currently owns the open state.
+import { ColDisCom               } from './ui.jsx';                        // What: Collapse Disclosure Component. Why: A group's Day Log panel and an entry's inline editor both need an animated expand/collapse wrapper. How: This wraps GroLogCom and EntryEditor, gated on whichever key/eid currently owns the open state.
 import { CON_NAM_OBJ             } from './conditionals.js';               // What: Conditionals Namespace Object. Why: Day-off suppression during generate() needs the shared conditional-evaluation logic. How: This is called via CON_NAM_OBJ.supGatFun against each picker's own resolved conditional.
 import { createPortal            } from 'react-dom';                       // What: Create Portal. Why: The completion celebration's confetti/sparkle overlay must escape the tab-fade wrapper's own containing block. How: This portals the celebration overlay straight onto document.body.
 import { DayLogChip              } from './day-log.jsx';                   // What: Day Log Chip. Why: Each group header needs a small toggle chip for its own Day Log panel. How: This is rendered inside GroHeaCom next to the group's own done/total count.
 import { emlTouObj               } from './onboarding.jsx';                // What: Ease My Life Tour Object. Why: Several onboarding-adjacent features (checklist visibility, drag-hiding the tour coach, starting a create-picker flow) need to publish onto the shared tour event bus. How: This is written to directly (never read here) via its own .set method.
-import { EUR_WAR_STR             } from './constants.js';                  // What: Ease-Up-Range Warning String. Why: An ease-up item's Soonest/Latest row needs its own explanatory warning text. How: This is passed as an InfoTip's own label prop inside EntryEditor.
-import { FillButton              } from './ui.jsx';                        // What: Fill Button. Why: Ease-up and ease-down items each need a button that instantly fills the item to its threshold. How: This is rendered inside EntryEditor's own Fill/Refill row, labeled per direction.
-import { fmtDate                 } from './ui.jsx';                        // What: Format Date. Why: The header's own kicker line needs today's date in the app's shared display format. How: This formats the live now clock value shown next to the streak.
-import { fmtDateLong             } from './ui.jsx';                        // What: Format Date Long. Why: The footer's "List generated on..." line needs the long-form date of the last generation. How: This formats state.today.generatedAt for that footer line.
-import { fmtTime                 } from './ui.jsx';                        // What: Format Time. Why: Both the header's kicker line and the footer's generated-on line need a formatted time of day. How: This formats the live now clock and state.today.generatedAt respectively.
-import { GroLogCom               } from './day-log.jsx';                   // What: Group Log Component. Why: A group's Day Log panel needs to render that group's own picker audit rows. How: This is rendered inside a Collapse, scoped to one group's own name.
-import { HelButCom              } from './help-mode.jsx';                 // What: Help Button Component. Why: Today needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOn.
-import { HelOveCom             } from './help-mode.jsx';                 // What: Help Overlay Component. Why: Help mode needs its own coach-mark overlay driven by this tab's own catalog of targets. How: This is rendered once, passed TOD_HEL_ARR and the helpOn/helpExit pair.
+import { EUR_WAR_STR             } from './constants.js';                  // What: Ease-Up-Range Warning String. Why: An ease-up item's Soonest/Latest row needs its own explanatory warning text. How: This is passed as an InfTipCom's own label prop inside EntryEditor.
+import { FilButCom               } from './ui.jsx';                        // What: Fill Button Component. Why: Ease-up and ease-down items each need a button that instantly fills the item to its threshold. How: This is rendered inside EntryEditor's own Fill/Refill row, labeled per direction.
+import { forDatFun               } from './ui.jsx';                        // What: Format Date Function. Why: The header's own kicker line needs today's date in the app's shared display format. How: This formats the live now clock value shown next to the streak.
+import { forLonFun               } from './ui.jsx';                        // What: Format Long Function. Why: The footer's "List generated on..." line needs the long-form date of the last generation. How: This formats state.today.generatedAt for that footer line.
+import { forTimFun               } from './ui.jsx';                        // What: Format Time Function. Why: Both the header's kicker line and the footer's generated-on line need a formatted time of day. How: This formats the live now clock and state.today.generatedAt respectively.
+import { GroLogCom               } from './day-log.jsx';                   // What: Group Log Component. Why: A group's Day Log panel needs to render that group's own picker audit rows. How: This is rendered inside a ColDisCom, scoped to one group's own name.
+import { HelButCom               } from './help-mode.jsx';                 // What: Help Button Component. Why: Today needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOn.
+import { HelOveCom               } from './help-mode.jsx';                 // What: Help Overlay Component. Why: Help mode needs its own coach-mark overlay driven by this tab's own catalog of targets. How: This is rendered once, passed TOD_HEL_ARR and the helpOn/helpExit pair.
 import { HOL_NAM_OBJ             } from './holidays.js';                   // What: Holidays Namespace Object. Why: Both generate()'s own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holDatFun against state.holidays.
-import { Icon                    } from './ui.jsx';                        // What: Icon. Why: Nearly every card/button in this file needs a small named glyph alongside its label. How: This is rendered throughout, given a name and a size.
-import { InfoTip                 } from './ui.jsx';                        // What: Info Tip. Why: A disabled action (a locked re-roll, a blocked tutorial, a disabled Regenerate) still needs to explain itself on hover/tap. How: This wraps whichever control needs an explanatory label throughout this file.
+import { IcoSvgCom               } from './ui.jsx';                        // What: Icon Svg Component. Why: Nearly every card/button in this file needs a small named glyph alongside its label. How: This is rendered throughout, given a name and a size.
+import { InfTipCom               } from './ui.jsx';                        // What: Info Tip Component. Why: A disabled action (a locked re-roll, a blocked tutorial, a disabled Regenerate) still needs to explain itself on hover/tap. How: This wraps whichever control needs an explanatory label throughout this file.
 import { norGroFun               } from './pickers.js';                    // What: Normalize Group Function. Why: A typed group rename/Page Tours rename needs the same normalization real picker groups already get. How: This is called inside requestRenameGroup and pageToursNameCollision.
 import { NOT_NAM_OBJ             } from './notify.js';                     // What: Notification Namespace Object. Why: An auto-generated list should still fire a best-effort system notification. How: This is called via NOT_NAM_OBJ.generated() right after an auto run, its result deliberately ignored.
-import { NumStepper              } from './ui.jsx';                        // What: Number Stepper. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered twice inside EntryEditor's own ease rows.
+import { NumSteCom               } from './ui.jsx';                        // What: Numeric Stepper Component. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered twice inside EntryEditor's own ease rows.
 import { OB_CHECKLIST            } from './onboarding-checklist.js';       // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called throughout for entryFor/status/realPickerCount/readyToGenerate/othersRemaining/tutorialsInProgress.
 import { OB_GENERATE_ITEM_ID     } from './onboarding-checklist.js';       // What: Onboarding Generate Item Id. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to OB_CHECKLIST.entryFor/setChecklistItem wherever that specific card is read or resolved.
 import { OB_PAGE_TOURS           } from './onboarding-checklist.js';       // What: Onboarding Page Tours Array. Why: The Page Tours section needs its own fixed manifest of tour cards, separate from sample pickers/tasks. How: This is mapped over to render one PagTouCom per entry and to compute that section's own counts.
@@ -40,14 +40,14 @@ import { OB_PICKER_CARD_TIME     } from './onboarding-seed-data.js';       // Wh
 import { OB_SAMPLE_PICKER_IDS    } from './onboarding-seed-data.js';       // What: Onboarding Sample Picker Ids Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout groEntFun and TabToday's own counts.
 import { OB_SAMPLE_TASK_IDS      } from './onboarding-seed-data.js';       // What: Onboarding Sample Task Ids Array. Why: Every count/filter that distinguishes a real reminder from a sample one needs this fixed id list. How: This is checked with .includes throughout TabToday's own tutorial-task counts.
 import { PICKERS                 } from './pickers.js';                    // What: Pickers Namespace Object. Why: Picking, re-rolling, and reading a picker's own eligibility/average-ease all funnel through this shared namespace. How: This is called throughout generate()/handleReroll/EntryEditor for pick/easeEligible/avgEase.
-import { reduceMotion            } from './ui.jsx';                        // What: Reduce Motion. Why: Nearly every animated sequence in this file (celebration, reel cascade, card flip, scroll) needs to skip or shorten itself for a user who prefers reduced motion. How: This is checked throughout as a plain function call.
+import { redMotFun               } from './ui.jsx';                        // What: Reduce Motion Function. Why: Nearly every animated sequence in this file (celebration, reel cascade, card flip, scroll) needs to skip or shorten itself for a user who prefers reduced motion. How: This is checked throughout as a plain function call.
 import { RemSecCom               } from './reminders.jsx';                 // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genBlockOrder.
 import { RemTouCom               } from './onboarding-reminder-tours.jsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while actMinTouObj holds a 'reminder' kind entry.
 import { REORDER                 } from './reorder.js';                    // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REORDER.startDrag inside startGroupDrag/startItemDrag.
 import { TASKS                   } from './tasks.js';                      // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for anchorDate/visibleToday/isDoneToday/optsFor/isCompletedOnce.
 import { TOD_HEL_ARR             } from './help-content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
 import { useEmlTouFun            } from './onboarding.jsx';                // What: Use Ease My Life Tour. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
-import { useEscapeCancel         } from './ui.jsx';                        // What: Use Escape Cancel. Why: EntryEditor's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntryEditor with a handler that checks confirmDel first.
+import { useEscCanFun            } from './ui.jsx';                        // What: Use Escape Cancel Function. Why: EntryEditor's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntryEditor with a handler that checks confirmDel first.
 
 // #endregion Imports
 
@@ -564,10 +564,10 @@ function GroHeaCom ( { name : groNamStr, doneCount : donCouNum, total : totCouNu
 						>{ /* What: Group Grip Span Element. Why: This is the actual pointer-drag handle for reordering this group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. */ }
 
 
-							<Icon
+							<IcoSvgCom
 								name='grip'
 								size={ 16 }
-							/>{ /* What: Icon. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'grip' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'grip' icon at a fixed size. */ }
 
 
 						</span>
@@ -610,10 +610,10 @@ function GroHeaCom ( { name : groNamStr, doneCount : donCouNum, total : totCouNu
 
 
 							{ groNamStr }
-							<Icon
+							<IcoSvgCom
 								name='edit'
 								size={ 13 }
-							/>{ /* What: Icon. Why: The rename button needs a recognizable edit-affordance glyph next to the name. How: This renders the 'edit' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The rename button needs a recognizable edit-affordance glyph next to the name. How: This renders the 'edit' icon at a fixed size. */ }
 
 
 						</button>
@@ -681,20 +681,20 @@ function GroHeaCom ( { name : groNamStr, doneCount : donCouNum, total : totCouNu
 
 					</span>
 
-					<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The Cancel/Merge actions read as one paired cluster. How: This wraps both Btn elements below. */ }
+					<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The Cancel/Merge actions read as one paired cluster. How: This wraps both ButBasCom elements below. */ }
 
 
-						<Btn
+						<ButBasCom
 							kind='ghost'
 							size='sm'
 							onClick={ onCanMerFun }
-						>Cancel</Btn>{ /* What: Btn. Why: This backs out of the pending merge without changing anything. How: This calls onCanMerFun. */ }
+						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the pending merge without changing anything. How: This calls onCanMerFun. */ }
 
-						<Btn
+						<ButBasCom
 							kind='primary'
 							size='sm'
 							onClick={ onConMerFun }
-						>Merge</Btn>{ /* What: Btn. Why: This is the actual, confirmed merge trigger. How: This calls onConMerFun. */ }
+						>Merge</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed merge trigger. How: This calls onConMerFun. */ }
 
 
 					</div>
@@ -955,7 +955,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 	const canEdiFun = () => { cloWayRef.current = 'cancel'; revStaFun(); if ( !onCancel ) onClose(); }; // What: Cancel Edit Function. Why: An explicit Cancel click needs to mark itself handled, actually revert the item, and (unless the caller owns its own close affordance via onCancel) close this editor. How: This flips cloWayRef, calls revStaFun, then conditionally calls onClose.
 
-	useEscapeCancel( true, () => { // What: Use Escape Cancel. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canEdiFun.
+	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canEdiFun.
 
 
 		if ( conDelBoo ) setConDelBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is up, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conDelBoo false.
@@ -1060,7 +1060,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 	const sooDayNum = drfSooFun( curEasMaxNum ); // What: Soonest Day Number. Why: The Soonest/Shortest row needs this as a plain day count to display and edit. How: This converts curEasMaxNum via drfSooFun.
 	const latDayNum = drfLatFun( curEasMinNum ); // What: Latest Day Number. Why: The Latest/Longest row needs this as a plain day count to display and edit. How: This converts curEasMinNum via drfLatFun.
 
-	const setSooFun = ( dayCouNum ) => { // What: Set Soonest Function. Why: NumStepper's own onSet needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actions.updateItem.
+	const setSooFun = ( dayCouNum ) => { // What: Set Soonest Function. Why: NumSteCom's own onSet needs a handler that writes a typed Soonest/Shortest day count back onto the item's own easeMax field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actions.updateItem.
 
 
 		const newEasMaxNum = dayDrfFun( Math.max( 1, Math.min( 60, dayCouNum ) ) ); // What: New Ease Max Number. Why: The typed day count needs converting back into the drift value item.easeMax actually stores. How: This clamps dayCouNum to [1, 60] then converts it via dayDrfFun.
@@ -1070,7 +1070,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 	};
 
-	const setLatFun = ( dayCouNum ) => { // What: Set Latest Function. Why: NumStepper's own onSet needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actions.updateItem.
+	const setLatFun = ( dayCouNum ) => { // What: Set Latest Function. Why: NumSteCom's own onSet needs a handler that writes a typed Latest/Longest day count back onto the item's own easeMin field. How: This clamps dayCouNum, converts it back to a drift value, and writes it via actions.updateItem.
 
 
 		const newEasMinNum = dayDrfFun( Math.max( 1, Math.min( 90, dayCouNum ) ) ); // What: New Ease Min Number. Why: The typed day count needs converting back into the drift value item.easeMin actually stores. How: This clamps dayCouNum to [1, 90] then converts it via dayDrfFun.
@@ -1119,7 +1119,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 					 * itemChargeRangeUp/Down), split by direction rather than one
 					 * shared pie-ease-row, since Soonest/Latest/Fill (ease-up) and
 					 * Shortest/Longest/Refill (ease-down) get entirely different
-					 * tip copy, not just relabeled headings. FillButton (ui.jsx)
+					 * tip copy, not just relabeled headings. FilButCom (ui.jsx)
 					 * has no class of its own to distinguish it by, and it only
 					 * renders for ONE direction at a time, so there is no existing
 					 * class shared by exactly "this direction's ease rows" other
@@ -1132,24 +1132,24 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 					<React.Fragment>{ /* What: Ease Rows Fragment Element. Why: The Soonest/Latest rows plus one direction-specific Fill/Refill row are true siblings with no shared wrapper of their own. How: This groups all 3 without adding an extra DOM node. */ }
 
 
-						<div className={ ` pie-row   ${ isaDowBoo ? 'pie-ease-down-row' : 'pie-ease-up-row' } ` }>{ /* What: Soonest Row Div Element. Why: This is the Soonest/Shortest control row. How: This renders the row's own label/InfoTip/subtitle plus its NumStepper. */ }
+						<div className={ ` pie-row   ${ isaDowBoo ? 'pie-ease-down-row' : 'pie-ease-up-row' } ` }>{ /* What: Soonest Row Div Element. Why: This is the Soonest/Shortest control row. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. */ }
 
 
-							<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label/InfoTip pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
+							<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
 
 
-								<span className='pie-lbl-row'>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfoTip sit side by side. How: This wraps the label span and, for ease-up only, the warning InfoTip. */ }
+								<span className='pie-lbl-row'>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
 
 
 									<span className='pie-lbl'>{ sooLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders sooLabStr directly. */ }
 
 
-									{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfoTip only while picModStr is 'ease-up'.
+									{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfTipCom only while picModStr is 'ease-up'.
 
-										<InfoTip
+										<InfTipCom
 											className='pie-help'
 											label={ EUR_WAR_STR }
-										>?</InfoTip> // What: Info Tip. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
+										>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
 
 									) }
 
@@ -1164,16 +1164,16 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 							</div>
 
 
-							<div className='pie-ctl'>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumStepper and the unit-word span below. */ }
+							<div className='pie-ctl'>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
 
 
-								<NumStepper
+								<NumSteCom
 									value={ sooDayNum }
 									min={ 1 }
 									max={ 60 }
 									onSet={ setSooFun }
 									ariaLabel={ `${ sooLabStr } for ${ item.name }` }
-								/>{ /* What: Number Stepper. Why: This is the actual editable control for the Soonest/Shortest day count. How: This is passed sooDayNum and setSooFun, clamped to [1, 60]. */ }
+								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Soonest/Shortest day count. How: This is passed sooDayNum and setSooFun, clamped to [1, 60]. */ }
 
 								<span className='np-ease-unit'>{ uniWorFun( sooDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for sooDayNum. */ }
 
@@ -1183,24 +1183,24 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 						</div>
 
-						<div className={ ` pie-row   ${ isaDowBoo ? 'pie-ease-down-row' : 'pie-ease-up-row' } ` }>{ /* What: Latest Row Div Element. Why: This is the Latest/Longest control row, the mirror of the Soonest row above. How: This renders the row's own label/InfoTip/subtitle plus its NumStepper. */ }
+						<div className={ ` pie-row   ${ isaDowBoo ? 'pie-ease-down-row' : 'pie-ease-up-row' } ` }>{ /* What: Latest Row Div Element. Why: This is the Latest/Longest control row, the mirror of the Soonest row above. How: This renders the row's own label/InfTipCom/subtitle plus its NumSteCom. */ }
 
 
-							<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label/InfoTip pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
+							<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label/InfTipCom pair and the live subtitle read as one stacked cluster. How: This wraps the label row and the subtitle span below. */ }
 
 
-								<span className='pie-lbl-row'>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfoTip sit side by side. How: This wraps the label span and, for ease-up only, the warning InfoTip. */ }
+								<span className='pie-lbl-row'>{ /* What: Label Row Span Element. Why: The label text and its optional warning InfTipCom sit side by side. How: This wraps the label span and, for ease-up only, the warning InfTipCom. */ }
 
 
 									<span className='pie-lbl'>{ latLabStr }</span>{ /* What: Label Span Element. Why: This is the row's own heading text. How: This renders latLabStr directly. */ }
 
 
-									{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfoTip only while picModStr is 'ease-up'.
+									{ picModStr === 'ease-up' && ( // What: Ease-Up Warning Check. Why: Only ease-up needs its own inline warning about item competition at high item counts. How: This renders the InfTipCom only while picModStr is 'ease-up'.
 
-										<InfoTip
+										<InfTipCom
 											className='pie-help'
 											label={ EUR_WAR_STR }
-										>?</InfoTip> // What: Info Tip. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
+										>?</InfTipCom> // What: Info Tip Component. Why: Ease-up specifically needs its own warning about item competition at high item counts. How: This renders only for ease-up, labeled with EUR_WAR_STR.
 
 									) }
 
@@ -1215,16 +1215,16 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 							</div>
 
 
-							<div className='pie-ctl'>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumStepper and the unit-word span below. */ }
+							<div className='pie-ctl'>{ /* What: Control Div Element. Why: The numeric stepper and its own unit-word suffix read as one control cluster. How: This wraps the NumSteCom and the unit-word span below. */ }
 
 
-								<NumStepper
+								<NumSteCom
 									value={ latDayNum }
 									min={ 1 }
 									max={ 90 }
 									onSet={ setLatFun }
 									ariaLabel={ `${ latLabStr } for ${ item.name }` }
-								/>{ /* What: Number Stepper. Why: This is the actual editable control for the Latest/Longest day count. How: This is passed latDayNum and setLatFun, clamped to [1, 90]. */ }
+								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Latest/Longest day count. How: This is passed latDayNum and setLatFun, clamped to [1, 90]. */ }
 
 								<span className='np-ease-unit'>{ uniWorFun( latDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for latDayNum. */ }
 
@@ -1237,7 +1237,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 						{ picModStr === 'ease-up' && ( // What: Fill Row Visibility Check. Why: Only ease-up offers an instant-fill shortcut for its own charge. How: This renders the Fill row only while picModStr is 'ease-up'.
 
 
-							<div className='pie-row pie-ease-up-row'>{ /* What: Fill Row Div Element. Why: Ease-up specifically offers an instant-fill shortcut. How: This renders the Fill label/subtitle plus its FillButton. */ }
+							<div className='pie-row pie-ease-up-row'>{ /* What: Fill Row Div Element. Why: Ease-up specifically offers an instant-fill shortcut. How: This renders the Fill label/subtitle plus its FilButCom. */ }
 
 
 								<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -1254,11 +1254,11 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 								</div>
 
 
-								<FillButton
+								<FilButCom
 									label='Fill'
 									disabled={ ( item.value ?? 0 ) >= ( picker.threshold ?? 100 ) }
 									onClick={ () => actions.updateItem( item.id, { value : Math.max( item.value ?? 0, picker.threshold ?? 100 ) } ) }
-								/>{ /* What: Fill Button. Why: This is the actual instant-fill shortcut for an ease-up item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
+								/>{ /* What: Fill Button Component. Why: This is the actual instant-fill shortcut for an ease-up item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
 
 
 							</div>
@@ -1268,7 +1268,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 						{ picModStr === 'ease-down' && ( // What: Refill Row Visibility Check. Why: Only ease-down offers an instant-refill shortcut for its own charge. How: This renders the Refill row only while picModStr is 'ease-down'.
 
 
-							<div className='pie-row pie-ease-down-row'>{ /* What: Refill Row Div Element. Why: Ease-down specifically offers an instant-refill shortcut. How: This renders the Refill label/subtitle plus its FillButton. */ }
+							<div className='pie-row pie-ease-down-row'>{ /* What: Refill Row Div Element. Why: Ease-down specifically offers an instant-refill shortcut. How: This renders the Refill label/subtitle plus its FilButCom. */ }
 
 
 								<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live fill-state subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -1285,11 +1285,11 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 								</div>
 
 
-								<FillButton
+								<FilButCom
 									label='Refill'
 									disabled={ ( item.value ?? 0 ) >= ( picker.threshold ?? 100 ) }
 									onClick={ () => actions.updateItem( item.id, { value : Math.max( item.value ?? 0, picker.threshold ?? 100 ) } ) }
-								/>{ /* What: Fill Button. Why: This is the actual instant-refill shortcut for an ease-down item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
+								/>{ /* What: Fill Button Component. Why: This is the actual instant-refill shortcut for an ease-down item. How: This is disabled once item.value already meets the picker's own threshold, otherwise writes value up to that threshold on click. */ }
 
 
 							</div>
@@ -1372,7 +1372,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 				{ isaDynBoo && ( // What: Boost Row Visibility Check. Why: Only dynamic mode has a boost value worth showing/resetting. How: This renders the Boost row only while isaDynBoo is true.
 
 
-					<div className='pie-row'>{ /* What: Boost Row Div Element. Why: This is the dynamic-mode boost control row. How: This renders the label/subtitle plus a BoostReset control. */ }
+					<div className='pie-row'>{ /* What: Boost Row Div Element. Why: This is the dynamic-mode boost control row. How: This renders the label/subtitle plus a BooResCom control. */ }
 
 
 						<div className='pie-rowlabel'>{ /* What: Row Label Div Element. Why: The label and the live boost subtitle read as one stacked cluster. How: This wraps the label span and the subtitle span below. */ }
@@ -1389,13 +1389,13 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 						</div>
 
 
-						<div className='pie-ctl'>{ /* What: Control Div Element. Why: The boost row's own reset control needs a consistent control-column slot, matching every other row. How: This wraps the BoostReset below. */ }
+						<div className='pie-ctl'>{ /* What: Control Div Element. Why: The boost row's own reset control needs a consistent control-column slot, matching every other row. How: This wraps the BooResCom below. */ }
 
 
-							<BoostReset
+							<BooResCom
 								value={ item.value || 0 }
 								onReset={ () => actions.updateItem( item.id, { value : 0 } ) }
-							/>{ /* What: Boost Reset. Why: This is the actual control for zeroing out a dynamic item's own accumulated boost. How: This is passed item.value and writes 0 back via actions.updateItem on reset. */ }
+							/>{ /* What: Boost Reset Component. Why: This is the actual control for zeroing out a dynamic item's own accumulated boost. How: This is passed item.value and writes 0 back via actions.updateItem on reset. */ }
 
 
 						</div>
@@ -1450,20 +1450,20 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 
 					<span className='rem-del-msg'>Delete this item?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
 
-					<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both Btn elements below. */ }
+					<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both ButBasCom elements below. */ }
 
 
-						<Btn
+						<ButBasCom
 							kind='ghost'
 							size='sm'
 							onClick={ () => setConDelBoo( false ) }
-						>Cancel</Btn>{ /* What: Btn. Why: This backs out of the delete confirm without changing anything. How: This closes conDelBoo, returning to the plain footer. */ }
+						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the delete confirm without changing anything. How: This closes conDelBoo, returning to the plain footer. */ }
 
-						<Btn
+						<ButBasCom
 							kind='danger'
 							size='sm'
 							onClick={ () => ( onDelete ? onDelete() : actions.removeItem( item.id ) ) }
-						>Delete</Btn>{ /* What: Btn. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelete when supplied, otherwise removes the item directly via actions.removeItem. */ }
+						>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls the caller's own onDelete when supplied, otherwise removes the item directly via actions.removeItem. */ }
 
 
 					</div>
@@ -1478,55 +1478,55 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 				<div
 					className='rem-inline-foot rd-edit-foot'
 					key='foot'
-				>{ /* What: Plain Foot Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. The Pickers tab hides the Delete button entirely via a `.pv-newitem .rd-edit-foot > .btn--danger` direct-child selector and enforces the 2-item minimum on its own row-level trash icon instead, so it never passes itemCount here, keeping minIteBoo false and this branch's extra InfoTip wrapper out of the way of that selector. How: This renders Delete (plain, or InfoTip-wrapped and disabled while minIteBoo) unless isNew, then the Cancel/Save pair. */ }
+				>{ /* What: Plain Foot Div Element. Why: This is the normal footer, holding an optional Delete button (suppressed for a brand-new item) plus the Cancel/Save actions. The Pickers tab hides the Delete button entirely via a `.pv-newitem .rd-edit-foot > .btn--danger` direct-child selector and enforces the 2-item minimum on its own row-level trash icon instead, so it never passes itemCount here, keeping minIteBoo false and this branch's extra InfTipCom wrapper out of the way of that selector. How: This renders Delete (plain, or InfTipCom-wrapped and disabled while minIteBoo) unless isNew, then the Cancel/Save pair. */ }
 
 
 					{ !isNew && ( minIteBoo ? ( // What: Delete Visibility Check. Why: A brand-new item has nothing to delete yet, only to discard via Cancel/implicit-close; an existing item at the 2-item floor gets a disabled, explained Delete instead of a working one.
 
 
-						<InfoTip
+						<InfTipCom
 							className='rd-del-disabled-tip'
 							label='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
 						>
 
-							<Btn
+							<ButBasCom
 								kind='danger'
 								size='sm'
 								icon='trash'
 								disabled
-							>Delete</Btn>{ /* What: Btn. Why: This shows the disabled Delete control the wrapping InfoTip explains. How: This never fires, since disabled is always set in this branch. */ }
+							>Delete</ButBasCom>{ /* What: Button Base Component. Why: This shows the disabled Delete control the wrapping InfTipCom explains. How: This never fires, since disabled is always set in this branch. */ }
 
-						</InfoTip> // What: Info Tip. Why: A blocked delete still needs to explain itself on hover/tap, not just silently refuse. How: This wraps the disabled Delete button with the fixed floor-explanation text.
+						</InfTipCom> // What: Info Tip Component. Why: A blocked delete still needs to explain itself on hover/tap, not just silently refuse. How: This wraps the disabled Delete button with the fixed floor-explanation text.
 
 
 					) : ( // What: Working Delete Branch. Why: With more than 2 items still in the pool, a real working Delete button belongs here instead. How: This renders the else branch, taken while minIteBoo is false.
 
 
-						<Btn
+						<ButBasCom
 							kind='danger'
 							size='sm'
 							icon='trash'
 							onClick={ () => setConDelBoo( true ) }
-						>Delete</Btn> // What: Btn. Why: This opens the delete confirm prompt above instead of deleting immediately. How: This sets conDelBoo to true.
+						>Delete</ButBasCom> // What: Button Base Component. Why: This opens the delete confirm prompt above instead of deleting immediately. How: This sets conDelBoo to true.
 
 
 					) ) }
-					<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both Btn elements below. */ }
+					<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
 
 
-						<Btn
+						<ButBasCom
 							kind='ghost'
 							size='sm'
 							className='ob-item-cancel'
 							onClick={ canEdiFun }
-						>Cancel</Btn>{ /* What: Btn. Why: This discards the live edits and reverts to the original snapshot. How: This calls canEdiFun. */ }
+						>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the live edits and reverts to the original snapshot. How: This calls canEdiFun. */ }
 
-						<Btn
+						<ButBasCom
 							kind='ghost'
 							size='sm'
 							className='ob-item-save'
 							onClick={ savCloFun }
-						>Save</Btn>{ /* What: Btn. Why: This keeps the live edits as-is. How: This calls savCloFun. */ }
+						>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps the live edits as-is. How: This calls savCloFun. */ }
 
 
 					</div>
@@ -1662,10 +1662,10 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 							aria-hidden='true'
 						/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
-						<Icon
+						<IcoSvgCom
 							name='check'
 							size={ 14 }
-						/>{ /* What: Icon. Why: A resolved card needs a checkmark glyph. How: This renders the 'check' icon at a fixed size. */ }
+						/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'check' icon at a fixed size. */ }
 
 
 					</button>
@@ -1682,10 +1682,10 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 					>{ /* What: Play Check Button Element. Why: A pending tutorial card's own check button starts its mini-tour instead of toggling done. How: This calls onPlaTutFun, scoped to 'picker'. */ }
 
 
-						<Icon
+						<IcoSvgCom
 							name='play'
 							size={ 13 }
-						/>{ /* What: Icon. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'play' icon at a fixed size. */ }
+						/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'play' icon at a fixed size. */ }
 
 
 					</button>
@@ -1738,10 +1738,10 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 						>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setChecklistItem with a 'cancelled' status. */ }
 
 
-							<Icon
+							<IcoSvgCom
 								name='x'
 								size={ 15 }
-							/>{ /* What: Icon. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'x' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'x' icon at a fixed size. */ }
 
 
 						</button>
@@ -1771,7 +1771,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 
 
 		const doFreBoo = jusCheStr === entRecObj.eid && entRecObj.done; // What: Day-Off Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRecObj's own eid, and requires done to already be true.
-		const disTipStr = 'This action is disabled for this type of item.';                                                                       // What: Disabled Tip String. Why: Every disabled action icon on this row shares the exact same explanation. How: This is passed as every InfoTip's own label below.
+		const disTipStr = 'This action is disabled for this type of item.';                                                                       // What: Disabled Tip String. Why: Every disabled action icon on this row shares the exact same explanation. How: This is passed as every InfTipCom's own label below.
 		const dofTitStr = entRecObj.pickerName ? `${ entRecObj.pickerName } · ${ entRecObj.condName || 'Day off' }` : 'Day off';              // What: Day-Off Title String. Why: The truncatable title tooltip needs the full "{picker} · {conditional}" text even when the visible row itself wraps or truncates it. How: This combines entRecObj's own pickerName/condName, falling back to a plain "Day off" when no picker name is recorded.
 
 		const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area) should toggle done, but only outside Edit Mode and while not mid-removal. How: This checks both exclusion conditions first, then calls onCheFun.
@@ -1809,10 +1809,10 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 					>{ /* What: Card Grip Span Element. Why: This is the actual pointer-drag handle for reordering this row within its group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. */ }
 
 
-						<Icon
+						<IcoSvgCom
 							name='grip'
 							size={ 16 }
-						/>{ /* What: Icon. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'grip' icon at a fixed size. */ }
+						/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'grip' icon at a fixed size. */ }
 
 
 					</span>
@@ -1836,12 +1836,12 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 						/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
 
-						{ entRecObj.done && ( // What: Done Icon Check. Why: A completed day-off card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the Icon only while entRecObj.done is true.
+						{ entRecObj.done && ( // What: Done IcoSvgCom Check. Why: A completed day-off card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRecObj.done is true.
 
-							<Icon
+							<IcoSvgCom
 								name='check'
 								size={ 14 }
-							/> // What: Icon. Why: A completed day-off card needs a checkmark glyph. How: This renders the 'check' icon only while entRecObj.done is true.
+							/> // What: Icon Svg Component. Why: A completed day-off card needs a checkmark glyph. How: This renders the 'check' icon only while entRecObj.done is true.
 
 						) }
 
@@ -1852,20 +1852,20 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 				<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block. How: This wraps the meta row and the name div below. */ }
 
 
-					<div className='today-card-meta today-card-meta--dayoff'>{ /* What: Card Meta Div Element. Why: A day-off row's own truncatable title needs its own modifier class for layout. How: This wraps the InfoTip-wrapped title below. */ }
+					<div className='today-card-meta today-card-meta--dayoff'>{ /* What: Card Meta Div Element. Why: A day-off row's own truncatable title needs its own modifier class for layout. How: This wraps the InfTipCom-wrapped title below. */ }
 
 
-						<InfoTip
+						<InfTipCom
 							className='meta-picker meta-dayoff-title'
 							label={ dofTitStr }
 							truncationOnly
-						>{ /* What: Info Tip. Why: A visually-truncated title still needs its own full text reachable on hover/tap. How: This wraps the visible title text, only ever showing its own tooltip when the text is actually truncated (truncationOnly). */ }
+						>{ /* What: Info Tip Component. Why: A visually-truncated title still needs its own full text reachable on hover/tap. How: This wraps the visible title text, only ever showing its own tooltip when the text is actually truncated (truncationOnly). */ }
 
 
 							{ entRecObj.pickerName ? <>{ entRecObj.pickerName } &middot; <strong>{ entRecObj.condName || 'Day off' }</strong></> : 'Day off' }
 
 
-						</InfoTip>
+						</InfTipCom>
 
 
 					</div>
@@ -1878,21 +1878,21 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 				{ !ediModBoo && ( // What: Card Actions Visibility Check. Why: Edit Mode replaces the whole actions strip with the drag grip above, so it has nothing left to show here. How: This renders the actions strip only while ediModBoo is false.
 
 
-					<div className='today-card-actions'>{ /* What: Card Actions Div Element. Why: A day-off row still shows the full 3-icon action strip for layout parity, but re-roll/edit are disabled since neither concept applies. How: This wraps the disabled Re-Roll InfoTip, a working Skip button, and the disabled Edit InfoTip. */ }
+					<div className='today-card-actions'>{ /* What: Card Actions Div Element. Why: A day-off row still shows the full 3-icon action strip for layout parity, but re-roll/edit are disabled since neither concept applies. How: This wraps the disabled Re-Roll InfTipCom, a working Skip button, and the disabled Edit InfTipCom. */ }
 
 
-						<InfoTip
+						<InfTipCom
 							className='icon-btn is-disabled'
 							label={ disTipStr }
 							action='Re-Roll'
 						>
 
-							<Icon
+							<IcoSvgCom
 								name='refresh'
 								size={ 14 }
-							/>{ /* What: Icon. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
 
-						</InfoTip>{ /* What: Info Tip. Why: A day-off card has no items to re-roll between, so this action is explained rather than removed. How: This wraps a disabled-looking refresh icon with disTipStr. */ }
+						</InfTipCom>{ /* What: Info Tip Component. Why: A day-off card has no items to re-roll between, so this action is explained rather than removed. How: This wraps a disabled-looking refresh icon with disTipStr. */ }
 
 						<button
 							className='icon-btn'
@@ -1902,26 +1902,26 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 						>{ /* What: Skip Icon Button Element. Why: Skip is the one action that DOES still apply to a day-off row. How: This calls onSkiFun with entRecObj's own eid. */ }
 
 
-							<Icon
+							<IcoSvgCom
 								name='skip'
 								size={ 15 }
-							/>{ /* What: Icon. Why: The Skip action needs a recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
 
 
 						</button>
 
-						<InfoTip
+						<InfTipCom
 							className='icon-btn is-disabled'
 							label={ disTipStr }
 							action='Edit'
 						>
 
-							<Icon
+							<IcoSvgCom
 								name='edit'
 								size={ 15 }
-							/>{ /* What: Icon. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'edit' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'edit' icon at a fixed size. */ }
 
-						</InfoTip>{ /* What: Info Tip. Why: A day-off card has no editable name of its own, so this action is explained rather than removed. How: This wraps a disabled-looking edit icon with disTipStr. */ }
+						</InfTipCom>{ /* What: Info Tip Component. Why: A day-off card has no editable name of its own, so this action is explained rather than removed. How: This wraps a disabled-looking edit icon with disTipStr. */ }
 
 
 					</div>
@@ -1948,7 +1948,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 
 
 		const chgFreBoo = jusCheStr === entRecObj.eid && entRecObj.done; // What: Charging Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRecObj's own eid, and requires done to already be true.
-		const disTipStr = 'This action is disabled for this type of item.'; // What: Disabled Tip String. Why: Every disabled action icon on this row shares the exact same explanation. How: This is passed as every InfoTip's own label below.
+		const disTipStr = 'This action is disabled for this type of item.'; // What: Disabled Tip String. Why: Every disabled action icon on this row shares the exact same explanation. How: This is passed as every InfTipCom's own label below.
 
 		const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area) should toggle done, but only outside Edit Mode and while not mid-removal. How: This checks both exclusion conditions first, then calls onCheFun.
 
@@ -1985,10 +1985,10 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 					>{ /* What: Card Grip Span Element. Why: This is the actual pointer-drag handle for reordering this row within its group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. */ }
 
 
-						<Icon
+						<IcoSvgCom
 							name='grip'
 							size={ 16 }
-						/>{ /* What: Icon. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'grip' icon at a fixed size. */ }
+						/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'grip' icon at a fixed size. */ }
 
 
 					</span>
@@ -2012,12 +2012,12 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 						/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
 
-						{ entRecObj.done && ( // What: Done Icon Check. Why: A completed charging card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the Icon only while entRecObj.done is true.
+						{ entRecObj.done && ( // What: Done IcoSvgCom Check. Why: A completed charging card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRecObj.done is true.
 
-							<Icon
+							<IcoSvgCom
 								name='check'
 								size={ 14 }
-							/> // What: Icon. Why: A completed charging card needs a checkmark glyph. How: This renders the 'check' icon only while entRecObj.done is true.
+							/> // What: Icon Svg Component. Why: A completed charging card needs a checkmark glyph. How: This renders the 'check' icon only while entRecObj.done is true.
 
 						) }
 
@@ -2044,47 +2044,47 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 				{ !ediModBoo && ( // What: Card Actions Visibility Check. Why: Edit Mode replaces the whole actions strip with the drag grip above, so it has nothing left to show here. How: This renders the actions strip only while ediModBoo is false.
 
 
-					<div className='today-card-actions'>{ /* What: Card Actions Div Element. Why: A charging row still shows the full 3-icon action strip for layout parity, but every one of them is disabled since none of those concepts apply here. How: This wraps 3 disabled InfoTip-wrapped icons. */ }
+					<div className='today-card-actions'>{ /* What: Card Actions Div Element. Why: A charging row still shows the full 3-icon action strip for layout parity, but every one of them is disabled since none of those concepts apply here. How: This wraps 3 disabled InfTipCom-wrapped icons. */ }
 
 
-						<InfoTip
+						<InfTipCom
 							className='icon-btn is-disabled'
 							label={ disTipStr }
 							action='Re-Roll'
 						>
 
-							<Icon
+							<IcoSvgCom
 								name='refresh'
 								size={ 14 }
-							/>{ /* What: Icon. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
 
-						</InfoTip>{ /* What: Info Tip. Why: A charging card has no items to re-roll between yet. How: This wraps a disabled-looking refresh icon with disTipStr. */ }
+						</InfTipCom>{ /* What: Info Tip Component. Why: A charging card has no items to re-roll between yet. How: This wraps a disabled-looking refresh icon with disTipStr. */ }
 
-						<InfoTip
+						<InfTipCom
 							className='icon-btn is-disabled'
 							label={ disTipStr }
 							action='Skip'
 						>
 
-							<Icon
+							<IcoSvgCom
 								name='skip'
 								size={ 15 }
-							/>{ /* What: Icon. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
 
-						</InfoTip>{ /* What: Info Tip. Why: Skipping a charging card would discard the day's own staged drift instead of applying it. How: This wraps a disabled-looking skip icon with disTipStr. */ }
+						</InfTipCom>{ /* What: Info Tip Component. Why: Skipping a charging card would discard the day's own staged drift instead of applying it. How: This wraps a disabled-looking skip icon with disTipStr. */ }
 
-						<InfoTip
+						<InfTipCom
 							className='icon-btn is-disabled'
 							label={ disTipStr }
 							action='Edit'
 						>
 
-							<Icon
+							<IcoSvgCom
 								name='edit'
 								size={ 15 }
-							/>{ /* What: Icon. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'edit' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The disabled Edit action still needs its own recognizable glyph. How: This renders the 'edit' icon at a fixed size. */ }
 
-						</InfoTip>{ /* What: Info Tip. Why: A charging card has no item of its own yet to edit. How: This wraps a disabled-looking edit icon with disTipStr. */ }
+						</InfTipCom>{ /* What: Info Tip Component. Why: A charging card has no item of its own yet to edit. How: This wraps a disabled-looking edit icon with disTipStr. */ }
 
 
 					</div>
@@ -2151,8 +2151,8 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 	const entDonBoo = !!entRecObj.done;             // What: Entry Done Boolean. Why: See the doc comment just above. How: This reads entRecObj's own done flag.
 	const canRerBoo = eliCouNum >= 2 && !entDonBoo; // What: Can Reroll Boolean. Why: Re-roll is only ever a live control when both enough candidates exist AND the row is not already completed. How: This combines eliCouNum's own floor with the negation of entDonBoo.
 
-	const donRerStr = 'Item is completed and cannot be rolled away. If you want another item added, use the Pickers tab to manually push another item here.'; // What: Done Reroll String. Why: A completed row's own disabled re-roll needs its own specific explanation. How: This is passed as the InfoTip's own label when entDonBoo blocks re-roll.
-	const donSkiStr = 'Item is completed and cannot be skipped. If you want remove this item, uncheck it first.';                                            // What: Done Skip String. Why: A completed row's own disabled skip needs its own specific explanation. How: This is passed as the InfoTip's own label when entDonBoo blocks skip.
+	const donRerStr = 'Item is completed and cannot be rolled away. If you want another item added, use the Pickers tab to manually push another item here.'; // What: Done Reroll String. Why: A completed row's own disabled re-roll needs its own specific explanation. How: This is passed as the InfTipCom's own label when entDonBoo blocks re-roll.
+	const donSkiStr = 'Item is completed and cannot be skipped. If you want remove this item, uncheck it first.';                                            // What: Done Skip String. Why: A completed row's own disabled skip needs its own specific explanation. How: This is passed as the InfTipCom's own label when entDonBoo blocks skip.
 	const rerTipStr = picRecObj.mode === 'ease-up' // What: Reroll Tip String. Why: A not-yet-completed row with too few candidates still needs an explanation, phrased differently per mode. How: This picks the ease-up-specific wording or the general "only one active item" wording.
 		? 'Only one item is charged and ready, so there’s nothing to re-roll to. Another item becomes available once it reaches full charge.'
 		: 'This picker has only one active item, so there’s nothing to re-roll to. Add or activate another item for this picker to enable re-rolls.';
@@ -2196,10 +2196,10 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 				>{ /* What: Card Grip Span Element. Why: This is the actual pointer-drag handle for reordering this row within its group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. */ }
 
 
-					<Icon
+					<IcoSvgCom
 						name='grip'
 						size={ 16 }
-					/>{ /* What: Icon. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'grip' icon at a fixed size. */ }
+					/>{ /* What: Icon Svg Component. Why: The grip handle needs a recognizable drag-affordance glyph. How: This renders the 'grip' icon at a fixed size. */ }
 
 
 				</span>
@@ -2223,12 +2223,12 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
 
-					{ entRecObj.done && ( // What: Done Icon Check. Why: A completed pick card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the Icon only while entRecObj.done is true.
+					{ entRecObj.done && ( // What: Done IcoSvgCom Check. Why: A completed pick card's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while entRecObj.done is true.
 
-						<Icon
+						<IcoSvgCom
 							name='check'
 							size={ 14 }
-						/> // What: Icon. Why: A completed pick card needs a checkmark glyph. How: This renders the 'check' icon only while entRecObj.done is true.
+						/> // What: Icon Svg Component. Why: A completed pick card needs a checkmark glyph. How: This renders the 'check' icon only while entRecObj.done is true.
 
 					) }
 
@@ -2293,10 +2293,10 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 						>{ /* What: Reroll Icon Button Element. Why: This is the actual working re-roll control, available whenever canRerBoo allows it. How: This calls onRerFun, spinning its own icon while isaRolBoo is true. */ }
 
 
-							<Icon
+							<IcoSvgCom
 								name='refresh'
 								size={ 14 }
-							/>{ /* What: Icon. Why: The Re-Roll action needs a recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The Re-Roll action needs a recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
 
 
 						</button>
@@ -2305,36 +2305,36 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 					) : ( // What: Disabled Reroll Branch. Why: A blocked re-roll needs an explained disabled control instead. How: This renders the else branch, taken while canRerBoo is false.
 
 
-						<InfoTip
+						<InfTipCom
 							className='icon-btn is-disabled'
 							label={ actRerStr }
 							action='Re-Roll'
 						>
 
-							<Icon
+							<IcoSvgCom
 								name='refresh'
 								size={ 14 }
-							/>{ /* What: Icon. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The disabled Re-Roll action still needs its own recognizable glyph. How: This renders the 'refresh' icon at a fixed size. */ }
 
-						</InfoTip> // What: Info Tip. Why: A blocked re-roll (too few candidates, or already completed) still needs to explain itself. How: This wraps a disabled-looking refresh icon with actRerStr.
+						</InfTipCom> // What: Info Tip Component. Why: A blocked re-roll (too few candidates, or already completed) still needs to explain itself. How: This wraps a disabled-looking refresh icon with actRerStr.
 
 
 					) }
 					{ entDonBoo ? ( // What: Entry Done Check. Why: Skip only makes sense while the row isn't already completed. How: This renders an explained disabled Skip while entDonBoo is true, the working button otherwise.
 
 
-						<InfoTip
+						<InfTipCom
 							className='icon-btn is-disabled'
 							label={ donSkiStr }
 							action='Skip'
 						>
 
-							<Icon
+							<IcoSvgCom
 								name='skip'
 								size={ 15 }
-							/>{ /* What: Icon. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The disabled Skip action still needs its own recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
 
-						</InfoTip> // What: Info Tip. Why: A completed row's own skip is explained rather than removed, matching re-roll's own lockout above. How: This wraps a disabled-looking skip icon with donSkiStr.
+						</InfTipCom> // What: Info Tip Component. Why: A completed row's own skip is explained rather than removed, matching re-roll's own lockout above. How: This wraps a disabled-looking skip icon with donSkiStr.
 
 
 					) : ( // What: Working Skip Branch. Why: An uncompleted row needs its own real, working Skip control instead. How: This renders the else branch, taken while entDonBoo is false.
@@ -2348,10 +2348,10 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 						>{ /* What: Skip Icon Button Element. Why: This is the actual working skip control, available whenever the row is not yet completed. How: This calls onSkiFun with entRecObj's own eid. */ }
 
 
-							<Icon
+							<IcoSvgCom
 								name='skip'
 								size={ 15 }
-							/>{ /* What: Icon. Why: The Skip action needs a recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The Skip action needs a recognizable glyph. How: This renders the 'skip' icon at a fixed size. */ }
 
 
 						</button>
@@ -2367,10 +2367,10 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 					>{ /* What: Edit Icon Button Element. Why: Edit always works, regardless of completion, unlike re-roll/skip. How: This calls onEdiFun, toggling isaEdiBoo. */ }
 
 
-						<Icon
+						<IcoSvgCom
 							name='edit'
 							size={ 15 }
-						/>{ /* What: Icon. Why: The Edit action needs a recognizable glyph. How: This renders the 'edit' icon at a fixed size. */ }
+						/>{ /* What: Icon Svg Component. Why: The Edit action needs a recognizable glyph. How: This renders the 'edit' icon at a fixed size. */ }
 
 
 					</button>
@@ -2472,10 +2472,10 @@ function PagTouCom ( { tour : touRecObj, state : staAppObj, actions : actStoObj,
 						aria-hidden='true'
 					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
-					<Icon
+					<IcoSvgCom
 						name='check'
 						size={ 14 }
-					/>{ /* What: Icon. Why: A resolved card needs a checkmark glyph. How: This renders the 'check' icon at a fixed size. */ }
+					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'check' icon at a fixed size. */ }
 
 
 				</button>
@@ -2492,10 +2492,10 @@ function PagTouCom ( { tour : touRecObj, state : staAppObj, actions : actStoObj,
 				>{ /* What: Play Check Button Element. Why: A pending page-tour card's own check button starts the tour instead of toggling done. How: This calls onPlaTutFun, scoped to 'pageTour'. */ }
 
 
-					<Icon
+					<IcoSvgCom
 						name='play'
 						size={ 13 }
-					/>{ /* What: Icon. Why: A pending card needs a play glyph inviting the user to start the tour. How: This renders the 'play' icon at a fixed size. */ }
+					/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start the tour. How: This renders the 'play' icon at a fixed size. */ }
 
 
 				</button>
@@ -2548,10 +2548,10 @@ function PagTouCom ( { tour : touRecObj, state : staAppObj, actions : actStoObj,
 					>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing the tour. How: This calls actStoObj.setChecklistItem with a 'cancelled' status. */ }
 
 
-						<Icon
+						<IcoSvgCom
 							name='x'
 							size={ 15 }
-						/>{ /* What: Icon. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'x' icon at a fixed size. */ }
+						/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'x' icon at a fixed size. */ }
 
 
 					</button>
@@ -2653,32 +2653,32 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 						aria-hidden='true'
 					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
 
-					<Icon
+					<IcoSvgCom
 						name='check'
 						size={ 14 }
-					/>{ /* What: Icon. Why: A resolved card needs a checkmark glyph. How: This renders the 'check' icon at a fixed size. */ }
+					/>{ /* What: Icon Svg Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'check' icon at a fixed size. */ }
 
 
 				</button>
 
 
-			) : blkRsnStr ? ( // What: Blocked Feature Check. Why: A pending, blocked feature needs an explained disabled control instead of a working one. How: This renders the disabled InfoTip while blkRsnStr holds a reason, the real play-check button otherwise.
+			) : blkRsnStr ? ( // What: Blocked Feature Check. Why: A pending, blocked feature needs an explained disabled control instead of a working one. How: This renders the disabled InfTipCom while blkRsnStr holds a reason, the real play-check button otherwise.
 
 
-				<InfoTip
+				<InfTipCom
 					className='check is-disabled'
 					action={ `Start the ${ feaRecObj.label } tutorial` }
 					label={ blkRsnStr }
-				>{ /* What: Info Tip. Why: A blocked feature's own disabled check button still needs to explain WHY it is blocked. How: This wraps a disabled-looking play icon with blkRsnStr. */ }
+				>{ /* What: Info Tip Component. Why: A blocked feature's own disabled check button still needs to explain WHY it is blocked. How: This wraps a disabled-looking play icon with blkRsnStr. */ }
 
 
-					<Icon
+					<IcoSvgCom
 						name='play'
 						size={ 13 }
-					/>{ /* What: Icon. Why: The disabled check button still needs its own recognizable play glyph. How: This renders the 'play' icon at a fixed size. */ }
+					/>{ /* What: Icon Svg Component. Why: The disabled check button still needs its own recognizable play glyph. How: This renders the 'play' icon at a fixed size. */ }
 
 
-				</InfoTip>
+				</InfTipCom>
 
 
 			) : ( // What: Play Check Branch. Why: A pending, unblocked feature needs its own real play-to-start checkbox instead. How: This renders the else branch, taken while blkRsnStr is falsy.
@@ -2692,10 +2692,10 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 				>{ /* What: Play Check Button Element. Why: A pending, unblocked App Feature card's own check button starts its tutorial instead of toggling done. How: This calls onPlaTutFun, scoped to 'appFeature'. */ }
 
 
-					<Icon
+					<IcoSvgCom
 						name='play'
 						size={ 13 }
-					/>{ /* What: Icon. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'play' icon at a fixed size. */ }
+					/>{ /* What: Icon Svg Component. Why: A pending card needs a play glyph inviting the user to start its tutorial. How: This renders the 'play' icon at a fixed size. */ }
 
 
 				</button>
@@ -2748,10 +2748,10 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 					>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setAppFeatureItem with a 'cancelled' status. */ }
 
 
-						<Icon
+						<IcoSvgCom
 							name='x'
 							size={ 15 }
-						/>{ /* What: Icon. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'x' icon at a fixed size. */ }
+						/>{ /* What: Icon Svg Component. Why: The Cancel action needs a recognizable dismiss glyph. How: This renders the 'x' icon at a fixed size. */ }
 
 
 					</button>
@@ -3519,7 +3519,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		setActiveEditor( ( curValStr ) => curValStr === `item:${ entIdeStr }` ? null : curValStr ); // What: Editor Close. Why: A deleted item's own editor must not stay open. How: This clears activeEditor only if it currently points at this exact item's own editor slot.
 
-		if ( reduceMotion() ) { actions.removeItem( iteIdeStr ); return; } // What: Reduced Motion Branch. Why: A user who prefers reduced motion should see the item removed immediately, not wait through an animation they won't see anyway. How: This removes iteIdeStr directly and returns early.
+		if ( redMotFun() ) { actions.removeItem( iteIdeStr ); return; } // What: Reduced Motion Branch. Why: A user who prefers reduced motion should see the item removed immediately, not wait through an animation they won't see anyway. How: This removes iteIdeStr directly and returns early.
 
 
 		if ( remIdeSet.has( entIdeStr ) ) return; // What: Already Removing Guard. Why: A row already mid-removal must not be re-triggered by a second click. How: This bails out early when entIdeStr is already in remIdeSet.
@@ -3561,7 +3561,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 *
 	*/
 
-	const rolAniMsNum = ( reduceMotion && reduceMotion() ) ? 200 : 760; // What: Roll Animation Ms Number. Why: See the doc comment just above. How: This picks the short reduced-motion beat or the full flip duration.
+	const rolAniMsNum = ( redMotFun && redMotFun() ) ? 200 : 760; // What: Roll Animation Ms Number. Why: See the doc comment just above. How: This picks the short reduced-motion beat or the full flip duration.
 	const [ rolIdeSet, setRolIdeSet ] = React.useState( () => new Set() ); // What: Rolling Id Set And Setter. Why: A re-rolling row needs to know it is mid-flip so it can play its own animation class. How: This is added to right before the flip starts and cleared once it finishes.
 
 	const hndRerFun = ( entRecObj, picRecObj ) => { // What: Handle Reroll Function. Why: This is the actual re-roll trigger, shared by every EntCarCom's own onRerFun prop. How: This stages entRecObj's own eid as rolling, computes and stages a new pending pick at the flip's own apex, then clears the rolling flag once the flip finishes.
@@ -3817,7 +3817,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			pinGroRef.current = tarOffNum > maxScrNum - 2 ? namStr : null; // What: Pin Group Set. Why: If this group can't reach the spy line at all, the scroll-spy effect needs to pin it active instead of reclaiming the highlight for whatever CAN reach the line. How: This pins namStr only when tarOffNum exceeds what the scroller can actually reach.
 
-			mnScrEle.scrollTo( { top : tarOffNum, behavior : reduceMotion() ? 'auto' : 'smooth' } ); // What: Scroll To Call. Why: This is the actual scroll. How: This scrolls mnScrEle to tarOffNum, smoothly unless reduced motion is preferred.
+			mnScrEle.scrollTo( { top : tarOffNum, behavior : redMotFun() ? 'auto' : 'smooth' } ); // What: Scroll To Call. Why: This is the actual scroll. How: This scrolls mnScrEle to tarOffNum, smoothly unless reduced motion is preferred.
 
 
 		}
@@ -3829,7 +3829,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			const winTopNum = tarEle.getBoundingClientRect().top + window.scrollY - stkHeiNum - extPadNum; // What: Window Top Number. Why: This is the actual scroll position that lands tarEle's own header just beneath the sticky offset, in window-scroll terms. How: This combines tarEle's own viewport-relative top with the current window.scrollY.
 
-			window.scrollTo( { top : winTopNum, behavior : reduceMotion() ? 'auto' : 'smooth' } ); // What: Scroll To Call. Why: This is the actual scroll. How: This scrolls the window to winTopNum, smoothly unless reduced motion is preferred.
+			window.scrollTo( { top : winTopNum, behavior : redMotFun() ? 'auto' : 'smooth' } ); // What: Scroll To Call. Why: This is the actual scroll. How: This scrolls the window to winTopNum, smoothly unless reduced motion is preferred.
 
 
 		}
@@ -3949,7 +3949,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		setBanCloBoo( true ); // What: Banner Closing Stage. Why: The banner needs to play its own collapse-out before unmounting. How: This flips banCloBoo to true.
 
-		if ( reduceMotion() ) setBanCloBoo( false ); // What: Reduced Motion Branch. Why: A user who prefers reduced motion should see the banner gone immediately rather than watch a collapse it won't perceive as smooth anyway. How: This clears banCloBoo back to false immediately.
+		if ( redMotFun() ) setBanCloBoo( false ); // What: Reduced Motion Branch. Why: A user who prefers reduced motion should see the banner gone immediately rather than watch a collapse it won't perceive as smooth anyway. How: This clears banCloBoo back to false immediately.
 
 		else setTimeout( () => setBanCloBoo( false ), 240 ); // What: Collapse Settle Timeout. Why: Everyone else needs the banner to stay mounted through its own real collapse animation. How: This clears banCloBoo 240ms later, matching that animation's own duration.
 
@@ -3991,7 +3991,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			gripEl      : griCurEle,
 			scroller    : mnScrRef.current?.closest( '.main' ),
 
-			onStart : () => emlTouObj.set( { dragging : true } ),  // What: On Start Callback. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable Icon" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes dragging:true onto the shared tour bus, a harmless no-op when no tour is mounted.
+			onStart : () => emlTouObj.set( { dragging : true } ),  // What: On Start Callback. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable IcoSvgCom" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes dragging:true onto the shared tour bus, a harmless no-op when no tour is mounted.
 			onEnd   : () => emlTouObj.set( { dragging : false } ), // What: On End Callback. Why: The coach must reappear once the gesture ends. How: This publishes dragging:false onto the shared tour bus.
 			onDrop  : ( ordNumArr ) => { // What: On Drop Callback. Why: The actual persisted group order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through shoOrdRef's own shown order, then merges the result into state.groupOrder.
 
@@ -4106,9 +4106,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			skpSpyRef.current = true; // What: Skip Spy Set. Why: The scroll-spy effect must not fight this programmatic scroll while it is in flight. How: This flags skpSpyRef true for the duration of the scroll below.
 
-			if ( scrCurEle ) scrCurEle.scrollTo( { top : 0, behavior : reduceMotion() ? 'auto' : 'smooth' } ); // What: Scroller Scroll Call. Why: A real scroll container needs its own scrollTo. How: This scrolls scrCurEle to the top, smoothly unless reduced motion is preferred.
+			if ( scrCurEle ) scrCurEle.scrollTo( { top : 0, behavior : redMotFun() ? 'auto' : 'smooth' } ); // What: Scroller Scroll Call. Why: A real scroll container needs its own scrollTo. How: This scrolls scrCurEle to the top, smoothly unless reduced motion is preferred.
 
-			else window.scrollTo( { top : 0, behavior : reduceMotion() ? 'auto' : 'smooth' } ); // What: Window Scroll Call. Why: Without a real scroll container, the window itself must be scrolled instead. How: This scrolls the window to the top, smoothly unless reduced motion is preferred.
+			else window.scrollTo( { top : 0, behavior : redMotFun() ? 'auto' : 'smooth' } ); // What: Window Scroll Call. Why: Without a real scroll container, the window itself must be scrolled instead. How: This scrolls the window to the top, smoothly unless reduced motion is preferred.
 
 
 			await new Promise( ( resFun ) => setTimeout( resFun, 450 ) ); // What: Settle Wait. Why: The smooth scroll needs time to actually finish before the cascade begins. How: This awaits a fixed 450ms.
@@ -4314,7 +4314,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		setGenActBoo( true );        // What: Generate Active Set. Why: The footer/rail need to know a cascade is now playing. How: This flips genActBoo to true.
 
 
-		if ( reduceMotion && reduceMotion() ) { // What: Reduced Motion Branch. Why: The picks are already fully computed above, so the pending-active-settled cascade is pure theatre for a user who won't perceive it as smooth anyway; this commits every slot straight to settled instead of making them wait genTotMsNum for a list that already exists. How: This builds and publishes an all-settled map immediately.
+		if ( redMotFun && redMotFun() ) { // What: Reduced Motion Branch. Why: The picks are already fully computed above, so the pending-active-settled cascade is pure theatre for a user who won't perceive it as smooth anyway; this commits every slot straight to settled instead of making them wait genTotMsNum for a list that already exists. How: This builds and publishes an all-settled map immediately.
 
 
 			const setSltMapObj = {}; // What: Settled Slot Map Object. Why: Every slot needs to land at 'settled' in one shot. How: This is populated just below from ordSltArr.
@@ -4436,7 +4436,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		const newDueArr = TASKS.visibleToday( state.tasks, state.reminderOpts, state.holidays, genNowDat );                       // What: New Due Array. Why: This is what becomes visible under the fresh, post-generate anchor. How: This calls TASKS.visibleToday with genNowDat as the anchor.
 		const arrTasArr = newDueArr.filter( ( curTasObj ) => !oldDueSet.has( curTasObj.id ) ).map( ( curTasObj ) => curTasObj.id ); // What: Arriving Task Array. Why: This is exactly which reminders are newly visible and deserve an entrance animation. How: This filters newDueArr down to ids absent from oldDueSet.
 
-		if ( ( depEidArr.length || depTasArr.length ) && !( reduceMotion && reduceMotion() ) ) { // What: Departure Animation Branch. Why: A departing row/reminder needs time to actually play its own exit animation before the underlying data changes out from under it. How: This stages both leaving sets, then awaits a fixed settle period.
+		if ( ( depEidArr.length || depTasArr.length ) && !( redMotFun && redMotFun() ) ) { // What: Departure Animation Branch. Why: A departing row/reminder needs time to actually play its own exit animation before the underlying data changes out from under it. How: This stages both leaving sets, then awaits a fixed settle period.
 
 
 			if ( depEidArr.length ) setLvgEidArr( new Set( depEidArr ) ); // What: Leaving Entry Stage. Why: EntCarCom's own isaRemBoo prop needs this set to know which rows are departing. How: This publishes depEidArr into lvgEidArr.
@@ -4462,7 +4462,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		setLvgEidArr( new Set() ); // What: Leaving Entry Clear. Why: The commit above already applied, so nothing is departing any more. How: This clears lvgEidArr back to empty.
 		setLvgTasSet( new Set() ); // What: Leaving Task Clear. Why: Same reasoning as leaving entries, for reminders. How: This clears lvgTasSet back to empty.
 
-		if ( arrTasArr.length && !( reduceMotion && reduceMotion() ) ) { // What: Arrival Animation Branch. Why: A newly-visible reminder deserves its own brief entrance flourish instead of popping in silently. How: This stages arvTasSet, then clears it again shortly after.
+		if ( arrTasArr.length && !( redMotFun && redMotFun() ) ) { // What: Arrival Animation Branch. Why: A newly-visible reminder deserves its own brief entrance flourish instead of popping in silently. How: This stages arvTasSet, then clears it again shortly after.
 
 
 			setArvTasSet( new Set( arrTasArr ) );
@@ -4891,7 +4891,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 					const stkHeiNum = parseInt( getComputedStyle( tabCurEle ).getPropertyValue( '--sticky-top-h' ) ) || 140; // What: Sticky Height Number. Why: The scroll target must land just beneath the sticky header/rail. How: This reads the --sticky-top-h custom property, falling back to a fixed 140.
 					const tarOffNum = curEle.offsetTop - stkHeiNum - 16;                                                     // What: Target Offset Number. Why: This is the actual scroll position that lands the card's own top just beneath the sticky offset, with a small 16px pad. How: This subtracts stkHeiNum and 16 from curEle's own offsetTop.
 
-					mnScrEle.scrollTo( { top : tarOffNum, behavior : reduceMotion() ? 'auto' : 'smooth' } ); // What: Scroll To Call. Why: This is the actual scroll. How: This scrolls mnScrEle to tarOffNum, smoothly unless reduced motion is preferred.
+					mnScrEle.scrollTo( { top : tarOffNum, behavior : redMotFun() ? 'auto' : 'smooth' } ); // What: Scroll To Call. Why: This is the actual scroll. How: This scrolls mnScrEle to tarOffNum, smoothly unless reduced motion is preferred.
 
 
 				}
@@ -4935,7 +4935,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		if ( genResBoo && !preGenResRef.current ) { // What: Fresh Resolve Branch. Why: The whole conclusion sequence only ever plays on a genuine false-to-true transition. How: This checks genResBoo against preGenResRef's own prior value.
 
 
-			const rdcBoo   = reduceMotion && reduceMotion();     // What: Reduced Boolean. Why: Every timing below needs to collapse almost to nothing for a user who prefers reduced motion. How: This checks reduceMotion once, reused for both timeouts below.
+			const rdcBoo   = redMotFun && redMotFun();     // What: Reduced Boolean. Why: Every timing below needs to collapse almost to nothing for a user who prefers reduced motion. How: This checks redMotFun once, reused for both timeouts below.
 			const celMsNum = rdcBoo ? 200 : 1700;                 // What: Celebrate Ms Number. Why: The exit animation must wait for the celebration to actually finish playing first. How: This is a short reduced-motion beat or the full celebration duration.
 			const extMsNum = rdcBoo ? 0 : 380;                    // What: Exit Ms Number. Why: The checklist's own conclusion must wait for the card-exit animation to finish too. How: This is 0 under reduced motion or the real exit animation's own duration.
 
@@ -5041,9 +5041,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 						<div className='kicker-row'>{ /* What: Kicker Row Div Element. Why: The date/time and the streak/help cluster sit on one shared row. How: This wraps the kicker span and the kicker-row-right div below. */ }
 
 
-							<div className='kicker'>{ /* What: Kicker Div Element. Why: Today's own date and time read as one small cluster. How: This renders fmtDate and fmtTime against curNowDat. */ }
+							<div className='kicker'>{ /* What: Kicker Div Element. Why: Today's own date and time read as one small cluster. How: This renders forDatFun and forTimFun against curNowDat. */ }
 
-								{ fmtDate( curNowDat ) } <span className='kicker-time'>{ fmtTime( curNowDat ) }</span>
+								{ forDatFun( curNowDat ) } <span className='kicker-time'>{ forTimFun( curNowDat ) }</span>
 
 							</div>
 
@@ -5057,10 +5057,10 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 								>{ /* What: Streak Div Element. Why: This is the badge the streak-pulse effect above targets directly. How: This renders a flame icon plus the current streak count. */ }
 
 
-									<Icon
+									<IcoSvgCom
 										name='flame'
 										size={ 12 }
-									/>{ /* What: Icon. Why: The streak badge needs a recognizable glyph. How: This renders the 'flame' icon at a fixed size. */ }
+									/>{ /* What: Icon Svg Component. Why: The streak badge needs a recognizable glyph. How: This renders the 'flame' icon at a fixed size. */ }
 
 									<span>{ state.streak }-day streak</span>{ /* What: Streak Text Span Element. Why: The streak count needs its own plain text alongside the flame icon. How: This renders state.streak interpolated into the fixed phrase. */ }
 
@@ -5296,29 +5296,29 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 						<span className='editmode-banner-msg'>{ /* What: Banner Message Span Element. Why: The icon and the explanatory text read as one inline cluster. How: This wraps the grip icon and the fixed copy below. */ }
 
 
-							<Icon
+							<IcoSvgCom
 								name='grip'
 								size={ 15 }
-							/>{ /* What: Icon. Why: The banner needs a recognizable drag-affordance glyph alongside its own copy. How: This renders the 'grip' icon at a fixed size. */ }
+							/>{ /* What: Icon Svg Component. Why: The banner needs a recognizable drag-affordance glyph alongside its own copy. How: This renders the 'grip' icon at a fixed size. */ }
 							Edit Mode allows you to drag groups and items to rearrange them or to click group names to edit them.
 
 						</span>
 
-						<span className='editmode-banner-actions'>{ /* What: Banner Actions Span Element. Why: The Cancel/Done pair reads as one right-aligned cluster. How: This wraps both Btn elements below. */ }
+						<span className='editmode-banner-actions'>{ /* What: Banner Actions Span Element. Why: The Cancel/Done pair reads as one right-aligned cluster. How: This wraps both ButBasCom elements below. */ }
 
 
-							<Btn
+							<ButBasCom
 								kind='ghost'
 								size='sm'
 								onClick={ () => exitEdiFun( false ) }
-							>Cancel</Btn>{ /* What: Btn. Why: This discards every drag made during the current Edit Mode session. How: This calls exitEdiFun(false). */ }
+							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every drag made during the current Edit Mode session. How: This calls exitEdiFun(false). */ }
 
-							<Btn
+							<ButBasCom
 								kind='primary'
 								size='sm'
 								icon='check'
 								onClick={ () => exitEdiFun( true ) }
-							>Done</Btn>{ /* What: Btn. Why: This keeps every drag made during the current Edit Mode session. How: This calls exitEdiFun(true). */ }
+							>Done</ButBasCom>{ /* What: Button Base Component. Why: This keeps every drag made during the current Edit Mode session. How: This calls exitEdiFun(true). */ }
 
 
 						</span>
@@ -5506,10 +5506,10 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 							>{ /* What: Edit Mode Rail Button Element. Why: This is the actual toggle control, disabled while a generation is in flight since dragging mid-cascade makes no sense. How: This calls togEdiFun, swapping its own label per ediModBoo. */ }
 
 
-								<Icon
+								<IcoSvgCom
 									name='grip'
 									size={ 15 }
-								/>{ /* What: Icon. Why: The toggle needs a recognizable drag-affordance glyph alongside its own label. How: This renders the 'grip' icon at a fixed size. */ }
+								/>{ /* What: Icon Svg Component. Why: The toggle needs a recognizable drag-affordance glyph alongside its own label. How: This renders the 'grip' icon at a fixed size. */ }
 
 								{ ediModBoo ? 'Done' : 'Edit Mode' }
 
@@ -5694,7 +5694,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 										key={ curGroObj.name }
 										ref={ ( curEle ) => { secRefObj.current[ curGroObj.name ] = curEle; } }
 										className='group-section'
-									>{ /* What: Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log Collapse, then the group's own today-list. */ }
+									>{ /* What: Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log ColDisCom, then the group's own today-list. */ }
 
 
 										<GroHeaCom
@@ -5712,7 +5712,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 										/>{ /* What: Group Header Component. Why: Every group needs its own name/rename, count, and progress dashes. How: This is passed curGroObj's own name/counts plus every rename/merge/log handler. */ }
 
 
-										<Collapse open={ opeLogStr === curGroObj.name && !ediModBoo }>{ /* What: Collapse. Why: This group's own Day Log panel should only mount while it is actually open, outside Edit Mode. How: This wraps GroLogCom below. */ }
+										<ColDisCom open={ opeLogStr === curGroObj.name && !ediModBoo }>{ /* What: Collapse Disclosure Component. Why: This group's own Day Log panel should only mount while it is actually open, outside Edit Mode. How: This wraps GroLogCom below. */ }
 
 
 											<GroLogCom
@@ -5722,7 +5722,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 											/>{ /* What: Group Log. Why: This renders curGroObj's own picker audit rows. How: This is passed curGroObj's own name and a close handler that re-toggles it shut. */ }
 
 
-										</Collapse>
+										</ColDisCom>
 
 
 										<div className='today-list'>{ /* What: Today List Div Element. Why: Every row in this group (real, loader, or tutorial) shares this one list column. How: This maps curGroObj's own entries to one EntCarCom (or LoaCarCom, mid-generation) per row, then any incoming placeholder slots. */ }
@@ -5752,7 +5752,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 												return (
 
 
-													<React.Fragment key={ curEntObj.eid }>{ /* What: Row Fragment Element. Why: The card itself and its own inline editor's Collapse are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+													<React.Fragment key={ curEntObj.eid }>{ /* What: Row Fragment Element. Why: The card itself and its own inline editor's ColDisCom are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
 														<EntCarCom
@@ -5777,7 +5777,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 														/>{ /* What: Entry Card Component. Why: This is the actual row: a real pick, a day-off/charging card, or a mini-tour launcher, depending on curEntObj's own kind. How: This is passed curEntObj/curPicObj plus every shared handler/animation-state flag. */ }
 
 
-														<Collapse open={ activeEditor === `item:${ curEntObj.eid }` && !!curIteObj }>{ /* What: Collapse. Why: This row's own inline editor should only mount while it is actually open AND a real item still exists to edit. How: This wraps the editor wrapper div below. */ }
+														<ColDisCom open={ activeEditor === `item:${ curEntObj.eid }` && !!curIteObj }>{ /* What: Collapse Disclosure Component. Why: This row's own inline editor should only mount while it is actually open AND a real item still exists to edit. How: This wraps the editor wrapper div below. */ }
 
 
 															{ curIteObj && ( // What: Item Exists Check. Why: The inline editor needs a real item to edit, which can briefly go missing right after a delete. How: This renders the editor wrapper only while curIteObj still resolves to something.
@@ -5803,7 +5803,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 															) }
 
 
-														</Collapse>
+														</ColDisCom>
 
 
 													</React.Fragment>
@@ -5900,7 +5900,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 								<div className='ob-create-i'>{ /* What: Card Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed check icon. */ }
 
-									<Icon
+									<IcoSvgCom
 										name='check'
 										size={ 22 }
 									/>
@@ -5912,25 +5912,25 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 								<p>{ genExpStr }</p>{ /* What: Card Explanation Element. Why: The user needs to know exactly what's still missing (or that everything is ready). How: This renders genExpStr directly. */ }
 
 
-								{ onbRdyBoo ? ( // What: Generate Ready Check. Why: Generate's own trigger swaps between a real working button and an explained disabled one depending on readiness. How: This renders the working Btn while onbRdyBoo is true, the disabled InfoTip otherwise.
+								{ onbRdyBoo ? ( // What: Generate Ready Check. Why: Generate's own trigger swaps between a real working button and an explained disabled one depending on readiness. How: This renders the working ButBasCom while onbRdyBoo is true, the disabled InfTipCom otherwise.
 
 
-									<Btn
+									<ButBasCom
 										kind='primary'
 										size='sm'
 										icon='check'
 										onClick={ onGenCarFun }
-									>Generate your list</Btn> // What: Btn. Why: This is the actual working trigger once every requirement is satisfied. How: This calls onGenCarFun.
+									>Generate your list</ButBasCom> // What: Button Base Component. Why: This is the actual working trigger once every requirement is satisfied. How: This calls onGenCarFun.
 
 
 								) : ( // What: Disabled Generate Branch. Why: Without every requirement satisfied, Generate needs an explained disabled control instead. How: This renders the else branch, taken while onbRdyBoo is false.
 
 
-									<InfoTip
+									<InfTipCom
 										className='btn btn--primary btn--sm is-disabled'
 										label='Complete at least one "Create a picker" tutorial above first.'
 										action='Generate your list'
-									>Generate your list</InfoTip> // What: Info Tip. Why: A not-yet-ready Generate button still needs to explain itself. How: This wraps a disabled-looking button with a fixed explanation.
+									>Generate your list</InfTipCom> // What: Info Tip Component. Why: A not-yet-ready Generate button still needs to explain itself. How: This wraps a disabled-looking button with a fixed explanation.
 
 
 								) }
@@ -5949,7 +5949,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 								<div className='ob-create-i'>{ /* What: Card Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed plus icon. */ }
 
-									<Icon
+									<IcoSvgCom
 										name='plus'
 										size={ 22 }
 									/>
@@ -5961,12 +5961,12 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 								<p>At least one picker is required for any items to show up here. You will need to create one with at least two items for it to choose from.</p>{ /* What: Card Explanation Element. Why: The user needs to understand why the list is empty and what to do about it. How: This renders a fixed explanatory sentence. */ }
 
 
-								<Btn
+								<ButBasCom
 									kind='primary'
 									size='sm'
 									icon='plus'
 									onClick={ begCreFun }
-								>Create a picker</Btn>{ /* What: Btn. Why: This is the actual shortcut into the Pickers tab's own create flow. How: This calls begCreFun. */ }
+								>Create a picker</ButBasCom>{ /* What: Button Base Component. Why: This is the actual shortcut into the Pickers tab's own create flow. How: This calls begCreFun. */ }
 
 
 							</div>
@@ -5982,7 +5982,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 								<div className='ob-create-i'>{ /* What: Card Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed calendar icon. */ }
 
-									<Icon
+									<IcoSvgCom
 										name='calendar'
 										size={ 22 }
 									/>
@@ -6024,22 +6024,22 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 									<p className='gen-confirm-msg'>This will replace any items marked as completed and these will not show up in the Stats tab. Continue?</p>{ /* What: Confirm Message Element. Why: The user needs to understand the real consequence before confirming. How: This renders a fixed warning sentence. */ }
 
-									<div className='gen-confirm-actions'>{ /* What: Confirm Actions Div Element. Why: The Cancel/Continue pair reads as one cluster. How: This wraps both Btn elements below. */ }
+									<div className='gen-confirm-actions'>{ /* What: Confirm Actions Div Element. Why: The Cancel/Continue pair reads as one cluster. How: This wraps both ButBasCom elements below. */ }
 
 
-										<Btn
+										<ButBasCom
 											kind='ghost'
 											size='sm'
 											onClick={ () => setCfmGenBoo( false ) }
-										>Cancel</Btn>{ /* What: Btn. Why: This backs out of the confirm without regenerating anything. How: This clears cfmGenBoo. */ }
+										>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the confirm without regenerating anything. How: This clears cfmGenBoo. */ }
 
-										<Btn
+										<ButBasCom
 											kind='primary'
 											size='sm'
 											icon='refresh'
 											className='gen-confirm-continue'
 											onClick={ () => genFun() }
-										>Continue</Btn>{ /* What: Btn. Why: This is the actual, confirmed regeneration trigger. How: This calls genFun with no options (a manual, non-auto run). */ }
+										>Continue</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed regeneration trigger. How: This calls genFun with no options (a manual, non-auto run). */ }
 
 
 									</div>
@@ -6051,19 +6051,19 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 							) : ediModBoo ? ( // What: Edit Mode Branch. Why: Edit Mode replaces the normal footer with its own Cancel/Done pair. How: This renders the edit-mode actions while ediModBoo is true, the normal footer otherwise.
 
 
-								<div className='today-foot-actions editmode-foot-actions'>{ /* What: Edit Mode Foot Actions Div Element. Why: Edit Mode replaces the normal footer actions with its own Cancel/Done pair. How: This wraps both Btn elements below. */ }
+								<div className='today-foot-actions editmode-foot-actions'>{ /* What: Edit Mode Foot Actions Div Element. Why: Edit Mode replaces the normal footer actions with its own Cancel/Done pair. How: This wraps both ButBasCom elements below. */ }
 
 
-									<Btn
+									<ButBasCom
 										kind='ghost'
 										onClick={ () => exitEdiFun( false ) }
-									>Cancel</Btn>{ /* What: Btn. Why: This discards every drag made during the current Edit Mode session. How: This calls exitEdiFun(false). */ }
+									>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every drag made during the current Edit Mode session. How: This calls exitEdiFun(false). */ }
 
-									<Btn
+									<ButBasCom
 										kind='primary'
 										icon='check'
 										onClick={ () => exitEdiFun( true ) }
-									>Done</Btn>{ /* What: Btn. Why: This keeps every drag made during the current Edit Mode session. How: This calls exitEdiFun(true). */ }
+									>Done</ButBasCom>{ /* What: Button Base Component. Why: This keeps every drag made during the current Edit Mode session. How: This calls exitEdiFun(true). */ }
 
 
 								</div>
@@ -6078,42 +6078,42 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 									<div className='today-foot-actions'>{ /* What: Foot Actions Div Element. Why: The Edit Mode and Regenerate buttons read as one row. How: This wraps both controls below. */ }
 
 
-										<Btn
+										<ButBasCom
 											kind='secondary'
 											icon='grip'
 											className='foot-editmode'
 											disabled={ genActBoo }
 											onClick={ togEdiFun }
-										>Edit Mode</Btn>{ /* What: Btn. Why: This is the actual Edit Mode entry point. How: This calls togEdiFun, disabled while a generation is in flight. */ }
+										>Edit Mode</ButBasCom>{ /* What: Button Base Component. Why: This is the actual Edit Mode entry point. How: This calls togEdiFun, disabled while a generation is in flight. */ }
 
 										{ shwCheBoo ? ( // What: Checklist-Gated Regenerate Branch. Why: Every picker (sample AND any real one already created mid-checklist, see genResBoo's own comment on why those stay hidden too) is hidden until the closing Generate card runs, and genFun's own picker loop skips anything hidden, so this would always produce an empty list while still updating today.generatedAt, misleadingly showing a fresh "List generated on..." timestamp for a regenerate that couldn't actually draw anything. How: This renders a real, disabled-and-explained Regenerate instead of a working one.
 
 
-											<InfoTip
+											<InfTipCom
 												className='btn btn--secondary btn--md ob-generate is-disabled'
 												label='Complete every tutorial above and generate your real list first.'
 												action='Regenerate'
-											>{ /* What: Info Tip. Why: A blocked Regenerate still needs to explain itself. How: This wraps a disabled-looking button with a fixed explanation. */ }
+											>{ /* What: Info Tip Component. Why: A blocked Regenerate still needs to explain itself. How: This wraps a disabled-looking button with a fixed explanation. */ }
 
 
-												<Icon
+												<IcoSvgCom
 													name='refresh'
 													size={ 16 }
 												/>Regenerate
 
-											</InfoTip>
+											</InfTipCom>
 
 
 										) : ( // What: Working Regenerate Branch. Why: Outside the guided checklist, the real working Regenerate control belongs here instead. How: This renders the else branch, taken while shwCheBoo is false.
 
 
-											<Btn
+											<ButBasCom
 												kind='secondary'
 												icon='refresh'
 												className='ob-generate'
 												disabled={ genActBoo }
 												onClick={ () => setCfmGenBoo( true ) }
-											>{ genActBoo ? 'Generating…' : 'Regenerate' }</Btn> // What: Btn. Why: This is the actual working Regenerate trigger, opening the confirm prompt above. How: This sets cfmGenBoo, disabled and relabeled while a cascade is already in flight.
+											>{ genActBoo ? 'Generating…' : 'Regenerate' }</ButBasCom> // What: Button Base Component. Why: This is the actual working Regenerate trigger, opening the confirm prompt above. How: This sets cfmGenBoo, disabled and relabeled while a cascade is already in flight.
 
 
 										) }
@@ -6121,7 +6121,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 									</div>
 
 
-									<div className='today-foot-sub'>List generated on { fmtDateLong( state.today.generatedAt ) } at { fmtTime( state.today.generatedAt ) }</div>{ /* What: Foot Sub Div Element. Why: The user still deserves to know exactly when the current list was built. How: This renders state.today.generatedAt formatted 2 ways. */ }
+									<div className='today-foot-sub'>List generated on { forLonFun( state.today.generatedAt ) } at { forTimFun( state.today.generatedAt ) }</div>{ /* What: Foot Sub Div Element. Why: The user still deserves to know exactly when the current list was built. How: This renders state.today.generatedAt formatted 2 ways. */ }
 
 
 								</React.Fragment>

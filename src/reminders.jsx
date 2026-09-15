@@ -7,23 +7,23 @@
 import React from 'react'; // What: React. Why: Every component in this file is built directly on React's own APIs. How: This is used directly (React.useState, React.useRef, React.useCallback, React.useLayoutEffect, React.useEffect, React.forwardRef, React.useImperativeHandle, React.Fragment) throughout, instead of importing individual named hooks.
 
 
-import { Btn                   } from './ui.jsx';                  // What: Btn. Why: Every editor footer and quick-add form needs its own Cancel/Save/Delete buttons. How: This is rendered throughout EdiFooCom and the quick-add footer below.
-import { Collapse              } from './ui.jsx';                  // What: Collapse. Why: Every schedule subsection, log panel, and inline editor needs to animate open and closed instead of snapping. How: This wraps the anchor hint, the Reminders log, and every inline editor's own open state throughout this file.
-import { compareSortEntries    } from './ui.jsx';                  // What: Compare Sort Entries. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside RemManCom's own sorTasArr sort.
+import { ButBasCom             } from './ui.jsx';                  // What: Button Base Component. Why: Every editor footer and quick-add form needs its own Cancel/Save/Delete buttons. How: This is rendered throughout EdiFooCom and the quick-add footer below.
+import { ColDisCom             } from './ui.jsx';                  // What: Collapse Disclosure Component. Why: Every schedule subsection, log panel, and inline editor needs to animate open and closed instead of snapping. How: This wraps the anchor hint, the Reminders log, and every inline editor's own open state throughout this file.
 import { DayLogChip            } from './day-log.jsx';             // What: Day Log Chip. Why: The Reminders section's own header needs the same show-today's-log toggle chip as every other group. How: This is rendered in RemSecCom's header, gated on onToggleLog being supplied.
 import { emlTouObj             } from './eml-tour-bus.js';         // What: Ease My Life Tour Object. Why: A reminder mini-tour publishes prefill data and reads the live draft's own repeat kind through this shared bus. How: This is read via .get() in staAddFun and written to via .set() below.
-import { freezeEditedRow       } from './ui.jsx';                  // What: Freeze Edited Row. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
-import { Icon                  } from './ui.jsx';                  // What: Icon. Why: Every reminder row, card, and button needs a recognizable glyph. How: This is rendered throughout RemCarCom, RemSecCom, and RemManCom.
-import { InfoTip               } from './ui.jsx';                  // What: Info Tip. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add buttons in RemSecCom and RemManCom.
+import { freEdiFun             } from './ui.jsx';                  // What: Freeze Edited Function. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
+import { IcoSvgCom             } from './ui.jsx';                  // What: Icon Svg Component. Why: Every reminder row, card, and button needs a recognizable glyph. How: This is rendered throughout RemCarCom, RemSecCom, and RemManCom.
+import { InfTipCom             } from './ui.jsx';                  // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add buttons in RemSecCom and RemManCom.
 import { OB_CHECKLIST          } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: Both add-reminder entry points must stay disabled while any onboarding tutorial is still in progress. How: This is read via its own tutorialsInProgress and entryFor helpers.
 import { OB_REMINDER_CARD_TEXT } from './onboarding-seed-data.js'; // What: Onboarding Reminder Card Text. Why: A still-hidden sample reminder's own mini-tour launcher card needs copy distinct from its real schedule summary. How: This is looked up by sample task id inside RemCarCom's own isaTutBoo branch.
 import { OB_SAMPLE_TASK_IDS    } from './onboarding-seed-data.js'; // What: Onboarding Sample Task Identifiers. Why: Only the Welcome Tour's own seeded sample reminders should ever render as a mini-tour launcher card. How: This is checked against a hidden task's own id inside RemSecCom's tutTasArr filter.
-import { reduceMotion          } from './ui.jsx';                  // What: Reduce Motion. Why: A user who prefers reduced motion should get an instant close, skip, or remove instead of a timed animation. How: This is checked before every staged animation throughout this file.
+import { redMotFun             } from './ui.jsx';                  // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant close, skip, or remove instead of a timed animation. How: This is checked before every staged animation throughout this file.
 import { RemLogCom             } from './day-log.jsx';             // What: Reminders Log Component. Why: The Reminders section's own header chip opens this exact audit panel. How: This is rendered inside RemSecCom, gated on logOpen.
-import { SortSelect            } from './ui.jsx';                  // What: Sort Select. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
+import { sorEntFun             } from './ui.jsx';                  // What: Sort Entries Function. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside RemManCom's own sorTasArr sort.
+import { SorSelCom             } from './ui.jsx';                  // What: Sort Select Component. Why: The Data tab's reminder Items list needs the same sort control as every other Data tab list. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
 import { TASKS                 } from './tasks.js';                // What: Tasks. Why: Every due-ness, visibility, summary, and schedule computation in this file defers to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout every component below.
-import { useEscapeCancel       } from './ui.jsx';                  // What: Use Escape Cancel. Why: Both the quick-add form and EdiFooCom's own confirm flow need Escape to discard in-progress edits. How: This is called once each in EdiFooCom and RemSecCom.
-import { WeekdayChips          } from './ui.jsx';                  // What: Weekday Chips. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This is rendered inside SchEdiCom's own weekly schedule subsection.
+import { useEscCanFun          } from './ui.jsx';                  // What: Use Escape Cancel Function. Why: Both the quick-add form and EdiFooCom's own confirm flow need Escape to discard in-progress edits. How: This is called once each in EdiFooCom and RemSecCom.
+import { WeeChiCom             } from './ui.jsx';                  // What: Weekday Chip Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This is rendered inside SchEdiCom's own weekly schedule subsection.
 
 // #endregion Imports
 
@@ -591,7 +591,7 @@ function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
  *                          passes a stand-in object exposing its own
  *                          updateTask.
  * @param props.aniExtBoo - Animate Extra Boolean: Whether the extra-fields
- *                          subsection should animate open/closed via Collapse,
+ *                          subsection should animate open/closed via ColDisCom,
  *                          defaulting to false for a context that doesn't need
  *                          it.
  * @param props.staAppObj - State App Object: The shared app state, passed
@@ -877,20 +877,20 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 						</div>
 
-						<WeekdayChips
+						<WeeChiCom
 							value={ tasRecObj.daysOfWeek || [] }
 							describedBy={ schPlaNot }
 							onChange={ ( weeSelArr ) => updPatFun( { daysOfWeek : weeSelArr } ) }
-						/>{ /* What: Weekday Chips. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This commits the newly-selected day array straight through updPatFun. */ }
+						/>{ /* What: Weekday Chips Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This commits the newly-selected day array straight through updPatFun. */ }
 
 
-						<Collapse open={ ( tasRecObj.interval || 1 ) > 1 }>{ /* What: Anchor Collapse Element. Why: The counted-from hint is only meaningful once interval is above 1 week. How: This animates ancHinEle open only while that condition holds. */ }
+						<ColDisCom open={ ( tasRecObj.interval || 1 ) > 1 }>{ /* What: Collapse Disclosure Component. Why: The counted-from hint is only meaningful once interval is above 1 week. How: This animates ancHinEle open only while that condition holds. */ }
 
 
 							<div className='cad-anchor-fade'>{ ancHinEle }</div>
 
 
-						</Collapse>
+						</ColDisCom>
 
 
 						{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kndValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Weekly Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kndValStr 'schedule', only while staAppObj was actually passed. */ }
@@ -985,13 +985,13 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 						</div>
 
 
-						<Collapse open={ ( tasRecObj.interval || 1 ) > 1 }>{ /* What: Anchor Collapse Element. Why: The counted-from hint is only meaningful once interval is above 1 month. How: This animates ancHinEle open only while that condition holds. */ }
+						<ColDisCom open={ ( tasRecObj.interval || 1 ) > 1 }>{ /* What: Collapse Disclosure Component. Why: The counted-from hint is only meaningful once interval is above 1 month. How: This animates ancHinEle open only while that condition holds. */ }
 
 
 							<div className='cad-anchor-fade'>{ ancHinEle }</div>
 
 
-						</Collapse>
+						</ColDisCom>
 
 
 					</div>
@@ -1163,13 +1163,13 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 						</div>
 
 
-						<Collapse open={ ( tasRecObj.interval || 1 ) > 1 }>{ /* What: Anchor Collapse Element. Why: The counted-from hint is only meaningful once interval is above 1 year. How: This animates ancHinEle open only while that condition holds. */ }
+						<ColDisCom open={ ( tasRecObj.interval || 1 ) > 1 }>{ /* What: Collapse Disclosure Component. Why: The counted-from hint is only meaningful once interval is above 1 year. How: This animates ancHinEle open only while that condition holds. */ }
 
 
 							<div className='cad-anchor-fade'>{ ancHinEle }</div>
 
 
-						</Collapse>
+						</ColDisCom>
 
 
 					</div>
@@ -1372,9 +1372,9 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 			{ aniExtBoo
 
 
-				? <Collapse open={ tasRecObj.repeat === 'once' }><div className='rem-extra-fade'>{ oncFieEle }</div></Collapse> // What: Animated Once Fields Branch. Why: A caller that opted into animation needs the once-fields subsection to grow/shrink instead of snapping. How: This wraps oncFieEle in Collapse, open only while repeat is 'once'.
+				? <ColDisCom open={ tasRecObj.repeat === 'once' }><div className='rem-extra-fade'>{ oncFieEle }</div></ColDisCom> // What: Animated Once Fields Branch. Why: A caller that opted into animation needs the once-fields subsection to grow/shrink instead of snapping. How: This wraps oncFieEle in ColDisCom, open only while repeat is 'once'.
 
-				: ( tasRecObj.repeat === 'once' && oncFieEle ) // What: Plain Once Fields Branch. Why: A caller that didn't opt into animation just needs oncFieEle shown or hidden outright. How: This renders oncFieEle directly, with no Collapse wrapper, only while repeat is 'once'.
+				: ( tasRecObj.repeat === 'once' && oncFieEle ) // What: Plain Once Fields Branch. Why: A caller that didn't opt into animation just needs oncFieEle shown or hidden outright. How: This renders oncFieEle directly, with no ColDisCom wrapper, only while repeat is 'once'.
 
 
 			}
@@ -1383,21 +1383,21 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 			{ aniExtBoo
 
 
-				? ( // What: Animated Extra Fields Branch. Why: A caller that opted into animation needs the extra-fields subsection to grow/shrink, and to re-key on kind switch so its own internal Collapse states reset cleanly. How: This wraps extFieEle in Collapse, open whenever repeat isn't 'once', keyed by curRepStr.
+				? ( // What: Animated Extra Fields Branch. Why: A caller that opted into animation needs the extra-fields subsection to grow/shrink, and to re-key on kind switch so its own internal ColDisCom states reset cleanly. How: This wraps extFieEle in ColDisCom, open whenever repeat isn't 'once', keyed by curRepStr.
 
 
-					<Collapse open={ tasRecObj.repeat !== 'once' }>
+					<ColDisCom open={ tasRecObj.repeat !== 'once' }>
 
 
 						<div className='rem-extra-fade' key={ tasRecObj.repeat === 'once' ? lasExtRef.current : tasRecObj.repeat }>{ extFieEle }</div>
 
 
-					</Collapse>
+					</ColDisCom>
 
 
 				)
 
-				: extFieEle // What: Plain Extra Fields Branch. Why: A caller that didn't opt into animation just needs extFieEle shown or hidden outright, which it already does internally via its own curRepStr checks. How: This renders extFieEle directly, with no Collapse wrapper.
+				: extFieEle // What: Plain Extra Fields Branch. Why: A caller that didn't opt into animation just needs extFieEle shown or hidden outright, which it already does internally via its own curRepStr checks. How: This renders extFieEle directly, with no ColDisCom wrapper.
 
 
 			}
@@ -1476,7 +1476,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 
 	React.useEffect( () => () => { if ( isaNewBoo && !expDonRef.current ) onCanTasFun( oriTasRef.current ); }, [] ); // What: Implicit Close Effect. Why: A brand-new, not-yet-kept reminder should be discarded if its editor closes ANY other way, not just an explicit Cancel. How: This runs only on unmount, discarding the draft only when it was new and nothing explicit already handled the close.
 
-	useEscapeCancel( true, () => { // What: Use Escape Cancel. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canNowFun.
+	useEscCanFun( true, () => { // What: Use Escape Cancel Function. Why: Escape should cancel the live edits, except while the delete confirm is up, where it should just back out of the confirm instead. How: This closes the confirm prompt when open, otherwise calls canNowFun.
 
 
 		if ( conOpeBoo ) setConOpeBoo( false ); // What: Close Confirm Branch. Why: While the delete confirm prompt is up, Escape should just back out of it instead of cancelling the whole edit. How: This closes the confirm by setting conOpeBoo false.
@@ -1498,20 +1498,20 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 
 				<span className='rem-del-msg'>Delete this reminder?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }
 
-				<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both Btn elements below. */ }
+				<div className='rem-del-actions'>{ /* What: Delete Actions Div Element. Why: The confirm's own Cancel/Delete buttons need to sit together. How: This wraps both ButBasCom elements below. */ }
 
 
-					<Btn
+					<ButBasCom
 						kind='ghost'
 						size='sm'
 						onClick={ () => setConOpeBoo( false ) }
-					>Cancel</Btn>{ /* What: Btn. Why: This backs out of the delete confirm without changing anything. How: This closes conOpeBoo, returning to the plain footer. */ }
+					>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the delete confirm without changing anything. How: This closes conOpeBoo, returning to the plain footer. */ }
 
-					<Btn
+					<ButBasCom
 						kind='danger'
 						size='sm'
 						onClick={ delNowFun }
-					>Delete</Btn>{ /* What: Btn. Why: This is the actual, confirmed deletion trigger. How: This calls delNowFun, which marks itself handled and invokes onDelTasFun. */ }
+					>Delete</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed deletion trigger. How: This calls delNowFun, which marks itself handled and invokes onDelTasFun. */ }
 
 
 				</div>
@@ -1535,29 +1535,29 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 			{ !isaNewBoo && ( // What: Delete Visibility Check. Why: A brand-new, not-yet-kept reminder has nothing to delete yet, only to discard via Cancel/implicit-close. How: This renders the Delete button only for an already-existing reminder.
 
 
-				<Btn
+				<ButBasCom
 					kind='danger'
 					size='sm'
 					icon='trash'
 					onClick={ () => setConOpeBoo( true ) }
-				>Delete</Btn> // What: Btn. Why: This opens the delete confirm prompt above instead of deleting immediately. How: This sets conOpeBoo to true.
+				>Delete</ButBasCom> // What: Button Base Component. Why: This opens the delete confirm prompt above instead of deleting immediately. How: This sets conOpeBoo to true.
 
 
 			) }
-			<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both Btn elements below. */ }
+			<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
 
 
-				<Btn
+				<ButBasCom
 					kind='ghost'
 					size='sm'
 					onClick={ canNowFun }
-				>Cancel</Btn>{ /* What: Btn. Why: This discards the live edits and reverts to the original snapshot. How: This calls canNowFun. */ }
+				>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the live edits and reverts to the original snapshot. How: This calls canNowFun. */ }
 
-				<Btn
+				<ButBasCom
 					kind='ghost'
 					size='sm'
 					onClick={ donNowFun }
-				>Save</Btn>{ /* What: Btn. Why: This keeps the live edits as-is. How: This calls donNowFun. */ }
+				>Save</ButBasCom>{ /* What: Button Base Component. Why: This keeps the live edits as-is. How: This calls donNowFun. */ }
 
 
 			</div>
@@ -1762,10 +1762,10 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 						<span className='check-ripple' aria-hidden='true' />{ /* What: Check Ripple Span Element. Why: The checkbox needs its own decorative press-ripple, same as every other checkbox in the app. How: This renders an empty, purely decorative span. */ }
 
-						<Icon
+						<IcoSvgCom
 							name='check'
 							size={ 14 }
-						/>{ /* What: Icon. Why: A resolved sample's own checkbox needs the same checkmark glyph as a real completed card. How: This renders the 'check' icon. */ }
+						/>{ /* What: Icon Svg Component. Why: A resolved sample's own checkbox needs the same checkmark glyph as a real completed card. How: This renders the 'check' icon. */ }
 
 
 					</button>
@@ -1782,10 +1782,10 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 					>{ /* What: Play Check Button Element. Why: An unresolved sample's own checkbox instead starts the mini-tour, never marks it done directly. How: This calls onPlaTutFun, isolated from the row's own onRowCliFun via stopPropagation. */ }
 
 
-						<Icon
+						<IcoSvgCom
 							name='play'
 							size={ 13 }
-						/>{ /* What: Icon. Why: An unresolved sample's own checkbox needs a play glyph instead of a checkmark, since clicking it starts the tour rather than completing anything. How: This renders the 'play' icon. */ }
+						/>{ /* What: Icon Svg Component. Why: An unresolved sample's own checkbox needs a play glyph instead of a checkmark, since clicking it starts the tour rather than completing anything. How: This renders the 'play' icon. */ }
 
 
 					</button>
@@ -1839,10 +1839,10 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 						>{ /* What: Cancel Button Element. Why: This marks the sample's own checklist entry cancelled without touching the sample itself, distinct from actually resolving it. How: This calls actStoObj.setChecklistItem, isolated from the row's own onRowCliFun via stopPropagation. */ }
 
 
-							<Icon
+							<IcoSvgCom
 								name='x'
 								size={ 15 }
-							/>{ /* What: Icon. Why: This is the Cancel action's own glyph. How: This renders the 'x' icon. */ }
+							/>{ /* What: Icon Svg Component. Why: This is the Cancel action's own glyph. How: This renders the 'x' icon. */ }
 
 
 						</button>
@@ -1902,13 +1902,13 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 				<span className='check-ripple' aria-hidden='true' />{ /* What: Check Ripple Span Element. Why: The checkbox needs its own decorative press-ripple. How: This renders an empty, purely decorative span. */ }
 
 
-				{ isaDonBoo && ( // What: Done Icon Check. Why: A done reminder's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the Icon only while isaDonBoo is true.
+				{ isaDonBoo && ( // What: Done IcoSvgCom Check. Why: A done reminder's own checkbox needs a checkmark glyph, an undone one doesn't. How: This renders the IcoSvgCom only while isaDonBoo is true.
 
 
-					<Icon
+					<IcoSvgCom
 						name='check'
 						size={ 14 }
-					/> // What: Icon. Why: A done reminder's own checkbox needs a checkmark glyph. How: This renders the 'check' icon only while isaDonBoo.
+					/> // What: Icon Svg Component. Why: A done reminder's own checkbox needs a checkmark glyph. How: This renders the 'check' icon only while isaDonBoo.
 
 
 				) }
@@ -1923,10 +1923,10 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 				<div className='today-card-meta rem-meta'>{ /* What: Card Meta Div Element. Why: A small type icon and the schedule summary read together as one line. How: This renders the type icon, then the summary span. */ }
 
 
-					<Icon
+					<IcoSvgCom
 						name={ tasRecObj.repeat === 'once' ? 'pin' : 'calendar' }
 						size={ 12 }
-					/>{ /* What: Icon. Why: This distinguishes a one-time reminder from a recurring one at a glance. How: This renders 'pin' for a 'once' repeat, otherwise 'calendar'. */ }
+					/>{ /* What: Icon Svg Component. Why: This distinguishes a one-time reminder from a recurring one at a glance. How: This renders 'pin' for a 'once' repeat, otherwise 'calendar'. */ }
 
 					<span className='meta-picker'>{ TASKS.summary( tasRecObj ) }</span>{ /* What: Meta Picker Span Element. Why: This is the row's own schedule summary, reusing the same class a real entry's picker name uses. How: This calls TASKS.summary against tasRecObj. */ }
 
@@ -1976,10 +1976,10 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 				>{ /* What: Skip Button Element. Why: This opens/closes this card's own skip confirm. How: This is isolated from the row's own onRowCliFun via stopPropagation. */ }
 
 
-					<Icon
+					<IcoSvgCom
 						name='skip'
 						size={ 15 }
-					/>{ /* What: Icon. Why: This is the Skip action's own glyph. How: This renders the 'skip' icon. */ }
+					/>{ /* What: Icon Svg Component. Why: This is the Skip action's own glyph. How: This renders the 'skip' icon. */ }
 
 
 				</button>
@@ -1993,10 +1993,10 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 				>{ /* What: Edit Button Element. Why: This opens/closes this card's own inline schedule editor. How: This is isolated from the row's own onRowCliFun via stopPropagation. */ }
 
 
-					<Icon
+					<IcoSvgCom
 						name='edit'
 						size={ 15 }
-					/>{ /* What: Icon. Why: This is the Edit action's own glyph. How: This renders the 'edit' icon. */ }
+					/>{ /* What: Icon Svg Component. Why: This is the Edit action's own glyph. How: This renders the 'edit' icon. */ }
 
 
 				</button>
@@ -2126,7 +2126,7 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 			clearTimeout( cloTimRef.current ); // What: Stale Timer Clear. Why: A close already scheduled a moment ago must not also fire after this fresh forced-close begins. How: This clears whatever timeout id cloTimRef currently holds.
 
 
-			if ( reduceMotion() ) { setDraTasObj( null ); setVisForBoo( false ); }
+			if ( redMotFun() ) { setDraTasObj( null ); setVisForBoo( false ); }
 
 			else {
 
@@ -2178,7 +2178,7 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 		selCloRef.current = true;
 
-		if ( reduceMotion() ) { setDraTasObj( null ); setVisForBoo( false ); cloAddFun(); setAddCloBoo( false ); return; }
+		if ( redMotFun() ) { setDraTasObj( null ); setVisForBoo( false ); cloAddFun(); setAddCloBoo( false ); return; }
 
 		setAddCloBoo( true );
 		cloTimRef.current = setTimeout( () => { setDraTasObj( null ); setVisForBoo( false ); cloAddFun(); setAddCloBoo( false ); }, 180 );
@@ -2270,7 +2270,7 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 		};
 
-		if ( reduceMotion() ) { finAddFun(); return; }
+		if ( redMotFun() ) { finAddFun(); return; }
 
 		setAddCloBoo( true );
 		cloTimRef.current = setTimeout( finAddFun, 180 );
@@ -2279,7 +2279,7 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 	};
 
 
-	useEscapeCancel( visForBoo && !addCloBoo, canAddFun ); // What: Use Escape Cancel. Why: Escape should discard the quick-add regardless of what's been typed or which of its controls has focus. How: This calls canAddFun whenever the form is visible and not already mid-close.
+	useEscCanFun( visForBoo && !addCloBoo, canAddFun ); // What: Use Escape Cancel Function. Why: Escape should discard the quick-add regardless of what's been typed or which of its controls has focus. How: This calls canAddFun whenever the form is visible and not already mid-close.
 
 
 	const donCouNum = dueTasArr.filter( ( curTasObj ) => TASKS.isDoneToday( curTasObj, ancDatObj ) ).length; // What: Done Count Number. Why: The header's own "N of M" count needs the real completed count among dueTasArr. How: This filters dueTasArr by TASKS.isDoneToday and reads the resulting length.
@@ -2343,10 +2343,10 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 						>{ /* What: Group Grip Span Element. Why: This is the whole section's own drag handle for reordering among other groups. How: This suppresses the native HTML5 drag entirely and forwards pointer-down straight to onGripDown. */ }
 
 
-							<Icon
+							<IcoSvgCom
 								name='grip'
 								size={ 16 }
-							/>{ /* What: Icon. Why: This is the grip's own visible glyph. How: This renders the 'grip' icon. */ }
+							/>{ /* What: Icon Svg Component. Why: This is the grip's own visible glyph. How: This renders the 'grip' icon. */ }
 
 
 						</span>
@@ -2389,26 +2389,26 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 
 					</div>
-					{ !editMode && ( // What: Add Button Visibility Check. Why: The add button (or its disabled InfoTip stand-in) only makes sense outside Edit Mode. How: This renders one of the 2 branches below only while editMode is false.
+					{ !editMode && ( // What: Add Button Visibility Check. Why: The add button (or its disabled InfTipCom stand-in) only makes sense outside Edit Mode. How: This renders one of the 2 branches below only while editMode is false.
 
 
-						tutProBoo ? ( // What: Tutorials In Progress Check. Why: The add control must stay disabled with an explanation while the guided checklist is still running. How: This renders the disabled InfoTip while tutProBoo is true, the real button otherwise.
+						tutProBoo ? ( // What: Tutorials In Progress Check. Why: The add control must stay disabled with an explanation while the guided checklist is still running. How: This renders the disabled InfTipCom while tutProBoo is true, the real button otherwise.
 
 
-							<InfoTip
+							<InfTipCom
 								className='rem-add-btn is-tour-disabled'
 								action='Add a Reminder'
 								label='This button is disabled until all tutorials are completed.'
-							>{ /* What: Info Tip. Why: A disabled add control still needs to explain why it can't be clicked while some other tutorial is in progress. How: This wraps the plus icon, standing in for the real button below. */ }
+							>{ /* What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while some other tutorial is in progress. How: This wraps the plus icon, standing in for the real button below. */ }
 
 
-								<Icon
+								<IcoSvgCom
 									name='plus'
 									size={ 16 }
-								/>{ /* What: Icon. Why: This is the disabled control's own visible glyph, matching the real button's own icon. How: This renders the 'plus' icon. */ }
+								/>{ /* What: Icon Svg Component. Why: This is the disabled control's own visible glyph, matching the real button's own icon. How: This renders the 'plus' icon. */ }
 
 
-							</InfoTip>
+							</InfTipCom>
 
 
 						) : ( // What: Add Button Branch. Why: Outside the guided checklist, the real working Add button belongs here instead. How: This renders the else branch, taken while tutProBoo is false.
@@ -2422,10 +2422,10 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 							>{ /* What: Add Button Element. Why: This is the real, clickable entry point into the quick-add form. How: This toggles between canAddFun and staAddFun based on whether the form is already open. */ }
 
 
-								<Icon
+								<IcoSvgCom
 									name='plus'
 									size={ 16 }
-								/>{ /* What: Icon. Why: This is the add button's own visible glyph. How: This renders the 'plus' icon. */ }
+								/>{ /* What: Icon Svg Component. Why: This is the add button's own visible glyph. How: This renders the 'plus' icon. */ }
 
 
 							</button>
@@ -2442,16 +2442,16 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 			</header>
 
-			{ !editMode && ( // What: Log Panel Visibility Check. Why: The day-log panel only makes sense outside Edit Mode. How: This renders the Collapse-wrapped RemLogCom only while editMode is false.
+			{ !editMode && ( // What: Log Panel Visibility Check. Why: The day-log panel only makes sense outside Edit Mode. How: This renders the ColDisCom-wrapped RemLogCom only while editMode is false.
 
 
-				<Collapse open={ !!logOpen }>
+				<ColDisCom open={ !!logOpen }>
 
 
 					<RemLogCom state={ state } onClose={ onToggleLog } />
 
 
-				</Collapse>
+				</ColDisCom>
 
 
 			) }
@@ -2505,21 +2505,21 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 							/>{ /* What: Schedule Editor Component. Why: This is the actual live schedule editor, operating on the in-progress draft before it's ever created. How: This is passed draActObj instead of the real store actions, so every field stays local until Add. */ }
 
 
-							<div className='rem-inline-foot'>{ /* What: Inline Foot Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both Btn elements below. */ }
+							<div className='rem-inline-foot'>{ /* What: Inline Foot Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. */ }
 
 
-								<Btn
+								<ButBasCom
 									kind='ghost'
 									size='sm'
 									onClick={ canAddFun }
-								>Cancel</Btn>{ /* What: Btn. Why: This discards the in-progress draft entirely. How: This calls canAddFun. */ }
+								>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards the in-progress draft entirely. How: This calls canAddFun. */ }
 
-								<Btn
+								<ButBasCom
 									kind='primary'
 									size='sm'
 									disabled={ !draTasObj.name.trim() }
 									onClick={ comAddFun }
-								>Add</Btn>{ /* What: Btn. Why: This is the form's own actual submit action. How: This calls comAddFun, disabled while the name is blank. */ }
+								>Add</ButBasCom>{ /* What: Button Base Component. Why: This is the form's own actual submit action. How: This calls comAddFun, disabled while the name is blank. */ }
 
 
 							</div>
@@ -2548,7 +2548,7 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 
 				) ) }
-				{ dueTasArr.map( ( curTasObj ) => ( // What: Due Card List Render. Why: One real reminder row (plus its own inline editors) is needed per currently-due reminder. How: This maps dueTasArr to one RemCarCom, one skip Collapse, and one edit Collapse per entry, keyed by its own id.
+				{ dueTasArr.map( ( curTasObj ) => ( // What: Due Card List Render. Why: One real reminder row (plus its own inline editors) is needed per currently-due reminder. How: This maps dueTasArr to one RemCarCom, one skip ColDisCom, and one edit ColDisCom per entry, keyed by its own id.
 
 
 					<React.Fragment key={ curTasObj.id }>
@@ -2605,7 +2605,7 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 						/>{ /* What: Reminder Card Component. Why: This is one real, due reminder's own row. How: This wires every one of its callback props straight into this section's own local state and actions. */ }
 
 
-						<Collapse open={ opeTasStr === curTasObj.id }>{ /* What: Edit Collapse Element. Why: The inline schedule editor only exists while this exact card's own edit affordance is open. How: This animates InlEdiCom open only while opeTasStr matches curTasObj's own id. */ }
+						<ColDisCom open={ opeTasStr === curTasObj.id }>{ /* What: Collapse Disclosure Component. Why: The inline schedule editor only exists while this exact card's own edit affordance is open. How: This animates InlEdiCom open only while opeTasStr matches curTasObj's own id. */ }
 
 
 							<InlEdiCom
@@ -2617,7 +2617,7 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 									setActiveEditor( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr );
 
-									if ( reduceMotion() ) { actions.removeTask( curTasObj.id ); return; }
+									if ( redMotFun() ) { actions.removeTask( curTasObj.id ); return; }
 
 									remActRef.current = () => actions.removeTask( curTasObj.id );
 									setRemIdeStr( curTasObj.id ); // What: Removal Stage Call. Why: The card above must play its own collapse-out animation before remActRef's own thunk actually runs, on that card's own onAniEndFun. How: This stages curTasObj's own id as the currently-removing card.
@@ -2628,9 +2628,9 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 							/>
 
 
-						</Collapse>
+						</ColDisCom>
 
-						<Collapse open={ skiIdeStr === curTasObj.id }>{ /* What: Skip Collapse Element. Why: The skip confirm only exists while this exact card's own skip affordance is open. How: This animates the confirm prompt open only while skiIdeStr matches curTasObj's own id. */ }
+						<ColDisCom open={ skiIdeStr === curTasObj.id }>{ /* What: Collapse Disclosure Component. Why: The skip confirm only exists while this exact card's own skip affordance is open. How: This animates the confirm prompt open only while skiIdeStr matches curTasObj's own id. */ }
 
 
 							{ ( () => { // What: Skip Confirm Content Function. Why: The confirm prompt's own wording depends on curTasObj's own next eligible day, computed once as an IIFE rather than inline in the JSX below. How: This resolves that next day, then returns the confirm/no-day-available markup.
@@ -2648,7 +2648,7 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 								return (
 
 
-									<div className='rem-skip-confirm'>{ /* What: Skip Confirm Div Element. Why: This is the skip prompt's own root, replacing nothing (it renders inline below the card, inside its own Collapse). How: This renders one of the 2 branches below depending on whether skiLabStr resolved to a real day. */ }
+									<div className='rem-skip-confirm'>{ /* What: Skip Confirm Div Element. Why: This is the skip prompt's own root, replacing nothing (it renders inline below the card, inside its own ColDisCom). How: This renders one of the 2 branches below depending on whether skiLabStr resolved to a real day. */ }
 
 
 										{ skiLabStr ? ( // What: Skip Label Check. Why: The confirm prompt's own shape depends on whether a real eligible day was actually found. How: This renders the Skip-until confirm while skiLabStr holds a value, an explanatory no-day message otherwise.
@@ -2659,16 +2659,16 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 												<div className='rem-skip-msg'>Skip until <strong>{ skiLabStr }</strong>?</div>{ /* What: Skip Message Div Element. Why: This names the exact day curTasObj would be deferred to. How: This renders skiLabStr inside the confirm question. */ }
 
-												<div className='rem-skip-actions'>{ /* What: Skip Actions Div Element. Why: Cancel and Confirm read as a pair. How: This wraps both Btn elements below. */ }
+												<div className='rem-skip-actions'>{ /* What: Skip Actions Div Element. Why: Cancel and Confirm read as a pair. How: This wraps both ButBasCom elements below. */ }
 
 
-													<Btn
+													<ButBasCom
 														kind='ghost'
 														size='sm'
 														onClick={ () => setSkiIdeStr( null ) }
-													>Cancel</Btn>{ /* What: Btn. Why: This backs out of the skip confirm without changing anything. How: This closes skiIdeStr, returning to the plain row. */ }
+													>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This backs out of the skip confirm without changing anything. How: This closes skiIdeStr, returning to the plain row. */ }
 
-													<Btn
+													<ButBasCom
 														kind='primary'
 														size='sm'
 														onClick={ () => {
@@ -2676,14 +2676,14 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 															setSkiIdeStr( null );
 
-															if ( reduceMotion() ) { actions.skipTask( curTasObj.id, nexIsoStr ); return; }
+															if ( redMotFun() ) { actions.skipTask( curTasObj.id, nexIsoStr ); return; }
 
 															remActRef.current = () => actions.skipTask( curTasObj.id, nexIsoStr );
 															setRemIdeStr( curTasObj.id ); // What: Removal Stage Call. Why: The card above must play its own collapse-out animation before the deferred skipTask call actually runs, on that card's own onAniEndFun. How: This stages curTasObj's own id as the currently-removing card, reusing the same removal machinery Delete uses.
 
 
 														} }
-													>Confirm</Btn>{ /* What: Btn. Why: This is the actual, confirmed skip trigger. How: This stages the deferred actions.skipTask call above. */ }
+													>Confirm</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed skip trigger. How: This stages the deferred actions.skipTask call above. */ }
 
 
 												</div>
@@ -2700,14 +2700,14 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 												<div className='rem-skip-msg'>No upcoming eligible day to skip to.</div>{ /* What: Skip Message Div Element. Why: curTasObj has no eligible day at all to defer to, e.g. every allowed weekday is excluded. How: This renders the plain explanatory text instead of a real confirm question. */ }
 
-												<div className='rem-skip-actions'>{ /* What: Skip Actions Div Element. Why: Even with nothing to confirm, the prompt still needs a way to close. How: This wraps the single Close Btn below. */ }
+												<div className='rem-skip-actions'>{ /* What: Skip Actions Div Element. Why: Even with nothing to confirm, the prompt still needs a way to close. How: This wraps the single Close ButBasCom below. */ }
 
 
-													<Btn
+													<ButBasCom
 														kind='ghost'
 														size='sm'
 														onClick={ () => setSkiIdeStr( null ) }
-													>Close</Btn>{ /* What: Btn. Why: This is the only available action when there's no eligible day to skip to. How: This closes skiIdeStr, returning to the plain row. */ }
+													>Close</ButBasCom>{ /* What: Button Base Component. Why: This is the only available action when there's no eligible day to skip to. How: This closes skiIdeStr, returning to the plain row. */ }
 
 
 												</div>
@@ -2728,7 +2728,7 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 							} )() }
 
 
-						</Collapse>
+						</ColDisCom>
 
 
 					</React.Fragment>
@@ -3000,20 +3000,20 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
 			<div className='rd-mx-foot'>{ /* What: Matrix Foot Div Element. Why: The Cancel/Save actions need their own row below every matrix row. How: This wraps the rem-foot-right div below. */ }
 
 
-				<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned. How: This wraps both Btn elements below. */ }
+				<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned. How: This wraps both ButBasCom elements below. */ }
 
 
-					<Btn
+					<ButBasCom
 						kind='ghost'
 						size='sm'
 						onClick={ canMatFun }
-					>Cancel</Btn>{ /* What: Btn. Why: This reverts every toggle changed since this component mounted. How: This calls canMatFun. */ }
+					>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This reverts every toggle changed since this component mounted. How: This calls canMatFun. */ }
 
-					<Btn
+					<ButBasCom
 						kind='ghost'
 						size='sm'
 						onClick={ onCloConFun }
-					>Save</Btn>{ /* What: Btn. Why: This just collapses the body, keeping every toggle as-is (they already committed live, on each individual click). How: This calls onCloConFun directly. */ }
+					>Save</ButBasCom>{ /* What: Button Base Component. Why: This just collapses the body, keeping every toggle as-is (they already committed live, on each individual click). How: This calls onCloConFun directly. */ }
 
 
 				</div>
@@ -3040,7 +3040,7 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
  * @summary
  * Item-list sort options for the Data tab's Reminders section,
  * extrapolated from the same vocabulary as the Data tab's own
- * section/item sorts (see compareSortEntries in ui.jsx). Reminders
+ * section/item sorts (see sorEntFun in ui.jsx). Reminders
  * have no per-item Active/Inactive concept (no enabled/disabled
  * toggle, only a schedule and a today's-completion state, which isn't
  * the same thing) and no Group, so only Name and Type (One-time vs
@@ -3053,22 +3053,22 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
  * occurrence at all (rare, effectively stale, normally purged before
  * it'd ever be seen here) is a genuinely missing value, not an
  * irrelevant field the way Range/Odds/Boost are for a conditional
- * whose mode doesn't use them, so it uses compareSortEntries' ordinary
+ * whose mode doesn't use them, so it uses sorEntFun' ordinary
  * top/bottom-by-direction N/A placement rather than always-last.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list sort control needs one entry per supported sort. How: This is passed as SortSelect's own options prop from RemManCom below.
+const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list sort control needs one entry per supported sort. How: This is passed as SorSelCom's own options prop from RemManCom below.
 
 
-	{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Key String. Why: This is the section's own default sort. How: SortSelect reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }, // What: Key String. Why: This is the reverse of the default sort. How: SortSelect reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'type-asc',  labStr : 'Type (A–Z)' }, // What: Key String. Why: Type (One-time vs Recurring) is the only other text-like field reminders have. How: SortSelect reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'type-desc', labStr : 'Type (Z–A)' }, // What: Key String. Why: This is the reverse of the type sort. How: SortSelect reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'date-asc',  labStr : 'Soonest' },    // What: Key String. Why: Date sorts by each reminder's own next eligible occurrence. How: SortSelect reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
-	{ keyStr : 'date-desc', labStr : 'Latest' }      // What: Key String. Why: This is the reverse of the date sort. How: SortSelect reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SortSelect renders this as the option's own text content.
+	{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Key String. Why: This is the section's own default sort. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }, // What: Key String. Why: This is the reverse of the default sort. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'type-asc',  labStr : 'Type (A–Z)' }, // What: Key String. Why: Type (One-time vs Recurring) is the only other text-like field reminders have. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'type-desc', labStr : 'Type (Z–A)' }, // What: Key String. Why: This is the reverse of the type sort. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'date-asc',  labStr : 'Soonest' },    // What: Key String. Why: Date sorts by each reminder's own next eligible occurrence. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'date-desc', labStr : 'Latest' }      // What: Key String. Why: This is the reverse of the date sort. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
 
 
 ];
@@ -3117,7 +3117,7 @@ function RemManCom ( { state, actions, hidden } ) {
 
 	const opeEdiRef = React.useRef( null ); // What: Open Editor Reference. Why: The currently-open reminder's own EdiFooCom instance needs to be reachable from outside itself, so the row's own collapse chevron can call its kepFun before closing. How: This is attached only to the currently-open row's own EdiFooCom, via its ref prop below.
 
-	const froIndRef = React.useRef( null ); // What: Frozen Index Reference. Why: freezeEditedRow needs a place to remember whichever reminder's own render position is currently frozen. How: This is passed straight through to freezeEditedRow below.
+	const froIndRef = React.useRef( null ); // What: Frozen Index Reference. Why: freEdiFun needs a place to remember whichever reminder's own render position is currently frozen. How: This is passed straight through to freEdiFun below.
 
 	const preOpeRef = React.useRef( null ); // What: Previous Open Reference. Why: The effect right below needs opeIdeStr's own PRIOR value to detect a genuine close, not just its current value. How: This is read and overwritten at the end of that same effect.
 
@@ -3136,7 +3136,7 @@ function RemManCom ( { state, actions, hidden } ) {
 
 	const opeRowRef = React.useRef( null ); // What: Open Row Reference. Why: A brand-new reminder's own "+ New reminder" click needs to scroll the resulting form into view, since it opens pinned below the sort control rather than guaranteed to already be on-screen. How: This is attached only to the currently-open row's own DOM node, via its ref prop below.
 
-	React.useEffect( () => { // What: Scroll Into View Effect. Why: Only a BRAND-NEW reminder's own editor opening should auto-scroll; reopening an existing reminder's editor should not yank the viewport. How: This guards on newAddRef still matching opeIdeStr, then scrolls opeRowRef's own current node into view, waiting for the Collapse open animation to finish first (unless reduced motion).
+	React.useEffect( () => { // What: Scroll Into View Effect. Why: Only a BRAND-NEW reminder's own editor opening should auto-scroll; reopening an existing reminder's editor should not yank the viewport. How: This guards on newAddRef still matching opeIdeStr, then scrolls opeRowRef's own current node into view, waiting for the ColDisCom open animation to finish first (unless reduced motion).
 
 
 		if ( !opeIdeStr || newAddRef.current !== opeIdeStr || !opeRowRef.current ) return; // What: Not-A-New-Open Guard. Why: Every other case (no row open, a re-opened existing row, or the ref not yet attached) should do nothing at all. How: This bails out unless all 3 conditions hold.
@@ -3144,10 +3144,10 @@ function RemManCom ( { state, actions, hidden } ) {
 
 		const rowCurEle = opeRowRef.current; // What: Row Current Element. Why: This gives a stable local reference to the live row DOM node for this scroll pass. How: This is read once from opeRowRef.current and reused below.
 
-		if ( reduceMotion() ) { rowCurEle.scrollIntoView( { behavior : 'auto', block : 'nearest' } ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant scroll instead of a smooth, timed one. How: This scrolls instantly and returns early when reduceMotion reports true.
+		if ( redMotFun() ) { rowCurEle.scrollIntoView( { behavior : 'auto', block : 'nearest' } ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant scroll instead of a smooth, timed one. How: This scrolls instantly and returns early when redMotFun reports true.
 
 
-		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), 300 ); // What: Scroll Timeout Number. Why: The Collapse open animation (.26s, see .collapse in styles2.css) needs to finish growing the editor below the row header before scrolling, or the scroll target would still be moving. How: This waits 300ms, then scrolls smoothly.
+		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), 300 ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (.26s, see .collapse in styles2.css) needs to finish growing the editor below the row header before scrolling, or the scroll target would still be moving. How: This waits 300ms, then scrolls smoothly.
 
 
 		return () => clearTimeout( scrTimNum ); // What: Effect Cleanup Return. Why: A pending scroll must not fire after this effect re-runs or the component unmounts. How: This clears scrTimNum.
@@ -3165,7 +3165,7 @@ function RemManCom ( { state, actions, hidden } ) {
 	const tasDatMap = new Map( visTasArr.map( ( curTasObj ) => { // What: Task Date Map. Why: TASKS.nextEligible can walk up to ~3 years of days per call; computing every task's own next date once up front (rather than inside the comparator below, which runs it on every comparison) avoids doing that work redundantly. How: This maps each visible task to a [id, time] pair.
 
 
-		const nexEliObj = TASKS.nextEligible( curTasObj, state.reminderOpts, state.holidays ); // What: Next Eligible Object. Why: This is the actual date compareSortEntries sorts by for the date-asc/date-desc options. How: This calls TASKS.nextEligible against curTasObj.
+		const nexEliObj = TASKS.nextEligible( curTasObj, state.reminderOpts, state.holidays ); // What: Next Eligible Object. Why: This is the actual date sorEntFun sorts by for the date-asc/date-desc options. How: This calls TASKS.nextEligible against curTasObj.
 
 
 		return [ curTasObj.id, nexEliObj ? nexEliObj.getTime() : null ]; // What: Task Date Pair Return. Why: A Map needs a real, comparable numeric time (or null for "no next occurrence"), not a Date instance. How: This pairs curTasObj's own id with nexEliObj's own getTime(), or null when there's no next occurrence at all.
@@ -3173,7 +3173,7 @@ function RemManCom ( { state, actions, hidden } ) {
 
 	} ) );
 
-	const sorTasArr = [ ...visTasArr ].sort( ( tasAObj, tasBObj ) => compareSortEntries( // What: Sorted Task Array. Why: This is the Items list's own actual render order. How: This sorts a copy of visTasArr via compareSortEntries, fed each side's own name/type/date shape and iteSorStr.
+	const sorTasArr = [ ...visTasArr ].sort( ( tasAObj, tasBObj ) => sorEntFun( // What: Sorted Task Array. Why: This is the Items list's own actual render order. How: This sorts a copy of visTasArr via sorEntFun, fed each side's own name/type/date shape and iteSorStr.
 
 
 		{ name : tasAObj.name, type : TASKS.isRecurring( tasAObj ) ? 'Recurring' : 'One-time', group : null, count : null, date : tasDatMap.get( tasAObj.id ), isActive : null },
@@ -3183,7 +3183,7 @@ function RemManCom ( { state, actions, hidden } ) {
 
 	) );
 
-	const disTasArr = freezeEditedRow( sorTasArr, opeIdeStr, newAddRef.current, froIndRef ); // What: Display Task Array. Why: The open editor's own row must not visibly reorder out from under it as its own fields change. How: This calls freezeEditedRow against sorTasArr, opeIdeStr, and newAddRef's own current value.
+	const disTasArr = freEdiFun( sorTasArr, opeIdeStr, newAddRef.current, froIndRef ); // What: Display Task Array. Why: The open editor's own row must not visibly reorder out from under it as its own fields change. How: This calls freEdiFun against sorTasArr, opeIdeStr, and newAddRef's own current value.
 
 	const kepCloFun = ( tasIdeStr ) => { // What: Keep Close Function. Why: The row's own collapse chevron AND EdiFooCom's own Save mean "keep this, I'm done", and both need the exact same cleanup so the chevron can't drift out of sync with what Save already does. How: This calls the open editor's own kepFun, clears the new-item flag, and closes only if this row is still the open one.
 
@@ -3233,7 +3233,7 @@ function RemManCom ( { state, actions, hidden } ) {
 		<section
 			className='cat cat--reminders cat--enter'
 			style={ hidden ? { display : 'none' } : undefined }
-		>{ /* What: Category Section Element. Why: This is RemManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the Collapse-wrapped body below. */ }
+		>{ /* What: Category Section Element. Why: This is RemManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. */ }
 
 
 			<header className='cat-h'>{ /* What: Category Header Element. Why: The whole header is one clickable disclosure toggling the main section. How: This wraps the single toggle button below. */ }
@@ -3250,7 +3250,7 @@ function RemManCom ( { state, actions, hidden } ) {
 					<span className={ `chev ${ secOpeBoo ? 'is-open' : '' }` }>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates the disclosure's open/closed state. How: This marks itself is-open while secOpeBoo is true. */ }
 
 
-						<Icon
+						<IcoSvgCom
 							name='chev'
 							size={ 14 }
 						/>
@@ -3286,10 +3286,10 @@ function RemManCom ( { state, actions, hidden } ) {
 			</header>
 
 
-			<Collapse open={ secOpeBoo }>{ /* What: Main Collapse Element. Why: The entire body below only exists while the category itself is expanded. How: This animates cat-body open/closed based on secOpeBoo. */ }
+			<ColDisCom open={ secOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The entire body below only exists while the category itself is expanded. How: This animates cat-body open/closed based on secOpeBoo. */ }
 
 
-				<div className='cat-body'>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures need to sit together as one scrollable body. How: This renders both disclosure toggles and their own Collapse-wrapped content below. */ }
+				<div className='cat-body'>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures need to sit together as one scrollable body. How: This renders both disclosure toggles and their own ColDisCom-wrapped content below. */ }
 
 
 					<button
@@ -3306,7 +3306,7 @@ function RemManCom ( { state, actions, hidden } ) {
 							<span className={ `chev ${ conColBoo ? '' : 'is-open' }` }>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates whether Controls is currently open (note the inverted sense: is-open while NOT collapsed). How: This marks itself is-open while conColBoo is false. */ }
 
 
-								<Icon
+								<IcoSvgCom
 									name='chev'
 									size={ 12 }
 								/>
@@ -3326,7 +3326,7 @@ function RemManCom ( { state, actions, hidden } ) {
 					</button>
 
 
-					<Collapse open={ !conColBoo }>{ /* What: Controls Collapse Element. Why: OptMatCom's own matrix only exists while the Controls disclosure is open. How: This animates OptMatCom open/closed based on conColBoo. */ }
+					<ColDisCom open={ !conColBoo }>{ /* What: Collapse Disclosure Component. Why: OptMatCom's own matrix only exists while the Controls disclosure is open. How: This animates OptMatCom open/closed based on conColBoo. */ }
 
 
 						<OptMatCom
@@ -3336,7 +3336,7 @@ function RemManCom ( { state, actions, hidden } ) {
 						/>
 
 
-					</Collapse>
+					</ColDisCom>
 
 					<button
 						className='rd-ctl'
@@ -3352,7 +3352,7 @@ function RemManCom ( { state, actions, hidden } ) {
 							<span className={ `chev ${ iteColBoo ? '' : 'is-open' }` }>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates whether Items is currently open. How: This marks itself is-open while iteColBoo is false. */ }
 
 
-								<Icon
+								<IcoSvgCom
 									name='chev'
 									size={ 12 }
 								/>
@@ -3372,29 +3372,29 @@ function RemManCom ( { state, actions, hidden } ) {
 					</button>
 
 
-					<Collapse open={ !iteColBoo }>{ /* What: Items Collapse Element. Why: The whole Items list (full-bleed rows: type icon + name + schedule, expanding into the exact Today editor) only exists while this disclosure is open. How: This animates the fragment below open/closed based on iteColBoo. */ }
+					<ColDisCom open={ !iteColBoo }>{ /* What: Collapse Disclosure Component. Why: The whole Items list (full-bleed rows: type icon + name + schedule, expanding into the exact Today editor) only exists while this disclosure is open. How: This animates the fragment below open/closed based on iteColBoo. */ }
 
 
 						<React.Fragment>{ /* What: Items Fragment Element. Why: The add button and the list/empty-state below need to sit together with no extra dom wrapper of their own. How: This groups both below as one returned value. */ }
 
 
-							{ tutProBoo ? ( // What: Tutorials In Progress Check. Why: This second add-reminder entry point must also stay disabled with an explanation while the guided checklist is running. How: This renders the disabled InfoTip while tutProBoo is true, the real button otherwise.
+							{ tutProBoo ? ( // What: Tutorials In Progress Check. Why: This second add-reminder entry point must also stay disabled with an explanation while the guided checklist is running. How: This renders the disabled InfTipCom while tutProBoo is true, the real button otherwise.
 
 
-								<InfoTip
+								<InfTipCom
 									className='rd-add is-tour-disabled'
 									action='New reminder'
 									label='This button is disabled until all tutorials are completed.'
-								>{ /* What: Info Tip. Why: This is a second, independent path to a real reminder, so it must stay disabled during any onboarding tutorial the same way RemSecCom's own add button does. How: This wraps the plus icon and label text, standing in for the real button below. */ }
+								>{ /* What: Info Tip Component. Why: This is a second, independent path to a real reminder, so it must stay disabled during any onboarding tutorial the same way RemSecCom's own add button does. How: This wraps the plus icon and label text, standing in for the real button below. */ }
 
 
-									<Icon
+									<IcoSvgCom
 										name='plus'
 										size={ 13 }
 									/> New reminder
 
 
-								</InfoTip>
+								</InfTipCom>
 
 
 							) : ( // What: Add Button Branch. Why: Outside the guided checklist, the real working Add button belongs here instead. How: This renders the else branch, taken while tutProBoo is false.
@@ -3406,7 +3406,7 @@ function RemManCom ( { state, actions, hidden } ) {
 								>{ /* What: Add Button Element. Why: This is the real, clickable "New reminder" entry point. How: This calls addEdiFun. */ }
 
 
-									<Icon
+									<IcoSvgCom
 										name='plus'
 										size={ 13 }
 									/> New reminder
@@ -3428,10 +3428,10 @@ function RemManCom ( { state, actions, hidden } ) {
 								<>
 
 
-									{ visTasArr.length > 1 && ( // What: Sort Visibility Check. Why: Sorting only matters once there's more than 1 reminder to sort. How: This renders SortSelect only while there are at least 2.
+									{ visTasArr.length > 1 && ( // What: Sort Visibility Check. Why: Sorting only matters once there's more than 1 reminder to sort. How: This renders SorSelCom only while there are at least 2.
 
 
-										<SortSelect
+										<SorSelCom
 											id='rem-item-sort'
 											label='Sort'
 											options={ ITE_SOR_ARR }
@@ -3444,7 +3444,7 @@ function RemManCom ( { state, actions, hidden } ) {
 									{ disTasArr.map( ( curTasObj ) => { // What: Task Row List Render. Why: One full-bleed row (plus its own expanding editor) is needed per visible reminder. How: This maps disTasArr to one row div per entry, keyed by its own id.
 
 
-										const carOpeBoo = opeIdeStr === curTasObj.id; // What: Card Open Boolean. Why: This single check decides both this row's own toggle-button-vs-name-input branch and whether its editor Collapse is open. How: This compares opeIdeStr against curTasObj's own id.
+										const carOpeBoo = opeIdeStr === curTasObj.id; // What: Card Open Boolean. Why: This single check decides both this row's own toggle-button-vs-name-input branch and whether its editor ColDisCom is open. How: This compares opeIdeStr against curTasObj's own id.
 										const isaOncBoo = curTasObj.repeat === 'once'; // What: Is-A Once Boolean. Why: The row's own type icon depends on whether this is a one-time or recurring reminder. How: This checks curTasObj's own repeat.
 
 
@@ -3456,7 +3456,7 @@ function RemManCom ( { state, actions, hidden } ) {
 												ref={ carOpeBoo ? opeRowRef : undefined }
 												className={ `rd-item ${ carOpeBoo ? 'is-editing' : '' } ${ insIdeStr === curTasObj.id ? 'rd-item--insert' : '' }` }
 												onAnimationEnd={ () => { if ( insIdeStr === curTasObj.id ) setInsIdeStr( null ); } }
-											>{ /* What: Row Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor Collapse. */ }
+											>{ /* What: Row Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor ColDisCom. */ }
 
 
 												{ carOpeBoo ? ( // What: Row Editing Check. Why: The row's own header swaps between a live-editable div and a plain clickable button depending on whether it's open. How: This renders the editing div while carOpeBoo is true, the plain toggle button otherwise.
@@ -3465,10 +3465,10 @@ function RemManCom ( { state, actions, hidden } ) {
 													<div className='rd-row'>{ /* What: Row Editing Div Element. Why: While editing, this is a plain div rather than a button, since a button can't legally contain the input below it (interactive-in-interactive), which also cost it an accessible name of its own. How: This renders the type icon, the live name input, and a real, separate collapse-chevron button. */ }
 
 
-														<span className={ `rd-ico ${ isaOncBoo ? 'is-once' : '' }` }>{ /* What: Row Icon Span Element. Why: The type icon needs its own wrapper for styling. How: This wraps the single Icon below. */ }
+														<span className={ `rd-ico ${ isaOncBoo ? 'is-once' : '' }` }>{ /* What: Row Icon Span Element. Why: The type icon needs its own wrapper for styling. How: This wraps the single IcoSvgCom below. */ }
 
 
-															<Icon
+															<IcoSvgCom
 																name={ isaOncBoo ? 'pin' : 'calendar' }
 																size={ 15 }
 															/>
@@ -3505,7 +3505,7 @@ function RemManCom ( { state, actions, hidden } ) {
 														>{ /* What: Collapse Chevron Button Element. Why: This is the row's own real, separate close affordance (see the row-editing div's own comment above for why it can't be the button itself). How: This calls kepCloFun, which marks the editor kept before closing it. */ }
 
 
-															<Icon
+															<IcoSvgCom
 																name='chev'
 																size={ 16 }
 															/>
@@ -3528,10 +3528,10 @@ function RemManCom ( { state, actions, hidden } ) {
 													>{ /* What: Row Toggle Button Element. Why: The plain, non-editing state is itself the clickable control that opens the editor. How: This toggles opeIdeStr to curTasObj's own id (or back to null). */ }
 
 
-														<span className={ `rd-ico ${ isaOncBoo ? 'is-once' : '' }` }>{ /* What: Row Icon Span Element. Why: The type icon needs its own wrapper for styling. How: This wraps the single Icon below. */ }
+														<span className={ `rd-ico ${ isaOncBoo ? 'is-once' : '' }` }>{ /* What: Row Icon Span Element. Why: The type icon needs its own wrapper for styling. How: This wraps the single IcoSvgCom below. */ }
 
 
-															<Icon
+															<IcoSvgCom
 																name={ isaOncBoo ? 'pin' : 'calendar' }
 																size={ 15 }
 															/>
@@ -3551,10 +3551,10 @@ function RemManCom ( { state, actions, hidden } ) {
 														</span>
 
 
-														<span className='rd-chev chev' aria-hidden='true'>{ /* What: Row Chevron Span Element. Why: The plain state's own chevron is purely decorative (the whole row is already the real toggle), so it's a span rather than a separate button. How: This wraps the single Icon below, hidden from screen readers. */ }
+														<span className='rd-chev chev' aria-hidden='true'>{ /* What: Row Chevron Span Element. Why: The plain state's own chevron is purely decorative (the whole row is already the real toggle), so it's a span rather than a separate button. How: This wraps the single IcoSvgCom below, hidden from screen readers. */ }
 
 
-															<Icon
+															<IcoSvgCom
 																name='chev'
 																size={ 16 }
 															/>
@@ -3567,7 +3567,7 @@ function RemManCom ( { state, actions, hidden } ) {
 
 
 												) }
-												<Collapse open={ carOpeBoo }>{ /* What: Edit Collapse Element. Why: The schedule editor and its own footer only exist while this exact row is open. How: This animates the editor div below open/closed based on carOpeBoo. */ }
+												<ColDisCom open={ carOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The schedule editor and its own footer only exist while this exact row is open. How: This animates the editor div below open/closed based on carOpeBoo. */ }
 
 
 													<div className='rd-edit'>{ /* What: Edit Div Element. Why: The editor needs its own padding/framing distinct from the plain row above it. How: This wraps the shared rem-inline-editor div below. */ }
@@ -3598,7 +3598,7 @@ function RemManCom ( { state, actions, hidden } ) {
 
 																	setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr );
 
-																	if ( reduceMotion() ) { actions.removeTask( tasIdeStr ); return; }
+																	if ( redMotFun() ) { actions.removeTask( tasIdeStr ); return; }
 
 																	setTimeout( () => actions.removeTask( tasIdeStr ), 280 ); // What: Deferred Remove Call. Why: This can fire well after the user has already switched to a different reminder's editor, so it must only ever remove tasIdeStr's own snapshot, never whatever row happens to be open by then. How: This waits 280ms (matching the editor's own collapse-close animation) before actually removing the task.
 
@@ -3641,7 +3641,7 @@ function RemManCom ( { state, actions, hidden } ) {
 													</div>
 
 
-												</Collapse>
+												</ColDisCom>
 
 
 											</div>
@@ -3662,13 +3662,13 @@ function RemManCom ( { state, actions, hidden } ) {
 						</React.Fragment>
 
 
-					</Collapse>
+					</ColDisCom>
 
 
 				</div>
 
 
-			</Collapse>
+			</ColDisCom>
 
 
 		</section>

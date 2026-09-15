@@ -7,14 +7,14 @@
 import React from 'react'; // What: React. Why: This file's own PicTouCom component needs React in scope to compile its JSX and to call React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
 
 
-import { emlTouObj          } from './eml-tour-bus.js';            // What: Ease My Life Tour Object. Why: This publishes the running tour's prefill data for the real create-picker form and clears it again on every exit path. How: This is written to via .set() in bldNewFun's/bldAddFun's own run() and cloTouFun below, and read via .get() inside GuidedTour's own onGoBack handler.
-import { GuidedTour         } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives this picker mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-picker step array.
-import { Icon               } from './ui.jsx';                     // What: Icon. Why: The intro modal needs a recognizable glyph identifying this as a picker tutorial. How: This is rendered inside the intro modal's icon prop below.
-import { MODES              } from './seed.js';                    // What: Modes. Why: The intro modal's own pill needs this picker's own mode label, not its raw mode key. How: This is looked up by picRecObj's own mode to resolve modLabStr below.
-import { NAV_TAR_OBJ        } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Step 1's own body copy is kept in sync with the Pickers page tour's own Step 1, which is built from this object. How: This is not referenced directly in this file's own code, only in NAV_STE_OBJ's own comment explaining that copy-sync relationship; left as an unused import, matching this pass's treatment of other currently-unused bindings elsewhere in this codebase.
-import { OB_EXAMPLE         } from './onboarding-seed-data.js';    // What: Onboarding Example. Why: This is the "Daily Chores" sample picker's own template, one of the entries PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
-import { OB_EXTRA_PICKERS   } from './onboarding-seed-data.js';    // What: Onboarding Extra Pickers. Why: This is every OTHER sample picker's own template, alongside OB_EXAMPLE the full set PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
-import { IntModCom          } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each picker mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this picker's own icon/title/paragraphs/pills.
+import { emlTouObj        } from './eml-tour-bus.js';            // What: Ease My Life Tour Object. Why: This publishes the running tour's prefill data for the real create-picker form and clears it again on every exit path. How: This is written to via .set() in bldNewFun's/bldAddFun's own run() and cloTouFun below, and read via .get() inside GuidedTour's own onGoBack handler.
+import { GuidedTour       } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives this picker mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-picker step array.
+import { IcoSvgCom        } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph identifying this as a picker tutorial. How: This is rendered inside the intro modal's icon prop below.
+import { IntModCom        } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each picker mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this picker's own icon/title/paragraphs/pills.
+import { MODES            } from './seed.js';                    // What: Modes. Why: The intro modal's own pill needs this picker's own mode label, not its raw mode key. How: This is looked up by picRecObj's own mode to resolve modLabStr below.
+import { NAV_TAR_OBJ      } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Step 1's own body copy is kept in sync with the Pickers page tour's own Step 1, which is built from this object. How: This is not referenced directly in this file's own code, only in NAV_STE_OBJ's own comment explaining that copy-sync relationship; left as an unused import, matching this pass's treatment of other currently-unused bindings elsewhere in this codebase.
+import { OB_EXAMPLE       } from './onboarding-seed-data.js';    // What: Onboarding Example. Why: This is the "Daily Chores" sample picker's own template, one of the entries PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
+import { OB_EXTRA_PICKERS } from './onboarding-seed-data.js';    // What: Onboarding Extra Pickers. Why: This is every OTHER sample picker's own template, alongside OB_EXAMPLE the full set PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
 
 // #endregion Imports
 
@@ -619,7 +619,7 @@ const WEI_STE_OBJ = { // What: Weight Step Object. Why: This step highlights the
  * in the editor's own isDynamic-only branch (Dynamic mode
  * specifically; unlike Weight, Weighted-mode pickers do not get this
  * row at all). Not interactive (there is no requireClick, since the
- * BoostReset control only ever does something once an item has
+ * BooResCom control only ever does something once an item has
  * actually accrued a boost, never true for a freshly-created item),
  * just narration, since this value is the core mechanic of how
  * Dynamic Weighted differs from plain Weighted.
@@ -818,7 +818,7 @@ function PicTouCom ( { picIdeStr, state, actions, active, selectTab, onCloFun } 
 
 
 			<IntModCom
-				icon={ <Icon name='picker' size={ 54 } /> }
+				icon={ <IcoSvgCom name='picker' size={ 54 } /> }
 				title={ `${ picRecObj.name } Picker` }
 				paragraphs={ [ FIR_PAR_ELE, picCopObj.bodEle ] }
 				pills={ [ 'pickers', modLabStr, ( picRecObj.group || '' ).toLowerCase() ] }

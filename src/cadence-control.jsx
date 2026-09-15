@@ -4,8 +4,8 @@
 // #region Imports
 
 import { CAD_NAM_OBJ } from './cadence.js';    // What: Cadence. Why: Every cadence field this component reads or writes (mode, anchors, dateMode, nthOrdinal, nthWeekday) is normalized and summarized through this one domain namespace instead of duplicating that logic locally. How: This is called below for its own norCadFun and tipMesFun entries.
-import { Collapse    } from './ui.jsx';        // What: Collapse. Why: The anchor subsection needs to animate open and closed as the selected cadence changes, instead of snapping. How: This wraps the whole non-daily anchor block below, gated on the current cadence.
-import { InfoTip     } from './ui.jsx';        // What: Info Tip. Why: Every cadence row's own "?" control needs an explanatory tooltip beside its label. How: This is rendered once per cadence row below, fed by CAD_NAM_OBJ's own tipMesFun copy.
+import { ColDisCom   } from './ui.jsx';        // What: Collapse Disclosure Component. Why: The anchor subsection needs to animate open and closed as the selected cadence changes, instead of snapping. How: This wraps the whole non-daily anchor block below, gated on the current cadence.
+import { InfTipCom   } from './ui.jsx';        // What: Info Tip Component. Why: Every cadence row's own "?" control needs an explanatory tooltip beside its label. How: This is rendered once per cadence row below, fed by CAD_NAM_OBJ's own tipMesFun copy.
 import { SegConCom   } from './reminders.jsx'; // What: Segment Control Component. Why: The top-level cadence picker and the monthly/yearly Date-vs-Weekday picker both need the same animated segmented control. How: This is rendered once for the cadence choice and once more inside each of the monthly and yearly subsections.
 
 // #endregion Imports
@@ -141,7 +141,7 @@ const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // 
  * what this component renders and where it is reused. In short: a
  * cadence picker (Daily/Weekly/Monthly/Yearly) plus, for every mode
  * but daily, whichever anchor subsection matches the selected mode,
- * animated open and closed via Collapse as the mode itself changes.
+ * animated open and closed via ColDisCom as the mode itself changes.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -154,7 +154,7 @@ const dayCouFun = ( monOneNum ) => new Date( 2024, monOneNum, 0 ).getDate(); // 
  *
  * @returns The full cadence editor: the cadence picker plus, for
  * every mode but daily, the matching anchor subsection inside an
- * animated Collapse.
+ * animated ColDisCom.
  *
  * @example
  * ```tsx
@@ -184,17 +184,17 @@ function CadConCom ( { value, onChange } ) {
 				<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The field's own label and live summary need to sit together as one visual unit. How: This wraps the label span and the fading summary span below. */ }
 
 
-					<span className='rem-flabel pie-lbl-row'>{ /* What: How Often Label Span Element. Why: This is the cadence field's own plain label, with an inline "?" help bubble on the daily mode. How: This renders the literal text "How often?" followed by the conditional InfoTip below. */ }
+					<span className='rem-flabel pie-lbl-row'>{ /* What: How Often Label Span Element. Why: This is the cadence field's own plain label, with an inline "?" help bubble on the daily mode. How: This renders the literal text "How often?" followed by the conditional InfTipCom below. */ }
 
 
 						How often?
-						{ norCadObj.cadence === 'daily' && ( // What: Daily Help Check. Why: Only the daily cadence needs its own inline explanation of how it interacts with a picker's own Days control. How: This renders the InfoTip only while norCadObj.cadence is 'daily'.
+						{ norCadObj.cadence === 'daily' && ( // What: Daily Help Check. Why: Only the daily cadence needs its own inline explanation of how it interacts with a picker's own Days control. How: This renders the InfTipCom only while norCadObj.cadence is 'daily'.
 
 
-							<InfoTip
+							<InfTipCom
 								className='pie-help pie-help--sm'
 								label={ CAD_NAM_OBJ.tipMesFun( 'daily', 'Which days?' ) }
-							>?</InfoTip> // What: Info Tip. Why: Only the daily cadence needs this inline explanation of how it interacts with a picker's own Days control. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy.
+							>?</InfTipCom> // What: Info Tip Component. Why: Only the daily cadence needs this inline explanation of how it interacts with a picker's own Days control. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy.
 
 
 						) }
@@ -221,7 +221,7 @@ function CadConCom ( { value, onChange } ) {
 
 			</div>
 
-			<Collapse open={ norCadObj.cadence !== 'daily' }>{ /* What: Anchor Collapse Element. Why: Only a non-daily cadence has any anchor subsection at all to show. How: This animates the whole anchor block below open only while norCadObj.cadence isn't 'daily'. */ }
+			<ColDisCom open={ norCadObj.cadence !== 'daily' }>{ /* What: Collapse Disclosure Component. Why: Only a non-daily cadence has any anchor subsection at all to show. How: This animates the whole anchor block below open only while norCadObj.cadence isn't 'daily'. */ }
 
 
 				<div
@@ -239,14 +239,14 @@ function CadConCom ( { value, onChange } ) {
 							<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the plain summary span below. */ }
 
 
-								<span className='rem-flabel pie-lbl-row'>{ /* What: On Which Day Label Span Element. Why: This is the weekly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which day?" followed by the InfoTip below. */ }
+								<span className='rem-flabel pie-lbl-row'>{ /* What: On Which Day Label Span Element. Why: This is the weekly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which day?" followed by the InfTipCom below. */ }
 
 
 									On which day?
-									<InfoTip
+									<InfTipCom
 										className='pie-help'
 										label={ CAD_NAM_OBJ.tipMesFun( 'weekly', 'Which days?' ) }
-									>?</InfoTip>{ /* What: Info Tip. Why: The weekly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
+									>?</InfTipCom>{ /* What: Info Tip Component. Why: The weekly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
 
 
 								</span>
@@ -302,14 +302,14 @@ function CadConCom ( { value, onChange } ) {
 							<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the fading summary span below. */ }
 
 
-								<span className='rem-flabel pie-lbl-row'>{ /* What: On Which Day Label Span Element. Why: This is the monthly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which day?" followed by the InfoTip below. */ }
+								<span className='rem-flabel pie-lbl-row'>{ /* What: On Which Day Label Span Element. Why: This is the monthly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which day?" followed by the InfTipCom below. */ }
 
 
 									On which day?
-									<InfoTip
+									<InfTipCom
 										className='pie-help'
 										label={ CAD_NAM_OBJ.tipMesFun( 'monthly', 'Which days?' ) }
-									>?</InfoTip>{ /* What: Info Tip. Why: The monthly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
+									>?</InfTipCom>{ /* What: Info Tip Component. Why: The monthly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
 
 
 								</span>
@@ -441,14 +441,14 @@ function CadConCom ( { value, onChange } ) {
 							<div className='rem-flabel-wrap'>{ /* What: Flabel Wrap Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the fading summary span below. */ }
 
 
-								<span className='rem-flabel pie-lbl-row'>{ /* What: On Which Date Label Span Element. Why: This is the yearly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which date?" followed by the InfoTip below. */ }
+								<span className='rem-flabel pie-lbl-row'>{ /* What: On Which Date Label Span Element. Why: This is the yearly subsection's own plain label, with an inline "?" help bubble. How: This renders the literal text "On which date?" followed by the InfTipCom below. */ }
 
 
 									On which date?
-									<InfoTip
+									<InfTipCom
 										className='pie-help'
 										label={ CAD_NAM_OBJ.tipMesFun( 'yearly', 'Which days?' ) }
-									>?</InfoTip>{ /* What: Info Tip. Why: The yearly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
+									>?</InfTipCom>{ /* What: Info Tip Component. Why: The yearly cadence's own anchor day interacts with a picker's own Days control, which needs explaining. How: This renders the shared "?" bubble, fed by CAD_NAM_OBJ's own tipMesFun copy. */ }
 
 
 								</span>
@@ -619,7 +619,7 @@ function CadConCom ( { value, onChange } ) {
 				</div>
 
 
-			</Collapse>
+			</ColDisCom>
 
 
 		</div>

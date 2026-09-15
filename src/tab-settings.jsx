@@ -6,27 +6,27 @@
 import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useLayoutEffect, React.useCallback, React.useMemo) throughout, instead of importing individual named hooks.
 
 
-import { announce                } from './ui.jsx';                  // What: Announce. Why: Several actions here (export, import, reset) need to speak a transient status to screen readers once they finish. How: This is called after each of those actions completes, sometimes assertively so it is not dropped by a focus move.
-import { APP_NAM_OBJ             } from './appearance.js';           // What: Appearance Namespace Object. Why: The Theme section needs to look up each built-in theme's own preview colors. How: This is read as APP_NAM_OBJ.PAL_SET_OBJ[key] when rendering each preset theme row.
-import { Btn                     } from './ui.jsx';                  // What: Btn. Why: Nearly every action in this tab (contact support, install, export/import/reset, replay tour, view legal docs) is triggered from this shared button component. How: This is rendered throughout the tab with varying kind/size/icon props.
-import { Card                    } from './ui.jsx';                  // What: Card. Why: Every section's own controls sit inside this shared bordered container. How: This wraps the contents of nearly every set-subsection and set-section below.
-import { CelPreCom               } from './settings-previews.jsx';   // What: Celebration Preview Component. Why: The completion-celebration style picker needs a live preview the user can play. How: This is rendered inside the Completion Celebration card, driven by celStyStr/celTokNum.
-import { Collapse                } from './ui.jsx';                  // What: Collapse. Why: The contact-support form and the pending import/reset confirmations all need to expand/collapse in place. How: This wraps the contact-support form's own Card, gated on its own open boolean.
-import { HelButCom              } from './help-mode.jsx';           // What: Help Button Component. Why: This tab needs its own toggle for entering/exiting help mode, like every other tab. How: This is rendered in the header, toggling helModBoo.
-import { HelOveCom             } from './help-mode.jsx';           // What: Help Overlay Component. Why: Help mode needs its own dimmed overlay plus tooltips layered above this tab's real content. How: This is rendered once, driven by helModBoo and SET_HEL_ARR.
-import { HOL_NAM_OBJ             } from './holidays.js';             // What: Holidays Namespace Object. Why: The Holidays section needs both a default holidays-state shape and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.defStaFun() and HOL_NAM_OBJ.comYeaFun() inside HolEdiCom.
-import { Icon                    } from './ui.jsx';                  // What: Icon. Why: A handful of controls (the custom-holiday delete button, the brand-mark logo) need a small glyph. How: This is rendered with a specific name/size prop wherever a glyph is needed.
-import { InfoTip                 } from './ui.jsx';                  // What: Info Tip. Why: A disabled Export/Reset button still needs to explain why it is disabled. How: This wraps those buttons, given a label prop with the explanation.
-import { LegModCom               } from './legal-docs.jsx';          // What: Legal Modal Component. Why: The Legal section's View buttons need somewhere to actually show the Privacy Policy/Terms of Service text. How: This is rendered once, driven by legDocStr, and closed by clearing that state back to null.
-import { NOT_NAM_OBJ             } from './notify.js';               // What: Notification Namespace Object. Why: The Daily generator's notify-me row needs to read/request the browser's notification permission. How: This is called via its own permission()/askOnce()/request()/subscribe() methods, kept as this exact external name since it broke production once before under a rename.
-import { OB_SAMPLE_PICKER_IDS    } from './onboarding-seed-data.js'; // What: Onboarding Sample Picker Ids. Why: Replaying the welcome tour needs to tell a real, established account apart from one still holding only seeded sample pickers. How: This is checked against state.pickers to decide whether to self-heal stale onboarding flags before the tour starts.
-import { PicAniCom               } from './settings-previews.jsx';   // What: Picker Animation Component. Why: The picker-animation style picker needs a live preview the user can play. How: This is rendered inside the Picker Animation card, driven by picPreStr/picTokNum.
-import { PWA                     } from './pwa.js';                  // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isStandalone()/canInstall()/installState()/promptInstall()/requestPersistOnce() methods.
-import { reduceMotion            } from './ui.jsx';                  // What: Reduce Motion. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
-import { SegConCom               } from './reminders.jsx';           // What: Segment Control Component. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
-import { SET_HEL_ARR             } from './help-content.jsx';        // What: Settings Help Array. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelOveCom.
-import { STORAGE                 } from './storage.js';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own status()/readPersisted() methods.
-import { useEscapeCancel         } from './ui.jsx';                  // What: Use Escape Cancel. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
+import { annStaFun            } from './ui.jsx';                  // What: Announce Status Function. Why: Several actions here (export, import, reset) need to speak a transient status to screen readers once they finish. How: This is called after each of those actions completes, sometimes assertively so it is not dropped by a focus move.
+import { APP_NAM_OBJ          } from './appearance.js';           // What: Appearance Namespace Object. Why: The Theme section needs to look up each built-in theme's own preview colors. How: This is read as APP_NAM_OBJ.PAL_SET_OBJ[key] when rendering each preset theme row.
+import { ButBasCom            } from './ui.jsx';                  // What: Button Base Component. Why: Nearly every action in this tab (contact support, install, export/import/reset, replay tour, view legal docs) is triggered from this shared button component. How: This is rendered throughout the tab with varying kind/size/icon props.
+import { CarSurCom            } from './ui.jsx';                  // What: Card Surface Component. Why: Every section's own controls sit inside this shared bordered container. How: This wraps the contents of nearly every set-subsection and set-section below.
+import { CelPreCom            } from './settings-previews.jsx';   // What: Celebration Preview Component. Why: The completion-celebration style picker needs a live preview the user can play. How: This is rendered inside the Completion Celebration card, driven by celStyStr/celTokNum.
+import { ColDisCom            } from './ui.jsx';                  // What: Collapse Disclosure Component. Why: The contact-support form and the pending import/reset confirmations all need to expand/collapse in place. How: This wraps the contact-support form's own CarSurCom, gated on its own open boolean.
+import { HelButCom            } from './help-mode.jsx';           // What: Help Button Component. Why: This tab needs its own toggle for entering/exiting help mode, like every other tab. How: This is rendered in the header, toggling helModBoo.
+import { HelOveCom            } from './help-mode.jsx';           // What: Help Overlay Component. Why: Help mode needs its own dimmed overlay plus tooltips layered above this tab's real content. How: This is rendered once, driven by helModBoo and SET_HEL_ARR.
+import { HOL_NAM_OBJ          } from './holidays.js';             // What: Holidays Namespace Object. Why: The Holidays section needs both a default holidays-state shape and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.defStaFun() and HOL_NAM_OBJ.comYeaFun() inside HolEdiCom.
+import { IcoSvgCom            } from './ui.jsx';                  // What: Icon Svg Component. Why: A handful of controls (the custom-holiday delete button, the brand-mark logo) need a small glyph. How: This is rendered with a specific name/size prop wherever a glyph is needed.
+import { InfTipCom            } from './ui.jsx';                  // What: Info Tip Component. Why: A disabled Export/Reset button still needs to explain why it is disabled. How: This wraps those buttons, given a label prop with the explanation.
+import { LegModCom            } from './legal-docs.jsx';          // What: Legal Modal Component. Why: The Legal section's View buttons need somewhere to actually show the Privacy Policy/Terms of Service text. How: This is rendered once, driven by legDocStr, and closed by clearing that state back to null.
+import { NOT_NAM_OBJ          } from './notify.js';               // What: Notification Namespace Object. Why: The Daily generator's notify-me row needs to read/request the browser's notification permission. How: This is called via its own permission()/askOnce()/request()/subscribe() methods, kept as this exact external name since it broke production once before under a rename.
+import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js'; // What: Onboarding Sample Picker Ids. Why: Replaying the welcome tour needs to tell a real, established account apart from one still holding only seeded sample pickers. How: This is checked against state.pickers to decide whether to self-heal stale onboarding flags before the tour starts.
+import { PicAniCom            } from './settings-previews.jsx';   // What: Picker Animation Component. Why: The picker-animation style picker needs a live preview the user can play. How: This is rendered inside the Picker Animation card, driven by picPreStr/picTokNum.
+import { PWA                  } from './pwa.js';                  // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isStandalone()/canInstall()/installState()/promptInstall()/requestPersistOnce() methods.
+import { redMotFun            } from './ui.jsx';                  // What: Reduce Motion Function. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
+import { SegConCom            } from './reminders.jsx';           // What: Segment Control Component. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
+import { SET_HEL_ARR          } from './help-content.jsx';        // What: Settings Help Array. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelOveCom.
+import { STORAGE              } from './storage.js';              // What: Storage Namespace Object. Why: The Data Control section reports where data lives and reads the true persisted pick log before exporting. How: This is called via its own status()/readPersisted() methods.
+import { useEscCanFun         } from './ui.jsx';                  // What: Use Escape Cancel Function. Why: Both the pending-import and pending-reset confirmations need Escape to back out, like every other confirm in the app. How: This is called once per confirmation, gated on that confirmation's own open boolean.
 
 // #endregion Imports
 
@@ -250,10 +250,10 @@ function HolEdiCom ( { state, actions } ) {
 						>{ /* What: Custom Holiday Delete Button Element. Why: A user-added holiday needs its own way to be removed entirely, unlike a computed one which can only be disabled. How: This calls remExiFun with this row's own id when clicked. */ }
 
 
-							<Icon
+							<IcoSvgCom
 								name='trash'
 								size={ 14 }
-							/>{ /* What: Icon. Why: The delete button needs a recognizable trash glyph. How: This renders the 'trash' icon at a fixed small size. */ }
+							/>{ /* What: Icon Svg Component. Why: The delete button needs a recognizable trash glyph. How: This renders the 'trash' icon at a fixed small size. */ }
 
 
 						</button>
@@ -298,13 +298,13 @@ function HolEdiCom ( { state, actions } ) {
 					onChange={ ( chgEveObj ) => setDraDatStr( chgEveObj.target.value ) }
 				/>{ /* What: Draft Date Input Element. Why: The user needs a native date picker to choose the new holiday's own recurring month/day. How: This is bound to draDatStr and blurs on Escape like every other input in this tab. */ }
 
-				<Btn
+				<ButBasCom
 					kind='primary'
 					size='sm'
 					icon='plus'
 					disabled={ !draNamStr.trim() || !draDatStr }
 					onClick={ addCusFun }
-				>Add</Btn>{ /* What: Btn. Why: The form needs an explicit submit action, disabled until both drafts are filled. How: This calls addCusFun when clicked. */ }
+				>Add</ButBasCom>{ /* What: Button Base Component. Why: The form needs an explicit submit action, disabled until both drafts are filled. How: This calls addCusFun when clicked. */ }
 
 
 			</div>
@@ -474,7 +474,7 @@ const SUPPORT_FORM_NAME = 'support'; // What: Support Form Name. Why: Netlify ma
 function ConSupCom ( { state, actions } ) {
 
 
-	const [ frmOpnBoo, setFrmOpnBoo ] = React.useState( false ); // What: Form Open Boolean And Setter. Why: The support form is not persisted; it always starts closed on load. How: This gates the Collapse below and is flipped by openForm/cancel.
+	const [ frmOpnBoo, setFrmOpnBoo ] = React.useState( false ); // What: Form Open Boolean And Setter. Why: The support form is not persisted; it always starts closed on load. How: This gates the ColDisCom below and is flipped by openForm/cancel.
 	const [ draSubStr, setDraSubStr ] = React.useState( '' ); // What: Draft Subject String And Setter. Why: The subject field needs somewhere to hold its own typed value before sending. How: This is bound to the subject input below and read by sndFrmFun.
 	const [ draMesStr, setDraMesStr ] = React.useState( '' ); // What: Draft Message String And Setter. Why: The message field needs somewhere to hold its own typed value before sending. How: This is bound to the message textarea below and read by sndFrmFun.
 	const [ senAtNum, setSenAtNum ] = React.useState( 0 ); // What: Sent At Number And Setter. Why: A successful send needs both a truthy flag and a fresh React key to replay the "sent" note if the user sends a second message later. How: This is set to Date.now() on a successful send and used as both the visibility check and the key below.
@@ -491,12 +491,12 @@ function ConSupCom ( { state, actions } ) {
 	const [ isaSndBoo, setIsaSndBoo ] = React.useState( false ); // What: Is-A Sending Boolean And Setter. Why: A second Send press must not fire a second overlapping request while one is already in flight. How: This gates sndFrmFun's own guard and disables the Send button while true.
 
 
-	const opnFrmFun = () => { // What: Open Form Function. Why: "Contact Support" needs to actually expand the form and bring it into view. How: This opens the form, then (after Collapse's own expand animation finishes) scrolls it into view if it would otherwise sit below the fold.
+	const opnFrmFun = () => { // What: Open Form Function. Why: "Contact Support" needs to actually expand the form and bring it into view. How: This opens the form, then (after ColDisCom's own expand animation finishes) scrolls it into view if it would otherwise sit below the fold.
 
 
-		setFrmOpnBoo( true ); // What: Form Open Call. Why: This is the actual trigger that expands the Collapse below. How: This flips frmOpnBoo to true.
+		setFrmOpnBoo( true ); // What: Form Open Call. Why: This is the actual trigger that expands the ColDisCom below. How: This flips frmOpnBoo to true.
 
-		setTimeout( () => { // What: Scroll-Into-View Timeout. Why: Scrolling must wait until Collapse's own expand animation has actually finished, so the form's final height (not a mid-animation one) is what gets measured. How: This waits 360ms, matching Collapse's own animation duration, before measuring and possibly scrolling.
+		setTimeout( () => { // What: Scroll-Into-View Timeout. Why: Scrolling must wait until ColDisCom's own expand animation has actually finished, so the form's final height (not a mid-animation one) is what gets measured. How: This waits 360ms, matching ColDisCom's own animation duration, before measuring and possibly scrolling.
 
 
 			const frmCurEle = frmCarRef.current; // What: Form Current Element. Why: This gives a stable local handle on the rendered form for this measurement pass. How: This is read once from frmCarRef.current.
@@ -522,7 +522,7 @@ function ConSupCom ( { state, actions } ) {
 			// visible too when the form is short enough to fit alongside it.
 			const oveBelNum = frmRecObj.bottom - visBotNum + 24; // What: Overflow Below Number. Why: Only a form that actually overflows past the visible bottom edge needs any scrolling at all. How: This is the form's own bottom minus the visible bottom edge, plus 24px of breathing room.
 
-			if ( oveBelNum > 0 ) scrConEle.scrollTo( { top : scrConEle.scrollTop + oveBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' } ); // What: Scroll Into View Call. Why: The form should only actually be scrolled when it truly overflows below the fold. How: This scrolls the container down by exactly the overflow amount, animated unless reduced motion is preferred.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo( { top : scrConEle.scrollTop + oveBelNum, behavior : redMotFun() ? 'auto' : 'smooth' } ); // What: Scroll Into View Call. Why: The form should only actually be scrolled when it truly overflows below the fold. How: This scrolls the container down by exactly the overflow amount, animated unless reduced motion is preferred.
 
 
 		}, 360 );
@@ -638,7 +638,7 @@ function ConSupCom ( { state, actions } ) {
 		<React.Fragment>
 
 
-			<Card>{ /* What: Trigger Card. Why: "Having problems?" needs its own bordered container, matching every other row in this tab. How: This wraps the trigger row below. */ }
+			<CarSurCom>{ /* What: Card Surface Component. Why: "Having problems?" needs its own bordered container, matching every other row in this tab. How: This wraps the trigger row below. */ }
 
 
 				<div className='set-data-row set-contact-trigger'>{ /* What: Contact Trigger Div Element. Why: The label/description and the trigger button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Contact Support button. */ }
@@ -666,22 +666,22 @@ function ConSupCom ( { state, actions } ) {
 
 					</div>
 
-					<Btn
+					<ButBasCom
 						kind='secondary'
 						size='sm'
 						onClick={ opnFrmFun }
-					>Contact Support</Btn>{ /* What: Btn. Why: This is the actual trigger that expands the support form below. How: This calls opnFrmFun when clicked. */ }
+					>Contact Support</ButBasCom>{ /* What: Button Base Component. Why: This is the actual trigger that expands the support form below. How: This calls opnFrmFun when clicked. */ }
 
 
 				</div>
 
 
-			</Card>
+			</CarSurCom>
 
-			<Collapse open={ frmOpnBoo }>{ /* What: Collapse. Why: The support form itself should stay collapsed until the trigger above is pressed. How: This mounts/expands its own Card below, gated on frmOpnBoo. */ }
+			<ColDisCom open={ frmOpnBoo }>{ /* What: Collapse Disclosure Component. Why: The support form itself should stay collapsed until the trigger above is pressed. How: This mounts/expands its own CarSurCom below, gated on frmOpnBoo. */ }
 
 
-				<Card>{ /* What: Support Form Card. Why: The form's own fields need the same bordered container as every other card in this tab. How: This wraps the whole support-form div below. */ }
+				<CarSurCom>{ /* What: Card Surface Component. Why: The form's own fields need the same bordered container as every other card in this tab. How: This wraps the whole support-form div below. */ }
 
 
 					<div
@@ -815,27 +815,27 @@ function ConSupCom ( { state, actions } ) {
 							{ sndFalBoo && !shwErrBoo && ( // What: Copy Address Button Check. Why: The copy-address shortcut should only show alongside the fallback message above. How: This renders the button only while both conditions hold, same as the message above.
 
 
-								<Btn
+								<ButBasCom
 									kind='ghost'
 									size='sm'
 									onClick={ copAdrFun }
-								>{ adrCpdBoo ? 'Copied' : 'Copy address' }</Btn> // What: Btn. Why: This lets the user copy the fallback address without selecting it by hand. How: This calls copAdrFun when clicked, and its own label reflects adrCpdBoo.
+								>{ adrCpdBoo ? 'Copied' : 'Copy address' }</ButBasCom> // What: Button Base Component. Why: This lets the user copy the fallback address without selecting it by hand. How: This calls copAdrFun when clicked, and its own label reflects adrCpdBoo.
 
 
 							) }
 
-							<Btn
+							<ButBasCom
 								kind='ghost'
 								size='sm'
 								onClick={ cnlFrmFun }
-							>Cancel</Btn>{ /* What: Btn. Why: The form needs an explicit way to back out without sending. How: This calls cnlFrmFun when clicked. */ }
+							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The form needs an explicit way to back out without sending. How: This calls cnlFrmFun when clicked. */ }
 
-							<Btn
+							<ButBasCom
 								kind='secondary'
 								size='sm'
 								disabled={ isaSndBoo }
 								onClick={ sndFrmFun }
-							>{ isaSndBoo ? 'Sending…' : 'Send' }</Btn>{ /* What: Btn. Why: This is the form's own actual submit action. How: This calls sndFrmFun when clicked, disabling itself and relabeling while isaSndBoo is true. */ }
+							>{ isaSndBoo ? 'Sending…' : 'Send' }</ButBasCom>{ /* What: Button Base Component. Why: This is the form's own actual submit action. How: This calls sndFrmFun when clicked, disabling itself and relabeling while isaSndBoo is true. */ }
 
 
 						</div>
@@ -844,10 +844,10 @@ function ConSupCom ( { state, actions } ) {
 					</div>
 
 
-				</Card>
+				</CarSurCom>
 
 
-			</Collapse>
+			</ColDisCom>
 
 
 		</React.Fragment>
@@ -1137,7 +1137,7 @@ function TheSecCom ( { state, actions } ) {
 		<React.Fragment>
 
 
-			<div className='set-subsection set-subsection--theme-light'>{ /* What: Theme Light Subsection Div Element. Why: The Light card needs its own labeled subsection, matching every other Appearance subsection. How: This wraps the subsection heading, its explanatory copy, and the Light theme Card. */ }
+			<div className='set-subsection set-subsection--theme-light'>{ /* What: Theme Light Subsection Div Element. Why: The Light card needs its own labeled subsection, matching every other Appearance subsection. How: This wraps the subsection heading, its explanatory copy, and the Light theme CarSurCom. */ }
 
 
 				<div className='set-subsection-h'>Theme &middot; Light</div>{ /* What: Set Subsection H Div Element. Why: Every subsection in Appearance names itself with this same heading style. How: This renders the fixed heading "Theme · Light". */ }
@@ -1161,7 +1161,7 @@ function TheSecCom ( { state, actions } ) {
 
 				</p>
 
-				<Card>{ /* What: Light Theme Card. Why: The 3 preset rows and the custom row need a shared bordered container, matching every other picker in this tab. How: This wraps LIG_THE_ARR's own mapped rows plus the trailing TheCusCom. */ }
+				<CarSurCom>{ /* What: Card Surface Component. Why: The 3 preset rows and the custom row need a shared bordered container, matching every other picker in this tab. How: This wraps LIG_THE_ARR's own mapped rows plus the trailing TheCusCom. */ }
 
 
 					{ LIG_THE_ARR.map( ( theKeyStr ) => ( // What: Light Theme Map. Why: One preview row is needed per entry in LIG_THE_ARR. How: This maps LIG_THE_ARR into one TheRowCom per key, each looking up its own palette from APP_NAM_OBJ.PAL_SET_OBJ.
@@ -1186,12 +1186,12 @@ function TheSecCom ( { state, actions } ) {
 					/>{ /* What: Theme Custom Component. Why: The Light card's own custom-theme row sits after its 3 presets. How: This is passed the user's saved custom-light colors, if any, and whether that custom theme is currently active. */ }
 
 
-				</Card>
+				</CarSurCom>
 
 
 			</div>
 
-			<div className='set-subsection set-subsection--theme-dark'>{ /* What: Theme Dark Subsection Div Element. Why: The Dark card needs its own labeled subsection, matching the Light one above. How: This wraps the subsection heading, its explanatory copy, and the Dark theme Card. */ }
+			<div className='set-subsection set-subsection--theme-dark'>{ /* What: Theme Dark Subsection Div Element. Why: The Dark card needs its own labeled subsection, matching the Light one above. How: This wraps the subsection heading, its explanatory copy, and the Dark theme CarSurCom. */ }
 
 
 				<div className='set-subsection-h'>Theme &middot; Dark</div>{ /* What: Set Subsection H Div Element. Why: Every subsection in Appearance names itself with this same heading style. How: This renders the fixed heading "Theme · Dark". */ }
@@ -1215,7 +1215,7 @@ function TheSecCom ( { state, actions } ) {
 
 				</p>
 
-				<Card>{ /* What: Dark Theme Card. Why: The 3 preset rows and the custom row need a shared bordered container, matching the Light card above. How: This wraps DAR_THE_ARR's own mapped rows plus the trailing TheCusCom. */ }
+				<CarSurCom>{ /* What: Card Surface Component. Why: The 3 preset rows and the custom row need a shared bordered container, matching the Light card above. How: This wraps DAR_THE_ARR's own mapped rows plus the trailing TheCusCom. */ }
 
 
 					{ DAR_THE_ARR.map( ( theKeyStr ) => ( // What: Dark Theme Map. Why: One preview row is needed per entry in DAR_THE_ARR. How: This maps DAR_THE_ARR into one TheRowCom per key, each looking up its own palette from APP_NAM_OBJ.PAL_SET_OBJ.
@@ -1242,7 +1242,7 @@ function TheSecCom ( { state, actions } ) {
 					/>{ /* What: Theme Custom Component. Why: The Dark card's own custom-theme row sits after its 3 presets. How: This is passed the user's saved custom-dark colors, if any, and whether that custom theme is currently active. */ }
 
 
-				</Card>
+				</CarSurCom>
 
 
 			</div>
@@ -1316,7 +1316,7 @@ function StyRadCom ( { groupName : groNamStr, groupLabel : groLabStr, options : 
 		// list, which renders it as a plain div nested inside its own fieldset,
 		// so this reset is scoped to just this usage. The legend is visually
 		// hidden, since the section's own visible heading (just above, outside
-		// this Card) already shows this same text, and a visible legend here
+		// this CarSurCom) already shows this same text, and a visible legend here
 		// would just duplicate it right above the radio rows.
 		<fieldset className='style-radio-fieldset'>{ /* What: Style Radio Fieldset Element. Why: A native radio group needs a real fieldset/legend pairing for assistive tech, even though the legend itself stays visually hidden. How: This wraps the visually-hidden legend and the radio rows below. */ }
 
@@ -1359,7 +1359,7 @@ function StyRadCom ( { groupName : groNamStr, groupLabel : groLabStr, options : 
 
 								<span className='rd-mode-name'>{ optCurObj.label }</span>{ /* What: Radio Mode Name Span Element. Why: Every row needs its own visible option name. How: This renders optCurObj's own label. */ }
 
-								{ /* Always-mounted collapse (not <Collapse>, which unmounts the hint
+								{ /* Always-mounted collapse (not <ColDisCom>, which unmounts the hint
 								    on deselect, since a freshly-inserted node can't transition its
 								    own grid-template-rows and the height would snap). Keeping it
 								    mounted lets the 0fr<->1fr glide run every time. */ }
@@ -1710,7 +1710,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 			const ofsDelNum = secCurEle.getBoundingClientRect().top - scrConEle.getBoundingClientRect().top; // What: Offset Delta Number. Why: The scroll target must be computed relative to the container's own current scroll position, not an absolute page position. How: This is the section's own top minus the container's own top.
 			const topPosNum = toTopBoo ? 0 : scrConEle.scrollTop + ofsDelNum - stkOffFun();                   // What: Top Position Number. Why: This is the actual scrollTop value to animate to. How: This is 0 for the top-of-tab case, otherwise the container's own current scrollTop plus ofsDelNum, minus the sticky offset so the section lands below the rail/header.
 
-			scrConEle.scrollTo( { top : topPosNum, behavior : reduceMotion() ? 'auto' : 'smooth' } ); // What: Container Scroll Call. Why: This is the actual scroll animation for the normal, in-'.main' case. How: This scrolls scrConEle to topPosNum, animated unless reduced motion is preferred.
+			scrConEle.scrollTo( { top : topPosNum, behavior : redMotFun() ? 'auto' : 'smooth' } ); // What: Container Scroll Call. Why: This is the actual scroll animation for the normal, in-'.main' case. How: This scrolls scrConEle to topPosNum, animated unless reduced motion is preferred.
 
 
 		}
@@ -1720,7 +1720,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 			const topPosNum = toTopBoo ? 0 : secCurEle.getBoundingClientRect().top + window.scrollY - stkOffFun(); // What: Top Position Number. Why: This is the actual scrollTo value for the fallback, window-level scroll case. How: This is 0 for the top-of-tab case, otherwise the section's own viewport top plus the current window scroll, minus the sticky offset.
 
-			window.scrollTo( { top : topPosNum, behavior : reduceMotion() ? 'auto' : 'smooth' } ); // What: Window Scroll Call. Why: This is the actual scroll animation for the fallback case, when no '.main' ancestor was found. How: This scrolls the window to topPosNum, animated unless reduced motion is preferred.
+			window.scrollTo( { top : topPosNum, behavior : redMotFun() ? 'auto' : 'smooth' } ); // What: Window Scroll Call. Why: This is the actual scroll animation for the fallback case, when no '.main' ancestor was found. How: This scrolls the window to topPosNum, animated unless reduced motion is preferred.
 
 
 		}
@@ -1740,7 +1740,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	// is explicit consent), so without this note the choice would look active
 	// when it isn't. Tracked live so the note appears/disappears if the OS
 	// setting changes mid-session.
-	const [ redMotBoo, setRedMotBoo ] = React.useState( () => !!( reduceMotion && reduceMotion() ) ); // What: Reduce Motion Boolean And Setter. Why: Both style-picker sections need to know live whether the OS currently prefers reduced motion. How: This starts from an immediate reduceMotion() check, then is kept in sync by the effect below.
+	const [ redMotBoo, setRedMotBoo ] = React.useState( () => !!( redMotFun && redMotFun() ) ); // What: Reduce Motion Boolean And Setter. Why: Both style-picker sections need to know live whether the OS currently prefers reduced motion. How: This starts from an immediate redMotFun() check, then is kept in sync by the effect below.
 
 	React.useEffect( () => { // What: Reduce Motion Listener Effect. Why: redMotBoo needs to update live if the OS setting changes while the app is open, not just reflect its value at mount. How: This subscribes a change listener to the prefers-reduced-motion media query and cleans it up on unmount.
 
@@ -1929,9 +1929,9 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	// Both actions hand focus away (export appends and clicks a download link,
 	// import opens the file dialog), leaving focus on <body> where a screen
 	// reader starts reading the browser and page title. Refocus the button
-	// that was used and announce through the app-level live region.
-	const expButRef = React.useRef( null );                     // What: Export Button Reference. Why: expDatFun needs a handle on the Export button to restore focus to it after the download link is clicked. How: This is attached to the Export Btn's own ref prop below.
-	const impButRef = React.useRef( null );                     // What: Import Button Reference. Why: Both onImpFun's own failure path and the focus-restore effect below need a handle on the Import button. How: This is attached to the Import Btn's own ref prop below.
+	// that was used and annStaFun through the app-level live region.
+	const expButRef = React.useRef( null );                     // What: Export Button Reference. Why: expDatFun needs a handle on the Export button to restore focus to it after the download link is clicked. How: This is attached to the Export ButBasCom's own ref prop below.
+	const impButRef = React.useRef( null );                     // What: Import Button Reference. Why: Both onImpFun's own failure path and the focus-restore effect below need a handle on the Import button. How: This is attached to the Import ButBasCom's own ref prop below.
 	const [ impMesObj, setImpMesObj ] = React.useState( null ); // What: Import Message Object And Setter. Why: A completed (or failed) import needs somewhere to report its own outcome once the confirmation itself is gone. How: This is rendered as a status line below the import row.
 	// Parsed-but-unconfirmed backup. Replaces a native confirm(), which the
 	// browser owns and no screen reader can be told about.
@@ -1960,7 +1960,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 		resFocRef.current = true; // What: Reset Focus Flag Set. Why: The focus-restore effect below needs to know this specific close was a real "back out" rather than a successful reset. How: This flags resFocRef true, consumed once conResBoo actually flips back to false.
 
-		if ( reduceMotion() ) { setConResBoo( false ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see the confirm pair close immediately, not play a leave animation. How: This closes the confirm immediately and bails out whenever reduceMotion() reports true.
+		if ( redMotFun() ) { setConResBoo( false ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see the confirm pair close immediately, not play a leave animation. How: This closes the confirm immediately and bails out whenever redMotFun() reports true.
 
 
 		setResLeaBoo( true ); // What: Reset Leaving Flag Set. Why: This is what actually triggers the leave animation's own CSS class. How: This flags resLeaBoo true.
@@ -1971,7 +1971,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	};
 
 	// Escape backs out of the reset confirmation, like the other confirms.
-	useEscapeCancel( conResBoo && !resLeaBoo, cloResFun ); // What: Escape Cancel Subscription. Why: Every confirmation in this tab backs out on Escape, and the reset confirm is no exception. How: This calls useEscapeCancel, active only while the confirm is open and not already leaving, invoking cloResFun.
+	useEscCanFun( conResBoo && !resLeaBoo, cloResFun ); // What: Escape Cancel Subscription. Why: Every confirmation in this tab backs out on Escape, and the reset confirm is no exception. How: This calls useEscCanFun, active only while the confirm is open and not already leaving, invoking cloResFun.
 
 	React.useEffect( () => { // What: Reset Focus Effect. Why: Focus must follow the swap between the Reset button and the confirm pair in both directions, since the element under it is unmounted/remounted each time. How: This focuses the confirm's own Reset button on open, or restores focus to the row's own Reset button on a deliberate close.
 
@@ -2033,7 +2033,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 		// announcement, so the speech has to be assertive and already under
 		// way. The file is fully built by this point, so "exported" is true
 		// when it is said.
-		announce( `Backup exported, including ${ entCouNum } history ${ entCouNum === 1 ? 'entry' : 'entries' }.`, { assertive : true } ); // What: Export Announce Call. Why: A screen-reader user needs to hear the export actually happened, including how much history it carried. How: This announces the entry count assertively, pluralized correctly for exactly 1 entry.
+		annStaFun( `Backup exported, including ${ entCouNum } history ${ entCouNum === 1 ? 'entry' : 'entries' }.`, { assertive : true } ); // What: Export Announce Call. Why: A screen-reader user needs to hear the export actually happened, including how much history it carried. How: This announces the entry count assertively, pluralized correctly for exactly 1 entry.
 
 		setTimeout( () => { // What: Download Trigger Timeout. Why: The announcement above needs a brief head start before the download link steals focus. How: This waits 220ms, then clicks the anchor, restores focus, and schedules the object URL's own cleanup.
 
@@ -2102,7 +2102,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 				if ( impButRef.current ) impButRef.current.focus(); // What: Import Button Focus Call. Why: Focus should return to a real, actionable control after a failed read. How: This focuses impButRef's own current element, if mounted.
 
-				announce( "That file couldn't be read as a backup.", { assertive : true } ); // What: Import Failure Announce Call. Why: A screen-reader user needs to hear the failure too, not just see it. How: This announces the same fixed failure message, assertively.
+				annStaFun( "That file couldn't be read as a backup.", { assertive : true } ); // What: Import Failure Announce Call. Why: A screen-reader user needs to hear the failure too, not just see it. How: This announces the same fixed failure message, assertively.
 
 
 			}
@@ -2125,7 +2125,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 		// remount.
 		impFocRef.current = true; // What: Import Focus Flag Set. Why: The focus-restore effect below needs to know this close should restore focus once the real Import button remounts. How: This flags impFocRef true.
 
-		if ( reduceMotion() ) { setPenImpObj( null ); setImpLeaBoo( false ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see the confirm pair close immediately, not play a leave animation. How: This closes the confirm immediately and bails out whenever reduceMotion() reports true.
+		if ( redMotFun() ) { setPenImpObj( null ); setImpLeaBoo( false ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see the confirm pair close immediately, not play a leave animation. How: This closes the confirm immediately and bails out whenever redMotFun() reports true.
 
 
 		setImpLeaBoo( true ); // What: Import Leaving Flag Set. Why: This is what actually triggers the leave animation's own CSS class. How: This flags impLeaBoo true.
@@ -2144,7 +2144,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 		setImpMesObj( { ok : true, text : 'Backup imported.' } ); // What: Import Success Message. Why: A status line should confirm the import once the confirmation row itself is gone. How: This sets impMesObj to a fixed success message.
 
-		announce( 'Backup imported.' ); // What: Import Success Announce Call. Why: A screen-reader user needs to hear the success too, not just see it. How: This announces the same fixed success message.
+		annStaFun( 'Backup imported.' ); // What: Import Success Announce Call. Why: A screen-reader user needs to hear the success too, not just see it. How: This announces the same fixed success message.
 
 		cloImpFun(); // What: Confirm Close Call. Why: A completed import should close the confirmation the same way cancelling it does. How: This calls cloImpFun to play the leave animation and eventually unmount the confirm pair.
 
@@ -2156,7 +2156,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 		if ( !penImpObj ) return; // What: No Pending Import Guard. Why: There is nothing to cancel if no backup is actually staged. How: This bails out early whenever penImpObj is null.
 
-		announce( 'Import cancelled.' ); // What: Import Cancelled Announce Call. Why: A screen-reader user needs to hear the cancellation too, not just see the row close. How: This announces a fixed cancellation message.
+		annStaFun( 'Import cancelled.' ); // What: Import Cancelled Announce Call. Why: A screen-reader user needs to hear the cancellation too, not just see the row close. How: This announces a fixed cancellation message.
 
 		cloImpFun(); // What: Confirm Close Call. Why: A cancelled import should close the confirmation the same way a completed one does. How: This calls cloImpFun to play the leave animation and eventually unmount the confirm pair.
 
@@ -2165,7 +2165,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 	// Escape backs out of the import confirmation, like every other confirm
 	// here.
-	useEscapeCancel( !!penImpObj && !impLeaBoo, cnlImpFun ); // What: Escape Cancel Subscription. Why: Every confirmation in this tab backs out on Escape, and the import confirm is no exception. How: This calls useEscapeCancel, active only while a backup is staged and not already leaving, invoking cnlImpFun.
+	useEscCanFun( !!penImpObj && !impLeaBoo, cnlImpFun ); // What: Escape Cancel Subscription. Why: Every confirmation in this tab backs out on Escape, and the import confirm is no exception. How: This calls useEscCanFun, active only while a backup is staged and not already leaving, invoking cnlImpFun.
 
 	React.useEffect( () => { // What: Import Focus Effect. Why: Focus must be restored to the real Import button only in the commit where it has actually remounted back into the tree. How: This checks impFocRef, consuming the flag and focusing impButRef only once penImpObj has actually cleared.
 
@@ -2400,10 +2400,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 						<p className='settings-sub'>Control the appearance of Ease My life, including colors, animations and tab placement.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Appearance. */ }
 
-						<div className='set-subsection set-subsection--systempref'>{ /* What: System Pref Subsection Div Element. Why: The system-preference toggle needs its own labeled subsection, first among Appearance's own controls. How: This wraps the toggle row's own Card. */ }
+						<div className='set-subsection set-subsection--systempref'>{ /* What: System Pref Subsection Div Element. Why: The system-preference toggle needs its own labeled subsection, first among Appearance's own controls. How: This wraps the toggle row's own CarSurCom. */ }
 
 
-							<Card>{ /* What: System Pref Card. Why: The toggle row needs the same bordered container as every other row in this tab. How: This wraps the system-preference row below. */ }
+							<CarSurCom>{ /* What: Card Surface Component. Why: The toggle row needs the same bordered container as every other row in this tab. How: This wraps the system-preference row below. */ }
 
 
 								<div className='set-data-row'>{ /* What: System Pref Row Div Element. Why: The label/description and the switch need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the switch button. */ }
@@ -2443,7 +2443,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 								</div>
 
 
-							</Card>
+							</CarSurCom>
 
 
 						</div>
@@ -2453,7 +2453,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 							actions={ actions }
 						/>{ /* What: Theme Section Component. Why: The Light and Dark theme cards are substantial enough to live in their own component. How: This renders both cards, driven by the same shared state/actions this whole tab receives. */ }
 
-						<div className='set-subsection set-subsection--celebration'>{ /* What: Celebration Subsection Div Element. Why: The completion-celebration style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview Card. */ }
+						<div className='set-subsection set-subsection--celebration'>{ /* What: Celebration Subsection Div Element. Why: The completion-celebration style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. */ }
 
 
 							<div className='set-subsection-h'>Completion celebration</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Completion celebration". */ }
@@ -2462,10 +2462,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 							{ motNotFun( 'celebrations' ) /* What: Reduced Motion Note Call. Why: A user who prefers reduced motion needs to know this animation won't play on its own, only on demand here. How: This renders motNotFun's own note, naming "celebrations", or nothing while redMotBoo is false. */ }
-							<Card
+							<CarSurCom
 								padded={ false }
 								className='style-radio-card'
-							>{ /* What: Celebration Style Card. Why: The style picker and its live preview stage need a shared, unpadded bordered container. How: This wraps StyRadCom and CelPreCom together. */ }
+							>{ /* What: Card Surface Component. Why: The style picker and its live preview stage need a shared, unpadded bordered container. How: This wraps StyRadCom and CelPreCom together. */ }
 
 
 								<StyRadCom
@@ -2492,12 +2492,12 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 								/>{ /* What: Celebration Preview Component. Why: The user should be able to actually watch each celebration style before committing to it. How: This plays celStyStr, replaying every time celTokNum bumps. */ }
 
 
-							</Card>
+							</CarSurCom>
 
 
 						</div>
 
-						<div className='set-subsection set-subsection--pickanim'>{ /* What: Pickanim Subsection Div Element. Why: The picker-animation style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview Card. */ }
+						<div className='set-subsection set-subsection--pickanim'>{ /* What: Pickanim Subsection Div Element. Why: The picker-animation style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. */ }
 
 
 							<div className='set-subsection-h'>Picker animation</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Picker animation". */ }
@@ -2506,10 +2506,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 							{ motNotFun( 'this animation' ) /* What: Reduced Motion Note Call. Why: A user who prefers reduced motion needs to know this animation won't play on its own, only on demand here. How: This renders motNotFun's own note, naming "this animation", or nothing while redMotBoo is false. */ }
-							<Card
+							<CarSurCom
 								padded={ false }
 								className='style-radio-card'
-							>{ /* What: Picker Animation Card. Why: The style picker and its live preview stage need a shared, unpadded bordered container. How: This wraps StyRadCom and PicAniCom together. */ }
+							>{ /* What: Card Surface Component. Why: The style picker and its live preview stage need a shared, unpadded bordered container. How: This wraps StyRadCom and PicAniCom together. */ }
 
 
 								<StyRadCom
@@ -2536,12 +2536,12 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 								/>{ /* What: Picker Animation Component. Why: The user should be able to actually watch each picker-animation style before committing to it. How: This plays picPreStr while a preview is active, otherwise the selected pickAnim, replaying every time picTokNum bumps. */ }
 
 
-							</Card>
+							</CarSurCom>
 
 
 						</div>
 
-						<div className='set-subsection set-subsection--layout'>{ /* What: Layout Subsection Div Element. Why: The tab-bar-placement control needs its own labeled subsection. How: This wraps its own heading, intro copy, and the placement row's own Card. */ }
+						<div className='set-subsection set-subsection--layout'>{ /* What: Layout Subsection Div Element. Why: The tab-bar-placement control needs its own labeled subsection. How: This wraps its own heading, intro copy, and the placement row's own CarSurCom. */ }
 
 
 							<div className='set-subsection-h'>Layout</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Layout". */ }
@@ -2549,7 +2549,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 							<p className='settings-sub'>Pick where the app&rsquo;s main navigation links should be located.</p>{ /* What: Settings Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the placement control. */ }
 
 
-							<Card>{ /* What: Layout Card. Why: The placement row needs the same bordered container as every other row in this tab. How: This wraps the placement row below. */ }
+							<CarSurCom>{ /* What: Card Surface Component. Why: The placement row needs the same bordered container as every other row in this tab. How: This wraps the placement row below. */ }
 
 
 								<div className='set-data-row'>{ /* What: Layout Row Div Element. Why: The label/description and the SegConCom control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the SegConCom control. */ }
@@ -2599,7 +2599,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 								</div>
 
 
-							</Card>
+							</CarSurCom>
 
 
 						</div>
@@ -2611,14 +2611,14 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 					<section
 						className='set-section set-section--daily'
 						ref={ ( secCurEle ) => { secMapRef.current[ 'daily' ] = secCurEle; } }
-					>{ /* What: Daily Section Element. Why: This is the Daily generator section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the generator's own settings Card. */ }
+					>{ /* What: Daily Section Element. Why: This is the Daily generator section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the generator's own settings CarSurCom. */ }
 
 
 						<div className='set-section-h'><span className='kicker'>Daily generator</span></div>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This renders the fixed text "Daily generator" inside the shared kicker span. */ }
 
 						<p className='settings-sub'>The Daily generator can always be run manually from the Today page regardless of this setting. Which pickers are included in the Daily generator can be found with their own settings in the Data page.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for the Daily generator. */ }
 
-						<Card>{ /* What: Daily Generator Card. Why: The auto-run toggle, its run-time row, and the notify-me row all share one bordered container. How: This wraps all 3 rows below. */ }
+						<CarSurCom>{ /* What: Card Surface Component. Why: The auto-run toggle, its run-time row, and the notify-me row all share one bordered container. How: This wraps all 3 rows below. */ }
 
 
 							<div className='set-data-row'>{ /* What: Auto Run Row Div Element. Why: The label/description and the switch need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the switch button. */ }
@@ -2724,14 +2724,14 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 									</div>
 
-									{ notPerStr === 'default' && ( // What: Enable Button Check. Why: An Enable button only makes sense while permission has not yet been decided either way. How: This renders the Btn only while notPerStr is 'default'.
+									{ notPerStr === 'default' && ( // What: Enable Button Check. Why: An Enable button only makes sense while permission has not yet been decided either way. How: This renders the ButBasCom only while notPerStr is 'default'.
 
 
-										<Btn
+										<ButBasCom
 											kind='secondary'
 											size='sm'
 											onClick={ enaNotFun }
-										>Enable</Btn> // What: Btn. Why: This is the actual explicit request for notification permission. How: This calls enaNotFun when clicked.
+										>Enable</ButBasCom> // What: Button Base Component. Why: This is the actual explicit request for notification permission. How: This calls enaNotFun when clicked.
 
 
 									) }
@@ -2759,7 +2759,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 							) }
 
 
-						</Card>
+						</CarSurCom>
 
 
 					</section>
@@ -2768,14 +2768,14 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 					<section
 						className='set-section set-section--holidays'
 						ref={ ( secCurEle ) => { secMapRef.current[ 'holidays' ] = secCurEle; } }
-					>{ /* What: Holidays Section Element. Why: This is the Holidays section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and HolEdiCom's own Card. */ }
+					>{ /* What: Holidays Section Element. Why: This is the Holidays section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and HolEdiCom's own CarSurCom. */ }
 
 
 						<div className='set-section-h'><span className='kicker'>Holidays</span></div>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This renders the fixed text "Holidays" inside the shared kicker span. */ }
 
 						<p className='settings-sub'>Any pickers that are set to &ldquo;Skip on holidays&rdquo; will not be run on the days that are toggled on here. Toggle off any that you don&rsquo;t observe, or even add your own! Dates shown are for { new Date().getFullYear() }.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Holidays, inlining the real current year. */ }
 
-						<Card>{ /* What: Holidays Card. Why: The whole holiday list and its add-form need a shared bordered container. How: This wraps HolEdiCom. */ }
+						<CarSurCom>{ /* What: Card Surface Component. Why: The whole holiday list and its add-form need a shared bordered container. How: This wraps HolEdiCom. */ }
 
 
 							<HolEdiCom
@@ -2784,7 +2784,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 							/>{ /* What: Holiday Editor Component. Why: The holiday list and its add-form are substantial enough to live in their own component. How: This renders it, driven by the same shared state/actions this whole tab receives. */ }
 
 
-						</Card>
+						</CarSurCom>
 
 
 					</section>
@@ -2793,14 +2793,14 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 					<section
 						className='set-section set-section--data'
 						ref={ ( secCurEle ) => { secMapRef.current[ 'data' ] = secCurEle; } }
-					>{ /* What: Data Section Element. Why: This is the Data control section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the whole storage/export/import/reset Card. */ }
+					>{ /* What: Data Section Element. Why: This is the Data control section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the whole storage/export/import/reset CarSurCom. */ }
 
 
 						<div className='set-section-h'><span className='kicker'>Data control</span></div>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This renders the fixed text "Data control" inside the shared kicker span. */ }
 
 						<p className='settings-sub'>All of your data is stored locally, on this device to do with it as you will. Unfortunately, this also means that if you want to use this app on a different device then you will need to export your data here, and then use the import feature on the other device. Exporting your data is also a good way to backup your data, just in case something were to happen either to your device or to the browser and its stored data.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Data control. */ }
 
-						<Card>{ /* What: Data Control Card. Why: The storage-status row, the platform-specific install notes, and the export/import/reset rows all share one bordered container. How: This wraps every row below. */ }
+						<CarSurCom>{ /* What: Card Surface Component. Why: The storage-status row, the platform-specific install notes, and the export/import/reset rows all share one bordered container. How: This wraps every row below. */ }
 
 
 							<div className='set-data-row set-store-row'>{ /* What: Store Row Div Element. Why: The storage-status label/facts and the install/protect actions need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the store-actions block. */ }
@@ -2855,42 +2855,42 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 								<div className='set-store-actions'>{ /* What: Store Actions Div Element. Why: The Install and Protect Data buttons need their own grouping, apart from the info block. How: This conditionally renders whichever of the 3 buttons currently applies. */ }
 
 
-									{ canInsBoo && ( // What: Install Button Check. Why: An Install button should only ever show while a real install prompt is actually available. How: This renders the Btn only while canInsBoo is true.
+									{ canInsBoo && ( // What: Install Button Check. Why: An Install button should only ever show while a real install prompt is actually available. How: This renders the ButBasCom only while canInsBoo is true.
 
 
-										<Btn
+										<ButBasCom
 											kind='primary'
 											size='sm'
 											icon='download'
 											className='set-install-btn'
 											onClick={ onInsFun }
-										>Install app</Btn> // What: Btn. Why: This is the actual trigger for the native install prompt. How: This calls onInsFun when clicked.
+										>Install app</ButBasCom> // What: Button Base Component. Why: This is the actual trigger for the native install prompt. How: This calls onInsFun when clicked.
 
 
 									) }
 
-									{ insStaStr === 'pending' && ( // What: Pending Install Button Check. Why: While it is not yet known whether an install prompt will become available, a disabled placeholder avoids a layout jump. How: This renders a disabled Btn only while insStaStr is 'pending'.
+									{ insStaStr === 'pending' && ( // What: Pending Install Button Check. Why: While it is not yet known whether an install prompt will become available, a disabled placeholder avoids a layout jump. How: This renders a disabled ButBasCom only while insStaStr is 'pending'.
 
 
-										<Btn
+										<ButBasCom
 											kind='secondary'
 											size='sm'
 											icon='download'
 											disabled
-										>Install app</Btn> // What: Btn. Why: This is a disabled placeholder shown only until install support is actually known one way or the other. How: This renders with no onClick at all, since it is always disabled.
+										>Install app</ButBasCom> // What: Button Base Component. Why: This is a disabled placeholder shown only until install support is actually known one way or the other. How: This renders with no onClick at all, since it is always disabled.
 
 
 									) }
 
-									{ !( stoStaObj && stoStaObj.persisted ) && ( // What: Protect Data Button Check. Why: The Protect Data button only makes sense while persistence has not already been granted. How: This renders the Btn only while stoStaObj reports persisted as falsy (or is not yet loaded).
+									{ !( stoStaObj && stoStaObj.persisted ) && ( // What: Protect Data Button Check. Why: The Protect Data button only makes sense while persistence has not already been granted. How: This renders the ButBasCom only while stoStaObj reports persisted as falsy (or is not yet loaded).
 
 
-										<Btn
+										<ButBasCom
 											kind='secondary'
 											size='sm'
 											className='set-protect-btn'
 											onClick={ onPerFun }
-										>Protect Data</Btn> // What: Btn. Why: This is the actual trigger for the storage-persistence request. How: This calls onPerFun when clicked.
+										>Protect Data</ButBasCom> // What: Button Base Component. Why: This is the actual trigger for the storage-persistence request. How: This calls onPerFun when clicked.
 
 
 									) }
@@ -3021,8 +3021,8 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 								{ hasDatBoo
 
 
-									? ( <Btn kind='secondary' size='sm' icon='download' ref={ expButRef } onClick={ expDatFun }>Export</Btn> ) // What: Btn. Why: This is the actual trigger for building and downloading the backup. How: This calls expDatFun when clicked.
-									: ( <InfoTip className='set-disabled-btn' label='There is no user data to export.'><Btn kind='secondary' size='sm' icon='download' disabled>Export</Btn></InfoTip> ) /* What: Info Tip. Why: A disabled Export button still needs to explain, on hover/focus, exactly why it is disabled. How: This wraps a disabled Btn, shown only while hasDatBoo is false. */ }
+									? ( <ButBasCom kind='secondary' size='sm' icon='download' ref={ expButRef } onClick={ expDatFun }>Export</ButBasCom> ) // What: Button Base Component. Why: This is the actual trigger for building and downloading the backup. How: This calls expDatFun when clicked.
+									: ( <InfTipCom className='set-disabled-btn' label='There is no user data to export.'><ButBasCom kind='secondary' size='sm' icon='download' disabled>Export</ButBasCom></InfTipCom> ) /* What: Info Tip Component. Why: A disabled Export button still needs to explain, on hover/focus, exactly why it is disabled. How: This wraps a disabled ButBasCom, shown only while hasDatBoo is false. */ }
 
 
 							</div>
@@ -3067,7 +3067,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									aria-label='Import a backup file'
 									style={{ display : 'none' }}
 									onChange={ onImpFun }
-								/>{ /* What: File Input Element. Why: A real, native file picker is required to choose a backup file; it stays hidden since the Import Btn below is what the user actually sees. How: This is triggered indirectly via filInpRef.current.click() and handled by onImpFun. */ }
+								/>{ /* What: File Input Element. Why: A real, native file picker is required to choose a backup file; it stays hidden since the Import ButBasCom below is what the user actually sees. How: This is triggered indirectly via filInpRef.current.click() and handled by onImpFun. */ }
 
 								{ penImpObj ? ( // What: Pending Import Check. Why: A staged backup awaiting confirmation replaces the plain Import trigger with its own confirm pair. How: This renders the confirm pair while penImpObj holds a value, the plain trigger otherwise.
 
@@ -3075,19 +3075,19 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									<div className={ ` set-reset-confirm   ${ impLeaBoo ? 'is-leaving' : '' } ` }>{ /* What: Import Confirm Div Element. Why: The Import/Cancel confirm pair needs its own grouping, replacing the single Import trigger while a backup is staged. How: This wraps the confirm's own Import and Cancel buttons. */ }
 
 
-										<Btn
+										<ButBasCom
 											kind='danger'
 											size='sm'
 											ref={ impConRef }
 											aria-describedby='set-import-confirm-msg'
 											onClick={ doImpFun }
-										>Import</Btn>{ /* What: Btn. Why: This is the actual, final confirmation that replaces all data with the staged backup. How: This calls doImpFun when clicked. */ }
+										>Import</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that replaces all data with the staged backup. How: This calls doImpFun when clicked. */ }
 
-										<Btn
+										<ButBasCom
 											kind='ghost'
 											size='sm'
 											onClick={ cnlImpFun }
-										>Cancel</Btn>{ /* What: Btn. Why: The confirmation needs an explicit way to back out without importing. How: This calls cnlImpFun when clicked. */ }
+										>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The confirmation needs an explicit way to back out without importing. How: This calls cnlImpFun when clicked. */ }
 
 
 									</div>
@@ -3096,13 +3096,13 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 								) : ( // What: Plain Import Branch. Why: With nothing staged yet, the row just needs its normal clickable trigger. How: This renders the else branch, taken while penImpObj is null.
 
 
-									<Btn
+									<ButBasCom
 										kind='secondary'
 										size='sm'
 										icon='upload'
 										ref={ impButRef }
 										onClick={ () => filInpRef.current && filInpRef.current.click() }
-									>Import</Btn> // What: Btn. Why: This is the actual trigger that opens the native file picker. How: This calls the hidden file input's own click() when clicked.
+									>Import</ButBasCom> // What: Button Base Component. Why: This is the actual trigger that opens the native file picker. How: This calls the hidden file input's own click() when clicked.
 
 
 								) }
@@ -3145,7 +3145,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									<div className={ ` set-reset-confirm   ${ resLeaBoo ? 'is-leaving' : '' } ` }>{ /* What: Reset Confirm Div Element. Why: The Reset/Cancel confirm pair needs its own grouping, replacing the single Reset trigger while confirmation is pending. How: This wraps the confirm's own Reset and Cancel buttons. */ }
 
 
-										<Btn
+										<ButBasCom
 											kind='danger'
 											size='sm'
 											ref={ resConRef }
@@ -3164,17 +3164,17 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 												// Nothing here to return focus to (the row's own Reset button
 												// becomes disabled with no data), and the welcome modal takes
 												// focus on the Today tab, so just say what happened.
-												announce( 'All data reset.' ); // What: Reset Announce Call. Why: A screen-reader user needs to hear the reset happened too, especially since no focus target remains here to imply it visually. How: This announces a fixed confirmation message.
+												annStaFun( 'All data reset.' ); // What: Reset Announce Call. Why: A screen-reader user needs to hear the reset happened too, especially since no focus target remains here to imply it visually. How: This announces a fixed confirmation message.
 
 
 											}}
-										>Reset</Btn>{ /* What: Btn. Why: This is the actual, final confirmation that wipes all data. How: This navigates home, resets the store, closes the confirm, and announces the outcome when clicked. */ }
+										>Reset</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, final confirmation that wipes all data. How: This navigates home, resets the store, closes the confirm, and announces the outcome when clicked. */ }
 
-										<Btn
+										<ButBasCom
 											kind='ghost'
 											size='sm'
 											onClick={ cloResFun }
-										>Cancel</Btn>{ /* What: Btn. Why: The confirmation needs an explicit way to back out without resetting. How: This calls cloResFun when clicked. */ }
+										>Cancel</ButBasCom>{ /* What: Button Base Component. Why: The confirmation needs an explicit way to back out without resetting. How: This calls cloResFun when clicked. */ }
 
 
 									</div>
@@ -3183,22 +3183,22 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 								) : hasDatBoo ? ( // What: Has Data Check. Why: A working Reset trigger only makes sense while there's actually something to reset. How: This renders the working Reset button while hasDatBoo is true, an explained disabled one otherwise.
 
 
-									<Btn
+									<ButBasCom
 										kind='danger'
 										size='sm'
 										icon='refresh'
 										ref={ resButRef }
 										onClick={ () => { setResMesStr( null ); setConResBoo( true ); } }
-									>Reset</Btn> // What: Btn. Why: This is the actual trigger that opens the reset confirmation. How: This clears any stale message and opens the confirm pair when clicked.
+									>Reset</ButBasCom> // What: Button Base Component. Why: This is the actual trigger that opens the reset confirmation. How: This clears any stale message and opens the confirm pair when clicked.
 
 
 								) : ( // What: No Data Branch. Why: With no data at all, the Reset trigger needs to explain why it's disabled instead of silently doing nothing. How: This renders the else branch, taken while hasDatBoo is false.
 
 
-									<InfoTip
+									<InfTipCom
 										className='set-disabled-btn'
 										label='There is no user data to reset.'
-									><Btn kind='danger' size='sm' icon='refresh' disabled>Reset</Btn></InfoTip> // What: Info Tip. Why: A disabled Reset button still needs to explain, on hover/focus, exactly why it is disabled. How: This wraps a disabled Btn, shown only while there is no data and no confirm pending.
+									><ButBasCom kind='danger' size='sm' icon='refresh' disabled>Reset</ButBasCom></InfTipCom> // What: Info Tip Component. Why: A disabled Reset button still needs to explain, on hover/focus, exactly why it is disabled. How: This wraps a disabled ButBasCom, shown only while there is no data and no confirm pending.
 
 
 								) }
@@ -3207,7 +3207,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 							</div>
 
 
-						</Card>
+						</CarSurCom>
 
 
 					</section>
@@ -3216,17 +3216,17 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 					<section
 						className='set-section set-section--account'
 						ref={ ( secCurEle ) => { secMapRef.current[ 'account' ] = secCurEle; } }
-					>{ /* What: Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the sync-placeholder Card. */ }
+					>{ /* What: Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the sync-placeholder CarSurCom. */ }
 
 
 						<div className='set-section-h'><span className='kicker'>Account</span></div>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This renders the fixed text "Account" inside the shared kicker span. */ }
 
 						<p className='settings-sub'>Ease My Life runs entirely on this device, with no account required. Sign in to sync across devices is planned for a future release as a paid feature (one time fee only).</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Account. */ }
 
-						<Card>{ /* What: Account Card. Why: The sync-placeholder row needs the same bordered container as every other row in this tab. How: This wraps the sync row below. */ }
+						<CarSurCom>{ /* What: Card Surface Component. Why: The sync-placeholder row needs the same bordered container as every other row in this tab. How: This wraps the sync row below. */ }
 
 
-							<div className='set-data-row'>{ /* What: Sync Row Div Element. Why: The label/description and the disabled placeholder button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the disabled Btn. */ }
+							<div className='set-data-row'>{ /* What: Sync Row Div Element. Why: The label/description and the disabled placeholder button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the disabled ButBasCom. */ }
 
 
 								<div className='set-data-info'>{ /* What: Sync Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
@@ -3239,17 +3239,17 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 								</div>
 
-								<Btn
+								<ButBasCom
 									kind='secondary'
 									size='sm'
 									disabled
-								>Coming Soon</Btn>{ /* What: Btn. Why: A disabled placeholder communicates the feature exists without implying it works today. How: This renders with no onClick at all, since it is always disabled. */ }
+								>Coming Soon</ButBasCom>{ /* What: Button Base Component. Why: A disabled placeholder communicates the feature exists without implying it works today. How: This renders with no onClick at all, since it is always disabled. */ }
 
 
 							</div>
 
 
-						</Card>
+						</CarSurCom>
 
 
 					</section>
@@ -3267,7 +3267,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 						<p className='settings-sub'>You will also find the link to this app&rsquo;s source code on GitHub. This is an open source project with an &ldquo;MIT + Non-Commercial&rdquo; Custom License which will allow anyone to freely fork and modify the project&rsquo;s source code, provided that attribution is included in your project and that you will not be selling the software or making money off it in any way. Please be responsible with the source code, because I am just one person maintaining the project in their free time trying to make a living. This is not some big company with vast resources trying to extract every dollar that they can.</p>{ /* What: Settings Sub Paragraph Element. Why: The license terms deserve their own separate paragraph from the personal note above. How: This renders the fixed second paragraph. */ }
 
-						<Card>{ /* What: About Identity Card. Why: The app's own name, version, and creator/GitHub links need a shared bordered container. How: This wraps the set-about div below. */ }
+						<CarSurCom>{ /* What: Card Surface Component. Why: The app's own name, version, and creator/GitHub links need a shared bordered container. How: This wraps the set-about div below. */ }
 
 
 							<div className='set-about'>{ /* What: Set About Div Element. Why: The brand name, version, and links all belong to one identity block. How: This wraps the brand span and the version/creator/GitHub spans. */ }
@@ -3291,12 +3291,12 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 							</div>
 
 
-						</Card>
+						</CarSurCom>
 
-						<Card>{ /* What: Support Project Card. Why: The "support the project" row needs the same bordered container as every other row in this tab. How: This wraps the support-project row below. */ }
+						<CarSurCom>{ /* What: Card Surface Component. Why: The "support the project" row needs the same bordered container as every other row in this tab. How: This wraps the support-project row below. */ }
 
 
-							<div className='set-data-row set-support-project-row'>{ /* What: Support Project Row Div Element. Why: The label/description and the disabled placeholder button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the disabled Btn. */ }
+							<div className='set-data-row set-support-project-row'>{ /* What: Support Project Row Div Element. Why: The label/description and the disabled placeholder button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the disabled ButBasCom. */ }
 
 
 								<div className='set-data-info'>{ /* What: Support Project Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
@@ -3309,22 +3309,22 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 								</div>
 
-								<Btn
+								<ButBasCom
 									kind='secondary'
 									size='sm'
 									disabled
-								>Buy Me a Coffee</Btn>{ /* What: Btn. Why: A disabled placeholder communicates the feature exists without implying it works today. How: This renders with no onClick at all, since it is always disabled. */ }
+								>Buy Me a Coffee</ButBasCom>{ /* What: Button Base Component. Why: A disabled placeholder communicates the feature exists without implying it works today. How: This renders with no onClick at all, since it is always disabled. */ }
 
 
 							</div>
 
 
-						</Card>
+						</CarSurCom>
 
-						<Card>{ /* What: Replay Tour Card. Why: The "replay the welcome tour" row needs the same bordered container as every other row in this tab. How: This wraps the replay-tour row below. */ }
+						<CarSurCom>{ /* What: Card Surface Component. Why: The "replay the welcome tour" row needs the same bordered container as every other row in this tab. How: This wraps the replay-tour row below. */ }
 
 
-							<div className='set-data-row set-replay-tour-row'>{ /* What: Replay Tour Row Div Element. Why: The label/description and the Replay Tour button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Replay Tour Btn. */ }
+							<div className='set-data-row set-replay-tour-row'>{ /* What: Replay Tour Row Div Element. Why: The label/description and the Replay Tour button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Replay Tour ButBasCom. */ }
 
 
 								<div className='set-data-info'>{ /* What: Replay Tour Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
@@ -3337,7 +3337,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 								</div>
 
-								<Btn
+								<ButBasCom
 									kind='secondary'
 									size='sm'
 									icon='refresh'
@@ -3380,13 +3380,13 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 
 									}}
-								>Replay Tour</Btn>{ /* What: Btn. Why: This is the actual trigger that restarts the first-run walkthrough. How: This navigates home, then resets (and, for an established account, self-heals) the onboarding flags when clicked. */ }
+								>Replay Tour</ButBasCom>{ /* What: Button Base Component. Why: This is the actual trigger that restarts the first-run walkthrough. How: This navigates home, then resets (and, for an established account, self-heals) the onboarding flags when clicked. */ }
 
 
 							</div>
 
 
-						</Card>
+						</CarSurCom>
 
 						<ConSupCom
 							state={ state }
@@ -3407,7 +3407,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 						<p className='settings-sub'>The documents below outline what you&rsquo;re agreeing to by using Ease My Life.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Legal. */ }
 
-						<Card>{ /* What: Legal Card. Why: Both document rows share one bordered container. How: This wraps the Privacy Policy row and the Terms of Service row. */ }
+						<CarSurCom>{ /* What: Card Surface Component. Why: Both document rows share one bordered container. How: This wraps the Privacy Policy row and the Terms of Service row. */ }
 
 
 							<div className='set-data-row set-privacy-row'>{ /* What: Privacy Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. */ }
@@ -3455,7 +3455,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 							</div>
 
 
-						</Card>
+						</CarSurCom>
 
 
 					</section>

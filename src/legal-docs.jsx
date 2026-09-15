@@ -6,8 +6,8 @@
 import React from 'react'; // What: React. Why: This is the UI library both legal-document components and LegModCom are built on. How: This is used directly (React.Fragment, React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
 
 
-import { Icon         } from './ui.jsx'; // What: Icon. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
-import { reduceMotion } from './ui.jsx'; // What: Reduce Motion. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegModCom's modDisFun to skip the animated delay.
+import { IcoSvgCom } from './ui.jsx'; // What: Icon Svg Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
+import { redMotFun } from './ui.jsx'; // What: Reduce Motion Function. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegModCom's modDisFun to skip the animated delay.
 
 // #endregion Imports
 
@@ -890,7 +890,7 @@ function LegModCom ( { legDocStr, onCloFun } ) {
 	const modDisFun = () => { // What: Modal Dismiss Function. Why: Every dismissal path (Esc, backdrop click, close button) needs the same reduced-motion check and the same delayed onCloFun. How: This calls onCloFun immediately when reduced motion is preferred, otherwise plays the closing animation for 200ms first.
 
 
-		if ( reduceMotion && reduceMotion() ) { onCloFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should not see the closing animation at all. How: This calls onCloFun immediately and skips the animated path below.
+		if ( redMotFun && redMotFun() ) { onCloFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should not see the closing animation at all. How: This calls onCloFun immediately and skips the animated path below.
 
 
 
@@ -1004,10 +1004,10 @@ function LegModCom ( { legDocStr, onCloFun } ) {
 					>{ /* What: Close Action Button Element. Why: A user must always have an explicit, visible way to dismiss the modal. How: This calls modDisFun when clicked. */ }
 
 
-						<Icon
+						<IcoSvgCom
 							name='x'
 							size={ 18 }
-						/>{ /* What: Icon. Why: The close button needs a recognizable "x" glyph rather than just its own aria-label text. How: This renders the shared Icon component at size 18. */ }
+						/>{ /* What: Icon Svg Component. Why: The close button needs a recognizable "x" glyph rather than just its own aria-label text. How: This renders the shared IcoSvgCom component at size 18. */ }
 
 
 					</button>

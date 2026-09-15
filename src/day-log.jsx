@@ -6,11 +6,11 @@
 import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.Fragment) throughout, instead of importing individual named hooks.
 
 
-import { CAD_NAM_OBJ  } from './cadence.js';      // What: Cadence. Why: An ease-mode item's subline needs CAD_NAM_OBJ.uniWorFun to phrase its range in the picker's own cadence unit (days/weeks/months/years) instead of always "days". How: This is called once inside iteSubFun below.
-import { Collapse     } from './ui.jsx';          // What: Collapse. Why: PicBloCom's own item table only needs to exist in the DOM while its block is actually expanded. How: This wraps that table, driven by PicBloCom's own open/closed state.
-import { CON_NAM_OBJ  } from './conditionals.js'; // What: Conditionals. Why: ConSecCom needs CON_NAM_OBJ.modValFun to know whether a given conditional's own mode even has a value to show. How: This is called once per conditional row inside ConSecCom below.
-import { InfoTip      } from './ui.jsx';          // What: Info Tip. Why: Every truncatable name/label in this file (item, conditional, reminder) needs the shared reveal-on-truncation tooltip. How: This wraps those names/labels throughout PicBloCom, ConSecCom and RemLogCom.
-import { TASKS        } from './tasks.js';        // What: Tasks. Why: RemLogCom needs the reminders engine's own scheduling helpers (anchorDate, visibleToday, isDoneToday, nextEligible, summary). How: These are called throughout RemLogCom below.
+import { CAD_NAM_OBJ } from './cadence.js';      // What: Cadence. Why: An ease-mode item's subline needs CAD_NAM_OBJ.uniWorFun to phrase its range in the picker's own cadence unit (days/weeks/months/years) instead of always "days". How: This is called once inside iteSubFun below.
+import { ColDisCom   } from './ui.jsx';          // What: Collapse Disclosure Component. Why: PicBloCom's own item table only needs to exist in the DOM while its block is actually expanded. How: This wraps that table, driven by PicBloCom's own open/closed state.
+import { CON_NAM_OBJ } from './conditionals.js'; // What: Conditionals. Why: ConSecCom needs CON_NAM_OBJ.modValFun to know whether a given conditional's own mode even has a value to show. How: This is called once per conditional row inside ConSecCom below.
+import { InfTipCom   } from './ui.jsx';          // What: Info Tip Component. Why: Every truncatable name/label in this file (item, conditional, reminder) needs the shared reveal-on-truncation tooltip. How: This wraps those names/labels throughout PicBloCom, ConSecCom and RemLogCom.
+import { TASKS       } from './tasks.js';        // What: Tasks. Why: RemLogCom needs the reminders engine's own scheduling helpers (anchorDate, visibleToday, isDoneToday, nextEligible, summary). How: These are called throughout RemLogCom below.
 
 // #endregion Imports
 
@@ -786,11 +786,11 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 
 						<span className='dl-block-name'>{ picRecObj.name }</span>{ /* What: Block Name Span Element. Why: The picker's own name is always shown first. How: This renders picRecObj's own name directly. */ }
 
-						<InfoTip
+						<InfTipCom
 							className={ `dl-mode ${ neuModBoo ? 'neutral' : '' }` }
 							label={ modLabStr }
 							truncationOnly
-						>{ modLabStr }</InfoTip>{ /* What: Mode Pill Info Tip Element. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfoTip. */ }
+						>{ modLabStr }</InfTipCom>{ /* What: Mode Pill Info Tip Element. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
 
 
 					</span>
@@ -845,11 +845,11 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 
 					<span className='dl-block-name'>{ picRecObj.name }</span>{ /* What: Block Name Span Element. Why: The picker's own name is always shown first. How: This renders picRecObj's own name directly. */ }
 
-					<InfoTip
+					<InfTipCom
 						className={ `dl-mode ${ neuModBoo ? 'neutral' : '' }` }
 						label={ modLabStr }
 						truncationOnly
-					>{ modLabStr }</InfoTip>{ /* What: Mode Pill Info Tip Element. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfoTip. */ }
+					>{ modLabStr }</InfTipCom>{ /* What: Mode Pill Info Tip Element. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
 
 
 				</span>
@@ -868,7 +868,7 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 			</button>
 
 
-			<Collapse open={ bloOpeBoo }>{ /* What: Collapse Component. Why: The item table below should only exist in the DOM while this block is actually expanded. How: This wraps the table, driven by bloOpeBoo. */ }
+			<ColDisCom open={ bloOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The item table below should only exist in the DOM while this block is actually expanded. How: This wraps the table, driven by bloOpeBoo. */ }
 
 
 				<div className='dl-table'>{ /* What: Item Table Div Element. Why: This groups the shared header row with every item row below it. How: This renders TabHeaCom followed by one row per picIteArr entry. */ }
@@ -899,11 +899,11 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 								<span className='dl-item dl-mk-item'>{ /* What: Item Name Span Element. Why: This groups the item's own name and subline together. How: This renders iteRecObj's own name plus its computed subline below. */ }
 
 
-									<InfoTip
+									<InfTipCom
 										className='dl-name'
 										label={ iteRecObj.name }
 										truncationOnly
-									>{ iteRecObj.name }</InfoTip>{ /* What: Item Name Info Tip Element. Why: A long item name can truncate in a narrow layout. How: This renders iteRecObj's own name as a truncation-revealing InfoTip. */ }
+									>{ iteRecObj.name }</InfTipCom>{ /* What: Item Name Info Tip Element. Why: A long item name can truncate in a narrow layout. How: This renders iteRecObj's own name as a truncation-revealing InfTipCom. */ }
 
 									<span className='dl-sub'>{ iteSubFun( picRecObj, iteRecObj, hasValBoo ? genIteObj[ iteRecObj.id ] : null ) }</span>{ /* What: Item Subline Span Element. Why: Every item shows its own weight/range/boost text beneath its name. How: This renders iteSubFun's own result, passing the generation snapshot only while hasValBoo. */ }
 
@@ -934,7 +934,7 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 				</div>
 
 
-			</Collapse>
+			</ColDisCom>
 
 
 		</div>
@@ -1056,17 +1056,17 @@ function ConSecCom ( { appStaObj, picGroArr } ) {
 									<span className='dl-nrow'>{ /* What: Name Row Span Element. Why: The name and mode pill sit side by side on their own row above the subline. How: This renders conRecObj's own name plus its modLabStr pill. */ }
 
 
-										<InfoTip
+										<InfTipCom
 											className='dl-name'
 											label={ conRecObj.name }
 											truncationOnly
-										>{ conRecObj.name }</InfoTip>{ /* What: Conditional Name Info Tip Element. Why: A long conditional name can truncate in a narrow layout. How: This renders conRecObj's own name as a truncation-revealing InfoTip. */ }
+										>{ conRecObj.name }</InfTipCom>{ /* What: Conditional Name Info Tip Element. Why: A long conditional name can truncate in a narrow layout. How: This renders conRecObj's own name as a truncation-revealing InfTipCom. */ }
 
-										<InfoTip
+										<InfTipCom
 											className={ `dl-mode dl-mode--cond ${ neuModBoo ? 'is-neutral' : '' }` }
 											label={ modLabStr }
 											truncationOnly
-										>{ modLabStr }</InfoTip>{ /* What: Mode Pill Info Tip Element. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfoTip. */ }
+										>{ modLabStr }</InfTipCom>{ /* What: Mode Pill Info Tip Element. Why: A long mode label can truncate in a narrow layout. How: This renders modLabStr as a truncation-revealing InfTipCom. */ }
 
 
 									</span>
@@ -1502,11 +1502,11 @@ function RemLogCom ( { state, onClose } ) {
 					>{ /* What: Reminder Row Div Element. Why: This is one task/reminder's own full row. How: This toggles its own is-done/is-due/is-notdue classes from rowStaStr. */ }
 
 
-						<InfoTip
+						<InfTipCom
 							className='dl-r-name dl-mk-rname'
 							label={ tasObj.name }
 							truncationOnly
-						>{ tasObj.name }</InfoTip>{ /* What: Reminder Name Info Tip Element. Why: A long reminder name can truncate in a narrow layout. How: This renders tasObj's own name as a truncation-revealing InfoTip. */ }
+						>{ tasObj.name }</InfTipCom>{ /* What: Reminder Name Info Tip Element. Why: A long reminder name can truncate in a narrow layout. How: This renders tasObj's own name as a truncation-revealing InfTipCom. */ }
 
 						<span className='dl-r-when dl-mk-rwhen'>{ wheStr }</span>{ /* What: Reminder When Span Element. Why: Every row shows its own plain schedule summary. How: This renders wheStr directly. */ }
 

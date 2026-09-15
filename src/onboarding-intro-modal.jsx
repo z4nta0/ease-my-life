@@ -8,7 +8,7 @@ import React from 'react'; // What: React. Why: This is the UI library IntModCom
 
 
 import { createPortal } from 'react-dom'; // What: Create Portal. Why: The modal must render into <body> so it lays over the whole app instead of being clipped by an ancestor's own overflow/stacking context. How: This is called with the modal's own JSX and document.body inside IntModCom's return.
-import { reduceMotion } from './ui.jsx';  // What: Reduce Motion.  Why: A user who prefers reduced motion should not see the card's own slide-in entrance animation. How: This is called below to decide whether the "ob-in" entrance class is applied.
+import { redMotFun    } from './ui.jsx';  // What: Reduce Motion Function.  Why: A user who prefers reduced motion should not see the card's own slide-in entrance animation. How: This is called below to decide whether the "ob-in" entrance class is applied.
 
 // #endregion Imports
 
@@ -34,8 +34,8 @@ import { reduceMotion } from './ui.jsx';  // What: Reduce Motion.  Why: A user w
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.icon        - Icon: The icon or glyph node rendered above the
- *                            title, typically an <Icon /> or an inline <svg>.
+ * @param props.icon        - IcoSvgCom: The icon or glyph node rendered above the
+ *                            title, typically an <IcoSvgCom /> or an inline <svg>.
  * @param props.title       - Title: The modal's own heading text, used as both
  *                            the visible <h2> and the dialog's own aria-label.
  * @param props.paragraphs  - Paragraphs: The body paragraphs shown under the
@@ -66,7 +66,7 @@ import { reduceMotion } from './ui.jsx';  // What: Reduce Motion.  Why: A user w
 function IntModCom ( { icon, title, paragraphs, pills, onStart, onSkip, startLabel = 'Get started', skipLabel = 'Skip' } ) {
 
 
-	const redMotBoo = reduceMotion && reduceMotion(); // What: Reduced Motion Boolean. Why: The card's own slide-in entrance animation should be skipped when the user prefers reduced motion. How: This calls the shared reduceMotion() check, guarded so a missing import is also tolerated.
+	const redMotBoo = redMotFun && redMotFun(); // What: Reduced Motion Boolean. Why: The card's own slide-in entrance animation should be skipped when the user prefers reduced motion. How: This calls the shared redMotFun() check, guarded so a missing import is also tolerated.
 
 
 

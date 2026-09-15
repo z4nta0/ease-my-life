@@ -6,19 +6,19 @@
 import React from 'react'; // What: React. Why: This is the UI library the whole file's component and its hooks are built on. How: This is used directly (React.useState, React.useMemo, React.useCallback, ...) throughout instead of importing individual named hooks.
 
 
-import { CAD_NAM_OBJ            } from './cadence.js';          // What: Cadence. Why: A cadence-scoped picker's run gaps need relabeling into real period words instead of raw day counts. How: This is called via CAD_NAM_OBJ.uniWorFun to turn a day/period count into "week"/"month"/"year" wording.
-import { Card                   } from './ui.jsx';              // What: Card. Why: Every stat card on this page shares the same rounded container chrome. How: This wraps each headline/breakdown/heatmap block rendered below.
-import { HelButCom             } from './help-mode.jsx';       // What: Help Button Component. Why: This page needs its own header toggle for entering and leaving help mode. How: This is rendered in the header, flipping helOnBoo on click.
-import { HelOveCom            } from './help-mode.jsx';       // What: Help Overlay Component. Why: Help mode needs a dimmed overlay with per-element tooltips layered above the real page. How: This is rendered while helOnBoo is true, fed STA_HEL_ARR as its copy source.
-import { hidHisFun              } from './help-sample-data.js'; // What: Hide History Function. Why: The real hidden sample pickers borrowed for help mode must be re-hidden once help mode ends. How: This is called whenever helOnBoo turns false, and again on unmount.
-import { Icon                   } from './ui.jsx';              // What: Icon. Why: Several small glyphs (sort-direction arrows, the streak flame) are needed throughout this page. How: This is rendered with a specific name and size wherever one of those glyphs is shown.
-import { InfoTip                } from './ui.jsx';              // What: Info Tip. Why: The Spent metric's "no completed cycle yet" case needs a small inline explanation. How: This renders a "?" bubble with its own label text next to that N/A value.
-import { MODES                  } from './seed.js';             // What: Modes. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up by a picker's own mode key throughout the page.
-import { Pill                   } from './ui.jsx';              // What: Pill. Why: The single-picker header needs a small labelled pill showing the picker's own mode. How: This renders that pill, toned as 'mode'.
-import { STA_HEL_ARR            } from './help-content.jsx';    // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelOveCom.
-import { TASKS                  } from './tasks.js';            // What: Tasks. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TASKS.normalizeOpts on the raw persisted reminderOpts.
-import { unhHisFun              } from './help-sample-data.js'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helOnBoo turns true, as long as the page tour doesn't already own the same samples.
-import { useEmlTouFun           } from './onboarding.jsx';      // What: Use Ease My Life Tour. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's reserveTop field.
+import { CAD_NAM_OBJ  } from './cadence.js';          // What: Cadence. Why: A cadence-scoped picker's run gaps need relabeling into real period words instead of raw day counts. How: This is called via CAD_NAM_OBJ.uniWorFun to turn a day/period count into "week"/"month"/"year" wording.
+import { CarSurCom    } from './ui.jsx';              // What: Card Surface Component. Why: Every stat card on this page shares the same rounded container chrome. How: This wraps each headline/breakdown/heatmap block rendered below.
+import { HelButCom    } from './help-mode.jsx';       // What: Help Button Component. Why: This page needs its own header toggle for entering and leaving help mode. How: This is rendered in the header, flipping helOnBoo on click.
+import { HelOveCom    } from './help-mode.jsx';       // What: Help Overlay Component. Why: Help mode needs a dimmed overlay with per-element tooltips layered above the real page. How: This is rendered while helOnBoo is true, fed STA_HEL_ARR as its copy source.
+import { hidHisFun    } from './help-sample-data.js'; // What: Hide History Function. Why: The real hidden sample pickers borrowed for help mode must be re-hidden once help mode ends. How: This is called whenever helOnBoo turns false, and again on unmount.
+import { IcoSvgCom    } from './ui.jsx';              // What: Icon Svg Component. Why: Several small glyphs (sort-direction arrows, the streak flame) are needed throughout this page. How: This is rendered with a specific name and size wherever one of those glyphs is shown.
+import { InfTipCom    } from './ui.jsx';              // What: Info Tip Component. Why: The Spent metric's "no completed cycle yet" case needs a small inline explanation. How: This renders a "?" bubble with its own label text next to that N/A value.
+import { MODES        } from './seed.js';             // What: Modes. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up by a picker's own mode key throughout the page.
+import { PilTagCom    } from './ui.jsx';              // What: Pill Tag Component. Why: The single-picker header needs a small labelled pill showing the picker's own mode. How: This renders that pill, toned as 'mode'.
+import { STA_HEL_ARR  } from './help-content.jsx';    // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelOveCom.
+import { TASKS        } from './tasks.js';            // What: Tasks. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TASKS.normalizeOpts on the raw persisted reminderOpts.
+import { unhHisFun    } from './help-sample-data.js'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helOnBoo turns true, as long as the page tour doesn't already own the same samples.
+import { useEmlTouFun } from './onboarding.jsx';      // What: Use Ease My Life Tour. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's reserveTop field.
 
 // #endregion Imports
 
@@ -225,9 +225,9 @@ function BreBarCom ( { titStr, totNum, segArr, empStr, className = '' } ) {
 	return (
 
 
-		<Card
+		<CarSurCom
 			className={ className }
-		>{ /* What: Breakdown Card Element. Why: This is BreBarCom's own root container, shared chrome with every other stat card. How: This renders the kicker, then either the bar and legend or the empty state below it. */ }
+		>{ /* What: Card Surface Component. Why: This is BreBarCom's own root container, shared chrome with every other stat card. How: This renders the kicker, then either the bar and legend or the empty state below it. */ }
 
 
 			<div className='kicker'>{ titStr }</div>{ /* What: Kicker Div Element. Why: Every card on this page opens with a small labelled kicker. How: This renders the caller's own titStr. */ }
@@ -294,7 +294,7 @@ function BreBarCom ( { titStr, totNum, segArr, empStr, className = '' } ) {
 			) : <div className='stat-empty'>{ empStr }</div> }{ /* What: Empty State Div Element. Why: A zero-total card needs to explain why the bar is missing instead of showing nothing at all. How: This renders the caller's own empStr message in place of the bar and legend. */ }
 
 
-		</Card>
+		</CarSurCom>
 
 
 	);
@@ -2474,7 +2474,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 							<span className='kicker'>Picker</span>{ /* What: Picker Kicker Span Element. Why: This block needs its own small label naming what it identifies. How: This renders the literal word "Picker". */ }
 							<h2 className='picker-title'>{ scpPicObj.name }</h2>{ /* What: Picker Title Element. Why: The scoped picker's own name is the headline of this identity block. How: This renders scpPicObj.name. */ }
-							<Pill tone='mode'>{ ( MODES[ scpPicObj.mode ] || {} ).label || scpPicObj.mode }</Pill>{ /* What: Pill. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own MODES label, falling back to the raw mode key. */ }
+							<PilTagCom tone='mode'>{ ( MODES[ scpPicObj.mode ] || {} ).label || scpPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own MODES label, falling back to the raw mode key. */ }
 
 							{ ( () => { // What: Mode Hint Render. Why: A mode's own hint text can be either a single paragraph or several, and each needs wrapping in its own paragraph element. How: This reads the mode's own hint field and maps an array into one <p> per paragraph, or wraps a plain string in one.
 
@@ -2506,41 +2506,41 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 							<React.Fragment>{ /* What: Conditionals Fragment Element. Why: This groups the headline row and the breakdown card without adding an extra DOM wrapper of its own. How: This wraps those two sibling blocks. */ }
 
 
-								<div className='stat-row'>{ /* What: Conditional Headline Row Div Element. Why: The four Conditionals headline numbers share the same row layout as every other scope's own headline cards. How: This renders one Card per headline number. */ }
+								<div className='stat-row'>{ /* What: Conditional Headline Row Div Element. Why: The four Conditionals headline numbers share the same row layout as every other scope's own headline cards. How: This renders one CarSurCom per headline number. */ }
 
 
-									<Card className='stat-card stat-mk-condfired'>{ /* What: Card. Why: Every headline number shares the same card chrome. How: This wraps the "triggered" total. */ }
+									<CarSurCom className='stat-card stat-mk-condfired'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "triggered" total. */ }
 
 										<div className='stat-num'>{ conTotObj.fired }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders conTotObj.fired. */ }
 										<div className='stat-lbl'>triggered</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal word "triggered". */ }
 
-									</Card>
+									</CarSurCom>
 
-									<Card className='stat-card stat-mk-condcycles'>{ /* What: Card. Why: Every headline number shares the same card chrome. How: This wraps the "cycles" total. */ }
+									<CarSurCom className='stat-card stat-mk-condcycles'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "cycles" total. */ }
 
 										<div className='stat-num'>{ conTotObj.total }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders conTotObj.total. */ }
 										<div className='stat-lbl'>cycles</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal word "cycles". */ }
 
-									</Card>
+									</CarSurCom>
 
-									<Card className='stat-card stat-mk-condrate'>{ /* What: Card. Why: Every headline number shares the same card chrome. How: This wraps the "fire rate" percentage. */ }
+									<CarSurCom className='stat-card stat-mk-condrate'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "fire rate" percentage. */ }
 
 										<div className='stat-num'>{ conTotObj.rate }%</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders conTotObj.rate as a percentage. */ }
 										<div className='stat-lbl'>fire rate</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "fire rate". */ }
 
-									</Card>
+									</CarSurCom>
 
-									<Card className='stat-card stat-mk-condlast'>{ /* What: Card. Why: Every headline number shares the same card chrome. How: This wraps the "last fired" date. */ }
+									<CarSurCom className='stat-card stat-mk-condlast'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "last fired" date. */ }
 
 										<div className='stat-num'>{ conTotObj.lastFired ? conDayFun( conTotObj.lastFired ) : '—' }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large value, or a placeholder glyph when nothing has ever fired. How: This formats conTotObj.lastFired, or renders the em-dash placeholder glyph when it's null. */ }
 										<div className='stat-lbl'>last fired</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "last fired". */ }
 
-									</Card>
+									</CarSurCom>
 
 
 								</div>
 
-								<Card className='stat-mk-condbreakdown'>{ /* What: Card. Why: The Conditionals breakdown list shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, explanatory note, and the list itself. */ }
+								<CarSurCom className='stat-mk-condbreakdown'>{ /* What: Card Surface Component. Why: The Conditionals breakdown list shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, explanatory note, and the list itself. */ }
 
 
 									<div className='rank-head'>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }
@@ -2555,7 +2555,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 										>{ /* What: Sort Toggle Button Element. Why: The user needs a way to flip the breakdown list's own sort direction. How: This flips conSorStr between 'desc' and 'asc' when clicked. */ }
 
 											{ conSorStr === 'desc' ? 'High → Low' : 'Low → High' }
-											<Icon name={ conSorStr === 'desc' ? 'arrow_down' : 'arrow_up' } size={ 13 } />{ /* What: Icon. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on conSorStr. */ }
+											<IcoSvgCom name={ conSorStr === 'desc' ? 'arrow_down' : 'arrow_up' } size={ 13 } />{ /* What: Icon Svg Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on conSorStr. */ }
 
 										</button>
 
@@ -2713,7 +2713,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 									) : <div className='stat-empty'>No conditional activity in { ranNouStr } yet.</div> }{ /* What: Conditional Empty State Div Element. Why: An empty breakdown needs to explain why the list is missing instead of showing nothing at all. How: This renders only while conBreArr is empty. */ }
 
 
-								</Card>
+								</CarSurCom>
 
 
 							</React.Fragment>
@@ -2738,36 +2738,36 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 							{ isaRemBoo ? ( // What: Reminders Headline Check. Why: The Reminders scope's own headline cards are shaped differently from a pick-based scope's. How: This renders the Reminders-shaped set while isaRemBoo is true, the pick-shaped set otherwise.
 
 
-								<React.Fragment>{ /* What: Reminders Headline Fragment Element. Why: The 4 Reminders-shaped headline cards need grouping without an extra DOM wrapper. How: This wraps those 4 Card elements. */ }
+								<React.Fragment>{ /* What: Reminders Headline Fragment Element. Why: The 4 Reminders-shaped headline cards need grouping without an extra DOM wrapper. How: This wraps those 4 CarSurCom elements. */ }
 
 
-									<Card className='stat-card stat-mk-remdone'>{ /* What: Card. Why: Every headline number shares the same card chrome. How: This wraps the "completed" total. */ }
+									<CarSurCom className='stat-card stat-mk-remdone'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "completed" total. */ }
 
 										<div className='stat-num'>{ totDonNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders totDonNum. */ }
 										<div className='stat-lbl'>completed</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal word "completed". */ }
 
-									</Card>
+									</CarSurCom>
 
-									<Card className='stat-card stat-mk-remweek'>{ /* What: Card. Why: Every headline number shares the same card chrome. How: This wraps the "this week" total. */ }
+									<CarSurCom className='stat-card stat-mk-remweek'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "this week" total. */ }
 
 										<div className='stat-num'>{ remWeeNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders remWeeNum. */ }
 										<div className='stat-lbl'>this week</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "this week". */ }
 
-									</Card>
+									</CarSurCom>
 
-									<Card className='stat-card stat-mk-remactive'>{ /* What: Card. Why: Every headline number shares the same card chrome. How: This wraps the "active days" total. */ }
+									<CarSurCom className='stat-card stat-mk-remactive'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "active days" total. */ }
 
 										<div className='stat-num'>{ actDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders actDayNum. */ }
 										<div className='stat-lbl'>active days</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "active days". */ }
 
-									</Card>
+									</CarSurCom>
 
-									<Card className='stat-card stat-mk-rembusiest'>{ /* What: Card. Why: Every headline number shares the same card chrome. How: This wraps the "busiest day" total. */ }
+									<CarSurCom className='stat-card stat-mk-rembusiest'>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "busiest day" total. */ }
 
 										<div className='stat-num'>{ busDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders busDayNum. */ }
 										<div className='stat-lbl'>busiest day</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "busiest day". */ }
 
-									</Card>
+									</CarSurCom>
 
 
 								</React.Fragment>
@@ -2776,7 +2776,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 							) : ( // What: Pick Headline Branch. Why: Every non-Reminders scope needs the pick-shaped headline cards instead. How: This renders the else branch, taken while isaRemBoo is false.
 
 
-								<React.Fragment>{ /* What: Pick Headline Fragment Element. Why: The 4 pick-shaped headline cards need grouping without an extra DOM wrapper. How: This wraps those 4 Card elements. */ }
+								<React.Fragment>{ /* What: Pick Headline Fragment Element. Why: The 4 pick-shaped headline cards need grouping without an extra DOM wrapper. How: This wraps those 4 CarSurCom elements. */ }
 
 
 									{ /* stat-mk-scope-{all,picker}: All and a specific
@@ -2784,34 +2784,34 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 									    exact same stat-mk-* classes above, so help mode
 									    needs an extra hook to give the two scopes their
 									    own separate tooltip copy. */ }
-									<Card className={ `stat-card stat-mk-streak ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' }` }>{ /* What: Card. Why: Every headline number shares the same card chrome. How: This wraps the "day streak" total, tagged with an extra scope-specific class for help mode. */ }
+									<CarSurCom className={ `stat-card stat-mk-streak ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' }` }>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "day streak" total, tagged with an extra scope-specific class for help mode. */ }
 
 										<div className='stat-num'>{ strCouNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders strCouNum. */ }
 										<div className='stat-lbl'>day streak</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "day streak". */ }
-										<Icon name='flame' size={ 16 } />{ /* What: Icon. Why: The streak card needs a small flame glyph reinforcing its own meaning. How: This renders the 'flame' icon at a fixed size. */ }
+										<IcoSvgCom name='flame' size={ 16 } />{ /* What: Icon Svg Component. Why: The streak card needs a small flame glyph reinforcing its own meaning. How: This renders the 'flame' icon at a fixed size. */ }
 
-									</Card>
+									</CarSurCom>
 
-									<Card className={ `stat-card stat-mk-fulldays ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' }` }>{ /* What: Card. Why: Every headline number shares the same card chrome. How: This wraps the "full days" total, tagged with an extra scope-specific class for help mode. */ }
+									<CarSurCom className={ `stat-card stat-mk-fulldays ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' }` }>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "full days" total, tagged with an extra scope-specific class for help mode. */ }
 
 										<div className='stat-num'>{ fulDayNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders fulDayNum. */ }
 										<div className='stat-lbl'>full days &middot; { actDayNum }</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it, plus its own denominator for context. How: This renders the literal words "full days" followed by actDayNum. */ }
 
-									</Card>
+									</CarSurCom>
 
-									<Card className={ `stat-card stat-mk-done ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' }` }>{ /* What: Card. Why: Every headline number shares the same card chrome. How: This wraps the "items done" total, tagged with an extra scope-specific class for help mode. */ }
+									<CarSurCom className={ `stat-card stat-mk-done ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' }` }>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "items done" total, tagged with an extra scope-specific class for help mode. */ }
 
 										<div className='stat-num'>{ totDonNum }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders totDonNum. */ }
 										<div className='stat-lbl'>items done</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "items done". */ }
 
-									</Card>
+									</CarSurCom>
 
-									<Card className={ `stat-card stat-mk-rate ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' }` }>{ /* What: Card. Why: Every headline number shares the same card chrome. How: This wraps the "completion" percentage, tagged with an extra scope-specific class for help mode. */ }
+									<CarSurCom className={ `stat-card stat-mk-rate ${ isaPicBoo ? 'stat-mk-scope-picker' : 'stat-mk-scope-all' }` }>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "completion" percentage, tagged with an extra scope-specific class for help mode. */ }
 
 										<div className='stat-num'>{ comRatNum }%</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large number. How: This renders comRatNum as a percentage. */ }
 										<div className='stat-lbl'>completion</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal word "completion". */ }
 
-									</Card>
+									</CarSurCom>
 
 
 								</React.Fragment>
@@ -2829,7 +2829,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 					{ !isaConBoo && ( // What: Heatmap Visibility Check. Why: The Conditionals scope has no day-by-day heatmap of its own to show. How: This renders the whole heatmap card only while isaConBoo is false.
 
 
-						<Card className='stat-heatmap-card'>{ /* What: Card. Why: The heatmap shares the same card chrome as every other stat card. How: This wraps the heat header, the optional year pager, and either the grid+detail or an empty state. */ }
+						<CarSurCom className='stat-heatmap-card'>{ /* What: Card Surface Component. Why: The heatmap shares the same card chrome as every other stat card. How: This wraps the heat header, the optional year pager, and either the grid+detail or an empty state. */ }
 
 
 							<div className='heat-h'>{ /* What: Heat Header Div Element. Why: The heatmap's own kicker and legend sit together in one row. How: This wraps the kicker div and the HeaLegCom legend. */ }
@@ -3018,7 +3018,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 							) }
 
 
-						</Card>
+						</CarSurCom>
 
 
 					) }
@@ -3027,7 +3027,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 					{ scoValStr === 'all' && hasConBoo && ( // What: Conditionals Summary Visibility Check. Why: This compact summary only belongs on the combined All view, and only while at least one conditional exists. How: This renders it only while both conditions hold.
 
 
-						<Card className='cnd-sum-card'>{ /* What: Card. Why: The Conditionals summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. */ }
+						<CarSurCom className='cnd-sum-card'>{ /* What: Card Surface Component. Why: The Conditionals summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. */ }
 
 
 							<div className='rem-stats-head'>{ /* What: Reminder Stats Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row, sharing this class with the Reminders summary below for consistent layout. How: This wraps the kicker div and the two inline stat spans. */ }
@@ -3086,7 +3086,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 							) : <div className='rem-log-empty'>No conditional activity in { ranNouStr } yet.</div> }{ /* What: Conditional Summary Empty State Div Element. Why: An empty summary needs to explain why the list is missing instead of showing nothing at all. How: This renders only while conStaArr is empty. */ }
 
 
-						</Card>
+						</CarSurCom>
 
 
 					) }
@@ -3095,7 +3095,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 					{ isaRemBoo && ( // What: Reminders Extras Visibility Check. Why: The type-split bar and the Reminders breakdown card only belong while the Reminders scope is active. How: This renders both together only while isaRemBoo is true.
 
 
-						<React.Fragment>{ /* What: Reminders Extras Fragment Element. Why: These two blocks need grouping without an extra DOM wrapper. How: This wraps the BreBarCom type-split card and the Reminders breakdown Card. */ }
+						<React.Fragment>{ /* What: Reminders Extras Fragment Element. Why: These two blocks need grouping without an extra DOM wrapper. How: This wraps the BreBarCom type-split card and the Reminders breakdown CarSurCom. */ }
 
 
 							<BreBarCom
@@ -3106,7 +3106,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								className='stat-mk-remtype'
 							/>{ /* What: Breakdown Bar Component. Why: The Reminders scope needs the same stacked-bar treatment as the pick-source split, but for the one-time/recurring type split instead. How: This is fed typSegArr and totDonNum as its own segments/total. */ }
 
-							<Card className='stat-mk-rembreakdown'>{ /* What: Card. Why: The Reminders breakdown list shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, explanatory note, and the paged list itself. */ }
+							<CarSurCom className='stat-mk-rembreakdown'>{ /* What: Card Surface Component. Why: The Reminders breakdown list shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, explanatory note, and the paged list itself. */ }
 
 
 								<div className='rank-head'>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }
@@ -3123,7 +3123,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 										{ remMetStr === 'recent'
 											? ( remSorStr === 'desc' ? 'Newest → Oldest' : 'Oldest → Newest' )
 											: ( remSorStr === 'desc' ? 'High → Low' : 'Low → High' ) }
-										<Icon name={ remSorStr === 'desc' ? 'arrow_down' : 'arrow_up' } size={ 13 } />{ /* What: Icon. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on remSorStr. */ }
+										<IcoSvgCom name={ remSorStr === 'desc' ? 'arrow_down' : 'arrow_up' } size={ 13 } />{ /* What: Icon Svg Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on remSorStr. */ }
 
 									</button>
 
@@ -3231,7 +3231,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								) }
 
 
-							</Card>
+							</CarSurCom>
 
 
 						</React.Fragment>
@@ -3242,7 +3242,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 					{ shoRemBoo && ( // What: Reminders Summary Visibility Check. Why: This compact summary only belongs on the combined All view, and only while reminders are enabled at all. How: This renders it only while shoRemBoo is true.
 
 
-						<Card className='rem-stats-card'>{ /* What: Card. Why: The Reminders summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. */ }
+						<CarSurCom className='rem-stats-card'>{ /* What: Card Surface Component. Why: The Reminders summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. */ }
 
 
 							<div className='rem-stats-head'>{ /* What: Reminder Stats Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row. How: This wraps the kicker div and the two inline stat spans. */ }
@@ -3299,7 +3299,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 							) }
 
 
-						</Card>
+						</CarSurCom>
 
 
 					) }
@@ -3327,7 +3327,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 						<div className='stat-row stat-row--2'>{ /* What: Rankings Row Div Element. Why: The two ranking cards sit side by side in their own row. How: This wraps the Most Picked and Coldest items Cards. */ }
 
 
-							<Card className='stat-mk-mostpicked'>{ /* What: Card. Why: The Most Picked ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. */ }
+							<CarSurCom className='stat-mk-mostpicked'>{ /* What: Card Surface Component. Why: The Most Picked ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. */ }
 
 
 								<div className='kicker'>Most picked</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Most picked". */ }
@@ -3358,9 +3358,9 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								) : <div className='stat-empty'>Nothing picked in { ranNouStr } yet.</div> }{ /* What: Top Ranking Empty State Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing at all. How: This renders only while topPicArr is empty. */ }
 
 
-							</Card>
+							</CarSurCom>
 
-							<Card className='stat-mk-coldest'>{ /* What: Card. Why: The Coldest items ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. */ }
+							<CarSurCom className='stat-mk-coldest'>{ /* What: Card Surface Component. Why: The Coldest items ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. */ }
 
 
 								<div className='kicker'>Coldest items</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Coldest items". */ }
@@ -3391,7 +3391,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								) : <div className='stat-empty'>No items in this scope.</div> }{ /* What: Cold Ranking Empty State Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing at all. How: This renders only while colIteArr is empty. */ }
 
 
-							</Card>
+							</CarSurCom>
 
 
 						</div>
@@ -3403,7 +3403,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 					{ isaPicBoo && ( // What: Pick Breakdown Visibility Check. Why: This entire card only belongs while a single real picker is the active scope. How: This renders it only while isaPicBoo is true.
 
 
-						<Card className='stat-breakdown-card'>{ /* What: Card. Why: The Pick breakdown shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, the active metric's own note, and the sorted list itself. */ }
+						<CarSurCom className='stat-breakdown-card'>{ /* What: Card Surface Component. Why: The Pick breakdown shares the same card chrome as every other breakdown card. How: This wraps the sort header, metric pill row, the active metric's own note, and the sorted list itself. */ }
 
 
 							<div className='rank-head'>{ /* What: Rank Head Div Element. Why: The breakdown's own kicker and sort toggle sit together in one row. How: This wraps the kicker div and the sort button. */ }
@@ -3418,7 +3418,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								>{ /* What: Sort Toggle Button Element. Why: The user needs a way to flip the breakdown list's own sort direction. How: This flips sorDirStr between 'desc' and 'asc' when clicked. */ }
 
 									{ sorDirStr === 'desc' ? 'High → Low' : 'Low → High' }
-									<Icon name={ sorDirStr === 'desc' ? 'arrow_down' : 'arrow_up' } size={ 13 } />{ /* What: Icon. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on sorDirStr. */ }
+									<IcoSvgCom name={ sorDirStr === 'desc' ? 'arrow_down' : 'arrow_up' } size={ 13 } />{ /* What: Icon Svg Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on sorDirStr. */ }
 
 								</button>
 
@@ -3660,7 +3660,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 																<span className='rank-freq-val rank-bd-freq--freq is-dim'>
 
-																	N/A <InfoTip className='pie-help pie-help--sm' label='No full cycle has been completed yet'>?</InfoTip>{ /* What: Info Tip. Why: A N/A Spent value needs a small inline explanation of why there's no cycle to measure yet. How: This renders the shared "?" bubble with its own label text. */ }
+																	N/A <InfTipCom className='pie-help pie-help--sm' label='No full cycle has been completed yet'>?</InfTipCom>{ /* What: Info Tip Component. Why: A N/A Spent value needs a small inline explanation of why there's no cycle to measure yet. How: This renders the shared "?" bubble with its own label text. */ }
 
 																</span>
 
@@ -3700,7 +3700,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 							) : <div className='stat-empty'>This picker has no items yet.</div> }{ /* What: Breakdown Empty State Div Element. Why: An empty picker needs to explain why the list is missing instead of showing nothing at all. How: This renders only while breListArr is empty. */ }
 
 
-						</Card>
+						</CarSurCom>
 
 
 					) }

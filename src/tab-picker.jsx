@@ -6,31 +6,31 @@
 import React from 'react'; // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useMemo, React.useCallback, React.Fragment) throughout, instead of importing individual named hooks.
 
 
-import { Btn                      } from './ui.jsx';                  // What: Button. Why: Every action in this file needs a consistently-styled clickable control. How: This is rendered wherever a styled button is needed, across the live picker view, the edit form, and the create form.
-import { CAD_NAM_OBJ              } from './cadence.js';              // What: Cadence. Why: This is the namespace of pure functions this file uses to normalize and edit a picker's own cadence. How: This is called for CAD_NAM_OBJ.norCadFun/enfWeeFun/locTipFun/uniWorFun throughout PicForCom.
-import { CadConCom                } from './cadence-control.jsx';     // What: Cadence Control. Why: This is the shared editor for a picker's cadence settings. How: This is rendered inside PicForCom's daily-schedule block, wired to the local cadence state.
-import { clePicFun                } from './help-sample-data.js';     // What: Clear Pickers Function. Why: Help mode's disposable sample pickers/conditionals must be torn down the moment help mode turns off or this tab unmounts. How: This is called from TabPicker's own help-mode effect and its unmount cleanup.
-import { Collapse                 } from './ui.jsx';                  // What: Collapse. Why: Several optional sections need an animated expand/collapse instead of an abrupt show/hide. How: This wraps the add-group input, the conditional-attach block, and the daily-schedule block, each gated on its own open boolean.
-import { CodConCom                } from './tab-conditional.jsx';     // What: Conditional Control Component. Why: Attaching a brand-new inline conditional needs the same editor the Data tab uses. How: This is rendered inside PicForCom's conditional-attach block, wired to the local condDraft state.
-import { conDrfFun                } from './tab-conditional.jsx';     // What: Conditional Draft Function. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This is called whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
-import { EntryEditor              } from './tab-today.jsx';           // What: Entry Editor. Why: Adding or editing a pool item reuses the exact same weight/ease editor the Today tab uses. How: This is rendered inline below the pool list, wired to either the real store actions or a local draft-item actions object.
-import { emlTouObj                } from './onboarding.jsx';          // What: Ease My Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill, and written via emlTouObj.set() to clear a staged empty-state prefill.
-import { HelButCom               } from './help-mode.jsx';           // What: Help Button Component. Why: This page needs its own toggle for entering/exiting help mode. How: This is rendered in the page header, wired to the local helpOn boolean.
-import { HelOveCom              } from './help-mode.jsx';           // What: Help Overlay Component. Why: Help mode needs its own highlighted-tooltip overlay layered above the page. How: This is rendered once, fed this page's own PIC_HEL_ARR.
-import { Icon                     } from './ui.jsx';                  // What: Icon. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
-import { InfoTip                  } from './ui.jsx';                  // What: Info Tip. Why: Several controls need an explanatory tooltip on hover/focus. How: This wraps the weight/value pills and the disabled Send/Delete buttons, given the tooltip's own label text.
-import { MODES                    } from './seed.js';                 // What: Modes. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read throughout to show the active mode's label/hint and to render the mode-choice radio list.
-import { norConFun                } from './pickers.js';              // What: Normalize Conditional Function. Why: A new inline conditional's name must be compared against existing ones the same way the store itself normalizes them. How: This is called on the conditional draft's own name before checking it for a collision.
-import { norGroFun                } from './pickers.js';              // What: Normalize Group Function. Why: A newly-typed group name must be normalized the same way the store itself normalizes group names. How: This is called on the new-group input's value to compute the picker's effective group.
-import { OB_CHECKLIST             } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: The Add New Picker button must stay disabled while the guided-tour checklist is still in progress. How: This is checked via OB_CHECKLIST.tutorialsInProgress against the shared state.
-import { Pill                     } from './ui.jsx';                  // What: Pill. Why: Small status labels need a consistent pill styling. How: This wraps the mode name, the 'inactive' tag, and the 'not yet'/'spent' tag.
-import { PIC_HEL_ARR              } from './help-content.jsx';        // What: Picker Help Array. Why: Help mode needs this page's own list of highlighted elements and their explanations. How: This is passed straight through to HelOveCom.
-import { PICKERS                  } from './pickers.js';              // What: Pickers. Why: This is the namespace of pure picking-engine functions this file drives every actual pick through. How: This is called throughout for PICKERS.pick/readiness/modeEligible/avgEase.
-import { ProgressBar              } from './ui.jsx';                  // What: Progress Bar. Why: A pool item's drift value needs a visual readiness bar, not just a raw number. How: This is rendered inside the pool row's InfoTip alongside the raw value.
-import { reduceMotion             } from './ui.jsx';                  // What: Reduce Motion. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
-import { sedPicFun                } from './help-sample-data.js';     // What: Seed Pickers Function. Why: Help mode needs real pickers of every mode, plus a conditional-gated one, to point its tooltips at. How: This is called the moment help mode turns on.
-import { useEmlTouFun             } from './onboarding.jsx';          // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
-import { WeekdayChips             } from './ui.jsx';                  // What: Weekday Chips. Why: The daily-schedule block needs a 7-day picker for which weekdays a picker may run on. How: This is rendered in PicForCom's schedule block, wired to the local daysOfWeek state.
+import { ButBasCom    } from './ui.jsx';                  // What: Button Base Component. Why: Every action in this file needs a consistently-styled clickable control. How: This is rendered wherever a styled button is needed, across the live picker view, the edit form, and the create form.
+import { CAD_NAM_OBJ  } from './cadence.js';              // What: Cadence. Why: This is the namespace of pure functions this file uses to normalize and edit a picker's own cadence. How: This is called for CAD_NAM_OBJ.norCadFun/enfWeeFun/locTipFun/uniWorFun throughout PicForCom.
+import { CadConCom    } from './cadence-control.jsx';     // What: Cadence Control. Why: This is the shared editor for a picker's cadence settings. How: This is rendered inside PicForCom's daily-schedule block, wired to the local cadence state.
+import { clePicFun    } from './help-sample-data.js';     // What: Clear Pickers Function. Why: Help mode's disposable sample pickers/conditionals must be torn down the moment help mode turns off or this tab unmounts. How: This is called from TabPicker's own help-mode effect and its unmount cleanup.
+import { CodConCom    } from './tab-conditional.jsx';     // What: Conditional Control Component. Why: Attaching a brand-new inline conditional needs the same editor the Data tab uses. How: This is rendered inside PicForCom's conditional-attach block, wired to the local condDraft state.
+import { ColDisCom    } from './ui.jsx';                  // What: Collapse Disclosure Component. Why: Several optional sections need an animated expand/collapse instead of an abrupt show/hide. How: This wraps the add-group input, the conditional-attach block, and the daily-schedule block, each gated on its own open boolean.
+import { conDrfFun    } from './tab-conditional.jsx';     // What: Conditional Draft Function. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This is called whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
+import { emlTouObj    } from './onboarding.jsx';          // What: Ease My Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill, and written via emlTouObj.set() to clear a staged empty-state prefill.
+import { EntryEditor  } from './tab-today.jsx';           // What: Entry Editor. Why: Adding or editing a pool item reuses the exact same weight/ease editor the Today tab uses. How: This is rendered inline below the pool list, wired to either the real store actions or a local draft-item actions object.
+import { HelButCom    } from './help-mode.jsx';           // What: Help Button Component. Why: This page needs its own toggle for entering/exiting help mode. How: This is rendered in the page header, wired to the local helpOn boolean.
+import { HelOveCom    } from './help-mode.jsx';           // What: Help Overlay Component. Why: Help mode needs its own highlighted-tooltip overlay layered above the page. How: This is rendered once, fed this page's own PIC_HEL_ARR.
+import { IcoSvgCom    } from './ui.jsx';                  // What: Icon Svg Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
+import { InfTipCom    } from './ui.jsx';                  // What: Info Tip Component. Why: Several controls need an explanatory tooltip on hover/focus. How: This wraps the weight/value pills and the disabled Send/Delete buttons, given the tooltip's own label text.
+import { MODES        } from './seed.js';                 // What: Modes. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read throughout to show the active mode's label/hint and to render the mode-choice radio list.
+import { norConFun    } from './pickers.js';              // What: Normalize Conditional Function. Why: A new inline conditional's name must be compared against existing ones the same way the store itself normalizes them. How: This is called on the conditional draft's own name before checking it for a collision.
+import { norGroFun    } from './pickers.js';              // What: Normalize Group Function. Why: A newly-typed group name must be normalized the same way the store itself normalizes group names. How: This is called on the new-group input's value to compute the picker's effective group.
+import { OB_CHECKLIST } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: The Add New Picker button must stay disabled while the guided-tour checklist is still in progress. How: This is checked via OB_CHECKLIST.tutorialsInProgress against the shared state.
+import { PIC_HEL_ARR  } from './help-content.jsx';        // What: Picker Help Array. Why: Help mode needs this page's own list of highlighted elements and their explanations. How: This is passed straight through to HelOveCom.
+import { PICKERS      } from './pickers.js';              // What: Pickers. Why: This is the namespace of pure picking-engine functions this file drives every actual pick through. How: This is called throughout for PICKERS.pick/readiness/modeEligible/avgEase.
+import { PilTagCom    } from './ui.jsx';                  // What: Pill Tag Component. Why: Small status labels need a consistent pill styling. How: This wraps the mode name, the 'inactive' tag, and the 'not yet'/'spent' tag.
+import { ProBarCom    } from './ui.jsx';                  // What: Progress Bar Component. Why: A pool item's drift value needs a visual readiness bar, not just a raw number. How: This is rendered inside the pool row's InfTipCom alongside the raw value.
+import { redMotFun    } from './ui.jsx';                  // What: Reduce Motion Function. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
+import { sedPicFun    } from './help-sample-data.js';     // What: Seed Pickers Function. Why: Help mode needs real pickers of every mode, plus a conditional-gated one, to point its tooltips at. How: This is called the moment help mode turns on.
+import { useEmlTouFun } from './onboarding.jsx';          // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
+import { WeeChiCom    } from './ui.jsx';                  // What: Weekday Chip Component. Why: The daily-schedule block needs a 7-day picker for which weekdays a picker may run on. How: This is rendered in PicForCom's schedule block, wired to the local daysOfWeek state.
 
 // #endregion Imports
 
@@ -93,7 +93,7 @@ function PickerStrip ( { candidates, picked, style, onDone, forceMotion } ) {
 	// What: Per-Step Transition Duration. Why: Each move must animate over the SAME time as the gap until the next move, so transitions are never cut off mid-flight (a fast start) or left sitting idle (a slow end); the motion reads as one continuous, decelerating glide. How: This is recomputed every step by the schedule loop below and applied as the strip's own CSS transition-duration.
 	const [ traDurNum, setTraDurNum ] = React.useState( 0 ); // What: Transition Duration Number And Setter. Why: This is the actual per-step duration described above. How: This starts at 0 and is overwritten by the schedule loop on every step.
 	// What: Animation-Off Boolean. Why: Reduced motion skips the cycle entirely, since the pick is already decided by the caller before this component even mounts, making the reel/spotlight/dissolve purely theatre; freezing the visuals via CSS alone would still leave the totSteNum-step timer running (roughly 2.5s) before onDone fires, gating the caller's own Send button behind a static screen with no feedback. How: forceMotion (set by the Settings preview's own explicit Play press) opts out of this skip even under a system reduced-motion preference.
-	const aniOffBoo = !forceMotion && !!( reduceMotion && reduceMotion() ); // What: Animation-Off Boolean Value. Why: This is the actual computed flag described above. How: This combines the forceMotion opt-out with the shared reduceMotion() check.
+	const aniOffBoo = !forceMotion && !!( redMotFun && redMotFun() ); // What: Animation-Off Boolean Value. Why: This is the actual computed flag described above. How: This combines the forceMotion opt-out with the shared redMotFun() check.
 	const [ cycPhaStr, setCycPhaStr ] = React.useState( aniOffBoo ? 'settled' : 'cycling' ); // What: Cycle Phase String And Setter. Why: Every style renders differently depending on whether the cycle is still spinning or has already landed. How: This starts on 'settled' when animation is off, otherwise 'cycling', and is flipped to 'settled' once the schedule loop below finishes.
 	const wraSpoRef = React.useRef( null ); // What: Wrap Spotlight Reference. Why: The spotlight style's own wrapping div needs a stable DOM handle. How: This is attached via the spotlight branch's own ref prop, below.
 	// What: Short Viewport Media Query Mirror. Why: This mirrors styles2.css's own `@media (max-height: 750px)` rule (.picker-stage's min-height drops there), but that alone can't help the 'reel' style: its own height is a fixed inline style (rowHeiNum * visRowNum, computed in JS), not CSS, so nothing in the stylesheet can shrink it. Without also reducing the row count here, the reel's own real content would stay exactly as tall as before, growing .picker-stage right back past its reduced min-height as soon as a pick starts running. How: This starts from the media query's current match state and is kept live by the effect right below.
@@ -445,7 +445,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	const aftExtFun = ( runActFun ) => { // What: After Exit Function. Why: Re-roll/Done need a shared helper that plays the exit animation (unless reduced motion applies) before running whatever the caller actually wants to happen. How: This either runs runActFun immediately, or stages butLevBoo for 180ms first.
 
 
-		if ( reduceMotion() ) { runActFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped animation. How: This runs the caller's action immediately and returns, skipping the staged delay below.
+		if ( redMotFun() ) { runActFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped animation. How: This runs the caller's action immediately and returns, skipping the staged delay below.
 
 		setButLevBoo( true ); // What: Leaving Stage Call. Why: The buttons need to actually play their own out-animation now. How: This flips butLevBoo, which the render below applies as a className modifier.
 
@@ -467,7 +467,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	const cnlCnfFun = () => { // What: Cancel Confirm Function. Why: Cancelling a pending delete needs to play the same leaving animation as everywhere else in this file, unless reduced motion applies. How: This either clears cnfDelStr immediately, or stages cnfLvgStr for 150ms first.
 
 
-		if ( reduceMotion() ) { setCnfDelStr( null ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped animation. How: This clears the confirm state immediately and returns.
+		if ( redMotFun() ) { setCnfDelStr( null ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped animation. How: This clears the confirm state immediately and returns.
 
 		setCnfLvgStr( cnfDelStr ); // What: Leaving Stage Call. Why: The confirm row needs to actually play its own out-animation now. How: This copies the current cnfDelStr into cnfLvgStr, which the render below applies as a className modifier.
 
@@ -546,7 +546,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
 
-			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : redMotFun() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
 
 
 		}) );
@@ -597,7 +597,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
 
-			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : redMotFun() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
 
 
 		}) );
@@ -815,18 +815,18 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 					<h2 className='picker-title'>{ picker.name }</h2>{ /* What: Title Heading Element. Why: The picker's own name is this view's main heading. How: This renders picker.name. */ }
 
-					<Pill tone='mode'>{ modInfObj.label }</Pill>{ /* What: Pill. Why: The picker's own mode reads as a small status pill beside its name. How: This renders modInfObj.label inside the shared Pill component. */ }
+					<PilTagCom tone='mode'>{ modInfObj.label }</PilTagCom>{ /* What: Pill Tag Component. Why: The picker's own mode reads as a small status pill beside its name. How: This renders modInfObj.label inside the shared PilTagCom component. */ }
 
 
 				</div>
 
-				<Btn
+				<ButBasCom
 					kind='secondary'
 					size='sm'
 					icon='edit'
 					className='picker-edit-btn'
 					onClick={ () => setEdiOpnBoo( true ) }
-				>Edit</Btn>{ /* What: Button. Why: The user needs a way to open PicForCom's own Details step against this exact picker. How: This flips ediOpnBoo true on click. */ }
+				>Edit</ButBasCom>{ /* What: Button. Why: The user needs a way to open PicForCom's own Details step against this exact picker. How: This flips ediOpnBoo true on click. */ }
 
 
 			</header>
@@ -883,9 +883,9 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 						<div className='stage-sent'>{ /* What: Sent Stage Div Element. Why: The checkmark, the sent item's own name, and its caption read as one confirmation block. How: This wraps those three pieces. */ }
 
 
-							<div className='stage-sent-check'>{ /* What: Sent Check Div Element. Why: A checkmark icon needs its own small badge to sit in. How: This wraps a single Icon. */ }
+							<div className='stage-sent-check'>{ /* What: Sent Check Div Element. Why: A checkmark icon needs its own small badge to sit in. How: This wraps a single IcoSvgCom. */ }
 
-								<Icon name='check' size={ 26 } />{ /* What: Icon. Why: A checkmark is the clearest possible confirmation glyph. How: This renders the shared check icon at a fixed size. */ }
+								<IcoSvgCom name='check' size={ 26 } />{ /* What: Icon Svg Component. Why: A checkmark is the clearest possible confirmation glyph. How: This renders the shared check icon at a fixed size. */ }
 
 							</div>
 
@@ -926,12 +926,12 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 							{ picker.mode === 'ease-down' && ( // What: Refill Button Check. Why: Only Ease Down can ever be depleted in a way a Refill actually fixes. How: This renders the Refill button only for that mode.
 
 
-								<Btn
+								<ButBasCom
 									kind='primary'
 									size='sm'
 									icon='refresh'
 									onClick={ () => actions.refillPicker( picker.id ) }
-								>Refill</Btn> // What: Button. Why: The user needs a direct way to bring every item back to full charge. How: This calls actions.refillPicker with this picker's own id.
+								>Refill</ButBasCom> // What: Button. Why: The user needs a direct way to bring every item back to full charge. How: This calls actions.refillPicker with this picker's own id.
 
 
 							) }
@@ -953,7 +953,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 						<React.Fragment>{ /* What: Done-Or-Sent Fragment Element. Why: Send to Today, Re-Roll, and Done are true siblings with no shared wrapper of their own. How: This groups all 3 buttons without adding an extra DOM node. */ }
 
-							<Btn
+							<ButBasCom
 								kind='primary'
 								icon='check'
 								className={ ` pv-act pv-act--send   ${ runPhaStr === 'sent' ? 'is-sent' : '' } ` }
@@ -967,38 +967,38 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 								</span>{ /* What: Send Label Span Element. Why: The label itself needs to cross-fade between its two states. How: This is re-keyed by runPhaStr so React replays the fade on every change. */ }
 
-							</Btn>
+							</ButBasCom>
 
 							{ /* What: Reroll Classname Design Note. Why: The pv-act--reroll class lets App Features' own manual-pick tour target this specific button (clickPassThroughSel, see onboarding-app-features.jsx) without also matching Send to Today or Done. How: disabled/is-tour-disabled below still only ever check itcSenBoo (the ORIGINAL Pickers page tour), unchanged; App Features leaves Re-Roll fully usable on purpose, see disDonBoo's own comment above. */ }
-							<Btn
+							<ButBasCom
 								kind='ghost'
 								icon='refresh'
 								className={ ` pv-act pv-act--reroll   ${ ( butLevBoo || runPhaStr === 'sent' ) ? 'is-leaving' : '' }   ${ itcSenBoo ? 'is-tour-disabled' : '' } ` }
 								style={{ animationDelay : '60ms' }}
 								disabled={ itcSenBoo }
 								onClick={ () => aftExtFun( rerActFun ) }
-							>Re-Roll</Btn>{ /* What: Button. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExtFun(rerActFun), disabled only during the page tour's own intercepted step. */ }
+							>Re-Roll</ButBasCom>{ /* What: Button. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExtFun(rerActFun), disabled only during the page tour's own intercepted step. */ }
 
-							<Btn
+							<ButBasCom
 								kind='ghost'
 								size='sm'
 								className={ ` pv-act   ${ ( butLevBoo || runPhaStr === 'sent' ) ? 'is-leaving' : '' }   ${ disDonBoo ? 'is-tour-disabled' : '' } ` }
 								style={{ animationDelay : '120ms' }}
 								disabled={ disDonBoo }
 								onClick={ () => aftExtFun( () => { setRunPhaStr( 'idle' ); setPicResObj( null ); } ) }
-							>Done</Btn>{ /* What: Button. Why: The user needs a way to walk away from this pick without sending or re-rolling it, playing the shared exit animation first. How: This calls aftExtFun with a callback resetting straight back to idle. */ }
+							>Done</ButBasCom>{ /* What: Button. Why: The user needs a way to walk away from this pick without sending or re-rolling it, playing the shared exit animation first. How: This calls aftExtFun with a callback resetting straight back to idle. */ }
 
 						</React.Fragment>
 
 					) : ( // What: Pick One Branch. Why: Before a pick has settled, only the initial trigger belongs here. How: This renders the else branch, taken while runPhaStr is neither 'done' nor 'sent'.
 
-						<Btn
+						<ButBasCom
 							kind='primary'
 							icon='play'
 							className={ ` pv-act pv-act--pick   ${ busPicBoo ? 'is-busy' : '' } ` }
 							disabled={ busPicBoo }
 							onClick={ runPicFun }
-						>{ busPicBoo ? 'Picking…' : 'Pick One' }</Btn> // What: Button. Why: This is the sole entry point into a fresh cycle. How: This calls runPicFun, disabling and relabeling itself while busPicBoo is true.
+						>{ busPicBoo ? 'Picking…' : 'Pick One' }</ButBasCom> // What: Button. Why: This is the sole entry point into a fresh cycle. How: This calls runPicFun, disabling and relabeling itself while busPicBoo is true.
 
 					) }
 
@@ -1029,7 +1029,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 							>{ /* What: Drift Toggle Button Element. Why: The user needs a way to reveal or hide each row's own drift/readiness bar. How: This flips shoDriBoo on click. */ }
 
 
-								<Icon name={ shoDriBoo ? 'eye_off' : 'eye' } size={ 13 } />{ /* What: Icon. Why: An eye/eye-off glyph reads faster than text alone for a show/hide toggle. How: This switches icon name based on shoDriBoo. */ }
+								<IcoSvgCom name={ shoDriBoo ? 'eye_off' : 'eye' } size={ 13 } />{ /* What: Icon Svg Component. Why: An eye/eye-off glyph reads faster than text alone for a show/hide toggle. How: This switches icon name based on shoDriBoo. */ }
 
 								{ shoDriBoo ? 'Hide drift' : 'Show drift' }
 
@@ -1104,14 +1104,14 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 											<div className='pool-confirm-actions'>{ /* What: Confirm Actions Div Element. Why: Cancel and Delete need to sit side by side. How: This wraps those two buttons. */ }
 
 
-												<Btn kind='ghost' size='sm' onClick={ cnlCnfFun }>Cancel</Btn>{ /* What: Button. Why: The user needs a clear way to back out of a delete they didn't mean to start. How: This calls cnlCnfFun. */ }
+												<ButBasCom kind='ghost' size='sm' onClick={ cnlCnfFun }>Cancel</ButBasCom>{ /* What: Button. Why: The user needs a clear way to back out of a delete they didn't mean to start. How: This calls cnlCnfFun. */ }
 
-												<Btn
+												<ButBasCom
 													kind='danger'
 													size='sm'
 													icon='trash'
 													onClick={ () => { setCnfDelStr( null ); setRemIdeStr( curIteObj.id ); } }
-												>Delete</Btn>{ /* What: Button. Why: This is the actual confirmed delete action. How: This clears the confirm state and starts the row's own removal animation. */ }
+												>Delete</ButBasCom>{ /* What: Button. Why: This is the actual confirmed delete action. How: This clears the confirm state and starts the row's own removal animation. */ }
 
 
 											</div>
@@ -1129,9 +1129,9 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 												<span className='pool-item-name'>{ curIteObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible item name. How: This renders curIteObj.name. */ }
 
-												{ curIteObj.vacation && <Pill tone='muted'>inactive</Pill> }{ /* What: Inactive Pill Check. Why: A vacationing item needs a clear status label. How: This renders the pill only while curIteObj.vacation is true. */ }
+												{ curIteObj.vacation && <PilTagCom tone='muted'>inactive</PilTagCom> }{ /* What: Inactive PilTagCom Check. Why: A vacationing item needs a clear status label. How: This renders the pill only while curIteObj.vacation is true. */ }
 
-												{ !eliHerBoo && !curIteObj.vacation && <Pill tone='muted'>{ picker.mode === 'ease-up' ? 'not yet' : 'spent' }</Pill> }{ /* What: Ineligible Pill Check. Why: An active-but-currently-ineligible item needs a status label distinct from "inactive". How: This renders only while eliHerBoo is false and curIteObj.vacation is also false, wording itself per mode. */ }
+												{ !eliHerBoo && !curIteObj.vacation && <PilTagCom tone='muted'>{ picker.mode === 'ease-up' ? 'not yet' : 'spent' }</PilTagCom> }{ /* What: Ineligible PilTagCom Check. Why: An active-but-currently-ineligible item needs a status label distinct from "inactive". How: This renders only while eliHerBoo is false and curIteObj.vacation is also false, wording itself per mode. */ }
 
 
 											</div>
@@ -1139,16 +1139,16 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 											<div className='pool-meta'>{ /* What: Meta Div Element. Why: The optional drift bar and the optional weight pill sit side by side. How: This wraps both, each independently gated. */ }
 
 
-												{ shoDriBoo && reaValNum != null && ( // What: Drift Bar Check. Why: The drift bar only makes sense once the toggle is on and this mode actually has a readiness value at all. How: This renders the InfoTip-wrapped bar only when both conditions hold.
+												{ shoDriBoo && reaValNum != null && ( // What: Drift Bar Check. Why: The drift bar only makes sense once the toggle is on and this mode actually has a readiness value at all. How: This renders the InfTipCom-wrapped bar only when both conditions hold.
 
 
-													<InfoTip className='pool-prog' label={ valTipStr }>
+													<InfTipCom className='pool-prog' label={ valTipStr }>
 
-														<ProgressBar value={ reaValNum } max={ 1 } tone={ picker.mode === 'ease-down' ? 'warm' : 'accent' } />{ /* What: Progress Bar. Why: A visual bar reads faster than the raw number alone. How: This renders reaValNum against a max of 1, tinted warm for Ease Down and accent otherwise. */ }
+														<ProBarCom value={ reaValNum } max={ 1 } tone={ picker.mode === 'ease-down' ? 'warm' : 'accent' } />{ /* What: Progress Bar Component. Why: A visual bar reads faster than the raw number alone. How: This renders reaValNum against a max of 1, tinted warm for Ease Down and accent otherwise. */ }
 
 														<span className='pool-val'>{ Math.round( curIteObj.value ) }</span>{ /* What: Value Span Element. Why: The exact underlying number is still useful alongside the bar. How: This renders curIteObj.value, rounded. */ }
 
-													</InfoTip>
+													</InfTipCom>
 
 
 												) }
@@ -1156,7 +1156,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 												{ ( picker.mode === 'weighted' || picker.mode === 'dynamic' ) && ( // What: Weight Pill Check. Why: Only these two modes treat weight as a real lever worth showing. How: This renders the weight pill only for those modes.
 
 
-													<InfoTip className='pool-weight' label={ wgtTipStr }>w{ curIteObj.weight }</InfoTip> // What: Info Tip. Why: The weight number benefits from the same hover explanation every other tooltip in this row gets. How: This renders "w" plus the raw weight, tipped with wgtTipStr.
+													<InfTipCom className='pool-weight' label={ wgtTipStr }>w{ curIteObj.weight }</InfTipCom> // What: Info Tip Component. Why: The weight number benefits from the same hover explanation every other tooltip in this row gets. How: This renders "w" plus the raw weight, tipped with wgtTipStr.
 
 
 												) }
@@ -1175,21 +1175,21 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 													disabled
 												>
 
-													<Icon name='check' size={ 15 } />
+													<IcoSvgCom name='check' size={ 15 } />
 
 												</button> // What: Button. Why: A brief, disabled confirmation reads clearer than the button just vanishing. How: This is disabled and shows a checkmark instead of the calendar glyph.
 
 
-											) : todIdeSet.has( curIteObj.id ) ? ( // What: Already On Today Check. Why: An item already sent to Today can't be sent again and needs an explained disabled state instead. How: This renders the disabled InfoTip while todIdeSet has this item's own id, the real Send button otherwise.
+											) : todIdeSet.has( curIteObj.id ) ? ( // What: Already On Today Check. Why: An item already sent to Today can't be sent again and needs an explained disabled state instead. How: This renders the disabled InfTipCom while todIdeSet has this item's own id, the real Send button otherwise.
 
-												<InfoTip
+												<InfTipCom
 													className='pool-send is-disabled'
 													label='This item is already included in the Today tab.'
 												>
 
-													<Icon name='calendar' size={ 15 } />
+													<IcoSvgCom name='calendar' size={ 15 } />
 
-												</InfoTip> // What: Info Tip. Why: An item already on Today can't be sent again, and the user should know why the button is inert. How: This wraps the calendar glyph with an explanatory tooltip instead of a real button.
+												</InfTipCom> // What: Info Tip Component. Why: An item already on Today can't be sent again, and the user should know why the button is inert. How: This wraps the calendar glyph with an explanatory tooltip instead of a real button.
 
 
 											) : ( // What: Send Button Branch. Why: An item that's neither just-sent nor already on Today gets the real, working Send button. How: This renders the else branch, taken while neither prior condition holds.
@@ -1203,7 +1203,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 													onClick={ () => sndIteFun( curIteObj.id ) }
 												>
 
-													<Icon name='calendar' size={ 15 } />
+													<IcoSvgCom name='calendar' size={ 15 } />
 
 												</button> // What: Button. Why: This is the actual per-item Send to Today action. How: This calls sndIteFun with this row's own item id.
 
@@ -1219,22 +1219,22 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 												onClick={ () => strEdiFun( curIteObj.id ) }
 											>
 
-												<Icon name='edit' size={ 15 } />
+												<IcoSvgCom name='edit' size={ 15 } />
 
 											</button>{ /* What: Button. Why: Every row needs a way to open its own item in the shared editor slot below. How: This calls strEdiFun with this row's own item id. */ }
 
-											{ picIteArr.length <= 2 ? ( // What: Delete Guard Check. Why: A picker must always keep at least 2 items, so the last two rows can't offer a real delete button at all. How: This renders a disabled, explanatory InfoTip instead of a working Delete button whenever the pool is at that floor.
+											{ picIteArr.length <= 2 ? ( // What: Delete Guard Check. Why: A picker must always keep at least 2 items, so the last two rows can't offer a real delete button at all. How: This renders a disabled, explanatory InfTipCom instead of a working Delete button whenever the pool is at that floor.
 
 
-												<InfoTip
+												<InfTipCom
 													className='pool-del is-disabled'
 													action='Delete'
 													label='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
 												>
 
-													<Icon name='trash' size={ 15 } />
+													<IcoSvgCom name='trash' size={ 15 } />
 
-												</InfoTip> // What: Info Tip. Why: The user should understand why Delete is unavailable rather than it just silently not working. How: This wraps the trash glyph with the explanatory tooltip above.
+												</InfTipCom> // What: Info Tip Component. Why: The user should understand why Delete is unavailable rather than it just silently not working. How: This wraps the trash glyph with the explanatory tooltip above.
 
 
 											) : ( // What: Delete Button Branch. Why: With more than 2 items in the pool, a real working Delete button belongs here instead. How: This renders the else branch, taken while picIteArr.length is above 2.
@@ -1247,7 +1247,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 													onClick={ () => setCnfDelStr( curIteObj.id ) }
 												>
 
-													<Icon name='trash' size={ 15 } />
+													<IcoSvgCom name='trash' size={ 15 } />
 
 												</button> // What: Button. Why: This starts this row's own delete-confirm flow. How: This writes curIteObj.id into cnfDelStr.
 
@@ -1362,7 +1362,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 								onClick={ addIteFun }
 							>
 
-								<Icon name='plus' size={ 14 } /> Add Item
+								<IcoSvgCom name='plus' size={ 14 } /> Add Item
 
 							</button>
 
@@ -1538,12 +1538,12 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 	const [ incDlyBoo, setIncDlyBoo ] = React.useState( ( iniFrmObj && 'includeInDaily' in iniFrmObj ) ? iniFrmObj.includeInDaily : true );
 	const dlyBlkRef = React.useRef( null ); // What: Daily Block Reference. Why: The reveal effect right below needs a handle on the schedule block's own DOM node. How: This is attached to the schedule block's own ref prop, below.
 	const dlyTogRef = React.useRef( false ); // What: Daily Toggled Reference. Why: The reveal effect below must only fire when the USER actually flipped the switch, not on an initial prefilled-true render. How: This is set true by the switch's own onClick and read (but never itself triggers a re-render) by the effect below.
-	React.useEffect( () => { // What: Daily Reveal Effect. Why: Re-enabling the Daily section should bring the newly-revealed block fully into view, since it can unfurl below the fold. How: This waits for the Collapse unfurl to finish, then scrolls the shared .main container just enough to bring the block fully into view.
+	React.useEffect( () => { // What: Daily Reveal Effect. Why: Re-enabling the Daily section should bring the newly-revealed block fully into view, since it can unfurl below the fold. How: This waits for the ColDisCom unfurl to finish, then scrolls the shared .main container just enough to bring the block fully into view.
 
 
 		if ( !incDlyBoo || !dlyTogRef.current ) return; // What: Not User-Toggled Guard. Why: Only a genuine user toggle-on should trigger this scroll, not a prefilled initial value. How: This bails out unless both incDlyBoo is true and dlyTogRef.current is true.
 
-		const scrTmo = setTimeout( () => { // What: Scroll Timeout. Why: The block must be measured only after Collapse's own unfurl animation has actually finished expanding it to full height. How: This waits reduceMotion() ? 0 : 320ms before measuring and scrolling.
+		const scrTmo = setTimeout( () => { // What: Scroll Timeout. Why: The block must be measured only after ColDisCom's own unfurl animation has actually finished expanding it to full height. How: This waits redMotFun() ? 0 : 320ms before measuring and scrolling.
 
 
 			const dlyBlkEle = dlyBlkRef.current; // What: Daily Block Element. Why: The scroll calculation needs the actual DOM node. How: This reads dlyBlkRef.current once and reuses it below.
@@ -1553,10 +1553,10 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 			const oveBelNum = dlyBlkEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the block actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the block's own bottom edge.
 
-			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing block needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : redMotFun() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing block needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
 
 
-		}, reduceMotion() ? 0 : 320 );
+		}, redMotFun() ? 0 : 320 );
 
 		return () => clearTimeout( scrTmo ); // What: Effect Cleanup Return. Why: A stale scroll must not fire after this effect re-runs or unmounts. How: This cancels the scheduled scrTmo timeout.
 
@@ -1606,7 +1606,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 	// What: Conditional Rail Cleanup Reference. Why: The edge-fade cue on the conditional rail (matching the app's other horizontal rails) needs its own teardown function remembered across callback-ref re-invocations. How: This holds whatever cleanup function raiCalFun most recently registered, run and cleared at the top of every subsequent call.
 	const raiCleRef = React.useRef( null );
 	const raiNodRef = React.useRef( null ); // What: Rail Node Reference. Why: The scroll-to-start effect below needs to read back the same DOM node raiCalFun most recently attached to. How: This mirrors whatever element is currently mounted, or null while the rail itself isn't rendered.
-	// What: Rail Callback Function. Why: Collapse (below) mounts this rail one render AFTER conOnBoo flips true (it stages its own `render` state first), so a plain useEffect keyed on conOnBoo would fire while the ref is still null and never get another chance to run once the rail actually appears; a callback ref, which fires exactly when the DOM node attaches, plus a ResizeObserver, which re-fires whenever conditionals are added/removed and the rail's content width changes, sidesteps that race entirely. How: This registers a scroll listener and a ResizeObserver on whatever element the rail's own ref prop attaches to below, tearing down the previous ones first.
+	// What: Rail Callback Function. Why: ColDisCom (below) mounts this rail one render AFTER conOnBoo flips true (it stages its own `render` state first), so a plain useEffect keyed on conOnBoo would fire while the ref is still null and never get another chance to run once the rail actually appears; a callback ref, which fires exactly when the DOM node attaches, plus a ResizeObserver, which re-fires whenever conditionals are added/removed and the rail's content width changes, sidesteps that race entirely. How: This registers a scroll listener and a ResizeObserver on whatever element the rail's own ref prop attaches to below, tearing down the previous ones first.
 	const raiCalFun = React.useCallback( ( raiCurEle ) => {
 
 
@@ -1648,7 +1648,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 		if ( !raiCurEle || conSelStr == null || conSelStr === 'new' ) return; // What: No Real Selection Guard. Why: Only picking a REAL existing conditional should trigger this scroll; neither an unmounted rail nor the 'new' pill (which has nothing to scroll to) should. How: This bails out unless a real element exists and conSelStr is a genuine id.
 
-		if ( raiCurEle.scrollLeft > 1 ) raiCurEle.scrollTo({ left : 0, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: A rail that's already at its start needs no animation at all. How: This scrolls back to the start only when it's actually scrolled away from it.
+		if ( raiCurEle.scrollLeft > 1 ) raiCurEle.scrollTo({ left : 0, behavior : redMotFun() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: A rail that's already at its start needs no animation at all. How: This scrolls back to the start only when it's actually scrolled away from it.
 
 
 	}, [ conSelStr ] ); // What: Effect Dependency Array. Why: Only a genuine change to which conditional is selected should trigger this scroll. How: conSelStr is the sole value this effect's own guard checks.
@@ -1677,7 +1677,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 				const oveStyStr = getComputedStyle( curWlkEle ).overflowY; // What: Overflow Style String. Why: Only an ancestor whose own CSS actually allows scrolling is a real candidate. How: This reads the computed overflowY value for curWlkEle.
 
-				if ( ( oveStyStr === 'auto' || oveStyStr === 'scroll' ) && curWlkEle.scrollHeight > curWlkEle.clientHeight ) { curWlkEle.scrollTo({ top : 0, behavior : reduceMotion() ? 'auto' : 'smooth' }); return; } // What: Scrollable Ancestor Found Guard. Why: The first genuinely-scrollable ancestor found is the one that actually needs resetting. How: This scrolls it to the top and returns immediately, skipping every further ancestor.
+				if ( ( oveStyStr === 'auto' || oveStyStr === 'scroll' ) && curWlkEle.scrollHeight > curWlkEle.clientHeight ) { curWlkEle.scrollTo({ top : 0, behavior : redMotFun() ? 'auto' : 'smooth' }); return; } // What: Scrollable Ancestor Found Guard. Why: The first genuinely-scrollable ancestor found is the one that actually needs resetting. How: This scrolls it to the top and returns immediately, skipping every further ancestor.
 
 				curWlkEle = curWlkEle.parentElement; // What: Walk Advance. Why: No scrollable ancestor was found yet, so the search continues one level up. How: This reassigns curWlkEle to its own parent.
 
@@ -1686,7 +1686,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 			const scrConEle = document.querySelector( '.main' ); // What: Scroll Container Element. Why: No scrollable ancestor was found in the walk above, so the shared app-wide scroller is the fallback target. How: This queries for the .main element directly.
 
-			if ( scrConEle ) scrConEle.scrollTo({ top : 0, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Fallback Scroll Guard. Why: Only a genuinely-found fallback container should be scrolled. How: This scrolls .main to the top if it exists.
+			if ( scrConEle ) scrConEle.scrollTo({ top : 0, behavior : redMotFun() ? 'auto' : 'smooth' }); // What: Fallback Scroll Guard. Why: Only a genuinely-found fallback container should be scrolled. How: This scrolls .main to the top if it exists.
 
 
 		});
@@ -1719,7 +1719,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 	const cnlCnfFun = () => { // What: Cancel Confirm Function. Why: Cancelling a pending delete needs to play the same leaving animation as everywhere else in this file, unless reduced motion applies. How: This either clears cnfDelStr immediately, or stages cnfLvgStr for 150ms first.
 
 
-		if ( reduceMotion() ) { setCnfDelStr( null ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped animation. How: This clears the confirm state immediately and returns.
+		if ( redMotFun() ) { setCnfDelStr( null ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped animation. How: This clears the confirm state immediately and returns.
 
 		setCnfLvgStr( cnfDelStr ); // What: Leaving Stage Call. Why: The confirm row needs to actually play its own out-animation now. How: This copies the current cnfDelStr into cnfLvgStr.
 
@@ -1814,7 +1814,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the new slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
 
-			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : redMotFun() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
 
 
 		}) );
@@ -1843,7 +1843,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + 96; // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge.
 
-			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo({ top : scrConEle.scrollTop + oveBelNum, behavior : redMotFun() ? 'auto' : 'smooth' }); // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
 
 
 		}) );
@@ -2072,7 +2072,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 					>{ /* What: Details Step Button Element. Why: The user needs a way to jump back to Step 1 at any time. How: This marks itself "is-on" while frmStpNum is 1, otherwise "is-done", and always allows navigating back. */ }
 
 
-						<span className='np-step-num'>{ frmStpNum > 1 ? <Icon name='check' size={ 12 } /> : '1' }</span>{ /* What: Step Number Span Element. Why: A completed step shows a checkmark instead of its own number. How: This renders a check icon once frmStpNum has advanced past 1, otherwise the literal "1". */ }
+						<span className='np-step-num'>{ frmStpNum > 1 ? <IcoSvgCom name='check' size={ 12 } /> : '1' }</span>{ /* What: Step Number Span Element. Why: A completed step shows a checkmark instead of its own number. How: This renders a check icon once frmStpNum has advanced past 1, otherwise the literal "1". */ }
 
 						<span className='np-step-lbl'>Details</span>{ /* What: Step Label Span Element. Why: The step needs a readable name alongside its number. How: This renders the fixed literal text. */ }
 
@@ -2179,14 +2179,14 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 							onClick={ () => setAddGroBoo( true ) }
 						>
 
-							<Icon name='plus' size={ 13 } /> New Group
+							<IcoSvgCom name='plus' size={ 13 } /> New Group
 
 						</button>{ /* What: Button. Why: The user needs an explicit way to open the inline new-group sub-form. How: This flips addGroBoo true. */ }
 
 
 					</div>
 
-					<Collapse open={ addGroBoo }>
+					<ColDisCom open={ addGroBoo }>
 
 						<input
 							className='np-input np-input--sm'
@@ -2200,7 +2200,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 							onChange={ ( chgEveObj ) => setNewGroStr( chgEveObj.target.value ) }
 						/>
 
-					</Collapse>{ /* What: Collapse. Why: The new-group input only needs to exist while addGroBoo is actually on. How: This animates the input open/closed around that boolean. */ }
+					</ColDisCom>{ /* What: Collapse Disclosure Component. Why: The new-group input only needs to exist while addGroBoo is actually on. How: This animates the input open/closed around that boolean. */ }
 
 
 				</div>
@@ -2260,7 +2260,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 				</fieldset>
 
-				<div className='np-field np-cond'>{ /* What: Conditional Field Div Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps np-field--toggle and the Collapse below it. */ }
+				<div className='np-field np-cond'>{ /* What: Conditional Field Div Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps np-field--toggle and the ColDisCom below it. */ }
 
 
 					<div className='np-field--toggle'>{ /* What: Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps np-toggle-text and the switch button. */ }
@@ -2294,9 +2294,9 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 					</div>
 
-					<Collapse open={ conOnBoo }>
+					<ColDisCom open={ conOnBoo }>
 
-						<div className='cnd-attach'>{ /* What: Conditional Attach Div Element. Why: The pill rail and the inline new-conditional editor form one block. How: This wraps cnd-rail and the Collapse around CodConCom. */ }
+						<div className='cnd-attach'>{ /* What: Conditional Attach Div Element. Why: The pill rail and the inline new-conditional editor form one block. How: This wraps cnd-rail and the ColDisCom around CodConCom. */ }
 
 
 							<div className='cnd-rail picker-groups at-start at-end' ref={ raiCalFun }>{ /* What: Conditional Rail Div Element. Why: Every existing conditional plus the "Add New" pill need a horizontally-scrolling rail. How: This wraps one pill per sorted entry in conObjArr, then the fixed "Add New Conditional" pill. */ }
@@ -2340,7 +2340,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 									onClick={ () => { setConSelStr( 'new' ); setConDftObj( conDrfFun( newNamStr.trim(), conObjArr.map( ( c ) => c.name ) ) ); } }
 								>
 
-									<Icon name='plus' size={ 16 } />
+									<IcoSvgCom name='plus' size={ 16 } />
 
 									<span className='cnd-pill-name'>Add New Conditional</span>
 
@@ -2349,21 +2349,21 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 							</div>
 
-							<Collapse open={ conSelStr === 'new' }>
+							<ColDisCom open={ conSelStr === 'new' }>
 
 								<CodConCom draft={ conDftObj } onChange={ setConDftObj } nameError={ conErrStr } />
 
-							</Collapse>{ /* What: Collapse. Why: The inline new-conditional editor only needs to exist while conSelStr is actually 'new'. How: This animates CodConCom open/closed around that check. */ }
+							</ColDisCom>{ /* What: Collapse Disclosure Component. Why: The inline new-conditional editor only needs to exist while conSelStr is actually 'new'. How: This animates CodConCom open/closed around that check. */ }
 
 
 						</div>
 
-					</Collapse>{ /* What: Collapse. Why: The whole conditional-attach block only needs to exist while conOnBoo is actually on. How: This animates cnd-attach open/closed around that boolean. */ }
+					</ColDisCom>{ /* What: Collapse Disclosure Component. Why: The whole conditional-attach block only needs to exist while conOnBoo is actually on. How: This animates cnd-attach open/closed around that boolean. */ }
 
 
 				</div>
 
-				<div className='np-field np-daily-group'>{ /* What: Daily Field Div Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps np-field--toggle and the Collapse below it. */ }
+				<div className='np-field np-daily-group'>{ /* What: Daily Field Div Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps np-field--toggle and the ColDisCom below it. */ }
 
 
 					<div className='np-field--toggle'>{ /* What: Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps np-toggle-text and the switch button. */ }
@@ -2406,7 +2406,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 					</div>
 
-					<Collapse open={ incDlyBoo }>
+					<ColDisCom open={ incDlyBoo }>
 
 					<div className='np-sched np-daily-anim' ref={ dlyBlkRef }>{ /* What: Schedule Div Element. Why: The cadence control, the weekday picker, and the two schedule toggles form one collapsible block. How: This wraps np-sched-block/np-sched-toggle sections below. */ }
 
@@ -2424,15 +2424,15 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 							<p className='np-help'>Pick the days that this picker is allowed to run on. Tap a day to turn it off. This is handy for things like chores, that you&rsquo;d rather not see on weekends.</p>{ /* What: Days Help Paragraph Element. Why: A first-time user needs to understand what tapping a day chip actually does. How: This renders a fixed explanatory sentence. */ }
 
-							<div className='np-sched-row'>{ /* What: Schedule Row Div Element. Why: The weekday chips and their preset shortcuts sit side by side. How: This wraps WeekdayChips and np-sched-presets. */ }
+							<div className='np-sched-row'>{ /* What: Schedule Row Div Element. Why: The weekday chips and their preset shortcuts sit side by side. How: This wraps WeeChiCom and np-sched-presets. */ }
 
 
-								<WeekdayChips
+								<WeeChiCom
 									value={ runDowArr }
 									onChange={ setRunDowArr }
 									lockedDay={ locDowNum }
 									lockedTip={ locDowNum === null ? '' : CAD_NAM_OBJ.locTipFun( locDowNum, 'On which day?' ) }
-								/>{ /* What: Weekday Chips. Why: The user needs a direct way to toggle individual weekdays on or off. How: This is passed runDowArr and locDowNum so a weekly cadence's own anchor day can't be turned off here. */ }
+								/>{ /* What: Weekday Chips Component. Why: The user needs a direct way to toggle individual weekdays on or off. How: This is passed runDowArr and locDowNum so a weekly cadence's own anchor day can't be turned off here. */ }
 
 								<div className='np-sched-presets'>{ /* What: Presets Div Element. Why: Three common day patterns deserve one-tap shortcuts instead of manual chip-tapping every time. How: This wraps the Every day/Weekdays/Weekends buttons. */ }
 
@@ -2535,7 +2535,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 					</div>
 
-					</Collapse>{ /* What: Collapse. Why: The whole schedule block only needs to exist while incDlyBoo is actually on. How: This animates np-sched open/closed around that boolean. */ }
+					</ColDisCom>{ /* What: Collapse Disclosure Component. Why: The whole schedule block only needs to exist while incDlyBoo is actually on. How: This animates np-sched open/closed around that boolean. */ }
 
 
 				</div>
@@ -2584,13 +2584,13 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 				<div className='np-footer-actions'>{ /* What: Footer Actions Div Element. Why: Cancel and the Save/Add Items button sit side by side. How: This wraps those two controls. */ }
 
 
-					<Btn kind='ghost' onClick={ onCnlFun }>Cancel</Btn>{ /* What: Button. Why: The user needs a way to back out of this form entirely. How: This calls onCnlFun. */ }
+					<ButBasCom kind='ghost' onClick={ onCnlFun }>Cancel</ButBasCom>{ /* What: Button. Why: The user needs a way to back out of this form entirely. How: This calls onCnlFun. */ }
 
 					{ isaEdiBoo
 
-						? <Btn kind='primary' icon='check' disabled={ !detRdyBoo || conColBoo } onClick={ subFrmFun }>Save</Btn> // What: Button. Why: Editing only ever has one step, so this button both validates and commits. How: This calls subFrmFun directly, disabled until detRdyBoo holds and no conditional name collides.
+						? <ButBasCom kind='primary' icon='check' disabled={ !detRdyBoo || conColBoo } onClick={ subFrmFun }>Save</ButBasCom> // What: Button. Why: Editing only ever has one step, so this button both validates and commits. How: This calls subFrmFun directly, disabled until detRdyBoo holds and no conditional name collides.
 
-						: <Btn kind='primary' icon='chev' className='ob-picker-next' disabled={ !detRdyBoo || conColBoo } onClick={ advStpFun }>Add Items</Btn> // What: Button. Why: Creating still has an Items step to fill in. How: This calls advStpFun to advance, disabled under the same conditions as the edit Save button above.
+						: <ButBasCom kind='primary' icon='chev' className='ob-picker-next' disabled={ !detRdyBoo || conColBoo } onClick={ advStpFun }>Add Items</ButBasCom> // What: Button. Why: Creating still has an Items step to fill in. How: This calls advStpFun to advance, disabled under the same conditions as the edit Save button above.
 
 					}
 
@@ -2735,14 +2735,14 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 												<div className='pool-confirm-actions'>{ /* What: Confirm Actions Div Element. Why: Cancel and Delete need to sit side by side. How: This wraps those two buttons. */ }
 
 
-													<Btn kind='ghost' size='sm' onClick={ cnlCnfFun }>Cancel</Btn>{ /* What: Button. Why: The user needs a clear way to back out of a delete they didn't mean to start. How: This calls cnlCnfFun. */ }
+													<ButBasCom kind='ghost' size='sm' onClick={ cnlCnfFun }>Cancel</ButBasCom>{ /* What: Button. Why: The user needs a clear way to back out of a delete they didn't mean to start. How: This calls cnlCnfFun. */ }
 
-													<Btn
+													<ButBasCom
 														kind='danger'
 														size='sm'
 														icon='trash'
 														onClick={ () => { setCnfDelStr( null ); setRemIdeStr( curIteObj.id ); } }
-													>Delete</Btn>{ /* What: Button. Why: This is the actual confirmed removal action. How: This clears the confirm state and starts the row's own removal animation. */ }
+													>Delete</ButBasCom>{ /* What: Button. Why: This is the actual confirmed removal action. How: This clears the confirm state and starts the row's own removal animation. */ }
 
 
 												</div>
@@ -2777,22 +2777,22 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 													onClick={ () => strDftFun( curIteObj.id ) }
 												>
 
-													<Icon name='edit' size={ 15 } />
+													<IcoSvgCom name='edit' size={ 15 } />
 
 												</button>{ /* What: Button. Why: Every row needs a way to open its own item in the shared editor slot below. How: This calls strDftFun with this row's own item id. */ }
 
-												{ pooIteArr.filter( ( x ) => x.id !== actNewStr ).length <= 2 ? ( // What: Delete Guard Check. Why: A picker must always keep at least 2 committed items, so the last two rows can't offer a real delete button at all. How: This renders a disabled, explanatory InfoTip instead of a working Delete button whenever the pool is at that floor.
+												{ pooIteArr.filter( ( x ) => x.id !== actNewStr ).length <= 2 ? ( // What: Delete Guard Check. Why: A picker must always keep at least 2 committed items, so the last two rows can't offer a real delete button at all. How: This renders a disabled, explanatory InfTipCom instead of a working Delete button whenever the pool is at that floor.
 
 
-													<InfoTip
+													<InfTipCom
 														className='pool-del is-disabled'
 														action='Delete'
 														label='Pickers require at least 2 items in their list, you need to add another item first or delete the entire picker instead.'
 													>
 
-														<Icon name='trash' size={ 15 } />
+														<IcoSvgCom name='trash' size={ 15 } />
 
-													</InfoTip> // What: Info Tip. Why: The user should understand why Delete is unavailable rather than it just silently not working. How: This wraps the trash glyph with the explanatory tooltip above.
+													</InfTipCom> // What: Info Tip Component. Why: The user should understand why Delete is unavailable rather than it just silently not working. How: This wraps the trash glyph with the explanatory tooltip above.
 
 
 												) : ( // What: Delete Button Branch. Why: With more than 2 committed items in the draft, a real working Delete button belongs here instead. How: This renders the else branch, taken while the draft pool is above that floor.
@@ -2804,7 +2804,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 														onClick={ () => setCnfDelStr( curIteObj.id ) }
 													>
 
-														<Icon name='trash' size={ 15 } />
+														<IcoSvgCom name='trash' size={ 15 } />
 
 													</button> // What: Button. Why: This starts this row's own delete-confirm flow. How: This writes curIteObj.id into cnfDelStr.
 
@@ -2918,7 +2918,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 									onClick={ addDftFun }
 								>
 
-									<Icon name='plus' size={ 14 } /> Add Item
+									<IcoSvgCom name='plus' size={ 14 } /> Add Item
 
 								</button>
 
@@ -3021,15 +3021,15 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 					<div className='np-footer-actions'>{ /* What: Footer Actions Div Element. Why: Back and Create Picker sit side by side. How: This wraps those two buttons. */ }
 
 
-						<Btn kind='ghost' onClick={ bckStpFun }>Back</Btn>{ /* What: Button. Why: The user needs a way to return to Step 1 without losing their in-progress items. How: This calls bckStpFun. */ }
+						<ButBasCom kind='ghost' onClick={ bckStpFun }>Back</ButBasCom>{ /* What: Button. Why: The user needs a way to return to Step 1 without losing their in-progress items. How: This calls bckStpFun. */ }
 
-						<Btn
+						<ButBasCom
 							kind='primary'
 							icon='check'
 							className='ob-picker-create'
 							disabled={ !enoIteBoo || conColBoo }
 							onClick={ subFrmFun }
-						>Create Picker</Btn>{ /* What: Button. Why: This is the actual final commit for a brand-new picker. How: This calls subFrmFun, disabled until enoIteBoo holds and no conditional name collides. */ }
+						>Create Picker</ButBasCom>{ /* What: Button. Why: This is the actual final commit for a brand-new picker. How: This calls subFrmFun, disabled until enoIteBoo holds and no conditional name collides. */ }
 
 
 					</div>
@@ -3269,7 +3269,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 		const scrConEle = document.querySelector( '.main' ); // What: Scroll Container Element. Why: The scroll call below needs the actual live DOM node. How: This queries for the .main element directly.
 
-		if ( scrConEle ) scrConEle.scrollTo({ top : 0, behavior : reduceMotion() ? 'auto' : 'smooth' }); // What: Scroll Call Guard. Why: Only a genuinely-found container should be scrolled. How: This scrolls .main to the top if it exists.
+		if ( scrConEle ) scrConEle.scrollTo({ top : 0, behavior : redMotFun() ? 'auto' : 'smooth' }); // What: Scroll Call Guard. Why: Only a genuinely-found container should be scrolled. How: This scrolls .main to the top if it exists.
 
 
 	};
@@ -3277,7 +3277,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 	const cnlCreFun = () => {
 
 
-		if ( reduceMotion() ) { setCreOpnBoo( false ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped scroll animation. How: This closes the form immediately and returns.
+		if ( redMotFun() ) { setCreOpnBoo( false ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped scroll animation. How: This closes the form immediately and returns.
 
 		scrTopFun(); // What: Scroll Up Call. Why: The tall form needs to still be mounted while this scroll actually plays, or there's nothing to glide past. How: This calls scrTopFun while creOpnBoo is still true.
 
@@ -3539,20 +3539,20 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 					<div className='picker-tabs' ref={ tabRailRef } key={ groFilStr + '|' + typFilStr }>{ /* What: Picker Tabs Div Element. Why: The Add New Picker tab plus one tab per currently-visible picker need a horizontally-scrolling rail; re-keying by the two filters together replays each tab's own stagger-in animation whenever the filtered set changes. How: This wraps the Add New Picker tab and one tab per entry in srtPicArr. */ }
 
 
-						{ tutProBoo ? ( // What: Tutorials In Progress Check. Why: Distinct from disAddBoo below, this tooltip's wording ("until all tutorials are completed") would be misleading during a Replay of the Pickers page tour, which runs AFTER the checklist finishes, when tutProBoo is always false, so that case still falls through to the plain disabled button with no tooltip. How: This renders a disabled, explanatory InfoTip instead of the real button while the guided checklist is still in progress.
+						{ tutProBoo ? ( // What: Tutorials In Progress Check. Why: Distinct from disAddBoo below, this tooltip's wording ("until all tutorials are completed") would be misleading during a Replay of the Pickers page tour, which runs AFTER the checklist finishes, when tutProBoo is always false, so that case still falls through to the plain disabled button with no tooltip. How: This renders a disabled, explanatory InfTipCom instead of the real button while the guided checklist is still in progress.
 
 
-							<InfoTip
+							<InfTipCom
 								className={ ` picker-tab picker-tab--add picker-tab--enter is-tour-disabled   ${ creOpnBoo ? 'is-on' : '' } ` }
 								action='Add New Picker'
 								label='This button is disabled until all tutorials are completed.'
 							>
 
-								<span className='picker-tab-add-icon' aria-hidden='true'><Icon name='plus' size={ 16 } /></span>
+								<span className='picker-tab-add-icon' aria-hidden='true'><IcoSvgCom name='plus' size={ 16 } /></span>
 
 								<span className='picker-tab-name'>Add New Picker</span>
 
-							</InfoTip>
+							</InfTipCom>
 
 
 						) : ( // What: Add Button Branch. Why: Outside the guided checklist, the real working Add New Picker button belongs here instead. How: This renders the else branch, taken while tutProBoo is false.
@@ -3565,7 +3565,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 								onClick={ () => setCreOpnBoo( true ) }
 							>
 
-								<span className='picker-tab-add-icon' aria-hidden='true'><Icon name='plus' size={ 16 } /></span>
+								<span className='picker-tab-add-icon' aria-hidden='true'><IcoSvgCom name='plus' size={ 16 } /></span>
 
 								<span className='picker-tab-name'>Add New Picker</span>
 
@@ -3649,7 +3649,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 								const finFun = () => { setCreOpnBoo( false ); setActPicStr( newPicStr ); }; // What: Finish Function. Why: Both the reduced-motion and animated paths below need the same final state change. How: This closes the form and selects the freshly-created picker.
 
-								if ( reduceMotion() ) { finFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped scroll animation. How: This finishes immediately and returns.
+								if ( redMotFun() ) { finFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped scroll animation. How: This finishes immediately and returns.
 
 								scrTopFun(); // What: Scroll Up Call. Why: The tall form needs to still be mounted while this scroll actually plays, or there's nothing to glide past. How: This calls the shared scrTopFun while creOpnBoo is still true.
 

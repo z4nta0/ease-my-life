@@ -6,12 +6,12 @@
 import React from 'react'; // What: React. Why: This file's single component is built directly on React's own APIs. How: This is used directly (React.useId) below, instead of importing an individual named hook.
 
 
-import { BoostReset               } from './ui.jsx';     // What: Boost Reset. Why: The dynamic mode's own accrued miss-boost needs a display plus a manual reset control. How: This is rendered in the dynamic-mode Boost row below.
-import { Collapse                 } from './ui.jsx';     // What: Collapse. Why: Every mode's own settings subsection needs to animate open and closed as the selected mode changes. How: This wraps the mode hint text and every per-mode settings block throughout this file.
-import { FillButton               } from './ui.jsx';     // What: Fill Button. Why: The ease-up and ease-down modes both need a manual full-charge control. How: This is rendered once per direction in the ease-mode settings block below.
-import { MODES                    } from './seed.js';    // What: Modes. Why: The mode radio below must offer the exact same options and labels as the picker editor's own mode radio. How: This is walked via Object.entries to render one radio option per mode.
-import { norConFun                } from './pickers.js'; // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conDrfFun below.
-import { NumStepper                } from './ui.jsx';    // What: Number Stepper. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered once per bound in the ease-mode settings block below.
+import { BooResCom } from './ui.jsx';     // What: Boost Reset Component. Why: The dynamic mode's own accrued miss-boost needs a display plus a manual reset control. How: This is rendered in the dynamic-mode Boost row below.
+import { ColDisCom } from './ui.jsx';     // What: Collapse Disclosure Component. Why: Every mode's own settings subsection needs to animate open and closed as the selected mode changes. How: This wraps the mode hint text and every per-mode settings block throughout this file.
+import { FilButCom } from './ui.jsx';     // What: Fill Button Component. Why: The ease-up and ease-down modes both need a manual full-charge control. How: This is rendered once per direction in the ease-mode settings block below.
+import { MODES     } from './seed.js';    // What: Modes. Why: The mode radio below must offer the exact same options and labels as the picker editor's own mode radio. How: This is walked via Object.entries to render one radio option per mode.
+import { norConFun } from './pickers.js'; // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conDrfFun below.
+import { NumSteCom } from './ui.jsx';     // What: Numeric Stepper Component. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered once per bound in the ease-mode settings block below.
 
 // #endregion Imports
 
@@ -54,7 +54,7 @@ const dayEasFun = ( dayCouNum ) => THR_DEF_NUM / Math.max( 1, dayCouNum );      
 
 
 
-const CON_HIN_OBJ = { // What: Conditional Hint Object. Why: Conditional mode explanations differ from the picker editor's own MODES hints, since a conditional's own effect (suppressing a picker) needs its own framing. How: This is looked up by mode key inside the mode radio's own Collapse below, falling back to MODES' own hint when a mode has no override here.
+const CON_HIN_OBJ = { // What: Conditional Hint Object. Why: Conditional mode explanations differ from the picker editor's own MODES hints, since a conditional's own effect (suppressing a picker) needs its own framing. How: This is looked up by mode key inside the mode radio's own ColDisCom below, falling back to MODES' own hint when a mode has no override here.
 
 
 	random      : [ 'Ruleset: This conditional’s ruleset uses a non-adjustable, static value of 50% for triggering the conditional.', 'Explanation: This is a good choice for being truly random, but it also has some drawbacks. e.g. it can be triggered multiple times in a row or it can go a long time without being triggered.' ],
@@ -65,7 +65,7 @@ const CON_HIN_OBJ = { // What: Conditional Hint Object. Why: Conditional mode ex
 
 
 };
-const RAN_NOT_STR = 'Truly Random conditionals have no options and function like a coin flip. e.g. it is 50/50 whether it gets triggered or not.'; // What: Random Note String. Why: The random mode's own settings block has no adjustable control at all, just this fixed explanation. How: This is rendered directly in place of a control in the random-mode Collapse below.
+const RAN_NOT_STR = 'Truly Random conditionals have no options and function like a coin flip. e.g. it is 50/50 whether it gets triggered or not.'; // What: Random Note String. Why: The random mode's own settings block has no adjustable control at all, just this fixed explanation. How: This is rendered directly in place of a control in the random-mode ColDisCom below.
 
 
 
@@ -262,7 +262,7 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 
 			</div>
 
-			<div className='cnd-type-group'>{ /* What: Type Group Div Element. Why: The mode radio and every per-mode settings block below need one shared wrapping element for layout. How: This wraps the mode fieldset and every Collapse-gated settings block that follows it. */ }
+			<div className='cnd-type-group'>{ /* What: Type Group Div Element. Why: The mode radio and every per-mode settings block below need one shared wrapping element for layout. How: This wraps the mode fieldset and every ColDisCom-gated settings block that follows it. */ }
 
 
 				<fieldset className='np-field'>{ /* What: Type Fieldset Element. Why: The mode radio's own options are a single logical group of controls. How: This wraps the legend and the mode radio list below. */ }
@@ -280,7 +280,7 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 							{ Object.entries( MODES ).map( ( [ modKeyStr, modConObj ] ) => { // What: Mode Option List Render. Why: One radio option is needed per configured mode, and the set of modes is data shared with the picker editor, not hardcoded markup. How: This maps MODES to one label per entry, keyed by its own mode key.
 
 
-								const modSelBoo = curModStr === modKeyStr; // What: Mode Selected Boolean. Why: Both the label's own "is-on" styling and the nested Collapse below need to know whether this specific option is the currently-selected one. How: This compares modKeyStr against curModStr.
+								const modSelBoo = curModStr === modKeyStr; // What: Mode Selected Boolean. Why: Both the label's own "is-on" styling and the nested ColDisCom below need to know whether this specific option is the currently-selected one. How: This compares modKeyStr against curModStr.
 
 
 								return (
@@ -310,13 +310,13 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 										<span className='rd-mode-dot' aria-hidden='true' />{ /* What: Mode Dot Span Element. Why: This is the small decorative marker showing the option's own on/off state via CSS. How: This renders empty, styled purely through the "is-on" class on its parent label. */ }
 
 
-										<span className='rd-mode-text'>{ /* What: Mode Text Span Element. Why: The option's own name and its expandable hint text need to sit together as one unit. How: This wraps the name span and the Collapse below. */ }
+										<span className='rd-mode-text'>{ /* What: Mode Text Span Element. Why: The option's own name and its expandable hint text need to sit together as one unit. How: This wraps the name span and the ColDisCom below. */ }
 
 
 											<span className='rd-mode-name'>{ modConObj.label }</span>{ /* What: Mode Name Span Element. Why: This is the option's own visible mode name. How: This renders modConObj's own label. */ }
 
 
-											<Collapse open={ modSelBoo }>{ /* What: Mode Hint Collapse Element. Why: The longer explanation of a mode should only take up space while that mode is actually selected. How: This animates the hint text below open only while modSelBoo is true. */ }
+											<ColDisCom open={ modSelBoo }>{ /* What: Collapse Disclosure Component. Why: The longer explanation of a mode should only take up space while that mode is actually selected. How: This animates the hint text below open only while modSelBoo is true. */ }
 
 
 												{ Array.isArray( CON_HIN_OBJ[ modKeyStr ] ) // What: Hint Array Check. Why: The conditional-specific hints above are each a 2-paragraph array, while a mode with no override here falls back to a single plain hint string from MODES. How: This picks between rendering one span per paragraph or a single fallback span.
@@ -324,7 +324,7 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 													: <span className='rd-mode-hint'>{ CON_HIN_OBJ[ modKeyStr ] || modConObj.hint }</span> }
 
 
-											</Collapse>
+											</ColDisCom>
 
 
 										</span>
@@ -347,7 +347,7 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 
 				</fieldset>
 
-				<Collapse open={ curModStr === 'random' }>{ /* What: Random Settings Collapse Element. Why: The random mode has no adjustable settings at all, just a note explaining why. How: This animates the fixed 50/50 explanation open only while curModStr is 'random'. */ }
+				<ColDisCom open={ curModStr === 'random' }>{ /* What: Collapse Disclosure Component. Why: The random mode has no adjustable settings at all, just a note explaining why. How: This animates the fixed 50/50 explanation open only while curModStr is 'random'. */ }
 
 
 					<div className='cnd-typectl pie-rows'>{ /* What: Random Type Control Div Element. Why: This groups the random mode's own single explanatory row using the shared pie-rows layout every other mode's settings reuse. How: This wraps the one pie-row below. */ }
@@ -376,12 +376,12 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 					</div>
 
 
-				</Collapse>
+				</ColDisCom>
 
-				<Collapse open={ useWeiBoo }>{ /* What: Weight Settings Collapse Element. Why: Only the weighted and dynamic modes have an adjustable odds percentage. How: This animates the Odds row, and for dynamic the nested Boost row, open only while useWeiBoo is true. */ }
+				<ColDisCom open={ useWeiBoo }>{ /* What: Collapse Disclosure Component. Why: Only the weighted and dynamic modes have an adjustable odds percentage. How: This animates the Odds row, and for dynamic the nested Boost row, open only while useWeiBoo is true. */ }
 
 
-					<div className='cnd-typectl pie-rows'>{ /* What: Weight Type Control Div Element. Why: This groups the Odds row and the dynamic-only Boost row using the shared pie-rows layout. How: This wraps the Odds pie-row and the nested Boost Collapse below. */ }
+					<div className='cnd-typectl pie-rows'>{ /* What: Weight Type Control Div Element. Why: This groups the Odds row and the dynamic-only Boost row using the shared pie-rows layout. How: This wraps the Odds pie-row and the nested Boost ColDisCom below. */ }
 
 
 						<div className='pie-row'>{ /* What: Odds Row Div Element. Why: This is the shared row layout for the odds percentage control. How: This wraps the label block and the plus/minus stepper below. */ }
@@ -398,7 +398,7 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 							</div>
 
 
-							<div className='weight-stepper'>{ /* What: Odds Stepper Div Element. Why: The odds percentage needs a plain plus/minus control, distinct from the drag-free NumStepper used elsewhere. How: This wraps the lower button, the live value, and the raise button below. */ }
+							<div className='weight-stepper'>{ /* What: Odds Stepper Div Element. Why: The odds percentage needs a plain plus/minus control, distinct from the drag-free NumSteCom used elsewhere. How: This wraps the lower button, the live value, and the raise button below. */ }
 
 
 								<button
@@ -421,10 +421,10 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 
 						</div>
 
-						<Collapse open={ isaDynBoo }>{ /* What: Boost Settings Collapse Element. Why: Only the dynamic mode has an accrued miss-boost to show and reset. How: This animates the Boost row open only while isaDynBoo is true. */ }
+						<ColDisCom open={ isaDynBoo }>{ /* What: Collapse Disclosure Component. Why: Only the dynamic mode has an accrued miss-boost to show and reset. How: This animates the Boost row open only while isaDynBoo is true. */ }
 
 
-							<div className='pie-row'>{ /* What: Boost Row Div Element. Why: This is the shared row layout for the dynamic mode's own boost display and reset control. How: This wraps the label block and the BoostReset control below. */ }
+							<div className='pie-row'>{ /* What: Boost Row Div Element. Why: This is the shared row layout for the dynamic mode's own boost display and reset control. How: This wraps the label block and the BooResCom control below. */ }
 
 
 								<div className='pie-rowlabel'>{ /* What: Boost Rowlabel Div Element. Why: The row's own title and live boost summary need to sit together. How: This wraps the "Boost" title span and the fading summary span below. */ }
@@ -441,14 +441,14 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 								</div>
 
 
-								<div className='pie-ctl'>{ /* What: Boost Control Div Element. Why: The control itself sits apart from the row's own label block. How: This wraps the BoostReset control below. */ }
+								<div className='pie-ctl'>{ /* What: Boost Control Div Element. Why: The control itself sits apart from the row's own label block. How: This wraps the BooResCom control below. */ }
 
 
-									<BoostReset
+									<BooResCom
 										value={ draft.value || 0 }
 										suffix='%'
 										onReset={ () => patSetFun( { value : 0 } ) }
-									/>{ /* What: Boost Reset. Why: A user who wants to discard an accrued miss-boost needs a direct way to zero it out. How: This shows the current boost value and zeroes draft.value when reset. */ }
+									/>{ /* What: Boost Reset Component. Why: A user who wants to discard an accrued miss-boost needs a direct way to zero it out. How: This shows the current boost value and zeroes draft.value when reset. */ }
 
 
 								</div>
@@ -457,21 +457,21 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 							</div>
 
 
-						</Collapse>
+						</ColDisCom>
 
 
 					</div>
 
 
-				</Collapse>
+				</ColDisCom>
 
-				<Collapse open={ isaEasBoo }>{ /* What: Ease Settings Collapse Element. Why: Only the ease-up and ease-down modes have a Soonest/Latest drift range and a Fill/Refill control. How: This animates the whole ease-mode settings block open only while isaEasBoo is true. */ }
+				<ColDisCom open={ isaEasBoo }>{ /* What: Collapse Disclosure Component. Why: Only the ease-up and ease-down modes have a Soonest/Latest drift range and a Fill/Refill control. How: This animates the whole ease-mode settings block open only while isaEasBoo is true. */ }
 
 
 					<div className='cnd-typectl pie-rows'>{ /* What: Ease Type Control Div Element. Why: cnd-ease-up-row/cnd-ease-down-row (in addition to the shared pie-row) are pure selector hooks for help mode, see help-content.jsx's newCondEaseUp/newCondEaseDown, split by direction the same way EntryEditor's own pie-ease-up-row/pie-ease-down-row are, since Soonest/Latest/Fill and Shortest/Longest/Refill need entirely different tip copy. How: This groups the Soonest/Shortest row, the Latest/Longest row, and the direction-specific Fill/Refill row below. */ }
 
 
-						<div className={ `pie-row   ${ isaDowBoo ? 'cnd-ease-down-row' : 'cnd-ease-up-row' }` }>{ /* What: Soonest Row Div Element. Why: This is the shared row layout for the lower drift bound, labeled Shortest instead for ease-down. How: This wraps the label block and the NumStepper control below. */ }
+						<div className={ `pie-row   ${ isaDowBoo ? 'cnd-ease-down-row' : 'cnd-ease-up-row' }` }>{ /* What: Soonest Row Div Element. Why: This is the shared row layout for the lower drift bound, labeled Shortest instead for ease-down. How: This wraps the label block and the NumSteCom control below. */ }
 
 
 							<div className='pie-rowlabel'>{ /* What: Soonest Rowlabel Div Element. Why: The row's own title and live day-count summary need to sit together. How: This wraps the title span and the fading summary span below. */ }
@@ -488,16 +488,16 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 							</div>
 
 
-							<div className='pie-ctl'>{ /* What: Soonest Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumStepper and its own unit label below. */ }
+							<div className='pie-ctl'>{ /* What: Soonest Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumSteCom and its own unit label below. */ }
 
 
-								<NumStepper
+								<NumSteCom
 									value={ sooDayNum }
 									min={ 1 }
 									max={ 100 }
 									ariaLabel={ sooLabStr }
 									onSet={ appSooFun }
-								/>{ /* What: Number Stepper. Why: This is the actual increment/decrement control for the lower drift bound. How: This commits every change through appSooFun. */ }
+								/>{ /* What: Number Stepper Component. Why: This is the actual increment/decrement control for the lower drift bound. How: This commits every change through appSooFun. */ }
 
 								<span className='np-ease-unit'>{ sooDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Soonest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on sooDayNum. */ }
 
@@ -507,7 +507,7 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 
 						</div>
 
-						<div className={ `pie-row   ${ isaDowBoo ? 'cnd-ease-down-row' : 'cnd-ease-up-row' }` }>{ /* What: Latest Row Div Element. Why: This is the shared row layout for the upper drift bound, labeled Longest instead for ease-down. How: This wraps the label block and the NumStepper control below. */ }
+						<div className={ `pie-row   ${ isaDowBoo ? 'cnd-ease-down-row' : 'cnd-ease-up-row' }` }>{ /* What: Latest Row Div Element. Why: This is the shared row layout for the upper drift bound, labeled Longest instead for ease-down. How: This wraps the label block and the NumSteCom control below. */ }
 
 
 							<div className='pie-rowlabel'>{ /* What: Latest Rowlabel Div Element. Why: The row's own title and live day-count summary need to sit together. How: This wraps the title span and the fading summary span below. */ }
@@ -524,16 +524,16 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 							</div>
 
 
-							<div className='pie-ctl'>{ /* What: Latest Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumStepper and its own unit label below. */ }
+							<div className='pie-ctl'>{ /* What: Latest Control Div Element. Why: The stepper control itself sits apart from the row's own label block. How: This wraps the NumSteCom and its own unit label below. */ }
 
 
-								<NumStepper
+								<NumSteCom
 									value={ latDayNum }
 									min={ 1 }
 									max={ 100 }
 									ariaLabel={ latLabStr }
 									onSet={ appLatFun }
-								/>{ /* What: Number Stepper. Why: This is the actual increment/decrement control for the upper drift bound. How: This commits every change through appLatFun. */ }
+								/>{ /* What: Number Stepper Component. Why: This is the actual increment/decrement control for the upper drift bound. How: This commits every change through appLatFun. */ }
 
 								<span className='np-ease-unit'>{ latDayNum === 1 ? 'day' : 'days' }</span>{ /* What: Latest Unit Span Element. Why: The stepper's own raw number needs a "day"/"days" unit alongside it. How: This pluralizes based on latDayNum. */ }
 
@@ -562,11 +562,11 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 								</div>
 
 
-								<FillButton
+								<FilButCom
 									label='Fill'
 									disabled={ ( draft.value ?? 0 ) >= thrValNum }
 									onClick={ () => patSetFun( { value : thrValNum, triggered : true } ) }
-								/>{ /* What: Fill Button. Why: This is the actual jump-to-full control for ease-up. How: This sets value to thrValNum and triggered to true, disabling itself once already full. */ }
+								/>{ /* What: Fill Button Component. Why: This is the actual jump-to-full control for ease-up. How: This sets value to thrValNum and triggered to true, disabling itself once already full. */ }
 
 
 							</div>
@@ -593,11 +593,11 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 								</div>
 
 
-								<FillButton
+								<FilButCom
 									label='Refill'
 									disabled={ ( draft.value ?? 0 ) >= thrValNum }
 									onClick={ () => patSetFun( { value : thrValNum, triggered : true } ) }
-								/>{ /* What: Fill Button. Why: This is the actual jump-to-full control for ease-down. How: This sets value to thrValNum and triggered to true, disabling itself once already full. */ }
+								/>{ /* What: Fill Button Component. Why: This is the actual jump-to-full control for ease-down. How: This sets value to thrValNum and triggered to true, disabling itself once already full. */ }
 
 
 							</div>
@@ -609,10 +609,10 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 					</div>
 
 
-				</Collapse>
+				</ColDisCom>
 
 
-				<div className='cnd-typectl pie-rows'>{ /* What: Active Type Control Div Element. Why: The Active toggle applies regardless of mode, so it sits outside every mode-gated Collapse above. How: This wraps the one Active pie-row below. */ }
+				<div className='cnd-typectl pie-rows'>{ /* What: Active Type Control Div Element. Why: The Active toggle applies regardless of mode, so it sits outside every mode-gated ColDisCom above. How: This wraps the one Active pie-row below. */ }
 
 
 					<div className='pie-row'>{ /* What: Active Row Div Element. Why: This is the shared row layout for the enabled/disabled toggle. How: This wraps the label block and the switch button below. */ }

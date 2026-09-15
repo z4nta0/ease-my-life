@@ -7,7 +7,7 @@ import React from 'react'; // What: React. Why: This is the UI library HelButCom
 
 
 import { createPortal } from 'react-dom'; // What: Create Portal. Why: The dim layer, highlight spots, badges and the open tip must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with HelOveCom's own JSX and document.body inside its return.
-import { Icon         } from './ui.jsx';  // What: Icon. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
+import { IcoSvgCom    } from './ui.jsx';  // What: Icon Svg Component. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
 
 // #endregion Imports
 
@@ -723,7 +723,7 @@ const BAD_SIZ_NUM = 20; // What: Badge Size Number. Why: Every highlighted targe
  * Badge geometry, shared between where it is actually drawn and where
  * an open tip anchored to it should point: a 20px circle overlapping
  * the highlighted box's own top-right corner (matching the "small
- * corner marker" design, distinct from InfoTip's own inline-trigger
+ * corner marker" design, distinct from InfTipCom's own inline-trigger
  * placement). This falls back to the top-LEFT corner instead when the
  * target's own right edge sits past the viewport, e.g. a
  * horizontally-scrollable row (Today's group nav) whose own rect is
@@ -800,7 +800,7 @@ function badRecFun ( tarRecObj, cenBadBoo ) {
  * @summary
  * Where the open tip should sit relative to the target it describes,
  * the same "prefer below, flip above if it would clip, clamp
- * horizontally" idea as both InfoTip's own place() and the tour's own
+ * horizontally" idea as both InfTipCom's own place() and the tour's own
  * coach placement. Both axes are TARGET-relative, not badge-relative
  * (the badge only marks where to click; it is not where the tip should
  * point): vertically it clears the target's own rect so a big target
@@ -923,7 +923,7 @@ function plaTipFun ( tarRecObj, tipWidNum, tipHeiNum, pinBelYNum ) {
  * HelTipCom = Help Tip Component
  *
  * @summary
- * One tip, positioned once its own size is known, mirroring InfoTip's
+ * One tip, positioned once its own size is known, mirroring InfTipCom's
  * own measure-after-mount approach; simpler than the guided tour's
  * permanent hidden measurer since at most one of these ever exists at
  * a time. tipIteObj.mtwBoo (e.g. the nav tip, once it grew to 5
@@ -1121,7 +1121,7 @@ const NAV_HEL_OBJ = {
 
 				<div className='help-nav-item' key={ curTabObj.icoStr }>{ /* What: Help Nav Item Div Element. Why: Each tab gets its own icon/label/description block inside the shared nav tip. How: This renders curTabObj's own icon and label on one line, its description below. */ }
 
-					<div className='help-nav-label'><Icon name={ curTabObj.icoStr } size={ 14 } /><b>{ curTabObj.labStr }:</b></div>{ /* What: Help Nav Label Div Element. Why: The tab's own real icon glyph next to its label lets a reader match this entry to the real button. How: This renders Icon with curTabObj.icoStr alongside curTabObj.labStr in bold. */ }
+					<div className='help-nav-label'><IcoSvgCom name={ curTabObj.icoStr } size={ 14 } /><b>{ curTabObj.labStr }:</b></div>{ /* What: Help Nav Label Div Element. Why: The tab's own real icon glyph next to its label lets a reader match this entry to the real button. How: This renders IcoSvgCom with curTabObj.icoStr alongside curTabObj.labStr in bold. */ }
 
 					<p>{ curTabObj.desStr }</p>{ /* What: Help Nav Description Paragraph Element. Why: This is the actual explanatory text for this tab. How: This renders curTabObj.desStr as plain text. */ }
 
