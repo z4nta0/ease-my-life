@@ -3,11 +3,11 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This is the UI library both legal-document components and LegalModal are built on. How: This is used directly (React.Fragment, React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
+import React from 'react'; // What: React. Why: This is the UI library both legal-document components and LegModCom are built on. How: This is used directly (React.Fragment, React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
 
 
-import { Icon         } from './ui.jsx'; // What: Icon. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegalModal's close button with the name 'x'.
-import { reduceMotion } from './ui.jsx'; // What: Reduce Motion. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegalModal's modDisFun to skip the animated delay.
+import { Icon         } from './ui.jsx'; // What: Icon. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
+import { reduceMotion } from './ui.jsx'; // What: Reduce Motion. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegModCom's modDisFun to skip the animated delay.
 
 // #endregion Imports
 
@@ -20,7 +20,7 @@ import { reduceMotion } from './ui.jsx'; // What: Reduce Motion. Why: A user who
  * Legal documents shown in a Settings-initiated modal (Privacy Policy /
  * Terms of Service). Each document is a self-contained component owning
  * its own body copy, so when the real legal text lands it is a one-file
- * edit per document. LegalModal is the shared shell: backdrop plus
+ * edit per document. LegModCom is the shared shell: backdrop plus
  * centered scrollable panel, dismissible via Esc, a backdrop click, or
  * the close button, with focus moved into the panel on open and an
  * animated close (skipped for a user who prefers reduced motion). The
@@ -41,7 +41,7 @@ import { reduceMotion } from './ui.jsx'; // What: Reduce Motion. Why: A user who
  * @summary
  * Renders the Privacy Policy's own body copy (a title, a run of
  * sections, subsections, paragraphs and lists) as a React.Fragment, so
- * LegalModal can drop it straight into its own scrollable body div
+ * LegModCom can drop it straight into its own scrollable body div
  * alongside TerSerCom. The copy itself is placeholder text pending the
  * real, final Privacy Policy.
  *
@@ -65,7 +65,7 @@ function PriPolCom () {
 	return (
 
 
-		<React.Fragment>{ /* What: Container Fragment Element. Why: The document's own top-level elements need one wrapper so LegalModal can render them as a single child, without adding an extra DOM node of its own. How: This wraps the policy's own heading, sections, and lists below. */ }
+		<React.Fragment>{ /* What: Container Fragment Element. Why: The document's own top-level elements need one wrapper so LegModCom can render them as a single child, without adding an extra DOM node of its own. How: This wraps the policy's own heading, sections, and lists below. */ }
 
 
 			<h1>Privacy Policy</h1>{ /* What: Document Title Heading Element. Why: This is the document's own top-level heading naming which legal document this is. How: This renders as a plain h1 at the top of the document body. */ }
@@ -610,7 +610,7 @@ function PriPolCom () {
  * @summary
  * Renders the Terms of Service's own body copy (a title, a run of
  * sections, subsections, paragraphs and lists) as a React.Fragment, so
- * LegalModal can drop it straight into its own scrollable body div
+ * LegModCom can drop it straight into its own scrollable body div
  * alongside PriPolCom. The copy itself is placeholder text pending the
  * real, final Terms of Service.
  *
@@ -634,7 +634,7 @@ function TerSerCom () {
 	return (
 
 
-		<React.Fragment>{ /* What: Container Fragment Element. Why: The document's own top-level elements need one wrapper so LegalModal can render them as a single child, without adding an extra DOM node of its own. How: This wraps the terms' own heading, sections, and lists below. */ }
+		<React.Fragment>{ /* What: Container Fragment Element. Why: The document's own top-level elements need one wrapper so LegModCom can render them as a single child, without adding an extra DOM node of its own. How: This wraps the terms' own heading, sections, and lists below. */ }
 
 
 			<h1>Terms and Conditions</h1>{ /* What: Document Title Heading Element. Why: This is the document's own top-level heading naming which legal document this is. How: This renders as a plain h1 at the top of the document body. */ }
@@ -847,10 +847,10 @@ function TerSerCom () {
 
 
 
-// #region LegalModal
+// #region LegModCom
 
 /**
- * LegalModal = Legal Modal
+ * LegModCom = Legal Modal Component
  *
  * @summary
  * The shared shell shown for both legal documents (Privacy Policy and
@@ -860,47 +860,48 @@ function TerSerCom () {
  * outright for a user who prefers reduced motion). Background scroll
  * is locked to whatever offset the app's own <main> scroller was
  * showing at open time and restored to that exact offset on close.
- * Renders nothing at all while which is null.
+ * Renders nothing at all while legDocStr is null.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.which   - Which: Which document to show, 'privacy' or 'terms',
- *                        or null to render nothing.
- * @param props.onClose - On Close: Called once the close animation (or the
- *                        instant reduced-motion path) finishes.
+ * @param props.legDocStr - Legal Document String: Which document to show,
+ *                          or null to render nothing.
+ * @param props.onCloFun  - On Close Function: Called once the close
+ *                          animation (or the instant reduced-motion path)
+ *                          finishes.
  *
  * @returns The modal's own backdrop-and-panel markup, or null while
- * which is null.
+ * legDocStr is null.
  *
  * @example
  * ```tsx
- * LegalModal({ which: legalDoc, onClose: () => setLegalDoc(null) }) // => <LegalModal />
+ * LegModCom({ legDocStr: legalDoc, onCloFun: () => setLegalDoc(null) }) // => <LegModCom />
  * ```
  *
 */
 
-function LegalModal ( { which, onClose } ) {
+function LegModCom ( { legDocStr, onCloFun } ) {
 
 
 	const panEleRef                   = React.useRef( null );   // What: Panel Element Reference. Why: This gives the effect below a handle on the panel so it can be focused on open. How: This is attached via the panel div's ref prop and read inside the open/close effect.
 	const [ modCloBoo, setModCloBoo ] = React.useState( false ); // What: Modal Closing Boolean And Setter. Why: This flags the closing-animation window so the backdrop/panel can swap to their own "is-closing" class. How: This is set true by modDisFun and read in both className expressions below.
 
 
-	const modDisFun = () => { // What: Modal Dismiss Function. Why: Every dismissal path (Esc, backdrop click, close button) needs the same reduced-motion check and the same delayed onClose. How: This calls onClose immediately when reduced motion is preferred, otherwise plays the closing animation for 200ms first.
+	const modDisFun = () => { // What: Modal Dismiss Function. Why: Every dismissal path (Esc, backdrop click, close button) needs the same reduced-motion check and the same delayed onCloFun. How: This calls onCloFun immediately when reduced motion is preferred, otherwise plays the closing animation for 200ms first.
 
 
-		if ( reduceMotion && reduceMotion() ) { onClose(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should not see the closing animation at all. How: This calls onClose immediately and skips the animated path below.
+		if ( reduceMotion && reduceMotion() ) { onCloFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should not see the closing animation at all. How: This calls onCloFun immediately and skips the animated path below.
 
 
 
 		setModCloBoo( true ); // What: Closing State Start Call. Why: This flips both the backdrop and panel into their own "is-closing" class. How: This is read by the className expressions on the backdrop and panel divs below.
 
-		setTimeout( () => { // What: Delayed Close Call. Why: onClose must not fire until the closing animation has actually finished playing. How: This waits 200ms, matching the CSS transition duration, before resetting modCloBoo and calling onClose.
+		setTimeout( () => { // What: Delayed Close Call. Why: onCloFun must not fire until the closing animation has actually finished playing. How: This waits 200ms, matching the CSS transition duration, before resetting modCloBoo and calling onCloFun.
 
 
 			setModCloBoo( false ); // What: Closing State Clear Call. Why: The next open should not inherit this close's own "is-closing" class. How: This resets modCloBoo back to its default false value.
 
-			onClose(); // What: Deferred Close Call. Why: The caller needs to actually clear which once the closing animation has finished playing. How: This calls the onClose prop passed in from LegalModal's own caller.
+			onCloFun(); // What: Deferred Close Call. Why: The caller needs to actually clear legDocStr once the closing animation has finished playing. How: This calls the onCloFun prop passed in from LegModCom's own caller.
 
 
 		}, 200 );
@@ -909,10 +910,10 @@ function LegalModal ( { which, onClose } ) {
 	};
 
 
-	React.useEffect( () => { // What: Open State Effect. Why: Every time which changes to a real value, the modal needs its own Esc listener, its own scroll lock, and its own initial focus, all torn back down on close. How: This subscribes a keydown listener, freezes the app's own main scroller, focuses the panel, and returns a cleanup that reverses all three.
+	React.useEffect( () => { // What: Open State Effect. Why: Every time legDocStr changes to a real value, the modal needs its own Esc listener, its own scroll lock, and its own initial focus, all torn back down on close. How: This subscribes a keydown listener, freezes the app's own main scroller, focuses the panel, and returns a cleanup that reverses all three.
 
 
-		if ( !which ) return; // What: No Document Guard. Why: There is nothing to set up while no document is being shown. How: This bails out of the effect entirely when which is null.
+		if ( !legDocStr ) return; // What: No Document Guard. Why: There is nothing to set up while no document is being shown. How: This bails out of the effect entirely when legDocStr is null.
 
 
 
@@ -960,14 +961,14 @@ function LegalModal ( { which, onClose } ) {
 		};
 
 
-	}, [ which ] ); // What: Effect Dependency Array. Why: This effect must re-run every time a different document (or no document) is requested. How: which changes both whether the modal is shown at all and which document's own title/body renders inside it.
+	}, [ legDocStr ] ); // What: Effect Dependency Array. Why: This effect must re-run every time a different document (or no document) is requested. How: legDocStr changes both whether the modal is shown at all and which document's own title/body renders inside it.
 
 
-	if ( !which ) return null; // What: No Document Render Guard. Why: LegalModal renders nothing at all until a document is actually requested. How: This returns null before any of the JSX below runs.
+	if ( !legDocStr ) return null; // What: No Document Render Guard. Why: LegModCom renders nothing at all until a document is actually requested. How: This returns null before any of the JSX below runs.
 
 
 
-	const modTitStr = which === 'privacy' ? 'Privacy Policy' : 'Terms of Service'; // What: Modal Title String. Why: The same title is needed for both the visible heading and the dialog's own aria-label. How: This is computed once from which and read in both places below.
+	const modTitStr = legDocStr === 'privacy' ? 'Privacy Policy' : 'Terms of Service'; // What: Modal Title String. Why: The same title is needed for both the visible heading and the dialog's own aria-label. How: This is computed once from legDocStr and read in both places below.
 
 
 
@@ -1015,10 +1016,10 @@ function LegalModal ( { which, onClose } ) {
 				</div>
 
 
-				<div className='legal-modal-body'>{ /* What: Container Body Div Element. Why: This is the actual scrollable area the chosen document's own body renders into. How: This renders PriPolCom or TerSerCom below, chosen by which. */ }
+				<div className='legal-modal-body'>{ /* What: Container Body Div Element. Why: This is the actual scrollable area the chosen document's own body renders into. How: This renders PriPolCom or TerSerCom below, chosen by legDocStr. */ }
 
 
-					{ which === 'privacy' ? <PriPolCom /> : <TerSerCom /> }{ /* What: Document Choice Expression. Why: Only one of the two documents is ever shown at a time. How: This renders PriPolCom while which is 'privacy', otherwise TerSerCom. */ }
+					{ legDocStr === 'privacy' ? <PriPolCom /> : <TerSerCom /> }{ /* What: Document Choice Expression. Why: Only one of the two documents is ever shown at a time. How: This renders PriPolCom while legDocStr is 'privacy', otherwise TerSerCom. */ }
 
 
 				</div>
@@ -1035,11 +1036,11 @@ function LegalModal ( { which, onClose } ) {
 
 }
 
-// #endregion LegalModal
+// #endregion LegModCom
 
 
 
-export { LegalModal }; // What: Named Export. Why: tab-settings.jsx imports this by this exact name. How: This re-exports LegalModal as-is, deliberately left unrenamed since tab-settings.jsx (not yet reformatted) relies on this exact export name.
+export { LegModCom }; // What: Named Export. Why: tab-settings.jsx imports this by this exact name. How: This re-exports LegModCom by name, rippled into tab-settings.jsx's own import and JSX usage in the same pass.
 
 
 

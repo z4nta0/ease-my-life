@@ -17,7 +17,7 @@ import { HelOveCom             } from './help-mode.jsx';           // What: Help
 import { HOL_NAM_OBJ             } from './holidays.js';             // What: Holidays Namespace Object. Why: The Holidays section needs both a default holidays-state shape and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.defStaFun() and HOL_NAM_OBJ.comYeaFun() inside HolEdiCom.
 import { Icon                    } from './ui.jsx';                  // What: Icon. Why: A handful of controls (the custom-holiday delete button, the brand-mark logo) need a small glyph. How: This is rendered with a specific name/size prop wherever a glyph is needed.
 import { InfoTip                 } from './ui.jsx';                  // What: Info Tip. Why: A disabled Export/Reset button still needs to explain why it is disabled. How: This wraps those buttons, given a label prop with the explanation.
-import { LegalModal              } from './legal-docs.jsx';          // What: Legal Modal. Why: The Legal section's View buttons need somewhere to actually show the Privacy Policy/Terms of Service text. How: This is rendered once, driven by legDocStr, and closed by clearing that state back to null.
+import { LegModCom               } from './legal-docs.jsx';          // What: Legal Modal Component. Why: The Legal section's View buttons need somewhere to actually show the Privacy Policy/Terms of Service text. How: This is rendered once, driven by legDocStr, and closed by clearing that state back to null.
 import { NOT_NAM_OBJ             } from './notify.js';               // What: Notification Namespace Object. Why: The Daily generator's notify-me row needs to read/request the browser's notification permission. How: This is called via its own permission()/askOnce()/request()/subscribe() methods, kept as this exact external name since it broke production once before under a rename.
 import { OB_SAMPLE_PICKER_IDS    } from './onboarding-seed-data.js'; // What: Onboarding Sample Picker Ids. Why: Replaying the welcome tour needs to tell a real, established account apart from one still holding only seeded sample pickers. How: This is checked against state.pickers to decide whether to self-heal stale onboarding flags before the tour starts.
 import { PickerAnimStage         } from './settings-previews.jsx';   // What: Picker Animation Stage. Why: The picker-animation style picker needs a live preview the user can play. How: This is rendered inside the Picker Animation card, driven by picPreStr/picTokNum.
@@ -1457,7 +1457,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	// shared <main className="main">; sections live in the right pane and the
 	// sticky rail on the left tracks / drives position.
 	const [ actSecStr, setActSecStr ] = React.useState( 'daily' ); // What: Active Section String And Setter. Why: Both the rail's own highlighted link and the scroll-spy effect below need one shared source of truth for which section reads as current. How: This is written by the scroll-spy effect during normal scrolling and by jmpSecFun when a rail link is clicked.
-	const [ legDocStr, setLegDocStr ] = React.useState( null ); // What: Legal Document String And Setter. Why: The Legal section's own View buttons need somewhere to record which document ('privacy' | 'terms') to show, or null for neither. How: This gates and selects LegalModal's own content below.
+	const [ legDocStr, setLegDocStr ] = React.useState( null ); // What: Legal Document String And Setter. Why: The Legal section's own View buttons need somewhere to record which document ('privacy' | 'terms') to show, or null for neither. How: This gates and selects LegModCom's own content below.
 	// Help mode (see help-mode.jsx); every section here is static UI chrome, no
 	// data-dependent content, so unlike Pickers/Data/Stats no disposable sample
 	// data needs seeding.
@@ -3427,7 +3427,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									type='button'
 									className='btn btn--secondary btn--sm'
 									onClick={ () => setLegDocStr( 'privacy' ) }
-								>View</button>{ /* What: Privacy View Button Element. Why: This is the actual trigger that opens the Privacy Policy inside LegalModal. How: This sets legDocStr to 'privacy' when clicked. */ }
+								>View</button>{ /* What: Privacy View Button Element. Why: This is the actual trigger that opens the Privacy Policy inside LegModCom. How: This sets legDocStr to 'privacy' when clicked. */ }
 
 
 							</div>
@@ -3449,7 +3449,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									type='button'
 									className='btn btn--secondary btn--sm'
 									onClick={ () => setLegDocStr( 'terms' ) }
-								>View</button>{ /* What: Terms View Button Element. Why: This is the actual trigger that opens the Terms of Service inside LegalModal. How: This sets legDocStr to 'terms' when clicked. */ }
+								>View</button>{ /* What: Terms View Button Element. Why: This is the actual trigger that opens the Terms of Service inside LegModCom. How: This sets legDocStr to 'terms' when clicked. */ }
 
 
 							</div>
@@ -3466,10 +3466,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 			</div>
 
-			<LegalModal
-				which={ legDocStr }
-				onClose={ () => setLegDocStr( null ) }
-			/>{ /* What: Legal Modal. Why: Both Legal rows above need somewhere to actually show their own document text. How: This shows whichever document legDocStr names, or nothing while it is null, and clears it on close. */ }
+			<LegModCom
+				legDocStr={ legDocStr }
+				onCloFun={ () => setLegDocStr( null ) }
+			/>{ /* What: Legal Modal Component. Why: Both Legal rows above need somewhere to actually show their own document text. How: This shows whichever document legDocStr names, or nothing while it is null, and clears it on close. */ }
 
 
 		</div>
