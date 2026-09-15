@@ -943,7 +943,7 @@ function visTodFun( tasListArr, remOptObj, holStaObj, cheDatObj = new Date() ) {
 
 
 	const isaWkdBoo = cheDatObj.getDay() === 0 || cheDatObj.getDay() === 6;                       // What: Is-A Weekend Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
-	const isaHolBoo = !!( HOL_NAM_OBJ && HOL_NAM_OBJ.holidayOn( holStaObj, cheDatObj ) );          // What: Is-A Holiday Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself is an active holiday. How: This guards on HOL_NAM_OBJ existing before calling its own holidayOn, coercing the result to a real boolean.
+	const isaHolBoo = !!( HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ) );          // What: Is-A Holiday Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself is an active holiday. How: This guards on HOL_NAM_OBJ existing before calling its own holDatFun, coercing the result to a real boolean.
 	const cheIsoStr = isoDatFun( cheDatObj );                                                      // What: Check Iso String. Why: The filter below compares a task's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDatFun.
 
 
@@ -1017,13 +1017,13 @@ function todVisFun( tasRecObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
 
 	const optNorObj = optForFun( tasRecObj, remOptObj );                    // What: Options Normalized Object. Why: The 2 exclusion checks further below both read from tasRecObj's own governing class. How: This calls optForFun once and reuses the result.
 	const isaWkdBoo = cheDatObj.getDay() === 0 || cheDatObj.getDay() === 6; // What: Is-A Weekend Boolean. Why: The weekend-exclusion check further below needs to know whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
-	const holInfObj = HOL_NAM_OBJ && HOL_NAM_OBJ.holidayInfoOn // What: Holiday Info Object. Why: A caller distinguishing a built-in holiday from a custom one needs the full record, not just its name; an older HOL_NAM_OBJ shape only ever exposed holidayOn (name only), so the richer holidayInfoOn is preferred when present. This whole expression is deliberately left as one guarded chain rather than split into separate always-evaluated consts, since HOL_NAM_OBJ.holidayOn must never be called before HOL_NAM_OBJ itself is confirmed to exist. How: This calls holidayInfoOn directly when it exists, otherwise rebuilds a name-only record from holidayOn when that finds a match, or lands on null when neither one does.
-		? HOL_NAM_OBJ.holidayInfoOn( holStaObj, cheDatObj )
-		: ( HOL_NAM_OBJ && HOL_NAM_OBJ.holidayOn( holStaObj, cheDatObj )
+	const holInfObj = HOL_NAM_OBJ && HOL_NAM_OBJ.holInfFun // What: Holiday Info Object. Why: A caller distinguishing a built-in holiday from a custom one needs the full record, not just its name; an older HOL_NAM_OBJ shape only ever exposed holDatFun (name only), so the richer holInfFun is preferred when present. This whole expression is deliberately left as one guarded chain rather than split into separate always-evaluated consts, since HOL_NAM_OBJ.holDatFun must never be called before HOL_NAM_OBJ itself is confirmed to exist. How: This calls holInfFun directly when it exists, otherwise rebuilds a name-only record from holDatFun when that finds a match, or lands on null when neither one does.
+		? HOL_NAM_OBJ.holInfFun( holStaObj, cheDatObj )
+		: ( HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj )
 			? {
 
 
-				name   : HOL_NAM_OBJ.holidayOn( holStaObj, cheDatObj ), // What: Name. Why: The caller needs the matched holiday's own display name. How: This calls HOL_NAM_OBJ.holidayOn again for its own return value (already confirmed truthy by the guard above).
+				name   : HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ), // What: Name. Why: The caller needs the matched holiday's own display name. How: This calls HOL_NAM_OBJ.holDatFun again for its own return value (already confirmed truthy by the guard above).
 				custom : false // What: Custom. Why: This name-only fallback path can only ever be reached for a computed built-in holiday, never a custom one. How: This is always false on this branch.
 
 
@@ -1141,7 +1141,7 @@ function nexEliFun( tasRecObj, remOptObj, holStaObj, fromDatObj = new Date(), re
 
 		if ( optNorObj.excludeWeekends && isaWkdBoo ) continue; // What: Weekend Exclusion Guard. Why: This class has opted out of showing on a weekend, and curDatObj is one. How: This skips to the next iteration when both conditions hold.
 
-		if ( optNorObj.excludeHolidays && HOL_NAM_OBJ && HOL_NAM_OBJ.holidayOn( holStaObj, curDatObj ) ) continue; // What: Holiday Exclusion Guard. Why: This class has opted out of showing on a holiday, and curDatObj is one; the HOL_NAM_OBJ existence check must stay part of this same short-circuit chain, never split out, since holidayOn can't be called before HOL_NAM_OBJ itself is confirmed to exist. How: This skips to the next iteration when all 3 conditions hold.
+		if ( optNorObj.excludeHolidays && HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, curDatObj ) ) continue; // What: Holiday Exclusion Guard. Why: This class has opted out of showing on a holiday, and curDatObj is one; the HOL_NAM_OBJ existence check must stay part of this same short-circuit chain, never split out, since holDatFun can't be called before HOL_NAM_OBJ itself is confirmed to exist. How: This skips to the next iteration when all 3 conditions hold.
 
 
 

@@ -4,7 +4,7 @@
 
 // #region Imports
 
-import { HOL_NAM_OBJ } from './holidays.js'; // What: Holidays Namespace Object. Why: The seeded demo state needs a real holidays-state shape, and the clean state needs the same canonical empty one. How: This is called (defaultState) by both buiCleFun and buiSeeFun below.
+import { HOL_NAM_OBJ } from './holidays.js'; // What: Holidays Namespace Object. Why: The seeded demo state needs a real holidays-state shape, and the clean state needs the same canonical empty one. How: This is called (defStaFun) by both buiCleFun and buiSeeFun below.
 import { TASKS       } from './tasks.js';    // What: Tasks. Why: The seeded demo state needs a few real reminder task objects, built to the reminders engine's own shape. How: This is called (defaultTask/defaultOpts) by buiSeeFun and buiCleFun below.
 
 // #endregion Imports
@@ -1129,7 +1129,7 @@ function buiSeeFun() {
 		],
 
 		daily           : { pickerIds : allPicArr.map( ( curPicObj ) => curPicObj.id ), runTime : '04:00', mode : 'auto' }, // What: Daily. Why: The Daily generator needs to know which pickers to run and when; every seeded picker runs daily, auto-triggered at 4am. How: This maps allPicArr down to just its own ids, paired with a fixed runTime/mode.
-		holidays        : HOL_NAM_OBJ.defaultState(),                                                      // What: Holidays. Why: The demo state needs a real, canonical holidays-state shape, same as a fresh install would get. How: This calls HOL_NAM_OBJ's own defaultState.
+		holidays        : HOL_NAM_OBJ.defStaFun(),                                                      // What: Holidays. Why: The demo state needs a real, canonical holidays-state shape, same as a fresh install would get. How: This calls HOL_NAM_OBJ's own defStaFun.
 		appearance      : { theme : 'ink', customLight : null, customDark : null, autoSystem : false, pickAnim : 'reel', completionStyle : 'confetti', tabPlacement : 'bottom' }, // What: Appearance. Why: The demo state needs a full, valid appearance settings object, same shape a fresh install would get. How: This is the app's own default theme/animation/placement settings.
 		tasks           : [ // What: Tasks. Why: A few manual reminders need seeding atop Today, covering weekly/monthly/interval/once recurrence. How: This is an array of TASKS.defaultTask calls, in state.tasks' own shape.
 
@@ -1305,7 +1305,7 @@ function buiCleFun() {
 		pickers         : [],                                                    // What: Pickers. Why: A brand-new user has no pickers at all. How: This is an empty array.
 		conditionals    : [],                                                    // What: Conditionals. Why: A brand-new user has no conditionals at all. How: This is an empty array.
 		daily           : { pickerIds : [], runTime : '04:00', mode : 'auto' },  // What: Daily. Why: The Daily generator needs a valid, empty configuration to start from. How: This is an empty pickerIds list paired with the app's own default runTime/mode.
-		holidays        : HOL_NAM_OBJ.defaultState(),                           // What: Holidays. Why: A brand-new user still needs a real, canonical holidays-state shape. How: This calls HOL_NAM_OBJ's own defaultState.
+		holidays        : HOL_NAM_OBJ.defStaFun(),                           // What: Holidays. Why: A brand-new user still needs a real, canonical holidays-state shape. How: This calls HOL_NAM_OBJ's own defStaFun.
 		appearance      : { theme : 'ink', customLight : null, customDark : null, autoSystem : false, pickAnim : 'reel', completionStyle : 'confetti', tabPlacement : 'bottom' }, // What: Appearance. Why: A brand-new user still needs a full, valid appearance settings object. How: This is the app's own default theme/animation/placement settings.
 		tasks           : [],                                                    // What: Tasks. Why: A brand-new user has no reminders at all. How: This is an empty array.
 		reminderOpts    : TASKS.defaultOpts(),                                  // What: Reminder Opts. Why: A brand-new user still needs a full, valid reminder-options object. How: This calls TASKS's own defaultOpts.

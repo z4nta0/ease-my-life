@@ -55,17 +55,17 @@ const THU_DAY_NUM = 4; // What: Thursday Day Number. Why: Same reasoning as MON_
 const HOL_DEF_ARR = [ // What: Holiday Definition Array. Why: This is the single source of truth every US holiday computation in this file reads from. How: This is read by comYeaFun below, resolving each entry's own rule via datDefFun into a concrete date for whatever year is requested.
 
 
-	{ key : 'newyear',      name : 'New Year\'s Day',            fixArr : [ 1, 1 ] },               // What: New Year Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to January 1st every year.
-	{ key : 'mlk',          name : 'Martin Luther King Jr. Day', nthArr : [ 1, MON_DAY_NUM, 3 ] },  // What: MLK Day Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 3rd Monday of January every year.
-	{ key : 'presidents',   name : 'Presidents\' Day',           nthArr : [ 2, MON_DAY_NUM, 3 ] },  // What: Presidents Day Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 3rd Monday of February every year.
-	{ key : 'memorial',     name : 'Memorial Day',               lasArr : [ 5, MON_DAY_NUM ] },     // What: Memorial Day Definition Object. Why: This is a last-weekday federal holiday. How: This resolves to the last Monday of May every year.
-	{ key : 'juneteenth',   name : 'Juneteenth',                 fixArr : [ 6, 19 ] },              // What: Juneteenth Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to June 19th every year.
-	{ key : 'independence', name : 'Independence Day',           fixArr : [ 7, 4 ] },               // What: Independence Day Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to July 4th every year.
-	{ key : 'labor',        name : 'Labor Day',                  nthArr : [ 9, MON_DAY_NUM, 1 ] },  // What: Labor Day Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 1st Monday of September every year.
-	{ key : 'columbus',     name : 'Columbus Day',               nthArr : [ 10, MON_DAY_NUM, 2 ] }, // What: Columbus Day Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 2nd Monday of October every year.
-	{ key : 'veterans',     name : 'Veterans Day',               fixArr : [ 11, 11 ] },             // What: Veterans Day Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to November 11th every year.
-	{ key : 'thanksgiving', name : 'Thanksgiving Day',           nthArr : [ 11, THU_DAY_NUM, 4 ] }, // What: Thanksgiving Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 4th Thursday of November every year.
-	{ key : 'christmas',    name : 'Christmas Day',              fixArr : [ 12, 25 ] }              // What: Christmas Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to December 25th every year.
+	{ keyStr : 'newyear',      namStr : 'New Year\'s Day',            fixArr : [ 1, 1 ]               }, // What: New Year Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to January 1st every year.
+	{ keyStr : 'mlk',          namStr : 'Martin Luther King Jr. Day', nthArr : [ 1, MON_DAY_NUM, 3 ]  }, // What: MLK Day Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 3rd Monday of January every year.
+	{ keyStr : 'presidents',   namStr : 'Presidents\' Day',           nthArr : [ 2, MON_DAY_NUM, 3 ]  }, // What: Presidents Day Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 3rd Monday of February every year.
+	{ keyStr : 'memorial',     namStr : 'Memorial Day',               lasArr : [ 5, MON_DAY_NUM ]     }, // What: Memorial Day Definition Object. Why: This is a last-weekday federal holiday. How: This resolves to the last Monday of May every year.
+	{ keyStr : 'juneteenth',   namStr : 'Juneteenth',                 fixArr : [ 6, 19 ]              }, // What: Juneteenth Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to June 19th every year.
+	{ keyStr : 'independence', namStr : 'Independence Day',           fixArr : [ 7, 4 ]               }, // What: Independence Day Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to July 4th every year.
+	{ keyStr : 'labor',        namStr : 'Labor Day',                  nthArr : [ 9, MON_DAY_NUM, 1 ]  }, // What: Labor Day Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 1st Monday of September every year.
+	{ keyStr : 'columbus',     namStr : 'Columbus Day',               nthArr : [ 10, MON_DAY_NUM, 2 ] }, // What: Columbus Day Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 2nd Monday of October every year.
+	{ keyStr : 'veterans',     namStr : 'Veterans Day',               fixArr : [ 11, 11 ]             }, // What: Veterans Day Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to November 11th every year.
+	{ keyStr : 'thanksgiving', namStr : 'Thanksgiving Day',           nthArr : [ 11, THU_DAY_NUM, 4 ] }, // What: Thanksgiving Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 4th Thursday of November every year.
+	{ keyStr : 'christmas',    namStr : 'Christmas Day',              fixArr : [ 12, 25 ]             }  // What: Christmas Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to December 25th every year.
 
 
 ];
@@ -76,7 +76,7 @@ const REG_DEF_OBJ = { US : { labStr : 'United States', defArr : HOL_DEF_ARR } };
 
 
 
-const padDigFun = ( digValNum ) => String( digValNum ).padStart( 2, '0' ); // What: Pad Digit Function. Why: Every ISO date string segment (month, day) needs to render as exactly 2 digits. How: This left-pads digValNum's own string form with a leading '0' when it's under 2 characters.
+const padDigFun = ( digValNum ) => String( digValNum ).padStart( 2, '0' );                                                                          // What: Pad Digit Function. Why: Every ISO date string segment (month, day) needs to render as exactly 2 digits. How: This left-pads digValNum's own string form with a leading '0' when it's under 2 characters.
 const isoDatFun = ( souDatObj ) => `${ souDatObj.getFullYear() }-${ padDigFun( souDatObj.getMonth() + 1 ) }-${ padDigFun( souDatObj.getDate() ) }`; // What: Iso Date Function. Why: Every date comparison and lookup in this module needs a plain, locale-independent, comparable string key, not a Date instance. How: This formats souDatObj as YYYY-MM-DD using padDigFun for the 2-digit month/day segments.
 
 
@@ -112,7 +112,7 @@ const isoDatFun = ( souDatObj ) => `${ souDatObj.getFullYear() }-${ padDigFun( s
 function nthDayFun( yeaValNum, monOneNum, dayIndNum, nthCouNum ) {
 
 
-	const firDatObj = new Date( yeaValNum, monOneNum - 1, 1 ); // What: First Date Object. Why: The month's own first day is the anchor every weekday-offset calculation below is computed from. How: This constructs a Date for day 1 of the given month/year.
+	const firDatObj = new Date( yeaValNum, monOneNum - 1, 1 );    // What: First Date Object. Why: The month's own first day is the anchor every weekday-offset calculation below is computed from. How: This constructs a Date for day 1 of the given month/year.
 	const shiDayNum = ( dayIndNum - firDatObj.getDay() + 7 ) % 7; // What: Shift Day Number. Why: The number of days to add to the 1st of the month to reach the FIRST occurrence of the target weekday must always be a non-negative offset. How: This computes ( target - actual + 7 ) % 7, wrapping a negative difference back into 0-6.
 
 
@@ -156,7 +156,7 @@ function nthDayFun( yeaValNum, monOneNum, dayIndNum, nthCouNum ) {
 function lasDayFun( yeaValNum, monOneNum, dayIndNum ) {
 
 
-	const lasDatObj = new Date( yeaValNum, monOneNum, 0 ); // What: Last Date Object. Why: Day 0 of the NEXT month is JavaScript's own idiom for the last day of THIS month, which every offset below is computed from. How: This constructs a Date one month ahead with a day value of 0, which Date normalizes back to the prior month's final day.
+	const lasDatObj = new Date( yeaValNum, monOneNum, 0 );        // What: Last Date Object. Why: Day 0 of the NEXT month is JavaScript's own idiom for the last day of THIS month, which every offset below is computed from. How: This constructs a Date one month ahead with a day value of 0, which Date normalizes back to the prior month's final day.
 	const shiDayNum = ( lasDatObj.getDay() - dayIndNum + 7 ) % 7; // What: Shift Day Number. Why: The number of days to subtract from the month's last day to reach the LAST occurrence of the target weekday must always be a non-negative offset. How: This computes ( actual - target + 7 ) % 7, wrapping a negative difference back into 0-6.
 
 
@@ -202,7 +202,11 @@ function datDefFun( holDefObj, yeaValNum ) {
 
 	if ( holDefObj.fixArr ) return new Date( yeaValNum, holDefObj.fixArr[ 0 ] - 1, holDefObj.fixArr[ 1 ] ); // What: Fixed Rule Branch. Why: A fixed-date holiday's actual calendar date never depends on any weekday math at all. How: This builds the date directly from the definition's own [month, day] pair.
 
+
+
 	if ( holDefObj.nthArr ) return nthDayFun( yeaValNum, holDefObj.nthArr[ 0 ], holDefObj.nthArr[ 1 ], holDefObj.nthArr[ 2 ] ); // What: Nth Rule Branch. Why: An Nth-weekday holiday's actual calendar date depends on which weekday the month starts on. How: This delegates to nthDayFun with the definition's own [month, weekday, n] triple.
+
+
 
 	if ( holDefObj.lasArr ) return lasDayFun( yeaValNum, holDefObj.lasArr[ 0 ], holDefObj.lasArr[ 1 ] ); // What: Last Rule Branch. Why: A last-weekday holiday's actual calendar date depends on which weekday the month ends on. How: This delegates to lasDayFun with the definition's own [month, weekday] pair.
 
@@ -248,6 +252,7 @@ function obsDatFun( actDatObj ) {
 
 
 	const curDayNum = actDatObj.getDay(); // What: Current Day Number. Why: The federal observed-date shift depends on which weekday the actual holiday falls on. How: This reads actDatObj's own weekday via Date.getDay().
+
 
 	if ( curDayNum === 6 ) return new Date( actDatObj.getFullYear(), actDatObj.getMonth(), actDatObj.getDate() - 1 ); // What: Saturday Shift Branch. Why: A federal holiday landing on Saturday is observed the Friday before it instead. How: This returns a Date one day earlier than actDatObj.
 
@@ -311,12 +316,12 @@ function comYeaFun( yeaValNum, couCodStr = 'US' ) {
 		return { // What: Holiday Record Object. Why: The caller needs one denormalized record per definition, carrying both the observed and actual dates so callers can tell whether they differ. How: This builds one plain object per curRegObj.defArr entry, mixing data straight from holDefObj with the two dates resolved above.
 
 
-			key      : holDefObj.key,                                     // What: Key. Why: This is the stable identifier callers use to reference this specific holiday, e.g. to disable it. How: This is copied straight from holDefObj.key.
-			name     : holDefObj.name,                                    // What: Name. Why: This is the human-readable label callers display for this holiday. How: This is copied straight from holDefObj.name.
-			date     : obsDatObj,                                         // What: Date. Why: This is the OBSERVED day, what people actually get off, which is what most callers care about. How: This is obsDatObj, resolved above.
-			iso      : isoDatFun( obsDatObj ),                            // What: Iso. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts obsDatObj via isoDatFun.
-			actual   : actDatObj,                                         // What: Actual. Why: A caller wording itself around an observed shift needs the true calendar date too. How: This is actDatObj, resolved above.
-			observed : isoDatFun( obsDatObj ) !== isoDatFun( actDatObj )  // What: Observed. Why: A caller needs to know whether the observed and actual dates actually differ, to word itself accordingly. How: This compares the two dates' own iso strings for inequality.
+			keyStr : holDefObj.keyStr,                                  // What: Key String. Why: This is the stable identifier callers use to reference this specific holiday, e.g. to disable it. How: This is copied straight from holDefObj.keyStr.
+			namStr : holDefObj.namStr,                                  // What: Name String. Why: This is the human-readable label callers display for this holiday. How: This is copied straight from holDefObj.namStr.
+			datObj : obsDatObj,                                         // What: Date Object. Why: This is the OBSERVED day, what people actually get off, which is what most callers care about. How: This is obsDatObj, resolved above.
+			isoStr : isoDatFun( obsDatObj ),                            // What: Iso String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts obsDatObj via isoDatFun.
+			actObj : actDatObj,                                         // What: Actual Object. Why: A caller wording itself around an observed shift needs the true calendar date too. How: This is actDatObj, resolved above.
+			obsBoo : isoDatFun( obsDatObj ) !== isoDatFun( actDatObj )  // What: Observed Boolean. Why: A caller needs to know whether the observed and actual dates actually differ, to word itself accordingly. How: This compares the two dates' own iso strings for inequality.
 
 
 		};
@@ -390,12 +395,12 @@ function actYeaFun( holStaObj, yeaValNum ) {
 
 
 	const resHolObj = holStaObj || defStaFun(); // What: Resolved Holidays Object. Why: A caller might pass a missing/undefined holidays state, which still needs a safe fallback to read from below. How: This falls back to defStaFun's canonical empty shape when holStaObj is falsy.
-	const disKeyArr = resHolObj.disabled || [];  // What: Disabled Key Array. Why: A very old persisted state might be missing this field entirely. How: This falls back to an empty array when resHolObj.disabled is missing.
+	const disKeyArr = resHolObj.disabled || []; // What: Disabled Key Array. Why: A very old persisted state might be missing this field entirely. How: This falls back to an empty array when resHolObj.disabled is missing.
 
 
 	const comActArr = comYeaFun( yeaValNum, resHolObj.country ) // What: Computed Active Array. Why: The caller only wants every defined holiday for the year, as a starting point before disabled ones are dropped. How: This computes every holiday record for yeaValNum against resHolObj.country.
 
-		.filter( ( comRecObj ) => !disKeyArr.includes( comRecObj.key ) ) // What: Disabled Filter. Why: A holiday the user has switched off must never appear in the active list. How: This keeps only records whose key is absent from disKeyArr.
+		.filter( ( comRecObj ) => !disKeyArr.includes( comRecObj.keyStr ) ) // What: Disabled Filter. Why: A holiday the user has switched off must never appear in the active list. How: This keeps only records whose key is absent from disKeyArr.
 
 		.map( ( comRecObj ) => ( { ...comRecObj, custom : false } ) ); // What: Custom Flag Map. Why: Every surviving record needs marking as a computed (non-custom) holiday, for callers that tell the two kinds apart. How: This spreads each record and overrides custom to false.
 
@@ -410,10 +415,10 @@ function actYeaFun( holStaObj, yeaValNum ) {
 		return { // What: Custom Record Object. Why: Every resolved custom day needs the same record shape as a computed holiday, so callers can treat them uniformly. How: This builds one record, prefixing the key so it can never collide with a computed holiday's own key.
 
 
-			key    : 'custom:' + cusDefObj.id, // What: Key. Why: This is the stable identifier for this custom day, namespaced so it can never collide with a computed holiday's own key. How: This prefixes cusDefObj.id with 'custom:'.
-			name   : cusDefObj.name,           // What: Name. Why: This is the human-readable label callers display for this custom day. How: This is copied straight from cusDefObj.name.
-			date   : cusDatObj,                // What: Date. Why: This is the resolved concrete date for yeaValNum. How: This is cusDatObj, resolved above.
-			iso    : isoDatFun( cusDatObj ),   // What: Iso. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts cusDatObj via isoDatFun.
+			keyStr : 'custom:' + cusDefObj.id, // What: Key String. Why: This is the stable identifier for this custom day, namespaced so it can never collide with a computed holiday's own key. How: This prefixes cusDefObj.id with 'custom:'.
+			namStr : cusDefObj.name,           // What: Name String. Why: This is the human-readable label callers display for this custom day. How: This is copied straight from cusDefObj.name.
+			datObj : cusDatObj,                // What: Date Object. Why: This is the resolved concrete date for yeaValNum. How: This is cusDatObj, resolved above.
+			isoStr : isoDatFun( cusDatObj ),   // What: Iso String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts cusDatObj via isoDatFun.
 			custom : true                      // What: Custom. Why: A caller needs to tell this record apart from a computed built-in holiday. How: This is always true for a record built from the user's own custom list.
 
 
@@ -470,9 +475,10 @@ function holDatFun( holStaObj, cheDatObj ) {
 	for ( const cheYeaNum of [ curYeaNum - 1, curYeaNum, curYeaNum + 1 ] ) { // What: Neighboring Year Loop. Why: An observed shift can push a holiday across a year boundary, so the year before and after must be checked too, not just curYeaNum itself. How: This walks the prior, current, and next calendar year in turn.
 
 
-		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRecObj ) => comRecObj.iso === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
+		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRecObj ) => comRecObj.isoStr === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
 
-		if ( hitHolObj ) return hitHolObj.name; // What: Hit Found Guard. Why: The first matching year's own record is enough; there's no need to keep searching once found. How: This returns the matched record's own name immediately.
+
+		if ( hitHolObj ) return hitHolObj.namStr; // What: Hit Found Guard. Why: The first matching year's own record is enough; there's no need to keep searching once found. How: This returns the matched record's own name immediately.
 
 
 	}
@@ -524,7 +530,8 @@ function holInfFun( holStaObj, cheDatObj ) {
 	for ( const cheYeaNum of [ curYeaNum - 1, curYeaNum, curYeaNum + 1 ] ) { // What: Neighboring Year Loop. Why: An observed shift can push a holiday across a year boundary, so the year before and after must be checked too, not just curYeaNum itself. How: This walks the prior, current, and next calendar year in turn.
 
 
-		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRecObj ) => comRecObj.iso === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
+		const hitHolObj = actYeaFun( holStaObj, cheYeaNum ).find( ( comRecObj ) => comRecObj.isoStr === tarIsoStr ); // What: Hit Holiday Object. Why: Whichever active record (if any) actually falls on the queried date for this candidate year is what the caller wants. How: This searches cheYeaNum's own active list for a matching iso string.
+
 
 		if ( hitHolObj ) return hitHolObj; // What: Hit Found Guard. Why: The first matching year's own record is enough; there's no need to keep searching once found. How: This returns the matched full record immediately, unlike holDatFun which returns just its name.
 
@@ -575,6 +582,7 @@ function gueCouFun() {
 
 		const regCodStr = ( navigator.language || '' ).split( '-' )[ 1 ]; // What: Region Code String. Why: A BCP 47 locale tag's own region subtag (e.g. 'US' from 'en-US') is the only piece that could plausibly match a REG_DEF_OBJ key. How: This splits navigator.language on '-' and takes its second segment.
 
+
 		if ( regCodStr && REG_DEF_OBJ[ regCodStr.toUpperCase() ] ) return regCodStr.toUpperCase(); // What: Known Region Guard. Why: Only a region this module actually has a rule table for is worth reporting back. How: This returns the upper-cased region code only when REG_DEF_OBJ recognizes it.
 
 
@@ -623,20 +631,19 @@ function regLabFun( couCodStr ) { return ( REG_DEF_OBJ[ couCodStr ] || REG_DEF_O
 
 
 
-export const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object every consuming file imports and calls through. How: This maps each of this file's own renamed internal implementations back onto the exact public property names every caller (store.jsx, seed.js, tasks.js, tab-today.jsx, tab-settings.jsx) already depends on.
+export const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object every consuming file imports and calls through, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
 
 
-	computeForYear : comYeaFun, // What: Compute For Year. Why: Callers ask for a specific year's own active holiday set by this exact name. How: This re-exports comYeaFun under its original external property name.
-	activeForYear  : actYeaFun, // What: Active For Year. Why: Callers ask which holidays are active for a given year/state by this exact name. How: This re-exports actYeaFun under its original external property name.
-	holidayOn      : holDatFun, // What: Holiday On. Why: Callers check whether a specific date is a holiday by this exact name. How: This re-exports holDatFun under its original external property name.
-	holidayInfoOn  : holInfFun, // What: Holiday Info On. Why: Callers ask for a specific date's own full holiday info by this exact name. How: This re-exports holInfFun under its original external property name.
-	defaultState   : defStaFun, // What: Default State. Why: Callers ask for a fresh holidays-state shape by this exact name. How: This re-exports defStaFun under its original external property name.
-	guessCountry   : gueCouFun, // What: Guess Country. Why: Callers ask for the best-guess country code by this exact name. How: This re-exports gueCouFun under its original external property name.
-	regionLabel    : regLabFun, // What: Region Label. Why: Callers ask for a country's own display label by this exact name. How: This re-exports regLabFun under its original external property name.
-	isoOf          : isoDatFun  // What: Iso Of. Why: Callers ask for a date's own ISO string by this exact name. How: This re-exports isoDatFun under its original external property name.
+	comYeaFun : comYeaFun, // What: Compute Year Function. Why: tab-settings.jsx calls this for a specific year's own active holiday set. How: This re-exports comYeaFun under its own matching name.
+	actYeaFun : actYeaFun, // What: Active Year Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports actYeaFun under its own matching name.
+	holDatFun : holDatFun, // What: Holiday On Date Function. Why: tab-today.jsx and tasks.js both call this to check whether a specific date is a holiday. How: This re-exports holDatFun under its own matching name.
+	holInfFun : holInfFun, // What: Holiday Info Function. Why: tasks.js calls this for a specific date's own full holiday info. How: This re-exports holInfFun under its own matching name.
+	defStaFun : defStaFun, // What: Default State Function. Why: seed.js, store.jsx, and tab-settings.jsx all call this for a fresh holidays-state shape. How: This re-exports defStaFun under its own matching name.
+	gueCouFun : gueCouFun, // What: Guess Country Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports gueCouFun under its own matching name.
+	regLabFun : regLabFun, // What: Region Label Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports regLabFun under its own matching name.
+	isoDatFun : isoDatFun  // What: Iso Date Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports isoDatFun under its own matching name.
 
 
 };
-
 
 

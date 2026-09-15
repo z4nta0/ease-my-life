@@ -27,7 +27,7 @@ import { fmtTime                 } from './ui.jsx';                        // Wh
 import { GroLogCom               } from './day-log.jsx';                   // What: Group Log Component. Why: A group's Day Log panel needs to render that group's own picker audit rows. How: This is rendered inside a Collapse, scoped to one group's own name.
 import { HelButCom              } from './help-mode.jsx';                 // What: Help Button Component. Why: Today needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helpOn.
 import { HelOveCom             } from './help-mode.jsx';                 // What: Help Overlay Component. Why: Help mode needs its own coach-mark overlay driven by this tab's own catalog of targets. How: This is rendered once, passed TOD_HEL_ARR and the helpOn/helpExit pair.
-import { HOL_NAM_OBJ             } from './holidays.js';                   // What: Holidays Namespace Object. Why: Both generate()'s own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holidayOn against state.holidays.
+import { HOL_NAM_OBJ             } from './holidays.js';                   // What: Holidays Namespace Object. Why: Both generate()'s own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holDatFun against state.holidays.
 import { Icon                    } from './ui.jsx';                        // What: Icon. Why: Nearly every card/button in this file needs a small named glyph alongside its label. How: This is rendered throughout, given a name and a size.
 import { InfoTip                 } from './ui.jsx';                        // What: Info Tip. Why: A disabled action (a locked re-roll, a blocked tutorial, a disabled Regenerate) still needs to explain itself on hover/tap. How: This wraps whichever control needs an explanatory label throughout this file.
 import { normalizeGroupName      } from './pickers.js';                    // What: Normalize Group Name. Why: A typed group rename/Page Tours rename needs the same normalization real picker groups already get. How: This is called inside requestRenameGroup and pageToursNameCollision.
@@ -4135,7 +4135,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		const genNowDat   = new Date();                                            // What: Generate Now Date. Why: Every schedule/cadence/holiday check below needs one single, consistent "now" for this whole generation pass. How: This is a fresh Date, read once.
 		const dowNum      = genNowDat.getDay();                                     // What: Day Of Week Number. Why: A picker's own daysOfWeek gate is checked against this. How: This reads genNowDat.getDay().
-		const holTodBoo   = HOL_NAM_OBJ.holidayOn( state.holidays, genNowDat );      // What: Holiday Today Boolean. Why: A picker's own skipHolidays gate is checked against this. How: This calls HOL_NAM_OBJ.holidayOn with state.holidays and genNowDat.
+		const holTodBoo   = HOL_NAM_OBJ.holDatFun( state.holidays, genNowDat );      // What: Holiday Today Boolean. Why: A picker's own skipHolidays gate is checked against this. How: This calls HOL_NAM_OBJ.holDatFun with state.holidays and genNowDat.
 
 		const conArr    = actions.resolveConditionalsForDay() || state.conditionals || []; // What: Conditional Array. Why: Phase A resolves every conditional's own `triggered` for today up front, before the per-picker loop below needs to read it. How: This calls actions.resolveConditionalsForDay, falling back to state.conditionals or an empty array.
 		const conByIdMap = new Map( conArr.map( ( curConObj ) => [ curConObj.id, curConObj ] ) );   // What: Conditional By Id Map. Why: The per-picker loop below needs a fast lookup from a picker's own conditionalId to its resolved conditional. How: This maps conArr down to an id-keyed Map.
@@ -4678,7 +4678,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		const cheNowDat = new Date();                                   // What: Check Now Date. Why: The weekday/holiday gates below both need a single consistent "now". How: This is a fresh Date, read once.
 		const dowNum    = cheNowDat.getDay();                            // What: Day Of Week Number. Why: The weekday gate below is checked against this. How: This reads cheNowDat.getDay().
-		const holNowBoo = HOL_NAM_OBJ.holidayOn( state.holidays, cheNowDat ); // What: Holiday Now Boolean. Why: The holiday gate below is checked against this. How: This calls HOL_NAM_OBJ.holidayOn with state.holidays and cheNowDat.
+		const holNowBoo = HOL_NAM_OBJ.holDatFun( state.holidays, cheNowDat ); // What: Holiday Now Boolean. Why: The holiday gate below is checked against this. How: This calls HOL_NAM_OBJ.holDatFun with state.holidays and cheNowDat.
 
 		return !state.pickers.some( ( curPicObj ) => (
 

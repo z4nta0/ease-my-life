@@ -14,7 +14,7 @@ import { CelebrationPreviewStage } from './settings-previews.jsx';   // What: Ce
 import { Collapse                } from './ui.jsx';                  // What: Collapse. Why: The contact-support form and the pending import/reset confirmations all need to expand/collapse in place. How: This wraps the contact-support form's own Card, gated on its own open boolean.
 import { HelButCom              } from './help-mode.jsx';           // What: Help Button Component. Why: This tab needs its own toggle for entering/exiting help mode, like every other tab. How: This is rendered in the header, toggling helModBoo.
 import { HelOveCom             } from './help-mode.jsx';           // What: Help Overlay Component. Why: Help mode needs its own dimmed overlay plus tooltips layered above this tab's real content. How: This is rendered once, driven by helModBoo and SET_HEL_ARR.
-import { HOL_NAM_OBJ             } from './holidays.js';             // What: Holidays Namespace Object. Why: The Holidays section needs both a default holidays-state shape and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.defaultState() and HOL_NAM_OBJ.computeForYear() inside HolEdiCom.
+import { HOL_NAM_OBJ             } from './holidays.js';             // What: Holidays Namespace Object. Why: The Holidays section needs both a default holidays-state shape and the computed U.S. holiday list for the current year. How: This is called via HOL_NAM_OBJ.defStaFun() and HOL_NAM_OBJ.comYeaFun() inside HolEdiCom.
 import { Icon                    } from './ui.jsx';                  // What: Icon. Why: A handful of controls (the custom-holiday delete button, the brand-mark logo) need a small glyph. How: This is rendered with a specific name/size prop wherever a glyph is needed.
 import { InfoTip                 } from './ui.jsx';                  // What: Info Tip. Why: A disabled Export/Reset button still needs to explain why it is disabled. How: This wraps those buttons, given a label prop with the explanation.
 import { LegalModal              } from './legal-docs.jsx';          // What: Legal Modal. Why: The Legal section's View buttons need somewhere to actually show the Privacy Policy/Terms of Service text. How: This is rendered once, driven by legDocStr, and closed by clearing that state back to null.
@@ -106,9 +106,9 @@ function forRunFun ( runTimStr ) {
 function HolEdiCom ( { state, actions } ) {
 
 
-	const curYeaNum = new Date().getFullYear();                                        // What: Current Year Number. Why: The computed U.S. holiday list is specific to a single calendar year. How: This reads the real device's current year and is passed to HOL_NAM_OBJ.computeForYear below.
-	const holStaObj = state.holidays || HOL_NAM_OBJ.defaultState();                     // What: Holiday State Object. Why: A very old persisted state might not carry a holidays sub-object at all. How: This falls back to HOL_NAM_OBJ's own default shape when state.holidays is missing.
-	const comHolArr = HOL_NAM_OBJ.computeForYear( curYeaNum, holStaObj.country );       // What: Computed Holiday Array. Why: The list needs every rule-computed U.S. holiday for the current year and country. How: This calls HOL_NAM_OBJ.computeForYear with the current year and the user's saved country.
+	const curYeaNum = new Date().getFullYear();                                        // What: Current Year Number. Why: The computed U.S. holiday list is specific to a single calendar year. How: This reads the real device's current year and is passed to HOL_NAM_OBJ.comYeaFun below.
+	const holStaObj = state.holidays || HOL_NAM_OBJ.defStaFun();                     // What: Holiday State Object. Why: A very old persisted state might not carry a holidays sub-object at all. How: This falls back to HOL_NAM_OBJ's own default shape when state.holidays is missing.
+	const comHolArr = HOL_NAM_OBJ.comYeaFun( curYeaNum, holStaObj.country );       // What: Computed Holiday Array. Why: The list needs every rule-computed U.S. holiday for the current year and country. How: This calls HOL_NAM_OBJ.comYeaFun with the current year and the user's saved country.
 	const disKeyArr = holStaObj.disabled || [];                                        // What: Disabled Key Array. Why: A toggled-off computed holiday must still render, just marked disabled. How: This is checked per-row below via .includes to decide each row's on/off state.
 	const cusHolArr = holStaObj.custom || [];                                          // What: Custom Holiday Array. Why: The user's own added recurring days off need to render in their own list, below the computed ones. How: This is mapped below into its own set of rows.
 
@@ -163,7 +163,7 @@ function HolEdiCom ( { state, actions } ) {
 				{ comHolArr.map( ( holCurObj ) => { // What: Computed Holiday Map. Why: One row is needed per rule-computed holiday for the current year. How: This maps comHolArr, deriving each row's own on/off state from disKeyArr before rendering it.
 
 
-					const holOnBoo = !disKeyArr.includes( holCurObj.key ); // What: Holiday On Boolean. Why: A row's own switch and label both depend on whether this specific holiday is currently enabled. How: This is true unless the holiday's own key appears in disKeyArr.
+					const holOnBoo = !disKeyArr.includes( holCurObj.keyStr ); // What: Holiday On Boolean. Why: A row's own switch and label both depend on whether this specific holiday is currently enabled. How: This is true unless the holiday's own key appears in disKeyArr.
 
 
 
@@ -171,7 +171,7 @@ function HolEdiCom ( { state, actions } ) {
 
 
 						<li
-							key={ holCurObj.key }
+							key={ holCurObj.keyStr }
 							className={ ` holiday-row   ${ holOnBoo ? '' : 'is-off' } ` }
 						>{ /* What: Holiday Row Li Element. Why: Each computed holiday needs its own row pairing its name/date info with an on/off switch. How: This renders holCurObj's own name and date, plus a switch bound to holOnBoo. */ }
 
@@ -179,17 +179,17 @@ function HolEdiCom ( { state, actions } ) {
 							<div className='holiday-info'>{ /* What: Holiday Info Div Element. Why: The name and date need their own grouping, separate from the switch. How: This wraps the name span and the date span below. */ }
 
 
-								<span className='holiday-name'>{ holCurObj.name }</span>{ /* What: Holiday Name Span Element. Why: Every row needs its own visible holiday name. How: This renders holCurObj's own name field. */ }
+								<span className='holiday-name'>{ holCurObj.namStr }</span>{ /* What: Holiday Name Span Element. Why: Every row needs its own visible holiday name. How: This renders holCurObj's own name field. */ }
 
 								<span className='holiday-date'>{ /* What: Holiday Date Span Element. Why: The landing date, and (when observed) the real weekday it falls on, need their own grouping. How: This wraps the main date span and, conditionally, the observed-note span below. */ }
 
 
-									<span className='holiday-date-main'>{ shtDatFun( holCurObj.date ) }</span>{ /* What: Holiday Date Main Span Element. Why: Every row needs a compact landing-date label. How: This renders holCurObj's own date, formatted via shtDatFun. */ }
+									<span className='holiday-date-main'>{ shtDatFun( holCurObj.datObj ) }</span>{ /* What: Holiday Date Main Span Element. Why: Every row needs a compact landing-date label. How: This renders holCurObj's own date, formatted via shtDatFun. */ }
 
-									{ holCurObj.observed && ( // What: Observed Note Check. Why: A holiday shifted off a weekend needs to also explain which real weekday it falls on. How: This renders the observed-note span only while holCurObj.observed is true.
+									{ holCurObj.obsBoo && ( // What: Observed Note Check. Why: A holiday shifted off a weekend needs to also explain which real weekday it falls on. How: This renders the observed-note span only while holCurObj.obsBoo is true.
 
 
-										<span className='holiday-obs'>observed &middot; { holCurObj.name === "New Year's Day" ? 'falls' : 'lands' } on a { realDayFun( holCurObj.actual ) }</span> // What: Holiday Obs Span Element. Why: This is the actual observed-weekday note text. How: This renders "falls"/"lands" (New Year's Day reads more naturally as "falls") followed by the real weekday from realDayFun.
+										<span className='holiday-obs'>observed &middot; { holCurObj.namStr === "New Year's Day" ? 'falls' : 'lands' } on a { realDayFun( holCurObj.actObj ) }</span> // What: Holiday Obs Span Element. Why: This is the actual observed-weekday note text. How: This renders "falls"/"lands" (New Year's Day reads more naturally as "falls") followed by the real weekday from realDayFun.
 
 
 									) }
@@ -203,8 +203,8 @@ function HolEdiCom ( { state, actions } ) {
 							<button
 								className={ ` switch   ${ holOnBoo ? 'is-on' : '' } ` }
 								aria-pressed={ holOnBoo }
-								aria-label={ `${ holOnBoo ? 'Disable' : 'Enable' } ${ holCurObj.name }` }
-								onClick={ () => actions.toggleHoliday( holCurObj.key ) }
+								aria-label={ `${ holOnBoo ? 'Disable' : 'Enable' } ${ holCurObj.namStr }` }
+								onClick={ () => actions.toggleHoliday( holCurObj.keyStr ) }
 							><i /></button>{ /* What: Holiday Switch Button Element. Why: Every computed holiday needs a way to toggle it off/on without deleting it outright. How: This calls actions.toggleHoliday with this row's own key when clicked. */ }
 
 

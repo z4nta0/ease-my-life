@@ -9,7 +9,7 @@ import React from 'react'; // What: React. Why: This is the UI library the whole
 import { CAD_NAM_OBJ               } from './cadence.js';               // What: Cadence. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enfWeeFun/norCadFun/isaCadFun) from migrate and from the picker-authoring actions below.
 import { CLEAN_STATE               } from './seed.js';                 // What: Clean State. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called by loadState and by the reset action below.
 import { CON_NAM_OBJ               } from './conditionals.js';         // What: Conditionals. Why: Day-off gate resolution/advancement logic lives here, not in this file. How: This is called from resolveConditionalsForDay and from applyConditionalToggle below.
-import { HOL_NAM_OBJ               } from './holidays.js';             // What: Holidays Namespace Object. Why: The holiday list backfill and the holiday-editing actions both need the canonical empty holidays shape. How: This is called (defaultState) from migrate and from the holiday actions below.
+import { HOL_NAM_OBJ               } from './holidays.js';             // What: Holidays Namespace Object. Why: The holiday list backfill and the holiday-editing actions both need the canonical empty holidays shape. How: This is called (defStaFun) from migrate and from the holiday actions below.
 import { normalizeConditionalName  } from './pickers.js';              // What: Normalize Conditional Name. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicker and commitPickerEdit below.
 import { normalizeGroupName        } from './pickers.js';              // What: Normalize Group Name. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called from migrate and from renameGroup/renamePageTours below.
 import { normalizePickerName       } from './pickers.js';              // What: Normalize Picker Name. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from migrate, addPicker, commitPickerEdit, and renamePicker below.
@@ -1212,7 +1212,7 @@ function migrate( curStaObj ) {
 	}
 
 	// What: Holidays Backfill. Why: The daily-schedule config (a global editable holiday list) was added later than this file's own first save shape. How: This backfills curStaObj.holidays to HOL_NAM_OBJ's own default state when it's missing.
-	if ( curStaObj && !curStaObj.holidays && HOL_NAM_OBJ ) curStaObj.holidays = HOL_NAM_OBJ.defaultState();
+	if ( curStaObj && !curStaObj.holidays && HOL_NAM_OBJ ) curStaObj.holidays = HOL_NAM_OBJ.defStaFun();
 
 	// What: Daily Run-Time Backfill. Why: The Daily generator's own auto-run time was added later, defaulting to 4:00am. How: This backfills curStaObj.daily.runTime when curStaObj.daily exists but lacks one.
 	if ( curStaObj && curStaObj.daily && !curStaObj.daily.runTime ) curStaObj.daily.runTime = '04:00';
@@ -3588,7 +3588,7 @@ function useStore( optArgObj ) {
 		toggleHoliday : ( key ) => setAppStaObj( ( curStaObj ) => {
 
 
-			const curHolObj = curStaObj.holidays || HOL_NAM_OBJ.defaultState(); // What: Current Holidays Object. Why: The toggle below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
+			const curHolObj = curStaObj.holidays || HOL_NAM_OBJ.defStaFun(); // What: Current Holidays Object. Why: The toggle below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
 			const nexDisArr = curHolObj.disabled.includes( key ) // What: Next Disabled Array. Why: Toggling off removes key from disabled; toggling on (re-enabling) adds it. How: This filters key out when already present, else appends it.
 				? curHolObj.disabled.filter( ( curKeyStr ) => curKeyStr !== key )
 				: [ ...curHolObj.disabled, key ];
@@ -3602,7 +3602,7 @@ function useStore( optArgObj ) {
 		addCustomHoliday : ( { name, month, day } ) => setAppStaObj( ( curStaObj ) => { // What: Add Custom-Holiday Function. Why: A user's own hand-entered holiday needs its own fresh id before it can be appended. How: This appends a new row to holidays.custom.
 
 
-			const curHolObj = curStaObj.holidays || HOL_NAM_OBJ.defaultState(); // What: Current Holidays Object. Why: The append below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
+			const curHolObj = curStaObj.holidays || HOL_NAM_OBJ.defStaFun(); // What: Current Holidays Object. Why: The append below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
 			const newHolObj = { id : 'h_' + Math.random().toString( 36 ).slice( 2, 7 ), name, month, day }; // What: New Holiday Object. Why: This is the actual custom-holiday row being added. How: This bundles a fresh id with the given name/month/day.
 
 
@@ -3614,7 +3614,7 @@ function useStore( optArgObj ) {
 		removeCustomHoliday : ( tarIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Remove Custom-Holiday Function. Why: A user's own hand-entered holiday must be removable by its own id. How: This filters holidays.custom down to every entry but the matching one.
 
 
-			const curHolObj = curStaObj.holidays || HOL_NAM_OBJ.defaultState(); // What: Current Holidays Object. Why: The filter below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
+			const curHolObj = curStaObj.holidays || HOL_NAM_OBJ.defStaFun(); // What: Current Holidays Object. Why: The filter below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
 
 
 			return { ...curStaObj, holidays : { ...curHolObj, custom : ( curHolObj.custom || [] ).filter( ( curCstObj ) => curCstObj.id !== tarIdeStr ) } }; // What: Next State Return. Why: The caller needs the one matching custom holiday removed from a fresh holidays object. How: This spreads curHolObj with custom filtered.
