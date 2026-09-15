@@ -98,7 +98,7 @@ const APP_FEATURES = [
 	{
 
 
-		id    : 'feat_manual_pick',                     // What: Id. Why: This uniquely identifies this feature, keying state.onboarding.appFeatures and this tour's own GuidedTour tourId. How: AppFeatureTour below searches APP_FEATURES for the entry whose own id matches its own featureId prop.
+		id    : 'feat_manual_pick',                     // What: Id. Why: This uniquely identifies this feature, keying state.onboarding.appFeatures and this tour's own GuidedTour tourId. How: AppFeatureTour below searches APP_FEATURES for the entry whose own id matches its own feaIdeStr prop.
 		page  : 'picker',                               // What: Page. Why: This says which real nav tab this feature's own Step 1 highlights. How: buildPageTourStep1 below reads this to find the matching NAV_TAR_OBJ entry.
 		label : 'Make your first manual pick',           // What: Label. Why: The launcher card on Today needs this feature's own visible title. How: tab-today.jsx renders this directly as the card's own name.
 		title : 'Manual Picks',                          // What: Title. Why: The intro modal needs a heading naming this tutorial. How: This is rendered as TutorialIntroModal's own title prop.
@@ -782,35 +782,34 @@ function appFeatureBlockedReason ( feaIdeStr, state ) {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.featureId  - Feature Id: This feature's own id (e.g.
- *                           'feat_manual_pick'), keying APP_FEATURES and
- *                           bldSteFun. Named featureId, not the usual
- *                           feaIdeStr, to match app.jsx's own JSX call site.
- * @param props.state      - State: The entire app's own persisted state.
- * @param props.actions    - Actions: The actions that mutate props.state.
- * @param props.active     - Active: The app's own currently active tab id.
- * @param props.selectTab  - Select Tab: Switches the app's own active tab.
- * @param props.onClose    - On Close: Clears app.jsx's own actFeaStr, ending
- *                           this mount.
+ * @param props.feaIdeStr - Feature Identifier String: This feature's own id
+ *                          (e.g. 'feat_manual_pick'), keying APP_FEATURES
+ *                          and bldSteFun.
+ * @param props.state     - State: The entire app's own persisted state.
+ * @param props.actions   - Actions: The actions that mutate props.state.
+ * @param props.active    - Active: The app's own currently active tab id.
+ * @param props.selectTab - Select Tab: Switches the app's own active tab.
+ * @param props.onCloFun  - On Close Function: Clears app.jsx's own
+ *                          actFeaStr, ending this mount.
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running guided
  * tour (touPhaStr 'tour'), depending on this feature's own phase.
  *
  * @example
  * ```tsx
- * AppFeatureTour({ featureId, state, actions, active, selectTab, onClose })
+ * AppFeatureTour({ feaIdeStr, state, actions, active, selectTab, onCloFun })
  * // => <AppFeatureTour />
  * ```
  *
 */
 
-function AppFeatureTour ( { featureId, state, actions, active, selectTab, onClose } ) {
+function AppFeatureTour ( { feaIdeStr, state, actions, active, selectTab, onCloFun } ) {
 
 
-	const feaRecObj = APP_FEATURES.find( ( curFeaObj ) => curFeaObj.id === featureId ); // What: Feature Record Object. Why: This feature's own page/title/body/pills/time are read off its own APP_FEATURES entry. How: This searches APP_FEATURES for the entry whose own id matches featureId.
+	const feaRecObj = APP_FEATURES.find( ( curFeaObj ) => curFeaObj.id === feaIdeStr ); // What: Feature Record Object. Why: This feature's own page/title/body/pills/time are read off its own APP_FEATURES entry. How: This searches APP_FEATURES for the entry whose own id matches feaIdeStr.
 	// Same resumable pattern as PageTour, see its own comment.
 	const onbStaObj = state.onboarding || {}; // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeAppFeature already re-derived from this SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resumable) step to land on. How: This reads state.onboarding, falling back to an empty object.
-	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `appfeature-${ featureId }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this feature's own tourId, otherwise null.
+	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `appfeature-${ feaIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this feature's own tourId, otherwise null.
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
 
 	// Whether THIS browser already has persisted storage, checked once up front (not reactively), see bldSteFun's own comment on why feat_protect_data's first step needs to know this. Frozen at whatever it resolves to on mount: a user who actually grants persistence mid-tour (by clicking the real button that step targets) shouldn't have the step list change shape out from under them the same run.
@@ -819,26 +818,26 @@ function AppFeatureTour ( { featureId, state, actions, active, selectTab, onClos
 	React.useEffect( () => { // What: Check Persisted Effect. Why: navigator.storage.persisted() is itself async, so alrProBoo can't be computed synchronously up front. How: This resolves the real persisted() promise once, then sets alrProBoo, guarded against a stale update after unmount.
 
 
-		if ( featureId !== 'feat_protect_data' ) return; // What: Other Feature Guard. Why: Only feat_protect_data's own steps ever read alrProBoo, so no other feature needs this checked. How: This returns early for every other featureId.
+		if ( feaIdeStr !== 'feat_protect_data' ) return; // What: Other Feature Guard. Why: Only feat_protect_data's own steps ever read alrProBoo, so no other feature needs this checked. How: This returns early for every other feaIdeStr.
 
 		let aliMouBoo = true; // What: Alive Mounted Boolean. Why: A resolved promise must not update state after this effect's own cleanup has already fired. How: This starts true, then this effect's own cleanup below flips it false.
 
 		Promise.resolve( navigator.storage && navigator.storage.persisted ? navigator.storage.persisted() : false )
 			.then( ( curValBoo ) => { if ( aliMouBoo ) setAlrProBoo( curValBoo ); } ); // What: Persisted Resolve Call. Why: A browser without the Storage API at all must resolve to false rather than throwing. How: This resolves the real persisted() promise (or a plain false), then sets alrProBoo only if this effect is still mounted.
 
-		return () => { aliMouBoo = false; }; // What: Cleanup Function. Why: A reload or featureId change mid-flight must not let a late resolve touch a stale closure's own state. How: This flips aliMouBoo to false on unmount.
+		return () => { aliMouBoo = false; }; // What: Cleanup Function. Why: A reload or feaIdeStr change mid-flight must not let a late resolve touch a stale closure's own state. How: This flips aliMouBoo to false on unmount.
 
 
-	}, [ featureId ] ); // What: Effect Dependency Array. Why: This must re-run whenever featureId itself changes, so a fresh mount for a different feature re-checks fresh. How: featureId is the exact value this effect's own guard reads.
+	}, [ feaIdeStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever feaIdeStr itself changes, so a fresh mount for a different feature re-checks fresh. How: feaIdeStr is the exact value this effect's own guard reads.
 
 
 
-	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Every path that ends this tour, however it ends, needs the exact same cleanup. How: This resolves this feature's own checklist entry to staValStr, then calls onClose.
+	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Every path that ends this tour, however it ends, needs the exact same cleanup. How: This resolves this feature's own checklist entry to staValStr, then calls onCloFun.
 
 
-		actions.setAppFeatureItem( featureId, { status : staValStr } ); // What: Set App Feature Item Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this feature's own appFeatures entry to staValStr.
+		actions.setAppFeatureItem( feaIdeStr, { status : staValStr } ); // What: Set App Feature Item Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this feature's own appFeatures entry to staValStr.
 
-		onClose(); // What: On Close Call. Why: app.jsx's own actFeaStr must be cleared however this tour ends. How: This calls the onClose prop passed down from app.jsx.
+		onCloFun(); // What: On Close Call. Why: app.jsx's own actFeaStr must be cleared however this tour ends. How: This calls the onCloFun prop passed down from app.jsx.
 
 
 	};
@@ -851,7 +850,7 @@ function AppFeatureTour ( { featureId, state, actions, active, selectTab, onClos
 		return (
 
 			<TutorialIntroModal
-				icon={ featureId === 'feat_highlights'
+				icon={ feaIdeStr === 'feat_highlights'
 					? <span className='ob-wmark-help'>i</span>
 					: <Icon name={ feaRecObj.page } size={ 54 } /> }
 				title={ feaRecObj.title }
@@ -869,7 +868,7 @@ function AppFeatureTour ( { featureId, state, actions, active, selectTab, onClos
 
 
 
-	const extSteArr = bldSteFun( featureId, actions, alrProBoo ); // What: Extra Step Array. Why: GuidedTour needs this feature's own full step array beyond Step 1. How: This calls bldSteFun with featureId, actions, and alrProBoo.
+	const extSteArr = bldSteFun( feaIdeStr, actions, alrProBoo ); // What: Extra Step Array. Why: GuidedTour needs this feature's own full step array beyond Step 1. How: This calls bldSteFun with feaIdeStr, actions, and alrProBoo.
 
 	// "Edit your first item" wants a clean, all-collapsed Data page the moment it lands there, any picker the user happened to leave expanded from a previous visit would otherwise make the Your Pickers step's "click a header to expand" instruction confusing (that picker's already open). Runs as Step 1's own run(), which fires at the exact moment its real nav click transitions into Step 2 (see onPrimary's own comment in onboarding-tour-runner.jsx), toggleControlsCollapsed only ever FLIPS, so this only touches pickers actually found expanded (=== false), rather than blindly toggling every picker and accidentally re-opening ones that were already collapsed.
 	const colAllFun = () => { // What: Collapse All Function. Why: Step 2 of the edit-item tour expects every picker to start collapsed. How: This flips only the pickers currently found expanded, leaving already-collapsed ones untouched.
@@ -886,19 +885,19 @@ function AppFeatureTour ( { featureId, state, actions, active, selectTab, onClos
 
 
 		<GuidedTour
-			tourId={ `appfeature-${ featureId }` }
-			steps={ featureId === 'feat_highlights' ? extSteArr : [
-				buildPageTourStep1( feaRecObj.page, featureId === 'feat_edit_item' ? colAllFun : undefined, extSteArr.length ? 'Next' : 'Done' ), // What: Build Page Tour Step 1 Call. Why: Every feature but feat_highlights prepends this exact shared Step 1. How: This passes this feature's own page, feat_edit_item's own collapse callback (undefined for every other feature), and 'Next'/'Done' depending on whether extSteArr has any steps of its own.
+			tourId={ `appfeature-${ feaIdeStr }` }
+			steps={ feaIdeStr === 'feat_highlights' ? extSteArr : [
+				buildPageTourStep1( feaRecObj.page, feaIdeStr === 'feat_edit_item' ? colAllFun : undefined, extSteArr.length ? 'Next' : 'Done' ), // What: Build Page Tour Step 1 Call. Why: Every feature but feat_highlights prepends this exact shared Step 1. How: This passes this feature's own page, feat_edit_item's own collapse callback (undefined for every other feature), and 'Next'/'Done' depending on whether extSteArr has any steps of its own.
 				...extSteArr // What: Extra Steps Spread. Why: Whatever steps this feature has beyond Step 1 must follow it in order. How: This spreads extSteArr after the Step 1 object above.
 			] }
 			resumeStep={ resTouObj ? resTouObj.step : 0 }
 			actions={ actions }
 			active={ active }
 			selectTab={ selectTab }
-			onGoBack={ ( tarSteNum ) => { // What: On Go Back Handler. Why: A real, one-way UI transition (Edit Mode-style collapses, or the highlights toggle) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on featureId first, then on tarSteNum, driving whichever real DOM control or direct action reverses that specific transition.
+			onGoBack={ ( tarSteNum ) => { // What: On Go Back Handler. Why: A real, one-way UI transition (Edit Mode-style collapses, or the highlights toggle) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on feaIdeStr first, then on tarSteNum, driving whichever real DOM control or direct action reverses that specific transition.
 
 
-				if ( featureId === 'feat_edit_item' ) { // What: Edit Item Back Branch Check. Why: Only the edit-item tour's own steps have this one-way collapse/expand state to reverse. How: This branches on featureId matching 'feat_edit_item'.
+				if ( feaIdeStr === 'feat_edit_item' ) { // What: Edit Item Back Branch Check. Why: Only the edit-item tour's own steps have this one-way collapse/expand state to reverse. How: This branches on feaIdeStr matching 'feat_edit_item'.
 
 
 					if ( tarSteNum === 1 ) { // What: Your Pickers Collapse Check. Why: Back from Controls Section to Your Pickers must re-collapse whichever picker header(s) got expanded, restoring the same all-collapsed slate Your Pickers originally expects. How: This clicks every currently-expanded picker header, the same real click the user would trigger themselves.
@@ -954,7 +953,7 @@ function AppFeatureTour ( { featureId, state, actions, active, selectTab, onClos
 
 				}
 
-				else if ( featureId === 'feat_highlights' ) { // What: Highlights Back Branch Check. Why: Only the highlights tour's own steps have the help-highlight toggle state to reverse. How: This branches on featureId matching 'feat_highlights'.
+				else if ( feaIdeStr === 'feat_highlights' ) { // What: Highlights Back Branch Check. Why: Only the highlights tour's own steps have the help-highlight toggle state to reverse. How: This branches on feaIdeStr matching 'feat_highlights'.
 
 
 					if ( tarSteNum === 0 ) { // What: Toggle Off Check. Why: Back from the 2nd step to the 1st expects help mode currently off, but reaching the 2nd step in the first place required a real click that turned it on. How: This clicks the real, currently-on help-highlight toggle.
@@ -973,10 +972,10 @@ function AppFeatureTour ( { featureId, state, actions, active, selectTab, onClos
 
 			} }
 			onFinish={ () => cloTouFun( 'finished' ) }
-			onSkip={ () => { // What: On Skip Handler. Why: Help mode's own on/off flag is local React state inside TabToday, unreachable from here, only reachable via the highlights tour's own 2nd step requireClick target (.help-btn). How: This clicks the real, currently-on help-highlight toggle when featureId is 'feat_highlights', mirroring exactly how finishing normally turns it back off.
+			onSkip={ () => { // What: On Skip Handler. Why: Help mode's own on/off flag is local React state inside TabToday, unreachable from here, only reachable via the highlights tour's own 2nd step requireClick target (.help-btn). How: This clicks the real, currently-on help-highlight toggle when feaIdeStr is 'feat_highlights', mirroring exactly how finishing normally turns it back off.
 
 
-				if ( featureId === 'feat_highlights' ) { // What: Highlights Feature Check. Why: Only this feature can leave help mode turned on mid-Step-2 for Skip to undo. How: This branches on featureId matching 'feat_highlights'.
+				if ( feaIdeStr === 'feat_highlights' ) { // What: Highlights Feature Check. Why: Only this feature can leave help mode turned on mid-Step-2 for Skip to undo. How: This branches on feaIdeStr matching 'feat_highlights'.
 
 
 					const helButEle = document.querySelector( '.help-btn.is-on' ); // What: Help Button Element. Why: This is the real control that must be clicked back off if it's still on. How: This looks it up fresh, since it only exists while help mode is on.
@@ -986,7 +985,7 @@ function AppFeatureTour ( { featureId, state, actions, active, selectTab, onClos
 
 				}
 
-				cloTouFun( 'skipped' ); // What: Close Tour Call. Why: This funnels Skip through the same cleanup any other exit path off this tour uses. How: This updates this feature's own appFeatures entry to 'skipped' and calls onClose.
+				cloTouFun( 'skipped' ); // What: Close Tour Call. Why: This funnels Skip through the same cleanup any other exit path off this tour uses. How: This updates this feature's own appFeatures entry to 'skipped' and calls onCloFun.
 
 
 			} }

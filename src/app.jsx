@@ -903,11 +903,11 @@ function AppRooCom () {
 
 
 				<AppFeatureTour
-					featureId={ actFeaStr }
+					feaIdeStr={ actFeaStr }
 					actions={ actStoObj }
 					active={ actIdeStr }
 					state={ staAppObj }
-					onClose={ () => setActFeaStr( null ) }
+					onCloFun={ () => setActFeaStr( null ) }
 					selectTab={ selTabFun }
 				/> // What: AppFeatureTour. Why: This drives the currently-running App Features tutorial. How: This is passed the specific feature's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actFeaStr.
 
