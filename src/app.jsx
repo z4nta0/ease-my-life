@@ -14,7 +14,7 @@ import { Icon           } from './ui.jsx';                      // What: Icon. W
 import { Onboarding     } from './onboarding.jsx';              // What: Onboarding. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
 import { PagTouCom      } from './onboarding-page-tours.jsx';   // What: Page Tour Component. Why: This drives the currently-running "Explore the page" mini-tour. How: This is rendered while actPagStr holds a page id.
 import { PAL_SET_OBJ    } from './appearance.js';               // What: Palette Set Object. Why: Every built-in theme key needs to resolve to one of the app's own palettes. How: This is looked up by the resolved theme key, falling back to the ink palette.
-import { PickerTour     } from './onboarding-picker-tours.jsx'; // What: Picker Tour. Why: This drives the currently-running sample-picker mini-tour. How: This is rendered while actPicStr holds a picker id.
+import { PicTouCom      } from './onboarding-picker-tours.jsx'; // What: Picker Tour Component. Why: This drives the currently-running sample-picker mini-tour. How: This is rendered while actPicStr holds a picker id.
 import { reduceMotion   } from './ui.jsx';                      // What: Reduce Motion. Why: A user who prefers reduced motion shouldn't see the ghost/enter animation. How: This is checked inside the animation effect to bail out early when it reports true.
 import { resCusFun      } from './appearance.js';               // What: Resolve Custom Function. Why: A user-defined custom palette needs resolving into a usable palette object. How: This is called with 'light' or 'dark' and the user's saved custom colors when a custom theme key is active.
 import { resTheFun      } from './appearance.js';               // What: Resolve Theme Function. Why: The palette to apply depends on both the user's theme choice and the current system dark-mode state. How: This resolves both into a single concrete theme key inside the theme-application effect.
@@ -867,17 +867,17 @@ function AppRooCom () {
 			/>{ /* What: Onboarding. Why: The first-run welcome modal and its driven tour need to run above every tab, regardless of which one is active. How: This is passed the shared state/actions plus the current active tab and the tab-switching function. */ }
 
 
-			{ actPicStr && ( // What: Picker Tour Visibility Check. Why: A picker mini-tour overlay should only exist while one is actually running. How: This renders PickerTour only while actPicStr holds a picker id.
+			{ actPicStr && ( // What: Picker Tour Visibility Check. Why: A picker mini-tour overlay should only exist while one is actually running. How: This renders PicTouCom only while actPicStr holds a picker id.
 
 
-				<PickerTour
-					pickerId={ actPicStr }
+				<PicTouCom
+					picIdeStr={ actPicStr }
 					actions={ actStoObj }
 					active={ actIdeStr }
 					state={ staAppObj }
-					onClose={ () => setActPicStr( null ) }
+					onCloFun={ () => setActPicStr( null ) }
 					selectTab={ selTabFun }
-				/> // What: PickerTour. Why: This drives the currently-running sample-picker mini-tour. How: This is passed the specific picker's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actPicStr.
+				/> // What: PicTouCom. Why: This drives the currently-running sample-picker mini-tour. How: This is passed the specific picker's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actPicStr.
 
 
 			) }

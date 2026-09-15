@@ -4,7 +4,7 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This file's own PickerTour component needs React in scope to compile its JSX and to call React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
+import React from 'react'; // What: React. Why: This file's own PicTouCom component needs React in scope to compile its JSX and to call React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
 
 
 import { emlTouObj          } from './eml-tour-bus.js';            // What: Ease My Life Tour Object. Why: This publishes the running tour's prefill data for the real create-picker form and clears it again on every exit path. How: This is written to via .set() in bldNewFun's/bldAddFun's own run() and cloTouFun below, and read via .get() inside GuidedTour's own onGoBack handler.
@@ -36,14 +36,14 @@ import { IntModCom          } from './onboarding-intro-modal.jsx'; // What: Intr
  * A tour's own step count and shape vary by the sample picker's own
  * mode: the Soonest/Latest steps only exist for an ease-up/ease-down
  * sample, the Weight step only for weighted/dynamic, and the Boost
- * step only for dynamic. See PickerTour's own isaEasBoo/useWeiBoo/
+ * step only for dynamic. See PicTouCom's own isaEasBoo/useWeiBoo/
  * isaDynBoo below for that gating.
  *
  * Mounted at the app level (see app.jsx's own actPicStr), not inside
  * TabToday the way the reminder mini-tours are: Step 1 navigates to
  * the Pickers tab, which would unmount TabToday (and this tour along
  * with it) if it lived there instead. active/selectTab passed into
- * PickerTour below are therefore the real app-wide ones, not stubs.
+ * PicTouCom below are therefore the real app-wide ones, not stubs.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -217,7 +217,7 @@ const NAV_STE_OBJ = { // What: Nav Step Object. Why: Every picker tutorial's own
  * timed so the real click (which natively opens the form via the
  * button's own onClick, not this run()) ends up mounting NewPickerForm
  * with it already applied. See the design-rationale comment on
- * PickerTour below for why this specific ordering matters.
+ * PicTouCom below for why this specific ordering matters.
  *
  * "+Add" is the FIRST tab in the strip (tab-picker.jsx), not the
  * last; no revealHorizontally is needed here. It used to sit last,
@@ -343,7 +343,7 @@ const GRO_STE_OBJ = { // What: Group Step Object. Why: This step highlights the 
  * prevents switching to a different type here, which would break the
  * mode-specific copy/targets later steps assume (Soonest/Latest
  * wording, the Weight/Boost rows, etc. are all mode-specific; see
- * PickerTour's own isaEasBoo/useWeiBoo/isaDynBoo checks below).
+ * PicTouCom's own isaEasBoo/useWeiBoo/isaDynBoo checks below).
  *
  * coachAtTop exists since a single mode option (label + description)
  * can be tall enough on its own to rival a short mobile viewport's
@@ -528,7 +528,7 @@ const bldNamFun = ( picIdeStr ) => ({ // What: Build Name Function. Why: This bu
  * editor's own isEase branch. Only meaningful for Ease Up/Ease Down
  * samples (the row does not exist at all for Weighted/Dynamic/Random
  * modes, where this same .pie-row position is a Weight stepper
- * instead); PickerTour only includes this step when the sample's own
+ * instead); PicTouCom only includes this step when the sample's own
  * mode is one of the ease modes (see its own isaEasBoo below). The
  * whole body is per-picker (picCopObj.sooEle), defaulting to the
  * original Ease Up/"task item"/"week" wording; Daily Chores is the
@@ -584,7 +584,7 @@ const bldLatFun = ( picIdeStr ) => ({ // What: Build Latest Function. Why: This 
  * editor's own usesWeight branch (Weighted/Dynamic modes only,
  * mutually exclusive with the isEase branch above, so reusing the
  * same :first-child position is safe since only one of the two ever
- * renders for a given picker). PickerTour only includes this step
+ * renders for a given picker). PicTouCom only includes this step
  * when the sample's own mode is Weighted or Dynamic (see its own
  * useWeiBoo below). No new one-way DOM transition happens between
  * bldNamFun's own step and here (the editor stays open the whole
@@ -710,10 +710,10 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
 
 
 
-// #region PickerTour
+// #region PicTouCom
 
 /**
- * PickerTour = Picker Tour
+ * PicTouCom = Picker Tour Component
  *
  * @summary
  * Renders whichever piece of one sample picker's own mini-tour is
@@ -724,7 +724,7 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
  * it) if it lived there instead. active/selectTab are therefore the
  * real app-wide ones, not stubs.
  *
- * Why bldNewFun's own run() (not, say, NAV_STE_OBJ's, or PickerTour's
+ * Why bldNewFun's own run() (not, say, NAV_STE_OBJ's, or PicTouCom's
  * own mount) is where prefill gets published: tab-picker.jsx has its
  * own dormant effect from the original (stashed) create-a-picker tour
  * design, `if (tour.prefill && !creating) { setCreating(true);
@@ -748,14 +748,14 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.pickerId   - Picker Id: The sample picker's own id, keying both
- *                           PIC_SAM_OBJ and PIC_COP_OBJ.
- * @param props.state      - State: The entire app's own persisted state.
- * @param props.actions    - Actions: The actions that mutate props.state.
- * @param props.active     - Active: The app's own currently active tab id.
- * @param props.selectTab  - Select Tab: Switches the app's own active tab.
- * @param props.onClose    - On Close: Clears app.jsx's own actPicStr, ending
- *                           this mount.
+ * @param props.picIdeStr - Picker Identifier String: The sample picker's own
+ *                          id, keying both PIC_SAM_OBJ and PIC_COP_OBJ.
+ * @param props.state     - State: The entire app's own persisted state.
+ * @param props.actions   - Actions: The actions that mutate props.state.
+ * @param props.active    - Active: The app's own currently active tab id.
+ * @param props.selectTab - Select Tab: Switches the app's own active tab.
+ * @param props.onCloFun  - On Close Function: Clears app.jsx's own
+ *                          actPicStr, ending this mount.
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running
  * guided tour (touPhaStr 'tour'), depending on this picker's own
@@ -763,29 +763,29 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
  *
  * @example
  * ```tsx
- * PickerTour({ pickerId, state, actions, active, selectTab, onClose })
- * // => <PickerTour />
+ * PicTouCom({ picIdeStr, state, actions, active, selectTab, onCloFun })
+ * // => <PicTouCom />
  * ```
  *
 */
 
-function PickerTour ( { pickerId, state, actions, active, selectTab, onClose } ) {
+function PicTouCom ( { picIdeStr, state, actions, active, selectTab, onCloFun } ) {
 
 
-	const picRecObj = ( state.pickers || [] ).find( ( curPicObj ) => curPicObj.id === pickerId ); // What: Picker Record Object. Why: The intro modal and every mode-gating check below need this sample's own live picker record. How: This searches state.pickers for the entry whose own id matches pickerId.
-	const picCopObj = PIC_COP_OBJ[ pickerId ];                                                     // What: Picker Copy Object. Why: The intro modal's own second paragraph needs this sample's own copy. How: This looks up PIC_COP_OBJ by pickerId.
+	const picRecObj = ( state.pickers || [] ).find( ( curPicObj ) => curPicObj.id === picIdeStr ); // What: Picker Record Object. Why: The intro modal and every mode-gating check below need this sample's own live picker record. How: This searches state.pickers for the entry whose own id matches picIdeStr.
+	const picCopObj = PIC_COP_OBJ[ picIdeStr ];                                                     // What: Picker Copy Object. Why: The intro modal's own second paragraph needs this sample's own copy. How: This looks up PIC_COP_OBJ by picIdeStr.
 	const modLabStr = ( ( MODES[ picRecObj.mode ] || {} ).label || picRecObj.mode ).toLowerCase(); // What: Mode Label String. Why: The intro modal's own pill needs a human-readable mode label, not the raw mode key. How: This looks up MODES by picRecObj's own mode, falling back to the raw mode key, then lower-cases the result.
 
 
 
 	const onbStaObj = state.onboarding || {}; // What: Onboarding State Object. Why: A reload lands here with app.jsx already having re-derived actPicStr from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resumable) step to land on. How: This reads state.onboarding, falling back to an empty object.
-	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `picker-${ pickerId }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this picker's own tourId, otherwise null.
+	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `picker-${ picIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this picker's own tourId, otherwise null.
 
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
 
 
 
-	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Clears both bus fields regardless of exit path (cancelled/skipped/finished), since tab-picker.jsx's own dormant auto-open effect keys off tour.prefill's mere presence, so a leftover value from THIS tour would silently reopen the create form with stale sample data the next time TabPicker mounts. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onClose.
+	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Clears both bus fields regardless of exit path (cancelled/skipped/finished), since tab-picker.jsx's own dormant auto-open effect keys off tour.prefill's mere presence, so a leftover value from THIS tour would silently reopen the create form with stale sample data the next time TabPicker mounts. How: This publishes every prefill-related field back to its own idle value, updates the checklist, then calls onCloFun.
 
 
 		emlTouObj.set({ // What: Prefill Clear Call. Why: A stale prefill left over from this tour must not leak into a future visit to the Pickers tab. How: This resets every field bldNewFun's/bldAddFun's own run() published, back to its own idle value.
@@ -802,9 +802,9 @@ function PickerTour ( { pickerId, state, actions, active, selectTab, onClose } )
 
 		});
 
-		actions.setChecklistItem( pickerId, { status : staValStr } ); // What: Checklist Status Update Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this sample's own checklist entry to staValStr.
+		actions.setChecklistItem( picIdeStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this sample's own checklist entry to staValStr.
 
-		onClose(); // What: On Close Call. Why: app.jsx's own actPicStr must be cleared however this tour ends. How: This calls the onClose prop passed down from app.jsx.
+		onCloFun(); // What: On Close Call. Why: app.jsx's own actPicStr must be cleared however this tour ends. How: This calls the onCloFun prop passed down from app.jsx.
 
 
 	};
@@ -841,9 +841,9 @@ function PickerTour ( { pickerId, state, actions, active, selectTab, onClose } )
 	const steObjArr = [ // What: Step Object Array. Why: GuidedTour needs this sample's own full ordered step list, varying in length by mode (isaEasBoo/useWeiBoo/isaDynBoo above decide which optional steps are included). How: This concatenates the shared steps with whichever mode-specific ones apply.
 
 
-		NAV_STE_OBJ, bldNewFun( pickerId, state ), NAM_STE_OBJ, GRO_STE_OBJ,
-		bldModFun( pickerId ), ITE_STE_OBJ, bldAddFun( pickerId ), bldNamFun( pickerId ),
-		...( isaEasBoo ? [ bldSooFun( pickerId ), bldLatFun( pickerId ) ] : [] ),
+		NAV_STE_OBJ, bldNewFun( picIdeStr, state ), NAM_STE_OBJ, GRO_STE_OBJ,
+		bldModFun( picIdeStr ), ITE_STE_OBJ, bldAddFun( picIdeStr ), bldNamFun( picIdeStr ),
+		...( isaEasBoo ? [ bldSooFun( picIdeStr ), bldLatFun( picIdeStr ) ] : [] ),
 		...( useWeiBoo ? [ WEI_STE_OBJ ] : [] ),
 		...( isaDynBoo ? [ BOO_STE_OBJ ] : [] ),
 		SAV_STE_OBJ, CRE_STE_OBJ
@@ -857,7 +857,7 @@ function PickerTour ( { pickerId, state, actions, active, selectTab, onClose } )
 
 
 		<GuidedTour
-			tourId={ `picker-${ pickerId }` }
+			tourId={ `picker-${ picIdeStr }` }
 			steps={ steObjArr }
 			resumeStep={ resTouObj ? resTouObj.step : 0 }
 			actions={ actions }
@@ -906,11 +906,11 @@ function PickerTour ( { pickerId, state, actions, active, selectTab, onClose } )
 
 }
 
-// #endregion PickerTour
+// #endregion PicTouCom
 
 
 
-export { PickerTour }; // What: Named Exports. Why: app.jsx renders this as the Pickers page's own guided tour. How: This re-exports PickerTour; every other binding in this file is internal-only.
+export { PicTouCom }; // What: Named Exports. Why: app.jsx renders this as the Pickers page's own guided tour. How: This re-exports PicTouCom; every other binding in this file is internal-only.
 
 
 

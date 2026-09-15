@@ -1015,7 +1015,7 @@ function AppFeatureTour ( { feaIdeStr, state, actions, active, selectTab, onCloF
  * onboarding-tour-runner.jsx), which hides the step counter and Skip/Back,
  * showing one full-width "Dismiss" button instead. Mounted directly from
  * TabToday rather than lifted to app.jsx like
- * AppFeatureTour/PagTouCom/PickerTour are: unlike those, this never navigates
+ * AppFeatureTour/PagTouCom/PicTouCom are: unlike those, this never navigates
  * to another tab (the whole point is the section already on screen), so it
  * doesn't need real cross-tab selectTab/active plumbing, active='today'/a
  * no-op selectTab is enough, the same pattern PagTouCom itself used before
