@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { hydrateOnboardingStats } from './onboarding-seed-data.js'; // What: Hydrate Onboarding Stats. Why: This converts the precomputed onboarding stats into real dated pickLog/reminderLog/reminderSkipLog rows. How: This is called by unhHisFun the first time help mode needs a genuine year of history to show.
+import { hydStaFun              } from './onboarding-seed-data.js'; // What: Hydrate Stats Function. Why: This converts the precomputed onboarding stats into real dated pickLog/reminderLog/reminderSkipLog rows. How: This is called by unhHisFun the first time help mode needs a genuine year of history to show.
 import { OB_EXAMPLE             } from './onboarding-seed-data.js'; // What: Onboarding Example. Why: This is the real onboarding sample picker, borrowed here so help mode's own copy of it looks identical. How: This is read alongside OB_EXTRA_PICKERS by sedPicFun/clePicFun below.
 import { OB_EXTRA_PICKERS       } from './onboarding-seed-data.js'; // What: Onboarding Extra Pickers. Why: These are the real onboarding sample pickers, borrowed here so help mode's own copies of them look identical. How: This is read alongside OB_EXAMPLE by sedPicFun/clePicFun below.
 import { OB_SAMPLE_PICKER_IDS   } from './onboarding-seed-data.js'; // What: Onboarding Sample Picker Ids. Why: Help mode's Stats page borrows the real onboarding sample pickers directly rather than seeding its own copies. How: This is read by unhHisFun/hidHisFun to (un)hide each one by id.
@@ -299,7 +299,7 @@ const unhHisFun = ( appStaObj, actShaObj ) => { // What: Unhide History Function
 		import( './onboarding-stats-data.js' ).then( ( { ONBOARDING_STATS } ) => { // What: Onboarding Stats Data Import. Why: The precomputed history is large enough to load lazily rather than bundling it into every page. How: This dynamically imports onboarding-stats-data.js, resolving with its own ONBOARDING_STATS export.
 
 
-			actShaObj.seedHistory( hydrateOnboardingStats( ONBOARDING_STATS ) ); // What: Stats History Seed Call. Why: The precomputed history must become real, dated pickLog/reminderLog/reminderSkipLog rows before appending. How: This hydrates ONBOARDING_STATS via hydrateOnboardingStats, then appends the result via seedHistory.
+			actShaObj.seedHistory( hydStaFun( ONBOARDING_STATS ) ); // What: Stats History Seed Call. Why: The precomputed history must become real, dated pickLog/reminderLog/reminderSkipLog rows before appending. How: This hydrates ONBOARDING_STATS via hydStaFun, then appends the result via seedHistory.
 
 
 		} );

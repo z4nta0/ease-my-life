@@ -355,10 +355,10 @@ function isoDayFun( datRawObj ) {
 
 
 
-// #region hydrateOnboardingStats
+// #region hydStaFun
 
 /**
- * hydrateOnboardingStats = Hydrate Onboarding Stats
+ * hydStaFun = Hydrate Stats Function
  *
  * @summary
  * Converts the precomputed, day-offset-based ONBOARDING_STATS (see
@@ -380,12 +380,12 @@ function isoDayFun( datRawObj ) {
  *
  * @example
  * ```ts
- * hydrateOnboardingStats(staRawObj) // => { pickLog, reminderLog, reminderSkipLog }
+ * hydStaFun(staRawObj) // => { pickLog, reminderLog, reminderSkipLog }
  * ```
  *
 */
 
-export function hydrateOnboardingStats( staRawObj ) {
+export function hydStaFun( staRawObj ) {
 
 
 	const todMidObj = new Date(); // What: Today Midnight Object. Why: Every row's own real date is computed relative to this same instant, so all 3 logs line up on the same calendar. How: This is read as "now" and then floored to midnight on the next line.
@@ -511,7 +511,7 @@ export function hydrateOnboardingStats( staRawObj ) {
 
 }
 
-// #endregion hydrateOnboardingStats
+// #endregion hydStaFun
 
 
 

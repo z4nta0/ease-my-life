@@ -9,7 +9,7 @@ import React from 'react'; // What: React. Why: This file's own PagTouCom compon
 
 import { emlTouObj              } from './onboarding.jsx';             // What: Ease My Life Tour Object. Why: This publishes/reads bus nonces the Pickers-page onGoBack handler uses to reset or redo an in-flight picker-form animation. How: This is read via .get() and written via .set() inside PagTouCom's own onGoBack below.
 import { GuidedTour             } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each page mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-page step array.
-import { hydrateOnboardingStats } from './onboarding-seed-data.js';    // What: Hydrate Onboarding Stats. Why: The Stats tour's own borrowed sample history needs converting from its static template shape into real pickLog rows. How: This is called inside unhHisFun below, passed ONBOARDING_STATS.
+import { hydStaFun              } from './onboarding-seed-data.js';    // What: Hydrate Stats Function. Why: The Stats tour's own borrowed sample history needs converting from its static template shape into real pickLog rows. How: This is called inside unhHisFun below, passed ONBOARDING_STATS.
 import { Icon                   } from './ui.jsx';                     // What: Icon. Why: The intro modal needs a recognizable glyph matching the current page. How: This is rendered inside the intro modal's icon prop below.
 import { NAV_TAR_OBJ            } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Every page tour's own Step 1 and its own intro-modal fallback copy read this shared nav-button catalog. How: This is looked up by a page key everywhere this file needs the real nav button's own selector/title/body.
 import { OB_EXAMPLE             } from './onboarding-seed-data.js';    // What: Onboarding Example. Why: This is the "Daily Chores" sample picker's own template, one of the entries PAG_SAM_ARR below carries, and its own id is the Stats tour's own preselected picker. How: This is spread into PAG_SAM_ARR below and read directly for PRE_PIC_STR.
@@ -384,7 +384,7 @@ const unhHisFun = ( state, actions ) => { // What: Unhide History Function. Why:
 		import( './onboarding-stats-data.js' ).then( ( { ONBOARDING_STATS } ) => { // What: Stats Data Import. Why: The precomputed sample history template is large enough to warrant a lazy, on-demand import instead of a static one. How: This dynamically imports onboarding-stats-data.js, then seeds its own ONBOARDING_STATS export.
 
 
-			actions.seedHistory( hydrateOnboardingStats( ONBOARDING_STATS ) ); // What: Seed History Call. Why: The static template needs converting into real pickLog rows before it means anything to the Stats tab. How: This calls actions.seedHistory with hydrateOnboardingStats' own converted result.
+			actions.seedHistory( hydStaFun( ONBOARDING_STATS ) ); // What: Seed History Call. Why: The static template needs converting into real pickLog rows before it means anything to the Stats tab. How: This calls actions.seedHistory with hydStaFun' own converted result.
 
 
 		});
