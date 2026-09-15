@@ -2000,6 +2000,14 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     codebase, e.g. `copIdeStr`/`neeCopFun`/`picCopFun`/`tasCopFun`
     (`onboarding-page-tours.jsx`), `datCopObj` (`seed.js`/`store.jsx`),
     and `PAG_COP_OBJ`/`PIC_COP_OBJ`/`REP_COP_OBJ`/`VAR_COP_OBJ`)
+  - `boot` → `boo` (Boot — a 4-letter word left untruncated instead of
+    taking its own literal first 3 letters, found in `bootAppFun`
+    (`main.jsx`), fixed to `booAppFun`; note `boo` already carries 2
+    other meanings in this codebase, Boolean (the universal type
+    segment) and Boost (`booRouNum`, `BooResCom`), making this a third;
+    context — the type segment always being literally `Boo` for
+    Boolean, versus `boo` appearing as segment 1 or 2 for Boot/Boost —
+    disambiguates which of the three it stands for)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
