@@ -80,14 +80,15 @@ const PAG_LAB_OBJ = { // What: Page Label Object. Why: tab-today.jsx's own AppFe
  * APP_FEA_ARR = App Feature Array
  *
  * @summary
- * The ordered catalog of every App Feature tutorial: its own id (keys
+ * The ordered catalog of every App Feature tutorial: its own ideStr (keys
  * state.onboarding.appFeatures and this tour's own GuidedTour tourId), which
- * real page it lives on, the launcher card's own label, the intro modal's own
- * titStr/bodEle/pilArr, and an optional time estimate. id/page/label/time are
- * read directly by tab-today.jsx's own AppFeaCom and progress counters, so
- * these 4 property names stay exactly as written rather than following the
- * usual 6-character object-property convention; titStr/bodEle/pilArr are
- * read only within this file, so they were already renamed to match.
+ * real pagStr it lives on, the launcher card's own labStr, the intro modal's
+ * own titStr/bodEle/pilArr, and an optional timStr estimate. Every property
+ * here is read only by this file and by tab-today.jsx's own AppFeaCom and
+ * progress counters, none of it persisted (the persisted map itself is keyed
+ * by ideStr's own string VALUE, e.g. 'feat_manual_pick', not by this
+ * property's own name), so all 7 fields follow the usual 6-character
+ * object-property convention.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -99,15 +100,15 @@ const APP_FEA_ARR = [
 	{
 
 
-		id     : 'feat_manual_pick',                     // What: Id. Why: This uniquely identifies this feature, keying state.onboarding.appFeatures and this tour's own GuidedTour tourId. How: FeaTouCom below searches APP_FEA_ARR for the entry whose own id matches its own feaIdeStr prop.
-		page   : 'picker',                               // What: Page. Why: This says which real nav tab this feature's own Step 1 highlights. How: buildPageTourStep1 below reads this to find the matching NAV_TAR_OBJ entry.
-		label  : 'Make your first manual pick',           // What: Label. Why: The launcher card on Today needs this feature's own visible title. How: tab-today.jsx renders this directly as the card's own name.
+		ideStr : 'feat_manual_pick',                     // What: Identifier String. Why: This uniquely identifies this feature, keying state.onboarding.appFeatures and this tour's own GuidedTour tourId. How: FeaTouCom below searches APP_FEA_ARR for the entry whose own ideStr matches its own feaIdeStr prop.
+		pagStr : 'picker',                               // What: Page String. Why: This says which real nav tab this feature's own Step 1 highlights. How: buildPageTourStep1 below reads this to find the matching NAV_TAR_OBJ entry.
+		labStr : 'Make your first manual pick',           // What: Label String. Why: The launcher card on Today needs this feature's own visible title. How: tab-today.jsx renders this directly as the card's own name.
 		titStr : 'Manual Picks',                          // What: Title String. Why: The intro modal needs a heading naming this tutorial. How: This is rendered as IntModCom's own title prop.
 		bodEle : <>This tutorial will show you <b>how to manually run one of your pickers and send its result straight to your todo list</b>, without waiting for the next automatic generation.</>, // What: Body Element. Why: The intro modal needs a plain description of what this tutorial covers. How: This is rendered as the sole entry of IntModCom's own paragraphs prop.
 		pilArr : [ 'pickers page', 'run a picker', 'manual pick' ], // What: Pills Array. Why: The intro modal's own pill row needs 3 short tags describing this tutorial. How: This is rendered as IntModCom's own pills prop.
 
 		// Real, user-confirmed estimate (same convention as OB_PAGE_TOURS' own time field in onboarding-checklist.js). Only this feature has real step-by-step content built out so far, the rest stay untimed until they do too.
-		time  : '1 min' // What: Time. Why: The launcher card shows this next to its label when present. How: tab-today.jsx renders feature.time directly whenever it's truthy.
+		timStr : '1 min' // What: Time String. Why: The launcher card shows this next to its label when present. How: tab-today.jsx renders feaRecObj.timStr directly whenever it's truthy.
 
 
 	},
@@ -115,15 +116,15 @@ const APP_FEA_ARR = [
 	{
 
 
-		id     : 'feat_edit_item',
-		page   : 'data',
-		label  : 'Edit your first item',
+		ideStr : 'feat_edit_item',
+		pagStr : 'data',
+		labStr : 'Edit your first item',
 		titStr : 'Editing Items',
 		bodEle : <>This tutorial will show you <b>how to edit one of your own items</b>. You will be able to update names, weights, or other values whenever your needs change.</>,
 		pilArr : [ 'data page', 'edit item', 'update values' ],
 
 		// Real, user-confirmed estimate, see feat_manual_pick's own comment on this same convention.
-		time  : '1 min'
+		timStr : '1 min'
 
 
 	},
@@ -131,15 +132,15 @@ const APP_FEA_ARR = [
 	{
 
 
-		id     : 'feat_run_time',
-		page   : 'settings',
-		label  : 'Adjust your generator run time',
+		ideStr : 'feat_run_time',
+		pagStr : 'settings',
+		labStr : 'Adjust your generator run time',
 		titStr : 'Generator Run Time',
 		bodEle : <>This tutorial will show you <b>how to change what time of day your todo list automatically generates</b>, so it is ready exactly when you want it.</>,
 		pilArr : [ 'settings page', 'daily generator', 'run time' ],
 
 		// Real, user-confirmed estimate, see feat_manual_pick's own comment on this same convention.
-		time  : '< 1 min'
+		timStr : '< 1 min'
 
 
 	},
@@ -147,15 +148,15 @@ const APP_FEA_ARR = [
 	{
 
 
-		id     : 'feat_theme',
-		page   : 'settings',
-		label  : 'Change your app theme',
+		ideStr : 'feat_theme',
+		pagStr : 'settings',
+		labStr : 'Change your app theme',
 		titStr : 'App Theme',
 		bodEle : <>This tutorial will show you <b>how to switch between light and dark mode</b>, or customize the app’s colors to your own taste.</>,
 		pilArr : [ 'settings page', 'appearance', 'theme' ],
 
 		// Real, user-confirmed estimate, see feat_manual_pick's own comment on this same convention.
-		time  : '< 1 min'
+		timStr : '< 1 min'
 
 
 	},
@@ -163,15 +164,15 @@ const APP_FEA_ARR = [
 	{
 
 
-		id     : 'feat_celebration',
-		page   : 'settings',
-		label  : 'Change your celebration animation',
+		ideStr : 'feat_celebration',
+		pagStr : 'settings',
+		labStr : 'Change your celebration animation',
 		titStr : 'Celebration Animation',
 		bodEle : <>This tutorial will show you <b>how to change the animation that plays whenever you complete your entire todo list</b> for the day.</>,
 		pilArr : [ 'settings page', 'appearance', 'animation' ],
 
 		// Real, user-confirmed estimate, see feat_manual_pick's own comment on this same convention.
-		time  : '< 1 min'
+		timStr : '< 1 min'
 
 
 	},
@@ -179,15 +180,15 @@ const APP_FEA_ARR = [
 	{
 
 
-		id     : 'feat_pick_anim',
-		page   : 'settings',
-		label  : 'Change your picker animation',
+		ideStr : 'feat_pick_anim',
+		pagStr : 'settings',
+		labStr : 'Change your picker animation',
 		titStr : 'Picker Animation',
 		bodEle : <>This tutorial will show you <b>how to change the animation that plays on the Pickers page</b> whenever you manually direct it to select one of its items.</>,
 		pilArr : [ 'settings page', 'appearance', 'animation' ],
 
 		// Real, user-confirmed estimate, see feat_manual_pick's own comment on this same convention.
-		time  : '< 1 min'
+		timStr : '< 1 min'
 
 
 	},
@@ -195,15 +196,15 @@ const APP_FEA_ARR = [
 	{
 
 
-		id     : 'feat_highlights',
-		page   : 'today',
-		label  : 'Use the highlight feature',
+		ideStr : 'feat_highlights',
+		pagStr : 'today',
+		labStr : 'Use the highlight feature',
 		titStr : 'Highlight Feature',
 		bodEle : <>This tutorial will show you <b>how to use the highlight feature</b>, which lets you tap the info icon on any page to get an on demand explanation of everything on screen.</>,
 		pilArr : [ 'help highlights', 'on demand', 'any page' ],
 
 		// Real, user-confirmed estimate, see feat_manual_pick's own comment on this same convention.
-		time  : '< 1 min'
+		timStr : '< 1 min'
 
 
 	},
@@ -211,15 +212,15 @@ const APP_FEA_ARR = [
 	{
 
 
-		id     : 'feat_protect_data',
-		page   : 'settings',
-		label  : 'Protect your data / Install the app',
+		ideStr : 'feat_protect_data',
+		pagStr : 'settings',
+		labStr : 'Protect your data / Install the app',
 		titStr : 'Protect Your Data',
 		bodEle : <>This tutorial will show you <b>how to protect your data from being deleted by your browser</b>, and to keep your data even more safe, how to install the app.</>,
 		pilArr : [ 'settings page', 'data control', 'install app' ],
 
 		// Real, user-confirmed estimate, see feat_manual_pick's own comment on this same convention.
-		time  : '< 1 min'
+		timStr : '< 1 min'
 
 
 	}
@@ -807,7 +808,7 @@ function bloReaFun ( feaIdeStr, state ) {
 function FeaTouCom ( { feaIdeStr, state, actions, active, selectTab, onCloFun } ) {
 
 
-	const feaRecObj = APP_FEA_ARR.find( ( curFeaObj ) => curFeaObj.id === feaIdeStr ); // What: Feature Record Object. Why: This feature's own page/title/body/pills/time are read off its own APP_FEA_ARR entry. How: This searches APP_FEA_ARR for the entry whose own id matches feaIdeStr.
+	const feaRecObj = APP_FEA_ARR.find( ( curFeaObj ) => curFeaObj.ideStr === feaIdeStr ); // What: Feature Record Object. Why: This feature's own page/title/body/pills/time are read off its own APP_FEA_ARR entry. How: This searches APP_FEA_ARR for the entry whose own id matches feaIdeStr.
 	// Same resumable pattern as PagTouCom, see its own comment.
 	const onbStaObj = state.onboarding || {}; // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeAppFeature already re-derived from this SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resumable) step to land on. How: This reads state.onboarding, falling back to an empty object.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `appfeature-${ feaIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this feature's own tourId, otherwise null.
@@ -853,7 +854,7 @@ function FeaTouCom ( { feaIdeStr, state, actions, active, selectTab, onCloFun } 
 			<IntModCom
 				icon={ feaIdeStr === 'feat_highlights'
 					? <span className='ob-wmark-help'>i</span>
-					: <IcoSvgCom name={ feaRecObj.page } size={ 54 } /> }
+					: <IcoSvgCom name={ feaRecObj.pagStr } size={ 54 } /> }
 				title={ feaRecObj.titStr }
 				paragraphs={ [ feaRecObj.bodEle ] }
 				pills={ feaRecObj.pilArr }
@@ -888,7 +889,7 @@ function FeaTouCom ( { feaIdeStr, state, actions, active, selectTab, onCloFun } 
 		<GuidedTour
 			tourId={ `appfeature-${ feaIdeStr }` }
 			steps={ feaIdeStr === 'feat_highlights' ? extSteArr : [
-				buildPageTourStep1( feaRecObj.page, feaIdeStr === 'feat_edit_item' ? colAllFun : undefined, extSteArr.length ? 'Next' : 'Done' ), // What: Build Page Tour Step 1 Call. Why: Every feature but feat_highlights prepends this exact shared Step 1. How: This passes this feature's own page, feat_edit_item's own collapse callback (undefined for every other feature), and 'Next'/'Done' depending on whether extSteArr has any steps of its own.
+				buildPageTourStep1( feaRecObj.pagStr, feaIdeStr === 'feat_edit_item' ? colAllFun : undefined, extSteArr.length ? 'Next' : 'Done' ), // What: Build Page Tour Step 1 Call. Why: Every feature but feat_highlights prepends this exact shared Step 1. How: This passes this feature's own page, feat_edit_item's own collapse callback (undefined for every other feature), and 'Next'/'Done' depending on whether extSteArr has any steps of its own.
 				...extSteArr // What: Extra Steps Spread. Why: Whatever steps this feature has beyond Step 1 must follow it in order. How: This spreads extSteArr after the Step 1 object above.
 			] }
 			resumeStep={ resTouObj ? resTouObj.step : 0 }

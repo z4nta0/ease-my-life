@@ -2610,8 +2610,8 @@ function PagTouCom ( { tour : touRecObj, state : staAppObj, actions : actStoObj,
 function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoObj, onPlayTutorial : onPlaTutFun, onUncheckAppFeature : onUncFeaFun } ) {
 
 
-	const tutDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.appFeatures && staAppObj.onboarding.appFeatures[ feaRecObj.id ] ); // What: Tutorial Done Boolean. Why: A resolved App Feature card renders/behaves differently from a pending one. How: This reads staAppObj's own onboarding.appFeatures map for feaRecObj's own id.
-	const blkRsnStr = !tutDonBoo ? bloReaFun( feaRecObj.id, staAppObj ) : null; // What: Blocked Reason String. Why: A still-pending card can require an earlier one first, and needs its own explanation string when it does. How: This calls bloReaFun only while tutDonBoo is false, otherwise null.
+	const tutDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.appFeatures && staAppObj.onboarding.appFeatures[ feaRecObj.ideStr ] ); // What: Tutorial Done Boolean. Why: A resolved App Feature card renders/behaves differently from a pending one. How: This reads staAppObj's own onboarding.appFeatures map for feaRecObj's own ideStr.
+	const blkRsnStr = !tutDonBoo ? bloReaFun( feaRecObj.ideStr, staAppObj ) : null; // What: Blocked Reason String. Why: A still-pending card can require an earlier one first, and needs its own explanation string when it does. How: This calls bloReaFun only while tutDonBoo is false, otherwise null.
 
 	const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this feature, unless it is currently blocked. How: This checks the actions-area exclusion and the blocked guard first, then dispatches to onUncFeaFun or onPlaTutFun based on tutDonBoo.
 
@@ -2620,9 +2620,9 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 
 		if ( blkRsnStr ) return;
 
-		if ( tutDonBoo ) onUncFeaFun( feaRecObj.id );
+		if ( tutDonBoo ) onUncFeaFun( feaRecObj.ideStr );
 
-		else onPlaTutFun( 'appFeature', feaRecObj.id );
+		else onPlaTutFun( 'appFeature', feaRecObj.ideStr );
 
 
 	};
@@ -2643,8 +2643,8 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 					type='button'
 					className='check'
 					aria-pressed='true'
-					aria-label={ `Undo ${ feaRecObj.label } tutorial` }
-					onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onUncFeaFun( feaRecObj.id ); } }
+					aria-label={ `Undo ${ feaRecObj.labStr } tutorial` }
+					onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onUncFeaFun( feaRecObj.ideStr ); } }
 				>{ /* What: Undo Check Button Element. Why: A resolved App Feature card can be un-resolved directly from its own check button, unlike a pending one. How: This calls onUncFeaFun. */ }
 
 
@@ -2667,7 +2667,7 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 
 				<InfTipCom
 					className='check is-disabled'
-					action={ `Start the ${ feaRecObj.label } tutorial` }
+					action={ `Start the ${ feaRecObj.labStr } tutorial` }
 					label={ blkRsnStr }
 				>{ /* What: Info Tip Component. Why: A blocked feature's own disabled check button still needs to explain WHY it is blocked. How: This wraps a disabled-looking play icon with blkRsnStr. */ }
 
@@ -2687,8 +2687,8 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 				<button
 					type='button'
 					className='check'
-					aria-label={ `Start the ${ feaRecObj.label } tutorial` }
-					onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onPlaTutFun( 'appFeature', feaRecObj.id ); } }
+					aria-label={ `Start the ${ feaRecObj.labStr } tutorial` }
+					onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); onPlaTutFun( 'appFeature', feaRecObj.ideStr ); } }
 				>{ /* What: Play Check Button Element. Why: A pending, unblocked App Feature card's own check button starts its tutorial instead of toggling done. How: This calls onPlaTutFun, scoped to 'appFeature'. */ }
 
 
@@ -2708,10 +2708,10 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 				<div className='today-card-meta'>{ /* What: Card Meta Div Element. Why: The feature's own page label and its optional time estimate sit together. How: This wraps the page-label span and, when one exists, the time estimate. */ }
 
 
-					<span className='meta-picker'>{ PAG_LAB_OBJ[ feaRecObj.page ] }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRecObj's own page in PAG_LAB_OBJ. */ }
+					<span className='meta-picker'>{ PAG_LAB_OBJ[ feaRecObj.pagStr ] }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRecObj's own pagStr in PAG_LAB_OBJ. */ }
 
 
-					{ feaRecObj.time && ( // What: Time Estimate Check. Why: Not every App Feature card has a manually-timed estimate. How: This renders the dot/time pair only while feaRecObj's own time is set.
+					{ feaRecObj.timStr && ( // What: Time Estimate Check. Why: Not every App Feature card has a manually-timed estimate. How: This renders the dot/time pair only while feaRecObj's own timStr is set.
 
 
 						<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
@@ -2719,7 +2719,7 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 
 							<span className='meta-dot'>&middot;</span>{ /* What: Meta Dot Span Element. Why: The page label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
 
-							<span className='meta-time'>{ feaRecObj.time }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tutorial takes. How: This renders feaRecObj's own time. */ }
+							<span className='meta-time'>{ feaRecObj.timStr }</span>{ /* What: Meta Time Span Element. Why: A time estimate helps the user judge how long this tutorial takes. How: This renders feaRecObj's own time. */ }
 
 
 						</React.Fragment>
@@ -2730,7 +2730,7 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 				</div>
 
 
-				<div className='today-card-name'>{ feaRecObj.label }</div>{ /* What: Card Name Div Element. Why: This is the card's own main display text. How: This renders feaRecObj's own label directly. */ }
+				<div className='today-card-name'>{ feaRecObj.labStr }</div>{ /* What: Card Name Div Element. Why: This is the card's own main display text. How: This renders feaRecObj's own label directly. */ }
 
 
 			</div>
@@ -2744,7 +2744,7 @@ function AppFeaCom ( { feature : feaRecObj, state : staAppObj, actions : actStoO
 						className='icon-btn'
 						aria-label='Cancel tutorial'
 						title='Cancel'
-						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); actStoObj.setAppFeatureItem( feaRecObj.id, { status : 'cancelled' } ); } }
+						onClick={ ( cliEveObj ) => { cliEveObj.stopPropagation(); actStoObj.setAppFeatureItem( feaRecObj.ideStr, { status : 'cancelled' } ); } }
 					>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setAppFeatureItem with a 'cancelled' status. */ }
 
 
@@ -3024,7 +3024,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 *
 	*/
 
-	const shwFeaBoo = cheDonBoo && ( fecDonBoo ? APP_FEA_ARR.some( ( curFeaObj ) => !feaStaObj[ curFeaObj.id ] ) : !fsrFlaBoo ); // What: Show App Features Boolean. Why: See the doc comment just above. How: This branches on fecDonBoo to pick either the live "some still unresolved" check or the negation of the first-time snapshot.
+	const shwFeaBoo = cheDonBoo && ( fecDonBoo ? APP_FEA_ARR.some( ( curFeaObj ) => !feaStaObj[ curFeaObj.ideStr ] ) : !fsrFlaBoo ); // What: Show App Features Boolean. Why: See the doc comment just above. How: This branches on fecDonBoo to pick either the live "some still unresolved" check or the negation of the first-time snapshot.
 
 	React.useEffect( () => { emlTouObj.set( { showChecklist : shwCheBoo } ); }, [ shwCheBoo ] ); // What: Checklist Bus Publish Effect. Why: reminders.jsx's startAdd needs to hide ANY reminder created while the checklist is up, not just ones a mini-tour itself creates, so a user manually clicking "+" mid-onboarding doesn't clutter the list alongside the still-open launcher cards either (see the unhide side in the generateCardResolved effect further below). How: This republishes shwCheBoo onto the shared tour bus under its own showChecklist field.
 
@@ -4451,7 +4451,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		actions.replaceTodayEntries( nexEntArr, { resetStreak : isaAutBoo } ); // What: Replace Today Entries Call. Why: This is the actual commit, writing nexEntArr as the new state.today.entries. How: This calls actions.replaceTodayEntries, resetting the streak claim only for an auto-run.
 		actions.markGenerated(); // What: Mark Generated Call. Why: state.today.generatedAt (and every anchor/count derived from it) needs to reflect this fresh generation. How: This calls actions.markGenerated.
 
-		if ( cheDonBoo && APP_FEA_ARR.every( ( curFeaObj ) => feaStaObj[ curFeaObj.id ] ) ) { // What: Feature Section Resolve Guard. Why: The App Features section (see shwFeaBoo's own doc comment above) is only allowed to finally disappear here, at a real generation boundary, not the instant the last tutorial resolves; checked fresh on every genFun call (both manual Regenerate and the Daily Generator funnel through this same function) rather than only once, so a generation that happens to land after the very last tutorial finishes is what actually hides it. How: This flips both resolution flags only once every App Feature is already done.
+		if ( cheDonBoo && APP_FEA_ARR.every( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ) ) { // What: Feature Section Resolve Guard. Why: The App Features section (see shwFeaBoo's own doc comment above) is only allowed to finally disappear here, at a real generation boundary, not the instant the last tutorial resolves; checked fresh on every genFun call (both manual Regenerate and the Daily Generator funnel through this same function) rather than only once, so a generation that happens to land after the very last tutorial finishes is what actually hides it. How: This flips both resolution flags only once every App Feature is already done.
 
 
 			actions.setOnboarding( { appFeaturesSectionResolved : true, appFeaturesEverCompleted : true } ); // What: Set Onboarding Call. Why: fecDonBoo is the permanent half of this pair, see its own doc comment above for why it must never reset alongside fsrFlaBoo on a Replay Tour. How: This writes both flags true.
@@ -5480,7 +5480,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 										<span className='rail-count'>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
-											<span>{ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.id ] ).length }</span><span className='rail-of'>/{ APP_FEA_ARR.length }</span>
+											<span>{ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ).length }</span><span className='rail-of'>/{ APP_FEA_ARR.length }</span>
 
 										</span>
 
@@ -5852,7 +5852,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 								<GroHeaCom
 									name='App Features'
-									doneCount={ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.id ] ).length }
+									doneCount={ APP_FEA_ARR.filter( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ).length }
 									total={ APP_FEA_ARR.length }
 									editMode={ false }
 								/>{ /* What: Group Header Component. Why: App Features shares the exact same header chrome as a real group, but is never itself reorderable. How: This is passed a fixed name plus its own live done/total counts. */ }
@@ -5867,11 +5867,11 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 									    replay-continuation cards. The ORIGINAL first-time pass is
 									    unaffected: every card stays until the whole section resolves
 									    together at the next real generation. */ }
-									{ APP_FEA_ARR.filter( ( curFeaObj ) => !( fecDonBoo && feaStaObj[ curFeaObj.id ] ) ).map( ( curFeaObj ) => ( // What: App Feature Card List Render. Why: Every still-relevant feature needs its own card; a resolved one during replay drops out immediately instead of lingering with an Undo toggle. How: This maps APP_FEA_ARR, filtered per the design note above, to one AppFeaCom per entry, keyed by its own id.
+									{ APP_FEA_ARR.filter( ( curFeaObj ) => !( fecDonBoo && feaStaObj[ curFeaObj.ideStr ] ) ).map( ( curFeaObj ) => ( // What: App Feature Card List Render. Why: Every still-relevant feature needs its own card; a resolved one during replay drops out immediately instead of lingering with an Undo toggle. How: This maps APP_FEA_ARR, filtered per the design note above, to one AppFeaCom per entry, keyed by its own ideStr.
 
 
 										<AppFeaCom
-											key={ curFeaObj.id }
+											key={ curFeaObj.ideStr }
 											feature={ curFeaObj }
 											state={ state }
 											actions={ actions }
