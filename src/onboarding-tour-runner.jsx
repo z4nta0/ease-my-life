@@ -272,9 +272,9 @@ const safTopFun = ( { forCoaBoo } = {} ) => { // What: Safe Top Function. Why: E
 
 	if ( forCoaBoo ) return 0; // What: Coach Exemption Guard. Why: The coach card floats in its own high z-index overlay, never physically under this chrome. How: This skips the whole exclusion zone and returns 0 whenever forCoaBoo is true.
 
-	const hdrEle = document.querySelector( '.today-h' ); // What: Header Element. Why: Today's own sticky header is the first, always-present piece of chrome to clamp against. How: This looks it up fresh on every call, since it may not exist outside the Today tab.
+	const heaEle = document.querySelector( '.today-h' ); // What: Header Element. Why: Today's own sticky header is the first, always-present piece of chrome to clamp against. How: This looks it up fresh on every call, since it may not exist outside the Today tab.
 
-	let botNum = hdrEle ? hdrEle.getBoundingClientRect().bottom : 0; // What: Bottom Number. Why: This is the running "safe top" answer, widened below by whichever additional chrome is also present. How: This starts at the header's own bottom edge, or 0 when there is no header at all.
+	let botNum = heaEle ? heaEle.getBoundingClientRect().bottom : 0; // What: Bottom Number. Why: This is the running "safe top" answer, widened below by whichever additional chrome is also present. How: This starts at the header's own bottom edge, or 0 when there is no header at all.
 
 	const railEle = document.querySelector( '.group-rail' ); // What: Rail Element. Why: On mobile the group rail stacks below the header as its own row, so it needs folding into the same floor. How: This looks up the rail element fresh on every call.
 

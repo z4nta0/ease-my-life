@@ -2127,6 +2127,12 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     context — the type segment always being literally `Boo` for
     Boolean, versus `boo` appearing as segment 1 or 2 for Boot/Boost —
     disambiguates which of the three it stands for)
+  - `hdr` → `hea` (Header — found in `opeHdrEle`/`hdrButArr`
+    (`onboarding-app-features.jsx`), `hdrEle` (`onboarding-tour-
+    runner.jsx`), and `hdrEleRef`/`hdrCurEle`/`hdrHeiNum`
+    (`tab-today.jsx`); `hea` was already the established, unambiguous
+    code for Header elsewhere in this codebase, e.g. `TabHeaCom`,
+    `GroHeaCom`, `heaLabStr`)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

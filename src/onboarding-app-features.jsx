@@ -351,19 +351,19 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 					const triColFun = () => { // What: Try Collapse Function. Why: The just-expanded picker's own header buttons may not have mounted yet, so this must re-poll a frame at a time. How: This looks up the open picker's own header/buttons, retrying via requestAnimationFrame until they exist or the try cap is hit.
 
 
-						const opeHdrEle = document.querySelector( '.data-list .cat-h-l[aria-expanded="true"]' ); // What: Open Header Element. Why: This must find whichever picker header the user just clicked open. How: This looks up the one .cat-h-l currently marked expanded.
-						const catSecEle = opeHdrEle && opeHdrEle.closest( '.cat' );                              // What: Category Section Element. Why: The picker's own id and Controls/Items buttons live on its enclosing .cat section. How: This walks up from opeHdrEle to its closest .cat ancestor.
+						const opeHeaEle = document.querySelector( '.data-list .cat-h-l[aria-expanded="true"]' ); // What: Open Header Element. Why: This must find whichever picker header the user just clicked open. How: This looks up the one .cat-h-l currently marked expanded.
+						const catSecEle = opeHeaEle && opeHeaEle.closest( '.cat' );                              // What: Category Section Element. Why: The picker's own id and Controls/Items buttons live on its enclosing .cat section. How: This walks up from opeHeaEle to its closest .cat ancestor.
 						const picIdeStr = catSecEle && catSecEle.dataset.pickerId;                              // What: Picker Identifier String. Why: actions.toggleControlsCollapsed needs this picker's own real id. How: This reads catSecEle's own data-picker-id attribute.
-						const hdrButArr = catSecEle ? [ ...catSecEle.querySelectorAll( '.rd-ctl' ) ] : [];       // What: Header Button Array. Why: The Controls header (index 0) and Items header (index 1) both need checking. How: This collects every .rd-ctl button inside catSecEle into a plain array.
+						const heaButArr = catSecEle ? [ ...catSecEle.querySelectorAll( '.rd-ctl' ) ] : [];       // What: Header Button Array. Why: The Controls header (index 0) and Items header (index 1) both need checking. How: This collects every .rd-ctl button inside catSecEle into a plain array.
 
 						// Re-polls a frame later whenever the expected DOM hasn't mounted yet and the try cap hasn't been hit. Left inline rather than extracted into named consts: triCouNum++ is a side effect that must stay inside this short-circuited check, extracting it would change how often it increments.
-						if ( ( !picIdeStr || hdrButArr.length < 2 ) && triCouNum++ < 20 ) { requestAnimationFrame( triColFun ); return; } // What: Retry Guard. Why: The picker's own header/buttons may not have mounted on the very first frame checked. How: This re-schedules triColFun a frame later, up to 20 tries, whenever picIdeStr or both buttons are still missing.
+						if ( ( !picIdeStr || heaButArr.length < 2 ) && triCouNum++ < 20 ) { requestAnimationFrame( triColFun ); return; } // What: Retry Guard. Why: The picker's own header/buttons may not have mounted on the very first frame checked. How: This re-schedules triColFun a frame later, up to 20 tries, whenever picIdeStr or both buttons are still missing.
 
 						if ( !picIdeStr ) return; // What: Missing Picker Guard. Why: A try cap hit with no picker found at all has nothing left to collapse. How: This returns early whenever picIdeStr was never resolved.
 
-						if ( hdrButArr[ 0 ] && hdrButArr[ 0 ].getAttribute( 'aria-expanded' ) === 'true' ) actions.toggleControlsCollapsed( picIdeStr + ':controls' ); // What: Controls Collapse Call. Why: Controls must start collapsed if it defaulted open. How: This toggles the picker's own ':controls' section only when it's currently expanded.
+						if ( heaButArr[ 0 ] && heaButArr[ 0 ].getAttribute( 'aria-expanded' ) === 'true' ) actions.toggleControlsCollapsed( picIdeStr + ':controls' ); // What: Controls Collapse Call. Why: Controls must start collapsed if it defaulted open. How: This toggles the picker's own ':controls' section only when it's currently expanded.
 
-						if ( hdrButArr[ 1 ] && hdrButArr[ 1 ].getAttribute( 'aria-expanded' ) === 'true' ) actions.toggleControlsCollapsed( picIdeStr + ':items' ); // What: Items Collapse Call. Why: Items must start collapsed if it defaulted open. How: This toggles the picker's own ':items' section only when it's currently expanded.
+						if ( heaButArr[ 1 ] && heaButArr[ 1 ].getAttribute( 'aria-expanded' ) === 'true' ) actions.toggleControlsCollapsed( picIdeStr + ':items' ); // What: Items Collapse Call. Why: Items must start collapsed if it defaulted open. How: This toggles the picker's own ':items' section only when it's currently expanded.
 
 
 					};

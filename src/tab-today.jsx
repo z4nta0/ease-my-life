@@ -3410,34 +3410,34 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 *
 	*/
 
-	const hdrEleRef  = React.useRef( null ); // What: Header Element Reference. Why: This effect needs a direct DOM handle on the sticky header to measure it. How: This is attached to the <header> element's own ref prop further down.
+	const heaEleRef  = React.useRef( null ); // What: Header Element Reference. Why: This effect needs a direct DOM handle on the sticky header to measure it. How: This is attached to the <header> element's own ref prop further down.
 	const railEleRef = React.useRef( null ); // What: Rail Element Reference. Why: This effect needs a direct DOM handle on the group rail to measure it when it stacks horizontally. How: This is attached to the <aside> rail's own ref prop further down.
 
 	React.useEffect( () => { // What: Sticky Offset Effect. Why: See the doc comment just above. How: This measures both elements on mount, on their own resize, and on window resize, publishing 3 CSS custom properties onto the tab root.
 
 
-		const hdrCurEle = hdrEleRef.current; // What: Header Current Element. Why: This is the actual DOM node every measurement below reads from. How: This reads hdrEleRef.current once.
+		const heaCurEle = heaEleRef.current; // What: Header Current Element. Why: This is the actual DOM node every measurement below reads from. How: This reads heaEleRef.current once.
 
-		if ( !hdrCurEle ) return; // What: No Header Guard. Why: Without the header mounted there is nothing to measure at all. How: This bails out of the effect early when hdrCurEle is missing.
+		if ( !heaCurEle ) return; // What: No Header Guard. Why: Without the header mounted there is nothing to measure at all. How: This bails out of the effect early when heaCurEle is missing.
 
 
-		const tabCurEle = hdrCurEle.closest( '.tab--today' ); // What: Tab Current Element. Why: The 3 CSS custom properties this effect publishes must land on the tab's own root, not the header itself. How: This walks up from hdrCurEle to its nearest .tab--today ancestor.
+		const tabCurEle = heaCurEle.closest( '.tab--today' ); // What: Tab Current Element. Why: The 3 CSS custom properties this effect publishes must land on the tab's own root, not the header itself. How: This walks up from heaCurEle to its nearest .tab--today ancestor.
 
 		if ( !tabCurEle ) return; // What: No Tab Root Guard. Why: Without the tab root there is nowhere to publish the measured values. How: This bails out of the effect early when tabCurEle is missing.
 
 
-		const aplFun = () => { // What: Apply Function. Why: Every trigger below (mount, either ResizeObserver, window resize) needs this exact same measure-and-publish step. How: This measures hdrCurEle/railEleRef, then writes 3 CSS custom properties onto tabCurEle.
+		const aplFun = () => { // What: Apply Function. Why: Every trigger below (mount, either ResizeObserver, window resize) needs this exact same measure-and-publish step. How: This measures heaCurEle/railEleRef, then writes 3 CSS custom properties onto tabCurEle.
 
 
-			const hdrHeiNum = hdrCurEle.offsetHeight; // What: Header Height Number. Why: This is the header's own real rendered height. How: This reads hdrCurEle.offsetHeight.
+			const heaHeiNum = heaCurEle.offsetHeight; // What: Header Height Number. Why: This is the header's own real rendered height. How: This reads heaCurEle.offsetHeight.
 
 			const railCurEle  = railEleRef.current;                                                      // What: Rail Current Element. Why: The rail only contributes to the sticky offset while it is stacked horizontally, which needs its own live check below. How: This reads railEleRef.current.
 			const railHorBoo  = railCurEle && getComputedStyle( railCurEle ).flexDirection === 'row';     // What: Rail Horizontal Boolean. Why: On mobile the rail flips to flex-direction: row and stacks below the header as a horizontal pill bar; this detects that state via computed style so it works whether triggered by the viewport breakpoint or the mobile-preview tweak. How: This reads railCurEle's own live computed flexDirection.
 			const railHeiNum  = railHorBoo ? railCurEle.offsetHeight : 0;                                 // What: Rail Height Number. Why: Only a horizontally-stacked rail contributes its own height to the sticky offset. How: This reads railCurEle.offsetHeight only while railHorBoo, otherwise 0.
 
-			tabCurEle.style.setProperty( '--today-h-h', `${ hdrHeiNum }px` );             // What: Header Height Property. Why: CSS elsewhere needs the header's own real height as a custom property. How: This writes hdrHeiNum in pixels.
+			tabCurEle.style.setProperty( '--today-h-h', `${ heaHeiNum }px` );             // What: Header Height Property. Why: CSS elsewhere needs the header's own real height as a custom property. How: This writes heaHeiNum in pixels.
 			tabCurEle.style.setProperty( '--rail-h-h', `${ railHeiNum }px` );              // What: Rail Height Property. Why: CSS elsewhere needs the rail's own real height (when horizontal) as a custom property. How: This writes railHeiNum in pixels.
-			tabCurEle.style.setProperty( '--sticky-top-h', `${ hdrHeiNum + railHeiNum }px` ); // What: Sticky Top Height Property. Why: jmpGroFun and the scroll-spy effect below both need this exact combined offset. How: This writes the sum of hdrHeiNum and railHeiNum in pixels.
+			tabCurEle.style.setProperty( '--sticky-top-h', `${ heaHeiNum + railHeiNum }px` ); // What: Sticky Top Height Property. Why: jmpGroFun and the scroll-spy effect below both need this exact combined offset. How: This writes the sum of heaHeiNum and railHeiNum in pixels.
 
 
 		};
@@ -3446,7 +3446,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		const resObsObj = new ResizeObserver( aplFun ); // What: Resize Observer Object. Why: Either element's own size can change independent of a window resize (e.g. text wrapping). How: This re-runs aplFun on every observed resize.
 
-		resObsObj.observe( hdrCurEle ); // What: Header Observe Call. Why: The header's own size must be watched directly. How: This starts observing hdrCurEle.
+		resObsObj.observe( heaCurEle ); // What: Header Observe Call. Why: The header's own size must be watched directly. How: This starts observing heaCurEle.
 
 		if ( railEleRef.current ) resObsObj.observe( railEleRef.current ); // What: Rail Observe Guard. Why: The rail should only be observed once it is actually mounted. How: This starts observing railEleRef.current only when it exists.
 
@@ -5048,7 +5048,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 			<header
-				ref={ hdrEleRef }
+				ref={ heaEleRef }
 				className='today-h'
 			>{ /* What: Today Header Element. Why: This is the sticky header every scroll-spy/offset calculation in this file measures against. How: This renders the date/streak/help row and the brand mark/title/ring row beneath it. */ }
 
