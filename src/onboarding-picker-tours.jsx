@@ -42,7 +42,7 @@ import { OB_EXTRA_PICKERS } from './onboarding-seed-data.js';    // What: Onboar
  * Mounted at the app level (see app.jsx's own actPicStr), not inside
  * TabToday the way the reminder mini-tours are: Step 1 navigates to
  * the Pickers tab, which would unmount TabToday (and this tour along
- * with it) if it lived there instead. active/selectTab passed into
+ * with it) if it lived there instead. actIdeStr/selTabFun passed into
  * PicTouCom below are therefore the real app-wide ones, not stubs.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -537,7 +537,7 @@ const bldNamFun = ( picIdeStr ) => ({ // What: Build Name Function. Why: This bu
  * than the ease-up-flavored default, for the "Shortest" label and
  * ease-down's reversed stays-picked-until-discharged semantics. No new
  * one-way DOM transition happens between bldNamFun's own step and
- * here (the editor stays open the whole time), so no onGoBack handling
+ * here (the editor stays open the whole time), so no onBacFun handling
  * is needed.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -588,7 +588,7 @@ const bldLatFun = ( picIdeStr ) => ({ // What: Build Latest Function. Why: This 
  * when the sample's own mode is Weighted or Dynamic (see its own
  * useWeiBoo below). No new one-way DOM transition happens between
  * bldNamFun's own step and here (the editor stays open the whole
- * time), so no onGoBack handling is needed, same reasoning as the
+ * time), so no onBacFun handling is needed, same reasoning as the
  * isEase steps above.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -683,7 +683,7 @@ const SAV_STE_OBJ = { // What: Save Step Object. Why: This step highlights the i
  * primary:'Done' together mean this is the ONE step where the real
  * target's own native click handler (submit, which actually calls
  * actions.addPicker) has to survive finish()'s own side effects
- * (selectTab away from Pickers, unmounting this whole tour);
+ * (selTabFun away from Pickers, unmounting this whole tour);
  * GuidedTour's own onPrimary defers the 'Done'/advance half of a
  * requireClick click by a tick for exactly this reason (see its own
  * comment), so submit() still fires normally in the click's own native
@@ -721,7 +721,7 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
  * Mounted at the app level (see app.jsx's own actPicStr), not inside
  * TabToday the way the reminder mini-tours are: Step 1 navigates to
  * the Pickers tab, which would unmount TabToday (and this along with
- * it) if it lived there instead. active/selectTab are therefore the
+ * it) if it lived there instead. actIdeStr/selTabFun are therefore the
  * real app-wide ones, not stubs.
  *
  * Why bldNewFun's own run() (not, say, NAV_STE_OBJ's, or PicTouCom's
@@ -752,8 +752,10 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
  *                          id, keying both PIC_SAM_OBJ and PIC_COP_OBJ.
  * @param props.state     - State: The entire app's own persisted state.
  * @param props.actions   - Actions: The actions that mutate props.state.
- * @param props.active    - Active: The app's own currently active tab id.
- * @param props.selectTab - Select Tab: Switches the app's own active tab.
+ * @param props.actIdeStr - Active Identifier String: The app's own
+ *                          currently active tab id.
+ * @param props.selTabFun - Select Tab Function: Switches the app's own
+ *                          active tab.
  * @param props.onCloFun  - On Close Function: Clears app.jsx's own
  *                          actPicStr, ending this mount.
  *
@@ -763,13 +765,13 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
  *
  * @example
  * ```tsx
- * PicTouCom({ picIdeStr, state, actions, active, selectTab, onCloFun })
+ * PicTouCom({ picIdeStr, state, actions, actIdeStr, selTabFun, onCloFun })
  * // => <PicTouCom />
  * ```
  *
 */
 
-function PicTouCom ( { picIdeStr, state, actions, active, selectTab, onCloFun } ) {
+function PicTouCom ( { picIdeStr, state, actions, actIdeStr, selTabFun, onCloFun } ) {
 
 
 	const picRecObj = ( state.pickers || [] ).find( ( curPicObj ) => curPicObj.id === picIdeStr ); // What: Picker Record Object. Why: The intro modal and every mode-gating check below need this sample's own live picker record. How: This searches state.pickers for the entry whose own id matches picIdeStr.
@@ -857,13 +859,13 @@ function PicTouCom ( { picIdeStr, state, actions, active, selectTab, onCloFun } 
 
 
 		<GuidedTour
-			tourId={ `picker-${ picIdeStr }` }
-			steps={ steObjArr }
-			resumeStep={ resTouObj ? resTouObj.step : 0 }
+			touIdeStr={ `picker-${ picIdeStr }` }
+			steObjArr={ steObjArr }
+			resSteNum={ resTouObj ? resTouObj.step : 0 }
 			actions={ actions }
-			active={ active }
-			selectTab={ selectTab }
-			onGoBack={ ( tarSteNum ) => { // What: On Go Back Handler. Why: Back from bldAddFun's own step (index 6, the Items sub-step's "+ Add Item" button) to ITE_STE_OBJ's own step (index 5, "Add Items") needs the form pushed back to its Details sub-step first; unlike the Reminders tours' own "+" button, .ob-picker-next's own click is a one-way step change inside NewPickerForm, not a toggle, so without this ITE_STE_OBJ's own target stays gone (the form is still showing Items) and the tour has nothing to highlight. How: This branches on tarSteNum, clicking the real DOM control that reverses whichever one-way transition the tour is backing out of.
+			actIdeStr={ actIdeStr }
+			selTabFun={ selTabFun }
+			onBacFun={ ( tarSteNum ) => { // What: On Go Back Handler. Why: Back from bldAddFun's own step (index 6, the Items sub-step's "+ Add Item" button) to ITE_STE_OBJ's own step (index 5, "Add Items") needs the form pushed back to its Details sub-step first; unlike the Reminders tours' own "+" button, .ob-picker-next's own click is a one-way step change inside NewPickerForm, not a toggle, so without this ITE_STE_OBJ's own target stays gone (the form is still showing Items) and the tour has nothing to highlight. How: This branches on tarSteNum, clicking the real DOM control that reverses whichever one-way transition the tour is backing out of.
 
 
 				if ( tarSteNum === 5 ) { // What: Details Step Back Check. Why: Reversing bldAddFun's own step needs the form pushed back to Details. How: This clicks the form's own "Details" step-indicator tab, the only way to reverse this from outside the form, which owns that step state locally.
@@ -896,9 +898,9 @@ function PicTouCom ( { picIdeStr, state, actions, active, selectTab, onCloFun } 
 
 
 			} }
-			onSkip={ () => cloTouFun( 'skipped' ) } // What: On Skip Handler. Why: Skip (or the not-found watchdog) reads as "the user didn't finish", distinct both from the intro modal's own 'cancelled' and from a genuine 'finished' below. How: This calls cloTouFun with 'skipped'.
-			onFinish={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from CRE_STE_OBJ's own requireClick, after the real click that creates the picker has already reached the button's own handler. How: This calls cloTouFun with 'finished'.
-		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this sample, mounted once its own intro modal has been accepted or resumed into. How: This is passed this sample's own tourId, steObjArr, and the resume/lifecycle plumbing above.
+			onSkiTouFun={ () => cloTouFun( 'skipped' ) } // What: On Skip Handler. Why: Skip (or the not-found watchdog) reads as "the user didn't finish", distinct both from the intro modal's own 'cancelled' and from a genuine 'finished' below. How: This calls cloTouFun with 'skipped'.
+			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from CRE_STE_OBJ's own requireClick, after the real click that creates the picker has already reached the button's own handler. How: This calls cloTouFun with 'finished'.
+		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this sample, mounted once its own intro modal has been accepted or resumed into. How: This is passed this sample's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
 
 
 	);

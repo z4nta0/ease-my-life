@@ -313,7 +313,7 @@ const bldSubFun = ( varKeyStr ) => ({
 		? <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>. NOTE: if you selected a day other than today as the recurrence date, then this item will not show up in your todo list until it is due.</>
 		: <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>.</>,
 
-	primary      : 'Done', // What: Primary String. Why: This is both tours' own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinish instead of moving to a next step.
+	primary      : 'Done', // What: Primary String. Why: This is both tours' own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinTouFun instead of moving to a next step.
 	back         : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 	requireClick : true,   // What: Require Click Boolean. Why: The real click both saves the reminder and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
 	resumable    : false   // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resumable is false.
@@ -375,7 +375,7 @@ function RemTouCom ( { varKeyStr, state, actions, onCloFrmFun, onCloFun } ) {
 
 
 	const onbStaObj = state.onboarding || {}; // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeMiniTour already re-derived from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which step to resume into. How: This reads state.onboarding, falling back to an empty object.
-	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `reminder-${ varKeyStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this varKeyStr's own tourId, otherwise null.
+	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `reminder-${ varKeyStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this varKeyStr's own touIdeStr, otherwise null.
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
 
 
@@ -435,14 +435,14 @@ function RemTouCom ( { varKeyStr, state, actions, onCloFrmFun, onCloFun } ) {
 
 
 		<GuidedTour
-			tourId={ `reminder-${ varKeyStr }` }
-			steps={ steObjArr }
-			resumeStep={ resTouObj ? resTouObj.step : 0 }
+			touIdeStr={ `reminder-${ varKeyStr }` }
+			steObjArr={ steObjArr }
+			resSteNum={ resTouObj ? resTouObj.step : 0 }
 			actions={ actions }
-			active='today'
-			selectTab={ () => {} }
-			onGoBack={ ( tarSteNum ) => { if ( tarSteNum === 0 ) onCloFrmFun(); } } // What: On Go Back Handler. Why: Back to Step 1 re-highlights the "+" button, which toggles the add form open or closed. How: Closing it here keeps Step 1's own click meaning exactly what it always means, open the form, instead of closing an already-open one.
-			onSkip={ () => { // What: On Skip Handler. Why: Skip discards the in-progress form exactly like its own Cancel button would. How: onCloFrmFun is a no-op if the form is not even open, for example Skip from Step 1.
+			actIdeStr='today'
+			selTabFun={ () => {} }
+			onBacFun={ ( tarSteNum ) => { if ( tarSteNum === 0 ) onCloFrmFun(); } } // What: On Go Back Handler. Why: Back to Step 1 re-highlights the "+" button, which toggles the add form open or closed. How: Closing it here keeps Step 1's own click meaning exactly what it always means, open the form, instead of closing an already-open one.
+			onSkiTouFun={ () => { // What: On Skip Handler. Why: Skip discards the in-progress form exactly like its own Cancel button would. How: onCloFrmFun is a no-op if the form is not even open, for example Skip from Step 1.
 
 
 				onCloFrmFun(); // What: Close Reminder Form Call. Why: A half-created reminder should not survive behind the scenes just because the user backed out via the tour instead of the form itself. How: This closes the add-reminder form exactly like its own Cancel button would.
@@ -451,8 +451,8 @@ function RemTouCom ( { varKeyStr, state, actions, onCloFrmFun, onCloFun } ) {
 
 
 			} }
-			onFinish={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from bldSubFun's own requireClick, after the real click that saves the reminder has already reached the button's own handler. How: This deliberately does not touch the form, since closing it here would discard the save instead of letting it happen.
-		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this varKeyStr, mounted once its own intro modal has been accepted or resumed into. How: This is passed this varKeyStr's own tourId, steObjArr, and the resume/lifecycle plumbing above.
+			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from bldSubFun's own requireClick, after the real click that saves the reminder has already reached the button's own handler. How: This deliberately does not touch the form, since closing it here would discard the save instead of letting it happen.
+		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this varKeyStr, mounted once its own intro modal has been accepted or resumed into. How: This is passed this varKeyStr's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
 
 
 	);

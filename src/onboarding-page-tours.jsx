@@ -7,7 +7,7 @@
 import React from 'react'; // What: React. Why: This file's own PagTouCom component needs React in scope to compile its JSX and to call React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
 
 
-import { emlTouObj            } from './onboarding.jsx';             // What: Ease My Life Tour Object. Why: This publishes/reads bus nonces the Pickers-page onGoBack handler uses to reset or redo an in-flight picker-form animation. How: This is read via .get() and written via .set() inside PagTouCom's own onGoBack below.
+import { emlTouObj            } from './onboarding.jsx';             // What: Ease My Life Tour Object. Why: This publishes/reads bus nonces the Pickers-page onBacFun handler uses to reset or redo an in-flight picker-form animation. How: This is read via .get() and written via .set() inside PagTouCom's own onBacFun below.
 import { GuidedTour           } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each page mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-page step array.
 import { hydStaFun            } from './onboarding-seed-data.js';    // What: Hydrate Stats Function. Why: The Stats tour's own borrowed sample history needs converting from its static template shape into real pickLog rows. How: This is called inside unhHisFun below, passed ONBOARDING_STATS.
 import { IcoSvgCom            } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current page. How: This is rendered inside the intro modal's icon prop below.
@@ -978,8 +978,8 @@ const forNamFun = ( actions ) => { // What: Force Name Function. Why: A click ra
  * buildPageTourStep1 above), keyed by page tour id, empty/absent for
  * any page that only has Step 1 so far. Advancing past the last step
  * here falls through GuidedTour's own "ran off the end" safety net
- * into onSkip, same as every other mini-tour behaved before its own
- * final Done step existed. A function of `actions` (built fresh per
+ * into onSkiTouFun, same as every other mini-tour behaved before its
+ * own final Done step existed. A function of `actions` (built fresh per
  * render, like buildPageTourStep1), not a static object, the Today
  * branch's own last step needs to call actions.renamePageTours
  * directly (see forNamFun above).
@@ -1210,7 +1210,7 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
  * relevant: the intro modal, or the running GuidedTour. Mounted at the
  * app level (see app.jsx's own actPagStr), reads real persisted state
  * and calls real actions.* methods (see store.jsx), and reads/writes
- * emlTouObj's own bus fields for the Pickers tour's own onGoBack
+ * emlTouObj's own bus fields for the Pickers tour's own onBacFun
  * handling below.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -1220,8 +1220,10 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
  *                          PAG_COP_OBJ and bldSteFun.
  * @param props.state     - State: The entire app's own persisted state.
  * @param props.actions   - Actions: The actions that mutate props.state.
- * @param props.active    - Active: The app's own currently active tab id.
- * @param props.selectTab - Select Tab: Switches the app's own active tab.
+ * @param props.actIdeStr - Active Identifier String: The app's own
+ *                          currently active tab id.
+ * @param props.selTabFun - Select Tab Function: Switches the app's own
+ *                          active tab.
  * @param props.onCloFun  - On Close Function: Clears app.jsx's own
  *                          actPagStr, ending this mount.
  *
@@ -1230,13 +1232,13 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
  *
  * @example
  * ```tsx
- * PagTouCom({ pagIdeStr, state, actions, active, selectTab, onCloFun })
+ * PagTouCom({ pagIdeStr, state, actions, actIdeStr, selTabFun, onCloFun })
  * // => <PagTouCom />
  * ```
  *
 */
 
-function PagTouCom ( { pagIdeStr, state, actions, active, selectTab, onCloFun } ) {
+function PagTouCom ( { pagIdeStr, state, actions, actIdeStr, selTabFun, onCloFun } ) {
 
 
 	const tourRecObj = OB_PAGE_TOURS.find( ( curTouObj ) => curTouObj.id === pagIdeStr ); // What: Tour Record Object. Why: This page's own real page key/label are read off its own OB_PAGE_TOURS manifest entry. How: This searches OB_PAGE_TOURS for the entry whose own id matches pagIdeStr.
@@ -1295,8 +1297,8 @@ function PagTouCom ( { pagIdeStr, state, actions, active, selectTab, onCloFun } 
 
 
 		<GuidedTour
-			tourId={ `page-${ pagIdeStr }` }
-			steps={ [
+			touIdeStr={ `page-${ pagIdeStr }` }
+			steObjArr={ [
 				buildPageTourStep1( tourRecObj.page,
 					pagIdeStr === 'explore_data' ? () => { seePicFun( state, actions ); seeTasFun( state, actions ); } : // What: Data Run Branch. Why: The Data tour's own Step 1 must seed BOTH disposable picker and reminder copies before its later steps can point at them. How: This calls both seePicFun and seeTasFun when pagIdeStr is 'explore_data'.
 					neeCopFun( pagIdeStr ) ? () => seePicFun( state, actions ) : // What: Pickers Run Branch. Why: The Pickers tour's own Step 1 only needs disposable picker copies. How: This calls seePicFun when neeCopFun says this page needs copies.
@@ -1306,11 +1308,11 @@ function PagTouCom ( { pagIdeStr, state, actions, active, selectTab, onCloFun } 
 					tourRecObj.label ),
 				...bldSteFun( pagIdeStr, actions )
 			] }
-			resumeStep={ resTouObj ? resTouObj.step : 0 }
+			resSteNum={ resTouObj ? resTouObj.step : 0 }
 			actions={ actions }
-			active={ active }
-			selectTab={ selectTab }
-			onGoBack={ ( tarSteNum ) => { // What: On Go Back Handler. Why: A real, one-way UI transition (the Pickers tour's own pick animation, or Today's own Edit Mode) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on pagIdeStr first, then on tarSteNum, driving whichever real DOM control or bus nonce reverses that specific transition.
+			actIdeStr={ actIdeStr }
+			selTabFun={ selTabFun }
+			onBacFun={ ( tarSteNum ) => { // What: On Go Back Handler. Why: A real, one-way UI transition (the Pickers tour's own pick animation, or Today's own Edit Mode) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on pagIdeStr first, then on tarSteNum, driving whichever real DOM control or bus nonce reverses that specific transition.
 
 
 				if ( pagIdeStr === 'explore_pickers' ) { // What: Pickers Back Branch Check. Why: Only the Pickers tour's own steps have this one-way pick-animation state to reverse. How: This branches on pagIdeStr matching 'explore_pickers'.
@@ -1350,7 +1352,7 @@ function PagTouCom ( { pagIdeStr, state, actions, active, selectTab, onCloFun } 
 
 					}
 
-					return; // What: Pickers Branch Return. Why: Nothing below this point applies to the Pickers tour. How: This exits onGoBack once the branch above has run.
+					return; // What: Pickers Branch Return. Why: Nothing below this point applies to the Pickers tour. How: This exits onBacFun once the branch above has run.
 
 
 				}
@@ -1379,7 +1381,7 @@ function PagTouCom ( { pagIdeStr, state, actions, active, selectTab, onCloFun } 
 
 
 			} }
-			onSkip={ () => { // What: On Skip Handler. Why: Skip can fire mid-Edit-Mode too, so any open rename input and any active Edit Mode session both need reverting before this tour actually closes. How: This forces the real name back if a rename input is open, clicks the real Cancel control if Edit Mode is on, then calls cloTouFun.
+			onSkiTouFun={ () => { // What: On Skip Handler. Why: Skip can fire mid-Edit-Mode too, so any open rename input and any active Edit Mode session both need reverting before this tour actually closes. How: This forces the real name back if a rename input is open, clicks the real Cancel control if Edit Mode is on, then calls cloTouFun.
 
 
 				if ( document.querySelector( '.pt-section .group-name-input' ) ) forNamFun( actions ); // What: Open Rename Guard. Why: The same blur-races-the-click risk as a real Done click applies here too, clicking Skip is ALSO a click on a different element than the input. How: This forces the real name back only when the rename input is actually still open.
@@ -1392,8 +1394,8 @@ function PagTouCom ( { pagIdeStr, state, actions, active, selectTab, onCloFun } 
 
 
 			} }
-			onFinish={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from a step's own requireClick primary 'Done'. How: This calls cloTouFun with 'finished'.
-		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this page, mounted once its own intro modal has been accepted or resumed into. How: This is passed this page's own tourId, step array, and the resume/lifecycle plumbing above.
+			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from a step's own requireClick primary 'Done'. How: This calls cloTouFun with 'finished'.
+		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this page, mounted once its own intro modal has been accepted or resumed into. How: This is passed this page's own touIdeStr, step array, and the resume/lifecycle plumbing above.
 
 
 	);

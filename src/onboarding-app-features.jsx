@@ -81,13 +81,13 @@ const PAG_LAB_OBJ = { // What: Page Label Object. Why: tab-today.jsx's own AppFe
  *
  * @summary
  * The ordered catalog of every App Feature tutorial: its own ideStr (keys
- * state.onboarding.appFeatures and this tour's own GuidedTour tourId), which
- * real pagStr it lives on, the launcher card's own labStr, the intro modal's
- * own titStr/bodEle/pilArr, and an optional timStr estimate. Every property
- * here is read only by this file and by tab-today.jsx's own AppFeaCom and
- * progress counters, none of it persisted (the persisted map itself is keyed
- * by ideStr's own string VALUE, e.g. 'feat_manual_pick', not by this
- * property's own name), so all 7 fields follow the usual 6-character
+ * state.onboarding.appFeatures and this tour's own GuidedTour touIdeStr),
+ * which real pagStr it lives on, the launcher card's own labStr, the intro
+ * modal's own titStr/bodEle/pilArr, and an optional timStr estimate. Every
+ * property here is read only by this file and by tab-today.jsx's own
+ * AppFeaCom and progress counters, none of it persisted (the persisted map
+ * itself is keyed by ideStr's own string VALUE, e.g. 'feat_manual_pick', not
+ * by this property's own name), so all 7 fields follow the usual 6-character
  * object-property convention.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -100,7 +100,7 @@ const APP_FEA_ARR = [
 	{
 
 
-		ideStr : 'feat_manual_pick',                     // What: Identifier String. Why: This uniquely identifies this feature, keying state.onboarding.appFeatures and this tour's own GuidedTour tourId. How: FeaTouCom below searches APP_FEA_ARR for the entry whose own ideStr matches its own feaIdeStr prop.
+		ideStr : 'feat_manual_pick',                     // What: Identifier String. Why: This uniquely identifies this feature, keying state.onboarding.appFeatures and this tour's own GuidedTour touIdeStr. How: FeaTouCom below searches APP_FEA_ARR for the entry whose own ideStr matches its own feaIdeStr prop.
 		pagStr : 'picker',                               // What: Page String. Why: This says which real nav tab this feature's own Step 1 highlights. How: buildPageTourStep1 below reads this to find the matching NAV_TAR_OBJ entry.
 		labStr : 'Make your first manual pick',           // What: Label String. Why: The launcher card on Today needs this feature's own visible title. How: tab-today.jsx renders this directly as the card's own name.
 		titStr : 'Manual Picks',                          // What: Title String. Why: The intro modal needs a heading naming this tutorial. How: This is rendered as IntModCom's own title prop.
@@ -316,7 +316,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 				tab        : 'picker',     // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 				title      : 'Picker Items', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 				body       : <>Here you can <b>view all items in this picker's pool</b>. You can see a given item's values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. The "Edit" and "Delete" buttons are disabled for this tutorial but feel free to try the "Send to Today" button on any item now. This concludes the Make your first manual pick tutorial, click Done when you are ready.</>, // What: Body Element. Why: This step's own coach card needs a plain description of the pool plus a closing instruction. How: GuidedTour renders this as the step's own descriptive paragraph.
-				primary    : 'Done', // What: Primary String. Why: This is the manual-pick tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinish.
+				primary    : 'Done', // What: Primary String. Why: This is the manual-pick tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinTouFun.
 				back       : true,   // What: Back Boolean. Why: The user should always be able to return to Add to Todo List. How: GuidedTour shows its own Back button whenever this is true.
 				coachAtTop : true    // What: Coach At Top Boolean. Why: A pool of even a few real items can be tall enough to overlap the coach on a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
 
@@ -474,7 +474,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 				tab        : 'data',                                                 // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 				title      : 'Edit Item Settings',                                   // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 				body       : <>Feel free to <b>explore this section and make any changes you'd like</b> to an item's name, weight, or other values. This concludes the Edit your first item tutorial, click Done when you are ready.</>, // What: Body Element. Why: This step's own coach card needs to invite free exploration plus a closing instruction. How: GuidedTour renders this as the step's own descriptive paragraph.
-				primary    : 'Done',                                                 // What: Primary String. Why: This is the edit-item tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinish.
+				primary    : 'Done',                                                 // What: Primary String. Why: This is the edit-item tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinTouFun.
 				back       : true,                                                   // What: Back Boolean. Why: The user should always be able to return to Picker Items. How: GuidedTour shows its own Back button whenever this is true.
 				coachAtTop : true                                                    // What: Coach At Top Boolean. Why: An item list can run just as tall as Controls' own field set once a picker has more than a couple items. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
 
@@ -500,7 +500,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 				tab        : 'settings',            // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 				title      : 'Daily Generator Settings', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 				body       : <>This is where you can <b>control the daily generator</b>: turn auto generation on or off, what time it runs, and enabling notifications for when it does. This concludes the Adjust your daily generator run time tutorial, click Done when you are ready.</>, // What: Body Element. Why: This step's own coach card needs a plain description plus a closing instruction. How: GuidedTour renders this as the step's own descriptive paragraph.
-				primary    : 'Done', // What: Primary String. Why: This is this tour's own only step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinish.
+				primary    : 'Done', // What: Primary String. Why: This is this tour's own only step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinTouFun.
 				back       : true,   // What: Back Boolean. Why: The user should always be able to return to Step 1's own nav highlight. How: GuidedTour shows its own Back button whenever this is true.
 				coachAtTop : true    // What: Coach At Top Boolean. Why: .set-section--daily can run taller than the viewport, same as every other Settings section. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
 
@@ -555,7 +555,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 				tab        : 'settings',                    // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 				title      : 'Dark Theme Settings',        // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 				body       : <>This is where you can <b>pick a dark based theme</b>, or create your own custom one. This concludes the App Theme tutorial, click Done when you are ready.</>, // What: Body Element. Why: This step's own coach card needs a plain description plus a closing instruction. How: GuidedTour renders this as the step's own descriptive paragraph.
-				primary    : 'Done', // What: Primary String. Why: This is the theme tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinish.
+				primary    : 'Done', // What: Primary String. Why: This is the theme tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinTouFun.
 				back       : true,   // What: Back Boolean. Why: The user should always be able to return to Light Theme Settings. How: GuidedTour shows its own Back button whenever this is true.
 				coachAtTop : true    // What: Coach At Top Boolean. Why: Every Settings section step can run taller than the viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
 
@@ -581,7 +581,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 				tab        : 'settings',                     // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 				title      : 'Completion Celebration',      // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 				body       : <>This is where you can <b>pick which animation plays</b> whenever you complete your entire todo list for the day. This concludes the Celebration Animation tutorial, click Done when you are ready.</>, // What: Body Element. Why: This step's own coach card needs a plain description plus a closing instruction. How: GuidedTour renders this as the step's own descriptive paragraph.
-				primary    : 'Done', // What: Primary String. Why: This is this tour's own only step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinish.
+				primary    : 'Done', // What: Primary String. Why: This is this tour's own only step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinTouFun.
 				back       : true,   // What: Back Boolean. Why: The user should always be able to return to Step 1's own nav highlight. How: GuidedTour shows its own Back button whenever this is true.
 				coachAtTop : true    // What: Coach At Top Boolean. Why: Every Settings section step can run taller than the viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
 
@@ -607,7 +607,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 				tab        : 'settings',                  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 				title      : 'Picker Animation',         // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 				body       : <>This is where you can <b>pick which animation plays</b> whenever you manually direct a picker to select an item on the Pickers page. This concludes the Picker Animation tutorial, click Done when you are ready.</>, // What: Body Element. Why: This step's own coach card needs a plain description plus a closing instruction. How: GuidedTour renders this as the step's own descriptive paragraph.
-				primary    : 'Done', // What: Primary String. Why: This is this tour's own only step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinish.
+				primary    : 'Done', // What: Primary String. Why: This is this tour's own only step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinTouFun.
 				back       : true,   // What: Back Boolean. Why: The user should always be able to return to Step 1's own nav highlight. How: GuidedTour shows its own Back button whenever this is true.
 				coachAtTop : true    // What: Coach At Top Boolean. Why: Every Settings section step can run taller than the viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
 
@@ -647,7 +647,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 				tab          : 'today',    // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 				title        : 'Highlights Feature', // What: Title String. Why: This step's own coach card needs the same heading as the previous step, since the target hasn't moved. How: GuidedTour renders this as the step's own heading text.
 				body         : <><b>Important elements on the page are highlighted, each with their own button</b> that will bring up a tooltip with more information. Click the “i” button again to turn the feature back off and conclude the Highlight Feature tutorial.</>, // What: Body Element. Why: This step's own coach card needs to explain the now-visible highlights plus a closing instruction. How: GuidedTour renders this as the step's own descriptive paragraph.
-				primary      : 'Done', // What: Primary String. Why: This is the highlights tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinish.
+				primary      : 'Done', // What: Primary String. Why: This is the highlights tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinTouFun.
 				back         : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				requireClick : true    // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 
@@ -689,7 +689,7 @@ const bldSteFun = ( feaIdeStr, actions, alrProBoo ) => { // What: Build Step Fun
 				tab        : 'settings',                        // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 				title      : 'Install the App',                // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 				body       : <>Installing the app to your device is <b>the best way to protect your data</b>, and gives you a more native, app-like experience. If a direct install isn't available in your browser, instructions for how to install it are shown here instead. This concludes the Protect Your Data tutorial, click Done when you are ready.</>, // What: Body Element. Why: This step's own coach card needs a plain description plus a closing instruction. How: GuidedTour renders this as the step's own descriptive paragraph.
-				primary    : 'Done', // What: Primary String. Why: This is the protect-data tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinish.
+				primary    : 'Done', // What: Primary String. Why: This is the protect-data tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinTouFun.
 				back       : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				coachAtTop : true    // What: Coach At Top Boolean. Why: Every Settings section step can run taller than the viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
 
@@ -789,8 +789,10 @@ function bloReaFun ( feaIdeStr, state ) {
  *                          and bldSteFun.
  * @param props.state     - State: The entire app's own persisted state.
  * @param props.actions   - Actions: The actions that mutate props.state.
- * @param props.active    - Active: The app's own currently active tab id.
- * @param props.selectTab - Select Tab: Switches the app's own active tab.
+ * @param props.actIdeStr - Active Identifier String: The app's own
+ *                          currently active tab id.
+ * @param props.selTabFun - Select Tab Function: Switches the app's own
+ *                          active tab.
  * @param props.onCloFun  - On Close Function: Clears app.jsx's own
  *                          actFeaStr, ending this mount.
  *
@@ -799,19 +801,19 @@ function bloReaFun ( feaIdeStr, state ) {
  *
  * @example
  * ```tsx
- * FeaTouCom({ feaIdeStr, state, actions, active, selectTab, onCloFun })
+ * FeaTouCom({ feaIdeStr, state, actions, actIdeStr, selTabFun, onCloFun })
  * // => <FeaTouCom />
  * ```
  *
 */
 
-function FeaTouCom ( { feaIdeStr, state, actions, active, selectTab, onCloFun } ) {
+function FeaTouCom ( { feaIdeStr, state, actions, actIdeStr, selTabFun, onCloFun } ) {
 
 
 	const feaRecObj = APP_FEA_ARR.find( ( curFeaObj ) => curFeaObj.ideStr === feaIdeStr ); // What: Feature Record Object. Why: This feature's own page/title/body/pills/time are read off its own APP_FEA_ARR entry. How: This searches APP_FEA_ARR for the entry whose own id matches feaIdeStr.
 	// Same resumable pattern as PagTouCom, see its own comment.
 	const onbStaObj = state.onboarding || {}; // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeAppFeature already re-derived from this SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resumable) step to land on. How: This reads state.onboarding, falling back to an empty object.
-	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `appfeature-${ feaIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this feature's own tourId, otherwise null.
+	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `appfeature-${ feaIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resumable field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this feature's own touIdeStr, otherwise null.
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
 
 	// Whether THIS browser already has persisted storage, checked once up front (not reactively), see bldSteFun's own comment on why feat_protect_data's first step needs to know this. Frozen at whatever it resolves to on mount: a user who actually grants persistence mid-tour (by clicking the real button that step targets) shouldn't have the step list change shape out from under them the same run.
@@ -887,16 +889,16 @@ function FeaTouCom ( { feaIdeStr, state, actions, active, selectTab, onCloFun } 
 
 
 		<GuidedTour
-			tourId={ `appfeature-${ feaIdeStr }` }
-			steps={ feaIdeStr === 'feat_highlights' ? extSteArr : [
+			touIdeStr={ `appfeature-${ feaIdeStr }` }
+			steObjArr={ feaIdeStr === 'feat_highlights' ? extSteArr : [
 				buildPageTourStep1( feaRecObj.pagStr, feaIdeStr === 'feat_edit_item' ? colAllFun : undefined, extSteArr.length ? 'Next' : 'Done' ), // What: Build Page Tour Step 1 Call. Why: Every feature but feat_highlights prepends this exact shared Step 1. How: This passes this feature's own page, feat_edit_item's own collapse callback (undefined for every other feature), and 'Next'/'Done' depending on whether extSteArr has any steps of its own.
 				...extSteArr // What: Extra Steps Spread. Why: Whatever steps this feature has beyond Step 1 must follow it in order. How: This spreads extSteArr after the Step 1 object above.
 			] }
-			resumeStep={ resTouObj ? resTouObj.step : 0 }
+			resSteNum={ resTouObj ? resTouObj.step : 0 }
 			actions={ actions }
-			active={ active }
-			selectTab={ selectTab }
-			onGoBack={ ( tarSteNum ) => { // What: On Go Back Handler. Why: A real, one-way UI transition (Edit Mode-style collapses, or the highlights toggle) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on feaIdeStr first, then on tarSteNum, driving whichever real DOM control or direct action reverses that specific transition.
+			actIdeStr={ actIdeStr }
+			selTabFun={ selTabFun }
+			onBacFun={ ( tarSteNum ) => { // What: On Go Back Handler. Why: A real, one-way UI transition (Edit Mode-style collapses, or the highlights toggle) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on feaIdeStr first, then on tarSteNum, driving whichever real DOM control or direct action reverses that specific transition.
 
 
 				if ( feaIdeStr === 'feat_edit_item' ) { // What: Edit Item Back Branch Check. Why: Only the edit-item tour's own steps have this one-way collapse/expand state to reverse. How: This branches on feaIdeStr matching 'feat_edit_item'.
@@ -973,8 +975,8 @@ function FeaTouCom ( { feaIdeStr, state, actions, active, selectTab, onCloFun } 
 
 
 			} }
-			onFinish={ () => cloTouFun( 'finished' ) }
-			onSkip={ () => { // What: On Skip Handler. Why: Help mode's own on/off flag is local React state inside TabToday, unreachable from here, only reachable via the highlights tour's own 2nd step requireClick target (.help-btn). How: This clicks the real, currently-on help-highlight toggle when feaIdeStr is 'feat_highlights', mirroring exactly how finishing normally turns it back off.
+			onFinTouFun={ () => cloTouFun( 'finished' ) }
+			onSkiTouFun={ () => { // What: On Skip Handler. Why: Help mode's own on/off flag is local React state inside TabToday, unreachable from here, only reachable via the highlights tour's own 2nd step requireClick target (.help-btn). How: This clicks the real, currently-on help-highlight toggle when feaIdeStr is 'feat_highlights', mirroring exactly how finishing normally turns it back off.
 
 
 				if ( feaIdeStr === 'feat_highlights' ) { // What: Highlights Feature Check. Why: Only this feature can leave help mode turned on mid-Step-2 for Skip to undo. How: This branches on feaIdeStr matching 'feat_highlights'.
@@ -991,7 +993,7 @@ function FeaTouCom ( { feaIdeStr, state, actions, active, selectTab, onCloFun } 
 
 
 			} }
-		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this feature, mounted once its own intro modal has been accepted or resumed into. How: This is passed this feature's own tourId, step array, and the resume/lifecycle plumbing above.
+		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this feature, mounted once its own intro modal has been accepted or resumed into. How: This is passed this feature's own touIdeStr, step array, and the resume/lifecycle plumbing above.
 
 
 	);
@@ -1017,11 +1019,12 @@ function FeaTouCom ( { feaIdeStr, state, actions, active, selectTab, onCloFun } 
  * onboarding-tour-runner.jsx), which hides the step counter and Skip/Back,
  * showing one full-width "Dismiss" button instead. Mounted directly from
  * TabToday rather than lifted to app.jsx like
- * FeaTouCom/PagTouCom/PicTouCom are: unlike those, this never navigates
- * to another tab (the whole point is the section already on screen), so it
- * doesn't need real cross-tab selectTab/active plumbing, active='today'/a
- * no-op selectTab is enough, the same pattern PagTouCom itself used before
- * Pickers/Stats/Data/Settings tours needed it to actually leave Today.
+ * FeaTouCom/PagTouCom/PicTouCom are: unlike those, this never navigates to
+ * another tab (the whole point is the section already on screen), so it
+ * doesn't need real cross-tab selTabFun/actIdeStr plumbing,
+ * actIdeStr='today'/a no-op selTabFun is enough, the same pattern PagTouCom
+ * itself used before Pickers/Stats/Data/Settings tours needed it to actually
+ * leave Today.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1045,8 +1048,8 @@ function FeaTipCom ( { actions } ) {
 
 
 		<GuidedTour
-			tourId='appfeatures-intro'
-			steps={ [ {
+			touIdeStr='appfeatures-intro'
+			steObjArr={ [ {
 
 
 				sel        : '.af-section', // What: Selector String. Why: This step highlights the freshly-appeared App Features section. How: GuidedTour spotlights whatever this selector matches.
@@ -1059,13 +1062,13 @@ function FeaTipCom ( { actions } ) {
 
 
 			} ] }
-			resumeStep={ 0 }
+			resSteNum={ 0 }
 			actions={ actions }
-			active='today'
-			selectTab={ () => {} }
-			onFinish={ () => actions.setOnboarding( { appFeaturesIntroSeen : true } ) }
-			onSkip={ () => actions.setOnboarding( { appFeaturesIntroSeen : true } ) }
-		/> // What: Guided Tour Element. Why: This is the single, solo spotlight step described above. How: This is passed a fixed tourId, the single step above, and the active='today'/no-op selectTab stand-ins described in this function's own doc comment.
+			actIdeStr='today'
+			selTabFun={ () => {} }
+			onFinTouFun={ () => actions.setOnboarding( { appFeaturesIntroSeen : true } ) }
+			onSkiTouFun={ () => actions.setOnboarding( { appFeaturesIntroSeen : true } ) }
+		/> // What: Guided Tour Element. Why: This is the single, solo spotlight step described above. How: This is passed a fixed touIdeStr, the single step above, and the actIdeStr='today'/no-op selTabFun stand-ins described in this function's own doc comment.
 
 
 	);

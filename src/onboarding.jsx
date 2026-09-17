@@ -251,10 +251,10 @@ const BRA_MAR_STR = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 43
  *                           persisted state.
  * @param props.actions    - Actions: {@link actStoObj}, the actions that
  *                           mutate props.state.
- * @param props.active     - Active: {@link actIdeStr}, the app's own currently
- *                           active tab id.
- * @param props.selectTab  - Select Tab: {@link selTabFun}, switches the app's
- *                           own active tab.
+ * @param props.actIdeStr  - Active Identifier String: the app's own
+ *                           currently active tab id.
+ * @param props.selTabFun  - Select Tab Function: switches the app's own
+ *                           active tab.
  *
  * @returns Either null (phase 'off'), the intro modal (phase
  * 'welcome'), or the running guided tour (phase 'tour'), depending on
@@ -262,12 +262,12 @@ const BRA_MAR_STR = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 43
  *
  * @example
  * ```tsx
- * Onboarding({ state, actions, active, selectTab }) // => <Onboarding />
+ * Onboarding({ state, actions, actIdeStr, selTabFun }) // => <Onboarding />
  * ```
  *
 */
 
-function Onboarding ( { state, actions, active, selectTab } ) {
+function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 
 
 	const onbStaObj = state.onboarding || { welcomed : true }; // What: Onboarding State Object. Why: A brand-new install has no persisted onboarding slice yet, so a plain stand-in default is needed until the real one exists. How: This reads state.onboarding, falling back to an object whose welcomed field alone is enough for every check below.
@@ -547,7 +547,7 @@ function Onboarding ( { state, actions, active, selectTab } ) {
 				onStart={ () => { // What: On Start Handler. Why: Accepting the tour needs to switch to Today, persist that the welcome modal is done, and hand off to the running GuidedTour, all as one action. How: This is called when IntModCom's own primary button is activated.
 
 
-					selectTab( 'today' ); // What: Today Switch Call. Why: The tour should always begin its walkthrough from the Today tab. How: This switches the app's own active tab to 'today'.
+					selTabFun( 'today' ); // What: Today Switch Call. Why: The tour should always begin its walkthrough from the Today tab. How: This switches the app's own active tab to 'today'.
 
 					welDonFun(); // What: Welcome Done Call. Why: Accepting the tour is also the point this welcome modal should never show again. How: This persists onboarding.welcomed as true.
 
@@ -582,7 +582,7 @@ function Onboarding ( { state, actions, active, selectTab } ) {
 
 					finTouFun(); // What: Finish Tour Call. Why: Skipping still needs the exact same cleanup any other path off the tour performs. How: This flips onbPhaStr to 'off' and clears the shared bus's own prefill field.
 
-					TodTopFun( active, selectTab ); // What: Today Landing Call. Why: Skipping should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This switches to Today if needed and scrolls both the app's own scroller and the window to 0.
+					TodTopFun( actIdeStr, selTabFun ); // What: Today Landing Call. Why: Skipping should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This switches to Today if needed and scrolls both the app's own scroller and the window to 0.
 
 
 				} }
@@ -600,15 +600,15 @@ function Onboarding ( { state, actions, active, selectTab } ) {
 
 
 		<GuidedTour
-			tourId='welcome'
-			steps={ steObjArr }
-			resumeStep={ resTouObj ? resTouObj.step : 0 }
+			touIdeStr='welcome'
+			steObjArr={ steObjArr }
+			resSteNum={ resTouObj ? resTouObj.step : 0 }
 			actions={ actions }
-			active={ active }
-			selectTab={ selectTab }
-			onGoBack={ bacSteFun }
-			onFinish={ finTouFun }
-		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough, mounted once the intro modal has been accepted or resumed into. How: This is passed this file's own tourId, steObjArr, and the resume/lifecycle plumbing above.
+			actIdeStr={ actIdeStr }
+			selTabFun={ selTabFun }
+			onBacFun={ bacSteFun }
+			onFinTouFun={ finTouFun }
+		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough, mounted once the intro modal has been accepted or resumed into. How: This is passed this file's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
 
 
 	);

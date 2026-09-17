@@ -861,9 +861,9 @@ function AppRooCom () {
 
 			<Onboarding
 				actions={ actStoObj }
-				active={ actIdeStr }
+				actIdeStr={ actIdeStr }
 				state={ staAppObj }
-				selectTab={ selTabFun }
+				selTabFun={ selTabFun }
 			/>{ /* What: Onboarding. Why: The first-run welcome modal and its driven tour need to run above every tab, regardless of which one is active. How: This is passed the shared state/actions plus the current active tab and the tab-switching function. */ }
 
 
@@ -873,10 +873,10 @@ function AppRooCom () {
 				<PicTouCom
 					picIdeStr={ actPicStr }
 					actions={ actStoObj }
-					active={ actIdeStr }
+					actIdeStr={ actIdeStr }
 					state={ staAppObj }
 					onCloFun={ () => setActPicStr( null ) }
-					selectTab={ selTabFun }
+					selTabFun={ selTabFun }
 				/> // What: PicTouCom. Why: This drives the currently-running sample-picker mini-tour. How: This is passed the specific picker's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actPicStr.
 
 
@@ -889,10 +889,10 @@ function AppRooCom () {
 				<PagTouCom
 					pagIdeStr={ actPagStr }
 					actions={ actStoObj }
-					active={ actIdeStr }
+					actIdeStr={ actIdeStr }
 					state={ staAppObj }
 					onCloFun={ () => setActPagStr( null ) }
-					selectTab={ selTabFun }
+					selTabFun={ selTabFun }
 				/> // What: PagTouCom. Why: This drives the currently-running "Explore the page" tour. How: This is passed the specific page's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actPagStr.
 
 
@@ -905,10 +905,10 @@ function AppRooCom () {
 				<FeaTouCom
 					feaIdeStr={ actFeaStr }
 					actions={ actStoObj }
-					active={ actIdeStr }
+					actIdeStr={ actIdeStr }
 					state={ staAppObj }
 					onCloFun={ () => setActFeaStr( null ) }
-					selectTab={ selTabFun }
+					selTabFun={ selTabFun }
 				/> // What: FeaTouCom. Why: This drives the currently-running App Features tutorial. How: This is passed the specific feature's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actFeaStr.
 
 

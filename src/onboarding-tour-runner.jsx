@@ -7,7 +7,7 @@ import React from 'react'; // What: React. Why: This is the UI library GuidedTou
 
 
 import { createPortal } from 'react-dom';         // What: Create Portal. Why: The dim layer, spotlight and coach card must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with GuidedTour's own JSX and document.body inside the porFun helper below.
-import { emlTouObj    } from './eml-tour-bus.js'; // What: Ease My Life Tour Object. Why: This publishes the running tour's phase/step/tourId/reserveTop/wantRailOpen fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
+import { emlTouObj    } from './eml-tour-bus.js'; // What: Ease My Life Tour Object. Why: This publishes the running tour's phase/step/touIdeStr/reserveTop/wantRailOpen fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
 import { InfTipCom    } from './ui.jsx';          // What: Info Tip Component. Why: A requireClick step's disabled Next button needs a hover/tap hint explaining why it can't be clicked yet. How: This wraps that disabled button in the render output below.
 import { redMotFun    } from './ui.jsx';          // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant scroll instead of a smooth one. How: This is checked inside briTarFun's own scroll calls below.
 import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour Function. Why: GuidedTour needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own dragging field.
@@ -173,33 +173,38 @@ import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour
  *              its sequence, not just as a single-step tour.
  *
  * Props:
- *   tourId     - This tour's slot key in state.onboarding.activeTour,
- *                e.g. 'welcome'. The ONLY thing enforcing "one guided
- *                tour at a time" is that only one GuidedTour is ever
- *                mounted at once; tourId just labels whichever one
- *                that is for persistence.
- *   steps      - The array described above.
- *   resumeStep - Initial step index (the caller decides whether/what
- *                to resume, e.g. gating on its own intro-modal state;
- *                this component does not read activeTour itself, only
- *                writes it going forward).
- *   actions, active, selectTab - Same app plumbing every tab already
- *                gets.
- *   onGoBack   - Optional (targetStepIndex) => void, side effects to
- *                run before navigating back to a given step (e.g.
- *                undoing something a later step did). Called before
- *                the step actually changes.
- *   onFinish   - Called on genuine completion only: the primary
- *                button on a step whose `primary` is 'Done'. After
- *                this component's own cleanup (activeTour, the bus's
- *                phase, the body class) has already run.
- *   onSkip     - Called for everything else the tour can end from:
- *                the Skip button, a target that never resolves (the
- *                not-found watchdog), or a resumed/advanced step
- *                index past the end of `steps`. Optional; omit it to
- *                route all of these through onFinish instead, for a
- *                tour with nothing tracking the distinction (e.g. the
- *                Welcome Tour).
+ *   touIdeStr                     - This tour's slot key in
+ *                                   state.onboarding.activeTour, e.g.
+ *                                   'welcome'. The ONLY thing enforcing "one
+ *                                   guided tour at a time" is that only one
+ *                                   GuidedTour is ever mounted at once;
+ *                                   touIdeStr just labels whichever one that
+ *                                   is for persistence.
+ *   steObjArr                     - The array described above.
+ *   resSteNum                     - Initial step index (the caller decides
+ *                                   whether/what to resume, e.g. gating on its
+ *                                   own intro-modal state; this component does
+ *                                   not read activeTour itself, only writes it
+ *                                   going forward).
+ *   actions, actIdeStr, selTabFun - Same app plumbing every tab already gets.
+ *   onBacFun                      - Optional (targetStepIndex) => void, side
+ *                                   effects to run before navigating back to a
+ *                                   given step (e.g. undoing something a later
+ *                                   step did). Called before the step actually
+ *                                   changes.
+ *   onFinTouFun                   - Called on genuine completion only: the
+ *                                   primary button on a step whose `primary`
+ *                                   is 'Done'. After this component's own
+ *                                   cleanup (activeTour, the bus's phase, the
+ *                                   body class) has already run.
+ *   onSkiTouFun                   - Called for everything else the tour can
+ *                                   end from: the Skip button, a target that
+ *                                   never resolves (the not-found watchdog),
+ *                                   or a resumed/advanced step index past the
+ *                                   end of `steObjArr`. Optional; omit it to
+ *                                   route all of these through onFinTouFun
+ *                                   instead, for a tour with nothing tracking
+ *                                   the distinction (e.g. the Welcome Tour).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -359,10 +364,10 @@ const arrXFun = ( recObj, coaLefNum, coaWidNum ) => Math.max( 18, Math.min( recO
  *
 */
 
-const TodTopFun = ( active, selectTab ) => { // What: Today Top Function. Why: Every tour ending (Skip, Done, or the not-found watchdog) needs to land the user back on a pristine, top-scrolled Today. How: This switches to Today if needed, then scrolls both the app's own scroller and the window to 0.
+const TodTopFun = ( actIdeStr, selTabFun ) => { // What: Today Top Function. Why: Every tour ending (Skip, Done, or the not-found watchdog) needs to land the user back on a pristine, top-scrolled Today. How: This switches to Today if needed, then scrolls both the app's own scroller and the window to 0.
 
 
-	if ( active !== 'today' ) selectTab( 'today' ); // What: Today Switch Guard. Why: A tour can end from any tab, but the landing spot is always Today. How: This only calls selectTab when the active tab is not already Today.
+	if ( actIdeStr !== 'today' ) selTabFun( 'today' ); // What: Today Switch Guard. Why: A tour can end from any tab, but the landing spot is always Today. How: This only calls selTabFun when the actIdeStr tab is not already Today.
 
 	requestAnimationFrame( () => { // What: Scroll Reset Frame. Why: The tab switch above may not have committed its own layout yet on this same tick. How: This waits one animation frame before scrolling both the app's own scroller and the window.
 
@@ -393,47 +398,50 @@ const TodTopFun = ( active, selectTab ) => { // What: Today Top Function. Why: E
  * it. Owns every mechanic described in this file's own header comment
  * above (spotlight tracking, the click-guard, the not-found watchdog,
  * tab-sync, the mobile rail auto-open, resume-on-reload persistence);
- * a specific tour's own content lives entirely in its `steps` prop,
+ * a specific tour's own content lives entirely in its `steObjArr` prop,
  * authored by a caller such as onboarding.jsx or one of the
  * onboarding-*-tours.jsx mini-tour modules.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.tourId     - Tour Id: This tour's slot key in
- *                           state.onboarding.activeTour, e.g. 'welcome'.
- * @param props.steps      - Steps: The step array described in this file's own
- *                           header comment above.
- * @param props.resumeStep - Resume Step: Initial step index; the caller
- *                           decides whether/what to resume.
- * @param props.actions    - Actions: The shared app actions object.
- * @param props.active     - Active: The app's own currently active tab id.
- * @param props.selectTab  - Select Tab: Switches the app's own active tab.
- * @param props.onGoBack   - On Go Back: Optional (targetStepIndex) => void,
- *                           side effects to run before navigating back to a
- *                           given step.
- * @param props.onFinish   - On Finish: Called on genuine completion only (the
- *                           primary button on a 'Done' step).
- * @param props.onSkip     - On Skip: Called for everything else the tour can
- *                           end from; optional, falls back to onFinish when
- *                           omitted.
+ * @param props.touIdeStr   - Tour Identifier String: This tour's slot key in
+ *                            state.onboarding.activeTour, e.g. 'welcome'.
+ * @param props.steObjArr   - Step Object Array: The step array described in
+ *                            this file's own header comment above.
+ * @param props.resSteNum   - Resume Step Number: Initial step index; the
+ *                            caller decides whether/what to resume.
+ * @param props.actions     - Actions: The shared app actions object.
+ * @param props.actIdeStr   - Active Identifier String: The app's own currently
+ *                            active tab id.
+ * @param props.selTabFun   - Select Tab Function: Switches the app's own
+ *                            active tab.
+ * @param props.onBacFun    - On Back Function: Optional (targetStepIndex) =>
+ *                            void, side effects to run before navigating back
+ *                            to a given step.
+ * @param props.onFinTouFun - On Finish Tour Function: Called on genuine
+ *                            completion only (the primary button on a 'Done'
+ *                            step).
+ * @param props.onSkiTouFun - On Skip Tour Function: Called for everything else
+ *                            the tour can end from; optional, falls back to
+ *                            onFinTouFun when omitted.
  *
  * @returns The tour's own dim/spotlight/coach overlay, portaled onto
  * document.body.
  *
  * @example
  * ```tsx
- * GuidedTour({ tourId, steps, resumeStep, actions, active, selectTab, ... })
+ * GuidedTour({ touIdeStr, steObjArr, resSteNum, actions, actIdeStr, selTabFun, ... })
  * // => <GuidedTour />
  * ```
  *
 */
 
-function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, onGoBack, onFinish, onSkip } ) {
+function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, selTabFun, onBacFun, onFinTouFun, onSkiTouFun } ) {
 
 
 	const { dragging } = useEmlTouFun(); // What: Dragging. Why: Published by tab-today.jsx's group/item drag handlers for the duration of a reorder gesture, since the coach card can sit right over whatever is being dragged. How: This reads the shared bus's own dragging field; only the coach hides while it is true, the spotlight/dim stay so the highlighted target is still visible to drop onto.
 
-	const [ curSteNum, setCurSteNum ] = React.useState( resumeStep || 0 ); // What: Current Step Number And Setter. Why: This is the tour's own live position in `steps`. How: This starts at resumeStep (or 0), then only setCurSteNum ever advances/rewinds it.
+	const [ curSteNum, setCurSteNum ] = React.useState( resSteNum || 0 ); // What: Current Step Number And Setter. Why: This is the tour's own live position in `steObjArr`. How: This starts at resSteNum (or 0), then only setCurSteNum ever advances/rewinds it.
 
 	const [ recObj, setRecObj ] = React.useState( null ); // What: Rect Object And Setter. Why: The render function needs the current step's own clamped highlight rect to position the spotlight and coach. How: This starts null (nothing to show yet) and is written by the position-tracking effect below.
 
@@ -472,42 +480,42 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 	React.useEffect( () => { emlTouObj.set( { step: curSteNum } ); }, [ curSteNum ] ); // What: Step Publish Effect. Why: Other modules read bus.step to gate behavior on a specific step index (e.g. onboarding-app-features.jsx). How: This republishes the literal step field whenever curSteNum changes. // What: Effect Dependency Array. Why: This must re-run whenever curSteNum itself changes. How: curSteNum is the exact value being published.
 
-	React.useEffect( () => { emlTouObj.set( { tourId } ); }, [ tourId ] ); // What: Tour Identifier Publish Effect. Why: This lets a consumer that needs to act only during a SPECIFIC tour's specific step (not just "some tour is up") tell them apart, e.g. tab-picker.jsx disabling its own "Add New Picker" button only during the Pickers page tour's own Step 4, not any other tour that happens to pass through the same step index. How: This is never cleared on unmount (like `step` itself is not), since every consumer already gates on phase === 'tour' too, which IS cleared, so a stale tourId left over from the last tour can never be read as still current. // What: Effect Dependency Array. Why: This must re-run whenever the tourId prop itself changes. How: tourId is the exact value being published.
+	React.useEffect( () => { emlTouObj.set( { touIdeStr } ); }, [ touIdeStr ] ); // What: Tour Identifier Publish Effect. Why: This lets a consumer that needs to act only during a SPECIFIC tour's specific step (not just "some tour is up") tell them apart, e.g. tab-picker.jsx disabling its own "Add New Picker" button only during the Pickers page tour's own Step 4, not any other tour that happens to pass through the same step index. How: This is never cleared on unmount (like `step` itself is not), since every consumer already gates on phase === 'tour' too, which IS cleared, so a stale touIdeStr left over from the last tour can never be read as still current. // What: Effect Dependency Array. Why: This must re-run whenever the touIdeStr prop itself changes. How: touIdeStr is the exact value being published.
 
-	React.useEffect( () => { // What: Resume Persist Effect. Why: A reload should be able to resume this tour from wherever it left off; the caller is responsible for reading state.onboarding.activeTour back out as resumeStep on mount, and for only ever mounting one GuidedTour at a time. How: This only actually persists a step marked resumable (default true, see that field's own doc comment above), so a reload always resumes at the latest SAFE step rather than a step whose target only exists because of an earlier, un-persisted side effect.
+	React.useEffect( () => { // What: Resume Persist Effect. Why: A reload should be able to resume this tour from wherever it left off; the caller is responsible for reading state.onboarding.activeTour back out as resSteNum on mount, and for only ever mounting one GuidedTour at a time. How: This only actually persists a step marked resumable (default true, see that field's own doc comment above), so a reload always resumes at the latest SAFE step rather than a step whose target only exists because of an earlier, un-persisted side effect.
 
 
-		if ( steps[ curSteNum ] && steps[ curSteNum ].resumable === false ) return; // What: Non-Resumable Guard. Why: Landing on a non-resumable step, forward or back, must leave the last persisted checkpoint alone. How: This bails out before writing anything whenever the current step explicitly opts out.
+		if ( steObjArr[ curSteNum ] && steObjArr[ curSteNum ].resumable === false ) return; // What: Non-Resumable Guard. Why: Landing on a non-resumable step, forward or back, must leave the last persisted checkpoint alone. How: This bails out before writing anything whenever the current step explicitly opts out.
 
-		actions.setOnboarding( { activeTour: { id: tourId, step: curSteNum } } ); // What: Checkpoint Write. Why: This is the actual persisted resume checkpoint a future mount reads back as resumeStep. How: This writes the tour's own id alongside the literal step field, both required by the shared activeTour shape.
+		actions.setOnboarding( { activeTour: { id: touIdeStr, step: curSteNum } } ); // What: Checkpoint Write. Why: This is the actual persisted resume checkpoint a future mount reads back as resSteNum. How: This writes the tour's own id alongside the literal step field, both required by the shared activeTour shape.
 
 
 	}, [ curSteNum ] ); // What: Effect Dependency Array. Why: A new checkpoint only needs writing when the step index itself has actually moved. How: curSteNum is the value gating whether this step should be persisted at all.
 
-	const finTouFun = React.useCallback( () => { // What: Finish Tour Function. Why: This is genuine completion only, the primary button on a step whose `primary` is 'Done'. How: This clears activeTour, calls the caller's own onFinish, then lands back on a pristine, scrolled-to-top Today the same way skpTouFun below does, so a caller's last step does not need to remember to also be scrollToTop just to stick the landing.
+	const finTouFun = React.useCallback( () => { // What: Finish Tour Function. Why: This is genuine completion only, the primary button on a step whose `primary` is 'Done'. How: This clears activeTour, calls the caller's own onFinTouFun, then lands back on a pristine, scrolled-to-top Today the same way skpTouFun below does, so a caller's last step does not need to remember to also be scrollToTop just to stick the landing.
 
 
 		actions.setOnboarding( { activeTour: null } ); // What: Active Tour Clear. Why: A finished tour must not still look resumable to a future mount. How: This overwrites the persisted checkpoint with null.
 
-		onFinish(); // What: Finish Callback. Why: The caller needs its own completion hook to fire before this component tears itself down. How: This calls the onFinish prop with no arguments.
+		onFinTouFun(); // What: Finish Callback. Why: The caller needs its own completion hook to fire before this component tears itself down. How: This calls the onFinTouFun prop with no arguments.
 
-		TodTopFun( active, selectTab ); // What: Today Landing. Why: A finished tour should always end on a pristine Today, regardless of which tab/scroll position its last step left things in. How: This calls the shared TodTopFun helper with the current active tab and selectTab.
+		TodTopFun( actIdeStr, selTabFun ); // What: Today Landing. Why: A finished tour should always end on a pristine Today, regardless of which tab/scroll position its last step left things in. How: This calls the shared TodTopFun helper with the current actIdeStr tab and selTabFun.
 
 
-	}, [ onFinish, active, selectTab ] ); // What: Effect Dependency Array. Why: This callback must re-close over a fresh onFinish whenever the prop itself changes, and over fresh active/selectTab so the landing logic always targets the current tab state. How: onFinish is the completion hook being called, active is read to decide whether a tab switch is needed, and selectTab is the function that performs it.
+	}, [ onFinTouFun, actIdeStr, selTabFun ] ); // What: Effect Dependency Array. Why: This callback must re-close over a fresh onFinTouFun whenever the prop itself changes, and over fresh actIdeStr/selTabFun so the landing logic always targets the current tab state. How: onFinTouFun is the completion hook being called, actIdeStr is read to decide whether a tab switch is needed, and selTabFun is the function that performs it.
 
-	const skpTouFun = () => { // What: Skip Tour Function. Why: Everything that is NOT genuine completion (the Skip button, but also the not-found watchdog and a resumed/advanced step index past the end of `steps`) funnels through here instead of onFinish, since none of these mean the tour's content was actually finished. How: This clears activeTour, calls the caller's own onSkip (or onFinish when onSkip was omitted), then lands back on a pristine Today.
+	const skpTouFun = () => { // What: Skip Tour Function. Why: Everything that is NOT genuine completion (the Skip button, but also the not-found watchdog and a resumed/advanced step index past the end of `steObjArr`) funnels through here instead of onFinTouFun, since none of these mean the tour's content was actually finished. How: This clears activeTour, calls the caller's own onSkiTouFun (or onFinTouFun when onSkiTouFun was omitted), then lands back on a pristine Today.
 
 
 		actions.setOnboarding( { activeTour: null } ); // What: Active Tour Clear. Why: A skipped tour must not still look resumable to a future mount. How: This overwrites the persisted checkpoint with null.
 
-		supGuaRef.current = true; // What: Guard Suppression. Why: A caller's own onSkip can drive real synthetic clicks to undo in-progress state (e.g. clicking Edit Mode's real Cancel button), and curSteRef.current still points at the step being left, so without this the guard would read that click as off-target and block it via preventDefault/stopPropagation before the target's own handler ever runs, the same reasoning as bacSteFun's own onGoBack call below. How: This flips supGuaRef.current on before calling onSkip/onFinish.
+		supGuaRef.current = true; // What: Guard Suppression. Why: A caller's own onSkiTouFun can drive real synthetic clicks to undo in-progress state (e.g. clicking Edit Mode's real Cancel button), and curSteRef.current still points at the step being left, so without this the guard would read that click as off-target and block it via preventDefault/stopPropagation before the target's own handler ever runs, the same reasoning as bacSteFun's own onBacFun call below. How: This flips supGuaRef.current on before calling onSkiTouFun/onFinTouFun.
 
-		( onSkip || onFinish )(); // What: Skip Or Finish Callback. Why: onSkip is optional; a caller that does not need the distinction (e.g. the Welcome Tour, which is not tracked in a per-tour checklist) can omit it and everything still funnels through onFinish. How: This calls whichever of the two is actually present.
+		( onSkiTouFun || onFinTouFun )(); // What: Skip Or Finish Callback. Why: onSkiTouFun is optional; a caller that does not need the distinction (e.g. the Welcome Tour, which is not tracked in a per-tour checklist) can omit it and everything still funnels through onFinTouFun. How: This calls whichever of the two is actually present.
 
-		supGuaRef.current = false; // What: Guard Suppression Release. Why: The suppression above must only cover onSkip/onFinish's own synthetic clicks, not any real click the user makes afterward. How: This flips supGuaRef.current back off immediately after the call above returns.
+		supGuaRef.current = false; // What: Guard Suppression Release. Why: The suppression above must only cover onSkiTouFun/onFinTouFun's own synthetic clicks, not any real click the user makes afterward. How: This flips supGuaRef.current back off immediately after the call above returns.
 
-		TodTopFun( active, selectTab ); // What: Today Landing. Why: A skipped tour should always end on a pristine Today too, same as a finished one. How: This calls the shared TodTopFun helper with the current active tab and selectTab.
+		TodTopFun( actIdeStr, selTabFun ); // What: Today Landing. Why: A skipped tour should always end on a pristine Today too, same as a finished one. How: This calls the shared TodTopFun helper with the current actIdeStr tab and selTabFun.
 
 
 	};
@@ -522,12 +530,12 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 	}, [] ); // What: Effect Dependency Array. Why: This class should only ever be added once for this component's own mounted lifetime. How: An empty array means there is no dependency that could ever change to trigger a re-run.
 
-	const curSteObj = steps[ curSteNum ] || null; // What: Current Step Object. Why: A resumed step index that no longer exists (e.g. a stale activeTour left over from before this tour's step count changed) must read as undefined rather than throw, and the position-tracking effect below bails out to skpTouFun the moment it sees a falsy value here. How: This reads steps at curSteNum, falling back to null.
+	const curSteObj = steObjArr[ curSteNum ] || null; // What: Current Step Object. Why: A resumed step index that no longer exists (e.g. a stale activeTour left over from before this tour's step count changed) must read as undefined rather than throw, and the position-tracking effect below bails out to skpTouFun the moment it sees a falsy value here. How: This reads steObjArr at curSteNum, falling back to null.
 
-	React.useEffect( () => { // What: Tab Sync Effect. Why: Whichever tab a step's target lives on is load-bearing for a resume (there is no previous step to have navigated there) and, since steps never call selectTab themselves, this is the ONLY thing that switches tabs at all, forward, back, or resuming alike.
+	React.useEffect( () => { // What: Tab Sync Effect. Why: Whichever tab a step's target lives on is load-bearing for a resume (there is no previous step to have navigated there) and, since steps never call selTabFun themselves, this is the ONLY thing that switches tabs at all, forward, back, or resuming alike.
 
 
-		if ( curSteObj && curSteObj.tab && active !== curSteObj.tab ) selectTab( curSteObj.tab ); // What: Tab Switch. Why: The step's own target may live on a different tab than whatever is currently active. How: This only calls selectTab when the current step names a tab and it does not already match.
+		if ( curSteObj && curSteObj.tab && actIdeStr !== curSteObj.tab ) selTabFun( curSteObj.tab ); // What: Tab Switch. Why: The step's own target may live on a different tab than whatever is currently active. How: This only calls selTabFun when the current step names a tab and it does not already match.
 
 
 	}, [ curSteNum ] ); // What: Effect Dependency Array. Why: This should re-check whenever the step index moves, since a different step can name a different tab. How: curSteNum is what curSteObj itself is derived from.
@@ -644,7 +652,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 	const priActRef = React.useRef( () => {} ); // What: Primary Action Reference. Why: Same lazy-ref pattern as curSteRef: priActFun below closes over curSteNum/curSteObj/finTouFun, all of which change every render, but the click-guard effect below is only ever set up once. How: This starts as a no-op and is overwritten with the latest priActFun at the end of every render.
 
-	const supGuaRef = React.useRef( false ); // What: Suppress Guard Reference. Why: This lets bacSteFun's/skpTouFun's own side effects click through the guard below, e.g. a picker mini-tour's onGoBack simulating a click on the create-form's own "Details" step tab to undo a later step's "Add Items" click. How: That synthetic click is not the step's own target (curSteRef still points at the step being left, since onGoBack runs before the step index actually changes), so without this the guard would block onGoBack from doing anything at all; the exact clicks meant to fix the page up before navigating back are the ones most likely to look like "not the current target" to it.
+	const supGuaRef = React.useRef( false ); // What: Suppress Guard Reference. Why: This lets bacSteFun's/skpTouFun's own side effects click through the guard below, e.g. a picker mini-tour's onBacFun simulating a click on the create-form's own "Details" step tab to undo a later step's "Add Items" click. How: That synthetic click is not the step's own target (curSteRef still points at the step being left, since onBacFun runs before the step index actually changes), so without this the guard would block onBacFun from doing anything at all; the exact clicks meant to fix the page up before navigating back are the ones most likely to look like "not the current target" to it.
 
 	const isaPasFun = ( eveObj ) => { // What: Is-A Pass-Through Function. Why: A step's optional clickPassThroughSel names element(s) that should reach their OWN real click handler normally, unlike clickSel (which ALSO satisfies requireClick and advances the tour): a pass-through click does neither, it is neither blocked nor treated as "the" action. How: This checks whether eveObj's own target sits inside any element matched by the current step's own clickPassThroughSel; built for App Features' own manual-pick tour, where Re-roll needs to stay genuinely usable (a real re-roll, its own animation) without also counting as the step's advancing click the way clicking Send to Today does.
 
@@ -760,27 +768,27 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 	const navSteFun = ( n ) => setCurSteNum( n ); // What: Navigate Step Function. Why: Every place that moves the tour to a specific step index should funnel through one named function rather than calling setCurSteNum directly. How: This just forwards n straight into setCurSteNum.
 
-	const bacSteFun = () => { // What: Back Step Function. Why: Back reverses navigation so the previous target exists again. How: Any tour-specific side effects (undoing something a later step did) are the caller's job via onGoBack, called with the destination step before it actually changes, with the click-guard suppressed for its duration, see supGuaRef's own comment for why.
+	const bacSteFun = () => { // What: Back Step Function. Why: Back reverses navigation so the previous target exists again. How: Any tour-specific side effects (undoing something a later step did) are the caller's job via onBacFun, called with the destination step before it actually changes, with the click-guard suppressed for its duration, see supGuaRef's own comment for why.
 
 
 		const toStepNum = Math.max( 0, curSteNum - 1 ); // What: To Step Number. Why: Back can never go below the first step. How: This clamps curSteNum - 1 to a floor of 0.
 
-		if ( onGoBack ) { // What: On-Go-Back Guard. Why: Not every caller supplies undo side effects. How: This only runs the suppressed onGoBack call when the prop is actually present.
+		if ( onBacFun ) { // What: On-Go-Back Guard. Why: Not every caller supplies undo side effects. How: This only runs the suppressed onBacFun call when the prop is actually present.
 
 
-			supGuaRef.current = true; // What: Guard Suppression. Why: onGoBack's own synthetic clicks must not be blocked by the guard below, see supGuaRef's own comment above. How: This flips supGuaRef.current on before calling onGoBack.
-			onGoBack( toStepNum ); // What: On-Go-Back Callback. Why: The caller's own undo side effects must run before the step index actually changes. How: This calls onGoBack with the destination step number.
-			supGuaRef.current = false; // What: Guard Suppression Release. Why: The suppression above must only cover onGoBack's own synthetic clicks. How: This flips supGuaRef.current back off immediately after the call above returns.
+			supGuaRef.current = true; // What: Guard Suppression. Why: onBacFun's own synthetic clicks must not be blocked by the guard below, see supGuaRef's own comment above. How: This flips supGuaRef.current on before calling onBacFun.
+			onBacFun( toStepNum ); // What: On-Go-Back Callback. Why: The caller's own undo side effects must run before the step index actually changes. How: This calls onBacFun with the destination step number.
+			supGuaRef.current = false; // What: Guard Suppression Release. Why: The suppression above must only cover onBacFun's own synthetic clicks. How: This flips supGuaRef.current back off immediately after the call above returns.
 
 
 		}
 
-		navSteFun( toStepNum ); // What: Step Navigation. Why: The actual step change must happen after onGoBack's own side effects have already run. How: This calls navSteFun with the computed destination step number.
+		navSteFun( toStepNum ); // What: Step Navigation. Why: The actual step change must happen after onBacFun's own side effects have already run. How: This calls navSteFun with the computed destination step number.
 
 
 	};
 
-	const priActFun = () => { // What: Primary Action Function. Why: The primary button's side effect (if any) runs first, then either finishes the tour ('Done') or advances to the next step; step authors never call navSteFun/selectTab themselves, keeping run() a pure side effect and navigation fully generic. How: For a requireClick step, this fires from the click-guard's CAPTURE-phase handling of the real target's click, the same event as the target's own native (bubble-phase) handler, which has not run yet; run() has to stay synchronous here (some steps' own prefill staging depends on landing before that native handler reads it), but advancing/finishing must NOT, since a 'Done' step's finTouFun calls selectTab away and unmounts this tour, and doing that synchronously here can remove the target from the DOM before its own bubble-phase handler ever fires, observed concretely on the Picker tour's "Create Picker" step, where the real submit() got skipped entirely because finTouFun tore down the page mid-click; deferring the advance/finish by a tick lets the browser finish dispatching the native click (including the target's own handler) first, since a requireClick step's target is real UI the user just interacted with, so nothing in `steps` should be reading tour curSteNum synchronously off this same click.
+	const priActFun = () => { // What: Primary Action Function. Why: The primary button's side effect (if any) runs first, then either finishes the tour ('Done') or advances to the next step; step authors never call navSteFun/selTabFun themselves, keeping run() a pure side effect and navigation fully generic. How: For a requireClick step, this fires from the click-guard's CAPTURE-phase handling of the real target's click, the same event as the target's own native (bubble-phase) handler, which has not run yet; run() has to stay synchronous here (some steps' own prefill staging depends on landing before that native handler reads it), but advancing/finishing must NOT, since a 'Done' step's finTouFun calls selTabFun away and unmounts this tour, and doing that synchronously here can remove the target from the DOM before its own bubble-phase handler ever fires, observed concretely on the Picker tour's "Create Picker" step, where the real submit() got skipped entirely because finTouFun tore down the page mid-click; deferring the advance/finish by a tick lets the browser finish dispatching the native click (including the target's own handler) first, since a requireClick step's target is real UI the user just interacted with, so nothing in `steObjArr` should be reading tour curSteNum synchronously off this same click.
 
 
 		if ( curSteObj.run ) { // What: Run Side Effect Guard. Why: Not every step supplies a side effect. How: This only runs the suppressed curSteObj.run() call when the current step actually names one.
@@ -1136,7 +1144,7 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 		window.addEventListener( 'scroll', scrPosFun, { passive: true, capture: true } ); // What: Scroll Listener Add. Why: This is what actually keeps the highlight in sync during a manual scroll, not just briTarFun's own programmatic one. How: This adds scrPosFun in capture phase, passively, at the window.
 
-		const nftNum = 4000; // What: Not-Found-Timeout Number. Why: A step whose target never resolves (normally just the tab-sync effect's own selectTab() still settling) would otherwise sit as a permanent dim with nothing to click, most likely on a resume, where a stale activeTour survived some app change that moved or removed the target. How: This is generous enough not to fire during ordinary mounting.
+		const nftNum = 4000; // What: Not-Found-Timeout Number. Why: A step whose target never resolves (normally just the tab-sync effect's own selTabFun() still settling) would otherwise sit as a permanent dim with nothing to click, most likely on a resume, where a stale activeTour survived some app change that moved or removed the target. How: This is generous enough not to fire during ordinary mounting.
 
 		let notFndNum = null; // What: Not-Found Number. Why: The watchdog below needs to track how long the target has been missing, not just whether it currently is. How: This starts null (never yet missing) and is set to a timestamp the first time the loop below finds nothing.
 
@@ -1217,9 +1225,9 @@ function GuidedTour ( { tourId, steps, resumeStep, actions, active, selectTab, o
 
 	const porFun = ( nodEle ) => createPortal( nodEle, document.body ); // What: Portal Function. Why: Every branch of this component's own render needs to portal its JSX onto document.body rather than wherever GuidedTour happens to be mounted in the tree. How: This forwards nodEle straight into React's own createPortal.
 
-	if ( !curSteObj ) return porFun( <div className='ob-tour' aria-live='polite'><div className='ob-dim' /></div> ); // What: No Step Render Guard. Why: A step index advanced past the end of a `steps` array whose last entry is not primary:'Done' yet (most likely mid-content-authoring) is caught by the position-tracking effect above, which already calls skpTouFun the moment it sees this, but that is a separate effect firing after this render commits, so this render still needs to not crash reading off a null curSteObj in the meantime. How: This returns the same one-frame dim-only fallback as the "target not found yet" case below.
+	if ( !curSteObj ) return porFun( <div className='ob-tour' aria-live='polite'><div className='ob-dim' /></div> ); // What: No Step Render Guard. Why: A step index advanced past the end of a `steObjArr` array whose last entry is not primary:'Done' yet (most likely mid-content-authoring) is caught by the position-tracking effect above, which already calls skpTouFun the moment it sees this, but that is a separate effect firing after this render commits, so this render still needs to not crash reading off a null curSteObj in the meantime. How: This returns the same one-frame dim-only fallback as the "target not found yet" case below.
 
-	const totSteNum = steps.length; // What: Total Step Number. Why: The progress line below needs the total step count. How: This reads steps.length once per render.
+	const totSteNum = steObjArr.length; // What: Total Step Number. Why: The progress line below needs the total step count. How: This reads steObjArr.length once per render.
 
 	const vieWidNum = window.innerWidth, vieHeiNum = window.innerHeight; // What: Viewport Width Number And Viewport Height Number. Why: The coach's own sizing below needs the current viewport dimensions. How: These are read fresh from window on every render.
 
