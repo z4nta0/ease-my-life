@@ -8,7 +8,7 @@ import React from 'react'; // What: React. Why: This is the UI library GuidedTou
 
 import { createPortal } from 'react-dom';         // What: Create Portal. Why: The dim layer, spotlight and coach card must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with GuidedTour's own JSX and document.body inside the porFun helper below.
 import { emlTouObj    } from './eml-tour-bus.js'; // What: Ease My Life Tour Object. Why: This publishes the running tour's phase/step/touIdeStr/reserveTop/wantRailOpen fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
-import { InfTipCom    } from './ui.jsx';          // What: Info Tip Component. Why: A requireClick step's disabled Next button needs a hover/tap hint explaining why it can't be clicked yet. How: This wraps that disabled button in the render output below.
+import { InfTipCom    } from './ui.jsx';          // What: Info Tip Component. Why: A reqCliBoo step's disabled Next button needs a hover/tap hint explaining why it can't be clicked yet. How: This wraps that disabled button in the render output below.
 import { redMotFun    } from './ui.jsx';          // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant scroll instead of a smooth one. How: This is checked inside briTarFun's own scroll calls below.
 import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour Function. Why: GuidedTour needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own dragging field.
 
@@ -32,145 +32,162 @@ import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour
  * coach, a genuinely different engine.
  *
  * A step is:
- *   sel      - CSS selector(s) for the element(s) to highlight
- *              (comma-separated fallbacks honored in order: finTarFun
- *              tries each in turn and uses the first that matches
- *              anything).
- *   clickSel - Optional override for what counts as "on target" for
- *              the click-guard/requireClick logic specifically (the
- *              spotlight tracking, scroll-into-view, and
- *              advanceWhen's own default still key off `sel`).
- *              Defaults to `sel`, only needed when a step highlights a
- *              BIGGER box than what it actually wants clicked, e.g.
- *              the whole picker stage plus actions area with multiple
- *              buttons in it, only one of which should count. Without
- *              this, any click landing anywhere inside `sel` (a
- *              disabled sibling button included, since a disabled
- *              element with pointer-events:none passes its click
- *              through to whatever is underneath, typically the
- *              highlighted container itself) would satisfy
- *              requireClick, which is almost never what a step author
- *              actually wants from a highlight wider than its real
- *              target.
- *   pulseSel - Optional; when set, the requireClick pulse (the
- *              .ob-spot.is-pulsing CSS) only plays while this selector
- *              currently matches. Used by a `sel` with a fallback
- *              alternative (e.g. a button that widens to its whole
- *              surrounding window once clicked, see manualGeneration
- *              in onboarding-page-tours.jsx) so the pulse stops the
- *              moment there is nothing left to click, instead of
- *              continuing to ping around the now-bigger, no-longer-
- *              actionable highlight. Defaults to matching
- *              cur.requireClick exactly (always pulses) when unset;
- *              every other requireClick step is unaffected.
- *   title/body - Coach card copy.
- *   tab      - Which app tab this step's target lives on. The tour
- *              switches there automatically whenever the active tab
- *              does not already match: this covers ordinary
- *              advancing and a resume (there is no "previous step" to
- *              have navigated there on a resume), plus going back, so
- *              step authors never call selectTab themselves.
- *   back     - Whether to show the Back button.
- *   primary  - Button label; 'Done' finishes the tour instead of
- *              advancing.
- *   run      - Optional side effect fired when the primary button is
- *              clicked, before advancing/finishing (e.g. running the
- *              real generator). A pure side effect: which step/tab
- *              comes next is handled generically, not by run() itself.
- *   scrollToTop - True if this step's target starts right at the top
- *              of the page anyway (e.g. a full-list review step), so
- *              landing on it scrolls all the way to 0 instead of just
- *              nudging the target into view.
- *   scrollToBottom - The same idea, inverted: true if this step's
- *              target always sits at the very bottom of its page/form
- *              (e.g. a footer button), so landing on it scrolls all
- *              the way to the end instead of nudging. This is more
- *              reliable than the pad-based nudge when the surrounding
- *              content just changed shape (a form switching sub-
- *              steps) and the carried-over scroll position no longer
- *              means anything.
- *   revealHorizontally - True if this step's target lives in a row
- *              that scrolls HORIZONTALLY (e.g. a tab strip), rather
- *              than being reachable through the normal vertical scroll
- *              the rest of briTarFun's own math handles (that math,
- *              and getScrFun, which only ever looks for a vertically-
- *              overflowing ancestor, has no horizontal equivalent, so
- *              a target sitting off the scrollable end of such a row
- *              would otherwise never actually come into view). A one-
- *              time native scrollIntoView({inline: 'end'}) once the
- *              target is first found. Not currently used by any step
- *              (the picker mini-tour's own "+Add" step used to need
- *              this, see buildPickerTourStep2's own comment for why
- *              moving that tab to the FRONT of its strip retired it),
- *              but the flag itself stays generic for the next
- *              horizontally-scrolling row a step needs to reach into.
- *   coachAtTop - True if this step's target can be TALLER than the
- *              viewport itself (e.g. a highlighted region that is
- *              most of a mobile screen's height). The normal reserve-
- *              space logic (decResFun below) only solves "does the
- *              coach fit adjacent to the target": it pads the target
- *              further down the page to make room for the coach
- *              above it, which is exactly backwards when the target
- *              is already tall enough to fill the viewport, since the
- *              padding pushes its own bottom edge past the fold
- *              instead of helping. This skips decResFun entirely and
- *              gives briTarFun a precise initial scroll target (the
- *              target starts right below where the coach will land)
- *              instead of the general pad/padBotNum math, which does
- *              not reliably land a too-tall target anywhere useful on
- *              the very first frame. The coach's own ONGOING position
- *              needs no special case at all beyond that: the normal
- *              below/above placement logic already reacts to the
- *              tracked rect (clamped to the safe viewport area, not
- *              the target's full height), so it naturally sits above
- *              the target while most of it is still below the fold,
- *              and flips to sit below it, arrow up, once the user has
- *              scrolled far enough that the target's real bottom edge
- *              comes into view with room to spare.
- *   requireClick - True if this step teaches the real interface
- *              rather than narrating it: Next is disabled (with a
- *              hover/tap hint) and the step only advances when the
- *              user clicks the highlighted target itself, the same
- *              click-guard exemption that already lets a target's own
- *              click through now also triggers the primary action
- *              (run(), then advance) instead of a no-op.
- *   advanceOn - Optional CSS selector, independent of requireClick:
- *              Next stays enabled and works as normal (this step
- *              narrates, it does not force the real interaction), but
- *              a real click landing on this selector is ALSO treated
- *              as clicking Next, the same onPrimary() call, run()
- *              included. For a step whose body copy already tells the
- *              user "we'll do this for you, or do it yourself via the
- *              real button", the real button's own click should count
- *              as having advanced, not leave the user still needing to
- *              also click Next afterward. Should stay within (or be a
- *              subset of) `sel`/`clickSel` so the generic guard does
- *              not block it as off-target.
- *   resumable - Defaults to true (every Welcome Tour step qualifies,
- *              since its targets are all durable/already-rendered).
- *              Set false on a step whose target only exists because an
- *              EARLIER step's un-persisted side effect put it there
- *              (e.g. a form opened by a previous click): a reload
- *              wipes that side effect, so resuming directly into such
- *              a step would highlight nothing and just trip the not-
- *              found watchdog a few seconds later. The persisted
- *              resume checkpoint (see the effect below) only ever
- *              advances to a resumable step, so a tour with a long
- *              non-resumable tail still resumes at its last safe step
- *              instead of being knocked all the way back to the
- *              intro.
- *   solo     - A standalone single-message tip, not a step in a
- *              sequence: hides the "Step N of N" progress line and
- *              the Skip/Back row, and stretches the one remaining
- *              button (whatever `primary` says, e.g. "Dismiss") to
- *              the full width of that row instead of pairing it
- *              against Skip/Back. Its click always finishes the tour
- *              outright regardless of the button's own label, see
- *              priActFun's own comment for why relying on
- *              primary === 'Done' would not work here. Built for the
- *              App Features intro tip (onboarding-app-features.jsx),
- *              but generic: any tour can use a solo step anywhere in
- *              its sequence, not just as a single-step tour.
+ *   selStr    - CSS selector(s) for the element(s) to highlight (comma-
+ *               separated fallbacks honored in order: finTarFun tries each in
+ *               turn and uses the first that matches anything).
+ *   cliSelStr - Optional override for what counts as "on target" for the
+ *               click-guard/reqCliBoo logic specifically (the spotlight
+ *               tracking, scroll-into-view, and advSelStr's own default still
+ *               key off `selStr`). Defaults to `selStr`, only needed when a
+ *               step highlights a BIGGER box than what it actually wants
+ *               clicked, e.g. the whole picker stage plus actions area with
+ *               multiple buttons in it, only one of which should count.
+ *               Without this, any click landing anywhere inside `selStr` (a
+ *               disabled sibling button included, since a disabled element
+ *               with pointer-events:none passes its click through to whatever
+ *               is underneath, typically the highlighted container itself)
+ *               would satisfy reqCliBoo, which is almost never what a step
+ *               author actually wants from a highlight wider than its real
+ *               target.
+ *   cptSelStr - Optional CSS selector naming element(s) whose click should
+ *               reach their OWN real handler untouched: neither blocked by the
+ *               click-guard nor treated as satisfying reqCliBoo/advCliStr,
+ *               unlike `cliSelStr` (which ALSO counts as the step's own
+ *               advancing click). For a real, repeatable action inside a
+ *               reqCliBoo step that must stay genuinely usable without also
+ *               counting as "the" advancing click, e.g. Re-roll inside the
+ *               Pickers tour's Manual Generation step.
+ *   pulSelStr - Optional; when set, the reqCliBoo pulse (the .ob-spot.is-
+ *               pulsing CSS) only plays while this selector currently matches.
+ *               Used by a `selStr` with a fallback alternative (e.g. a button
+ *               that widens to its whole surrounding window once clicked, see
+ *               manualGeneration in onboarding-page-tours.jsx) so the pulse
+ *               stops the moment there is nothing left to click, instead of
+ *               continuing to ping around the now-bigger, no-longer-actionable
+ *               highlight. Defaults to matching cur.reqCliBoo exactly (always
+ *               pulses) when unset; every other reqCliBoo step is unaffected.
+ *   titStr    - Coach card heading copy.
+ *   bodEle    - Coach card body copy.
+ *   tabStr    - Which app tab this step's target lives on. The tour switches
+ *               there automatically whenever the active tab does not already
+ *               match: this covers ordinary advancing and a resume (there is
+ *               no "previous step" to have navigated there on a resume), plus
+ *               going back, so step authors never call selTabFun themselves.
+ *   bacBoo    - Whether to show the Back button.
+ *   priStr    - Button label; 'Done' finishes the tour instead of advancing.
+ *   runFun    - Optional side effect fired when the primary button is clicked,
+ *               before advancing/finishing (e.g. running the real generator).
+ *               A pure side effect: which step/tab comes next is handled
+ *               generically, not by runFun() itself.
+ *   scrTopBoo - True if this step's target starts right at the top of the page
+ *               anyway (e.g. a full-list review step), so landing on it
+ *               scrolls all the way to 0 instead of just nudging the target
+ *               into view.
+ *   scrBotBoo - The same idea, inverted: true if this step's target always
+ *               sits at the very bottom of its page/form (e.g. a footer
+ *               button), so landing on it scrolls all the way to the end
+ *               instead of nudging. This is more reliable than the pad-based
+ *               nudge when the surrounding content just changed shape (a form
+ *               switching sub-steps) and the carried-over scroll position no
+ *               longer means anything.
+ *   revHorBoo - True if this step's target lives in a row that scrolls
+ *               HORIZONTALLY (e.g. a tab strip), rather than being reachable
+ *               through the normal vertical scroll the rest of briTarFun's own
+ *               math handles (that math, and getScrFun, which only ever looks
+ *               for a vertically-overflowing ancestor, has no horizontal
+ *               equivalent, so a target sitting off the scrollable end of such
+ *               a row would otherwise never actually come into view). A one-
+ *               time native scrollIntoView({inline: 'end'}) once the target is
+ *               first found. Not currently used by any step (the picker mini-
+ *               tour's own "+Add" step used to need this, see
+ *               buildPickerTourStep2's own comment for why moving that tab to
+ *               the FRONT of its strip retired it), but the flag itself stays
+ *               generic for the next horizontally-scrolling row a step needs
+ *               to reach into.
+ *   coaTopBoo - True if this step's target can be TALLER than the viewport
+ *               itself (e.g. a highlighted region that is most of a mobile
+ *               screen's height). The normal reserve-space logic (decResFun
+ *               below) only solves "does the coach fit adjacent to the
+ *               target": it pads the target further down the page to make room
+ *               for the coach above it, which is exactly backwards when the
+ *               target is already tall enough to fill the viewport, since the
+ *               padding pushes its own bottom edge past the fold instead of
+ *               helping. This skips decResFun entirely and gives briTarFun a
+ *               precise initial scroll target (the target starts right below
+ *               where the coach will land) instead of the general
+ *               pad/padBotNum math, which does not reliably land a too-tall
+ *               target anywhere useful on the very first frame. The coach's
+ *               own ONGOING position needs no special case at all beyond that:
+ *               the normal below/above placement logic already reacts to the
+ *               tracked rect (clamped to the safe viewport area, not the
+ *               target's full height), so it naturally sits above the target
+ *               while most of it is still below the fold, and flips to sit
+ *               below it, arrow up, once the user has scrolled far enough that
+ *               the target's real bottom edge comes into view with room to
+ *               spare.
+ *   reqCliBoo - True if this step teaches the real interface rather than
+ *               narrating it: Next is disabled (with a hover/tap hint) and the
+ *               step only advances when the user clicks the highlighted target
+ *               itself, the same click-guard exemption that already lets a
+ *               target's own click through now also triggers the primary
+ *               action (runFun(), then advance) instead of a no-op.
+ *   advCliStr - Optional CSS selector, independent of reqCliBoo: Next stays
+ *               enabled and works as normal (this step narrates, it does not
+ *               force the real interaction), but a real click landing on this
+ *               selector is ALSO treated as clicking Next, the same
+ *               onPrimary() call, runFun() included. For a step whose body
+ *               copy already tells the user "we'll do this for you, or do it
+ *               yourself via the real button", the real button's own click
+ *               should count as having advanced, not leave the user still
+ *               needing to also click Next afterward. Should stay within (or
+ *               be a subset of) `selStr`/`cliSelStr` so the generic guard does
+ *               not block it as off-target.
+ *   advSelStr - Optional CSS selector, only meaningful alongside reqCliBoo:
+ *               instead of advancing immediately after a reqCliBoo step's
+ *               target click, this polls (every animation frame) until an
+ *               element matching this selector actually appears, then
+ *               advances. For a click that kicks off something ASYNC whose
+ *               result IS the next step's own target, e.g. the Pickers tour's
+ *               "Manual Generation" step, where clicking Pick One starts a
+ *               multi-second spin animation and the Send to Today button (the
+ *               next step's target) does not exist until it resolves;
+ *               advancing on the usual immediate timer would move the step
+ *               index forward before that target exists, so the tour would
+ *               render a bare dim with no coach at all for however long the
+ *               wait takes.
+ *   advDelNum - Optional milliseconds, likewise only meaningful alongside
+ *               reqCliBoo: delays the advance by this many ms after a
+ *               reqCliBoo step's target click, instead of the usual immediate
+ *               (next-tick) advance. For a click that plays a brief, self-
+ *               contained confirmation animation with a fixed duration and no
+ *               lasting DOM trace to poll for (unlike advSelStr above, which
+ *               needs an actual target to appear), e.g. the Pickers tour's own
+ *               "Add to Todo List" step, where Send to Today swaps its label
+ *               to "Sent!" for a beat then reverts on its own; advancing
+ *               immediately would cut that confirmation off before the user
+ *               ever sees it.
+ *   resBoo    - Defaults to true (every Welcome Tour step qualifies, since its
+ *               targets are all durable/already-rendered). Set false on a step
+ *               whose target only exists because an EARLIER step's un-
+ *               persisted side effect put it there (e.g. a form opened by a
+ *               previous click): a reload wipes that side effect, so resuming
+ *               directly into such a step would highlight nothing and just
+ *               trip the not-found watchdog a few seconds later. The persisted
+ *               resume checkpoint (see the effect below) only ever advances to
+ *               a resBoo step, so a tour with a long non-resBoo tail
+ *               still resumes at its last safe step instead of being knocked
+ *               all the way back to the intro.
+ *   solBoo    - A standalone single-message tip, not a step in a sequence:
+ *               hides the "Step N of N" progress line and the Skip/Back row,
+ *               and stretches the one remaining button (whatever `priStr`
+ *               says, e.g. "Dismiss") to the full width of that row instead of
+ *               pairing it against Skip/Back. Its click always finishes the
+ *               tour outright regardless of the button's own label, see
+ *               priActFun's own comment for why relying on priStr === 'Done'
+ *               would not work here. Built for the App Features intro tip
+ *               (onboarding-app-features.jsx), but generic: any tour can use a
+ *               solo step anywhere in its sequence, not just as a single-step
+ *               tour.
  *
  * Props:
  *   touIdeStr                     - This tour's slot key in
@@ -193,7 +210,7 @@ import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour
  *                                   step did). Called before the step actually
  *                                   changes.
  *   onFinTouFun                   - Called on genuine completion only: the
- *                                   primary button on a step whose `primary`
+ *                                   primary button on a step whose `priStr`
  *                                   is 'Done'. After this component's own
  *                                   cleanup (activeTour, the bus's phase, the
  *                                   body class) has already run.
@@ -454,7 +471,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 	const [ coaHeiNum, setCoaHeiNum ] = React.useState( COA_HEI_NUM ); // What: Coach Height Number And Setter. Why: COA_HEI_NUM is only a rough estimate; a step with longer body text renders taller than it, and using the stale estimate for the "place above" branch made a long step's coach overlap the top of its own target instead of sitting flush above it. How: This starts at the rough estimate and is corrected once the real coach has been measured by the layout effect below.
 
-	const coaHeiRef = React.useRef( coaHeiNum ); // What: Coach Height Reference. Why: The position-tracking effect below reads this ref rather than coaHeiNum directly, since that effect's own deps are [curSteNum, curSteObj.sel]: whenever React re-renders without those changing (exactly what happens right after the layout effect below corrects coaHeiNum for a step whose coach differs in height from the one before it), React reuses that effect's ORIGINAL closure rather than the fresher one, permanently freezing whatever coaHeiNum was still stale at that render. How: This is written to on every render, so decResFun always reads the latest measured height regardless of which closure is still live; most visible navigating Back into a step whose coach is taller than the one it is coming from.
+	const coaHeiRef = React.useRef( coaHeiNum ); // What: Coach Height Reference. Why: The position-tracking effect below reads this ref rather than coaHeiNum directly, since that effect's own deps are [curSteNum, curSteObj.selStr]: whenever React re-renders without those changing (exactly what happens right after the layout effect below corrects coaHeiNum for a step whose coach differs in height from the one before it), React reuses that effect's ORIGINAL closure rather than the fresher one, permanently freezing whatever coaHeiNum was still stale at that render. How: This is written to on every render, so decResFun always reads the latest measured height regardless of which closure is still live; most visible navigating Back into a step whose coach is taller than the one it is coming from.
 
 	coaHeiRef.current = coaHeiNum; // What: Coach Height Reference Sync. Why: This must happen on every render, not just inside an effect, so the very next synchronous read (even before any effect runs) already sees the latest value. How: This assigns coaHeiNum straight into coaHeiRef.current.
 
@@ -482,20 +499,20 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 	React.useEffect( () => { emlTouObj.set( { touIdeStr } ); }, [ touIdeStr ] ); // What: Tour Identifier Publish Effect. Why: This lets a consumer that needs to act only during a SPECIFIC tour's specific step (not just "some tour is up") tell them apart, e.g. tab-picker.jsx disabling its own "Add New Picker" button only during the Pickers page tour's own Step 4, not any other tour that happens to pass through the same step index. How: This is never cleared on unmount (like `step` itself is not), since every consumer already gates on phase === 'tour' too, which IS cleared, so a stale touIdeStr left over from the last tour can never be read as still current. // What: Effect Dependency Array. Why: This must re-run whenever the touIdeStr prop itself changes. How: touIdeStr is the exact value being published.
 
-	React.useEffect( () => { // What: Resume Persist Effect. Why: A reload should be able to resume this tour from wherever it left off; the caller is responsible for reading state.onboarding.activeTour back out as resSteNum on mount, and for only ever mounting one GuidedTour at a time. How: This only actually persists a step marked resumable (default true, see that field's own doc comment above), so a reload always resumes at the latest SAFE step rather than a step whose target only exists because of an earlier, un-persisted side effect.
+	React.useEffect( () => { // What: Resume Persist Effect. Why: A reload should be able to resume this tour from wherever it left off; the caller is responsible for reading state.onboarding.activeTour back out as resSteNum on mount, and for only ever mounting one GuidedTour at a time. How: This only actually persists a step marked resBoo (default true, see that field's own doc comment above), so a reload always resumes at the latest SAFE step rather than a step whose target only exists because of an earlier, un-persisted side effect.
 
 
-		if ( steObjArr[ curSteNum ] && steObjArr[ curSteNum ].resumable === false ) return; // What: Non-Resumable Guard. Why: Landing on a non-resumable step, forward or back, must leave the last persisted checkpoint alone. How: This bails out before writing anything whenever the current step explicitly opts out.
+		if ( steObjArr[ curSteNum ] && steObjArr[ curSteNum ].resBoo === false ) return; // What: Non-Resumable Guard. Why: Landing on a non-resBoo step, forward or back, must leave the last persisted checkpoint alone. How: This bails out before writing anything whenever the current step explicitly opts out.
 
 		actions.setOnboarding( { activeTour: { id: touIdeStr, step: curSteNum } } ); // What: Checkpoint Write. Why: This is the actual persisted resume checkpoint a future mount reads back as resSteNum. How: This writes the tour's own id alongside the literal step field, both required by the shared activeTour shape.
 
 
 	}, [ curSteNum ] ); // What: Effect Dependency Array. Why: A new checkpoint only needs writing when the step index itself has actually moved. How: curSteNum is the value gating whether this step should be persisted at all.
 
-	const finTouFun = React.useCallback( () => { // What: Finish Tour Function. Why: This is genuine completion only, the primary button on a step whose `primary` is 'Done'. How: This clears activeTour, calls the caller's own onFinTouFun, then lands back on a pristine, scrolled-to-top Today the same way skpTouFun below does, so a caller's last step does not need to remember to also be scrollToTop just to stick the landing.
+	const finTouFun = React.useCallback( () => { // What: Finish Tour Function. Why: This is genuine completion only, the primary button on a step whose `priStr` is 'Done'. How: This clears activeTour, calls the caller's own onFinTouFun, then lands back on a pristine, scrolled-to-top Today the same way skpTouFun below does, so a caller's last step does not need to remember to also be scrTopBoo just to stick the landing.
 
 
-		actions.setOnboarding( { activeTour: null } ); // What: Active Tour Clear. Why: A finished tour must not still look resumable to a future mount. How: This overwrites the persisted checkpoint with null.
+		actions.setOnboarding( { activeTour: null } ); // What: Active Tour Clear. Why: A finished tour must not still look resBoo to a future mount. How: This overwrites the persisted checkpoint with null.
 
 		onFinTouFun(); // What: Finish Callback. Why: The caller needs its own completion hook to fire before this component tears itself down. How: This calls the onFinTouFun prop with no arguments.
 
@@ -507,7 +524,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 	const skpTouFun = () => { // What: Skip Tour Function. Why: Everything that is NOT genuine completion (the Skip button, but also the not-found watchdog and a resumed/advanced step index past the end of `steObjArr`) funnels through here instead of onFinTouFun, since none of these mean the tour's content was actually finished. How: This clears activeTour, calls the caller's own onSkiTouFun (or onFinTouFun when onSkiTouFun was omitted), then lands back on a pristine Today.
 
 
-		actions.setOnboarding( { activeTour: null } ); // What: Active Tour Clear. Why: A skipped tour must not still look resumable to a future mount. How: This overwrites the persisted checkpoint with null.
+		actions.setOnboarding( { activeTour: null } ); // What: Active Tour Clear. Why: A skipped tour must not still look resBoo to a future mount. How: This overwrites the persisted checkpoint with null.
 
 		supGuaRef.current = true; // What: Guard Suppression. Why: A caller's own onSkiTouFun can drive real synthetic clicks to undo in-progress state (e.g. clicking Edit Mode's real Cancel button), and curSteRef.current still points at the step being left, so without this the guard would read that click as off-target and block it via preventDefault/stopPropagation before the target's own handler ever runs, the same reasoning as bacSteFun's own onBacFun call below. How: This flips supGuaRef.current on before calling onSkiTouFun/onFinTouFun.
 
@@ -535,7 +552,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 	React.useEffect( () => { // What: Tab Sync Effect. Why: Whichever tab a step's target lives on is load-bearing for a resume (there is no previous step to have navigated there) and, since steps never call selTabFun themselves, this is the ONLY thing that switches tabs at all, forward, back, or resuming alike.
 
 
-		if ( curSteObj && curSteObj.tab && actIdeStr !== curSteObj.tab ) selTabFun( curSteObj.tab ); // What: Tab Switch. Why: The step's own target may live on a different tab than whatever is currently active. How: This only calls selTabFun when the current step names a tab and it does not already match.
+		if ( curSteObj && curSteObj.tabStr && actIdeStr !== curSteObj.tabStr ) selTabFun( curSteObj.tabStr ); // What: Tab Switch. Why: The step's own target may live on a different tab than whatever is currently active. How: This only calls selTabFun when the current step names a tab and it does not already match.
 
 
 	}, [ curSteNum ] ); // What: Effect Dependency Array. Why: This should re-check whenever the step index moves, since a different step can name a different tab. How: curSteNum is what curSteObj itself is derived from.
@@ -543,7 +560,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 	React.useEffect( () => { // What: Rail Open Publish Effect. Why: On tabPlacement 'side', the rail collapses to an off-canvas drawer on small screens (App owns the actual open/close state via its own subscription to this same field), and a step targeting a nav button would otherwise never find it there.
 
 
-		emlTouObj.set( { wantRailOpen: !!( curSteObj && curSteObj.sel.includes( '[data-tab=' ) ) } ); // What: Rail Open Publish. Why: This is published unconditionally, not just when opening, so it also closes the drawer again once the tour moves to a step that does not need it, rather than leaving it open to cover a content target. How: This is a no-op at desktop widths, where the rail is never collapsed to begin with, and is keyed off the selector string itself (not resolved elements), since resolving would need the rail already open, which is exactly what this is for.
+		emlTouObj.set( { wantRailOpen: !!( curSteObj && curSteObj.selStr.includes( '[data-tab=' ) ) } ); // What: Rail Open Publish. Why: This is published unconditionally, not just when opening, so it also closes the drawer again once the tour moves to a step that does not need it, rather than leaving it open to cover a content target. How: This is a no-op at desktop widths, where the rail is never collapsed to begin with, and is keyed off the selector string itself (not resolved elements), since resolving would need the rail already open, which is exactly what this is for.
 
 
 	}, [ curSteNum ] ); // What: Effect Dependency Array. Why: This should republish whenever the step index moves, since a different step's own selector decides the answer. How: curSteNum is what curSteObj itself is derived from.
@@ -642,11 +659,11 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 	curSteRef.current = curSteObj; // What: Current Step Reference Sync. Why: The click-guard effect below reads this ref on every real click, so it must always reflect the LATEST render's curSteObj, not a stale closure. How: This assigns curSteObj into curSteRef.current on every render.
 
-	const steNumRef = React.useRef( curSteNum ); // What: Step Number Reference. Why: This mirrors curSteRef, but for the raw step NUMBER rather than the step object, used by priActFun's own advanceWhen poll below, which needs to notice a step change made for some OTHER reason (Back, Skip) while it was still waiting. How: curSteObj itself is not reliable for that same check, since steps are rebuilt as fresh objects on every render, so curSteRef.current would read as "changed" on the very next unrelated re-render even when the step index never actually moved.
+	const steNumRef = React.useRef( curSteNum ); // What: Step Number Reference. Why: This mirrors curSteRef, but for the raw step NUMBER rather than the step object, used by priActFun's own advSelStr poll below, which needs to notice a step change made for some OTHER reason (Back, Skip) while it was still waiting. How: curSteObj itself is not reliable for that same check, since steps are rebuilt as fresh objects on every render, so curSteRef.current would read as "changed" on the very next unrelated re-render even when the step index never actually moved.
 
 	steNumRef.current = curSteNum; // What: Step Number Reference Sync. Why: This must always reflect the LATEST render's curSteNum. How: This assigns curSteNum into steNumRef.current on every render.
 
-	const mouStaRef = React.useRef( true ); // What: Mounted State Reference. Why: This lets the advanceWhen poll (and anything else scheduling a callback beyond this render's own lifetime) notice this component has actually unmounted and stop, rather than firing a state update into the void. How: This starts true and is flipped false by the unmount effect right below.
+	const mouStaRef = React.useRef( true ); // What: Mounted State Reference. Why: This lets the advSelStr poll (and anything else scheduling a callback beyond this render's own lifetime) notice this component has actually unmounted and stop, rather than firing a state update into the void. How: This starts true and is flipped false by the unmount effect right below.
 
 	React.useEffect( () => () => { mouStaRef.current = false; }, [] ); // What: Mounted State Cleanup Effect. Why: The flip must happen exactly once, on this component's own real unmount. How: This returns a cleanup closure with no dependency that could ever re-run it early.
 
@@ -654,17 +671,17 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 	const supGuaRef = React.useRef( false ); // What: Suppress Guard Reference. Why: This lets bacSteFun's/skpTouFun's own side effects click through the guard below, e.g. a picker mini-tour's onBacFun simulating a click on the create-form's own "Details" step tab to undo a later step's "Add Items" click. How: That synthetic click is not the step's own target (curSteRef still points at the step being left, since onBacFun runs before the step index actually changes), so without this the guard would block onBacFun from doing anything at all; the exact clicks meant to fix the page up before navigating back are the ones most likely to look like "not the current target" to it.
 
-	const isaPasFun = ( eveObj ) => { // What: Is-A Pass-Through Function. Why: A step's optional clickPassThroughSel names element(s) that should reach their OWN real click handler normally, unlike clickSel (which ALSO satisfies requireClick and advances the tour): a pass-through click does neither, it is neither blocked nor treated as "the" action. How: This checks whether eveObj's own target sits inside any element matched by the current step's own clickPassThroughSel; built for App Features' own manual-pick tour, where Re-roll needs to stay genuinely usable (a real re-roll, its own animation) without also counting as the step's advancing click the way clicking Send to Today does.
+	const isaPasFun = ( eveObj ) => { // What: Is-A Pass-Through Function. Why: A step's optional cptSelStr names element(s) that should reach their OWN real click handler normally, unlike cliSelStr (which ALSO satisfies reqCliBoo and advances the tour): a pass-through click does neither, it is neither blocked nor treated as "the" action. How: This checks whether eveObj's own target sits inside any element matched by the current step's own cptSelStr; built for App Features' own manual-pick tour, where Re-roll needs to stay genuinely usable (a real re-roll, its own animation) without also counting as the step's advancing click the way clicking Send to Today does.
 
 
 		const liveSteObj = curSteRef.current; // What: Live Step Object. Why: The freshest step object must be read off the ref, not a stale render closure. How: This reads curSteRef.current directly.
 
-		return !!( liveSteObj && liveSteObj.clickPassThroughSel && finTarFun( liveSteObj.clickPassThroughSel ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ); // What: Pass-Through Check Return. Why: The caller needs a plain boolean answer. How: This checks that a live step exists, that it names a clickPassThroughSel, and that one of its matched elements contains the event's own target.
+		return !!( liveSteObj && liveSteObj.cptSelStr && finTarFun( liveSteObj.cptSelStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ); // What: Pass-Through Check Return. Why: The caller needs a plain boolean answer. How: This checks that a live step exists, that it names a cptSelStr, and that one of its matched elements contains the event's own target.
 
 
 	};
 
-	const isaOffFun = ( eveObj ) => { // What: Is-Off-Target Function. Why: This is the off-target check shared by both the mousedown and click capture listeners below. How: This exempts the suppressed state, a click inside the coach card itself, and a pass-through click, then checks the current step's own clickSel (or sel) for everything else.
+	const isaOffFun = ( eveObj ) => { // What: Is-Off-Target Function. Why: This is the off-target check shared by both the mousedown and click capture listeners below. How: This exempts the suppressed state, a click inside the coach card itself, and a pass-through click, then checks the current step's own cliSelStr (or selStr) for everything else.
 
 
 		if ( supGuaRef.current ) return false; // What: Suppression Guard. Why: A caller-driven synthetic click must never itself be read as off-target. How: This returns false immediately whenever supGuaRef.current is true.
@@ -675,7 +692,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 		const liveSteObj = curSteRef.current; // What: Live Step Object. Why: The freshest step object must be read off the ref, not a stale render closure. How: This reads curSteRef.current directly.
 
-		return !( liveSteObj && finTarFun( liveSteObj.clickSel || liveSteObj.sel ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ); // What: Off-Target Check Return. Why: The caller needs a plain boolean answer. How: This is true whenever there is no live step, or the event's own target does not sit inside any element the step's own clickSel/sel currently matches.
+		return !( liveSteObj && finTarFun( liveSteObj.cliSelStr || liveSteObj.selStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ); // What: Off-Target Check Return. Why: The caller needs a plain boolean answer. How: This is true whenever there is no live step, or the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches.
 
 
 	};
@@ -694,7 +711,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 		};
 
-		const clkGuaFun = ( eveObj ) => { // What: Click Guard Function. Why: This is the real click-guard: it lets advanceOn/clickSel/requireClick clicks through to trigger the tour's own advance, lets a pass-through click through untouched, and blocks everything else.
+		const clkGuaFun = ( eveObj ) => { // What: Click Guard Function. Why: This is the real click-guard: it lets advCliStr/cliSelStr/reqCliBoo clicks through to trigger the tour's own advance, lets a pass-through click through untouched, and blocks everything else.
 
 
 			if ( supGuaRef.current ) return; // What: Suppression Guard. Why: A caller-driven synthetic click must never be intercepted by this guard at all. How: This returns immediately whenever supGuaRef.current is true.
@@ -703,22 +720,22 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 			if ( eveObj.target.closest( '.ob-coach' ) ) return; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card is always legitimate and needs no further handling here. How: This returns whenever the event's own target has a .ob-coach ancestor.
 
-			if ( liveSteObj && liveSteObj.advanceOn && finTarFun( liveSteObj.advanceOn ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ) { // What: Advance-On Check. Why: See advanceOn's own doc comment in this file's own header above, an optional real-action shortcut, NOT a requireClick step (Next keeps working normally too): the real target's click just also counts as clicking Next.
+			if ( liveSteObj && liveSteObj.advCliStr && finTarFun( liveSteObj.advCliStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ) { // What: Advance-On Check. Why: See advCliStr's own doc comment in this file's own header above, an optional real-action shortcut, NOT a reqCliBoo step (Next keeps working normally too): the real target's click just also counts as clicking Next.
 
 
-				priActRef.current(); // What: Primary Action Trigger. Why: An advanceOn click must run the exact same onPrimary logic a real Next click would. How: This calls the latest priActFun via its own ref.
+				priActRef.current(); // What: Primary Action Trigger. Why: An advCliStr click must run the exact same onPrimary logic a real Next click would. How: This calls the latest priActFun via its own ref.
 
-				return; // What: Advance-On Early Return. Why: Nothing else in this handler applies once advanceOn has already fired. How: This exits before the clickSel/requireClick branch below.
+				return; // What: Advance-On Early Return. Why: Nothing else in this handler applies once advCliStr has already fired. How: This exits before the cliSelStr/reqCliBoo branch below.
 
 
 			}
 
-			if ( liveSteObj && finTarFun( liveSteObj.clickSel || liveSteObj.sel ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ) { // What: Target Click Check. Why: A requireClick step's target click IS its primary action, since the Next button is disabled, so this is the only way forward.
+			if ( liveSteObj && finTarFun( liveSteObj.cliSelStr || liveSteObj.selStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ) { // What: Target Click Check. Why: A reqCliBoo step's target click IS its primary action, since the Next button is disabled, so this is the only way forward.
 
 
-				if ( liveSteObj.requireClick ) priActRef.current(); // What: Require-Click Trigger. Why: Only a requireClick step treats its own target click as the advancing action. How: This calls the latest priActFun only when the live step actually requires it.
+				if ( liveSteObj.reqCliBoo ) priActRef.current(); // What: Require-Click Trigger. Why: Only a reqCliBoo step treats its own target click as the advancing action. How: This calls the latest priActFun only when the live step actually requires it.
 
-				return; // What: Target Click Early Return. Why: A non-requireClick step's own target click needs no further handling here, it is real UI reacting to itself. How: This exits before the pass-through/block logic below.
+				return; // What: Target Click Early Return. Why: A non-reqCliBoo step's own target click needs no further handling here, it is real UI reacting to itself. How: This exits before the pass-through/block logic below.
 
 
 			}
@@ -742,7 +759,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 			if ( eveObj.relatedTarget && eveObj.relatedTarget.closest( '.ob-coach' ) ) return; // What: Coach Move Exemption. Why: A focus move into the coach card is a legitimate, deliberate way to leave the target. How: This returns whenever the event's own relatedTarget has a .ob-coach ancestor.
 
-			if ( !finTarFun( liveSteObj.clickSel || liveSteObj.sel ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ) return; // What: On-Target Guard. Why: Only a focus loss FROM the current step's own target needs protecting. How: This returns whenever the event's own target does not sit inside any element the step's own clickSel/sel currently matches.
+			if ( !finTarFun( liveSteObj.cliSelStr || liveSteObj.selStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ) return; // What: On-Target Guard. Why: Only a focus loss FROM the current step's own target needs protecting. How: This returns whenever the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches.
 
 			eveObj.stopPropagation(); // What: Propagation Stop. Why: This is what actually keeps React's own delegated onBlur listener from ever seeing this event. How: This calls stopPropagation on the focusout event.
 
@@ -788,40 +805,40 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 	};
 
-	const priActFun = () => { // What: Primary Action Function. Why: The primary button's side effect (if any) runs first, then either finishes the tour ('Done') or advances to the next step; step authors never call navSteFun/selTabFun themselves, keeping run() a pure side effect and navigation fully generic. How: For a requireClick step, this fires from the click-guard's CAPTURE-phase handling of the real target's click, the same event as the target's own native (bubble-phase) handler, which has not run yet; run() has to stay synchronous here (some steps' own prefill staging depends on landing before that native handler reads it), but advancing/finishing must NOT, since a 'Done' step's finTouFun calls selTabFun away and unmounts this tour, and doing that synchronously here can remove the target from the DOM before its own bubble-phase handler ever fires, observed concretely on the Picker tour's "Create Picker" step, where the real submit() got skipped entirely because finTouFun tore down the page mid-click; deferring the advance/finish by a tick lets the browser finish dispatching the native click (including the target's own handler) first, since a requireClick step's target is real UI the user just interacted with, so nothing in `steObjArr` should be reading tour curSteNum synchronously off this same click.
+	const priActFun = () => { // What: Primary Action Function. Why: The primary button's side effect (if any) runs first, then either finishes the tour ('Done') or advances to the next step; step authors never call navSteFun/selTabFun themselves, keeping runFun() a pure side effect and navigation fully generic. How: For a reqCliBoo step, this fires from the click-guard's CAPTURE-phase handling of the real target's click, the same event as the target's own native (bubble-phase) handler, which has not run yet; runFun() has to stay synchronous here (some steps' own prefill staging depends on landing before that native handler reads it), but advancing/finishing must NOT, since a 'Done' step's finTouFun calls selTabFun away and unmounts this tour, and doing that synchronously here can remove the target from the DOM before its own bubble-phase handler ever fires, observed concretely on the Picker tour's "Create Picker" step, where the real submit() got skipped entirely because finTouFun tore down the page mid-click; deferring the advance/finish by a tick lets the browser finish dispatching the native click (including the target's own handler) first, since a reqCliBoo step's target is real UI the user just interacted with, so nothing in `steObjArr` should be reading tour curSteNum synchronously off this same click.
 
 
-		if ( curSteObj.run ) { // What: Run Side Effect Guard. Why: Not every step supplies a side effect. How: This only runs the suppressed curSteObj.run() call when the current step actually names one.
+		if ( curSteObj.runFun ) { // What: Run Side Effect Guard. Why: Not every step supplies a side effect. How: This only runs the suppressed curSteObj.runFun() call when the current step actually names one.
 
 
-			supGuaRef.current = true; // What: Guard Suppression. Why: A run() that drives a real click on something outside the CURRENT step's own target (e.g. staging the NEXT step's target on a different part of the page) would otherwise get blocked by the same document-level guard that stops the USER clicking off-target, since curSteRef.current still points at this step (the index has not advanced yet), so a synthetic click landing anywhere else would read as off-target and get preventDefault/stopPropagation'd before its own handler ever runs. How: This flips supGuaRef.current on before calling curSteObj.run().
-			curSteObj.run(); // What: Run Callback. Why: The step's own declared side effect must actually execute. How: This calls curSteObj.run() with no arguments.
-			supGuaRef.current = false; // What: Guard Suppression Release. Why: The suppression above must only cover run()'s own synthetic clicks. How: This flips supGuaRef.current back off immediately after the call above returns.
+			supGuaRef.current = true; // What: Guard Suppression. Why: A runFun() that drives a real click on something outside the CURRENT step's own target (e.g. staging the NEXT step's target on a different part of the page) would otherwise get blocked by the same document-level guard that stops the USER clicking off-target, since curSteRef.current still points at this step (the index has not advanced yet), so a synthetic click landing anywhere else would read as off-target and get preventDefault/stopPropagation'd before its own handler ever runs. How: This flips supGuaRef.current on before calling curSteObj.runFun().
+			curSteObj.runFun(); // What: Run Callback. Why: The step's own declared side effect must actually execute. How: This calls curSteObj.runFun() with no arguments.
+			supGuaRef.current = false; // What: Guard Suppression Release. Why: The suppression above must only cover runFun()'s own synthetic clicks. How: This flips supGuaRef.current back off immediately after the call above returns.
 
 
 		}
 
-		const advSteFun = () => { // What: Advance Step Function. Why: solo steps (see their own doc comment in this file's own header above) always finish on their one button regardless of its label, since a solo step is never actually followed by a real "next" step, so relying on primary === 'Done' (every other step's own signal) would send it past the end of the array on a step whose button reads something else, like "Dismiss". How: This calls finTouFun for a 'Done' or solo step, otherwise moves to the next step index.
+		const advSteFun = () => { // What: Advance Step Function. Why: solo steps (see their own doc comment in this file's own header above) always finish on their one button regardless of its label, since a solo step is never actually followed by a real "next" step, so relying on priStr === 'Done' (every other step's own signal) would send it past the end of the array on a step whose button reads something else, like "Dismiss". How: This calls finTouFun for a 'Done' or solo step, otherwise moves to the next step index.
 
 
-			if ( curSteObj.primary === 'Done' || curSteObj.solo ) finTouFun(); // What: Finish Branch. Why: A 'Done'-labeled or solo step ends the tour instead of advancing further. How: This calls finTouFun with no arguments.
+			if ( curSteObj.priStr === 'Done' || curSteObj.solBoo ) finTouFun(); // What: Finish Branch. Why: A 'Done'-labeled or solo step ends the tour instead of advancing further. How: This calls finTouFun with no arguments.
 
 			else navSteFun( curSteNum + 1 ); // What: Advance Branch. Why: Every other step just moves to the next index in sequence. How: This calls navSteFun with curSteNum + 1.
 
 
 		};
 
-		if ( curSteObj.requireClick && curSteObj.advanceWhen ) { // What: Advance-When Poll Guard. Why: The real click just kicked off something ASYNC whose result is the next step's own target, e.g. the Pickers tour's "Manual Generation" step, where clicking Pick One starts a multi-second spin animation and the Send to Today button (the next step's target) does not exist until it resolves. How: Advancing on the usual immediate timer would move the step index forward before that target exists, and the position-tracking effect's own "target not found yet" fallback would render a bare dim with no coach at all for however long that takes, reading as the tour blanking out mid-click; polling here instead means THIS step's own already-resolved coach and highlight just keep sitting there, unbothered, for the whole wait, and the jump to the next step only happens once its target is actually ready to be found immediately.
+		if ( curSteObj.reqCliBoo && curSteObj.advSelStr ) { // What: Advance-When Poll Guard. Why: The real click just kicked off something ASYNC whose result is the next step's own target, e.g. the Pickers tour's "Manual Generation" step, where clicking Pick One starts a multi-second spin animation and the Send to Today button (the next step's target) does not exist until it resolves. How: Advancing on the usual immediate timer would move the step index forward before that target exists, and the position-tracking effect's own "target not found yet" fallback would render a bare dim with no coach at all for however long that takes, reading as the tour blanking out mid-click; polling here instead means THIS step's own already-resolved coach and highlight just keep sitting there, unbothered, for the whole wait, and the jump to the next step only happens once its target is actually ready to be found immediately.
 
 
 			const begSteNum = curSteNum; // What: Began Step Number. Why: The poll below checks the LIVE step number (via steNumRef, not this closure's own curSteNum) on each frame, so if the user goes Back/Skip in the meantime this can notice and bail out instead of firing a stale advance() later. How: This snapshots curSteNum at the moment the poll starts.
 
-			const polTarFun = () => { // What: Poll Target Function. Why: Each frame needs to check whether the async work has produced its own next-step target yet, without ever running past this component's own unmount or a step change made for some other reason. How: This bails out via mouStaRef/steNumRef, otherwise checks finTarFun(curSteObj.advanceWhen) and either advances or schedules another frame.
+			const polTarFun = () => { // What: Poll Target Function. Why: Each frame needs to check whether the async work has produced its own next-step target yet, without ever running past this component's own unmount or a step change made for some other reason. How: This bails out via mouStaRef/steNumRef, otherwise checks finTarFun(curSteObj.advSelStr) and either advances or schedules another frame.
 
 
 				if ( !mouStaRef.current || steNumRef.current !== begSteNum ) return; // What: Staleness Guard. Why: This poll must stop the instant it becomes stale, whether from unmount or from the user having navigated away in the meantime. How: This returns whenever the component is no longer mounted or the live step number no longer matches begSteNum.
 
-				if ( finTarFun( curSteObj.advanceWhen ).length ) advSteFun(); // What: Target Found Advance. Why: The async work's own result is now ready to become the tour's new spotlight. How: This advances once finTarFun actually matches something for the step's own advanceWhen selector.
+				if ( finTarFun( curSteObj.advSelStr ).length ) advSteFun(); // What: Target Found Advance. Why: The async work's own result is now ready to become the tour's new spotlight. How: This advances once finTarFun actually matches something for the step's own advSelStr selector.
 
 				else requestAnimationFrame( polTarFun ); // What: Poll Reschedule. Why: The target is not ready yet. How: This schedules another check on the next animation frame.
 
@@ -833,12 +850,12 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 		}
 
-		else if ( curSteObj.requireClick && curSteObj.advanceDelay ) { // What: Advance-Delay Timer Guard. Why: The real click plays a self-contained confirmation animation with a fixed duration and no lasting DOM trace to poll for, e.g. the Pickers tour's own "Add to Todo List" step, where Send to Today swaps its label to "Sent!" for a beat then reverts on its own. How: advanceWhen above cannot express "wait for this ANIMATION", only "wait for a target to exist"; advancing on the usual immediate timer would cut that confirmation off before the user ever sees it.
+		else if ( curSteObj.reqCliBoo && curSteObj.advDelNum ) { // What: Advance-Delay Timer Guard. Why: The real click plays a self-contained confirmation animation with a fixed duration and no lasting DOM trace to poll for, e.g. the Pickers tour's own "Add to Todo List" step, where Send to Today swaps its label to "Sent!" for a beat then reverts on its own. How: advSelStr above cannot express "wait for this ANIMATION", only "wait for a target to exist"; advancing on the usual immediate timer would cut that confirmation off before the user ever sees it.
 
 
-			const begSteNum = curSteNum; // What: Began Step Number. Why: Same staleness guard as advanceWhen's own poll above, for the same reason (a Back/Skip during the wait should not fire a stale advance() once the timer finally elapses). How: This snapshots curSteNum at the moment the timer starts.
+			const begSteNum = curSteNum; // What: Began Step Number. Why: Same staleness guard as advSelStr's own poll above, for the same reason (a Back/Skip during the wait should not fire a stale advance() once the timer finally elapses). How: This snapshots curSteNum at the moment the timer starts.
 
-			setTimeout( () => { // What: Advance Delay Timer. Why: The confirmation animation's own fixed duration must actually elapse before advancing. How: This waits curSteObj.advanceDelay milliseconds, then checks staleness before calling advSteFun.
+			setTimeout( () => { // What: Advance Delay Timer. Why: The confirmation animation's own fixed duration must actually elapse before advancing. How: This waits curSteObj.advDelNum milliseconds, then checks staleness before calling advSteFun.
 
 
 				if ( !mouStaRef.current || steNumRef.current !== begSteNum ) return; // What: Staleness Guard. Why: This timer must not fire a stale advance once the component has unmounted or the user has navigated away. How: This returns whenever the component is no longer mounted or the live step number no longer matches begSteNum.
@@ -846,12 +863,12 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 				advSteFun(); // What: Delayed Advance. Why: The confirmation animation has now had its own full duration to play. How: This calls advSteFun.
 
 
-			}, curSteObj.advanceDelay );
+			}, curSteObj.advDelNum );
 
 
 		}
 
-		else if ( curSteObj.requireClick ) setTimeout( advSteFun, 0 ); // What: Deferred Advance. Why: See this function's own header comment above for why a requireClick step's advance must be deferred by a tick rather than run synchronously. How: This schedules advSteFun on the next tick via a 0ms timeout.
+		else if ( curSteObj.reqCliBoo ) setTimeout( advSteFun, 0 ); // What: Deferred Advance. Why: See this function's own header comment above for why a reqCliBoo step's advance must be deferred by a tick rather than run synchronously. How: This schedules advSteFun on the next tick via a 0ms timeout.
 
 		else advSteFun(); // What: Immediate Advance. Why: A step that is neither polling nor delaying can advance right away. How: This calls advSteFun synchronously.
 
@@ -922,15 +939,15 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 			if ( canBoo ) return; // What: Cancelled Guard. Why: This guards the recursive requestAnimationFrame(() => briTarFun()) call below (the reserve-space retry), which fires on its own timer, outside this effect's own raf loop, so the ordinary canBoo check further down never gets a chance to catch it if the step/tour has already moved on by the time it fires. How: This returns immediately whenever canBoo is already true.
 
-			const eleArr = finTarFun( curSteObj.sel ); // What: Element Array. Why: Nothing below can run without knowing which elements the current step actually targets. How: This resolves curSteObj.sel via finTarFun.
+			const eleArr = finTarFun( curSteObj.selStr ); // What: Element Array. Why: Nothing below can run without knowing which elements the current step actually targets. How: This resolves curSteObj.selStr via finTarFun.
 
 			if ( !eleArr.length ) return; // What: No Targets Guard. Why: There is nothing to bring into view yet. How: This returns whenever finTarFun matched nothing.
 
-			if ( curSteObj.revealHorizontally ) eleArr[ 0 ].scrollIntoView( { inline: 'end', block: 'nearest' } ); // What: Horizontal Reveal. Why: See revealHorizontally's own doc comment in this file's own header above, a one-time native reveal for a target sitting off the end of a horizontally-scrolling row, independent of (and before) all the vertical handling below, which has no idea this axis exists at all. How: This calls scrollIntoView on the first matched element with inline:'end'.
+			if ( curSteObj.revHorBoo ) eleArr[ 0 ].scrollIntoView( { inline: 'end', block: 'nearest' } ); // What: Horizontal Reveal. Why: See revHorBoo's own doc comment in this file's own header above, a one-time native reveal for a target sitting off the end of a horizontally-scrolling row, independent of (and before) all the vertical handling below, which has no idea this axis exists at all. How: This calls scrollIntoView on the first matched element with inline:'end'.
 
 			const scrEle = getScrFun( eleArr[ 0 ] ); // What: Scroll Element. Why: Every branch below needs to know which element actually scrolls. How: This resolves the first matched element's own scroller via getScrFun.
 
-			if ( curSteObj.scrollToTop ) { // What: Scroll-To-Top Guard. Why: A step whose target starts right at the top of the page anyway (e.g. a full-list review step) should scroll all the way up rather than just nudging it into view, keeping everything visible from the top instead of opening mid-scroll.
+			if ( curSteObj.scrTopBoo ) { // What: Scroll-To-Top Guard. Why: A step whose target starts right at the top of the page anyway (e.g. a full-list review step) should scroll all the way up rather than just nudging it into view, keeping everything visible from the top instead of opening mid-scroll.
 
 
 				const optObj = { top: 0, behavior: redMotFun() ? 'auto' : 'smooth' }; // What: Scroll Options Object. Why: Both branches below need the same behavior choice. How: This builds one shared options object.
@@ -939,12 +956,12 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 				else scrEle.scrollTo( optObj ); // What: Element Scroll To. Why: Any other scroller is addressed directly. How: This calls scrEle.scrollTo for every other case.
 
-				return; // What: Scroll-To-Top Early Return. Why: Nothing below applies once this branch has already handled the scroll. How: This exits before the scrollToBottom/coachAtTop/pad branches.
+				return; // What: Scroll-To-Top Early Return. Why: Nothing below applies once this branch has already handled the scroll. How: This exits before the scrBotBoo/coaTopBoo/pad branches.
 
 
 			}
 
-			if ( curSteObj.scrollToBottom ) { // What: Scroll-To-Bottom Guard. Why: The symmetric case: a step whose target always sits at the very bottom of its page/form (e.g. a footer "next" button), where scrolling by pad math alone can undershoot after the surrounding content just changed shape (e.g. a form switching back from a longer sub-step to a shorter one), landing short of the target instead of reaching it.
+			if ( curSteObj.scrBotBoo ) { // What: Scroll-To-Bottom Guard. Why: The symmetric case: a step whose target always sits at the very bottom of its page/form (e.g. a footer "next" button), where scrolling by pad math alone can undershoot after the surrounding content just changed shape (e.g. a form switching back from a longer sub-step to a shorter one), landing short of the target instead of reaching it.
 
 
 				const behStr = redMotFun() ? 'auto' : 'smooth'; // What: Behavior String. Why: Both branches below need the same behavior choice. How: This resolves the reduced-motion preference once.
@@ -953,7 +970,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 				else scrEle.scrollTo( { top: scrEle.scrollHeight, behavior: behStr } ); // What: Element Scroll To Bottom. Why: Any other scroller is addressed directly. How: This scrolls scrEle all the way to its own scrollHeight.
 
-				return; // What: Scroll-To-Bottom Early Return. Why: Nothing below applies once this branch has already handled the scroll. How: This exits before the coachAtTop/pad branches.
+				return; // What: Scroll-To-Bottom Early Return. Why: Nothing below applies once this branch has already handled the scroll. How: This exits before the coaTopBoo/pad branches.
 
 
 			}
@@ -964,7 +981,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 			const scrRecObj = isaDocBoo ? { top: 0, bottom: window.innerHeight } : scrEle.getBoundingClientRect(); // What: Scroller Rect Object. Why: The pad math below needs the scroller's own visible bounds. How: This uses the viewport bounds for the document scroller, otherwise scrEle's own bounding rect.
 
-			if ( curSteObj.coachAtTop ) { // What: Coach-At-Top Guard. Why: See coachAtTop's own doc comment in this file's own header above, scrolls so the target starts right where the coach (pinned to safTopNum) leaves off, instead of trying to fit the target's WHOLE height within the normal pad/padBotNum window below, which a too-tall target cannot do.
+			if ( curSteObj.coaTopBoo ) { // What: Coach-At-Top Guard. Why: See coaTopBoo's own doc comment in this file's own header above, scrolls so the target starts right where the coach (pinned to safTopNum) leaves off, instead of trying to fit the target's WHOLE height within the normal pad/padBotNum window below, which a too-tall target cannot do.
 
 
 				const desTopNum = safTopFun( { forCoaBoo: true } ) + 12 + coaHeiRef.current + 16; // What: Desired Top Number. Why: This is exactly where the target's own top edge should land. How: This adds the coach's own floor, its 12px margin, its current measured height, and a 16px gap.
@@ -986,7 +1003,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 			else if ( tarRecObj.bottom > scrRecObj.bottom - padBotNum ) preTopNum = ( scrRecObj.bottom - padBotNum ) - tarRecObj.height; // What: Predicted Top From Below. Why: A target overflowing the bottom pad boundary will be scrolled up until its own bottom lands exactly there. How: This derives the resulting top from that landing bottom minus the target's own height.
 
-			if ( !curSteObj.coachAtTop && !resDecBoo && preTopNum != null ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the exact same fits-below/fits-above checks decResFun itself uses below, so this can never disagree with what decResFun would have decided anyway, just decided proactively instead of reactively; this replaces the loop's own decResFun (unchanged) used to be the only place this got decided, which meant a visibly separate second "jump then re-scroll" once it found the overlap, this step's target genuinely overlapping the coach at its settled position is exactly the case reproduced live and reported as jank.
+			if ( !curSteObj.coaTopBoo && !resDecBoo && preTopNum != null ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the exact same fits-below/fits-above checks decResFun itself uses below, so this can never disagree with what decResFun would have decided anyway, just decided proactively instead of reactively; this replaces the loop's own decResFun (unchanged) used to be the only place this got decided, which meant a visibly separate second "jump then re-scroll" once it found the overlap, this step's target genuinely overlapping the coach at its settled position is exactly the case reproduced live and reported as jank.
 
 
 				const vieHeiNum = window.innerHeight, coaHeiNum = coaHeiRef.current; // What: Viewport Height Number And Coach Height Number. Why: Both fit checks below need the current viewport height and the coach's own latest measured height. How: These are read fresh from window.innerHeight and coaHeiRef.current.
@@ -1022,7 +1039,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 		let hasBroBoo = false; // What: Has Brought Boolean. Why: briTarFun above should only run once as soon as the target actually exists, not on every frame; the loop below flips this once that first call has happened. How: This starts false and is set true the first time the target is found inside the loop.
 
-		const spoPadNum = curSteObj.requireClick ? 0 : 8; // What: Spotlight Pad Number. Why: requireClick steps get a pulsing ring drawn tight against the target (see the .ob-spot.is-pulsing CSS); any padding here would leave a visible gap between the target's real edge and the pulse, which reads as the highlight being for some larger, vaguer area instead of the exact element to click. How: This is 0 for a requireClick step, otherwise the normal 8px.
+		const spoPadNum = curSteObj.reqCliBoo ? 0 : 8; // What: Spotlight Pad Number. Why: reqCliBoo steps get a pulsing ring drawn tight against the target (see the .ob-spot.is-pulsing CSS); any padding here would leave a visible gap between the target's real edge and the pulse, which reads as the highlight being for some larger, vaguer area instead of the exact element to click. How: This is 0 for a reqCliBoo step, otherwise the normal 8px.
 
 		const claChrFun = ( recObj, eleArr ) => { // What: Clamp Chrome Function. Why: Today's own sticky header (and, on mobile, the groups rail stacked below it) plus a floating bottom tab bar (tabPlacement 'bottom') both sit at a higher z-index than the surrounding content but a LOWER one than this tour overlay, so a highlighted rect reaching past either one's edge would expose it through the spotlight's cutout (a box-shadow "hole") instead of dimming it, reading as if that chrome were part of the highlighted target. How: This clamps the rect actually drawn (not the one briTarFun scrolls by, which needs the real position) so the spotlight never reaches into either safe zone; targets that live INSIDE the nav bar, the group rail, or Today's own header are exempt, since clamping those against their own containing chrome can squash the highlight down to a sliver sitting below/past the actual target instead of on it.
 
@@ -1083,7 +1100,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 		const decResFun = ( eleArr ) => { // What: Decide Reserve Function. Why: This decides how much top-space (if any) THIS step's target needs reserved above it, ONCE, the very first time the target's own geometry has settled, rather than continuously on every frame. How: A continuous decision looks right on Today (its highlight is tall enough that scrolling never changes the verdict) but flips mid-scroll on shorter pages like Pickers, where scrolling the header over the target can cross the "fits above" threshold WHILE THE USER IS STILL SCROLLING, jumping the layout under them; deciding once and locking it for the step's duration reads like a person who sized up the space up front, not one who keeps rearranging things as you scroll.
 
 
-			if ( curSteObj.coachAtTop ) { resDecBoo = true; return; } // What: Coach-At-Top Skip. Why: coachAtTop steps never reserve, see that flag's own doc comment in this file's own header above; resTopNum stays at its already-0 default. How: This marks the decision as made without ever setting a nonzero reserve.
+			if ( curSteObj.coaTopBoo ) { resDecBoo = true; return; } // What: Coach-At-Top Skip. Why: coaTopBoo steps never reserve, see that flag's own doc comment in this file's own header above; resTopNum stays at its already-0 default. How: This marks the decision as made without ever setting a nonzero reserve.
 
 			if ( resDecBoo ) return; // What: Already Decided Guard. Why: This decision must only ever happen once per step. How: This returns immediately once resDecBoo is already true.
 
@@ -1111,7 +1128,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 			resAmtNum = coaHeiNum + 40; // What: Reserve Amount Commit. Why: Neither side fits, so the reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmtNum to the coach's own height plus a fixed 40px.
 			setResTopNum( resAmtNum ); // What: Reserve Top Commit. Why: TabToday reads this off the bus to actually pad its own list. How: This publishes resAmtNum into React state.
 
-			const ele2Arr = finTarFun( curSteObj.sel ); // What: Element 2 Array. Why: The scroll compensation below needs to re-resolve the target's own elements. How: This calls finTarFun again for the current step's own sel.
+			const ele2Arr = finTarFun( curSteObj.selStr ); // What: Element 2 Array. Why: The scroll compensation below needs to re-resolve the target's own elements. How: This calls finTarFun again for the current step's own selStr.
 
 			if ( ele2Arr.length ) { // What: Re-Resolved Guard. Why: The target must still exist for the scroll compensation below to make sense. How: This only proceeds when ele2Arr is non-empty.
 
@@ -1121,7 +1138,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 				requestAnimationFrame( () => { // What: Scroll Compensation Frame. Why: The padding needs to have actually landed in the DOM first, so this re-measures the target after a frame rather than computing from tarRecObj, which is now stale. How: This recomputes the scroller and desired top freshly, rather than closing over briTarFun's own local scrEle, which this function does not have access to.
 
 
-					const freEleArr = finTarFun( curSteObj.sel ); // What: Fresh Element Array. Why: The target's own geometry must be read again, now that the reserve padding has actually rendered. How: This calls finTarFun once more for the current step's own sel.
+					const freEleArr = finTarFun( curSteObj.selStr ); // What: Fresh Element Array. Why: The target's own geometry must be read again, now that the reserve padding has actually rendered. How: This calls finTarFun once more for the current step's own selStr.
 
 					if ( !freEleArr.length ) return; // What: Fresh Target Guard. Why: The target may have disappeared in the meantime. How: This returns whenever freEleArr is empty.
 
@@ -1140,7 +1157,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 		};
 
-		const scrPosFun = () => { const eleArr = finTarFun( curSteObj.sel ); if ( eleArr.length ) plcTarFun( eleArr ); }; // What: Scroll Position Function. Why: This repositions synchronously as scroll fires (before paint) so the highlight does not trail the content the way a purely rAF-driven fixed box does. How: This resolves the target fresh and, when found, repositions it via plcTarFun; listening broadly (capture) so it fires for whichever element scrolls.
+		const scrPosFun = () => { const eleArr = finTarFun( curSteObj.selStr ); if ( eleArr.length ) plcTarFun( eleArr ); }; // What: Scroll Position Function. Why: This repositions synchronously as scroll fires (before paint) so the highlight does not trail the content the way a purely rAF-driven fixed box does. How: This resolves the target fresh and, when found, repositions it via plcTarFun; listening broadly (capture) so it fires for whichever element scrolls.
 
 		window.addEventListener( 'scroll', scrPosFun, { passive: true, capture: true } ); // What: Scroll Listener Add. Why: This is what actually keeps the highlight in sync during a manual scroll, not just briTarFun's own programmatic one. How: This adds scrPosFun in capture phase, passively, at the window.
 
@@ -1150,14 +1167,14 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 		let lasScrHeiNum = null; // What: Last Scroll Height Number. Why: This tracks the scrollable content's total height so a step whose target stays put (no tab/step change) but whose SURROUNDING content grows or shrinks, e.g. the user does the step's own action themselves without ever clicking the coach's Next, can still get nudged back into view. How: Ordinary scrolling never changes this value, so it does not fight the user scrolling around on purpose; only an actual content-size change re-triggers briTarFun; measured with resAmtNum subtracted out, otherwise decResFun's own CSS padding (added specifically to make room for the coach above a highlight too tall to fit either way) reads as "content grew", re-triggers briTarFun, and briTarFun scrolls the target right back up to its usual pad-from-top position, undoing the reserve and putting the coach right back on top of it.
 
-		let pulPriBoo = true; // What: Pulse Primary Boolean. Why: This tracks pulseSel's own on/off transition (see its own doc comment in this file's own header above) so falling back to the wider, no-longer-pulsing highlight also brings it into view, since the wider box can extend well past what the tight button-only highlight needed. How: This starts true so a step that never had a pulseSel primary target at all (pulseSel unset) never spuriously fires this on its first frame.
+		let pulPriBoo = true; // What: Pulse Primary Boolean. Why: This tracks pulSelStr's own on/off transition (see its own doc comment in this file's own header above) so falling back to the wider, no-longer-pulsing highlight also brings it into view, since the wider box can extend well past what the tight button-only highlight needed. How: This starts true so a step that never had a pulSelStr primary target at all (pulSelStr unset) never spuriously fires this on its first frame.
 
 		const loopFun = () => { // What: Loop Function. Why: This is the per-frame heartbeat: it re-resolves the target, positions it, decides reserve, tracks the not-found watchdog, and reschedules itself.
 
 
 			if ( canBoo ) return; // What: Cancelled Guard. Why: A cancelled effect must never schedule another frame. How: This returns immediately whenever canBoo is already true.
 
-			const eleArr = finTarFun( curSteObj.sel ); // What: Element Array. Why: Every branch below needs to know whether the target currently exists. How: This resolves curSteObj.sel fresh on every frame.
+			const eleArr = finTarFun( curSteObj.selStr ); // What: Element Array. Why: Every branch below needs to know whether the target currently exists. How: This resolves curSteObj.selStr fresh on every frame.
 
 			if ( eleArr.length ) { // What: Target Found Branch. Why: The target currently exists, so this positions it and clears the not-found watchdog. How: This runs the full per-frame bookkeeping below.
 
@@ -1173,10 +1190,10 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 				else if ( lasScrHeiNum != null && Math.abs( scrHeiNum - lasScrHeiNum ) > 40 ) briTarFun(); // What: Content Grew Re-Bring. Why: See lasScrHeiNum's own doc comment above, the surrounding content changing size mid-step should re-trigger the bring. How: This re-calls briTarFun once the scroll height has moved by more than a 40px tolerance.
 
-				else if ( curSteObj.pulseSel ) { // What: Pulse Transition Check. Why: A pulseSel step's own primary target can stop matching mid-step (e.g. a button widening to its whole surrounding window once clicked), and the wider fallback highlight needs bringing into view too.
+				else if ( curSteObj.pulSelStr ) { // What: Pulse Transition Check. Why: A pulSelStr step's own primary target can stop matching mid-step (e.g. a button widening to its whole surrounding window once clicked), and the wider fallback highlight needs bringing into view too.
 
 
-					const isaPriBoo = !!document.querySelector( curSteObj.pulseSel ); // What: Is-A Primary Boolean. Why: This is the live answer to whether the tight, pulsing target still matches. How: This checks curSteObj.pulseSel directly against the document.
+					const isaPriBoo = !!document.querySelector( curSteObj.pulSelStr ); // What: Is-A Primary Boolean. Why: This is the live answer to whether the tight, pulsing target still matches. How: This checks curSteObj.pulSelStr directly against the document.
 
 					if ( pulPriBoo && !isaPriBoo ) briTarFun(); // What: Pulse Transition Bring. Why: The wider fallback box can extend well past what the tight target needed. How: This re-calls briTarFun exactly on the frame the primary target stops matching.
 
@@ -1219,13 +1236,13 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 		return () => { canBoo = true; cancelAnimationFrame( rafNum ); window.removeEventListener( 'scroll', scrPosFun, { capture: true } ); }; // What: Position Tracking Cleanup Return. Why: The raf loop and the scroll listener must both stop the instant the step changes or this component unmounts. How: This flips canBoo, cancels the pending frame, and removes the scroll listener.
 
 
-	}, [ curSteNum, curSteObj && curSteObj.sel ] ); // What: Effect Dependency Array. Why: This must re-run whenever the step index moves (a genuinely new step to track) or, for the very same step, whenever its own sel changes identity (steps are rebuilt as fresh objects on every render, so this is really just watching the one field that actually decides what to track). How: curSteNum is the step position itself, and curSteObj && curSteObj.sel is the specific selector that drives everything inside this effect.
+	}, [ curSteNum, curSteObj && curSteObj.selStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever the step index moves (a genuinely new step to track) or, for the very same step, whenever its own selStr changes identity (steps are rebuilt as fresh objects on every render, so this is really just watching the one field that actually decides what to track). How: curSteNum is the step position itself, and curSteObj && curSteObj.selStr is the specific selector that drives everything inside this effect.
 
 	React.useEffect( () => { emlTouObj.set( { reserveTop: resTopNum } ); }, [ resTopNum ] ); // What: Reserve Top Publish Effect. Why: This is published on the bus so the active tab (which owns the actual scrollable content) can apply it, since this component only overlays the page and does not own that layout. How: resTopNum itself is set by the position-tracking effect above, decided ONCE per step rather than continuously, see the comment on decResFun there for why. // What: Effect Dependency Array. Why: This must re-run whenever resTopNum itself changes. How: resTopNum is the exact value being published.
 
 	const porFun = ( nodEle ) => createPortal( nodEle, document.body ); // What: Portal Function. Why: Every branch of this component's own render needs to portal its JSX onto document.body rather than wherever GuidedTour happens to be mounted in the tree. How: This forwards nodEle straight into React's own createPortal.
 
-	if ( !curSteObj ) return porFun( <div className='ob-tour' aria-live='polite'><div className='ob-dim' /></div> ); // What: No Step Render Guard. Why: A step index advanced past the end of a `steObjArr` array whose last entry is not primary:'Done' yet (most likely mid-content-authoring) is caught by the position-tracking effect above, which already calls skpTouFun the moment it sees this, but that is a separate effect firing after this render commits, so this render still needs to not crash reading off a null curSteObj in the meantime. How: This returns the same one-frame dim-only fallback as the "target not found yet" case below.
+	if ( !curSteObj ) return porFun( <div className='ob-tour' aria-live='polite'><div className='ob-dim' /></div> ); // What: No Step Render Guard. Why: A step index advanced past the end of a `steObjArr` array whose last entry is not priStr:'Done' yet (most likely mid-content-authoring) is caught by the position-tracking effect above, which already calls skpTouFun the moment it sees this, but that is a separate effect firing after this render commits, so this render still needs to not crash reading off a null curSteObj in the meantime. How: This returns the same one-frame dim-only fallback as the "target not found yet" case below.
 
 	const totSteNum = steObjArr.length; // What: Total Step Number. Why: The progress line below needs the total step count. How: This reads steObjArr.length once per render.
 
@@ -1251,27 +1268,27 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 		>{ /* What: Measurer Coach Element. Why: This is the hidden clone described above. How: This renders the exact same content as the real coach below, but off-screen and pointer-events:none. */ }
 
 
-			{ !curSteObj.solo && <p className='ob-prog'>Step { curSteNum + 1 } of { totSteNum }</p> }{ /* What: Progress Paragraph Element. Why: Every non-solo step shows its own position in the sequence. How: This renders only when curSteObj.solo is falsy. */ }
-			<p className='ob-coach-title'>{ curSteObj.title }</p>{ /* What: Coach Title Paragraph Element. Why: Every step needs its own heading text. How: This renders curSteObj.title directly. */ }
-			<p className='ob-body'>{ curSteObj.body }</p>{ /* What: Coach Body Paragraph Element. Why: Every step needs its own explanatory copy. How: This renders curSteObj.body directly. */ }
-			<div className={ `ob-crow   ${ curSteObj.solo ? 'ob-crow--solo' : '' }` }>{ /* What: Coach Row Container Element. Why: This groups the Skip/Back/Next controls into one row, stretched full-width for a solo step. How: This adds the ob-crow--solo modifier class whenever curSteObj.solo is true. */ }
+			{ !curSteObj.solBoo && <p className='ob-prog'>Step { curSteNum + 1 } of { totSteNum }</p> }{ /* What: Progress Paragraph Element. Why: Every non-solo step shows its own position in the sequence. How: This renders only when curSteObj.solBoo is falsy. */ }
+			<p className='ob-coach-title'>{ curSteObj.titStr }</p>{ /* What: Coach Title Paragraph Element. Why: Every step needs its own heading text. How: This renders curSteObj.titStr directly. */ }
+			<p className='ob-body'>{ curSteObj.bodEle }</p>{ /* What: Coach Body Paragraph Element. Why: Every step needs its own explanatory copy. How: This renders curSteObj.bodEle directly. */ }
+			<div className={ `ob-crow   ${ curSteObj.solBoo ? 'ob-crow--solo' : '' }` }>{ /* What: Coach Row Container Element. Why: This groups the Skip/Back/Next controls into one row, stretched full-width for a solo step. How: This adds the ob-crow--solo modifier class whenever curSteObj.solBoo is true. */ }
 
 
-				{ !curSteObj.solo && ( // What: Left Nav Visibility Check. Why: A solo step hides the Skip/Back row entirely, per solo's own doc comment in this file's own header above.
+				{ !curSteObj.solBoo && ( // What: Left Nav Visibility Check. Why: A solo step hides the Skip/Back row entirely, per solBoo's own doc comment in this file's own header above.
 
 
 					<div className='ob-lnav'>{ /* What: Left Nav Container Element. Why: This groups Skip and the optional Back button together on the row's own left side. How: This is only rendered for a non-solo step. */ }
 
 
 						<button className='ob-skip'>Skip</button>{ /* What: Skip Button Element. Why: This is the measurer's own inert copy of the real Skip button. How: This has no onClick, since the measurer is never actually interactive. */ }
-						{ curSteObj.back && <button className='ob-back'>&lsaquo; Back</button> }{ /* What: Back Button Element. Why: Only a step that opts in via `back` shows this. How: This is the measurer's own inert copy of the real Back button. */ }
+						{ curSteObj.bacBoo && <button className='ob-back'>&lsaquo; Back</button> }{ /* What: Back Button Element. Why: Only a step that opts in via `bacBoo` shows this. How: This is the measurer's own inert copy of the real Back button. */ }
 
 
 					</div>
 
 
 				) }
-				<button className='ob-next' disabled={ curSteObj.requireClick }>{ curSteObj.primary }{ ( curSteObj.primary !== 'Done' && !curSteObj.solo ) ? ' ›' : '' }</button>{ /* What: Next Button Element. Why: This is the measurer's own inert copy of the real Next/Done button, disabled exactly when the real one would be. How: This renders curSteObj.primary plus a trailing arrow glyph unless the step is 'Done' or solo. */ }
+				<button className='ob-next' disabled={ curSteObj.reqCliBoo }>{ curSteObj.priStr }{ ( curSteObj.priStr !== 'Done' && !curSteObj.solBoo ) ? ' ›' : '' }</button>{ /* What: Next Button Element. Why: This is the measurer's own inert copy of the real Next/Done button, disabled exactly when the real one would be. How: This renders curSteObj.priStr plus a trailing arrow glyph unless the step is 'Done' or solo. */ }
 
 
 			</div>
@@ -1282,20 +1299,20 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 
 	);
 
-	const shoPulBoo = curSteObj.requireClick && ( !curSteObj.pulseSel || !!document.querySelector( curSteObj.pulseSel ) ); // What: Should Pulse Boolean. Why: See pulseSel's own doc comment in this file's own header above, this defaults to matching requireClick exactly when unset, so every other requireClick step pulses for its whole duration same as before. How: This is true whenever the step requires a click and either names no pulseSel at all, or its own pulseSel currently matches something.
+	const shoPulBoo = curSteObj.reqCliBoo && ( !curSteObj.pulSelStr || !!document.querySelector( curSteObj.pulSelStr ) ); // What: Should Pulse Boolean. Why: See pulSelStr's own doc comment in this file's own header above, this defaults to matching reqCliBoo exactly when unset, so every other reqCliBoo step pulses for its whole duration same as before. How: This is true whenever the step requires a click and either names no pulSelStr at all, or its own pulSelStr currently matches something.
 
 	let coaStyObj, arrClaStr, spoStyObj = null; // What: Coach Style Object, Arrow Class String, And Spotlight Style Object. Why: Exactly one of the two branches below assigns all 3. How: These start uninitialized (spoStyObj explicitly null) and are filled in by whichever branch applies.
 
 	if ( recObj ) { // What: Rect Present Branch. Why: A resolved rect means the target currently exists and both the spot and coach can be laid out. How: This computes spoStyObj/coaStyObj/arrClaStr from the current recObj.
 
 
-		const padNum = curSteObj.requireClick ? 0 : 8; // What: Pad Number. Why: See spoPadNum's own comment above inside the position-tracking effect, this is the render-time twin of that same value. How: This is 0 for a requireClick step, otherwise the normal 8px.
+		const padNum = curSteObj.reqCliBoo ? 0 : 8; // What: Pad Number. Why: See spoPadNum's own comment above inside the position-tracking effect, this is the render-time twin of that same value. How: This is 0 for a reqCliBoo step, otherwise the normal 8px.
 
 		hadRecRef.current = true; // What: Had Rect Commit. Why: Once a rect has actually been drawn, the very next step's own first appearance should no longer suppress the slide-in the way the very first one did. How: This flips hadRecRef.current to true.
 
 		spoStyObj = { top: recObj.top - padNum, left: recObj.left - padNum, width: recObj.width + padNum * 2, height: recObj.height + padNum * 2, transition: 'none' }; // What: Spotlight Style Object Assignment. Why: The rendered .ob-spot div below reads this directly as its own inline style. How: This pads recObj outward by padNum on every side and disables any CSS transition, since plcTarFun already animates position imperatively every frame.
 
-		const layObj = coaLayFun( recObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ); // What: Layout Object. Why: This is the same shared math plcTarFun uses imperatively every frame, kept here too as the coach's own first-paint value each step and the eventual React-driven fallback once it catches up. How: This calls coaLayFun with the current recObj, coaHeiNum, and the current viewport/coach sizes; coachAtTop needs no special branch here at all any more, letting it fall through to the exact same below/above logic every other step already uses is what lets the coach flip to sit BELOW the target (arrow up) once there is room, instead of only ever attaching above it, since coachAtTop's own remaining job is upstream of this (skipping decResFun's own padding and giving briTarFun a precise initial scroll target).
+		const layObj = coaLayFun( recObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ); // What: Layout Object. Why: This is the same shared math plcTarFun uses imperatively every frame, kept here too as the coach's own first-paint value each step and the eventual React-driven fallback once it catches up. How: This calls coaLayFun with the current recObj, coaHeiNum, and the current viewport/coach sizes; coaTopBoo needs no special branch here at all any more, letting it fall through to the exact same below/above logic every other step already uses is what lets the coach flip to sit BELOW the target (arrow up) once there is room, instead of only ever attaching above it, since coaTopBoo's own remaining job is upstream of this (skipping decResFun's own padding and giving briTarFun a precise initial scroll target).
 
 		coaStyObj = { top: layObj.top, left: layObj.left }; // What: Coach Style Object Assignment. Why: The rendered .ob-coach div below reads this directly as part of its own inline style. How: This takes layObj's own top/left.
 		arrClaStr = layObj.arrowClass; // What: Arrow Class String Assignment. Why: The rendered .ob-coach div below needs to know which arrow direction class to apply. How: This takes layObj's own arrowClass.
@@ -1328,45 +1345,45 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 				<div className={ `ob-coach   ${ arrClaStr }` } ref={ reaCoaRef } style={{ ...coaStyObj, width: coaWidNum, '--ob-ax': arrXNum + 'px' }}>{ /* What: Coach Container Element. Why: This is the real, visible, interactive coach card. How: This positions itself from coaStyObj/coaWidNum/arrXNum and renders its own arrow direction class. */ }
 
 
-					{ !curSteObj.solo && <p className='ob-prog'>Step { curSteNum + 1 } of { totSteNum }</p> }{ /* What: Progress Paragraph Element. Why: Every non-solo step shows its own position in the sequence. How: This renders only when curSteObj.solo is falsy. */ }
-					<p className='ob-coach-title'>{ curSteObj.title }</p>{ /* What: Coach Title Paragraph Element. Why: Every step needs its own heading text. How: This renders curSteObj.title directly. */ }
-					<p className='ob-body'>{ curSteObj.body }</p>{ /* What: Coach Body Paragraph Element. Why: Every step needs its own explanatory copy. How: This renders curSteObj.body directly. */ }
-					<div className={ `ob-crow   ${ curSteObj.solo ? 'ob-crow--solo' : '' }` }>{ /* What: Coach Row Container Element. Why: This groups the Skip/Back/Next controls into one row, stretched full-width for a solo step. How: This adds the ob-crow--solo modifier class whenever curSteObj.solo is true. */ }
+					{ !curSteObj.solBoo && <p className='ob-prog'>Step { curSteNum + 1 } of { totSteNum }</p> }{ /* What: Progress Paragraph Element. Why: Every non-solo step shows its own position in the sequence. How: This renders only when curSteObj.solBoo is falsy. */ }
+					<p className='ob-coach-title'>{ curSteObj.titStr }</p>{ /* What: Coach Title Paragraph Element. Why: Every step needs its own heading text. How: This renders curSteObj.titStr directly. */ }
+					<p className='ob-body'>{ curSteObj.bodEle }</p>{ /* What: Coach Body Paragraph Element. Why: Every step needs its own explanatory copy. How: This renders curSteObj.bodEle directly. */ }
+					<div className={ `ob-crow   ${ curSteObj.solBoo ? 'ob-crow--solo' : '' }` }>{ /* What: Coach Row Container Element. Why: This groups the Skip/Back/Next controls into one row, stretched full-width for a solo step. How: This adds the ob-crow--solo modifier class whenever curSteObj.solBoo is true. */ }
 
 
-						{ !curSteObj.solo && ( // What: Left Nav Visibility Check. Why: A solo step hides the Skip/Back row entirely, per solo's own doc comment in this file's own header above.
+						{ !curSteObj.solBoo && ( // What: Left Nav Visibility Check. Why: A solo step hides the Skip/Back row entirely, per solBoo's own doc comment in this file's own header above.
 
 
 							<div className='ob-lnav'>{ /* What: Left Nav Container Element. Why: This groups Skip and the optional Back button together on the row's own left side. How: This is only rendered for a non-solo step. */ }
 
 
 								<button className='ob-skip' onClick={ skpTouFun }>Skip</button>{ /* What: Skip Button Element. Why: This ends the tour as a non-completion, per skpTouFun's own comment above. How: This calls skpTouFun on click. */ }
-								{ curSteObj.back && <button className='ob-back' onClick={ bacSteFun }>&lsaquo; Back</button> }{ /* What: Back Button Element. Why: Only a step that opts in via `back` shows this. How: This calls bacSteFun on click. */ }
+								{ curSteObj.bacBoo && <button className='ob-back' onClick={ bacSteFun }>&lsaquo; Back</button> }{ /* What: Back Button Element. Why: Only a step that opts in via `bacBoo` shows this. How: This calls bacSteFun on click. */ }
 
 
 							</div>
 
 
 						) }
-						{ curSteObj.requireClick ? ( // What: Require-Click Check. Why: A requireClick step needs its Next button disabled and explained instead of the normal clickable one. How: This renders the InfTipCom-wrapped disabled button while curSteObj.requireClick is true.
+						{ curSteObj.reqCliBoo ? ( // What: Require-Click Check. Why: A reqCliBoo step needs its Next button disabled and explained instead of the normal clickable one. How: This renders the InfTipCom-wrapped disabled button while curSteObj.reqCliBoo is true.
 
-							<InfTipCom label='Please click the indicated element in order to advance.'>{ /* What: Require-Click Info Tip Element. Why: A requireClick step's Next button is disabled, and the user needs to be told why. How: This wraps the disabled button below with a hover/tap hint. */ }
+							<InfTipCom label='Please click the indicated element in order to advance.'>{ /* What: Require-Click Info Tip Element. Why: A reqCliBoo step's Next button is disabled, and the user needs to be told why. How: This wraps the disabled button below with a hover/tap hint. */ }
 
 
 								<button className='ob-next' disabled>
-									{ curSteObj.primary }{ ( curSteObj.primary !== 'Done' && !curSteObj.solo ) ? ' ›' : '' }
-								</button>{ /* What: Disabled Next Button Element. Why: The user must click the highlighted target itself to advance, not this button. How: This renders curSteObj.primary plus a trailing arrow glyph unless the step is 'Done' or solo, always disabled. */ }
+									{ curSteObj.priStr }{ ( curSteObj.priStr !== 'Done' && !curSteObj.solBoo ) ? ' ›' : '' }
+								</button>{ /* What: Disabled Next Button Element. Why: The user must click the highlighted target itself to advance, not this button. How: This renders curSteObj.priStr plus a trailing arrow glyph unless the step is 'Done' or solo, always disabled. */ }
 
 
 							</InfTipCom>
 
-						) : ( // What: Normal Next Branch. Why: A step without requireClick just needs the plain clickable button. How: This renders the else branch, taken while curSteObj.requireClick is false.
+						) : ( // What: Normal Next Branch. Why: A step without reqCliBoo just needs the plain clickable button. How: This renders the else branch, taken while curSteObj.reqCliBoo is false.
 
 							<button className='ob-next' onClick={ priActFun }>
-								{ curSteObj.primary }{ ( curSteObj.primary !== 'Done' && !curSteObj.solo ) ? ' ›' : '' }
+								{ curSteObj.priStr }{ ( curSteObj.priStr !== 'Done' && !curSteObj.solBoo ) ? ' ›' : '' }
 							</button>
 
-						) }{ /* What: Next/Done Button Ternary. Why: A requireClick step swaps the interactive button for the disabled/InfTipCom-wrapped one above. How: This picks between the two based on curSteObj.requireClick, calling priActFun on click for the enabled case. */ }
+						) }{ /* What: Next/Done Button Ternary. Why: A reqCliBoo step swaps the interactive button for the disabled/InfTipCom-wrapped one above. How: This picks between the two based on curSteObj.reqCliBoo, calling priActFun on click for the enabled case. */ }
 
 
 					</div>

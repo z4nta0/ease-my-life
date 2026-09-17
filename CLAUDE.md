@@ -2206,6 +2206,23 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     comment starts with a vowel sound: `isaBigBoo` → `What: Is-A Big
     Boolean.`, `isaOutBoo` → `What: Is-An Outer Boolean.` ("Outer"
     starts with a vowel sound, so "An").
+- **Under-length segment 2 word — resolve by real behavior, not padding**:
+  the same under-length problem can hit segment 2 (the descriptor)
+  instead of segment 1, and padding a 2-letter preposition like "on"
+  with a filler letter (there is no natural "on" + 1-letter word the
+  way "is" + "a" reads as "is-a") doesn't produce anything readable.
+  Instead, pick a different, real 3-letter word that describes what the
+  field actually DOES, the same reasoning already used to name
+  `clickSel`/`pulseSel`'s own "Sel" segment after the value's real
+  shape (a selector) rather than its literal old name. Example:
+  `onboarding-tour-runner.jsx`'s own `advanceOn` field (a selector
+  where a real click ALSO counts as clicking Next) has "Advance" +
+  "On" as its literal two words, but "On" is only 2 letters; since the
+  field is fundamentally about a CLICK counting as advancing, it
+  became `advCliStr` (Advance + Click + String) instead, kept
+  distinct from the separate `advanceWhen`/`advSelStr` field (which
+  polls for a selector to exist, not a click) by using "Sel" there
+  instead for the same "value is a selector" reasoning.
 - **Acronym-reference rule**: when a name describes or refers to another
   named thing (a component, function, etc.), its own first segment is
   built from the first letter of *that* thing's own three segments,

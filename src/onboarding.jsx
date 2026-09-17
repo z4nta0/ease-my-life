@@ -335,28 +335,28 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 	const steObjArr = [ // What: Step Object Array. Why: This is the Welcome Tour's own ordered content, read by <GuidedTour> below. How: This is passed directly as GuidedTour's own steps prop.
 
 
-		{ // What: Today Nav Step Object. Why: The tour's very first step orients the user on the Today tab's own nav button. How: This spreads NAV_TAR_OBJ.today's shared sel/place/title/body onto a step targeting the 'today' tab, with no Back button since it's the first step.
+		{ // What: Today Nav Step Object. Why: The tour's very first step orients the user on the Today tab's own nav button. How: This spreads NAV_TAR_OBJ.today's shared selStr/place/titStr/bodEle onto a step targeting the 'today' tab, with no Back button since it's the first step.
 
 
-			...NAV_TAR_OBJ.today, // What: Today Nav Target Spread. Why: This reuses the shared Today nav-target descriptor instead of duplicating its sel/place/title/body. How: This spreads NAV_TAR_OBJ.today's own fields onto this step object.
-			tab     : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			primary : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			back    : false    // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
+			...NAV_TAR_OBJ.today, // What: Today Nav Target Spread. Why: This reuses the shared Today nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.today's own fields onto this step object.
+			tabStr : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			bacBoo : false    // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
 
 
 		},
 
-		{ // What: Generate Step Object. Why: This is the step that actually produces (or reviews) a real Today list, seeding the sample reminders and running the real generator alongside the tour's own "do it yourself" fallback path. How: This targets whichever of .ob-generate/.gen-confirm currently exists, and its own run() below both triggers generation and seeds the sample reminders.
+		{ // What: Generate Step Object. Why: This is the step that actually produces (or reviews) a real Today list, seeding the sample reminders and running the real generator alongside the tour's own "do it yourself" fallback path. How: This targets whichever of .ob-generate/.gen-confirm currently exists, and its own runFun() below both triggers generation and seeds the sample reminders.
 
 
-			sel        : '.ob-generate, .gen-confirm', // What: Selector String. Why: .gen-confirm is a fallback, not the primary target: clicking Regenerate yourself (the step's own "do it yourself" path) replaces the button with tab-today.jsx's own confirm prompt, and without this fallback the step's own target would genuinely vanish for however long the user takes to read the step and click Continue, long enough on a real human timescale to trip the not-found watchdog and end the tour outright. How: GuidedTour tries .ob-generate first, falling back to .gen-confirm once the button has already been replaced.
-			tab        : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			advanceOn  : '.gen-confirm-continue', // What: Advance On String. Why: Confirming the real Regenerate flow (the "do it yourself" path this step's own body text offers) is functionally the same action Next's own run() performs below via window.__emlGenerate(), and the real generate() call is reentrancy-guarded (see tab-today.jsx's own generatingRef), so whichever of the two fires first wins and the other becomes a harmless no-op. How: A real click landing on .gen-confirm-continue is treated exactly like clicking Next, run() included.
-			title      : 'Todo list generation', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-			body       : <>Each morning the app will <b>automatically generate your daily todo list</b>. Since you have not created anything yet, the app will use some sample data so that you can see how it works. You can always click Regenerate if you’d rather generate the list yourself. Let’s go ahead and run that now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the generator does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-			primary    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			back       : true,   // What: Back Boolean. Why: The user should always be able to return to the previous, Today-orientation step. How: GuidedTour shows its own Back button whenever this is true.
-			run        : () => { // What: Run Function. Why: On a genuine first run, the real generator needs to actually fire; on a replay (dismissed:true) the user already has a real Today list, so regenerating would clobber it, and the sample reminders below need seeding differently in each case too. How: This conditionally calls window.__emlGenerate() and seeds OB_TASKS, guarded by existence so returning to this step and forward again can never seed either one twice.
+			selStr    : '.ob-generate, .gen-confirm', // What: Selector String. Why: .gen-confirm is a fallback, not the primary target: clicking Regenerate yourself (the step's own "do it yourself" path) replaces the button with tab-today.jsx's own confirm prompt, and without this fallback the step's own target would genuinely vanish for however long the user takes to read the step and click Continue, long enough on a real human timescale to trip the not-found watchdog and end the tour outright. How: GuidedTour tries .ob-generate first, falling back to .gen-confirm once the button has already been replaced.
+			tabStr    : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			advCliStr : '.gen-confirm-continue', // What: Advance Click String. Why: Confirming the real Regenerate flow (the "do it yourself" path this step's own body text offers) is functionally the same action Next's own runFun() performs below via window.__emlGenerate(), and the real generate() call is reentrancy-guarded (see tab-today.jsx's own generatingRef), so whichever of the two fires first wins and the other becomes a harmless no-op. How: A real click landing on .gen-confirm-continue is treated exactly like clicking Next, runFun() included.
+			titStr    : 'Todo list generation', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+			bodEle    : <>Each morning the app will <b>automatically generate your daily todo list</b>. Since you have not created anything yet, the app will use some sample data so that you can see how it works. You can always click Regenerate if you’d rather generate the list yourself. Let’s go ahead and run that now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the generator does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+			priStr    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			bacBoo    : true, // What: Back Boolean. Why: The user should always be able to return to the previous, Today-orientation step. How: GuidedTour shows its own Back button whenever this is true.
+			runFun    : () => { // What: Run Function. Why: On a genuine first run, the real generator needs to actually fire; on a replay (dismissed:true) the user already has a real Today list, so regenerating would clobber it, and the sample reminders below need seeding differently in each case too. How: This conditionally calls window.__emlGenerate() and seeds OB_TASKS, guarded by existence so returning to this step and forward again can never seed either one twice.
 
 
 				if ( !onbStaObj.dismissed ) { // What: Not Dismissed Guard. Why: Only a true first run should actually regenerate the list; a replay's own review moment is the user's real, current list, not sample data. How: This calls the registered generator only when onbStaObj.dismissed is falsy.
@@ -392,13 +392,13 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 		},
 
 		{
-			sel        : '.group-section', // What: Selector String. Why: This step highlights the whole generated list, group sections included. How: GuidedTour spotlights every element .group-section matches.
-			tab        : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			title      : 'Daily todo list', // What: Title String. Why: This step's own coach card needs a heading naming what it's showing. How: GuidedTour renders this as the step's own heading text.
-			body       : <>This is <b>what a typical todo list will look like</b> once you’ve set up your own pickers and reminders. There will be tutorials for setting these up once this tour ends.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the highlighted list represents. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-			primary    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			back       : true,   // What: Back Boolean. Why: The user should always be able to return to the previous, Generate step. How: GuidedTour shows its own Back button whenever this is true.
-			scrollToTop : true   // What: Scroll To Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuidedTour scrolls all the way to 0 instead of just nudging the target into view.
+			selStr    : '.group-section', // What: Selector String. Why: This step highlights the whole generated list, group sections included. How: GuidedTour spotlights every element .group-section matches.
+			tabStr    : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			titStr    : 'Daily todo list', // What: Title String. Why: This step's own coach card needs a heading naming what it's showing. How: GuidedTour renders this as the step's own heading text.
+			bodEle    : <>This is <b>what a typical todo list will look like</b> once you’ve set up your own pickers and reminders. There will be tutorials for setting these up once this tour ends.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the highlighted list represents. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+			priStr    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			bacBoo    : true, // What: Back Boolean. Why: The user should always be able to return to the previous, Generate step. How: GuidedTour shows its own Back button whenever this is true.
+			scrTopBoo : true // What: Scroll To Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuidedTour scrolls all the way to 0 instead of just nudging the target into view.
 
 
 		},
@@ -406,10 +406,10 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 		{
 
 
-			...NAV_TAR_OBJ.picker, // What: Picker Nav Target Spread. Why: This reuses the shared Pickers nav-target descriptor instead of duplicating its sel/place/title/body. How: This spreads NAV_TAR_OBJ.picker's own fields onto this step object.
-			tab     : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			primary : 'Next',   // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			back    : true      // What: Back Boolean. Why: The user should always be able to return to the previous, list-review step. How: GuidedTour shows its own Back button whenever this is true.
+			...NAV_TAR_OBJ.picker, // What: Picker Nav Target Spread. Why: This reuses the shared Pickers nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.picker's own fields onto this step object.
+			tabStr : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			priStr : 'Next',   // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			bacBoo : true      // What: Back Boolean. Why: The user should always be able to return to the previous, list-review step. How: GuidedTour shows its own Back button whenever this is true.
 
 
 		},
@@ -417,10 +417,10 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 		{
 
 
-			...NAV_TAR_OBJ.stats, // What: Stats Nav Target Spread. Why: This reuses the shared Stats nav-target descriptor instead of duplicating its sel/place/title/body. How: This spreads NAV_TAR_OBJ.stats's own fields onto this step object.
-			tab     : 'stats', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			primary : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			back    : true     // What: Back Boolean. Why: The user should always be able to return to the previous, Pickers step. How: GuidedTour shows its own Back button whenever this is true.
+			...NAV_TAR_OBJ.stats, // What: Stats Nav Target Spread. Why: This reuses the shared Stats nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.stats's own fields onto this step object.
+			tabStr : 'stats', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			bacBoo : true     // What: Back Boolean. Why: The user should always be able to return to the previous, Pickers step. How: GuidedTour shows its own Back button whenever this is true.
 
 
 		},
@@ -428,20 +428,20 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 		{
 
 
-			...NAV_TAR_OBJ.data, // What: Data Nav Target Spread. Why: This reuses the shared Data nav-target descriptor instead of duplicating its sel/place/title/body. How: This spreads NAV_TAR_OBJ.data's own fields onto this step object.
-			tab     : 'data', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			primary : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			back    : true    // What: Back Boolean. Why: The user should always be able to return to the previous, Stats step. How: GuidedTour shows its own Back button whenever this is true.
+			...NAV_TAR_OBJ.data, // What: Data Nav Target Spread. Why: This reuses the shared Data nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.data's own fields onto this step object.
+			tabStr : 'data', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			bacBoo : true    // What: Back Boolean. Why: The user should always be able to return to the previous, Stats step. How: GuidedTour shows its own Back button whenever this is true.
 
 
 		},
 
 		{
-			...NAV_TAR_OBJ.settings, // What: Settings Nav Target Spread. Why: This reuses the shared Settings nav-target descriptor instead of duplicating its sel/place/title/body. How: This spreads NAV_TAR_OBJ.settings's own fields onto this step object.
-			tab     : 'settings', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			primary : 'Next',     // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			back    : true,       // What: Back Boolean. Why: The user should always be able to return to the previous, Data step. How: GuidedTour shows its own Back button whenever this is true.
-			run     : () => { // What: Run Function. Why: The sample pickers/reminders are not deleted, since the per-page mini-tours will reuse this exact data (and its precomputed Stats history) later, only tucked out of sight. How: This hides every sample picker and every sample task.
+			...NAV_TAR_OBJ.settings, // What: Settings Nav Target Spread. Why: This reuses the shared Settings nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.settings's own fields onto this step object.
+			tabStr : 'settings', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			priStr : 'Next',     // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			bacBoo : true,       // What: Back Boolean. Why: The user should always be able to return to the previous, Data step. How: GuidedTour shows its own Back button whenever this is true.
+			runFun : () => {     // What: Run Function. Why: The sample pickers/reminders are not deleted, since the per-page mini-tours will reuse this exact data (and its precomputed Stats history) later, only tucked out of sight. How: This hides every sample picker and every sample task.
 
 
 				OB_SAMPLE_PICKER_IDS.forEach( ( picIdeStr ) => actions.updatePicker( picIdeStr, { hidden : true } ) ); // What: Sample Picker Hide Call. Why: A hidden sample still exists for a later mini-tour to reuse, it just should not clutter Today anymore. How: This updates every sample picker id to hidden:true.
@@ -455,13 +455,13 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 		},
 
 		{
-			sel         : '.groups-dnd', // What: Selector String. Why: This closing step highlights the same area the tutorial launcher cards will appear in next. How: GuidedTour spotlights whatever .groups-dnd matches.
-			tab         : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			title       : 'You’re all finished!', // What: Title String. Why: This closing step's own coach card needs a heading marking the tour's own end. How: GuidedTour renders this as the step's own heading text.
-			body        : <>That is all for the Welcome Tour. Highlighted here are <b>a few small tutorials that will help get you set up to start using the app</b>. Enjoy!</>, // What: Body Element. Why: This closing step's own coach card needs a plain description of what comes next. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-			primary     : 'Done', // What: Primary String. Why: This is the tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' primary as the signal to call onFinish instead of moving to a next step.
-			back        : true,  // What: Back Boolean. Why: The user should always be able to return to the previous, Settings step. How: GuidedTour shows its own Back button whenever this is true.
-			scrollToTop : true   // What: Scroll To Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuidedTour scrolls all the way to 0 instead of just nudging the target into view.
+			selStr    : '.groups-dnd', // What: Selector String. Why: This closing step highlights the same area the tutorial launcher cards will appear in next. How: GuidedTour spotlights whatever .groups-dnd matches.
+			tabStr    : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			titStr    : 'You’re all finished!', // What: Title String. Why: This closing step's own coach card needs a heading marking the tour's own end. How: GuidedTour renders this as the step's own heading text.
+			bodEle    : <>That is all for the Welcome Tour. Highlighted here are <b>a few small tutorials that will help get you set up to start using the app</b>. Enjoy!</>, // What: Body Element. Why: This closing step's own coach card needs a plain description of what comes next. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+			priStr    : 'Done', // What: Primary String. Why: This is the tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
+			bacBoo    : true, // What: Back Boolean. Why: The user should always be able to return to the previous, Settings step. How: GuidedTour shows its own Back button whenever this is true.
+			scrTopBoo : true // What: Scroll To Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuidedTour scrolls all the way to 0 instead of just nudging the target into view.
 
 
 		}
@@ -489,7 +489,7 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 	 *
 	*/
 
-	const bacSteFun = ( tarSteNum ) => { // What: Back Step Function. Why: GuidedTour's own onGoBack calls this before actually navigating back to a given step, so any step-specific side effect a later step performed can be undone. How: This unhides the sample pickers, then branches on tarSteNum for the one step (the Generate step) whose own forward run() adds data that did not exist before it fired.
+	const bacSteFun = ( tarSteNum ) => { // What: Back Step Function. Why: GuidedTour's own onBacFun calls this before actually navigating back to a given step, so any step-specific side effect a later step performed can be undone. How: This unhides the sample pickers, then branches on tarSteNum for the one step (the Generate step) whose own forward runFun() adds data that did not exist before it fired.
 
 
 		if ( onbStaObj.dismissed ) return; // What: Dismissed Guard. Why: A replay's own samples are the user's real, already-hidden ones; unhiding them here would leak stale demo data into the real Today list. How: This bails out before touching anything whenever onbStaObj.dismissed is true.
