@@ -194,12 +194,12 @@ const NAV_STE_OBJ = { // What: Nav Step Object. Why: Every picker tutorial's own
 
 
 	selStr    : '[data-tab="picker"]', // What: Selector String. Why: This step highlights the real Pickers nav button. How: GuidedTour spotlights whatever this selector matches.
-	tabStr    : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr    : 'The Pickers Page', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-	bodEle    : <>The Pickers page is <b>where you can create new pickers</b> and can be found using the shuffle icon indicated here. You can also <b>manually run any picker, as well as send a specific item to your todo list</b>, from the Pickers page. Go ahead and click the "Pickers" page's button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the Pickers page does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo    : false, // What: Back Boolean. Why: This is every picker tutorial's own very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
-	reqCliBoo : true // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	tabStr    : 'today',               // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	titStr    : 'The Pickers Page',    // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	priStr    : 'Next',                // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo    : false,                 // What: Back Boolean. Why: This is every picker tutorial's own very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
+	reqCliBoo : true,                  // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	bodEle    : <>The Pickers page is <b>where you can create new pickers</b> and can be found using the shuffle icon indicated here. You can also <b>manually run any picker, as well as send a specific item to your todo list</b>, from the Pickers page. Go ahead and click the "Pickers" page's button now.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Pickers page does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 };
@@ -247,14 +247,14 @@ const NAV_STE_OBJ = { // What: Nav Step Object. Why: Every picker tutorial's own
 const bldNewFun = ( picIdeStr, state ) => ({ // What: Build New Function. Why: This builds Step 2, the step that highlights the real "+ Add New Picker" tab and stages this sample's own prefill data. How: This returns a step object whose runFun() publishes picIdeStr's own template onto the shared bus before the real click opens the create-picker form.
 
 
-	selStr    : '.picker-tab--add', // What: Selector String. Why: This step highlights the real "+ Add New Picker" tab. How: GuidedTour spotlights whatever this selector matches.
-	tabStr    : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	scrTopBoo : true, // What: Scroll To Top Boolean. Why: This step's own target sits at the top of the Pickers page. How: GuidedTour scrolls all the way to 0 for this step instead of just nudging the target into view.
+	selStr    : '.picker-tab--add',    // What: Selector String. Why: This step highlights the real "+ Add New Picker" tab. How: GuidedTour spotlights whatever this selector matches.
+	tabStr    : 'picker',              // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	scrTopBoo : true,                  // What: Scroll To Top Boolean. Why: This step's own target sits at the top of the Pickers page. How: GuidedTour scrolls all the way to 0 for this step instead of just nudging the target into view.
 	titStr    : 'Create a new picker', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	priStr    : 'Next',                // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo    : true,                  // What: Back Boolean. Why: The user should always be able to return to the previous, Pickers-nav step. How: GuidedTour shows its own Back button whenever this is true.
+	reqCliBoo : true,                  // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 	bodEle    : <>The "Add New Picker" button will <b>open up the form for creating a new picker</b>. Go ahead and click the "Add New Picker" button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo    : true, // What: Back Boolean. Why: The user should always be able to return to the previous, Pickers-nav step. How: GuidedTour shows its own Back button whenever this is true.
-	reqCliBoo : true, // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 
 	runFun : () => { // What: Run Function. Why: This sample's own template needs staging onto the bus before the real click opens the create-picker form. How: This looks up whether this sample was already created before, then publishes the template alongside that lookup's own result.
 
@@ -303,12 +303,12 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: This step highlights the c
 
 
 	selStr : '.np-fields .np-field:first-child', // What: Selector String. Why: This step highlights the Name field's whole group. How: GuidedTour spotlights whatever this selector matches.
-	tabStr : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr : 'Give it a name', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-	bodEle : <>This is the <b>name of the picker</b> and should be descriptive of the types of items contained in its list of items. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the Name field is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo : true, // What: Back Boolean. Why: The user should always be able to return to the previous, "Add New Picker" step. How: GuidedTour shows its own Back button whenever this is true.
-	resBoo : false // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	tabStr : 'picker',                           // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	titStr : 'Give it a name',                   // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	priStr : 'Next',                             // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo : true,                               // What: Back Boolean. Why: The user should always be able to return to the previous, "Add New Picker" step. How: GuidedTour shows its own Back button whenever this is true.
+	resBoo : false,                              // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	bodEle : <>This is the <b>name of the picker</b> and should be descriptive of the types of items contained in its list of items. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Name field is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 };
@@ -319,12 +319,12 @@ const GRO_STE_OBJ = { // What: Group Step Object. Why: This step highlights the 
 
 
 	selStr : '.np-fields .np-field:nth-child(2)', // What: Selector String. Why: This step highlights the Group field's whole group. How: GuidedTour spotlights whatever this selector matches.
-	tabStr : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr : 'Attach to a group', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-	bodEle : <>This is the group that the picker will be attached to and <b>controls how pickers are organized on the Today page</b>. You can either select an existing group or create a new one. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the Group field is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo : true, // What: Back Boolean. Why: The user should always be able to return to the previous, Name step. How: GuidedTour shows its own Back button whenever this is true.
-	resBoo : false // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	tabStr : 'picker',                            // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	titStr : 'Attach to a group',                 // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	priStr : 'Next',                              // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo : true,                                // What: Back Boolean. Why: The user should always be able to return to the previous, Name step. How: GuidedTour shows its own Back button whenever this is true.
+	resBoo : false,                               // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	bodEle : <>This is the group that the picker will be attached to and <b>controls how pickers are organized on the Today page</b>. You can either select an existing group or create a new one. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Group field is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 };
@@ -362,13 +362,13 @@ const bldModFun = ( picIdeStr ) => ({ // What: Build Mode Function. Why: This bu
 
 
 	selStr    : `.np-fields .mode-opt[data-mode="${ PIC_SAM_OBJ[ picIdeStr ].mode }"]`, // What: Selector String. Why: This step highlights only this sample's own mode option, never the whole list. How: GuidedTour spotlights whatever this selector matches.
-	tabStr    : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr    : 'Select a picker type', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-	bodEle    : <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you. Click next when you are ready to move on.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the mode options are. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo    : true, // What: Back Boolean. Why: The user should always be able to return to the previous, Group step. How: GuidedTour shows its own Back button whenever this is true.
-	resBoo    : false, // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
-	coaTopBoo : true // What: Coach At Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
+	tabStr    : 'picker',                                                               // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	titStr    : 'Select a picker type',                                                 // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	priStr    : 'Next',                                                                 // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo    : true,                                                                   // What: Back Boolean. Why: The user should always be able to return to the previous, Group step. How: GuidedTour shows its own Back button whenever this is true.
+	resBoo    : false,                                                                  // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	coaTopBoo : true,                                                                   // What: Coach At Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
+	bodEle    : <>These are the different types of pickers. They are the <b>main control for how pickers work</b> and each type has its own pros and cons. We have already selected the appropriate type for you. Click next when you are ready to move on.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the mode options are. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 });
@@ -420,15 +420,15 @@ const bldModFun = ( picIdeStr ) => ({ // What: Build Mode Function. Why: This bu
 const ITE_STE_OBJ = { // What: Items Step Object. Why: This step highlights the "Add Items" button that advances the form to its Items sub-step. How: This is spread as-is into every picker's own steObjArr below.
 
 
-	selStr    : '.ob-picker-next', // What: Selector String. Why: This step highlights the real "Add Items" button. How: GuidedTour spotlights whatever this selector matches.
-	tabStr    : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	scrBotBoo : true, // What: Scroll To Bottom Boolean. Why: This step's own target always sits at the bottom of the Details footer. How: GuidedTour scrolls all the way to the end for this step instead of just nudging the target into view.
+	selStr    : '.ob-picker-next',          // What: Selector String. Why: This step highlights the real "Add Items" button. How: GuidedTour spotlights whatever this selector matches.
+	tabStr    : 'picker',                   // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	scrBotBoo : true,                       // What: Scroll To Bottom Boolean. Why: This step's own target always sits at the bottom of the Details footer. How: GuidedTour scrolls all the way to the end for this step instead of just nudging the target into view.
 	titStr    : 'Add items to this picker', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	priStr    : 'Next',                     // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo    : true,                       // What: Back Boolean. Why: The user should always be able to return to the previous, mode-selection step. How: GuidedTour shows its own Back button whenever this is true.
+	reqCliBoo : true,                       // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	resBoo    : false,                      // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 	bodEle    : <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click the "Add Items" button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo    : true, // What: Back Boolean. Why: The user should always be able to return to the previous, mode-selection step. How: GuidedTour shows its own Back button whenever this is true.
-	reqCliBoo : true, // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
-	resBoo    : false, // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 
 	runFun : () => { // What: Run Function. Why: The scroll position must be reset to the top before the native click swaps the form's own content, so the clamp described above never gets a chance to fire. How: This zeroes .main's own scrollTop when it exists.
 
@@ -466,14 +466,14 @@ const ITE_STE_OBJ = { // What: Items Step Object. Why: This step highlights the 
 const bldAddFun = ( picIdeStr ) => ({ // What: Build Add Function. Why: This builds the step that highlights the real "+ Add Item" button and stages this item's own prefill data. How: This returns a step object whose runFun() publishes picCopObj's own item fields onto the shared bus.
 
 
-	selStr    : '.pv-additem-btn', // What: Selector String. Why: This step highlights the real "+ Add Item" button. How: GuidedTour spotlights whatever this selector matches.
-	tabStr    : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	selStr    : '.pv-additem-btn',                  // What: Selector String. Why: This step highlights the real "+ Add Item" button. How: GuidedTour spotlights whatever this selector matches.
+	tabStr    : 'picker',                           // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 	titStr    : 'Add an item to the picker’s list', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	priStr    : 'Next',                             // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo    : true,                               // What: Back Boolean. Why: The user should always be able to return to the previous, "Add Items" step. How: GuidedTour shows its own Back button whenever this is true.
+	reqCliBoo : true,                               // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	resBoo    : false,                              // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form and its Items sub-step, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 	bodEle    : <>Pickers need a <b>list of items to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click the "Add Item" button now to add a new item to this picker's list of items.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo    : true, // What: Back Boolean. Why: The user should always be able to return to the previous, "Add Items" step. How: GuidedTour shows its own Back button whenever this is true.
-	reqCliBoo : true, // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
-	resBoo    : false, // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form and its Items sub-step, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 
 	runFun : () => { // What: Run Function. Why: This item's own prefill data needs staging onto the bus before the real click opens the inline item editor. How: This looks up this sample's own copy, then converts its own sooNum/latNum days into the drift values tab-picker.jsx's own editor expects.
 
@@ -599,12 +599,12 @@ const WEI_STE_OBJ = { // What: Weight Step Object. Why: This step highlights the
 
 
 	selStr : '.pv-additem-wrap .pie-row:first-child', // What: Selector String. Why: This step highlights the Weight stepper row, only present for Weighted/Dynamic samples. How: GuidedTour spotlights whatever this selector matches.
-	tabStr : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr : 'Give it a weight', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-	bodEle : <>The Weight control allows you to <b>prioritize some items over others</b>. e.g. an item with a weight of 2 is twice as likely to be picked as an item with a weight of 1. That way the pick is still random while allowing you some control over how it works.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the Weight row is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo : true, // What: Back Boolean. Why: The user should always be able to return to the previous, name-input step. How: GuidedTour shows its own Back button whenever this is true.
-	resBoo : false // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	tabStr : 'picker',                                // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	titStr : 'Give it a weight',                      // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	priStr : 'Next',                                  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo : true,                                    // What: Back Boolean. Why: The user should always be able to return to the previous, name-input step. How: GuidedTour shows its own Back button whenever this is true.
+	resBoo : false,                                   // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	bodEle : <>The Weight control allows you to <b>prioritize some items over others</b>. e.g. an item with a weight of 2 is twice as likely to be picked as an item with a weight of 1. That way the pick is still random while allowing you some control over how it works.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Weight row is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 };
@@ -632,12 +632,12 @@ const BOO_STE_OBJ = { // What: Boost Step Object. Why: This step highlights the 
 
 
 	selStr : '.pv-additem-wrap .pie-row:nth-child(2)', // What: Selector String. Why: This step highlights the Boost row, only present for Dynamic samples. How: GuidedTour spotlights whatever this selector matches.
-	tabStr : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr : 'Boost value', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-	bodEle : <>This is the <b>crucial piece of a Dynamic Weighted picker</b>. Every time an item does not get picked this value will increase, making it more and more likely to be picked. Then when it does get picked this value will reset, making it much less likely to be picked.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the Boost row is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo : true, // What: Back Boolean. Why: The user should always be able to return to the previous, Weight step. How: GuidedTour shows its own Back button whenever this is true.
-	resBoo : false // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	tabStr : 'picker',                                 // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	titStr : 'Boost value',                            // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	priStr : 'Next',                                   // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo : true,                                     // What: Back Boolean. Why: The user should always be able to return to the previous, Weight step. How: GuidedTour shows its own Back button whenever this is true.
+	resBoo : false,                                    // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	bodEle : <>This is the <b>crucial piece of a Dynamic Weighted picker</b>. Every time an item does not get picked this value will increase, making it more and more likely to be picked. Then when it does get picked this value will reset, making it much less likely to be picked.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Boost row is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 };
@@ -660,14 +660,14 @@ const BOO_STE_OBJ = { // What: Boost Step Object. Why: This step highlights the 
 const SAV_STE_OBJ = { // What: Save Step Object. Why: This step highlights the item editor's own Save button. How: This is spread as-is into every picker's own steObjArr below.
 
 
-	selStr    : '.ob-item-save', // What: Selector String. Why: This step highlights the real Save button. How: GuidedTour spotlights whatever this selector matches.
-	tabStr    : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	selStr    : '.ob-item-save',         // What: Selector String. Why: This step highlights the real Save button. How: GuidedTour spotlights whatever this selector matches.
+	tabStr    : 'picker',                // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 	titStr    : 'Save this picker item', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-	bodEle    : <>This picker item is now complete and can be <b>saved to this picker’s list</b>. Go ahead and click the "Save" button now to save this item to this picker's list of items.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo    : true, // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-	reqCliBoo : true, // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
-	resBoo    : false // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	priStr    : 'Next',                  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo    : true,                    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+	reqCliBoo : true,                    // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	resBoo    : false,                   // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	bodEle    : <>This picker item is now complete and can be <b>saved to this picker’s list</b>. Go ahead and click the "Save" button now to save this item to this picker's list of items.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 };
@@ -696,14 +696,14 @@ const SAV_STE_OBJ = { // What: Save Step Object. Why: This step highlights the i
 const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the form's own real "Create Picker" button. How: This is spread as-is into every picker's own steObjArr below.
 
 
-	selStr    : '.ob-picker-create', // What: Selector String. Why: This step highlights the real Create Picker button. How: GuidedTour spotlights whatever this selector matches.
-	tabStr    : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	selStr    : '.ob-picker-create',  // What: Selector String. Why: This step highlights the real Create Picker button. How: GuidedTour spotlights whatever this selector matches.
+	tabStr    : 'picker',             // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 	titStr    : 'Create this picker', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-	bodEle    : <>You’re all set! You’ve created this picker and its list of items. All that’s left is to finish creating this picker. Go ahead and <b>click the "Create Picker" button now</b> to create this picker.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr    : 'Done', // What: Primary String. Why: This is every picker tutorial's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
-	bacBoo    : true, // What: Back Boolean. Why: The user should always be able to return to the previous, Save step. How: GuidedTour shows its own Back button whenever this is true.
-	reqCliBoo : true, // What: Require Click Boolean. Why: The real click both creates the picker and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
-	resBoo    : false // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	priStr    : 'Done',               // What: Primary String. Why: This is every picker tutorial's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
+	bacBoo    : true,                 // What: Back Boolean. Why: The user should always be able to return to the previous, Save step. How: GuidedTour shows its own Back button whenever this is true.
+	reqCliBoo : true,                 // What: Require Click Boolean. Why: The real click both creates the picker and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
+	resBoo    : false,                // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	bodEle    : <>You’re all set! You’ve created this picker and its list of items. All that’s left is to finish creating this picker. Go ahead and <b>click the "Create Picker" button now</b> to create this picker.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 };

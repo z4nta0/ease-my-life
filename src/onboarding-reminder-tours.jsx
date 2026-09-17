@@ -103,13 +103,13 @@ const bldAddFun = ( varKeyStr, state ) => { // What: Build Add Function. Why: Th
 	return { // What: Step Object Return. Why: GuidedTour needs this step's own selector, copy, and side effect. How: This returns the plain step object read by RemTouCom's own steObjArr below.
 
 
-		selStr    : '.rem-add-btn', // What: Selector String. Why: This step highlights the real "+" button that opens the add-reminder form. How: GuidedTour spotlights whatever this selector matches.
-		tabStr    : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+		selStr    : '.rem-add-btn',      // What: Selector String. Why: This step highlights the real "+" button that opens the add-reminder form. How: GuidedTour spotlights whatever this selector matches.
+		tabStr    : 'today',             // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 		titStr    : 'Create a Reminder', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+		priStr    : 'Next',              // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+		bacBoo    : false,               // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
+		reqCliBoo : true,                // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 		bodEle    : <>The "+" button is always present on the Today page and will <b>open the interface for creating a Reminder</b>. Go ahead and click the "+" button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the "+" button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-		priStr    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-		bacBoo    : false, // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
-		reqCliBoo : true, // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 
 		runFun : () => { // What: Run Function. Why: The live sample's own prefill data needs staging onto the bus before the real click opens the form. How: This looks up the live sample task, falling back to OB_TASKS' own static template, then publishes its own name/repeat/daysOfWeek onto the bus.
 
@@ -148,12 +148,12 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share t
 
 
 	selStr : '.rem-quickadd input', // What: Selector String. Why: This step highlights the real name input inside the now-open add-reminder form. How: GuidedTour spotlights whatever this selector matches.
-	tabStr : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr : 'Give it a name', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-	bodEle : <>This is the name of the reminder and is what will be <b>shown in your todo list on the Today page</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the name field is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo : true, // What: Back Boolean. Why: The user should always be able to return to the previous, "click the +" step. How: GuidedTour shows its own Back button whenever this is true.
-	resBoo : false // What: Resumable Boolean. Why: This step's own target only exists because Step 1's click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	tabStr : 'today',               // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	titStr : 'Give it a name',      // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	priStr : 'Next',                // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo : true,                  // What: Back Boolean. Why: The user should always be able to return to the previous, "click the +" step. How: GuidedTour shows its own Back button whenever this is true.
+	resBoo : false,                 // What: Resumable Boolean. Why: This step's own target only exists because Step 1's click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	bodEle : <>This is the name of the reminder and is what will be <b>shown in your todo list on the Today page</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the name field is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 };
@@ -187,12 +187,12 @@ const REP_STE_OBJ = { // What: Repeat Step Object. Why: The recurring tour's own
 
 
 	selStr : '.rem-quickadd-wrap .seg[aria-label="Repeat"] .seg-btn ~ .seg-btn', // What: Selector String. Why: This step highlights every Repeat pill except "Once", scoped narrowly enough to exclude the Monthly/Yearly Date/Weekday toggle below it. How: GuidedTour spotlights every element this combined selector matches.
-	tabStr : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr : 'Select recurring schedule', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-	bodEle : <>Recurring reminders have multiple options for <b>how often they should show up in your todo list</b>. We’ve already selected "Weekly" for you but feel free to select whichever one you’d prefer.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the Repeat pills control. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-	priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo : true, // What: Back Boolean. Why: The user should always be able to return to the previous, name-input step. How: GuidedTour shows its own Back button whenever this is true.
-	resBoo : false // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	tabStr : 'today',                                                            // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	titStr : 'Select recurring schedule',                                        // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	priStr : 'Next',                                                             // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo : true,                                                               // What: Back Boolean. Why: The user should always be able to return to the previous, name-input step. How: GuidedTour shows its own Back button whenever this is true.
+	resBoo : false,                                                              // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	bodEle : <>Recurring reminders have multiple options for <b>how often they should show up in your todo list</b>. We’ve already selected "Weekly" for you but feel free to select whichever one you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Repeat pills control. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 };
@@ -272,13 +272,13 @@ const bldFrqFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
 
 
 		selStr    : '.rem-quickadd-wrap .rem-extra-fade', // What: Selector String. Why: This step highlights whichever schedule control the recurring draft's own repeat kind reveals below the Repeat pills. How: GuidedTour spotlights whatever this selector matches.
-		tabStr    : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-		titStr    : repCopObj.titStr, // What: Title String. Why: This step's own coach card needs a heading naming what this repeat kind's own control does. How: GuidedTour renders repCopObj.titStr as the step's own heading text.
-		bodEle    : <>This option controls <b>{ repCopObj.leaStr }</b>{ repCopObj.taiStr } We’ve already made { repCopObj.pluBoo ? 'these selections' : 'this selection' } for you but feel free to customize it to whatever you’d prefer.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what this repeat kind's own control does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-		priStr    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-		bacBoo    : true, // What: Back Boolean. Why: The user should always be able to return to the previous, Repeat-pills step. How: GuidedTour shows its own Back button whenever this is true.
-		resBoo    : false, // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
-		coaTopBoo : true // What: Coach At Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
+		tabStr    : 'today',                              // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+		titStr    : repCopObj.titStr,                     // What: Title String. Why: This step's own coach card needs a heading naming what this repeat kind's own control does. How: GuidedTour renders repCopObj.titStr as the step's own heading text.
+		priStr    : 'Next',                               // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+		bacBoo    : true,                                 // What: Back Boolean. Why: The user should always be able to return to the previous, Repeat-pills step. How: GuidedTour shows its own Back button whenever this is true.
+		resBoo    : false,                                // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+		coaTopBoo : true,                                 // What: Coach At Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
+		bodEle    : <>This option controls <b>{ repCopObj.leaStr }</b>{ repCopObj.taiStr } We’ve already made { repCopObj.pluBoo ? 'these selections' : 'this selection' } for you but feel free to customize it to whatever you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what this repeat kind's own control does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 	};

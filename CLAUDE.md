@@ -509,6 +509,31 @@ decision is captured for next time instead of getting re-asked later.
     in `notify.js`, where forcing alignment would have padded
     `padZerFun`'s own comment out by 73 extra spaces to reach
     `locDayFun`'s own, much longer line.
+    - **Refinement — a single object literal's own properties reorder
+      around the outlier instead of losing alignment entirely**: this
+      case (as opposed to the function-declaration-run case above,
+      which has no properties to reorder) has an extra option the
+      general rule doesn't: when one or more properties in an object
+      are the ones tripping the 100-char threshold (most commonly a
+      `bodEle`/`body`-style property holding real prose, dramatically
+      longer than short sibling fields like a selector string or a
+      boolean), move each such long property to the END of the object
+      instead of letting it disable alignment for the whole thing.
+      Multiple long properties keep their own original relative order
+      among themselves once moved. The remaining (short) properties
+      then column-align their `:` and their comments with EACH OTHER
+      normally, computed only from that shorter set; the relocated long
+      propert(y/ies) at the end get natural one-space comment placement,
+      unaligned, the same treatment the general exception above already
+      gives an outlier. This was found live across the GuidedTour step
+      objects in `onboarding.jsx`/`onboarding-picker-tours.jsx`/
+      `onboarding-page-tours.jsx`/`onboarding-app-features.jsx`/
+      `onboarding-reminder-tours.jsx`, where nearly every step object's
+      own `bodEle` property was tripping the 100-char exception and
+      silently killing alignment for every other property in the same
+      object; reordering `bodEle` to the end and aligning the rest
+      recovers real, useful alignment across dozens of objects that
+      would otherwise have none at all.
 - **Structure — every comment is exactly one line**, following this exact
   template: `// What: <Name Expansion Or Short Descriptive Purpose, Title
   Cased>. Why: <a terse but complete sentence explaining why this exists>.
