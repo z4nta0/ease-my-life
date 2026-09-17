@@ -79,12 +79,12 @@ import { OB_TASKS             } from './onboarding-seed-data.js';    // What: On
 const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro modal reads this by pagIdeStr for its title/body/pills, falling back to navTarObj's own content when a page has no entry here. How: This is looked up by pagIdeStr inside PagTouCom below.
 
 
-	explore_today : {
+	explore_data : {
 
 
-		titStr : 'Today Page', // What: Title String. Why: The intro modal needs a heading naming this page. How: This is rendered as IntModCom's own title prop.
-		bodEle : <>This tutorial will take you on a quick tour of the Today page, in order to <b>highlight important elements and functionality</b>.</>, // What: Body Element. Why: The intro modal needs a plain description of what this tour covers. How: This is rendered as the sole entry of IntModCom's own paragraphs prop.
-		pilArr : [ 'page tour', 'today page', 'todo list' ] // What: Pills Array. Why: The intro modal's own pill row needs 3 short tags describing this tour. How: This is rendered as IntModCom's own pills prop.
+		bodEle : <>This tutorial will take you on a quick tour of the Data page, in order to <b>highlight important elements and functionality</b>.</>,
+		pilArr : [ 'page tour', 'data page', 'edit pickers' ],
+		titStr : 'Data Page'
 
 
 	},
@@ -92,29 +92,9 @@ const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro moda
 	explore_pickers : {
 
 
-		titStr : 'Pickers Page',
 		bodEle : <>This tutorial will take you on a quick tour of the Pickers page, in order to <b>highlight important elements and functionality</b>.</>,
-		pilArr : [ 'page tour', 'pickers page', 'new pickers' ]
-
-
-	},
-
-	explore_stats : {
-
-
-		titStr : 'Stats Page',
-		bodEle : <>This tutorial will take you on a quick tour of the Stats page, in order to <b>highlight important elements and functionality</b>.</>,
-		pilArr : [ 'page tour', 'stats page', 'picker statistics' ]
-
-
-	},
-
-	explore_data : {
-
-
-		titStr : 'Data Page',
-		bodEle : <>This tutorial will take you on a quick tour of the Data page, in order to <b>highlight important elements and functionality</b>.</>,
-		pilArr : [ 'page tour', 'data page', 'edit pickers' ]
+		pilArr : [ 'page tour', 'pickers page', 'new pickers' ],
+		titStr : 'Pickers Page'
 
 
 	},
@@ -122,9 +102,30 @@ const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro moda
 	explore_settings : {
 
 
-		titStr : 'Settings Page',
 		bodEle : <>This tutorial will take you on a quick tour of the Settings page, in order to <b>highlight important elements and functionality</b>.</>,
-		pilArr : [ 'page tour', 'settings page', 'app customization' ]
+		pilArr : [ 'page tour', 'settings page', 'app customization' ],
+		titStr : 'Settings Page'
+
+
+	},
+
+	explore_stats : {
+
+
+		bodEle : <>This tutorial will take you on a quick tour of the Stats page, in order to <b>highlight important elements and functionality</b>.</>,
+		pilArr : [ 'page tour', 'stats page', 'picker statistics' ],
+		titStr : 'Stats Page'
+
+
+	},
+
+	explore_today : {
+
+
+		pilArr : [ 'page tour', 'today page', 'todo list' ], // What: Pills Array. Why: The intro modal's own pill row needs 3 short tags describing this tour. How: This is rendered as IntModCom's own pills prop.
+		titStr : 'Today Page',                               // What: Title String. Why: The intro modal needs a heading naming this page. How: This is rendered as IntModCom's own title prop.
+
+		bodEle : <>This tutorial will take you on a quick tour of the Today page, in order to <b>highlight important elements and functionality</b>.</> // What: Body Element. Why: The intro modal needs a plain description of what this tour covers. How: This is rendered as the sole entry of IntModCom's own paragraphs prop.
 
 
 	}
@@ -249,11 +250,11 @@ const seePicFun = ( state, actions ) => { // What: Seed Picker Function. Why: Th
 		actions.addPicker({ // What: Add Picker Call. Why: This is the real, interactive disposable copy the tour's own steps point at. How: This adds a picker under copIdeStr, copying samPicObj's own name/group/mode/items.
 
 
-			id    : copIdeStr,
-			name  : samPicObj.name,
 			group : samPicObj.group,
+			id    : copIdeStr,
+			items : samPicObj.items.map( ( { id : oldIdeStr, ...iteResObj } ) => iteResObj ), // What: Items Field. Why: Items keep their own name/weight/ease fields but must drop their real id, passing the real sample's own item ids through would collide with the real hidden picker's own items in state.items. How: This destructures each item, discarding its own id and keeping the rest.
 			mode  : samPicObj.mode,
-			items : samPicObj.items.map( ( { id : oldIdeStr, ...iteResObj } ) => iteResObj ) // What: Items Field. Why: Items keep their own name/weight/ease fields but must drop their real id, passing the real sample's own item ids through would collide with the real hidden picker's own items in state.items. How: This destructures each item, discarding its own id and keeping the rest.
+			name  : samPicObj.name
 
 
 		});
@@ -424,67 +425,12 @@ const hidHisFun = ( actions ) => { // What: Hide History Function. Why: The real
 const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: bldSteFun below spreads each of these entries into the Pickers tour's own real step objects. How: This is looked up by a fixed key per step inside bldSteFun's own explore_pickers branch.
 
 
-	groupFilter : {
+	addPickerItem : {
 
 
-		// The pills specifically, not their .picker-groups container, that container stretches to the FULL width of its row (.stat-filter-row's own align-items: stretch), well past the pills' own content width, so highlighting it left a big undimmed gap of empty background after the last visible pill. Excludes the Type filter row (.picker-groups--type, same base class, its own separate row), which would otherwise widen this step's highlight down through it too.
-		selStr : '.picker-groups:not(.picker-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Group Filter', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-		bodEle : <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Group Filter pills do. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-
-
-	},
-
-	typeFilter : {
-
-
-		selStr : '.picker-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Type Filter',
-		bodEle : <>This will allow you to <b>further filter the pickers row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>
-
-
-	},
-
-	pickerSelection : {
-
-
-		// Excludes the "Add New Picker" button (now the first tab, not the last), the createNewPickers step (below) covers that on its own, and this step's own copy is entirely about selecting an EXISTING picker.
-		selStr : '.picker-tabs .picker-tab:not(.picker-tab--add)', // What: Selector String. Why: This step highlights every existing picker's own tab, excluding the Add tab. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Picker Selection',
-		bodEle : <>This will <b>allow you to select a specific picker</b>, in order to initiate a manual picker generation as well as edit or delete its items.</>
-
-
-	},
-
-	editPicker : {
-
-
-		selStr : '.picker-edit-btn', // What: Selector String. Why: This step highlights the real Edit Picker button. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Edit Picker',
-		bodEle : <>This opens the same form used to create a picker, pre-filled with this picker's current settings. You can <b>adjust its name, group, type, daily generator schedule, or conditional attachment</b>. Its items aren&rsquo;t edited here, but you can use this picker's own item list below or the Data tab for that.</>
-
-
-	},
-
-	createNewPickers : {
-
-
-		selStr : '.picker-tab--add', // What: Selector String. Why: This step highlights the real "Add New Picker" tab. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Create New Pickers',
-		bodEle : <>The "Add New Picker" button will <b>open up a form that allows you to create new pickers</b>. This will not be included as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished.</>
-
-
-	},
-
-	manualGeneration : {
-
-
-		// Two-phase highlight, both via the same fallback sel (findTargets tries each comma-separated selector in turn and uses the first that matches, see its own comment in onboarding-tour-runner.jsx). Before the click, .pv-act--pick:not(.is-busy) matches the idle "Pick One" button, so the pulse lands tight on the actual button instead of the whole window. The button alone doesn't disappear until the pick actually lands (phase flips to 'done'/'sent', see tab-picker.jsx), simply falling back once it's gone would leave the highlight pinned to a "Picking…" button for the whole multi-second spin instead of framing the window it's about to affect. .is-busy (added the instant the click fires, well before the spin finishes) excludes that first selector immediately on click, so the fallback to framing .picker-run kicks in right as the spin starts, not once it ends.
-		selStr    : '.pv-act--pick:not(.is-busy), .picker-run', // What: Selector String. Why: This step highlights the idle Pick One button, falling back to framing the whole stage once it goes busy. How: GuidedTour spotlights the first alternative that matches.
-		cliSelStr : '.pv-act--pick',                            // What: Click Selector String. Why: The reqCliBoo guard must stay scoped to the button specifically even once the fallback widens the highlight. How: This is read by the click-guard/reqCliBoo logic separately from selStr.
-		pulSelStr : '.pv-act--pick:not(.is-busy)',              // What: Pulse Selector String. Why: There is nothing left to click once the highlight has widened to frame the window, so the pulse should stop there too. How: This matches the same primary alternative as selStr.
-		titStr    : 'Manual Generation',
-		bodEle    : <>The "Pick One" button will <b>allow you to run a manual pick generation for your selected picker</b>, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick One" button now to see how this works.</>
+		bodEle : <>The "Add Item" button will <b>allow you to add new items to the selected picker's list of items</b>. This button is disabled for this tutorial. This concludes the Pickers page tutorial, click Done when you are ready.</>,
+		selStr : '.pv-additem-btn', // What: Selector String. Why: This step highlights the real Add Item button. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Add Picker Item'
 
 
 	},
@@ -492,12 +438,54 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: bldSteFun below sprea
 	addToTodoList : {
 
 
-		// Same two-phase highlight as manualGeneration above: before the click, .pv-act--send:not(.is-sent) matches the real Send to Today button, so the pulse lands tight on it instead of the whole window. Clicking it flips phase to 'sent' SYNCHRONOUSLY (see sendToToday in tab-picker.jsx, unlike Pick One's spin, there's no separate busy/running phase to exclude), which adds .is-sent immediately, so the fallback to framing .picker-run kicks in right on click. cliSelStr narrows the click-guard/reqCliBoo target down to Send to Today specifically, without it, a click landing anywhere else in the widened box (a disabled sibling button whose pointer-events:none passes its click through to the container) would satisfy reqCliBoo as if Send to Today itself had been clicked.
-		selStr    : '.pv-act--send:not(.is-sent), .picker-run', // What: Selector String. Why: This step highlights the real Send to Today button, falling back to framing the whole stage once it's sent. How: GuidedTour spotlights the first alternative that matches.
+		bodEle    : <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to see how this works.</>,
 		cliSelStr : '.pv-act--send',                            // What: Click Selector String. Why: The reqCliBoo guard must stay scoped to Send to Today specifically, not any disabled sibling sharing the widened box. How: This is read by the click-guard/reqCliBoo logic separately from selStr.
 		pulSelStr : '.pv-act--send:not(.is-sent)',              // What: Pulse Selector String. Why: There is nothing left to click once the highlight has widened to frame the window, so the pulse should stop there too. How: This matches the same primary alternative as selStr.
-		titStr    : 'Add to Todo List',
-		bodEle    : <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to see how this works.</>
+		selStr    : '.pv-act--send:not(.is-sent), .picker-run', // What: Selector String. Why: This step highlights the real Send to Today button, falling back to framing the whole stage once it's sent. How: GuidedTour spotlights the first alternative that matches.
+		titStr    : 'Add to Todo List'
+
+
+	},
+
+	createNewPickers : {
+
+
+		bodEle : <>The "Add New Picker" button will <b>open up a form that allows you to create new pickers</b>. This will not be included as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished.</>,
+		selStr : '.picker-tab--add', // What: Selector String. Why: This step highlights the real "Add New Picker" tab. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Create New Pickers'
+
+
+	},
+
+	editPicker : {
+
+
+		bodEle : <>This opens the same form used to create a picker, pre-filled with this picker's current settings. You can <b>adjust its name, group, type, daily generator schedule, or conditional attachment</b>. Its items aren&rsquo;t edited here, but you can use this picker's own item list below or the Data tab for that.</>,
+		selStr : '.picker-edit-btn', // What: Selector String. Why: This step highlights the real Edit Picker button. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Edit Picker'
+
+
+	},
+
+	groupFilter : {
+
+
+		selStr : '.picker-groups:not(.picker-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Group Filter',                                                // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+
+		bodEle : <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Group Filter pills do. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+
+
+	},
+
+	manualGeneration : {
+
+
+		bodEle    : <>The "Pick One" button will <b>allow you to run a manual pick generation for your selected picker</b>, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick One" button now to see how this works.</>,
+		cliSelStr : '.pv-act--pick',                            // What: Click Selector String. Why: The reqCliBoo guard must stay scoped to the button specifically even once the fallback widens the highlight. How: This is read by the click-guard/reqCliBoo logic separately from selStr.
+		pulSelStr : '.pv-act--pick:not(.is-busy)',              // What: Pulse Selector String. Why: There is nothing left to click once the highlight has widened to frame the window, so the pulse should stop there too. How: This matches the same primary alternative as selStr.
+		selStr    : '.pv-act--pick:not(.is-busy), .picker-run', // What: Selector String. Why: This step highlights the idle Pick One button, falling back to framing the whole stage once it goes busy. How: GuidedTour spotlights the first alternative that matches.
+		titStr    : 'Manual Generation'
 
 
 	},
@@ -505,21 +493,29 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: bldSteFun below sprea
 	pickerItems : {
 
 
-		// Per-item Send to Today/Edit/Delete are disabled while this step is up (tab-picker.jsx's own disablePoolItemButtons, gated on this exact tourId+step), narrating what they do is the point, not inviting the user to act on a disposable tutorial picker's real items. Excludes "+ Add Item" (.pool-items, not .picker-pool), that gets its own addPickerItem step next.
+		bodEle : <>Here you can <b>view all items in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial.</>,
 		selStr : '.pool-items', // What: Selector String. Why: This step highlights the whole item pool, excluding the Add Item button. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Picker Items',
-		bodEle : <>Here you can <b>view all items in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial.</>
+		titStr : 'Picker Items'
 
 
 	},
 
-	addPickerItem : {
+	pickerSelection : {
 
 
-		// Disabled while this step is up (tab-picker.jsx's own disableAddItemButton, same tourId+step gating pattern), narrating what it does is the point, not inviting the user to open the real create-item form on a disposable tutorial picker.
-		selStr : '.pv-additem-btn', // What: Selector String. Why: This step highlights the real Add Item button. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Add Picker Item',
-		bodEle : <>The "Add Item" button will <b>allow you to add new items to the selected picker's list of items</b>. This button is disabled for this tutorial. This concludes the Pickers page tutorial, click Done when you are ready.</>
+		bodEle : <>This will <b>allow you to select a specific picker</b>, in order to initiate a manual picker generation as well as edit or delete its items.</>,
+		selStr : '.picker-tabs .picker-tab:not(.picker-tab--add)', // What: Selector String. Why: This step highlights every existing picker's own tab, excluding the Add tab. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Picker Selection'
+
+
+	},
+
+	typeFilter : {
+
+
+		bodEle : <>This will allow you to <b>further filter the pickers row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
+		selStr : '.picker-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Type Filter'
 
 
 	}
@@ -552,42 +548,9 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: bldSteFun below spreads
 	groupFilter : {
 
 
-		// Excludes the Type filter row (.stat-scope-groups--type, same base class, its own separate row), which would otherwise widen this step's highlight down through it too.
+		bodEle : <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
 		selStr : '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Group Filter',
-		bodEle : <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>
-
-
-	},
-
-	typeFilter : {
-
-
-		selStr : '.stat-scope-groups--type .picker-group-pill',
-		titStr : 'Type Filter',
-		bodEle : <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>
-
-
-	},
-
-	pickersFilter : {
-
-
-		// All/Conditionals/Reminders/individual pickers all render as tabs in the same row, one combined step rather than splitting them out, since they're really one "what am I looking at" choice.
-		selStr : '.stat-scope-tabs .picker-tab', // What: Selector String. Why: This step highlights the whole scope-tabs row. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Show Filter',
-		bodEle : <>This will allow you to <b>narrow your selection to specific pickers, reminders or conditionals</b>, or you can view everything all at once.</>
-
-
-	},
-
-	rangeFilter : {
-
-
-		// The pills specifically, not their .stat-filter-pills--seg container, that container stretches to the FULL width of its row (.stat-filter-row's own align-items: stretch), well past the pills' own content width, so highlighting it left a big undimmed gap of empty background past the last visible pill.
-		selStr : '.stat-filter-pills--seg .stat-pill', // What: Selector String. Why: This step highlights the Range Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Range Filter',
-		bodEle : <>This will allow you to further <b>narrow your selection by date range</b>, with ranges from 1 week to 1 year to all time.</>
+		titStr : 'Group Filter'
 
 
 	},
@@ -595,9 +558,9 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: bldSteFun below spreads
 	heatmap : {
 
 
+		bodEle : <>This visualizes your completed activity over time, with <b>each day shaded by how much you got done</b>. You can click on any day for more details. Click Next when you are ready to advance to the next step.</>,
 		selStr : '.stat-heatmap-card', // What: Selector String. Why: This step highlights the whole activity heatmap card. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Activity Heatmap',
-		bodEle : <>This visualizes your completed activity over time, with <b>each day shaded by how much you got done</b>. You can click on any day for more details. Click Next when you are ready to advance to the next step.</>
+		titStr : 'Activity Heatmap'
 
 
 	},
@@ -605,10 +568,39 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: bldSteFun below spreads
 	pickerBreakdown : {
 
 
-		// Only rendered once a specific picker is the active scope, the PREVIOUS step's own runFun() (see bldSteFun below) selects one before this step ever mounts, same "prepare what the NEXT step needs" timing used throughout this file.
+		bodEle : <>Once a specific picker is selected, its individual items are broken down here. You can <b>view things like pick count, pick frequency, last picked date</b> and others. This concludes the Stats page tutorial, click Done when you are ready.</>,
 		selStr : '.stat-breakdown-card', // What: Selector String. Why: This step highlights the whole picker breakdown card. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Picker Breakdown',
-		bodEle : <>Once a specific picker is selected, its individual items are broken down here. You can <b>view things like pick count, pick frequency, last picked date</b> and others. This concludes the Stats page tutorial, click Done when you are ready.</>
+		titStr : 'Picker Breakdown'
+
+
+	},
+
+	pickersFilter : {
+
+
+		bodEle : <>This will allow you to <b>narrow your selection to specific pickers, reminders or conditionals</b>, or you can view everything all at once.</>,
+		selStr : '.stat-scope-tabs .picker-tab', // What: Selector String. Why: This step highlights the whole scope-tabs row. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Show Filter'
+
+
+	},
+
+	rangeFilter : {
+
+
+		bodEle : <>This will allow you to further <b>narrow your selection by date range</b>, with ranges from 1 week to 1 year to all time.</>,
+		selStr : '.stat-filter-pills--seg .stat-pill', // What: Selector String. Why: This step highlights the Range Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Range Filter'
+
+
+	},
+
+	typeFilter : {
+
+
+		bodEle : <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
+		selStr : '.stat-scope-groups--type .picker-group-pill',
+		titStr : 'Type Filter'
 
 
 	}
@@ -640,23 +632,22 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: bldSteFun below spreads
 const DAT_TAR_OBJ = { // What: Data Target Object. Why: bldSteFun below spreads each of these entries into the Data tour's own real step objects. How: This is looked up by a fixed key per step inside bldSteFun's own explore_data branch.
 
 
-	groupFilter : {
+	createPicker : {
 
 
-		// Excludes the Type filter row (.stat-scope-groups--type, same base class, its own separate row), which would otherwise widen this step's highlight down through it too.
-		selStr : '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Group Filter',
-		bodEle : <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>
+		bodEle : <>This creates a new picker directly from this list, respecting the group, type and conditional filters if they are used. This concludes the Data page tutorial, click Done when you are ready.</>,
+		selStr : '.cat-create-btn', // What: Selector String. Why: This step highlights the real Create Picker button at the bottom of the list. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Create New Picker'
 
 
 	},
 
-	typeFilter : {
+	groupFilter : {
 
 
-		selStr : '.stat-scope-groups--type .picker-group-pill',
-		titStr : 'Type Filter',
-		bodEle : <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the group filter and is extremely useful if you have created a lot of pickers.</>
+		bodEle : <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
+		selStr : '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Group Filter'
 
 
 	},
@@ -664,19 +655,9 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: bldSteFun below spreads 
 	pickersFilter : {
 
 
+		bodEle : <>This will allow you to <b>further narrow exactly what you want to view and edit</b>.</>,
 		selStr : '.stat-scope-tabs .picker-tab',
-		titStr : 'Show Filter',
-		bodEle : <>This will allow you to <b>further narrow exactly what you want to view and edit</b>.</>
-
-
-	},
-
-	remindersManager : {
-
-
-		selStr : '.cat--reminders', // What: Selector String. Why: This step highlights the whole Reminders manager section. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'View and Edit Reminders',
-		bodEle : <>This is where you can <b>view and edit all of your reminders, as well as create new ones</b>. Feel free to explore this section yourself. Click Next when you are ready to move on.</>
+		titStr : 'Show Filter'
 
 
 	},
@@ -684,20 +665,29 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: bldSteFun below spreads 
 	pickersManager : {
 
 
-		// Targets every .cat section (each picker/Conditionals/Reminders card), not the whole .data-list container, excludes the trailing "Create Picker" button (a plain .cat-create-btn sibling, not a .cat section), which gets its own createPicker step below instead. Scope stays 'all' for the whole Data tour, so every picker card renders here, same as the Welcome Tour's own whole-list highlight on Today.
+		bodEle : <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
 		selStr : '.data-list > .cat', // What: Selector String. Why: This step highlights every picker/Conditionals/Reminders card as one combined region. How: GuidedTour spotlights every element this selector matches.
-		titStr : 'View and Edit Pickers',
-		bodEle : <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. Click Next when you are ready to move on.</>
+		titStr : 'View and Edit Pickers'
 
 
 	},
 
-	createPicker : {
+	remindersManager : {
 
 
-		selStr : '.cat-create-btn', // What: Selector String. Why: This step highlights the real Create Picker button at the bottom of the list. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Create New Picker',
-		bodEle : <>This creates a new picker directly from this list, respecting the group, type and conditional filters if they are used. This concludes the Data page tutorial, click Done when you are ready.</>
+		bodEle : <>This is where you can <b>view and edit all of your reminders, as well as create new ones</b>. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
+		selStr : '.cat--reminders', // What: Selector String. Why: This step highlights the whole Reminders manager section. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'View and Edit Reminders'
+
+
+	},
+
+	typeFilter : {
+
+
+		bodEle : <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the group filter and is extremely useful if you have created a lot of pickers.</>,
+		selStr : '.stat-scope-groups--type .picker-group-pill',
+		titStr : 'Type Filter'
 
 
 	}
@@ -725,12 +715,22 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: bldSteFun below spreads 
 const SET_TAR_OBJ = { // What: Settings Target Object. Why: bldSteFun below spreads each of these entries into the Settings tour's own real step objects. How: This is looked up by a fixed key per step inside bldSteFun's own explore_settings branch.
 
 
+	about : {
+
+
+		bodEle : <>This is where you can find information about this app and its developer, replay the welcome tour and all of these tutorials at any time, and <b>contact the developer if you have any problems or suggestions</b>.</>,
+		selStr : '.set-section--about',
+		titStr : 'About Ease My Life'
+
+
+	},
+
 	appearance : {
 
 
+		bodEle : <>This is where you can <b>customize the app's look and feel</b>: light, dark and custom theme colors, completion celebration animations, picker pick animations, and tab bar placement.</>,
 		selStr : '.set-section--appearance', // What: Selector String. Why: This step highlights the whole Appearance section. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'App Customization',
-		bodEle : <>This is where you can <b>customize the app's look and feel</b>: light, dark and custom theme colors, completion celebration animations, picker pick animations, and tab bar placement.</>
+		titStr : 'App Customization'
 
 
 	},
@@ -738,19 +738,9 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: bldSteFun below spre
 	daily : {
 
 
+		bodEle : <>This is where you can <b>control the daily generator</b>: turn auto generation on or off, what time it runs, and enabling notifications for when it does.</>,
 		selStr : '.set-section--daily',
-		titStr : 'Daily Generator',
-		bodEle : <>This is where you can <b>control the daily generator</b>: turn auto generation on or off, what time it runs, and enabling notifications for when it does.</>
-
-
-	},
-
-	holidays : {
-
-
-		selStr : '.set-section--holidays',
-		titStr : 'Holiday Controls',
-		bodEle : <>This is where you can <b>toggle which holiday observances that the pickers and reminders option uses</b>. You can even add your own custom holidays, like your birthday!</>
+		titStr : 'Daily Generator'
 
 
 	},
@@ -758,19 +748,19 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: bldSteFun below spre
 	data : {
 
 
+		bodEle : <>This is where you can protect your data from browser deletion, <b>install the app directly to your device</b>, back up your data (export), restore your data (import), or erase all of your data.</>,
 		selStr : '.set-section--data',
-		titStr : 'Data Control',
-		bodEle : <>This is where you can protect your data from browser deletion, <b>install the app directly to your device</b>, back up your data (export), restore your data (import), or erase all of your data.</>
+		titStr : 'Data Control'
 
 
 	},
 
-	about : {
+	holidays : {
 
 
-		selStr : '.set-section--about',
-		titStr : 'About Ease My Life',
-		bodEle : <>This is where you can find information about this app and its developer, replay the welcome tour and all of these tutorials at any time, and <b>contact the developer if you have any problems or suggestions</b>.</>
+		bodEle : <>This is where you can <b>toggle which holiday observances that the pickers and reminders option uses</b>. You can even add your own custom holidays, like your birthday!</>,
+		selStr : '.set-section--holidays',
+		titStr : 'Holiday Controls'
 
 
 	},
@@ -778,9 +768,9 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: bldSteFun below spre
 	legal : {
 
 
+		bodEle : <>This is where you can <b>view the Privacy Policy and Terms of Service</b>. This concludes the Settings page tutorial, click Done when you are ready.</>,
 		selStr : '.set-section--legal',
-		titStr : 'Legal Information',
-		bodEle : <>This is where you can <b>view the Privacy Policy and Terms of Service</b>. This concludes the Settings page tutorial, click Done when you are ready.</>
+		titStr : 'Legal Information'
 
 
 	}
@@ -811,34 +801,12 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: bldSteFun below spre
 const TOD_TAR_OBJ = { // What: Today Target Object. Why: bldSteFun below spreads each of these entries into the Today tour's own real step objects. How: This is looked up by a fixed key per step inside bldSteFun's own explore_today branch.
 
 
-	progressRing : {
-
-
-		selStr : '.ring', // What: Selector String. Why: This step highlights the real progress ring. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Progress Ring',
-		bodEle : <>This <b>tracks your current progress of completed / total tasks for today’s todo list</b>. Once filled completely, your Day Streak will increase and the celebration animations will play.</>
-
-
-	},
-
-	groupsNav : {
-
-
-		// The <ul> specifically, not the whole .group-rail aside, on desktop (a vertical sidebar) that aside also contains .rail-editmode's own Edit Mode button below the group list, and highlighting the whole container would spotlight that button right alongside the group buttons this step is actually about. Mobile's .group-rail is a horizontal pill row with Edit Mode surfaced separately in the footer instead, so this scoping is a no-op difference there, same highlight either way.
-		selStr : '.group-rail ul', // What: Selector String. Why: This step highlights the group navigation list, excluding Edit Mode. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'List Navigation',
-		bodEle : <>This is the todo list’s navigation, <b>allowing you to jump directly to a group’s section</b>. Over time your list can grow quite long and this helps to quickly move between the different sections of your todo list.</>
-
-
-	},
-
 	editMode : {
 
 
-		// .em-rail-btn (sidebar, desktop) / .foot-editmode (footer, mobile) both exist in the DOM at every width, a container query just toggles which one is display:none, so this relies on findTargets' own zero-rect filtering to resolve to whichever is actually visible. Unlike the other targets here, this body isn't a pure standalone reference blurb, it bakes in the click instruction, since Edit Mode (like Step 1's nav button) is taught by having the user click the real control, not just described.
+		bodEle : <>The "Edit Mode" button will allow you to both <b>rearrange the positions of the groups and items, as well as rename the groups</b>. Go ahead and click the "Edit Mode" button now.</>,
 		selStr : '.em-rail-btn, .foot-editmode', // What: Selector String. Why: This step highlights whichever Edit Mode control is actually visible at the current width. How: GuidedTour spotlights the first alternative that matches.
-		titStr : 'Edit Mode',
-		bodEle : <>The "Edit Mode" button will allow you to both <b>rearrange the positions of the groups and items, as well as rename the groups</b>. Go ahead and click the "Edit Mode" button now.</>
+		titStr : 'Edit Mode'
 
 
 	},
@@ -846,10 +814,29 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: bldSteFun below spreads
 	groupGrip : {
 
 
-		// Scoped to the Reminders section specifically (.rem-section, its own distinguishing class, every OTHER group section shares plain .group-section) since .group-grip itself isn't unique: one renders per section once editMode is on (see reminders.jsx's RemSecCom and tab-today.jsx's GroupHeader, which share this exact class/aria-label).
+		bodEle : <>This will <b>allow you to move an entire group section to a different position in the todo list or move item positions within a group’s section</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now. Click Next when you are ready to move on.</>,
 		selStr : '.rem-section .group-grip', // What: Selector String. Why: This step highlights the Reminders section's own drag handle specifically. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Movable Icon',
-		bodEle : <>This will <b>allow you to move an entire group section to a different position in the todo list or move item positions within a group’s section</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now. Click Next when you are ready to move on.</>
+		titStr : 'Movable Icon'
+
+
+	},
+
+	groupsNav : {
+
+
+		bodEle : <>This is the todo list’s navigation, <b>allowing you to jump directly to a group’s section</b>. Over time your list can grow quite long and this helps to quickly move between the different sections of your todo list.</>,
+		selStr : '.group-rail ul', // What: Selector String. Why: This step highlights the group navigation list, excluding Edit Mode. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'List Navigation'
+
+
+	},
+
+	progressRing : {
+
+
+		bodEle : <>This <b>tracks your current progress of completed / total tasks for today’s todo list</b>. Once filled completely, your Day Streak will increase and the celebration animations will play.</>,
+		selStr : '.ring', // What: Selector String. Why: This step highlights the real progress ring. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Progress Ring'
 
 
 	},
@@ -857,10 +844,9 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: bldSteFun below spreads
 	renameGroup : {
 
 
-		// Reminders has no rename feature (its own header is a plain, non-editable <h2>, see reminders.jsx), so this targets Page Tours instead: it's rendered through the same GroupHeader component as a real picker group (rename included), and, unlike any actual picker group, is guaranteed to exist the moment this tour is reachable at all, since both live under the same mini-tour checklist.
+		bodEle : <>This will <b>allow you to change a group’s name</b>. You can go ahead and try it yourself, but once you exit this tutorial the changes will be reverted. This concludes the Today page tutorial, click Done when you are ready.</>,
 		selStr : '.pt-section .group-name-input', // What: Selector String. Why: This step highlights the Page Tours group's own rename input. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Rename Group',
-		bodEle : <>This will <b>allow you to change a group’s name</b>. You can go ahead and try it yourself, but once you exit this tutorial the changes will be reverted. This concludes the Today page tutorial, click Done when you are ready.</>
+		titStr : 'Rename Group'
 
 
 	}

@@ -513,14 +513,14 @@ function genSidFun( gutWidNum, conHeiNum ) {
 		return { // What: Placement Item Return. Why: Every raw grid placement needs to become one fully-styled, renderable item using all the values computed above. How: This builds the final { id, big, top, inset, symbol, size, opacity, rotate } object for this one glyph.
 
 
-			ideStr  : `${ rowIndNum }-${ colIndNum }-${ iteIndNum }`,                       // What: Identifier String. Why: Each rendered glyph needs a stable, unique React key. How: This concatenates the placement's own row, column, and item index into one string.
-			bigBoo  : isaBigBoo,                                                            // What: Big Boolean. Why: The rendering component needs to know whether this glyph claimed a 2x2 footprint. How: This carries the same isaBigBoo value computed above straight through.
-			topNum  : rowIndNum * ROW_HEI_NUM + rowJitNum,                                  // What: Top Number. Why: The rendered glyph needs its own absolute vertical offset within the gutter. How: This converts the placement's own row index into pixels and adds the jittered offset.
-			insNum  : insPosNum,                                                            // What: Inset Number. Why: The rendered glyph needs its own absolute horizontal offset from the content edge. How: This carries the same insPosNum value computed above straight through.
-			symStr  : nexSymFun(),                                                          // What: Symbol String. Why: Each glyph needs an actual character to render. How: This draws the next well-distributed symbol from the cycler built above.
-			sizNum  : isaBigBoo ? nexBigFun() : nexSizFun(),                                // What: Size Number. Why: A big glyph needs its own larger font-size range than a normal one. How: This draws from nexBigFun when isaBigBoo, nexSizFun otherwise.
-			opaNum  : 0.08 + Math.random() * 0.1,                                           // What: Opacity Number. Why: Glyphs should stay subtle, not compete with real content. How: This picks a random opacity in a narrow, low-visibility range.
-			rotNum  : nexRotFun()                                                           // What: Rotate Number. Why: Each glyph needs its own rotation angle for visual variety. How: This draws the next well-distributed angle from the cycler built above.
+			bigBoo : isaBigBoo,                                      // What: Big Boolean. Why: The rendering component needs to know whether this glyph claimed a 2x2 footprint. How: This carries the same isaBigBoo value computed above straight through.
+			ideStr : `${ rowIndNum }-${ colIndNum }-${ iteIndNum }`, // What: Identifier String. Why: Each rendered glyph needs a stable, unique React key. How: This concatenates the placement's own row, column, and item index into one string.
+			insNum : insPosNum,                                      // What: Inset Number. Why: The rendered glyph needs its own absolute horizontal offset from the content edge. How: This carries the same insPosNum value computed above straight through.
+			opaNum : 0.08 + Math.random() * 0.1,                     // What: Opacity Number. Why: Glyphs should stay subtle, not compete with real content. How: This picks a random opacity in a narrow, low-visibility range.
+			rotNum : nexRotFun(),                                    // What: Rotate Number. Why: Each glyph needs its own rotation angle for visual variety. How: This draws the next well-distributed angle from the cycler built above.
+			sizNum : isaBigBoo ? nexBigFun() : nexSizFun(),          // What: Size Number. Why: A big glyph needs its own larger font-size range than a normal one. How: This draws from nexBigFun when isaBigBoo, nexSizFun otherwise.
+			symStr : nexSymFun(),                                    // What: Symbol String. Why: Each glyph needs an actual character to render. How: This draws the next well-distributed symbol from the cycler built above.
+			topNum : rowIndNum * ROW_HEI_NUM + rowJitNum             // What: Top Number. Why: The rendered glyph needs its own absolute vertical offset within the gutter. How: This converts the placement's own row index into pixels and adds the jittered offset.
 
 
 		};

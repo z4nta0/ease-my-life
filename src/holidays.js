@@ -316,12 +316,12 @@ function comYeaFun( yeaValNum, couCodStr = 'US' ) {
 		return { // What: Holiday Record Object. Why: The caller needs one denormalized record per definition, carrying both the observed and actual dates so callers can tell whether they differ. How: This builds one plain object per curRegObj.defArr entry, mixing data straight from holDefObj with the two dates resolved above.
 
 
-			keyStr : holDefObj.keyStr,                                  // What: Key String. Why: This is the stable identifier callers use to reference this specific holiday, e.g. to disable it. How: This is copied straight from holDefObj.keyStr.
-			namStr : holDefObj.namStr,                                  // What: Name String. Why: This is the human-readable label callers display for this holiday. How: This is copied straight from holDefObj.namStr.
-			datObj : obsDatObj,                                         // What: Date Object. Why: This is the OBSERVED day, what people actually get off, which is what most callers care about. How: This is obsDatObj, resolved above.
-			isoStr : isoDatFun( obsDatObj ),                            // What: Iso String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts obsDatObj via isoDatFun.
-			actObj : actDatObj,                                         // What: Actual Object. Why: A caller wording itself around an observed shift needs the true calendar date too. How: This is actDatObj, resolved above.
-			obsBoo : isoDatFun( obsDatObj ) !== isoDatFun( actDatObj )  // What: Observed Boolean. Why: A caller needs to know whether the observed and actual dates actually differ, to word itself accordingly. How: This compares the two dates' own iso strings for inequality.
+			actObj : actDatObj,                                        // What: Actual Object. Why: A caller wording itself around an observed shift needs the true calendar date too. How: This is actDatObj, resolved above.
+			datObj : obsDatObj,                                        // What: Date Object. Why: This is the OBSERVED day, what people actually get off, which is what most callers care about. How: This is obsDatObj, resolved above.
+			isoStr : isoDatFun( obsDatObj ),                           // What: Iso String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts obsDatObj via isoDatFun.
+			keyStr : holDefObj.keyStr,                                 // What: Key String. Why: This is the stable identifier callers use to reference this specific holiday, e.g. to disable it. How: This is copied straight from holDefObj.keyStr.
+			namStr : holDefObj.namStr,                                 // What: Name String. Why: This is the human-readable label callers display for this holiday. How: This is copied straight from holDefObj.namStr.
+			obsBoo : isoDatFun( obsDatObj ) !== isoDatFun( actDatObj ) // What: Observed Boolean. Why: A caller needs to know whether the observed and actual dates actually differ, to word itself accordingly. How: This compares the two dates' own iso strings for inequality.
 
 
 		};
@@ -415,11 +415,11 @@ function actYeaFun( holStaObj, yeaValNum ) {
 		return { // What: Custom Record Object. Why: Every resolved custom day needs the same record shape as a computed holiday, so callers can treat them uniformly. How: This builds one record, prefixing the key so it can never collide with a computed holiday's own key.
 
 
-			keyStr : 'custom:' + cusDefObj.id, // What: Key String. Why: This is the stable identifier for this custom day, namespaced so it can never collide with a computed holiday's own key. How: This prefixes cusDefObj.id with 'custom:'.
-			namStr : cusDefObj.name,           // What: Name String. Why: This is the human-readable label callers display for this custom day. How: This is copied straight from cusDefObj.name.
+			custom : true,                     // What: Custom. Why: A caller needs to tell this record apart from a computed built-in holiday. How: This is always true for a record built from the user's own custom list.
 			datObj : cusDatObj,                // What: Date Object. Why: This is the resolved concrete date for yeaValNum. How: This is cusDatObj, resolved above.
 			isoStr : isoDatFun( cusDatObj ),   // What: Iso String. Why: Callers matching against a specific calendar day need a plain comparable string, not a Date instance. How: This converts cusDatObj via isoDatFun.
-			custom : true                      // What: Custom. Why: A caller needs to tell this record apart from a computed built-in holiday. How: This is always true for a record built from the user's own custom list.
+			keyStr : 'custom:' + cusDefObj.id, // What: Key String. Why: This is the stable identifier for this custom day, namespaced so it can never collide with a computed holiday's own key. How: This prefixes cusDefObj.id with 'custom:'.
+			namStr : cusDefObj.name            // What: Name String. Why: This is the human-readable label callers display for this custom day. How: This is copied straight from cusDefObj.name.
 
 
 		};
@@ -634,14 +634,14 @@ function regLabFun( couCodStr ) { return ( REG_DEF_OBJ[ couCodStr ] || REG_DEF_O
 export const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object every consuming file imports and calls through, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
 
 
-	comYeaFun : comYeaFun, // What: Compute Year Function. Why: tab-settings.jsx calls this for a specific year's own active holiday set. How: This re-exports comYeaFun under its own matching name.
 	actYeaFun : actYeaFun, // What: Active Year Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports actYeaFun under its own matching name.
-	holDatFun : holDatFun, // What: Holiday On Date Function. Why: tab-today.jsx and tasks.js both call this to check whether a specific date is a holiday. How: This re-exports holDatFun under its own matching name.
-	holInfFun : holInfFun, // What: Holiday Info Function. Why: tasks.js calls this for a specific date's own full holiday info. How: This re-exports holInfFun under its own matching name.
+	comYeaFun : comYeaFun, // What: Compute Year Function. Why: tab-settings.jsx calls this for a specific year's own active holiday set. How: This re-exports comYeaFun under its own matching name.
 	defStaFun : defStaFun, // What: Default State Function. Why: seed.js, store.jsx, and tab-settings.jsx all call this for a fresh holidays-state shape. How: This re-exports defStaFun under its own matching name.
 	gueCouFun : gueCouFun, // What: Guess Country Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports gueCouFun under its own matching name.
-	regLabFun : regLabFun, // What: Region Label Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports regLabFun under its own matching name.
-	isoDatFun : isoDatFun  // What: Iso Date Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports isoDatFun under its own matching name.
+	holDatFun : holDatFun, // What: Holiday On Date Function. Why: tab-today.jsx and tasks.js both call this to check whether a specific date is a holiday. How: This re-exports holDatFun under its own matching name.
+	holInfFun : holInfFun, // What: Holiday Info Function. Why: tasks.js calls this for a specific date's own full holiday info. How: This re-exports holInfFun under its own matching name.
+	isoDatFun : isoDatFun, // What: Iso Date Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports isoDatFun under its own matching name.
+	regLabFun : regLabFun  // What: Region Label Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of HOL_NAM_OBJ's own stable public shape. How: This re-exports regLabFun under its own matching name.
 
 
 };

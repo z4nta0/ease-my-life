@@ -12,18 +12,66 @@ import { redMotFun } from './ui.jsx'; // What: Reduce Motion Function. Why: The 
 const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed set of built-in color themes, each a full 8-token palette plus a display name. How: This is read directly by resTheFun/appPalFun and exported for the Settings tab's theme picker.
 
 
+	ember : { // What: Ember Palette Object. Why: This is one of the app's built-in themes. How: This holds Ember's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
+
+
+		accStr : 'oklch(0.72 0.13 42)',  // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
+		aceStr : 'oklch(0.32 0.05 42)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
+		bacStr : 'oklch(0.17 0.014 45)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
+		borStr : 'oklch(0.28 0.018 45)', // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
+		mutStr : 'oklch(0.65 0.016 50)', // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
+		namStr : 'Ember',                // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
+		surStr : 'oklch(0.21 0.016 45)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
+		texStr : 'oklch(0.95 0.012 50)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		warStr : 'oklch(0.78 0.13 60)'   // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
+
+
+	},
+
 	ink : { // What: Ink Palette Object. Why: This is one of the app's built-in themes. How: This holds Ink's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
 
 
-		namStr : 'Ink',                    // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
-		bacStr : 'oklch(0.985 0.003 240)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
-		surStr : 'oklch(0.975 0.004 240)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
-		borStr : 'oklch(0.91 0.005 240)',  // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
-		texStr : 'oklch(0.17 0.012 250)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
-		mutStr : 'oklch(0.5 0.012 250)',   // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
 		accStr : 'oklch(0.5 0.14 250)',    // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
 		aceStr : 'oklch(0.95 0.025 250)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
+		bacStr : 'oklch(0.985 0.003 240)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
+		borStr : 'oklch(0.91 0.005 240)',  // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
+		mutStr : 'oklch(0.5 0.012 250)',   // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
+		namStr : 'Ink',                    // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
+		surStr : 'oklch(0.975 0.004 240)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
+		texStr : 'oklch(0.17 0.012 250)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
 		warStr : 'oklch(0.62 0.13 50)'     // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
+
+
+	},
+
+	moss : { // What: Moss Palette Object. Why: This is one of the app's built-in themes. How: This holds Moss's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
+
+
+		accStr : 'oklch(0.7 0.1 155)',    // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
+		aceStr : 'oklch(0.3 0.035 150)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
+		bacStr : 'oklch(0.17 0.01 150)',  // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
+		borStr : 'oklch(0.28 0.016 150)', // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
+		mutStr : 'oklch(0.65 0.012 150)', // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
+		namStr : 'Moss',                  // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
+		surStr : 'oklch(0.21 0.014 150)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
+		texStr : 'oklch(0.95 0.008 150)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		warStr : 'oklch(0.78 0.13 60)'    // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
+
+
+	},
+
+	night : { // What: Night Palette Object. Why: This is one of the app's built-in themes. How: This holds Night's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
+
+
+		accStr : 'oklch(0.75 0.14 250)',  // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
+		aceStr : 'oklch(0.3 0.04 250)',   // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
+		bacStr : 'oklch(0.18 0.012 250)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
+		borStr : 'oklch(0.3 0.014 250)',  // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
+		mutStr : 'oklch(0.65 0.012 250)', // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
+		namStr : 'Night',                 // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
+		surStr : 'oklch(0.22 0.014 250)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
+		texStr : 'oklch(0.95 0.005 250)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
+		warStr : 'oklch(0.78 0.13 60)'    // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
 
 
 	},
@@ -31,14 +79,14 @@ const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed 
 	sage : { // What: Sage Palette Object. Why: This is one of the app's built-in themes. How: This holds Sage's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
 
 
-		namStr : 'Sage',                   // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
-		bacStr : 'oklch(0.985 0.005 130)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
-		surStr : 'oklch(0.97 0.008 130)',  // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
-		borStr : 'oklch(0.9 0.012 130)',   // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
-		texStr : 'oklch(0.19 0.015 150)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
-		mutStr : 'oklch(0.5 0.012 150)',   // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
 		accStr : 'oklch(0.48 0.09 155)',   // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
 		aceStr : 'oklch(0.95 0.03 150)',   // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
+		bacStr : 'oklch(0.985 0.005 130)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
+		borStr : 'oklch(0.9 0.012 130)',   // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
+		mutStr : 'oklch(0.5 0.012 150)',   // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
+		namStr : 'Sage',                   // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
+		surStr : 'oklch(0.97 0.008 130)',  // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
+		texStr : 'oklch(0.19 0.015 150)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
 		warStr : 'oklch(0.62 0.12 60)'     // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
 
 
@@ -47,63 +95,15 @@ const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed 
 	sand : { // What: Sand Palette Object. Why: This is one of the app's built-in themes. How: This holds Sand's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
 
 
-		namStr : 'Sand',                 // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
-		bacStr : 'oklch(0.98 0.008 80)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
-		surStr : 'oklch(0.96 0.012 80)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
-		borStr : 'oklch(0.9 0.015 75)',  // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
-		texStr : 'oklch(0.2 0.018 50)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
-		mutStr : 'oklch(0.5 0.018 50)',  // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
 		accStr : 'oklch(0.5 0.12 40)',   // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
 		aceStr : 'oklch(0.94 0.03 60)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
+		bacStr : 'oklch(0.98 0.008 80)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
+		borStr : 'oklch(0.9 0.015 75)',  // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
+		mutStr : 'oklch(0.5 0.018 50)',  // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
+		namStr : 'Sand',                 // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
+		surStr : 'oklch(0.96 0.012 80)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
+		texStr : 'oklch(0.2 0.018 50)',  // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
 		warStr : 'oklch(0.6 0.14 30)'    // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
-
-
-	},
-
-	night : { // What: Night Palette Object. Why: This is one of the app's built-in themes. How: This holds Night's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
-
-
-		namStr : 'Night',                 // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
-		bacStr : 'oklch(0.18 0.012 250)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
-		surStr : 'oklch(0.22 0.014 250)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
-		borStr : 'oklch(0.3 0.014 250)',  // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
-		texStr : 'oklch(0.95 0.005 250)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
-		mutStr : 'oklch(0.65 0.012 250)', // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
-		accStr : 'oklch(0.75 0.14 250)',  // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
-		aceStr : 'oklch(0.3 0.04 250)',   // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
-		warStr : 'oklch(0.78 0.13 60)'    // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
-
-
-	},
-
-	moss : { // What: Moss Palette Object. Why: This is one of the app's built-in themes. How: This holds Moss's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
-
-
-		namStr : 'Moss',                  // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
-		bacStr : 'oklch(0.17 0.01 150)',  // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
-		surStr : 'oklch(0.21 0.014 150)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
-		borStr : 'oklch(0.28 0.016 150)', // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
-		texStr : 'oklch(0.95 0.008 150)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
-		mutStr : 'oklch(0.65 0.012 150)', // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
-		accStr : 'oklch(0.7 0.1 155)',    // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
-		aceStr : 'oklch(0.3 0.035 150)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
-		warStr : 'oklch(0.78 0.13 60)'    // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
-
-
-	},
-
-	ember : { // What: Ember Palette Object. Why: This is one of the app's built-in themes. How: This holds Ember's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
-
-
-		namStr : 'Ember',                // What: Name String. Why: This is the human-readable label shown in the Settings tab's theme picker. How: This is read as palette.namStr in tab-settings.jsx's ThemeRow.
-		bacStr : 'oklch(0.17 0.014 45)', // What: Background String. Why: This is the page's own base background color token. How: This is written onto the --bg custom property by appPalFun.
-		surStr : 'oklch(0.21 0.016 45)', // What: Surface String. Why: This is the color token for card/surface backgrounds. How: This is written onto the --surface custom property by appPalFun.
-		borStr : 'oklch(0.28 0.018 45)', // What: Border String. Why: This is the color token for border colors. How: This is written onto the --border custom property by appPalFun.
-		texStr : 'oklch(0.95 0.012 50)', // What: Text String. Why: This is the color token for body text. How: This is written onto the --text custom property by appPalFun.
-		mutStr : 'oklch(0.65 0.016 50)', // What: Muted String. Why: This is the color token for de-emphasized text. How: This is written onto the --muted custom property by appPalFun.
-		accStr : 'oklch(0.72 0.13 42)',  // What: Accent String. Why: This is the color token for the primary accent color. How: This is written onto the --accent custom property by appPalFun.
-		aceStr : 'oklch(0.32 0.05 42)',  // What: Accent Soft String. Why: This is the color token for a softened accent background. How: This is written onto the --accent-soft custom property by appPalFun.
-		warStr : 'oklch(0.78 0.13 60)'   // What: Warm String. Why: This is the color token for the warm/celebration accent color. How: This is written onto the --warm custom property by appPalFun.
 
 
 	}
@@ -424,13 +424,13 @@ function resCusFun( modKeyStr, usrColObj ) {
 	return { // What: Palette Object Return. Why: The derived custom palette must be handed back to the caller in the same 8-token shape as a PAL_SET_OBJ entry. How: This builds the object literal below from the 3 anchor colors and the CSS relative-color expressions computed above.
 
 
-		bacStr : bacColStr,                                                                      // What: Background String. Why: The user's own chosen background color is used as-is, no derivation needed. How: This is just bacColStr, computed above from usrColObj.bg.
-		texStr : texColStr,                                                                      // What: Text String. Why: The user's own chosen text color is used as-is, no derivation needed. How: This is just texColStr, computed above from usrColObj.text.
 		accStr : accColStr,                                                                      // What: Accent String. Why: The user's own chosen accent color is used as-is, no derivation needed. How: This is just accColStr, computed above from usrColObj.accent.
-		surStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.04, 0.17 ) } c h)`,                  // What: Surface String. Why: The surface token needs to sit slightly toward/away from the background depending on mode. How: This computes an oklch relative-color expression off bacColStr using calOffFun's smaller offset/floor pair.
+		aceStr : `oklch(from ${ accColStr } calc(l + ${ modSgnNum * -0.42 }) calc(c - 0.08) h)`, // What: Accent Soft String. Why: The softened accent token needs a lighter or darker, less saturated version of the chosen accent. How: This computes an oklch relative-color expression off accColStr, shifting both lightness (via modSgnNum) and chroma.
+		bacStr : bacColStr,                                                                      // What: Background String. Why: The user's own chosen background color is used as-is, no derivation needed. How: This is just bacColStr, computed above from usrColObj.bg.
 		borStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.12, 0.26 ) } c h)`,                  // What: Border String. Why: The border token needs a stronger lightness shift off the background than surface does. How: This computes an oklch relative-color expression off bacColStr using calOffFun's larger offset/floor pair.
 		mutStr : `oklch(from ${ texColStr } calc(l + ${ modSgnNum * -0.32 }) c h)`,              // What: Muted String. Why: The muted token needs to sit between text and background in lightness. How: This computes an oklch relative-color expression off texColStr, shifted by modSgnNum's signed offset.
-		aceStr : `oklch(from ${ accColStr } calc(l + ${ modSgnNum * -0.42 }) calc(c - 0.08) h)`, // What: Accent Soft String. Why: The softened accent token needs a lighter or darker, less saturated version of the chosen accent. How: This computes an oklch relative-color expression off accColStr, shifting both lightness (via modSgnNum) and chroma.
+		surStr : `oklch(from ${ bacColStr } ${ calOffFun( 0.04, 0.17 ) } c h)`,                  // What: Surface String. Why: The surface token needs to sit slightly toward/away from the background depending on mode. How: This computes an oklch relative-color expression off bacColStr using calOffFun's smaller offset/floor pair.
+		texStr : texColStr,                                                                      // What: Text String. Why: The user's own chosen text color is used as-is, no derivation needed. How: This is just texColStr, computed above from usrColObj.text.
 		warStr : modKeyStr === 'dark' ? 'oklch(0.78 0.13 60)' : 'oklch(0.62 0.13 50)'            // What: Warm String. Why: The warm/celebration token isn't derived from user input at all, unlike the other 7. How: This picks one of 2 fixed oklch values based on whether modKeyStr is 'dark' or 'light'.
 
 
@@ -446,14 +446,14 @@ function resCusFun( modKeyStr, usrColObj ) {
 const THE_PAI_OBJ = { // What: Theme Pair Object. Why: "System preference" auto-switching needs to know each theme's light/dark sibling; built-ins mirror the palette design (Ink and Night, Sage and Moss, Sand and Ember), and the two custom slots pair with each other. How: This is looked up by the current theme key in resTheFun below.
 
 
+	customDark  : { ligStr : 'customLight', drkStr : 'customDark' }, // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
+	customLight : { ligStr : 'customLight', drkStr : 'customDark' }, // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
+	ember       : { ligStr : 'sand',        drkStr : 'ember' },      // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
 	ink         : { ligStr : 'ink',         drkStr : 'night' },      // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
+	moss        : { ligStr : 'sage',        drkStr : 'moss' },       // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
 	night       : { ligStr : 'ink',         drkStr : 'night' },      // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
 	sage        : { ligStr : 'sage',        drkStr : 'moss' },       // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
-	moss        : { ligStr : 'sage',        drkStr : 'moss' },       // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
-	sand        : { ligStr : 'sand',        drkStr : 'ember' },      // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
-	ember       : { ligStr : 'sand',        drkStr : 'ember' },      // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
-	customLight : { ligStr : 'customLight', drkStr : 'customDark' }, // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
-	customDark  : { ligStr : 'customLight', drkStr : 'customDark' }  // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
+	sand        : { ligStr : 'sand',        drkStr : 'ember' }       // What: Light String. Why: This is the theme key to use when the OS prefers light mode. How: This is read via curPaiObj.ligStr in resTheFun. What: Dark String. Why: This is the theme key to use when the OS prefers dark mode. How: This is read via curPaiObj.drkStr in resTheFun.
 
 
 };

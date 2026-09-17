@@ -339,10 +339,10 @@ function advValFun( conCurObj ) {
 		return { // What: Ease Up Advance Return. Why: The caller needs this completion's own resolved charge, triggered state, and rolled step all landing together as one patch. How: This builds that patch from newValNum, thrValNum, and steValNum.
 
 
-			value        : newValNum,              // What: Value. Why: This completion's own newly-advanced charge must land in the returned patch. How: This carries newValNum through unchanged.
-			triggered    : newValNum >= thrValNum, // What: Triggered. Why: The conditional fires the moment its charge actually reaches thrValNum. How: This compares newValNum against thrValNum directly.
 			chargedToday : true,                   // What: Charged Today. Why: This completion must not also charge this same conditional again later today. How: This is fixed true whenever this branch runs at all.
-			chargeStep   : steValNum               // What: Charge Step. Why: The already-rolled plan for this streak must carry forward unchanged. How: This carries steValNum through unchanged.
+			chargeStep   : steValNum,              // What: Charge Step. Why: The already-rolled plan for this streak must carry forward unchanged. How: This carries steValNum through unchanged.
+			triggered    : newValNum >= thrValNum, // What: Triggered. Why: The conditional fires the moment its charge actually reaches thrValNum. How: This compares newValNum against thrValNum directly.
+			value        : newValNum               // What: Value. Why: This completion's own newly-advanced charge must land in the returned patch. How: This carries newValNum through unchanged.
 
 
 		};
@@ -355,8 +355,8 @@ function advValFun( conCurObj ) {
 	if ( conCurObj.mode === 'dynamic' ) return { // What: Dynamic Miss Accrual Return. Why: A dynamic conditional's own odds should climb after a completion that means today's roll did not fire. How: This adds a fixed 10 percentage points onto conCurObj's own value.
 
 
-		value        : ( conCurObj.value || 0 ) + 10, // What: Value. Why: A dynamic conditional's own odds climb by a fixed amount after a miss. How: This adds 10 onto conCurObj's own current value, defaulting a missing value to 0 first.
-		chargedToday : true                           // What: Charged Today. Why: This completion must not also charge this same conditional again later today. How: This is fixed true whenever this branch runs at all.
+		chargedToday : true,                         // What: Charged Today. Why: This completion must not also charge this same conditional again later today. How: This is fixed true whenever this branch runs at all.
+		value        : ( conCurObj.value || 0 ) + 10 // What: Value. Why: A dynamic conditional's own odds climb by a fixed amount after a miss. How: This adds 10 onto conCurObj's own current value, defaulting a missing value to 0 first.
 
 
 	};
@@ -441,9 +441,9 @@ function carComFun( conCurObj ) {
 		return { // What: Ease Down Discharge Return. Why: The caller needs this card completion's own resolved value, triggered state, and rolled step all landing together as one patch. How: This builds that patch from newValNum and steValNum.
 
 
-			value      : newValNum,     // What: Value. Why: This completion's own newly-discharged value must land in the returned patch. How: This carries newValNum through unchanged.
+			chargeStep : steValNum,     // What: Charge Step. Why: The already-rolled plan for this streak must carry forward unchanged. How: This carries steValNum through unchanged.
 			triggered  : newValNum > 0, // What: Triggered. Why: This streak stays triggered only while it hasn't fully discharged to 0 yet. How: This compares newValNum against 0 directly.
-			chargeStep : steValNum      // What: Charge Step. Why: The already-rolled plan for this streak must carry forward unchanged. How: This carries steValNum through unchanged.
+			value      : newValNum      // What: Value. Why: This completion's own newly-discharged value must land in the returned patch. How: This carries newValNum through unchanged.
 
 
 		};
@@ -465,14 +465,14 @@ function carComFun( conCurObj ) {
 export const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the single public entry point store.jsx, day-log.jsx, and tab-today.jsx all import, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
 
 
-	modProFun : modProFun, // What: Mode Probability Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports modProFun under its own matching name.
-	modValFun : modValFun, // What: Mode Value Function. Why: day-log.jsx and store.jsx both check this to classify a conditional's own mode. How: This re-exports modValFun under its own matching name.
-	truOddFun : truOddFun, // What: True Odds Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports truOddFun under its own matching name.
-	resDayFun : resDayFun, // What: Resolve Day Function. Why: store.jsx calls this once per generate to roll/carry every conditional's own triggered state for the day. How: This re-exports resDayFun under its own matching name.
-	supGatFun : supGatFun, // What: Suppress Gate Function. Why: tab-today.jsx calls this to decide whether a dependent picker's own day-off card should show instead of a real pick. How: This re-exports supGatFun under its own matching name.
 	advValFun : advValFun, // What: Advance Value Function. Why: store.jsx calls this on a dependent picker's own first completion of the day. How: This re-exports advValFun under its own matching name.
 	carComFun : carComFun, // What: Card Complete Function. Why: store.jsx calls this when a day-off card itself is completed. How: This re-exports carComFun under its own matching name.
-	claValFun : claValFun  // What: Clamp Value Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports claValFun under its own matching name.
+	claValFun : claValFun, // What: Clamp Value Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports claValFun under its own matching name.
+	modProFun : modProFun, // What: Mode Probability Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports modProFun under its own matching name.
+	modValFun : modValFun, // What: Mode Value Function. Why: day-log.jsx and store.jsx both check this to classify a conditional's own mode. How: This re-exports modValFun under its own matching name.
+	resDayFun : resDayFun, // What: Resolve Day Function. Why: store.jsx calls this once per generate to roll/carry every conditional's own triggered state for the day. How: This re-exports resDayFun under its own matching name.
+	supGatFun : supGatFun, // What: Suppress Gate Function. Why: tab-today.jsx calls this to decide whether a dependent picker's own day-off card should show instead of a real pick. How: This re-exports supGatFun under its own matching name.
+	truOddFun : truOddFun  // What: True Odds Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of CON_NAM_OBJ's own stable public shape. How: This re-exports truOddFun under its own matching name.
 
 
 };

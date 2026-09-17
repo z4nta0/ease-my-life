@@ -57,11 +57,11 @@ const dayEasFun = ( dayCouNum ) => THR_DEF_NUM / Math.max( 1, dayCouNum );      
 const CON_HIN_OBJ = { // What: Conditional Hint Object. Why: Conditional mode explanations differ from the picker editor's own MODES hints, since a conditional's own effect (suppressing a picker) needs its own framing. How: This is looked up by mode key inside the mode radio's own ColDisCom below, falling back to MODES' own hint when a mode has no override here.
 
 
-	random      : [ 'Ruleset: This conditional’s ruleset uses a non-adjustable, static value of 50% for triggering the conditional.', 'Explanation: This is a good choice for being truly random, but it also has some drawbacks. e.g. it can be triggered multiple times in a row or it can go a long time without being triggered.' ],
-	weighted    : [ 'Ruleset: This conditional’s ruleset uses an adjustable, weighted value that ranges from 10%–90%, with a default of 50%, for triggering the conditional.', 'Explanation: This is a good choice for mitigating some of the Truly Random drawbacks by tuning the % chance to make it more (or less) likely to trigger. e.g. it can still be triggered multiple times in a row or it can go a long time without being triggered, although it is less likely to do so.' ],
 	dynamic     : [ 'Ruleset: This conditional’s ruleset is exactly the same as the Weighted conditional, but it also adds a second value that increments the weighted value every time it does not trigger and then resets its value every time that it does.', 'Explanation: This is a good choice for mitigating almost all of the Truly Random drawbacks by tuning the % chance to make it more (or less) likely to trigger. Furthermore, by adding a dynamic value it makes it increasingly likely to trigger when it doesn’t and less likely when it does. e.g. it can still be triggered multiple times in a row or it can go a long time without being triggered, although it is much less likely to do so.' ],
+	'ease-down' : [ 'Ruleset: This conditional’s ruleset is the opposite of the Ease Up conditional. It makes it so that it is guaranteed to be triggered until its value reaches 0, at which point it will be ineligible for exactly one cycle. Said value will start at 100 and is decremented every cycle by a random amount within a user defined range.', 'Explanation: This is a good choice for ensuring that the conditional stays triggered for at least N days and then is not triggered for exactly one day. e.g. it must remain triggered for at least a week and must not remain triggered for more than two weeks.' ],
 	'ease-up'   : [ 'Ruleset: This conditional’s ruleset makes it so that it is ineligible to be triggered until its value reaches 100, at which point it is guaranteed to trigger. Said value will start at 0 and is incremented every cycle by a random amount within a user defined range.', 'Explanation: This is a good choice for ensuring that the conditional can only be triggered once every N days and can never be triggered multiple times in a row. e.g. it can only be triggered at most once a week and must be triggered at least once every two weeks.' ],
-	'ease-down' : [ 'Ruleset: This conditional’s ruleset is the opposite of the Ease Up conditional. It makes it so that it is guaranteed to be triggered until its value reaches 0, at which point it will be ineligible for exactly one cycle. Said value will start at 100 and is decremented every cycle by a random amount within a user defined range.', 'Explanation: This is a good choice for ensuring that the conditional stays triggered for at least N days and then is not triggered for exactly one day. e.g. it must remain triggered for at least a week and must not remain triggered for more than two weeks.' ]
+	random      : [ 'Ruleset: This conditional’s ruleset uses a non-adjustable, static value of 50% for triggering the conditional.', 'Explanation: This is a good choice for being truly random, but it also has some drawbacks. e.g. it can be triggered multiple times in a row or it can go a long time without being triggered.' ],
+	weighted    : [ 'Ruleset: This conditional’s ruleset uses an adjustable, weighted value that ranges from 10%–90%, with a default of 50%, for triggering the conditional.', 'Explanation: This is a good choice for mitigating some of the Truly Random drawbacks by tuning the % chance to make it more (or less) likely to trigger. e.g. it can still be triggered multiple times in a row or it can go a long time without being triggered, although it is less likely to do so.' ]
 
 
 };
@@ -300,8 +300,8 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 
 
 												mode      : modKeyStr,
-												value     : modKeyStr === 'ease-down' ? thrValNum : 0,
-												triggered : modKeyStr === 'ease-down'
+												triggered : modKeyStr === 'ease-down',
+												value     : modKeyStr === 'ease-down' ? thrValNum : 0
 
 
 											}) }
@@ -715,17 +715,17 @@ export const conDrfFun = ( picNamStr, exiNamArr = [] ) => { // What: Conditional
 	return { // What: Conditional Draft Default Return. Why: The caller needs a full, ready-to-edit conditional draft with every field defaulted, not just the resolved name. How: This builds that draft from basNamStr/namCouNum plus each field's own fixed starting value.
 
 
-		name      : `${ basNamStr } ${ namCouNum }`, // What: Name. Why: This is the new conditional's own resolved, collision-free default name. How: This joins basNamStr and namCouNum with a space.
+		active    : true,                            // What: Active. Why: A brand-new conditional should take effect immediately rather than starting disabled. How: This is a fixed starting value of true.
 		cardText  : 'Picker suppressed for today',   // What: Card Text. Why: A brand-new conditional needs a sensible default day-off card message. How: This is a fixed starting sentence the user can freely edit afterward.
+		easeMax   : 14,                              // What: Ease Maximum. Why: This matches the same 14-day fallback easMaxNum resolves to above. How: This is a fixed starting value of 14.
+		easeMin   : 7,                               // What: Ease Minimum. Why: This matches the same 7-day fallback easMinNum resolves to above. How: This is a fixed starting value of 7.
 		mode      : 'random',                        // What: Mode. Why: A brand-new conditional defaults to the simplest, no-configuration mode. How: This matches the same 'random' fallback curModStr resolves to above.
-		weight    : 1,                                // What: Weight. Why: This mirrors the picker item default weight, kept for parity even though conditionals do not currently expose their own weight control. How: This is a fixed starting value of 1.
-		oddsPct   : 50,                                // What: Odds Percentage. Why: A brand-new weighted/dynamic-mode conditional should default to an even coin-flip odds value. How: This is a fixed starting value of 50.
-		easeMin   : 7,                                 // What: Ease Minimum. Why: This matches the same 7-day fallback easMinNum resolves to above. How: This is a fixed starting value of 7.
-		easeMax   : 14,                                // What: Ease Maximum. Why: This matches the same 14-day fallback easMaxNum resolves to above. How: This is a fixed starting value of 14.
-		value     : 0,                                 // What: Value. Why: A brand-new value-family-mode conditional starts fully uncharged. How: This is a fixed starting value of 0.
-		active    : true,                              // What: Active. Why: A brand-new conditional should take effect immediately rather than starting disabled. How: This is a fixed starting value of true.
-		triggered : false,                             // What: Triggered. Why: A brand-new conditional has not yet resolved a triggered state for any day. How: This is a fixed starting value of false.
-		threshold : 100                                // What: Threshold. Why: This matches the same 100 fallback thrValNum resolves to above, and THR_DEF_NUM's own value. How: This is a fixed starting value of 100.
+		name      : `${ basNamStr } ${ namCouNum }`, // What: Name. Why: This is the new conditional's own resolved, collision-free default name. How: This joins basNamStr and namCouNum with a space.
+		oddsPct   : 50,                              // What: Odds Percentage. Why: A brand-new weighted/dynamic-mode conditional should default to an even coin-flip odds value. How: This is a fixed starting value of 50.
+		threshold : 100,                             // What: Threshold. Why: This matches the same 100 fallback thrValNum resolves to above, and THR_DEF_NUM's own value. How: This is a fixed starting value of 100.
+		triggered : false,                           // What: Triggered. Why: A brand-new conditional has not yet resolved a triggered state for any day. How: This is a fixed starting value of false.
+		value     : 0,                               // What: Value. Why: A brand-new value-family-mode conditional starts fully uncharged. How: This is a fixed starting value of 0.
+		weight    : 1                                // What: Weight. Why: This mirrors the picker item default weight, kept for parity even though conditionals do not currently expose their own weight control. How: This is a fixed starting value of 1.
 
 
 	};

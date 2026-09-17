@@ -109,16 +109,16 @@ function IcoSetCom ( { icoKeyStr, strWidNum = 2 } ) {
 	const isePatObj = { // What: Icon-Shape-Element Path Object. Why: This is the lookup table mapping every icon key this file uses to its own inline SVG shape markup. How: This is indexed below by icoKeyStr to pick which shape the rendered svg actually draws.
 
 
+		braEle : <><path d='M4 4v10a4 4 0 0 0 4 4h12' /><path d='m16 14 4 4-4 4' /></>,                                                  // What: Branch Element. Why: This marks the strip listing which pickers a conditional affects. How: This draws a branching arrow shape.
+		cheEle : <><path d='M20 6 9 17l-5-5' /></>,                                                                                      // What: Check Element. Why: This marks a completed status. How: This draws a single checkmark stroke.
+		chvEle : <><path d='m6 9 6 6 6-6' /></>,                                                                                         // What: Chevron Element. Why: This marks PicBloCom's own expand/collapse toggle. How: This draws a plain downward chevron, keyed chvEle (escalated past the usual che truncation, since that collides with cheEle just above, per the Naming-conflict resolution rule).
+		clcEle : <><path d='M12 8v4l3 3' /><circle cx='12' cy='12' r='9' /></>,                                                          // What: Clock Element. Why: This marks RemLogCom's own kicker. How: This draws a plain clock face, keyed clcEle (escalated past the usual clo truncation, since clo already heavily means Close throughout this codebase, per the Naming-conflict resolution rule).
 		logEle : <><path d='M3 5h18M3 12h18M3 19h18' /></>,                                                                              // What: Log Element. Why: This marks the DayLogChip toggle and every panel's own kicker. How: This draws 3 stacked horizontal lines.
-		shuEle : <><path d='M16 3h5v5' /><path d='M4 20 21 3' /><path d='M21 16v5h-5' /><path d='m15 15 6 6' /><path d='m4 4 5 5' /></>, // What: Shuffle Element. Why: This marks an auto-picked status. How: This draws a pair of crossing shuffle-style arrows.
+		mooEle : <><path d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z' /></>,                                                                   // What: Moon Element. Why: This marks a picker resting today under a triggered conditional. How: This draws a crescent moon shape.
 		pusEle : <><path d='M12 19V5M5 12l7-7 7 7' /></>,                                                                                // What: Push Element. Why: This marks a manually pushed/rerolled status. How: This draws an upward arrow.
 		rolEle : <><path d='M3 2v6h6' /><path d='M3 8a9 9 0 1 0 3-5' /></>,                                                              // What: Roll Element. Why: This marks a rolled-off status. How: This draws a counter-clockwise arrow.
-		xEle   : <><path d='M18 6 6 18M6 6l12 12' /></>,                                                                                 // What: X Element. Why: This marks a skipped status, and a close button. How: This draws a plain X shape.
-		cheEle : <><path d='M20 6 9 17l-5-5' /></>,                                                                                      // What: Check Element. Why: This marks a completed status. How: This draws a single checkmark stroke.
-		mooEle : <><path d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z' /></>,                                                                   // What: Moon Element. Why: This marks a picker resting today under a triggered conditional. How: This draws a crescent moon shape.
-		braEle : <><path d='M4 4v10a4 4 0 0 0 4 4h12' /><path d='m16 14 4 4-4 4' /></>,                                                  // What: Branch Element. Why: This marks the strip listing which pickers a conditional affects. How: This draws a branching arrow shape.
-		clcEle : <><path d='M12 8v4l3 3' /><circle cx='12' cy='12' r='9' /></>,                                                          // What: Clock Element. Why: This marks RemLogCom's own kicker. How: This draws a plain clock face, keyed clcEle (escalated past the usual clo truncation, since clo already heavily means Close throughout this codebase, per the Naming-conflict resolution rule).
-		chvEle : <><path d='m6 9 6 6 6-6' /></>                                                                                          // What: Chevron Element. Why: This marks PicBloCom's own expand/collapse toggle. How: This draws a plain downward chevron, keyed chvEle (escalated past the usual che truncation, since that collides with cheEle just above, per the Naming-conflict resolution rule).
+		shuEle : <><path d='M16 3h5v5' /><path d='M4 20 21 3' /><path d='M21 16v5h-5' /><path d='m15 15 6 6' /><path d='m4 4 5 5' /></>, // What: Shuffle Element. Why: This marks an auto-picked status. How: This draws a pair of crossing shuffle-style arrows.
+		xEle   : <><path d='M18 6 6 18M6 6l12 12' /></>                                                                                  // What: X Element. Why: This marks a skipped status, and a close button. How: This draws a plain X shape.
 
 
 	};
@@ -751,11 +751,11 @@ function PicBloCom ( { appStaObj, picRecObj, dayKeyStr, isaSupBoo } ) {
 	const modLabObj = { // What: Mode Label Object. Why: The header pill below needs a human-friendly label for picRecObj's own mode key. How: This is indexed just below by picRecObj's own mode.
 
 
-		'ease-up'   : 'Ease Up',          // What: Ease Up Entry. Why: An ease-up picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'ease-up'.
-		'ease-down' : 'Ease Down',        // What: Ease Down Entry. Why: An ease-down picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'ease-down'.
 		'dynamic'   : 'Dynamic Weighted', // What: Dynamic Entry. Why: A dynamic picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'dynamic'.
-		'weighted'  : 'Weighted',         // What: Weighted Entry. Why: A weighted picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'weighted'.
-		'random'    : 'Truly Random'      // What: Random Entry. Why: A random picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'random'.
+		'ease-down' : 'Ease Down',        // What: Ease Down Entry. Why: An ease-down picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'ease-down'.
+		'ease-up'   : 'Ease Up',          // What: Ease Up Entry. Why: An ease-up picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'ease-up'.
+		'random'    : 'Truly Random',     // What: Random Entry. Why: A random picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'random'.
+		'weighted'  : 'Weighted'          // What: Weighted Entry. Why: A weighted picker's own header pill needs this exact display label. How: This is read when picRecObj's own mode is 'weighted'.
 
 
 	};
@@ -1027,11 +1027,11 @@ function ConSecCom ( { appStaObj, picGroArr } ) {
 					const modLabObj = { // What: Mode Label Object. Why: The row's own mode pill needs a human-friendly label for conRecObj's own mode key. How: This is indexed just below by conRecObj's own mode.
 
 
-						'ease-up'   : 'Ease Up',          // What: Ease Up Entry. Why: An ease-up conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'ease-up'.
-						'ease-down' : 'Ease Down',        // What: Ease Down Entry. Why: An ease-down conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'ease-down'.
 						'dynamic'   : 'Dynamic Weighted', // What: Dynamic Entry. Why: A dynamic conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'dynamic'.
-						'weighted'  : 'Weighted',         // What: Weighted Entry. Why: A weighted conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'weighted'.
-						'random'    : 'Truly Random'      // What: Random Entry. Why: A random conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'random'.
+						'ease-down' : 'Ease Down',        // What: Ease Down Entry. Why: An ease-down conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'ease-down'.
+						'ease-up'   : 'Ease Up',          // What: Ease Up Entry. Why: An ease-up conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'ease-up'.
+						'random'    : 'Truly Random',     // What: Random Entry. Why: A random conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'random'.
+						'weighted'  : 'Weighted'          // What: Weighted Entry. Why: A weighted conditional's own mode pill needs this exact display label. How: This is read when conRecObj's own mode is 'weighted'.
 
 
 					};

@@ -58,8 +58,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		keyStr : 'once', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Once', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+		keyStr : 'once',                                                                    // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Once',                                                                    // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>until marked as completed</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'once' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -68,8 +68,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		keyStr : 'interval',      // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Every N days', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+		keyStr : 'interval',                                                                  // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Every N days',                                                              // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>as often as specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'interval' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -78,8 +78,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		keyStr : 'weekly', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Weekly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+		keyStr : 'weekly',                                                                    // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Weekly',                                                                    // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>on the days specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'weekly' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -88,8 +88,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		keyStr : 'monthly', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Monthly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+		keyStr : 'monthly',                                                                      // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Monthly',                                                                      // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>every month as specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'monthly' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -98,8 +98,8 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
 	{
 
 
-		keyStr : 'annual', // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Yearly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+		keyStr : 'annual',                                                                      // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Yearly',                                                                      // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
 		subEle : <>included in the Today page <strong>every year as specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'annual' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
 
 
@@ -2812,9 +2812,9 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
 	{
 
 
-		key    : 'streak',                                                                              // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
-		label  : 'Counts toward day streak',                                                             // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
-		dynFun : paiSubFun( 'trigger the day streak in the Today page', 'nor' )                           // What: Dynamic Function. Why: This row's own sub-explanation must reflect which classes currently count toward the streak. How: OptMatCom calls this with the live once/recurring toggle states.
+		dynFun : paiSubFun( 'trigger the day streak in the Today page', 'nor' ), // What: Dynamic Function. Why: This row's own sub-explanation must reflect which classes currently count toward the streak. How: OptMatCom calls this with the live once/recurring toggle states.
+		key    : 'streak',                                                       // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
+		label  : 'Counts toward day streak'                                      // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
 
 
 	},
@@ -2822,9 +2822,9 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
 	{
 
 
-		key    : 'ring',                                                                                 // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
-		label  : 'Include in completion ring',                                                            // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
-		dynFun : paiSubFun( 'trigger the completion ring in the Today page', 'nor' )                       // What: Dynamic Function. Why: This row's own sub-explanation must reflect which classes currently count toward the ring. How: OptMatCom calls this with the live once/recurring toggle states.
+		dynFun : paiSubFun( 'trigger the completion ring in the Today page', 'nor' ), // What: Dynamic Function. Why: This row's own sub-explanation must reflect which classes currently count toward the ring. How: OptMatCom calls this with the live once/recurring toggle states.
+		key    : 'ring',                                                              // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
+		label  : 'Include in completion ring'                                         // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
 
 
 	},
@@ -2832,9 +2832,9 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
 	{
 
 
-		key    : 'excludeWeekends',                                                                      // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
-		label  : 'Exclude on weekends',                                                                   // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
-		dynFun : paiSubFun( 'show in the Today page on weekends', 'nor' )                                 // What: Dynamic Function. Why: This row's own sub-explanation must reflect which classes currently get excluded on weekends. How: OptMatCom calls this with the live once/recurring toggle states.
+		dynFun : paiSubFun( 'show in the Today page on weekends', 'nor' ), // What: Dynamic Function. Why: This row's own sub-explanation must reflect which classes currently get excluded on weekends. How: OptMatCom calls this with the live once/recurring toggle states.
+		key    : 'excludeWeekends',                                        // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
+		label  : 'Exclude on weekends'                                     // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
 
 
 	},
@@ -2842,9 +2842,9 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
 	{
 
 
-		key    : 'excludeHolidays',                                                                      // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
-		label  : 'Exclude on holidays',                                                                   // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
-		dynFun : paiSubFun( 'show in the Today page on holidays', 'nor' )                                 // What: Dynamic Function. Why: This row's own sub-explanation must reflect which classes currently get excluded on holidays. How: OptMatCom calls this with the live once/recurring toggle states.
+		dynFun : paiSubFun( 'show in the Today page on holidays', 'nor' ), // What: Dynamic Function. Why: This row's own sub-explanation must reflect which classes currently get excluded on holidays. How: OptMatCom calls this with the live once/recurring toggle states.
+		key    : 'excludeHolidays',                                        // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
+		label  : 'Exclude on holidays'                                     // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
 
 
 	},
@@ -2852,8 +2852,6 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
 	{
 
 
-		key    : 'stats',                        // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
-		label  : 'Include in Stats',              // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
 		dynFun : ( oncOnBoo, recOnBoo ) =>        // What: Dynamic Function. Why: This row's own sub-explanation needs custom wording ("statistics") rather than paiSubFun's own generic verb phrasing, so it's written out directly instead of reusing paiSubFun. How: OptMatCom calls this with the live once/recurring toggle states.
 
 
@@ -2863,7 +2861,10 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
 
 				: recOnBoo ? <><strong>only</strong> recurring item statistics will be shown in the Stats page</>
 
-				: <><strong>neither</strong> one-time nor recurring item statistics will be shown in the Stats page</>
+				: <><strong>neither</strong> one-time nor recurring item statistics will be shown in the Stats page</>,
+
+		key   : 'stats',           // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
+		label : 'Include in Stats' // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
 
 
 	}

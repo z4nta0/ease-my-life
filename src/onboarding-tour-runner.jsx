@@ -1257,12 +1257,12 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actions, actIdeStr, sel
 			className='ob-coach'
 			ref={ meaCoaRef }
 			style={{
+				left          : -9999,
+				pointerEvents : 'none',
 				position      : 'fixed',
 				top           : 0,
-				left          : -9999,
-				width         : coaWidNum,
 				visibility    : 'hidden',
-				pointerEvents : 'none'
+				width         : coaWidNum
 			}}
 			aria-hidden='true'
 		>{ /* What: Measurer Coach Element. Why: This is the hidden clone described above. How: This renders the exact same content as the real coach below, but off-screen and pointer-events:none. */ }

@@ -605,9 +605,9 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 	const snpRef = React.useRef( { // What: Snapshot Reference. Why: Controls opening (this component mounting) is the moment every field must be remembered, so Cancel can revert every change made while it was open. How: This freezes a shallow copy of the picker, every one of its items, and its own daily-generator membership, captured once on mount.
 
 
-		picker  : { ...picObj },                                       // What: Picker. Why: The picker's own fields (name, mode, schedule, etc.) all need to be revertible. How: This is a shallow copy of picObj as it existed the instant Controls opened.
+		inDaily : inDaiBoo,                                            // What: In Daily. Why: Toggling daily-generator membership while Controls is open must also be revertible. How: This is inDaiBoo as it existed the instant Controls opened.
 		items   : iteArr.map( ( iteCurObj ) => ( { ...iteCurObj } ) ), // What: Items. Why: A Refill/Fill performed while Controls is open must also be revertible. How: This is a shallow copy of every item as it existed the instant Controls opened.
-		inDaily : inDaiBoo                                             // What: In Daily. Why: Toggling daily-generator membership while Controls is open must also be revertible. How: This is inDaiBoo as it existed the instant Controls opened.
+		picker  : { ...picObj }                                        // What: Picker. Why: The picker's own fields (name, mode, schedule, etc.) all need to be revertible. How: This is a shallow copy of picObj as it existed the instant Controls opened.
 
 
 	} );
@@ -1774,10 +1774,34 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 	const iteSorStr = ( staAppObj.ui && staAppObj.ui.dataSort && staAppObj.ui.dataSort.conditionals ) || 'name-asc'; // What: Item Sort String. Why: This section's own list needs its own persisted sort choice. How: This reads staAppObj.ui.dataSort.conditionals, falling back to 'name-asc'.
 	const sorConArr = [ ...conIteArr ].sort( ( aConObj, bConObj ) => sorEntFun( // What: Sorted Conditional Array. Why: The rendered list needs to actually be in iteSorStr's own order. How: This builds a matching sort-entry shape for both sides and delegates the comparison to sorEntFun.
 
-		{ name : aConObj.name, type : ( MODES[ aConObj.mode ] || {} ).label || aConObj.mode, group : null, count : null,
-			range : conRngFun( aConObj ), odds : conOddFun( aConObj ), boost : conBstFun( aConObj ), isActive : aConObj.active !== false },
-		{ name : bConObj.name, type : ( MODES[ bConObj.mode ] || {} ).label || bConObj.mode, group : null, count : null,
-			range : conRngFun( bConObj ), odds : conOddFun( bConObj ), boost : conBstFun( bConObj ), isActive : bConObj.active !== false },
+		{
+
+
+			boost    : conBstFun( aConObj ),
+		count    : null,
+		group    : null,
+			isActive : aConObj.active !== false,
+		name     : aConObj.name,
+			odds     : conOddFun( aConObj ),
+			range    : conRngFun( aConObj ),
+		type     : ( MODES[ aConObj.mode ] || {} ).label || aConObj.mode
+
+
+		},
+		{
+
+
+			boost    : conBstFun( bConObj ),
+		count    : null,
+		group    : null,
+			isActive : bConObj.active !== false,
+		name     : bConObj.name,
+			odds     : conOddFun( bConObj ),
+			range    : conRngFun( bConObj ),
+		type     : ( MODES[ bConObj.mode ] || {} ).label || bConObj.mode
+
+
+		},
 		iteSorStr
 
 	) );
@@ -2288,12 +2312,13 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 		const newIdeStr = actObj.addPicker( { // What: New Identifier String. Why: The freshly-created picker's own id is needed immediately to become the new draft. How: This calls addPicker, pre-filled per the active filters, and returns its own new id.
 
 
-			name          : '',
-			group         : filGroStr !== 'all' ? filGroStr : '',
-			mode          : isaRelBoo ? filTypStr : 'random',
 			conditionalId : filConStr !== 'all' ? filConStr : null,
+			group         : filGroStr !== 'all' ? filGroStr : '',
+			hidden        : true,
 			items         : [],
-			hidden        : true
+			mode          : isaRelBoo ? filTypStr : 'random',
+			name          : ''
+
 
 		} );
 
@@ -2727,25 +2752,37 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 							{ [ // What: Type Entry Build. Why: Conditionals/Reminders sort in alphabetically alongside the real modes instead of being pinned, matching the Show row's own vocabulary. How: This builds one entry per mode plus (when applicable) Conditionals and Reminders, then sorts and maps them below.
 
 								...exiModArr.map( ( modCurStr ) => ( {
-									key     : modCurStr,
-									name    : MODES[ modCurStr ].label,
+
+
 									count   : picArr.filter( ( picCurObj ) => picCurObj.mode === modCurStr && !picCurObj.hidden ).length,
 									isOn    : filTypStr === modCurStr,
+									key     : modCurStr,
+									name    : MODES[ modCurStr ].label,
 									onClick : () => setFilTypStr( modCurStr )
+
+
 								} ) ),
 								...( conIteArr.length > 0 ? [ {
-									key     : 'conditionals',
-									name    : 'Conditionals',
+
+
 									count   : conIteArr.length,
 									isOn    : filTypStr === 'conditionals',
+									key     : 'conditionals',
+									name    : 'Conditionals',
 									onClick : () => { setFilTypStr( 'conditionals' ); selScoFun( 'conditionals' ); }
+
+
 								} ] : []),
 								{
-									key     : 'reminders',
-									name    : 'Reminders',
+
+
 									count   : ( staAppObj.tasks || [] ).filter( ( tasCurObj ) => !tasCurObj.hidden ).length,
 									isOn    : filTypStr === 'reminders',
+									key     : 'reminders',
+									name    : 'Reminders',
 									onClick : () => { setFilTypStr( 'reminders' ); selScoFun( 'reminders' ); }
+
+
 								}
 
 							]
@@ -2962,13 +2999,15 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 						return { // What: Item Entry Return. Why: sorEntFun needs one comparable shape per item, mode-dependent fields included. How: This builds that entry from iteCurObj plus the resolved isaEasBoo/useWgtBoo/easMaxNum context above.
 
-							name     : iteCurObj.name,
-							type     : null,
-							group    : null,
-							count    : isaEasBoo ? ( iteCurObj.value ?? 0 ) : ( useWgtBoo ? ( iteCurObj.weight ?? 1 ) : null ),
-							range    : isaEasBoo ? Math.max( 1, Math.round( 100 / ( easMaxNum || 1 ) ) ) : null,
+
 							boost    : picCurObj.mode === 'dynamic' ? ( iteCurObj.value ?? 0 ) : null,
-							isActive : !iteCurObj.vacation
+							count    : isaEasBoo ? ( iteCurObj.value ?? 0 ) : ( useWgtBoo ? ( iteCurObj.weight ?? 1 ) : null ),
+							group    : null,
+							isActive : !iteCurObj.vacation,
+							name     : iteCurObj.name,
+							range    : isaEasBoo ? Math.max( 1, Math.round( 100 / ( easMaxNum || 1 ) ) ) : null,
+							type     : null
+
 
 						};
 

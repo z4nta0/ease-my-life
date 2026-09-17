@@ -121,10 +121,10 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 			setIndRecObj({ // What: Indicator Record Update Call. Why: This publishes the freshly-measured position and size so the indicator pill re-renders in the right place. How: This builds the lefNum/topNum/widNum/heiNum shape from the two bounding rects above.
 
 
+				heiNum : butRecObj.height,                                       // What: Height Number. Why: This sizes the indicator pill to match the active tab's height. How: This is taken directly from the active button's bounding rect.
 				lefNum : butRecObj.left - navRecObj.left + navCurEle.scrollLeft, // What: Left Number. Why: This positions the indicator pill horizontally over the active tab. How: This is computed from the active button's bounding rect minus the nav's, plus the current scroll offset.
 				topNum : butRecObj.top - navRecObj.top + navCurEle.scrollTop,    // What: Top Number. Why: This positions the indicator pill vertically over the active tab. How: This is computed from the active button's bounding rect minus the nav's, plus the current scroll offset.
-				widNum : butRecObj.width,                                        // What: Width Number. Why: This sizes the indicator pill to match the active tab's width. How: This is taken directly from the active button's bounding rect.
-				heiNum : butRecObj.height                                        // What: Height Number. Why: This sizes the indicator pill to match the active tab's height. How: This is taken directly from the active button's bounding rect.
+				widNum : butRecObj.width                                         // What: Width Number. Why: This sizes the indicator pill to match the active tab's width. How: This is taken directly from the active button's bounding rect.
 
 
 			});
@@ -190,9 +190,9 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 				<span
 					className='tabbar-indicator'
 					style={{
+						height    : indRecObj.heiNum + 'px',
 						transform : `translate(${ indRecObj.lefNum }px, ${ indRecObj.topNum }px)`,
-						width     : indRecObj.widNum + 'px',
-						height    : indRecObj.heiNum + 'px'
+						width     : indRecObj.widNum + 'px'
 					}}
 					aria-hidden='true'
 				/> // What: Indicator Span Element. Why: This is the small sliding pill that visually marks the active tab. How: This is absolutely positioned via inline style using indRecObj's measured offsets and size.
@@ -281,10 +281,10 @@ function TabBarCom ( { actIdeStr, onChange, tabPlaStr, raiOpeBoo, onTogRaiFun, c
 
 						<rect
 							style={{
-								strokeWidth    : 16,
+								stroke         : 'currentColor',
 								strokeLinecap  : 'round',
 								strokeLinejoin : 'round',
-								stroke         : 'currentColor'
+								strokeWidth    : 16
 							}}
 							height='512'
 							rx='75'

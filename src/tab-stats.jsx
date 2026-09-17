@@ -248,8 +248,8 @@ function BreBarCom ( { titStr, totNum, segArr, empStr, className = '' } ) {
 								key={ segObj.keyStr }
 								className='bd-seg'
 								style={{
-									width      : `${ ( segObj.n / totNum ) * 100 }%`,
-									background : segObj.colStr
+									background : segObj.colStr,
+									width      : `${ ( segObj.n / totNum ) * 100 }%`
 								}}
 								title={ `${ segObj.labStr }: ${ segObj.n }` }
 							/> // What: Segment Span Element. Why: Each stacked segment needs its own width, color, and a hover tooltip with the raw count. How: This is sized to the segment's own share of totNum and colored via its own colStr.
@@ -655,10 +655,20 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 		for ( const conObj of conDefArr ) conByIdMap.set( conObj.id, { // What: Live Conditional Seed Loop. Why: Every live conditional needs a starting accumulator row, even one that never fired in range. How: This seeds one entry per live definition with its own current config values and zeroed history fields.
 
 
-			id : conObj.id, name : conObj.name, mode : conObj.mode, deleted : false,
-			value : conObj.value ?? 0, threshold : conObj.threshold ?? 100, oddsPct : conObj.oddsPct ?? 50,
-			easeMin : conObj.easeMin ?? 7, easeMax : conObj.easeMax ?? 14,
-			active : conObj.active !== false, total : 0, fired : 0, lastFired : null, fireDates : []
+			active    : conObj.active !== false,
+			deleted   : false,
+			easeMax   : conObj.easeMax ?? 14,
+			easeMin   : conObj.easeMin ?? 7,
+			fired     : 0,
+			fireDates : [],
+			id        : conObj.id,
+			lastFired : null,
+			mode      : conObj.mode,
+			name      : conObj.name,
+			oddsPct   : conObj.oddsPct ?? 50,
+			threshold : conObj.threshold ?? 100,
+			total     : 0,
+			value     : conObj.value ?? 0
 
 
 		});
@@ -1516,9 +1526,9 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 			outMapObj.set( iteIdeStr, { // What: Item Spent Store. Why: The Spent metric needs both unit averages plus the completed-cycle count per item. How: This averages every streak's own runs/calDays field and counts how many streaks were averaged.
 
 
-				elig   : strkArr.reduce( ( sumNum, strkObj ) => sumNum + strkObj.runs, 0 ) / strkArr.length,
 				cal    : strkArr.reduce( ( sumNum, strkObj ) => sumNum + strkObj.calDays, 0 ) / strkArr.length,
-				cycles : strkArr.length
+				cycles : strkArr.length,
+				elig   : strkArr.reduce( ( sumNum, strkObj ) => sumNum + strkObj.runs, 0 ) / strkArr.length
 
 
 			});
@@ -1627,12 +1637,19 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 			return { // What: Breakdown Row Return. Why: This is the single combined object the Pick breakdown card renders one list item from. How: This packages the item's own identity flags alongside every metric value computed above.
 
 
-				id : iteObj.id, name : iteObj.name, vacation : !!iteObj.vacation, wasOnVac : wasVacBoo, deleted : !!iteObj.__deleted,
-				n : couEntObj.n, auto : couEntObj.auto, manual : couEntObj.manual,
-				rejected : rejCouMap.get( iteObj.id ) || 0,
-				skipped : skiCouMap.get( iteObj.id ) || 0,
+				auto      : couEntObj.auto,
+				aveGap    : aveGapNum,
+				deleted   : !!iteObj.__deleted,
 				eligDenom : eliDenNum,
-				aveGap : aveGapNum, freqCount : freEntObj.count,
+				freqCount : freEntObj.count,
+				id        : iteObj.id,
+				lastDays  : lasDayNum,
+				manual    : couEntObj.manual,
+				n         : couEntObj.n,
+				name      : iteObj.name,
+				rejected  : rejCouMap.get( iteObj.id ) || 0,
+				skipped   : skiCouMap.get( iteObj.id ) || 0,
+
 				spent : ( () => { // What: Spent Field Resolver. Why: The Spent field needs the same calendar/eligible unit switch as aveGap above, but sourced from speGapMap instead. How: This looks the item up in speGapMap, returning null when it has no completed cycle, otherwise the mode-selected value.
 
 
@@ -1644,7 +1661,9 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 
 				})(),
-				lastDays : lasDayNum
+
+				vacation : !!iteObj.vacation,
+				wasOnVac : wasVacBoo
 
 
 			};
@@ -2127,10 +2146,10 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 								x='16'
 								y='16'
 								style={{
-									strokeWidth    : 16,
+									stroke         : 'currentColor',
 									strokeLinecap  : 'round',
 									strokeLinejoin : 'round',
-									stroke         : 'currentColor'
+									strokeWidth    : 16
 								}}
 							/>{ /* What: Badge Rect Element. Why: The logo needs a visible rounded-square border/badge behind the glyph. How: This draws the same rounded-square shape as the clip rect above, but stroked and visible instead of hidden in defs. */ }
 
@@ -2285,9 +2304,10 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 									...exiModArr.map( ( picModStr ) => ( { // What: Mode Entry Mapping. Why: Every real mode in use needs its own pill entry with a matching count/click handler before the combined list is sorted. How: This maps each exiModArr entry to a small { key, name, count, isOn, onClick } shape.
 
 
-										key : picModStr, name : MODES[ picModStr ].label,
-										count : picLisArr.filter( ( picObj ) => picObj.mode === picModStr && !picObj.hidden ).length,
-										isOn : typFilStr === picModStr,
+										count   : picLisArr.filter( ( picObj ) => picObj.mode === picModStr && !picObj.hidden ).length,
+										isOn    : typFilStr === picModStr,
+										key     : picModStr,
+										name    : MODES[ picModStr ].label,
 										onClick : () => setTypFilStr( picModStr )
 
 
@@ -2296,8 +2316,10 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 									...( hasConBoo ? [ { // What: Conditionals Entry Array. Why: The Conditionals sentinel pill only belongs in the list at all once at least one conditional exists. How: This is a one-entry array (or empty) spread into the combined list below.
 
 
-										key : 'conditionals', name : 'Conditionals', count : conDefArr.length,
-										isOn : typFilStr === 'conditionals',
+										count   : conDefArr.length,
+										isOn    : typFilStr === 'conditionals',
+										key     : 'conditionals',
+										name    : 'Conditionals',
 										onClick : () => { setTypFilStr( 'conditionals' ); setScoValStr( 'conditionals' ); }
 
 
@@ -2306,8 +2328,10 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 									...( remEnaBoo ? [ { // What: Reminders Entry Array. Why: The Reminders sentinel pill only belongs in the list at all once at least one reminder type is enabled. How: This is a one-entry array (or empty) spread into the combined list below.
 
 
-										key : 'reminders', name : 'Reminders', count : ( state.tasks || [] ).filter( ( tasObj ) => !tasObj.hidden ).length,
-										isOn : typFilStr === 'reminders',
+										count   : ( state.tasks || [] ).filter( ( tasObj ) => !tasObj.hidden ).length,
+										isOn    : typFilStr === 'reminders',
+										key     : 'reminders',
+										name    : 'Reminders',
 										onClick : () => { setTypFilStr( 'reminders' ); setScoValStr( 'reminders' ); }
 
 

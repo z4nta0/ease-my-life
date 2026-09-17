@@ -850,7 +850,7 @@ function norOptFun( remOptObj ) {
 	return { // What: Normalized Options Return. Why: A partially-saved remOptObj (an older save missing a newer switch) must still come out fully-shaped. How: This merges each of remOptObj's own 2 classes over defOptObj's own matching class.
 
 
-		once      : { ...defOptObj.once, ...( remOptObj.once || {} ) },           // What: Once. Why: This is the fully-merged once-class options object. How: This spreads defOptObj.once first, then remOptObj's own once (or an empty object when missing) over it.
+		once      : { ...defOptObj.once, ...( remOptObj.once || {} ) },          // What: Once. Why: This is the fully-merged once-class options object. How: This spreads defOptObj.once first, then remOptObj's own once (or an empty object when missing) over it.
 		recurring : { ...defOptObj.recurring, ...( remOptObj.recurring || {} ) } // What: Recurring. Why: This is the fully-merged recurring-class options object. How: This spreads defOptObj.recurring first, then remOptObj's own recurring (or an empty object when missing) over it.
 
 
@@ -1023,8 +1023,8 @@ function todVisFun( tasRecObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
 			? {
 
 
-				name   : HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ), // What: Name. Why: The caller needs the matched holiday's own display name. How: This calls HOL_NAM_OBJ.holDatFun again for its own return value (already confirmed truthy by the guard above).
-				custom : false // What: Custom. Why: This name-only fallback path can only ever be reached for a computed built-in holiday, never a custom one. How: This is always false on this branch.
+				custom : false,                                        // What: Custom. Why: This name-only fallback path can only ever be reached for a computed built-in holiday, never a custom one. How: This is always false on this branch.
+				name   : HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ) // What: Name. Why: The caller needs the matched holiday's own display name. How: This calls HOL_NAM_OBJ.holDatFun again for its own return value (already confirmed truthy by the guard above).
 
 
 			}
@@ -1055,12 +1055,12 @@ function todVisFun( tasRecObj, remOptObj, holStaObj, cheDatObj = new Date() ) {
 	return { // What: Today Visibility Return. Why: The caller needs the full advisory shape described in this function's own @summary above. How: This builds one plain object from every value computed above.
 
 
-		visible       : !priCauStr,                                                                 // What: Visible. Why: The caller's simplest possible question is whether tasRecObj shows at all. How: This is true only when priCauStr is null.
-		cause         : priCauStr,                                                                  // What: Cause. Why: The caller needs the single primary reason, for routing an advisory note to the right control. How: This is priCauStr, computed above.
-		causes        : cauValArr,                                                                  // What: Causes. Why: A caller wording a fuller note (more than one cause can apply at once) needs the complete set. How: This is cauValArr, computed above.
-		holidayName   : holInfObj ? holInfObj.name : null,                                          // What: Holiday Name. Why: A caller wording itself around a specific holiday needs its own display name. How: This reads holInfObj's own name when holInfObj exists, null otherwise.
-		holidayCustom : holInfObj ? !!holInfObj.custom : false,                                     // What: Holiday Custom. Why: A caller needs to distinguish "the Christmas Day holiday" from "your Family Day custom holiday" in its own wording. How: This coerces holInfObj's own custom flag when holInfObj exists, false otherwise.
-		next          : priCauStr ? nexEliFun( tasRecObj, remOptObj, holStaObj, cheDatObj, true ) : null // What: Next. Why: A caller offering "it'll show again on ..." only needs to compute that (a real search) when tasRecObj isn't visible at all. How: This calls nexEliFun only when priCauStr is set, null otherwise.
+		cause         : priCauStr,                                                                        // What: Cause. Why: The caller needs the single primary reason, for routing an advisory note to the right control. How: This is priCauStr, computed above.
+		causes        : cauValArr,                                                                        // What: Causes. Why: A caller wording a fuller note (more than one cause can apply at once) needs the complete set. How: This is cauValArr, computed above.
+		holidayCustom : holInfObj ? !!holInfObj.custom : false,                                           // What: Holiday Custom. Why: A caller needs to distinguish "the Christmas Day holiday" from "your Family Day custom holiday" in its own wording. How: This coerces holInfObj's own custom flag when holInfObj exists, false otherwise.
+		holidayName   : holInfObj ? holInfObj.name : null,                                                // What: Holiday Name. Why: A caller wording itself around a specific holiday needs its own display name. How: This reads holInfObj's own name when holInfObj exists, null otherwise.
+		next          : priCauStr ? nexEliFun( tasRecObj, remOptObj, holStaObj, cheDatObj, true ) : null, // What: Next. Why: A caller offering "it'll show again on ..." only needs to compute that (a real search) when tasRecObj isn't visible at all. How: This calls nexEliFun only when priCauStr is set, null otherwise.
+		visible       : !priCauStr                                                                        // What: Visible. Why: The caller's simplest possible question is whether tasRecObj shows at all. How: This is true only when priCauStr is null.
 
 
 	};
@@ -1168,24 +1168,24 @@ const TAS_RPT_ARR = [ 'once', 'weekly', 'interval', 'monthly', 'annual' ]; // Wh
 export const TASKS = { // What: Tasks Namespace Object. Why: store.jsx, reminders.jsx, day-log.jsx, tab-today.jsx, tab-stats.jsx, seed.js, and the onboarding modules all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on.
 
 
-	defaultTask     : defTasFun, // What: Default Task. Why: Callers build a fully-defaulted task/reminder record by this exact name. How: This re-exports defTasFun under its original external property name.
-	isDueToday      : isaDueFun, // What: Is Due Today. Why: Callers check whether a task is due on a given date by this exact name. How: This re-exports isaDueFun under its original external property name.
-	isDoneToday     : isaDonFun, // What: Is Done Today. Why: Callers check whether a task's own occurrence is already completed by this exact name. How: This re-exports isaDonFun under its original external property name.
-	isStaleOnce     : isaStaFun, // What: Is Stale Once. Why: store.jsx's own migrate() drops a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its original external property name.
-	isCompletedOnce : isaComFun, // What: Is Completed Once. Why: Callers drop a same-day completed one-time task by this exact name. How: This re-exports isaComFun under its original external property name.
-	summary         : sumTasFun, // What: Summary. Why: Callers need a task's own human-readable schedule summary by this exact name. How: This re-exports sumTasFun under its original external property name.
-	dueToday        : dueTodFun, // What: Due Today. Why: Callers need the due, non-hidden, stably-sorted task list by this exact name. How: This re-exports dueTodFun under its original external property name.
-	defaultOpts     : defOptFun, // What: Default Opts. Why: Callers need the canonical default participation-options shape by this exact name. How: This re-exports defOptFun under its original external property name.
-	normalizeOpts   : norOptFun, // What: Normalize Opts. Why: store.jsx's own migrate() and every opts-reading caller need a fully-shaped options object by this exact name. How: This re-exports norOptFun under its original external property name.
-	isRecurring     : isaRecFun, // What: Is Recurring. Why: Callers check whether a task belongs to the recurring (vs one-time) options class by this exact name. How: This re-exports isaRecFun under its original external property name.
-	optsFor         : optForFun, // What: Opts For. Why: Callers need a specific task's own governing options object by this exact name. How: This re-exports optForFun under its original external property name.
-	visibleToday    : visTodFun, // What: Visible Today. Why: Callers need the actually-visible-on-Today task list by this exact name. How: This re-exports visTodFun under its original external property name.
-	nextEligible    : nexEliFun, // What: Next Eligible. Why: Callers need a task's own next eligible occurrence by this exact name. How: This re-exports nexEliFun under its original external property name.
-	todayVisibility : todVisFun, // What: Today Visibility. Why: Callers need the full visible/cause/next advisory for a single task by this exact name. How: This re-exports todVisFun under its original external property name.
-	isoToday        : curIsoFun, // What: Iso Today. Why: Callers need today's own ISO date string by this exact name. How: This re-exports curIsoFun under its original external property name.
-	isoOf           : isoDatFun, // What: Iso Of. Why: Callers need an arbitrary date's own ISO string by this exact name. How: This re-exports isoDatFun under its original external property name.
-	anchorDate      : ancDatFun, // What: Anchor Date. Why: Callers need the generator-anchored "what day is it" Date by this exact name. How: This re-exports ancDatFun under its original external property name.
-	REPEATS         : TAS_RPT_ARR // What: Repeats. Why: Callers (a task's own repeat-kind dropdown) need the fixed list of valid repeat option values. How: This re-exports TAS_RPT_ARR under its original external property name.
+	anchorDate      : ancDatFun,   // What: Anchor Date. Why: Callers need the generator-anchored "what day is it" Date by this exact name. How: This re-exports ancDatFun under its original external property name.
+	defaultOpts     : defOptFun,   // What: Default Opts. Why: Callers need the canonical default participation-options shape by this exact name. How: This re-exports defOptFun under its original external property name.
+	defaultTask     : defTasFun,   // What: Default Task. Why: Callers build a fully-defaulted task/reminder record by this exact name. How: This re-exports defTasFun under its original external property name.
+	dueToday        : dueTodFun,   // What: Due Today. Why: Callers need the due, non-hidden, stably-sorted task list by this exact name. How: This re-exports dueTodFun under its original external property name.
+	isCompletedOnce : isaComFun,   // What: Is Completed Once. Why: Callers drop a same-day completed one-time task by this exact name. How: This re-exports isaComFun under its original external property name.
+	isDoneToday     : isaDonFun,   // What: Is Done Today. Why: Callers check whether a task's own occurrence is already completed by this exact name. How: This re-exports isaDonFun under its original external property name.
+	isDueToday      : isaDueFun,   // What: Is Due Today. Why: Callers check whether a task is due on a given date by this exact name. How: This re-exports isaDueFun under its original external property name.
+	isoOf           : isoDatFun,   // What: Iso Of. Why: Callers need an arbitrary date's own ISO string by this exact name. How: This re-exports isoDatFun under its original external property name.
+	isoToday        : curIsoFun,   // What: Iso Today. Why: Callers need today's own ISO date string by this exact name. How: This re-exports curIsoFun under its original external property name.
+	isRecurring     : isaRecFun,   // What: Is Recurring. Why: Callers check whether a task belongs to the recurring (vs one-time) options class by this exact name. How: This re-exports isaRecFun under its original external property name.
+	isStaleOnce     : isaStaFun,   // What: Is Stale Once. Why: store.jsx's own migrate() drops a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its original external property name.
+	nextEligible    : nexEliFun,   // What: Next Eligible. Why: Callers need a task's own next eligible occurrence by this exact name. How: This re-exports nexEliFun under its original external property name.
+	normalizeOpts   : norOptFun,   // What: Normalize Opts. Why: store.jsx's own migrate() and every opts-reading caller need a fully-shaped options object by this exact name. How: This re-exports norOptFun under its original external property name.
+	optsFor         : optForFun,   // What: Opts For. Why: Callers need a specific task's own governing options object by this exact name. How: This re-exports optForFun under its original external property name.
+	REPEATS         : TAS_RPT_ARR, // What: Repeats. Why: Callers (a task's own repeat-kind dropdown) need the fixed list of valid repeat option values. How: This re-exports TAS_RPT_ARR under its original external property name.
+	summary         : sumTasFun,   // What: Summary. Why: Callers need a task's own human-readable schedule summary by this exact name. How: This re-exports sumTasFun under its original external property name.
+	todayVisibility : todVisFun,   // What: Today Visibility. Why: Callers need the full visible/cause/next advisory for a single task by this exact name. How: This re-exports todVisFun under its original external property name.
+	visibleToday    : visTodFun    // What: Visible Today. Why: Callers need the actually-visible-on-Today task list by this exact name. How: This re-exports visTodFun under its original external property name.
 
 
 };

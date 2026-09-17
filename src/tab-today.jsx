@@ -3254,12 +3254,14 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 				setParArr( Array.from( { length : 26 }, ( _, curIndNum ) => ( {
 
-					id      : curIndNum,
+
 					angle   : Math.round( Math.random() * 360 ),
+					delay   : Math.round( Math.random() * 180 ),
 					dist    : 90 + Math.random() * 220,
-					rot     : Math.round( Math.random() * 360 ),
+					id      : curIndNum,
 					opacity : ( 0.7 + Math.random() * 0.3 ).toFixed( 2 ),
-					delay   : Math.round( Math.random() * 180 )
+					rot     : Math.round( Math.random() * 360 )
+
 
 				} ) ) );
 
@@ -3271,10 +3273,12 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 				setParArr( Array.from( { length : 22 }, () => ( {
 
+
+					delay : Math.round( Math.random() * 700 ),
 					id    : Math.random(),
 					xPer  : Math.round( Math.random() * 100 ),
-					yPer  : Math.round( Math.random() * 100 ),
-					delay : Math.round( Math.random() * 700 )
+					yPer  : Math.round( Math.random() * 100 )
+
 
 				} ) ) );
 
@@ -3594,8 +3598,13 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 					actions.setEntryItem( entRecObj.eid, nexIteObj.id, { // What: Set Entry Item Call. Why: This stages the new pick's own value/weight mutation as pending, applied only once the entry is marked done, preserving the "nothing changes until you actually do it" contract. How: This writes nexIteObj's own id plus resObj's own updates/pickerPatch/depletedEnd.
 
-						updates : resObj.updates, pickerPatch : resObj.pickerPatch,
-						depletedEnd : resObj.depletedEnd, pickedId : nexIteObj.id, bumpPick : true
+
+						bumpPick    : true,
+						depletedEnd : resObj.depletedEnd,
+						pickedId    : nexIteObj.id,
+						pickerPatch : resObj.pickerPatch,
+						updates     : resObj.updates
+
 
 					} );
 
@@ -3615,8 +3624,13 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 					actions.setEntryItem( entRecObj.eid, resObj.picked.id, { // What: Set Entry Item Call. Why: Same staging contract as the ease-up branch above: nothing changes until the entry is marked done. How: This writes resObj.picked's own id plus resObj's own updates/pickerPatch/depletedEnd.
 
-						updates : resObj.updates, pickerPatch : resObj.pickerPatch,
-						depletedEnd : resObj.depletedEnd, pickedId : resObj.picked.id, bumpPick : true
+
+						bumpPick    : true,
+						depletedEnd : resObj.depletedEnd,
+						pickedId    : resObj.picked.id,
+						pickerPatch : resObj.pickerPatch,
+						updates     : resObj.updates
+
 
 					} );
 
@@ -3923,8 +3937,10 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		ordSnpRef.current = {
 
+
 			groupOrder  : ( state.groupOrder || [] ).slice(),
 			pickerOrder : JSON.parse( JSON.stringify( state.pickerOrder || {} ) )
+
 
 		};
 
@@ -3985,14 +4001,11 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		REORDER.startDrag( ptdEveObj, { // What: Start Drag Call. Why: This is the actual shared pointer-drag mechanism every reorderable list in the app uses. How: This is passed the container/handle plus 3 callbacks below.
 
 
-			container   : wrpCurEle,
+			container    : wrpCurEle,
+			gripEl       : griCurEle,
+			handleEl     : secCurEle,
 			itemSelector : '.group-section',
-			handleEl    : secCurEle,
-			gripEl      : griCurEle,
-			scroller    : mnScrRef.current?.closest( '.main' ),
 
-			onStart : () => emlTouObj.set( { dragging : true } ),  // What: On Start Callback. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable IcoSvgCom" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes dragging:true onto the shared tour bus, a harmless no-op when no tour is mounted.
-			onEnd   : () => emlTouObj.set( { dragging : false } ), // What: On End Callback. Why: The coach must reappear once the gesture ends. How: This publishes dragging:false onto the shared tour bus.
 			onDrop  : ( ordNumArr ) => { // What: On Drop Callback. Why: The actual persisted group order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through shoOrdRef's own shown order, then merges the result into state.groupOrder.
 
 
@@ -4002,7 +4015,11 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 				actions.reorderGroups( merOrdFun( state.groupOrder || [], preArr ) ); // What: Reorder Groups Call. Why: This is the actual persisted write. How: This merges preArr's own new order back into the fuller saved order via merOrdFun.
 
 
-			}
+			},
+
+			onEnd    : () => emlTouObj.set( { dragging : false } ), // What: On End Callback. Why: The coach must reappear once the gesture ends. How: This publishes dragging:false onto the shared tour bus.
+			onStart  : () => emlTouObj.set( { dragging : true } ),  // What: On Start Callback. Why: Dragging a group should hide the mini-tour coach for the gesture's own duration (see Today's own "Movable IcoSvgCom" tour step), since its tooltip card can sit right over the group being dragged. How: This publishes dragging:true onto the shared tour bus, a harmless no-op when no tour is mounted.
+			scroller : mnScrRef.current?.closest( '.main' )
 
 
 		} );
@@ -4023,14 +4040,11 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		REORDER.startDrag( ptdEveObj, { // What: Start Drag Call. Why: This is the actual shared pointer-drag mechanism every reorderable list in the app uses. How: This is passed the container/handle plus 3 callbacks below.
 
 
-			container   : lisCurEle,
+			container    : lisCurEle,
+			gripEl       : griCurEle,
+			handleEl     : carCurEle,
 			itemSelector : '.today-card',
-			handleEl    : carCurEle,
-			gripEl      : griCurEle,
-			scroller    : mnScrRef.current?.closest( '.main' ),
 
-			onStart : () => emlTouObj.set( { dragging : true } ),  // What: On Start Callback. Why: Same reasoning as startGroDraFun's own onStart above. How: This publishes dragging:true onto the shared tour bus.
-			onEnd   : () => emlTouObj.set( { dragging : false } ), // What: On End Callback. Why: Same reasoning as startGroDraFun's own onEnd above. How: This publishes dragging:false onto the shared tour bus.
 			onDrop  : ( ordNumArr ) => { // What: On Drop Callback. Why: The actual persisted per-group picker order needs to be recomputed from the drop's own DOM-position indices. How: This maps ordNumArr back through curGroObj's own current entries, then merges the result into state.pickerOrder for this group.
 
 
@@ -4039,7 +4053,11 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 				actions.reorderPickersInGroup( curGroObj.name, merOrdFun( ( state.pickerOrder || {} )[ curGroObj.name ] || [], preArr ) ); // What: Reorder Pickers In Group Call. Why: This is the actual persisted write, scoped to this one group. How: This merges preArr's own new order back into this group's own fuller saved order via merOrdFun.
 
 
-			}
+			},
+
+			onEnd    : () => emlTouObj.set( { dragging : false } ), // What: On End Callback. Why: Same reasoning as startGroDraFun's own onEnd above. How: This publishes dragging:false onto the shared tour bus.
+			onStart  : () => emlTouObj.set( { dragging : true } ),  // What: On Start Callback. Why: Same reasoning as startGroDraFun's own onStart above. How: This publishes dragging:true onto the shared tour bus.
+			scroller : mnScrRef.current?.closest( '.main' )
 
 
 		} );
@@ -4273,11 +4291,14 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 				newPikArr.push( { // What: New Pick Push. Why: This is the actual pending-commit record for this fresh pick. How: This bundles curPicIdeStr, the full pikResObj, its own cycle candidates, picked id, depletedEnd flag, and period key.
 
-					pickerId : curPicIdeStr, res : pikResObj,
-					candidates : pikResObj.cycleCandidates || [],
-					pickedId : pikResObj.picked.id,
+
+					candidates  : pikResObj.cycleCandidates || [],
 					depletedEnd : !!pikResObj.depletedEnd,
-					periodKey : perKeyStr
+					periodKey   : perKeyStr,
+					pickedId    : pikResObj.picked.id,
+					pickerId    : curPicIdeStr,
+					res         : pikResObj
+
 
 				} );
 
@@ -5561,8 +5582,13 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 									<i
 										key={ curParObj.id }
 										className='confetti-piece'
-										style={{ '--angle' : `${ curParObj.angle }deg`, '--dist' : `${ curParObj.dist }px`, '--rot' : `${ curParObj.rot }deg`,
-											'--piece-opacity' : curParObj.opacity, animationDelay : `${ curParObj.delay }ms` }}
+										style={{
+										'--angle'         : `${ curParObj.angle }deg`,
+										'--dist'          : `${ curParObj.dist }px`,
+											'--piece-opacity' : curParObj.opacity,
+										'--rot'           : `${ curParObj.rot }deg`,
+											animationDelay    : `${ curParObj.delay }ms`
+										}}
 									/> // What: Confetti Piece Element. Why: This is one single confetti piece, positioned/rotated/timed entirely via inline CSS custom properties. How: This renders curParObj's own randomized angle/distance/rotation/opacity/delay.
 
 								) ) }

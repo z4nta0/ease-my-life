@@ -499,12 +499,12 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	const dftActObj = { // What: Draft Actions Object. Why: EntryEditor expects a real actions-shaped object to call as the user edits the in-progress new-item draft, but that draft isn't committed to the store yet. How: Every method below mirrors the real store action's own name and signature, but writes into newDftObj instead of dispatching a real store update.
 
 
-		updateItem     : ( tarIdeStr, patIteObj ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, ...patIteObj } : d ), // What: Update Item Method. Why: EntryEditor calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into newDftObj only if the ids still match.
+		removeItem     : () => setNewDftObj( null ),                                                                                      // What: Remove Item Method. Why: EntryEditor's own footer Delete button (hidden here via CSS, see the render below) still expects this method to exist. How: This clears newDftObj entirely.
+		renameItem     : ( tarIdeStr, newNamStr ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, name : newNamStr } : d ),   // What: Rename Item Method. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on newDftObj, if the ids still match.
+		replaceItem    : ( tarIdeStr, snaIteObj ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? snaIteObj : d ),                    // What: Replace Item Method. Why: EntryEditor's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces newDftObj wholesale with snaIteObj, if the ids still match.
 		setItemWeight  : ( tarIdeStr, wgtValNum ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, weight : wgtValNum } : d ), // What: Set Item Weight Method. Why: EntryEditor's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on newDftObj, if the ids still match.
-		replaceItem    : ( tarIdeStr, snaIteObj ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? snaIteObj : d ), // What: Replace Item Method. Why: EntryEditor's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces newDftObj wholesale with snaIteObj, if the ids still match.
-		removeItem     : () => setNewDftObj( null ), // What: Remove Item Method. Why: EntryEditor's own footer Delete button (hidden here via CSS, see the render below) still expects this method to exist. How: This clears newDftObj entirely.
-		renameItem     : ( tarIdeStr, newNamStr ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, name : newNamStr } : d ), // What: Rename Item Method. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on newDftObj, if the ids still match.
-		toggleVacation : ( tarIdeStr ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, vacation : !d.vacation } : d ) // What: Toggle Vacation Method. Why: EntryEditor's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on newDftObj, if the ids still match.
+		toggleVacation : ( tarIdeStr ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, vacation : !d.vacation } : d ),        // What: Toggle Vacation Method. Why: EntryEditor's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on newDftObj, if the ids still match.
+		updateItem     : ( tarIdeStr, patIteObj ) => setNewDftObj( ( d ) => d && d.id === tarIdeStr ? { ...d, ...patIteObj } : d )        // What: Update Item Method. Why: EntryEditor calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into newDftObj only if the ids still match.
 
 
 	};
@@ -670,21 +670,21 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	const ediIniObj = { // What: Edit Initial Object. Why: PicForCom's own edit mode needs every one of this picker's current settings prefilled, so Save can round-trip them through commitPickerEdit unchanged unless the user actually edits a field. How: This maps every relevant picker field onto the same shape PicForCom's own initial prop expects.
 
 
-		name            : picker.name,
-		mode            : picker.mode,
-		includeInDaily  : ( ( state.daily && state.daily.pickerIds ) || [] ).includes( picker.id ),
-		daysOfWeek      : picker.daysOfWeek,
-		skipHolidays    : picker.skipHolidays,
-		avoidDuplicates : picker.avoidDuplicates,
-		conditionalId   : picker.conditionalId || null,
-		cadence         : picker.cadence,
-		anchorDow       : picker.anchorDow,
-		anchorDom       : picker.anchorDom,
-		anchorMonth     : picker.anchorMonth,
 		anchorDay       : picker.anchorDay,
+		anchorDom       : picker.anchorDom,
+		anchorDow       : picker.anchorDow,
+		anchorMonth     : picker.anchorMonth,
+		avoidDuplicates : picker.avoidDuplicates,
+		cadence         : picker.cadence,
+		conditionalId   : picker.conditionalId || null,
 		dateMode        : picker.dateMode,
+		daysOfWeek      : picker.daysOfWeek,
+		includeInDaily  : ( ( state.daily && state.daily.pickerIds ) || [] ).includes( picker.id ),
+		mode            : picker.mode,
+		name            : picker.name,
 		nthOrdinal      : picker.nthOrdinal,
-		nthWeekday      : picker.nthWeekday
+		nthWeekday      : picker.nthWeekday,
+		skipHolidays    : picker.skipHolidays
 
 		// What: Deliberately Omitted Group Field. Why: `group` specifically means "prefill the inline ADD-A-NEW-GROUP sub-form" (see PicForCom's own addingGroup/newGroup state), which would be wrong here: this picker's group already exists (it's necessarily in ediGroArr, since that list is derived from state.pickers including this picker itself), so it should land on that EXISTING pill instead. How: initialGroup (passed at the return below) is the prop that does that, same as the create flow's own group-filter prefill.
 
@@ -1743,12 +1743,12 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 	const dftActObj = { // What: Draft Actions Object. Why: EntryEditor expects a real actions-shaped object to call as the user edits a draft pool item, but pooIteArr isn't the real store. How: Every method below mirrors the real store action's own name and signature, but writes into pooIteArr instead of dispatching a real store update.
 
 
-		updateItem     : ( tarIdeStr, patIteObj ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, ...patIteObj } : it ) ),  // What: Update Item Method. Why: EntryEditor calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into whichever pooIteArr entry matches tarIdeStr.
+		removeItem     : ( tarIdeStr ) => setPooIteArr( ( xs ) => xs.filter( ( it ) => it.id !== tarIdeStr ) ),                                              // What: Remove Item Method. Why: EntryEditor's own footer Delete button (hidden here via CSS, same as the live flow) still expects this method to exist. How: This filters the matching entry out entirely.
+		renameItem     : ( tarIdeStr, newNamStr ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, name : newNamStr } : it ) ),   // What: Rename Item Method. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on the matching entry.
+		replaceItem    : ( tarIdeStr, snaIteObj ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? snaIteObj : it ) ),                     // What: Replace Item Method. Why: EntryEditor's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces the matching entry wholesale with snaIteObj.
 		setItemWeight  : ( tarIdeStr, wgtValNum ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, weight : wgtValNum } : it ) ), // What: Set Item Weight Method. Why: EntryEditor's own weight stepper calls this exactly like the real store action. How: This overwrites just the weight field on the matching entry.
-		replaceItem    : ( tarIdeStr, snaIteObj ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? snaIteObj : it ) ),                  // What: Replace Item Method. Why: EntryEditor's own Cancel/Escape handling calls this to revert to a prior snapshot. How: This replaces the matching entry wholesale with snaIteObj.
-		removeItem     : ( tarIdeStr ) => setPooIteArr( ( xs ) => xs.filter( ( it ) => it.id !== tarIdeStr ) ),                                          // What: Remove Item Method. Why: EntryEditor's own footer Delete button (hidden here via CSS, same as the live flow) still expects this method to exist. How: This filters the matching entry out entirely.
-		renameItem     : ( tarIdeStr, newNamStr ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, name : newNamStr } : it ) ), // What: Rename Item Method. Why: The name input's own onBlur calls this exactly like the real store action. How: This overwrites just the name field on the matching entry.
-		toggleVacation : ( tarIdeStr ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, vacation : !it.vacation } : it ) )    // What: Toggle Vacation Method. Why: EntryEditor's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on the matching entry.
+		toggleVacation : ( tarIdeStr ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, vacation : !it.vacation } : it ) ),       // What: Toggle Vacation Method. Why: EntryEditor's own Active switch calls this exactly like the real store action. How: This flips just the vacation field on the matching entry.
+		updateItem     : ( tarIdeStr, patIteObj ) => setPooIteArr( ( xs ) => xs.map( ( it ) => it.id === tarIdeStr ? { ...it, ...patIteObj } : it ) )        // What: Update Item Method. Why: EntryEditor calls this exactly like the real store action to apply a field patch. How: This merges patIteObj into whichever pooIteArr entry matches tarIdeStr.
 
 
 	};

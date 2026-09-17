@@ -371,10 +371,10 @@ function detEdgFun ( recObj ) {
 	const edgGapObj = { // What: Edge Gap Object. Why: Every one of the 4 viewport edges needs its own candidate gap computed before the smallest one can be picked. How: This is reduced below to whichever single entry holds the smallest gap.
 
 
-		top    : recObj.top,                         // What: Top Gap. Why: This is how far recObj's own top edge sits below the viewport's own top edge, which is always y=0. How: This is recObj's own top value used directly, with no subtraction needed.
 		bottom : window.innerHeight - recObj.bottom, // What: Bottom Gap. Why: This is how far recObj's own bottom edge sits above the viewport's own bottom edge. How: This subtracts recObj's own bottom from the viewport's own total height.
 		left   : recObj.left,                        // What: Left Gap. Why: This is how far recObj's own left edge sits right of the viewport's own left edge, which is always x=0. How: This is recObj's own left value used directly, with no subtraction needed.
-		right  : window.innerWidth - recObj.right    // What: Right Gap. Why: This is how far recObj's own right edge sits left of the viewport's own right edge. How: This subtracts recObj's own right from the viewport's own total width.
+		right  : window.innerWidth - recObj.right,   // What: Right Gap. Why: This is how far recObj's own right edge sits left of the viewport's own right edge. How: This subtracts recObj's own right from the viewport's own total width.
+		top    : recObj.top                          // What: Top Gap. Why: This is how far recObj's own top edge sits below the viewport's own top edge, which is always y=0. How: This is recObj's own top value used directly, with no subtraction needed.
 
 
 	};
@@ -580,10 +580,10 @@ function claPadFun ( tarRecObj, padHorNum, padVerNum, chrIteArr, tarEleArr ) {
 	return { // What: Surviving Pad Return. Why: The caller needs to know how much of the requested pad actually survived on each individual side. How: This compares tarRecObj's own unpadded edges against cliRecObj's own clipped edges, one side at a time.
 
 
-		padTopNum : tarRecObj.top - cliRecObj.top,       // What: Pad Top Number. Why: The top side's own surviving pad is however much of the padded box's own top edge is still above the clipped rect's own top. How: This subtracts cliRecObj's own top from tarRecObj's own top.
 		padBotNum : cliRecObj.bottom - tarRecObj.bottom, // What: Pad Bottom Number. Why: The bottom side's own surviving pad is however much of the padded box's own bottom edge is still below the clipped rect's own bottom. How: This subtracts tarRecObj's own bottom from cliRecObj's own bottom.
 		padLefNum : tarRecObj.left - cliRecObj.left,     // What: Pad Left Number. Why: The left side's own surviving pad is however much of the padded box's own left edge is still left of the clipped rect's own left. How: This subtracts cliRecObj's own left from tarRecObj's own left.
-		padRigNum : cliRecObj.right - tarRecObj.right    // What: Pad Right Number. Why: The right side's own surviving pad is however much of the padded box's own right edge is still right of the clipped rect's own right. How: This subtracts tarRecObj's own right from cliRecObj's own right.
+		padRigNum : cliRecObj.right - tarRecObj.right,   // What: Pad Right Number. Why: The right side's own surviving pad is however much of the padded box's own right edge is still right of the clipped rect's own right. How: This subtracts tarRecObj's own right from cliRecObj's own right.
+		padTopNum : tarRecObj.top - cliRecObj.top        // What: Pad Top Number. Why: The top side's own surviving pad is however much of the padded box's own top edge is still above the clipped rect's own top. How: This subtracts cliRecObj's own top from tarRecObj's own top.
 
 
 	};
@@ -676,8 +676,10 @@ function shaRadFun ( tarDomEle, padWidNum, padHeiNum, shaOveStr ) {
 
 		return { // What: Percentage Radius Return. Why: The caller needs the percentage token actually scaled against the padded box's own size. How: This multiplies perRatNum against padWidNum/padHeiNum.
 
+
 			rx : perRatNum * padWidNum, // What: Radius X. Why: The horizontal radius must scale by the same percentage the source element's own border-radius specified. How: This multiplies perRatNum against padWidNum.
 			ry : perRatNum * padHeiNum  // What: Radius Y. Why: The vertical radius must scale by that same percentage too. How: This multiplies perRatNum against padHeiNum.
+
 
 		};
 
@@ -698,8 +700,10 @@ function shaRadFun ( tarDomEle, padWidNum, padHeiNum, shaOveStr ) {
 
 	return { // What: Grown Radius Return. Why: A real, moderate rounded-corner value should keep reading as rounded once the box has grown by the pad amount. How: This adds the flat pad margin back onto the parsed pixel radius.
 
+
 		rx : pxNum + PAD_MAR_NUM, // What: Radius X. Why: A pixel radius must grow by the same flat pad margin the box itself grew by, to roughly preserve how rounded it reads. How: This adds PAD_MAR_NUM onto the parsed pixel radius.
 		ry : pxNum + PAD_MAR_NUM  // What: Radius Y. Why: Same reasoning as rx, since a border-radius grows uniformly on both axes for a plain pixel value. How: This adds PAD_MAR_NUM onto the parsed pixel radius.
+
 
 	};
 
@@ -1080,29 +1084,7 @@ function HelTipCom ( { tipIteObj, tarRecObj } ) {
 const NAV_HEL_OBJ = {
 
 
-	ideStr  : '__nav',
-	selStr  : '[data-tab]',
-	mtwBoo  : true,
-	mwsStr  : '.tabbar',
-	padYNum : 7,
-	scrBoo  : true,
-	absStr  : '.tabbar--side, .tabbar--top',
-
-	shaStr : ( padWidNum, padHeiNum ) => { // What: Shape Function. Why: A multi-element union like the nav bar has no single source element's own border-radius to read. How: This computes a true-pill radius only once the box is meaningfully elongated, matching 'bottom'/'top' placement but not 'side'.
-
-
-		const shoPilNum = Math.min( padWidNum, padHeiNum );                         // What: Short Pill Number. Why: The elongation check and the pill radius itself both need to know which dimension is smaller. How: This takes the smaller of padWidNum/padHeiNum.
-		const lonPilNum = Math.max( padWidNum, padHeiNum );                         // What: Long Pill Number. Why: The elongation check needs the larger dimension to compare against shoPilNum. How: This takes the larger of padWidNum/padHeiNum.
-		const radPilNum = lonPilNum / shoPilNum >= 2 ? shoPilNum / 2 : DEF_RAD_NUM; // What: Radius Pill Number. Why: Only a box at least twice as long as it is short reads correctly as a true pill; a nearly-square union (the 'side' stack) would otherwise round into a circle/oval. How: This picks half of shoPilNum once elongated enough, otherwise the app's own default radius.
-
-
-
-		return { rx: radPilNum, ry: radPilNum }; // What: Pill Radius Return. Why: The caller needs both radii in the same { rx, ry } shape every other shape source in this file already returns. How: This returns radPilNum for both axes, since a pill radius is always equal on both.
-
-
-	},
-
-	titStr : 'Navigation',
+	absStr : '.tabbar--side, .tabbar--top',
 
 	bodEle : ( // What: Body Expression. Why: This is NAV_HEL_OBJ's own tip content, one column per tab. How: This maps a small local tab-description array, reusing each tab's own real nav icon so it can never drift from the real button.
 
@@ -1132,7 +1114,30 @@ const NAV_HEL_OBJ = {
 		</>
 
 
-	)
+	),
+
+	ideStr  : '__nav',
+	mtwBoo  : true,
+	mwsStr  : '.tabbar',
+	padYNum : 7,
+	scrBoo  : true,
+	selStr  : '[data-tab]',
+
+	shaStr : ( padWidNum, padHeiNum ) => { // What: Shape Function. Why: A multi-element union like the nav bar has no single source element's own border-radius to read. How: This computes a true-pill radius only once the box is meaningfully elongated, matching 'bottom'/'top' placement but not 'side'.
+
+
+		const shoPilNum = Math.min( padWidNum, padHeiNum );                         // What: Short Pill Number. Why: The elongation check and the pill radius itself both need to know which dimension is smaller. How: This takes the smaller of padWidNum/padHeiNum.
+		const lonPilNum = Math.max( padWidNum, padHeiNum );                         // What: Long Pill Number. Why: The elongation check needs the larger dimension to compare against shoPilNum. How: This takes the larger of padWidNum/padHeiNum.
+		const radPilNum = lonPilNum / shoPilNum >= 2 ? shoPilNum / 2 : DEF_RAD_NUM; // What: Radius Pill Number. Why: Only a box at least twice as long as it is short reads correctly as a true pill; a nearly-square union (the 'side' stack) would otherwise round into a circle/oval. How: This picks half of shoPilNum once elongated enough, otherwise the app's own default radius.
+
+
+
+		return { rx: radPilNum, ry: radPilNum }; // What: Pill Radius Return. Why: The caller needs both radii in the same { rx, ry } shape every other shape source in this file already returns. How: This returns radPilNum for both axes, since a pill radius is always equal on both.
+
+
+	},
+
+	titStr : 'Navigation'
 
 
 };
@@ -1172,10 +1177,10 @@ const NAV_HEL_OBJ = {
 const RAI_HAN_OBJ = {
 
 
+	bodEle : <>This button will open the app's navigation, allowing you to navigate to the app's other pages.</>,
 	ideStr : '__railHandle',
 	selStr : '.rail-handle',
-	titStr : 'Sidebar Toggle',
-	bodEle : <>This button will open the app's navigation, allowing you to navigate to the app's other pages.</>
+	titStr : 'Sidebar Toggle'
 
 
 };
@@ -1700,11 +1705,11 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 				const spoStyObj = { // What: Spot Style Object. Why: The rendered highlight spot needs its own absolute position/size plus a border-radius matching rx/ry exactly. How: This is applied directly as this div's own inline style below.
 
 
-					top          : curRecObj.top - padTopNum,                // What: Top Position. Why: The rendered spot must sit at the padded target's own top edge, matching the mask cutout above. How: This subtracts padTopNum from curRecObj's own top.
-					left         : curRecObj.left - padLefNum,               // What: Left Position. Why: The rendered spot must sit at the padded target's own left edge, matching the mask cutout above. How: This subtracts padLefNum from curRecObj's own left.
-					width        : curRecObj.width + padLefNum + padRigNum,  // What: Spot Width. Why: The rendered spot must span the padded target's own full width, matching the mask cutout above. How: This adds padLefNum and padRigNum onto curRecObj's own width.
+					borderRadius : `${ rx }px / ${ ry }px`,                  // What: Spot Border Radius. Why: The rendered spot's own rounding must exactly match the mask cutout's own rx/ry, or the two would visibly mismatch. How: This builds the 2-value CSS border-radius shorthand from rx/ry.
 					height       : curRecObj.height + padTopNum + padBotNum, // What: Spot Height. Why: The rendered spot must span the padded target's own full height, matching the mask cutout above. How: This adds padTopNum and padBotNum onto curRecObj's own height.
-					borderRadius : `${ rx }px / ${ ry }px`                   // What: Spot Border Radius. Why: The rendered spot's own rounding must exactly match the mask cutout's own rx/ry, or the two would visibly mismatch. How: This builds the 2-value CSS border-radius shorthand from rx/ry.
+					left         : curRecObj.left - padLefNum,               // What: Left Position. Why: The rendered spot must sit at the padded target's own left edge, matching the mask cutout above. How: This subtracts padLefNum from curRecObj's own left.
+					top          : curRecObj.top - padTopNum,                // What: Top Position. Why: The rendered spot must sit at the padded target's own top edge, matching the mask cutout above. How: This subtracts padTopNum from curRecObj's own top.
+					width        : curRecObj.width + padLefNum + padRigNum   // What: Spot Width. Why: The rendered spot must span the padded target's own full width, matching the mask cutout above. How: This adds padLefNum and padRigNum onto curRecObj's own width.
 
 
 				};

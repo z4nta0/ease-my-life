@@ -297,11 +297,11 @@ async function genNotFun() {
 	const notOptObj = { // What: Notification Options Object. Why: This is the fixed set of options shown on every daily-generation notification. How: This is handed to both the service-worker and page-level notification paths below; its own property names are the Notification API's own contract, not this codebase's invention, so they are left as-is.
 
 
+		badge              : 'assets/icon-192.png',                                               // What: Badge. Why: This is the notification's own small monochrome status-bar badge image, read directly by the browser's Notification API. How: This reuses the same 192px icon asset as the badge source.
 		body               : 'Your personalized list for today is ready. Click here to open it.', // What: Body. Why: This is the notification's own secondary line of text, read directly by the browser's Notification API. How: This tells the user their list is ready and that clicking opens it.
 		icon               : 'assets/icon-192.png',                                               // What: Icon. Why: This is the notification's own large icon image, read directly by the browser's Notification API. How: This points at the app's own 192px icon asset.
-		badge              : 'assets/icon-192.png',                                               // What: Badge. Why: This is the notification's own small monochrome status-bar badge image, read directly by the browser's Notification API. How: This reuses the same 192px icon asset as the badge source.
-		tag                : 'eml-daily-' + curDayStr,                                            // What: Tag. Why: A shared tag collapses duplicate notifications from multiple open tabs into one, read directly by the browser's Notification API. How: This combines a fixed prefix with curDayStr so only same-day notifications collapse together.
-		requireInteraction : false                                                                // What: Require Interaction. Why: This notification should dismiss itself normally rather than staying pinned, read directly by the browser's Notification API. How: This is fixed false, since nothing about this notification requires the user to act on it.
+		requireInteraction : false,                                                               // What: Require Interaction. Why: This notification should dismiss itself normally rather than staying pinned, read directly by the browser's Notification API. How: This is fixed false, since nothing about this notification requires the user to act on it.
+		tag                : 'eml-daily-' + curDayStr                                             // What: Tag. Why: A shared tag collapses duplicate notifications from multiple open tabs into one, read directly by the browser's Notification API. How: This combines a fixed prefix with curDayStr so only same-day notifications collapse together.
 
 
 	};
@@ -390,12 +390,12 @@ async function genNotFun() {
 export const NOT_NAM_OBJ = { // What: Notification Namespace Object. Why: This bundles every one of this module's public operations behind one object, giving callers a single import surface, its own external names swept to match the internal implementation exactly after checking the blast radius was small and non-persisted. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
 
 
+	askCheFun : askCheFun, // What: Ask Check Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of NOT_NAM_OBJ's own stable public shape. How: This re-exports askCheFun under its own matching name.
+	askOncFun : askOncFun, // What: Ask Once Function. Why: tab-settings.jsx calls this from the run-time input's own onChange handler, the one moment this app ever asks for notification permission unprompted. How: This re-exports askOncFun under its own matching name.
+	genNotFun : genNotFun, // What: Generated Notification Function. Why: tab-today.jsx calls this right after an automatic daily-list generation completes. How: This re-exports genNotFun under its own matching name.
 	notSupFun : notSupFun, // What: Notification Support Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of NOT_NAM_OBJ's own stable public shape. How: This re-exports notSupFun under its own matching name.
 	perCheFun : perCheFun, // What: Permission Check Function. Why: tab-settings.jsx's own notify-me row reads this to decide which of its 3 states to show. How: This re-exports perCheFun under its own matching name.
-	askOncFun : askOncFun, // What: Ask Once Function. Why: tab-settings.jsx calls this from the run-time input's own onChange handler, the one moment this app ever asks for notification permission unprompted. How: This re-exports askOncFun under its own matching name.
 	reqPerFun : reqPerFun, // What: Request Permission Function. Why: tab-settings.jsx's own explicit Enable button calls this to (re-)request permission. How: This re-exports reqPerFun under its own matching name.
-	genNotFun : genNotFun, // What: Generated Notification Function. Why: tab-today.jsx calls this right after an automatic daily-list generation completes. How: This re-exports genNotFun under its own matching name.
-	askCheFun : askCheFun, // What: Ask Check Function. Why: Nothing outside this file currently reads this directly, but it stays exported as part of NOT_NAM_OBJ's own stable public shape. How: This re-exports askCheFun under its own matching name.
 	subAddFun : subAddFun  // What: Subscribe Add Function. Why: tab-settings.jsx's own permission-state display needs to hear about live permission changes. How: This re-exports subAddFun under its own matching name.
 
 

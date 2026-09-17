@@ -399,10 +399,11 @@ decision is captured for next time instead of getting re-asked later.
     stays exactly where it is, since it was never the repeated
     boilerplate this exception targets. See `help-content.jsx`'s own
     header comment for the reference example: it documents its shared
-    `{ ideStr, selStr, shaStr?, titStr, bodEle, padXNum?, padYNum?,
-    scrBoo?, groStr?, mulBoo?, labStr? }` catalog-item shape once, and
-    none of its 210 individual items repeat those same 11 fields' own
-    boilerplate comments.
+    `{ bodEle, groStr?, ideStr, labStr?, mulBoo?, padXNum?, padYNum?,
+    scrBoo?, selStr, shaStr?, titStr }` catalog-item shape once (its own
+    fields listed alphabetically, per the object-property-ordering rule
+    below), and none of its 210 individual items repeat those same 11
+    fields' own boilerplate comments.
   - **Exception to the closing-bracket exemption**: a React hook call's
     closing line that carries a dependency array (`}, [ a, b, c ] );`)
     DOES get a comment, even though it's otherwise just a closing bracket
@@ -1118,6 +1119,39 @@ don't invent one for anything else yet:
   closing `}` before the parent's closing `}` (last). Between sibling
   array entries that are each multi-line objects (neither first nor last),
   it's 1 blank on both sides.
+- **Every multi-line object literal's own properties are ordered
+  alphabetically by property name** (case-insensitive), independent of
+  whatever order they were originally written in. This applies at every
+  nesting depth (a nested object's own properties are alphabetized
+  independently of its parent's, same as its own `:` alignment is), and
+  applies to a namespace object's own external-facing keys too (e.g.
+  `STORAGE`/`PICKERS`/`CAD_NAM_OBJ`), since a plain object literal's own
+  property order has no functional effect in JS. This does NOT apply to
+  array literal entries (e.g. `TAB_OBJ_ARR`'s own rows, a help-catalog's
+  own items) — only to an object literal's own named properties; an
+  array's own entry order is frequently meaningful (a tour's own step
+  sequence, a nav bar's own left-to-right order) and stays exactly as
+  authored.
+  - **Exception — skip when the current order is actually relied on**:
+    before reordering a given object, check whether anything reads it
+    via `Object.keys()`/`Object.entries()`/`Object.values()`/a
+    `for...in` loop in a way that assumes its own current property
+    sequence (as opposed to just looking up one property by name,
+    which is order-independent and always safe to reorder around).
+    If reordering would change real behavior, leave that one object's
+    own order exactly as-is and note it rather than guessing; this is
+    judged per-object, not assumed from the object's shape alone.
+  - **Amends the "reorder the long outlier(s) to the end" refinement
+    above**: once alphabetical order is established, the long/short
+    split still happens exactly as described there, but the two
+    groups no longer sit flush together — leave exactly 1 blank line
+    between the last short property and the first long one, the same
+    "somewhat related, different kind of thing" gap already used
+    elsewhere for a comparable shift in what a block of lines is doing.
+    Each group stays internally alphabetical (the short group already
+    is, from the base rule above; when 2+ properties both qualify as
+    "long," they're alphabetized against each other too, not left in
+    whatever order they happened to fall in before the split).
 - Every multi-line object's properties get their `:` column-aligned —
   pad each property name (left-justify) to the width of the longest name
   in that specific object, same computation used for `style` objects and

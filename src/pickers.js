@@ -519,9 +519,9 @@ function pikIteFun( pikRecObj, iteAllArr, optConObj ) {
 				return { // What: Charge Update Return. Why: The caller needs this item's own newly-charged value and the step that produced it landing together as one update. How: This builds that update from curIteObj's own id, its incremented value, and curSteNum.
 
 
+					chargeStep : curSteNum,                  // What: Charge Step. Why: Next cycle must keep charging by this exact same step, not roll a new one. How: This carries curSteNum through unchanged for getSteFun to find on the next pass.
 					id         : curIteObj.id,               // What: Id. Why: The caller needs to know which item this update applies to. How: This carries curIteObj's own id through unchanged.
-					value      : curIteObj.value + curSteNum, // What: Value. Why: This is the actual charged value the caller needs to persist. How: This adds curSteNum onto curIteObj's own current value.
-					chargeStep : curSteNum                    // What: Charge Step. Why: Next cycle must keep charging by this exact same step, not roll a new one. How: This carries curSteNum through unchanged for getSteFun to find on the next pass.
+					value      : curIteObj.value + curSteNum // What: Value. Why: This is the actual charged value the caller needs to persist. How: This adds curSteNum onto curIteObj's own current value.
 
 
 				};
@@ -692,11 +692,11 @@ function pikIteFun( pikRecObj, iteAllArr, optConObj ) {
 				return { // What: Continue Streak Return. Why: The active item stays picked while it decays, releasing back into the pool (activeItemId cleared) only once fully depleted. How: This returns actIteObj as the pick, updIteArr, itself as the sole cycle candidate, and a pickerPatch clearing activeItemId only when depEndBoo.
 
 
-					picked          : actIteObj,
-					updates         : updIteArr,
 					cycleCandidates : [ actIteObj ],
 					depletedEnd     : depEndBoo,
-					pickerPatch     : { activeItemId : depEndBoo ? null : actIteObj.id }
+					picked          : actIteObj,
+					pickerPatch     : { activeItemId : depEndBoo ? null : actIteObj.id },
+					updates         : updIteArr
 
 
 				};
@@ -751,11 +751,11 @@ function pikIteFun( pikRecObj, iteAllArr, optConObj ) {
 			return { // What: New Streak Return. Why: The chosen item becomes the new active one while it decays, tracked via pickerPatch's own activeItemId. How: This returns chsIteObj as the pick, updIteArr, canIteArr as the cycle candidates, and a pickerPatch setting activeItemId only when not already depEndBoo.
 
 
-				picked          : chsIteObj,
-				updates         : updIteArr,
 				cycleCandidates : canIteArr,
 				depletedEnd     : depEndBoo,
-				pickerPatch     : { activeItemId : depEndBoo ? null : chsIteObj.id }
+				picked          : chsIteObj,
+				pickerPatch     : { activeItemId : depEndBoo ? null : chsIteObj.id },
+				updates         : updIteArr
 
 
 			};
@@ -910,13 +910,13 @@ const modEliFun = ( iteRecObj, pikRecObj ) => { // What: Mode Eligible Function.
 export const PICKERS = { // What: Pickers Namespace Object. Why: store.jsx, tab-today.jsx, and tab-picker.jsx all import this one namespace object rather than several individual named exports. How: This maps every one of this file's own renamed internal implementations back onto the SAME external property names those callers already depend on, deliberately left unrenamed (see this file's own header comment).
 
 
-	pick         : pikIteFun,   // What: Pick Function. Why: tab-today.jsx and tab-picker.jsx both call this to actually pick a new item from a picker's own pool. How: This re-exports pikIteFun under its own matching name.
-	readiness    : reaValFun,   // What: Readiness Function. Why: tab-picker.jsx reads this for a pool item's own readiness value. How: This re-exports reaValFun under its own matching name.
+	avgEase      : aveEasFun,   // What: Average Ease Function. Why: store.jsx, tab-today.jsx, and tab-picker.jsx all call this for a picker's own average ease-band value. How: This re-exports aveEasFun under its own matching name.
+	DEFAULT_EASE : DEF_EAS_OBJ, // What: Default Ease Object. Why: store.jsx reads this for a fresh item's own starting ease-band shape. How: This re-exports DEF_EAS_OBJ under its own matching name.
+	EASE_TOL     : EAS_TOL_NUM, // What: Ease Tolerance Number. Why: Nothing outside this file currently reads this directly, but it stays exported as part of PICKERS' own stable public shape. How: This re-exports EAS_TOL_NUM under its own matching name.
 	easeEligible : easEliFun,   // What: Ease Eligible Function. Why: tab-today.jsx checks this to decide whether an ease-mode item is currently eligible to be picked. How: This re-exports easEliFun under its own matching name.
 	modeEligible : modEliFun,   // What: Mode Eligible Function. Why: tab-picker.jsx checks this for a pool item's own mode-specific eligibility. How: This re-exports modEliFun under its own matching name.
-	EASE_TOL     : EAS_TOL_NUM, // What: Ease Tolerance Number. Why: Nothing outside this file currently reads this directly, but it stays exported as part of PICKERS' own stable public shape. How: This re-exports EAS_TOL_NUM under its own matching name.
-	avgEase      : aveEasFun,   // What: Average Ease Function. Why: store.jsx, tab-today.jsx, and tab-picker.jsx all call this for a picker's own average ease-band value. How: This re-exports aveEasFun under its own matching name.
-	DEFAULT_EASE : DEF_EAS_OBJ  // What: Default Ease Object. Why: store.jsx reads this for a fresh item's own starting ease-band shape. How: This re-exports DEF_EAS_OBJ under its own matching name.
+	pick         : pikIteFun,   // What: Pick Function. Why: tab-today.jsx and tab-picker.jsx both call this to actually pick a new item from a picker's own pool. How: This re-exports pikIteFun under its own matching name.
+	readiness    : reaValFun    // What: Readiness Function. Why: tab-picker.jsx reads this for a pool item's own readiness value. How: This re-exports reaValFun under its own matching name.
 
 
 };

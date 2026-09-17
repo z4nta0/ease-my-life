@@ -664,8 +664,12 @@ function applyEntryPending( curStaObj, curEntObj ) {
 
 	return { // What: Applied Pending Result Return. Why: The caller (toggleDone) needs the patched arrays plus a revert snapshot to stash on the entry. How: This bundles nexIteArr/nexPicArr/nexLogArr with a revert object capturing revIteArr/preActIde/the entry's own pickerId.
 
-		items : nexIteArr, pickers : nexPicArr, pickLog : nexLogArr,
-		revert : { items : revIteArr, activeItemId : preActIde, pickerId : curEntObj.pickerId }
+
+		items   : nexIteArr,
+		pickers : nexPicArr,
+		pickLog : nexLogArr,
+		revert  : { items : revIteArr, activeItemId : preActIde, pickerId : curEntObj.pickerId }
+
 
 	};
 

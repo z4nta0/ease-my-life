@@ -41,11 +41,8 @@
 export const OB_EXAMPLE = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is spread into actions.addPicker by onboarding.jsx's own seeding effect, exactly like a real, user-created picker.
 
 
-	id    : 'pkr_ob_daily',    // What: Id String. Why: This is this sample picker's own stable identifier, matching what scripts/build-onboarding-stats.mjs baked into onboarding-stats-data.js and what store.jsx/onboarding.jsx use to recognize and later hide this sample. How: This is a literal, load-bearing string, never generated at runtime.
-	name  : 'Daily Chores',    // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
-	group : 'Chores',          // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
-	mode  : 'ease-up',         // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
-	step  : 1,                 // What: Step Number. Why: This prefills the (currently stashed) create-a-picker form's own wizard step, for whenever a future create-a-picker mini-tour reuses this data. How: This is only read by that stashed form flow, not by the picker engine itself.
+	group : 'Chores',       // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
+	id    : 'pkr_ob_daily', // What: Id String. Why: This is this sample picker's own stable identifier, matching what scripts/build-onboarding-stats.mjs baked into onboarding-stats-data.js and what store.jsx/onboarding.jsx use to recognize and later hide this sample. How: This is a literal, load-bearing string, never generated at runtime.
 
 	items : [ // What: Items Array. Why: Every picker needs at least one item for the picker engine to actually choose between. How: This is read by the picker engine exactly like any real picker's own items array.
 
@@ -58,7 +55,11 @@ export const OB_EXAMPLE = { // What: Onboarding Example Object. Why: This is the
 		{ id : 'ob_it_oven', name : 'Clean the oven', weight : 1, easeMin : 4.7619, easeMax : 7.1429, value : 100 }           // What: Sample Item Object. Why: This is one sample item in this picker's own seed pool, giving the Welcome Tour something realistic to pick from. How: This is read by the picker engine (pickers.js) exactly like any real, user-created item, eased via its own easeMin/easeMax/value fields.
 
 
-	]
+	],
+
+	mode : 'ease-up',      // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+	name : 'Daily Chores', // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
+	step : 1               // What: Step Number. Why: This prefills the (currently stashed) create-a-picker form's own wizard step, for whenever a future create-a-picker mini-tour reuses this data. How: This is only read by that stashed form flow, not by the picker engine itself.
 
 
 };
@@ -86,10 +87,8 @@ export const OB_EXTRA_PICKERS = [ // What: Onboarding Extra Pickers Array. Why: 
 	{ // What: Extra Sample Picker Object. Why: This is one of the extra sample pickers described in the comment above this array, meant to round out a generated day. How: This follows the create-a-picker form's own defaults except for what is specified here, and is read by the picker engine exactly like any real, user-created picker.
 
 
-		id    : 'pkr_ob_monthly', // What: Id String. Why: This is this sample picker's own stable identifier, matching what scripts/build-onboarding-stats.mjs baked into onboarding-stats-data.js and what store.jsx/onboarding.jsx use to recognize and later hide this sample. How: This is a literal, load-bearing string, never generated at runtime.
-		name  : 'Monthly Chores', // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 		group : 'Chores',         // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
-		mode  : 'ease-up',        // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+		id    : 'pkr_ob_monthly', // What: Id String. Why: This is this sample picker's own stable identifier, matching what scripts/build-onboarding-stats.mjs baked into onboarding-stats-data.js and what store.jsx/onboarding.jsx use to recognize and later hide this sample. How: This is a literal, load-bearing string, never generated at runtime.
 
 		items : [ // What: Items Array. Why: Every picker needs at least one item for the picker engine to actually choose between. How: This is read by the picker engine exactly like any real picker's own items array.
 
@@ -101,7 +100,10 @@ export const OB_EXTRA_PICKERS = [ // What: Onboarding Extra Pickers Array. Why: 
 			{ id : 'it_ob_mop', name : 'Mop the floors', weight : 1, easeMin : 4.3478, easeMax : 6.6667, value : 100 }               // What: Sample Item Object. Why: This is one sample item in this picker's own seed pool, giving the Welcome Tour something realistic to pick from. How: This is read by the picker engine (pickers.js) exactly like any real, user-created item, eased via its own easeMin/easeMax/value fields.
 
 
-		]
+		],
+
+		mode : 'ease-up',       // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+		name : 'Monthly Chores' // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 
 
 	},
@@ -109,10 +111,8 @@ export const OB_EXTRA_PICKERS = [ // What: Onboarding Extra Pickers Array. Why: 
 	{ // What: Extra Sample Picker Object. Why: This is one of the extra sample pickers described in the comment above this array, meant to round out a generated day. How: This follows the create-a-picker form's own defaults except for what is specified here, and is read by the picker engine exactly like any real, user-created picker.
 
 
+		group : 'Food',          // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
 		id    : 'pkr_ob_coffee', // What: Id String. Why: This is this sample picker's own stable identifier, matching what scripts/build-onboarding-stats.mjs baked into onboarding-stats-data.js and what store.jsx/onboarding.jsx use to recognize and later hide this sample. How: This is a literal, load-bearing string, never generated at runtime.
-		name  : 'Coffee Creamer', // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
-		group : 'Food',           // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
-		mode  : 'dynamic',        // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
 
 		items : [ // What: Items Array. Why: Every picker needs at least one item for the picker engine to actually choose between. How: This is read by the picker engine exactly like any real picker's own items array.
 
@@ -126,7 +126,10 @@ export const OB_EXTRA_PICKERS = [ // What: Onboarding Extra Pickers Array. Why: 
 			{ id : 'it_ob_mocha', name : 'Mocha', weight : 3 }             // What: Sample Item Object. Why: This is one sample item in this picker's own seed pool, giving the Welcome Tour something realistic to pick from. How: This is read by the picker engine (pickers.js) exactly like any real, user-created item, weighted via its own weight field.
 
 
-		]
+		],
+
+		mode : 'dynamic',       // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+		name : 'Coffee Creamer' // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 
 
 	},
@@ -134,10 +137,8 @@ export const OB_EXTRA_PICKERS = [ // What: Onboarding Extra Pickers Array. Why: 
 	{ // What: Extra Sample Picker Object. Why: This is one of the extra sample pickers described in the comment above this array, meant to round out a generated day. How: This follows the create-a-picker form's own defaults except for what is specified here, and is read by the picker engine exactly like any real, user-created picker.
 
 
-		id    : 'pkr_ob_dinner', // What: Id String. Why: This is this sample picker's own stable identifier, matching what scripts/build-onboarding-stats.mjs baked into onboarding-stats-data.js and what store.jsx/onboarding.jsx use to recognize and later hide this sample. How: This is a literal, load-bearing string, never generated at runtime.
-		name  : 'Dinner',        // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 		group : 'Food',          // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
-		mode  : 'ease-up',       // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+		id    : 'pkr_ob_dinner', // What: Id String. Why: This is this sample picker's own stable identifier, matching what scripts/build-onboarding-stats.mjs baked into onboarding-stats-data.js and what store.jsx/onboarding.jsx use to recognize and later hide this sample. How: This is a literal, load-bearing string, never generated at runtime.
 
 		items : [ // What: Items Array. Why: Every picker needs at least one item for the picker engine to actually choose between. How: This is read by the picker engine exactly like any real picker's own items array.
 
@@ -152,7 +153,10 @@ export const OB_EXTRA_PICKERS = [ // What: Onboarding Extra Pickers Array. Why: 
 			{ id : 'it_ob_friedchicken', name : 'Fried chicken', weight : 1, easeMin : 11.1111, easeMax : 16.6667, value : 100 }        // What: Sample Item Object. Why: This is one sample item in this picker's own seed pool, giving the Welcome Tour something realistic to pick from. How: This is read by the picker engine (pickers.js) exactly like any real, user-created item, eased via its own easeMin/easeMax/value fields.
 
 
-		]
+		],
+
+		mode : 'ease-up', // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+		name : 'Dinner'   // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 
 
 	},
@@ -160,10 +164,8 @@ export const OB_EXTRA_PICKERS = [ // What: Onboarding Extra Pickers Array. Why: 
 	{ // What: Extra Sample Picker Object. Why: This is one of the extra sample pickers described in the comment above this array, meant to round out a generated day. How: This follows the create-a-picker form's own defaults except for what is specified here, and is read by the picker engine exactly like any real, user-created picker.
 
 
-		id    : 'pkr_ob_workouts', // What: Id String. Why: This is this sample picker's own stable identifier, matching what scripts/build-onboarding-stats.mjs baked into onboarding-stats-data.js and what store.jsx/onboarding.jsx use to recognize and later hide this sample. How: This is a literal, load-bearing string, never generated at runtime.
-		name  : 'Workouts',        // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 		group : 'Self Care',       // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
-		mode  : 'ease-up',         // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+		id    : 'pkr_ob_workouts', // What: Id String. Why: This is this sample picker's own stable identifier, matching what scripts/build-onboarding-stats.mjs baked into onboarding-stats-data.js and what store.jsx/onboarding.jsx use to recognize and later hide this sample. How: This is a literal, load-bearing string, never generated at runtime.
 
 		items : [ // What: Items Array. Why: Every picker needs at least one item for the picker engine to actually choose between. How: This is read by the picker engine exactly like any real picker's own items array.
 
@@ -175,7 +177,10 @@ export const OB_EXTRA_PICKERS = [ // What: Onboarding Extra Pickers Array. Why: 
 			{ id : 'it_ob_core', name : 'Core', weight : 1, easeMin : 12.5, easeMax : 20, value : 100 }                    // What: Sample Item Object. Why: This is one sample item in this picker's own seed pool, giving the Welcome Tour something realistic to pick from. How: This is read by the picker engine (pickers.js) exactly like any real, user-created item, eased via its own easeMin/easeMax/value fields.
 
 
-		]
+		],
+
+		mode : 'ease-up', // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+		name : 'Workouts' // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 
 
 	},
@@ -183,10 +188,8 @@ export const OB_EXTRA_PICKERS = [ // What: Onboarding Extra Pickers Array. Why: 
 	{ // What: Extra Sample Picker Object. Why: This is one of the extra sample pickers described in the comment above this array, meant to round out a generated day. How: This follows the create-a-picker form's own defaults except for what is specified here, and is read by the picker engine exactly like any real, user-created picker.
 
 
-		id    : 'pkr_ob_relax',    // What: Id String. Why: This is this sample picker's own stable identifier, matching what scripts/build-onboarding-stats.mjs baked into onboarding-stats-data.js and what store.jsx/onboarding.jsx use to recognize and later hide this sample. How: This is a literal, load-bearing string, never generated at runtime.
-		name  : 'Relax',           // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
-		group : 'Entertainment',   // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
-		mode  : 'ease-down',       // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+		group : 'Entertainment', // What: Group String. Why: This assigns the picker to one of the app's built-in sample groups, so it sits alongside real pickers covering the same topic. How: This is read by the grouping/filtering UI exactly like any real picker's own group.
+		id    : 'pkr_ob_relax',  // What: Id String. Why: This is this sample picker's own stable identifier, matching what scripts/build-onboarding-stats.mjs baked into onboarding-stats-data.js and what store.jsx/onboarding.jsx use to recognize and later hide this sample. How: This is a literal, load-bearing string, never generated at runtime.
 
 		items : [ // What: Items Array. Why: Every picker needs at least one item for the picker engine to actually choose between. How: This is read by the picker engine exactly like any real picker's own items array.
 
@@ -197,7 +200,10 @@ export const OB_EXTRA_PICKERS = [ // What: Onboarding Extra Pickers Array. Why: 
 			{ id : 'it_ob_youtube', name : 'Browse YouTube', weight : 1, easeMin : 25, easeMax : 50, value : 100 }              // What: Sample Item Object. Why: This is one sample item in this picker's own seed pool, giving the Welcome Tour something realistic to pick from. How: This is read by the picker engine (pickers.js) exactly like any real, user-created item, eased via its own easeMin/easeMax/value fields.
 
 
-		]
+		],
+
+		mode : 'ease-down', // What: Mode String. Why: This selects which of pickers.js's own selection algorithms (random/weighted/dynamic/ease-up/ease-down) this sample picker uses. How: This is read by the picker engine exactly like any real picker's own mode.
+		name : 'Relax'      // What: Name String. Why: This is the picker's own display name shown throughout the app. How: This is read wherever a picker's name needs displaying, exactly like any real, user-created picker.
 
 
 	}
@@ -301,12 +307,12 @@ export const OB_REMINDER_CARD_TEXT = { // What: Onboarding Reminder Card Text Ob
 export const OB_PICKER_CARD_TIME = { // What: Onboarding Picker Card Time Object. Why: This is the manually-timed card estimate table described above, keyed by sample picker id. How: This is read by whatever component renders a still-hidden sample picker's own mini-tour launcher card.
 
 
-	pkr_ob_daily    : '2.5 min', // What: Picker Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
-	pkr_ob_monthly  : '2.5 min', // What: Picker Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
 	pkr_ob_coffee   : '2.5 min', // What: Picker Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
+	pkr_ob_daily    : '2.5 min', // What: Picker Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
 	pkr_ob_dinner   : '2.5 min', // What: Picker Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
-	pkr_ob_workouts : '2.5 min', // What: Picker Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
-	pkr_ob_relax    : '2.5 min'  // What: Picker Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
+	pkr_ob_monthly  : '2.5 min', // What: Picker Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
+	pkr_ob_relax    : '2.5 min', // What: Picker Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
+	pkr_ob_workouts : '2.5 min'  // What: Picker Time String. Why: This is one sample picker's own manually-timed card estimate (see the comment above this object for methodology). How: This is read by that picker's own mini-tour launcher card, keyed by this property's own name matching the picker's own id.
 
 
 };
@@ -468,11 +474,11 @@ export function hydStaFun( staRawObj ) {
 		return { // What: Reminder Log Row Return. Why: This is one hydrated row, in the exact shape state.reminderLog itself expects. How: This builds the row from rowTspObj above plus remRowObj's own denormalized fields, passed through unchanged.
 
 
+			completedAt : rowTspObj.toISOString(),
+			name        : remRowObj.name,
 			rowId       : 'rl_ob_' + ( seqCouNum++ ).toString( 36 ),
 			taskId      : remRowObj.taskId,
-			name        : remRowObj.name,
-			type        : remRowObj.type,
-			completedAt : rowTspObj.toISOString()
+			type        : remRowObj.type
 
 
 		};
@@ -492,11 +498,11 @@ export function hydStaFun( staRawObj ) {
 		return { // What: Reminder Skip Log Row Return. Why: This is one hydrated row, in the exact shape state.reminderSkipLog itself expects. How: This builds the row from rowTspObj above plus skpRowObj's own denormalized fields, passed through unchanged.
 
 
-			rowId     : 'rs_ob_' + ( seqCouNum++ ).toString( 36 ),
-			taskId    : skpRowObj.taskId,
 			name      : skpRowObj.name,
-			type      : skpRowObj.type,
-			skippedAt : rowTspObj.toISOString()
+			rowId     : 'rs_ob_' + ( seqCouNum++ ).toString( 36 ),
+			skippedAt : rowTspObj.toISOString(),
+			taskId    : skpRowObj.taskId,
+			type      : skpRowObj.type
 
 
 		};

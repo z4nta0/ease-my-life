@@ -65,8 +65,9 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 	{
 
 
-		keyStr : 'weekly',                                                                                                                                // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Weekly',                                                                                                                                // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+		keyStr : 'weekly', // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Weekly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+
 		subEle : <>surfaces <strong>once a week</strong>, on the weekday you choose below, after which the pick will persist until marked as completed</> // What: Sub Element. Why: This is the live sub-explanation shown under the cadence picker while 'weekly' is selected. How: CadConCom looks this up by norCadObj.cadence and renders it as curSubEle.
 
 
@@ -75,8 +76,9 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 	{
 
 
-		keyStr : 'monthly',                                                                                                                            // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Monthly',                                                                                                                            // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+		keyStr : 'monthly', // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Monthly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+
 		subEle : <>surfaces <strong>once a month</strong>, on the day you choose below, after which the pick will persist until marked as completed</> // What: Sub Element. Why: This is the live sub-explanation shown under the cadence picker while 'monthly' is selected. How: CadConCom looks this up by norCadObj.cadence and renders it as curSubEle.
 
 
@@ -85,8 +87,9 @@ const CAD_OPT_ARR = [ // What: Cadence Options Array. Why: The top-level cadence
 	{
 
 
-		keyStr : 'yearly',                                                                                                                             // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Yearly',                                                                                                                             // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+		keyStr : 'yearly', // What: Key String. Why: This is the value the top SegConCom compares against norCadObj.cadence and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
+		labStr : 'Yearly', // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
+
 		subEle : <>surfaces <strong>once a year</strong>, on the date you choose below, after which the pick will persist until marked as completed</> // What: Sub Element. Why: This is the live sub-explanation shown under the cadence picker while 'yearly' is selected. How: CadConCom looks this up by norCadObj.cadence and renders it as curSubEle.
 
 

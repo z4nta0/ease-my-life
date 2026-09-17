@@ -584,12 +584,12 @@ function ConSupCom ( { state, actions } ) {
 		const reqBodStr = new URLSearchParams( { // What: Request Body String. Why: Netlify Forms expects a standard form-encoded POST body, matching the static form's own field names in index.html. How: This builds that body from the form-name, the honeypot, and the 4 real fields.
 
 
-			'form-name' : SUPPORT_FORM_NAME,
 			'bot-field' : botFieStr,
-			subject     : draSubStr.trim(),
+			browser     : braNamStr,
+			'form-name' : SUPPORT_FORM_NAME,
 			message     : draMesStr.trim(),
-			version     : appVerStr,
-			browser     : braNamStr
+			subject     : draSubStr.trim(),
+			version     : appVerStr
 
 
 		} ).toString();
@@ -598,9 +598,9 @@ function ConSupCom ( { state, actions } ) {
 		fetch( '/', {
 
 
-			method  : 'POST',
+			body    : reqBodStr,
 			headers : { 'Content-Type' : 'application/x-www-form-urlencoded' },
-			body    : reqBodStr
+			method  : 'POST'
 
 
 		} ).then( ( fetResObj ) => { // What: Fetch Then Handler. Why: Netlify's own response status is the only reliable signal of whether the submission was actually accepted. How: This throws on a non-ok status (caught below), otherwise clears the drafts and shows the sent confirmation.

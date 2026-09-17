@@ -46,9 +46,10 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
 	once      : {
 
 
-		ideStr : 'tk_ob_meds',                                                                                                                                                                                                                         // What: Identifier String. Why: This ties the 'once' varKeyStr to its own sample reminder. How: This is read back against state.tasks/OB_TASKS by bldAddFun's runFun() below and against the checklist by cloTouFun.
-		icoStr : 'pin',                                                                                                                                                                                                                                // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
-		titStr : 'One-Time Reminders',                                                                                                                                                                                                                 // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own title prop.
+		icoStr : 'pin',                // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
+		ideStr : 'tk_ob_meds',         // What: Identifier String. Why: This ties the 'once' varKeyStr to its own sample reminder. How: This is read back against state.tasks/OB_TASKS by bldAddFun's runFun() below and against the checklist by cloTouFun.
+		titStr : 'One-Time Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own title prop.
+
 		bodStr : 'One-time reminders are simple one off things that need to get done and will never show up again once they are marked as completed in your todo list. e.g. pickup precription or pickup dry cleaning. Let’s create one of these now.' // What: Body String. Why: This varKeyStr's own second intro paragraph explains what a one-time reminder is. How: This is rendered as the second entry of IntModCom's own paragraphs prop.
 
 
@@ -57,9 +58,10 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
 	recurring : {
 
 
-		ideStr : 'tk_ob_trash',                                                                                                                                                        // What: Identifier String. Why: This ties the 'recurring' varKeyStr to its own sample reminder. How: This is read back against state.tasks/OB_TASKS by bldAddFun's runFun() below and against the checklist by cloTouFun.
-		icoStr : 'calendar',                                                                                                                                                           // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
-		titStr : 'Recurring Reminders',                                                                                                                                                // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own title prop.
+		icoStr : 'calendar',            // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
+		ideStr : 'tk_ob_trash',         // What: Identifier String. Why: This ties the 'recurring' varKeyStr to its own sample reminder. How: This is read back against state.tasks/OB_TASKS by bldAddFun's runFun() below and against the checklist by cloTouFun.
+		titStr : 'Recurring Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own title prop.
+
 		bodStr : 'Recurring tasks are things that need to get done on a set schedule. e.g. take trash out for pickup (weekly) or get the mail (daily). Let’s create one of these now.' // What: Body String. Why: This varKeyStr's own second intro paragraph explains what a recurring reminder is. How: This is rendered as the second entry of IntModCom's own paragraphs prop.
 
 
@@ -103,13 +105,9 @@ const bldAddFun = ( varKeyStr, state ) => { // What: Build Add Function. Why: Th
 	return { // What: Step Object Return. Why: GuidedTour needs this step's own selector, copy, and side effect. How: This returns the plain step object read by RemTouCom's own steObjArr below.
 
 
-		selStr    : '.rem-add-btn',      // What: Selector String. Why: This step highlights the real "+" button that opens the add-reminder form. How: GuidedTour spotlights whatever this selector matches.
-		tabStr    : 'today',             // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-		titStr    : 'Create a Reminder', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-		priStr    : 'Next',              // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-		bacBoo    : false,               // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
-		reqCliBoo : true,                // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
-		bodEle    : <>The "+" button is always present on the Today page and will <b>open the interface for creating a Reminder</b>. Go ahead and click the "+" button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the "+" button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+		bacBoo    : false,  // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
+		priStr    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+		reqCliBoo : true,   // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 
 		runFun : () => { // What: Run Function. Why: The live sample's own prefill data needs staging onto the bus before the real click opens the form. How: This looks up the live sample task, falling back to OB_TASKS' own static template, then publishes its own name/repeat/daysOfWeek onto the bus.
 
@@ -136,6 +134,12 @@ const bldAddFun = ( varKeyStr, state ) => { // What: Build Add Function. Why: Th
 
 		},
 
+		selStr : '.rem-add-btn',      // What: Selector String. Why: This step highlights the real "+" button that opens the add-reminder form. How: GuidedTour spotlights whatever this selector matches.
+		tabStr : 'today',             // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+		titStr : 'Create a Reminder', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+
+		bodEle : <>The "+" button is always present on the Today page and will <b>open the interface for creating a Reminder</b>. Go ahead and click the "+" button now.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the "+" button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+
 
 	};
 
@@ -147,12 +151,13 @@ const bldAddFun = ( varKeyStr, state ) => { // What: Build Add Function. Why: Th
 const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share this exact step, highlighting the real name input right after Step 1's click opens the form. How: This is spread as-is into both variants' own steObjArr below; resBoo stays false since its own target only exists once the add-reminder form is already open, which a reload does not survive.
 
 
+	bacBoo : true,                  // What: Back Boolean. Why: The user should always be able to return to the previous, "click the +" step. How: GuidedTour shows its own Back button whenever this is true.
+	priStr : 'Next',                // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	resBoo : false,                 // What: Resumable Boolean. Why: This step's own target only exists because Step 1's click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 	selStr : '.rem-quickadd input', // What: Selector String. Why: This step highlights the real name input inside the now-open add-reminder form. How: GuidedTour spotlights whatever this selector matches.
 	tabStr : 'today',               // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 	titStr : 'Give it a name',      // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-	priStr : 'Next',                // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo : true,                  // What: Back Boolean. Why: The user should always be able to return to the previous, "click the +" step. How: GuidedTour shows its own Back button whenever this is true.
-	resBoo : false,                 // What: Resumable Boolean. Why: This step's own target only exists because Step 1's click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+
 	bodEle : <>This is the name of the reminder and is what will be <b>shown in your todo list on the Today page</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the name field is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
@@ -186,12 +191,13 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share t
 const REP_STE_OBJ = { // What: Repeat Step Object. Why: The recurring tour's own Step 3 needs a single combined highlight over every non-"Once" Repeat pill. How: This is spread as-is into the recurring varKeyStr's own steObjArr below.
 
 
+	bacBoo : true,                                                               // What: Back Boolean. Why: The user should always be able to return to the previous, name-input step. How: GuidedTour shows its own Back button whenever this is true.
+	priStr : 'Next',                                                             // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	resBoo : false,                                                              // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 	selStr : '.rem-quickadd-wrap .seg[aria-label="Repeat"] .seg-btn ~ .seg-btn', // What: Selector String. Why: This step highlights every Repeat pill except "Once", scoped narrowly enough to exclude the Monthly/Yearly Date/Weekday toggle below it. How: GuidedTour spotlights every element this combined selector matches.
 	tabStr : 'today',                                                            // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 	titStr : 'Select recurring schedule',                                        // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-	priStr : 'Next',                                                             // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	bacBoo : true,                                                               // What: Back Boolean. Why: The user should always be able to return to the previous, name-input step. How: GuidedTour shows its own Back button whenever this is true.
-	resBoo : false,                                                              // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+
 	bodEle : <>Recurring reminders have multiple options for <b>how often they should show up in your todo list</b>. We’ve already selected "Weekly" for you but feel free to select whichever one you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Repeat pills control. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
@@ -217,23 +223,23 @@ const REP_STE_OBJ = { // What: Repeat Step Object. Why: The recurring tour's own
 const REP_COP_OBJ = { // What: Repeat Copy Object. Why: Step 4's own copy differs by which schedule control Step 3's pill choice revealed. How: This is looked up by bldFrqFun below, keyed by the live draft's own repeat kind.
 
 
-	interval : {
+	annual   : {
 
 
-		titStr  : 'Select recurring frequency',                                         // What: Title String. Why: This kind's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-		leaStr  : 'how frequently a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into bldFrqFun's own bodEle below.
-		taiStr  : ', with an additional selector control for the start date.',          // What: Tail String. Why: An interval-based schedule also needs a start date, unlike the other 3 kinds. How: This is appended after leaStr in bldFrqFun's own bodEle below.
-		pluBoo  : true                                                                  // What: Plural Boolean. Why: An interval schedule's own body copy needs to say "these selections" (plural), unlike the other 3 kinds' single selection. How: This is read by bldFrqFun below to pick between "this selection"/"these selections".
+		leaStr : 'how often and which day or weekday of the year a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into bldFrqFun's own bodEle below.
+		taiStr : '.',                                                                                                  // What: Tail String. Why: An annual schedule's own lead clause already reads as a complete sentence. How: This is appended after leaStr in bldFrqFun's own bodEle below.
+		titStr : 'Select day of the year'                                                                              // What: Title String. Why: This kind's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
 
 	},
 
-	weekly   : {
+	interval : {
 
 
-		titStr : 'Select day of the week',                                                                     // What: Title String. Why: This kind's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-		leaStr : 'how often and which day(s) of the week a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into bldFrqFun's own bodEle below.
-		taiStr : ' (multiple days may be selected).'                                                           // What: Tail String. Why: A weekly schedule can select more than one day. How: This is appended after leaStr in bldFrqFun's own bodEle below.
+		leaStr : 'how frequently a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into bldFrqFun's own bodEle below.
+		pluBoo : true,                                                                 // What: Plural Boolean. Why: An interval schedule's own body copy needs to say "these selections" (plural), unlike the other 3 kinds' single selection. How: This is read by bldFrqFun below to pick between "this selection"/"these selections".
+		taiStr : ', with an additional selector control for the start date.',          // What: Tail String. Why: An interval-based schedule also needs a start date, unlike the other 3 kinds. How: This is appended after leaStr in bldFrqFun's own bodEle below.
+		titStr : 'Select recurring frequency'                                          // What: Title String. Why: This kind's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
 
 	},
@@ -241,19 +247,19 @@ const REP_COP_OBJ = { // What: Repeat Copy Object. Why: Step 4's own copy differ
 	monthly  : {
 
 
-		titStr : 'Select day of the month',                                                                             // What: Title String. Why: This kind's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 		leaStr : 'how often and which day or weekday of the month a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into bldFrqFun's own bodEle below.
-		taiStr : '.'                                                                                                    // What: Tail String. Why: A monthly schedule's own lead clause already reads as a complete sentence. How: This is appended after leaStr in bldFrqFun's own bodEle below.
+		taiStr : '.',                                                                                                   // What: Tail String. Why: A monthly schedule's own lead clause already reads as a complete sentence. How: This is appended after leaStr in bldFrqFun's own bodEle below.
+		titStr : 'Select day of the month'                                                                              // What: Title String. Why: This kind's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
 
 	},
 
-	annual   : {
+	weekly   : {
 
 
-		titStr : 'Select day of the year',                                                                             // What: Title String. Why: This kind's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-		leaStr : 'how often and which day or weekday of the year a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into bldFrqFun's own bodEle below.
-		taiStr : '.'                                                                                                   // What: Tail String. Why: An annual schedule's own lead clause already reads as a complete sentence. How: This is appended after leaStr in bldFrqFun's own bodEle below.
+		leaStr : 'how often and which day(s) of the week a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into bldFrqFun's own bodEle below.
+		taiStr : ' (multiple days may be selected).',                                                          // What: Tail String. Why: A weekly schedule can select more than one day. How: This is appended after leaStr in bldFrqFun's own bodEle below.
+		titStr : 'Select day of the week'                                                                      // What: Title String. Why: This kind's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
 
 	}
@@ -271,14 +277,15 @@ const bldFrqFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
 	return { // What: Step Object Return. Why: GuidedTour needs this step's own selector, copy, and flags. How: This returns the plain step object read by RemTouCom's own steObjArr below.
 
 
+		bacBoo    : true,                                 // What: Back Boolean. Why: The user should always be able to return to the previous, Repeat-pills step. How: GuidedTour shows its own Back button whenever this is true.
+		coaTopBoo : true,                                 // What: Coach At Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
+		priStr    : 'Next',                               // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+		resBoo    : false,                                // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 		selStr    : '.rem-quickadd-wrap .rem-extra-fade', // What: Selector String. Why: This step highlights whichever schedule control the recurring draft's own repeat kind reveals below the Repeat pills. How: GuidedTour spotlights whatever this selector matches.
 		tabStr    : 'today',                              // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 		titStr    : repCopObj.titStr,                     // What: Title String. Why: This step's own coach card needs a heading naming what this repeat kind's own control does. How: GuidedTour renders repCopObj.titStr as the step's own heading text.
-		priStr    : 'Next',                               // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-		bacBoo    : true,                                 // What: Back Boolean. Why: The user should always be able to return to the previous, Repeat-pills step. How: GuidedTour shows its own Back button whenever this is true.
-		resBoo    : false,                                // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
-		coaTopBoo : true,                                 // What: Coach At Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
-		bodEle    : <>This option controls <b>{ repCopObj.leaStr }</b>{ repCopObj.taiStr } We’ve already made { repCopObj.pluBoo ? 'these selections' : 'this selection' } for you but feel free to customize it to whatever you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what this repeat kind's own control does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+
+		bodEle : <>This option controls <b>{ repCopObj.leaStr }</b>{ repCopObj.taiStr } We’ve already made { repCopObj.pluBoo ? 'these selections' : 'this selection' } for you but feel free to customize it to whatever you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what this repeat kind's own control does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 	};
@@ -305,18 +312,18 @@ const bldFrqFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
 const bldSubFun = ( varKeyStr ) => ({
 
 
-	selStr : '.rem-quickadd-wrap .btn--primary', // What: Selector String. Why: This step highlights the real "Add" button that both saves the reminder and ends the tour. How: GuidedTour spotlights whatever this selector matches.
-	tabStr : 'today',                            // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr : 'Add your new Reminder',            // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	bacBoo : true, // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 
 	bodEle : varKeyStr === 'recurring' // What: Body Ternary. Why: The recurring varKeyStr needs an extra sentence about the recurrence date the one-time varKeyStr does not. How: This ternary picks between 2 JSX bodies based on varKeyStr.
 		? <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>. NOTE: if you selected a day other than today as the recurrence date, then this item will not show up in your todo list until it is due.</>
 		: <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>.</>,
 
-	priStr    : 'Done', // What: Primary String. Why: This is both tours' own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
-	bacBoo    : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-	reqCliBoo : true,   // What: Require Click Boolean. Why: The real click both saves the reminder and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
-	resBoo    : false   // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	priStr    : 'Done',                             // What: Primary String. Why: This is both tours' own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
+	reqCliBoo : true,                               // What: Require Click Boolean. Why: The real click both saves the reminder and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
+	resBoo    : false,                              // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	selStr    : '.rem-quickadd-wrap .btn--primary', // What: Selector String. Why: This step highlights the real "Add" button that both saves the reminder and ends the tour. How: GuidedTour spotlights whatever this selector matches.
+	tabStr    : 'today',                            // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	titStr    : 'Add your new Reminder'             // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
 
 });

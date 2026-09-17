@@ -165,15 +165,15 @@ function buiIteFun() {
 	return ITE_DEF_ARR.map( ( [ tupNamStr, tupPicStr, tupWeiNum, tupValNum, tupVacBoo, tupDelBoo ] ) => ({ // What: Item Object Map. Why: Every tuple in ITE_DEF_ARR must become a full item object before it can be seeded into state. How: This destructures each tuple positionally and builds the object below from its own fields.
 
 
-		id         : uniIdeFun( 'it' ),              // What: Id. Why: Every item needs its own stable, unique identifier. How: This mints one via uniIdeFun, prefixed 'it'.
-		name       : tupNamStr,                      // What: Name. Why: This is the item's own display name shown throughout the app. How: This is copied straight from the tuple's own name field.
-		pickerId   : tupPicStr,                      // What: Picker Id. Why: This ties the item to its owning picker; a picker's own pool is every item whose own pickerId matches. How: This is copied straight from the tuple's own pickerId field.
-		weight     : tupWeiNum,                      // What: Weight. Why: This is the item's own base selection weight. How: This is copied straight from the tuple's own weight field.
-		value      : tupValNum,                      // What: Value. Why: This is the item's own per-item drift state used by dynamic/ease-up/ease-down modes (see the file header comment). How: This is copied straight from the tuple's own value field.
-		vacation   : !!tupVacBoo,                    // What: Vacation. Why: This flags whether the item starts out inactive. How: This coerces the tuple's own optional vacation field to a real boolean.
-		__deleted  : !!tupDelBoo,                    // What: Deleted. Why: A retired item is kept here only so its own pick-log history survives; buiSeeFun drops it from the live item list below. How: This coerces the tuple's own optional deleted field to a real boolean.
+		__deleted  : !!tupDelBoo,                     // What: Deleted. Why: A retired item is kept here only so its own pick-log history survives; buiSeeFun drops it from the live item list below. How: This coerces the tuple's own optional deleted field to a real boolean.
+		id         : uniIdeFun( 'it' ),               // What: Id. Why: Every item needs its own stable, unique identifier. How: This mints one via uniIdeFun, prefixed 'it'.
+		lastPicked : null,                            // What: Last Picked. Why: None of these items have a real last-picked timestamp yet. How: This is always null for freshly-seeded items.
+		name       : tupNamStr,                       // What: Name. Why: This is the item's own display name shown throughout the app. How: This is copied straight from the tuple's own name field.
+		pickerId   : tupPicStr,                       // What: Picker Id. Why: This ties the item to its owning picker; a picker's own pool is every item whose own pickerId matches. How: This is copied straight from the tuple's own pickerId field.
 		picks      : Math.floor( Math.random() * 8 ), // What: Picks. Why: A brand-new-looking demo item with 0 picks would look untouched; a small random starting count reads as lived-in. How: This floors a random value between 0 and 8.
-		lastPicked : null                            // What: Last Picked. Why: None of these items have a real last-picked timestamp yet. How: This is always null for freshly-seeded items.
+		vacation   : !!tupVacBoo,                     // What: Vacation. Why: This flags whether the item starts out inactive. How: This coerces the tuple's own optional vacation field to a real boolean.
+		value      : tupValNum,                       // What: Value. Why: This is the item's own per-item drift state used by dynamic/ease-up/ease-down modes (see the file header comment). How: This is copied straight from the tuple's own value field.
+		weight     : tupWeiNum                        // What: Weight. Why: This is the item's own base selection weight. How: This is copied straight from the tuple's own weight field.
 
 
 	}) );
@@ -224,8 +224,8 @@ function buiPicFun() {
 
 
 		pkr_chore_d : { daysOfWeek : wekAllArr, skipHolidays : true }, // What: Daily Chore Schedule. Why: Chores are pre-tuned to skip holidays. How: This runs every day of the week, holidays skipped.
-		pkr_chore_w : { daysOfWeek : wekDayArr, skipHolidays : true }, // What: Weekly Chore Schedule. Why: Chores are pre-tuned to skip holidays. How: This runs weekdays only, holidays skipped.
 		pkr_chore_m : { daysOfWeek : wekAllArr, skipHolidays : true }, // What: Monthly Task Schedule. Why: Chores are pre-tuned to skip holidays. How: This runs every day of the week, holidays skipped.
+		pkr_chore_w : { daysOfWeek : wekDayArr, skipHolidays : true }, // What: Weekly Chore Schedule. Why: Chores are pre-tuned to skip holidays. How: This runs weekdays only, holidays skipped.
 		pkr_work    : { daysOfWeek : wekDayArr, skipHolidays : true }  // What: Quick Win Schedule. Why: The work picker is pre-tuned to weekdays only. How: This runs weekdays only, holidays skipped.
 
 
@@ -1083,17 +1083,17 @@ function buiSeeFun() {
 		return { // What: Today Row Return. Why: This is one row, in the exact shape state.pickLog itself expects, matching this pick's own today.entries counterpart. How: This builds the row from curPikObj/curPicObj/pikTspObj above.
 
 
-			id          : 'pls_today_' + curPikObj.eid,                            // What: Id. Why: Every row needs its own stable, unique identifier, tied back to its own entry. How: This is prefixed 'pls_today_' plus curPikObj's own eid.
-			eid         : curPikObj.eid,                                          // What: Entry Id. Why: This row must reference the live today.entries row it came from. How: This is copied straight from curPikObj's own eid.
-			date        : todIsoStr,                                             // What: Date. Why: Every one of today's own rows shares the same calendar day. How: This is todIsoStr, resolved above.
-			pickerId    : curPikObj.pickerId,                                     // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from curPikObj's own pickerId.
-			itemId      : curPikObj.itemId,                                       // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from curPikObj's own itemId.
-			itemName    : curPikObj.iteStr,                                       // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This is copied straight from curPikObj's own iteStr.
-			pickerName  : curPicObj.name,                                         // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from curPicObj's own name.
-			group       : curPicObj.group,                                        // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPicObj's own group.
-			done        : curPikObj.donValBoo,                                    // What: Done. Why: Every row must record whether it was actually completed. How: This is copied straight from curPikObj's own donValBoo.
-			completedAt : curPikObj.donValBoo ? pikTspObj.toISOString() : null,   // What: Completed At. Why: Only an actually-completed row has a real completion timestamp. How: This uses pikTspObj's own ISO string only when curPikObj's own donValBoo is true, otherwise null.
-			source      : curPikObj.souValStr                                     // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from curPikObj's own souValStr.
+			completedAt : curPikObj.donValBoo ? pikTspObj.toISOString() : null, // What: Completed At. Why: Only an actually-completed row has a real completion timestamp. How: This uses pikTspObj's own ISO string only when curPikObj's own donValBoo is true, otherwise null.
+			date        : todIsoStr,                                            // What: Date. Why: Every one of today's own rows shares the same calendar day. How: This is todIsoStr, resolved above.
+			done        : curPikObj.donValBoo,                                  // What: Done. Why: Every row must record whether it was actually completed. How: This is copied straight from curPikObj's own donValBoo.
+			eid         : curPikObj.eid,                                        // What: Entry Id. Why: This row must reference the live today.entries row it came from. How: This is copied straight from curPikObj's own eid.
+			group       : curPicObj.group,                                      // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPicObj's own group.
+			id          : 'pls_today_' + curPikObj.eid,                         // What: Id. Why: Every row needs its own stable, unique identifier, tied back to its own entry. How: This is prefixed 'pls_today_' plus curPikObj's own eid.
+			itemId      : curPikObj.itemId,                                     // What: Item Id. Why: Every row must record which item it belongs to. How: This is copied straight from curPikObj's own itemId.
+			itemName    : curPikObj.iteStr,                                     // What: Item Name. Why: This denormalized copy lets the row survive a later rename or deletion of the item itself. How: This is copied straight from curPikObj's own iteStr.
+			pickerId    : curPikObj.pickerId,                                   // What: Picker Id. Why: Every row must record which picker it belongs to. How: This is copied straight from curPikObj's own pickerId.
+			pickerName  : curPicObj.name,                                       // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from curPicObj's own name.
+			source      : curPikObj.souValStr                                   // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from curPikObj's own souValStr.
 
 
 		};
@@ -1118,8 +1118,8 @@ function buiSeeFun() {
 	return { // What: Demo State Return. Why: This is the full assembled demo/sample app state, in state's own top-level shape. How: This builds every top-level field from the pieces resolved throughout this function, or inline where no further processing is needed.
 
 
-		items           : allIteArr.filter( ( curIteObj ) => !curIteObj.__deleted ),                       // What: Items. Why: A retired item is kept only long enough to seed its own pick-log history above; the live item list itself must exclude it, so Stats renders it as a "deleted" ghost row instead. How: This drops every item flagged __deleted from allIteArr.
-		pickers         : allPicArr,                                                                        // What: Pickers. Why: Every seeded picker, already fully resolved (schedule, ease-down state, conditional gate) above. How: This is allPicArr, unchanged.
+		conditionalLog : buiConFun(), // What: Conditional Log. Why: The demo Chore-Free Day gate needs its own year of trigger history. How: This calls buiConFun.
+
 		conditionals    : [ // What: Conditionals. Why: The demo Chore-Free Day gate needs seeding here, attached to the weekly-chore picker via its own conditionalId (set inside buiPicFun above). How: This is a single-entry array, in state.conditionals' own shape.
 
 
@@ -1129,8 +1129,16 @@ function buiSeeFun() {
 		],
 
 		daily           : { pickerIds : allPicArr.map( ( curPicObj ) => curPicObj.id ), runTime : '04:00', mode : 'auto' }, // What: Daily. Why: The Daily generator needs to know which pickers to run and when; every seeded picker runs daily, auto-triggered at 4am. How: This maps allPicArr down to just its own ids, paired with a fixed runTime/mode.
-		holidays        : HOL_NAM_OBJ.defStaFun(),                                                      // What: Holidays. Why: The demo state needs a real, canonical holidays-state shape, same as a fresh install would get. How: This calls HOL_NAM_OBJ's own defStaFun.
-		appearance      : { theme : 'ink', customLight : null, customDark : null, autoSystem : false, pickAnim : 'reel', completionStyle : 'confetti', tabPlacement : 'bottom' }, // What: Appearance. Why: The demo state needs a full, valid appearance settings object, same shape a fresh install would get. How: This is the app's own default theme/animation/placement settings.
+		holidays        : HOL_NAM_OBJ.defStaFun(),                                                                          // What: Holidays. Why: The demo state needs a real, canonical holidays-state shape, same as a fresh install would get. How: This calls HOL_NAM_OBJ's own defStaFun.
+		items           : allIteArr.filter( ( curIteObj ) => !curIteObj.__deleted ),                                        // What: Items. Why: A retired item is kept only long enough to seed its own pick-log history above; the live item list itself must exclude it, so Stats renders it as a "deleted" ghost row instead. How: This drops every item flagged __deleted from allIteArr.
+		onboarding      : { welcomed : true, dismissed : true },                                                            // What: Onboarding. Why: The demo/sample-data build already has pickers and history seeded, so it must never trigger onboarding. How: This marks onboarding as both welcomed and dismissed.
+		pickers         : allPicArr,                                                                                        // What: Pickers. Why: Every seeded picker, already fully resolved (schedule, ease-down state, conditional gate) above. How: This is allPicArr, unchanged.
+		pickLog         : pikLogArr,                                                                                        // What: Pick Log. Why: The demo state needs the full assembled pick history built above. How: This is pikLogArr, resolved above.
+		reminderLog     : buiRemFun(),                                                                                      // What: Reminder Log. Why: The demo state needs the seeded reminder completion history built above. How: This calls buiRemFun.
+		reminderOpts    : TASKS.defaultOpts(),                                                                              // What: Reminder Opts. Why: The demo state needs a full, valid reminder-options object, same shape a fresh install would get. How: This calls TASKS's own defaultOpts.
+		reminderSkipLog : rslBuiFun(),                                                                                      // What: Reminder Skip Log. Why: The demo state needs the seeded reminder skip history built above. How: This calls rslBuiFun.
+		streak          : 11,                                                                                               // What: Streak. Why: The demo state needs a headline streak count consistent with picLogFun's own forced-active last 10 days. How: This is a fixed literal, matching that simulation's own design.
+
 		tasks           : [ // What: Tasks. Why: A few manual reminders need seeding atop Today, covering weekly/monthly/interval/once recurrence. How: This is an array of TASKS.defaultTask calls, in state.tasks' own shape.
 
 
@@ -1145,24 +1153,22 @@ function buiSeeFun() {
 
 
 		],
-		reminderOpts    : TASKS.defaultOpts(),                                                              // What: Reminder Opts. Why: The demo state needs a full, valid reminder-options object, same shape a fresh install would get. How: This calls TASKS's own defaultOpts.
-		reminderLog     : buiRemFun(),                                                                      // What: Reminder Log. Why: The demo state needs the seeded reminder completion history built above. How: This calls buiRemFun.
-		reminderSkipLog : rslBuiFun(),                                                                      // What: Reminder Skip Log. Why: The demo state needs the seeded reminder skip history built above. How: This calls rslBuiFun.
+
 		today           : { // What: Today. Why: The demo state needs a real, in-progress-looking Today, not a blank one. How: This builds every field from todIsoStr/todPikArr above, or inline where no further processing is needed.
 
 
-			date          : todIsoStr,                                                                     // What: Date. Why: Today needs to know which calendar day it represents. How: This is todIsoStr, resolved above.
-			generatedAt   : (() => { const genDatObj = new Date(); genDatObj.setHours( 7, 12, 0, 0 ); return genDatObj.toISOString(); })(), // What: Generated At. Why: Today needs a plausible timestamp for when the Daily generator last ran. How: This resolves a fixed 7:12am on today's own real date.
-			streakClaimed : true,                                                                           // What: Streak Claimed. Why: The demo state already has done entries, so today already counts toward the streak. How: This is always true for the demo state.
-			entries       : todPikArr.map( ( curPikObj ) => ({ eid : curPikObj.eid, pickerId : curPikObj.pickerId, itemId : curPikObj.itemId, done : curPikObj.donValBoo, skipped : false }) ) // What: Entries. Why: Today needs one real entry per today's own pick, in today.entries' own shape. How: This maps todPikArr down to just the fields that shape actually needs.
+			date          : todIsoStr, // What: Date. Why: Today needs to know which calendar day it represents. How: This is todIsoStr, resolved above.
+			streakClaimed : true,      // What: Streak Claimed. Why: The demo state already has done entries, so today already counts toward the streak. How: This is always true for the demo state.
+
+			entries     : todPikArr.map( ( curPikObj ) => ({ eid : curPikObj.eid, pickerId : curPikObj.pickerId, itemId : curPikObj.itemId, done : curPikObj.donValBoo, skipped : false }) ), // What: Entries. Why: Today needs one real entry per today's own pick, in today.entries' own shape. How: This maps todPikArr down to just the fields that shape actually needs.
+			generatedAt : (() => { const genDatObj = new Date(); genDatObj.setHours( 7, 12, 0, 0 ); return genDatObj.toISOString(); })()                                                      // What: Generated At. Why: Today needs a plausible timestamp for when the Daily generator last ran. How: This resolves a fixed 7:12am on today's own real date.
 
 
 		},
-		pickLog         : pikLogArr,                                                                        // What: Pick Log. Why: The demo state needs the full assembled pick history built above. How: This is pikLogArr, resolved above.
-		vacationLog     : vacLogArr,                                                                        // What: Vacation Log. Why: The demo state needs the seeded inactive-state log built above. How: This is vacLogArr, resolved above.
-		conditionalLog  : buiConFun(),                                                                      // What: Conditional Log. Why: The demo Chore-Free Day gate needs its own year of trigger history. How: This calls buiConFun.
-		streak          : 11,                                                                               // What: Streak. Why: The demo state needs a headline streak count consistent with picLogFun's own forced-active last 10 days. How: This is a fixed literal, matching that simulation's own design.
-		onboarding      : { welcomed : true, dismissed : true }                                             // What: Onboarding. Why: The demo/sample-data build already has pickers and history seeded, so it must never trigger onboarding. How: This marks onboarding as both welcomed and dismissed.
+
+		vacationLog : vacLogArr, // What: Vacation Log. Why: The demo state needs the seeded inactive-state log built above. How: This is vacLogArr, resolved above.
+
+		appearance : { theme : 'ink', customLight : null, customDark : null, autoSystem : false, pickAnim : 'reel', completionStyle : 'confetti', tabPlacement : 'bottom' } // What: Appearance. Why: The demo state needs a full, valid appearance settings object, same shape a fresh install would get. How: This is the app's own default theme/animation/placement settings.
 
 
 	};
@@ -1301,22 +1307,23 @@ function buiCleFun() {
 	return { // What: Clean State Return. Why: This is the full canonical empty app state, in state's own top-level shape, mirroring every field buiSeeFun above also produces. How: This builds every top-level field to its own genuinely empty/default value.
 
 
-		items           : [],                                                    // What: Items. Why: A brand-new user has no items at all. How: This is an empty array.
-		pickers         : [],                                                    // What: Pickers. Why: A brand-new user has no pickers at all. How: This is an empty array.
-		conditionals    : [],                                                    // What: Conditionals. Why: A brand-new user has no conditionals at all. How: This is an empty array.
-		daily           : { pickerIds : [], runTime : '04:00', mode : 'auto' },  // What: Daily. Why: The Daily generator needs a valid, empty configuration to start from. How: This is an empty pickerIds list paired with the app's own default runTime/mode.
-		holidays        : HOL_NAM_OBJ.defStaFun(),                           // What: Holidays. Why: A brand-new user still needs a real, canonical holidays-state shape. How: This calls HOL_NAM_OBJ's own defStaFun.
-		appearance      : { theme : 'ink', customLight : null, customDark : null, autoSystem : false, pickAnim : 'reel', completionStyle : 'confetti', tabPlacement : 'bottom' }, // What: Appearance. Why: A brand-new user still needs a full, valid appearance settings object. How: This is the app's own default theme/animation/placement settings.
-		tasks           : [],                                                    // What: Tasks. Why: A brand-new user has no reminders at all. How: This is an empty array.
-		reminderOpts    : TASKS.defaultOpts(),                                  // What: Reminder Opts. Why: A brand-new user still needs a full, valid reminder-options object. How: This calls TASKS's own defaultOpts.
-		reminderLog     : [],                                                    // What: Reminder Log. Why: A brand-new user has no reminder completion history at all. How: This is an empty array.
-		reminderSkipLog : [],                                                    // What: Reminder Skip Log. Why: A brand-new user has no reminder skip history at all. How: This is an empty array.
+		conditionalLog  : [],                                                                            // What: Conditional Log. Why: A brand-new user has no conditional trigger history at all. How: This is an empty array.
+		conditionals    : [],                                                                            // What: Conditionals. Why: A brand-new user has no conditionals at all. How: This is an empty array.
+		daily           : { pickerIds : [], runTime : '04:00', mode : 'auto' },                          // What: Daily. Why: The Daily generator needs a valid, empty configuration to start from. How: This is an empty pickerIds list paired with the app's own default runTime/mode.
+		holidays        : HOL_NAM_OBJ.defStaFun(),                                                       // What: Holidays. Why: A brand-new user still needs a real, canonical holidays-state shape. How: This calls HOL_NAM_OBJ's own defStaFun.
+		items           : [],                                                                            // What: Items. Why: A brand-new user has no items at all. How: This is an empty array.
+		onboarding      : { welcomed : false, dismissed : false },                                       // What: Onboarding. Why: A brand-new user must actually see onboarding (the welcome modal, tour, and checklist). How: This marks onboarding as neither welcomed nor dismissed.
+		pickers         : [],                                                                            // What: Pickers. Why: A brand-new user has no pickers at all. How: This is an empty array.
+		pickLog         : [],                                                                            // What: Pick Log. Why: A brand-new user has no pick history at all. How: This is an empty array.
+		reminderLog     : [],                                                                            // What: Reminder Log. Why: A brand-new user has no reminder completion history at all. How: This is an empty array.
+		reminderOpts    : TASKS.defaultOpts(),                                                           // What: Reminder Opts. Why: A brand-new user still needs a full, valid reminder-options object. How: This calls TASKS's own defaultOpts.
+		reminderSkipLog : [],                                                                            // What: Reminder Skip Log. Why: A brand-new user has no reminder skip history at all. How: This is an empty array.
+		streak          : 0,                                                                             // What: Streak. Why: A brand-new user has no streak yet. How: This is a fixed literal 0.
+		tasks           : [],                                                                            // What: Tasks. Why: A brand-new user has no reminders at all. How: This is an empty array.
 		today           : { date : todIsoStr, generatedAt : null, streakClaimed : false, entries : [] }, // What: Today. Why: A brand-new user still needs a valid Today, just an entirely empty one. How: This is today's own real date paired with no generation yet and no entries.
-		pickLog         : [],                                                    // What: Pick Log. Why: A brand-new user has no pick history at all. How: This is an empty array.
-		vacationLog     : [],                                                    // What: Vacation Log. Why: A brand-new user has no inactive-state history at all. How: This is an empty array.
-		conditionalLog  : [],                                                    // What: Conditional Log. Why: A brand-new user has no conditional trigger history at all. How: This is an empty array.
-		streak          : 0,                                                     // What: Streak. Why: A brand-new user has no streak yet. How: This is a fixed literal 0.
-		onboarding      : { welcomed : false, dismissed : false }               // What: Onboarding. Why: A brand-new user must actually see onboarding (the welcome modal, tour, and checklist). How: This marks onboarding as neither welcomed nor dismissed.
+		vacationLog     : [],                                                                            // What: Vacation Log. Why: A brand-new user has no inactive-state history at all. How: This is an empty array.
+
+		appearance : { theme : 'ink', customLight : null, customDark : null, autoSystem : false, pickAnim : 'reel', completionStyle : 'confetti', tabPlacement : 'bottom' } // What: Appearance. Why: A brand-new user still needs a full, valid appearance settings object. How: This is the app's own default theme/animation/placement settings.
 
 
 	};

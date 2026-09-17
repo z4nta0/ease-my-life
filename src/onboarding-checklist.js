@@ -138,10 +138,10 @@ function cheStaFun ( appStaObj ) {
 	return { // What: Checklist Status Return. Why: The caller needs all 4 summary counts at once, in one plain object. How: This builds total/done directly from totNum/donNum above, then derives remaining and complete from them.
 
 
-		total     : totNum,
+		complete  : donNum === totNum,
 		done      : donNum,
 		remaining : totNum - donNum,
-		complete  : donNum === totNum
+		total     : totNum
 
 
 	};
@@ -326,12 +326,12 @@ function tutProFun ( appStaObj ) {
 export const OB_CHECKLIST = { // What: Onboarding Checklist Object. Why: This is the single namespace every other file reaches this module's own data and functions through. How: This is imported directly by store.jsx/reminders.jsx/tab-today.jsx/tab-picker.jsx/tab-data.jsx, keyed by the property names below.
 
 
-	items               : CHE_ITE_ARR, // What: Items Property. Why: Some future caller may need the full flat manifest directly rather than one of the derived helpers below. How: This is CHE_ITE_ARR above, assigned under its own external, stable property name.
-	status              : cheStaFun,   // What: Status Property. Why: tab-today.jsx reads this to decide whether the whole checklist (and therefore its own launcher UI) is complete. How: This is cheStaFun above, assigned under its own external, stable property name.
 	entryFor            : entLooFun,   // What: Entry-For Property. Why: Every consuming file needs to check one specific checklist item's own resolution. How: This is entLooFun above, assigned under its own external, stable property name.
-	realPickerCount     : reaPicFun,   // What: Real-Picker-Count Property. Why: store.jsx and tab-today.jsx both gate real-data-exists checks on this. How: This is reaPicFun above, assigned under its own external, stable property name.
+	items               : CHE_ITE_ARR, // What: Items Property. Why: Some future caller may need the full flat manifest directly rather than one of the derived helpers below. How: This is CHE_ITE_ARR above, assigned under its own external, stable property name.
 	othersRemaining     : othRemFun,   // What: Others-Remaining Property. Why: tab-today.jsx reads this for the Generate card's own dynamic explanation text. How: This is othRemFun above, assigned under its own external, stable property name.
 	readyToGenerate     : reaGenFun,   // What: Ready-To-Generate Property. Why: store.jsx and tab-today.jsx both gate the Generate card's own actionability on this. How: This is reaGenFun above, assigned under its own external, stable property name.
+	realPickerCount     : reaPicFun,   // What: Real-Picker-Count Property. Why: store.jsx and tab-today.jsx both gate real-data-exists checks on this. How: This is reaPicFun above, assigned under its own external, stable property name.
+	status              : cheStaFun,   // What: Status Property. Why: tab-today.jsx reads this to decide whether the whole checklist (and therefore its own launcher UI) is complete. How: This is cheStaFun above, assigned under its own external, stable property name.
 	tutorialsInProgress : tutProFun    // What: Tutorials-In-Progress Property. Why: reminders.jsx/tab-picker.jsx/tab-data.jsx all gate their own "add new X" controls on this. How: This is tutProFun above, assigned under its own external, stable property name.
 
 
