@@ -18,7 +18,7 @@ import { createPortal         } from 'react-dom';                       // What:
 import { DayLogChip           } from './day-log.jsx';                   // What: Day Log Chip. Why: Each group header needs a small toggle chip for its own Day Log panel. How: This is rendered inside GroHeaCom next to the group's own done/total count.
 import { emlTouObj            } from './onboarding.jsx';                // What: Ease My Life Tour Object. Why: Several onboarding-adjacent features (checklist visibility, drag-hiding the tour coach, starting a create-picker flow) need to publish onto the shared tour event bus. How: This is written to directly (never read here) via its own .set method.
 import { EUR_WAR_STR          } from './constants.js';                  // What: Ease-Up-Range Warning String. Why: An ease-up item's Soonest/Latest row needs its own explanatory warning text. How: This is passed as an InfTipCom's own label prop inside EntryEditor.
-import { FeaTipCom            } from './onboarding-app-features.jsx';   // What: Feature Tip Component. Why: The App Features section needs a one-time "One Last Thing..." intro the first time it is shown. How: This is rendered once showAppFeaturesIntro is true, passed actions so it can mark itself seen.
+import { FeaTipCom            } from './onboarding-app-features.jsx';   // What: Feature Tip Component. Why: The App Features section needs a one-time "One Last Thing..." intro the first time it is shown. How: This is rendered once showAppFeaturesIntro is true, passed actStoObj so it can mark itself seen.
 import { FilButCom            } from './ui.jsx';                        // What: Fill Button Component. Why: Ease-up and ease-down items each need a button that instantly fills the item to its threshold. How: This is rendered inside EntryEditor's own Fill/Refill row, labeled per direction.
 import { forDatFun            } from './ui.jsx';                        // What: Format Date Function. Why: The header's own kicker line needs today's date in the app's shared display format. How: This formats the live now clock value shown next to the streak.
 import { forLonFun            } from './ui.jsx';                        // What: Format Long Function. Why: The footer's "List generated on..." line needs the long-form date of the last generation. How: This formats state.today.generatedAt for that footer line.
@@ -6174,16 +6174,16 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 				<RemTouCom
 					varKeyStr={ actMinTouObj.id === 'tk_ob_meds' ? 'once' : 'recurring' }
-					state={ state }
+					staAppObj={ state }
 					actions={ actions }
 					onCloFrmFun={ () => setActiveEditor( ( curValStr ) => curValStr === 'reminder-add' ? null : curValStr ) }
-					onCloFun={ () => setActMinTouObj( null ) }
+					onCloTouFun={ () => setActMinTouObj( null ) }
 				/> // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it renders directly here. How: This is passed which variant to run plus a close handler that clears actMinTouObj.
 
 			) }
 			{ shwFeaIntBoo && ( // What: App Features Intro Check. Why: The one-time intro tip only belongs once, right when it first becomes relevant. How: This renders FeaTipCom only while shwFeaIntBoo is true.
 
-				<FeaTipCom actions={ actions } /> // What: App Features Intro Tip. Why: The App Features section needs its own one-time "One Last Thing..." intro. How: This renders only while shwFeaIntBoo is true.
+				<FeaTipCom actStoObj={ actions } /> // What: App Features Intro Tip. Why: The App Features section needs its own one-time "One Last Thing..." intro. How: This renders only while shwFeaIntBoo is true.
 
 			) }
 

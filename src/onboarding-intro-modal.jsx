@@ -34,36 +34,39 @@ import { redMotFun    } from './ui.jsx';  // What: Reduce Motion Function.  Why:
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.icon        - IcoSvgCom: The icon or glyph node rendered above the
- *                            title, typically an <IcoSvgCom /> or an inline <svg>.
- * @param props.title       - Title: The modal's own heading text, used as both
- *                            the visible <h2> and the dialog's own aria-label.
- * @param props.paragraphs  - Paragraphs: The body paragraphs shown under the
- *                            title, in order; each entry may be a plain string
- *                            or a JSX fragment.
- * @param props.pills       - Pills: An optional array of short label strings
- *                            rendered as small chips below the paragraphs;
- *                            omitted or empty renders no chip row at all.
- * @param props.onStart     - On Start: Called when the primary action button
- *                            is activated.
- * @param props.onSkip      - On Skip: Called when the secondary, skip action
- *                            button is activated.
- * @param props.startLabel  - Start Label: The primary button's own visible
- *                            text; defaults to 'Get started'.
- * @param props.skipLabel   - Skip Label: The secondary button's own visible
- *                            text; defaults to 'Skip'.
+ * @param props.icoTopEle   - Icon Top Element: The icon or glyph node rendered
+ *                            above the title, typically an <IcoSvgCom /> or an
+ *                            inline <svg>.
+ * @param props.titHeaStr   - Title Heading String: The modal's own heading
+ *                            text, used as both the visible <h2> and the
+ *                            dialog's own aria-label.
+ * @param props.parEleArr   - Paragraph Element Array: The body paragraphs
+ *                            shown under the title, in order; each entry may
+ *                            be a plain string or a JSX fragment.
+ * @param props.pilLabArr   - Pills Label Array: An optional array of short
+ *                            label strings rendered as small chips below the
+ *                            paragraphs; omitted or empty renders no chip row
+ *                            at all.
+ * @param props.onBegTouFun - On Begin Tour Function: Called when the primary
+ *                            action button is activated.
+ * @param props.onSkiTouFun - On Skip Tour Function: Called when the secondary,
+ *                            skip action button is activated.
+ * @param props.begLabStr   - Begin Label String: The primary button's own
+ *                            visible text; defaults to 'Get started'.
+ * @param props.skiLabStr   - Skip Label String: The secondary button's own
+ *                            visible text; defaults to 'Skip'.
  *
  * @returns The modal's own scrim-and-card markup, portaled into
  * document.body.
  *
  * @example
  * ```tsx
- * IntModCom({ icon, title, ... }) // => <IntModCom />
+ * IntModCom({ icoTopEle, titHeaStr, ... }) // => <IntModCom />
  * ```
  *
 */
 
-function IntModCom ( { icon, title, paragraphs, pills, onStart, onSkip, startLabel = 'Get started', skipLabel = 'Skip' } ) {
+function IntModCom ( { icoTopEle, titHeaStr, parEleArr, pilLabArr, onBegTouFun, onSkiTouFun, begLabStr = 'Get started', skiLabStr = 'Skip' } ) {
 
 
 	const redMotBoo = redMotFun && redMotFun(); // What: Reduced Motion Boolean. Why: The card's own slide-in entrance animation should be skipped when the user prefers reduced motion. How: This calls the shared redMotFun() check, guarded so a missing import is also tolerated.
@@ -84,21 +87,21 @@ function IntModCom ( { icon, title, paragraphs, pills, onStart, onSkip, startLab
 			className='ob-scrim'
 			role='dialog'
 			aria-modal='true'
-			aria-label={ title }
-		>{ /* What: Container Scrim Div Element. Why: This is the modal's own full-viewport backdrop and, since it can scroll, the positioning context the focus effect above cares about. How: This wraps the welcome card below and marks itself as an accessible dialog named by title. */ }
+			aria-label={ titHeaStr }
+		>{ /* What: Container Scrim Div Element. Why: This is the modal's own full-viewport backdrop and, since it can scroll, the positioning context the focus effect above cares about. How: This wraps the welcome card below and marks itself as an accessible dialog named by titHeaStr. */ }
 
 
 			<div className={ ` ob-welcome   ${ redMotBoo ? '' : 'ob-in' } ` }>{ /* What: Welcome Card Div Element. Why: This is the actual visible card, separate from the scrim so only it plays the slide-in entrance animation. How: This applies the "ob-in" entrance class unless redMotBoo reports the user prefers reduced motion. */ }
 
 
-				<div className='ob-wmark'>{ icon }</div>{ /* What: Icon Mark Div Element. Why: Every intro modal shows a recognizable glyph above its own title. How: This renders whatever icon node the caller passed in. */ }
+				<div className='ob-wmark'>{ icoTopEle }</div>{ /* What: Icon Mark Div Element. Why: Every intro modal shows a recognizable glyph above its own title. How: This renders whatever icon node the caller passed in. */ }
 
 
 
-				<h2>{ title }</h2>{ /* What: Title Heading Element. Why: Every intro modal needs one visible, accessible heading. How: This renders the title prop as an h2. */ }
+				<h2>{ titHeaStr }</h2>{ /* What: Title Heading Element. Why: Every intro modal needs one visible, accessible heading. How: This renders the titHeaStr prop as an h2. */ }
 
 
-				{ paragraphs.map( ( parIteNod, parIndNum ) => ( // What: Paragraph Map. Why: Each entry in paragraphs needs to become its own rendered paragraph tag. How: This maps every paragraph entry to a <p>, keyed by its own index since paragraph text can repeat.
+				{ parEleArr.map( ( parIteNod, parIndNum ) => ( // What: Paragraph Map. Why: Each entry in parEleArr needs to become its own rendered paragraph tag. How: This maps every paragraph entry to a <p>, keyed by its own index since paragraph text can repeat.
 
 
 					<p key={ parIndNum }>{ parIteNod }</p> // What: Paragraph Element. Why: This renders one paragraph of the modal's own body copy. How: This wraps parIteNod, which may be a plain string or a JSX fragment, directly as the tag's own children.
@@ -106,13 +109,13 @@ function IntModCom ( { icon, title, paragraphs, pills, onStart, onSkip, startLab
 				) ) }
 
 
-				{ pills && pills.length > 0 && ( // What: Pills Visibility Check. Why: Not every intro modal has pills to show. How: This renders the chip row only while pills holds at least one entry.
+				{ pilLabArr && pilLabArr.length > 0 && ( // What: Pills Visibility Check. Why: Not every intro modal has pills to show. How: This renders the chip row only while pilLabArr holds at least one entry.
 
 
-					<div className='ob-chips'>{ /* What: Container Chips Div Element. Why: This groups every pill chip as one visual row below the paragraphs. How: This renders one span per pills entry below. */ }
+					<div className='ob-chips'>{ /* What: Container Chips Div Element. Why: This groups every pill chip as one visual row below the paragraphs. How: This renders one span per pilLabArr entry below. */ }
 
 
-						{ pills.map( ( pilValStr ) => ( // What: Pill Map. Why: One chip is needed per entry in pills. How: This maps every pills entry to its own span, keyed by its own text.
+						{ pilLabArr.map( ( pilValStr ) => ( // What: Pill Map. Why: One chip is needed per entry in pilLabArr. How: This maps every pilLabArr entry to its own span, keyed by its own text.
 
 
 							<span key={ pilValStr }>{ pilValStr }</span> // What: Pill Span Element. Why: This is one small chip labeling a topic the tour touches on. How: This renders pilValStr as the chip's own visible text.
@@ -132,13 +135,13 @@ function IntModCom ( { icon, title, paragraphs, pills, onStart, onSkip, startLab
 					<button
 						ref={ priButRef }
 						className='ob-btn ob-btn--primary'
-						onClick={ onStart }
-					>{ startLabel }</button>{ /* What: Primary Action Button Element. Why: This is the tour's own main call to action. How: This is focused on mount via priButRef and calls onStart when clicked. */ }
+						onClick={ onBegTouFun }
+					>{ begLabStr }</button>{ /* What: Primary Action Button Element. Why: This is the tour's own main call to action. How: This is focused on mount via priButRef and calls onBegTouFun when clicked. */ }
 
 					<button
 						className='ob-btn ob-btn--ghost'
-						onClick={ onSkip }
-					>{ skipLabel }</button>{ /* What: Skip Action Button Element. Why: A user must always be able to decline a tour instead of taking it. How: This calls onSkip when clicked. */ }
+						onClick={ onSkiTouFun }
+					>{ skiLabStr }</button>{ /* What: Skip Action Button Element. Why: A user must always be able to decline a tour instead of taking it. How: This calls onSkiTouFun when clicked. */ }
 
 
 				</div>

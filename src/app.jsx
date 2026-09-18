@@ -874,8 +874,8 @@ function AppRooCom () {
 					picIdeStr={ actPicStr }
 					actions={ actStoObj }
 					actIdeStr={ actIdeStr }
-					state={ staAppObj }
-					onCloFun={ () => setActPicStr( null ) }
+					staAppObj={ staAppObj }
+					onCloTouFun={ () => setActPicStr( null ) }
 					selTabFun={ selTabFun }
 				/> // What: PicTouCom. Why: This drives the currently-running sample-picker mini-tour. How: This is passed the specific picker's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actPicStr.
 
@@ -890,8 +890,8 @@ function AppRooCom () {
 					pagIdeStr={ actPagStr }
 					actions={ actStoObj }
 					actIdeStr={ actIdeStr }
-					state={ staAppObj }
-					onCloFun={ () => setActPagStr( null ) }
+					staAppObj={ staAppObj }
+					onCloTouFun={ () => setActPagStr( null ) }
 					selTabFun={ selTabFun }
 				/> // What: PagTouCom. Why: This drives the currently-running "Explore the page" tour. How: This is passed the specific page's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actPagStr.
 
@@ -904,10 +904,10 @@ function AppRooCom () {
 
 				<FeaTouCom
 					feaIdeStr={ actFeaStr }
-					actions={ actStoObj }
+					actStoObj={ actStoObj }
 					actIdeStr={ actIdeStr }
-					state={ staAppObj }
-					onCloFun={ () => setActFeaStr( null ) }
+					staAppObj={ staAppObj }
+					onCloTouFun={ () => setActFeaStr( null ) }
 					selTabFun={ selTabFun }
 				/> // What: FeaTouCom. Why: This drives the currently-running App Features tutorial. How: This is passed the specific feature's id, the shared state/actions, the active tab, the tab-switching function, and a close handler that clears actFeaStr.
 

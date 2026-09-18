@@ -36,7 +36,7 @@ import { useEmlTouFun } from './eml-tour-bus.js';            // What: Use Ease M
 
 
 
-const FIR_PAR_ELE = <>Reminders can be thought of as <b>what a normal task would be in a typical todo list app</b>, since not all tasks can be randomly selected. Taking out the trash for pickup, as an example, since this must be done on a set day every week.</>; // What: First Paragraph Element. Why: This is the intro modal's shared opening paragraph, identical for both tour variants. How: This is passed as the first entry of IntModCom's own paragraphs prop in the render below.
+const FIR_PAR_ELE = <>Reminders can be thought of as <b>what a normal task would be in a typical todo list app</b>, since not all tasks can be randomly selected. Taking out the trash for pickup, as an example, since this must be done on a set day every week.</>; // What: First Paragraph Element. Why: This is the intro modal's shared opening paragraph, identical for both tour variants. How: This is passed as the first entry of IntModCom's own parEleArr prop in the render below.
 
 
 
@@ -48,9 +48,9 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
 
 		icoStr : 'pin',                // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
 		ideStr : 'tk_ob_meds',         // What: Identifier String. Why: This ties the 'once' varKeyStr to its own sample reminder. How: This is read back against state.tasks/OB_TASKS by bldAddFun's runFun() below and against the checklist by cloTouFun.
-		titStr : 'One-Time Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own title prop.
+		titStr : 'One-Time Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own titHeaStr prop.
 
-		bodStr : 'One-time reminders are simple one off things that need to get done and will never show up again once they are marked as completed in your todo list. e.g. pickup precription or pickup dry cleaning. Let’s create one of these now.' // What: Body String. Why: This varKeyStr's own second intro paragraph explains what a one-time reminder is. How: This is rendered as the second entry of IntModCom's own paragraphs prop.
+		bodStr : 'One-time reminders are simple one off things that need to get done and will never show up again once they are marked as completed in your todo list. e.g. pickup precription or pickup dry cleaning. Let’s create one of these now.' // What: Body String. Why: This varKeyStr's own second intro paragraph explains what a one-time reminder is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
 
 
 	},
@@ -60,9 +60,9 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
 
 		icoStr : 'calendar',            // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
 		ideStr : 'tk_ob_trash',         // What: Identifier String. Why: This ties the 'recurring' varKeyStr to its own sample reminder. How: This is read back against state.tasks/OB_TASKS by bldAddFun's runFun() below and against the checklist by cloTouFun.
-		titStr : 'Recurring Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own title prop.
+		titStr : 'Recurring Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own titHeaStr prop.
 
-		bodStr : 'Recurring tasks are things that need to get done on a set schedule. e.g. take trash out for pickup (weekly) or get the mail (daily). Let’s create one of these now.' // What: Body String. Why: This varKeyStr's own second intro paragraph explains what a recurring reminder is. How: This is rendered as the second entry of IntModCom's own paragraphs prop.
+		bodStr : 'Recurring tasks are things that need to get done on a set schedule. e.g. take trash out for pickup (weekly) or get the mail (daily). Let’s create one of these now.' // What: Body String. Why: This varKeyStr's own second intro paragraph explains what a recurring reminder is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
 
 
 	}
@@ -85,8 +85,8 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
  * 2.
  *
  * This is deliberately NOT set any earlier (for example the intro modal's
- * onStart, where an earlier version of this tour published it), since resuming
- * skips the intro modal entirely (see RemTouCom's own resBoo handling
+ * onBegTouFun, where an earlier version of this tour published it), since
+ * resuming skips the intro modal entirely (see RemTouCom's own resBoo handling
  * below), and a resumed session still reaches this step via a real click, so
  * publishing here instead of there is the one place that fires on every path.
  * Resumable stays at its default (no flag needed) since this button always
@@ -97,7 +97,7 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
  *
 */
 
-const bldAddFun = ( varKeyStr, state ) => { // What: Build Add Function. Why: This builds both tours' shared step that highlights the real "+" button. How: This returns a step object whose runFun() stages the live sample's prefill data onto the bus before the real click opens the add-reminder form.
+const bldAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why: This builds both tours' shared step that highlights the real "+" button. How: This returns a step object whose runFun() stages the live sample's prefill data onto the bus before the real click opens the add-reminder form.
 
 
 	const varCopObj = VAR_COP_OBJ[ varKeyStr ]; // What: Variant Copy Object. Why: The step's own runFun() needs this varKeyStr's own sample task id to look up the live sample. How: This looks up VAR_COP_OBJ by varKeyStr.
@@ -105,14 +105,14 @@ const bldAddFun = ( varKeyStr, state ) => { // What: Build Add Function. Why: Th
 	return { // What: Step Object Return. Why: GuidedTour needs this step's own selector, copy, and side effect. How: This returns the plain step object read by RemTouCom's own steObjArr below.
 
 
-		bacBoo    : false,  // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
-		priStr    : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-		reqCliBoo : true,   // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+		bacBoo : false,  // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
+		cirBoo : true,   // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+		priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 
 		runFun : () => { // What: Run Function. Why: The live sample's own prefill data needs staging onto the bus before the real click opens the form. How: This looks up the live sample task, falling back to OB_TASKS' own static template, then publishes its own name/repeat/daysOfWeek onto the bus.
 
 
-			const samTasObj = ( state.tasks || [] ).find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ) || OB_TASKS.find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ); // What: Sample Task Object. Why: The Welcome Tour seeds the recurring sample with today's real weekday (see onboarding.jsx's own Generate step), which the static OB_TASKS template does not know, so the live one must win whenever it exists. How: This reads the live sample off state.tasks first, falling back to OB_TASKS only when no live one exists yet.
+			const samTasObj = ( staAppObj.tasks || [] ).find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ) || OB_TASKS.find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ); // What: Sample Task Object. Why: The Welcome Tour seeds the recurring sample with today's real weekday (see onboarding.jsx's own Generate step), which the static OB_TASKS template does not know, so the live one must win whenever it exists. How: This reads the live sample off staAppObj.tasks first, falling back to OB_TASKS only when no live one exists yet.
 
 			emlTouObj.set({ // What: Prefill Publish Call. Why: reminders.jsx's own startAdd reads this in its own bubble-phase handler to prefill the real add-reminder form. How: This builds the prefill shape from the resolved samTasObj above.
 
@@ -181,7 +181,7 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share t
  * too the moment one of those repeat kinds is selected, unioning the highlight
  * down to include that whole control as well.
  *
- * No reqCliBoo: there is no single correct pill to click, the prefilled
+ * No cirBoo: there is no single correct pill to click, the prefilled
  * "Weekly" is just a starting point the user is free to change.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -277,13 +277,13 @@ const bldFrqFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
 	return { // What: Step Object Return. Why: GuidedTour needs this step's own selector, copy, and flags. How: This returns the plain step object read by RemTouCom's own steObjArr below.
 
 
-		bacBoo    : true,                                 // What: Back Boolean. Why: The user should always be able to return to the previous, Repeat-pills step. How: GuidedTour shows its own Back button whenever this is true.
-		coaTopBoo : true,                                 // What: Coach At Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
-		priStr    : 'Next',                               // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-		resBoo    : false,                                // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
-		selStr    : '.rem-quickadd-wrap .rem-extra-fade', // What: Selector String. Why: This step highlights whichever schedule control the recurring draft's own repeat kind reveals below the Repeat pills. How: GuidedTour spotlights whatever this selector matches.
-		tabStr    : 'today',                              // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-		titStr    : repCopObj.titStr,                     // What: Title String. Why: This step's own coach card needs a heading naming what this repeat kind's own control does. How: GuidedTour renders repCopObj.titStr as the step's own heading text.
+		bacBoo : true,                                 // What: Back Boolean. Why: The user should always be able to return to the previous, Repeat-pills step. How: GuidedTour shows its own Back button whenever this is true.
+		catBoo : true,                                 // What: Coach At Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
+		priStr : 'Next',                               // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+		resBoo : false,                                // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+		selStr : '.rem-quickadd-wrap .rem-extra-fade', // What: Selector String. Why: This step highlights whichever schedule control the recurring draft's own repeat kind reveals below the Repeat pills. How: GuidedTour spotlights whatever this selector matches.
+		tabStr : 'today',                              // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+		titStr : repCopObj.titStr,                     // What: Title String. Why: This step's own coach card needs a heading naming what this repeat kind's own control does. How: GuidedTour renders repCopObj.titStr as the step's own heading text.
 
 		bodEle : <>This option controls <b>{ repCopObj.leaStr }</b>{ repCopObj.taiStr } We’ve already made { repCopObj.pluBoo ? 'these selections' : 'this selection' } for you but feel free to customize it to whatever you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what this repeat kind's own control does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
@@ -299,7 +299,7 @@ const bldFrqFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
  * bldSubFun = Build Submit Function
  *
  * @summary
- * Both tours' closing step: the real "Add" button. reqCliBoo plus
+ * Both tours' closing step: the real "Add" button. cirBoo plus
  * priStr:'Done' together mean Next stays disabled and clicking the button
  * itself both saves the reminder AND ends the tour (GuidedTour's own finish(),
  * not just an advance, see onboarding-tour-runner.jsx's own onPrimary). The
@@ -318,12 +318,12 @@ const bldSubFun = ( varKeyStr ) => ({
 		? <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>. NOTE: if you selected a day other than today as the recurrence date, then this item will not show up in your todo list until it is due.</>
 		: <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>.</>,
 
-	priStr    : 'Done',                             // What: Primary String. Why: This is both tours' own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
-	reqCliBoo : true,                               // What: Require Click Boolean. Why: The real click both saves the reminder and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
-	resBoo    : false,                              // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
-	selStr    : '.rem-quickadd-wrap .btn--primary', // What: Selector String. Why: This step highlights the real "Add" button that both saves the reminder and ends the tour. How: GuidedTour spotlights whatever this selector matches.
-	tabStr    : 'today',                            // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr    : 'Add your new Reminder'             // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	cirBoo : true,                               // What: Require Click Boolean. Why: The real click both saves the reminder and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
+	priStr : 'Done',                             // What: Primary String. Why: This is both tours' own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
+	resBoo : false,                              // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	selStr : '.rem-quickadd-wrap .btn--primary', // What: Selector String. Why: This step highlights the real "Add" button that both saves the reminder and ends the tour. How: GuidedTour spotlights whatever this selector matches.
+	tabStr : 'today',                            // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	titStr : 'Add your new Reminder'            // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
 
 });
@@ -353,13 +353,15 @@ const bldSubFun = ( varKeyStr ) => ({
  *
  * @param props.varKeyStr   - Variant Key String: Which sample reminder this
  *                            mounts for, 'once' or 'recurring'.
- * @param props.state       - State: The entire app's own persisted state.
- * @param props.actions     - Actions: The actions that mutate props.state.
+ * @param props.staAppObj   - State App Object: The entire app's own
+ *                            persisted state.
+ * @param props.actions     - Actions: The actions that mutate
+ *                            props.staAppObj.
  * @param props.onCloFrmFun - On Close Form Function: Closes the real
  *                            add-reminder form on Today, exactly like its
  *                            own Cancel button would.
- * @param props.onCloFun    - On Close Function: Clears tab-today.jsx's own
- *                            activeMiniTour, ending this mount.
+ * @param props.onCloTouFun - On Close Tour Function: Clears tab-today.jsx's
+ *                            own activeMiniTour, ending this mount.
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running
  * guided tour (touPhaStr 'tour'), depending on this varKeyStr's own
@@ -367,13 +369,13 @@ const bldSubFun = ( varKeyStr ) => ({
  *
  * @example
  * ```tsx
- * RemTouCom({ varKeyStr, state, actions, onCloFrmFun, onCloFun })
+ * RemTouCom({ varKeyStr, staAppObj, actions, onCloFrmFun, onCloTouFun })
  * // => <RemTouCom />
  * ```
  *
 */
 
-function RemTouCom ( { varKeyStr, state, actions, onCloFrmFun, onCloFun } ) {
+function RemTouCom ( { varKeyStr, staAppObj, actions, onCloFrmFun, onCloTouFun } ) {
 
 
 	const varCopObj = VAR_COP_OBJ[ varKeyStr ]; // What: Variant Copy Object. Why: Both the intro modal and cloTouFun below need this varKeyStr's own sample task id, icon, title, and second paragraph. How: This looks up VAR_COP_OBJ by the varKeyStr prop.
@@ -381,7 +383,7 @@ function RemTouCom ( { varKeyStr, state, actions, onCloFrmFun, onCloFun } ) {
 	const { draftRepeat } = useEmlTouFun(); // What: Draft Repeat. Why: Only the recurring tour's own Step 4 actually depends on this, but the hook itself has to run unconditionally either way. How: This subscribes to the shared bus and reads its own draftRepeat field, harmless to read up front even when unused.
 
 
-	const onbStaObj = state.onboarding || {}; // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeMiniTour already re-derived from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which step to resume into. How: This reads state.onboarding, falling back to an empty object.
+	const onbStaObj = staAppObj.onboarding || {}; // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeMiniTour already re-derived from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which step to resume into. How: This reads staAppObj.onboarding, falling back to an empty object.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `reminder-${ varKeyStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this varKeyStr's own touIdeStr, otherwise null.
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
 
@@ -394,7 +396,7 @@ function RemTouCom ( { varKeyStr, state, actions, onCloFrmFun, onCloFun } ) {
 
 		actions.setChecklistItem( varCopObj.ideStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this varKeyStr's own sample task's checklist entry to staValStr.
 
-		onCloFun(); // What: On Close Call. Why: tab-today.jsx's own activeMiniTour must be cleared however this tour ends. How: This calls the onCloFun prop passed down from tab-today.jsx.
+		onCloTouFun(); // What: On Close Call. Why: tab-today.jsx's own activeMiniTour must be cleared however this tour ends. How: This calls the onCloTouFun prop passed down from tab-today.jsx.
 
 
 	};
@@ -408,21 +410,21 @@ function RemTouCom ( { varKeyStr, state, actions, onCloFrmFun, onCloFun } ) {
 
 
 			<IntModCom
-				icon={ <IcoSvgCom name={ varCopObj.icoStr } size={ 54 } /> }
-				title={ varCopObj.titStr }
-				paragraphs={ [ FIR_PAR_ELE, varCopObj.bodStr ] }
-				pills={ [ 'reminders', 'one-time', 'recurring' ] }
-				onStart={ () => setTouPhaStr( 'tour' ) }
-				onSkip={ () => { // What: On Skip Handler. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying sample reminder. How: This never sets the prefill at this point, so there is nothing to clear.
+				icoTopEle={ <IcoSvgCom name={ varCopObj.icoStr } size={ 54 } /> }
+				titHeaStr={ varCopObj.titStr }
+				parEleArr={ [ FIR_PAR_ELE, varCopObj.bodStr ] }
+				pilLabArr={ [ 'reminders', 'one-time', 'recurring' ] }
+				onBegTouFun={ () => setTouPhaStr( 'tour' ) }
+				onSkiTouFun={ () => { // What: On Skip Handler. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying sample reminder. How: This never sets the prefill at this point, so there is nothing to clear.
 
 
 					actions.setChecklistItem( varCopObj.ideStr, { status : 'cancelled' } ); // What: Checklist Status Cancel Call. Why: Skipping the intro modal still needs the launcher card to stop showing itself. How: This updates this varKeyStr's own sample task's checklist entry to 'cancelled'.
 
-					onCloFun(); // What: On Close Call. Why: tab-today.jsx's own activeMiniTour must be cleared however this tour ends. How: This calls the onCloFun prop passed down from tab-today.jsx.
+					onCloTouFun(); // What: On Close Call. Why: tab-today.jsx's own activeMiniTour must be cleared however this tour ends. How: This calls the onCloTouFun prop passed down from tab-today.jsx.
 
 
 				} }
-			/> // What: Tutorial Intro Modal Element. Why: This is this varKeyStr's own opening screen, shown before any spotlight step ever does. How: This is passed this varKeyStr's own icon/title/paragraphs/pills and the onStart/onSkip handlers above.
+			/> // What: Tutorial Intro Modal Element. Why: This is this varKeyStr's own opening screen, shown before any spotlight step ever does. How: This is passed this varKeyStr's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
 
 
 		);
@@ -433,8 +435,8 @@ function RemTouCom ( { varKeyStr, state, actions, onCloFrmFun, onCloFun } ) {
 
 
 	const steObjArr = varKeyStr === 'recurring' // What: Step Object Array. Why: The recurring varKeyStr has 2 extra steps (the Repeat pills and the schedule-detail step) the one-time varKeyStr skips entirely. How: This ternary picks between the 2 full step lists, both starting with bldAddFun and NAM_STE_OBJ and ending with bldSubFun.
-		? [ bldAddFun( varKeyStr, state ), NAM_STE_OBJ, REP_STE_OBJ, bldFrqFun( draftRepeat ), bldSubFun( varKeyStr ) ]
-		: [ bldAddFun( varKeyStr, state ), NAM_STE_OBJ, bldSubFun( varKeyStr ) ];
+		? [ bldAddFun( varKeyStr, staAppObj ), NAM_STE_OBJ, REP_STE_OBJ, bldFrqFun( draftRepeat ), bldSubFun( varKeyStr ) ]
+		: [ bldAddFun( varKeyStr, staAppObj ), NAM_STE_OBJ, bldSubFun( varKeyStr ) ];
 
 
 
@@ -445,20 +447,20 @@ function RemTouCom ( { varKeyStr, state, actions, onCloFrmFun, onCloFun } ) {
 			touIdeStr={ `reminder-${ varKeyStr }` }
 			steObjArr={ steObjArr }
 			resSteNum={ resTouObj ? resTouObj.step : 0 }
-			actions={ actions }
+			actStoObj={ actions }
 			actIdeStr='today'
 			selTabFun={ () => {} }
-			onBacFun={ ( tarSteNum ) => { if ( tarSteNum === 0 ) onCloFrmFun(); } } // What: On Go Back Handler. Why: Back to Step 1 re-highlights the "+" button, which toggles the add form open or closed. How: Closing it here keeps Step 1's own click meaning exactly what it always means, open the form, instead of closing an already-open one.
+			onBacTouFun={ ( tarSteNum ) => { if ( tarSteNum === 0 ) onCloFrmFun(); } } // What: On Go Back Handler. Why: Back to Step 1 re-highlights the "+" button, which toggles the add form open or closed. How: Closing it here keeps Step 1's own click meaning exactly what it always means, open the form, instead of closing an already-open one.
 			onSkiTouFun={ () => { // What: On Skip Handler. Why: Skip discards the in-progress form exactly like its own Cancel button would. How: onCloFrmFun is a no-op if the form is not even open, for example Skip from Step 1.
 
 
 				onCloFrmFun(); // What: Close Reminder Form Call. Why: A half-created reminder should not survive behind the scenes just because the user backed out via the tour instead of the form itself. How: This closes the add-reminder form exactly like its own Cancel button would.
 
-				cloTouFun( 'skipped' ); // What: Close Tour Call. Why: This funnels Skip through the same cleanup any other exit path off this tour uses. How: This clears the bus prefill, updates the checklist to 'skipped', and calls onCloFun.
+				cloTouFun( 'skipped' ); // What: Close Tour Call. Why: This funnels Skip through the same cleanup any other exit path off this tour uses. How: This clears the bus prefill, updates the checklist to 'skipped', and calls onCloTouFun.
 
 
 			} }
-			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from bldSubFun's own reqCliBoo, after the real click that saves the reminder has already reached the button's own handler. How: This deliberately does not touch the form, since closing it here would discard the save instead of letting it happen.
+			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from bldSubFun's own cirBoo, after the real click that saves the reminder has already reached the button's own handler. How: This deliberately does not touch the form, since closing it here would discard the save instead of letting it happen.
 		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this varKeyStr, mounted once its own intro modal has been accepted or resumed into. How: This is passed this varKeyStr's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
 
 

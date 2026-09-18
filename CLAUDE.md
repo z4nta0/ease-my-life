@@ -435,6 +435,24 @@ decision is captured for next time instead of getting re-asked later.
   internal `// ` markers beyond the one at the very start. Judge
   cohesion by content, not by the presence/absence of existing blank
   lines within the block, since these predate any real structure.
+- **Merging a line's own normal identity comment with a separate,
+  already-existing design-rationale note that used to sit on its own
+  leading line** follows this exact same one-line, multiple-`// `-marker
+  mechanism, just approached from the opposite direction: instead of
+  splitting one old free-form block apart, two ALREADY well-formed
+  comments, the line's own normal What/Why/How and a separate leading
+  note explaining something extra about it (a selector's own design, why
+  a step exists in this order, ...), get combined onto that SAME line.
+  **The normal What/Why/How comment always comes first**; any additional
+  comment(s) follow it, each keeping its own leading `// ` marker, same
+  as the topic-splitting case above. This keeps a line's real identity
+  comment easy to spot on a quick scan (it's always first, right after
+  the code) while still surfacing the extra context right there instead
+  of on a separate line above it. See `onboarding-app-features.jsx`'s
+  own GuidedTour step objects in `bldSteFun` for the reference example
+  (e.g. the `Your Pickers Step`/`pulSelStr`/`runFun` lines): each one's
+  own What/Why/How comes first, followed by its own extra design note,
+  both on the object's/property's own single line.
 - **A topic that is specifically about one property's own value or
   implementation quirk** (e.g. "padXNum: 4 exists because...", "mulBoo
   is true because...", "titStr/bodEle are functions because...") moves
@@ -470,6 +488,26 @@ decision is captured for next time instead of getting re-asked later.
     line would have orphaned the other two. Before moving any
     property-specific topic down, check whether a sibling item shares
     that same value with no comment before assuming it's safe to move.
+  - **Not limited to Repeated-shape object literals**: the same "copy
+    the identical text onto each property it covers, never a `See
+    <property>` pointer" treatment applies just as directly on an
+    object whose properties DO already carry their own normal per-line
+    What/Why/How comments (i.e. outside the Repeated-shape-object-
+    literals case above), whenever a separate design-rationale note
+    genuinely explains 2+ of that object's own properties at once. Here
+    the copy lands MERGED onto each covered property's own single line
+    instead of a separate leading line above it, the exact same
+    one-line/What-Why-How-first mechanism the merging rule above uses
+    for a single property, just applied once per property the note
+    covers rather than once. A `See <property>` pointer instead would
+    send the reader on a jump to recover context a quick scan should
+    already have; the small duplication cost is worth avoiding that.
+    See `onboarding-app-features.jsx`'s own `bldSteFun`, e.g. its Picker
+    Selection/Manual Generation/Add To Todo List/Picker Items step
+    objects: each one's own "Title/body copied verbatim..." note
+    explains both `titStr` and `bodEle` together, so it's merged onto
+    BOTH of their own lines (after each one's own What/Why/How), not
+    left as a standalone line above either.
 - **Placement**: a single-line statement's comment goes at the very end of
   the line, one space after the line's own trailing `;` (or just one space
   after whatever the line ends with, if it doesn't need a `;` — e.g. a
@@ -535,6 +573,25 @@ decision is captured for next time instead of getting re-asked later.
       object; reordering `bodEle` to the end and aligning the rest
       recovers real, useful alignment across dozens of objects that
       would otherwise have none at all.
+      - **Exception — a GuidedTour step object's own `bodEle` always
+        goes last, even when its own comment is short enough that it
+        wouldn't otherwise trip the 100-char threshold.** A GuidedTour
+        step object (identified by its own `bodEle`+`tabStr`+`titStr`
+        trio, the shape documented in `onboarding-tour-runner.jsx`) is
+        reused as dozens of near-identical sibling objects across
+        `onboarding.jsx`/`onboarding-picker-tours.jsx`/`onboarding-
+        page-tours.jsx`/`onboarding-app-features.jsx`/`onboarding-
+        reminder-tours.jsx`, and `bodEle` is inherently this shape's own
+        prose field regardless of how long any one instance's own copy
+        happens to be. Measuring its comment length case by case (the
+        general rule just above) produces an inconsistent shape across
+        otherwise-identical sibling step objects for no real reason, a
+        short `bodEle` sitting inline in its own natural alphabetical
+        spot on one step while every other step's own `bodEle` sits
+        alone at the end. Force it into the long/trailing group
+        unconditionally for this one specific shape instead, so every
+        GuidedTour step object looks the same regardless of how long
+        its own particular tutorial copy happens to be.
 - **Structure — every comment is exactly one line**, following this exact
   template: `// What: <Name Expansion Or Short Descriptive Purpose, Title
   Cased>. Why: <a terse but complete sentence explaining why this exists>.

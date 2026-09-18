@@ -7,7 +7,7 @@ import React from 'react'; // What: React. Why: This file's own Onboarding compo
 
 
 import { emlTouObj              } from './eml-tour-bus.js';              // What: Ease My Life Tour Object. Why: This is the shared observable tour bus other tabs read to react to the Welcome Tour without a context provider. How: This is written to via .set() at a few points below and re-exported for existing importers.
-import { TodTopFun              } from './onboarding-tour-runner.jsx';   // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkip handler below.
+import { TodTopFun              } from './onboarding-tour-runner.jsx';   // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkiTouFun handler below.
 import { GuidedTour             } from './onboarding-tour-runner.jsx';   // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives the Welcome Tour once the intro modal is accepted. How: This is rendered while onbPhaStr is 'tour', passed this file's own step array and side effects.
 import { hydStaFun              } from './onboarding-seed-data.js';      // What: Hydrate Stats Function. Why: The precomputed sample history stores day-offsets, not real dates. How: This converts those offsets into real ISO dates relative to today inside the seeding effect below.
 import { NAV_TAR_OBJ            } from './onboarding-targets.jsx';      // What: Nav Target Object. Why: Four of this tour's steps just spotlight a nav button, sharing the same selector/copy as each page's own future mini-tour. How: This is spread into the Pickers/Stats/Data/Settings step objects below.
@@ -15,7 +15,7 @@ import { OB_EXAMPLE             } from './onboarding-seed-data.js';      // What
 import { OB_EXTRA_PICKERS       } from './onboarding-seed-data.js';      // What: Onboarding Extra Pickers. Why: These extra sample pickers make a generated day look like a fuller, more realistic todo list. How: This is spread into actions.addPicker alongside OB_EXAMPLE by the seeding effect below.
 import { OB_SAMPLE_PICKER_IDS   } from './onboarding-seed-data.js';      // What: Onboarding Sample Picker Ids. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read by the settings step's run() and by bacSteFun below.
 import { OB_SAMPLE_TASK_IDS     } from './onboarding-seed-data.js';      // What: Onboarding Sample Task Ids. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actions.addTask below.
-import { OB_TASKS               } from './onboarding-seed-data.js';      // What: Onboarding Tasks. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actions.addTask by the Generate step's own run() and by the intro modal's onSkip below.
+import { OB_TASKS               } from './onboarding-seed-data.js';      // What: Onboarding Tasks. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actions.addTask by the Generate step's own run() and by the intro modal's onSkiTouFun below.
 import { IntModCom              } from './onboarding-intro-modal.jsx';   // What: Intro Modal Component. Why: The Welcome Tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while onbPhaStr is 'welcome', passed this file's own copy and labels.
 import { useEmlTouFun           } from './eml-tour-bus.js';              // What: Use Ease My Life Tour. Why: Other tabs (app.jsx, tab-today.jsx, tab-picker.jsx, tab-stats.jsx) subscribe to the shared tour bus through this hook. How: This is re-exported below rather than called directly in this file.
 
@@ -228,7 +228,7 @@ export { emlTouObj, useEmlTouFun }; // What: Named Exports. Why: The bus itself 
 
 
 
-const BRA_MAR_STR = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z'; // What: Brand Mark String. Why: This is the app's own brand glyph path, drawn as the intro modal's icon. How: This is passed as the sole <path>'s own d attribute inside the icon prop below.
+const BRA_MAR_STR = 'M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z'; // What: Brand Mark String. Why: This is the app's own brand glyph path, drawn as the intro modal's icon. How: This is passed as the sole <path>'s own d attribute inside the icoTopEle prop below.
 
 
 
@@ -369,7 +369,7 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 
 					const dowValNum = new Date().getDay(); // What: Day-Of-Week Value Number. Why: A weekly sample reminder needs a real day of the week to be scheduled on. How: This reads the current local day index (0-6) from a fresh Date.
 
-					OB_TASKS.forEach( ( curTasObj ) => actions.addTask( { // What: Sample Task Add Call. Why: On a true first run these appear alongside the generated picks, not before; on a replay there is no such review moment, so they are seeded straight into hidden instead, same as the intro modal's own onSkip handling below. How: This adds each OB_TASKS entry, pinning a weekly one to today and hiding it outright on a replay.
+					OB_TASKS.forEach( ( curTasObj ) => actions.addTask( { // What: Sample Task Add Call. Why: On a true first run these appear alongside the generated picks, not before; on a replay there is no such review moment, so they are seeded straight into hidden instead, same as the intro modal's own onSkiTouFun handling below. How: This adds each OB_TASKS entry, pinning a weekly one to today and hiding it outright on a replay.
 
 
 						...curTasObj, // What: Task Spread. Why: Every one of the sample task's own fields is kept as authored. How: This spreads curTasObj's own fields first so the overrides below can still win.
@@ -397,12 +397,12 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 		{
 
 
-			bacBoo    : true,              // What: Back Boolean. Why: The user should always be able to return to the previous, Generate step. How: GuidedTour shows its own Back button whenever this is true.
-			priStr    : 'Next',            // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			scrTopBoo : true,              // What: Scroll To Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuidedTour scrolls all the way to 0 instead of just nudging the target into view.
-			selStr    : '.group-section',  // What: Selector String. Why: This step highlights the whole generated list, group sections included. How: GuidedTour spotlights every element .group-section matches.
-			tabStr    : 'today',           // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			titStr    : 'Daily todo list', // What: Title String. Why: This step's own coach card needs a heading naming what it's showing. How: GuidedTour renders this as the step's own heading text.
+			bacBoo : true,              // What: Back Boolean. Why: The user should always be able to return to the previous, Generate step. How: GuidedTour shows its own Back button whenever this is true.
+			priStr : 'Next',            // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			selStr : '.group-section',  // What: Selector String. Why: This step highlights the whole generated list, group sections included. How: GuidedTour spotlights every element .group-section matches.
+			sttBoo : true,              // What: Scroll To Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuidedTour scrolls all the way to 0 instead of just nudging the target into view.
+			tabStr : 'today',           // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			titStr : 'Daily todo list', // What: Title String. Why: This step's own coach card needs a heading naming what it's showing. How: GuidedTour renders this as the step's own heading text.
 
 			bodEle : <>This is <b>what a typical todo list will look like</b> once you’ve set up your own pickers and reminders. There will be tutorials for setting these up once this tour ends.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the highlighted list represents. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
@@ -463,12 +463,12 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 		{
 
 
-			bacBoo    : true,                   // What: Back Boolean. Why: The user should always be able to return to the previous, Settings step. How: GuidedTour shows its own Back button whenever this is true.
-			priStr    : 'Done',                 // What: Primary String. Why: This is the tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
-			scrTopBoo : true,                   // What: Scroll To Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuidedTour scrolls all the way to 0 instead of just nudging the target into view.
-			selStr    : '.groups-dnd',          // What: Selector String. Why: This closing step highlights the same area the tutorial launcher cards will appear in next. How: GuidedTour spotlights whatever .groups-dnd matches.
-			tabStr    : 'today',                // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			titStr    : 'You’re all finished!', // What: Title String. Why: This closing step's own coach card needs a heading marking the tour's own end. How: GuidedTour renders this as the step's own heading text.
+			bacBoo : true,                   // What: Back Boolean. Why: The user should always be able to return to the previous, Settings step. How: GuidedTour shows its own Back button whenever this is true.
+			priStr : 'Done',                 // What: Primary String. Why: This is the tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
+			selStr : '.groups-dnd',          // What: Selector String. Why: This closing step highlights the same area the tutorial launcher cards will appear in next. How: GuidedTour spotlights whatever .groups-dnd matches.
+			sttBoo : true,                   // What: Scroll To Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuidedTour scrolls all the way to 0 instead of just nudging the target into view.
+			tabStr : 'today',                // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			titStr : 'You’re all finished!', // What: Title String. Why: This closing step's own coach card needs a heading marking the tour's own end. How: GuidedTour renders this as the step's own heading text.
 
 			bodEle : <>That is all for the Welcome Tour. Highlighted here are <b>a few small tutorials that will help get you set up to start using the app</b>. Enjoy!</> // What: Body Element. Why: This closing step's own coach card needs a plain description of what comes next. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
@@ -498,7 +498,7 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 	 *
 	*/
 
-	const bacSteFun = ( tarSteNum ) => { // What: Back Step Function. Why: GuidedTour's own onBacFun calls this before actually navigating back to a given step, so any step-specific side effect a later step performed can be undone. How: This unhides the sample pickers, then branches on tarSteNum for the one step (the Generate step) whose own forward runFun() adds data that did not exist before it fired.
+	const bacSteFun = ( tarSteNum ) => { // What: Back Step Function. Why: GuidedTour's own onBacTouFun calls this before actually navigating back to a given step, so any step-specific side effect a later step performed can be undone. How: This unhides the sample pickers, then branches on tarSteNum for the one step (the Generate step) whose own forward runFun() adds data that did not exist before it fired.
 
 
 		if ( onbStaObj.dismissed ) return; // What: Dismissed Guard. Why: A replay's own samples are the user's real, already-hidden ones; unhiding them here would leak stale demo data into the real Today list. How: This bails out before touching anything whenever onbStaObj.dismissed is true.
@@ -537,9 +537,9 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 
 
 			<IntModCom
-				icon={ <svg viewBox='8 8 528 528' fill='none'><path style={{ fill : 'currentColor', stroke : 'currentColor' }} d={ BRA_MAR_STR } strokeWidth='8' strokeLinecap='round' strokeLinejoin='round' /></svg> }
-				title='Welcome to Ease My Life'
-				paragraphs={ [
+				icoTopEle={ <svg viewBox='8 8 528 528' fill='none'><path style={{ fill : 'currentColor', stroke : 'currentColor' }} d={ BRA_MAR_STR } strokeWidth='8' strokeLinecap='round' strokeLinejoin='round' /></svg> }
+				titHeaStr='Welcome to Ease My Life'
+				parEleArr={ [
 
 
 					<>Decide less and add some variety to your life! <b>Ease My Life is a todo app that automatically generates a daily list of tasks</b> from lists of items that you create and according to the rules that you set.</>, // What: Intro Paragraph Element. Why: The modal's own body needs an opening paragraph explaining what the app does. How: This is rendered as the modal's own first paragraph, written as JSX so specific phrases can be bolded.
@@ -550,10 +550,10 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 
 
 				] }
-				pills={ [ 'todo list', 'pickers', 'reminders' ] }
-				startLabel='Take the quick tour'
-				skipLabel='I’ll explore myself'
-				onStart={ () => { // What: On Start Handler. Why: Accepting the tour needs to switch to Today, persist that the welcome modal is done, and hand off to the running GuidedTour, all as one action. How: This is called when IntModCom's own primary button is activated.
+				pilLabArr={ [ 'todo list', 'pickers', 'reminders' ] }
+				begLabStr='Take the quick tour'
+				skiLabStr='I’ll explore myself'
+				onBegTouFun={ () => { // What: On Begin Handler. Why: Accepting the tour needs to switch to Today, persist that the welcome modal is done, and hand off to the running GuidedTour, all as one action. How: This is called when IntModCom's own primary button is activated.
 
 
 					selTabFun( 'today' ); // What: Today Switch Call. Why: The tour should always begin its walkthrough from the Today tab. How: This switches the app's own active tab to 'today'.
@@ -564,7 +564,7 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 
 
 				} }
-				onSkip={ () => { // What: On Skip Handler. Why: Skipping still needs to land on the exact same "few small tutorials" checklist phase the full tour reaches at its own last step (the Generate step's task-seeding run(), the Settings step's hide-everything run(), see steObjArr above), since without this Today would have nothing to show: the sample pickers would exist but not be hidden yet, and no sample reminders would exist at all; seeded straight into hidden here, unlike the tour's own Generate step, since there is no in-between "review the generated list" step for them to be visible during first. How: This persists welcomed, seeds the sample tasks (hidden) if they do not already exist, hides the sample pickers, finishes the tour, and lands back on a pristine Today.
+				onSkiTouFun={ () => { // What: On Skip Handler. Why: Skipping still needs to land on the exact same "few small tutorials" checklist phase the full tour reaches at its own last step (the Generate step's task-seeding run(), the Settings step's hide-everything run(), see steObjArr above), since without this Today would have nothing to show: the sample pickers would exist but not be hidden yet, and no sample reminders would exist at all; seeded straight into hidden here, unlike the tour's own Generate step, since there is no in-between "review the generated list" step for them to be visible during first. How: This persists welcomed, seeds the sample tasks (hidden) if they do not already exist, hides the sample pickers, finishes the tour, and lands back on a pristine Today.
 
 
 					welDonFun(); // What: Welcome Done Call. Why: Skipping is also the point this welcome modal should never show again. How: This persists onboarding.welcomed as true.
@@ -595,7 +595,7 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 
 
 				} }
-			/> // What: Tutorial Intro Modal Element. Why: This is the Welcome Tour's own opening screen, shown before any spotlight step ever does. How: This is passed this file's own brand icon, copy, pills, and the onStart/onSkip handlers above.
+			/> // What: Tutorial Intro Modal Element. Why: This is the Welcome Tour's own opening screen, shown before any spotlight step ever does. How: This is passed this file's own brand icon, copy, pills, and the onBegTouFun/onSkiTouFun handlers above.
 
 
 		);
@@ -612,10 +612,10 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 			touIdeStr='welcome'
 			steObjArr={ steObjArr }
 			resSteNum={ resTouObj ? resTouObj.step : 0 }
-			actions={ actions }
+			actStoObj={ actions }
 			actIdeStr={ actIdeStr }
 			selTabFun={ selTabFun }
-			onBacFun={ bacSteFun }
+			onBacTouFun={ bacSteFun }
 			onFinTouFun={ finTouFun }
 		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough, mounted once the intro modal has been accepted or resumed into. How: This is passed this file's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
 
