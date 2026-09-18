@@ -32,9 +32,9 @@ import { InfTipCom            } from './ui.jsx';                        // What:
 import { norGroFun            } from './pickers.js';                    // What: Normalize Group Function. Why: A typed group rename/Page Tours rename needs the same normalization real picker groups already get. How: This is called inside requestRenameGroup and pageToursNameCollision.
 import { NOT_NAM_OBJ          } from './notify.js';                     // What: Notification Namespace Object. Why: An auto-generated list should still fire a best-effort system notification. How: This is called via NOT_NAM_OBJ.genNotFun() right after an auto run, its result deliberately ignored.
 import { NumSteCom            } from './ui.jsx';                        // What: Numeric Stepper Component. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered twice inside EntryEditor's own ease rows.
-import { OB_CHECKLIST         } from './onboarding-checklist.js';       // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called throughout for entryFor/status/realPickerCount/readyToGenerate/othersRemaining/tutorialsInProgress.
-import { OB_GENERATE_ITEM_ID  } from './onboarding-checklist.js';       // What: Onboarding Generate Item Id. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to OB_CHECKLIST.entryFor/setChecklistItem wherever that specific card is read or resolved.
-import { OB_PAGE_TOURS        } from './onboarding-checklist.js';       // What: Onboarding Page Tours Array. Why: The Page Tours section needs its own fixed manifest of tour cards, separate from sample pickers/tasks. How: This is mapped over to render one PagTouCom per entry and to compute that section's own counts.
+import { ONB_CHE_OBJ          } from './onboarding-checklist.js';       // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called throughout for entLooFun/cheStaFun/reaPicFun/reaGenFun/othRemFun/tutProFun.
+import { ONB_GII_STR          } from './onboarding-checklist.js';       // What: Onboarding Generate-Item-Id String. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to ONB_CHE_OBJ.entLooFun/setChecklistItem wherever that specific card is read or resolved.
+import { ONB_EPT_ARR          } from './onboarding-checklist.js';       // What: Onboarding Explore-Page-Tours Array. Why: The Page Tours section needs its own fixed manifest of tour cards, separate from sample pickers/tasks. How: This is mapped over to render one PagTouCom per entry and to compute that section's own counts.
 import { OB_PICKER_CARD_TIME  } from './onboarding-seed-data.js';       // What: Onboarding Picker Card Time Object. Why: A still-hidden sample picker's launcher card needs a manually-timed estimate to show next to its own name. How: This is looked up by picker id inside EntCarCom's own tutorial branch.
 import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';       // What: Onboarding Sample Picker Ids Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout groEntFun and TabToday's own counts.
 import { OB_SAMPLE_TASK_IDS   } from './onboarding-seed-data.js';       // What: Onboarding Sample Task Ids Array. Why: Every count/filter that distinguishes a real reminder from a sample one needs this fixed id list. How: This is checked with .includes throughout TabToday's own tutorial-task counts.
@@ -265,7 +265,7 @@ function groEntFun ( staAppObj ) {
 		if ( !curPicObj.hidden || !OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) ) continue; // What: Non-Sample Guard. Why: Only a hidden SAMPLE picker gets a launcher card at all. How: This skips any picker that is not hidden, or not one of the fixed sample ids.
 
 
-		const isaDonBoo = !!OB_CHECKLIST.entryFor( staAppObj, curPicObj.id ); // What: Is-A Done Boolean. Why: A card's own resolved/unresolved state decides both its own display and whether it should vanish post-checklistDone. How: This checks OB_CHECKLIST for an existing entry against this picker's own id.
+		const isaDonBoo = !!ONB_CHE_OBJ.entLooFun( staAppObj, curPicObj.id ); // What: Is-A Done Boolean. Why: A card's own resolved/unresolved state decides both its own display and whether it should vanish post-checklistDone. How: This checks ONB_CHE_OBJ for an existing entry against this picker's own id.
 
 		if ( cheDonBoo && isaDonBoo ) continue; // What: Replay Resolved Guard. Why: Post-checklistDone, a resolved card vanishes for good the moment it resolves instead of sticking around with an Undo toggle, since there is no closing Generate card left to synchronize a batch disappearance against. How: This drops curPicObj's own card once it is both post-checklistDone and already resolved.
 
@@ -1622,7 +1622,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 
 
 		const tutDonBoo = entRecObj.done; // What: Tutorial Done Boolean. Why: A resolved tutorial card renders/behaves differently from a pending one. How: This reads entRecObj's own done flag.
-		const neeAttBoo = !tutDonBoo && OB_CHECKLIST.realPickerCount( staAppObj ) === 0; // What: Needs Attention Boolean. Why: Only picker cards participate in the "at least one real picker" gate that blocks the closing Generate card, flagged with a visible cue rather than requiring a tap to discover. How: This is true only while this card is unresolved and no real picker exists yet.
+		const neeAttBoo = !tutDonBoo && ONB_CHE_OBJ.reaPicFun( staAppObj ) === 0; // What: Needs Attention Boolean. Why: Only picker cards participate in the "at least one real picker" gate that blocks the closing Generate card, flagged with a visible cue rather than requiring a tap to discover. How: This is true only while this card is unresolved and no real picker exists yet.
 
 		const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this sample's own mini-tour. How: This checks for a click inside the actions area first, then dispatches to onUncTutFun or onPlaTutFun based on tutDonBoo.
 
@@ -2432,7 +2432,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 function PagTouCom ( { tour : touRecObj, state : staAppObj, actions : actStoObj, onPlayTutorial : onPlaTutFun, onUncheckTutorial : onUncTutFun, checklistExiting : cheExiBoo } ) {
 
 
-	const tutDonBoo = !!OB_CHECKLIST.entryFor( staAppObj, touRecObj.id ); // What: Tutorial Done Boolean. Why: A resolved page-tour card renders/behaves differently from a pending one. How: This checks OB_CHECKLIST for an existing entry against touRecObj's own id.
+	const tutDonBoo = !!ONB_CHE_OBJ.entLooFun( staAppObj, touRecObj.id ); // What: Tutorial Done Boolean. Why: A resolved page-tour card renders/behaves differently from a pending one. How: This checks ONB_CHE_OBJ for an existing entry against touRecObj's own id.
 
 	const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this tour. How: This checks for a click inside the actions area first, then dispatches to onUncTutFun or onPlaTutFun based on tutDonBoo.
 
@@ -2973,7 +2973,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 *
 	*/
 
-	const rptVisBoo = cheDonBoo && mainEndBoo && OB_PAGE_TOURS.some( ( curTouObj ) => !OB_CHECKLIST.entryFor( state, curTouObj.id ) ); // What: Replay-Page-Tours Visible Boolean. Why: See the doc comment just above. How: This is true only post-checklistDone, post-mainEndBoo, while at least one page tour is still unresolved.
+	const rptVisBoo = cheDonBoo && mainEndBoo && ONB_EPT_ARR.some( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( state, curTouObj.id ) ); // What: Replay-Page-Tours Visible Boolean. Why: See the doc comment just above. How: This is true only post-checklistDone, post-mainEndBoo, while at least one page tour is still unresolved.
 
 	/**
 	 * App Features Gates = App Features Section Gate Rationale
@@ -3079,26 +3079,26 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	const tutPicCouNum = ( shwCheBoo || repActBoo ) // What: Tutorial Picker Count Number. Why: See the doc comment just above. How: This counts hidden sample pickers, collision-filtered only once cheDonBoo (repActBoo), 0 while neither gate is open.
 		? state.pickers.filter( ( curPicObj ) => curPicObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPicObj.id )
-			&& ( shwCheBoo || !OB_CHECKLIST.entryFor( state, curPicObj.id ) )
+			&& ( shwCheBoo || !ONB_CHE_OBJ.entLooFun( state, curPicObj.id ) )
 			&& ( shwCheBoo || !state.pickers.some( ( othPicObj ) => !OB_SAMPLE_PICKER_IDS.includes( othPicObj.id ) && othPicObj.name === curPicObj.name ) ) ).length
 		: 0;
 	const tutPicDonNum = shwCheBoo // What: Tutorial Picker Done Number. Why: The first-time phase counts every resolved sample picker card as done. How: This counts hidden sample pickers with an existing checklist entry, 0 outside shwCheBoo.
-		? state.pickers.filter( ( curPicObj ) => curPicObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) && OB_CHECKLIST.entryFor( state, curPicObj.id ) ).length
+		? state.pickers.filter( ( curPicObj ) => curPicObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) && ONB_CHE_OBJ.entLooFun( state, curPicObj.id ) ).length
 		: 0;
 	const tutTasCouNum = ( shwCheBoo || repActBoo ) // What: Tutorial Task Count Number. Why: Same reasoning as tutPicCouNum, for sample reminders. How: This counts hidden sample tasks, collision-filtered only once cheDonBoo (repActBoo), 0 while neither gate is open.
 		? ( state.tasks || [] ).filter( ( curTasObj ) => curTasObj.hidden && OB_SAMPLE_TASK_IDS.includes( curTasObj.id )
-			&& ( shwCheBoo || !OB_CHECKLIST.entryFor( state, curTasObj.id ) )
+			&& ( shwCheBoo || !ONB_CHE_OBJ.entLooFun( state, curTasObj.id ) )
 			&& ( shwCheBoo || !( state.tasks || [] ).some( ( othTasObj ) => !OB_SAMPLE_TASK_IDS.includes( othTasObj.id ) && othTasObj.name === curTasObj.name ) ) ).length
 		: 0;
 	const tutTasDonNum = shwCheBoo // What: Tutorial Task Done Number. Why: The first-time phase counts every resolved sample task card as done. How: This counts hidden sample tasks with an existing checklist entry, 0 outside shwCheBoo.
-		? ( state.tasks || [] ).filter( ( curTasObj ) => curTasObj.hidden && OB_SAMPLE_TASK_IDS.includes( curTasObj.id ) && OB_CHECKLIST.entryFor( state, curTasObj.id ) ).length
+		? ( state.tasks || [] ).filter( ( curTasObj ) => curTasObj.hidden && OB_SAMPLE_TASK_IDS.includes( curTasObj.id ) && ONB_CHE_OBJ.entLooFun( state, curTasObj.id ) ).length
 		: 0;
-	const pagTouCouNum = shwCheBoo ? OB_PAGE_TOURS.length // What: Page Tour Count Number. Why: Same replay-continuation treatment as the picker/task counts above: still counted while rptVisBoo cards are on screen, but (matching the render map's own resolved-cards-vanish behavior) only the still-unresolved ones. How: This is every tour during shwCheBoo, only the unresolved ones during rptVisBoo, 0 otherwise.
-		: rptVisBoo ? OB_PAGE_TOURS.filter( ( curTouObj ) => !OB_CHECKLIST.entryFor( state, curTouObj.id ) ).length
+	const pagTouCouNum = shwCheBoo ? ONB_EPT_ARR.length // What: Page Tour Count Number. Why: Same replay-continuation treatment as the picker/task counts above: still counted while rptVisBoo cards are on screen, but (matching the render map's own resolved-cards-vanish behavior) only the still-unresolved ones. How: This is every tour during shwCheBoo, only the unresolved ones during rptVisBoo, 0 otherwise.
+		: rptVisBoo ? ONB_EPT_ARR.filter( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( state, curTouObj.id ) ).length
 		: 0;
-	const pagTouDonNum = shwCheBoo ? OB_PAGE_TOURS.filter( ( curTouObj ) => OB_CHECKLIST.entryFor( state, curTouObj.id ) ).length : 0; // What: Page Tour Done Number. Why: The first-time phase counts every resolved page tour as done. How: This counts resolved OB_PAGE_TOURS entries, 0 outside shwCheBoo.
+	const pagTouDonNum = shwCheBoo ? ONB_EPT_ARR.filter( ( curTouObj ) => ONB_CHE_OBJ.entLooFun( state, curTouObj.id ) ).length : 0; // What: Page Tour Done Number. Why: The first-time phase counts every resolved page tour as done. How: This counts resolved ONB_EPT_ARR entries, 0 outside shwCheBoo.
 	const genCarCouNum = shwCheBoo ? 1 : 0; // What: Generate Card Count Number. Why: The closing Generate card only ever contributes 1 slot to the total, and only during the first-time checklist phase. How: This is 1 while shwCheBoo, otherwise 0.
-	const genCarDonNum = ( shwCheBoo && OB_CHECKLIST.entryFor( state, OB_GENERATE_ITEM_ID ) ) ? 1 : 0; // What: Generate Card Done Number. Why: The closing Generate card's own done contribution mirrors genCarCouNum. How: This is 1 only while shwCheBoo AND the Generate item already has a checklist entry.
+	const genCarDonNum = ( shwCheBoo && ONB_CHE_OBJ.entLooFun( state, ONB_GII_STR ) ) ? 1 : 0; // What: Generate Card Done Number. Why: The closing Generate card's own done contribution mirrors genCarCouNum. How: This is 1 only while shwCheBoo AND the Generate item already has a checklist entry.
 
 	const donCouNum = entArr.filter( ( curEntObj ) => curEntObj.done ).length + remDonNum
 		+ tutPicDonNum + tutTasDonNum + pagTouDonNum + genCarDonNum; // What: Done Count Number. Why: This is the ring's own numerator, combining every countable source of "done" on the page. How: This sums done picker/day-off entries, done ring reminders, and every tutorial-card category's own done count.
@@ -4657,7 +4657,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	const obEveBus = useEmlTouFun ? useEmlTouFun() : {}; // What: Onboarding Event Bus. Why: Several onboarding-adjacent empty-state/create-flow checks below need to read the shared tour bus's own live fields. How: This calls useEmlTouFun when it exists, otherwise falls back to an empty object.
 
-	const onbCplBoo = OB_CHECKLIST.status( state ).complete; // What: Onboarding Complete Boolean. Why: This replaces the old onboarding.dismissed flag (which only ever got set by the now-removed "Get started" checklist, so it was permanently stuck false); derived instead of stored, see onboarding-checklist.js for what counts as done. How: This calls OB_CHECKLIST.status and reads its own complete field.
+	const onbCplBoo = ONB_CHE_OBJ.cheStaFun( state ).comBoo; // What: Onboarding Complete Boolean. Why: This replaces the old onboarding.dismissed flag (which only ever got set by the now-removed "Get started" checklist, so it was permanently stuck false); derived instead of stored, see onboarding-checklist.js for what counts as done. How: This calls ONB_CHE_OBJ.cheStaFun and reads its own comBoo field.
 	const onbCreBoo = !onbCplBoo && state.pickers.length === 0; // What: Onboarding Create Boolean. Why: This also force-shows the create-picker onboarding card while the tour's own step 0 was up (that step anchored on this card), see the "STASHED: create-a-picker tour content" block atop onboarding.jsx; a future "Create your first picker" mini-tour will need an equivalent force-render once it exists, keyed off its own step numbering. How: This is true only while onboarding isn't complete AND the user has no pickers at all.
 
 	/**
@@ -4796,10 +4796,10 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 *
 	*/
 
-	const onbRdyBoo = OB_CHECKLIST.readyToGenerate( state );                       // What: Onboarding Ready Boolean. Why: See the doc comment just above. How: This calls OB_CHECKLIST.readyToGenerate.
-	const genResBoo = !!OB_CHECKLIST.entryFor( state, OB_GENERATE_ITEM_ID );       // What: Generate Resolved Boolean. Why: Both the card's own visual state and the effect further below need to know whether the Generate item has already resolved. How: This checks OB_CHECKLIST for an existing entry against OB_GENERATE_ITEM_ID.
+	const onbRdyBoo = ONB_CHE_OBJ.reaGenFun( state );                       // What: Onboarding Ready Boolean. Why: See the doc comment just above. How: This calls ONB_CHE_OBJ.reaGenFun.
+	const genResBoo = !!ONB_CHE_OBJ.entLooFun( state, ONB_GII_STR );       // What: Generate Resolved Boolean. Why: Both the card's own visual state and the effect further below need to know whether the Generate item has already resolved. How: This checks ONB_CHE_OBJ for an existing entry against ONB_GII_STR.
 
-	const onGenCarFun = () => { if ( onbRdyBoo ) actions.setChecklistItem( OB_GENERATE_ITEM_ID, { status : 'finished' } ); }; // What: On Generate Card Function. Why: This is the actual click handler for the closing Generate card. How: This resolves the Generate item only while onbRdyBoo allows it.
+	const onGenCarFun = () => { if ( onbRdyBoo ) actions.setChecklistItem( ONB_GII_STR, { status : 'finished' } ); }; // What: On Generate Card Function. Why: This is the actual click handler for the closing Generate card. How: This resolves the Generate item only while onbRdyBoo allows it.
 
 	/**
 	 * genExpStr = Generate Card Explanation String
@@ -4807,18 +4807,18 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * @summary
 	 * Names exactly what's still missing, singular/plural and "and" both
 	 * adjusted to whichever of the two requirements (tutorials, a real
-	 * picker) is actually still outstanding, see OB_CHECKLIST's own
-	 * othersRemaining and realPickerCount. Once nothing is missing
-	 * (onbRdyBoo), this "still missing" framing no longer applies at all,
-	 * so it's a completely separate sentence, not a 0-item case of the
-	 * same template.
+	 * picker) is actually still outstanding, see ONB_CHE_OBJ's own
+	 * othRemFun and reaPicFun. Once nothing is missing (onbRdyBoo), this
+	 * "still missing" framing no longer applies at all, so it's a
+	 * completely separate sentence, not a 0-item case of the same
+	 * template.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	*/
 
-	const onbRemNum   = OB_CHECKLIST.othersRemaining( state );     // What: Onboarding Remaining Number. Why: See the doc comment just above. How: This calls OB_CHECKLIST.othersRemaining.
-	const onbNeePicBoo = OB_CHECKLIST.realPickerCount( state ) < 1; // What: Onboarding Needs Picker Boolean. Why: See the doc comment just above. How: This checks OB_CHECKLIST.realPickerCount against a floor of 1.
+	const onbRemNum   = ONB_CHE_OBJ.othRemFun( state );     // What: Onboarding Remaining Number. Why: See the doc comment just above. How: This calls ONB_CHE_OBJ.othRemFun.
+	const onbNeePicBoo = ONB_CHE_OBJ.reaPicFun( state ) < 1; // What: Onboarding Needs Picker Boolean. Why: See the doc comment just above. How: This checks ONB_CHE_OBJ.reaPicFun against a floor of 1.
 	const genExpStr = onbRdyBoo
 		? 'Everything is completed! Click this button to generate your first, real todo list.'
 		: ( () => {
@@ -5413,7 +5413,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 									if ( !shwCheBoo && !rptVisBoo ) return null;
 
 
-									const pagDonNum = OB_PAGE_TOURS.filter( ( curTouObj ) => !!OB_CHECKLIST.entryFor( state, curTouObj.id ) ).length; // What: Page Done Number. Why: The rail entry needs its own live done count. How: This counts resolved OB_PAGE_TOURS entries.
+									const pagDonNum = ONB_EPT_ARR.filter( ( curTouObj ) => !!ONB_CHE_OBJ.entLooFun( state, curTouObj.id ) ).length; // What: Page Done Number. Why: The rail entry needs its own live done count. How: This counts resolved ONB_EPT_ARR entries.
 
 									return (
 
@@ -5431,7 +5431,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 												<span className='rail-count'>{ /* What: Rail Count Span Element. Why: The done/total pair reads as one small cluster. How: This wraps the done and "of total" spans below. */ }
 
-													<span>{ pagDonNum }</span><span className='rail-of'>/{ OB_PAGE_TOURS.length }</span>
+													<span>{ pagDonNum }</span><span className='rail-of'>/{ ONB_EPT_ARR.length }</span>
 
 												</span>
 
@@ -5652,9 +5652,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 									if ( !shwCheBoo && !rptVisBoo ) return null;
 
 
-									const visTouArr = shwCheBoo ? OB_PAGE_TOURS // What: Visible Tour Array. Why: Post-cheDonBoo (replay continuation, see rptVisBoo's own comment), only the still-unresolved tours keep showing; the ORIGINAL first-time checklist still shows every one of them, done or not, unchanged. How: This is every tour during shwCheBoo, only the unresolved ones during rptVisBoo.
-										: OB_PAGE_TOURS.filter( ( curTouObj ) => !OB_CHECKLIST.entryFor( state, curTouObj.id ) );
-									const pagDonNum = OB_PAGE_TOURS.filter( ( curTouObj ) => !!OB_CHECKLIST.entryFor( state, curTouObj.id ) ).length; // What: Page Done Number. Why: The section's own header needs this same live done count. How: This counts resolved OB_PAGE_TOURS entries.
+									const visTouArr = shwCheBoo ? ONB_EPT_ARR // What: Visible Tour Array. Why: Post-cheDonBoo (replay continuation, see rptVisBoo's own comment), only the still-unresolved tours keep showing; the ORIGINAL first-time checklist still shows every one of them, done or not, unchanged. How: This is every tour during shwCheBoo, only the unresolved ones during rptVisBoo.
+										: ONB_EPT_ARR.filter( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( state, curTouObj.id ) );
+									const pagDonNum = ONB_EPT_ARR.filter( ( curTouObj ) => !!ONB_CHE_OBJ.entLooFun( state, curTouObj.id ) ).length; // What: Page Done Number. Why: The section's own header needs this same live done count. How: This counts resolved ONB_EPT_ARR entries.
 
 									return (
 
@@ -5669,7 +5669,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 											<GroHeaCom
 												name={ pagNamStr }
 												doneCount={ pagDonNum }
-												total={ OB_PAGE_TOURS.length }
+												total={ ONB_EPT_ARR.length }
 												editMode={ ediModBoo }
 												onGripDown={ startGroDraFun }
 												onRenameGroup={ ( newNamStr ) => actions.renamePageTours( newNamStr ) }

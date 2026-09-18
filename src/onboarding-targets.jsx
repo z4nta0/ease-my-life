@@ -10,9 +10,9 @@
  * Shared, reusable target-and-description catalog for onboarding overlays. The
  * nav bar's per-page buttons ([data-tab="..."]) are spotlighted both by the
  * main Welcome Tour (onboarding.jsx) and, later, by each page's own "Explore
- * the {page}" mini-tour (see OB_PAGE_TOURS in onboarding-checklist.js) as its
+ * the {page}" mini-tour (see ONB_EPT_ARR in onboarding-checklist.js) as its
  * opening step. This is kept as one source of truth instead of being
- * duplicated per consumer, keyed by the same page ids as OB_PAGE_TOURS' page
+ * duplicated per consumer, keyed by the same page ids as ONB_EPT_ARR' page
  * field.
  *
  * Each entry holds content only (selStr/place/titStr/bodEle), no navigation

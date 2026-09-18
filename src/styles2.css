@@ -2146,7 +2146,7 @@ button.cat-h-l {
 .picker-tab--add .picker-tab-name { font-size: 13px; color: inherit; }
 /* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
    pointer-events:none here — this instance is an InfoTip span (see
-   tab-picker.jsx), not a real <button>, whenever it's tutorialsInProgress,
+   tab-picker.jsx), not a real <button>, whenever it's tutProFun,
    and InfoTip needs real hover/tap events to reach it to show its tooltip
    at all (see .btn.is-disabled in styles.css, the same InfoTip pattern
    used by the Generate card, which omits it for the same reason). Nothing
@@ -2527,8 +2527,8 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rem-add-btn:hover { border-color: var(--accent); color: var(--accent); background: oklch(from var(--accent-soft) l c h / 0.5); }
 /* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
    pointer-events:none here — this instance is an InfoTip span (see
-   reminders.jsx's tutorialsInProgress), not a real <button>, whenever
-   OB_CHECKLIST.tutorialsInProgress is true, and InfoTip needs real
+   reminders.jsx's tutProFun), not a real <button>, whenever
+   ONB_CHE_OBJ.tutProFun is true, and InfoTip needs real
    hover/tap events reaching it to show its tooltip at all (see
    .btn.is-disabled in styles.css, the same InfoTip pattern used by the
    Generate card, which omits it for the same reason). Nothing unsafe
@@ -2909,7 +2909,7 @@ legend.np-label { padding: 0; float: none; width: 100%; }
 .rd-add:hover { color: var(--accent); }
 /* Unlike .pv-act.is-tour-disabled elsewhere in this file, deliberately NO
    pointer-events:none here — these instances become InfoTip spans (not
-   real <button>s) whenever OB_CHECKLIST.tutorialsInProgress is true, and
+   real <button>s) whenever ONB_CHE_OBJ.tutProFun is true, and
    InfoTip needs real hover/tap events reaching it to show its tooltip at
    all (see .btn.is-disabled in styles.css, the same InfoTip pattern used
    by the Generate card, which omits it for the same reason). Nothing
@@ -4307,7 +4307,7 @@ body.is-reordering, body.is-reordering * { cursor: grabbing !important; user-sel
 @media (prefers-reduced-motion:reduce){.ob-create.is-removing{animation:none;opacity:0}}
 /* Same "needs attention" cue as .ob-create--generate.is-needed above, applied
    to every still-open "Create a picker" launcher card while zero real
-   pickers exist yet — see OB_CHECKLIST.realPickerCount. */
+   pickers exist yet — see ONB_CHE_OBJ.reaPicFun. */
 .today-card--tutorial.is-needed{border-color:oklch(from var(--warm) l c h/0.55);background:oklch(from var(--warm) l c h/0.06)}
 .today-card--tutorial.is-needed:hover{border-color:oklch(from var(--warm) l c h/0.7)}
 @keyframes obFade{from{opacity:0}to{opacity:1}}

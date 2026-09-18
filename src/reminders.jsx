@@ -14,7 +14,7 @@ import { emlTouObj             } from './eml-tour-bus.js';         // What: Ease
 import { freEdiFun             } from './ui.jsx';                  // What: Freeze Edited Function. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
 import { IcoSvgCom             } from './ui.jsx';                  // What: Icon Svg Component. Why: Every reminder row, card, and button needs a recognizable glyph. How: This is rendered throughout RemCarCom, RemSecCom, and RemManCom.
 import { InfTipCom             } from './ui.jsx';                  // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add buttons in RemSecCom and RemManCom.
-import { OB_CHECKLIST          } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: Both add-reminder entry points must stay disabled while any onboarding tutorial is still in progress. How: This is read via its own tutorialsInProgress and entryFor helpers.
+import { ONB_CHE_OBJ           } from './onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Both add-reminder entry points must stay disabled while any onboarding tutorial is still in progress. How: This is read via its own tutProFun and entLooFun helpers.
 import { OB_REMINDER_CARD_TEXT } from './onboarding-seed-data.js'; // What: Onboarding Reminder Card Text. Why: A still-hidden sample reminder's own mini-tour launcher card needs copy distinct from its real schedule summary. How: This is looked up by sample task id inside RemCarCom's own isaTutBoo branch.
 import { OB_SAMPLE_TASK_IDS    } from './onboarding-seed-data.js'; // What: Onboarding Sample Task Identifiers. Why: Only the Welcome Tour's own seeded sample reminders should ever render as a mini-tour launcher card. How: This is checked against a hidden task's own id inside RemSecCom's tutTasArr filter.
 import { redMotFun             } from './ui.jsx';                  // What: Reduce Motion Function. Why: A user who prefers reduced motion should get an instant close, skip, or remove instead of a timed animation. How: This is checked before every staged animation throughout this file.
@@ -2083,12 +2083,12 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 	const actTouStr = state.onboarding && state.onboarding.activeTour && state.onboarding.activeTour.id; // What: Active Tour String. Why: This decides whether a reminder mini-tour specifically (not just any tour) is currently running. How: This reads state's own onboarding.activeTour.id, or a falsy value when no tour is active.
 	const remTouBoo = typeof actTouStr === 'string' && actTouStr.startsWith( 'reminder-' );               // What: Reminder Tour Boolean. Why: The add button below must stay clickable during a reminder mini-tour's own Step 1, which needs the user to click it themselves rather than a simulated click. How: This checks actTouStr's own prefix.
-	const tutProBoo = OB_CHECKLIST.tutorialsInProgress( state ) && !remTouBoo;                            // What: Tutorial Progress Boolean. Why: Every OTHER tutorial still disables the add button as normal; only a reminder tour itself is exempted. How: This combines OB_CHECKLIST's own check with the negation of remTouBoo.
+	const tutProBoo = ONB_CHE_OBJ.tutProFun( state ) && !remTouBoo;                            // What: Tutorial Progress Boolean. Why: Every OTHER tutorial still disables the add button as normal; only a reminder tour itself is exempted. How: This combines ONB_CHE_OBJ's own check with the negation of remTouBoo.
 
 	const tutTasArr = ( state.tasks || [] ).filter( ( curTasObj ) => curTasObj.hidden && OB_SAMPLE_TASK_IDS.includes( curTasObj.id ) // What: Tutorial Task Array. Why: One mini-tour launcher card is needed per still-hidden, still-relevant sample reminder. How: This keeps a hidden sample task unless it's already resolved post-checklistDone, or a same-named real reminder has since been created post-checklistDone.
 
 
-		&& !( cheDonBoo && OB_CHECKLIST.entryFor( state, curTasObj.id ) )
+		&& !( cheDonBoo && ONB_CHE_OBJ.entLooFun( state, curTasObj.id ) )
 		&& ( !cheDonBoo || !( state.tasks || [] ).some( ( othTasObj ) => !OB_SAMPLE_TASK_IDS.includes( othTasObj.id ) && othTasObj.name === curTasObj.name ) ) );
 
 
@@ -2283,7 +2283,7 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 
 	const donCouNum = dueTasArr.filter( ( curTasObj ) => TASKS.isDoneToday( curTasObj, ancDatObj ) ).length; // What: Done Count Number. Why: The header's own "N of M" count needs the real completed count among dueTasArr. How: This filters dueTasArr by TASKS.isDoneToday and reads the resulting length.
-	const tutDonNum = tutTasArr.filter( ( curTasObj ) => !!OB_CHECKLIST.entryFor( state, curTasObj.id ) ).length; // What: Tutorial Done Number. Why: A mini-tour launcher card resolved any of the 3 ways counts toward the same header total as a real completed card. How: This filters tutTasArr by OB_CHECKLIST.entryFor and reads the resulting length.
+	const tutDonNum = tutTasArr.filter( ( curTasObj ) => !!ONB_CHE_OBJ.entLooFun( state, curTasObj.id ) ).length; // What: Tutorial Done Number. Why: A mini-tour launcher card resolved any of the 3 ways counts toward the same header total as a real completed card. How: This filters tutTasArr by ONB_CHE_OBJ.entLooFun and reads the resulting length.
 	const remTotNum = dueTasArr.length + tutTasArr.length;                                                       // What: Reminder Total Number. Why: The header's own "of M" total must include both real due reminders and any still-offered tutorial cards. How: This sums dueTasArr's own length and tutTasArr's own length.
 	const remDonNum = donCouNum + tutDonNum;                                                                     // What: Reminder Done Number. Why: The header's own "N of" count must likewise include both real completions and resolved tutorial cards. How: This sums donCouNum and tutDonNum.
 
@@ -2543,11 +2543,11 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 						tasRecObj={ curTasObj }
 						actStoObj={ actions }
 						isaTutBoo
-						tutDonBoo={ !!OB_CHECKLIST.entryFor( state, curTasObj.id ) }
+						tutDonBoo={ !!ONB_CHE_OBJ.entLooFun( state, curTasObj.id ) }
 						extClaStr={ checklistExiting ? 'is-removing' : '' }
 						onPlaTutFun={ onPlayTutorial }
 						onUncTutFun={ onUncheckTutorial }
-					/> // What: Reminder Card Component. Why: This is one mini-tour launcher card. How: This is flagged isaTutBoo, resolved via OB_CHECKLIST.entryFor, and plays the checklist's own exit class while checklistExiting.
+					/> // What: Reminder Card Component. Why: This is one mini-tour launcher card. How: This is flagged isaTutBoo, resolved via ONB_CHE_OBJ.entLooFun, and plays the checklist's own exit class while checklistExiting.
 
 
 				) ) }
@@ -3208,7 +3208,7 @@ function RemManCom ( { state, actions, hidden } ) {
 	const colSubMap    = ( state.ui && state.ui.controlsCollapsed ) || {}; // What: Collapsed Sub Map. Why: The Controls and Items sub-panels each remember their own collapse state independently of the main section and of each other. How: This reads the same state's own ui.controlsCollapsed, kept as a separate read for its own 2 sub-keys below.
 	const conColBoo    = !!colSubMap[ '__reminders' ];                     // What: Controls Collapsed Boolean. Why: The Controls disclosure defaults OPEN, so absent means open. How: This checks colSubMap's own '__reminders' entry.
 	const iteColBoo    = !!colSubMap[ '__reminders:items' ];               // What: Items Collapsed Boolean. Why: The Items disclosure likewise defaults open. How: This checks colSubMap's own '__reminders:items' entry.
-	const tutProBoo    = OB_CHECKLIST.tutorialsInProgress( state );        // What: Tutorial Progress Boolean. Why: "New reminder" is a second, independent path to a real reminder, reachable from this page, and must stay disabled during any onboarding tutorial the same way RemSecCom's own add button does. How: This calls OB_CHECKLIST.tutorialsInProgress against state.
+	const tutProBoo    = ONB_CHE_OBJ.tutProFun( state );        // What: Tutorial Progress Boolean. Why: "New reminder" is a second, independent path to a real reminder, reachable from this page, and must stay disabled during any onboarding tutorial the same way RemSecCom's own add button does. How: This calls ONB_CHE_OBJ.tutProFun against state.
 
 
 	const addEdiFun = () => { // What: Add Edit Function. Why: "New reminder" needs to create a real, minimal reminder AND immediately open its own editor, ensuring both the main section and the Items disclosure are expanded to actually show it. How: This mints a fresh id, adds the task, stages every relevant "just added"/open/insert flag, and expands whichever section is currently collapsed.

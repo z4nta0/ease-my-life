@@ -15,7 +15,7 @@ import { IntModCom            } from './onboarding-intro-modal.jsx'; // What: In
 import { NAV_TAR_OBJ          } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Every page tour's own Step 1 and its own intro-modal fallback copy read this shared nav-button catalog. How: This is looked up by a page key everywhere this file needs the real nav button's own selector/title/body.
 import { OB_EXAMPLE           } from './onboarding-seed-data.js';    // What: Onboarding Example. Why: This is the "Daily Chores" sample picker's own template, one of the entries PAG_SAM_ARR below carries, and its own id is the Stats tour's own preselected picker. How: This is spread into PAG_SAM_ARR below and read directly for PRE_PIC_STR.
 import { OB_EXTRA_PICKERS     } from './onboarding-seed-data.js';    // What: Onboarding Extra Pickers. Why: This is every OTHER sample picker's own template, alongside OB_EXAMPLE the full set PAG_SAM_ARR below carries. How: This is spread into PAG_SAM_ARR below.
-import { OB_PAGE_TOURS        } from './onboarding-checklist.js';    // What: Onboarding Page Tours. Why: PagTouCom below needs this page tour's own id/page/label manifest entry. How: This is searched by pagIdeStr inside PagTouCom below.
+import { ONB_EPT_ARR          } from './onboarding-checklist.js';    // What: Onboarding Explore-Page-Tours Array. Why: PagTouCom below needs this page tour's own id/page/label manifest entry. How: This is searched by pagIdeStr inside PagTouCom below.
 import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';    // What: Onboarding Sample Picker Ids. Why: The Stats tour needs to unhide/rehide every real sample picker (not a disposable copy) for its own duration. How: This is iterated by unhHisFun/hidHisFun below.
 import { OB_TASKS             } from './onboarding-seed-data.js';    // What: Onboarding Tasks. Why: The Data tour needs real reminders to point at, seeded/cleared as disposable copies the same way PAG_SAM_ARR is for pickers. How: This is iterated by seeTasFun/cleTasFun below.
 
@@ -29,7 +29,7 @@ import { OB_TASKS             } from './onboarding-seed-data.js';    // What: On
  * @summary
  * Content for the page tours ("Explore the {page}" — Today/Pickers/
  * Stats/Data/Settings), launched from each page's own Today launcher
- * card (see onboarding-checklist.js's OB_PAGE_TOURS and tab-today.jsx's
+ * card (see onboarding-checklist.js's ONB_EPT_ARR and tab-today.jsx's
  * PageTourCard). Still growing in from an intro-only stub: Today is
  * the only page with a full walkthrough of its own interior elements
  * so far, the others currently stop after Step 1 (the shared nav-
@@ -1229,7 +1229,7 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
 function PagTouCom ( { pagIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCloTouFun } ) {
 
 
-	const tourRecObj = OB_PAGE_TOURS.find( ( curTouObj ) => curTouObj.id === pagIdeStr ); // What: Tour Record Object. Why: This page's own real page key/label are read off its own OB_PAGE_TOURS manifest entry. How: This searches OB_PAGE_TOURS for the entry whose own id matches pagIdeStr.
+	const tourRecObj = ONB_EPT_ARR.find( ( curTouObj ) => curTouObj.id === pagIdeStr ); // What: Tour Record Object. Why: This page's own real page key/label are read off its own ONB_EPT_ARR manifest entry. How: This searches ONB_EPT_ARR for the entry whose own id matches pagIdeStr.
 	const navTarObj = NAV_TAR_OBJ[ tourRecObj.page ]; // What: Nav Target Object. Why: The intro modal's own fallback titStr/bodEle come from the shared nav-button catalog. How: This looks up NAV_TAR_OBJ by tourRecObj's own page.
 	const pagCopObj = PAG_COP_OBJ[ pagIdeStr ]; // What: Page Copy Object. Why: The intro modal's own title/body/pills prefer this page's own dedicated copy when it has one. How: This looks up PAG_COP_OBJ by pagIdeStr.
 

@@ -2394,6 +2394,25 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     ...); rather than adding an eleventh meaning to an already-loaded
     code, it was escalated via Phase A to `clcEle` instead, keeping
     `clo`'s own meaning unambiguous everywhere else.
+  - **A project-scoped override, requested by the user, when Phase A/B
+    escalation itself keeps colliding**: `onboarding-checklist.js`'s own
+    `cheStaFun` returns a `remaining` count that would normally truncate
+    to `rem`, but `rem` is used dozens of times for "Reminder" throughout
+    THIS project specifically (`remActRef`, `remAncObj`, `remCouNum`,
+    `remIteArr`, ...), squarely the "heavy pre-existing overload" case
+    just above. Phase A's own escalation candidate, `rea`, doesn't help
+    either: it already carries two different meanings within this exact
+    file alone (`reaGenFun` = Ready, `reaPicFun` = Real), so escalating
+    into it would trade one collision for a worse one. Per the user's
+    own explicit request, `remaining` is truncated to `rmn` instead (its
+    leading consonant skeleton, Re-m-n, vowels dropped, rather than any
+    letter found via the documented Phase A/B position-escalation
+    method), giving `rmnNum`. **This exact resolution (`remaining` →
+    `rmn`) is scoped to ease-my-life ONLY**, because `rem` = Reminder is
+    specifically what makes it necessary here; it is NOT a general
+    consonant-skeleton technique to reach for on a different project,
+    where `rem` would truncate to "Remaining" the normal way with no
+    such conflict.
   - **When even the escalation letters collide, pick a different word
     entirely rather than force one through**: `tab-today.jsx`'s own
     `rndOrdRef`/`rndArr` (holding the group order actually rendered to
@@ -2504,6 +2523,21 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     those would silently break rendering, not just look different. The
     test is always "do I control every reader of this key," not merely
     "is this an object I wrote."
+  - **Second exemption — an exported namespace object's own properties**:
+    this 6-character rule does not apply to the property names of an
+    EXPORTED namespace object either (`STORAGE`, `PICKERS`, `TASKS`,
+    `CAD_NAM_OBJ`, `ONB_CHE_OBJ`, ...). See "Exported namespace objects"
+    below for the fuller rule, but in short: each property should just
+    reuse the already-named 9-character internal function/constant's own
+    real name directly as its external key, rather than compressing it
+    down to 6 characters. The whole point of a namespace object is so a
+    consuming file can trace `SomeObj.propName` straight back to the
+    exact internal implementation it's calling; a separately-compressed
+    6-char key would just be a second, different abbreviation of the same
+    concept, adding a translation step for zero benefit. This is the
+    standard, default practice for this category of object, not a rare
+    exception — apply it to every exported namespace object, not only the
+    ones already swept this way.
 - **Exported namespace objects must use explicit `originalName :
   internalName` mapping, never JS shorthand `{ internalName }`.** A
   domain module's public API (`STORAGE`, `PICKERS`, `TASKS`,
@@ -2520,27 +2554,40 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   `<ObjectName>\.` to enumerate every property name actually called
   externally, then verify the export object explicitly maps EACH one
   (`realName : internalName`), never bare.
-  - **Exception**: `cadence.js`'s own `CAD_NAM_OBJ` (originally
-    `CADENCE`), `conditionals.js`'s own `CON_NAM_OBJ` (originally
-    `CONDITIONALS`), and `notify.js`'s own `NOT_NAM_OBJ` all deliberately
-    swept their external property names to match their internal
-    implementation exactly (e.g. `normalize` → `norCadFun`, `isCadence`
-    → `isaCadFun` for the first; `cardComplete` → `carComFun`,
-    `advanceOnCompletion` → `advValFun` for the second; `permission` →
-    `perCheFun`, `subscribe` → `subAddFun`, `askOnce` → `askOncFun`,
-    `request` → `reqPerFun`, `generated` → `genNotFun` for the third),
-    with every external call site (~60 across 7 consumer files for
-    CAD_NAM_OBJ, 6 across 3 for CON_NAM_OBJ, 6 across 2 for NOT_NAM_OBJ)
-    updated in the same pass. This was a deliberate, fully-swept rename,
-    not a case of the shorthand danger above: the blast radius was
-    checked first for each (every call site is plain JS, resolved at
-    call time, never persisted to IndexedDB/localStorage), unlike a
-    picker's own persisted cadence fields (`anchorDow`, `anchorDom`,
-    ...) or a conditional's own persisted fields (`oddsPct`, `easeMin`,
-    `chargeStep`, ...), which stay unrenamed for exactly that reason.
-    The explicit `name : name` mapping is still kept (never JS
-    shorthand) even though the names now match, so a future internal
-    rename still has to touch the export line deliberately.
+  - **Standard practice (not a rare exception): sweep the external
+    property names to match their internal implementation exactly.**
+    `cadence.js`'s own `CAD_NAM_OBJ` (originally `CADENCE`),
+    `conditionals.js`'s own `CON_NAM_OBJ` (originally `CONDITIONALS`),
+    `notify.js`'s own `NOT_NAM_OBJ`, and `onboarding-checklist.js`'s own
+    `ONB_CHE_OBJ` all deliberately swept their external property names to
+    match their internal implementation exactly (e.g. `normalize` →
+    `norCadFun`, `isCadence` → `isaCadFun` for the first; `cardComplete`
+    → `carComFun`, `advanceOnCompletion` → `advValFun` for the second;
+    `permission` → `perCheFun`, `subscribe` → `subAddFun`, `askOnce` →
+    `askOncFun`, `request` → `reqPerFun`, `generated` → `genNotFun` for
+    the third; `entryFor` → `entLooFun`, `items` → `cheIteArr`,
+    `othersRemaining` → `othRemFun`, `readyToGenerate` → `reaGenFun`,
+    `realPickerCount` → `reaPicFun`, `status` → `cheStaFun`,
+    `tutorialsInProgress` → `tutProFun` for the fourth), with every
+    external call site (~60 across 7 consumer files for CAD_NAM_OBJ, 6
+    across 3 for CON_NAM_OBJ, 6 across 2 for NOT_NAM_OBJ, ~28 across 4 for
+    ONB_CHE_OBJ) updated in the same pass. Reusing the already-named
+    9-char internal identifier directly as the external key (rather than
+    inventing a separately-compressed name, 6-char property-style or
+    otherwise) means a reader can trace `SomeObj.propName` straight back
+    to the exact function/constant it calls, with nothing to translate.
+    This was a deliberate, fully-swept rename each time, not a case of
+    the shorthand danger above: the blast radius was checked first for
+    each (every call site is plain JS, resolved at call time, never
+    persisted to IndexedDB/localStorage), unlike a picker's own persisted
+    cadence fields (`anchorDow`, `anchorDom`, ...) or a conditional's own
+    persisted fields (`oddsPct`, `easeMin`, `chargeStep`, ...), which stay
+    unrenamed for exactly that reason. The explicit `name : name` mapping
+    is still kept (never JS shorthand) even once the names match, so a
+    future internal rename still has to touch the export line
+    deliberately. Apply this same treatment to every future exported
+    namespace object as a matter of course, not only when it happens to
+    come up again.
 
 ### Default parameter values
 - Only give a parameter a default where it's genuinely reachable/

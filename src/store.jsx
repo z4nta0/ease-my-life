@@ -13,7 +13,7 @@ import { HOL_NAM_OBJ               } from './holidays.js';             // What: 
 import { norConFun                 } from './pickers.js';              // What: Normalize Conditional Function. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicker and commitPickerEdit below.
 import { norGroFun                 } from './pickers.js';              // What: Normalize Group Function. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called from migrate and from renameGroup/renamePageTours below.
 import { norPicFun                 } from './pickers.js';              // What: Normalize Picker Function. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from migrate, addPicker, commitPickerEdit, and renamePicker below.
-import { OB_CHECKLIST              } from './onboarding-checklist.js'; // What: Onboarding Checklist. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (readyToGenerate) from setChecklistItem below.
+import { ONB_CHE_OBJ               } from './onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (reaGenFun) from setChecklistItem below.
 import { OB_SAMPLE_PICKER_IDS      } from './onboarding-seed-data.js'; // What: Onboarding Sample Picker Ids. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicker below.
 import { PICKERS                   } from './pickers.js';              // What: Pickers. Why: The item-authoring/editing actions need this module's own ease-band averaging and per-mode defaults. How: This is called (avgEase/DEFAULT_EASE) from addItem and commitPickerEdit below.
 import { PWA                       } from './pwa.js';                  // What: Progressive Web App. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (noteFirstPicker) once, from inside addPicker below.
@@ -2149,7 +2149,7 @@ function useStore( optArgObj ) {
 		 * uncheck it back to pending (redo). Never touches the underlying
 		 * sample picker/task; resolution is tracked here only, which is
 		 * exactly what makes unchecking free. Also flags the exact moment
-		 * readyToGenerate flips false-to-true, for tab-today.jsx's own
+		 * reaGenFun flips false-to-true, for tab-today.jsx's own
 		 * auto-scroll (see generateScrollPending's own migrate() comment
 		 * for why this has to be captured HERE, the actual mutation
 		 * point, rather than as a derived-value comparison inside
@@ -2168,7 +2168,7 @@ function useStore( optArgObj ) {
 
 			const nexStaObj = { ...curStaObj, onboarding : { ...( curStaObj.onboarding || {} ), checklist : curCheObj } }; // What: Next State Object. Why: The caller needs a fresh state with the patched checklist written on. How: This spreads curStaObj with onboarding's own checklist replaced by curCheObj.
 
-			if ( !OB_CHECKLIST.readyToGenerate( curStaObj ) && OB_CHECKLIST.readyToGenerate( nexStaObj ) ) { // What: Ready-To-Generate Edge Guard. Why: tab-today.jsx's own auto-scroll needs to know the EXACT moment readiness just flipped on, not merely that it's on now. How: This flags generateScrollPending only when curStaObj was not-yet-ready and nexStaObj now is.
+			if ( !ONB_CHE_OBJ.reaGenFun( curStaObj ) && ONB_CHE_OBJ.reaGenFun( nexStaObj ) ) { // What: Ready-To-Generate Edge Guard. Why: tab-today.jsx's own auto-scroll needs to know the EXACT moment readiness just flipped on, not merely that it's on now. How: This flags generateScrollPending only when curStaObj was not-yet-ready and nexStaObj now is.
 
 
 				nexStaObj.onboarding.generateScrollPending = true; // What: Generate-Scroll-Pending Flag Set. Why: TabToday consumes (and clears) this the next time it renders with it true, per its own migrate() comment. How: This flips nexStaObj.onboarding.generateScrollPending to true.

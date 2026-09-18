@@ -26,7 +26,7 @@ import { IntModCom          } from './onboarding-intro-modal.jsx'; // What: Intr
  * comment) and every real picker group. Unlike every earlier onboarding tour,
  * these operate on the user's own REAL data rather than disposable samples:
  * there is always at least one real picker by this point (see onboarding-
- * checklist.js's readyToGenerate gate), and these are deliberately NOT tracked
+ * checklist.js's reaGenFun gate), and these are deliberately NOT tracked
  * by the checklist "engine" at all: no doneCount/total ring or streak
  * participation, no closing Generate-style card, no counting toward anything.
  * Resolved state lives in its own state.onboarding.appFeatures map (see
@@ -113,7 +113,7 @@ const PAG_LAB_OBJ = { // What: Page Label Object. Why: tab-today.jsx's own AppFe
  *   own pilLabArr prop).
  *
  * - `timStr` (String, optional): Time String is a real, user-confirmed
- *   estimate (same convention as OB_PAGE_TOURS' own time field in
+ *   estimate (same convention as ONB_EPT_ARR' own time field in
  *   onboarding-checklist.js), shown next to the launcher card's own
  *   label whenever present; tab-today.jsx renders feaRecObj.timStr
  *   directly whenever it's truthy. Only a feature with real step-by-step
@@ -741,7 +741,7 @@ const bldSteFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Step F
  * item Re-roll would deterministically return the same result every time,
  * making that invitation pointless. Unlike the checklist's own amber "needs
  * attention" cue on the Create-a-picker cards (which are always runnable,
- * just flagged as unfinished, see onboarding-checklist.js's realPickerCount),
+ * just flagged as unfinished, see onboarding-checklist.js's reaPicFun),
  * this actually blocks the card: there's no partial tour to offer without a
  * real picker to run one on. No other App Feature has a requirement yet, so
  * this stays a one-off check rather than a generic per-feature schema field.
