@@ -1,7 +1,6 @@
 
 
 
-
 /**
  * ONBOARDING_STATS = Onboarding Stats
  *

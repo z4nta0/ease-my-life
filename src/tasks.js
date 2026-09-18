@@ -1,7 +1,6 @@
 
 
 
-
 // #region Imports
 
 import { HOL_NAM_OBJ } from './holidays.js'; // What: Holidays Namespace Object. Why: A reminder's own weekend/holiday participation switches need to know whether a given date is an active day off. How: This is called (guarded, since it's an external module) inside visTodFun/todVisFun/nexEliFun below.

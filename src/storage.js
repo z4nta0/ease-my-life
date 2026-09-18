@@ -1,7 +1,6 @@
 
 
 
-
 /**
  * storage.js = Storage Layer
  *
