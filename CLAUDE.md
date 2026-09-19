@@ -2190,6 +2190,13 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     (`tab-today.jsx`); `hea` was already the established, unambiguous
     code for Header elsewhere in this codebase, e.g. `TabHeaCom`,
     `GroHeaCom`, `heaLabStr`)
+  - `bld` → `bui` (Build, found across 9 functions spanning
+    `onboarding-page-tours.jsx`, `onboarding-app-features.jsx`,
+    `onboarding-picker-tours.jsx`, and `onboarding-reminder-tours.jsx`,
+    e.g. `bldAddFun`, `bldNewFun`, `bldModFun`, `bldSteFun`; `bld` is a
+    common real-world abbreviation for "build" (build tooling, CI
+    scripts, ...) that crept in over the word's own literal first 3
+    letters the same way `btn`/`cfg` did elsewhere in this list)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
