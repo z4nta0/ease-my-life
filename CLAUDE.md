@@ -1132,29 +1132,31 @@ don't invent one for anything else yet:
   	{
 
 
-  		exaStr : 'example property string',
-  		exaNum : 456,
   		exaBoo : true,
+  		exaNum : 456,
 
   		exaObj : {
 
 
-  			exaStr : 'example property string',
-  			exaNum : 456,
   			exaBoo : true,
+  			exaNum : 456,
 
   			exaObj : {
 
 
-  				exaStr : 'example property string',
+  				exaBoo : true,
   				exaNum : 456,
-  				exaBoo : true
+  				exaStr : 'example property string'
 
 
-  			}
+  			},
+
+  			exaStr : 'example property string'
 
 
-  		}
+  		},
+
+  		exaStr : 'example property string'
 
 
   	},
@@ -1168,14 +1170,16 @@ don't invent one for anything else yet:
   ];
   ```
   Walking this: `exaRulArr`'s first entry gets 2 blanks after `[` (first);
-  that entry's first property `exaStr` gets 2 blanks after its own `{`
-  (first); the simple properties `exaStr`/`exaNum`/`exaBoo` have no blanks
-  between each other (plain entries, not multi-line); the multi-line
-  property `exaObj` gets 1 blank before it (it's not first) and, since
-  it's also the LAST property of its parent, 2 blanks after its own
-  closing `}` before the parent's closing `}` (last). Between sibling
-  array entries that are each multi-line objects (neither first nor last),
-  it's 1 blank on both sides.
+  that entry's first property `exaBoo` gets 2 blanks after its own `{`
+  (first); the simple properties `exaBoo`/`exaNum` have no blanks between
+  each other (plain entries, not multi-line); the multi-line property
+  `exaObj` gets 1 blank before it (not first) and 1 blank after it (not
+  last either, since `exaStr` follows it); `exaStr`, even though it's a
+  plain simple property, is still this object's own LAST entry, so the
+  object's own closing `}` still gets the base 2-blank close padding
+  before it, exactly as it would if the last entry had been multi-line
+  instead. Between sibling array entries that are each multi-line objects
+  (neither first nor last), it's 1 blank on both sides.
 - **Every multi-line object literal's own properties are ordered
   alphabetically by property name** (case-insensitive), independent of
   whatever order they were originally written in. This applies at every
@@ -1348,10 +1352,10 @@ don't invent one for anything else yet:
   setIndRecObj({
 
 
-  	x : butRecObj.left - navRecObj.left + navCurEle.scrollLeft,
-  	y : butRecObj.top - navRecObj.top + navCurEle.scrollTop,
-  	w : butRecObj.width,
-  	h : butRecObj.height
+  	heiNum : butRecObj.height,
+  	lefNum : butRecObj.left - navRecObj.left + navCurEle.scrollLeft,
+  	topNum : butRecObj.top - navRecObj.top + navCurEle.scrollTop,
+  	widNum : butRecObj.width
 
 
   });
@@ -1399,10 +1403,10 @@ don't invent one for anything else yet:
   setIndRecObj({
 
 
-  	x : butRecObj.left - navRecObj.left + navCurEle.scrollLeft,
-  	y : butRecObj.top - navRecObj.top + navCurEle.scrollTop,
-  	w : butRecObj.width,
-  	h : butRecObj.height
+  	heiNum : butRecObj.height,
+  	lefNum : butRecObj.left - navRecObj.left + navCurEle.scrollLeft,
+  	topNum : butRecObj.top - navRecObj.top + navCurEle.scrollTop,
+  	widNum : butRecObj.width
 
 
   });
@@ -2569,7 +2573,7 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - **Exemption**: this rule only applies to an object whose property
     names are entirely OUR OWN invention — both the write site and every
     read site are code we control, so renaming is free (e.g. the
-    `{ lefNum, topNum, widNum, heiNum }` shape `setIndRecObj` builds and
+    `{ heiNum, lefNum, topNum, widNum }` shape `setIndRecObj` builds and
     `indRecObj.lefNum`/etc. reads back, all private to `TabBarCom`). An
     object whose keys are constrained by an external contract is exempt
     entirely — most commonly a `style={{ ... }}` object, whose keys must
