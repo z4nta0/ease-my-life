@@ -32,7 +32,7 @@ import { OB_TASKS             } from './onboarding-seed-data.js';    // What: On
  * PageTourCard). Still growing in from an intro-only stub: Today is
  * the only page with a full walkthrough of its own interior elements
  * so far, the others currently stop after Step 1 (the shared nav-
- * button highlight built by buildPageTourStep1, also reused verbatim
+ * button highlight built by buiTs1Fun, also reused verbatim
  * by onboarding-app-features.jsx's own App Features tours).
  *
  * The Pickers/Data tours need real pickers on screen to point at, but
@@ -51,7 +51,7 @@ import { OB_TASKS             } from './onboarding-seed-data.js';    // What: On
  * TOD_TAR_OBJ), the same selStr/titStr/bodEle shape as NAV_TAR_OBJ, kept
  * separate from navigation flags (tabStr/priStr/bacBoo/...) so a future
  * on-demand multi-highlight help mode could pull from these same
- * catalogs directly. bldSteFun assembles each page's own real step
+ * catalogs directly. buiTesFun assembles each page's own real step
  * array by spreading a catalog entry together with that flow's own
  * navigation flags.
  *
@@ -70,6 +70,22 @@ import { OB_TASKS             } from './onboarding-seed-data.js';    // What: On
  * (already written to stand alone, with no reference to "this tour" or
  * "the next step" baked in) for any page this object hasn't gotten its
  * own dedicated copy pass yet.
+ *
+ * Every entry below shares this exact shape, and none of the 5 entries
+ * repeat these same fields' own boilerplate comments on their own lines
+ * (see the "Repeated-shape object literals" comment exception in
+ * CLAUDE.md):
+ *
+ * - `bodEle` (Element): Body Element is the intro modal's own plain
+ *   description of what this tour covers, rendered as the sole entry of
+ *   IntModCom's own parEleArr prop.
+ *
+ * - `pilArr` (Array): Pills Array holds 3 short tags describing this
+ *   tour, rendered as the intro modal's own pill row (IntModCom's own
+ *   pilLabArr prop).
+ *
+ * - `titStr` (String): Title String is the intro modal's own heading
+ *   naming this page, rendered as IntModCom's own titHeaStr prop.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -121,10 +137,10 @@ const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro moda
 	explore_today : {
 
 
-		pilArr : [ 'page tour', 'today page', 'todo list' ], // What: Pills Array. Why: The intro modal's own pill row needs 3 short tags describing this tour. How: This is rendered as IntModCom's own pilLabArr prop.
-		titStr : 'Today Page',                               // What: Title String. Why: The intro modal needs a heading naming this page. How: This is rendered as IntModCom's own titHeaStr prop.
+		pilArr : [ 'page tour', 'today page', 'todo list' ],
+		titStr : 'Today Page',
 
-		bodEle : <>This tutorial will take you on a quick tour of the Today page, in order to <b>highlight important elements and functionality</b>.</> // What: Body Element. Why: The intro modal needs a plain description of what this tour covers. How: This is rendered as the sole entry of IntModCom's own parEleArr prop.
+		bodEle : <>This tutorial will take you on a quick tour of the Today page, in order to <b>highlight important elements and functionality</b>.</>
 
 
 	}
@@ -135,7 +151,7 @@ const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro moda
 
 
 /**
- * buildPageTourStep1 = Build Page Tour Step 1
+ * buiTs1Fun = Build Tour-Step-1 Function
  *
  * @summary
  * Step 1 for every page tour: highlight that page's own navbar button,
@@ -146,23 +162,23 @@ const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro moda
  * Welcome Tour's wording exactly, cirBoo's own hover hint is
  * what tells the user to click.
  *
- * tabStr: 'today' keeps this from auto-navigating when the step opens (a
- * page tour is launched from Today, and clicking the real nav icon is
- * meant to be what does the navigating, not the step itself). priBut
- * Str defaults to 'Next' (every page tour has more steps after this
- * one) but is overridable, onboarding-app-features.jsx's own App
- * Features tours reuse this exact step verbatim as their OWN Step 1,
- * currently still their only step, so theirs pass 'Done' instead.
- * butLabStr names the actual nav button ("Today", "Pickers", ...) in
- * the closing sentence instead of the generic "click it now", optional
- * and only passed where a caller has explicitly asked for it, so other
- * callers' wording is unaffected.
+ * tabStr: This property in the returned object uses 'today' in order to keep
+ * this from auto-navigating when the step opens (a page tour is launched from
+ * Today, and clicking the real nav icon is meant to be what does the
+ * navigating, not the step itself). priButStr defaults to 'Next' (every page
+ * tour has more steps after this one) but is overridable,
+ * onboarding-app-features.jsx's own App Features tours reuse this exact step
+ * verbatim as their OWN Step 1, currently still their only step, so theirs
+ * pass 'Done' instead. butLabStr names the actual nav button ("Today",
+ * "Pickers", ...) in the closing sentence instead of the generic "click it
+ * now", optional and only passed where a caller has explicitly asked for it,
+ * so other callers' wording is unaffected.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const buildPageTourStep1 = ( pagKeyStr, runSteFun, priButStr = 'Next', butLabStr = null ) => { // What: Build Page Tour Step 1. Why: This builds every page tour's own shared Step 1, the real nav-button highlight. How: This looks up navTarObj by pagKeyStr, then spreads it with this step's own navigation flags.
+const buiTs1Fun = ( pagKeyStr, runSteFun, priButStr = 'Next', butLabStr = null ) => { // What: Build Tour-Step-1 Function. Why: This builds every page tour's own shared Step 1, the real nav-button highlight. How: This looks up navTarObj by pagKeyStr, then spreads it with this step's own navigation flags.
 
 
 	const navTarObj = NAV_TAR_OBJ[ pagKeyStr ]; // What: Nav Target Object. Why: This step's own selStr/titStr/bodEle come from the shared nav-button catalog. How: This looks up NAV_TAR_OBJ by pagKeyStr.
@@ -414,14 +430,14 @@ const hidHisFun = ( actions ) => { // What: Hide History Function. Why: The real
  * Target and description catalog for the Pickers page's OWN interior
  * elements, content only (selStr/titStr/bodEle, plus cliSelStr/pulSelStr
  * where a two-phase highlight is needed), no navigation fields, the same
- * shape/reasoning as TOD_TAR_OBJ below. bldSteFun spreads these entries
+ * shape/reasoning as TOD_TAR_OBJ below. buiTesFun spreads these entries
  * together with this flow's own tabStr/priStr/bacBoo/etc. flags.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: bldSteFun below spreads each of these entries into the Pickers tour's own real step objects. How: This is looked up by a fixed key per step inside bldSteFun's own explore_pickers branch.
+const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below spreads each of these entries into the Pickers tour's own real step objects. How: This is looked up by a fixed key per step inside buiTesFun's own explore_pickers branch.
 
 
 	addPickerItem : {
@@ -541,7 +557,7 @@ const PRE_PIC_STR = OB_EXAMPLE.id; // What: Preselect Picker String. Why: The St
  *
 */
 
-const STA_TAR_OBJ = { // What: Stats Target Object. Why: bldSteFun below spreads each of these entries into the Stats tour's own real step objects. How: This is looked up by a fixed key per step inside bldSteFun's own explore_stats branch.
+const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads each of these entries into the Stats tour's own real step objects. How: This is looked up by a fixed key per step inside buiTesFun's own explore_stats branch.
 
 
 	groupFilter : {
@@ -628,7 +644,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: bldSteFun below spreads
  *
 */
 
-const DAT_TAR_OBJ = { // What: Data Target Object. Why: bldSteFun below spreads each of these entries into the Data tour's own real step objects. How: This is looked up by a fixed key per step inside bldSteFun's own explore_data branch.
+const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads each of these entries into the Data tour's own real step objects. How: This is looked up by a fixed key per step inside buiTesFun's own explore_data branch.
 
 
 	createPicker : {
@@ -711,7 +727,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: bldSteFun below spreads 
  *
 */
 
-const SET_TAR_OBJ = { // What: Settings Target Object. Why: bldSteFun below spreads each of these entries into the Settings tour's own real step objects. How: This is looked up by a fixed key per step inside bldSteFun's own explore_settings branch.
+const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spreads each of these entries into the Settings tour's own real step objects. How: This is looked up by a fixed key per step inside buiTesFun's own explore_settings branch.
 
 
 	about : {
@@ -797,7 +813,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: bldSteFun below spre
  *
 */
 
-const TOD_TAR_OBJ = { // What: Today Target Object. Why: bldSteFun below spreads each of these entries into the Today tour's own real step objects. How: This is looked up by a fixed key per step inside bldSteFun's own explore_today branch.
+const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads each of these entries into the Today tour's own real step objects. How: This is looked up by a fixed key per step inside buiTesFun's own explore_today branch.
 
 
 	editMode : {
@@ -872,7 +888,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: bldSteFun below spreads
  *
 */
 
-let pgtNamStr = 'Page Tours'; // What: Page-Tours Name String. Why: canRenFun/forNamFun below need this group's own real, pre-rename name to revert to. How: This starts as the group's own default name, then is overwritten by the renameGroup step's own runFun() (see bldSteFun below) the instant it opens the rename input.
+let pgtNamStr = 'Page Tours'; // What: Page-Tours Name String. Why: canRenFun/forNamFun below need this group's own real, pre-rename name to revert to. How: This starts as the group's own default name, then is overwritten by the renameGroup step's own runFun() (see buiTesFun below) the instant it opens the rename input.
 
 
 
@@ -956,16 +972,16 @@ const forNamFun = ( actions ) => { // What: Force Name Function. Why: A click ra
 
 
 /**
- * bldSteFun = Build Step Function
+ * buiTesFun = Build Tour-Extra-Steps Function
  *
  * @summary
  * Steps beyond Step 1 (the nav-highlight every page tour shares, see
- * buildPageTourStep1 above), keyed by page tour id, empty/absent for
+ * buiTs1Fun above), keyed by page tour id, empty/absent for
  * any page that only has Step 1 so far. Advancing past the last step
  * here falls through GuidedTour's own "ran off the end" safety net
  * into onSkiTouFun, same as every other mini-tour behaved before its
  * own final Done step existed. A function of `actions` (built fresh per
- * render, like buildPageTourStep1), not a static object, the Today
+ * render, like buiTs1Fun), not a static object, the Today
  * branch's own last step needs to call actions.renamePageTours
  * directly (see forNamFun above).
  *
@@ -973,7 +989,7 @@ const forNamFun = ( actions ) => { // What: Force Name Function. Why: A click ra
  *
 */
 
-const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why: PagTouCom below needs this page's own full ordered step array beyond Step 1. How: This branches on pagIdeStr, spreading the matching target catalog's entries with this flow's own navigation flags.
+const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Function. Why: PagTouCom below needs this page's own full ordered step array beyond Step 1. How: This branches on pagIdeStr, spreading the matching target catalog's entries with this flow's own navigation flags.
 
 
 	if ( pagIdeStr === 'explore_pickers' ) { // What: Pickers Branch Check. Why: The Pickers tour's own steps only apply to this one page tour. How: This returns its own step array whenever pagIdeStr matches.
@@ -1202,7 +1218,7 @@ const bldSteFun = ( pagIdeStr, actions ) => { // What: Build Step Function. Why:
  *
  * @param props.pagIdeStr   - Page Identifier String: This page tour's own
  *                            checklist id (e.g. 'explore_today'), keying
- *                            PAG_COP_OBJ and bldSteFun.
+ *                            PAG_COP_OBJ and buiTesFun.
  * @param props.staAppObj   - State App Object: The entire app's own
  *                            persisted state.
  * @param props.actions     - Actions: The actions that mutate
@@ -1286,14 +1302,14 @@ function PagTouCom ( { pagIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCl
 		<GuidedTour
 			touIdeStr={ `page-${ pagIdeStr }` }
 			steObjArr={ [
-				buildPageTourStep1( tourRecObj.page,
+				buiTs1Fun( tourRecObj.page,
 					pagIdeStr === 'explore_data' ? () => { seePicFun( staAppObj, actions ); seeTasFun( staAppObj, actions ); } : // What: Data Run Branch. Why: The Data tour's own Step 1 must seed BOTH disposable picker and reminder copies before its later steps can point at them. How: This calls both seePicFun and seeTasFun when pagIdeStr is 'explore_data'.
 					neeCopFun( pagIdeStr ) ? () => seePicFun( staAppObj, actions ) : // What: Pickers Run Branch. Why: The Pickers tour's own Step 1 only needs disposable picker copies. How: This calls seePicFun when neeCopFun says this page needs copies.
 					pagIdeStr === 'explore_stats' ? () => unhHisFun( staAppObj, actions ) : // What: Stats Run Branch. Why: The Stats tour's own Step 1 instead needs the real samples unhidden. How: This calls unhHisFun when pagIdeStr is 'explore_stats'.
-					undefined, // What: Default Run Branch. Why: Today/Settings touch neither pickers nor reminders, so Step 1 needs no side effect at all. How: This passes undefined as buildPageTourStep1's own runSteFun for every other page.
+					undefined, // What: Default Run Branch. Why: Today/Settings touch neither pickers nor reminders, so Step 1 needs no side effect at all. How: This passes undefined as buiTs1Fun's own runSteFun for every other page.
 					'Next',
 					tourRecObj.label ),
-				...bldSteFun( pagIdeStr, actions )
+				...buiTesFun( pagIdeStr, actions )
 			] }
 			resSteNum={ resTouObj ? resTouObj.step : 0 }
 			actStoObj={ actions }
@@ -1394,6 +1410,6 @@ function PagTouCom ( { pagIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCl
 
 
 
-export { PagTouCom, buildPageTourStep1 }; // What: Named Exports. Why: app.jsx renders PagTouCom directly, and onboarding-app-features.jsx reuses buildPageTourStep1 verbatim for its own App Features tours. How: This re-exports both bindings unchanged from their own module.
+export { PagTouCom, buiTs1Fun }; // What: Named Exports. Why: app.jsx renders PagTouCom directly, and onboarding-app-features.jsx reuses buiTs1Fun verbatim for its own App Features tours. How: This re-exports both bindings unchanged from their own module.
 
 

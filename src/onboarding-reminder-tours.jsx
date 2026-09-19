@@ -6,11 +6,11 @@
 import React from 'react'; // What: React. Why: This file's own RemTouCom component and its step-building helpers all need React in scope to compile their JSX. How: This is used directly (React.useState) below, instead of importing individual named hooks.
 
 
-import { emlTouObj    } from './eml-tour-bus.js';            // What: Ease My Life Tour Object. Why: This publishes the running tour's prefill data for the real reminder form and clears it again on every exit path. How: This is written to via .set() in bldAddFun's runFun() and cloTouFun below.
+import { emlTouObj    } from './eml-tour-bus.js';            // What: Ease My Life Tour Object. Why: This publishes the running tour's prefill data for the real reminder form and clears it again on every exit path. How: This is written to via .set() in buiAddFun's runFun() and cloTouFun below.
 import { GuidedTour   } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each reminder mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-varKeyStr step array.
 import { IcoSvgCom    } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current varKeyStr. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom    } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each reminder mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this file's own per-varKeyStr copy.
-import { OB_TASKS     } from './onboarding-seed-data.js';    // What: Onboarding Tasks. Why: A reload can land on this tour before the live sample task has been re-derived from state.tasks. How: This is searched as the fallback template lookup in bldAddFun's runFun() below.
+import { OB_TASKS     } from './onboarding-seed-data.js';    // What: Onboarding Tasks. Why: A reload can land on this tour before the live sample task has been re-derived from state.tasks. How: This is searched as the fallback template lookup in buiAddFun's runFun() below.
 import { useEmlTouFun } from './eml-tour-bus.js';            // What: Use Ease My Life Tour. Why: The recurring tour's own Step 4 needs to read the live draft's current schedule type off the shared bus. How: This is called once to subscribe to the bus and read its own draftRepeat field.
 
 // #endregion Imports
@@ -47,7 +47,7 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
 
 
 		icoStr : 'pin',                // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
-		ideStr : 'tk_ob_meds',         // What: Identifier String. Why: This ties the 'once' varKeyStr to its own sample reminder. How: This is read back against state.tasks/OB_TASKS by bldAddFun's runFun() below and against the checklist by cloTouFun.
+		ideStr : 'tk_ob_meds',         // What: Identifier String. Why: This ties the 'once' varKeyStr to its own sample reminder. How: This is read back against state.tasks/OB_TASKS by buiAddFun's runFun() below and against the checklist by cloTouFun.
 		titStr : 'One-Time Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own titHeaStr prop.
 
 		bodStr : 'One-time reminders are simple one off things that need to get done and will never show up again once they are marked as completed in your todo list. e.g. pickup precription or pickup dry cleaning. Let’s create one of these now.' // What: Body String. Why: This varKeyStr's own second intro paragraph explains what a one-time reminder is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
@@ -59,7 +59,7 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
 
 
 		icoStr : 'calendar',            // What: Icon String. Why: The intro modal needs a glyph matching this varKeyStr. How: This is passed to IcoSvgCom's own name prop in the render below.
-		ideStr : 'tk_ob_trash',         // What: Identifier String. Why: This ties the 'recurring' varKeyStr to its own sample reminder. How: This is read back against state.tasks/OB_TASKS by bldAddFun's runFun() below and against the checklist by cloTouFun.
+		ideStr : 'tk_ob_trash',         // What: Identifier String. Why: This ties the 'recurring' varKeyStr to its own sample reminder. How: This is read back against state.tasks/OB_TASKS by buiAddFun's runFun() below and against the checklist by cloTouFun.
 		titStr : 'Recurring Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own titHeaStr prop.
 
 		bodStr : 'Recurring tasks are things that need to get done on a set schedule. e.g. take trash out for pickup (weekly) or get the mail (daily). Let’s create one of these now.' // What: Body String. Why: This varKeyStr's own second intro paragraph explains what a recurring reminder is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
@@ -73,7 +73,7 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
 
 
 /**
- * bldAddFun = Build Add Function
+ * buiAddFun = Build Add Function
  *
  * @summary
  * Requires the user to actually click the "+" button themselves (Next stays
@@ -97,7 +97,7 @@ const VAR_COP_OBJ = { // What: Variant Copy Object. Why: Each tour varKeyStr nee
  *
 */
 
-const bldAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why: This builds both tours' shared step that highlights the real "+" button. How: This returns a step object whose runFun() stages the live sample's prefill data onto the bus before the real click opens the add-reminder form.
+const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why: This builds both tours' shared step that highlights the real "+" button. How: This returns a step object whose runFun() stages the live sample's prefill data onto the bus before the real click opens the add-reminder form.
 
 
 	const varCopObj = VAR_COP_OBJ[ varKeyStr ]; // What: Variant Copy Object. Why: The step's own runFun() needs this varKeyStr's own sample task id to look up the live sample. How: This looks up VAR_COP_OBJ by varKeyStr.
@@ -220,14 +220,14 @@ const REP_STE_OBJ = { // What: Repeat Step Object. Why: The recurring tour's own
  *
 */
 
-const REP_COP_OBJ = { // What: Repeat Copy Object. Why: Step 4's own copy differs by which schedule control Step 3's pill choice revealed. How: This is looked up by bldFrqFun below, keyed by the live draft's own repeat kind.
+const REP_COP_OBJ = { // What: Repeat Copy Object. Why: Step 4's own copy differs by which schedule control Step 3's pill choice revealed. How: This is looked up by buiFrqFun below, keyed by the live draft's own repeat kind.
 
 
 	annual   : {
 
 
-		leaStr : 'how often and which day or weekday of the year a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into bldFrqFun's own bodEle below.
-		taiStr : '.',                                                                                                  // What: Tail String. Why: An annual schedule's own lead clause already reads as a complete sentence. How: This is appended after leaStr in bldFrqFun's own bodEle below.
+		leaStr : 'how often and which day or weekday of the year a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into buiFrqFun's own bodEle below.
+		taiStr : '.',                                                                                                  // What: Tail String. Why: An annual schedule's own lead clause already reads as a complete sentence. How: This is appended after leaStr in buiFrqFun's own bodEle below.
 		titStr : 'Select day of the year'                                                                              // What: Title String. Why: This kind's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
 
@@ -236,9 +236,9 @@ const REP_COP_OBJ = { // What: Repeat Copy Object. Why: Step 4's own copy differ
 	interval : {
 
 
-		leaStr : 'how frequently a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into bldFrqFun's own bodEle below.
-		pluBoo : true,                                                                 // What: Plural Boolean. Why: An interval schedule's own body copy needs to say "these selections" (plural), unlike the other 3 kinds' single selection. How: This is read by bldFrqFun below to pick between "this selection"/"these selections".
-		taiStr : ', with an additional selector control for the start date.',          // What: Tail String. Why: An interval-based schedule also needs a start date, unlike the other 3 kinds. How: This is appended after leaStr in bldFrqFun's own bodEle below.
+		leaStr : 'how frequently a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into buiFrqFun's own bodEle below.
+		pluBoo : true,                                                                 // What: Plural Boolean. Why: An interval schedule's own body copy needs to say "these selections" (plural), unlike the other 3 kinds' single selection. How: This is read by buiFrqFun below to pick between "this selection"/"these selections".
+		taiStr : ', with an additional selector control for the start date.',          // What: Tail String. Why: An interval-based schedule also needs a start date, unlike the other 3 kinds. How: This is appended after leaStr in buiFrqFun's own bodEle below.
 		titStr : 'Select recurring frequency'                                          // What: Title String. Why: This kind's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
 
@@ -247,8 +247,8 @@ const REP_COP_OBJ = { // What: Repeat Copy Object. Why: Step 4's own copy differ
 	monthly  : {
 
 
-		leaStr : 'how often and which day or weekday of the month a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into bldFrqFun's own bodEle below.
-		taiStr : '.',                                                                                                   // What: Tail String. Why: A monthly schedule's own lead clause already reads as a complete sentence. How: This is appended after leaStr in bldFrqFun's own bodEle below.
+		leaStr : 'how often and which day or weekday of the month a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into buiFrqFun's own bodEle below.
+		taiStr : '.',                                                                                                   // What: Tail String. Why: A monthly schedule's own lead clause already reads as a complete sentence. How: This is appended after leaStr in buiFrqFun's own bodEle below.
 		titStr : 'Select day of the month'                                                                              // What: Title String. Why: This kind's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
 
@@ -257,8 +257,8 @@ const REP_COP_OBJ = { // What: Repeat Copy Object. Why: Step 4's own copy differ
 	weekly   : {
 
 
-		leaStr : 'how often and which day(s) of the week a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into bldFrqFun's own bodEle below.
-		taiStr : ' (multiple days may be selected).',                                                          // What: Tail String. Why: A weekly schedule can select more than one day. How: This is appended after leaStr in bldFrqFun's own bodEle below.
+		leaStr : 'how often and which day(s) of the week a recurring reminder will show up in your todo list', // What: Lead String. Why: This is the shared, kind-specific middle clause of the step's own bodEle copy. How: This is interpolated into buiFrqFun's own bodEle below.
+		taiStr : ' (multiple days may be selected).',                                                          // What: Tail String. Why: A weekly schedule can select more than one day. How: This is appended after leaStr in buiFrqFun's own bodEle below.
 		titStr : 'Select day of the week'                                                                      // What: Title String. Why: This kind's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
 
@@ -269,7 +269,7 @@ const REP_COP_OBJ = { // What: Repeat Copy Object. Why: Step 4's own copy differ
 
 
 
-const bldFrqFun = ( repValStr ) => { // What: Build Frequency Function. Why: Step 4 highlights whichever schedule control the recurring draft's own repeat kind reveals, with copy that tracks it. How: This looks up REP_COP_OBJ by repValStr, falling back to 'weekly' for the one frame before reminders.jsx's own startAdd/draftActions have published a real value onto the bus yet.
+const buiFrqFun = ( repValStr ) => { // What: Build Frequency Function. Why: Step 4 highlights whichever schedule control the recurring draft's own repeat kind reveals, with copy that tracks it. How: This looks up REP_COP_OBJ by repValStr, falling back to 'weekly' for the one frame before reminders.jsx's own startAdd/draftActions have published a real value onto the bus yet.
 
 
 	const repCopObj = REP_COP_OBJ[ repValStr ] || REP_COP_OBJ.weekly; // What: Repeat Copy Object. Why: The step's own titStr/bodEle below need this repeat kind's own copy. How: This looks up REP_COP_OBJ by repValStr, falling back to weekly.
@@ -296,7 +296,7 @@ const bldFrqFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
 
 
 /**
- * bldSubFun = Build Submit Function
+ * buiSubFun = Build Submit Function
  *
  * @summary
  * Both tours' closing step: the real "Add" button. cirBoo plus
@@ -309,7 +309,7 @@ const bldFrqFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
  *
 */
 
-const bldSubFun = ( varKeyStr ) => ({
+const buiSubFun = ( varKeyStr ) => ({
 
 
 	bacBoo : true, // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
@@ -338,9 +338,9 @@ const bldSubFun = ( varKeyStr ) => ({
  * @summary
  * Renders whichever piece of one varKeyStr's own reminder mini-tour is currently
  * relevant: the intro modal, or the running GuidedTour. Both variants ('once'
- * and 'recurring') share the exact same 2 opening steps (bldAddFun,
- * NAM_STE_OBJ) and the exact same closing step (bldSubFun); only the recurring
- * varKeyStr adds 2 extra steps in between (REP_STE_OBJ, bldFrqFun) for its own
+ * and 'recurring') share the exact same 2 opening steps (buiAddFun,
+ * NAM_STE_OBJ) and the exact same closing step (buiSubFun); only the recurring
+ * varKeyStr adds 2 extra steps in between (REP_STE_OBJ, buiFrqFun) for its own
  * Repeat schedule.
  *
  * Every step stays on Today, and this component is only ever mounted from
@@ -389,7 +389,7 @@ function RemTouCom ( { varKeyStr, staAppObj, actions, onCloFrmFun, onCloTouFun }
 
 
 
-	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Clears the checklist status and the shared bus's own prefill together, the only two bits of state this tour ever touches outside its own local phase. How: This never touches the sample task itself (see bldAddFun's own runFun() above), only the new draft it seeded gets built from it.
+	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Clears the checklist status and the shared bus's own prefill together, the only two bits of state this tour ever touches outside its own local phase. How: This never touches the sample task itself (see buiAddFun's own runFun() above), only the new draft it seeded gets built from it.
 
 
 		emlTouObj.set( { prefill : null } ); // What: Prefill Clear Call. Why: A stale prefill left over from Step 1 must not leak into whatever the add-reminder form shows next. How: This clears the shared bus's own prefill field.
@@ -434,9 +434,9 @@ function RemTouCom ( { varKeyStr, staAppObj, actions, onCloFrmFun, onCloTouFun }
 
 
 
-	const steObjArr = varKeyStr === 'recurring' // What: Step Object Array. Why: The recurring varKeyStr has 2 extra steps (the Repeat pills and the schedule-detail step) the one-time varKeyStr skips entirely. How: This ternary picks between the 2 full step lists, both starting with bldAddFun and NAM_STE_OBJ and ending with bldSubFun.
-		? [ bldAddFun( varKeyStr, staAppObj ), NAM_STE_OBJ, REP_STE_OBJ, bldFrqFun( draftRepeat ), bldSubFun( varKeyStr ) ]
-		: [ bldAddFun( varKeyStr, staAppObj ), NAM_STE_OBJ, bldSubFun( varKeyStr ) ];
+	const steObjArr = varKeyStr === 'recurring' // What: Step Object Array. Why: The recurring varKeyStr has 2 extra steps (the Repeat pills and the schedule-detail step) the one-time varKeyStr skips entirely. How: This ternary picks between the 2 full step lists, both starting with buiAddFun and NAM_STE_OBJ and ending with buiSubFun.
+		? [ buiAddFun( varKeyStr, staAppObj ), NAM_STE_OBJ, REP_STE_OBJ, buiFrqFun( draftRepeat ), buiSubFun( varKeyStr ) ]
+		: [ buiAddFun( varKeyStr, staAppObj ), NAM_STE_OBJ, buiSubFun( varKeyStr ) ];
 
 
 
@@ -460,7 +460,7 @@ function RemTouCom ( { varKeyStr, staAppObj, actions, onCloFrmFun, onCloTouFun }
 
 
 			} }
-			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from bldSubFun's own cirBoo, after the real click that saves the reminder has already reached the button's own handler. How: This deliberately does not touch the form, since closing it here would discard the save instead of letting it happen.
+			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Handler. Why: This only fires from buiSubFun's own cirBoo, after the real click that saves the reminder has already reached the button's own handler. How: This deliberately does not touch the form, since closing it here would discard the save instead of letting it happen.
 		/> // What: Guided Tour Element. Why: This is the actual running spotlight walkthrough for this varKeyStr, mounted once its own intro modal has been accepted or resumed into. How: This is passed this varKeyStr's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
 
 

@@ -6,7 +6,7 @@
 import React from 'react'; // What: React. Why: This file's own FeaTouCom and FeaTipCom components need React in scope to compile their JSX and to call React.useState/React.useEffect. How: This is used directly (React.useState, React.useEffect) below, instead of importing individual named hooks.
 
 
-import { buildPageTourStep1 } from './onboarding-page-tours.jsx';  // What: Build Page Tour Step 1. Why: Every App Feature tour reuses this exact shared Step 1, the real nav-button highlight, as its own opening step. How: This is called inside FeaTouCom below, passed this feature's own page, an optional run side effect, and a primary button label.
+import { buiTs1Fun          } from './onboarding-page-tours.jsx';  // What: Build Tour-Step-1 Function. Why: Every App Feature tour reuses this exact shared Step 1, the real nav-button highlight, as its own opening step. How: This is called inside FeaTouCom below, passed this feature's own page, an optional run side effect, and a primary button label.
 import { GuidedTour         } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each App Feature tutorial once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-feature step array.
 import { IcoSvgCom          } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current feature's own page. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom          } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each App Feature tutorial opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this feature's own icon/title/paragraphs/pills.
@@ -37,7 +37,7 @@ import { IntModCom          } from './onboarding-intro-modal.jsx'; // What: Intr
  * Content here is a first-pass STUB, same as every page tour in onboarding-
  * page-tours.jsx started as (see that file's own PAGE_TOUR_COPY header
  * comment): one step per feature (highlight the real nav button for whichever
- * page it lives on, reusing NAV_TAR_OBJ the same way buildPageTourStep1 does),
+ * page it lives on, reusing NAV_TAR_OBJ the same way buiTs1Fun does),
  * not yet the full walkthrough. Copy, pills, and order are a first draft per
  * the user's own dictated list, expect an editing pass.
  *
@@ -105,7 +105,7 @@ const PAG_LAB_OBJ = { // What: Page Label Object. Why: tab-today.jsx's own AppFe
  *   title on Today, rendered directly as the card's own name.
  *
  * - `pagStr` (String): Page String says which real nav tab this
- *   feature's own Step 1 highlights; buildPageTourStep1 below reads this
+ *   feature's own Step 1 highlights; buiTs1Fun below reads this
  *   to find the matching NAV_TAR_OBJ entry.
  *
  * - `pilArr` (Array): Pills Array holds 3 short tags describing this
@@ -248,15 +248,15 @@ const APP_FEA_ARR = [
 
 
 /**
- * bldSteFun = Build Step Function
+ * buiTesFun = Build Tour-Extra-Steps Function
  *
  * @summary
  * Steps beyond Step 1 (the shared nav-highlight every App Feature tour starts
  * with, built fresh per render below), keyed by feature id, empty/absent for
  * any feature that only has Step 1 so far. Mirrors onboarding-page-tours.jsx's
- * own bldSteFun (same reasoning: filled in incrementally as each tutorial gets
+ * own buiTesFun (same reasoning: filled in incrementally as each tutorial gets
  * its own pass, not all at once). Takes actStoObj (built fresh per render,
- * like that file's own bldSteFun) since feat_edit_item's own Step 2 needs to
+ * like that file's own buiTesFun) since feat_edit_item's own Step 2 needs to
  * call actStoObj.toggleControlsCollapsed directly, see that step's own
  * runFun() comment for why a real click won't do.
  *
@@ -264,7 +264,7 @@ const APP_FEA_ARR = [
  *
 */
 
-const bldSteFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Step Function. Why: FeaTouCom below needs this feature's own full ordered step array beyond Step 1. How: This branches on feaIdeStr, returning that feature's own real step array, or an empty array for any feature that only has Step 1 so far.
+const buiTesFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Tour-Extra-Steps Function. Why: FeaTouCom below needs this feature's own full ordered step array beyond Step 1. How: This branches on feaIdeStr, returning that feature's own real step array, or an empty array for any feature that only has Step 1 so far.
 
 
 	if ( feaIdeStr === 'feat_manual_pick' ) { // What: Manual Pick Branch Check. Why: The manual-pick tour's own steps only apply to this one feature. How: This returns its own step array whenever feaIdeStr matches.
@@ -639,7 +639,7 @@ const bldSteFun = ( feaIdeStr, actStoObj, alrProBoo ) => { // What: Build Step F
 	if ( feaIdeStr === 'feat_highlights' ) { // What: Highlights Branch Check. Why: The highlights tour's own steps only apply to this one feature, and this is the only feature whose steps below fully replace Step 1 rather than follow it. How: This returns its own 2-step array whenever feaIdeStr matches.
 
 
-		return [ // What: Highlights Tour Steps Return. Why: The caller needs this feature's own full 2-step array, replacing Step 1 entirely rather than following it. How: This returns the highlights tour's own steps, each carrying its own selector/copy/navigation fields. // Unlike every other feature, this one does NOT use the shared buildPageTourStep1 nav-click (see FeaTouCom's own steps prop below, which skips prepending it for this feaIdeStr specifically): the whole point is the help-highlight toggle itself (.help-btn, help-mode.jsx), which already sits in the CURRENT page's own header, there's nothing to navigate to first. Both steps target the exact same element (it never moves), so the highlight/coach position stays pinned across the transition between them, only the body copy changes.
+		return [ // What: Highlights Tour Steps Return. Why: The caller needs this feature's own full 2-step array, replacing Step 1 entirely rather than following it. How: This returns the highlights tour's own steps, each carrying its own selector/copy/navigation fields. // Unlike every other feature, this one does NOT use the shared buiTs1Fun nav-click (see FeaTouCom's own steps prop below, which skips prepending it for this feaIdeStr specifically): the whole point is the help-highlight toggle itself (.help-btn, help-mode.jsx), which already sits in the CURRENT page's own header, there's nothing to navigate to first. Both steps target the exact same element (it never moves), so the highlight/coach position stays pinned across the transition between them, only the body copy changes.
 
 
             { // What: Highlights Feature Step. Why: This is the highlights tour's own 1st step, the real help-highlight toggle. How: This teaches turning the feature on.
@@ -799,7 +799,7 @@ function bloReaFun ( feaIdeStr, staAppObj ) {
  * overall shape as PagTouCom in onboarding-page-tours.jsx.
  *
  * Unlike PagTouCom, most features here have no extra steps yet beyond the
- * shared Step 1 (see bldSteFun above), and the feat_highlights feature skips
+ * shared Step 1 (see buiTesFun above), and the feat_highlights feature skips
  * Step 1 entirely since its own target, the real help-highlight toggle,
  * already sits on the current page with nothing to navigate to first.
  *
@@ -807,7 +807,7 @@ function bloReaFun ( feaIdeStr, staAppObj ) {
  *
  * @param props.feaIdeStr   - Feature Identifier String: This feature's own id
  *                            (e.g. 'feat_manual_pick'), keying APP_FEA_ARR and
- *                            bldSteFun.
+ *                            buiTesFun.
  * @param props.staAppObj   - State App Object: The entire app's own
  *                            persisted state.
  * @param props.actStoObj   - Action Store Object: The actions that mutate
@@ -838,7 +838,7 @@ function FeaTouCom ( { feaIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `appfeature-${ feaIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this feature's own touIdeStr, otherwise null.
 
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
-	const [ alrProBoo, setAlrProBoo ] = React.useState( false );                        // What: Already Protected Boolean And Setter. Why: feat_protect_data's own first step must not exist at all once this browser already has persisted storage. How: This starts false, then resolves once via the effect below. // Whether THIS browser already has persisted storage, checked once up front (not reactively), see bldSteFun's own comment on why feat_protect_data's first step needs to know this. Frozen at whatever it resolves to on mount: a user who actually grants persistence mid-tour (by clicking the real button that step targets) shouldn't have the step list change shape out from under them the same run.
+	const [ alrProBoo, setAlrProBoo ] = React.useState( false );                        // What: Already Protected Boolean And Setter. Why: feat_protect_data's own first step must not exist at all once this browser already has persisted storage. How: This starts false, then resolves once via the effect below. // Whether THIS browser already has persisted storage, checked once up front (not reactively), see buiTesFun's own comment on why feat_protect_data's first step needs to know this. Frozen at whatever it resolves to on mount: a user who actually grants persistence mid-tour (by clicking the real button that step targets) shouldn't have the step list change shape out from under them the same run.
 
 
 	React.useEffect( () => { // What: Check Persisted Effect. Why: navigator.storage.persisted() is itself async, so alrProBoo can't be computed synchronously up front. How: This resolves the real persisted() promise once, then sets alrProBoo, guarded against a stale update after unmount.
@@ -901,7 +901,7 @@ function FeaTouCom ( { feaIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 
 
 
-	const extSteArr = bldSteFun( feaIdeStr, actStoObj, alrProBoo ); // What: Extra Step Array. Why: GuidedTour needs this feature's own full step array beyond Step 1. How: This calls bldSteFun with feaIdeStr, actStoObj, and alrProBoo.
+	const extSteArr = buiTesFun( feaIdeStr, actStoObj, alrProBoo ); // What: Extra Step Array. Why: GuidedTour needs this feature's own full step array beyond Step 1. How: This calls buiTesFun with feaIdeStr, actStoObj, and alrProBoo.
 
 
 	const colAllFun = () => { // What: Collapse All Function. Why: Step 2 of the edit-item tour expects every picker to start collapsed. How: This flips only the pickers currently found expanded, leaving already-collapsed ones untouched. // "Edit your first item" wants a clean, all-collapsed Data page the moment it lands there, any picker the user happened to leave expanded from a previous visit would otherwise make the Your Pickers step's "click a header to expand" instruction confusing (that picker's already open). Runs as Step 1's own runFun(), which fires at the exact moment its real nav click transitions into Step 2 (see onPrimary's own comment in onboarding-tour-runner.jsx), toggleControlsCollapsed only ever FLIPS, so this only touches pickers actually found expanded (=== false), rather than blindly toggling every picker and accidentally re-opening ones that were already collapsed.
@@ -923,7 +923,7 @@ function FeaTouCom ( { feaIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 		<GuidedTour
 			touIdeStr={ `appfeature-${ feaIdeStr }` }
 			steObjArr={ feaIdeStr === 'feat_highlights' ? extSteArr : [
-				buildPageTourStep1( feaRecObj.pagStr, feaIdeStr === 'feat_edit_item' ? colAllFun : undefined, extSteArr.length ? 'Next' : 'Done' ), // What: Build Page Tour Step 1 Call. Why: Every feature but feat_highlights prepends this exact shared Step 1. How: This passes this feature's own page, feat_edit_item's own collapse callback (undefined for every other feature), and 'Next'/'Done' depending on whether extSteArr has any steps of its own.
+				buiTs1Fun( feaRecObj.pagStr, feaIdeStr === 'feat_edit_item' ? colAllFun : undefined, extSteArr.length ? 'Next' : 'Done' ), // What: Build Tour-Step-1 Call. Why: Every feature but feat_highlights prepends this exact shared Step 1. How: This passes this feature's own page, feat_edit_item's own collapse callback (undefined for every other feature), and 'Next'/'Done' depending on whether extSteArr has any steps of its own.
 				...extSteArr // What: Extra Steps Spread. Why: Whatever steps this feature has beyond Step 1 must follow it in order. How: This spreads extSteArr after the Step 1 object above.
 			] }
 			resSteNum={ resTouObj ? resTouObj.step : 0 }
