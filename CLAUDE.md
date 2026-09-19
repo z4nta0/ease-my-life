@@ -1198,6 +1198,54 @@ don't invent one for anything else yet:
     If reordering would change real behavior, leave that one object's
     own order exactly as-is and note it rather than guessing; this is
     judged per-object, not assumed from the object's shape alone.
+  - **Object literals containing a spread (`...someObj`) are NOT
+    entirely skipped, only the spread's own position is protected.**
+    A spread carries real override/inheritance semantics based on
+    WHERE it sits relative to the object's other entries (a spread
+    followed by explicit properties means "start from these defaults,
+    then override some of them"; a spread placed after explicit
+    properties would instead override THEM), so moving a spread
+    relative to any named property, or relative to another spread, is
+    a genuine behavior change, not a cosmetic reorder: its own
+    position stays exactly as authored. Every other, named property in
+    the same object still gets alphabetized normally among itself,
+    exactly as if the spread were not there at all (and still applies
+    the `bodEle`-always-last refinement above where relevant); only the
+    spread's own slot in the sequence is pinned. This refines an
+    earlier, more conservative practice of skipping such an object
+    entirely: `onboarding-page-tours.jsx`'s own `buiTs1Fun` is the
+    reference example, where `...navTarObj` opens the returned step
+    object and the explicit `bacBoo`/`cirBoo`/`priStr`/`tabStr`
+    properties after it are alphabetized normally, with `bodEle` still
+    pulled to the very end per its own separate exception.
+    - **Blank-line spacing around a spread**: exactly 1 blank line
+      separates a spread from a NAMED property immediately next to it
+      (in either direction), and exactly 1 blank line precedes a
+      spread's own first line, UNLESS it is the object's own first
+      entry, in which case the container's normal 2-blank open-padding
+      applies instead (per the general multi-line-entry padding rule
+      above) rather than a redundant extra 1-blank rule on top of it.
+      - **Exception — a run of consecutive spreads with nothing named
+        between them stays tightly grouped, 0 blank lines within the
+        run itself**, the same "same kind of thing" tiering already
+        used for a run of consecutive `const`/`let` declarations or a
+        run of consecutive same-operation calls elsewhere in this doc
+        (e.g. a base spread immediately followed by one or more
+        conditional-override spreads building up toward one combined
+        object, `...curTasObj, ...( cond ? {...} : {} ), ...( cond2 ?
+        {...} : {} )`). The 1-blank-line rule from the bullet above
+        still governs the transition INTO the run's own first spread
+        (unless it's the object's own first entry) and OUT of the
+        run's own last spread (unless it's the object's own last
+        entry); it just does not apply BETWEEN spreads inside the
+        same run. Each spread in the run still gets its own comment.
+    - **A spread gets its own comment, same as any other line of
+      code**: `...navTarObj, // What: Nav Target Spread. Why: ... How:
+      ...`, explaining what it spreads in and why, following the same
+      one-line What/Why/How template as everything else in this
+      section: a spread is not exempt from the "every line of code
+      gets a comment" rule just because it has no property name of its
+      own to hang a `What:` label off of.
   - **Amends the "reorder the long outlier(s) to the end" refinement
     above**: once alphabetical order is established, the long/short
     split still happens exactly as described there, but the two

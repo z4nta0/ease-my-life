@@ -339,9 +339,10 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 
 
 			...NAV_TAR_OBJ.today, // What: Today Nav Target Spread. Why: This reuses the shared Today nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.today's own fields onto this step object.
-			tabStr : 'today', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			bacBoo : false    // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
+
+			bacBoo : false,  // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
+			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
 		},
@@ -413,9 +414,10 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 
 
 			...NAV_TAR_OBJ.picker, // What: Picker Nav Target Spread. Why: This reuses the shared Pickers nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.picker's own fields onto this step object.
-			tabStr : 'picker', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			priStr : 'Next',   // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			bacBoo : true      // What: Back Boolean. Why: The user should always be able to return to the previous, list-review step. How: GuidedTour shows its own Back button whenever this is true.
+
+			bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous, list-review step. How: GuidedTour shows its own Back button whenever this is true.
+			priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
 		},
@@ -424,9 +426,10 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 
 
 			...NAV_TAR_OBJ.stats, // What: Stats Nav Target Spread. Why: This reuses the shared Stats nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.stats's own fields onto this step object.
-			tabStr : 'stats', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			bacBoo : true     // What: Back Boolean. Why: The user should always be able to return to the previous, Pickers step. How: GuidedTour shows its own Back button whenever this is true.
+
+			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous, Pickers step. How: GuidedTour shows its own Back button whenever this is true.
+			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
 		},
@@ -435,18 +438,20 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 
 
 			...NAV_TAR_OBJ.data, // What: Data Nav Target Spread. Why: This reuses the shared Data nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.data's own fields onto this step object.
-			tabStr : 'data', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous, Stats step. How: GuidedTour shows its own Back button whenever this is true.
 			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			bacBoo : true    // What: Back Boolean. Why: The user should always be able to return to the previous, Stats step. How: GuidedTour shows its own Back button whenever this is true.
+			tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
 		},
 
 		{
 			...NAV_TAR_OBJ.settings, // What: Settings Nav Target Spread. Why: This reuses the shared Settings nav-target descriptor instead of duplicating its selStr/place/titStr/bodEle. How: This spreads NAV_TAR_OBJ.settings's own fields onto this step object.
-			tabStr : 'settings', // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-			priStr : 'Next',     // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			bacBoo : true,       // What: Back Boolean. Why: The user should always be able to return to the previous, Data step. How: GuidedTour shows its own Back button whenever this is true.
+
+			bacBoo : true,  // What: Back Boolean. Why: The user should always be able to return to the previous, Data step. How: GuidedTour shows its own Back button whenever this is true.
+			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+
 			runFun : () => { // What: Run Function. Why: The sample pickers/reminders are not deleted, since the per-page mini-tours will reuse this exact data (and its precomputed Stats history) later, only tucked out of sight. How: This hides every sample picker and every sample task.
 
 
@@ -455,7 +460,9 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 				OB_TASKS.forEach( ( curTasObj ) => actions.updateTask( curTasObj.id, { hidden : true } ) ); // What: Sample Task Hide Call. Why: A hidden sample reminder still exists for its own mini-tour launcher card to read later. How: This updates every OB_TASKS entry's own id to hidden:true.
 
 
-			}
+			},
+
+			tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
 		},
@@ -579,6 +586,7 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 
 							...curTasObj, // What: Task Spread. Why: Every one of the sample task's own fields is kept as authored. How: This spreads curTasObj's own fields first so the overrides below can still win.
 							...( curTasObj.repeat === 'weekly' ? { daysOfWeek : [ dowValNum ] } : {} ), // What: Weekly Override. Why: A weekly-repeat sample reminder should actually show up today, not on whatever day it happened to be authored for. How: This overrides daysOfWeek to [dowValNum] only when curTasObj.repeat is 'weekly'.
+
 							hidden : true // What: Hidden Override. Why: There is no review moment on this path for these to appear alongside first. How: This always overrides hidden to true on this path.
 
 
