@@ -432,7 +432,7 @@ const hidHisFun = ( actions ) => { // What: Hide History Function. Why: The real
  *
  * @summary
  * Target and description catalog for the Pickers page's OWN interior
- * elements, content only (selStr/titStr/bodEle, plus cliSelStr/pulSelStr
+ * elements, content only (selStr/titStr/bodEle, plus clkSelStr/pulSelStr
  * where a two-phase highlight is needed), no navigation fields, the same
  * shape/reasoning as TOD_TAR_OBJ below. buiTesFun spreads these entries
  * together with this flow's own tabStr/priStr/bacBoo/etc. flags.
@@ -458,7 +458,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle    : <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to see how this works.</>,
-		cliSelStr : '.pv-act--send',                            // What: Click Selector String. Why: The cirBoo guard must stay scoped to Send to Today specifically, not any disabled sibling sharing the widened box. How: This is read by the click-guard/cirBoo logic separately from selStr.
+		clkSelStr : '.pv-act--send',                            // What: Click Selector String. Why: The cirBoo guard must stay scoped to Send to Today specifically, not any disabled sibling sharing the widened box. How: This is read by the click-guard/cirBoo logic separately from selStr.
 		pulSelStr : '.pv-act--send:not(.is-sent)',              // What: Pulse Selector String. Why: There is nothing left to click once the highlight has widened to frame the window, so the pulse should stop there too. How: This matches the same primary alternative as selStr.
 		selStr    : '.pv-act--send:not(.is-sent), .picker-run', // What: Selector String. Why: This step highlights the real Send to Today button, falling back to framing the whole stage once it's sent. How: GuidedTour spotlights the first alternative that matches.
 		titStr    : 'Add to Todo List'
@@ -501,7 +501,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle    : <>The "Pick One" button will <b>allow you to run a manual pick generation for your selected picker</b>, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick One" button now to see how this works.</>,
-		cliSelStr : '.pv-act--pick',                            // What: Click Selector String. Why: The cirBoo guard must stay scoped to the button specifically even once the fallback widens the highlight. How: This is read by the click-guard/cirBoo logic separately from selStr.
+		clkSelStr : '.pv-act--pick',                            // What: Click Selector String. Why: The cirBoo guard must stay scoped to the button specifically even once the fallback widens the highlight. How: This is read by the click-guard/cirBoo logic separately from selStr.
 		pulSelStr : '.pv-act--pick:not(.is-busy)',              // What: Pulse Selector String. Why: There is nothing left to click once the highlight has widened to frame the window, so the pulse should stop there too. How: This matches the same primary alternative as selStr.
 		selStr    : '.pv-act--pick:not(.is-busy), .picker-run', // What: Selector String. Why: This step highlights the idle Pick One button, falling back to framing the whole stage once it goes busy. How: GuidedTour spotlights the first alternative that matches.
 		titStr    : 'Manual Generation'
@@ -1067,7 +1067,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 				...PIC_TAR_OBJ.manualGeneration, // What: Manual Generation Target Spread. Why: This step reuses the Pickers catalog's own manualGeneration entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.manualGeneration before this step's own navigation flags.
 
-				advSelStr : PIC_TAR_OBJ.addToTodoList.cliSelStr, // What: Advance Selector String. Why: This step must hold until the pick actually resolves, not until the next step's own target merely exists. How: GuidedTour polls for this selector before advancing past this step. Pick One kicks off the multi-second spin animation, its result (the addToTodoList step's own target) isn't ready the instant the click fires. Stay on THIS step's own already-resolved coach/highlight for the whole wait instead of advancing into a blank "not found yet" dim. Polls for .pv-act--send specifically (addToTodoList's own cliSelStr, NOT its sel), since .picker-run itself (that step's own sel) already exists the whole time, spin animation included, so polling for that would advance immediately instead of waiting for the pick to actually resolve.
+				advSelStr : PIC_TAR_OBJ.addToTodoList.clkSelStr, // What: Advance Selector String. Why: This step must hold until the pick actually resolves, not until the next step's own target merely exists. How: GuidedTour polls for this selector before advancing past this step. Pick One kicks off the multi-second spin animation, its result (the addToTodoList step's own target) isn't ready the instant the click fires. Stay on THIS step's own already-resolved coach/highlight for the whole wait instead of advancing into a blank "not found yet" dim. Polls for .pv-act--send specifically (addToTodoList's own clkSelStr, NOT its sel), since .picker-run itself (that step's own sel) already exists the whole time, spin animation included, so polling for that would advance immediately instead of waiting for the pick to actually resolve.
 				bacBoo    : true,                                // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				catBoo    : true,                                // What: Coach-At-Top Boolean. Why: .picker-run can run taller than a short viewport even before this step's own click. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .picker-run (stage + actions) can run taller than a short viewport on its own, before Re-roll/Done even render alongside it, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .data-list step below. Confirmed live: without this, the coach overlapped the real Pick One button on an iPhone SE-sized viewport.
 				cirBoo    : true,                                // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.

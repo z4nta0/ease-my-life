@@ -35,7 +35,7 @@ import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour
  *   selStr    - CSS selector(s) for the element(s) to highlight (comma-
  *               separated fallbacks honored in order: finTarFun tries each in
  *               turn and uses the first that matches anything).
- *   cliSelStr - Optional override for what counts as "on target" for the
+ *   clkSelStr - Optional override for what counts as "on target" for the
  *               click-guard/cirBoo logic specifically (the spotlight
  *               tracking, scroll-into-view, and advSelStr's own default still
  *               key off `selStr`). Defaults to `selStr`, only needed when a
@@ -51,8 +51,8 @@ import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour
  *               target.
  *   cptSelStr - Optional CSS selector naming element(s) whose click should
  *               reach their OWN real handler untouched: neither blocked by the
- *               click-guard nor treated as satisfying cirBoo/advCliStr,
- *               unlike `cliSelStr` (which ALSO counts as the step's own
+ *               click-guard nor treated as satisfying cirBoo/advClkStr,
+ *               unlike `clkSelStr` (which ALSO counts as the step's own
  *               advancing click). For a real, repeatable action inside a
  *               cirBoo step that must stay genuinely usable without also
  *               counting as "the" advancing click, e.g. Re-roll inside the
@@ -131,7 +131,7 @@ import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour
  *               itself, the same click-guard exemption that already lets a
  *               target's own click through now also triggers the primary
  *               action (runFun(), then advance) instead of a no-op.
- *   advCliStr - Optional CSS selector, independent of cirBoo: Next stays
+ *   advClkStr - Optional CSS selector, independent of cirBoo: Next stays
  *               enabled and works as normal (this step narrates, it does not
  *               force the real interaction), but a real click landing on this
  *               selector is ALSO treated as clicking Next, the same
@@ -140,7 +140,7 @@ import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour
  *               yourself via the real button", the real button's own click
  *               should count as having advanced, not leave the user still
  *               needing to also click Next afterward. Should stay within (or
- *               be a subset of) `selStr`/`cliSelStr` so the generic guard does
+ *               be a subset of) `selStr`/`clkSelStr` so the generic guard does
  *               not block it as off-target.
  *   advSelStr - Optional CSS selector, only meaningful alongside cirBoo:
  *               instead of advancing immediately after a cirBoo step's
@@ -674,7 +674,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 	const supGuaRef = React.useRef( false ); // What: Suppress Guard Reference. Why: This lets bacSteFun's/skpTouFun's own side effects click through the guard below, e.g. a picker mini-tour's onBacTouFun simulating a click on the create-form's own "Details" step tab to undo a later step's "Add Items" click. How: That synthetic click is not the step's own target (curSteRef still points at the step being left, since onBacTouFun runs before the step index actually changes), so without this the guard would block onBacTouFun from doing anything at all; the exact clicks meant to fix the page up before navigating back are the ones most likely to look like "not the current target" to it.
 
-	const isaPasFun = ( eveObj ) => { // What: Is-A Pass-Through Function. Why: A step's optional cptSelStr names element(s) that should reach their OWN real click handler normally, unlike cliSelStr (which ALSO satisfies cirBoo and advances the tour): a pass-through click does neither, it is neither blocked nor treated as "the" action. How: This checks whether eveObj's own target sits inside any element matched by the current step's own cptSelStr; built for App Features' own manual-pick tour, where Re-roll needs to stay genuinely usable (a real re-roll, its own animation) without also counting as the step's advancing click the way clicking Send to Today does.
+	const isaPasFun = ( eveObj ) => { // What: Is-A Pass-Through Function. Why: A step's optional cptSelStr names element(s) that should reach their OWN real click handler normally, unlike clkSelStr (which ALSO satisfies cirBoo and advances the tour): a pass-through click does neither, it is neither blocked nor treated as "the" action. How: This checks whether eveObj's own target sits inside any element matched by the current step's own cptSelStr; built for App Features' own manual-pick tour, where Re-roll needs to stay genuinely usable (a real re-roll, its own animation) without also counting as the step's advancing click the way clicking Send to Today does.
 
 
 		const liveSteObj = curSteRef.current; // What: Live Step Object. Why: The freshest step object must be read off the ref, not a stale render closure. How: This reads curSteRef.current directly.
@@ -684,7 +684,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 	};
 
-	const isaOffFun = ( eveObj ) => { // What: Is-Off-Target Function. Why: This is the off-target check shared by both the mousedown and click capture listeners below. How: This exempts the suppressed state, a click inside the coach card itself, and a pass-through click, then checks the current step's own cliSelStr (or selStr) for everything else.
+	const isaOffFun = ( eveObj ) => { // What: Is-Off-Target Function. Why: This is the off-target check shared by both the mousedown and click capture listeners below. How: This exempts the suppressed state, a click inside the coach card itself, and a pass-through click, then checks the current step's own clkSelStr (or selStr) for everything else.
 
 
 		if ( supGuaRef.current ) return false; // What: Suppression Guard. Why: A caller-driven synthetic click must never itself be read as off-target. How: This returns false immediately whenever supGuaRef.current is true.
@@ -695,7 +695,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 		const liveSteObj = curSteRef.current; // What: Live Step Object. Why: The freshest step object must be read off the ref, not a stale render closure. How: This reads curSteRef.current directly.
 
-		return !( liveSteObj && finTarFun( liveSteObj.cliSelStr || liveSteObj.selStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ); // What: Off-Target Check Return. Why: The caller needs a plain boolean answer. How: This is true whenever there is no live step, or the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches.
+		return !( liveSteObj && finTarFun( liveSteObj.clkSelStr || liveSteObj.selStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ); // What: Off-Target Check Return. Why: The caller needs a plain boolean answer. How: This is true whenever there is no live step, or the event's own target does not sit inside any element the step's own clkSelStr/selStr currently matches.
 
 
 	};
@@ -714,7 +714,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 		};
 
-		const clkGuaFun = ( eveObj ) => { // What: Click Guard Function. Why: This is the real click-guard: it lets advCliStr/cliSelStr/cirBoo clicks through to trigger the tour's own advance, lets a pass-through click through untouched, and blocks everything else.
+		const clkGuaFun = ( eveObj ) => { // What: Click Guard Function. Why: This is the real click-guard: it lets advClkStr/clkSelStr/cirBoo clicks through to trigger the tour's own advance, lets a pass-through click through untouched, and blocks everything else.
 
 
 			if ( supGuaRef.current ) return; // What: Suppression Guard. Why: A caller-driven synthetic click must never be intercepted by this guard at all. How: This returns immediately whenever supGuaRef.current is true.
@@ -723,17 +723,17 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 			if ( eveObj.target.closest( '.ob-coach' ) ) return; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card is always legitimate and needs no further handling here. How: This returns whenever the event's own target has a .ob-coach ancestor.
 
-			if ( liveSteObj && liveSteObj.advCliStr && finTarFun( liveSteObj.advCliStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ) { // What: Advance-On Check. Why: See advCliStr's own doc comment in this file's own header above, an optional real-action shortcut, NOT a cirBoo step (Next keeps working normally too): the real target's click just also counts as clicking Next.
+			if ( liveSteObj && liveSteObj.advClkStr && finTarFun( liveSteObj.advClkStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ) { // What: Advance-On Check. Why: See advClkStr's own doc comment in this file's own header above, an optional real-action shortcut, NOT a cirBoo step (Next keeps working normally too): the real target's click just also counts as clicking Next.
 
 
-				priActRef.current(); // What: Primary Action Trigger. Why: An advCliStr click must run the exact same onPrimary logic a real Next click would. How: This calls the latest priActFun via its own ref.
+				priActRef.current(); // What: Primary Action Trigger. Why: An advClkStr click must run the exact same onPrimary logic a real Next click would. How: This calls the latest priActFun via its own ref.
 
-				return; // What: Advance-On Early Return. Why: Nothing else in this handler applies once advCliStr has already fired. How: This exits before the cliSelStr/cirBoo branch below.
+				return; // What: Advance-On Early Return. Why: Nothing else in this handler applies once advClkStr has already fired. How: This exits before the clkSelStr/cirBoo branch below.
 
 
 			}
 
-			if ( liveSteObj && finTarFun( liveSteObj.cliSelStr || liveSteObj.selStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ) { // What: Target Click Check. Why: A cirBoo step's target click IS its primary action, since the Next button is disabled, so this is the only way forward.
+			if ( liveSteObj && finTarFun( liveSteObj.clkSelStr || liveSteObj.selStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ) { // What: Target Click Check. Why: A cirBoo step's target click IS its primary action, since the Next button is disabled, so this is the only way forward.
 
 
 				if ( liveSteObj.cirBoo ) priActRef.current(); // What: Require-Click Trigger. Why: Only a cirBoo step treats its own target click as the advancing action. How: This calls the latest priActFun only when the live step actually requires it.
@@ -762,7 +762,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 			if ( eveObj.relatedTarget && eveObj.relatedTarget.closest( '.ob-coach' ) ) return; // What: Coach Move Exemption. Why: A focus move into the coach card is a legitimate, deliberate way to leave the target. How: This returns whenever the event's own relatedTarget has a .ob-coach ancestor.
 
-			if ( !finTarFun( liveSteObj.cliSelStr || liveSteObj.selStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ) return; // What: On-Target Guard. Why: Only a focus loss FROM the current step's own target needs protecting. How: This returns whenever the event's own target does not sit inside any element the step's own cliSelStr/selStr currently matches.
+			if ( !finTarFun( liveSteObj.clkSelStr || liveSteObj.selStr ).some( ( curEle ) => curEle.contains( eveObj.target ) ) ) return; // What: On-Target Guard. Why: Only a focus loss FROM the current step's own target needs protecting. How: This returns whenever the event's own target does not sit inside any element the step's own clkSelStr/selStr currently matches.
 
 			eveObj.stopPropagation(); // What: Propagation Stop. Why: This is what actually keeps React's own delegated onBlur listener from ever seeing this event. How: This calls stopPropagation on the focusout event.
 
