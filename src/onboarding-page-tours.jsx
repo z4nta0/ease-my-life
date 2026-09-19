@@ -191,7 +191,7 @@ const buiTs1Fun = ( pagKeyStr, runSteFun, priButStr = 'Next', butLabStr = null )
 		...navTarObj, // What: Nav Target Spread. Why: This step's own selStr/titStr/bodEle default to navTarObj's own content, only some of which get overridden below. How: This spreads navTarObj first so the explicit properties below can still win.
 
 		bacBoo : false,     // What: Back Boolean. Why: This is every page tour's own very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
-		cirBoo : true,      // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+		cirBoo : true,      // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 		priStr : priButStr, // What: Primary String. Why: This step's own coach card needs a label for its main action button, 'Next' by default but overridable by a caller like the App Features tours. How: GuidedTour renders this as the button's own visible text.
 		tabStr : 'today',   // What: Tab String. Why: This step must stay on Today so the real nav click is what does the navigating, not this step itself. How: GuidedTour's own tab-sync effect reads this.
 
@@ -1069,8 +1069,8 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 				advSelStr : PIC_TAR_OBJ.addToTodoList.cliSelStr, // What: Advance Selector String. Why: This step must hold until the pick actually resolves, not until the next step's own target merely exists. How: GuidedTour polls for this selector before advancing past this step. Pick One kicks off the multi-second spin animation, its result (the addToTodoList step's own target) isn't ready the instant the click fires. Stay on THIS step's own already-resolved coach/highlight for the whole wait instead of advancing into a blank "not found yet" dim. Polls for .pv-act--send specifically (addToTodoList's own cliSelStr, NOT its sel), since .picker-run itself (that step's own sel) already exists the whole time, spin animation included, so polling for that would advance immediately instead of waiting for the pick to actually resolve.
 				bacBoo    : true,                                // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo    : true,                                // What: Coach At Top Boolean. Why: .picker-run can run taller than a short viewport even before this step's own click. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .picker-run (stage + actions) can run taller than a short viewport on its own, before Re-roll/Done even render alongside it, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .data-list step below. Confirmed live: without this, the coach overlapped the real Pick One button on an iPhone SE-sized viewport.
-				cirBoo    : true,                                // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+				catBoo    : true,                                // What: Coach-At-Top Boolean. Why: .picker-run can run taller than a short viewport even before this step's own click. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .picker-run (stage + actions) can run taller than a short viewport on its own, before Re-roll/Done even render alongside it, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .data-list step below. Confirmed live: without this, the coach overlapped the real Pick One button on an iPhone SE-sized viewport.
+				cirBoo    : true,                                // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 				priStr    : 'Next',                              // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr    : 'picker'                             // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
@@ -1084,8 +1084,8 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 				advDelNum : 1600,    // What: Advance Delay Number. Why: The "Sent!" confirmation must be visible before this step advances. How: GuidedTour waits this many milliseconds after the click before advancing. Send to Today swaps its own label to "Sent!" for 1500ms (see sendToToday's own setTimeout in tab-picker.jsx) before reverting, advancing immediately would cut that confirmation off before the user ever sees it. 100ms past that own timer as a safety margin.
 				bacBoo    : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo    : true,    // What: Coach At Top Boolean. Why: .picker-run is taller still on this step, Re-roll/Done now render alongside the stage. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. Same short-viewport reasoning as manualGeneration just above, .picker-run is taller still here (Re-roll/Done now render alongside the stage too).
-				cirBoo    : true,    // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+				catBoo    : true,    // What: Coach-At-Top Boolean. Why: .picker-run is taller still on this step, Re-roll/Done now render alongside the stage. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. Same short-viewport reasoning as manualGeneration just above, .picker-run is taller still here (Re-roll/Done now render alongside the stage too).
+				cirBoo    : true,    // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 				priStr    : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr    : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
@@ -1098,7 +1098,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				...PIC_TAR_OBJ.pickerItems, // What: Picker Items Target Spread. Why: This step reuses the Pickers catalog's own pickerItems entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.pickerItems before this step's own navigation flags.
 
 				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,    // What: Coach At Top Boolean. Why: .pool-items grows with the picker's own item count and can run well past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .pool-items grows with the picker's own item count and can run WAY past a short viewport's height, same reasoning as manualGeneration above.
+				catBoo : true,    // What: Coach-At-Top Boolean. Why: .pool-items grows with the picker's own item count and can run well past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .pool-items grows with the picker's own item count and can run WAY past a short viewport's height, same reasoning as manualGeneration above.
 				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
@@ -1183,7 +1183,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				...STA_TAR_OBJ.heatmap, // What: Heatmap Target Spread. Why: This step reuses the Stats catalog's own heatmap entry as its base selector/copy. How: This spreads STA_TAR_OBJ.heatmap before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,   // What: Coach At Top Boolean. Why: .stat-heatmap-card renders a full year's worth of cells and can run far past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .stat-heatmap-card renders a full year's worth of cells and can run FAR past a short viewport's height, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .data-list step and this tour's own pickerBreakdown step below. Confirmed live: without this, the coach overlapped the top of the heatmap on an iPhone SE-sized viewport.
+				catBoo : true,   // What: Coach-At-Top Boolean. Why: .stat-heatmap-card renders a full year's worth of cells and can run far past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .stat-heatmap-card renders a full year's worth of cells and can run FAR past a short viewport's height, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .data-list step and this tour's own pickerBreakdown step below. Confirmed live: without this, the coach overlapped the top of the heatmap on an iPhone SE-sized viewport.
 				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 
 				runFun : () => { // What: Run Function. Why: The pickerBreakdown step's own target only renders once a specific picker is the active scope, so this selects the real sample picker (unhidden for this whole tour, see unhHisFun) before that step ever mounts. How: This clicks the real scope tab matching PRE_PIC_STR.
@@ -1207,7 +1207,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				...STA_TAR_OBJ.pickerBreakdown, // What: Picker Breakdown Target Spread. Why: This step reuses the Stats catalog's own pickerBreakdown entry as its base selector/copy. How: This spreads STA_TAR_OBJ.pickerBreakdown before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,   // What: Coach At Top Boolean. Why: .stat-breakdown-card lists every item in the picker's pool and can run past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .stat-breakdown-card lists every item in the picker's pool and can run well past a short viewport's height, same as the heatmap step just above. Confirmed live: without this, the coach clipped the top of its own body text and overlapped the card on an iPhone SE-sized viewport.
+				catBoo : true,   // What: Coach-At-Top Boolean. Why: .stat-breakdown-card lists every item in the picker's pool and can run past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .stat-breakdown-card lists every item in the picker's pool and can run well past a short viewport's height, same as the heatmap step just above. Confirmed live: without this, the coach clipped the top of its own body text and overlapped the card on an iPhone SE-sized viewport.
 				priStr : 'Done', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				resBoo : false,  // What: Resumable Boolean. Why: This step's own target only exists because the heatmap step's own runFun() already selected a scope, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false. `scope` (tab-stats.jsx's own local useState, choosing which picker is active) is NOT persisted, a reload always lands back at 'all', so this step's own target wouldn't exist to resume into even though the real sample picker itself stays unhidden (a real, persisted field) across the reload. A reload mid this step falls back to the heatmap step, which is always safe to land on and re-runs the selection on its own next Next click.
 				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
@@ -1281,7 +1281,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				...DAT_TAR_OBJ.pickersManager, // What: Pickers Manager Target Spread. Why: This step reuses the Data catalog's own pickersManager entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.pickersManager before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,   // What: Coach At Top Boolean. Why: The unioned picker/Conditionals/Reminders card rect can run far taller than the viewport once every copy renders. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .data-list > .cat can still union to a rect much taller than the viewport once every picker card renders (6 real disposable copies plus whatever the user has of their own), the normal reserve-space padding would push the target's own bottom edge further past the fold instead of helping, exactly backwards.
+				catBoo : true,   // What: Coach-At-Top Boolean. Why: The unioned picker/Conditionals/Reminders card rect can run far taller than the viewport once every copy renders. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .data-list > .cat can still union to a rect much taller than the viewport once every picker card renders (6 real disposable copies plus whatever the user has of their own), the normal reserve-space padding would push the target's own bottom edge further past the fold instead of helping, exactly backwards.
 				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
@@ -1318,7 +1318,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				...SET_TAR_OBJ.appearance, // What: Appearance Target Spread. Why: This step reuses the Settings catalog's own appearance entry as its base selector/copy. How: This spreads SET_TAR_OBJ.appearance before this step's own navigation flags.
 
 				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,      // What: Coach At Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
+				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
 				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
@@ -1331,7 +1331,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				...SET_TAR_OBJ.daily, // What: Daily Generator Target Spread. Why: This step reuses the Settings catalog's own daily entry as its base selector/copy. How: This spreads SET_TAR_OBJ.daily before this step's own navigation flags.
 
 				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,      // What: Coach At Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
+				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
 				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
@@ -1344,7 +1344,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				...SET_TAR_OBJ.holidays, // What: Holiday Controls Target Spread. Why: This step reuses the Settings catalog's own holidays entry as its base selector/copy. How: This spreads SET_TAR_OBJ.holidays before this step's own navigation flags.
 
 				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,      // What: Coach At Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
+				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
 				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
@@ -1357,7 +1357,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				...SET_TAR_OBJ.data, // What: Data Control Target Spread. Why: This step reuses the Settings catalog's own data entry as its base selector/copy. How: This spreads SET_TAR_OBJ.data before this step's own navigation flags.
 
 				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,      // What: Coach At Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
+				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
 				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
@@ -1370,7 +1370,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				...SET_TAR_OBJ.about, // What: About Target Spread. Why: This step reuses the Settings catalog's own about entry as its base selector/copy. How: This spreads SET_TAR_OBJ.about before this step's own navigation flags.
 
 				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,      // What: Coach At Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
+				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
 				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
@@ -1430,7 +1430,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 			...TOD_TAR_OBJ.editMode, // What: Edit Mode Target Spread. Why: This step reuses the Today catalog's own editMode entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.editMode before this step's own navigation flags.
 
 			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-			cirBoo : true,   // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+			cirBoo : true,   // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 

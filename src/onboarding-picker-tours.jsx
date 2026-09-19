@@ -199,7 +199,7 @@ const NAV_STE_OBJ = { // What: Nav Step Object. Why: Every picker tutorial's own
 
 
 	bacBoo : false,                 // What: Back Boolean. Why: This is every picker tutorial's own very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
-	cirBoo : true,                  // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	cirBoo : true,                  // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 	priStr : 'Next',                // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 	selStr : '[data-tab="picker"]', // What: Selector String. Why: This step highlights the real Pickers nav button. How: GuidedTour spotlights whatever this selector matches.
 	tabStr : 'today',               // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
@@ -254,7 +254,7 @@ const buiNewFun = ( picIdeStr, staAppObj ) => ({ // What: Build New Function. Wh
 
 
 	bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous, Pickers-nav step. How: GuidedTour shows its own Back button whenever this is true.
-	cirBoo : true,   // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	cirBoo : true,   // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 	priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 
 	runFun : () => { // What: Run Function. Why: This sample's own template needs staging onto the bus before the real click opens the create-picker form. How: This looks up whether this sample was already created before, then publishes the template alongside that lookup's own result.
@@ -277,7 +277,7 @@ const buiNewFun = ( picIdeStr, staAppObj ) => ({ // What: Build New Function. Wh
 	},
 
 	selStr : '.picker-tab--add',    // What: Selector String. Why: This step highlights the real "+ Add New Picker" tab. How: GuidedTour spotlights whatever this selector matches.
-	sttBoo : true,                  // What: Scroll To Top Boolean. Why: This step's own target sits at the top of the Pickers page. How: GuidedTour scrolls all the way to 0 for this step instead of just nudging the target into view.
+	sttBoo : true,                  // What: Scroll-To-Top Boolean. Why: This step's own target sits at the top of the Pickers page. How: GuidedTour scrolls all the way to 0 for this step instead of just nudging the target into view.
 	tabStr : 'picker',              // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 	titStr : 'Create a new picker', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
@@ -372,7 +372,7 @@ const buiModFun = ( picIdeStr ) => ({ // What: Build Mode Function. Why: This bu
 
 
 	bacBoo : true,                                                                   // What: Back Boolean. Why: The user should always be able to return to the previous, Group step. How: GuidedTour shows its own Back button whenever this is true.
-	catBoo : true,                                                                   // What: Coach At Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
+	catBoo : true,                                                                   // What: Coach-At-Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
 	priStr : 'Next',                                                                 // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 	resBoo : false,                                                                  // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 	selStr : `.np-fields .mode-opt[data-mode="${ PIC_SAM_OBJ[ picIdeStr ].mode }"]`, // What: Selector String. Why: This step highlights only this sample's own mode option, never the whole list. How: GuidedTour spotlights whatever this selector matches.
@@ -432,7 +432,7 @@ const ITE_STE_OBJ = { // What: Items Step Object. Why: This step highlights the 
 
 
 	bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous, mode-selection step. How: GuidedTour shows its own Back button whenever this is true.
-	cirBoo : true,   // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	cirBoo : true,   // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 	priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 	resBoo : false,  // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 
@@ -447,7 +447,7 @@ const ITE_STE_OBJ = { // What: Items Step Object. Why: This step highlights the 
 	},
 
 	selStr : '.ob-picker-next',          // What: Selector String. Why: This step highlights the real "Add Items" button. How: GuidedTour spotlights whatever this selector matches.
-	stbBoo : true,                       // What: Scroll To Bottom Boolean. Why: This step's own target always sits at the bottom of the Details footer. How: GuidedTour scrolls all the way to the end for this step instead of just nudging the target into view.
+	stbBoo : true,                       // What: Scroll-To-Bottom Boolean. Why: This step's own target always sits at the bottom of the Details footer. How: GuidedTour scrolls all the way to the end for this step instead of just nudging the target into view.
 	tabStr : 'picker',                   // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 	titStr : 'Add items to this picker', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
@@ -480,7 +480,7 @@ const buiAddFun = ( picIdeStr ) => ({ // What: Build Add Function. Why: This bui
 
 
 	bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous, "Add Items" step. How: GuidedTour shows its own Back button whenever this is true.
-	cirBoo : true,   // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	cirBoo : true,   // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 	priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 	resBoo : false,  // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form and its Items sub-step, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 
@@ -681,7 +681,7 @@ const SAV_STE_OBJ = { // What: Save Step Object. Why: This step highlights the i
 
 
 	bacBoo : true,                    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-	cirBoo : true,                    // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	cirBoo : true,                    // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 	priStr : 'Next',                  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 	resBoo : false,                   // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, its Items sub-step, and this item's own inline editor, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 	selStr : '.ob-item-save',         // What: Selector String. Why: This step highlights the real Save button. How: GuidedTour spotlights whatever this selector matches.
@@ -718,7 +718,7 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
 
 
 	bacBoo : true,                 // What: Back Boolean. Why: The user should always be able to return to the previous, Save step. How: GuidedTour shows its own Back button whenever this is true.
-	cirBoo : true,                 // What: Require Click Boolean. Why: The real click both creates the picker and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
+	cirBoo : true,                 // What: Click-Is-Required Boolean. Why: The real click both creates the picker and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
 	priStr : 'Done',               // What: Primary String. Why: This is every picker tutorial's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
 	resBoo : false,                // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 	selStr : '.ob-picker-create',  // What: Selector String. Why: This step highlights the real Create Picker button. How: GuidedTour spotlights whatever this selector matches.

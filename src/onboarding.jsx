@@ -401,7 +401,7 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 			bacBoo : true,              // What: Back Boolean. Why: The user should always be able to return to the previous, Generate step. How: GuidedTour shows its own Back button whenever this is true.
 			priStr : 'Next',            // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 			selStr : '.group-section',  // What: Selector String. Why: This step highlights the whole generated list, group sections included. How: GuidedTour spotlights every element .group-section matches.
-			sttBoo : true,              // What: Scroll To Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuidedTour scrolls all the way to 0 instead of just nudging the target into view.
+			sttBoo : true,              // What: Scroll-To-Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuidedTour scrolls all the way to 0 instead of just nudging the target into view.
 			tabStr : 'today',           // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 			titStr : 'Daily todo list', // What: Title String. Why: This step's own coach card needs a heading naming what it's showing. How: GuidedTour renders this as the step's own heading text.
 
@@ -473,7 +473,7 @@ function Onboarding ( { state, actions, actIdeStr, selTabFun } ) {
 			bacBoo : true,                   // What: Back Boolean. Why: The user should always be able to return to the previous, Settings step. How: GuidedTour shows its own Back button whenever this is true.
 			priStr : 'Done',                 // What: Primary String. Why: This is the tour's own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
 			selStr : '.groups-dnd',          // What: Selector String. Why: This closing step highlights the same area the tutorial launcher cards will appear in next. How: GuidedTour spotlights whatever .groups-dnd matches.
-			sttBoo : true,                   // What: Scroll To Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuidedTour scrolls all the way to 0 instead of just nudging the target into view.
+			sttBoo : true,                   // What: Scroll-To-Top Boolean. Why: This step's own target starts right at the top of the page anyway. How: GuidedTour scrolls all the way to 0 instead of just nudging the target into view.
 			tabStr : 'today',                // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 			titStr : 'You’re all finished!', // What: Title String. Why: This closing step's own coach card needs a heading marking the tour's own end. How: GuidedTour renders this as the step's own heading text.
 

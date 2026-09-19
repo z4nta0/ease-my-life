@@ -106,7 +106,7 @@ const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why
 
 
 		bacBoo : false,  // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
-		cirBoo : true,   // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+		cirBoo : true,   // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 		priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 
 		runFun : () => { // What: Run Function. Why: The live sample's own prefill data needs staging onto the bus before the real click opens the form. How: This looks up the live sample task, falling back to OB_TASKS' own static template, then publishes its own name/repeat/daysOfWeek onto the bus.
@@ -278,7 +278,7 @@ const buiFrqFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
 
 
 		bacBoo : true,                                 // What: Back Boolean. Why: The user should always be able to return to the previous, Repeat-pills step. How: GuidedTour shows its own Back button whenever this is true.
-		catBoo : true,                                 // What: Coach At Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
+		catBoo : true,                                 // What: Coach-At-Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
 		priStr : 'Next',                               // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 		resBoo : false,                                // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 		selStr : '.rem-quickadd-wrap .rem-extra-fade', // What: Selector String. Why: This step highlights whichever schedule control the recurring draft's own repeat kind reveals below the Repeat pills. How: GuidedTour spotlights whatever this selector matches.
@@ -318,7 +318,7 @@ const buiSubFun = ( varKeyStr ) => ({
 		? <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>. NOTE: if you selected a day other than today as the recurrence date, then this item will not show up in your todo list until it is due.</>
 		: <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>.</>,
 
-	cirBoo : true,                               // What: Require Click Boolean. Why: The real click both saves the reminder and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
+	cirBoo : true,                               // What: Click-Is-Required Boolean. Why: The real click both saves the reminder and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
 	priStr : 'Done',                             // What: Primary String. Why: This is both tours' own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
 	resBoo : false,                              // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 	selStr : '.rem-quickadd-wrap .btn--primary', // What: Selector String. Why: This step highlights the real "Add" button that both saves the reminder and ends the tour. How: GuidedTour spotlights whatever this selector matches.
