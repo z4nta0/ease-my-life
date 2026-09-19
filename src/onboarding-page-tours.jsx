@@ -1001,13 +1001,70 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 		return [ // What: Pickers Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Pickers tour's own remaining steps, each spreading PIC_TAR_OBJ's matching entry with this flow's own navigation flags.
 
-			{ ...PIC_TAR_OBJ.groupFilter, tabStr : 'picker', priStr : 'Next', bacBoo : true }, // What: Group Filter Step. Why: This is the Pickers tour's own 2nd step. How: This spreads PIC_TAR_OBJ.groupFilter with this flow's own navigation flags.
-			{ ...PIC_TAR_OBJ.typeFilter, tabStr : 'picker', priStr : 'Next', bacBoo : true }, // What: Type Filter Step. Why: This is the Pickers tour's own 3rd step. How: This spreads PIC_TAR_OBJ.typeFilter with this flow's own navigation flags.
-			{ ...PIC_TAR_OBJ.createNewPickers, tabStr : 'picker', priStr : 'Next', bacBoo : true }, // What: Create New Pickers Step. Why: This is the Pickers tour's own 4th step. How: This spreads PIC_TAR_OBJ.createNewPickers with this flow's own navigation flags.
-			{ ...PIC_TAR_OBJ.pickerSelection, tabStr : 'picker', priStr : 'Next', bacBoo : true }, // What: Picker Selection Step. Why: This is the Pickers tour's own 5th step. How: This spreads PIC_TAR_OBJ.pickerSelection with this flow's own navigation flags.
-			{ ...PIC_TAR_OBJ.editPicker, tabStr : 'picker', priStr : 'Next', bacBoo : true }, // What: Edit Picker Step. Why: This is the Pickers tour's own 6th step. How: This spreads PIC_TAR_OBJ.editPicker with this flow's own navigation flags.
 
 			{
+
+
+				...PIC_TAR_OBJ.groupFilter, // What: Group Filter Target Spread. Why: This step reuses the Pickers catalog's own groupFilter entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.groupFilter before this step's own navigation flags.
+
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Group Filter Step. Why: This is the Pickers tour's own 2nd step. How: This spreads PIC_TAR_OBJ.groupFilter with this flow's own navigation flags.
+
+			{
+
+
+				...PIC_TAR_OBJ.typeFilter, // What: Type Filter Target Spread. Why: This step reuses the Pickers catalog's own typeFilter entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.typeFilter before this step's own navigation flags.
+
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Type Filter Step. Why: This is the Pickers tour's own 3rd step. How: This spreads PIC_TAR_OBJ.typeFilter with this flow's own navigation flags.
+
+			{
+
+
+				...PIC_TAR_OBJ.createNewPickers, // What: Create New Pickers Target Spread. Why: This step reuses the Pickers catalog's own createNewPickers entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.createNewPickers before this step's own navigation flags.
+
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Create New Pickers Step. Why: This is the Pickers tour's own 4th step. How: This spreads PIC_TAR_OBJ.createNewPickers with this flow's own navigation flags.
+
+			{
+
+
+				...PIC_TAR_OBJ.pickerSelection, // What: Picker Selection Target Spread. Why: This step reuses the Pickers catalog's own pickerSelection entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.pickerSelection before this step's own navigation flags.
+
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Picker Selection Step. Why: This is the Pickers tour's own 5th step. How: This spreads PIC_TAR_OBJ.pickerSelection with this flow's own navigation flags.
+
+			{
+
+
+				...PIC_TAR_OBJ.editPicker, // What: Edit Picker Target Spread. Why: This step reuses the Pickers catalog's own editPicker entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.editPicker before this step's own navigation flags.
+
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Edit Picker Step. Why: This is the Pickers tour's own 6th step. How: This spreads PIC_TAR_OBJ.editPicker with this flow's own navigation flags.
+
+			{
+
+
 				...PIC_TAR_OBJ.manualGeneration, // What: Manual Generation Target Spread. Why: This step reuses the Pickers catalog's own manualGeneration entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.manualGeneration before this step's own navigation flags.
 
 				advSelStr : PIC_TAR_OBJ.addToTodoList.cliSelStr, // What: Advance Selector String. Why: This step must hold until the pick actually resolves, not until the next step's own target merely exists. How: GuidedTour polls for this selector before advancing past this step. Pick One kicks off the multi-second spin animation, its result (the addToTodoList step's own target) isn't ready the instant the click fires. Stay on THIS step's own already-resolved coach/highlight for the whole wait instead of advancing into a blank "not found yet" dim. Polls for .pv-act--send specifically (addToTodoList's own cliSelStr, NOT its sel), since .picker-run itself (that step's own sel) already exists the whole time, spin animation included, so polling for that would advance immediately instead of waiting for the pick to actually resolve.
@@ -1021,6 +1078,8 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 			}, // What: Manual Generation Step. Why: This is the Pickers tour's own 7th step, the real Pick One button. How: This spreads PIC_TAR_OBJ.manualGeneration with this flow's own navigation flags plus catBoo/advSelStr.
 
 			{
+
+
 				...PIC_TAR_OBJ.addToTodoList, // What: Add To Todo List Target Spread. Why: This step reuses the Pickers catalog's own addToTodoList entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.addToTodoList before this step's own navigation flags.
 
 				advDelNum : 1600,    // What: Advance Delay Number. Why: The "Sent!" confirmation must be visible before this step advances. How: GuidedTour waits this many milliseconds after the click before advancing. Send to Today swaps its own label to "Sent!" for 1500ms (see sendToToday's own setTimeout in tab-picker.jsx) before reverting, advancing immediately would cut that confirmation off before the user ever sees it. 100ms past that own timer as a safety margin.
@@ -1034,6 +1093,8 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 			}, // What: Add To Todo List Step. Why: This is the Pickers tour's own 8th step, the real Send to Today button. How: This spreads PIC_TAR_OBJ.addToTodoList with this flow's own navigation flags plus catBoo/advDelNum.
 
 			{
+
+
 				...PIC_TAR_OBJ.pickerItems, // What: Picker Items Target Spread. Why: This step reuses the Pickers catalog's own pickerItems entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.pickerItems before this step's own navigation flags.
 
 				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
@@ -1044,7 +1105,17 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 			}, // What: Picker Items Step. Why: This is the Pickers tour's own 9th step. How: This spreads PIC_TAR_OBJ.pickerItems with this flow's own navigation flags plus catBoo.
 
-			{ ...PIC_TAR_OBJ.addPickerItem, tabStr : 'picker', priStr : 'Done', bacBoo : true } // What: Add Picker Item Step. Why: This is the Pickers tour's own final step. How: This spreads PIC_TAR_OBJ.addPickerItem with this flow's own navigation flags, priStr 'Done' ending the tour.
+			{
+
+
+				...PIC_TAR_OBJ.addPickerItem, // What: Add Picker Item Target Spread. Why: This step reuses the Pickers catalog's own addPickerItem entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.addPickerItem before this step's own navigation flags.
+
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Done',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			} // What: Add Picker Item Step. Why: This is the Pickers tour's own final step. How: This spreads PIC_TAR_OBJ.addPickerItem with this flow's own navigation flags, priStr 'Done' ending the tour.
 
 
 		];
@@ -1057,12 +1128,58 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 		return [ // What: Stats Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Stats tour's own remaining steps, each spreading STA_TAR_OBJ's matching entry with this flow's own navigation flags.
 
-			{ ...STA_TAR_OBJ.groupFilter, tabStr : 'stats', priStr : 'Next', bacBoo : true }, // What: Group Filter Step. Why: This is the Stats tour's own 2nd step. How: This spreads STA_TAR_OBJ.groupFilter with this flow's own navigation flags.
-			{ ...STA_TAR_OBJ.typeFilter, tabStr : 'stats', priStr : 'Next', bacBoo : true }, // What: Type Filter Step. Why: This is the Stats tour's own 3rd step. How: This spreads STA_TAR_OBJ.typeFilter with this flow's own navigation flags.
-			{ ...STA_TAR_OBJ.pickersFilter, tabStr : 'stats', priStr : 'Next', bacBoo : true }, // What: Show Filter Step. Why: This is the Stats tour's own 4th step. How: This spreads STA_TAR_OBJ.pickersFilter with this flow's own navigation flags.
-			{ ...STA_TAR_OBJ.rangeFilter, tabStr : 'stats', priStr : 'Next', bacBoo : true }, // What: Range Filter Step. Why: This is the Stats tour's own 5th step. How: This spreads STA_TAR_OBJ.rangeFilter with this flow's own navigation flags.
 
 			{
+
+
+				...STA_TAR_OBJ.groupFilter, // What: Group Filter Target Spread. Why: This step reuses the Stats catalog's own groupFilter entry as its base selector/copy. How: This spreads STA_TAR_OBJ.groupFilter before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Group Filter Step. Why: This is the Stats tour's own 2nd step. How: This spreads STA_TAR_OBJ.groupFilter with this flow's own navigation flags.
+
+			{
+
+
+				...STA_TAR_OBJ.typeFilter, // What: Type Filter Target Spread. Why: This step reuses the Stats catalog's own typeFilter entry as its base selector/copy. How: This spreads STA_TAR_OBJ.typeFilter before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Type Filter Step. Why: This is the Stats tour's own 3rd step. How: This spreads STA_TAR_OBJ.typeFilter with this flow's own navigation flags.
+
+			{
+
+
+				...STA_TAR_OBJ.pickersFilter, // What: Show Filter Target Spread. Why: This step reuses the Stats catalog's own pickersFilter entry as its base selector/copy. How: This spreads STA_TAR_OBJ.pickersFilter before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Show Filter Step. Why: This is the Stats tour's own 4th step. How: This spreads STA_TAR_OBJ.pickersFilter with this flow's own navigation flags.
+
+			{
+
+
+				...STA_TAR_OBJ.rangeFilter, // What: Range Filter Target Spread. Why: This step reuses the Stats catalog's own rangeFilter entry as its base selector/copy. How: This spreads STA_TAR_OBJ.rangeFilter before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Range Filter Step. Why: This is the Stats tour's own 5th step. How: This spreads STA_TAR_OBJ.rangeFilter with this flow's own navigation flags.
+
+			{
+
+
 				...STA_TAR_OBJ.heatmap, // What: Heatmap Target Spread. Why: This step reuses the Stats catalog's own heatmap entry as its base selector/copy. How: This spreads STA_TAR_OBJ.heatmap before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
@@ -1085,6 +1202,8 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 			}, // What: Heatmap Step. Why: This is the Stats tour's own 6th step, staging the next step's own single-picker scope. How: This spreads STA_TAR_OBJ.heatmap with this flow's own navigation flags plus catBoo/run.
 
 			{
+
+
 				...STA_TAR_OBJ.pickerBreakdown, // What: Picker Breakdown Target Spread. Why: This step reuses the Stats catalog's own pickerBreakdown entry as its base selector/copy. How: This spreads STA_TAR_OBJ.pickerBreakdown before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
@@ -1107,12 +1226,58 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 		return [ // What: Data Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Data tour's own remaining steps, each spreading DAT_TAR_OBJ's matching entry with this flow's own navigation flags.
 
-			{ ...DAT_TAR_OBJ.groupFilter, tabStr : 'data', priStr : 'Next', bacBoo : true }, // What: Group Filter Step. Why: This is the Data tour's own 2nd step. How: This spreads DAT_TAR_OBJ.groupFilter with this flow's own navigation flags.
-			{ ...DAT_TAR_OBJ.typeFilter, tabStr : 'data', priStr : 'Next', bacBoo : true }, // What: Type Filter Step. Why: This is the Data tour's own 3rd step. How: This spreads DAT_TAR_OBJ.typeFilter with this flow's own navigation flags.
-			{ ...DAT_TAR_OBJ.pickersFilter, tabStr : 'data', priStr : 'Next', bacBoo : true }, // What: Show Filter Step. Why: This is the Data tour's own 4th step. How: This spreads DAT_TAR_OBJ.pickersFilter with this flow's own navigation flags.
-			{ ...DAT_TAR_OBJ.remindersManager, tabStr : 'data', priStr : 'Next', bacBoo : true }, // What: Reminders Manager Step. Why: This is the Data tour's own 5th step. How: This spreads DAT_TAR_OBJ.remindersManager with this flow's own navigation flags.
 
 			{
+
+
+				...DAT_TAR_OBJ.groupFilter, // What: Group Filter Target Spread. Why: This step reuses the Data catalog's own groupFilter entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.groupFilter before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Group Filter Step. Why: This is the Data tour's own 2nd step. How: This spreads DAT_TAR_OBJ.groupFilter with this flow's own navigation flags.
+
+			{
+
+
+				...DAT_TAR_OBJ.typeFilter, // What: Type Filter Target Spread. Why: This step reuses the Data catalog's own typeFilter entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.typeFilter before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Type Filter Step. Why: This is the Data tour's own 3rd step. How: This spreads DAT_TAR_OBJ.typeFilter with this flow's own navigation flags.
+
+			{
+
+
+				...DAT_TAR_OBJ.pickersFilter, // What: Show Filter Target Spread. Why: This step reuses the Data catalog's own pickersFilter entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.pickersFilter before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Show Filter Step. Why: This is the Data tour's own 4th step. How: This spreads DAT_TAR_OBJ.pickersFilter with this flow's own navigation flags.
+
+			{
+
+
+				...DAT_TAR_OBJ.remindersManager, // What: Reminders Manager Target Spread. Why: This step reuses the Data catalog's own remindersManager entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.remindersManager before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Reminders Manager Step. Why: This is the Data tour's own 5th step. How: This spreads DAT_TAR_OBJ.remindersManager with this flow's own navigation flags.
+
+			{
+
+
 				...DAT_TAR_OBJ.pickersManager, // What: Pickers Manager Target Spread. Why: This step reuses the Data catalog's own pickersManager entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.pickersManager before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
@@ -1123,7 +1288,17 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 			}, // What: Pickers Manager Step. Why: This is the Data tour's own 6th step. How: This spreads DAT_TAR_OBJ.pickersManager with this flow's own navigation flags plus catBoo.
 
-			{ ...DAT_TAR_OBJ.createPicker, tabStr : 'data', priStr : 'Done', bacBoo : true } // What: Create Picker Step. Why: This is the Data tour's own final step. How: This spreads DAT_TAR_OBJ.createPicker with this flow's own navigation flags, priStr 'Done' ending the tour.
+			{
+
+
+				...DAT_TAR_OBJ.createPicker, // What: Create Picker Target Spread. Why: This step reuses the Data catalog's own createPicker entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.createPicker before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Done', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			} // What: Create Picker Step. Why: This is the Data tour's own final step. How: This spreads DAT_TAR_OBJ.createPicker with this flow's own navigation flags, priStr 'Done' ending the tour.
 
 
 		];
@@ -1136,12 +1311,83 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 		return [ // What: Settings Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Settings tour's own remaining steps, each spreading SET_TAR_OBJ's matching entry with this flow's own navigation flags.
 
-			{ ...SET_TAR_OBJ.appearance, tabStr : 'settings', priStr : 'Next', bacBoo : true, catBoo : true }, // What: Appearance Step. Why: This is the Settings tour's own 2nd step. How: This spreads SET_TAR_OBJ.appearance with this flow's own navigation flags plus catBoo.
-			{ ...SET_TAR_OBJ.daily, tabStr : 'settings', priStr : 'Next', bacBoo : true, catBoo : true }, // What: Daily Generator Step. Why: This is the Settings tour's own 3rd step. How: This spreads SET_TAR_OBJ.daily with this flow's own navigation flags plus catBoo.
-			{ ...SET_TAR_OBJ.holidays, tabStr : 'settings', priStr : 'Next', bacBoo : true, catBoo : true }, // What: Holiday Controls Step. Why: This is the Settings tour's own 4th step. How: This spreads SET_TAR_OBJ.holidays with this flow's own navigation flags plus catBoo.
-			{ ...SET_TAR_OBJ.data, tabStr : 'settings', priStr : 'Next', bacBoo : true, catBoo : true }, // What: Data Control Step. Why: This is the Settings tour's own 5th step. How: This spreads SET_TAR_OBJ.data with this flow's own navigation flags plus catBoo.
-			{ ...SET_TAR_OBJ.about, tabStr : 'settings', priStr : 'Next', bacBoo : true, catBoo : true }, // What: About Step. Why: This is the Settings tour's own 6th step. How: This spreads SET_TAR_OBJ.about with this flow's own navigation flags plus catBoo.
-			{ ...SET_TAR_OBJ.legal, tabStr : 'settings', priStr : 'Done', bacBoo : true } // What: Legal Step. Why: This is the Settings tour's own final step, short enough to need no catBoo. How: This spreads SET_TAR_OBJ.legal with this flow's own navigation flags, priStr 'Done' ending the tour.
+
+			{
+
+
+				...SET_TAR_OBJ.appearance, // What: Appearance Target Spread. Why: This step reuses the Settings catalog's own appearance entry as its base selector/copy. How: This spreads SET_TAR_OBJ.appearance before this step's own navigation flags.
+
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				catBoo : true,      // What: Coach At Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
+				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Appearance Step. Why: This is the Settings tour's own 2nd step. How: This spreads SET_TAR_OBJ.appearance with this flow's own navigation flags plus catBoo.
+
+			{
+
+
+				...SET_TAR_OBJ.daily, // What: Daily Generator Target Spread. Why: This step reuses the Settings catalog's own daily entry as its base selector/copy. How: This spreads SET_TAR_OBJ.daily before this step's own navigation flags.
+
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				catBoo : true,      // What: Coach At Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
+				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Daily Generator Step. Why: This is the Settings tour's own 3rd step. How: This spreads SET_TAR_OBJ.daily with this flow's own navigation flags plus catBoo.
+
+			{
+
+
+				...SET_TAR_OBJ.holidays, // What: Holiday Controls Target Spread. Why: This step reuses the Settings catalog's own holidays entry as its base selector/copy. How: This spreads SET_TAR_OBJ.holidays before this step's own navigation flags.
+
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				catBoo : true,      // What: Coach At Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
+				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Holiday Controls Step. Why: This is the Settings tour's own 4th step. How: This spreads SET_TAR_OBJ.holidays with this flow's own navigation flags plus catBoo.
+
+			{
+
+
+				...SET_TAR_OBJ.data, // What: Data Control Target Spread. Why: This step reuses the Settings catalog's own data entry as its base selector/copy. How: This spreads SET_TAR_OBJ.data before this step's own navigation flags.
+
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				catBoo : true,      // What: Coach At Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
+				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: Data Control Step. Why: This is the Settings tour's own 5th step. How: This spreads SET_TAR_OBJ.data with this flow's own navigation flags plus catBoo.
+
+			{
+
+
+				...SET_TAR_OBJ.about, // What: About Target Spread. Why: This step reuses the Settings catalog's own about entry as its base selector/copy. How: This spreads SET_TAR_OBJ.about before this step's own navigation flags.
+
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				catBoo : true,      // What: Coach At Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
+				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			}, // What: About Step. Why: This is the Settings tour's own 6th step. How: This spreads SET_TAR_OBJ.about with this flow's own navigation flags plus catBoo.
+
+			{
+
+
+				...SET_TAR_OBJ.legal, // What: Legal Target Spread. Why: This step reuses the Settings catalog's own legal entry as its base selector/copy. How: This spreads SET_TAR_OBJ.legal before this step's own navigation flags.
+
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Done',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			} // What: Legal Step. Why: This is the Settings tour's own final step, short enough to need no catBoo. How: This spreads SET_TAR_OBJ.legal with this flow's own navigation flags, priStr 'Done' ending the tour.
 
 
 		];
@@ -1153,11 +1399,47 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 	return [ // What: Today Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Today tour's own remaining steps, each spreading TOD_TAR_OBJ's matching entry with this flow's own navigation flags.
 
-		{ ...TOD_TAR_OBJ.progressRing, tabStr : 'today', priStr : 'Next', bacBoo : true }, // What: Progress Ring Step. Why: This is the Today tour's own 2nd step. How: This spreads TOD_TAR_OBJ.progressRing with this flow's own navigation flags.
-		{ ...TOD_TAR_OBJ.groupsNav, tabStr : 'today', priStr : 'Next', bacBoo : true }, // What: Groups Nav Step. Why: This is the Today tour's own 3rd step. How: This spreads TOD_TAR_OBJ.groupsNav with this flow's own navigation flags.
-		{ ...TOD_TAR_OBJ.editMode, tabStr : 'today', priStr : 'Next', bacBoo : true, cirBoo : true }, // What: Edit Mode Step. Why: This is the Today tour's own 4th step, the real Edit Mode toggle. How: This spreads TOD_TAR_OBJ.editMode with this flow's own navigation flags plus cirBoo.
 
 		{
+
+
+			...TOD_TAR_OBJ.progressRing, // What: Progress Ring Target Spread. Why: This step reuses the Today catalog's own progressRing entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.progressRing before this step's own navigation flags.
+
+			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+		}, // What: Progress Ring Step. Why: This is the Today tour's own 2nd step. How: This spreads TOD_TAR_OBJ.progressRing with this flow's own navigation flags.
+
+		{
+
+
+			...TOD_TAR_OBJ.groupsNav, // What: Groups Nav Target Spread. Why: This step reuses the Today catalog's own groupsNav entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.groupsNav before this step's own navigation flags.
+
+			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+		}, // What: Groups Nav Step. Why: This is the Today tour's own 3rd step. How: This spreads TOD_TAR_OBJ.groupsNav with this flow's own navigation flags.
+
+		{
+
+
+			...TOD_TAR_OBJ.editMode, // What: Edit Mode Target Spread. Why: This step reuses the Today catalog's own editMode entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.editMode before this step's own navigation flags.
+
+			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+			cirBoo : true,   // What: Require Click Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+		}, // What: Edit Mode Step. Why: This is the Today tour's own 4th step, the real Edit Mode toggle. How: This spreads TOD_TAR_OBJ.editMode with this flow's own navigation flags plus cirBoo.
+
+		{
+
+
 			...TOD_TAR_OBJ.groupGrip, // What: Group Grip Target Spread. Why: This step reuses the Today catalog's own groupGrip entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.groupGrip before this step's own navigation flags.
 
 			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
@@ -1199,6 +1481,8 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 		}, // What: Group Grip Step. Why: This is the Today tour's own 5th step, staging the next step's own rename input. How: This spreads TOD_TAR_OBJ.groupGrip with this flow's own navigation flags plus resBoo/runFun.
 
 		{
+
+
 			...TOD_TAR_OBJ.renameGroup, // What: Rename Group Target Spread. Why: This step reuses the Today catalog's own renameGroup entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.renameGroup before this step's own navigation flags.
 
 			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
