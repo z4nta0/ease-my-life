@@ -94,7 +94,7 @@ import { OB_TASKS             } from './onboarding-seed-data.js';    // What: On
 const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro modal reads this by pagIdeStr for its title/body/pills, falling back to navTarObj's own content when a page has no entry here. How: This is looked up by pagIdeStr inside PagTouCom below.
 
 
-	explore_data : {
+	explore_data : { // What: Explore Data Entry. Why: This is the intro-modal content descriptor for the Data page's own tour. How: This is looked up by PagTouCom via the real 'explore_data' pagIdeStr.
 
 
 		bodEle : <>This tutorial will take you on a quick tour of the Data page, in order to <b>highlight important elements and functionality</b>.</>,
@@ -104,7 +104,7 @@ const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro moda
 
 	},
 
-	explore_pickers : {
+	explore_pickers : { // What: Explore Pickers Entry. Why: This is the intro-modal content descriptor for the Pickers page's own tour. How: This is looked up by PagTouCom via the real 'explore_pickers' pagIdeStr.
 
 
 		bodEle : <>This tutorial will take you on a quick tour of the Pickers page, in order to <b>highlight important elements and functionality</b>.</>,
@@ -114,7 +114,7 @@ const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro moda
 
 	},
 
-	explore_settings : {
+	explore_settings : { // What: Explore Settings Entry. Why: This is the intro-modal content descriptor for the Settings page's own tour. How: This is looked up by PagTouCom via the real 'explore_settings' pagIdeStr.
 
 
 		bodEle : <>This tutorial will take you on a quick tour of the Settings page, in order to <b>highlight important elements and functionality</b>.</>,
@@ -124,7 +124,7 @@ const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro moda
 
 	},
 
-	explore_stats : {
+	explore_stats : { // What: Explore Stats Entry. Why: This is the intro-modal content descriptor for the Stats page's own tour. How: This is looked up by PagTouCom via the real 'explore_stats' pagIdeStr.
 
 
 		bodEle : <>This tutorial will take you on a quick tour of the Stats page, in order to <b>highlight important elements and functionality</b>.</>,
@@ -134,13 +134,12 @@ const PAG_COP_OBJ = { // What: Page Copy Object. Why: PagTouCom's own intro moda
 
 	},
 
-	explore_today : {
+	explore_today : { // What: Explore Today Entry. Why: This is the intro-modal content descriptor for the Today page's own tour. How: This is looked up by PagTouCom via the real 'explore_today' pagIdeStr.
 
 
+		bodEle : <>This tutorial will take you on a quick tour of the Today page, in order to <b>highlight important elements and functionality</b>.</>,
 		pilArr : [ 'page tour', 'today page', 'todo list' ],
-		titStr : 'Today Page',
-
-		bodEle : <>This tutorial will take you on a quick tour of the Today page, in order to <b>highlight important elements and functionality</b>.</>
+		titStr : 'Today Page'
 
 
 	}
@@ -236,7 +235,10 @@ const buiTs1Fun = ( pagKeyStr, runSteFun, priButStr = 'Next', butLabStr = null )
 */
 
 const PAG_SAM_ARR = [ OB_EXAMPLE, ...OB_EXTRA_PICKERS ]; // What: Page Sample Array. Why: seePicFun/clePicFun below need every sample picker's own template to seed/clear a disposable copy of. How: This flattens OB_EXAMPLE and every OB_EXTRA_PICKERS entry into one array.
-const picCopFun = ( samIdeStr ) => `pt_${ samIdeStr }`; // What: Picker Copy Function. Why: Every disposable picker copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
+
+
+
+const picCopFun = ( samIdeStr ) => `pt_${ samIdeStr }`;                                             // What: Picker Copy Function. Why: Every disposable picker copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
 const neeCopFun = ( pagIdeStr ) => pagIdeStr === 'explore_pickers' || pagIdeStr === 'explore_data'; // What: Needs Copies Function. Why: Only the Pickers/Data tours seed/clear disposable picker copies at all. How: This checks pagIdeStr against both of those page ids.
 
 
@@ -256,24 +258,27 @@ const neeCopFun = ( pagIdeStr ) => pagIdeStr === 'explore_pickers' || pagIdeStr 
  *
 */
 
-const seePicFun = ( staAppObj, actions ) => { // What: Seed Picker Function. Why: The Pickers/Data tours need real, disposable copies of every sample picker seeded before their own steps can point at them. How: This adds one copy per PAG_SAM_ARR entry, skipping any already seeded.
+const seePicFun = ( staAppObj, actStoObj ) => { // What: Seed Picker Function. Why: The Pickers/Data tours need real, disposable copies of every sample picker seeded before their own steps can point at them. How: This adds one copy per PAG_SAM_ARR entry, skipping any already seeded.
 
 
 	PAG_SAM_ARR.forEach( ( samPicObj ) => { // What: Sample Picker Object Loop. Why: Every sample picker's own template needs its own disposable copy. How: This iterates PAG_SAM_ARR, seeding one copy per entry.
 
 
-		const copIdeStr = picCopFun( samPicObj.id ); // What: Picker Copy Id String. Why: This copy's own id must never collide with the real hidden picker's own id. How: This derives it from samPicObj's own id via picCopFun.
+		const copIdeStr = picCopFun( samPicObj.id ); // What: (Picker) Copy Identifier String. Why: This copy's own id must never collide with the real hidden picker's own id. How: This derives it from samPicObj's own id via picCopFun.
+
 
 		if ( staAppObj.pickers.some( ( exiPicObj ) => exiPicObj.id === copIdeStr ) ) return; // What: Existing Copy Guard. Why: Re-firing this runFun() (Back then Forward again) must not create a duplicate-id picker. How: This returns early whenever a picker with this exact copy id already exists.
 
-		actions.addPicker({ // What: Add Picker Call. Why: This is the real, interactive disposable copy the tour's own steps point at. How: This adds a picker under copIdeStr, copying samPicObj's own name/group/mode/items.
 
 
-			group : samPicObj.group,
-			id    : copIdeStr,
+		actStoObj.addPicker({ // What: Add Picker Call. Why: This is the real, interactive disposable copy the tour's own steps point at. How: This adds a picker under copIdeStr, copying samPicObj's own name/group/mode/items.
+
+
+			group : samPicObj.group,                                                          // What: Group Field. Why: The disposable copy must sit in the same group as the real sample picker. How: This copies samPicObj's own group verbatim.
+			id    : copIdeStr,                                                                // What: Id Field. Why: This copy's own id must be copIdeStr, not the real sample's own id, so it can never collide with it. How: This uses the already-derived copIdeStr.
 			items : samPicObj.items.map( ( { id : oldIdeStr, ...iteResObj } ) => iteResObj ), // What: Items Field. Why: Items keep their own name/weight/ease fields but must drop their real id, passing the real sample's own item ids through would collide with the real hidden picker's own items in state.items. How: This destructures each item, discarding its own id and keeping the rest.
-			mode  : samPicObj.mode,
-			name  : samPicObj.name
+			mode  : samPicObj.mode,                                                           // What: Mode Field. Why: The disposable copy must use the same picker mode as the real sample. How: This copies samPicObj's own mode verbatim.
+			name  : samPicObj.name                                                            // What: Name Field. Why: The disposable copy should display with the real sample's own name. How: This copies samPicObj's own name verbatim.
 
 
 		});
@@ -300,10 +305,10 @@ const seePicFun = ( staAppObj, actions ) => { // What: Seed Picker Function. Why
  *
 */
 
-const clePicFun = ( actions ) => { // What: Clear Picker Function. Why: A disposable copy must never linger in the user's real picker list once its own tour ends. How: This removes every PAG_SAM_ARR entry's own copy id, a harmless no-op for one never seeded.
+const clePicFun = ( actStoObj ) => { // What: Clear Picker Function. Why: A disposable copy must never linger in the user's real picker list once its own tour ends. How: This removes every PAG_SAM_ARR entry's own copy id, a harmless no-op for one never seeded.
 
 
-	PAG_SAM_ARR.forEach( ( samPicObj ) => actions.removePicker( picCopFun( samPicObj.id ) ) ); // What: Remove Picker Call. Why: Every seeded copy must be discarded, not just some. How: This removes a picker at picCopFun's own derived id for each PAG_SAM_ARR entry.
+	PAG_SAM_ARR.forEach( ( samPicObj ) => actStoObj.removePicker( picCopFun( samPicObj.id ) ) ); // What: Remove Picker Call. Why: Every seeded copy must be discarded, not just some. How: This removes a picker at picCopFun's own derived id for each PAG_SAM_ARR entry.
 
 
 };
@@ -325,22 +330,26 @@ const clePicFun = ( actions ) => { // What: Clear Picker Function. Why: A dispos
 */
 
 const tasCopFun = ( samIdeStr ) => `pt_${ samIdeStr }`; // What: Task Copy Function. Why: Every disposable reminder copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
-const seeTasFun = ( staAppObj, actions ) => { // What: Seed Task Function. Why: The Data tour needs real, disposable copies of every sample reminder seeded before its Reminders step can point at them. How: This adds one copy per OB_TASKS entry, skipping any already seeded.
+
+const seeTasFun = ( staAppObj, actStoObj ) => { // What: Seed Task Function. Why: The Data tour needs real, disposable copies of every sample reminder seeded before its Reminders step can point at them. How: This adds one copy per OB_TASKS entry, skipping any already seeded.
 
 
 	OB_TASKS.forEach( ( samTasObj ) => { // What: Sample Task Object Loop. Why: Every sample reminder's own template needs its own disposable copy. How: This iterates OB_TASKS, seeding one copy per entry.
 
 
-		const copIdeStr = tasCopFun( samTasObj.id ); // What: Task Copy Id String. Why: This copy's own id must never collide with the real hidden reminder's own id. How: This derives it from samTasObj's own id via tasCopFun.
+		const copIdeStr = tasCopFun( samTasObj.id ); // What: Task Copy Identifier String. Why: This copy's own id must never collide with the real hidden reminder's own id. How: This derives it from samTasObj's own id via tasCopFun.
+
 
 		if ( staAppObj.tasks.some( ( exiTasObj ) => exiTasObj.id === copIdeStr ) ) return; // What: Existing Copy Guard. Why: Re-firing this runFun() must not create a duplicate-id reminder. How: This returns early whenever a task with this exact copy id already exists.
 
-		actions.addTask({ // What: Add Task Call. Why: This is the real, interactive disposable copy the Data tour's own Reminders step points at. How: This adds a task under copIdeStr, copying samTasObj's own name/repeat, and this weekday when it recurs weekly.
 
 
-			id     : copIdeStr,
-			name   : samTasObj.name,
-			repeat : samTasObj.repeat,
+		actStoObj.addTask({ // What: Add Task Call. Why: This is the real, interactive disposable copy the Data tour's own Reminders step points at. How: This adds a task under copIdeStr, copying samTasObj's own name/repeat, and this weekday when it recurs weekly.
+
+
+			id     : copIdeStr,        // What: Id Field. Why: This copy's own id must be copIdeStr, not the real sample's own id, so it can never collide with it. How: This uses the already-derived copIdeStr.
+			name   : samTasObj.name,   // What: Name Field. Why: The disposable copy should display with the real sample's own name. How: This copies samTasObj's own name verbatim.
+			repeat : samTasObj.repeat, // What: Repeat Field. Why: The disposable copy must use the same repeat schedule as the real sample. How: This copies samTasObj's own repeat verbatim.
 
 			...( samTasObj.repeat === 'weekly' ? { daysOfWeek : [ new Date().getDay() ] } : {} ) // What: Days Of Week Spread. Why: Mirrors the real Welcome Tour's own seeding (see onboarding.jsx's Generate step): the recurring sample's own daysOfWeek should read as "due today", not the base template's hardcoded Monday. How: This spreads today's own weekday in only when this sample recurs weekly.
 
@@ -352,10 +361,11 @@ const seeTasFun = ( staAppObj, actions ) => { // What: Seed Task Function. Why: 
 
 
 };
-const cleTasFun = ( actions ) => { // What: Clear Task Function. Why: A disposable reminder copy must never linger in the user's real reminder list once its own tour ends. How: This removes every OB_TASKS entry's own copy id, a harmless no-op for one never seeded.
+
+const cleTasFun = ( actStoObj ) => { // What: Clear Task Function. Why: A disposable reminder copy must never linger in the user's real reminder list once its own tour ends. How: This removes every OB_TASKS entry's own copy id, a harmless no-op for one never seeded.
 
 
-	OB_TASKS.forEach( ( samTasObj ) => actions.removeTask( tasCopFun( samTasObj.id ) ) ); // What: Remove Task Call. Why: Every seeded copy must be discarded, not just some. How: This removes a task at tasCopFun's own derived id for each OB_TASKS entry.
+	OB_TASKS.forEach( ( samTasObj ) => actStoObj.removeTask( tasCopFun( samTasObj.id ) ) ); // What: Remove Task Call. Why: Every seeded copy must be discarded, not just some. How: This removes a task at tasCopFun's own derived id for each OB_TASKS entry.
 
 
 };
@@ -393,10 +403,11 @@ const cleTasFun = ( actions ) => { // What: Clear Task Function. Why: A disposab
  *
 */
 
-const unhHisFun = ( staAppObj, actions ) => { // What: Unhide History Function. Why: The Stats tour's own heatmap/breakdown need real sample history to demonstrate, not an empty disposable copy. How: This unhides every real sample picker, backfilling its own pickLog history if none exists yet.
+const unhHisFun = ( staAppObj, actStoObj ) => { // What: Unhide History Function. Why: The Stats tour's own heatmap/breakdown need real sample history to demonstrate, not an empty disposable copy. How: This unhides every real sample picker, backfilling its own pickLog history if none exists yet.
 
 
-	OB_SAMPLE_PICKER_IDS.forEach( ( samIdeStr ) => actions.updatePicker( samIdeStr, { hidden : false } ) ); // What: Unhide Sample Picker Call. Why: The Stats tour's own steps need every real sample picker visible for its own duration. How: This updates every OB_SAMPLE_PICKER_IDS entry's own hidden field to false.
+	OB_SAMPLE_PICKER_IDS.forEach( ( samIdeStr ) => actStoObj.updatePicker( samIdeStr, { hidden : false } ) ); // What: Unhide Sample Picker Call. Why: The Stats tour's own steps need every real sample picker visible for its own duration. How: This updates every OB_SAMPLE_PICKER_IDS entry's own hidden field to false.
+
 
 	if ( !( staAppObj.pickLog || [] ).some( ( curRowObj ) => OB_SAMPLE_PICKER_IDS.includes( curRowObj.pickerId ) ) ) { // What: Missing History Check. Why: Only a genuinely virgin-install user (or a first run of this tour) is missing the precomputed sample history. How: This checks whether any existing pickLog row already belongs to a sample picker.
 
@@ -404,7 +415,7 @@ const unhHisFun = ( staAppObj, actions ) => { // What: Unhide History Function. 
 		import( './onboarding-stats-data.js' ).then( ( { ONBOARDING_STATS } ) => { // What: Stats Data Import. Why: The precomputed sample history template is large enough to warrant a lazy, on-demand import instead of a static one. How: This dynamically imports onboarding-stats-data.js, then seeds its own ONBOARDING_STATS export.
 
 
-			actions.seedHistory( hydStaFun( ONBOARDING_STATS ) ); // What: Seed History Call. Why: The static template needs converting into real pickLog rows before it means anything to the Stats tab. How: This calls actions.seedHistory with hydStaFun' own converted result.
+			actStoObj.seedHistory( hydStaFun( ONBOARDING_STATS ) ); // What: Seed History Call. Why: The static template needs converting into real pickLog rows before it means anything to the Stats tab. How: This calls actStoObj.seedHistory with hydStaFun' own converted result.
 
 
 		});
@@ -417,10 +428,10 @@ const unhHisFun = ( staAppObj, actions ) => { // What: Unhide History Function. 
 
 
 
-const hidHisFun = ( actions ) => { // What: Hide History Function. Why: The real sample pickers borrowed by the Stats tour must go back to hidden the moment that tour ends. How: This updates every OB_SAMPLE_PICKER_IDS entry's own hidden field back to true.
+const hidHisFun = ( actStoObj ) => { // What: Hide History Function. Why: The real sample pickers borrowed by the Stats tour must go back to hidden the moment that tour ends. How: This updates every OB_SAMPLE_PICKER_IDS entry's own hidden field back to true.
 
 
-	OB_SAMPLE_PICKER_IDS.forEach( ( samIdeStr ) => actions.updatePicker( samIdeStr, { hidden : true } ) ); // What: Hide Sample Picker Call. Why: This must run for every sample picker unhHisFun could have unhidden. How: This updates every OB_SAMPLE_PICKER_IDS entry's own hidden field to true.
+	OB_SAMPLE_PICKER_IDS.forEach( ( samIdeStr ) => actStoObj.updatePicker( samIdeStr, { hidden : true } ) ); // What: Hide Sample Picker Call. Why: This must run for every sample picker unhHisFun could have unhidden. How: This updates every OB_SAMPLE_PICKER_IDS entry's own hidden field to true.
 
 
 };
@@ -437,6 +448,38 @@ const hidHisFun = ( actions ) => { // What: Hide History Function. Why: The real
  * shape/reasoning as TOD_TAR_OBJ below. buiTesFun spreads these entries
  * together with this flow's own tabStr/priStr/bacBoo/etc. flags.
  *
+ * 3 of these fields carry the exact same boilerplate What/Why/How (or,
+ * for pulSelStr, the exact same text) wherever they appear, so none of
+ * the entries below repeat it on their own lines (see the "Repeated-
+ * shape object literals" comment exception in CLAUDE.md). `selStr` and
+ * `clkSelStr` still get their own bullet explaining what the field is
+ * FOR in general, but keep their own per-entry inline comment too,
+ * since each entry's own Why genuinely differs, describing that
+ * entry's own specific target:
+ *
+ * - `bodEle` (Element): Body Element is this step's own coach card
+ *   body, a plain description of what the highlighted element does,
+ *   rendered as JSX so specific phrases can be bolded.
+ *
+ * - `clkSelStr` (String, optional): Click Selector String overrides
+ *   what counts as "on target" for the click-guard/cirBoo logic
+ *   specifically, when a step's own selStr highlights a bigger box
+ *   than what should actually satisfy the click. Defaults to selStr
+ *   when unset.
+ *
+ * - `pulSelStr` (String, optional): Pulse Selector String only exists
+ *   on a step needing a two-phase highlight (see clkSelStr just
+ *   above). There is nothing left to click once the highlight has
+ *   widened to frame the window, so the pulse should stop there too,
+ *   matching the same primary alternative as selStr.
+ *
+ * - `selStr` (String): Selector String is the CSS selector(s)
+ *   GuidedTour highlights for this step (comma-separated fallbacks
+ *   honored in order, first match wins).
+ *
+ * - `titStr` (String): Title String is this step's own coach card
+ *   heading, rendered by GuidedTour as the step's own heading text.
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
@@ -444,29 +487,19 @@ const hidHisFun = ( actions ) => { // What: Hide History Function. Why: The real
 const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below spreads each of these entries into the Pickers tour's own real step objects. How: This is looked up by a fixed key per step inside buiTesFun's own explore_pickers branch.
 
 
-	addPickerItem : {
-
-
-		bodEle : <>The "Add Item" button will <b>allow you to add new items to the selected picker's list of items</b>. This button is disabled for this tutorial. This concludes the Pickers page tutorial, click Done when you are ready.</>,
-		selStr : '.pv-additem-btn', // What: Selector String. Why: This step highlights the real Add Item button. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Add Picker Item'
-
-
-	},
-
-	addToTodoList : {
+	atlObj : { // What: Add-Todo-List Object. Why: This is the target/content descriptor for the real Send to Today button. How: This is spread into buiTesFun's own Add To Todo List step object.
 
 
 		bodEle    : <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to see how this works.</>,
 		clkSelStr : '.pv-act--send',                            // What: Click Selector String. Why: The cirBoo guard must stay scoped to Send to Today specifically, not any disabled sibling sharing the widened box. How: This is read by the click-guard/cirBoo logic separately from selStr.
-		pulSelStr : '.pv-act--send:not(.is-sent)',              // What: Pulse Selector String. Why: There is nothing left to click once the highlight has widened to frame the window, so the pulse should stop there too. How: This matches the same primary alternative as selStr.
+		pulSelStr : '.pv-act--send:not(.is-sent)',
 		selStr    : '.pv-act--send:not(.is-sent), .picker-run', // What: Selector String. Why: This step highlights the real Send to Today button, falling back to framing the whole stage once it's sent. How: GuidedTour spotlights the first alternative that matches.
 		titStr    : 'Add to Todo List'
 
 
 	},
 
-	createNewPickers : {
+	cnpObj : { // What: Create-New-Pickers Object. Why: This is the target/content descriptor for the real Add New Picker tab. How: This is spread into buiTesFun's own Create New Pickers step object.
 
 
 		bodEle : <>The "Add New Picker" button will <b>open up a form that allows you to create new pickers</b>. This will not be included as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished.</>,
@@ -476,7 +509,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 	},
 
-	editPicker : {
+	epsObj : { // What: Edit-Picker-Settings Object. Why: This is the target/content descriptor for the real Edit Picker button. How: This is spread into buiTesFun's own Edit Picker step object.
 
 
 		bodEle : <>This opens the same form used to create a picker, pre-filled with this picker's current settings. You can <b>adjust its name, group, type, daily generator schedule, or conditional attachment</b>. Its items aren&rsquo;t edited here, but you can use this picker's own item list below or the Data tab for that.</>,
@@ -486,30 +519,39 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 	},
 
-	groupFilter : {
-
-
-		selStr : '.picker-groups:not(.picker-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Group Filter',                                                // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-
-		bodEle : <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Group Filter pills do. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
-
-
-	},
-
-	manualGeneration : {
+	mpgObj : { // What: Manual-Pick-Generation Object. Why: This is the target/content descriptor for the real Pick One button. How: This is spread into buiTesFun's own Manual Generation step object.
 
 
 		bodEle    : <>The "Pick One" button will <b>allow you to run a manual pick generation for your selected picker</b>, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick One" button now to see how this works.</>,
 		clkSelStr : '.pv-act--pick',                            // What: Click Selector String. Why: The cirBoo guard must stay scoped to the button specifically even once the fallback widens the highlight. How: This is read by the click-guard/cirBoo logic separately from selStr.
-		pulSelStr : '.pv-act--pick:not(.is-busy)',              // What: Pulse Selector String. Why: There is nothing left to click once the highlight has widened to frame the window, so the pulse should stop there too. How: This matches the same primary alternative as selStr.
+		pulSelStr : '.pv-act--pick:not(.is-busy)',
 		selStr    : '.pv-act--pick:not(.is-busy), .picker-run', // What: Selector String. Why: This step highlights the idle Pick One button, falling back to framing the whole stage once it goes busy. How: GuidedTour spotlights the first alternative that matches.
 		titStr    : 'Manual Generation'
 
 
 	},
 
-	pickerItems : {
+	pgfObj : { // What: Picker-Group-Filter Object. Why: This is the target/content descriptor for the real Group Filter pills. How: This is spread into buiTesFun's own Group Filter step object.
+
+
+		bodEle : <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</>,
+		selStr : '.picker-groups:not(.picker-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Group Filter'
+
+
+	},
+
+	piaObj : { // What: Picker-Item-Add Object. Why: This is the target/content descriptor for the real Add Item button. How: This is spread into buiTesFun's own Add Picker Item step object.
+
+
+		bodEle : <>The "Add Item" button will <b>allow you to add new items to the selected picker's list of items</b>. This button is disabled for this tutorial. This concludes the Pickers page tutorial, click Done when you are ready.</>,
+		selStr : '.pv-additem-btn', // What: Selector String. Why: This step highlights the real Add Item button. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Add Picker Item'
+
+
+	},
+
+	pivObj : { // What: Picker-Items-View Object. Why: This is the target/content descriptor for the picker's own item pool. How: This is spread into buiTesFun's own Picker Items step object.
 
 
 		bodEle : <>Here you can <b>view all items in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial.</>,
@@ -519,22 +561,22 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 	},
 
-	pickerSelection : {
-
-
-		bodEle : <>This will <b>allow you to select a specific picker</b>, in order to initiate a manual picker generation as well as edit or delete its items.</>,
-		selStr : '.picker-tabs .picker-tab:not(.picker-tab--add)', // What: Selector String. Why: This step highlights every existing picker's own tab, excluding the Add tab. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Picker Selection'
-
-
-	},
-
-	typeFilter : {
+	ptfObj : { // What: Picker-Type-Filter Object. Why: This is the target/content descriptor for the real Type Filter pills. How: This is spread into buiTesFun's own Type Filter step object.
 
 
 		bodEle : <>This will allow you to <b>further filter the pickers row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
 		selStr : '.picker-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
 		titStr : 'Type Filter'
+
+
+	},
+
+	spsObj : { // What: Specific-Picker-Selection Object. Why: This is the target/content descriptor for selecting one specific picker's own tab. How: This is spread into buiTesFun's own Picker Selection step object.
+
+
+		bodEle : <>This will <b>allow you to select a specific picker</b>, in order to initiate a manual picker generation as well as edit or delete its items.</>,
+		selStr : '.picker-tabs .picker-tab:not(.picker-tab--add)', // What: Selector String. Why: This step highlights every existing picker's own tab, excluding the Add tab. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Picker Selection'
 
 
 	}
@@ -557,6 +599,25 @@ const PRE_PIC_STR = OB_EXAMPLE.id; // What: Preselect Picker String. Why: The St
  * covering only the "main sections" per instruction, not every filter/
  * card gets its own step yet.
  *
+ * 2 of these fields carry the exact same boilerplate What/Why/How
+ * wherever they appear, so none of the entries below repeat it on
+ * their own lines (see the "Repeated-shape object literals" comment
+ * exception in CLAUDE.md). `selStr` still gets its own bullet
+ * explaining what the field is FOR in general, but keeps its own
+ * per-entry inline comment too, since each entry's own Why genuinely
+ * differs, describing that entry's own specific target:
+ *
+ * - `bodEle` (Element): Body Element is this step's own coach card
+ *   body, a plain description of what the highlighted element does,
+ *   rendered as JSX so specific phrases can be bolded.
+ *
+ * - `selStr` (String): Selector String is the CSS selector(s)
+ *   GuidedTour highlights for this step (comma-separated fallbacks
+ *   honored in order, first match wins).
+ *
+ * - `titStr` (String): Title String is this step's own coach card
+ *   heading, rendered by GuidedTour as the step's own heading text.
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
@@ -564,17 +625,7 @@ const PRE_PIC_STR = OB_EXAMPLE.id; // What: Preselect Picker String. Why: The St
 const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads each of these entries into the Stats tour's own real step objects. How: This is looked up by a fixed key per step inside buiTesFun's own explore_stats branch.
 
 
-	groupFilter : {
-
-
-		bodEle : <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
-		titStr : 'Group Filter'
-
-
-	},
-
-	heatmap : {
+	hemObj : { // What: Heatmap Object. Why: This is the target/content descriptor for the real activity heatmap card. How: This is spread into buiTesFun's own Heatmap step object.
 
 
 		bodEle : <>This visualizes your completed activity over time, with <b>each day shaded by how much you got done</b>. You can click on any day for more details. Click Next when you are ready to advance to the next step.</>,
@@ -584,7 +635,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 	},
 
-	pickerBreakdown : {
+	pbvObj : { // What: Picker-Breakdown-View Object. Why: This is the target/content descriptor for the real picker breakdown card. How: This is spread into buiTesFun's own Picker Breakdown step object.
 
 
 		bodEle : <>Once a specific picker is selected, its individual items are broken down here. You can <b>view things like pick count, pick frequency, last picked date</b> and others. This concludes the Stats page tutorial, click Done when you are ready.</>,
@@ -594,7 +645,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 	},
 
-	pickersFilter : {
+	pfsObj : { // What: Pickers-Filter-Selection Object. Why: This is the target/content descriptor for the real scope-tabs row. How: This is spread into buiTesFun's own Show Filter step object.
 
 
 		bodEle : <>This will allow you to <b>narrow your selection to specific pickers, reminders or conditionals</b>, or you can view everything all at once.</>,
@@ -604,22 +655,32 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 	},
 
-	rangeFilter : {
+	pgfObj : { // What: Picker-Group-Filter Object. Why: This is the target/content descriptor for the real Group Filter pills. How: This is spread into buiTesFun's own Group Filter step object.
+
+
+		bodEle : <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
+		selStr : '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Group Filter'
+
+
+	},
+
+	ptfObj : { // What: Picker-Type-Filter Object. Why: This is the target/content descriptor for the real Type Filter pills. How: This is spread into buiTesFun's own Type Filter step object.
+
+
+		bodEle : <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
+		selStr : '.stat-scope-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Type Filter'
+
+
+	},
+
+	trfObj : { // What: Time-Range-Filter Object. Why: This is the target/content descriptor for the real Range Filter pills. How: This is spread into buiTesFun's own Range Filter step object.
 
 
 		bodEle : <>This will allow you to further <b>narrow your selection by date range</b>, with ranges from 1 week to 1 year to all time.</>,
 		selStr : '.stat-filter-pills--seg .stat-pill', // What: Selector String. Why: This step highlights the Range Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
 		titStr : 'Range Filter'
-
-
-	},
-
-	typeFilter : {
-
-
-		bodEle : <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.stat-scope-groups--type .picker-group-pill',
-		titStr : 'Type Filter'
 
 
 	}
@@ -636,13 +697,32 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
  * Target and description catalog for the Data page's OWN interior
  * elements, same shape/reasoning as STA_TAR_OBJ above. Also a first
  * draft covering only the "main sections" per instruction, likely to
- * grow more steps later. groupFilter/pickersFilter are both disabled
+ * grow more steps later. pgfObj/pfsObj are both disabled
  * while their own step is up (tab-data.jsx's own disableGroupFilter/
  * disablePickersFilter, same tourId+step gating pattern as tab-
  * picker.jsx), narrating what they do is the point, and changing
  * statGroup/scope mid-tour would otherwise leave a LATER step's own
- * target (remindersManager, which only shows at scope 'all') unable to
+ * target (rmsObj, which only shows at scope 'all') unable to
  * find anything, since nothing here resets it back afterward.
+ *
+ * 2 of these fields carry the exact same boilerplate What/Why/How
+ * wherever they appear, so none of the entries below repeat it on
+ * their own lines (see the "Repeated-shape object literals" comment
+ * exception in CLAUDE.md). `selStr` still gets its own bullet
+ * explaining what the field is FOR in general, but keeps its own
+ * per-entry inline comment too, since each entry's own Why genuinely
+ * differs, describing that entry's own specific target:
+ *
+ * - `bodEle` (Element): Body Element is this step's own coach card
+ *   body, a plain description of what the highlighted element does,
+ *   rendered as JSX so specific phrases can be bolded.
+ *
+ * - `selStr` (String): Selector String is the CSS selector(s)
+ *   GuidedTour highlights for this step (comma-separated fallbacks
+ *   honored in order, first match wins).
+ *
+ * - `titStr` (String): Title String is this step's own coach card
+ *   heading, rendered by GuidedTour as the step's own heading text.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -651,7 +731,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads each of these entries into the Data tour's own real step objects. How: This is looked up by a fixed key per step inside buiTesFun's own explore_data branch.
 
 
-	createPicker : {
+	cpfObj : { // What: Create-Picker-Form Object. Why: This is the target/content descriptor for the real Create Picker button. How: This is spread into buiTesFun's own Create Picker step object.
 
 
 		bodEle : <>This creates a new picker directly from this list, respecting the group, type and conditional filters if they are used. This concludes the Data page tutorial, click Done when you are ready.</>,
@@ -661,7 +741,17 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 	},
 
-	groupFilter : {
+	pfsObj : { // What: Pickers-Filter-Selection Object. Why: This is the target/content descriptor for the real scope-tabs row. How: This is spread into buiTesFun's own Show Filter step object.
+
+
+		bodEle : <>This will allow you to <b>further narrow exactly what you want to view and edit</b>.</>,
+		selStr : '.stat-scope-tabs .picker-tab', // What: Selector String. Why: This step highlights the whole scope-tabs row. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Show Filter'
+
+
+	},
+
+	pgfObj : { // What: Picker-Group-Filter Object. Why: This is the target/content descriptor for the real Group Filter pills. How: This is spread into buiTesFun's own Group Filter step object.
 
 
 		bodEle : <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
@@ -671,17 +761,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 	},
 
-	pickersFilter : {
-
-
-		bodEle : <>This will allow you to <b>further narrow exactly what you want to view and edit</b>.</>,
-		selStr : '.stat-scope-tabs .picker-tab',
-		titStr : 'Show Filter'
-
-
-	},
-
-	pickersManager : {
+	pmsObj : { // What: Pickers-Manager-Section Object. Why: This is the target/content descriptor for the real combined picker/Conditionals/Reminders region. How: This is spread into buiTesFun's own View and Edit Pickers step object.
 
 
 		bodEle : <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
@@ -691,22 +771,22 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 	},
 
-	remindersManager : {
+	ptfObj : { // What: Picker-Type-Filter Object. Why: This is the target/content descriptor for the real Type Filter pills. How: This is spread into buiTesFun's own Type Filter step object.
+
+
+		bodEle : <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the group filter and is extremely useful if you have created a lot of pickers.</>,
+		selStr : '.stat-scope-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		titStr : 'Type Filter'
+
+
+	},
+
+	rmsObj : { // What: Reminders-Manager-Section Object. Why: This is the target/content descriptor for the real Reminders manager section. How: This is spread into buiTesFun's own View and Edit Reminders step object.
 
 
 		bodEle : <>This is where you can <b>view and edit all of your reminders, as well as create new ones</b>. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
 		selStr : '.cat--reminders', // What: Selector String. Why: This step highlights the whole Reminders manager section. How: GuidedTour spotlights whatever this selector matches.
 		titStr : 'View and Edit Reminders'
-
-
-	},
-
-	typeFilter : {
-
-
-		bodEle : <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the group filter and is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.stat-scope-groups--type .picker-group-pill',
-		titStr : 'Type Filter'
 
 
 	}
@@ -727,6 +807,25 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
  * mounted (a scroll-spy sidebar, not a disclosure), so GuidedTour's own
  * scroll-into-view handles reaching each one without any runFun() staging.
  *
+ * 2 of these fields carry the exact same boilerplate What/Why/How
+ * wherever they appear, so none of the entries below repeat it on
+ * their own lines (see the "Repeated-shape object literals" comment
+ * exception in CLAUDE.md). `selStr` still gets its own bullet
+ * explaining what the field is FOR in general, but keeps its own
+ * per-entry inline comment too, since each entry's own Why genuinely
+ * differs, describing that entry's own specific target:
+ *
+ * - `bodEle` (Element): Body Element is this step's own coach card
+ *   body, a plain description of what the highlighted element does,
+ *   rendered as JSX so specific phrases can be bolded.
+ *
+ * - `selStr` (String): Selector String is the CSS selector(s)
+ *   GuidedTour highlights for this step (comma-separated fallbacks
+ *   honored in order, first match wins).
+ *
+ * - `titStr` (String): Title String is this step's own coach card
+ *   heading, rendered by GuidedTour as the step's own heading text.
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
@@ -734,17 +833,17 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spreads each of these entries into the Settings tour's own real step objects. How: This is looked up by a fixed key per step inside buiTesFun's own explore_settings branch.
 
 
-	about : {
+	aboObj : { // What: About Object. Why: This is the target/content descriptor for the real About section. How: This is spread into buiTesFun's own About step object.
 
 
 		bodEle : <>This is where you can find information about this app and its developer, replay the welcome tour and all of these tutorials at any time, and <b>contact the developer if you have any problems or suggestions</b>.</>,
-		selStr : '.set-section--about',
+		selStr : '.set-section--about', // What: Selector String. Why: This step highlights the whole About section. How: GuidedTour spotlights whatever this selector matches.
 		titStr : 'About Ease My Life'
 
 
 	},
 
-	appearance : {
+	appObj : { // What: Appearance Object. Why: This is the target/content descriptor for the real Appearance section. How: This is spread into buiTesFun's own Appearance step object.
 
 
 		bodEle : <>This is where you can <b>customize the app's look and feel</b>: light, dark and custom theme colors, completion celebration animations, picker pick animations, and tab bar placement.</>,
@@ -754,41 +853,41 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 	},
 
-	daily : {
+	daiObj : { // What: Daily Object. Why: This is the target/content descriptor for the real Daily Generator section. How: This is spread into buiTesFun's own Daily Generator step object.
 
 
 		bodEle : <>This is where you can <b>control the daily generator</b>: turn auto generation on or off, what time it runs, and enabling notifications for when it does.</>,
-		selStr : '.set-section--daily',
+		selStr : '.set-section--daily', // What: Selector String. Why: This step highlights the whole Daily Generator section. How: GuidedTour spotlights whatever this selector matches.
 		titStr : 'Daily Generator'
 
 
 	},
 
-	data : {
+	dtaObj : { // What: Data Object. Why: This is the target/content descriptor for the real Data Control section. How: This is spread into buiTesFun's own Data Control step object.
 
 
 		bodEle : <>This is where you can protect your data from browser deletion, <b>install the app directly to your device</b>, back up your data (export), restore your data (import), or erase all of your data.</>,
-		selStr : '.set-section--data',
+		selStr : '.set-section--data', // What: Selector String. Why: This step highlights the whole Data Control section. How: GuidedTour spotlights whatever this selector matches.
 		titStr : 'Data Control'
 
 
 	},
 
-	holidays : {
+	holObj : { // What: Holidays Object. Why: This is the target/content descriptor for the real Holiday Controls section. How: This is spread into buiTesFun's own Holiday Controls step object.
 
 
 		bodEle : <>This is where you can <b>toggle which holiday observances that the pickers and reminders option uses</b>. You can even add your own custom holidays, like your birthday!</>,
-		selStr : '.set-section--holidays',
+		selStr : '.set-section--holidays', // What: Selector String. Why: This step highlights the whole Holiday Controls section. How: GuidedTour spotlights whatever this selector matches.
 		titStr : 'Holiday Controls'
 
 
 	},
 
-	legal : {
+	legObj : { // What: Legal Object. Why: This is the target/content descriptor for the real Legal section. How: This is spread into buiTesFun's own Legal step object.
 
 
 		bodEle : <>This is where you can <b>view the Privacy Policy and Terms of Service</b>. This concludes the Settings page tutorial, click Done when you are ready.</>,
-		selStr : '.set-section--legal',
+		selStr : '.set-section--legal', // What: Selector String. Why: This step highlights the whole Legal section. How: GuidedTour spotlights whatever this selector matches.
 		titStr : 'Legal Information'
 
 
@@ -813,6 +912,25 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
  * alongside NAV_TAR_OBJ if/when that help mode actually gets built and
  * needs to reference these same targets.
  *
+ * 2 of these fields carry the exact same boilerplate What/Why/How
+ * wherever they appear, so none of the entries below repeat it on
+ * their own lines (see the "Repeated-shape object literals" comment
+ * exception in CLAUDE.md). `selStr` still gets its own bullet
+ * explaining what the field is FOR in general, but keeps its own
+ * per-entry inline comment too, since each entry's own Why genuinely
+ * differs, describing that entry's own specific target:
+ *
+ * - `bodEle` (Element): Body Element is this step's own coach card
+ *   body, a plain description of what the highlighted element does,
+ *   rendered as JSX so specific phrases can be bolded.
+ *
+ * - `selStr` (String): Selector String is the CSS selector(s)
+ *   GuidedTour highlights for this step (comma-separated fallbacks
+ *   honored in order, first match wins).
+ *
+ * - `titStr` (String): Title String is this step's own coach card
+ *   heading, rendered by GuidedTour as the step's own heading text.
+ *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
@@ -820,7 +938,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads each of these entries into the Today tour's own real step objects. How: This is looked up by a fixed key per step inside buiTesFun's own explore_today branch.
 
 
-	editMode : {
+	emfObj : { // What: Edit-Mode-Feature Object. Why: This is the target/content descriptor for the real Edit Mode control. How: This is spread into buiTesFun's own Edit Mode step object.
 
 
 		bodEle : <>The "Edit Mode" button will allow you to both <b>rearrange the positions of the groups and items, as well as rename the groups</b>. Go ahead and click the "Edit Mode" button now.</>,
@@ -830,7 +948,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 	},
 
-	groupGrip : {
+	gghObj : { // What: Group-Grip-Handle Object. Why: This is the target/content descriptor for the real group drag handle. How: This is spread into buiTesFun's own Movable Icon step object.
 
 
 		bodEle : <>This will <b>allow you to move an entire group section to a different position in the todo list or move item positions within a group’s section</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now. Click Next when you are ready to move on.</>,
@@ -840,7 +958,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 	},
 
-	groupsNav : {
+	gnlObj : { // What: Group-Navigation-List Object. Why: This is the target/content descriptor for the real group navigation list. How: This is spread into buiTesFun's own List Navigation step object.
 
 
 		bodEle : <>This is the todo list’s navigation, <b>allowing you to jump directly to a group’s section</b>. Over time your list can grow quite long and this helps to quickly move between the different sections of your todo list.</>,
@@ -850,7 +968,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 	},
 
-	progressRing : {
+	prfObj : { // What: Progress-Ring-Feature Object. Why: This is the target/content descriptor for the real progress ring. How: This is spread into buiTesFun's own Progress Ring step object.
 
 
 		bodEle : <>This <b>tracks your current progress of completed / total tasks for today’s todo list</b>. Once filled completely, your Day Streak will increase and the celebration animations will play.</>,
@@ -860,7 +978,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 	},
 
-	renameGroup : {
+	rgiObj : { // What: Rename-Group-Input Object. Why: This is the target/content descriptor for the real group rename input. How: This is spread into buiTesFun's own Rename Group step object.
 
 
 		bodEle : <>This will <b>allow you to change a group’s name</b>. You can go ahead and try it yourself, but once you exit this tutorial the changes will be reverted. This concludes the Today page tutorial, click Done when you are ready.</>,
@@ -879,20 +997,20 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
  * pgtNamStr = Page-Tours Name String
  *
  * @summary
- * The Page Tours group's real name at the moment the renameGroup step
+ * The Page Tours group's real name at the moment the rgiObj step
  * (see TOD_TAR_OBJ above) opens its rename input, captured off the
  * rename button's own aria-label ("Rename group {name}") before it
- * disappears behind the input. Lets a Back to the groupGrip step reset
+ * disappears behind the input. Lets a Back to the gghObj step reset
  * the input to a genuine no-op edit (draft === name) rather than an
  * actual rename, without this module otherwise needing to know the
- * live app state (PagTouCom itself is only ever passed `actions`, not
+ * live app state (PagTouCom itself is only ever passed `actStoObj`, not
  * `staAppObj`, for this purpose).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-let pgtNamStr = 'Page Tours'; // What: Page-Tours Name String. Why: canRenFun/forNamFun below need this group's own real, pre-rename name to revert to. How: This starts as the group's own default name, then is overwritten by the renameGroup step's own runFun() (see buiTesFun below) the instant it opens the rename input.
+let pgtNamStr = 'Page Tours'; // What: Page-Tours Name String. Why: canRenFun/forNamFun below need this group's own real, pre-rename name to revert to. How: This starts as the group's own default name, then is overwritten by the rgiObj step's own runFun() (see buiTesFun below) the instant it opens the rename input.
 
 
 
@@ -901,8 +1019,8 @@ let pgtNamStr = 'Page Tours'; // What: Page-Tours Name String. Why: canRenFun/fo
  *
  * @summary
  * Discards a typed rename WITHOUT exiting Edit Mode, used only for a
- * Back to the groupGrip step, which needs Edit Mode to stay on (the
- * renameGroup step's own Done doesn't need this at all, see forNamFun
+ * Back to the gghObj step, which needs Edit Mode to stay on (the
+ * rgiObj step's own Done doesn't need this at all, see forNamFun
  * below for why). Resets the input's value back to its real name first
  * so the blur that follows reads as a NO-OP commit (see tab-
  * today.jsx's GroupHeader: commit() only calls onRenameGroup when draft
@@ -929,12 +1047,15 @@ let pgtNamStr = 'Page Tours'; // What: Page-Tours Name String. Why: canRenFun/fo
  *
 */
 
-const canRenFun = () => { // What: Cancel Rename Function. Why: A Back out of the renameGroup step must discard whatever was typed without exiting Edit Mode. How: This resets the real input's value to pgtNamStr, then blurs it a frame later so the blur's own commit reads as a no-op.
+const canRenFun = () => { // What: Cancel Rename Function. Why: A Back out of the rgiObj step must discard whatever was typed without exiting Edit Mode. How: This resets the real input's value to pgtNamStr, then blurs it a frame later so the blur's own commit reads as a no-op.
 
 
 	const renInpEle = document.querySelector( '.pt-section .group-name-input' ); // What: Rename Input Element. Why: This must only act on the real, currently-open rename input. How: This looks it up fresh, since it may not exist outside Edit Mode.
 
+
 	if ( !renInpEle ) return; // What: Missing Input Guard. Why: A Back that lands here with the input already gone (never opened, or already closed) has nothing to reset. How: This returns early whenever renInpEle was not found.
+
+
 
 	renInpEle.value = pgtNamStr; // What: Input Value Reset. Why: The dispatched 'input' event below must carry the real name, not whatever the user typed. How: This overwrites renInpEle's own value with pgtNamStr.
 
@@ -965,10 +1086,10 @@ const canRenFun = () => { // What: Cancel Rename Function. Why: A Back out of th
  *
 */
 
-const forNamFun = ( actions ) => { // What: Force Name Function. Why: A click racing an open rename input's own delayed commit must still end with the group's own real name intact. How: This calls actions.renamePageTours with pgtNamStr, 200ms after this fires.
+const forNamFun = ( actStoObj ) => { // What: Force Name Function. Why: A click racing an open rename input's own delayed commit must still end with the group's own real name intact. How: This calls actStoObj.renamePageTours with pgtNamStr, 200ms after this fires.
 
 
-	setTimeout( () => actions.renamePageTours( pgtNamStr ), 200 ); // What: Deferred Rename Call. Why: This must fire safely after GroupHeader's own 150ms closing-animation commit, not before it. How: This waits 200ms, then renames the group back to pgtNamStr.
+	setTimeout( () => actStoObj.renamePageTours( pgtNamStr ), 200 ); // What: Deferred Rename Call. Why: This must fire safely after GroupHeader's own 150ms closing-animation commit, not before it. How: This waits 200ms, then renames the group back to pgtNamStr.
 
 
 };
@@ -984,16 +1105,16 @@ const forNamFun = ( actions ) => { // What: Force Name Function. Why: A click ra
  * any page that only has Step 1 so far. Advancing past the last step
  * here falls through GuidedTour's own "ran off the end" safety net
  * into onSkiTouFun, same as every other mini-tour behaved before its
- * own final Done step existed. A function of `actions` (built fresh per
+ * own final Done step existed. A function of `actStoObj` (built fresh per
  * render, like buiTs1Fun), not a static object, the Today
- * branch's own last step needs to call actions.renamePageTours
+ * branch's own last step needs to call actStoObj.renamePageTours
  * directly (see forNamFun above).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Function. Why: PagTouCom below needs this page's own full ordered step array beyond Step 1. How: This branches on pagIdeStr, spreading the matching target catalog's entries with this flow's own navigation flags.
+const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps Function. Why: PagTouCom below needs this page's own full ordered step array beyond Step 1. How: This branches on pagIdeStr, spreading the matching target catalog's entries with this flow's own navigation flags.
 
 
 	if ( pagIdeStr === 'explore_pickers' ) { // What: Pickers Branch Check. Why: The Pickers tour's own steps only apply to this one page tour. How: This returns its own step array whenever pagIdeStr matches.
@@ -1002,72 +1123,72 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 		return [ // What: Pickers Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Pickers tour's own remaining steps, each spreading PIC_TAR_OBJ's matching entry with this flow's own navigation flags.
 
 
-			{
+			{ // What: Group Filter Step. Why: This is the Pickers tour's own 2nd step. How: This spreads PIC_TAR_OBJ.pgfObj with this flow's own navigation flags.
 
 
-				...PIC_TAR_OBJ.groupFilter, // What: Group Filter Target Spread. Why: This step reuses the Pickers catalog's own groupFilter entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.groupFilter before this step's own navigation flags.
-
-				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-
-
-			}, // What: Group Filter Step. Why: This is the Pickers tour's own 2nd step. How: This spreads PIC_TAR_OBJ.groupFilter with this flow's own navigation flags.
-
-			{
-
-
-				...PIC_TAR_OBJ.typeFilter, // What: Type Filter Target Spread. Why: This step reuses the Pickers catalog's own typeFilter entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.typeFilter before this step's own navigation flags.
+				...PIC_TAR_OBJ.pgfObj, // What: Group Filter Target Spread. Why: This step reuses the Pickers catalog's own pgfObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.pgfObj before this step's own navigation flags.
 
 				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Type Filter Step. Why: This is the Pickers tour's own 3rd step. How: This spreads PIC_TAR_OBJ.typeFilter with this flow's own navigation flags.
+			},
 
-			{
-
-
-				...PIC_TAR_OBJ.createNewPickers, // What: Create New Pickers Target Spread. Why: This step reuses the Pickers catalog's own createNewPickers entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.createNewPickers before this step's own navigation flags.
-
-				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			{ // What: Type Filter Step. Why: This is the Pickers tour's own 3rd step. How: This spreads PIC_TAR_OBJ.ptfObj with this flow's own navigation flags.
 
 
-			}, // What: Create New Pickers Step. Why: This is the Pickers tour's own 4th step. How: This spreads PIC_TAR_OBJ.createNewPickers with this flow's own navigation flags.
-
-			{
-
-
-				...PIC_TAR_OBJ.pickerSelection, // What: Picker Selection Target Spread. Why: This step reuses the Pickers catalog's own pickerSelection entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.pickerSelection before this step's own navigation flags.
+				...PIC_TAR_OBJ.ptfObj, // What: Type Filter Target Spread. Why: This step reuses the Pickers catalog's own ptfObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.ptfObj before this step's own navigation flags.
 
 				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Picker Selection Step. Why: This is the Pickers tour's own 5th step. How: This spreads PIC_TAR_OBJ.pickerSelection with this flow's own navigation flags.
+			},
 
-			{
+			{ // What: Create New Pickers Step. Why: This is the Pickers tour's own 4th step. How: This spreads PIC_TAR_OBJ.cnpObj with this flow's own navigation flags.
 
 
-				...PIC_TAR_OBJ.editPicker, // What: Edit Picker Target Spread. Why: This step reuses the Pickers catalog's own editPicker entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.editPicker before this step's own navigation flags.
+				...PIC_TAR_OBJ.cnpObj, // What: Create New Pickers Target Spread. Why: This step reuses the Pickers catalog's own cnpObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.cnpObj before this step's own navigation flags.
 
 				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Edit Picker Step. Why: This is the Pickers tour's own 6th step. How: This spreads PIC_TAR_OBJ.editPicker with this flow's own navigation flags.
+			},
 
-			{
+			{ // What: Picker Selection Step. Why: This is the Pickers tour's own 5th step. How: This spreads PIC_TAR_OBJ.spsObj with this flow's own navigation flags.
 
 
-				...PIC_TAR_OBJ.manualGeneration, // What: Manual Generation Target Spread. Why: This step reuses the Pickers catalog's own manualGeneration entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.manualGeneration before this step's own navigation flags.
+				...PIC_TAR_OBJ.spsObj, // What: Picker Selection Target Spread. Why: This step reuses the Pickers catalog's own spsObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.spsObj before this step's own navigation flags.
 
-				advSelStr : PIC_TAR_OBJ.addToTodoList.clkSelStr, // What: Advance Selector String. Why: This step must hold until the pick actually resolves, not until the next step's own target merely exists. How: GuidedTour polls for this selector before advancing past this step. Pick One kicks off the multi-second spin animation, its result (the addToTodoList step's own target) isn't ready the instant the click fires. Stay on THIS step's own already-resolved coach/highlight for the whole wait instead of advancing into a blank "not found yet" dim. Polls for .pv-act--send specifically (addToTodoList's own clkSelStr, NOT its sel), since .picker-run itself (that step's own sel) already exists the whole time, spin animation included, so polling for that would advance immediately instead of waiting for the pick to actually resolve.
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			},
+
+			{ // What: Edit Picker Step. Why: This is the Pickers tour's own 6th step. How: This spreads PIC_TAR_OBJ.epsObj with this flow's own navigation flags.
+
+
+				...PIC_TAR_OBJ.epsObj, // What: Edit Picker Target Spread. Why: This step reuses the Pickers catalog's own epsObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.epsObj before this step's own navigation flags.
+
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			},
+
+			{ // What: Manual Generation Step. Why: This is the Pickers tour's own 7th step, the real Pick One button. How: This spreads PIC_TAR_OBJ.mpgObj with this flow's own navigation flags plus catBoo/advSelStr.
+
+
+				...PIC_TAR_OBJ.mpgObj, // What: Manual Generation Target Spread. Why: This step reuses the Pickers catalog's own mpgObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.mpgObj before this step's own navigation flags.
+
+				advSelStr : PIC_TAR_OBJ.atlObj.clkSelStr, // What: Advance Selector String. Why: This step must hold until the pick actually resolves, not until the next step's own target merely exists. How: GuidedTour polls for this selector before advancing past this step. Pick One kicks off the multi-second spin animation, its result (the atlObj step's own target) isn't ready the instant the click fires. Stay on THIS step's own already-resolved coach/highlight for the whole wait instead of advancing into a blank "not found yet" dim. Polls for .pv-act--send specifically (atlObj's own clkSelStr, NOT its sel), since .picker-run itself (that step's own sel) already exists the whole time, spin animation included, so polling for that would advance immediately instead of waiting for the pick to actually resolve.
 				bacBoo    : true,                                // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				catBoo    : true,                                // What: Coach-At-Top Boolean. Why: .picker-run can run taller than a short viewport even before this step's own click. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .picker-run (stage + actions) can run taller than a short viewport on its own, before Re-roll/Done even render alongside it, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .data-list step below. Confirmed live: without this, the coach overlapped the real Pick One button on an iPhone SE-sized viewport.
 				cirBoo    : true,                                // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
@@ -1075,47 +1196,47 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				tabStr    : 'picker'                             // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Manual Generation Step. Why: This is the Pickers tour's own 7th step, the real Pick One button. How: This spreads PIC_TAR_OBJ.manualGeneration with this flow's own navigation flags plus catBoo/advSelStr.
+			},
 
-			{
+			{ // What: Add To Todo List Step. Why: This is the Pickers tour's own 8th step, the real Send to Today button. How: This spreads PIC_TAR_OBJ.atlObj with this flow's own navigation flags plus catBoo/advDelNum.
 
 
-				...PIC_TAR_OBJ.addToTodoList, // What: Add To Todo List Target Spread. Why: This step reuses the Pickers catalog's own addToTodoList entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.addToTodoList before this step's own navigation flags.
+				...PIC_TAR_OBJ.atlObj, // What: Add To Todo List Target Spread. Why: This step reuses the Pickers catalog's own atlObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.atlObj before this step's own navigation flags.
 
 				advDelNum : 1600,    // What: Advance Delay Number. Why: The "Sent!" confirmation must be visible before this step advances. How: GuidedTour waits this many milliseconds after the click before advancing. Send to Today swaps its own label to "Sent!" for 1500ms (see sendToToday's own setTimeout in tab-picker.jsx) before reverting, advancing immediately would cut that confirmation off before the user ever sees it. 100ms past that own timer as a safety margin.
 				bacBoo    : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo    : true,    // What: Coach-At-Top Boolean. Why: .picker-run is taller still on this step, Re-roll/Done now render alongside the stage. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. Same short-viewport reasoning as manualGeneration just above, .picker-run is taller still here (Re-roll/Done now render alongside the stage too).
+				catBoo    : true,    // What: Coach-At-Top Boolean. Why: .picker-run is taller still on this step, Re-roll/Done now render alongside the stage. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. Same short-viewport reasoning as mpgObj just above, .picker-run is taller still here (Re-roll/Done now render alongside the stage too).
 				cirBoo    : true,    // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
 				priStr    : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr    : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Add To Todo List Step. Why: This is the Pickers tour's own 8th step, the real Send to Today button. How: This spreads PIC_TAR_OBJ.addToTodoList with this flow's own navigation flags plus catBoo/advDelNum.
+			},
 
-			{
+			{ // What: Picker Items Step. Why: This is the Pickers tour's own 9th step. How: This spreads PIC_TAR_OBJ.pivObj with this flow's own navigation flags plus catBoo.
 
 
-				...PIC_TAR_OBJ.pickerItems, // What: Picker Items Target Spread. Why: This step reuses the Pickers catalog's own pickerItems entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.pickerItems before this step's own navigation flags.
+				...PIC_TAR_OBJ.pivObj, // What: Picker Items Target Spread. Why: This step reuses the Pickers catalog's own pivObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.pivObj before this step's own navigation flags.
 
 				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,    // What: Coach-At-Top Boolean. Why: .pool-items grows with the picker's own item count and can run well past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .pool-items grows with the picker's own item count and can run WAY past a short viewport's height, same reasoning as manualGeneration above.
+				catBoo : true,    // What: Coach-At-Top Boolean. Why: .pool-items grows with the picker's own item count and can run well past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .pool-items grows with the picker's own item count and can run WAY past a short viewport's height, same reasoning as mpgObj above.
 				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Picker Items Step. Why: This is the Pickers tour's own 9th step. How: This spreads PIC_TAR_OBJ.pickerItems with this flow's own navigation flags plus catBoo.
+			},
 
-			{
+			{ // What: Add Picker Item Step. Why: This is the Pickers tour's own final step. How: This spreads PIC_TAR_OBJ.piaObj with this flow's own navigation flags, priStr 'Done' ending the tour.
 
 
-				...PIC_TAR_OBJ.addPickerItem, // What: Add Picker Item Target Spread. Why: This step reuses the Pickers catalog's own addPickerItem entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.addPickerItem before this step's own navigation flags.
+				...PIC_TAR_OBJ.piaObj, // What: Add Picker Item Target Spread. Why: This step reuses the Pickers catalog's own piaObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.piaObj before this step's own navigation flags.
 
 				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				priStr : 'Done',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			} // What: Add Picker Item Step. Why: This is the Pickers tour's own final step. How: This spreads PIC_TAR_OBJ.addPickerItem with this flow's own navigation flags, priStr 'Done' ending the tour.
+			}
 
 
 		];
@@ -1123,70 +1244,72 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 	}
 
+
+
 	if ( pagIdeStr === 'explore_stats' ) { // What: Stats Branch Check. Why: The Stats tour's own steps only apply to this one page tour. How: This returns its own step array whenever pagIdeStr matches.
 
 
 		return [ // What: Stats Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Stats tour's own remaining steps, each spreading STA_TAR_OBJ's matching entry with this flow's own navigation flags.
 
 
-			{
+			{ // What: Group Filter Step. Why: This is the Stats tour's own 2nd step. How: This spreads STA_TAR_OBJ.pgfObj with this flow's own navigation flags.
 
 
-				...STA_TAR_OBJ.groupFilter, // What: Group Filter Target Spread. Why: This step reuses the Stats catalog's own groupFilter entry as its base selector/copy. How: This spreads STA_TAR_OBJ.groupFilter before this step's own navigation flags.
-
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-
-
-			}, // What: Group Filter Step. Why: This is the Stats tour's own 2nd step. How: This spreads STA_TAR_OBJ.groupFilter with this flow's own navigation flags.
-
-			{
-
-
-				...STA_TAR_OBJ.typeFilter, // What: Type Filter Target Spread. Why: This step reuses the Stats catalog's own typeFilter entry as its base selector/copy. How: This spreads STA_TAR_OBJ.typeFilter before this step's own navigation flags.
+				...STA_TAR_OBJ.pgfObj, // What: Group Filter Target Spread. Why: This step reuses the Stats catalog's own pgfObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.pgfObj before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Type Filter Step. Why: This is the Stats tour's own 3rd step. How: This spreads STA_TAR_OBJ.typeFilter with this flow's own navigation flags.
+			},
 
-			{
-
-
-				...STA_TAR_OBJ.pickersFilter, // What: Show Filter Target Spread. Why: This step reuses the Stats catalog's own pickersFilter entry as its base selector/copy. How: This spreads STA_TAR_OBJ.pickersFilter before this step's own navigation flags.
-
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			{ // What: Type Filter Step. Why: This is the Stats tour's own 3rd step. How: This spreads STA_TAR_OBJ.ptfObj with this flow's own navigation flags.
 
 
-			}, // What: Show Filter Step. Why: This is the Stats tour's own 4th step. How: This spreads STA_TAR_OBJ.pickersFilter with this flow's own navigation flags.
-
-			{
-
-
-				...STA_TAR_OBJ.rangeFilter, // What: Range Filter Target Spread. Why: This step reuses the Stats catalog's own rangeFilter entry as its base selector/copy. How: This spreads STA_TAR_OBJ.rangeFilter before this step's own navigation flags.
+				...STA_TAR_OBJ.ptfObj, // What: Type Filter Target Spread. Why: This step reuses the Stats catalog's own ptfObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.ptfObj before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Range Filter Step. Why: This is the Stats tour's own 5th step. How: This spreads STA_TAR_OBJ.rangeFilter with this flow's own navigation flags.
+			},
 
-			{
+			{ // What: Show Filter Step. Why: This is the Stats tour's own 4th step. How: This spreads STA_TAR_OBJ.pfsObj with this flow's own navigation flags.
 
 
-				...STA_TAR_OBJ.heatmap, // What: Heatmap Target Spread. Why: This step reuses the Stats catalog's own heatmap entry as its base selector/copy. How: This spreads STA_TAR_OBJ.heatmap before this step's own navigation flags.
+				...STA_TAR_OBJ.pfsObj, // What: Show Filter Target Spread. Why: This step reuses the Stats catalog's own pfsObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.pfsObj before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,   // What: Coach-At-Top Boolean. Why: .stat-heatmap-card renders a full year's worth of cells and can run far past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .stat-heatmap-card renders a full year's worth of cells and can run FAR past a short viewport's height, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .data-list step and this tour's own pickerBreakdown step below. Confirmed live: without this, the coach overlapped the top of the heatmap on an iPhone SE-sized viewport.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			},
+
+			{ // What: Range Filter Step. Why: This is the Stats tour's own 5th step. How: This spreads STA_TAR_OBJ.trfObj with this flow's own navigation flags.
+
+
+				...STA_TAR_OBJ.trfObj, // What: Range Filter Target Spread. Why: This step reuses the Stats catalog's own trfObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.trfObj before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			},
+
+			{ // What: Heatmap Step. Why: This is the Stats tour's own 6th step, staging the next step's own single-picker scope. How: This spreads STA_TAR_OBJ.hemObj with this flow's own navigation flags plus catBoo/run.
+
+
+				...STA_TAR_OBJ.hemObj, // What: Heatmap Target Spread. Why: This step reuses the Stats catalog's own hemObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.hemObj before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				catBoo : true,   // What: Coach-At-Top Boolean. Why: .stat-heatmap-card renders a full year's worth of cells and can run far past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .stat-heatmap-card renders a full year's worth of cells and can run FAR past a short viewport's height, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .data-list step and this tour's own pbvObj step below. Confirmed live: without this, the coach overlapped the top of the heatmap on an iPhone SE-sized viewport.
 				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 
-				runFun : () => { // What: Run Function. Why: The pickerBreakdown step's own target only renders once a specific picker is the active scope, so this selects the real sample picker (unhidden for this whole tour, see unhHisFun) before that step ever mounts. How: This clicks the real scope tab matching PRE_PIC_STR.
+				runFun : () => { // What: Run Function. Why: The pbvObj step's own target only renders once a specific picker is the active scope, so this selects the real sample picker (unhidden for this whole tour, see unhHisFun) before that step ever mounts. How: This clicks the real scope tab matching PRE_PIC_STR.
 
 
 					const picTabEle = document.querySelector( `.stat-scope-tabs .picker-tab[data-picker-id="${ PRE_PIC_STR }"]` ); // What: Picker Tab Element. Why: This must click the exact tab for the real, preselected sample picker. How: This looks it up fresh via its own data-picker-id attribute.
@@ -1199,27 +1322,29 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Heatmap Step. Why: This is the Stats tour's own 6th step, staging the next step's own single-picker scope. How: This spreads STA_TAR_OBJ.heatmap with this flow's own navigation flags plus catBoo/run.
+			},
 
-			{
+			{ // What: Picker Breakdown Step. Why: This is the Stats tour's own final step. How: This spreads STA_TAR_OBJ.pbvObj with this flow's own navigation flags plus catBoo, priStr 'Done' ending the tour.
 
 
-				...STA_TAR_OBJ.pickerBreakdown, // What: Picker Breakdown Target Spread. Why: This step reuses the Stats catalog's own pickerBreakdown entry as its base selector/copy. How: This spreads STA_TAR_OBJ.pickerBreakdown before this step's own navigation flags.
+				...STA_TAR_OBJ.pbvObj, // What: Picker Breakdown Target Spread. Why: This step reuses the Stats catalog's own pbvObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.pbvObj before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,   // What: Coach-At-Top Boolean. Why: .stat-breakdown-card lists every item in the picker's pool and can run past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .stat-breakdown-card lists every item in the picker's pool and can run well past a short viewport's height, same as the heatmap step just above. Confirmed live: without this, the coach clipped the top of its own body text and overlapped the card on an iPhone SE-sized viewport.
+				catBoo : true,   // What: Coach-At-Top Boolean. Why: .stat-breakdown-card lists every item in the picker's pool and can run past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .stat-breakdown-card lists every item in the picker's pool and can run well past a short viewport's height, same as the hemObj step just above. Confirmed live: without this, the coach clipped the top of its own body text and overlapped the card on an iPhone SE-sized viewport.
 				priStr : 'Done', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				resBoo : false,  // What: Resumable Boolean. Why: This step's own target only exists because the heatmap step's own runFun() already selected a scope, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false. `scope` (tab-stats.jsx's own local useState, choosing which picker is active) is NOT persisted, a reload always lands back at 'all', so this step's own target wouldn't exist to resume into even though the real sample picker itself stays unhidden (a real, persisted field) across the reload. A reload mid this step falls back to the heatmap step, which is always safe to land on and re-runs the selection on its own next Next click.
+				resBoo : false,  // What: Resumable Boolean. Why: This step's own target only exists because the hemObj step's own runFun() already selected a scope, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false. `scope` (tab-stats.jsx's own local useState, choosing which picker is active) is NOT persisted, a reload always lands back at 'all', so this step's own target wouldn't exist to resume into even though the real sample picker itself stays unhidden (a real, persisted field) across the reload. A reload mid this step falls back to the hemObj step, which is always safe to land on and re-runs the selection on its own next Next click.
 				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			} // What: Picker Breakdown Step. Why: This is the Stats tour's own final step. How: This spreads STA_TAR_OBJ.pickerBreakdown with this flow's own navigation flags plus catBoo, priStr 'Done' ending the tour.
+			}
 
 
 		];
 
 
 	}
+
+
 
 	if ( pagIdeStr === 'explore_data' ) { // What: Data Branch Check. Why: The Data tour's own steps only apply to this one page tour. How: This returns its own step array whenever pagIdeStr matches.
 
@@ -1227,58 +1352,58 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 		return [ // What: Data Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Data tour's own remaining steps, each spreading DAT_TAR_OBJ's matching entry with this flow's own navigation flags.
 
 
-			{
+			{ // What: Group Filter Step. Why: This is the Data tour's own 2nd step. How: This spreads DAT_TAR_OBJ.pgfObj with this flow's own navigation flags.
 
 
-				...DAT_TAR_OBJ.groupFilter, // What: Group Filter Target Spread. Why: This step reuses the Data catalog's own groupFilter entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.groupFilter before this step's own navigation flags.
-
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-
-
-			}, // What: Group Filter Step. Why: This is the Data tour's own 2nd step. How: This spreads DAT_TAR_OBJ.groupFilter with this flow's own navigation flags.
-
-			{
-
-
-				...DAT_TAR_OBJ.typeFilter, // What: Type Filter Target Spread. Why: This step reuses the Data catalog's own typeFilter entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.typeFilter before this step's own navigation flags.
+				...DAT_TAR_OBJ.pgfObj, // What: Group Filter Target Spread. Why: This step reuses the Data catalog's own pgfObj entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.pgfObj before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Type Filter Step. Why: This is the Data tour's own 3rd step. How: This spreads DAT_TAR_OBJ.typeFilter with this flow's own navigation flags.
+			},
 
-			{
-
-
-				...DAT_TAR_OBJ.pickersFilter, // What: Show Filter Target Spread. Why: This step reuses the Data catalog's own pickersFilter entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.pickersFilter before this step's own navigation flags.
-
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			{ // What: Type Filter Step. Why: This is the Data tour's own 3rd step. How: This spreads DAT_TAR_OBJ.ptfObj with this flow's own navigation flags.
 
 
-			}, // What: Show Filter Step. Why: This is the Data tour's own 4th step. How: This spreads DAT_TAR_OBJ.pickersFilter with this flow's own navigation flags.
-
-			{
-
-
-				...DAT_TAR_OBJ.remindersManager, // What: Reminders Manager Target Spread. Why: This step reuses the Data catalog's own remindersManager entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.remindersManager before this step's own navigation flags.
+				...DAT_TAR_OBJ.ptfObj, // What: Type Filter Target Spread. Why: This step reuses the Data catalog's own ptfObj entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.ptfObj before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Reminders Manager Step. Why: This is the Data tour's own 5th step. How: This spreads DAT_TAR_OBJ.remindersManager with this flow's own navigation flags.
+			},
 
-			{
+			{ // What: Show Filter Step. Why: This is the Data tour's own 4th step. How: This spreads DAT_TAR_OBJ.pfsObj with this flow's own navigation flags.
 
 
-				...DAT_TAR_OBJ.pickersManager, // What: Pickers Manager Target Spread. Why: This step reuses the Data catalog's own pickersManager entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.pickersManager before this step's own navigation flags.
+				...DAT_TAR_OBJ.pfsObj, // What: Show Filter Target Spread. Why: This step reuses the Data catalog's own pfsObj entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.pfsObj before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			},
+
+			{ // What: Reminders Manager Step. Why: This is the Data tour's own 5th step. How: This spreads DAT_TAR_OBJ.rmsObj with this flow's own navigation flags.
+
+
+				...DAT_TAR_OBJ.rmsObj, // What: Reminders Manager Target Spread. Why: This step reuses the Data catalog's own rmsObj entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.rmsObj before this step's own navigation flags.
+
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			},
+
+			{ // What: Pickers Manager Step. Why: This is the Data tour's own 6th step. How: This spreads DAT_TAR_OBJ.pmsObj with this flow's own navigation flags plus catBoo.
+
+
+				...DAT_TAR_OBJ.pmsObj, // What: Pickers Manager Target Spread. Why: This step reuses the Data catalog's own pmsObj entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.pmsObj before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				catBoo : true,   // What: Coach-At-Top Boolean. Why: The unioned picker/Conditionals/Reminders card rect can run far taller than the viewport once every copy renders. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .data-list > .cat can still union to a rect much taller than the viewport once every picker card renders (6 real disposable copies plus whatever the user has of their own), the normal reserve-space padding would push the target's own bottom edge further past the fold instead of helping, exactly backwards.
@@ -1286,25 +1411,27 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Pickers Manager Step. Why: This is the Data tour's own 6th step. How: This spreads DAT_TAR_OBJ.pickersManager with this flow's own navigation flags plus catBoo.
+			},
 
-			{
+			{ // What: Create Picker Step. Why: This is the Data tour's own final step. How: This spreads DAT_TAR_OBJ.cpfObj with this flow's own navigation flags, priStr 'Done' ending the tour.
 
 
-				...DAT_TAR_OBJ.createPicker, // What: Create Picker Target Spread. Why: This step reuses the Data catalog's own createPicker entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.createPicker before this step's own navigation flags.
+				...DAT_TAR_OBJ.cpfObj, // What: Create Picker Target Spread. Why: This step reuses the Data catalog's own cpfObj entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.cpfObj before this step's own navigation flags.
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				priStr : 'Done', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			} // What: Create Picker Step. Why: This is the Data tour's own final step. How: This spreads DAT_TAR_OBJ.createPicker with this flow's own navigation flags, priStr 'Done' ending the tour.
+			}
 
 
 		];
 
 
 	}
+
+
 
 	if ( pagIdeStr === 'explore_settings' ) { // What: Settings Branch Check. Why: The Settings tour's own steps only apply to this one page tour. How: This returns its own step array whenever pagIdeStr matches, catBoo on every section but Legal (short enough to fit normally), each of these can be taller than the viewport, same "pin the coach to the top instead of padding the target past the fold" reasoning as the Data tour's own tall .data-list step above.
 
@@ -1312,23 +1439,10 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 		return [ // What: Settings Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Settings tour's own remaining steps, each spreading SET_TAR_OBJ's matching entry with this flow's own navigation flags.
 
 
-			{
+			{ // What: Appearance Step. Why: This is the Settings tour's own 2nd step. How: This spreads SET_TAR_OBJ.appObj with this flow's own navigation flags plus catBoo.
 
 
-				...SET_TAR_OBJ.appearance, // What: Appearance Target Spread. Why: This step reuses the Settings catalog's own appearance entry as its base selector/copy. How: This spreads SET_TAR_OBJ.appearance before this step's own navigation flags.
-
-				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
-				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-
-
-			}, // What: Appearance Step. Why: This is the Settings tour's own 2nd step. How: This spreads SET_TAR_OBJ.appearance with this flow's own navigation flags plus catBoo.
-
-			{
-
-
-				...SET_TAR_OBJ.daily, // What: Daily Generator Target Spread. Why: This step reuses the Settings catalog's own daily entry as its base selector/copy. How: This spreads SET_TAR_OBJ.daily before this step's own navigation flags.
+				...SET_TAR_OBJ.appObj, // What: Appearance Target Spread. Why: This step reuses the Settings catalog's own appObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.appObj before this step's own navigation flags.
 
 				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
@@ -1336,25 +1450,12 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Daily Generator Step. Why: This is the Settings tour's own 3rd step. How: This spreads SET_TAR_OBJ.daily with this flow's own navigation flags plus catBoo.
+			},
 
-			{
-
-
-				...SET_TAR_OBJ.holidays, // What: Holiday Controls Target Spread. Why: This step reuses the Settings catalog's own holidays entry as its base selector/copy. How: This spreads SET_TAR_OBJ.holidays before this step's own navigation flags.
-
-				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
-				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			{ // What: Daily Generator Step. Why: This is the Settings tour's own 3rd step. How: This spreads SET_TAR_OBJ.daiObj with this flow's own navigation flags plus catBoo.
 
 
-			}, // What: Holiday Controls Step. Why: This is the Settings tour's own 4th step. How: This spreads SET_TAR_OBJ.holidays with this flow's own navigation flags plus catBoo.
-
-			{
-
-
-				...SET_TAR_OBJ.data, // What: Data Control Target Spread. Why: This step reuses the Settings catalog's own data entry as its base selector/copy. How: This spreads SET_TAR_OBJ.data before this step's own navigation flags.
+				...SET_TAR_OBJ.daiObj, // What: Daily Generator Target Spread. Why: This step reuses the Settings catalog's own daiObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.daiObj before this step's own navigation flags.
 
 				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
@@ -1362,12 +1463,12 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: Data Control Step. Why: This is the Settings tour's own 5th step. How: This spreads SET_TAR_OBJ.data with this flow's own navigation flags plus catBoo.
+			},
 
-			{
+			{ // What: Holiday Controls Step. Why: This is the Settings tour's own 4th step. How: This spreads SET_TAR_OBJ.holObj with this flow's own navigation flags plus catBoo.
 
 
-				...SET_TAR_OBJ.about, // What: About Target Spread. Why: This step reuses the Settings catalog's own about entry as its base selector/copy. How: This spreads SET_TAR_OBJ.about before this step's own navigation flags.
+				...SET_TAR_OBJ.holObj, // What: Holiday Controls Target Spread. Why: This step reuses the Settings catalog's own holObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.holObj before this step's own navigation flags.
 
 				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
@@ -1375,19 +1476,45 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			}, // What: About Step. Why: This is the Settings tour's own 6th step. How: This spreads SET_TAR_OBJ.about with this flow's own navigation flags plus catBoo.
+			},
 
-			{
+			{ // What: Data Control Step. Why: This is the Settings tour's own 5th step. How: This spreads SET_TAR_OBJ.dtaObj with this flow's own navigation flags plus catBoo.
 
 
-				...SET_TAR_OBJ.legal, // What: Legal Target Spread. Why: This step reuses the Settings catalog's own legal entry as its base selector/copy. How: This spreads SET_TAR_OBJ.legal before this step's own navigation flags.
+				...SET_TAR_OBJ.dtaObj, // What: Data Control Target Spread. Why: This step reuses the Settings catalog's own dtaObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.dtaObj before this step's own navigation flags.
+
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
+				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			},
+
+			{ // What: About Step. Why: This is the Settings tour's own 6th step. How: This spreads SET_TAR_OBJ.aboObj with this flow's own navigation flags plus catBoo.
+
+
+				...SET_TAR_OBJ.aboObj, // What: About Target Spread. Why: This step reuses the Settings catalog's own aboObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.aboObj before this step's own navigation flags.
+
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
+				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+			},
+
+			{ // What: Legal Step. Why: This is the Settings tour's own final step, short enough to need no catBoo. How: This spreads SET_TAR_OBJ.legObj with this flow's own navigation flags, priStr 'Done' ending the tour.
+
+
+				...SET_TAR_OBJ.legObj, // What: Legal Target Spread. Why: This step reuses the Settings catalog's own legObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.legObj before this step's own navigation flags.
 
 				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 				priStr : 'Done',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-			} // What: Legal Step. Why: This is the Settings tour's own final step, short enough to need no catBoo. How: This spreads SET_TAR_OBJ.legal with this flow's own navigation flags, priStr 'Done' ending the tour.
+			}
 
 
 		];
@@ -1395,39 +1522,43 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 	}
 
+
+
 	if ( pagIdeStr !== 'explore_today' ) return []; // What: Today Fallback Guard. Why: Any page tour not yet handled above (or not this one) has no steps beyond Step 1. How: This returns an empty array whenever pagIdeStr isn't 'explore_today'.
+
+
 
 	return [ // What: Today Tour Steps Return. Why: The caller needs this page tour's own full ordered step array beyond Step 1. How: This returns the Today tour's own remaining steps, each spreading TOD_TAR_OBJ's matching entry with this flow's own navigation flags.
 
 
-		{
+		{ // What: Progress Ring Step. Why: This is the Today tour's own 2nd step. How: This spreads TOD_TAR_OBJ.prfObj with this flow's own navigation flags.
 
 
-			...TOD_TAR_OBJ.progressRing, // What: Progress Ring Target Spread. Why: This step reuses the Today catalog's own progressRing entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.progressRing before this step's own navigation flags.
-
-			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-
-
-		}, // What: Progress Ring Step. Why: This is the Today tour's own 2nd step. How: This spreads TOD_TAR_OBJ.progressRing with this flow's own navigation flags.
-
-		{
-
-
-			...TOD_TAR_OBJ.groupsNav, // What: Groups Nav Target Spread. Why: This step reuses the Today catalog's own groupsNav entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.groupsNav before this step's own navigation flags.
+			...TOD_TAR_OBJ.prfObj, // What: Progress Ring Target Spread. Why: This step reuses the Today catalog's own prfObj entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.prfObj before this step's own navigation flags.
 
 			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-		}, // What: Groups Nav Step. Why: This is the Today tour's own 3rd step. How: This spreads TOD_TAR_OBJ.groupsNav with this flow's own navigation flags.
+		},
 
-		{
+		{ // What: Groups Nav Step. Why: This is the Today tour's own 3rd step. How: This spreads TOD_TAR_OBJ.gnlObj with this flow's own navigation flags.
 
 
-			...TOD_TAR_OBJ.editMode, // What: Edit Mode Target Spread. Why: This step reuses the Today catalog's own editMode entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.editMode before this step's own navigation flags.
+			...TOD_TAR_OBJ.gnlObj, // What: Groups Nav Target Spread. Why: This step reuses the Today catalog's own gnlObj entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.gnlObj before this step's own navigation flags.
+
+			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
+			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+
+
+		},
+
+		{ // What: Edit Mode Step. Why: This is the Today tour's own 4th step, the real Edit Mode toggle. How: This spreads TOD_TAR_OBJ.emfObj with this flow's own navigation flags plus cirBoo.
+
+
+			...TOD_TAR_OBJ.emfObj, // What: Edit Mode Target Spread. Why: This step reuses the Today catalog's own emfObj entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.emfObj before this step's own navigation flags.
 
 			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 			cirBoo : true,   // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
@@ -1435,27 +1566,27 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-		}, // What: Edit Mode Step. Why: This is the Today tour's own 4th step, the real Edit Mode toggle. How: This spreads TOD_TAR_OBJ.editMode with this flow's own navigation flags plus cirBoo.
+		},
 
-		{
+		{ // What: Group Grip Step. Why: This is the Today tour's own 5th step, staging the next step's own rename input. How: This spreads TOD_TAR_OBJ.gghObj with this flow's own navigation flags plus resBoo/runFun.
 
 
-			...TOD_TAR_OBJ.groupGrip, // What: Group Grip Target Spread. Why: This step reuses the Today catalog's own groupGrip entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.groupGrip before this step's own navigation flags.
+			...TOD_TAR_OBJ.gghObj, // What: Group Grip Target Spread. Why: This step reuses the Today catalog's own gghObj entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.gghObj before this step's own navigation flags.
 
 			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
 			resBoo : false,  // What: Resumable Boolean. Why: This step's own target only exists while Edit Mode is on, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false. Edit Mode is local, unpersisted UI state (tab-today.jsx's own useState, not part of `staAppObj`), a reload always lands back with it off, so this step's own target (only rendered while Edit Mode is on) wouldn't exist to resume into.
 
-			runFun : () => { // What: Run Function. Why: The renameGroup step's own target (the Page Tours group's rename input) needs staging by a real click before that step ever mounts, same real-UI-driving pattern used throughout the Picker/Reminder tours. How: This clicks the Page Tours group's own rename button, captures its real name first, then focuses the resulting input a frame later.
+			runFun : () => { // What: Run Function. Why: The rgiObj step's own target (the Page Tours group's rename input) needs staging by a real click before that step ever mounts, same real-UI-driving pattern used throughout the Picker/Reminder tours. How: This clicks the Page Tours group's own rename button, captures its real name first, then focuses the resulting input a frame later.
 
 
-				// Found via .pt-section (see tab-today.jsx), not by matching the aria-label's current name text, a user who's already renamed Page Tours themselves, entirely outside any tour, would otherwise make this selector (and the whole rest of the step) silently never match again.
-				const renButEle = document.querySelector( '.pt-section button.group-name--editable' ); // What: Rename Button Element. Why: This is the real control that opens the rename input this step highlights. How: This looks it up fresh, since it only exists while Edit Mode is on.
+				const renButEle = document.querySelector( '.pt-section button.group-name--editable' ); // What: Rename Button Element. Why: This is the real control that opens the rename input this step highlights. How: This looks it up fresh, since it only exists while Edit Mode is on. // Found via .pt-section (see tab-today.jsx), not by matching the aria-label's current name text, a user who's already renamed Page Tours themselves, entirely outside any tour, would otherwise make this selector (and the whole rest of the step) silently never match again.
 
 				if ( renButEle ) { // What: Rename Button Existence Check. Why: This must only act on a real, currently-rendered button. How: This branches on whether renButEle was found.
 
 
 					pgtNamStr = ( renButEle.getAttribute( 'aria-label' ) || '' ).replace( /^Rename group /, '' ) || 'Page Tours'; // What: Page-Tours Name Capture. Why: canRenFun/forNamFun both need this group's own real name to revert to later. How: This strips the "Rename group " prefix off the button's own aria-label, falling back to the default name.
+
 
 					renButEle.click(); // What: Rename Button Click. Why: This is the real click that opens the rename input, mirroring what a user clicking the button themselves would do. How: This clicks renButEle.
 
@@ -1466,6 +1597,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 
 
 					const renInpEle = document.querySelector( '.pt-section .group-name-input' ); // What: Rename Input Element. Why: This is the real input this step highlights and needs focused. How: This looks it up fresh, since it only exists once the rename button above has been clicked.
+
 
 					if ( renInpEle ) renInpEle.focus({ preventScroll : true } ); // What: Rename Input Focus. Why: Explicit focus alongside the input's own autoFocus is belt-and-suspenders, since the click driving it here is synthetic, not a direct user click on the rename button itself. How: This focuses renInpEle without scrolling the page.
 
@@ -1478,26 +1610,26 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-		}, // What: Group Grip Step. Why: This is the Today tour's own 5th step, staging the next step's own rename input. How: This spreads TOD_TAR_OBJ.groupGrip with this flow's own navigation flags plus resBoo/runFun.
+		},
 
-		{
+		{ // What: Rename Group Step. Why: This is the Today tour's own final step. How: This spreads TOD_TAR_OBJ.rgiObj with this flow's own navigation flags plus resBoo/runFun, priStr 'Done' ending the tour.
 
 
-			...TOD_TAR_OBJ.renameGroup, // What: Rename Group Target Spread. Why: This step reuses the Today catalog's own renameGroup entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.renameGroup before this step's own navigation flags.
+			...TOD_TAR_OBJ.rgiObj, // What: Rename Group Target Spread. Why: This step reuses the Today catalog's own rgiObj entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.rgiObj before this step's own navigation flags.
 
 			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
 			priStr : 'Done', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			resBoo : false,  // What: Resumable Boolean. Why: This step's own target depends on Edit Mode being on and the previous step's own click, neither of which survives a reload. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false. Same as the groupGrip step's own resBoo:false, this step's target depends on BOTH Edit Mode being on AND that step's own runFun() having already clicked the rename button open, neither of which survives a reload.
+			resBoo : false,  // What: Resumable Boolean. Why: This step's own target depends on Edit Mode being on and the previous step's own click, neither of which survives a reload. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false. Same as the gghObj step's own resBoo:false, this step's target depends on BOTH Edit Mode being on AND that step's own runFun() having already clicked the rename button open, neither of which survives a reload.
 
 			runFun : () => { // What: Run Function. Why: Edit Mode's own real Cancel control alone isn't enough to discard an in-progress rename, since clicking this step's own Done button can itself race-commit a real rename first. How: This clicks the real Cancel control, then forces the real Page Tours name back afterward regardless of what the DOM did.
 
 
-				// Edit Mode's own real Cancel control discards any group reordering AND closes the rename input, GroupHeader force-closes `editing` the instant editMode itself goes false. That's still not enough on its own, though: clicking this step's own Done button (a totally different element) blurs the currently-focused rename input FIRST, as an intrinsic part of the click's own focus-change handling, which happens before React's onClick (and therefore this runFun()) ever fires, and that blur's own commit() genuinely renames the group for real if the user typed something. There's no way to intercept that ordering from here, so this doesn't try to, it just forces the real name back afterward directly, via the same action a real rename commit would have called. A harmless no-op if nothing was ever typed.
-				const canButEle = document.querySelector( '.editmode-banner-actions .btn--ghost' ); // What: Cancel Button Element. Why: This is the real control that discards any group reordering and closes the rename input. How: This looks it up fresh, since it only exists while Edit Mode is on.
+				const canButEle = document.querySelector( '.editmode-banner-actions .btn--ghost' ); // What: Cancel Button Element. Why: This is the real control that discards any group reordering and closes the rename input. How: This looks it up fresh, since it only exists while Edit Mode is on. // Edit Mode's own real Cancel control discards any group reordering AND closes the rename input, GroupHeader force-closes `editing` the instant editMode itself goes false. That's still not enough on its own, though: clicking this step's own Done button (a totally different element) blurs the currently-focused rename input FIRST, as an intrinsic part of the click's own focus-change handling, which happens before React's onClick (and therefore this runFun()) ever fires, and that blur's own commit() genuinely renames the group for real if the user typed something. There's no way to intercept that ordering from here, so this doesn't try to, it just forces the real name back afterward directly, via the same action a real rename commit would have called. A harmless no-op if nothing was ever typed.
 
 				if ( canButEle ) canButEle.click(); // What: Cancel Button Click. Why: This must only fire when the control actually exists. How: This clicks canButEle.
 
-				forNamFun( actions ); // What: Force Name Call. Why: The click above (and Done's own blur race) might still leave the group's real name overwritten. How: This forces the real pgtNamStr back, 200ms after this fires.
+
+				forNamFun( actStoObj ); // What: Force Name Call. Why: The click above (and Done's own blur race) might still leave the group's real name overwritten. How: This forces the real pgtNamStr back, 200ms after this fires.
 
 
 			},
@@ -1505,7 +1637,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
 			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 
 
-		} // What: Rename Group Step. Why: This is the Today tour's own final step. How: This spreads TOD_TAR_OBJ.renameGroup with this flow's own navigation flags plus resBoo/runFun, priStr 'Done' ending the tour.
+		}
 
 
 	];
@@ -1524,7 +1656,7 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
  * Renders whichever piece of one page's own mini-tour is currently
  * relevant: the intro modal, or the running GuidedTour. Mounted at the
  * app level (see app.jsx's own actPagStr), reads real persisted
- * staAppObj and calls real actions.* methods (see store.jsx), and
+ * staAppObj and calls real actStoObj.* methods (see store.jsx), and
  * reads/writes emlTouObj's own bus fields for the Pickers tour's own
  * onBacTouFun handling below.
  *
@@ -1535,8 +1667,8 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
  *                            PAG_COP_OBJ and buiTesFun.
  * @param props.staAppObj   - State App Object: The entire app's own
  *                            persisted state.
- * @param props.actions     - Actions: The actions that mutate
- *                            props.staAppObj.
+ * @param props.actStoObj   - Action Store Object: The shared app actions that
+ *                            mutate props.staAppObj.
  * @param props.actIdeStr   - Active Identifier String: The app's own currently
  *                            active tab id.
  * @param props.selTabFun   - Select Tab Function: Switches the app's own
@@ -1549,23 +1681,24 @@ const buiTesFun = ( pagIdeStr, actions ) => { // What: Build Tour-Extra-Steps Fu
  *
  * @example
  * ```tsx
- * PagTouCom({ pagIdeStr, staAppObj, actions, actIdeStr, selTabFun, ... })
+ * PagTouCom({ pagIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, ... })
  * // => <PagTouCom />
  * ```
  *
 */
 
-function PagTouCom ( { pagIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCloTouFun } ) {
+function PagTouCom ( { pagIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, onCloTouFun } ) {
 
 
 	const tourRecObj = ONB_EPT_ARR.find( ( curTouObj ) => curTouObj.id === pagIdeStr ); // What: Tour Record Object. Why: This page's own real page key/label are read off its own ONB_EPT_ARR manifest entry. How: This searches ONB_EPT_ARR for the entry whose own id matches pagIdeStr.
-	const navTarObj = NAV_TAR_OBJ[ tourRecObj.page ]; // What: Nav Target Object. Why: The intro modal's own fallback titStr/bodEle come from the shared nav-button catalog. How: This looks up NAV_TAR_OBJ by tourRecObj's own page.
-	const pagCopObj = PAG_COP_OBJ[ pagIdeStr ]; // What: Page Copy Object. Why: The intro modal's own title/body/pills prefer this page's own dedicated copy when it has one. How: This looks up PAG_COP_OBJ by pagIdeStr.
+	const navTarObj = NAV_TAR_OBJ[ tourRecObj.page ];                                   // What: Nav Target Object. Why: The intro modal's own fallback titStr/bodEle come from the shared nav-button catalog. How: This looks up NAV_TAR_OBJ by tourRecObj's own page.
+	const pagCopObj = PAG_COP_OBJ[ pagIdeStr ];                                         // What: Page Copy Object. Why: The intro modal's own title/body/pills prefer this page's own dedicated copy when it has one. How: This looks up PAG_COP_OBJ by pagIdeStr.
 
 
 
-	const onbStaObj = staAppObj.onboarding || {}; // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeMiniTour already re-derived from this SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, falling back to an empty object.
+	const onbStaObj = staAppObj.onboarding || {};                                                                              // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeMiniTour already re-derived from this SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, falling back to an empty object.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `page-${ pagIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this page's own tourId, otherwise null.
+
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
 
 
@@ -1573,13 +1706,18 @@ function PagTouCom ( { pagIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCl
 	const cloTouFun = ( staValStr ) => { // What: Close Tour Function. Why: Discards this tour's own disposable sample copies/borrowed history the moment it ends, however it ends, harmless no-op paths included. How: This branches on pagIdeStr to run whichever cleanup that page's own tour needs, then updates the checklist and calls onCloTouFun.
 
 
-		if ( neeCopFun( pagIdeStr ) ) clePicFun( actions ); // What: Picker Copy Cleanup Call. Why: The Pickers/Data tours must never leave a disposable picker copy behind. How: This calls clePicFun whenever neeCopFun says this page needed copies.
+		if ( neeCopFun( pagIdeStr ) ) clePicFun( actStoObj ); // What: Picker Copy Cleanup Call. Why: The Pickers/Data tours must never leave a disposable picker copy behind. How: This calls clePicFun whenever neeCopFun says this page needed copies.
 
-		else if ( pagIdeStr === 'explore_stats' ) hidHisFun( actions ); // What: Sample History Hide Call. Why: The Stats tour must re-hide the real samples it borrowed. How: This calls hidHisFun only for the Stats page.
+		else if ( pagIdeStr === 'explore_stats' ) hidHisFun( actStoObj ); // What: Sample History Hide Call. Why: The Stats tour must re-hide the real samples it borrowed. How: This calls hidHisFun only for the Stats page.
 
-		if ( pagIdeStr === 'explore_data' ) cleTasFun( actions ); // What: Task Copy Cleanup Call. Why: The Data tour must never leave a disposable reminder copy behind. How: This calls cleTasFun only for the Data page.
 
-		actions.setChecklistItem( pagIdeStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: This page's own Today launcher card reads this to know whether to keep showing itself. How: This updates this page's own checklist entry to staValStr.
+
+		if ( pagIdeStr === 'explore_data' ) cleTasFun( actStoObj ); // What: Task Copy Cleanup Call. Why: The Data tour must never leave a disposable reminder copy behind. How: This calls cleTasFun only for the Data page.
+
+
+
+		actStoObj.setChecklistItem( pagIdeStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: This page's own Today launcher card reads this to know whether to keep showing itself. How: This updates this page's own checklist entry to staValStr.
+
 
 		onCloTouFun(); // What: On Close Call. Why: app.jsx's own actPagStr must be cleared however this tour ends. How: This calls the onCloTouFun prop passed down from app.jsx.
 
@@ -1615,18 +1753,18 @@ function PagTouCom ( { pagIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCl
 
 		<GuidedTour
 			touIdeStr={ `page-${ pagIdeStr }` }
-			steObjArr={ [
+			steObjArr={ [ // What: Step Object Array. Why: GuidedTour needs this page's own full ordered step list, Step 1 plus every step buiTesFun returns beyond it. How: This combines buiTs1Fun's own first step with a spread of buiTesFun's own remaining steps into one array.
 				buiTs1Fun( tourRecObj.page,
-					pagIdeStr === 'explore_data' ? () => { seePicFun( staAppObj, actions ); seeTasFun( staAppObj, actions ); } : // What: Data Run Branch. Why: The Data tour's own Step 1 must seed BOTH disposable picker and reminder copies before its later steps can point at them. How: This calls both seePicFun and seeTasFun when pagIdeStr is 'explore_data'.
-					neeCopFun( pagIdeStr ) ? () => seePicFun( staAppObj, actions ) : // What: Pickers Run Branch. Why: The Pickers tour's own Step 1 only needs disposable picker copies. How: This calls seePicFun when neeCopFun says this page needs copies.
-					pagIdeStr === 'explore_stats' ? () => unhHisFun( staAppObj, actions ) : // What: Stats Run Branch. Why: The Stats tour's own Step 1 instead needs the real samples unhidden. How: This calls unhHisFun when pagIdeStr is 'explore_stats'.
+					pagIdeStr === 'explore_data' ? () => { seePicFun( staAppObj, actStoObj ); seeTasFun( staAppObj, actStoObj ); } : // What: Data Run Branch. Why: The Data tour's own Step 1 must seed BOTH disposable picker and reminder copies before its later steps can point at them. How: This calls both seePicFun and seeTasFun when pagIdeStr is 'explore_data'.
+					neeCopFun( pagIdeStr ) ? () => seePicFun( staAppObj, actStoObj ) : // What: Pickers Run Branch. Why: The Pickers tour's own Step 1 only needs disposable picker copies. How: This calls seePicFun when neeCopFun says this page needs copies.
+					pagIdeStr === 'explore_stats' ? () => unhHisFun( staAppObj, actStoObj ) : // What: Stats Run Branch. Why: The Stats tour's own Step 1 instead needs the real samples unhidden. How: This calls unhHisFun when pagIdeStr is 'explore_stats'.
 					undefined, // What: Default Run Branch. Why: Today/Settings touch neither pickers nor reminders, so Step 1 needs no side effect at all. How: This passes undefined as buiTs1Fun's own runSteFun for every other page.
 					'Next',
 					tourRecObj.label ),
-				...buiTesFun( pagIdeStr, actions )
+				...buiTesFun( pagIdeStr, actStoObj )
 			] }
 			resSteNum={ resTouObj ? resTouObj.step : 0 }
-			actStoObj={ actions }
+			actStoObj={ actStoObj }
 			actIdeStr={ actIdeStr }
 			selTabFun={ selTabFun }
 			onBacTouFun={ ( tarSteNum ) => { // What: On Go Back Handler. Why: A real, one-way UI transition (the Pickers tour's own pick animation, or Today's own Edit Mode) must be reversed by a real control so a Back finds its target step's own selector again. How: This branches on pagIdeStr first, then on tarSteNum, driving whichever real DOM control or bus nonce reverses that specific transition.
@@ -1645,7 +1783,7 @@ function PagTouCom ( { pagIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCl
 
 					}
 
-					else if ( tarSteNum === 5 ) { // What: Manual Generation Reset Check. Why: Back from Manual Generation to Edit Picker (tarSteNum 5 is reached only by backing out of the step whose own target is manualGeneration) needs any still-spinning pick animation cancelled, so it doesn't settle into a 'done' result behind the tour's back. How: This bumps the Pickers tour's own reset nonce on the shared bus.
+					else if ( tarSteNum === 5 ) { // What: Manual Generation Reset Check. Why: Back from Manual Generation to Edit Picker (tarSteNum 5 is reached only by backing out of the step whose own target is mpgObj) needs any still-spinning pick animation cancelled, so it doesn't settle into a 'done' result behind the tour's back. How: This bumps the Pickers tour's own reset nonce on the shared bus.
 
 
 						emlTouObj.set({ pickerTourResetNonce : ( emlTouObj.get().pickerTourResetNonce || 0 ) + 1 } ); // What: Reset Nonce Publish. Why: tab-picker.jsx's own PickerStrip only renders while phase is 'running'/'done', so bumping this unmounts it immediately, actually cancelling the in-flight animation instead of leaving it to finish on its own. How: This increments the bus's own current pickerTourResetNonce by 1.
@@ -1669,12 +1807,18 @@ function PagTouCom ( { pagIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCl
 
 					}
 
+
+
 					return; // What: Pickers Branch Return. Why: Nothing below this point applies to the Pickers tour. How: This exits onBacTouFun once the branch above has run.
 
 
 				}
 
+
+
 				if ( pagIdeStr !== 'explore_today' ) return; // What: Today Branch Guard. Why: Only the Today tour's own steps have Edit Mode/rename state to reverse. How: This returns early whenever pagIdeStr isn't 'explore_today'.
+
+
 
 				if ( tarSteNum === 3 ) { // What: Edit Mode Toggle Check. Why: Back from Group Grip to Edit Mode must toggle Edit Mode back off via its own real control, since the .foot-editmode target only exists while it's off. How: This clicks whichever real Edit Mode toggle/Cancel control is currently visible.
 
@@ -1691,7 +1835,7 @@ function PagTouCom ( { pagIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCl
 
 					canRenFun(); // What: Cancel Rename Call. Why: See canRenFun's own doc comment for why this can't just be an Escape keydown. How: This resets the real rename input's value and defers its own blur a frame.
 
-					forNamFun( actions ); // What: Force Name Call. Why: Clicking Back is ALSO a click on a different element than the input, which can blur-and-commit a real rename before this handler even runs. How: This forces the real pgtNamStr back, 200ms after this fires.
+					forNamFun( actStoObj ); // What: Force Name Call. Why: Clicking Back is ALSO a click on a different element than the input, which can blur-and-commit a real rename before this handler even runs. How: This forces the real pgtNamStr back, 200ms after this fires.
 
 
 				}
@@ -1701,11 +1845,13 @@ function PagTouCom ( { pagIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCl
 			onSkiTouFun={ () => { // What: On Skip Handler. Why: Skip can fire mid-Edit-Mode too, so any open rename input and any active Edit Mode session both need reverting before this tour actually closes. How: This forces the real name back if a rename input is open, clicks the real Cancel control if Edit Mode is on, then calls cloTouFun.
 
 
-				if ( document.querySelector( '.pt-section .group-name-input' ) ) forNamFun( actions ); // What: Open Rename Guard. Why: The same blur-races-the-click risk as a real Done click applies here too, clicking Skip is ALSO a click on a different element than the input. How: This forces the real name back only when the rename input is actually still open.
+				if ( document.querySelector( '.pt-section .group-name-input' ) ) forNamFun( actStoObj ); // What: Open Rename Guard. Why: The same blur-races-the-click risk as a real Done click applies here too, clicking Skip is ALSO a click on a different element than the input. How: This forces the real name back only when the rename input is actually still open.
+
 
 				const canButEle = document.querySelector( '.editmode-banner-actions .btn--ghost' ); // What: Cancel Button Element. Why: This reverts any group reordering, a harmless no-op if Edit Mode was never entered, since the banner/button won't exist. How: This looks it up fresh, since it only exists while Edit Mode is on.
 
 				if ( canButEle ) canButEle.click(); // What: Cancel Button Click. Why: This must only fire when the control actually exists. How: This clicks canButEle.
+
 
 				cloTouFun( 'skipped' ); // What: Close Tour Call. Why: This funnels Skip through the same cleanup any other exit path off this tour uses. How: This clears the disposable copies/borrowed history, updates the checklist to 'skipped', and calls onCloTouFun.
 

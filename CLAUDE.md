@@ -735,9 +735,24 @@ decision is captured for next time instead of getting re-asked later.
       (`/`.map((x) => (`/`return (` boundary), the comment is a live bug
       and must be converted.
   - The closing tag itself still gets nothing, same as always.
-  - **Attribute lines never get their own comment** — unlike object
-    properties, a JSX attribute is self-descriptive enough via its own
-    name/value pairing that per-attribute comments would just be noise.
+  - **Attribute lines never get their own comment, UNLESS the attribute's
+    own value is itself a multi-line construct** (a multi-line arrow
+    function body, a multi-line array/object literal, ...), in which
+    case it follows the ordinary "multi-line construct gets a comment
+    right after its own opening bracket" treatment instead, the exact
+    same as anywhere else in this doc — the attribute being a JSX prop
+    rather than a plain statement doesn't exempt it once its value
+    genuinely spans multiple lines. A short, single-line attribute value
+    (`className='x'`, `onFinTouFun={ () => cloTouFun( 'finished' ) }`)
+    stays uncommented: unlike object properties, a JSX attribute whose
+    value fits on one line is self-descriptive enough via its own name/
+    value pairing that a comment would just be noise. See
+    `onboarding-page-tours.jsx`'s own `<GuidedTour>` element for the
+    reference example: `onBacTouFun`/`onSkiTouFun` (each a multi-line
+    arrow function) and `steObjArr` (a multi-line array literal) all
+    carry their own comment on the attribute's own opening `{`/`[`,
+    while `onFinTouFun`/`resSteNum`/`actStoObj` (each a single-line
+    value) carry none.
   - A multi-line JS expression embedded in JSX that ISN'T itself an
     element — a `{condition && (` wrapper, a `{arr.map((x) => (` call —
     still gets a comment (it's still a line of code), but follows the
@@ -1476,15 +1491,24 @@ how short the body is.
   "Multi-statement one-line blocks" above (`if ( !butActEle ) {
   setIndRecObj( null ); return; }`), is exempt and stays exactly as
   compact as it already is.
-- A short "declare a value, then immediately guard-check it and return
-  early" pair (e.g.
-  `const prePlaStr = prePlaRef.current; if ( prePlaStr === tabPlaStr ) return;`)
-  counts as one small isolated unit: 1 blank line between the two lines
-  internally, but 3 blank lines on both sides separating that whole pair
-  from whatever comes before/after it — even if a neighboring pair looks
-  structurally identical (e.g. a second `declare + guard` pair checking a
-  completely different, independent condition right after it also gets 3
-  before it, not folded into the same unit).
+- A `const`/`let` declaration immediately followed by a single-line guard
+  clause that checks that SAME variable and exits (`return`/`continue`/
+  `break`), e.g.
+  `const prePlaStr = prePlaRef.current; if ( prePlaStr === tabPlaStr ) return;`,
+  gets exactly 2 blank lines between the two lines: this is the ordinary
+  "Somewhat related" tier from "### General relatedness tiering" below
+  (a plain declaration followed by a different KIND of construct
+  operating on that same data), not the tighter 1-blank tier a run of
+  same-kind plain declarations would get. The guard's own blank-line
+  treatment AFTER it needs no separate rule here at all: it's already
+  fully governed by the single-line-exit-guard rule under "### Return
+  and continue statements" below (always 3 blank lines after, regardless
+  of what precedes it). There is no separate "isolated pair" concept
+  requiring its own symmetric before/after spacing: a second, unrelated
+  `declare + guard` pair checking a completely different condition
+  immediately after the first one still naturally lands 3 blank lines
+  away, simply because that gap IS the first guard's own mandatory
+  3-blank-after, not a rule of its own.
 - A multi-line `if`/`else if`/`else` chain puts each `else if`/`else` on
   its OWN line — never cuddled onto the previous block's closing `}` (no
   `} else {`) — with exactly 1 blank line between that closing `}` and
@@ -1545,6 +1569,55 @@ how short the body is.
   Functions" and this section's own "declare + guard" bullet above) —
   once it's genuinely 2 lines, the enclosing block follows its own normal
   multi-line padding rules like any other multi-statement body.
+- **Multiple standalone `if` blocks are NOT the same thing as an `if`/
+  `else if`/`else` chain, even when they check different values of the
+  exact same variable and share an identical shape.** The 1-blank "each
+  branch is inherently related to its siblings" reasoning above is
+  specific to a real chain, where the branches are literally one
+  conditional construct and mutually exclusive by construction. A run of
+  separate `if ( cond ) { ... }` statements with no `else` tying them
+  together — most commonly an early-return dispatch on different values
+  of one variable, e.g. `if ( pagIdeStr === 'explore_pickers' ) { ...
+  return [...]; }` followed later by its own separate `if ( pagIdeStr
+  === 'explore_stats' ) { ... return [...]; }` — are genuinely
+  independent statements that only happen to look parallel, the exact
+  "looks structurally parallel but isn't really related" case "###
+  General relatedness tiering" below already warns about. These get 3
+  blank lines between them, the "Unrelated" tier, the same as any other
+  pair of independent statements. See `buiTesFun`'s own 4 standalone
+  `if ( pagIdeStr === '...' )` branch checks (Pickers/Stats/Data/
+  Settings) for the reference example: each one is its own complete,
+  self-contained early return, not a shared conditional, so 3 blank
+  lines separate each one from the next.
+- **A different, separate rule from the one above: once a complete `if`/
+  `else if`/`else` construct finishes — a single standalone `if` with no
+  `else` at all, or a full chain — the very next line of code always
+  gets 3 blank lines before it, unconditionally, no matter what that
+  next line actually is** (another separate, unrelated `if`, a plain
+  statement, a function call, ...) **and no matter whether the
+  construct's own branch(es) were written compact/single-line or as a
+  full multi-line block.** This is the same "a genuinely separate
+  decision, always 3 apart" reasoning `try`/`catch` statements already
+  get under "### try/catch statements" below, applied to if/else-if/else
+  constructs instead: by the time every branch of one conditional
+  decision has already been resolved, whatever comes next is a fresh
+  topic, never a continuation of the branch(es) that just closed, so it
+  can never collapse to the tighter 1-or-2-blank tiers a plain
+  relatedness guess might otherwise assign just because it sits right
+  next to the construct or touches similar-looking data. This stacks
+  with the bullet above rather than replacing it: that one is about
+  several independent `if`s specifically sitting next to EACH OTHER;
+  this one is about the boundary right after ANY if/else-if/else
+  construct ends, whatever comes after it. See `cloTouFun`'s own cleanup
+  dispatch for the reference example (`onboarding-page-tours.jsx`): its
+  `if ( neeCopFun( pagIdeStr ) ) ... else if ( pagIdeStr ===
+  'explore_stats' ) ...` chain is followed by a separate, standalone
+  `if ( pagIdeStr === 'explore_data' ) cleTasFun( actStoObj );`, which is
+  in turn followed by `actStoObj.setChecklistItem(...)` — despite every
+  line here being a single-line statement, not a braced block, both
+  transitions (chain → standalone `if`, and standalone `if` → the
+  `setChecklistItem` call after it) get 3 blank lines, not the 1 a quick
+  glance at their shared `pagIdeStr`/cleanup theme might suggest.
 
 ### try/catch statements
 Treated the same as an `if`/`else` chain in every respect: `catch` (and
@@ -1630,34 +1703,54 @@ catch ( e ) {
   "returning JSX", so it still gets a normal trailing/attached comment
   like any other multi-line construct. See `HelOveCom`'s own `return
   createPortal(` in `help-mode.jsx` for the reference example.
-- Single-line early-return guards (`if (!btn) { setInd(null); return; }`)
-  are exempt from the "3 before" rule entirely — they're not a standalone
-  return statement, just an inline guard, so they follow the ordinary
-  relatedness tiering below instead.
+- A single-line exit guard (`if (!btn) { setInd(null); return; }`, or the
+  fused one-liner form `if (cond) return;`) skips the standalone "3
+  before" rule ONLY when it is the guard half of the "declare a value,
+  then immediately guard-check that same value" pair documented under
+  "### if/else, while, and for statements" above — that pair's own guard
+  gets exactly 2 blank lines before it instead, per that pair's own
+  dedicated rule, since its condition operates directly on the value the
+  line right above it just declared.
+- **Every other single-line exit guard gets the full 3 blank lines
+  before it too, unconditionally, exactly like a standalone return/
+  continue statement.** General relatedness tiering is never consulted
+  to judge this "before" gap by degree: a single-line exit guard is
+  still a hard control-flow boundary regardless of how compactly it's
+  written, so whatever precedes it (when it isn't the one declared value
+  the guard itself is checking) can never be "related" to it in the
+  tiering sense, no matter how topically close it looks. This is most
+  commonly seen on a standalone fallback guard sitting right after some
+  other, unrelated `if` block's own closing `}` — e.g. `buiTesFun`'s own
+  per-branch fallback guards (`if ( pagIdeStr !== 'explore_today' )
+  return [];` immediately below the Settings tour's own `if` block's
+  closing `}`) get 3 blank lines on both sides, since the guard's own
+  condition has nothing to do with whichever branch happened to close
+  right above it.
 - **`continue` (inside a loop) follows this exact same treatment as
   `return`, with no exceptions beyond the ones already listed above**: a
   `continue;` that occupies its own line always gets 3 blank lines
   directly before it, 2 blank lines between it and the loop/if-block's
   own closing `}` when that `}` comes right after it, and a single-line
   early guard fused onto one line (`if ( conCurObj.active === false )
-  continue;`) is exempt from the "3 before" rule the same way a fused
-  early-return guard is. `continue` never takes a value, so the
-  multi-line/parenthesized-return bullet has no equivalent case for it.
-- **A single-line exit guard always gets 3 blank lines AFTER it, even
-  though it's exempt from the 3-blank rule BEFORE it.** `if (cond)
-  return;`, `if (cond) return <value>;` (a guard that returns an actual
-  value, e.g. a fallback/placeholder, rather than a bare `return;`),
-  `if (cond) continue;`, and `if (cond) break;` each hand control out of
-  the enclosing function/loop the moment they fire, the same hard
-  control-flow boundary a standalone `return`/`continue` already gets 3
-  blank lines for, just written compactly on one line instead of its own
-  block. Whatever code follows such a guard only ever runs once every one
-  of those exits has already been ruled out, so it is never "related" to
-  the guard in the ordinary tiering sense, regardless of what it actually
-  does next; this overrides whatever the General relatedness tiering
-  below would otherwise assign. Examples: `if ( logRowObj.date !==
-  dayKeyStr || logRowObj.pickerId !== picIdeStr ) continue;` in
-  `dayFlaFun`, and `if ( !iteFlaObj || !iteFlaObj.anyBoo ) return <span
+  continue;`) follows the same "3 before, unless it's the declare +
+  guard pair's own guard half" rule as a fused early-return guard.
+  `continue` never takes a value, so the multi-line/parenthesized-return
+  bullet has no equivalent case for it.
+- **A single-line exit guard always gets 3 blank lines AFTER it too.**
+  `if (cond) return;`, `if (cond) return <value>;` (a guard that returns
+  an actual value, e.g. a fallback/placeholder, rather than a bare
+  `return;`), `if (cond) continue;`, and `if (cond) break;` each hand
+  control out of the enclosing function/loop the moment they fire, the
+  same hard control-flow boundary a standalone `return`/`continue`
+  already gets 3 blank lines for, just written compactly on one line
+  instead of its own block. Whatever code follows such a guard only ever
+  runs once every one of those exits has already been ruled out, so it
+  is never "related" to the guard in the ordinary tiering sense,
+  regardless of what it actually does next; this overrides whatever the
+  General relatedness tiering below would otherwise assign. Examples:
+  `if ( logRowObj.date !== dayKeyStr || logRowObj.pickerId !==
+  picIdeStr ) continue;` in `dayFlaFun`, and `if ( !iteFlaObj ||
+  !iteFlaObj.anyBoo ) return <span
   className='dl-none dl-mk-status'>—</span>;` in `StaChiCom` (both
   `day-log.jsx`), each get 3 blank lines before the next line, not the 1
   an ordinary relatedness guess might otherwise assign just because
@@ -1859,6 +1952,25 @@ attribute) are ordered into these 8 tiers, top to bottom:
     internally, using the mechanism below independently within itself),
     with the normal 1 blank line between the two sub-groups, even though
     the whole run still shares one overall purpose.
+  - **Same keyword still isn't enough on its own — a run also splits by
+    declaration SHAPE.** A plain single-name binding (`const x = ...;`)
+    and a destructured binding (`const [ a, b ] = ...;` or `const { a,
+    b } = ...;`, most commonly a `React.useState()` pair) are a
+    different KIND of declaration from each other, the same "different
+    kind of code" reasoning the const/let split above already uses, even
+    when both use the same keyword and would otherwise tightly group.
+    Split a run that mixes the two shapes into separate sub-groups the
+    same way: 1 blank line between the sub-groups, 0-blank internally
+    within each (trivial when a sub-group is a single line). This also
+    keeps a destructured binding's own differently-shaped left-hand side
+    from forcing the `=`/comment alignment columns of an otherwise
+    plain, evenly-named run wider than they need to be. E.g.
+    `PagTouCom`'s own `onbStaObj`/`resTouObj` (2 plain bindings) followed
+    by `const [ touPhaStr, setTouPhaStr ] = React.useState( ... );` (a
+    destructured `useState` pair) gets a blank line before the
+    `useState` line, splitting it into its own single-line group rather
+    than folding it into the same 0-blank run as the two plain bindings
+    above it.
   - **This same run gets its `=` signs column-aligned**, the same
     column-alignment mechanism used elsewhere in this doc (named imports,
     object `:` alignment, ...): pad each line's own left-hand side

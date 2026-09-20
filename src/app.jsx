@@ -888,7 +888,7 @@ function AppRooCom () {
 
 				<PagTouCom
 					pagIdeStr={ actPagStr }
-					actions={ actStoObj }
+					actStoObj={ actStoObj }
 					actIdeStr={ actIdeStr }
 					staAppObj={ staAppObj }
 					onCloTouFun={ () => setActPagStr( null ) }
