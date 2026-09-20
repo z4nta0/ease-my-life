@@ -6,19 +6,19 @@
 import React from 'react'; // What: React. Why: This is the UI library the whole store hook is built on. How: This is used directly (React.useState, React.useMemo, React.useEffect, React.useRef, React.useCallback) instead of importing individual named hooks.
 
 
-import { CAD_NAM_OBJ               } from './cadence.js';               // What: Cadence. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enfWeeFun/norCadFun/isaCadFun) from migrate and from the picker-authoring actions below.
-import { CLEAN_STATE               } from './seed.js';                 // What: Clean State. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called by loadState and by the reset action below.
-import { CON_NAM_OBJ               } from './conditionals.js';         // What: Conditionals. Why: Day-off gate resolution/advancement logic lives here, not in this file. How: This is called from resolveConditionalsForDay and from applyConditionalToggle below.
-import { HOL_NAM_OBJ               } from './holidays.js';             // What: Holidays Namespace Object. Why: The holiday list backfill and the holiday-editing actions both need the canonical empty holidays shape. How: This is called (defStaFun) from migrate and from the holiday actions below.
-import { norConFun                 } from './pickers.js';              // What: Normalize Conditional Function. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicker and commitPickerEdit below.
-import { norGroFun                 } from './pickers.js';              // What: Normalize Group Function. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called from migrate and from renameGroup/renamePageTours below.
-import { norPicFun                 } from './pickers.js';              // What: Normalize Picker Function. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from migrate, addPicker, commitPickerEdit, and renamePicker below.
-import { ONB_CHE_OBJ               } from './onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (reaGenFun) from setChecklistItem below.
-import { OB_SAMPLE_PICKER_IDS      } from './onboarding-seed-data.js'; // What: Onboarding Sample Picker Ids. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicker below.
-import { PICKERS                   } from './pickers.js';              // What: Pickers. Why: The item-authoring/editing actions need this module's own ease-band averaging and per-mode defaults. How: This is called (avgEase/DEFAULT_EASE) from addItem and commitPickerEdit below.
-import { PWA                       } from './pwa.js';                  // What: Progressive Web App. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (noteFirstPicker) once, from inside addPicker below.
-import { STORAGE                   } from './storage.js';              // What: Storage. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called from loadState, saveState, flushState, and the reset/importData actions below.
-import { TASKS                     } from './tasks.js';                // What: Tasks. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout migrate, reconcileStreak, and the task actions below.
+import { CAD_NAM_OBJ } from './cadence.js';              // What: Cadence. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enfWeeFun/norCadFun/isaCadFun) from migrate and from the picker-authoring actions below.
+import { CLEAN_STATE } from './seed.js';                 // What: Clean State. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called by loadState and by the reset action below.
+import { CON_NAM_OBJ } from './conditionals.js';         // What: Conditionals. Why: Day-off gate resolution/advancement logic lives here, not in this file. How: This is called from resolveConditionalsForDay and from applyConditionalToggle below.
+import { HOL_NAM_OBJ } from './holidays.js';             // What: Holidays Namespace Object. Why: The holiday list backfill and the holiday-editing actions both need the canonical empty holidays shape. How: This is called (defStaFun) from migrate and from the holiday actions below.
+import { norConFun   } from './pickers.js';              // What: Normalize Conditional Function. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicker and commitPickerEdit below.
+import { norGroFun   } from './pickers.js';              // What: Normalize Group Function. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called from migrate and from renameGroup/renamePageTours below.
+import { norPicFun   } from './pickers.js';              // What: Normalize Picker Function. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from migrate, addPicker, commitPickerEdit, and renamePicker below.
+import { ONB_CHE_OBJ } from './onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (reaGenFun) from setChecklistItem below.
+import { ONB_SPI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicker below.
+import { PICKERS     } from './pickers.js';              // What: Pickers. Why: The item-authoring/editing actions need this module's own ease-band averaging and per-mode defaults. How: This is called (avgEase/DEFAULT_EASE) from addItem and commitPickerEdit below.
+import { PWA         } from './pwa.js';                  // What: Progressive Web App. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (noteFirstPicker) once, from inside addPicker below.
+import { STORAGE     } from './storage.js';              // What: Storage. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called from loadState, saveState, flushState, and the reset/importData actions below.
+import { TASKS       } from './tasks.js';                // What: Tasks. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout migrate, reconcileStreak, and the task actions below.
 
 // #endregion Imports
 
@@ -2949,7 +2949,7 @@ function useStore( optArgObj ) {
 				 *
 				*/
 
-				const finNamStr = OB_SAMPLE_PICKER_IDS.includes( id ) ? ( norPicFun( name ) || name ) : uniNamFun(
+				const finNamStr = ONB_SPI_ARR.includes( id ) ? ( norPicFun( name ) || name ) : uniNamFun(
 					norPicFun( name ) || name,
 					curStaObj.pickers.filter( ( curPicObj ) => !curPicObj.hidden && curPicObj.id !== picIdeStr ).map( ( curPicObj ) => curPicObj.name )
 				);

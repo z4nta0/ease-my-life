@@ -6,13 +6,13 @@
 import React from 'react'; // What: React. Why: This file's own PicTouCom component needs React in scope to compile its JSX and to call React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
 
 
-import { emlTouObj        } from './eml-tour-bus.js';            // What: Ease My Life Tour Object. Why: This publishes the running tour's prefill data for the real create-picker form and clears it again on every exit path. How: This is written to via .set() in buiNewFun's/buiAddFun's own runFun() and cloTouFun below, and read via .get() inside GuidedTour's own onBacTouFun handler.
-import { GuidedTour       } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives this picker mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-picker step array.
-import { IcoSvgCom        } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph identifying this as a picker tutorial. How: This is rendered inside the intro modal's icon prop below.
-import { IntModCom        } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each picker mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this picker's own icon/title/paragraphs/pills.
-import { MODES            } from './seed.js';                    // What: Modes. Why: The intro modal's own pill needs this picker's own mode label, not its raw mode key. How: This is looked up by picRecObj's own mode to resolve modLabStr below.
-import { OB_EXAMPLE       } from './onboarding-seed-data.js';    // What: Onboarding Example. Why: This is the "Daily Chores" sample picker's own template, one of the entries PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
-import { OB_EXTRA_PICKERS } from './onboarding-seed-data.js';    // What: Onboarding Extra Pickers. Why: This is every OTHER sample picker's own template, alongside OB_EXAMPLE the full set PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
+import { emlTouObj   } from './eml-tour-bus.js';            // What: Ease My Life Tour Object. Why: This publishes the running tour's prefill data for the real create-picker form and clears it again on every exit path. How: This is written to via .set() in buiNewFun's/buiAddFun's own runFun() and cloTouFun below, and read via .get() inside GuidedTour's own onBacTouFun handler.
+import { GuidedTour  } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives this picker mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-picker step array.
+import { IcoSvgCom   } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph identifying this as a picker tutorial. How: This is rendered inside the intro modal's icon prop below.
+import { IntModCom   } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each picker mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this picker's own icon/title/paragraphs/pills.
+import { MODES       } from './seed.js';                    // What: Modes. Why: The intro modal's own pill needs this picker's own mode label, not its raw mode key. How: This is looked up by picRecObj's own mode to resolve modLabStr below.
+import { ONB_EXA_OBJ } from './onboarding-seed-data.js';    // What: Onboarding Example Object. Why: This is the "Daily Chores" sample picker's own template, one of the entries PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
+import { ONB_ESP_ARR } from './onboarding-seed-data.js';    // What: Onboarding Extra-Sample-Pickers Array. Why: This is every OTHER sample picker's own template, alongside ONB_EXA_OBJ the full set PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
 
 // #endregion Imports
 
@@ -29,7 +29,7 @@ import { OB_EXTRA_PICKERS } from './onboarding-seed-data.js';    // What: Onboar
  * the exact same intro-modal structure and first paragraph (FIR_PAR_ELE
  * below); only the title (the picker's own name) and the second
  * paragraph differ per picker, keyed by the sample picker's own id (see
- * onboarding-seed-data.js's own OB_EXAMPLE/OB_EXTRA_PICKERS).
+ * onboarding-seed-data.js's own ONB_EXA_OBJ/ONB_ESP_ARR).
  *
  * A tour's own step count and shape vary by the sample picker's own
  * mode: the Soonest/Latest steps only exist for an ease-up/ease-down
@@ -66,7 +66,7 @@ import { OB_EXTRA_PICKERS } from './onboarding-seed-data.js';    // What: Onboar
  *
 */
 
-const PIC_SAM_OBJ = Object.fromEntries( [ OB_EXAMPLE, ...OB_EXTRA_PICKERS ].map( ( curPicObj ) => [ curPicObj.id, curPicObj ] ) ); // What: Picker Sample Object. Why: Every step below that needs this sample's own template data (name/group/mode/items/step) reads it from here. How: This maps OB_EXAMPLE plus every OB_EXTRA_PICKERS entry down to a [id, template] pair, then folds those pairs into one object.
+const PIC_SAM_OBJ = Object.fromEntries( [ ONB_EXA_OBJ, ...ONB_ESP_ARR ].map( ( curPicObj ) => [ curPicObj.id, curPicObj ] ) ); // What: Picker Sample Object. Why: Every step below that needs this sample's own template data (name/group/mode/items/step) reads it from here. How: This maps ONB_EXA_OBJ plus every ONB_ESP_ARR entry down to a [id, template] pair, then folds those pairs into one object.
 
 
 
@@ -80,7 +80,7 @@ const FIR_PAR_ELE = <>Pickers are where the magic happens. They have rules for w
  * @summary
  * Content for the picker mini-tours ("Set up a {picker name} picker"), keyed
  * by the sample picker's own id (see onboarding-seed-data.js's own
- * OB_EXAMPLE/OB_EXTRA_PICKERS). bodEle/preStr for every non-daily sample here
+ * ONB_EXA_OBJ/ONB_ESP_ARR). bodEle/preStr for every non-daily sample here
  * is a first pass, not yet manually verified live the way Daily Chores' own
  * tour was; expect touch-ups once each one gets its own dedicated pass.
  *

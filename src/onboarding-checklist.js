@@ -3,8 +3,8 @@
 
 // #region Imports
 
-import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js'; // What: Onboarding Sample Picker Ids. Why: This module needs every seeded sample picker's own id to build its own 'sample' checklist entries below and to tell a real, user-created picker apart from a sample one. How: This is read directly by reaPicFun below and mapped into CHE_ITE_ARR's own 'sample' entries.
-import { OB_SAMPLE_TASK_IDS   } from './onboarding-seed-data.js'; // What: Onboarding Sample Task Ids. Why: This module needs every seeded sample task's own id to build its own 'sample' checklist entries below. How: This is mapped into CHE_ITE_ARR's own 'sample' entries, one per seeded sample task id.
+import { ONB_SPI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: This module needs every seeded sample picker's own id to build its own 'sample' checklist entries below and to tell a real, user-created picker apart from a sample one. How: This is read directly by reaPicFun below and mapped into CHE_ITE_ARR's own 'sample' entries.
+import { ONB_STI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Task-Ids Array. Why: This module needs every seeded sample task's own id to build its own 'sample' checklist entries below. How: This is mapped into CHE_ITE_ARR's own 'sample' entries, one per seeded sample task id.
 
 // #endregion Imports
 
@@ -34,8 +34,8 @@ import { OB_SAMPLE_TASK_IDS   } from './onboarding-seed-data.js'; // What: Onboa
  * nothing needs restoring.
  *
  * Three item kinds exist. 'sample' is one of the Welcome Tour's sample
- * pickers/reminders, built programmatically from OB_SAMPLE_PICKER_IDS
- * and OB_SAMPLE_TASK_IDS, so a new sample card needs no changes here.
+ * pickers/reminders, built programmatically from ONB_SPI_ARR
+ * and ONB_STI_ARR, so a new sample card needs no changes here.
  * 'pageTour' is an "Explore the {page}" tour, not tied to any sample
  * picker/reminder: no data to finish/skip/cancel, just the same
  * checklist bookkeeping. These render in their own "Page Tours" section
@@ -84,11 +84,11 @@ export const ONB_EPT_ARR = [ // What: Onboarding Explore-Page-Tours Array. Why: 
 
 
 
-const CHE_ITE_ARR = [ // What: Checklist Item Array. Why: This is the full, flat manifest of every checklist item the app currently knows about (every sample picker, every sample task, every page tour, plus the closing Generate card), across all 3 item kinds. How: This concatenates a 'sample' entry per OB_SAMPLE_PICKER_IDS/OB_SAMPLE_TASK_IDS id, a 'pageTour' entry per ONB_EPT_ARR entry, and the single 'generate' entry, in that fixed order.
+const CHE_ITE_ARR = [ // What: Checklist Item Array. Why: This is the full, flat manifest of every checklist item the app currently knows about (every sample picker, every sample task, every page tour, plus the closing Generate card), across all 3 item kinds. How: This concatenates a 'sample' entry per ONB_SPI_ARR/ONB_STI_ARR id, a 'pageTour' entry per ONB_EPT_ARR entry, and the single 'generate' entry, in that fixed order.
 
 
-	...OB_SAMPLE_PICKER_IDS.map( ( picIdeStr ) => ( { id : picIdeStr, kind : 'sample', entityKind : 'picker' } ) ), // What: Sample Picker Entries. Why: Every seeded sample picker needs its own 'sample' checklist entry so it can be resolved (finished/skipped/cancelled) independently. How: This maps OB_SAMPLE_PICKER_IDS down to one { id, kind, entityKind } object per sample picker id.
-	...OB_SAMPLE_TASK_IDS.map( ( tasIdeStr ) => ( { id : tasIdeStr, kind : 'sample', entityKind : 'task' } ) ),     // What: Sample Task Entries. Why: Every seeded sample task needs its own 'sample' checklist entry, same reasoning as the picker entries above. How: This maps OB_SAMPLE_TASK_IDS down to one { id, kind, entityKind } object per sample task id.
+	...ONB_SPI_ARR.map( ( picIdeStr ) => ( { id : picIdeStr, kind : 'sample', entityKind : 'picker' } ) ), // What: Sample Picker Entries. Why: Every seeded sample picker needs its own 'sample' checklist entry so it can be resolved (finished/skipped/cancelled) independently. How: This maps ONB_SPI_ARR down to one { id, kind, entityKind } object per sample picker id.
+	...ONB_STI_ARR.map( ( tasIdeStr ) => ( { id : tasIdeStr, kind : 'sample', entityKind : 'task' } ) ),     // What: Sample Task Entries. Why: Every seeded sample task needs its own 'sample' checklist entry, same reasoning as the picker entries above. How: This maps ONB_STI_ARR down to one { id, kind, entityKind } object per sample task id.
 	...ONB_EPT_ARR.map( ( touConObj ) => ( { id : touConObj.id, kind : 'pageTour' } ) ),                            // What: Page Tour Entries. Why: Every page tour needs its own checklist entry too, even though it has no sample data of its own to finish/skip/cancel. How: This maps ONB_EPT_ARR down to one { id, kind } object per page tour entry, keyed by that tour's own id.
 	{ id : ONB_GII_STR, kind : 'generate' }                                                                         // What: Generate Entry. Why: The single closing Generate card needs its own checklist entry, the same as every other item. How: This is a single { id, kind } object, keyed by the fixed ONB_GII_STR above.
 
@@ -191,7 +191,7 @@ function cheStaFun ( appStaObj ) {
  *
 */
 
-function reaPicFun ( appStaObj ) { return appStaObj.pickers.filter( ( curPicObj ) => !OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) ).length; } // What: Real Picker Count Return. Why: The caller needs a plain count of every picker that isn't one of the seeded samples. How: This filters appStaObj.pickers down to ids absent from OB_SAMPLE_PICKER_IDS, then takes the resulting count.
+function reaPicFun ( appStaObj ) { return appStaObj.pickers.filter( ( curPicObj ) => !ONB_SPI_ARR.includes( curPicObj.id ) ).length; } // What: Real Picker Count Return. Why: The caller needs a plain count of every picker that isn't one of the seeded samples. How: This filters appStaObj.pickers down to ids absent from ONB_SPI_ARR, then takes the resulting count.
 
 // #endregion reaPicFun
 
@@ -311,8 +311,8 @@ function tutProFun ( appStaObj ) {
 
 
 
-	const picHidBoo = appStaObj.pickers.some( ( curPicObj ) => curPicObj.hidden && OB_SAMPLE_PICKER_IDS.includes( curPicObj.id ) );       // What: Picker Hidden Boolean. Why: The mini-tour checklist phase only starts once the Welcome Tour's own last step has actually hidden at least one sample picker. How: This checks appStaObj.pickers for any picker that's both hidden and one of the seeded sample ids.
-	const tasHidBoo = ( appStaObj.tasks || [] ).some( ( curTasObj ) => curTasObj.hidden && OB_SAMPLE_TASK_IDS.includes( curTasObj.id ) ); // What: Task Hidden Boolean. Why: A hidden sample task counts exactly the same as a hidden sample picker for this check. How: This checks appStaObj.tasks (falling back to an empty array, since old saves may be missing it) for any task that's both hidden and one of the seeded sample ids.
+	const picHidBoo = appStaObj.pickers.some( ( curPicObj ) => curPicObj.hidden && ONB_SPI_ARR.includes( curPicObj.id ) );       // What: Picker Hidden Boolean. Why: The mini-tour checklist phase only starts once the Welcome Tour's own last step has actually hidden at least one sample picker. How: This checks appStaObj.pickers for any picker that's both hidden and one of the seeded sample ids.
+	const tasHidBoo = ( appStaObj.tasks || [] ).some( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id ) ); // What: Task Hidden Boolean. Why: A hidden sample task counts exactly the same as a hidden sample picker for this check. How: This checks appStaObj.tasks (falling back to an empty array, since old saves may be missing it) for any task that's both hidden and one of the seeded sample ids.
 
 	const maiTouBoo = picHidBoo || tasHidBoo; // What: Main Tour (Ended) Boolean. Why: The mini-tour checklist phase only starts once the Welcome Tour's own last step has actually hidden at least one sample, either kind being enough. How: This is true whenever either picHidBoo or tasHidBoo is true.
 

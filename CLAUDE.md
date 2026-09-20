@@ -2512,6 +2512,12 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     surrounding context disambiguates which of the three "fre" stands
     for in practice, the same reasoning already used for `con`/`sta`/
     `per` elsewhere in this list)
+  - `tsp` → `tim` (Timestamp — found in `rowTspObj`
+    (`onboarding-seed-data.js`, 3 separate declarations) and `pikTspObj`
+    (`seed.js`, 2 separate declarations), fixed to `rowTimObj`/
+    `pikTimObj`; `tim` was already the established, correct code for
+    this exact word right next to one of the miscorrected instances,
+    `comTimStr` in `onboarding-seed-data.js`'s own `hydStaFun`)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

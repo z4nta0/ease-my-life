@@ -592,9 +592,9 @@ function picLogFun( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 	const logPicFun = ( datValObj, curPicObj, curIteObj, donValBoo, souValStr, outValStr, depEndBoo ) => { // What: Log Pick Function. Why: Every simulated pick, toss, skip, or Ease Down tick below shares the same row-building logic. How: This builds one pickLog row shaped to state.pickLog's own contract and pushes it onto picRowArr.
 
 
-		const pikTspObj = new Date( datValObj ); // What: Pick Timestamp Object. Why: A completed pick needs a plausible time of day, not just a bare date. How: This constructs a fresh copy of datValObj to set a random time of day on below.
+		const pikTimObj = new Date( datValObj ); // What: Pick Timestamp Object. Why: A completed pick needs a plausible time of day, not just a bare date. How: This constructs a fresh copy of datValObj to set a random time of day on below.
 
-		pikTspObj.setHours( 8 + Math.floor( Math.random() * 12 ), Math.floor( Math.random() * 60 ), 0, 0 ); // What: Pick Timestamp Hours Set. Why: A real completion could happen any time between 8am and 8pm, not always at the same instant. How: This sets a random hour in that range and a random minute, zeroing seconds/milliseconds.
+		pikTimObj.setHours( 8 + Math.floor( Math.random() * 12 ), Math.floor( Math.random() * 60 ), 0, 0 ); // What: Pick Timestamp Hours Set. Why: A real completion could happen any time between 8am and 8pm, not always at the same instant. How: This sets a random hour in that range and a random minute, zeroing seconds/milliseconds.
 
 
 
@@ -610,7 +610,7 @@ function picLogFun( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 			pickerName  : curPicObj.name,                                                              // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from curPicObj's own name.
 			group       : curPicObj.group,                                                             // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPicObj's own group.
 			done        : outValStr === 'rejected' ? false : donValBoo,                                // What: Done. Why: A rejected toss was never actually completed, regardless of what donValBoo says. How: This forces false for a rejected row, otherwise uses donValBoo as given.
-			completedAt : ( outValStr !== 'rejected' && donValBoo ) ? pikTspObj.toISOString() : null,  // What: Completed At. Why: Only an actually-completed, non-rejected row has a real completion timestamp. How: This uses pikTspObj's own ISO string only when both conditions hold, otherwise null.
+			completedAt : ( outValStr !== 'rejected' && donValBoo ) ? pikTimObj.toISOString() : null,  // What: Completed At. Why: Only an actually-completed, non-rejected row has a real completion timestamp. How: This uses pikTimObj's own ISO string only when both conditions hold, otherwise null.
 			source      : souValStr,                                                                    // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from souValStr.
 			...( outValStr ? { outcome : outValStr } : {} ),                                           // What: Outcome Spread. Why: Most rows have no special outcome at all, so the field should be entirely absent rather than present-but-null. How: This spreads in an outcome field only when outValStr was actually given.
 			...( depEndBoo ? { depletedEnd : true } : {} )                                             // What: Depleted End Spread. Why: Only the row ending an Ease Down depletion streak needs this flag at all. How: This spreads in depletedEnd : true only when depEndBoo is truthy.
@@ -1075,14 +1075,14 @@ function buiSeeFun() {
 
 
 		const curPicObj = picByIdeObj[ curPikObj.pickerId ]; // What: Current Picker Object. Why: This row's own denormalized pickerName/group fields need the real picker looked up. How: This looks curPikObj's own pickerId up in picByIdeObj.
-		const pikTspObj = new Date(); pikTspObj.setHours( 8, 30, 0, 0 ); // What: Pick Timestamp Object. Why: A completed today-row needs a plausible, fixed time of day. How: This is set to 8:30am on today's own real date.
+		const pikTimObj = new Date(); pikTimObj.setHours( 8, 30, 0, 0 ); // What: Pick Timestamp Object. Why: A completed today-row needs a plausible, fixed time of day. How: This is set to 8:30am on today's own real date.
 
 
 
-		return { // What: Today Row Return. Why: This is one row, in the exact shape state.pickLog itself expects, matching this pick's own today.entries counterpart. How: This builds the row from curPikObj/curPicObj/pikTspObj above.
+		return { // What: Today Row Return. Why: This is one row, in the exact shape state.pickLog itself expects, matching this pick's own today.entries counterpart. How: This builds the row from curPikObj/curPicObj/pikTimObj above.
 
 
-			completedAt : curPikObj.donValBoo ? pikTspObj.toISOString() : null, // What: Completed At. Why: Only an actually-completed row has a real completion timestamp. How: This uses pikTspObj's own ISO string only when curPikObj's own donValBoo is true, otherwise null.
+			completedAt : curPikObj.donValBoo ? pikTimObj.toISOString() : null, // What: Completed At. Why: Only an actually-completed row has a real completion timestamp. How: This uses pikTimObj's own ISO string only when curPikObj's own donValBoo is true, otherwise null.
 			date        : todIsoStr,                                            // What: Date. Why: Every one of today's own rows shares the same calendar day. How: This is todIsoStr, resolved above.
 			done        : curPikObj.donValBoo,                                  // What: Done. Why: Every row must record whether it was actually completed. How: This is copied straight from curPikObj's own donValBoo.
 			eid         : curPikObj.eid,                                        // What: Entry Id. Why: This row must reference the live today.entries row it came from. How: This is copied straight from curPikObj's own eid.

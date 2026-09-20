@@ -6,17 +6,17 @@
 import React from 'react'; // What: React. Why: This file's own PagTouCom component needs React in scope to compile its JSX and to call React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
 
 
-import { emlTouObj            } from './onboarding.jsx';             // What: Ease My Life Tour Object. Why: This publishes/reads bus nonces the Pickers-page onBacTouFun handler uses to reset or redo an in-flight picker-form animation. How: This is read via .get() and written via .set() inside PagTouCom's own onBacTouFun below.
-import { GuidedTour           } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each page mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-page step array.
-import { hydStaFun            } from './onboarding-seed-data.js';    // What: Hydrate Stats Function. Why: The Stats tour's own borrowed sample history needs converting from its static template shape into real pickLog rows. How: This is called inside unhHisFun below, passed ONBOARDING_STATS.
-import { IcoSvgCom            } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current page. How: This is rendered inside the intro modal's icon prop below.
-import { IntModCom            } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each page mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this page's own icon/title/paragraphs/pills.
-import { NAV_TAR_OBJ          } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Every page tour's own Step 1 and its own intro-modal fallback copy read this shared nav-button catalog. How: This is looked up by a page key everywhere this file needs the real nav button's own selector/title/body.
-import { OB_EXAMPLE           } from './onboarding-seed-data.js';    // What: Onboarding Example. Why: This is the "Daily Chores" sample picker's own template, one of the entries PAG_SAM_ARR below carries, and its own id is the Stats tour's own preselected picker. How: This is spread into PAG_SAM_ARR below and read directly for PRE_PIC_STR.
-import { OB_EXTRA_PICKERS     } from './onboarding-seed-data.js';    // What: Onboarding Extra Pickers. Why: This is every OTHER sample picker's own template, alongside OB_EXAMPLE the full set PAG_SAM_ARR below carries. How: This is spread into PAG_SAM_ARR below.
-import { ONB_EPT_ARR          } from './onboarding-checklist.js';    // What: Onboarding Explore-Page-Tours Array. Why: PagTouCom below needs this page tour's own id/page/label manifest entry. How: This is searched by pagIdeStr inside PagTouCom below.
-import { OB_SAMPLE_PICKER_IDS } from './onboarding-seed-data.js';    // What: Onboarding Sample Picker Ids. Why: The Stats tour needs to unhide/rehide every real sample picker (not a disposable copy) for its own duration. How: This is iterated by unhHisFun/hidHisFun below.
-import { OB_TASKS             } from './onboarding-seed-data.js';    // What: Onboarding Tasks. Why: The Data tour needs real reminders to point at, seeded/cleared as disposable copies the same way PAG_SAM_ARR is for pickers. How: This is iterated by seeTasFun/cleTasFun below.
+import { emlTouObj   } from './onboarding.jsx';             // What: Ease My Life Tour Object. Why: This publishes/reads bus nonces the Pickers-page onBacTouFun handler uses to reset or redo an in-flight picker-form animation. How: This is read via .get() and written via .set() inside PagTouCom's own onBacTouFun below.
+import { GuidedTour  } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each page mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-page step array.
+import { hydStaFun   } from './onboarding-seed-data.js';    // What: Hydrate Stats Function. Why: The Stats tour's own borrowed sample history needs converting from its static template shape into real pickLog rows. How: This is called inside unhHisFun below, passed ONBOARDING_STATS.
+import { IcoSvgCom   } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current page. How: This is rendered inside the intro modal's icon prop below.
+import { IntModCom   } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each page mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this page's own icon/title/paragraphs/pills.
+import { NAV_TAR_OBJ } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Every page tour's own Step 1 and its own intro-modal fallback copy read this shared nav-button catalog. How: This is looked up by a page key everywhere this file needs the real nav button's own selector/title/body.
+import { ONB_EXA_OBJ } from './onboarding-seed-data.js';    // What: Onboarding Example Object. Why: This is the "Daily Chores" sample picker's own template, one of the entries PAG_SAM_ARR below carries, and its own id is the Stats tour's own preselected picker. How: This is spread into PAG_SAM_ARR below and read directly for PRE_PIC_STR.
+import { ONB_ESP_ARR } from './onboarding-seed-data.js';    // What: Onboarding Extra-Sample-Pickers Array. Why: This is every OTHER sample picker's own template, alongside ONB_EXA_OBJ the full set PAG_SAM_ARR below carries. How: This is spread into PAG_SAM_ARR below.
+import { ONB_EPT_ARR } from './onboarding-checklist.js';    // What: Onboarding Explore-Page-Tours Array. Why: PagTouCom below needs this page tour's own id/page/label manifest entry. How: This is searched by pagIdeStr inside PagTouCom below.
+import { ONB_SPI_ARR } from './onboarding-seed-data.js';    // What: Onboarding Sample-Picker-Ids Array. Why: The Stats tour needs to unhide/rehide every real sample picker (not a disposable copy) for its own duration. How: This is iterated by unhHisFun/hidHisFun below.
+import { ONB_TAS_ARR } from './onboarding-seed-data.js';    // What: Onboarding Task Array. Why: The Data tour needs real reminders to point at, seeded/cleared as disposable copies the same way PAG_SAM_ARR is for pickers. How: This is iterated by seeTasFun/cleTasFun below.
 
 // #endregion Imports
 
@@ -40,7 +40,7 @@ import { OB_TASKS             } from './onboarding-seed-data.js';    // What: On
  * `pt_`-prefixed COPIES of the Welcome Tour's own hidden samples
  * (PAG_SAM_ARR) rather than risk the user's own interaction here
  * corrupting that shared reference data; the Data tour does the same
- * for reminders (OB_TASKS), and both clean their copies up the moment
+ * for reminders (ONB_TAS_ARR), and both clean their copies up the moment
  * their own tour ends. The Stats tour has no edit/delete controls at
  * all, so it instead unhides the REAL hidden samples for its own
  * duration (a copy would also start with zero pick history, leaving
@@ -234,7 +234,7 @@ const buiTs1Fun = ( pagKeyStr, runSteFun, priButStr = 'Next', butLabStr = null )
  *
 */
 
-const PAG_SAM_ARR = [ OB_EXAMPLE, ...OB_EXTRA_PICKERS ]; // What: Page Sample Array. Why: seePicFun/clePicFun below need every sample picker's own template to seed/clear a disposable copy of. How: This flattens OB_EXAMPLE and every OB_EXTRA_PICKERS entry into one array.
+const PAG_SAM_ARR = [ ONB_EXA_OBJ, ...ONB_ESP_ARR ]; // What: Page Sample Array. Why: seePicFun/clePicFun below need every sample picker's own template to seed/clear a disposable copy of. How: This flattens ONB_EXA_OBJ and every ONB_ESP_ARR entry into one array.
 
 
 
@@ -322,7 +322,7 @@ const clePicFun = ( actStoObj ) => { // What: Clear Picker Function. Why: A disp
  * The Data tour's own Reminders step needs real reminders to point at,
  * same reasoning as PAG_SAM_ARR above (real edit/delete controls are
  * exposed there too, so a disposable copy protects the real hidden
- * samples), just for OB_TASKS instead of pickers. Data-only, the
+ * samples), just for ONB_TAS_ARR instead of pickers. Data-only, the
  * Pickers tour never touches reminders at all.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -331,10 +331,10 @@ const clePicFun = ( actStoObj ) => { // What: Clear Picker Function. Why: A disp
 
 const tasCopFun = ( samIdeStr ) => `pt_${ samIdeStr }`; // What: Task Copy Function. Why: Every disposable reminder copy's own id needs deriving from its real sample's id, consistently. How: This prefixes samIdeStr with 'pt_'.
 
-const seeTasFun = ( staAppObj, actStoObj ) => { // What: Seed Task Function. Why: The Data tour needs real, disposable copies of every sample reminder seeded before its Reminders step can point at them. How: This adds one copy per OB_TASKS entry, skipping any already seeded.
+const seeTasFun = ( staAppObj, actStoObj ) => { // What: Seed Task Function. Why: The Data tour needs real, disposable copies of every sample reminder seeded before its Reminders step can point at them. How: This adds one copy per ONB_TAS_ARR entry, skipping any already seeded.
 
 
-	OB_TASKS.forEach( ( samTasObj ) => { // What: Sample Task Object Loop. Why: Every sample reminder's own template needs its own disposable copy. How: This iterates OB_TASKS, seeding one copy per entry.
+	ONB_TAS_ARR.forEach( ( samTasObj ) => { // What: Sample Task Object Loop. Why: Every sample reminder's own template needs its own disposable copy. How: This iterates ONB_TAS_ARR, seeding one copy per entry.
 
 
 		const copIdeStr = tasCopFun( samTasObj.id ); // What: Task Copy Identifier String. Why: This copy's own id must never collide with the real hidden reminder's own id. How: This derives it from samTasObj's own id via tasCopFun.
@@ -362,10 +362,10 @@ const seeTasFun = ( staAppObj, actStoObj ) => { // What: Seed Task Function. Why
 
 };
 
-const cleTasFun = ( actStoObj ) => { // What: Clear Task Function. Why: A disposable reminder copy must never linger in the user's real reminder list once its own tour ends. How: This removes every OB_TASKS entry's own copy id, a harmless no-op for one never seeded.
+const cleTasFun = ( actStoObj ) => { // What: Clear Task Function. Why: A disposable reminder copy must never linger in the user's real reminder list once its own tour ends. How: This removes every ONB_TAS_ARR entry's own copy id, a harmless no-op for one never seeded.
 
 
-	OB_TASKS.forEach( ( samTasObj ) => actStoObj.removeTask( tasCopFun( samTasObj.id ) ) ); // What: Remove Task Call. Why: Every seeded copy must be discarded, not just some. How: This removes a task at tasCopFun's own derived id for each OB_TASKS entry.
+	ONB_TAS_ARR.forEach( ( samTasObj ) => actStoObj.removeTask( tasCopFun( samTasObj.id ) ) ); // What: Remove Task Call. Why: Every seeded copy must be discarded, not just some. How: This removes a task at tasCopFun's own derived id for each ONB_TAS_ARR entry.
 
 
 };
@@ -406,10 +406,10 @@ const cleTasFun = ( actStoObj ) => { // What: Clear Task Function. Why: A dispos
 const unhHisFun = ( staAppObj, actStoObj ) => { // What: Unhide History Function. Why: The Stats tour's own heatmap/breakdown need real sample history to demonstrate, not an empty disposable copy. How: This unhides every real sample picker, backfilling its own pickLog history if none exists yet.
 
 
-	OB_SAMPLE_PICKER_IDS.forEach( ( samIdeStr ) => actStoObj.updatePicker( samIdeStr, { hidden : false } ) ); // What: Unhide Sample Picker Call. Why: The Stats tour's own steps need every real sample picker visible for its own duration. How: This updates every OB_SAMPLE_PICKER_IDS entry's own hidden field to false.
+	ONB_SPI_ARR.forEach( ( samIdeStr ) => actStoObj.updatePicker( samIdeStr, { hidden : false } ) ); // What: Unhide Sample Picker Call. Why: The Stats tour's own steps need every real sample picker visible for its own duration. How: This updates every ONB_SPI_ARR entry's own hidden field to false.
 
 
-	if ( !( staAppObj.pickLog || [] ).some( ( curRowObj ) => OB_SAMPLE_PICKER_IDS.includes( curRowObj.pickerId ) ) ) { // What: Missing History Check. Why: Only a genuinely virgin-install user (or a first run of this tour) is missing the precomputed sample history. How: This checks whether any existing pickLog row already belongs to a sample picker.
+	if ( !( staAppObj.pickLog || [] ).some( ( curRowObj ) => ONB_SPI_ARR.includes( curRowObj.pickerId ) ) ) { // What: Missing History Check. Why: Only a genuinely virgin-install user (or a first run of this tour) is missing the precomputed sample history. How: This checks whether any existing pickLog row already belongs to a sample picker.
 
 
 		import( './onboarding-stats-data.js' ).then( ( { ONBOARDING_STATS } ) => { // What: Stats Data Import. Why: The precomputed sample history template is large enough to warrant a lazy, on-demand import instead of a static one. How: This dynamically imports onboarding-stats-data.js, then seeds its own ONBOARDING_STATS export.
@@ -428,10 +428,10 @@ const unhHisFun = ( staAppObj, actStoObj ) => { // What: Unhide History Function
 
 
 
-const hidHisFun = ( actStoObj ) => { // What: Hide History Function. Why: The real sample pickers borrowed by the Stats tour must go back to hidden the moment that tour ends. How: This updates every OB_SAMPLE_PICKER_IDS entry's own hidden field back to true.
+const hidHisFun = ( actStoObj ) => { // What: Hide History Function. Why: The real sample pickers borrowed by the Stats tour must go back to hidden the moment that tour ends. How: This updates every ONB_SPI_ARR entry's own hidden field back to true.
 
 
-	OB_SAMPLE_PICKER_IDS.forEach( ( samIdeStr ) => actStoObj.updatePicker( samIdeStr, { hidden : true } ) ); // What: Hide Sample Picker Call. Why: This must run for every sample picker unhHisFun could have unhidden. How: This updates every OB_SAMPLE_PICKER_IDS entry's own hidden field to true.
+	ONB_SPI_ARR.forEach( ( samIdeStr ) => actStoObj.updatePicker( samIdeStr, { hidden : true } ) ); // What: Hide Sample Picker Call. Why: This must run for every sample picker unhHisFun could have unhidden. How: This updates every ONB_SPI_ARR entry's own hidden field to true.
 
 
 };
@@ -586,7 +586,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 
-const PRE_PIC_STR = OB_EXAMPLE.id; // What: Preselect Picker String. Why: The Stats tour's own single-picker steps below pre-select this exact real sample, matched by [data-picker-id] on the tab button (tab-stats.jsx), not by its display name, since nothing stops a user from naming their own picker the same thing. How: This reads OB_EXAMPLE's own id straight through.
+const PRE_PIC_STR = ONB_EXA_OBJ.id; // What: Preselect Picker String. Why: The Stats tour's own single-picker steps below pre-select this exact real sample, matched by [data-picker-id] on the tab button (tab-stats.jsx), not by its display name, since nothing stops a user from naming their own picker the same thing. How: This reads ONB_EXA_OBJ's own id straight through.
 
 
 

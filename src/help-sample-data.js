@@ -3,10 +3,10 @@
 
 // #region Imports
 
-import { hydStaFun              } from './onboarding-seed-data.js'; // What: Hydrate Stats Function. Why: This converts the precomputed onboarding stats into real dated pickLog/reminderLog/reminderSkipLog rows. How: This is called by unhHisFun the first time help mode needs a genuine year of history to show.
-import { OB_EXAMPLE             } from './onboarding-seed-data.js'; // What: Onboarding Example. Why: This is the real onboarding sample picker, borrowed here so help mode's own copy of it looks identical. How: This is read alongside OB_EXTRA_PICKERS by sedPicFun/clePicFun below.
-import { OB_EXTRA_PICKERS       } from './onboarding-seed-data.js'; // What: Onboarding Extra Pickers. Why: These are the real onboarding sample pickers, borrowed here so help mode's own copies of them look identical. How: This is read alongside OB_EXAMPLE by sedPicFun/clePicFun below.
-import { OB_SAMPLE_PICKER_IDS   } from './onboarding-seed-data.js'; // What: Onboarding Sample Picker Ids. Why: Help mode's Stats page borrows the real onboarding sample pickers directly rather than seeding its own copies. How: This is read by unhHisFun/hidHisFun to (un)hide each one by id.
+import { hydStaFun   } from './onboarding-seed-data.js'; // What: Hydrate Stats Function. Why: This converts the precomputed onboarding stats into real dated pickLog/reminderLog/reminderSkipLog rows. How: This is called by unhHisFun the first time help mode needs a genuine year of history to show.
+import { ONB_EXA_OBJ } from './onboarding-seed-data.js'; // What: Onboarding Example Object. Why: This is the real onboarding sample picker, borrowed here so help mode's own copy of it looks identical. How: This is read alongside ONB_ESP_ARR by sedPicFun/clePicFun below.
+import { ONB_ESP_ARR } from './onboarding-seed-data.js'; // What: Onboarding Extra-Sample-Pickers Array. Why: These are the real onboarding sample pickers, borrowed here so help mode's own copies of them look identical. How: This is read alongside ONB_EXA_OBJ by sedPicFun/clePicFun below.
+import { ONB_SPI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: Help mode's Stats page borrows the real onboarding sample pickers directly rather than seeding its own copies. How: This is read by unhHisFun/hidHisFun to (un)hide each one by id.
 
 // #endregion Imports
 
@@ -189,7 +189,7 @@ const sedPicFun = ( appStaObj, actShaObj ) => { // What: Seed Pickers Function. 
 
 
 
-	[ OB_EXAMPLE, ...OB_EXTRA_PICKERS ].forEach( ( curPicObj ) => { // What: Onboarding Sample Copy Loop. Why: Every onboarding-sample picker needs its own disposable, hlp_-namespaced copy seeded alongside the help-only pickers below. How: This iterates OB_EXAMPLE plus every OB_EXTRA_PICKERS entry, building and adding one copy per entry.
+	[ ONB_EXA_OBJ, ...ONB_ESP_ARR ].forEach( ( curPicObj ) => { // What: Onboarding Sample Copy Loop. Why: Every onboarding-sample picker needs its own disposable, hlp_-namespaced copy seeded alongside the help-only pickers below. How: This iterates ONB_EXA_OBJ plus every ONB_ESP_ARR entry, building and adding one copy per entry.
 
 
 		const copIdeStr = helIdeFun( curPicObj.id ); // What: Copy Identifier String. Why: The copy must live in help mode's own hlp_-prefixed id namespace, never the real onboarding sample's own id. How: This prefixes curPicObj's own id via helIdeFun.
@@ -235,7 +235,7 @@ const sedPicFun = ( appStaObj, actShaObj ) => { // What: Seed Pickers Function. 
 const clePicFun = ( actShaObj ) => { // What: Clear Pickers Function. Why: Every picker/conditional seeded by sedPicFun must be torn back down the moment help mode turns off. How: This removes each onboarding-sample copy and help-only picker by id, then removes the day-off conditional.
 
 
-	[ OB_EXAMPLE, ...OB_EXTRA_PICKERS ].forEach( ( curPicObj ) => actShaObj.removePicker( helIdeFun( curPicObj.id ) ) ); // What: Onboarding Sample Copy Removal Loop. Why: Every copy seeded by sedPicFun's own onboarding-sample loop must be removed again. How: This maps each entry's own id through helIdeFun to find its copy's id, then removes it.
+	[ ONB_EXA_OBJ, ...ONB_ESP_ARR ].forEach( ( curPicObj ) => actShaObj.removePicker( helIdeFun( curPicObj.id ) ) ); // What: Onboarding Sample Copy Removal Loop. Why: Every copy seeded by sedPicFun's own onboarding-sample loop must be removed again. How: This maps each entry's own id through helIdeFun to find its copy's id, then removes it.
 
 	[ ...EXT_PIC_ARR, PIC_GAT_OBJ ].forEach( ( curPicObj ) => actShaObj.removePicker( curPicObj.id ) ); // What: Help-Only Picker Removal Loop. Why: Every help-only picker seeded by sedPicFun's own second loop must be removed again. How: This removes each entry directly by its own already-hlp_-prefixed id.
 
@@ -293,10 +293,10 @@ const cleTasFun = ( actShaObj ) => { // What: Clear Tasks Function. Why: Every r
 const unhHisFun = ( appStaObj, actShaObj ) => { // What: Unhide History Function. Why: The Stats page needs a genuine year of history to show while help mode is on (see the comment above this declaration). How: This unhides every real onboarding sample picker, then lazily seeds their precomputed history the first time it's actually missing.
 
 
-	OB_SAMPLE_PICKER_IDS.forEach( ( curIdeStr ) => actShaObj.updatePicker( curIdeStr, { hidden : false } ) ); // What: Onboarding Sample Unhide Loop. Why: Stats can only chart a picker's own history while that picker isn't hidden. How: This unhides every onboarding sample picker by id.
+	ONB_SPI_ARR.forEach( ( curIdeStr ) => actShaObj.updatePicker( curIdeStr, { hidden : false } ) ); // What: Onboarding Sample Unhide Loop. Why: Stats can only chart a picker's own history while that picker isn't hidden. How: This unhides every onboarding sample picker by id.
 
 
-	if ( !( appStaObj.pickLog || [] ).some( ( curRowObj ) => OB_SAMPLE_PICKER_IDS.includes( curRowObj.pickerId ) ) ) { // What: Missing History Check. Why: The precomputed history only ever needs seeding once; re-toggling help mode on and off must not seed it again. How: This checks whether any existing pickLog row already belongs to an onboarding sample picker.
+	if ( !( appStaObj.pickLog || [] ).some( ( curRowObj ) => ONB_SPI_ARR.includes( curRowObj.pickerId ) ) ) { // What: Missing History Check. Why: The precomputed history only ever needs seeding once; re-toggling help mode on and off must not seed it again. How: This checks whether any existing pickLog row already belongs to an onboarding sample picker.
 
 
 		import( './onboarding-stats-data.js' ).then( ( { ONBOARDING_STATS } ) => { // What: Onboarding Stats Data Import. Why: The precomputed history is large enough to load lazily rather than bundling it into every page. How: This dynamically imports onboarding-stats-data.js, resolving with its own ONBOARDING_STATS export.
@@ -318,7 +318,7 @@ const unhHisFun = ( appStaObj, actShaObj ) => { // What: Unhide History Function
 const hidHisFun = ( actShaObj ) => { // What: Hide History Function. Why: The onboarding sample pickers borrowed by unhHisFun must be hidden again the moment help mode turns off. How: This re-hides every onboarding sample picker by id.
 
 
-	OB_SAMPLE_PICKER_IDS.forEach( ( curIdeStr ) => actShaObj.updatePicker( curIdeStr, { hidden : true } ) ); // What: Onboarding Sample Hide Loop. Why: A picker borrowed only for help mode's own Stats display shouldn't stay visible once help mode is off. How: This re-hides every onboarding sample picker by id.
+	ONB_SPI_ARR.forEach( ( curIdeStr ) => actShaObj.updatePicker( curIdeStr, { hidden : true } ) ); // What: Onboarding Sample Hide Loop. Why: A picker borrowed only for help mode's own Stats display shouldn't stay visible once help mode is off. How: This re-hides every onboarding sample picker by id.
 
 
 };
