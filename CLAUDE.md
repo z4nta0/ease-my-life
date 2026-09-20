@@ -574,24 +574,67 @@ decision is captured for next time instead of getting re-asked later.
       recovers real, useful alignment across dozens of objects that
       would otherwise have none at all.
       - **Exception — a GuidedTour step object's own `bodEle` always
-        goes last, even when its own comment is short enough that it
-        wouldn't otherwise trip the 100-char threshold.** A GuidedTour
-        step object (identified by its own `bodEle`+`tabStr`+`titStr`
-        trio, the shape documented in `onboarding-tour-runner.jsx`) is
-        reused as dozens of near-identical sibling objects across
-        `onboarding.jsx`/`onboarding-picker-tours.jsx`/`onboarding-
-        page-tours.jsx`/`onboarding-app-features.jsx`/`onboarding-
-        reminder-tours.jsx`, and `bodEle` is inherently this shape's own
-        prose field regardless of how long any one instance's own copy
-        happens to be. Measuring its comment length case by case (the
-        general rule just above) produces an inconsistent shape across
-        otherwise-identical sibling step objects for no real reason, a
-        short `bodEle` sitting inline in its own natural alphabetical
-        spot on one step while every other step's own `bodEle` sits
-        alone at the end. Force it into the long/trailing group
-        unconditionally for this one specific shape instead, so every
-        GuidedTour step object looks the same regardless of how long
-        its own particular tutorial copy happens to be.
+        joins the outlier group, even when its own comment is short
+        enough that it wouldn't otherwise trip the 100-char threshold.**
+        A GuidedTour step object (identified by its own `bodEle`+
+        `tabStr`+`titStr` trio, the shape documented in `onboarding-
+        tour-runner.jsx`) is reused as dozens of near-identical sibling
+        objects across `onboarding.jsx`/`onboarding-picker-tours.jsx`/
+        `onboarding-page-tours.jsx`/`onboarding-app-features.jsx`/
+        `onboarding-reminder-tours.jsx`, and `bodEle` is inherently this
+        shape's own prose field regardless of how long any one
+        instance's own copy happens to be. Measuring its comment length
+        case by case (the general rule just above) produces an
+        inconsistent shape across otherwise-identical sibling step
+        objects for no real reason, a short `bodEle` sitting inline in
+        its own natural alphabetical spot on one step while every other
+        step's own `bodEle` sits alone at the end. Force it into the
+        outlier group unconditionally for this one specific shape
+        instead, so every GuidedTour step object looks the same
+        regardless of how long its own particular tutorial copy happens
+        to be. Where exactly it lands WITHIN that outlier group (last
+        overall, or ahead of some other outlier) is governed by the
+        tiering the next bullet describes, since a step object can carry
+        more than one kind of outlier at once (most commonly `bodEle`
+        alongside a `runFun`).
+      - **A property whose value is a genuinely multi-line construct, a
+        function (e.g. a step object's own `runFun`), an array literal,
+        or an object literal, is a long outlier too, even when its own
+        trailing comment would fit on one line just fine (a function
+        commonly has no trailing comment at all, since its own body is
+        already commented line by line).** Its VALUE, not its comment,
+        is what makes it disruptive: a multi-line body sitting between
+        two short scalar properties breaks up what would otherwise be
+        one clean, tightly-aligned run. It belongs to the same "long
+        outlier" category a long single-line value like `bodEle` already
+        belongs to, just reached via genuine multi-line length instead of
+        a single very long line, and both forms move to the end of the
+        object together, after every short scalar property.
+        **The two outlier kinds are not interchangeable within that
+        trailing group, though: a long SINGLE-LINE value (`bodEle`-style)
+        always sits closer to the short group than a genuinely
+        MULTI-LINE construct (a function, array, or object) does**,
+        since a long single-line value is still fundamentally the same
+        kind of thing as an ordinary short property (one line, one
+        value), just longer, while a multi-line construct is a
+        structurally different kind of thing entirely. Concretely: short
+        scalar group, then every single-line-long outlier (alphabetized
+        among themselves, `bodEle` included), then every multi-line
+        construct outlier (alphabetized among themselves). `bodEle`
+        therefore lands last only when no multi-line construct outlier
+        also exists in the same object, which is the common case; when a
+        `runFun` (or any other multi-line construct) is also present,
+        `bodEle` sits ahead of it instead, not after. Spacing between
+        the short group and the first outlier, and between each pair of
+        outliers, follows the ordinary multi-line-property padding rule
+        (1 blank line on each side, since none of them is the object's
+        own true first/last entry once the final outlier claims that
+        spot). See `buiNewFun`'s own returned step object in
+        `onboarding-picker-tours.jsx` for the reference example:
+        `bacBoo`/`cirBoo`/`priStr`/`selStr`/`sttBoo`/`tabStr`/`titStr`
+        form one tight, aligned short group, followed by `bodEle` (a
+        long single-line value), followed by `runFun` (a genuinely
+        multi-line construct) at the very end.
 - **Structure — every comment is exactly one line**, following this exact
   template: `// What: <Name Expansion Or Short Descriptive Purpose, Title
   Cased>. Why: <a terse but complete sentence explaining why this exists>.
@@ -1122,6 +1165,26 @@ don't invent one for anything else yet:
   unaffected — this only applies to the backtick-templated form.
 
 ### Arrays and objects
+- **Once an array literal cannot stay on a single line, every one of its
+  entries gets its own line — never 2+ entries packed onto one shared
+  physical line.** This is the array-literal counterpart to the object-
+  literal and JSX-attribute versions of the same rule elsewhere in this
+  doc (`### Multi-line attributes`' own "2+ attributes always goes
+  multi-line, one per line" rule; the object-literal "2+ properties gets
+  split to one property per line" rule below): once a construct is
+  multi-line at all, it commits fully, rather than a partial collapse
+  that crams several entries onto a leftover line. This applies
+  regardless of entry shape (a bare identifier, a function call, a
+  conditional spread, a literal) and regardless of how short an
+  individual entry is; a short entry sitting next to other short entries
+  is not an exception; the byte savings of "these all clearly fit
+  together" is never worth the inconsistency of some entries getting
+  their own line while others don't. See `onboarding-picker-tours.jsx`'s
+  own `steObjArr` for a fixed reference example: what used to be 4
+  entries crammed onto a shared line (`NAV_STE_OBJ, buiNewFun(...),
+  NAM_STE_OBJ, GRO_STE_OBJ,`) now gets one line per entry instead, each
+  with its own trailing comment per the usual "every line of code gets a
+  comment" rule.
 - No blank lines between entries within the same array/object literal
   (e.g. the rows of a plain config array) — but directly after the opening
   `[`/`{` and directly before the closing `]`/`}`, use 2 blank lines, same

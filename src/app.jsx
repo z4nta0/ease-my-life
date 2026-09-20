@@ -872,7 +872,7 @@ function AppRooCom () {
 
 				<PicTouCom
 					picIdeStr={ actPicStr }
-					actions={ actStoObj }
+					actStoObj={ actStoObj }
 					actIdeStr={ actIdeStr }
 					staAppObj={ staAppObj }
 					onCloTouFun={ () => setActPicStr( null ) }

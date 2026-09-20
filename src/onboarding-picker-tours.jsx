@@ -11,7 +11,6 @@ import { GuidedTour       } from './onboarding-tour-runner.jsx'; // What: Guided
 import { IcoSvgCom        } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph identifying this as a picker tutorial. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom        } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each picker mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this picker's own icon/title/paragraphs/pills.
 import { MODES            } from './seed.js';                    // What: Modes. Why: The intro modal's own pill needs this picker's own mode label, not its raw mode key. How: This is looked up by picRecObj's own mode to resolve modLabStr below.
-import { NAV_TAR_OBJ      } from './onboarding-targets.jsx';     // What: Nav Target Object. Why: Step 1's own body copy is kept in sync with the Pickers page tour's own Step 1, which is built from this object. How: This is not referenced directly in this file's own code, only in NAV_STE_OBJ's own comment explaining that copy-sync relationship; left as an unused import, matching this pass's treatment of other currently-unused bindings elsewhere in this codebase.
 import { OB_EXAMPLE       } from './onboarding-seed-data.js';    // What: Onboarding Example. Why: This is the "Daily Chores" sample picker's own template, one of the entries PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
 import { OB_EXTRA_PICKERS } from './onboarding-seed-data.js';    // What: Onboarding Extra Pickers. Why: This is every OTHER sample picker's own template, alongside OB_EXAMPLE the full set PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
 
@@ -79,15 +78,51 @@ const FIR_PAR_ELE = <>Pickers are where the magic happens. They have rules for w
  * PIC_COP_OBJ = Picker Copy Object
  *
  * @summary
- * Content for the picker mini-tours ("Set up a {picker name} picker"),
- * keyed by the sample picker's own id (see onboarding-seed-data.js's
- * own OB_EXAMPLE/OB_EXTRA_PICKERS). preStr is the name Step 7's own
- * runFun() stages for the tour's own added item (see buiAddFun below), a
- * new item distinct from anything already in that sample's own pool,
- * themed to fit. bodEle/preStr for every non-daily sample here is a
- * first pass, not yet manually verified live the way Daily Chores' own
- * tour was; expect touch-ups once each one gets its own dedicated
- * pass.
+ * Content for the picker mini-tours ("Set up a {picker name} picker"), keyed
+ * by the sample picker's own id (see onboarding-seed-data.js's own
+ * OB_EXAMPLE/OB_EXTRA_PICKERS). bodEle/preStr for every non-daily sample here
+ * is a first pass, not yet manually verified live the way Daily Chores' own
+ * tour was; expect touch-ups once each one gets its own dedicated pass.
+ *
+ * Every entry shares this exact shape, and none of the entries below repeat
+ * these same fields' own boilerplate comments on their own lines (see the
+ * "Repeated-shape object literals" comment exception in CLAUDE.md):
+ *
+ * - `bodEle` (Element): Body Element is this sample's own second intro
+ *   paragraph, explaining what this specific type of picker is; rendered as
+ *   the second entry of IntModCom's own parEleArr prop.
+ *
+ * - `latEle` (Element, optional): Latest Element overrides buiLatFun's own
+ *   default body with domain-specific wording for this sample; read as
+ *   picCopObj.latEle inside buiLatFun below, falling back to DEF_LAT_ELE when
+ *   absent.
+ *
+ * - `latNum` (Number, optional): Latest Number is the slow end of this item's
+ *   own drift/decay band (drift for an Ease Up sample, decay for an Ease Down
+ *   sample), same underlying reasoning as sooNum just for the opposite end;
+ *   read as picCopObj.latNum inside buiAddFun's own runFun() below, converted
+ *   into itemEaseMin there.
+ *
+ * - `namEle` (Element, optional): Name Element overrides buiNamFun's own
+ *   default body with domain-specific wording for this sample; read as
+ *   picCopObj.namEle inside buiNamFun below, falling back to DEF_NAM_ELE when
+ *   absent.
+ *
+ * - `preStr` (String, optional): Prefill String is the name Step 7's own
+ *   runFun() stages for the tour's own added item, a new item distinct from
+ *   anything already in that sample's own pool, themed to fit; read as
+ *   picCopObj.preStr inside buiAddFun's own runFun() below.
+ *
+ * - `sooEle` (Element, optional): Soonest Element overrides buiSooFun's own
+ *   default body with domain-specific wording for this sample; read as
+ *   picCopObj.sooEle inside buiSooFun below, falling back to DEF_SOO_ELE when
+ *   absent.
+ *
+ * - `sooNum` (Number, optional): Soonest Number overrides the generic 7/14-day
+ *   default band for this tour's own added item, tailored to fit that sample's
+ *   own theme; read as picCopObj.sooNum inside buiAddFun's own runFun() below,
+ *   converted into itemEaseMax there. See each entry's own comment for why its
+ *   specific value was chosen.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -96,78 +131,72 @@ const FIR_PAR_ELE = <>Pickers are where the magic happens. They have rules for w
 const PIC_COP_OBJ = { // What: Picker Copy Object. Why: Every picker mini-tour's own second intro paragraph, item prefill, and any per-step body override lives here, one entry per sample picker id. How: This is looked up by picIdeStr everywhere a step or the intro modal needs picker-specific copy.
 
 
-	pkr_ob_coffee : {
+	pkr_ob_coffee : { // What: Coffee Creamer Entry. Why: This is the copy/prefill content descriptor for the Coffee Creamer sample picker's own mini-tour. How: This is looked up by picCopObj via the real 'pkr_ob_coffee' picIdeStr.
 
 
-		preStr : 'Peppermint Mocha', // What: Prefill String. Why: Step 7's own runFun() stages this as the tour's own added item's name. How: This is read as picCopObj.preStr inside buiAddFun's runFun() below.
-
-		bodEle : <>This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is <b>perfect for randomly choosing something, while also making sure that every item is eventually picked and for prioritizing certain items over others</b>. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.</> // What: Body Element. Why: This sample's own second intro paragraph explains what a Coffee Creamer picker is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
-
-
-	},
-
-	pkr_ob_daily : {
-
-
-		preStr : 'Mop the floors', // What: Prefill String. Why: Step 7's own runFun() stages this as the tour's own added item's name. How: This is read as picCopObj.preStr inside buiAddFun's runFun() below.
-
-		bodEle : <>This tutorial will guide you through creating a Daily Chores picker. This type of picker is an Ease Up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Do the laundry", you don’t want that task picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</> // What: Body Element. Why: This sample's own second intro paragraph explains what a Daily Chores picker is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
+		bodEle : <>This tutorial will guide you through creating a Coffee Creamer picker. This type of picker is a Dynamic Weighted and is <b>perfect for randomly choosing something, while also making sure that every item is eventually picked and for prioritizing certain items over others</b>. e.g. "Caramel" starts out more likely to be picked than "Cinnamon", but the longer "Cinnamon" goes unpicked the more its odds increase, until it’s eventually chosen and its odds reset. Let’s create one of these now.</>,
+		preStr : 'Peppermint Mocha'
 
 
 	},
 
-	pkr_ob_dinner : {
+	pkr_ob_daily : { // What: Daily Chores Entry. Why: This is the copy/prefill content descriptor for the Daily Chores sample picker's own mini-tour. How: This is looked up by picCopObj via the real 'pkr_ob_daily' picIdeStr.
 
 
-		preStr : 'Grilled salmon', // What: Prefill String. Why: Step 7's own runFun() stages this as the tour's own added item's name. How: This is read as picCopObj.preStr inside buiAddFun's runFun() below.
-
-		bodEle : <>This tutorial will guide you through creating a Dinner picker. This type of picker is an Ease Up and is <b>perfect for something like meals where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Spaghetti and meatballs", you don’t want that meal picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>, // What: Body Element. Why: This sample's own second intro paragraph explains what a Dinner picker is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
-		latEle : <>This controls the <b>maximum number of days that a meal item must wait before it should be picked again</b>. This is also useful since you usually want a meal to be picked again within a certain timeframe.</>,                                                                                                                                                                               // What: Latest Element. Why: This overrides buiLatFun's own default body with meal-specific wording. How: This is read as picCopObj.latEle inside buiLatFun below, falling back to DEF_LAT_ELE when absent.
-		namEle : <>This is the name of the meal item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,                                                                                                                                                                                          // What: Name Element. Why: This overrides buiNamFun's own default body with meal-specific wording. How: This is read as picCopObj.namEle inside buiNamFun below, falling back to DEF_NAM_ELE when absent.
-		sooEle : <>This controls the <b>minimum number of days that a meal item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same meal to be chosen again within a certain timeframe.</>                                                                                                                                                          // What: Soonest Element. Why: This overrides buiSooFun's own default body with meal-specific wording. How: This is read as picCopObj.sooEle inside buiSooFun below, falling back to DEF_SOO_ELE when absent.
+		bodEle : <>This tutorial will guide you through creating a Daily Chores picker. This type of picker is an Ease Up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Do the laundry", you don’t want that task picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>,
+		preStr : 'Mop the floors'
 
 
 	},
 
-	pkr_ob_monthly : {
+	pkr_ob_dinner : { // What: Dinner Entry. Why: This is the copy/prefill content descriptor for the Dinner sample picker's own mini-tour. How: This is looked up by picCopObj via the real 'pkr_ob_dinner' picIdeStr.
 
 
-		latNum : 62,                 // What: Latest Number. Why: Same reasoning as sooNum, for the slow end of this item's own drift band. How: This is read as picCopObj.latNum inside buiAddFun's runFun() below, converted into itemEaseMin there.
-		preStr : 'Wash the windows', // What: Prefill String. Why: Step 7's own runFun() stages this as the tour's own added item's name. How: This is read as picCopObj.preStr inside buiAddFun's runFun() below.
-		sooNum : 31,                 // What: Soonest Number. Why: This overrides the generic 7/14-day default drift band for just this tour's own added item; a monthly-cadence picker's own sample item should look the part instead of a daily/weekly one. How: This is read as picCopObj.sooNum inside buiAddFun's runFun() below, converted into itemEaseMax there.
-
-		bodEle : <>This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease Up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 month</b>. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least 1 month but also no later than 2 months. Let’s create one of these now.</>, // What: Body Element. Why: This sample's own second intro paragraph explains what a Monthly Chores picker is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
-		sooEle : <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>                                                                                                                                                                               // What: Soonest Element. Why: This overrides buiSooFun's own default body with monthly-specific wording. How: This is read as picCopObj.sooEle inside buiSooFun below, falling back to DEF_SOO_ELE when absent.
-
-
-	},
-
-	pkr_ob_relax : {
-
-
-		latNum : 5,            // What: Latest Number. Why: Same reasoning as sooNum, for the slow end of this item's own decay band. How: This is read as picCopObj.latNum inside buiAddFun's runFun() below, converted into itemEaseMin there.
-		preStr : 'Take a nap', // What: Prefill String. Why: Step 7's own runFun() stages this as the tour's own added item's name. How: This is read as picCopObj.preStr inside buiAddFun's runFun() below.
-		sooNum : 3,            // What: Soonest Number. Why: This overrides the generic 7/14-day default decay band; a Relax picker's own sample item should stick around on a shorter cadence. How: This is read as picCopObj.sooNum inside buiAddFun's runFun() below, converted into itemEaseMax there.
-
-		bodEle : <>This tutorial will guide you through creating a Relax picker. This type of picker is an Ease Down and is <b>perfect for activities you want to stick with for a few days at a time instead of changing every day</b>. e.g. once it picks "Read a book", that activity will stay as the picked item for at least 5 days but no more than a week before a new activity is chosen. Let’s create one of these now.</>, // What: Body Element. Why: This sample's own second intro paragraph explains what a Relax picker is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
-		latEle : <>This controls the <b>maximum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is also useful since most activities you don’t want to stay picked past a certain timeframe.</>,                                                                                                                                                                      // What: Latest Element. Why: This overrides buiLatFun's own default body with Ease Down/activity-specific wording. How: This is read as picCopObj.latEle inside buiLatFun below, falling back to DEF_LAT_ELE when absent.
-		namEle : <>This is the name of the activity item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,                                                                                                                                                                                                         // What: Name Element. Why: This overrides buiNamFun's own default body with activity-specific wording. How: This is read as picCopObj.namEle inside buiNamFun below, falling back to DEF_NAM_ELE when absent.
-		sooEle : <>This controls the <b>minimum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is useful since most activities you want to stick with for a certain timeframe instead of changing every day.</>                                                                                                                                                      // What: Soonest Element. Why: This overrides buiSooFun's own default body with Ease Down/activity-specific wording. How: This is read as picCopObj.sooEle inside buiSooFun below, falling back to DEF_SOO_ELE when absent.
+		bodEle : <>This tutorial will guide you through creating a Dinner picker. This type of picker is an Ease Up and is <b>perfect for something like meals where you don’t want an item to be picked twice within, say, 1 week</b>. e.g. once it picks "Spaghetti and meatballs", you don’t want that meal picked again for at least 1 week but also no later than 2 weeks. Let’s create one of these now.</>,
+		latEle : <>This controls the <b>maximum number of days that a meal item must wait before it should be picked again</b>. This is also useful since you usually want a meal to be picked again within a certain timeframe.</>,
+		namEle : <>This is the name of the meal item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
+		preStr : 'Grilled salmon',
+		sooEle : <>This controls the <b>minimum number of days that a meal item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same meal to be chosen again within a certain timeframe.</>
 
 
 	},
 
-	pkr_ob_workouts : {
+	pkr_ob_monthly : { // What: Monthly Chores Entry. Why: This is the copy/prefill content descriptor for the Monthly Chores sample picker's own mini-tour. How: This is looked up by picCopObj via the real 'pkr_ob_monthly' picIdeStr.
 
 
-		latNum : 6,        // What: Latest Number. Why: Same reasoning as sooNum, for the slow end of this item's own drift band. How: This is read as picCopObj.latNum inside buiAddFun's runFun() below, converted into itemEaseMin there.
-		preStr : 'Cardio', // What: Prefill String. Why: Step 7's own runFun() stages this as the tour's own added item's name. How: This is read as picCopObj.preStr inside buiAddFun's runFun() below.
-		sooNum : 3,        // What: Soonest Number. Why: This overrides the generic 7/14-day default drift band; a workout picker's own sample item should recharge on a much shorter cadence. How: This is read as picCopObj.sooNum inside buiAddFun's runFun() below, converted into itemEaseMax there.
+		bodEle : <>This tutorial will guide you through creating a Monthly Chores picker. This type of picker is an Ease Up and is <b>perfect for something like chore tasks where you don’t want an item to be picked twice within, say, 1 month</b>. e.g. once it picks "Deep clean the oven", you don’t want that task picked again for at least 1 month but also no later than 2 months. Let’s create one of these now.</>,
+		latNum : 62,
+		preStr : 'Wash the windows',
+		sooEle : <>This controls the <b>minimum number of days that a task item must wait before it becomes eligible to be picked again</b>. This is useful since most chores do not usually need to be done again within a certain timeframe.</>,
+		sooNum : 31 // What: Soonest Number. Why: This overrides the generic 7/14-day default drift band for just this tour's own added item; a monthly-cadence picker's own sample item should look the part instead of a daily/weekly one. How: This is read as picCopObj.sooNum inside buiAddFun's runFun() below, converted into itemEaseMax there.
 
-		bodEle : <>This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease Up and is <b>perfect for something like workouts where you don’t want the same workout to be picked twice within, say, a few days</b>. e.g. once it picks "Chest", you don’t want that workout item picked again for at least 5 days but also no later than a week. Let’s create one of these now.</>, // What: Body Element. Why: This sample's own second intro paragraph explains what a Workouts picker is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
-		latEle : <>This controls the <b>maximum number of days that a workout item must wait before it should be picked again</b>. This is also useful since you usually want a workout to be picked again within a certain timeframe.</>,                                                                                                                                                                                // What: Latest Element. Why: This overrides buiLatFun's own default body with workout-specific wording. How: This is read as picCopObj.latEle inside buiLatFun below, falling back to DEF_LAT_ELE when absent.
-		namEle : <>This is the name of the workout item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,                                                                                                                                                                                              // What: Name Element. Why: This overrides buiNamFun's own default body with workout-specific wording. How: This is read as picCopObj.namEle inside buiNamFun below, falling back to DEF_NAM_ELE when absent.
-		sooEle : <>This controls the <b>minimum number of days that a workout item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same workout to be chosen again within a certain timeframe.</>                                                                                                                                                           // What: Soonest Element. Why: This overrides buiSooFun's own default body with workout-specific wording. How: This is read as picCopObj.sooEle inside buiSooFun below, falling back to DEF_SOO_ELE when absent.
+
+	},
+
+	pkr_ob_relax : { // What: Relax Entry. Why: This is the copy/prefill content descriptor for the Relax sample picker's own mini-tour. How: This is looked up by picCopObj via the real 'pkr_ob_relax' picIdeStr.
+
+
+		bodEle : <>This tutorial will guide you through creating a Relax picker. This type of picker is an Ease Down and is <b>perfect for activities you want to stick with for a few days at a time instead of changing every day</b>. e.g. once it picks "Read a book", that activity will stay as the picked item for at least 5 days but no more than a week before a new activity is chosen. Let’s create one of these now.</>,
+		latEle : <>This controls the <b>maximum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is also useful since most activities you don’t want to stay picked past a certain timeframe.</>,
+		latNum : 5,
+		namEle : <>This is the name of the activity item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
+		preStr : 'Take a nap',
+		sooEle : <>This controls the <b>minimum number of days that an activity item will stay picked before it discharges</b> and another item is picked. This is useful since most activities you want to stick with for a certain timeframe instead of changing every day.</>,
+		sooNum : 3 // What: Soonest Number. Why: This overrides the generic 7/14-day default decay band; a Relax picker's own sample item should stick around on a shorter cadence. How: This is read as picCopObj.sooNum inside buiAddFun's runFun() below, converted into itemEaseMax there.
+
+
+	},
+
+	pkr_ob_workouts : { // What: Workouts Entry. Why: This is the copy/prefill content descriptor for the Workouts sample picker's own mini-tour. How: This is looked up by picCopObj via the real 'pkr_ob_workouts' picIdeStr.
+
+
+		bodEle : <>This tutorial will guide you through creating a Workouts picker. This type of picker is an Ease Up and is <b>perfect for something like workouts where you don’t want the same workout to be picked twice within, say, a few days</b>. e.g. once it picks "Chest", you don’t want that workout item picked again for at least 5 days but also no later than a week. Let’s create one of these now.</>,
+		latEle : <>This controls the <b>maximum number of days that a workout item must wait before it should be picked again</b>. This is also useful since you usually want a workout to be picked again within a certain timeframe.</>,
+		latNum : 6,
+		namEle : <>This is the name of the workout item and is <b>what will show up in your todo list if it is picked</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</>,
+		preStr : 'Cardio',
+		sooEle : <>This controls the <b>minimum number of days that a workout item must wait before it becomes eligible to be picked again</b>. This is useful since you do not usually want the same workout to be chosen again within a certain timeframe.</>,
+		sooNum : 3 // What: Soonest Number. Why: This overrides the generic 7/14-day default drift band; a workout picker's own sample item should recharge on a much shorter cadence. How: This is read as picCopObj.sooNum inside buiAddFun's runFun() below, converted into itemEaseMax there.
 
 
 	}
@@ -253,35 +282,35 @@ const NAV_STE_OBJ = { // What: Nav Step Object. Why: Every picker tutorial's own
 const buiNewFun = ( picIdeStr, staAppObj ) => ({ // What: Build New Function. Why: This builds Step 2, the step that highlights the real "+ Add New Picker" tab and stages this sample's own prefill data. How: This returns a step object whose runFun() publishes picIdeStr's own template onto the shared bus before the real click opens the create-picker form.
 
 
-	bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous, Pickers-nav step. How: GuidedTour shows its own Back button whenever this is true.
-	cirBoo : true,   // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
-	priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	bacBoo : true,                  // What: Back Boolean. Why: The user should always be able to return to the previous, Pickers-nav step. How: GuidedTour shows its own Back button whenever this is true.
+	cirBoo : true,                  // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	priStr : 'Next',                // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	selStr : '.picker-tab--add',    // What: Selector String. Why: This step highlights the real "+ Add New Picker" tab. How: GuidedTour spotlights whatever this selector matches.
+	sttBoo : true,                  // What: Scroll-To-Top Boolean. Why: This step's own target sits at the top of the Pickers page. How: GuidedTour scrolls all the way to 0 for this step instead of just nudging the target into view.
+	tabStr : 'picker',              // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	titStr : 'Create a new picker', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+
+	bodEle : <>The "Add New Picker" button will <b>open up the form for creating a new picker</b>. Go ahead and click the "Add New Picker" button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 	runFun : () => { // What: Run Function. Why: This sample's own template needs staging onto the bus before the real click opens the create-picker form. How: This looks up whether this sample was already created before, then publishes the template alongside that lookup's own result.
 
 
 		const exiPicObj = staAppObj.pickers.find( ( curPicObj ) => curPicObj.createdFromSample === picIdeStr ); // What: Existing Picker Object. Why: A previously-finished run of this same tour already left a real picker tagged with this sample's own id. How: This searches staAppObj.pickers for an entry whose own createdFromSample matches picIdeStr.
 
+
 		emlTouObj.set({ // What: Prefill Publish Call. Why: tab-picker.jsx's own onCreate reads this in its own bubble-phase handler to prefill (or update in place) the real create-picker form. How: This builds the prefill shape from PIC_SAM_OBJ and the resolved exiPicObj above.
 
 
-			prefill           : PIC_SAM_OBJ[ picIdeStr ], // What: Prefill Field. Why: The real form's own fields need this sample's own template data. How: This reads PIC_SAM_OBJ by picIdeStr straight through.
-			suppressAutoOpen  : true,                     // What: Suppress Auto Open Field. Why: tab-picker.jsx's own dormant auto-open effect must not wrongly claim credit for the click this step is teaching. How: This is read by that effect's own guard, which stays silent whenever this is true.
+			prefill           : PIC_SAM_OBJ[ picIdeStr ],        // What: Prefill Field. Why: The real form's own fields need this sample's own template data. How: This reads PIC_SAM_OBJ by picIdeStr straight through.
+			suppressAutoOpen  : true,                            // What: Suppress Auto Open Field. Why: tab-picker.jsx's own dormant auto-open effect must not wrongly claim credit for the click this step is teaching. How: This is read by that effect's own guard, which stays silent whenever this is true.
 			existingPickerId  : exiPicObj ? exiPicObj.id : null, // What: Existing Picker Id Field. Why: A previously-finished run's own real picker must be updated in place, not duplicated. How: This carries exiPicObj's own id through when found, null otherwise.
-			createdFromSample : picIdeStr                 // What: Created From Sample Field. Why: A future replay of this same tour needs to find this run's own picker. How: This tags the prefill with picIdeStr.
+			createdFromSample : picIdeStr                        // What: Created From Sample Field. Why: A future replay of this same tour needs to find this run's own picker. How: This tags the prefill with picIdeStr.
 
 
 		});
 
 
-	},
-
-	selStr : '.picker-tab--add',    // What: Selector String. Why: This step highlights the real "+ Add New Picker" tab. How: GuidedTour spotlights whatever this selector matches.
-	sttBoo : true,                  // What: Scroll-To-Top Boolean. Why: This step's own target sits at the top of the Pickers page. How: GuidedTour scrolls all the way to 0 for this step instead of just nudging the target into view.
-	tabStr : 'picker',              // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr : 'Create a new picker', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-
-	bodEle : <>The "Add New Picker" button will <b>open up the form for creating a new picker</b>. Go ahead and click the "Add New Picker" button now.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	}
 
 
 });
@@ -431,27 +460,26 @@ const buiModFun = ( picIdeStr ) => ({ // What: Build Mode Function. Why: This bu
 const ITE_STE_OBJ = { // What: Items Step Object. Why: This step highlights the "Add Items" button that advances the form to its Items sub-step. How: This is spread as-is into every picker's own steObjArr below.
 
 
-	bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous, mode-selection step. How: GuidedTour shows its own Back button whenever this is true.
-	cirBoo : true,   // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
-	priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	resBoo : false,  // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
-
-	runFun : () => { // What: Run Function. Why: The scroll position must be reset to the top before the native click swaps the form's own content, so the clamp described above never gets a chance to fire. How: This zeroes .main's own scrollTop when it exists.
-
-
-		const maiEle = document.querySelector( '.main' ); // What: Main Element. Why: This is the app's own shared scroll container whose position needs resetting. How: This looks it up fresh, since it may not exist on every layout.
-
-		if ( maiEle ) maiEle.scrollTop = 0; // What: Main Scroll Reset. Why: This must only run when the element actually exists. How: This zeroes maiEle's own scrollTop.
-
-
-	},
-
+	bacBoo : true,                       // What: Back Boolean. Why: The user should always be able to return to the previous, mode-selection step. How: GuidedTour shows its own Back button whenever this is true.
+	cirBoo : true,                       // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	priStr : 'Next',                     // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	resBoo : false,                      // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
 	selStr : '.ob-picker-next',          // What: Selector String. Why: This step highlights the real "Add Items" button. How: GuidedTour spotlights whatever this selector matches.
 	stbBoo : true,                       // What: Scroll-To-Bottom Boolean. Why: This step's own target always sits at the bottom of the Details footer. How: GuidedTour scrolls all the way to the end for this step instead of just nudging the target into view.
 	tabStr : 'picker',                   // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
 	titStr : 'Add items to this picker', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
 
-	bodEle : <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click the "Add Items" button now.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	bodEle : <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click the "Add Items" button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+
+	runFun : () => { // What: Run Function. Why: The scroll position must be reset to the top before the native click swaps the form's own content, so the clamp described above never gets a chance to fire. How: This zeroes .main's own scrollTop when it exists.
+
+
+		const scrConEle = document.querySelector( '.main' ); // What: Scroll Container Element. Why: This is the app's own shared scroll container whose position needs resetting. How: This looks it up fresh, since it may not exist on every layout.
+
+		if ( scrConEle ) scrConEle.scrollTop = 0; // What: Scroll Container Reset. Why: This must only run when the element actually exists. How: This zeroes scrConEle's own scrollTop.
+
+
+	}
 
 
 };
@@ -479,34 +507,34 @@ const ITE_STE_OBJ = { // What: Items Step Object. Why: This step highlights the 
 const buiAddFun = ( picIdeStr ) => ({ // What: Build Add Function. Why: This builds the step that highlights the real "+ Add Item" button and stages this item's own prefill data. How: This returns a step object whose runFun() publishes picCopObj's own item fields onto the shared bus.
 
 
-	bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous, "Add Items" step. How: GuidedTour shows its own Back button whenever this is true.
-	cirBoo : true,   // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
-	priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	resBoo : false,  // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form and its Items sub-step, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	bacBoo : true,                               // What: Back Boolean. Why: The user should always be able to return to the previous, "Add Items" step. How: GuidedTour shows its own Back button whenever this is true.
+	cirBoo : true,                               // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
+	priStr : 'Next',                             // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+	resBoo : false,                              // What: Resumable Boolean. Why: This step's own target only exists because earlier clicks already opened the form and its Items sub-step, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
+	selStr : '.pv-additem-btn',                  // What: Selector String. Why: This step highlights the real "+ Add Item" button. How: GuidedTour spotlights whatever this selector matches.
+	tabStr : 'picker',                           // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+	titStr : 'Add an item to the picker’s list', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+
+	bodEle : <>Pickers need a <b>list of items to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click the "Add Item" button now to add a new item to this picker's list of items.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 	runFun : () => { // What: Run Function. Why: This item's own prefill data needs staging onto the bus before the real click opens the inline item editor. How: This looks up this sample's own copy, then converts its own sooNum/latNum days into the drift values tab-picker.jsx's own editor expects.
 
 
 		const picCopObj = PIC_COP_OBJ[ picIdeStr ]; // What: Picker Copy Object. Why: This item's own prefill name and Soonest/Latest overrides live here. How: This looks up PIC_COP_OBJ by picIdeStr.
 
+
 		emlTouObj.set({ // What: Item Prefill Publish Call. Why: tab-picker.jsx's own addNewDraft reads this in its own bubble-phase handler to prefill the real inline item editor. How: This builds the prefill shape from picCopObj above.
 
 
-			itemPrefill : picCopObj.preStr,                                       // What: Item Prefill Field. Why: The real editor's own name input needs this item's own prefilled name. How: This reads picCopObj's own preStr straight through.
-			itemEaseMax : picCopObj.sooNum ? 100 / picCopObj.sooNum : null,       // What: Item Ease Max Field. Why: 100/days is the same days-to-drift conversion tab-picker.jsx's own driftToSoonest/daysToDrift use, kept in sync manually since those are not exported. How: This converts picCopObj's own sooNum into a drift value, or null when this sample has no override.
-			itemEaseMin : picCopObj.latNum ? 100 / picCopObj.latNum : null        // What: Item Ease Min Field. Why: Same conversion as itemEaseMax, for the slow end of the drift band. How: This converts picCopObj's own latNum into a drift value, or null when this sample has no override.
+			itemPrefill : picCopObj.preStr,                                 // What: Item Prefill Field. Why: The real editor's own name input needs this item's own prefilled name. How: This reads picCopObj's own preStr straight through.
+			itemEaseMax : picCopObj.sooNum ? 100 / picCopObj.sooNum : null, // What: Item Ease Max Field. Why: 100/days is the same days-to-drift conversion tab-picker.jsx's own driftToSoonest/daysToDrift use, kept in sync manually since those are not exported. How: This converts picCopObj's own sooNum into a drift value, or null when this sample has no override.
+			itemEaseMin : picCopObj.latNum ? 100 / picCopObj.latNum : null  // What: Item Ease Min Field. Why: Same conversion as itemEaseMax, for the slow end of the drift band. How: This converts picCopObj's own latNum into a drift value, or null when this sample has no override.
 
 
 		});
 
 
-	},
-
-	selStr : '.pv-additem-btn',                  // What: Selector String. Why: This step highlights the real "+ Add Item" button. How: GuidedTour spotlights whatever this selector matches.
-	tabStr : 'picker',                           // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr : 'Add an item to the picker’s list', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
-
-	bodEle : <>Pickers need a <b>list of items to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click the "Add Item" button now to add a new item to this picker's list of items.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	}
 
 
 });
@@ -703,7 +731,7 @@ const SAV_STE_OBJ = { // What: Save Step Object. Why: This step highlights the i
  * create (see tab-picker.jsx's own np-footer). cirBoo plus
  * priStr:'Done' together mean this is the ONE step where the real
  * target's own native click handler (submit, which actually calls
- * actions.addPicker) has to survive finish()'s own side effects
+ * actStoObj.addPicker) has to survive finish()'s own side effects
  * (selTabFun away from Pickers, unmounting this whole tour);
  * GuidedTour's own onPrimary defers the 'Done'/advance half of a
  * cirBoo click by a tick for exactly this reason (see its own
@@ -774,8 +802,8 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
  *                            id, keying both PIC_SAM_OBJ and PIC_COP_OBJ.
  * @param props.staAppObj   - State App Object: The entire app's own
  *                            persisted state.
- * @param props.actions     - Actions: The actions that mutate
- *                            props.staAppObj.
+ * @param props.actStoObj   - Action Store Object: The shared app actions
+ *                            that mutate props.staAppObj.
  * @param props.actIdeStr   - Active Identifier String: The app's own currently
  *                            active tab id.
  * @param props.selTabFun   - Select Tab Function: Switches the app's own
@@ -789,22 +817,22 @@ const CRE_STE_OBJ = { // What: Create Step Object. Why: This step highlights the
  *
  * @example
  * ```tsx
- * PicTouCom({ picIdeStr, staAppObj, actions, actIdeStr, selTabFun, ... })
+ * PicTouCom({ picIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, ... })
  * // => <PicTouCom />
  * ```
  *
 */
 
-function PicTouCom ( { picIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCloTouFun } ) {
+function PicTouCom ( { picIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, onCloTouFun } ) {
 
 
 	const picRecObj = ( staAppObj.pickers || [] ).find( ( curPicObj ) => curPicObj.id === picIdeStr ); // What: Picker Record Object. Why: The intro modal and every mode-gating check below need this sample's own live picker record. How: This searches staAppObj.pickers for the entry whose own id matches picIdeStr.
-	const picCopObj = PIC_COP_OBJ[ picIdeStr ];                                                     // What: Picker Copy Object. Why: The intro modal's own second paragraph needs this sample's own copy. How: This looks up PIC_COP_OBJ by picIdeStr.
-	const modLabStr = ( ( MODES[ picRecObj.mode ] || {} ).label || picRecObj.mode ).toLowerCase(); // What: Mode Label String. Why: The intro modal's own pill needs a human-readable mode label, not the raw mode key. How: This looks up MODES by picRecObj's own mode, falling back to the raw mode key, then lower-cases the result.
+	const picCopObj = PIC_COP_OBJ[ picIdeStr ];                                                        // What: Picker Copy Object. Why: The intro modal's own second paragraph needs this sample's own copy. How: This looks up PIC_COP_OBJ by picIdeStr.
+	const modLabStr = ( ( MODES[ picRecObj.mode ] || {} ).label || picRecObj.mode ).toLowerCase();     // What: Mode Label String. Why: The intro modal's own pill needs a human-readable mode label, not the raw mode key. How: This looks up MODES by picRecObj's own mode, falling back to the raw mode key, then lower-cases the result.
 
 
 
-	const onbStaObj = staAppObj.onboarding || {}; // What: Onboarding State Object. Why: A reload lands here with app.jsx already having re-derived actPicStr from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, falling back to an empty object.
+	const onbStaObj = staAppObj.onboarding || {};                                                                                // What: Onboarding State Object. Why: A reload lands here with app.jsx already having re-derived actPicStr from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, falling back to an empty object.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `picker-${ picIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this picker's own tourId, otherwise null.
 
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
@@ -828,7 +856,9 @@ function PicTouCom ( { picIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCl
 
 		});
 
-		actions.setChecklistItem( picIdeStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this sample's own checklist entry to staValStr.
+
+		actStoObj.setChecklistItem( picIdeStr, { status : staValStr } ); // What: Checklist Status Update Call. Why: The launcher card on Today reads this to know whether to keep showing itself. How: This updates this sample's own checklist entry to staValStr.
+
 
 		onCloTouFun(); // What: On Close Call. Why: app.jsx's own actPicStr must be cleared however this tour ends. How: This calls the onCloTouFun prop passed down from app.jsx.
 
@@ -862,17 +892,24 @@ function PicTouCom ( { picIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCl
 
 	const isaEasBoo = picRecObj.mode === 'ease-up' || picRecObj.mode === 'ease-down'; // What: Is-An Ease Boolean. Why: The Soonest/Latest steps only apply to Ease Up/Ease Down samples; every other mode's item editor does not have those rows at all. How: This checks picRecObj's own mode against both ease mode keys.
 	const useWeiBoo = picRecObj.mode === 'weighted' || picRecObj.mode === 'dynamic';  // What: Uses Weight Boolean. Why: The Weight step is the mirror image of isaEasBoo; only Weighted/Dynamic samples get it. How: This checks picRecObj's own mode against both weight-using mode keys.
-	const isaDynBoo = picRecObj.mode === 'dynamic';                                  // What: Is-A Dynamic Boolean. Why: The Boost step is narrower still; only Dynamic samples (not plain Weighted) get that row at all. How: This checks picRecObj's own mode against the dynamic mode key.
+	const isaDynBoo = picRecObj.mode === 'dynamic';                                   // What: Is-A Dynamic Boolean. Why: The Boost step is narrower still; only Dynamic samples (not plain Weighted) get that row at all. How: This checks picRecObj's own mode against the dynamic mode key.
 
 	const steObjArr = [ // What: Step Object Array. Why: GuidedTour needs this sample's own full ordered step list, varying in length by mode (isaEasBoo/useWeiBoo/isaDynBoo above decide which optional steps are included). How: This concatenates the shared steps with whichever mode-specific ones apply.
 
 
-		NAV_STE_OBJ, buiNewFun( picIdeStr, staAppObj ), NAM_STE_OBJ, GRO_STE_OBJ,
-		buiModFun( picIdeStr ), ITE_STE_OBJ, buiAddFun( picIdeStr ), buiNamFun( picIdeStr ),
-		...( isaEasBoo ? [ buiSooFun( picIdeStr ), buiLatFun( picIdeStr ) ] : [] ),
-		...( useWeiBoo ? [ WEI_STE_OBJ ] : [] ),
-		...( isaDynBoo ? [ BOO_STE_OBJ ] : [] ),
-		SAV_STE_OBJ, CRE_STE_OBJ
+		NAV_STE_OBJ,                                                                // What: Nav Step Object. Why: This is every picker tutorial's own shared Step 1, highlighting the real Pickers nav button. How: This is inserted as steObjArr's own first entry.
+		buiNewFun( picIdeStr, staAppObj ),                                          // What: Build New Function Call. Why: This is Step 2, highlighting the real "+ Add New Picker" tab and staging this sample's own prefill data. How: This calls buiNewFun with picIdeStr and staAppObj.
+		NAM_STE_OBJ,                                                                // What: Name Step Object. Why: This step highlights the create-picker form's own Name field. How: This is inserted as steObjArr's own next entry.
+		GRO_STE_OBJ,                                                                // What: Group Step Object. Why: This step highlights the create-picker form's own Group field. How: This is inserted as steObjArr's own next entry.
+		buiModFun( picIdeStr ),                                                     // What: Build Mode Function Call. Why: This step highlights only this sample's own mode option. How: This calls buiModFun with picIdeStr.
+		ITE_STE_OBJ,                                                                // What: Items Step Object. Why: This step highlights the "Add Items" button that advances the form to its Items sub-step. How: This is inserted as steObjArr's own next entry.
+		buiAddFun( picIdeStr ),                                                     // What: Build Add Function Call. Why: This step highlights the real "+ Add Item" button and stages this item's own prefill data. How: This calls buiAddFun with picIdeStr.
+		buiNamFun( picIdeStr ),                                                     // What: Build Name Function Call. Why: This step highlights the item editor's own name input. How: This calls buiNamFun with picIdeStr.
+		...( isaEasBoo ? [ buiSooFun( picIdeStr ), buiLatFun( picIdeStr ) ] : [] ), // What: Ease Steps Spread. Why: The Soonest/Latest steps only apply to Ease Up/Ease Down samples. How: This spreads in buiSooFun's/buiLatFun's own step objects when isaEasBoo is true, otherwise an empty array.
+		...( useWeiBoo ? [ WEI_STE_OBJ ] : [] ),                                    // What: Weight Step Spread. Why: The Weight step only applies to Weighted/Dynamic samples. How: This spreads in WEI_STE_OBJ when useWeiBoo is true, otherwise an empty array.
+		...( isaDynBoo ? [ BOO_STE_OBJ ] : [] ),                                    // What: Boost Step Spread. Why: The Boost step only applies to Dynamic samples. How: This spreads in BOO_STE_OBJ when isaDynBoo is true, otherwise an empty array.
+		SAV_STE_OBJ,                                                                // What: Save Step Object. Why: This step highlights the item editor's own Save button. How: This is inserted as steObjArr's own next entry.
+		CRE_STE_OBJ                                                                 // What: Create Step Object. Why: This step highlights the form's own real "Create Picker" button. How: This is inserted as steObjArr's own final entry.
 
 
 	];
@@ -886,7 +923,7 @@ function PicTouCom ( { picIdeStr, staAppObj, actions, actIdeStr, selTabFun, onCl
 			touIdeStr={ `picker-${ picIdeStr }` }
 			steObjArr={ steObjArr }
 			resSteNum={ resTouObj ? resTouObj.step : 0 }
-			actStoObj={ actions }
+			actStoObj={ actStoObj }
 			actIdeStr={ actIdeStr }
 			selTabFun={ selTabFun }
 			onBacTouFun={ ( tarSteNum ) => { // What: On Go Back Handler. Why: Back from buiAddFun's own step (index 6, the Items sub-step's "+ Add Item" button) to ITE_STE_OBJ's own step (index 5, "Add Items") needs the form pushed back to its Details sub-step first; unlike the Reminders tours' own "+" button, .ob-picker-next's own click is a one-way step change inside NewPickerForm, not a toggle, so without this ITE_STE_OBJ's own target stays gone (the form is still showing Items) and the tour has nothing to highlight. How: This branches on tarSteNum, clicking the real DOM control that reverses whichever one-way transition the tour is backing out of.
