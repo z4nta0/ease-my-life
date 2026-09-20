@@ -32,6 +32,24 @@ import { useEscCanFun         } from './ui.jsx';                  // What: Use E
 
 
 
+/**
+ * tab-settings.jsx = Tab Settings
+ *
+ * @summary
+ * The Settings tab: appearance/theme (TheSecCom's own built-in palette grid
+ * via TheRowCom, plus a custom-color picker via TheCusCom), the Daily
+ * Generator schedule, the holiday/days-off editor (HolEdiCom), account/data
+ * import-export/wipe controls, and the contact-support form (ConSupCom).
+ * StyRadCom is a small reusable styled-radio-group primitive (used for the
+ * pick-animation-style preview rows); TabSettings itself ties every section
+ * together as the tab.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
 // #region forRunFun
 
 /**

@@ -30,6 +30,31 @@ import { useStore     } from './store.jsx';                   // What: Use Store
 
 
 
+/**
+ * app.jsx = App
+ *
+ * @summary
+ * The app's own root component. AppRooCom owns the single active-tab-id in
+ * React state, calls useStore() once for the entire state layer, and renders
+ * one of the five tabs directly, there is no router. It also owns theme
+ * application (resolving and writing the active palette's own CSS custom
+ * properties), the onboarding demo's clean-state seeding, and mounts
+ * Onboarding plus whichever mini-tour overlay (FeaTouCom/PagTouCom/PicTouCom)
+ * is currently running.
+ *
+ * TabBarCom is the shared nav bar rendered by AppRooCom, built from
+ * TAB_OBJ_ARR's own fixed tab list; it owns the sliding active-tab indicator's
+ * own measurement/animation, including the rail-placement-switch ghost-copy
+ * transition documented in its own reference comments (see CLAUDE.md's own
+ * worked examples throughout the Code formatting rules section, which use this
+ * file as the reference implementation).
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
 const TAB_OBJ_ARR = [ // What: Tab Object Array. Why: This defines the fixed set of tabs that TabBarCom renders. How: This is mapped over in TabBarCom's JSX to render one nav button per entry.
 
 

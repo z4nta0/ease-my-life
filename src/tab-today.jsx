@@ -53,6 +53,32 @@ import { useEscCanFun         } from './ui.jsx';                        // What:
 
 
 
+/**
+ * tab-today.jsx = Tab Today
+ *
+ * @summary
+ * The Today tab, the app's largest file: the auto-generated daily list itself
+ * (grouped, reorderable via Edit Mode's own drag system), each entry's own
+ * pick/skip/reroll/edit lifecycle (EntCarCom, the big one), the loading/reveal
+ * states while a new list is being generated (LoaReeCom/LoaCarCom), and the
+ * checklist launcher cards for every onboarding tour kind, including this
+ * file's own PagTouCom/AppFeaCom, which are Today-specific launcher CARDS, not
+ * the same components as onboarding-page-tours.jsx's real PagTouCom overlay or
+ * onboarding-app-features.jsx's real FeaTouCom overlay, despite sharing a
+ * name.
+ *
+ * GroHeaCom is a group's own header (progress bar, Edit Mode grip/rename);
+ * merOrdFun/groEntFun build the day's own group/entry structure. TabToday ties
+ * every section together as the tab, and EntryEditor (this file's own
+ * item-editing row) is exported for reuse by tab-picker.jsx and tab-data.jsx,
+ * so all 3 tabs edit an item through the exact same component.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
 // #region merOrdFun
 
 /**

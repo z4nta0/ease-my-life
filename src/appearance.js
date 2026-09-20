@@ -9,6 +9,28 @@ import { redMotFun } from './ui.jsx'; // What: Reduce Motion Function. Why: The 
 
 
 
+/**
+ * appearance.js = Appearance
+ *
+ * @summary
+ * Palette tokens plus theme application, deliberately split out of app.jsx to
+ * avoid an import cycle with tab-settings.jsx. PAL_SET_OBJ holds the app's
+ * fixed set of built-in named palettes, each an 8-token OKLCH color set plus a
+ * display name.
+ *
+ * appPalFun writes a resolved palette's own tokens onto the document's real
+ * CSS custom properties, animating the cross-fade unless the user prefers
+ * reduced motion. resCusFun derives a full palette from a user-picked custom
+ * accent color (toHexFun/syncTinFun handle the OKLCH conversion), and
+ * resTheFun resolves which theme key is actually active, including "system"
+ * auto-switching via THE_PAI_OBJ's own light/dark theme pairings.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
 const PAL_SET_OBJ = { // What: Palette Set Object. Why: This is the app's fixed set of built-in color themes, each a full 8-token palette plus a display name. How: This is read directly by resTheFun/appPalFun and exported for the Settings tab's theme picker.
 
 

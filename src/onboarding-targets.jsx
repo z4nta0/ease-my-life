@@ -1,6 +1,22 @@
 
 
 
+/**
+ * onboarding-targets.jsx = Onboarding Targets
+ *
+ * @summary
+ * A single-export file: NAV_TAR_OBJ, the shared nav-target catalog reused by
+ * the Welcome Tour and every page's own mini-tour. See NAV_TAR_OBJ's own
+ * comment right below for its full design rationale; this file exists purely
+ * so that catalog has one home neither onboarding.jsx nor
+ * onboarding-page-tours.jsx needs to own on the other's behalf.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
 // #region NAV_TAR_OBJ
 
 /**

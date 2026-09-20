@@ -13,6 +13,23 @@ import { redMotFun    } from './ui.jsx';  // What: Reduce Motion Function.  Why:
 
 
 
+/**
+ * onboarding-intro-modal.jsx = Onboarding Intro Modal
+ *
+ * @summary
+ * A single-component file: IntModCom, the generic intro modal shown before any
+ * guided tour (the Welcome Tour and every per-feature/page/picker/reminder
+ * mini-tour alike). See IntModCom's own function-declaration comment right
+ * below for its full signature and design notes; this file exists purely so
+ * every one of those tours can import the same shared component instead of
+ * each rolling its own modal.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
 // #region IntModCom
 
 /**

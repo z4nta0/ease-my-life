@@ -17,6 +17,25 @@ import './styles2.css'; // What: Styles2 Stylesheet Import. Why: This is the app
 
 
 
+/**
+ * main.jsx = Main
+ *
+ * @summary
+ * The app's real entry point, imported nowhere else. It races STORAGE.init()
+ * against a fixed 3500ms timeout so a hung IndexedDB open never blocks
+ * booting, then calls booAppFun either way once whichever settles first.
+ *
+ * booAppFun creates the single React 18 root on the #root DOM node, renders
+ * AppRooCom into it, and dismisses index.html's own boot splash (a plain
+ * CSS/inline-JS overlay, not React) once the first paint has had a chance to
+ * settle.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
 // #region booAppFun
 
 /**

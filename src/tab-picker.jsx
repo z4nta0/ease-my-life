@@ -36,6 +36,24 @@ import { WeeChiCom    } from './ui.jsx';                  // What: Weekday Chip 
 
 
 
+/**
+ * tab-picker.jsx = Tab Picker
+ *
+ * @summary
+ * The Pickers tab: browse, manually run, and create/edit every picker.
+ * PickerStrip is the manual "Pick One" spin-and-reveal animation, also reused
+ * standalone by settings-previews.jsx's own pick-animation-style preview;
+ * PicVieCom is a single picker's own run/view card; PicForCom is the
+ * multi-step create/edit form (Details, then Items); TabPicker ties all of it
+ * together as the tab itself, plus the Group/Type filter rails and the
+ * disposable-sample machinery help mode and the onboarding tours both rely on.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
 // #region PickerStrip
 
 /**

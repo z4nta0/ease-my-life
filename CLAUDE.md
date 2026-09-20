@@ -958,6 +958,25 @@ existed as a large prose block being reformatted, or is being newly
 written because the file/section genuinely warrants one; see the
 file-level comment and the `COL_WID_NUM`/`MIN_COL_NUM`/`BIG_CHA_NUM`
 comments in `src/bg-flourish.jsx` for the reference examples.
+- **Every file gets a file-level one of these, mandatory, regardless of
+  whether the file's own design would otherwise "genuinely warrant" one
+  under the general rule above.** This is a firm exception to that
+  judgment call: the FILE-LEVEL variant (nothing attached to any one
+  declaration, `<filename.ext> = <Expanded Name>` per the next bullet)
+  is required on every file in `src/`, even a short, simple one with no
+  real design rationale to document, since it also gives a reader the
+  file's own purpose/role before they dive into its actual code. (The
+  general judgment-call framing above still governs whether a SEPARATE
+  comment attached to one specific declaration, like `COL_WID_NUM`'s own
+  in `bg-flourish.jsx`, is warranted; that part of the rule is
+  unaffected, and a file can have both its own mandatory file-level
+  comment AND any number of these declaration-attached ones.) Placed
+  right after the file's own imports, per "### Sectioning / fold
+  regions" above: after the `// #endregion Imports` marker plus its own
+  3-blank gap when the file has any imports, or as the very first real
+  content (right after the file's own leading 3 blank lines) when it
+  has none. See `constants.js` (no imports) and `eml-tour-bus.js` (has
+  imports) for the two placement variants.
 - **Name/title line**: if the comment is attached to a specific
   declaration (the thing it immediately precedes), use that
   declaration's own name and expansion, exactly like a function

@@ -24,6 +24,24 @@ import { useEmlTouFun } from './onboarding.jsx';      // What: Use Ease My Life 
 
 
 
+/**
+ * tab-stats.jsx = Tab Stats
+ *
+ * @summary
+ * The Stats tab: the pick-log-derived history view, an activity heatmap,
+ * per-picker breakdown, and reminder/conditional history, all filterable by
+ * Group/Type/Pickers and a date range, paginated (PagNavCom) once a list runs
+ * long. BreBarCom renders the small horizontal breakdown bar charts
+ * throughout, HeaLegCom their shared legend; dayIsoFun/relWheFun/couLevFun are
+ * small date/heatmap-level helpers the rest of the file reads from. TabStats
+ * ties every section together as the tab.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+
+
 // #region dayIsoFun
 
 /**
