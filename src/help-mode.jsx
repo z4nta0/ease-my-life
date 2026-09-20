@@ -1573,10 +1573,10 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 
-		const keyDwnFun = ( keyDwnObj ) => { // What: Key Down Function. Why: Escape closes one thing at a time, a tip first if one is open, then help mode itself on a second press. How: This checks the key, then which of the 2 close targets currently applies.
+		const keyDowFun = ( keyDowObj ) => { // What: Key Down Function. Why: Escape closes one thing at a time, a tip first if one is open, then help mode itself on a second press. How: This checks the key, then which of the 2 close targets currently applies.
 
 
-			if ( keyDwnObj.key !== 'Escape' ) return; // What: Non Escape Guard. Why: Only Escape is a meaningful key for this listener. How: This ignores every other key.
+			if ( keyDowObj.key !== 'Escape' ) return; // What: Non Escape Guard. Why: Only Escape is a meaningful key for this listener. How: This ignores every other key.
 
 
 
@@ -1592,7 +1592,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 		document.addEventListener( 'click', clkCapFun, true ); // What: Click Listener Add. Why: The capture phase ensures this guard runs before any inner element's own handler could otherwise fire. How: This registers clkCapFun for every click in the document.
-		document.addEventListener( 'keydown', keyDwnFun );     // What: Keydown Listener Add. Why: Escape must close something regardless of which element currently has focus. How: This registers keyDwnFun for every keydown in the document.
+		document.addEventListener( 'keydown', keyDowFun );     // What: Keydown Listener Add. Why: Escape must close something regardless of which element currently has focus. How: This registers keyDowFun for every keydown in the document.
 
 
 
@@ -1600,13 +1600,13 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } ) {
 
 
 			document.removeEventListener( 'click', clkCapFun, true ); // What: Click Listener Remove. Why: The capture-phase guard must not keep intercepting clicks once this effect cleans up. How: This removes clkCapFun, matching the same phase/type it was added with.
-			document.removeEventListener( 'keydown', keyDwnFun );     // What: Keydown Listener Remove. Why: Escape must stop being intercepted once this effect cleans up. How: This removes keyDwnFun.
+			document.removeEventListener( 'keydown', keyDowFun );     // What: Keydown Listener Remove. Why: Escape must stop being intercepted once this effect cleans up. How: This removes keyDowFun.
 
 
 		};
 
 
-	}, [ actModBoo, allIteArr, onCloAllFun, opeIdeStr, safRecFun ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever help mode itself toggles, or close over a fresh reference to any of the values its own handlers read. How: actModBoo gates registration, allIteArr/safRecFun are read inside hitTarFun/clkCapFun, onCloAllFun/opeIdeStr are read inside keyDwnFun.
+	}, [ actModBoo, allIteArr, onCloAllFun, opeIdeStr, safRecFun ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever help mode itself toggles, or close over a fresh reference to any of the values its own handlers read. How: actModBoo gates registration, allIteArr/safRecFun are read inside hitTarFun/clkCapFun, onCloAllFun/opeIdeStr are read inside keyDowFun.
 
 
 

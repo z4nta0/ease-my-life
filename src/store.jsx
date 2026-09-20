@@ -2294,9 +2294,9 @@ function useStore( optArgObj ) {
 
 
 			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === pickerId ); // What: Current Picker Object And Guard. Why: Every branch below needs to know this picker's own mode/activeItemId/conditionalId. How: This looks up pickerId in curStaObj.pickers.
-			const easDwnBoo = curPicObj && curPicObj.mode === 'ease-down'; // What: Ease-Down Boolean. Why: Ease Down's own single-entry-per-picker replace behavior branches everywhere below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
+			const easDowBoo = curPicObj && curPicObj.mode === 'ease-down'; // What: Ease-Down Boolean. Why: Ease Down's own single-entry-per-picker replace behavior branches everywhere below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
 
-			const eid = easDwnBoo // What: Entry Id. Why: Ease Down reuses its own existing entry's eid (so a replace, not a stack); every other mode always mints a fresh one. How: This reuses the picker's own current entry's eid when found, else mints a new one via newEidFun.
+			const eid = easDowBoo // What: Entry Id. Why: Ease Down reuses its own existing entry's eid (so a replace, not a stack); every other mode always mints a fresh one. How: This reuses the picker's own current entry's eid when found, else mints a new one via newEidFun.
 				? ( curStaObj.today.entries.find( ( curEntObj ) => curEntObj.pickerId === pickerId )?.eid || newEidFun() )
 				: newEidFun();
 
@@ -2307,7 +2307,7 @@ function useStore( optArgObj ) {
 
 				penValObj = null; // What: Default Pending Reset. Why: Every mode besides ease-down's own re-activation case has no mutation to stage at all. How: This starts penValObj at null before the ease-down check below.
 
-				if ( easDwnBoo && curPicObj.activeItemId !== itemId ) { // What: Ease-Down Reactivation Guard. Why: Only switching to a DIFFERENT active item needs its own staged recharge-and-activate pending. How: This builds penValObj only when curPicObj is ease-down and itemId isn't already its own active item.
+				if ( easDowBoo && curPicObj.activeItemId !== itemId ) { // What: Ease-Down Reactivation Guard. Why: Only switching to a DIFFERENT active item needs its own staged recharge-and-activate pending. How: This builds penValObj only when curPicObj is ease-down and itemId isn't already its own active item.
 
 
 					const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: The previously-active item (if any) must be staged to recharge back to this exact threshold. How: This reads curPicObj's own threshold, defaulting to 100.
@@ -2331,14 +2331,14 @@ function useStore( optArgObj ) {
 			const logRowObj = logRowFun( curStaObj, { eid, pickerId, itemId, source : 'manual' } ); // What: Log Row Object. Why: A manual send must be reflected in the pick log too, denormalized the same way every other pick is. How: This calls logRowFun with source:'manual'.
 
 			const conIdeStr = curPicObj && curPicObj.conditionalId; // What: Conditional Identifier String. Why: The day-off-card check below needs to know which conditional (if any) gates this picker. How: This reads curPicObj's own conditionalId, or stays falsy when curPicObj is missing.
-			const hasDofBoo = easDwnBoo && conIdeStr && // What: Has Day-Off Boolean. Why: An ease-down picker that's currently suppressed behind its own day-off card must NOT have that card silently replaced by this manual override. How: This is true only when this is ease-down, gated, and today already shows a live day-off card for that same conditional.
+			const hasDofBoo = easDowBoo && conIdeStr && // What: Has Day-Off Boolean. Why: An ease-down picker that's currently suppressed behind its own day-off card must NOT have that card silently replaced by this manual override. How: This is true only when this is ease-down, gated, and today already shows a live day-off card for that same conditional.
 				curStaObj.today.entries.some( ( curEntObj ) => curEntObj.kind === 'dayoff' && curEntObj.conditionalId === conIdeStr );
 
-			const nexEntArr = ( easDwnBoo && !hasDofBoo ) // What: Next Entry Array. Why: Ease Down normally REPLACES its own picker's existing entry; the day-off-card exception instead ADDS an extra entry alongside the still-showing card. How: This filters out this picker's own prior entry (unless the exception applies) before appending newEntObj.
+			const nexEntArr = ( easDowBoo && !hasDofBoo ) // What: Next Entry Array. Why: Ease Down normally REPLACES its own picker's existing entry; the day-off-card exception instead ADDS an extra entry alongside the still-showing card. How: This filters out this picker's own prior entry (unless the exception applies) before appending newEntObj.
 				? [ ...curStaObj.today.entries.filter( ( curEntObj ) => curEntObj.pickerId !== pickerId ), newEntObj ]
 				: [ ...curStaObj.today.entries, newEntObj ];
 
-			const nexLogArr = easDwnBoo // What: Next Pick-Log Array. Why: A replaced Ease Down entry must not leave its own prior log row behind under the same eid. How: This drops any earlier row sharing eid before appending logRowObj, only for ease-down; every other mode simply appends.
+			const nexLogArr = easDowBoo // What: Next Pick-Log Array. Why: A replaced Ease Down entry must not leave its own prior log row behind under the same eid. How: This drops any earlier row sharing eid before appending logRowObj, only for ease-down; every other mode simply appends.
 				? [ ...( curStaObj.pickLog || [] ).filter( ( curRowObj ) => curRowObj.eid !== eid ), logRowObj ]
 				: [ ...( curStaObj.pickLog || [] ), logRowObj ];
 
@@ -2784,12 +2784,12 @@ function useStore( optArgObj ) {
 
 			const sibIteArr = curStaObj.items.filter( ( curIteObj ) => curIteObj.pickerId === pickerId ); // What: Sibling Item Array. Why: Both the name de-duplication and the ease-down weight averaging below need this picker's own existing items. How: This filters curStaObj.items to those owned by pickerId.
 			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === pickerId ); // What: Current Picker Object And Guard. Why: The mode checks below need this picker's own live mode. How: This looks up pickerId in curStaObj.pickers.
-			const isDwnBoo = curPicObj && curPicObj.mode === 'ease-down'; // What: Is Down Boolean. Why: Only Ease Down needs the special charged-value/fairness-weight treatment below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
+			const isDowBoo = curPicObj && curPicObj.mode === 'ease-down'; // What: Is Down Boolean. Why: Only Ease Down needs the special charged-value/fairness-weight treatment below. How: This is true only when curPicObj exists and its own mode is 'ease-down'.
 			const isEasBoo = curPicObj && ( curPicObj.mode === 'ease-up' || curPicObj.mode === 'ease-down' ); // What: Is Ease Boolean. Why: Both ease modes need their own drift-band fields stamped below. How: This is true when curPicObj's own mode is either ease-up or ease-down.
 
 			let wgtValNum = 1, valValNum = 0; // What: Weight/Value Values And Guard. Why: Every non-ease-down item just uses these plain defaults; only ease-down overrides them below. How: This starts at weight 1, value 0.
 
-			if ( isDwnBoo ) { // What: Ease-Down Defaults Guard. Why: Only ease-down needs its own charged value and fairness-averaged weight computed. How: This overwrites valValNum/wgtValNum with the ease-down-specific computation below.
+			if ( isDowBoo ) { // What: Ease-Down Defaults Guard. Why: Only ease-down needs its own charged value and fairness-averaged weight computed. How: This overwrites valValNum/wgtValNum with the ease-down-specific computation below.
 
 
 				valValNum = curPicObj.threshold ?? 100; // What: Charged Value Set. Why: A new ease-down item starts fully charged, same as every other item in that mode. How: This reads curPicObj's own threshold, defaulting to 100.
@@ -2857,14 +2857,14 @@ function useStore( optArgObj ) {
 			const picIdeStr = replaceId || id || ( 'pkr_' + Math.random().toString( 36 ).slice( 2, 8 ) );
 			const iniValNum = mode === 'ease-down' ? 100 : 0; // What: Initial Value Number. Why: Every new item's own starting drift value depends on the picker's own mode. How: This is 100 for ease-down (starts "charged"), else 0.
 			const isEasBoo = mode === 'ease-up' || mode === 'ease-down'; // What: Is Ease Boolean. Why: Only an ease-mode item carries its own per-item drift band. How: This is true when mode is either ease-up or ease-down.
-			const isDwnBoo = mode === 'ease-down'; // What: Is Down Boolean. Why: Only ease-down forces every item to a uniform starting weight of 1 regardless of any user-supplied weight. How: This is true only when mode is 'ease-down'.
+			const isDowBoo = mode === 'ease-down'; // What: Is Down Boolean. Why: Only ease-down forces every item to a uniform starting weight of 1 regardless of any user-supplied weight. How: This is true only when mode is 'ease-down'.
 
 			const newIteArr = ( items || [] ).map( ( curIteObj ) => ( { // What: New Item Array. Why: Every typed item in the create form becomes a real item object owned by this picker. How: This maps each raw item into state.items' own shape, honoring a form-set value/vacation and defaulting the rest per mode.
 
 
 				id : curIteObj.id || ( 'it_' + Math.random().toString( 36 ).slice( 2, 8 ) ),
 				name : curIteObj.name, pickerId : picIdeStr,
-				weight : isDwnBoo ? 1 : ( curIteObj.weight || 1 ),
+				weight : isDowBoo ? 1 : ( curIteObj.weight || 1 ),
 				// What: Value Honor-Or-Default. Why: A value the create form already set (e.g. Fill/Refill charging an ease item to threshold) must be honored; otherwise the mode's own default applies. How: This uses curIteObj.value when it isn't null/undefined, else iniValNum.
 				value : curIteObj.value != null ? curIteObj.value : iniValNum,
 				...( isEasBoo ? { easeMin : curIteObj.easeMin ?? 7, easeMax : curIteObj.easeMax ?? 14 } : {} ),

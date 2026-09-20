@@ -2037,11 +2037,11 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 		const entCouNum = ( expPayObj.pickLog || [] ).length;                            // What: Entry Count Number. Why: Both the announcement and the on-screen status line need to say how many history entries the export actually included. How: This reads the length of expPayObj's own (possibly swapped-in) pickLog.
 		const expBlbObj = new Blob( [ JSON.stringify( expPayObj, null, 2 ) ], { type : 'application/json' } ); // What: Export Blob Object. Why: A downloadable file needs to exist as a real Blob, not just a JS object. How: This serializes expPayObj as pretty-printed JSON inside a JSON-typed Blob.
 		const expUrlStr = URL.createObjectURL( expBlbObj );                              // What: Export Url String. Why: A Blob needs an object URL before a real download link can reference it. How: This creates a temporary object URL for expBlbObj, revoked further below once the download has started.
-		const dwnLnkEle = document.createElement( 'a' );                                 // What: Download Link Element. Why: Triggering a file download from script requires a real, if never-inserted, anchor element. How: This is configured below with its own href/download attributes, then clicked without ever being appended to the document.
+		const dowLnkEle = document.createElement( 'a' );                                 // What: Download Link Element. Why: Triggering a file download from script requires a real, if never-inserted, anchor element. How: This is configured below with its own href/download attributes, then clicked without ever being appended to the document.
 		const datStmStr = new Date().toISOString().slice( 0, 10 );                       // What: Date Stamp String. Why: The downloaded filename should carry today's own date for easy identification. How: This takes the first 10 characters of an ISO timestamp, i.e. its own "YYYY-MM-DD" date portion.
 
-		dwnLnkEle.href     = expUrlStr; // What: Download Href Assignment. Why: This is what actually points the anchor at the freshly-built backup blob. How: This sets dwnLnkEle's own href to expUrlStr.
-		dwnLnkEle.download = `ease-my-life-${ datStmStr }.json`; // What: Download Filename Assignment. Why: A named download attribute is what gives the saved file a sensible name instead of a random blob id. How: This sets dwnLnkEle's own download attribute to a dated, app-branded filename.
+		dowLnkEle.href     = expUrlStr; // What: Download Href Assignment. Why: This is what actually points the anchor at the freshly-built backup blob. How: This sets dowLnkEle's own href to expUrlStr.
+		dowLnkEle.download = `ease-my-life-${ datStmStr }.json`; // What: Download Filename Assignment. Why: A named download attribute is what gives the saved file a sensible name instead of a random blob id. How: This sets dowLnkEle's own download attribute to a dated, app-branded filename.
 
 		setExpMesObj( { t : Date.now(), entries : entCouNum } ); // What: Export Message Update. Why: The on-screen status line needs both a fresh React key and the actual entry count. How: This writes a timestamp/entries pair into expMesObj.
 
@@ -2061,7 +2061,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 			// identically. Focus is then re-asserted on the button, so if the
 			// browser's download UI does not grab it, focus stays somewhere
 			// meaningful.
-			dwnLnkEle.click(); // What: Download Click Call. Why: This is the actual trigger that starts the file download. How: This calls click() on the never-inserted dwnLnkEle.
+			dowLnkEle.click(); // What: Download Click Call. Why: This is the actual trigger that starts the file download. How: This calls click() on the never-inserted dowLnkEle.
 
 			if ( expButRef.current ) expButRef.current.focus(); // What: Export Button Focus Call. Why: Focus should land somewhere meaningful even if the browser's own download UI does not claim it. How: This focuses expButRef's own current element, if mounted.
 

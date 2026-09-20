@@ -2518,6 +2518,22 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `pikTimObj`; `tim` was already the established, correct code for
     this exact word right next to one of the miscorrected instances,
     `comTimStr` in `onboarding-seed-data.js`'s own `hydStaFun`)
+  - `dwn` → `dow` (Down — a very widely recurring miscorrection, found in
+    `dwnGuaFun` (`onboarding-tour-runner.jsx`), `onPoiDwnFun`/
+    `poiDwnObj`/`onKeyDwnFun`/`keyDwnObj` (`ui.jsx`), `dwnLnkEle`
+    (`tab-settings.jsx`), `keyDwnFun`/`keyDwnObj` (`help-mode.jsx`), and
+    `easDwnBoo`/`isDwnBoo` (`store.jsx`, 2 separate declarations), fixed
+    to `dowGuaFun`/`onPoiDowFun`/`poiDowObj`/`onKeyDowFun`/`keyDowObj`/
+    `dowLnkEle`/`keyDowFun`/`keyDowObj`/`easDowBoo`/`isDowBoo` across all
+    5 files in one sweep; every one of these comments already spelled
+    out "Down"/"Key Down"/"Pointer Down"/"Download"/"Mousedown"/
+    "Ease-Down" in full, so none needed any text changes, only the
+    identifiers themselves were wrong. Note `dow` collides in SPELLING
+    (not meaning) with `dow` already meaning Day-Of-Week in
+    `cadence-control.jsx`'s own `dowIndNum`, a single narrow usage in an
+    unrelated file; a name's own surrounding context disambiguates which
+    of the two "dow" stands for in practice, the same reasoning already
+    used for `con`/`sta`/`per`/`fre` elsewhere in this list)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

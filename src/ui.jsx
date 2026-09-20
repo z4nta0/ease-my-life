@@ -722,28 +722,28 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 		if ( !tipOpeBoo ) return; // What: Not Open Guard. Why: There is nothing to guard against while the tooltip is already closed. How: This skips the rest of the effect entirely while tipOpeBoo is false.
 
 
-		const onPoiDwnFun = ( poiDwnObj ) => { // What: On Pointer Down Function. Why: A pointerdown anywhere outside the trigger itself should close the tooltip. How: This checks whether the event's own target falls inside the trigger element before closing.
+		const onPoiDowFun = ( poiDowObj ) => { // What: On Pointer Down Function. Why: A pointerdown anywhere outside the trigger itself should close the tooltip. How: This checks whether the event's own target falls inside the trigger element before closing.
 
 
-			if ( trgEleRef.current && trgEleRef.current.contains( poiDwnObj.target ) ) return; // What: Inside Trigger Guard. Why: A pointerdown on the trigger itself is handled by the trigger's own onPointerDown/onClick handlers below, not this outside-close listener. How: This bails out when the event's own target is contained within the trigger element.
+			if ( trgEleRef.current && trgEleRef.current.contains( poiDowObj.target ) ) return; // What: Inside Trigger Guard. Why: A pointerdown on the trigger itself is handled by the trigger's own onPointerDown/onClick handlers below, not this outside-close listener. How: This bails out when the event's own target is contained within the trigger element.
 
 			setTipOpeBoo( false ); // What: Tip Close Call. Why: A pointerdown genuinely outside the trigger should close the tooltip. How: This sets tipOpeBoo false.
 
 
 		};
 
-		const onKeyDwnFun = ( keyDwnObj ) => { if ( keyDwnObj.key === 'Escape' ) setTipOpeBoo( false ); }; // What: On Key Down Function. Why: Escape is a standard way to dismiss a transient overlay like this tooltip. How: This closes the tooltip only when the pressed key is exactly Escape.
+		const onKeyDowFun = ( keyDowObj ) => { if ( keyDowObj.key === 'Escape' ) setTipOpeBoo( false ); }; // What: On Key Down Function. Why: Escape is a standard way to dismiss a transient overlay like this tooltip. How: This closes the tooltip only when the pressed key is exactly Escape.
 
 
-		document.addEventListener( 'pointerdown', onPoiDwnFun, true ); // What: Pointer Down Listener Add Call. Why: The capture phase ensures this fires before an inner element's own stopPropagation could swallow it. How: This registers onPoiDwnFun for every pointerdown in the document.
-		document.addEventListener( 'keydown', onKeyDwnFun );           // What: Key Down Listener Add Call. Why: Escape must close the tooltip regardless of which element currently has focus. How: This registers onKeyDwnFun for every keydown in the document.
+		document.addEventListener( 'pointerdown', onPoiDowFun, true ); // What: Pointer Down Listener Add Call. Why: The capture phase ensures this fires before an inner element's own stopPropagation could swallow it. How: This registers onPoiDowFun for every pointerdown in the document.
+		document.addEventListener( 'keydown', onKeyDowFun );           // What: Key Down Listener Add Call. Why: Escape must close the tooltip regardless of which element currently has focus. How: This registers onKeyDowFun for every keydown in the document.
 
 
 		return () => { // What: Effect Cleanup Function. Why: Neither listener may outlive this effect run. How: This removes both listeners registered above.
 
 
-			document.removeEventListener( 'pointerdown', onPoiDwnFun, true ); // What: Pointer Down Listener Remove Call. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onPoiDwnFun reference, matching the capture-phase flag.
-			document.removeEventListener( 'keydown', onKeyDwnFun );           // What: Key Down Listener Remove Call. Why: Same reasoning as the pointerdown listener removal above. How: This removes the same onKeyDwnFun reference.
+			document.removeEventListener( 'pointerdown', onPoiDowFun, true ); // What: Pointer Down Listener Remove Call. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onPoiDowFun reference, matching the capture-phase flag.
+			document.removeEventListener( 'keydown', onKeyDowFun );           // What: Key Down Listener Remove Call. Why: Same reasoning as the pointerdown listener removal above. How: This removes the same onKeyDowFun reference.
 
 
 		};
@@ -778,7 +778,7 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 			role='button'
 			aria-label={ action ? `${ action }, unavailable. ${ label }` : label }
 			aria-disabled={ action ? 'true' : undefined }
-			onPointerDown={ ( poiDwnObj ) => { lasPoiStr.current = poiDwnObj.pointerType || 'mouse'; } }
+			onPointerDown={ ( poiDowObj ) => { lasPoiStr.current = poiDowObj.pointerType || 'mouse'; } }
 			onPointerEnter={ ( poiEntObj ) => { if ( ( poiEntObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( true ); } }
 			onPointerLeave={ ( poiLeaObj ) => { if ( ( poiLeaObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( false ); } }
 			onClick={ ( clkEveObj ) => { // What: On Click Handler. Why: A mouse click should never toggle the tooltip since hover already owns it, but a touch/pen tap should. How: This stops the click from also reaching an outside-close listener, then toggles tipOpeBoo only when the last known pointer type wasn't mouse.
@@ -790,10 +790,10 @@ const InfTipCom = ( { children, label, className = '', action = null, truncation
 
 
 			} }
-			onKeyDown={ ( keyDwnObj ) => { // What: On Key Down Handler. Why: A keyboard user has no hover/tap, so Enter/Space must be able to toggle the tooltip directly. How: This toggles tipOpeBoo and prevents the key's own default action (e.g. Space scrolling the page) for either key.
+			onKeyDown={ ( keyDowObj ) => { // What: On Key Down Handler. Why: A keyboard user has no hover/tap, so Enter/Space must be able to toggle the tooltip directly. How: This toggles tipOpeBoo and prevents the key's own default action (e.g. Space scrolling the page) for either key.
 
 
-				if ( keyDwnObj.key === 'Enter' || keyDwnObj.key === ' ' ) { keyDwnObj.preventDefault(); setTipOpeBoo( ( preOpeBoo ) => !preOpeBoo ); } // What: Toggle Key Guard. Why: Only Enter and Space are meaningful "activate" keys for a role="button" trigger. How: This prevents the key's default action and flips tipOpeBoo only for those 2 keys.
+				if ( keyDowObj.key === 'Enter' || keyDowObj.key === ' ' ) { keyDowObj.preventDefault(); setTipOpeBoo( ( preOpeBoo ) => !preOpeBoo ); } // What: Toggle Key Guard. Why: Only Enter and Space are meaningful "activate" keys for a role="button" trigger. How: This prevents the key's default action and flips tipOpeBoo only for those 2 keys.
 
 
 			} }
@@ -1061,10 +1061,10 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 
 	window.__escBound = true; // What: Escape Bound Flag Set. Why: Every later module evaluation must see that the listener is already attached. How: This marks the global guard true before actually attaching the listener.
 
-	document.addEventListener( 'keydown', ( keyDwnObj ) => { // What: Document Keydown Listener. Why: This is the single shared handler that lets Escape cancel whichever editor is currently innermost. How: This checks a run of guards, then invokes the top entry on the shared escape stack.
+	document.addEventListener( 'keydown', ( keyDowObj ) => { // What: Document Keydown Listener. Why: This is the single shared handler that lets Escape cancel whichever editor is currently innermost. How: This checks a run of guards, then invokes the top entry on the shared escape stack.
 
 
-		if ( keyDwnObj.key !== 'Escape' || keyDwnObj.defaultPrevented ) return; // What: Non-Escape Guard. Why: Only an actual, not-already-handled Escape keypress should ever reach the stack. How: This bails out for any other key, or one whose default was already prevented by something else.
+		if ( keyDowObj.key !== 'Escape' || keyDowObj.defaultPrevented ) return; // What: Non-Escape Guard. Why: Only an actual, not-already-handled Escape keypress should ever reach the stack. How: This bails out for any other key, or one whose default was already prevented by something else.
 
 
 		const escStaArr = window.__escStack; // What: Escape Stack Array. Why: The rest of this handler needs a stable local reference to the shared stack. How: This reads window.__escStack once and reuses it below.
@@ -1074,7 +1074,7 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 		if ( document.querySelector( '.infotip, .ob-scrim' ) ) return; // What: Overlay Guard. Why: A visible tooltip or modal scrim owns Escape first, ahead of any inline editor. How: This bails out while either kind of overlay is present in the document.
 
 
-		keyDwnObj.preventDefault(); // What: Default Prevention Call. Why: The browser's own Escape behavior (e.g. exiting fullscreen) shouldn't also fire alongside this cancel. How: This prevents the keydown event's default action.
+		keyDowObj.preventDefault(); // What: Default Prevention Call. Why: The browser's own Escape behavior (e.g. exiting fullscreen) shouldn't also fire alongside this cancel. How: This prevents the keydown event's default action.
 
 		escStaArr[ escStaArr.length - 1 ].run(); // What: Top Entry Run Call. Why: Only the deepest (innermost, most-recently-registered) active editor should react. How: This invokes the run() of the last entry in escStaArr.
 
