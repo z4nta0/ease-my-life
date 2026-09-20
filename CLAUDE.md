@@ -529,6 +529,18 @@ decision is captured for next time instead of getting re-asked later.
     `^\s*return \{$` and `^\s*return \[$` for hits with no trailing
     `// What: ...` on that same line, not just the properties/entries
     inside the literal.
+  - **A second, related blind spot**: an object property whose OWN value
+    is a nested multi-line object/array literal (`someKey : {` opening a
+    multi-line object, sitting inside a PARENT object or array, not a
+    top-level `const`/`return`) is just as easy to leave uncommented,
+    for the same reason as the bare-return case above: it reads as "just
+    a property" rather than as its own multi-line construct. Found live
+    in `onboarding-reminder-tours.jsx`'s own `VAR_COP_OBJ`, whose
+    `once`/`recurring` entries (each a nested multi-line object) had no
+    comment on their own opening `{` at all. When auditing a file for
+    comment completeness, explicitly check every `<key> : {`/`<key> : [`
+    line that opens a multi-line value nested inside another object or
+    array, not just top-level declarations and `return` statements.
 - **Column alignment**: when a run of lines has NO blank lines between
   them (e.g. entries in the same array/object literal), pad each line so
   every comment's `//` starts at the same column — computed from the
@@ -1319,6 +1331,28 @@ don't invent one for anything else yet:
     object and the explicit `bacBoo`/`cirBoo`/`priStr`/`tabStr`
     properties after it are alphabetized normally, with `bodEle` still
     pulled to the very end per its own separate exception.
+    - **Refinement — a spread with no real key overlap against the named
+      properties it would move past MAY be relocated to sit after all
+      of them, treated as its own outlier, when doing so lets those
+      named properties form one clean, tightly-grouped, aligned run
+      instead of being split around it.** The "position is protected"
+      rule above exists specifically to preserve override semantics;
+      when the spread's own resolved keys share nothing with any named
+      property it would newly sit next to, moving it changes nothing at
+      runtime, so alignment can win instead. Verify this by inspecting
+      the spread's own contents against every named property in the
+      object before moving it; if there is real overlap, or any doubt,
+      leave the spread exactly where it was authored instead, per the
+      base rule above. Once moved, it still gets its own 1-blank-line
+      separation from the last named property before it (per the
+      blank-line rule just below), and the CONTAINER's own close
+      padding (2 blank lines) applies after it instead of that 1-blank
+      rule if it lands as the object's own new last entry. See
+      `onboarding-reminder-tours.jsx`'s own `buiAddFun`, whose
+      `emlTouObj.set()` prefill payload moved its own `daysOfWeek`-only
+      conditional spread to the very end, after `createdFromSample`/
+      `name`/`repeat` were alphabetized and tightly grouped, since
+      `daysOfWeek` shares no key with any of those 3.
     - **Blank-line spacing around a spread**: exactly 1 blank line
       separates a spread from a NAMED property immediately next to it
       (in either direction), and exactly 1 blank line precedes a
@@ -1376,6 +1410,23 @@ don't invent one for anything else yet:
     align with each other, and a help-catalog item's own `id`/`sel`/
     `title` in `help-content.jsx` do NOT pad to match a blank-separated
     `body` below them, even though all 4 are fields of the same item.
+    - **Known blind spot**: this is easy to get backwards specifically
+      when the blank-separated properties are themselves EACH a
+      multi-line object (not a short scalar), since two same-shaped
+      nested objects sitting right next to each other can look like
+      they "obviously" belong in one aligned table even though a blank
+      line already separates them the same as any other multi-line
+      property. `onboarding-reminder-tours.jsx`'s own `VAR_COP_OBJ` was
+      found live padding its own `once`/`recurring` keys out to match
+      each other's width (`once      : {` / `recurring : {`), even
+      though each is its own multi-line entry separated by a blank line
+      from the other, exactly the case this rule already rules out;
+      fixed to a plain single space on each (`once : {` /
+      `recurring : {`). When auditing a file for this rule, explicitly
+      check every blank-separated run of same-shaped nested multi-line
+      objects/entries, not just runs of short scalar properties, since
+      the visual "these clearly form a table" instinct applies just as
+      strongly (and just as wrongly) to those.
 - A one-line array literal — including a destructuring array binding like
   `const [ indRecObj, setIndRecObj ] = React.useState( null );` — gets a
   space directly after `[` and directly before `]` when it has at least one
@@ -2272,6 +2323,12 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   - `prv` → `pre` (Previous)
   - `tsk` → `tas` (Task)
   - `fmt` → `for` (Format)
+  - `frm` → `for` (Form — found in `onCloFrmFun`
+    (`onboarding-reminder-tours.jsx`), fixed to `onCloForFun`; note this
+    collides with `fmt` → `for` (Format) just above, and separately with
+    `for`'s own already-correct existing use for Force (e.g. `forIdeStr`
+    in `pickers.js`); context disambiguates which of the three "for"
+    stands for)
   - `pkr` → `pic` (Picker)
   - `ctl` → `con` (Control — note this collides with `cfg` → `con`
     (Config) above; when both "Control" and "Config/Configuration" are
@@ -2443,6 +2500,18 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     common real-world abbreviation for "build" (build tooling, CI
     scripts, ...) that crept in over the word's own literal first 3
     letters the same way `btn`/`cfg` did elsewhere in this list)
+  - `frq` → `fre` (Frequency — found in `buiFrqFun`
+    (`onboarding-reminder-tours.jsx`), fixed to `buiFreFun`; `fre` was
+    already the established, correct code for this exact word elsewhere
+    in this codebase, e.g. `freModStr`/`freGapMap`/`freKeyStr`/
+    `freEntObj` in `tab-stats.jsx`. Note `fre` is a heavily multi-meaning
+    segment even before this fix, already carrying Fresh (dozens of
+    uses, e.g. `isaFreBoo`/`freIndNum`/`freBoo` throughout
+    `reminders.jsx`/`tab-today.jsx`/`onboarding-tour-runner.jsx`) and
+    Freeze (`freEdiFun` in `ui.jsx`) alongside Frequency; a name's own
+    surrounding context disambiguates which of the three "fre" stands
+    for in practice, the same reasoning already used for `con`/`sta`/
+    `per` elsewhere in this list)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

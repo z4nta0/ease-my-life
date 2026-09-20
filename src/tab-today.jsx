@@ -6201,8 +6201,8 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 				<RemTouCom
 					varKeyStr={ actMinTouObj.id === 'tk_ob_meds' ? 'once' : 'recurring' }
 					staAppObj={ state }
-					actions={ actions }
-					onCloFrmFun={ () => setActiveEditor( ( curValStr ) => curValStr === 'reminder-add' ? null : curValStr ) }
+					actStoObj={ actions }
+					onCloForFun={ () => setActiveEditor( ( curValStr ) => curValStr === 'reminder-add' ? null : curValStr ) }
 					onCloTouFun={ () => setActMinTouObj( null ) }
 				/> // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it renders directly here. How: This is passed which variant to run plus a close handler that clears actMinTouObj.
 
