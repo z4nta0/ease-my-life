@@ -435,11 +435,11 @@ function resCusFun( modKeyStr, usrColObj ) {
 
 	const modSgnNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The muted/accentSoft tokens need to move toward the page background in dark mode but away from it in light mode. How: This flips the sign of their lightness offset below based on the given mode.
 
-	const calOffFun = ( offAmtNum, floValNum ) => ( modKeyStr === 'dark' // What: Calc Offset Function. Why: Dark mode needs a floored lightness offset to avoid the near-black gamma-encoding hazard described above, while light mode can use a plain one. How: This returns the appropriate CSS calc() expression string for whichever mode is active.
+	const calOffFun = ( offAmoNum, floValNum ) => ( modKeyStr === 'dark' // What: Calc Offset Function. Why: Dark mode needs a floored lightness offset to avoid the near-black gamma-encoding hazard described above, while light mode can use a plain one. How: This returns the appropriate CSS calc() expression string for whichever mode is active.
 
-		? `calc(max(l + ${ offAmtNum }, ${ floValNum }))` // What: Dark Mode Calc Expression. Why: Flooring the result keeps surface/border from vanishing into true black. How: This raises the lightness by offAmtNum, but never below floValNum.
+		? `calc(max(l + ${ offAmoNum }, ${ floValNum }))` // What: Dark Mode Calc Expression. Why: Flooring the result keeps surface/border from vanishing into true black. How: This raises the lightness by offAmoNum, but never below floValNum.
 
-		: `calc(l - ${ offAmtNum })` ); // What: Light Mode Calc Expression. Why: Light mode has no black-end hazard, so a plain offset is enough. How: This simply lowers the lightness by offAmtNum.
+		: `calc(l - ${ offAmoNum })` ); // What: Light Mode Calc Expression. Why: Light mode has no black-end hazard, so a plain offset is enough. How: This simply lowers the lightness by offAmoNum.
 
 
 

@@ -900,7 +900,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 		let rafNum, canBoo = false; // What: Raf Number And Cancelled Boolean. Why: rafNum holds the current requestAnimationFrame handle so the cleanup below can cancel it, and canBoo is the flag every scheduled callback checks before doing anything. How: Both start uninitialized/false and are only ever written inside this effect's own closures.
 
-		let resDecBoo = false, resAmtNum = 0; // What: Reserve Decided Boolean And Reserve Amount Number. Why: Whether THIS step's target needs top-space reserved above it, and how much, is declared here (not down by decResFun's own definition, where it conceptually belongs) because briTarFun now needs to read/set them on its very first call, before decResFun's own code further down has even run. How: See decResFun's own comment for the full reasoning on what these track and why the decision only ever happens once per step.
+		let resDecBoo = false, resAmoNum = 0; // What: Reserve Decided Boolean And Reserve Amount Number. Why: Whether THIS step's target needs top-space reserved above it, and how much, is declared here (not down by decResFun's own definition, where it conceptually belongs) because briTarFun now needs to read/set them on its very first call, before decResFun's own code further down has even run. How: See decResFun's own comment for the full reasoning on what these track and why the decision only ever happens once per step.
 
 		const getScrFun = ( tarEle ) => { // What: Get Scroller Function. Why: The ACTUAL scrolling ancestor of the target must be resolved, since on narrow/mobile layouts the scroller is not ".main" (the page/body scrolls instead), and a hardcoded ".main" would leave the target below the fold with the coach and spot off-screen, the dim-only "no highlight" state.
 
@@ -925,7 +925,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 		};
 
-		const scrAmtFun = ( scrEle, dltYNum ) => { // What: Scroll By Amount Function. Why: A step that jumps to a different part of the page, or, via briTarFun's own content-grew re-trigger and decResFun's own follow-up correction below, mid-step too, should read as the tour visibly navigating there rather than an unexplained cut. How: This is smooth unless prefers-reduced-motion, and is deliberately NOT applied to TodTopFun (the tour-END reset on Skip/Done), which is a closing reset, not a "here's the next thing" step transition, and already fires alongside a tab switch back to Today, staying an instant cut by design.
+		const scrAmoFun = ( scrEle, dltYNum ) => { // What: Scroll By Amount Function. Why: A step that jumps to a different part of the page, or, via briTarFun's own content-grew re-trigger and decResFun's own follow-up correction below, mid-step too, should read as the tour visibly navigating there rather than an unexplained cut. How: This is smooth unless prefers-reduced-motion, and is deliberately NOT applied to TodTopFun (the tour-END reset on Skip/Done), which is a closing reset, not a "here's the next thing" step transition, and already fires alongside a tab switch back to Today, staying an instant cut by design.
 
 
 			const optObj = { top: dltYNum, behavior: redMotFun() ? 'auto' : 'smooth' }; // What: Scroll Options Object. Why: Both branches below need the same behavior choice. How: This builds one shared options object from dltYNum and the current reduced-motion preference.
@@ -989,7 +989,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 				const desTopNum = safTopFun( { forCoaBoo: true } ) + 12 + coaHeiRef.current + 16; // What: Desired Top Number. Why: This is exactly where the target's own top edge should land. How: This adds the coach's own floor, its 12px margin, its current measured height, and a 16px gap.
 
-				scrAmtFun( scrEle, tarRecObj.top - desTopNum ); // What: Scroll By Desired Delta. Why: The scroller needs to move by exactly the gap between the target's own current top and its desired top. How: This calls scrAmtFun with that difference.
+				scrAmoFun( scrEle, tarRecObj.top - desTopNum ); // What: Scroll By Desired Delta. Why: The scroller needs to move by exactly the gap between the target's own current top and its desired top. How: This calls scrAmoFun with that difference.
 
 				return; // What: Coach-At-Top Early Return. Why: Nothing below applies once this branch has already handled the scroll. How: This exits before the pad-based branch.
 
@@ -1018,8 +1018,8 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 
 					resDecBoo = true; // What: Reserve Decided Commit. Why: This decision must only ever happen once per step. How: This flips resDecBoo to true so neither this branch nor decResFun's own later check re-decides it.
-					resAmtNum = coaHeiNum + 40; // What: Reserve Amount Commit. Why: The reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmtNum to the coach's own height plus a fixed 40px.
-					setResTopNum( resAmtNum ); // What: Reserve Top Commit. Why: TabToday reads this off the bus to actually pad its own list. How: This publishes resAmtNum into React state, which the effect below forwards onto the bus.
+					resAmoNum = coaHeiNum + 40; // What: Reserve Amount Commit. Why: The reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed 40px.
+					setResTopNum( resAmoNum ); // What: Reserve Top Commit. Why: TabToday reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state, which the effect below forwards onto the bus.
 
 					requestAnimationFrame( () => briTarFun() ); // What: Reserve Retry. Why: The padding has not rendered yet (React has not re-committed), so the retry must wait a real frame to measure the actual, already-reserved layout instead of guessing at it. How: This re-calls briTarFun on the next animation frame.
 
@@ -1031,9 +1031,9 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 			}
 
-			if ( tarRecObj.top < minTopNum ) scrAmtFun( scrEle, -( minTopNum - tarRecObj.top ) ); // What: Scroll Up To Min Top. Why: A target above the safe floor must be scrolled down until it clears it. How: This calls scrAmtFun with the negative gap between minTopNum and the target's own top.
+			if ( tarRecObj.top < minTopNum ) scrAmoFun( scrEle, -( minTopNum - tarRecObj.top ) ); // What: Scroll Up To Min Top. Why: A target above the safe floor must be scrolled down until it clears it. How: This calls scrAmoFun with the negative gap between minTopNum and the target's own top.
 
-			else if ( tarRecObj.bottom > scrRecObj.bottom - padBotNum ) scrAmtFun( scrEle, tarRecObj.bottom - ( scrRecObj.bottom - padBotNum ) ); // What: Scroll Down To Pad Bottom. Why: A target overflowing the bottom pad boundary must be scrolled up until it clears it. How: This calls scrAmtFun with the gap between the target's own bottom and the pad boundary.
+			else if ( tarRecObj.bottom > scrRecObj.bottom - padBotNum ) scrAmoFun( scrEle, tarRecObj.bottom - ( scrRecObj.bottom - padBotNum ) ); // What: Scroll Down To Pad Bottom. Why: A target overflowing the bottom pad boundary must be scrolled up until it clears it. How: This calls scrAmoFun with the gap between the target's own bottom and the pad boundary.
 
 
 		};
@@ -1128,8 +1128,8 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 			if ( tarRecObj.top - 16 - coaHeiNum >= safTopFun( { forCoaBoo: true } ) + 12 ) return; // What: Fits Above Return. Why: No reserve is needed once the coach's own height plus its 16px gap already fits above the target either. How: This returns whenever that check passes, leaving resTopNum at its already-0 default.
 
-			resAmtNum = coaHeiNum + 40; // What: Reserve Amount Commit. Why: Neither side fits, so the reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmtNum to the coach's own height plus a fixed 40px.
-			setResTopNum( resAmtNum ); // What: Reserve Top Commit. Why: TabToday reads this off the bus to actually pad its own list. How: This publishes resAmtNum into React state.
+			resAmoNum = coaHeiNum + 40; // What: Reserve Amount Commit. Why: Neither side fits, so the reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed 40px.
+			setResTopNum( resAmoNum ); // What: Reserve Top Commit. Why: TabToday reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state.
 
 			const ele2Arr = finTarFun( curSteObj.selStr ); // What: Element 2 Array. Why: The scroll compensation below needs to re-resolve the target's own elements. How: This calls finTarFun again for the current step's own selStr.
 
@@ -1149,7 +1149,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 					const desTopNum = safTopFun( { forCoaBoo: true } ) + 12 + coaHeiNum + 16; // What: Desired Top Number. Why: This scrolls so the target lands exactly coaHeiNum + 16 below the safe floor, the same threshold the "fits above" check above uses, and what the coach's own render-time placement needs to actually seat it flush above the target instead of overlapping it. How: This adds the safe floor, its 12px margin, the coach's own height, and a 16px gap.
 
-					scrAmtFun( scr2Ele, freTopNum - desTopNum ); // What: Scroll By Desired Delta. Why: This is deliberately NOT a scroll that compensates for the padding just added (e.g. scrolling by +resAmtNum), since that would fully cancel the reserve's own effect, undoing the room it just opened up and leaving the coach exactly as short on space as before any reserve existed. How: This calls scrAmtFun with the gap between the target's own fresh top and its desired top.
+					scrAmoFun( scr2Ele, freTopNum - desTopNum ); // What: Scroll By Desired Delta. Why: This is deliberately NOT a scroll that compensates for the padding just added (e.g. scrolling by +resAmoNum), since that would fully cancel the reserve's own effect, undoing the room it just opened up and leaving the coach exactly as short on space as before any reserve existed. How: This calls scrAmoFun with the gap between the target's own fresh top and its desired top.
 
 
 				} );
@@ -1168,7 +1168,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 		let notFndNum = null; // What: Not-Found Number. Why: The watchdog below needs to track how long the target has been missing, not just whether it currently is. How: This starts null (never yet missing) and is set to a timestamp the first time the loop below finds nothing.
 
-		let lasScrHeiNum = null; // What: Last Scroll Height Number. Why: This tracks the scrollable content's total height so a step whose target stays put (no tab/step change) but whose SURROUNDING content grows or shrinks, e.g. the user does the step's own action themselves without ever clicking the coach's Next, can still get nudged back into view. How: Ordinary scrolling never changes this value, so it does not fight the user scrolling around on purpose; only an actual content-size change re-triggers briTarFun; measured with resAmtNum subtracted out, otherwise decResFun's own CSS padding (added specifically to make room for the coach above a highlight too tall to fit either way) reads as "content grew", re-triggers briTarFun, and briTarFun scrolls the target right back up to its usual pad-from-top position, undoing the reserve and putting the coach right back on top of it.
+		let lasScrHeiNum = null; // What: Last Scroll Height Number. Why: This tracks the scrollable content's total height so a step whose target stays put (no tab/step change) but whose SURROUNDING content grows or shrinks, e.g. the user does the step's own action themselves without ever clicking the coach's Next, can still get nudged back into view. How: Ordinary scrolling never changes this value, so it does not fight the user scrolling around on purpose; only an actual content-size change re-triggers briTarFun; measured with resAmoNum subtracted out, otherwise decResFun's own CSS padding (added specifically to make room for the coach above a highlight too tall to fit either way) reads as "content grew", re-triggers briTarFun, and briTarFun scrolls the target right back up to its usual pad-from-top position, undoing the reserve and putting the coach right back on top of it.
 
 		let pulPriBoo = true; // What: Pulse Primary Boolean. Why: This tracks pulSelStr's own on/off transition (see its own doc comment in this file's own header above) so falling back to the wider, no-longer-pulsing highlight also brings it into view, since the wider box can extend well past what the tight button-only highlight needed. How: This starts true so a step that never had a pulSelStr primary target at all (pulSelStr unset) never spuriously fires this on its first frame.
 
@@ -1186,8 +1186,8 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 				const scrEle = getScrFun( eleArr[ 0 ] ); // What: Scroll Element. Why: The content-grew check below needs to know which element actually scrolls. How: This resolves the first matched element's own scroller.
 
-				const scrHeiNum = ( ( scrEle === document.scrollingElement || scrEle === document.documentElement ) // What: Scroll Height Number. Why: The content-grew check compares this against lasScrHeiNum. How: This reads either documentElement's own scrollHeight or the scroller's own, then subtracts resAmtNum (see lasScrHeiNum's own doc comment above for why).
-					? document.documentElement.scrollHeight : scrEle.scrollHeight ) - resAmtNum;
+				const scrHeiNum = ( ( scrEle === document.scrollingElement || scrEle === document.documentElement ) // What: Scroll Height Number. Why: The content-grew check compares this against lasScrHeiNum. How: This reads either documentElement's own scrollHeight or the scroller's own, then subtracts resAmoNum (see lasScrHeiNum's own doc comment above for why).
+					? document.documentElement.scrollHeight : scrEle.scrollHeight ) - resAmoNum;
 
 				if ( !hasBroBoo ) { hasBroBoo = true; briTarFun(); } // What: First Bring Call. Why: The target must be brought into view exactly once, the first time it actually exists. How: This flips hasBroBoo and calls briTarFun only on that first frame.
 

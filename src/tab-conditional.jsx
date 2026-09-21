@@ -48,8 +48,8 @@ const THR_DEF_NUM = 100; // What: Threshold Default Number. Why: The Soonest/Lat
 
 
 
-const easSooFun = ( easAmtNum ) => Math.max( 1, Math.round( THR_DEF_NUM / ( easAmtNum || 1 ) ) ); // What: Ease Soonest Function. Why: The Soonest/Shortest stepper needs a plain day count, not the raw per-day drift amount (easeMax) it is derived from. How: This divides THR_DEF_NUM by easAmtNum, rounds, and floors the result at 1 day.
-const easLatFun = ( easAmtNum ) => Math.max( 1, Math.round( THR_DEF_NUM / ( easAmtNum || 1 ) ) );  // What: Ease Latest Function. Why: The Latest/Longest stepper needs a plain day count, not the raw per-day drift amount (easeMin) it is derived from. How: This divides THR_DEF_NUM by easAmtNum, rounds, and floors the result at 1 day.
+const easSooFun = ( easAmoNum ) => Math.max( 1, Math.round( THR_DEF_NUM / ( easAmoNum || 1 ) ) ); // What: Ease Soonest Function. Why: The Soonest/Shortest stepper needs a plain day count, not the raw per-day drift amount (easeMax) it is derived from. How: This divides THR_DEF_NUM by easAmoNum, rounds, and floors the result at 1 day.
+const easLatFun = ( easAmoNum ) => Math.max( 1, Math.round( THR_DEF_NUM / ( easAmoNum || 1 ) ) );  // What: Ease Latest Function. Why: The Latest/Longest stepper needs a plain day count, not the raw per-day drift amount (easeMin) it is derived from. How: This divides THR_DEF_NUM by easAmoNum, rounds, and floors the result at 1 day.
 const dayEasFun = ( dayCouNum ) => THR_DEF_NUM / Math.max( 1, dayCouNum );                          // What: Day Ease Function. Why: Editing either stepper needs to convert a plain day count back into the per-day drift amount easeMin/easeMax actually store. How: This divides THR_DEF_NUM by dayCouNum, floored at 1 day, with no rounding since this feeds a stored drift amount rather than a displayed count.
 
 
@@ -137,10 +137,10 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 	const appSooFun = ( dayCouNum ) => { // What: Apply Soonest Function. Why: Editing the Soonest/Shortest stepper must convert its own day count back into a drift amount and commit it. How: This clamps dayCouNum to [1, 100], converts it via dayEasFun, and patches easeMax, raising easeMin to match if it would otherwise fall below it.
 
 
-		const newAmtNum = dayEasFun( Math.max( 1, Math.min( 100, dayCouNum ) ) ); // What: New Amount Number. Why: The clamped day count must be converted back into the drift amount easeMax actually stores. How: This calls dayEasFun against dayCouNum, clamped to [1, 100] first.
+		const newAmoNum = dayEasFun( Math.max( 1, Math.min( 100, dayCouNum ) ) ); // What: New Amount Number. Why: The clamped day count must be converted back into the drift amount easeMax actually stores. How: This calls dayEasFun against dayCouNum, clamped to [1, 100] first.
 
 
-		patSetFun( { easeMax : newAmtNum, easeMin : Math.min( easMinNum, newAmtNum ) } ); // What: Ease Maximum Patch Call. Why: Raising the soonest bound past the latest bound would invert the range, so easeMin is pulled down to match when needed. How: This commits the new easeMax alongside whichever of easMinNum/newAmtNum is smaller.
+		patSetFun( { easeMax : newAmoNum, easeMin : Math.min( easMinNum, newAmoNum ) } ); // What: Ease Maximum Patch Call. Why: Raising the soonest bound past the latest bound would invert the range, so easeMin is pulled down to match when needed. How: This commits the new easeMax alongside whichever of easMinNum/newAmoNum is smaller.
 
 
 	};
@@ -148,10 +148,10 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 	const appLatFun = ( dayCouNum ) => { // What: Apply Latest Function. Why: Editing the Latest/Longest stepper must convert its own day count back into a drift amount and commit it. How: This clamps dayCouNum to [1, 100], converts it via dayEasFun, and patches easeMin, lowering easeMax to match if it would otherwise fall below it.
 
 
-		const newAmtNum = dayEasFun( Math.max( 1, Math.min( 100, dayCouNum ) ) ); // What: New Amount Number. Why: The clamped day count must be converted back into the drift amount easeMin actually stores. How: This calls dayEasFun against dayCouNum, clamped to [1, 100] first.
+		const newAmoNum = dayEasFun( Math.max( 1, Math.min( 100, dayCouNum ) ) ); // What: New Amount Number. Why: The clamped day count must be converted back into the drift amount easeMin actually stores. How: This calls dayEasFun against dayCouNum, clamped to [1, 100] first.
 
 
-		patSetFun( { easeMin : newAmtNum, easeMax : Math.max( easMaxNum, newAmtNum ) } ); // What: Ease Minimum Patch Call. Why: Lowering the latest bound past the soonest bound would invert the range, so easeMax is pulled up to match when needed. How: This commits the new easeMin alongside whichever of easMaxNum/newAmtNum is larger.
+		patSetFun( { easeMin : newAmoNum, easeMax : Math.max( easMaxNum, newAmoNum ) } ); // What: Ease Minimum Patch Call. Why: Lowering the latest bound past the soonest bound would invert the range, so easeMax is pulled up to match when needed. How: This commits the new easeMin alongside whichever of easMaxNum/newAmoNum is larger.
 
 
 	};

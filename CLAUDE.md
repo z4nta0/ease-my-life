@@ -2534,6 +2534,15 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     unrelated file; a name's own surrounding context disambiguates which
     of the two "dow" stands for in practice, the same reasoning already
     used for `con`/`sta`/`per`/`fre` elsewhere in this list)
+  - `amt` → `amo` (Amount — found in `resAmtNum`/`scrAmtFun`
+    (`onboarding-tour-runner.jsx`), `easAmtNum`/`newAmtNum`
+    (`tab-conditional.jsx`, 2 separate `easSooFun`/`easLatFun`
+    parameters and 2 separate `newAmtNum` declarations), and `offAmtNum`
+    (`appearance.js`), fixed to `resAmoNum`/`scrAmoFun`/`easAmoNum`/
+    `newAmoNum`/`offAmoNum` across all 3 files in one sweep; every one
+    of these comments already spelled "Amount" out in full, so none
+    needed any text changes, only the identifiers themselves were
+    wrong. No collision: `amo` was not already in use anywhere)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
