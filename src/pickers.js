@@ -521,7 +521,6 @@ function picIteFun( picRecObj, iteAllArr, optConObj ) {
 			const thrValNum = picRecObj.threshold ?? 100;           // What: Threshold Value Number. Why: Every charge/eligibility calculation below is relative to this picker's own threshold. How: This reads picRecObj's own threshold, defaulting to 100 for older pickers with none set.
 			const falEasObj = aveEasFun( itePooArr, picRecObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a drift band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
 
-
 			const rolSteFun = ( curIteObj ) => { // What: Roll Step Function. Why: A freshly-reset item needs a brand new fixed charge step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that lands the item exactly on thrValNum in that many cycles.
 
 
@@ -539,7 +538,6 @@ function picIteFun( picRecObj, iteAllArr, optConObj ) {
 
 
 			const getSteFun = ( curIteObj ) => ( curIteObj.chargeStep && curIteObj.chargeStep > 0 ) ? curIteObj.chargeStep : rolSteFun( curIteObj ); // What: Get Step Function. Why: An item already mid-plan must keep charging by its own already-rolled step; only a legacy item with none rolls a fresh one. How: This returns curIteObj's own chargeStep when it's a real positive number, rolling one via rolSteFun otherwise.
-
 
 			const chrUpdFun = ( curIteObj ) => { // What: Charge Update Function. Why: A waiting item needs its own resolved step both applied to its value and persisted for next cycle. How: This resolves the step once via getSteFun, then returns an update carrying both the new value and that same step.
 
@@ -583,8 +581,6 @@ function picIteFun( picRecObj, iteAllArr, optConObj ) {
 
 
 			const getTimFun = ( curIteObj ) => curIteObj.lastPicked ? Date.parse( curIteObj.lastPicked ) : 0; // What: Get Time Function. Why: A tie between equally-overdue items must break on whichever waited longest. How: This resolves an item's own lastPicked into a comparable timestamp, treating a never-picked item as the oldest possible (0).
-
-
 
 			const picResObj = forIteObj || eliIteArr.reduce( ( besIteObj, curIteObj ) => { // What: Picked Result Object. Why: A forced target wins outright; otherwise the most overdue eligible item (by value, ties broken by oldest lastPicked) is picked. How: This reduces eliIteArr, keeping whichever of besIteObj/curIteObj is more overdue by the rules in its own body.
 
@@ -703,7 +699,6 @@ function picIteFun( picRecObj, iteAllArr, optConObj ) {
 
 			const thrValNum = picRecObj.threshold ?? 100;           // What: Threshold Value Number. Why: Every charge/decay calculation below is relative to this picker's own threshold. How: This reads picRecObj's own threshold, defaulting to 100 for older pickers with none set.
 			const falEasObj = aveEasFun( itePooArr, picRecObj.id ); // What: Fallback Ease Object. Why: An item with no easeMin/easeMax of its own still needs a decay band to roll a target cycle count from. How: This computes the sibling-average fallback band via aveEasFun.
-
 
 			const rolSteFun = ( curIteObj ) => { // What: Roll Step Function. Why: A freshly-chosen item needs a brand new fixed decay step planned, uniformly across its own eligible cycle-count range. How: This rolls a target cycle count in [sooCycNum, latCycNum], then returns the fixed step that empties the item exactly in that many cycles.
 
@@ -986,8 +981,6 @@ function aveEasFun( iteAllArr, picIdeStr ) {
 const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N charge step (100/3, say) can land a hair under thrValNum on the very cycle it was planned to become eligible, and this tolerance must be the ONE place that's decided, not re-derived per caller. How: This is read directly by easEliFun below, the single source every eligibility check in this file and its callers must use.
 
 const easEliFun = ( iteRecObj, thrValNum ) => ( iteRecObj.value ?? 0 ) >= ( ( thrValNum ?? 100 ) - EAS_TOL_NUM ); // What: Ease Eligible Function. Why: Comparing an item's own value against its threshold directly (with no tolerance) can make an item at 99.7 invisible to a re-roll cycle count while still being eligible to the generator itself, a real inconsistency this file used to have. How: This treats iteRecObj as eligible once its own value reaches thrValNum minus EAS_TOL_NUM, both defaulted the same way picIteFun defaults them.
-
-
 
 const modEliFun = ( iteRecObj, picRecObj ) => { // What: Mode Eligible Function. Why: Some callers need to know whether an item could be picked RIGHT NOW under its own picker's mode, independent of whether the item is active/inactive. How: This branches on picRecObj's own mode, delegating ease-up to easEliFun and treating ease-down/dynamic/random/weighted by their own simpler rules.
 
