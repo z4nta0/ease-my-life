@@ -1166,7 +1166,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 		const nftNum = 4000; // What: Not-Found-Timeout Number. Why: A step whose target never resolves (normally just the tab-sync effect's own selTabFun() still settling) would otherwise sit as a permanent dim with nothing to click, most likely on a resume, where a stale activeTour survived some app change that moved or removed the target. How: This is generous enough not to fire during ordinary mounting.
 
-		let notFndNum = null; // What: Not-Found Number. Why: The watchdog below needs to track how long the target has been missing, not just whether it currently is. How: This starts null (never yet missing) and is set to a timestamp the first time the loop below finds nothing.
+		let notFouNum = null; // What: Not-Found Number. Why: The watchdog below needs to track how long the target has been missing, not just whether it currently is. How: This starts null (never yet missing) and is set to a timestamp the first time the loop below finds nothing.
 
 		let lasScrHeiNum = null; // What: Last Scroll Height Number. Why: This tracks the scrollable content's total height so a step whose target stays put (no tab/step change) but whose SURROUNDING content grows or shrinks, e.g. the user does the step's own action themselves without ever clicking the coach's Next, can still get nudged back into view. How: Ordinary scrolling never changes this value, so it does not fight the user scrolling around on purpose; only an actual content-size change re-triggers briTarFun; measured with resAmoNum subtracted out, otherwise decResFun's own CSS padding (added specifically to make room for the coach above a highlight too tall to fit either way) reads as "content grew", re-triggers briTarFun, and briTarFun scrolls the target right back up to its usual pad-from-top position, undoing the reserve and putting the coach right back on top of it.
 
@@ -1182,7 +1182,7 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 			if ( eleArr.length ) { // What: Target Found Branch. Why: The target currently exists, so this positions it and clears the not-found watchdog. How: This runs the full per-frame bookkeeping below.
 
 
-				notFndNum = null; // What: Not-Found Reset. Why: The watchdog must reset the instant the target reappears. How: This clears notFndNum back to null.
+				notFouNum = null; // What: Not-Found Reset. Why: The watchdog must reset the instant the target reappears. How: This clears notFouNum back to null.
 
 				const scrEle = getScrFun( eleArr[ 0 ] ); // What: Scroll Element. Why: The content-grew check below needs to know which element actually scrolls. How: This resolves the first matched element's own scroller.
 
@@ -1222,9 +1222,9 @@ function GuidedTour ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, s
 
 				setRecObj( null ); // What: Rect Clear. Why: Nothing should render as highlighted while the target is missing. How: This clears the React rect state back to null.
 
-				if ( notFndNum == null ) notFndNum = performance.now(); // What: Not-Found Start. Why: The watchdog needs a timestamp to measure how long the target has been missing. How: This records the current time the first frame the target is missing.
+				if ( notFouNum == null ) notFouNum = performance.now(); // What: Not-Found Start. Why: The watchdog needs a timestamp to measure how long the target has been missing. How: This records the current time the first frame the target is missing.
 
-				else if ( performance.now() - notFndNum > nftNum ) { canBoo = true; skpTouFun(); return; } // What: Not-Found Timeout Skip. Why: A target that never resolves within nftNum must not leave a permanent, unclickable dim on screen. How: This cancels the loop and calls skpTouFun once the missing duration exceeds nftNum.
+				else if ( performance.now() - notFouNum > nftNum ) { canBoo = true; skpTouFun(); return; } // What: Not-Found Timeout Skip. Why: A target that never resolves within nftNum must not leave a permanent, unclickable dim on screen. How: This cancels the loop and calls skpTouFun once the missing duration exceeds nftNum.
 
 
 			}

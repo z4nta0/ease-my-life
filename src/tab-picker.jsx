@@ -595,15 +595,15 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	const opnEdiFun = ( tarIdeStr ) => { // What: Open Edit Function. Why: Opening an existing item's editor needs to snapshot it first (for strEdiFun's own revert-on-switch below) and seed the local name input. How: This looks up the item, bails out if it's already gone, then opens the editor and scrolls it into view.
 
 
-		const fndIteObj = state.items.find( ( x ) => x.id === tarIdeStr ); // What: Found Item Object. Why: The editor needs the real, current item record to open against. How: This looks up tarIdeStr in state.items.
+		const fouIteObj = state.items.find( ( x ) => x.id === tarIdeStr ); // What: Found Item Object. Why: The editor needs the real, current item record to open against. How: This looks up tarIdeStr in state.items.
 
-		if ( !fndIteObj ) return; // What: Missing Item Guard. Why: A stale id (already deleted) must not open an editor with nothing to show. How: This bails out before touching any state.
+		if ( !fouIteObj ) return; // What: Missing Item Guard. Why: A stale id (already deleted) must not open an editor with nothing to show. How: This bails out before touching any state.
 
-		ediSnaRef.current = { ...fndIteObj }; // What: Snapshot Write. Why: strEdiFun needs a snapshot of this exact item, taken right now, in case it later has to revert this edit to switch to a different one. How: This shallow-copies fndIteObj into ediSnaRef.
+		ediSnaRef.current = { ...fouIteObj }; // What: Snapshot Write. Why: strEdiFun needs a snapshot of this exact item, taken right now, in case it later has to revert this edit to switch to a different one. How: This shallow-copies fouIteObj into ediSnaRef.
 
 		setEdiIteStr( tarIdeStr ); // What: Open Editor Call. Why: This is the actual state change that shows the editor. How: This writes tarIdeStr into ediIteStr.
 
-		setEdiNamStr( fndIteObj.name ); // What: Seed Name Call. Why: The name input needs its own starting value. How: This writes the found item's own current name into ediNamStr.
+		setEdiNamStr( fouIteObj.name ); // What: Seed Name Call. Why: The name input needs its own starting value. How: This writes the found item's own current name into ediNamStr.
 
 		requestAnimationFrame( () => requestAnimationFrame( () => { // What: Scroll Into View Call. Why: This is the same below-the-list reveal as addIteFun's own, since the editor renders in the same slot, which can be well out of view from wherever in a long pool the Edit button that opened it was. How: This waits two animation frames for layout to settle, then scrolls the shared .main container just enough to bring the slot fully into view.
 
@@ -1845,11 +1845,11 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 	const opnDftFun = ( tarIdeStr ) => { // What: Open Draft Function. Why: Opening an already-committed draft item's editor needs to snapshot it first (for strDftFun's own revert-on-switch below) and scroll it into view. How: This looks up the item, bails out if it's already gone, then opens the editor and scrolls it into view.
 
 
-		const fndIteObj = pooIteArr.find( ( x ) => x.id === tarIdeStr ); // What: Found Item Object. Why: The editor needs the real, current draft item record to open against. How: This looks up tarIdeStr in pooIteArr.
+		const fouIteObj = pooIteArr.find( ( x ) => x.id === tarIdeStr ); // What: Found Item Object. Why: The editor needs the real, current draft item record to open against. How: This looks up tarIdeStr in pooIteArr.
 
-		if ( !fndIteObj ) return; // What: Missing Item Guard. Why: A stale id (already deleted) must not open an editor with nothing to show. How: This bails out before touching any state.
+		if ( !fouIteObj ) return; // What: Missing Item Guard. Why: A stale id (already deleted) must not open an editor with nothing to show. How: This bails out before touching any state.
 
-		ediSnaRef.current = { ...fndIteObj }; // What: Snapshot Write. Why: strDftFun needs a snapshot of this exact item, taken right now, in case it later has to revert this edit to switch to a different one. How: This shallow-copies fndIteObj into ediSnaRef.
+		ediSnaRef.current = { ...fouIteObj }; // What: Snapshot Write. Why: strDftFun needs a snapshot of this exact item, taken right now, in case it later has to revert this edit to switch to a different one. How: This shallow-copies fouIteObj into ediSnaRef.
 
 		setEdiIteStr( tarIdeStr ); // What: Open Editor Call. Why: This is the actual state change that shows the editor. How: This writes tarIdeStr into ediIteStr.
 

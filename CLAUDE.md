@@ -2543,6 +2543,16 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     of these comments already spelled "Amount" out in full, so none
     needed any text changes, only the identifiers themselves were
     wrong. No collision: `amo` was not already in use anywhere)
+  - `fnd` → `fou` (Found — found in `notFndNum`
+    (`onboarding-tour-runner.jsx`), `fndIteObj` (`tab-picker.jsx`, 2
+    separate declarations), and `curFndIndNum` (`tab-today.jsx`), fixed
+    to `notFouNum`/`fouIteObj`/`curFouIndNum` across all 3 files in one
+    sweep; `fou` was already the established, correct code for this
+    exact word elsewhere in this codebase, e.g. `fouCouNum` in
+    `seed.js`. Every one of these comments already spelled "Found" out
+    in full, so none needed any text changes, only the identifiers
+    themselves were wrong. No collision: none of the fixed names were
+    already in use anywhere)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
