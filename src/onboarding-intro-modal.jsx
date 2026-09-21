@@ -38,7 +38,7 @@ import { redMotFun    } from './ui.jsx';  // What: Reduce Motion Function.  Why:
  * @summary
  * This is the generic intro modal shown before any guided tour, the
  * Welcome Tour and every per-feature mini-tour built on the same
- * GuidedTour engine alike (see onboarding-tour-runner.jsx). It renders
+ * GuiTouCom engine alike (see onboarding-tour-runner.jsx). It renders
  * an icon, a title, one or more body paragraphs, and up to a few small
  * pills, then a primary "start" action above a secondary "skip" one.
  * Every piece of visible content is passed in by the caller; only the

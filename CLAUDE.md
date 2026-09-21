@@ -453,6 +453,20 @@ decision is captured for next time instead of getting re-asked later.
   (e.g. the `Your Pickers Step`/`pulSelStr`/`runFun` lines): each one's
   own What/Why/How comes first, followed by its own extra design note,
   both on the object's/property's own single line.
+  - **JSX variant**: when the target line is a JSX comment-only
+    expression rather than a plain `//` comment, the same mechanism
+    applies but each topic keeps its own separate `{ /* ... */ }`
+    block instead of sharing one, chained back-to-back on the same
+    line, identity comment first: `{ /* What: ... Why: ... How: ...
+    */ }{ /* <design note prose> */ }`. A design note that was
+    originally spread across several `//`-prefixed lines above the
+    target (the free-form block case above) still collapses to one
+    physical line first, exactly as that case describes, before being
+    moved into its own trailing `{ /* */ }` block. See
+    `onboarding-tour-runner.jsx`'s own Spotlight Element line for the
+    reference example, whose leading multi-line comment about the
+    ".ob-spot" box-shadow/is-dragging behavior moved into a second
+    `{ /* */ }` block right after the element's own identity comment.
 - **A topic that is specifically about one property's own value or
   implementation quirk** (e.g. "padXNum: 4 exists because...", "mulBoo
   is true because...", "titStr/bodEle are functions because...") moves
@@ -2396,8 +2410,11 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `bg-flourish.jsx` (`plaGriFun`), an unrelated multi-meaning segment
     in a different file with no collision risk between the two)
   - `ovf` → `ove` (Overflow — found in `ownOveStr`/`ancOveStr`/`oveRigBoo`
-    in `help-mode.jsx` and `oveBelNum`/`oveStyStr` across
-    `tab-settings.jsx` and `tab-picker.jsx`)
+    in `help-mode.jsx`, `oveBelNum`/`oveStyStr` across
+    `tab-settings.jsx` and `tab-picker.jsx`, and a third, distinct
+    recurrence in `onboarding-tour-runner.jsx`'s own `ownOveStr`/
+    `ancOveStr`/`ancOveYStr`, this last one caught during an automated
+    Known-miscorrections sweep rather than a full manual review pass)
   - `clp` → `cli` (Clip — found in `cliRecObj` across `help-mode.jsx` and
     `onboarding-tour-runner.jsx`; `cli` was already the established code
     for Clip elsewhere in this codebase, e.g. `cliHorFun`, `cliChrFun`)
@@ -2553,6 +2570,29 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     in full, so none needed any text changes, only the identifiers
     themselves were wrong. No collision: none of the fixed names were
     already in use anywhere)
+  - `plc` → `pla` (Place — found in `plcTarFun`
+    (`onboarding-tour-runner.jsx`), fixed to `plaTarFun`; `pla` was
+    already the established, heavily-used code for Place elsewhere in
+    this codebase, e.g. `plaTipFun` (`help-mode.jsx`/`ui.jsx`),
+    `plaGriFun` (`bg-flourish.jsx`), `plaThuFun` (`reminders.jsx`).
+    Every comment referencing this function already spelled out
+    "Place"/"placement" in full, so only the identifier itself was
+    wrong. No collision: `plaTarFun` was not already in use anywhere.
+    Searched the rest of the codebase for other `plc` instances and
+    found none, so this one was an isolated fix rather than a
+    multi-file sweep)
+  - `stb` → `sta` (Stable — found in `stbFraNum`
+    (`onboarding-tour-runner.jsx`), fixed to `staFraNum`; `sta` was
+    already the established code for Stable/Standard/Standalone
+    elsewhere in this codebase. Every comment referencing this
+    variable already spelled out "Stable"/"stability" in full, so only
+    the identifier itself was wrong. No collision: `staFraNum` was not
+    already in use anywhere. Note `stb` itself also appears elsewhere
+    in this codebase, in `onboarding-app-features.jsx` and
+    `onboarding-picker-tours.jsx`'s own `stbBoo` (Scroll-To-Bottom, an
+    initialism-compressed name, not an abbreviation of "Stable"), which
+    is unrelated and correctly left untouched, a spelling coincidence
+    rather than the same miscorrection)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

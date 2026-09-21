@@ -24,7 +24,7 @@ import { IcoSvgCom    } from './ui.jsx';  // What: Icon Svg Component. Why: The 
  * corner badge; clicking a badge reveals that element's tip (title plus
  * body, no Step N of N / Skip / Back / Next; see
  * onboarding-tour-runner.jsx for that, a genuinely different engine).
- * Deliberately not built on top of GuidedTour, since that engine is
+ * Deliberately not built on top of GuiTouCom, since that engine is
  * sequential/single-spotlight and its dimming trick (one element's own
  * box-shadow spread darkening everything outside it) does not compose
  * for "many holes at once". This instead paints a single SVG mask (a

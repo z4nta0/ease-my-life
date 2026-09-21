@@ -7,7 +7,7 @@ import React from 'react'; // What: React. Why: This file's own RemTouCom compon
 
 
 import { emlTouObj    } from './eml-tour-bus.js';            // What: Ease My Life Tour Object. Why: This publishes the running tour's prefill data for the real reminder form and clears it again on every exit path. How: This is written to via .set() in buiAddFun's runFun() and cloTouFun below.
-import { GuidedTour   } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each reminder mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-varKeyStr step array.
+import { GuiTouCom   } from './onboarding-tour-runner.jsx'; // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives each reminder mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-varKeyStr step array.
 import { IcoSvgCom    } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current varKeyStr. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom    } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each reminder mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this file's own per-varKeyStr copy.
 import { ONB_TAS_ARR  } from './onboarding-seed-data.js';    // What: Onboarding Task Array. Why: A reload can land on this tour before the live sample task has been re-derived from state.tasks. How: This is searched as the fallback template lookup in buiAddFun's runFun() below.
@@ -104,17 +104,17 @@ const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why
 
 
 
-	return { // What: Step Object Return. Why: GuidedTour needs this step's own selector, copy, and side effect. How: This returns the plain step object read by RemTouCom's own steObjArr below.
+	return { // What: Step Object Return. Why: GuiTouCom needs this step's own selector, copy, and side effect. How: This returns the plain step object read by RemTouCom's own steObjArr below.
 
 
-		bacBoo : false,               // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
-		cirBoo : true,                // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
-		priStr : 'Next',              // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-		selStr : '.rem-add-btn',      // What: Selector String. Why: This step highlights the real "+" button that opens the add-reminder form. How: GuidedTour spotlights whatever this selector matches.
-		tabStr : 'today',             // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-		titStr : 'Create a Reminder', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+		bacBoo : false,               // What: Back Boolean. Why: This is the tour's very first step, so there is nothing to go back to. How: GuiTouCom hides its own Back button whenever this is false.
+		cirBoo : true,                // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuiTouCom disables Next and only advances once the real target is clicked.
+		priStr : 'Next',              // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+		selStr : '.rem-add-btn',      // What: Selector String. Why: This step highlights the real "+" button that opens the add-reminder form. How: GuiTouCom spotlights whatever this selector matches.
+		tabStr : 'today',             // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
+		titStr : 'Create a Reminder', // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuiTouCom renders this as the step's own heading text.
 
-		bodEle : <>The "+" button is always present on the Today page and will <b>open the interface for creating a Reminder</b>. Go ahead and click the "+" button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the "+" button does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+		bodEle : <>The "+" button is always present on the Today page and will <b>open the interface for creating a Reminder</b>. Go ahead and click the "+" button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the "+" button does. How: GuiTouCom renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 		runFun : () => { // What: Run Function. Why: The live sample's own prefill data needs staging onto the bus before the real click opens the form. How: This looks up the live sample task, falling back to ONB_TAS_ARR' own static template, then publishes its own name/repeat/daysOfWeek onto the bus.
 
@@ -154,14 +154,14 @@ const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why
 const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share this exact step, highlighting the real name input right after Step 1's click opens the form. How: This is spread as-is into both variants' own steObjArr below; resBoo stays false since its own target only exists once the add-reminder form is already open, which a reload does not survive.
 
 
-	bacBoo : true,                  // What: Back Boolean. Why: The user should always be able to return to the previous, "click the +" step. How: GuidedTour shows its own Back button whenever this is true.
-	priStr : 'Next',                // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	resBoo : false,                 // What: Resumable Boolean. Why: This step's own target only exists because Step 1's click already opened the form, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
-	selStr : '.rem-quickadd input', // What: Selector String. Why: This step highlights the real name input inside the now-open add-reminder form. How: GuidedTour spotlights whatever this selector matches.
-	tabStr : 'today',               // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr : 'Give it a name',      // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	bacBoo : true,                  // What: Back Boolean. Why: The user should always be able to return to the previous, "click the +" step. How: GuiTouCom shows its own Back button whenever this is true.
+	priStr : 'Next',                // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+	resBoo : false,                 // What: Resumable Boolean. Why: This step's own target only exists because Step 1's click already opened the form, which a reload does not survive. How: GuiTouCom's own resume-persist effect never checkpoints a step whose resBoo is false.
+	selStr : '.rem-quickadd input', // What: Selector String. Why: This step highlights the real name input inside the now-open add-reminder form. How: GuiTouCom spotlights whatever this selector matches.
+	tabStr : 'today',               // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
+	titStr : 'Give it a name',      // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuiTouCom renders this as the step's own heading text.
 
-	bodEle : <>This is the name of the reminder and is what will be <b>shown in your todo list on the Today page</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the name field is for. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	bodEle : <>This is the name of the reminder and is what will be <b>shown in your todo list on the Today page</b>. We’ve already filled this out for you but feel free to customize it to whatever you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the name field is for. How: GuiTouCom renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 };
@@ -194,14 +194,14 @@ const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share t
 const REP_STE_OBJ = { // What: Repeat Step Object. Why: The recurring tour's own Step 3 needs a single combined highlight over every non-"Once" Repeat pill. How: This is spread as-is into the recurring varKeyStr's own steObjArr below.
 
 
-	bacBoo : true,                                                               // What: Back Boolean. Why: The user should always be able to return to the previous, name-input step. How: GuidedTour shows its own Back button whenever this is true.
-	priStr : 'Next',                                                             // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-	resBoo : false,                                                              // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
-	selStr : '.rem-quickadd-wrap .seg[aria-label="Repeat"] .seg-btn ~ .seg-btn', // What: Selector String. Why: This step highlights every Repeat pill except "Once", scoped narrowly enough to exclude the Monthly/Yearly Date/Weekday toggle below it. How: GuidedTour spotlights every element this combined selector matches.
-	tabStr : 'today',                                                            // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr : 'Select recurring schedule',                                        // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	bacBoo : true,                                                               // What: Back Boolean. Why: The user should always be able to return to the previous, name-input step. How: GuiTouCom shows its own Back button whenever this is true.
+	priStr : 'Next',                                                             // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+	resBoo : false,                                                              // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuiTouCom's own resume-persist effect never checkpoints a step whose resBoo is false.
+	selStr : '.rem-quickadd-wrap .seg[aria-label="Repeat"] .seg-btn ~ .seg-btn', // What: Selector String. Why: This step highlights every Repeat pill except "Once", scoped narrowly enough to exclude the Monthly/Yearly Date/Weekday toggle below it. How: GuiTouCom spotlights every element this combined selector matches.
+	tabStr : 'today',                                                            // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
+	titStr : 'Select recurring schedule',                                        // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuiTouCom renders this as the step's own heading text.
 
-	bodEle : <>Recurring reminders have multiple options for <b>how often they should show up in your todo list</b>. We’ve already selected "Weekly" for you but feel free to select whichever one you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Repeat pills control. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+	bodEle : <>Recurring reminders have multiple options for <b>how often they should show up in your todo list</b>. We’ve already selected "Weekly" for you but feel free to select whichever one you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what the Repeat pills control. How: GuiTouCom renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 };
@@ -237,7 +237,7 @@ const REP_STE_OBJ = { // What: Repeat Step Object. Why: The recurring tour's own
  *   was chosen, since that reasoning genuinely differs per kind.
  *
  * - `titStr` (String): Title String is this kind's own coach-card heading,
- *   rendered by GuidedTour as the step's own heading text.
+ *   rendered by GuiTouCom as the step's own heading text.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -299,18 +299,18 @@ const buiFreFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
 
 
 
-	return { // What: Step Object Return. Why: GuidedTour needs this step's own selector, copy, and flags. How: This returns the plain step object read by RemTouCom's own steObjArr below.
+	return { // What: Step Object Return. Why: GuiTouCom needs this step's own selector, copy, and flags. How: This returns the plain step object read by RemTouCom's own steObjArr below.
 
 
-		bacBoo : true,                                 // What: Back Boolean. Why: The user should always be able to return to the previous, Repeat-pills step. How: GuidedTour shows its own Back button whenever this is true.
-		catBoo : true,                                 // What: Coach-At-Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuidedTour skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
-		priStr : 'Next',                               // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-		resBoo : false,                                // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
-		selStr : '.rem-quickadd-wrap .rem-extra-fade', // What: Selector String. Why: This step highlights whichever schedule control the recurring draft's own repeat kind reveals below the Repeat pills. How: GuidedTour spotlights whatever this selector matches.
-		tabStr : 'today',                              // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-		titStr : repCopObj.titStr,                     // What: Title String. Why: This step's own coach card needs a heading naming what this repeat kind's own control does. How: GuidedTour renders repCopObj.titStr as the step's own heading text.
+		bacBoo : true,                                 // What: Back Boolean. Why: The user should always be able to return to the previous, Repeat-pills step. How: GuiTouCom shows its own Back button whenever this is true.
+		catBoo : true,                                 // What: Coach-At-Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuiTouCom skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
+		priStr : 'Next',                               // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+		resBoo : false,                                // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuiTouCom's own resume-persist effect never checkpoints a step whose resBoo is false.
+		selStr : '.rem-quickadd-wrap .rem-extra-fade', // What: Selector String. Why: This step highlights whichever schedule control the recurring draft's own repeat kind reveals below the Repeat pills. How: GuiTouCom spotlights whatever this selector matches.
+		tabStr : 'today',                              // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
+		titStr : repCopObj.titStr,                     // What: Title String. Why: This step's own coach card needs a heading naming what this repeat kind's own control does. How: GuiTouCom renders repCopObj.titStr as the step's own heading text.
 
-		bodEle : <>This option controls <b>{ repCopObj.leaStr }</b>{ repCopObj.taiStr } We’ve already made { repCopObj.pluBoo ? 'these selections' : 'this selection' } for you but feel free to customize it to whatever you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what this repeat kind's own control does. How: GuidedTour renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
+		bodEle : <>This option controls <b>{ repCopObj.leaStr }</b>{ repCopObj.taiStr } We’ve already made { repCopObj.pluBoo ? 'these selections' : 'this selection' } for you but feel free to customize it to whatever you’d prefer.</> // What: Body Element. Why: This step's own coach card needs a plain description of what this repeat kind's own control does. How: GuiTouCom renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
 
 	};
@@ -326,7 +326,7 @@ const buiFreFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
  * @summary
  * Both tours' closing step: the real "Add" button. cirBoo plus
  * priStr:'Done' together mean Next stays disabled and clicking the button
- * itself both saves the reminder AND ends the tour (GuidedTour's own finish(),
+ * itself both saves the reminder AND ends the tour (GuiTouCom's own finish(),
  * not just an advance, see onboarding-tour-runner.jsx's own onPrimary). The
  * recurring varKeyStr gets one extra sentence about the recurrence date.
  *
@@ -337,13 +337,13 @@ const buiFreFun = ( repValStr ) => { // What: Build Frequency Function. Why: Ste
 const buiSubFun = ( varKeyStr ) => ({
 
 
-	bacBoo : true,                               // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-	cirBoo : true,                               // What: Click-Is-Required Boolean. Why: The real click both saves the reminder and ends the tour, so the tour must not advance on its own before that click happens. How: GuidedTour disables Next and only advances once the real target is clicked.
-	priStr : 'Done',                             // What: Primary String. Why: This is both tours' own last step, so its main action finishes the tour instead of advancing. How: GuidedTour reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
-	resBoo : false,                              // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false.
-	selStr : '.rem-quickadd-wrap .btn--primary', // What: Selector String. Why: This step highlights the real "Add" button that both saves the reminder and ends the tour. How: GuidedTour spotlights whatever this selector matches.
-	tabStr : 'today',                            // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
-	titStr : 'Add your new Reminder',            // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuidedTour renders this as the step's own heading text.
+	bacBoo : true,                               // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+	cirBoo : true,                               // What: Click-Is-Required Boolean. Why: The real click both saves the reminder and ends the tour, so the tour must not advance on its own before that click happens. How: GuiTouCom disables Next and only advances once the real target is clicked.
+	priStr : 'Done',                             // What: Primary String. Why: This is both tours' own last step, so its main action finishes the tour instead of advancing. How: GuiTouCom reads a 'Done' priStr as the signal to call onFinTouFun instead of moving to a next step.
+	resBoo : false,                              // What: Resumable Boolean. Why: This step's own target only exists because the add-reminder form is already open, which a reload does not survive. How: GuiTouCom's own resume-persist effect never checkpoints a step whose resBoo is false.
+	selStr : '.rem-quickadd-wrap .btn--primary', // What: Selector String. Why: This step highlights the real "Add" button that both saves the reminder and ends the tour. How: GuiTouCom spotlights whatever this selector matches.
+	tabStr : 'today',                            // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
+	titStr : 'Add your new Reminder',            // What: Title String. Why: This step's own coach card needs a heading naming what it does. How: GuiTouCom renders this as the step's own heading text.
 
 	bodEle : varKeyStr === 'recurring' // What: Body Ternary. Why: The recurring varKeyStr needs an extra sentence about the recurrence date the one-time varKeyStr does not. How: This ternary picks between 2 JSX bodies based on varKeyStr.
 		? <>We’re all done creating this reminder item. Go ahead and click the "Add" button now to <b>add it to your todo list</b>. NOTE: if you selected a day other than today as the recurrence date, then this item will not show up in your todo list until it is due.</>
@@ -361,7 +361,7 @@ const buiSubFun = ( varKeyStr ) => ({
  *
  * @summary
  * Renders whichever piece of one varKeyStr's own reminder mini-tour is currently
- * relevant: the intro modal, or the running GuidedTour. Both variants ('once'
+ * relevant: the intro modal, or the running GuiTouCom. Both variants ('once'
  * and 'recurring') share the exact same 2 opening steps (buiAddFun,
  * NAM_STE_OBJ) and the exact same closing step (buiSubFun); only the recurring
  * varKeyStr adds 2 extra steps in between (REP_STE_OBJ, buiFreFun) for its own
@@ -410,7 +410,7 @@ function RemTouCom ( { varKeyStr, staAppObj, actStoObj, onCloForFun, onCloTouFun
 	const onbStaObj = staAppObj.onboarding || {};                                                                                  // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeMiniTour already re-derived from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which step to resume into. How: This reads staAppObj.onboarding, falling back to an empty object.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `reminder-${ varKeyStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this varKeyStr's own touIdeStr, otherwise null.
 
-	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
+	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuiTouCom running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
 
 
 
@@ -471,7 +471,7 @@ function RemTouCom ( { varKeyStr, staAppObj, actStoObj, onCloForFun, onCloTouFun
 	return (
 
 
-		<GuidedTour
+		<GuiTouCom
 			touIdeStr={ `reminder-${ varKeyStr }` }
 			steObjArr={ steObjArr }
 			resSteNum={ resTouObj ? resTouObj.step : 0 }

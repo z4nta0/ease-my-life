@@ -7,7 +7,7 @@ import React from 'react'; // What: React. Why: This file's own PagTouCom compon
 
 
 import { emlTouObj   } from './onboarding.jsx';             // What: Ease My Life Tour Object. Why: This publishes/reads bus nonces the Pickers-page onBacTouFun handler uses to reset or redo an in-flight picker-form animation. How: This is read via .get() and written via .set() inside PagTouCom's own onBacTouFun below.
-import { GuidedTour  } from './onboarding-tour-runner.jsx'; // What: Guided Tour. Why: This is the generic spotlight-tour engine that actually drives each page mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-page step array.
+import { GuiTouCom  } from './onboarding-tour-runner.jsx'; // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives each page mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-page step array.
 import { hydStaFun   } from './onboarding-seed-data.js';    // What: Hydrate Stats Function. Why: The Stats tour's own borrowed sample history needs converting from its static template shape into real pickLog rows. How: This is called inside unhHisFun below, passed ONBOARDING_STATS.
 import { IcoSvgCom   } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current page. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom   } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each page mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this page's own icon/title/paragraphs/pills.
@@ -184,15 +184,15 @@ const buiTs1Fun = ( pagKeyStr, runSteFun, priButStr = 'Next', butLabStr = null )
 
 
 
-	return { // What: Step Object Return. Why: GuidedTour needs this step's own selector, copy, and navigation flags. How: This spreads navTarObj, then overrides bodEle/tabStr/priStr/bacBoo/cirBoo/runFun.
+	return { // What: Step Object Return. Why: GuiTouCom needs this step's own selector, copy, and navigation flags. How: This spreads navTarObj, then overrides bodEle/tabStr/priStr/bacBoo/cirBoo/runFun.
 
 
 		...navTarObj, // What: Nav Target Spread. Why: This step's own selStr/titStr/bodEle default to navTarObj's own content, only some of which get overridden below. How: This spreads navTarObj first so the explicit properties below can still win.
 
-		bacBoo : false,     // What: Back Boolean. Why: This is every page tour's own very first step, so there is nothing to go back to. How: GuidedTour hides its own Back button whenever this is false.
-		cirBoo : true,      // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
-		priStr : priButStr, // What: Primary String. Why: This step's own coach card needs a label for its main action button, 'Next' by default but overridable by a caller like the App Features tours. How: GuidedTour renders this as the button's own visible text.
-		tabStr : 'today',   // What: Tab String. Why: This step must stay on Today so the real nav click is what does the navigating, not this step itself. How: GuidedTour's own tab-sync effect reads this.
+		bacBoo : false,     // What: Back Boolean. Why: This is every page tour's own very first step, so there is nothing to go back to. How: GuiTouCom hides its own Back button whenever this is false.
+		cirBoo : true,      // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuiTouCom disables Next and only advances once the real target is clicked.
+		priStr : priButStr, // What: Primary String. Why: This step's own coach card needs a label for its main action button, 'Next' by default but overridable by a caller like the App Features tours. How: GuiTouCom renders this as the button's own visible text.
+		tabStr : 'today',   // What: Tab String. Why: This step must stay on Today so the real nav click is what does the navigating, not this step itself. How: GuiTouCom's own tab-sync effect reads this.
 
 		bodEle : <>{ navTarObj.bodEle } Go ahead and click { butLabStr ? <>the "{ butLabStr }" page's button</> : 'it' } now.</>, // What: Body Element. Why: This step's own coach card needs navTarObj's own description plus an explicit click instruction. How: This appends a click sentence after navTarObj's own bodEle, naming the button when butLabStr is given.
 
@@ -474,11 +474,11 @@ const hidHisFun = ( actStoObj ) => { // What: Hide History Function. Why: The re
  *   matching the same primary alternative as selStr.
  *
  * - `selStr` (String): Selector String is the CSS selector(s)
- *   GuidedTour highlights for this step (comma-separated fallbacks
+ *   GuiTouCom highlights for this step (comma-separated fallbacks
  *   honored in order, first match wins).
  *
  * - `titStr` (String): Title String is this step's own coach card
- *   heading, rendered by GuidedTour as the step's own heading text.
+ *   heading, rendered by GuiTouCom as the step's own heading text.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -493,7 +493,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 		bodEle    : <>The "Send to Today" button will <b>add the manually generated pick to your todo list on the Today page</b>. Go ahead and click the "Send to Today" button now to see how this works.</>,
 		clkSelStr : '.pv-act--send',                            // What: Click Selector String. Why: The cirBoo guard must stay scoped to Send to Today specifically, not any disabled sibling sharing the widened box. How: This is read by the click-guard/cirBoo logic separately from selStr.
 		pulSelStr : '.pv-act--send:not(.is-sent)',
-		selStr    : '.pv-act--send:not(.is-sent), .picker-run', // What: Selector String. Why: This step highlights the real Send to Today button, falling back to framing the whole stage once it's sent. How: GuidedTour spotlights the first alternative that matches.
+		selStr    : '.pv-act--send:not(.is-sent), .picker-run', // What: Selector String. Why: This step highlights the real Send to Today button, falling back to framing the whole stage once it's sent. How: GuiTouCom spotlights the first alternative that matches.
 		titStr    : 'Add to Todo List'
 
 
@@ -503,7 +503,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>The "Add New Picker" button will <b>open up a form that allows you to create new pickers</b>. This will not be included as part of the tutorial, but if you want to learn more then please do any one of the picker tutorials after this is finished.</>,
-		selStr : '.picker-tab--add', // What: Selector String. Why: This step highlights the real "Add New Picker" tab. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.picker-tab--add', // What: Selector String. Why: This step highlights the real "Add New Picker" tab. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Create New Pickers'
 
 
@@ -513,7 +513,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>This opens the same form used to create a picker, pre-filled with this picker's current settings. You can <b>adjust its name, group, type, daily generator schedule, or conditional attachment</b>. Its items aren&rsquo;t edited here, but you can use this picker's own item list below or the Data tab for that.</>,
-		selStr : '.picker-edit-btn', // What: Selector String. Why: This step highlights the real Edit Picker button. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.picker-edit-btn', // What: Selector String. Why: This step highlights the real Edit Picker button. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Edit Picker'
 
 
@@ -525,7 +525,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 		bodEle    : <>The "Pick One" button will <b>allow you to run a manual pick generation for your selected picker</b>, so that you do not have to completely rely on the todo list's auto generation feature on the Today page. Click the "Pick One" button now to see how this works.</>,
 		clkSelStr : '.pv-act--pick',                            // What: Click Selector String. Why: The cirBoo guard must stay scoped to the button specifically even once the fallback widens the highlight. How: This is read by the click-guard/cirBoo logic separately from selStr.
 		pulSelStr : '.pv-act--pick:not(.is-busy)',
-		selStr    : '.pv-act--pick:not(.is-busy), .picker-run', // What: Selector String. Why: This step highlights the idle Pick One button, falling back to framing the whole stage once it goes busy. How: GuidedTour spotlights the first alternative that matches.
+		selStr    : '.pv-act--pick:not(.is-busy), .picker-run', // What: Selector String. Why: This step highlights the idle Pick One button, falling back to framing the whole stage once it goes busy. How: GuiTouCom spotlights the first alternative that matches.
 		titStr    : 'Manual Generation'
 
 
@@ -535,7 +535,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>This will allow you to <b>filter the pickers row below by their group</b>, which is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.picker-groups:not(.picker-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.picker-groups:not(.picker-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Group Filter'
 
 
@@ -545,7 +545,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>The "Add Item" button will <b>allow you to add new items to the selected picker's list of items</b>. This button is disabled for this tutorial. This concludes the Pickers page tutorial, click Done when you are ready.</>,
-		selStr : '.pv-additem-btn', // What: Selector String. Why: This step highlights the real Add Item button. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.pv-additem-btn', // What: Selector String. Why: This step highlights the real Add Item button. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Add Picker Item'
 
 
@@ -555,7 +555,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>Here you can <b>view all items in this picker's pool</b>. You can see a given items values, if applicable, as well as the <b>Send to Today, Edit and Delete buttons</b>. These buttons are disabled for this tutorial.</>,
-		selStr : '.pool-items', // What: Selector String. Why: This step highlights the whole item pool, excluding the Add Item button. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.pool-items', // What: Selector String. Why: This step highlights the whole item pool, excluding the Add Item button. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Picker Items'
 
 
@@ -565,7 +565,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>This will allow you to <b>further filter the pickers row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.picker-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.picker-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Type Filter'
 
 
@@ -575,7 +575,7 @@ const PIC_TAR_OBJ = { // What: Pickers Target Object. Why: buiTesFun below sprea
 
 
 		bodEle : <>This will <b>allow you to select a specific picker</b>, in order to initiate a manual picker generation as well as edit or delete its items.</>,
-		selStr : '.picker-tabs .picker-tab:not(.picker-tab--add)', // What: Selector String. Why: This step highlights every existing picker's own tab, excluding the Add tab. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.picker-tabs .picker-tab:not(.picker-tab--add)', // What: Selector String. Why: This step highlights every existing picker's own tab, excluding the Add tab. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Picker Selection'
 
 
@@ -612,11 +612,11 @@ const PRE_PIC_STR = ONB_EXA_OBJ.id; // What: Preselect Picker String. Why: The S
  *   rendered as JSX so specific phrases can be bolded.
  *
  * - `selStr` (String): Selector String is the CSS selector(s)
- *   GuidedTour highlights for this step (comma-separated fallbacks
+ *   GuiTouCom highlights for this step (comma-separated fallbacks
  *   honored in order, first match wins).
  *
  * - `titStr` (String): Title String is this step's own coach card
- *   heading, rendered by GuidedTour as the step's own heading text.
+ *   heading, rendered by GuiTouCom as the step's own heading text.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -629,7 +629,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This visualizes your completed activity over time, with <b>each day shaded by how much you got done</b>. You can click on any day for more details. Click Next when you are ready to advance to the next step.</>,
-		selStr : '.stat-heatmap-card', // What: Selector String. Why: This step highlights the whole activity heatmap card. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.stat-heatmap-card', // What: Selector String. Why: This step highlights the whole activity heatmap card. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Activity Heatmap'
 
 
@@ -639,7 +639,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>Once a specific picker is selected, its individual items are broken down here. You can <b>view things like pick count, pick frequency, last picked date</b> and others. This concludes the Stats page tutorial, click Done when you are ready.</>,
-		selStr : '.stat-breakdown-card', // What: Selector String. Why: This step highlights the whole picker breakdown card. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.stat-breakdown-card', // What: Selector String. Why: This step highlights the whole picker breakdown card. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Picker Breakdown'
 
 
@@ -649,7 +649,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This will allow you to <b>narrow your selection to specific pickers, reminders or conditionals</b>, or you can view everything all at once.</>,
-		selStr : '.stat-scope-tabs .picker-tab', // What: Selector String. Why: This step highlights the whole scope-tabs row. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.stat-scope-tabs .picker-tab', // What: Selector String. Why: This step highlights the whole scope-tabs row. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Show Filter'
 
 
@@ -659,7 +659,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Group Filter'
 
 
@@ -669,7 +669,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the previous group filter and is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.stat-scope-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.stat-scope-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Type Filter'
 
 
@@ -679,7 +679,7 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This will allow you to further <b>narrow your selection by date range</b>, with ranges from 1 week to 1 year to all time.</>,
-		selStr : '.stat-filter-pills--seg .stat-pill', // What: Selector String. Why: This step highlights the Range Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.stat-filter-pills--seg .stat-pill', // What: Selector String. Why: This step highlights the Range Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Range Filter'
 
 
@@ -718,11 +718,11 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
  *   rendered as JSX so specific phrases can be bolded.
  *
  * - `selStr` (String): Selector String is the CSS selector(s)
- *   GuidedTour highlights for this step (comma-separated fallbacks
+ *   GuiTouCom highlights for this step (comma-separated fallbacks
  *   honored in order, first match wins).
  *
  * - `titStr` (String): Title String is this step's own coach card
- *   heading, rendered by GuidedTour as the step's own heading text.
+ *   heading, rendered by GuiTouCom as the step's own heading text.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -735,7 +735,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 
 		bodEle : <>This creates a new picker directly from this list, respecting the group, type and conditional filters if they are used. This concludes the Data page tutorial, click Done when you are ready.</>,
-		selStr : '.cat-create-btn', // What: Selector String. Why: This step highlights the real Create Picker button at the bottom of the list. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.cat-create-btn', // What: Selector String. Why: This step highlights the real Create Picker button at the bottom of the list. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Create New Picker'
 
 
@@ -745,7 +745,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 
 		bodEle : <>This will allow you to <b>further narrow exactly what you want to view and edit</b>.</>,
-		selStr : '.stat-scope-tabs .picker-tab', // What: Selector String. Why: This step highlights the whole scope-tabs row. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.stat-scope-tabs .picker-tab', // What: Selector String. Why: This step highlights the whole scope-tabs row. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Show Filter'
 
 
@@ -755,7 +755,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 
 		bodEle : <>This will allow you to <b>filter the pickers row below by group</b>, which is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.stat-scope-groups:not(.stat-scope-groups--type) .picker-group-pill', // What: Selector String. Why: This step highlights the Group Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Group Filter'
 
 
@@ -765,7 +765,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 
 		bodEle : <>This is where you can <b>view and edit all of your pickers, as well as their containing items</b>. You can also create new picker items. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
-		selStr : '.data-list > .cat', // What: Selector String. Why: This step highlights every picker/Conditionals/Reminders card as one combined region. How: GuidedTour spotlights every element this selector matches.
+		selStr : '.data-list > .cat', // What: Selector String. Why: This step highlights every picker/Conditionals/Reminders card as one combined region. How: GuiTouCom spotlights every element this selector matches.
 		titStr : 'View and Edit Pickers'
 
 
@@ -775,7 +775,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 
 		bodEle : <>This will allow you to <b>further filter the show row below by their type</b>, which combines with the group filter and is extremely useful if you have created a lot of pickers.</>,
-		selStr : '.stat-scope-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.stat-scope-groups--type .picker-group-pill', // What: Selector String. Why: This step highlights the Type Filter pills specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Type Filter'
 
 
@@ -785,7 +785,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
 
 
 		bodEle : <>This is where you can <b>view and edit all of your reminders, as well as create new ones</b>. Feel free to explore this section yourself. Click Next when you are ready to move on.</>,
-		selStr : '.cat--reminders', // What: Selector String. Why: This step highlights the whole Reminders manager section. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.cat--reminders', // What: Selector String. Why: This step highlights the whole Reminders manager section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'View and Edit Reminders'
 
 
@@ -804,7 +804,7 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
  * elements, same shape/reasoning as PIC_TAR_OBJ above. One step per
  * section, each a fixed-content reference blurb (no interaction to
  * drive, unlike the Pickers tour), every .set-section is always
- * mounted (a scroll-spy sidebar, not a disclosure), so GuidedTour's own
+ * mounted (a scroll-spy sidebar, not a disclosure), so GuiTouCom's own
  * scroll-into-view handles reaching each one without any runFun() staging.
  *
  * 2 of these fields carry the exact same boilerplate What/Why/How
@@ -820,11 +820,11 @@ const DAT_TAR_OBJ = { // What: Data Target Object. Why: buiTesFun below spreads 
  *   rendered as JSX so specific phrases can be bolded.
  *
  * - `selStr` (String): Selector String is the CSS selector(s)
- *   GuidedTour highlights for this step (comma-separated fallbacks
+ *   GuiTouCom highlights for this step (comma-separated fallbacks
  *   honored in order, first match wins).
  *
  * - `titStr` (String): Title String is this step's own coach card
- *   heading, rendered by GuidedTour as the step's own heading text.
+ *   heading, rendered by GuiTouCom as the step's own heading text.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -837,7 +837,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 
 		bodEle : <>This is where you can find information about this app and its developer, replay the welcome tour and all of these tutorials at any time, and <b>contact the developer if you have any problems or suggestions</b>.</>,
-		selStr : '.set-section--about', // What: Selector String. Why: This step highlights the whole About section. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.set-section--about', // What: Selector String. Why: This step highlights the whole About section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'About Ease My Life'
 
 
@@ -847,7 +847,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 
 		bodEle : <>This is where you can <b>customize the app's look and feel</b>: light, dark and custom theme colors, completion celebration animations, picker pick animations, and tab bar placement.</>,
-		selStr : '.set-section--appearance', // What: Selector String. Why: This step highlights the whole Appearance section. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.set-section--appearance', // What: Selector String. Why: This step highlights the whole Appearance section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'App Customization'
 
 
@@ -857,7 +857,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 
 		bodEle : <>This is where you can <b>control the daily generator</b>: turn auto generation on or off, what time it runs, and enabling notifications for when it does.</>,
-		selStr : '.set-section--daily', // What: Selector String. Why: This step highlights the whole Daily Generator section. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.set-section--daily', // What: Selector String. Why: This step highlights the whole Daily Generator section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Daily Generator'
 
 
@@ -867,7 +867,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 
 		bodEle : <>This is where you can protect your data from browser deletion, <b>install the app directly to your device</b>, back up your data (export), restore your data (import), or erase all of your data.</>,
-		selStr : '.set-section--data', // What: Selector String. Why: This step highlights the whole Data Control section. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.set-section--data', // What: Selector String. Why: This step highlights the whole Data Control section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Data Control'
 
 
@@ -877,7 +877,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 
 		bodEle : <>This is where you can <b>toggle which holiday observances that the pickers and reminders option uses</b>. You can even add your own custom holidays, like your birthday!</>,
-		selStr : '.set-section--holidays', // What: Selector String. Why: This step highlights the whole Holiday Controls section. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.set-section--holidays', // What: Selector String. Why: This step highlights the whole Holiday Controls section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Holiday Controls'
 
 
@@ -887,7 +887,7 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
 
 
 		bodEle : <>This is where you can <b>view the Privacy Policy and Terms of Service</b>. This concludes the Settings page tutorial, click Done when you are ready.</>,
-		selStr : '.set-section--legal', // What: Selector String. Why: This step highlights the whole Legal section. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.set-section--legal', // What: Selector String. Why: This step highlights the whole Legal section. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Legal Information'
 
 
@@ -925,11 +925,11 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
  *   rendered as JSX so specific phrases can be bolded.
  *
  * - `selStr` (String): Selector String is the CSS selector(s)
- *   GuidedTour highlights for this step (comma-separated fallbacks
+ *   GuiTouCom highlights for this step (comma-separated fallbacks
  *   honored in order, first match wins).
  *
  * - `titStr` (String): Title String is this step's own coach card
- *   heading, rendered by GuidedTour as the step's own heading text.
+ *   heading, rendered by GuiTouCom as the step's own heading text.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -942,7 +942,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>The "Edit Mode" button will allow you to both <b>rearrange the positions of the groups and items, as well as rename the groups</b>. Go ahead and click the "Edit Mode" button now.</>,
-		selStr : '.em-rail-btn, .foot-editmode', // What: Selector String. Why: This step highlights whichever Edit Mode control is actually visible at the current width. How: GuidedTour spotlights the first alternative that matches.
+		selStr : '.em-rail-btn, .foot-editmode', // What: Selector String. Why: This step highlights whichever Edit Mode control is actually visible at the current width. How: GuiTouCom spotlights the first alternative that matches.
 		titStr : 'Edit Mode'
 
 
@@ -952,7 +952,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This will <b>allow you to move an entire group section to a different position in the todo list or move item positions within a group’s section</b>. Just click or press on it, hold it and move it up or down. You can try it yourself now. Click Next when you are ready to move on.</>,
-		selStr : '.rem-section .group-grip', // What: Selector String. Why: This step highlights the Reminders section's own drag handle specifically. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.rem-section .group-grip', // What: Selector String. Why: This step highlights the Reminders section's own drag handle specifically. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Movable Icon'
 
 
@@ -962,7 +962,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This is the todo list’s navigation, <b>allowing you to jump directly to a group’s section</b>. Over time your list can grow quite long and this helps to quickly move between the different sections of your todo list.</>,
-		selStr : '.group-rail ul', // What: Selector String. Why: This step highlights the group navigation list, excluding Edit Mode. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.group-rail ul', // What: Selector String. Why: This step highlights the group navigation list, excluding Edit Mode. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'List Navigation'
 
 
@@ -972,7 +972,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This <b>tracks your current progress of completed / total tasks for today’s todo list</b>. Once filled completely, your Day Streak will increase and the celebration animations will play.</>,
-		selStr : '.ring', // What: Selector String. Why: This step highlights the real progress ring. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.ring', // What: Selector String. Why: This step highlights the real progress ring. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Progress Ring'
 
 
@@ -982,7 +982,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
 
 
 		bodEle : <>This will <b>allow you to change a group’s name</b>. You can go ahead and try it yourself, but once you exit this tutorial the changes will be reverted. This concludes the Today page tutorial, click Done when you are ready.</>,
-		selStr : '.pt-section .group-name-input', // What: Selector String. Why: This step highlights the Page Tours group's own rename input. How: GuidedTour spotlights whatever this selector matches.
+		selStr : '.pt-section .group-name-input', // What: Selector String. Why: This step highlights the Page Tours group's own rename input. How: GuiTouCom spotlights whatever this selector matches.
 		titStr : 'Rename Group'
 
 
@@ -1103,7 +1103,7 @@ const forNamFun = ( actStoObj ) => { // What: Force Name Function. Why: A click 
  * Steps beyond Step 1 (the nav-highlight every page tour shares, see
  * buiTs1Fun above), keyed by page tour id, empty/absent for
  * any page that only has Step 1 so far. Advancing past the last step
- * here falls through GuidedTour's own "ran off the end" safety net
+ * here falls through GuiTouCom's own "ran off the end" safety net
  * into onSkiTouFun, same as every other mini-tour behaved before its
  * own final Done step existed. A function of `actStoObj` (built fresh per
  * render, like buiTs1Fun), not a static object, the Today
@@ -1128,9 +1128,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...PIC_TAR_OBJ.pgfObj, // What: Group Filter Target Spread. Why: This step reuses the Pickers catalog's own pgfObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.pgfObj before this step's own navigation flags.
 
-				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1140,9 +1140,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...PIC_TAR_OBJ.ptfObj, // What: Type Filter Target Spread. Why: This step reuses the Pickers catalog's own ptfObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.ptfObj before this step's own navigation flags.
 
-				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1152,9 +1152,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...PIC_TAR_OBJ.cnpObj, // What: Create New Pickers Target Spread. Why: This step reuses the Pickers catalog's own cnpObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.cnpObj before this step's own navigation flags.
 
-				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1164,9 +1164,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...PIC_TAR_OBJ.spsObj, // What: Picker Selection Target Spread. Why: This step reuses the Pickers catalog's own spsObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.spsObj before this step's own navigation flags.
 
-				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1176,9 +1176,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...PIC_TAR_OBJ.epsObj, // What: Edit Picker Target Spread. Why: This step reuses the Pickers catalog's own epsObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.epsObj before this step's own navigation flags.
 
-				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1188,12 +1188,12 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...PIC_TAR_OBJ.mpgObj, // What: Manual Generation Target Spread. Why: This step reuses the Pickers catalog's own mpgObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.mpgObj before this step's own navigation flags.
 
-				advSelStr : PIC_TAR_OBJ.atlObj.clkSelStr, // What: Advance Selector String. Why: This step must hold until the pick actually resolves, not until the next step's own target merely exists. How: GuidedTour polls for this selector before advancing past this step. Pick One kicks off the multi-second spin animation, its result (the atlObj step's own target) isn't ready the instant the click fires. Stay on THIS step's own already-resolved coach/highlight for the whole wait instead of advancing into a blank "not found yet" dim. Polls for .pv-act--send specifically (atlObj's own clkSelStr, NOT its sel), since .picker-run itself (that step's own sel) already exists the whole time, spin animation included, so polling for that would advance immediately instead of waiting for the pick to actually resolve.
-				bacBoo    : true,                                // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo    : true,                                // What: Coach-At-Top Boolean. Why: .picker-run can run taller than a short viewport even before this step's own click. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .picker-run (stage + actions) can run taller than a short viewport on its own, before Re-roll/Done even render alongside it, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .data-list step below. Confirmed live: without this, the coach overlapped the real Pick One button on an iPhone SE-sized viewport.
-				cirBoo    : true,                                // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
-				priStr    : 'Next',                              // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr    : 'picker'                             // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				advSelStr : PIC_TAR_OBJ.atlObj.clkSelStr, // What: Advance Selector String. Why: This step must hold until the pick actually resolves, not until the next step's own target merely exists. How: GuiTouCom polls for this selector before advancing past this step. Pick One kicks off the multi-second spin animation, its result (the atlObj step's own target) isn't ready the instant the click fires. Stay on THIS step's own already-resolved coach/highlight for the whole wait instead of advancing into a blank "not found yet" dim. Polls for .pv-act--send specifically (atlObj's own clkSelStr, NOT its sel), since .picker-run itself (that step's own sel) already exists the whole time, spin animation included, so polling for that would advance immediately instead of waiting for the pick to actually resolve.
+				bacBoo    : true,                                // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				catBoo    : true,                                // What: Coach-At-Top Boolean. Why: .picker-run can run taller than a short viewport even before this step's own click. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead. .picker-run (stage + actions) can run taller than a short viewport on its own, before Re-roll/Done even render alongside it, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .data-list step below. Confirmed live: without this, the coach overlapped the real Pick One button on an iPhone SE-sized viewport.
+				cirBoo    : true,                                // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuiTouCom disables Next and only advances once the real target is clicked.
+				priStr    : 'Next',                              // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr    : 'picker'                             // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1203,12 +1203,12 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...PIC_TAR_OBJ.atlObj, // What: Add To Todo List Target Spread. Why: This step reuses the Pickers catalog's own atlObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.atlObj before this step's own navigation flags.
 
-				advDelNum : 1600,    // What: Advance Delay Number. Why: The "Sent!" confirmation must be visible before this step advances. How: GuidedTour waits this many milliseconds after the click before advancing. Send to Today swaps its own label to "Sent!" for 1500ms (see sendToToday's own setTimeout in tab-picker.jsx) before reverting, advancing immediately would cut that confirmation off before the user ever sees it. 100ms past that own timer as a safety margin.
-				bacBoo    : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo    : true,    // What: Coach-At-Top Boolean. Why: .picker-run is taller still on this step, Re-roll/Done now render alongside the stage. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. Same short-viewport reasoning as mpgObj just above, .picker-run is taller still here (Re-roll/Done now render alongside the stage too).
-				cirBoo    : true,    // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
-				priStr    : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr    : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				advDelNum : 1600,    // What: Advance Delay Number. Why: The "Sent!" confirmation must be visible before this step advances. How: GuiTouCom waits this many milliseconds after the click before advancing. Send to Today swaps its own label to "Sent!" for 1500ms (see sendToToday's own setTimeout in tab-picker.jsx) before reverting, advancing immediately would cut that confirmation off before the user ever sees it. 100ms past that own timer as a safety margin.
+				bacBoo    : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				catBoo    : true,    // What: Coach-At-Top Boolean. Why: .picker-run is taller still on this step, Re-roll/Done now render alongside the stage. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead. Same short-viewport reasoning as mpgObj just above, .picker-run is taller still here (Re-roll/Done now render alongside the stage too).
+				cirBoo    : true,    // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuiTouCom disables Next and only advances once the real target is clicked.
+				priStr    : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr    : 'picker' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1218,10 +1218,10 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...PIC_TAR_OBJ.pivObj, // What: Picker Items Target Spread. Why: This step reuses the Pickers catalog's own pivObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.pivObj before this step's own navigation flags.
 
-				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,    // What: Coach-At-Top Boolean. Why: .pool-items grows with the picker's own item count and can run well past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .pool-items grows with the picker's own item count and can run WAY past a short viewport's height, same reasoning as mpgObj above.
-				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				catBoo : true,    // What: Coach-At-Top Boolean. Why: .pool-items grows with the picker's own item count and can run well past a short viewport. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead. .pool-items grows with the picker's own item count and can run WAY past a short viewport's height, same reasoning as mpgObj above.
+				priStr : 'Next',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1231,9 +1231,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...PIC_TAR_OBJ.piaObj, // What: Add Picker Item Target Spread. Why: This step reuses the Pickers catalog's own piaObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.piaObj before this step's own navigation flags.
 
-				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Done',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'picker' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Done',  // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'picker' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			}
@@ -1257,9 +1257,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...STA_TAR_OBJ.pgfObj, // What: Group Filter Target Spread. Why: This step reuses the Stats catalog's own pgfObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.pgfObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'stats' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1269,9 +1269,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...STA_TAR_OBJ.ptfObj, // What: Type Filter Target Spread. Why: This step reuses the Stats catalog's own ptfObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.ptfObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'stats' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1281,9 +1281,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...STA_TAR_OBJ.pfsObj, // What: Show Filter Target Spread. Why: This step reuses the Stats catalog's own pfsObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.pfsObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'stats' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1293,9 +1293,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...STA_TAR_OBJ.trfObj, // What: Range Filter Target Spread. Why: This step reuses the Stats catalog's own trfObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.trfObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'stats' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1305,9 +1305,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...STA_TAR_OBJ.hemObj, // What: Heatmap Target Spread. Why: This step reuses the Stats catalog's own hemObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.hemObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,   // What: Coach-At-Top Boolean. Why: .stat-heatmap-card renders a full year's worth of cells and can run far past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .stat-heatmap-card renders a full year's worth of cells and can run FAR past a short viewport's height, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .data-list step and this tour's own pbvObj step below. Confirmed live: without this, the coach overlapped the top of the heatmap on an iPhone SE-sized viewport.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				catBoo : true,   // What: Coach-At-Top Boolean. Why: .stat-heatmap-card renders a full year's worth of cells and can run far past a short viewport. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead. .stat-heatmap-card renders a full year's worth of cells and can run FAR past a short viewport's height, same "pin the coach to the top and let the target run off the bottom" reasoning as the Data tour's own tall .data-list step and this tour's own pbvObj step below. Confirmed live: without this, the coach overlapped the top of the heatmap on an iPhone SE-sized viewport.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
 
 				runFun : () => { // What: Run Function. Why: The pbvObj step's own target only renders once a specific picker is the active scope, so this selects the real sample picker (unhidden for this whole tour, see unhHisFun) before that step ever mounts. How: This clicks the real scope tab matching PRE_PIC_STR.
 
@@ -1319,7 +1319,7 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				},
 
-				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				tabStr : 'stats' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1329,11 +1329,11 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...STA_TAR_OBJ.pbvObj, // What: Picker Breakdown Target Spread. Why: This step reuses the Stats catalog's own pbvObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.pbvObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,   // What: Coach-At-Top Boolean. Why: .stat-breakdown-card lists every item in the picker's pool and can run past a short viewport. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .stat-breakdown-card lists every item in the picker's pool and can run well past a short viewport's height, same as the hemObj step just above. Confirmed live: without this, the coach clipped the top of its own body text and overlapped the card on an iPhone SE-sized viewport.
-				priStr : 'Done', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				resBoo : false,  // What: Resumable Boolean. Why: This step's own target only exists because the hemObj step's own runFun() already selected a scope, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false. `scope` (tab-stats.jsx's own local useState, choosing which picker is active) is NOT persisted, a reload always lands back at 'all', so this step's own target wouldn't exist to resume into even though the real sample picker itself stays unhidden (a real, persisted field) across the reload. A reload mid this step falls back to the hemObj step, which is always safe to land on and re-runs the selection on its own next Next click.
-				tabStr : 'stats' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				catBoo : true,   // What: Coach-At-Top Boolean. Why: .stat-breakdown-card lists every item in the picker's pool and can run past a short viewport. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead. .stat-breakdown-card lists every item in the picker's pool and can run well past a short viewport's height, same as the hemObj step just above. Confirmed live: without this, the coach clipped the top of its own body text and overlapped the card on an iPhone SE-sized viewport.
+				priStr : 'Done', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				resBoo : false,  // What: Resumable Boolean. Why: This step's own target only exists because the hemObj step's own runFun() already selected a scope, which a reload does not survive. How: GuiTouCom's own resume-persist effect never checkpoints a step whose resBoo is false. `scope` (tab-stats.jsx's own local useState, choosing which picker is active) is NOT persisted, a reload always lands back at 'all', so this step's own target wouldn't exist to resume into even though the real sample picker itself stays unhidden (a real, persisted field) across the reload. A reload mid this step falls back to the hemObj step, which is always safe to land on and re-runs the selection on its own next Next click.
+				tabStr : 'stats' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			}
@@ -1357,9 +1357,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...DAT_TAR_OBJ.pgfObj, // What: Group Filter Target Spread. Why: This step reuses the Data catalog's own pgfObj entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.pgfObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1369,9 +1369,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...DAT_TAR_OBJ.ptfObj, // What: Type Filter Target Spread. Why: This step reuses the Data catalog's own ptfObj entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.ptfObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1381,9 +1381,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...DAT_TAR_OBJ.pfsObj, // What: Show Filter Target Spread. Why: This step reuses the Data catalog's own pfsObj entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.pfsObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1393,9 +1393,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...DAT_TAR_OBJ.rmsObj, // What: Reminders Manager Target Spread. Why: This step reuses the Data catalog's own rmsObj entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.rmsObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1405,10 +1405,10 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...DAT_TAR_OBJ.pmsObj, // What: Pickers Manager Target Spread. Why: This step reuses the Data catalog's own pmsObj entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.pmsObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,   // What: Coach-At-Top Boolean. Why: The unioned picker/Conditionals/Reminders card rect can run far taller than the viewport once every copy renders. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead. .data-list > .cat can still union to a rect much taller than the viewport once every picker card renders (6 real disposable copies plus whatever the user has of their own), the normal reserve-space padding would push the target's own bottom edge further past the fold instead of helping, exactly backwards.
-				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				catBoo : true,   // What: Coach-At-Top Boolean. Why: The unioned picker/Conditionals/Reminders card rect can run far taller than the viewport once every copy renders. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead. .data-list > .cat can still union to a rect much taller than the viewport once every picker card renders (6 real disposable copies plus whatever the user has of their own), the normal reserve-space padding would push the target's own bottom edge further past the fold instead of helping, exactly backwards.
+				priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1418,9 +1418,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...DAT_TAR_OBJ.cpfObj, // What: Create Picker Target Spread. Why: This step reuses the Data catalog's own cpfObj entry as its base selector/copy. How: This spreads DAT_TAR_OBJ.cpfObj before this step's own navigation flags.
 
-				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Done', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'data'  // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Done', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'data'  // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			}
@@ -1444,10 +1444,10 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...SET_TAR_OBJ.appObj, // What: Appearance Target Spread. Why: This step reuses the Settings catalog's own appObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.appObj before this step's own navigation flags.
 
-				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
-				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead.
+				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1457,10 +1457,10 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...SET_TAR_OBJ.daiObj, // What: Daily Generator Target Spread. Why: This step reuses the Settings catalog's own daiObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.daiObj before this step's own navigation flags.
 
-				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
-				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead.
+				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1470,10 +1470,10 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...SET_TAR_OBJ.holObj, // What: Holiday Controls Target Spread. Why: This step reuses the Settings catalog's own holObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.holObj before this step's own navigation flags.
 
-				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
-				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead.
+				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1483,10 +1483,10 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...SET_TAR_OBJ.dtaObj, // What: Data Control Target Spread. Why: This step reuses the Settings catalog's own dtaObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.dtaObj before this step's own navigation flags.
 
-				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
-				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead.
+				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1496,10 +1496,10 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...SET_TAR_OBJ.aboObj, // What: About Target Spread. Why: This step reuses the Settings catalog's own aboObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.aboObj before this step's own navigation flags.
 
-				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuidedTour skips its own reserve-space math and pins the coach card to the top instead.
-				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				catBoo : true,      // What: Coach-At-Top Boolean. Why: This section can run taller than the viewport before the target's own bottom edge would otherwise show. How: GuiTouCom skips its own reserve-space math and pins the coach card to the top instead.
+				priStr : 'Next',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			},
@@ -1509,9 +1509,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 				...SET_TAR_OBJ.legObj, // What: Legal Target Spread. Why: This step reuses the Settings catalog's own legObj entry as its base selector/copy. How: This spreads SET_TAR_OBJ.legObj before this step's own navigation flags.
 
-				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-				priStr : 'Done',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-				tabStr : 'settings' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+				bacBoo : true,      // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+				priStr : 'Done',    // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+				tabStr : 'settings' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 			}
@@ -1536,9 +1536,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 			...TOD_TAR_OBJ.prfObj, // What: Progress Ring Target Spread. Why: This step reuses the Today catalog's own prfObj entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.prfObj before this step's own navigation flags.
 
-			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+			tabStr : 'today' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 		},
@@ -1548,9 +1548,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 			...TOD_TAR_OBJ.gnlObj, // What: Groups Nav Target Spread. Why: This step reuses the Today catalog's own gnlObj entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.gnlObj before this step's own navigation flags.
 
-			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+			tabStr : 'today' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 		},
@@ -1560,10 +1560,10 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 			...TOD_TAR_OBJ.emfObj, // What: Edit Mode Target Spread. Why: This step reuses the Today catalog's own emfObj entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.emfObj before this step's own navigation flags.
 
-			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-			cirBoo : true,   // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuidedTour disables Next and only advances once the real target is clicked.
-			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+			cirBoo : true,   // What: Click-Is-Required Boolean. Why: The click itself is the thing being taught, not just a gate. How: GuiTouCom disables Next and only advances once the real target is clicked.
+			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+			tabStr : 'today' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 		},
@@ -1573,9 +1573,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 			...TOD_TAR_OBJ.gghObj, // What: Group Grip Target Spread. Why: This step reuses the Today catalog's own gghObj entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.gghObj before this step's own navigation flags.
 
-			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			resBoo : false,  // What: Resumable Boolean. Why: This step's own target only exists while Edit Mode is on, which a reload does not survive. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false. Edit Mode is local, unpersisted UI state (tab-today.jsx's own useState, not part of `staAppObj`), a reload always lands back with it off, so this step's own target (only rendered while Edit Mode is on) wouldn't exist to resume into.
+			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+			priStr : 'Next', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+			resBoo : false,  // What: Resumable Boolean. Why: This step's own target only exists while Edit Mode is on, which a reload does not survive. How: GuiTouCom's own resume-persist effect never checkpoints a step whose resBoo is false. Edit Mode is local, unpersisted UI state (tab-today.jsx's own useState, not part of `staAppObj`), a reload always lands back with it off, so this step's own target (only rendered while Edit Mode is on) wouldn't exist to resume into.
 
 			runFun : () => { // What: Run Function. Why: The rgiObj step's own target (the Page Tours group's rename input) needs staging by a real click before that step ever mounts, same real-UI-driving pattern used throughout the Picker/Reminder tours. How: This clicks the Page Tours group's own rename button, captures its real name first, then focuses the resulting input a frame later.
 
@@ -1607,7 +1607,7 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 			},
 
-			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			tabStr : 'today' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 		},
@@ -1617,9 +1617,9 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 			...TOD_TAR_OBJ.rgiObj, // What: Rename Group Target Spread. Why: This step reuses the Today catalog's own rgiObj entry as its base selector/copy. How: This spreads TOD_TAR_OBJ.rgiObj before this step's own navigation flags.
 
-			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuidedTour shows its own Back button whenever this is true.
-			priStr : 'Done', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuidedTour renders this as the button's own visible text.
-			resBoo : false,  // What: Resumable Boolean. Why: This step's own target depends on Edit Mode being on and the previous step's own click, neither of which survives a reload. How: GuidedTour's own resume-persist effect never checkpoints a step whose resBoo is false. Same as the gghObj step's own resBoo:false, this step's target depends on BOTH Edit Mode being on AND that step's own runFun() having already clicked the rename button open, neither of which survives a reload.
+			bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to the previous step. How: GuiTouCom shows its own Back button whenever this is true.
+			priStr : 'Done', // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
+			resBoo : false,  // What: Resumable Boolean. Why: This step's own target depends on Edit Mode being on and the previous step's own click, neither of which survives a reload. How: GuiTouCom's own resume-persist effect never checkpoints a step whose resBoo is false. Same as the gghObj step's own resBoo:false, this step's target depends on BOTH Edit Mode being on AND that step's own runFun() having already clicked the rename button open, neither of which survives a reload.
 
 			runFun : () => { // What: Run Function. Why: Edit Mode's own real Cancel control alone isn't enough to discard an in-progress rename, since clicking this step's own Done button can itself race-commit a real rename first. How: This clicks the real Cancel control, then forces the real Page Tours name back afterward regardless of what the DOM did.
 
@@ -1634,7 +1634,7 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
 
 			},
 
-			tabStr : 'today' // What: Tab String. Why: GuidedTour needs to know which app tab this step's own target lives on. How: This is read by GuidedTour's own tab-sync effect.
+			tabStr : 'today' // What: Tab String. Why: GuiTouCom needs to know which app tab this step's own target lives on. How: This is read by GuiTouCom's own tab-sync effect.
 
 
 		}
@@ -1654,7 +1654,7 @@ const buiTesFun = ( pagIdeStr, actStoObj ) => { // What: Build Tour-Extra-Steps 
  *
  * @summary
  * Renders whichever piece of one page's own mini-tour is currently
- * relevant: the intro modal, or the running GuidedTour. Mounted at the
+ * relevant: the intro modal, or the running GuiTouCom. Mounted at the
  * app level (see app.jsx's own actPagStr), reads real persisted
  * staAppObj and calls real actStoObj.* methods (see store.jsx), and
  * reads/writes emlTouObj's own bus fields for the Pickers tour's own
@@ -1699,7 +1699,7 @@ function PagTouCom ( { pagIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 	const onbStaObj = staAppObj.onboarding || {};                                                                              // What: Onboarding State Object. Why: A reload lands here with tab-today.jsx's own activeMiniTour already re-derived from this SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, falling back to an empty object.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `page-${ pagIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding-tour-runner.jsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this page's own tourId, otherwise null.
 
-	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuidedTour running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
+	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuiTouCom running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
 
 
 
@@ -1751,9 +1751,9 @@ function PagTouCom ( { pagIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 	return (
 
 
-		<GuidedTour
+		<GuiTouCom
 			touIdeStr={ `page-${ pagIdeStr }` }
-			steObjArr={ [ // What: Step Object Array. Why: GuidedTour needs this page's own full ordered step list, Step 1 plus every step buiTesFun returns beyond it. How: This combines buiTs1Fun's own first step with a spread of buiTesFun's own remaining steps into one array.
+			steObjArr={ [ // What: Step Object Array. Why: GuiTouCom needs this page's own full ordered step list, Step 1 plus every step buiTesFun returns beyond it. How: This combines buiTs1Fun's own first step with a spread of buiTesFun's own remaining steps into one array.
 				buiTs1Fun( tourRecObj.page,
 					pagIdeStr === 'explore_data' ? () => { seePicFun( staAppObj, actStoObj ); seeTasFun( staAppObj, actStoObj ); } : // What: Data Run Branch. Why: The Data tour's own Step 1 must seed BOTH disposable picker and reminder copies before its later steps can point at them. How: This calls both seePicFun and seeTasFun when pagIdeStr is 'explore_data'.
 					neeCopFun( pagIdeStr ) ? () => seePicFun( staAppObj, actStoObj ) : // What: Pickers Run Branch. Why: The Pickers tour's own Step 1 only needs disposable picker copies. How: This calls seePicFun when neeCopFun says this page needs copies.
