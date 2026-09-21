@@ -6,7 +6,7 @@
 import React from 'react'; // What: React. Why: This file's own PagTouCom component needs React in scope to compile its JSX and to call React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
 
 
-import { emlTouObj   } from './onboarding.jsx';             // What: Ease My Life Tour Object. Why: This publishes/reads bus nonces the Pickers-page onBacTouFun handler uses to reset or redo an in-flight picker-form animation. How: This is read via .get() and written via .set() inside PagTouCom's own onBacTouFun below.
+import { emlTouObj   } from './eml-tour-bus.js';            // What: Ease My Life Tour Object. Why: This publishes/reads bus nonces the Pickers-page onBacTouFun handler uses to reset or redo an in-flight picker-form animation. How: This is read via .get() and written via .set() inside PagTouCom's own onBacTouFun below.
 import { GuiTouCom  } from './onboarding-tour-runner.jsx'; // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives each page mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-page step array.
 import { hydStaFun   } from './onboarding-seed-data.js';    // What: Hydrate Stats Function. Why: The Stats tour's own borrowed sample history needs converting from its static template shape into real pickLog rows. How: This is called inside unhHisFun below, passed ONBOARDING_STATS.
 import { IcoSvgCom   } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph matching the current page. How: This is rendered inside the intro modal's icon prop below.
@@ -351,7 +351,7 @@ const seeTasFun = ( staAppObj, actStoObj ) => { // What: Seed Task Function. Why
 			name   : samTasObj.name,   // What: Name Field. Why: The disposable copy should display with the real sample's own name. How: This copies samTasObj's own name verbatim.
 			repeat : samTasObj.repeat, // What: Repeat Field. Why: The disposable copy must use the same repeat schedule as the real sample. How: This copies samTasObj's own repeat verbatim.
 
-			...( samTasObj.repeat === 'weekly' ? { daysOfWeek : [ new Date().getDay() ] } : {} ) // What: Days Of Week Spread. Why: Mirrors the real Welcome Tour's own seeding (see onboarding.jsx's Generate step): the recurring sample's own daysOfWeek should read as "due today", not the base template's hardcoded Monday. How: This spreads today's own weekday in only when this sample recurs weekly.
+			...( samTasObj.repeat === 'weekly' ? { daysOfWeek : [ new Date().getDay() ] } : {} ) // What: Days Of Week Spread. Why: Mirrors the real Welcome Tour's own seeding (see onboarding-welcome-tour.jsx's Generate step): the recurring sample's own daysOfWeek should read as "due today", not the base template's hardcoded Monday. How: This spreads today's own weekday in only when this sample recurs weekly.
 
 
 		});
@@ -384,8 +384,9 @@ const cleTasFun = ( actStoObj ) => { // What: Clear Task Function. Why: A dispos
  * to demonstrate. Instead this borrows the REAL hidden sample pickers
  * directly, which normally already carry roughly 1 year of
  * precomputed pickLog history, seeded once on fresh install (see
- * onboarding.jsx's own mount effect), unhiding them for this tour's own
- * duration and hiding them again the moment it ends (hidHisFun below).
+ * onboarding-welcome-tour.jsx's own mount effect), unhiding them for this
+ * tour's own duration and hiding them again the moment it ends (hidHisFun
+ * below).
  * Mirrors the exact hide/show mechanism the main Welcome Tour itself
  * already uses for its own Back-navigation.
  *

@@ -42,10 +42,10 @@ import { redMotFun    } from './ui.jsx';  // What: Reduce Motion Function.  Why:
  * an icon, a title, one or more body paragraphs, and up to a few small
  * pills, then a primary "start" action above a secondary "skip" one.
  * Every piece of visible content is passed in by the caller; only the
- * structure and the two buttons' own styling are meant to stay
- * identical across every tour that uses this component. See
- * onboarding.jsx for the Welcome Tour's own copy and labels, which
- * differ slightly ("Take the quick tour" and "I'll explore myself")
+ * structure and the two buttons' own styling are meant to stay identical
+ * across every tour that uses this component. See
+ * onboarding-welcome-tour.jsx for the Welcome Tour's own copy and labels,
+ * which differ slightly ("Take the quick tour" and "I'll explore myself")
  * from a mini-tour's plainer "Get started" and "Skip".
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -179,6 +179,6 @@ function IntModCom ( { icoTopEle, titHeaStr, parEleArr, pilLabArr, onBegTouFun, 
 
 
 
-export { IntModCom }; // What: Named Export. Why: onboarding.jsx, onboarding-app-features.jsx, onboarding-page-tours.jsx, onboarding-picker-tours.jsx, and onboarding-reminder-tours.jsx all import this by this exact name. How: This re-exports IntModCom by name, rippled into every one of those files' own import and JSX usage in the same pass.
+export { IntModCom }; // What: Named Export. Why: onboarding-welcome-tour.jsx, onboarding-app-features.jsx, onboarding-page-tours.jsx, onboarding-picker-tours.jsx, and onboarding-reminder-tours.jsx all import this by this exact name. How: This re-exports IntModCom by name, rippled into every one of those files' own import and JSX usage in the same pass.
 
 

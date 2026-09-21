@@ -11,7 +11,6 @@ import { BacFloCom    } from './bg-flourish.jsx';             // What: Backgroun
 import { CLEAN_STATE  } from './seed.js';                     // What: Clean State. Why: The onboarding demo needs a fresh, non-persisted state to run against instead of the user's real data. How: This is called to seed useStore when the onboarding demo flag is set.
 import { FeaTouCom    } from './onboarding-app-features.jsx'; // What: Feature Tour Component. Why: This drives the App Features tutorial overlay. How: This is rendered while actFeaStr holds a feature id, passed the shared state/actions and a close handler.
 import { IcoSvgCom    } from './ui.jsx';                      // What: Icon Svg Component. Why: Every tab button needs a recognizable glyph alongside its label. How: This is rendered inside TabBarCom with the name from each tab's own icoStr.
-import { Onboarding   } from './onboarding.jsx';              // What: Onboarding. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
 import { PagTouCom    } from './onboarding-page-tours.jsx';   // What: Page Tour Component. Why: This drives the currently-running "Explore the page" mini-tour. How: This is rendered while actPagStr holds a page id.
 import { PAL_SET_OBJ  } from './appearance.js';               // What: Palette Set Object. Why: Every built-in theme key needs to resolve to one of the app's own palettes. How: This is looked up by the resolved theme key, falling back to the ink palette.
 import { PicTouCom    } from './onboarding-picker-tours.jsx'; // What: Picker Tour Component. Why: This drives the currently-running sample-picker mini-tour. How: This is rendered while actPicStr holds a picker id.
@@ -23,8 +22,9 @@ import { TabPicker    } from './tab-picker.jsx';              // What: Tab Picke
 import { TabSettings  } from './tab-settings.jsx';            // What: Tab Settings. Why: This is the actual Settings tab content. How: This is rendered while actIdeStr is 'settings', passed the shared state/actions.
 import { TabStats     } from './tab-stats.jsx';               // What: Tab Stats. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
 import { TabToday     } from './tab-today.jsx';               // What: Tab Today. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
-import { useEmlTouFun } from './onboarding.jsx';              // What: Use Ease My Life Tour. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's phase/wantRailOpen/step fields.
+import { useEmlTouFun } from './eml-tour-bus.js';             // What: Use Ease My Life Tour. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's phase/wantRailOpen/step fields.
 import { useStore     } from './store.jsx';                   // What: Use Store. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
+import { WelTouCom    } from './onboarding-welcome-tour.jsx'; // What: Welcome Tour Component. Why: The first-run welcome modal and its driven tour need to run above every tab. How: This is rendered once, passed the shared state/actions plus the active tab and the tab-switching function.
 
 // #endregion Imports
 
@@ -39,7 +39,7 @@ import { useStore     } from './store.jsx';                   // What: Use Store
  * one of the five tabs directly, there is no router. It also owns theme
  * application (resolving and writing the active palette's own CSS custom
  * properties), the onboarding demo's clean-state seeding, and mounts
- * Onboarding plus whichever mini-tour overlay (FeaTouCom/PagTouCom/PicTouCom)
+ * WelTouCom plus whichever mini-tour overlay (FeaTouCom/PagTouCom/PicTouCom)
  * is currently running.
  *
  * TabBarCom is the shared nav bar rendered by AppRooCom, built from
@@ -884,12 +884,12 @@ function AppRooCom () {
 
 
 
-			<Onboarding
-				actions={ actStoObj }
+			<WelTouCom
+				actStoObj={ actStoObj }
 				actIdeStr={ actIdeStr }
-				state={ staAppObj }
+				staAppObj={ staAppObj }
 				selTabFun={ selTabFun }
-			/>{ /* What: Onboarding. Why: The first-run welcome modal and its driven tour need to run above every tab, regardless of which one is active. How: This is passed the shared state/actions plus the current active tab and the tab-switching function. */ }
+			/>{ /* What: Welcome Tour Component. Why: The first-run welcome modal and its driven tour need to run above every tab, regardless of which one is active. How: This is passed the shared state/actions plus the current active tab and the tab-switching function. */ }
 
 
 			{ actPicStr && ( // What: Picker Tour Visibility Check. Why: A picker mini-tour overlay should only exist while one is actually running. How: This renders PicTouCom only while actPicStr holds a picker id.

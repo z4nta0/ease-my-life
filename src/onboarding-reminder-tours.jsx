@@ -119,7 +119,7 @@ const buiAddFun = ( varKeyStr, staAppObj ) => { // What: Build Add Function. Why
 		runFun : () => { // What: Run Function. Why: The live sample's own prefill data needs staging onto the bus before the real click opens the form. How: This looks up the live sample task, falling back to ONB_TAS_ARR' own static template, then publishes its own name/repeat/daysOfWeek onto the bus.
 
 
-			const samTasObj = ( staAppObj.tasks || [] ).find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ) || ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ); // What: Sample Task Object. Why: The Welcome Tour seeds the recurring sample with today's real weekday (see onboarding.jsx's own Generate step), which the static ONB_TAS_ARR template does not know, so the live one must win whenever it exists. How: This reads the live sample off staAppObj.tasks first, falling back to ONB_TAS_ARR only when no live one exists yet.
+			const samTasObj = ( staAppObj.tasks || [] ).find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ) || ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === varCopObj.ideStr ); // What: Sample Task Object. Why: The Welcome Tour seeds the recurring sample with today's real weekday (see onboarding-welcome-tour.jsx's own Generate step), which the static ONB_TAS_ARR template does not know, so the live one must win whenever it exists. How: This reads the live sample off staAppObj.tasks first, falling back to ONB_TAS_ARR only when no live one exists yet.
 
 
 			emlTouObj.set({ // What: Prefill Publish Call. Why: reminders.jsx's own startAdd reads this in its own bubble-phase handler to prefill the real add-reminder form. How: This builds the prefill shape from the resolved samTasObj above.
@@ -371,7 +371,7 @@ const buiSubFun = ( varKeyStr ) => ({
  * within TabToday (see tab-today.jsx's own startMiniTour), so
  * actIdeStr/selTabFun are hardcoded/stubbed below rather than threaded all
  * the way up; a future step needing another tab would need this lifted the
- * way Onboarding (onboarding.jsx) is.
+ * way WelTouCom (onboarding-welcome-tour.jsx) is.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

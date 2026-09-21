@@ -16,7 +16,7 @@ import { ColDisCom    } from './ui.jsx';                        // What: Collaps
 import { CON_NAM_OBJ  } from './conditionals.js';               // What: Conditionals Namespace Object. Why: Day-off suppression during generate() needs the shared conditional-evaluation logic. How: This is called via CON_NAM_OBJ.supGatFun against each picker's own resolved conditional.
 import { createPortal } from 'react-dom';                       // What: Create Portal. Why: The completion celebration's confetti/sparkle overlay must escape the tab-fade wrapper's own containing block. How: This portals the celebration overlay straight onto document.body.
 import { DayLogChip   } from './day-log.jsx';                   // What: Day Log Chip. Why: Each group header needs a small toggle chip for its own Day Log panel. How: This is rendered inside GroHeaCom next to the group's own done/total count.
-import { emlTouObj    } from './onboarding.jsx';                // What: Ease My Life Tour Object. Why: Several onboarding-adjacent features (checklist visibility, drag-hiding the tour coach, starting a create-picker flow) need to publish onto the shared tour event bus. How: This is written to directly (never read here) via its own .set method.
+import { emlTouObj    } from './eml-tour-bus.js';                // What: Ease My Life Tour Object. Why: Several onboarding-adjacent features (checklist visibility, drag-hiding the tour coach, starting a create-picker flow) need to publish onto the shared tour event bus. How: This is written to directly (never read here) via its own .set method.
 import { EUR_WAR_STR  } from './constants.js';                  // What: Ease-Up-Range Warning String. Why: An ease-up item's Soonest/Latest row needs its own explanatory warning text. How: This is passed as an InfTipCom's own label prop inside EntryEditor.
 import { FeaTipCom    } from './onboarding-app-features.jsx';   // What: Feature Tip Component. Why: The App Features section needs a one-time "One Last Thing..." intro the first time it is shown. How: This is rendered once showAppFeaturesIntro is true, passed actStoObj so it can mark itself seen.
 import { FilButCom    } from './ui.jsx';                        // What: Fill Button Component. Why: Ease-up and ease-down items each need a button that instantly fills the item to its threshold. How: This is rendered inside EntryEditor's own Fill/Refill row, labeled per direction.
@@ -46,7 +46,7 @@ import { RemTouCom    } from './onboarding-reminder-tours.jsx'; // What: Reminde
 import { REORDER      } from './reorder.js';                    // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REORDER.startDrag inside startGroupDrag/startItemDrag.
 import { TASKS        } from './tasks.js';                      // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for anchorDate/visibleToday/isDoneToday/optsFor/isCompletedOnce.
 import { TOD_HEL_ARR  } from './help-content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
-import { useEmlTouFun } from './onboarding.jsx';                // What: Use Ease My Life Tour. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
+import { useEmlTouFun } from './eml-tour-bus.js';                // What: Use Ease My Life Tour. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
 import { useEscCanFun } from './ui.jsx';                        // What: Use Escape Cancel Function. Why: EntryEditor's own Escape key needs to cancel the edit (or back out of a delete confirm) exactly like every other inline editor in the app. How: This is called once inside EntryEditor with a handler that checks confirmDel first.
 
 // #endregion Imports
@@ -267,17 +267,18 @@ function groEntFun ( staAppObj ) {
 	 * One launcher card per sample picker, slotted into its normal group
 	 * like any other card. `p.hidden` gates the timing: samples stay
 	 * visible/real for the main Welcome Tour and only flip hidden once, at
-	 * that tour's last step (see onboarding.jsx), which is when these
-	 * start rendering. They stay on screen, checked or not, through the
-	 * ORIGINAL first-time checklist, until checklistDone (set once the
-	 * closing Generate card runs, see onboarding-checklist.js). Unlike
-	 * checklistDone itself, this does NOT permanently stop once that
-	 * happens: Settings' Replay Tour button (tab-settings.jsx) resets each
-	 * item's own checklist entry (though never checklistDone), so a still-
-	 * unresolved sample keeps offering its card afterward too, EXCLUDED if
-	 * a real (non-sample) picker has since taken its exact name, since re-
-	 * prompting "set up a Daily Chores picker" when the user already has
-	 * their own real Daily Chores picker would be redundant, not helpful.
+	 * that tour's last step (see onboarding-welcome-tour.jsx), which is
+	 * when these start rendering. They stay on screen, checked or not,
+	 * through the ORIGINAL first-time checklist, until checklistDone (set
+	 * once the closing Generate card runs, see onboarding-checklist.js).
+	 * Unlike checklistDone itself, this does NOT permanently stop once
+	 * that happens: Settings' Replay Tour button (tab-settings.jsx) resets
+	 * each item's own checklist entry (though never checklistDone), so a
+	 * still-unresolved sample keeps offering its card afterward too,
+	 * EXCLUDED if a real (non-sample) picker has since taken its exact
+	 * name, since re-prompting "set up a Daily Chores picker" when the
+	 * user already has their own real Daily Chores picker would be
+	 * redundant, not helpful.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -3015,9 +3016,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * shwCheBoo's own gate has already gone false), so there is no
 	 * ordering conflict to resolve against Page Tours, but cheDonBoo
 	 * itself, unlike shwCheBoo, never resets back to false on a Replay
-	 * Tour (see onboarding.jsx), which is exactly why these need
-	 * Settings' replay button to explicitly clear appFeatures back to {}
-	 * to reappear, rather than reappearing automatically the way the
+	 * Tour (see onboarding-welcome-tour.jsx), which is exactly why these
+	 * need Settings' replay button to explicitly clear appFeatures back to
+	 * {} to reappear, rather than reappearing automatically the way the
 	 * checklist-driven cards do.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
@@ -4684,7 +4685,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const obEveBus = useEmlTouFun ? useEmlTouFun() : {}; // What: Onboarding Event Bus. Why: Several onboarding-adjacent empty-state/create-flow checks below need to read the shared tour bus's own live fields. How: This calls useEmlTouFun when it exists, otherwise falls back to an empty object.
 
 	const onbCplBoo = ONB_CHE_OBJ.cheStaFun( state ).comBoo; // What: Onboarding Complete Boolean. Why: This replaces the old onboarding.dismissed flag (which only ever got set by the now-removed "Get started" checklist, so it was permanently stuck false); derived instead of stored, see onboarding-checklist.js for what counts as done. How: This calls ONB_CHE_OBJ.cheStaFun and reads its own comBoo field.
-	const onbCreBoo = !onbCplBoo && state.pickers.length === 0; // What: Onboarding Create Boolean. Why: This also force-shows the create-picker onboarding card while the tour's own step 0 was up (that step anchored on this card), see the "STASHED: create-a-picker tour content" block atop onboarding.jsx; a future "Create your first picker" mini-tour will need an equivalent force-render once it exists, keyed off its own step numbering. How: This is true only while onboarding isn't complete AND the user has no pickers at all.
+	const onbCreBoo = !onbCplBoo && state.pickers.length === 0; // What: Onboarding Create Boolean. Why: This force-shows the create-picker onboarding card whenever onboarding isn't complete and the user has no pickers yet; a future "Create your first picker" mini-tour will need an equivalent force-render once it exists, keyed off its own step numbering. How: This is true only while onboarding isn't complete AND the user has no pickers at all.
 
 	/**
 	 * onbEmpBoo = Onboarding Empty Boolean

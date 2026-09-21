@@ -54,7 +54,7 @@ import { HOL_NAM_OBJ } from './holidays.js'; // What: Holidays Namespace Object.
  * anchorDate, REPEATS) are a cross-file contract read directly by
  * store.jsx, reminders.jsx, day-log.jsx, tab-today.jsx, tab-stats.jsx,
  * seed.js, onboarding-seed-data.js, onboarding-page-tours.jsx,
- * onboarding-reminder-tours.jsx, and onboarding.jsx. They are
+ * onboarding-reminder-tours.jsx, and onboarding-welcome-tour.jsx. They are
  * deliberately left unrenamed on this formatting pass, the same way
  * holidays.js's own HOL_NAM_OBJ property names were left unrenamed on
  * its own pass (unlike cadence.js's own CAD_NAM_OBJ, whose external

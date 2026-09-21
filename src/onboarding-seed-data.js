@@ -5,12 +5,12 @@
  * onboarding-seed-data.js = Onboarding Seed Data
  *
  * @summary
- * Sample-picker and sample-reminder data seeded on a fresh install,
- * before the Welcome Tour begins (see the seeding effect in
- * onboarding.jsx). Kept in its own plain-JS module, no JSX and no React
- * import, so it can also be imported directly by
- * scripts/build-onboarding-stats.mjs: a Node script that precomputes
- * about a year of matching pick/reminder history offline.
+ * Sample-picker and sample-reminder data seeded on a fresh install, before
+ * the Welcome Tour begins (see the seeding effect in
+ * onboarding-welcome-tour.jsx). Kept in its own plain-JS module, no JSX
+ * and no React import, so it can also be imported directly by
+ * scripts/build-onboarding-stats.mjs: a Node script that precomputes about
+ * a year of matching pick/reminder history offline.
  *
  * The ids below are load-bearing: they must exactly match what that
  * script baked into src/onboarding-stats-data.js, or the precomputed
@@ -29,9 +29,8 @@
  *
  * @summary
  * The sample "Daily Chores" picker seeded alongside the Welcome Tour.
- * Doubles as prefill data for the (currently stashed) create-a-picker
- * form flow in onboarding.jsx, for whenever a future create-a-picker
- * mini-tour reuses this same data.
+ * Doubles as prefill data for whenever a future create-a-picker mini-tour
+ * reuses this same data.
  *
  * Every property below shares this exact shape, and none of them repeat
  * these same fields' own boilerplate comments on their own lines (see
@@ -44,8 +43,8 @@
  *
  * - `id` (String): Id is this sample picker's own stable identifier,
  *   matching what scripts/build-onboarding-stats.mjs baked into
- *   onboarding-stats-data.js and what store.jsx/onboarding.jsx use to
- *   recognize and later hide this sample; a literal, load-bearing
+ *   onboarding-stats-data.js and what store.jsx/onboarding-welcome-tour.jsx
+ *   use to recognize and later hide this sample; a literal, load-bearing
  *   string, never generated at runtime.
  *
  * - `items` (Array): Items is every picker's own pool of choosable
@@ -61,10 +60,9 @@
  *   throughout the app; read wherever a picker's name needs displaying,
  *   exactly like any real, user-created picker.
  *
- * - `step` (Number): Step prefills the (currently stashed)
- *   create-a-picker form's own wizard step, for whenever a future
- *   create-a-picker mini-tour reuses this data; only read by that
- *   stashed form flow, not by the picker engine itself.
+ * - `step` (Number): Step prefills a picker-creation wizard's own step,
+ *   for whenever a future create-a-picker mini-tour needs it; not read
+ *   by the picker engine itself.
  *
  * Every entry inside `items` above shares this exact shape too, and
  * none of them repeat these same fields' own boilerplate comments
@@ -98,7 +96,7 @@
  *
 */
 
-export const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is spread into actions.addPicker by onboarding.jsx's own seeding effect, exactly like a real, user-created picker.
+export const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is spread into actStoObj.addPicker by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created picker.
 
 
 	group : 'Chores',
@@ -150,8 +148,8 @@ export const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is th
  *
  * - `id` (String): Id is this sample picker's own stable identifier,
  *   matching what scripts/build-onboarding-stats.mjs baked into
- *   onboarding-stats-data.js and what store.jsx/onboarding.jsx use to
- *   recognize and later hide this sample; a literal, load-bearing
+ *   onboarding-stats-data.js and what store.jsx/onboarding-welcome-tour.jsx
+ *   use to recognize and later hide this sample; a literal, load-bearing
  *   string, never generated at runtime.
  *
  * - `items` (Array): Items is every picker's own pool of choosable
@@ -206,7 +204,7 @@ export const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is th
  *
 */
 
-export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This is spread into actions.addPicker by onboarding.jsx's own seeding effect, exactly like a real, user-created picker.
+export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This is spread into actStoObj.addPicker by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created picker.
 
 
 	{ // What: Monthly Chores Entry. Why: This is a second, less-frequent Chores-group picker alongside ONB_EXA_OBJ's own "Daily Chores," rounding out a generated day with deeper, longer-cycle cleaning tasks. How: This is read by the picker engine exactly like any real picker, its own 5 items (oven, whole-house dust, fridge, under-furniture vacuum, mop) themed around chores done far less often than the Daily Chores picker's own pool.
@@ -348,16 +346,16 @@ export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why
  * "Repeated-shape object literals" comment exception in CLAUDE.md):
  *
  * - `daysOfWeek` (Array, optional): Days Of Week is the weekly
- *   reminder's own fixed [1] (Monday) placeholder here; onboarding.jsx
- *   overwrites it at seed time with whatever real weekday the tour is
- *   taken on, so the seeded task always reads as due today instead of
- *   drifting stale. Absent on the one-time reminder, which has no
- *   weekly schedule at all.
+ *   reminder's own fixed [1] (Monday) placeholder here;
+ *   onboarding-welcome-tour.jsx overwrites it at seed
+ *   time with whatever real weekday the tour is taken on, so the seeded
+ *   task always reads as due today instead of drifting stale. Absent on
+ *   the one-time reminder, which has no weekly schedule at all.
  *
  * - `id` (String): Id is this sample task's own stable identifier,
  *   matching what scripts/build-onboarding-stats.mjs baked into
- *   onboarding-stats-data.js and what store.jsx/onboarding.jsx use to
- *   recognize and later hide this sample; a literal, load-bearing
+ *   onboarding-stats-data.js and what store.jsx/onboarding-welcome-tour.jsx
+ *   use to recognize and later hide this sample; a literal, load-bearing
  *   string, never generated at runtime.
  *
  * - `name` (String): Name is the task's own display name shown
@@ -372,11 +370,11 @@ export const ONB_ESP_ARR = [ // What: Onboarding Extra-Sample-Pickers Array. Why
  *
 */
 
-export const ONB_TAS_ARR = [ // What: Onboarding Task Array. Why: This is the sample-reminder pool described above, seeded alongside the pickers. How: This is spread into actions.addTask by onboarding.jsx's own seeding effect, exactly like a real, user-created task.
+export const ONB_TAS_ARR = [ // What: Onboarding Task Array. Why: This is the sample-reminder pool described above, seeded alongside the pickers. How: This is spread into actStoObj.addTask by onboarding-welcome-tour.jsx's own seeding effect, exactly like a real, user-created task.
 
 
 	{ id : 'tk_ob_meds',  name : 'Pick up prescription',      repeat : 'once'                       }, // What: One-Time Reminder Entry. Why: This is the one-time sample reminder's own entry (see the comment above this array for why it stays pending). How: This is read by the reminders engine (tasks.js) exactly like any real, user-created task.
-	{ id : 'tk_ob_trash', name : 'Take trash out for pickup', repeat : 'weekly', daysOfWeek : [ 1 ] }  // What: Weekly Reminder Entry. Why: This is the recurring sample reminder's own entry (see the comment above this array for its own completion-history treatment). How: This is read by the reminders engine (tasks.js) exactly like any real, user-created task, its own daysOfWeek overwritten at seed time by onboarding.jsx to match today's real weekday.
+	{ id : 'tk_ob_trash', name : 'Take trash out for pickup', repeat : 'weekly', daysOfWeek : [ 1 ] }  // What: Weekly Reminder Entry. Why: This is the recurring sample reminder's own entry (see the comment above this array for its own completion-history treatment). How: This is read by the reminders engine (tasks.js) exactly like any real, user-created task, its own daysOfWeek overwritten at seed time by onboarding-welcome-tour.jsx to match today's real weekday.
 
 
 ];
@@ -389,9 +387,9 @@ export const ONB_TAS_ARR = [ // What: Onboarding Task Array. Why: This is the sa
  *
  * @summary
  * Every sample picker/task id in one place, used to hide them once the
- * Welcome Tour ends (see onboarding.jsx) and to recognize a still-hidden
- * one as a mini-tour launcher card on Today (see tab-today.jsx /
- * reminders.jsx).
+ * Welcome Tour ends (see onboarding-welcome-tour.jsx) and to recognize a
+ * still-hidden one as a mini-tour launcher card on Today (see
+ * tab-today.jsx / reminders.jsx).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -422,9 +420,9 @@ export const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id );    
  *   should be shown, e.g. the one-time reminder wants "One-Time"
  *   instead of TASKS.summary's own "One-time". Absent on the recurring
  *   reminder on purpose, since its daysOfWeek is set dynamically at
- *   seed time (see onboarding.jsx) to whatever day the tour is taken
- *   on, so TASKS.summary already produces the right "Every {Day}" text
- *   for it on its own.
+ *   seed time (see onboarding-welcome-tour.jsx) to whatever day the
+ *   tour is taken on, so TASKS.summary already produces the right
+ *   "Every {Day}" text for it on its own.
  *
  * - `name` (String): Name is the launcher card's own display name,
  *   always phrased as an instruction (e.g. "Set up a ... reminder")
@@ -677,7 +675,7 @@ export function hydStaFun( staRawObj ) {
 
 
 
-	return { pickLog : picLogArr, reminderLog : remLogArr, reminderSkipLog : rslRowArr }; // What: Hydrated Logs Return. Why: The caller (onboarding.jsx's own seeding effect) needs all 3 freshly-hydrated logs at once, in the same shape state itself expects. How: This returns picLogArr/remLogArr/rslRowArr above under their own state-contract key names.
+	return { pickLog : picLogArr, reminderLog : remLogArr, reminderSkipLog : rslRowArr }; // What: Hydrated Logs Return. Why: The caller (onboarding-welcome-tour.jsx's own seeding effect) needs all 3 freshly-hydrated logs at once, in the same shape state itself expects. How: This returns picLogArr/remLogArr/rslRowArr above under their own state-contract key names.
 
 
 }

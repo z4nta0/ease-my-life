@@ -19,10 +19,11 @@ import React from 'react'; // What: React. Why: This is the UI library the hook 
  * when its own normal render gate is off, or Today needs to push its
  * list down by reserveTop while a tall highlight is up.
  *
- * This is kept in its own module, not onboarding.jsx, so the guided-tour
- * engine (onboarding-tour-runner.jsx) and whatever authors an individual
- * tour's step content (onboarding.jsx, future mini-tour modules) can
- * both import it without a circular dependency between them.
+ * This is kept in its own module, not onboarding-welcome-tour.jsx, so the
+ * guided-tour engine (onboarding-tour-runner.jsx) and whatever authors an
+ * individual tour's step content (onboarding-welcome-tour.jsx, future
+ * mini-tour modules) can both import it without a circular dependency
+ * between them.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

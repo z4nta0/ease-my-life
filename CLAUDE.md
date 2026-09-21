@@ -1236,6 +1236,20 @@ don't invent one for anything else yet:
   as a function body (below). This only applies when the literal already
   spans multiple lines — a single-line literal (e.g. one inline `{ id, label }`
   passed as a prop) needs no padding.
+  - **Exception — a long, prose-length single-line array entry still gets
+    1 blank line before and after it**, the array-entry counterpart of the
+    object-property long-outlier exception below, even though this specific
+    exception is for ARRAY entries rather than object properties: a plain
+    config array's own short rows (a string, a number, a small object) stay
+    flush together with no blank lines per the base rule above, but an
+    array whose entries are each a full paragraph of prose (e.g. a modal's
+    own `parEleArr` body paragraphs) reads far more clearly with 1 blank
+    line separating each paragraph, the same readability reasoning the
+    object-property outlier exception already applies to a long `bodEle`-
+    style value. See `onboarding.jsx`'s own `parEleArr` array (passed to
+    `IntModCom`) for the reference example: its 3 paragraph entries each
+    get 1 blank line before and after, despite each being syntactically
+    one physical line, not a genuinely multi-line entry.
 - **A multi-line entry inside an array, or a multi-line property inside an
   object, gets exactly 1 blank line before and after it** — UNLESS that
   side is also the container's own first/last position, in which case the

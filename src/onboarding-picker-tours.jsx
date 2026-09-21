@@ -56,11 +56,11 @@ import { ONB_ESP_ARR } from './onboarding-seed-data.js';    // What: Onboarding 
  * Every sample picker's own template data, keyed by id. This IS the
  * exact shape NewPickerForm's own initial prop expects (name/group/
  * mode/items/step), and unlike the reminder samples, nothing seeds a
- * picker with per-field overrides at tour time (see onboarding.jsx's
- * own seeding effect: pickers are added from these templates
- * verbatim), so reading the static template here is safe. There is no
- * live-vs-template divergence to worry about the way the reminder
- * tours had to for daysOfWeek.
+ * picker with per-field overrides at tour time (see
+ * onboarding-welcome-tour.jsx's own seeding effect: pickers are added
+ * from these templates verbatim), so reading the static template here
+ * is safe. There is no live-vs-template divergence to worry about the
+ * way the reminder tours had to for daysOfWeek.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

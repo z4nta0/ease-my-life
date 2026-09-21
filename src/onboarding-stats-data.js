@@ -12,10 +12,10 @@
  * absolute dates.
  *
  * pickLog rows mirror state.pickLog (minus id/eid/completedAt, which
- * onboarding.jsx's own seeding effect fills in at hydration time from
- * daysAgo/h/m). reminderLog/reminderSkipLog rows mirror
- * state.reminderLog/.reminderSkipLog the same way (minus rowId/
- * completedAt or skippedAt).
+ * onboarding-welcome-tour.jsx's own seeding effect fills in at hydration
+ * time from daysAgo/h/m). reminderLog/reminderSkipLog rows mirror
+ * state.reminderLog/.reminderSkipLog the same way (minus rowId/completedAt
+ * or skippedAt).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

@@ -20,12 +20,12 @@ import { useEmlTouFun } from './eml-tour-bus.js'; // What: Use Ease My Life Tour
  * onboarding-tour-runner.jsx = Onboarding Tour Runner
  *
  * @summary
- * A generic guided-tour engine: sequential single-spotlight steps with
- * a coach card (Step N of N, Skip/Back/Next). Shared by the Welcome
- * Tour (onboarding.jsx) and every per-feature mini-tour built on it.
- * This file owns none of any specific tour's content or business
- * logic, only the mechanics: spotlight positioning, the chrome clamp,
- * the click-guard, the not-found watchdog, tab-sync, the mobile rail
+ * A generic guided-tour engine: sequential single-spotlight steps with a
+ * coach card (Step N of N, Skip/Back/Next). Shared by the Welcome Tour
+ * (onboarding-welcome-tour.jsx) and every per-feature mini-tour built on
+ * it. This file owns none of any specific tour's content or business
+ * logic, only the mechanics: spotlight positioning, the chrome clamp, the
+ * click-guard, the not-found watchdog, tab-sync, the mobile rail
  * auto-open, resume-on-reload persistence. This is NOT used by the
  * on-demand help mode (see help-mode.jsx): that is simultaneous
  * multi-highlight with no dimming that blocks clicks and no sequential
@@ -368,12 +368,12 @@ const arrHorFun = ( curRecObj, coaLefNum, coaWidNum ) => Math.max( 18, Math.min(
  * TodTopFun = Today Top Function
  *
  * @summary
- * Shared by every tour's Skip action (both the intro modal's and, once
- * a tour is under way, the coach card's): skipping should always land
- * back on a pristine Today, not wherever a mid-tour tab-switch or
- * scroll happened to leave things. Exported so onboarding.jsx's intro-
- * modal Skip (which fires before any GuiTouCom is even mounted) can
- * reuse the exact same behavior.
+ * Shared by every tour's Skip action (both the intro modal's and, once a
+ * tour is under way, the coach card's): skipping should always land back on
+ * a pristine Today, not wherever a mid-tour tab-switch or scroll happened to
+ * leave things. Exported so onboarding-welcome-tour.jsx's intro-modal Skip
+ * (which fires before any GuiTouCom is even mounted) can reuse the exact
+ * same behavior.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -417,7 +417,7 @@ const TodTopFun = ( actIdeStr, selTabFun ) => { // What: Today Top Function. Why
  * above (spotlight tracking, the click-guard, the not-found watchdog,
  * tab-sync, the mobile rail auto-open, resume-on-reload persistence);
  * a specific tour's own content lives entirely in its `steObjArr` prop,
- * authored by a caller such as onboarding.jsx or one of the
+ * authored by a caller such as onboarding-welcome-tour.jsx or one of the
  * onboarding-*-tours.jsx mini-tour modules.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -1749,6 +1749,6 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 
 
-export { GuiTouCom, TodTopFun }; // What: Named Exports. Why: Every onboarding-*-tours.jsx module renders GuiTouCom as its own shared tour engine, and onboarding.jsx calls TodTopFun directly to reset scroll position. How: This re-exports the 2 declared above; every other binding in this file is internal-only.
+export { GuiTouCom, TodTopFun }; // What: Named Exports. Why: Every onboarding-*-tours.jsx module renders GuiTouCom as its own shared tour engine, and onboarding-welcome-tour.jsx calls TodTopFun directly to reset scroll position. How: This re-exports the 2 declared above; every other binding in this file is internal-only.
 
 

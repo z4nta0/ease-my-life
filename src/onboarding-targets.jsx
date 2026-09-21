@@ -8,7 +8,7 @@
  * A single-export file: NAV_TAR_OBJ, the shared nav-target catalog reused by
  * the Welcome Tour and every page's own mini-tour. See NAV_TAR_OBJ's own
  * comment right below for its full design rationale; this file exists purely
- * so that catalog has one home neither onboarding.jsx nor
+ * so that catalog has one home neither onboarding-welcome-tour.jsx nor
  * onboarding-page-tours.jsx needs to own on the other's behalf.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -25,18 +25,18 @@
  * @summary
  * Shared, reusable target-and-description catalog for onboarding overlays. The
  * nav bar's per-page buttons ([data-tab="..."]) are spotlighted both by the
- * main Welcome Tour (onboarding.jsx) and, later, by each page's own "Explore
- * the {page}" mini-tour (see ONB_EPT_ARR in onboarding-checklist.js) as its
- * opening step. This is kept as one source of truth instead of being
- * duplicated per consumer, keyed by the same page ids as ONB_EPT_ARR' page
- * field.
+ * main Welcome Tour (onboarding-welcome-tour.jsx) and, later, by each page's
+ * own "Explore the {page}" mini-tour (see ONB_EPT_ARR in
+ * onboarding-checklist.js) as its opening step. This is kept as one source of
+ * truth instead of being duplicated per consumer, keyed by the same page ids
+ * as ONB_EPT_ARR' page field.
  *
  * Each entry holds content only (selStr/place/titStr/bodEle), no navigation
  * (priStr/bacBoo/runFun), since a guided tour needs Back/Next/Skip and a
  * future on-demand help mode won't. Consumers that need tour-flow-specific
  * framing (e.g. "let's explore this page now") append that themselves rather
- * than have it forced into the shared text; see the steps in onboarding.jsx
- * for that split in practice.
+ * than have it forced into the shared text; see the steps in
+ * onboarding-welcome-tour.jsx for that split in practice.
  *
  * Every entry below shares this exact shape, and none of them repeat these
  * same fields' own boilerplate comments on their own lines (see the

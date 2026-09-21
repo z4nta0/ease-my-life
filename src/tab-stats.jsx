@@ -18,7 +18,7 @@ import { PilTagCom    } from './ui.jsx';              // What: Pill Tag Componen
 import { STA_HEL_ARR  } from './help-content.jsx';    // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelOveCom.
 import { TASKS        } from './tasks.js';            // What: Tasks. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TASKS.normalizeOpts on the raw persisted reminderOpts.
 import { unhHisFun    } from './help-sample-data.js'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helOnBoo turns true, as long as the page tour doesn't already own the same samples.
-import { useEmlTouFun } from './onboarding.jsx';      // What: Use Ease My Life Tour. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's reserveTop field.
+import { useEmlTouFun } from './eml-tour-bus.js';     // What: Use Ease My Life Tour. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's reserveTop field.
 
 // #endregion Imports
 
