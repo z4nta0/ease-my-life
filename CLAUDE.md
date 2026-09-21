@@ -2607,6 +2607,94 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     initialism-compressed name, not an abbreviation of "Stable"), which
     is unrelated and correctly left untouched, a spelling coincidence
     rather than the same miscorrection)
+  - `pik` → `pic` (Pick — found across 6 files: `pickers.js` itself
+    (`pikIteFun`/`pikRecObj`/`pikResObj`/`pikIdeStr`), `seed.js`
+    (`pikTimObj`, `pikLogArr`, `todPikArr`), `onboarding-seed-data.js`
+    (2 prose mentions of `pikIteFun`), `tab-settings.jsx` (`pikCouNum`,
+    `plyPikFun`), `tab-data.jsx` (`pikIdeStr`), and `tab-today.jsx`
+    (`newPikArr`, `pikNamSet`, `pikResObj`); `pic` was already the
+    established, correct code for this exact word elsewhere in several
+    of these same files (`weiPicFun` in `pickers.js` itself, `picResObj`
+    in `tab-picker.jsx`, `picCouNum` in `tab-picker.jsx`, `picIdeStr`
+    used pervasively across `day-log.jsx`/`app.jsx`/`store.jsx`/
+    `onboarding-picker-tours.jsx`/etc.). Since `pik`→`pic` is a
+    straight 1-for-1 letter swap, every renamed identifier stayed
+    exactly the same length, so no column-alignment recalculation was
+    needed anywhere. Every comment referencing these identifiers
+    already spelled "Pick"/"Picked" out in full, so none needed text
+    changes, only the identifiers themselves were wrong.
+    **Two deliberate, documented exceptions were left as `pik`,
+    unrenamed**, both a genuine collision against `pic` already meaning
+    Picker in the exact same file: `seed.js`'s own `curPikObj` (used
+    throughout `buiTodFun`'s own today-row-building section, lines
+    ~1071-1095 and ~1162, where the exact same function body ALSO reads
+    a real `curPicObj` = Current Picker Object looked up from it,
+    e.g. `const curPicObj = picByIdeObj[ curPikObj.pickerId ];`, a hard
+    technical collision the user explicitly chose to resolve by leaving
+    `curPikObj` exactly as-is rather than escalating segment 1's
+    "Current" to an awkward `cuePicObj`); and `tab-today.jsx`'s own
+    `curPikObj` (the loop variable iterating `newPicArr` at line 4415),
+    left unrenamed by the same reasoning even though it does not sit in
+    literal scope alongside a `curPicObj`, since this exact file already
+    uses `curPicObj` = Picker dozens of times elsewhere and a lone
+    differently-meaning `curPicObj` outlier would be a real readability
+    trap on a file-wide search)
+  - `chg` → `chr` (Charge/Charging — found in `chgUpdFun`
+    (`pickers.js`'s own ease-up/ease-down charge-application helper)
+    and `chgFreBoo` (`tab-today.jsx`, a charging-card's own "just
+    finished charging" fresh-cue flag), fixed to `chrUpdFun`/
+    `chrFreBoo`. This did NOT use the literal first-3-letters `cha`:
+    that code already carries a large, heavily-established meaning
+    elsewhere in this codebase (Change, dozens of uses, e.g.
+    `chaEveObj` throughout `tab-conditional.jsx`/`app.jsx`/
+    `cadence-control.jsx`), squarely the "heavy pre-existing overload"
+    case from the Naming-conflict resolution section below, not the
+    few-uses case documented as an ordinary multi-meaning segment.
+    Phase A escalation on "Charge" (keep `Ch`, skip the normal 3rd
+    letter, try the word's own 4th letter `r`) landed on `chr` with no
+    further collision. Every comment referencing these identifiers
+    already spelled "Charge"/"Charging" out in full, so none needed
+    text changes, only the identifiers themselves were wrong)
+  - `chg` → `cha` (Change/Changed — a separate, much larger
+    miscorrection surfaced while checking the `chg`→`chr` fix above for
+    collisions: `chgEveObj` (~40 instances across `tab-settings.jsx`,
+    `tab-picker.jsx`, `tab-data.jsx`, `tab-today.jsx`), `chgIteArr`/
+    `modChgBoo` (`store.jsx`), `chgBoo` (`tab-data.jsx`), and
+    `filChgBoo` (`tab-stats.jsx`, `tab-picker.jsx`), fixed to
+    `chaEveObj`/`chaIteArr`/`modChaBoo`/`chaBoo`/`filChaBoo`. Unlike the
+    Charge/Charging case just above, this one uses the literal
+    first-3-letters `cha` directly, no escalation needed, since `cha`
+    was already the established, correct code for this exact word
+    elsewhere in this same codebase (`chaEveObj` already used
+    throughout `tab-conditional.jsx`/`app.jsx`/`cadence-control.jsx`,
+    confirmed with no same-scope collision anywhere the sweep touched:
+    `tab-picker.jsx`'s own pre-existing `chaEveObj` at line 131 sits in
+    a completely separate function from every `chgEveObj` instance
+    fixed there). Every comment referencing these identifiers already
+    spelled "Change"/"Changed" out in full, so none needed text
+    changes, only the identifiers themselves were wrong)
+  - `ovr` → `ove` (Over — found in `ovrShoArr`/`minOvrNum`
+    (`pickers.js`'s own ease-up overshoot-compression block), fixed to
+    `oveShoArr`/`minOveNum`; this is a distinct word from the `ovf`→
+    `ove` (Overflow) and `ovl`→`ove` (Overlap) cases already documented
+    above, `ove` now carrying a fourth meaning, the same "context
+    disambiguates" reasoning already covering the other three. Only 2
+    instances, both in this one file; no collision, `oveShoArr`/
+    `minOveNum` were not already in use anywhere. Every comment
+    referencing these identifiers already spelled "Overshoot" out in
+    full, so none needed text changes, only the identifiers themselves
+    were wrong)
+  - `chs` → `cho` (Chosen — found in `chsIteObj` (`pickers.js`'s own
+    ease-down new-streak branch), fixed to `choIteObj`; `cho` was
+    already the established, correct code for this word family
+    elsewhere in this codebase, just for a different member of it
+    (Choice, e.g. `choArr` in `tab-data.jsx`, `choResObj` in `pwa.js`),
+    so `cho` now carries a second, closely-related meaning (Choice vs.
+    Chosen), disambiguated by context the same way as any other
+    multi-meaning segment in this list. Only 1 instance, and no
+    collision: `choIteObj` was not already in use anywhere. The
+    comment already spelled "Chosen" out in full, so it needed no text
+    changes, only the identifier itself was wrong)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
@@ -2975,8 +3063,9 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     property names to match their internal implementation exactly.**
     `cadence.js`'s own `CAD_NAM_OBJ` (originally `CADENCE`),
     `conditionals.js`'s own `CON_NAM_OBJ` (originally `CONDITIONALS`),
-    `notify.js`'s own `NOT_NAM_OBJ`, and `onboarding-checklist.js`'s own
-    `ONB_CHE_OBJ` all deliberately swept their external property names to
+    `notify.js`'s own `NOT_NAM_OBJ`, `onboarding-checklist.js`'s own
+    `ONB_CHE_OBJ`, and `pickers.js`'s own `PIC_NAM_OBJ` (originally
+    `PICKERS`) all deliberately swept their external property names to
     match their internal implementation exactly (e.g. `normalize` →
     `norCadFun`, `isCadence` → `isaCadFun` for the first; `cardComplete`
     → `carComFun`, `advanceOnCompletion` → `advValFun` for the second;
@@ -2985,10 +3074,14 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     the third; `entryFor` → `entLooFun`, `items` → `cheIteArr`,
     `othersRemaining` → `othRemFun`, `readyToGenerate` → `reaGenFun`,
     `realPickerCount` → `reaPicFun`, `status` → `cheStaFun`,
-    `tutorialsInProgress` → `tutProFun` for the fourth), with every
-    external call site (~60 across 7 consumer files for CAD_NAM_OBJ, 6
-    across 3 for CON_NAM_OBJ, 6 across 2 for NOT_NAM_OBJ, ~28 across 4 for
-    ONB_CHE_OBJ) updated in the same pass. Reusing the already-named
+    `tutorialsInProgress` → `tutProFun` for the fourth; `pick` →
+    `picIteFun`, `readiness` → `reaValFun`, `easeEligible` → `easEliFun`,
+    `modeEligible` → `modEliFun`, `EASE_TOL` → `EAS_TOL_NUM`, `avgEase`
+    → `aveEasFun`, `DEFAULT_EASE` → `DEF_EAS_OBJ` for the fifth), with
+    every external call site (~60 across 7 consumer files for
+    CAD_NAM_OBJ, 6 across 3 for CON_NAM_OBJ, 6 across 2 for NOT_NAM_OBJ,
+    ~28 across 4 for ONB_CHE_OBJ, 28 across 4 for PIC_NAM_OBJ) updated
+    in the same pass. Reusing the already-named
     9-char internal identifier directly as the external key (rather than
     inventing a separately-compressed name, 6-char property-style or
     otherwise) means a reader can trace `SomeObj.propName` straight back

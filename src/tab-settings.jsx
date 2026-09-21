@@ -295,7 +295,7 @@ function HolEdiCom ( { state, actions } ) {
 					placeholder='Add a holiday, e.g. Birthday'
 					autoComplete='off'
 					aria-label='Name of the day off to add'
-					onChange={ ( chgEveObj ) => setDraNamStr( chgEveObj.target.value ) }
+					onChange={ ( chaEveObj ) => setDraNamStr( chaEveObj.target.value ) }
 					onKeyDown={ ( keyEveObj ) => {
 
 
@@ -313,7 +313,7 @@ function HolEdiCom ( { state, actions } ) {
 					value={ draDatStr }
 					aria-label='Date'
 					onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } }
-					onChange={ ( chgEveObj ) => setDraDatStr( chgEveObj.target.value ) }
+					onChange={ ( chaEveObj ) => setDraDatStr( chaEveObj.target.value ) }
 				/>{ /* What: Draft Date Input Element. Why: The user needs a native date picker to choose the new holiday's own recurring month/day. How: This is bound to draDatStr and blurs on Escape like every other input in this tab. */ }
 
 				<ButBasCom
@@ -718,7 +718,7 @@ function ConSupCom ( { state, actions } ) {
 								type='text'
 								value={ draSubStr }
 								placeholder="What's going on?"
-								onChange={ ( chgEveObj ) => setDraSubStr( chgEveObj.target.value ) }
+								onChange={ ( chaEveObj ) => setDraSubStr( chaEveObj.target.value ) }
 							/>{ /* What: Draft Subject Input Element. Why: The user needs a text field to type the support message's own subject into. How: This is bound to draSubStr. */ }
 
 
@@ -743,7 +743,7 @@ function ConSupCom ( { state, actions } ) {
 								value={ draMesStr }
 								rows={ 5 }
 								placeholder='The more detail, the better.'
-								onChange={ ( chgEveObj ) => setDraMesStr( chgEveObj.target.value ) }
+								onChange={ ( chaEveObj ) => setDraMesStr( chaEveObj.target.value ) }
 							/>{ /* What: Draft Message Textarea Element. Why: The user needs a multi-line field to type the support message's own body into. How: This is bound to draMesStr. */ }
 
 
@@ -789,7 +789,7 @@ function ConSupCom ( { state, actions } ) {
 									autoComplete='off'
 									name='bot-field'
 									value={ botFieStr }
-									onChange={ ( chgEveObj ) => setBotFieStr( chgEveObj.target.value ) }
+									onChange={ ( chaEveObj ) => setBotFieStr( chaEveObj.target.value ) }
 								/>{ /* What: Bot Field Input Element. Why: A non-empty value here is the actual honeypot signal. How: This is bound to botFieStr and posted alongside the real fields. */ }
 
 
@@ -1055,7 +1055,7 @@ function TheCusCom ( { mode : theModStr, colors : cusColObj, active : actThmBoo,
 				title='Background'
 				aria-label='Custom background color'
 				onClick={ () => actions.setAppearanceTheme( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
-				onChange={ ( chgEveObj ) => setColFun( 'bg', chgEveObj.target.value ) }
+				onChange={ ( chaEveObj ) => setColFun( 'bg', chaEveObj.target.value ) }
 			/>{ /* What: Background Swatch Input Element. Why: This is the live control for the custom theme's own background color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
 
 			<input
@@ -1066,7 +1066,7 @@ function TheCusCom ( { mode : theModStr, colors : cusColObj, active : actThmBoo,
 				title='Accent'
 				aria-label='Custom accent color'
 				onClick={ () => actions.setAppearanceTheme( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
-				onChange={ ( chgEveObj ) => setColFun( 'accent', chgEveObj.target.value ) }
+				onChange={ ( chaEveObj ) => setColFun( 'accent', chaEveObj.target.value ) }
 			/>{ /* What: Accent Swatch Input Element. Why: This is the live control for the custom theme's own accent color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
 
 			<input
@@ -1077,7 +1077,7 @@ function TheCusCom ( { mode : theModStr, colors : cusColObj, active : actThmBoo,
 				title='Text'
 				aria-label='Custom text color'
 				onClick={ () => actions.setAppearanceTheme( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
-				onChange={ ( chgEveObj ) => setColFun( 'text', chgEveObj.target.value ) }
+				onChange={ ( chaEveObj ) => setColFun( 'text', chaEveObj.target.value ) }
 			/>{ /* What: Text Swatch Input Element. Why: This is the live control for the custom theme's own text color. How: This activates this custom theme on click and saves a new color via setColFun on change. */ }
 
 			<input
@@ -1088,7 +1088,7 @@ function TheCusCom ( { mode : theModStr, colors : cusColObj, active : actThmBoo,
 				maxLength={ 18 }
 				aria-label={ `Name for your custom ${ theModStr === 'dark' ? 'dark' : 'light' } theme` }
 				onFocus={ () => actions.setAppearanceTheme( theModStr === 'dark' ? 'customDark' : 'customLight' ) }
-				onChange={ ( chgEveObj ) => actions.setCustomThemeName( theModStr, chgEveObj.target.value ) }
+				onChange={ ( chaEveObj ) => actions.setCustomThemeName( theModStr, chaEveObj.target.value ) }
 				onClick={ ( clkEveObj ) => clkEveObj.stopPropagation() }
 			/>{ /* What: Custom Name Input Element. Why: A custom theme can carry its own user-chosen display name instead of a fixed preset name. How: This activates this custom theme on focus and saves the typed name via actions.setCustomThemeName on change, without also re-toggling the theme on every keystroke click. */ }
 
@@ -1485,11 +1485,11 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	// hold which style is currently showing (null = idle, selector visible).
 	const [ celTokNum, setCelTokNum ] = React.useState( 0 ); // What: Celebration Token Number And Setter. Why: CelPreCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plyCelFun and passed straight through as CelPreCom's own repTokNum prop.
 	const [ celStyStr, setCelStyStr ] = React.useState( 'confetti' ); // What: Celebration Style String And Setter. Why: The preview stage needs to know which specific style to actually play. How: This is set by plyCelFun and passed straight through as CelPreCom's own styKeyStr prop.
-	const [ picTokNum, setPicTokNum ] = React.useState( 0 ); // What: Picker Token Number And Setter. Why: PicAniCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plyPikFun and passed straight through as PicAniCom's own repTokNum prop.
-	const [ picPreStr, setPicPreStr ] = React.useState( null ); // What: Picker Preview String And Setter. Why: The picker-animation stage should keep showing whichever style was last previewed, not the selected style, once its own cycle finishes. How: This is set by plyPikFun and, while non-null, overrides the selected pickAnim value passed to PicAniCom.
-	const picPreTmo = React.useRef( null ); // What: Picker Preview Timeout. Why: A rapid second Preview press should not leave 2 overlapping timers around from an earlier press. How: This holds whichever timeout id plyPikFun most recently scheduled, cleared on unmount below.
+	const [ picTokNum, setPicTokNum ] = React.useState( 0 ); // What: Picker Token Number And Setter. Why: PicAniCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plyPicFun and passed straight through as PicAniCom's own repTokNum prop.
+	const [ picPreStr, setPicPreStr ] = React.useState( null ); // What: Picker Preview String And Setter. Why: The picker-animation stage should keep showing whichever style was last previewed, not the selected style, once its own cycle finishes. How: This is set by plyPicFun and, while non-null, overrides the selected pickAnim value passed to PicAniCom.
+	const picPreTmo = React.useRef( null ); // What: Picker Preview Timeout. Why: A rapid second Preview press should not leave 2 overlapping timers around from an earlier press. How: This holds whichever timeout id plyPicFun most recently scheduled, cleared on unmount below.
 	const plyCelFun = ( newStyStr ) => { setCelStyStr( newStyStr ); setCelTokNum( ( tokCurNum ) => tokCurNum + 1 ); }; // What: Play Celebration Function. Why: Pressing Preview on a celebration style option needs to both select and immediately replay that style. How: This sets celStyStr to newStyStr, then bumps celTokNum to trigger CelPreCom's own replay effect.
-	const plyPikFun = ( newStyStr ) => { // What: Play Pick Function. Why: Pressing Preview on a picker-animation style option needs to both select and immediately replay that style. How: This clears any pending revert timeout, then sets picPreStr and bumps picTokNum to trigger PicAniCom's own remount.
+	const plyPicFun = ( newStyStr ) => { // What: Play Pick Function. Why: Pressing Preview on a picker-animation style option needs to both select and immediately replay that style. How: This clears any pending revert timeout, then sets picPreStr and bumps picTokNum to trigger PicAniCom's own remount.
 
 
 		clearTimeout( picPreTmo.current ); // What: Preview Timeout Clear. Why: A rapid second Preview press must not let an earlier press's own stale timeout fire later and revert this fresh preview. How: This cancels whichever timeout picPreTmo currently holds, if any.
@@ -2074,12 +2074,12 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	};
 
 
-	const onImpFun = ( chgEveObj ) => { // What: On Import File Function. Why: Choosing a backup file needs to be parsed and held for in-app confirmation before it can actually replace all data. How: This reads the chosen file as text, parses it as JSON, and either stages it as penImpObj or reports a read failure.
+	const onImpFun = ( chaEveObj ) => { // What: On Import File Function. Why: Choosing a backup file needs to be parsed and held for in-app confirmation before it can actually replace all data. How: This reads the chosen file as text, parses it as JSON, and either stages it as penImpObj or reports a read failure.
 
 
-		const impFilObj = chgEveObj.target.files && chgEveObj.target.files[ 0 ]; // What: Import File Object. Why: The native file input may have no file chosen at all, such as a cancelled dialog. How: This reads the first (and only) selected file, or undefined.
+		const impFilObj = chaEveObj.target.files && chaEveObj.target.files[ 0 ]; // What: Import File Object. Why: The native file input may have no file chosen at all, such as a cancelled dialog. How: This reads the first (and only) selected file, or undefined.
 
-		chgEveObj.target.value = ''; // What: File Input Reset. Why: Re-selecting the exact same file later must still fire a fresh change event. How: This clears the native input's own value back to empty.
+		chaEveObj.target.value = ''; // What: File Input Reset. Why: Re-selecting the exact same file later must still fire a fresh change event. How: This clears the native input's own value back to empty.
 
 		if ( !impFilObj ) return; // What: No File Guard. Why: A cancelled file dialog leaves nothing to read. How: This bails out early whenever impFilObj is falsy.
 
@@ -2200,7 +2200,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	// #endregion Data Control Export And Import
 
 
-	const pikCouNum = ( state.pickers || [] ).length;               // What: Picker Count Number. Why: The export row's own description names exactly how many pickers a backup would include. How: This reads the length of state.pickers, defaulting to an empty array.
+	const picCouNum = ( state.pickers || [] ).length;               // What: Picker Count Number. Why: The export row's own description names exactly how many pickers a backup would include. How: This reads the length of state.pickers, defaulting to an empty array.
 	const iteCouNum = ( state.items || [] ).length;                 // What: Item Count Number. Why: The export row's own description names exactly how many items a backup would include. How: This reads the length of state.items, defaulting to an empty array.
 	const remCouNum = ( state.tasks || [] ).length;                 // What: Reminder Count Number. Why: The export row's own description names exactly how many reminders a backup would include. How: This reads the length of state.tasks, defaulting to an empty array.
 	const dlyIdeArr = ( state.daily && state.daily.pickerIds ) || []; // What: Daily Id Array. Why: This mirrors the persisted daily picker-id list for parity with the rest of this component's own derived values, though nothing here currently reads it further. How: This reads state.daily's own pickerIds, defaulting to an empty array.
@@ -2545,8 +2545,8 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									] }
 									previewDisabled={ false }
 									onChange={ ( newValStr ) => { setPicPreStr( null ); actions.setPickAnim( newValStr ); } }
-									onPreview={ plyPikFun }
-								/>{ /* What: Style Radio Component. Why: This is the actual picker-animation style picker. How: This is bound to the persisted pickAnim, saving via actions.setPickAnim (clearing any stale preview first) and previewing via plyPikFun. */ }
+									onPreview={ plyPicFun }
+								/>{ /* What: Style Radio Component. Why: This is the actual picker-animation style picker. How: This is bound to the persisted pickAnim, saving via actions.setPickAnim (clearing any stale preview first) and previewing via plyPicFun. */ }
 
 								<PicAniCom
 									styKeyStr={ picPreStr || ( state.appearance && state.appearance.pickAnim ) || 'reel' }
@@ -2708,7 +2708,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 									disabled={ dlyModStr !== 'auto' }
 									aria-label='Daily generator run time'
 									onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } }
-									onChange={ ( chgEveObj ) => onRunChaFun( chgEveObj.target.value ) }
+									onChange={ ( chaEveObj ) => onRunChaFun( chaEveObj.target.value ) }
 								/>{ /* What: Run Time Input Element. Why: This is the actual control for the generator's own scheduled run time. How: This is bound to the persisted runTime, saving (and asking notification permission once) via onRunChaFun. */ }
 
 
@@ -3019,7 +3019,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 									<span className='set-data-name'>Export a backup</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Export a backup". */ }
 
-									<span className='set-data-sub'>Downloads a JSON file of everything, this includes <strong>{ pikCouNum }</strong> pickers, <strong>{ iteCouNum }</strong> items, <strong>{ remCouNum }</strong> reminders and <strong>all app settings</strong>.</span>{ /* What: Set Data Sub Span Element. Why: The row's own description should say exactly what a backup would include right now. How: This renders the fixed description, inlining the live pikCouNum/iteCouNum/remCouNum counts. */ }
+									<span className='set-data-sub'>Downloads a JSON file of everything, this includes <strong>{ picCouNum }</strong> pickers, <strong>{ iteCouNum }</strong> items, <strong>{ remCouNum }</strong> reminders and <strong>all app settings</strong>.</span>{ /* What: Set Data Sub Span Element. Why: The row's own description should say exactly what a backup would include right now. How: This renders the fixed description, inlining the live picCouNum/iteCouNum/remCouNum counts. */ }
 
 
 									{ expMesObj && ( // What: Export Message Check. Why: A message should only exist right after an actual export just happened. How: This renders the message span only while expMesObj holds a value.

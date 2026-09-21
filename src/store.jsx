@@ -15,7 +15,7 @@ import { norGroFun   } from './pickers.js';              // What: Normalize Grou
 import { norPicFun   } from './pickers.js';              // What: Normalize Picker Function. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from migrate, addPicker, commitPickerEdit, and renamePicker below.
 import { ONB_CHE_OBJ } from './onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (reaGenFun) from setChecklistItem below.
 import { ONB_SPI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicker below.
-import { PICKERS     } from './pickers.js';              // What: Pickers. Why: The item-authoring/editing actions need this module's own ease-band averaging and per-mode defaults. How: This is called (avgEase/DEFAULT_EASE) from addItem and commitPickerEdit below.
+import { PIC_NAM_OBJ } from './pickers.js';              // What: Pickers Namespace Object. Why: The item-authoring/editing actions need this module's own ease-band averaging and per-mode defaults. How: This is called (aveEasFun/DEF_EAS_OBJ) from addItem and commitPickerEdit below.
 import { PWA         } from './pwa.js';                  // What: Progressive Web App. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (noteFirstPicker) once, from inside addPicker below.
 import { STORAGE     } from './storage.js';              // What: Storage. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called from loadState, saveState, flushState, and the reset/importData actions below.
 import { TASKS       } from './tasks.js';                // What: Tasks. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout migrate, reconcileStreak, and the task actions below.
@@ -2223,11 +2223,11 @@ function useStore( optArgObj ) {
 
 		},
 
-		// What: Apply Pick-Result Action. Why: Some callers (outside the entry.pending staging path) need to apply a picker's own `updates`/pickerPatch/pick-bump directly. How: This patches value/weight per resValObj.updates, bumps the picked item's own picks/lastPicked, and applies resValObj.pickerPatch when present.
+		// What: Apply Pick-Result Action. Why: Some callers (outside the entry.pending staging path) need to apply a picker's own `updArr`/patObj/pick-bump directly. How: This patches value/weight per resValObj.updArr, bumps the picked item's own picks/lastPicked, and applies resValObj.patObj when present.
 		applyPickResult : ( pickerId, resValObj ) => setAppStaObj( ( curStaObj ) => {
 
 
-			const updIdeMap = new Map( resValObj.updates.map( ( curUpdObj ) => [ curUpdObj.id, curUpdObj ] ) ); // What: Update Identifier Map. Why: The items map below needs O(1) lookup of each touched item's own update row. How: This maps every resValObj.updates row by its own id.
+			const updIdeMap = new Map( resValObj.updArr.map( ( curUpdObj ) => [ curUpdObj.id, curUpdObj ] ) ); // What: Update Identifier Map. Why: The items map below needs O(1) lookup of each touched item's own update row. How: This maps every resValObj.updArr row by its own id.
 
 			const nexIteArr = curStaObj.items.map( ( curIteObj ) => { // What: Next Item Array. Why: Every item must be checked for a staged update or the pick bump. How: This maps curStaObj.items, applying updIdeMap's own patch and/or the pick bump to a touched item, leaving everything else unchanged.
 
@@ -2241,7 +2241,7 @@ function useStore( optArgObj ) {
 				if ( 'value' in matUpdObj ) nexIteObj.value = matUpdObj.value;   // What: Value Patch. Why: An update row only sometimes carries a new drift/charge value. How: This applies matUpdObj's own value only when the key is present.
 				if ( 'weight' in matUpdObj ) nexIteObj.weight = matUpdObj.weight; // What: Weight Patch. Why: An update row only sometimes carries a new ease-down fairness weight. How: This applies matUpdObj's own weight only when the key is present.
 
-				if ( resValObj.picked && resValObj.picked.id === curIteObj.id ) { // What: Pick Bump Guard. Why: Only the item resValObj itself reports as picked gets its own picks/lastPicked bumped. How: This increments picks and stamps lastPicked on nexIteObj when curIteObj matches resValObj.picked.
+				if ( resValObj.picObj && resValObj.picObj.id === curIteObj.id ) { // What: Pick Bump Guard. Why: Only the item resValObj itself reports as picked gets its own picks/lastPicked bumped. How: This increments picks and stamps lastPicked on nexIteObj when curIteObj matches resValObj.picObj.
 
 
 					nexIteObj.picks = ( curIteObj.picks || 0 ) + 1;             // What: Picks Increment. Why: A real pick must be reflected in this item's own running pick count. How: This increments curIteObj's own picks, defaulting to 0.
@@ -2256,8 +2256,8 @@ function useStore( optArgObj ) {
 
 			} );
 
-			const nexPicArr = resValObj.pickerPatch // What: Next Picker Array. Why: Only a result carrying its own pickerPatch (e.g. Ease Down's activeItemId) needs any picker actually rewritten. How: This patches pickerId's own picker with pickerPatch's own fields, else passes pickers through unchanged.
-				? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === pickerId ? { ...curPicObj, ...resValObj.pickerPatch } : curPicObj )
+			const nexPicArr = resValObj.patObj // What: Next Picker Array. Why: Only a result carrying its own patObj (e.g. Ease Down's activeItemId) needs any picker actually rewritten. How: This patches pickerId's own picker with patObj's own fields, else passes pickers through unchanged.
+				? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === pickerId ? { ...curPicObj, ...resValObj.patObj } : curPicObj )
 				: curStaObj.pickers;
 
 
@@ -2687,20 +2687,20 @@ function useStore( optArgObj ) {
 
 			const ownIteArr = curStaObj.items.filter( ( curIteObj ) => curIteObj.pickerId === tarIdeStr ); // What: Owned Item Array. Why: The whole-picker branch needs every item this picker actually owns. How: This filters curStaObj.items to those whose own pickerId matches tarIdeStr.
 			const nexVacBoo = !( ownIteArr.length && ownIteArr.every( ( curIteObj ) => curIteObj.vacation ) ); // What: Next Vacation Boolean. Why: A picker's own toggle flips to the OPPOSITE of "every owned item is already inactive" (so a mixed state turns everything ON first). How: This negates whether ownIteArr is non-empty and every item in it is already vacation:true.
-			const chgIteArr = ownIteArr.filter( ( curIteObj ) => curIteObj.vacation !== nexVacBoo ); // What: Changed Item Array. Why: Only an item whose own vacation flag actually differs from nexVacBoo needs a vacationLog row of its own. How: This filters ownIteArr to items whose own vacation doesn't already match nexVacBoo.
+			const chaIteArr = ownIteArr.filter( ( curIteObj ) => curIteObj.vacation !== nexVacBoo ); // What: Changed Item Array. Why: Only an item whose own vacation flag actually differs from nexVacBoo needs a vacationLog row of its own. How: This filters ownIteArr to items whose own vacation doesn't already match nexVacBoo.
 
 			let nexIteArr = curStaObj.items.map( ( curIteObj ) => curIteObj.pickerId === tarIdeStr ? { ...curIteObj, vacation : nexVacBoo } : curIteObj ); // What: Next Item Array. Why: Every item owned by this picker gets the same new vacation state. How: This maps curStaObj.items, setting vacation:nexVacBoo on every item owned by tarIdeStr.
 			let nexPicArr = curStaObj.pickers; // What: Next Picker Array And Guard. Why: This only changes below when the picker's own items just went inactive and need their own in-progress streaks abandoned. How: This starts at curStaObj's own current pickers.
 
-			if ( nexVacBoo ) ( { pickers : nexPicArr, items : nexIteArr } = abnIfActFun( nexPicArr, nexIteArr, chgIteArr.map( ( curIteObj ) => curIteObj.id ) ) ); // What: Abandon-If-Active Call Guard. Why: Only going INTO vacation can abandon an in-progress streak, same reasoning as the single-item branch above. How: This calls abnIfActFun (over just the CHANGED items) and destructures its own result, only when nexVacBoo is true.
+			if ( nexVacBoo ) ( { pickers : nexPicArr, items : nexIteArr } = abnIfActFun( nexPicArr, nexIteArr, chaIteArr.map( ( curIteObj ) => curIteObj.id ) ) ); // What: Abandon-If-Active Call Guard. Why: Only going INTO vacation can abandon an in-progress streak, same reasoning as the single-item branch above. How: This calls abnIfActFun (over just the CHANGED items) and destructures its own result, only when nexVacBoo is true.
 
 
-			return { // What: Whole-Picker Return. Why: The caller needs the patched arrays plus one fresh vacationLog row per actually-changed item. How: This spreads curStaObj with items/pickers replaced and appends chgIteArr's own rows to vacationLog.
+			return { // What: Whole-Picker Return. Why: The caller needs the patched arrays plus one fresh vacationLog row per actually-changed item. How: This spreads curStaObj with items/pickers replaced and appends chaIteArr's own rows to vacationLog.
 
 				...curStaObj,
 				items : nexIteArr,
 				pickers : nexPicArr,
-				vacationLog : [ ...( curStaObj.vacationLog || [] ), ...chgIteArr.map( ( curIteObj ) => ( { itemId : curIteObj.id, date : curDayStr, on : nexVacBoo } ) ) ]
+				vacationLog : [ ...( curStaObj.vacationLog || [] ), ...chaIteArr.map( ( curIteObj ) => ( { itemId : curIteObj.id, date : curDayStr, on : nexVacBoo } ) ) ]
 
 			};
 
@@ -2772,7 +2772,7 @@ function useStore( optArgObj ) {
 		 * newcomer down), rounded and floored at 1 so it's never a second
 		 * weight-0; with no peers yet, weight defaults to 1. An ease-mode
 		 * item is also stamped immediately with this picker's own current
-		 * average drift band (see PICKERS.avgEase), the only place that
+		 * average drift band (see PIC_NAM_OBJ.aveEasFun), the only place that
 		 * still matters now that pick()/the Data tab/the item editor all
 		 * compute this same average live instead of reading a picker-level
 		 * default.
@@ -2808,7 +2808,7 @@ function useStore( optArgObj ) {
 				id : optIdeStr || ( 'it_' + Math.random().toString( 36 ).slice( 2, 8 ) ),
 				name : uniNamFun( name, sibIteArr.map( ( curIteObj ) => curIteObj.name ) ), pickerId,
 				weight : wgtValNum, value : valValNum, vacation : false, picks : 0, lastPicked : null,
-				...( isEasBoo ? PICKERS.avgEase( sibIteArr, pickerId ) : {} )
+				...( isEasBoo ? PIC_NAM_OBJ.aveEasFun( sibIteArr, pickerId ) : {} )
 
 			};
 
@@ -3013,7 +3013,7 @@ function useStore( optArgObj ) {
 
 			if ( !curPicObj ) return curStaObj; // What: Missing-Picker Guard. Why: There's nothing to edit when curPicObj wasn't found. How: This returns curStaObj unchanged.
 
-			const modChgBoo = mode !== curPicObj.mode; // What: Mode Changed Boolean. Why: Only an actual mode change triggers the item-defaults reset further below. How: This is true when the new mode differs from curPicObj's own current one.
+			const modChaBoo = mode !== curPicObj.mode; // What: Mode Changed Boolean. Why: Only an actual mode change triggers the item-defaults reset further below. How: This is true when the new mode differs from curPicObj's own current one.
 			const finNamStr = uniNamFun( // What: Final Name String. Why: The committed picker still needs its own name tidied and de-duplicated against every OTHER visible picker. How: This calls uniNamFun with the tidied name against every sibling picker's own name, excluding itself.
 				norPicFun( name ) || name,
 				curStaObj.pickers.filter( ( picFilObj ) => !picFilObj.hidden && picFilObj.id !== pickerId ).map( ( picFilObj ) => picFilObj.name )
@@ -3053,12 +3053,12 @@ function useStore( optArgObj ) {
 
 			const thrValNum = curPicObj.threshold ?? 100; // What: Threshold Value Number. Why: The ease-down item-defaults branch below needs this picker's own threshold. How: This reads curPicObj's own threshold, defaulting to 100.
 			const modDefObj = mode === 'ease-down' // What: Mode Defaults Object. Why: Every item's own weight/value/drift-band must reset to sensible defaults for whichever mode was just switched to. How: This picks the ease-down, ease-up, or plain-weighted default shape depending on mode.
-				? { weight : 1, value : thrValNum, easeMin : PICKERS.DEFAULT_EASE.easeMin, easeMax : PICKERS.DEFAULT_EASE.easeMax }
+				? { weight : 1, value : thrValNum, easeMin : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, easeMax : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax }
 				: mode === 'ease-up'
-				? { weight : 1, value : 0, easeMin : PICKERS.DEFAULT_EASE.easeMin, easeMax : PICKERS.DEFAULT_EASE.easeMax }
+				? { weight : 1, value : 0, easeMin : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin, easeMax : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax }
 				: { weight : 1, value : 0 };
 
-			const nexIteArr = modChgBoo // What: Next Item Array. Why: Only an ACTUAL mode change resets this picker's own items; an unchanged mode leaves every item's own tuning untouched. How: This maps curStaObj.items, merging modDefObj onto every item owned by pickerId, only when modChgBoo is true.
+			const nexIteArr = modChaBoo // What: Next Item Array. Why: Only an ACTUAL mode change resets this picker's own items; an unchanged mode leaves every item's own tuning untouched. How: This maps curStaObj.items, merging modDefObj onto every item owned by pickerId, only when modChaBoo is true.
 				? curStaObj.items.map( ( curIteObj ) => curIteObj.pickerId === pickerId ? { ...curIteObj, ...modDefObj } : curIteObj )
 				: curStaObj.items;
 

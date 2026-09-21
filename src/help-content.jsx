@@ -2742,7 +2742,7 @@ const DAT_HEL_ARR = [ // What: Data Help Array. Why: This is the on-demand help 
 
 	},
 
-	// Fill/Refill acts on every item in this picker at once (actions.refillPicker), not just one. Moved out of "How it picks" into "Item Controls" alongside Avoid Duplicate Items above (see that entry's own comment), filling every item's charge is an items operation, not part of the picker's own ruleset. // padYNum:0, touches Picker Duplicate Items Toggle above with zero gap. // Split by mode (ease-config--up/--down, tab-data.jsx) rather than one combined Fill/Refill entry, same idea as itemChargeRangeUp/Down below (the per-item equivalent, which also covers each item's own Soonest/Latest controls, this picker level no longer has any of its own to prefill new items with; see PICKERS.avgEase in pickers.js).
+	// Fill/Refill acts on every item in this picker at once (actions.refillPicker), not just one. Moved out of "How it picks" into "Item Controls" alongside Avoid Duplicate Items above (see that entry's own comment), filling every item's charge is an items operation, not part of the picker's own ruleset. // padYNum:0, touches Picker Duplicate Items Toggle above with zero gap. // Split by mode (ease-config--up/--down, tab-data.jsx) rather than one combined Fill/Refill entry, same idea as itemChargeRangeUp/Down below (the per-item equivalent, which also covers each item's own Soonest/Latest controls, this picker level no longer has any of its own to prefill new items with; see PIC_NAM_OBJ.aveEasFun in pickers.js).
 	{
 
 

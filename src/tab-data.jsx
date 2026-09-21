@@ -26,7 +26,7 @@ import { MODES        } from './seed.js';                 // What: Modes. Why: E
 import { norConFun    } from './pickers.js';              // What: Normalize Conditional Function. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
 import { norGroFun    } from './pickers.js';              // What: Normalize Group Function. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
 import { ONB_CHE_OBJ  } from './onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Several add/edit controls in this file must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutProFun throughout TabData and ConManCom.
-import { PICKERS      } from './pickers.js';              // What: Pickers. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PICKERS.avgEase.
+import { PIC_NAM_OBJ  } from './pickers.js';              // What: Pickers Namespace Object. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PIC_NAM_OBJ.aveEasFun.
 import { redMotFun    } from './ui.jsx';                  // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see any of this file's own FLIP/scroll/collapse animations. How: This is checked before every animation throughout this file.
 import { RemManCom    } from './reminders.jsx';           // What: Reminder Manager Component. Why: The Reminders section of this tab is a full, separately-maintained editor. How: This is rendered once, in place of a picker card, whenever the Reminders scope is shown.
 import { sedPicFun    } from './help-sample-data.js';     // What: Seed Pickers Function. Why: Help mode needs a real picker of every mode to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
@@ -728,7 +728,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 						placeholder='Picker name'
 						maxLength={ 40 }
 						aria-label='Picker name'
-						onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { name : chgEveObj.target.value } ) }
+						onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { name : chaEveObj.target.value } ) }
 						onBlur={ ( blrEveObj ) => {
 
 							const namTriStr = blrEveObj.target.value.trim(); // What: Name Trimmed String. Why: A blur commit should tidy the name, not commit stray whitespace. How: This trims blrEveObj's own current value.
@@ -785,7 +785,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 									placeholder='Group name'
 									maxLength={ 30 }
 									aria-label='Group name'
-									onChange={ ( chgEveObj ) => setNewGroStr( chgEveObj.target.value ) }
+									onChange={ ( chaEveObj ) => setNewGroStr( chaEveObj.target.value ) }
 									onKeyDown={ ( keyEveObj ) => {
 
 										if ( keyEveObj.key === 'Enter' ) cmtGroFun(); // What: Enter Commit Guard. Why: Enter should commit the typed group name immediately. How: This calls cmtGroFun when keyEveObj.key is 'Enter'.
@@ -1094,7 +1094,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 									className='np-input rd-cad-sel'
 									value={ picObj.cadence || 'daily' }
 									aria-label='Cadence'
-									onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { cadence : chgEveObj.target.value } ) }
+									onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { cadence : chaEveObj.target.value } ) }
 								>
 									<option value='daily'>Daily</option>
 									<option value='weekly'>Weekly</option>
@@ -1109,7 +1109,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 										className='np-input rd-cad-sel'
 										value={ picObj.anchorDow ?? 0 }
 										aria-label='Anchor weekday'
-										onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { anchorDow : parseInt( chgEveObj.target.value ) } ) }
+										onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { anchorDow : parseInt( chaEveObj.target.value ) } ) }
 									>
 										{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps the fixed weekday-name array to one option per entry, keyed by its own dayIndNum.
 
@@ -1128,7 +1128,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 										className='np-input rd-cad-sel'
 										value={ picObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' }
 										aria-label='Day selection'
-										onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { dateMode : chgEveObj.target.value } ) }
+										onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { dateMode : chaEveObj.target.value } ) }
 									>
 										<option value='date'>Date</option>
 										<option value='nthWeekday'>Weekday</option>
@@ -1147,7 +1147,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ picObj.nthOrdinal ?? 1 }
 											aria-label='Week of the month'
-											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { nthOrdinal : parseInt( chgEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum, labeled via CAD_NAM_OBJ.sumCadFun.
 
@@ -1160,7 +1160,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ picObj.nthWeekday ?? 0 }
 											aria-label='Weekday'
-											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { nthWeekday : parseInt( chgEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps the fixed weekday-name array to one option per entry, keyed by its own dayIndNum.
 
@@ -1180,7 +1180,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 										className='np-input rd-cad-sel'
 										value={ picObj.anchorDom ?? 1 }
 										aria-label='Anchor day of month'
-										onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { anchorDom : parseInt( chgEveObj.target.value ) } ) }
+										onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { anchorDom : parseInt( chaEveObj.target.value ) } ) }
 									>
 										{ Array.from( { length : 31 }, ( _, arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Day Of Month Option List Render. Why: One option is needed per possible day of month, 1 through 31. How: This maps a generated 1-31 array to one option per entry, keyed by its own domValNum, labeled via CAD_NAM_OBJ.sumCadFun.
 
@@ -1202,7 +1202,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ picObj.nthOrdinal ?? 1 }
 											aria-label='Week of the month'
-											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { nthOrdinal : parseInt( chgEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { nthOrdinal : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ [ 1, 2, 3, 4, 5 ].map( ( ordValNum ) => ( // What: Ordinal Option List Render. Why: One option is needed per possible occurrence, 1st through 5th. How: This maps the fixed [1..5] array to one option per entry, keyed by its own ordValNum, labeled via CAD_NAM_OBJ.sumCadFun.
 
@@ -1215,7 +1215,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ picObj.nthWeekday ?? 0 }
 											aria-label='Weekday'
-											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { nthWeekday : parseInt( chgEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { nthWeekday : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( ( dayNamStr, dayIndNum ) => ( // What: Weekday Option List Render. Why: One option is needed per real weekday. How: This maps the fixed weekday-name array to one option per entry, keyed by its own dayIndNum.
 
@@ -1228,7 +1228,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ picObj.anchorMonth ?? 1 }
 											aria-label='Anchor month'
-											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { anchorMonth : parseInt( chgEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ].map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps the fixed month-abbreviation array to one option per entry, keyed by its own 1-indexed monIndNum.
 
@@ -1251,7 +1251,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ picObj.anchorMonth ?? 1 }
 											aria-label='Anchor month'
-											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { anchorMonth : parseInt( chgEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { anchorMonth : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ].map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps the fixed month-abbreviation array to one option per entry, keyed by its own 1-indexed monIndNum.
 
@@ -1264,7 +1264,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 											className='np-input rd-cad-sel'
 											value={ Math.min( picObj.anchorDay ?? 1, CAD_NAM_OBJ.dimCouFun( 2024, picObj.anchorMonth ?? 1 ) ) }
 											aria-label='Anchor day'
-											onChange={ ( chgEveObj ) => actObj.updatePicker( picObj.id, { anchorDay : parseInt( chgEveObj.target.value ) } ) }
+											onChange={ ( chaEveObj ) => actObj.updatePicker( picObj.id, { anchorDay : parseInt( chaEveObj.target.value ) } ) }
 										>
 											{ Array.from( { length : CAD_NAM_OBJ.dimCouFun( 2024, picObj.anchorMonth ?? 1 ) }, ( _, arrIndNum ) => arrIndNum + 1 ).map( ( domValNum ) => ( // What: Anchor Day Option List Render. Why: One option is needed per possible day within the anchor month's own real length. How: This maps a generated array sized by CAD_NAM_OBJ.dimCouFun to one option per entry, keyed by its own domValNum.
 
@@ -2048,7 +2048,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 												aria-label='Conditional name'
 												aria-invalid={ !!namErrStr }
 												ref={ ( inpCurEle ) => { if ( inpCurEle && focInpRef.current !== inpCurEle ) { inpCurEle.focus( { preventScroll : true } ); focInpRef.current = inpCurEle; } } }
-												onChange={ ( chgEveObj ) => setDrfObj( { ...drfObj, name : chgEveObj.target.value } ) }
+												onChange={ ( chaEveObj ) => setDrfObj( { ...drfObj, name : chaEveObj.target.value } ) }
 												onBlur={ () => { if ( tidNamStr ) setDrfObj( { ...drfObj, name : tidNamStr } ); } }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 											/>{ /* What: Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. */ }
@@ -2275,7 +2275,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	const picArr = staAppObj.pickers || []; // What: Picker Array. Why: Nearly every filter/list computation below needs the full picker list to start from. How: This reads staAppObj.pickers, falling back to an empty array.
 
 	const [ remPicStr, setRemPicStr ] = React.useState( null ); // What: Removing Picker String And Setter. Why: A deleted picker's own card needs to finish its collapse+fade-out animation before actually being removed. How: This holds whichever picker's own id is currently mid-removal-animation.
-	const delPicFun = ( pikIdeStr ) => { if ( redMotFun() ) { actObj.removePicker( pikIdeStr ); return; } setRemPicStr( pikIdeStr ); }; // What: Delete Picker Function. Why: A user who prefers reduced motion should see the removal happen instantly instead of animating. How: This removes the picker directly under reduced motion, otherwise just flags it for the animated removal (finished by the card's own onAnimationEnd below).
+	const delPicFun = ( picIdeStr ) => { if ( redMotFun() ) { actObj.removePicker( picIdeStr ); return; } setRemPicStr( picIdeStr ); }; // What: Delete Picker Function. Why: A user who prefers reduced motion should see the removal happen instantly instead of animating. How: This removes the picker directly under reduced motion, otherwise just flags it for the animated removal (finished by the card's own onAnimationEnd below).
 
 
 	const [ newDrfStr, setNewDrfStr ]   = React.useState( null );  // What: New Draft String And Setter. Why: The "Create Picker" trigger creates a REAL (but hidden) picker immediately; only its id is held here, since the card below always reads the LIVE picker from staAppObj.pickers, same as any other card. How: This is set by strNewFun and cleared by canNewFun/savNewFun.
@@ -2437,11 +2437,11 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	React.useEffect( () => { // What: Scope Coherence Effect. Why: The active scope must always land on the Show row's own first card whenever any filter changes, not only once the OLD scope happens to fall out of view entirely. How: This detects a filter change (or the current scope no longer being a valid entry) and resets curScoStr to shwEntArr's own first entry.
 
 
-		const chgBoo = preFilRef.current.statGroup !== filGroStr || preFilRef.current.condFilter !== filConStr || preFilRef.current.typeFilter !== filTypStr; // What: Changed Boolean. Why: This is the actual "did a filter change since last render" check. How: This compares every one of the 3 tracked filters against their own previous values.
+		const chaBoo = preFilRef.current.statGroup !== filGroStr || preFilRef.current.condFilter !== filConStr || preFilRef.current.typeFilter !== filTypStr; // What: Changed Boolean. Why: This is the actual "did a filter change since last render" check. How: This compares every one of the 3 tracked filters against their own previous values.
 
 		preFilRef.current = { statGroup : filGroStr, condFilter : filConStr, typeFilter : filTypStr }; // What: Previous Filter Update. Why: The next run of this effect needs to compare against the filters that are current now. How: This overwrites preFilRef with the freshly-read values.
 
-		if ( chgBoo || !shwEntArr.some( ( entCurObj ) => entCurObj.scope === curScoStr ) ) setCurScoStr( shwEntArr[ 0 ] ? shwEntArr[ 0 ].scope : 'all' ); // What: Reset Scope Guard. Why: Either an actual filter change, or the current scope simply no longer existing in the row, both call for landing on the first card. How: This sets curScoStr to shwEntArr's own first entry (or 'all' if the row is somehow empty).
+		if ( chaBoo || !shwEntArr.some( ( entCurObj ) => entCurObj.scope === curScoStr ) ) setCurScoStr( shwEntArr[ 0 ] ? shwEntArr[ 0 ].scope : 'all' ); // What: Reset Scope Guard. Why: Either an actual filter change, or the current scope simply no longer existing in the row, both call for landing on the first card. How: This sets curScoStr to shwEntArr's own first entry (or 'all' if the row is somehow empty).
 
 
 	}, [ filGroStr, filConStr, filTypStr, shwEntArr, curScoStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever any filter changes, the entry list itself changes, or the current scope changes (so its own no-longer-valid check stays accurate). How: Every one of these 5 values can affect whether curScoStr needs resetting.
@@ -2906,7 +2906,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 							...( filTypStr === 'all' || filTypStr === 'reminders'
 								? [ { key : 'reminders', name : 'Reminders', modLabStr : 'Tasks', isOn : curScoStr === 'reminders', onClick : () => selScoFun( 'reminders' ) } ]
 								: []),
-							...visPicArr.map( ( picCurObj ) => ( { key : picCurObj.id, name : picCurObj.name, modLabStr : MODES[ picCurObj.mode ].label, isOn : curScoStr === picCurObj.id, onClick : () => selScoFun( picCurObj.id ), pikIdeStr : picCurObj.id } ) )
+							...visPicArr.map( ( picCurObj ) => ( { key : picCurObj.id, name : picCurObj.name, modLabStr : MODES[ picCurObj.mode ].label, isOn : curScoStr === picCurObj.id, onClick : () => selScoFun( picCurObj.id ), picIdeStr : picCurObj.id } ) )
 
 						]
 							.sort( ( aEntObj, bEntObj ) => aEntObj.name.localeCompare( bEntObj.name ) )
@@ -2915,7 +2915,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 								<button
 									key={ filEntObj.key }
 									type='button'
-									data-picker-id={ filEntObj.pikIdeStr }
+									data-picker-id={ filEntObj.picIdeStr }
 									className={ ` picker-tab   picker-tab--enter   ${ filEntObj.isOn ? 'is-on' : '' } ` }
 									style={{ animationDelay : ( filIndNum + 1 ) * 40 + 'ms' }}
 									disabled={ disShwBoo }
@@ -2989,7 +2989,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 
 					const iteSorStr = ( staAppObj.ui && staAppObj.ui.dataSort && staAppObj.ui.dataSort[ picCurObj.id ] ) || 'name-asc'; // What: Item Sort String. Why: Every picker's own item list needs its own persisted sort choice. How: This reads staAppObj.ui.dataSort at this picker's own id, falling back to 'name-asc'.
-					const flbEasObj = isaEasBoo ? PICKERS.avgEase( iteArr, picCurObj.id ) : null;                                       // What: Fallback Ease Object. Why: An item with no ease band of its own falls back to the same average the picking engine itself uses. How: This is computed once per card, shared by both the sort entries and every item row below.
+					const flbEasObj = isaEasBoo ? PIC_NAM_OBJ.aveEasFun( iteArr, picCurObj.id ) : null;                                       // What: Fallback Ease Object. Why: An item with no ease band of its own falls back to the same average the picking engine itself uses. How: This is computed once per card, shared by both the sort entries and every item row below.
 
 					const iteEntFun = ( iteCurObj ) => { // What: Item Entry Function. Why: Every item needs the same comparable shape before sorEntFun can sort them. How: This builds a { name, type, group, count, range, boost, isActive } entry per item, mode-dependent per pickerItemSortOptions.
 
@@ -3282,7 +3282,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 																		maxLength={ 60 }
 																		aria-label='Item name'
 																		ref={ ( inpCurEle ) => { if ( inpCurEle && focInpRef.current !== inpCurEle ) { inpCurEle.focus( { preventScroll : true } ); focInpRef.current = inpCurEle; } } }
-																		onChange={ ( chgEveObj ) => actObj.updateItem( iteCurObj.id, { name : chgEveObj.target.value } ) }
+																		onChange={ ( chaEveObj ) => actObj.updateItem( iteCurObj.id, { name : chaEveObj.target.value } ) }
 																		onBlur={ ( blrEveObj ) => {
 
 																			const namTriStr = blrEveObj.target.value.trim(); // What: Name Trimmed String. Why: A blur commit should tidy the name, not commit stray whitespace. How: This trims blrEveObj's own current value.

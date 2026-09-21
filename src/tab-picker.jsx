@@ -24,7 +24,7 @@ import { norConFun    } from './pickers.js';              // What: Normalize Con
 import { norGroFun    } from './pickers.js';              // What: Normalize Group Function. Why: A newly-typed group name must be normalized the same way the store itself normalizes group names. How: This is called on the new-group input's value to compute the picker's effective group.
 import { ONB_CHE_OBJ  } from './onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: The Add New Picker button must stay disabled while the guided-tour checklist is still in progress. How: This is checked via ONB_CHE_OBJ.tutProFun against the shared state.
 import { PIC_HEL_ARR  } from './help-content.jsx';        // What: Picker Help Array. Why: Help mode needs this page's own list of highlighted elements and their explanations. How: This is passed straight through to HelOveCom.
-import { PICKERS      } from './pickers.js';              // What: Pickers. Why: This is the namespace of pure picking-engine functions this file drives every actual pick through. How: This is called throughout for PICKERS.pick/readiness/modeEligible/avgEase.
+import { PIC_NAM_OBJ  } from './pickers.js';              // What: Pickers Namespace Object. Why: This is the namespace of pure picking-engine functions this file drives every actual pick through. How: This is called throughout for PIC_NAM_OBJ.picIteFun/reaValFun/modEliFun/aveEasFun.
 import { PilTagCom    } from './ui.jsx';                  // What: Pill Tag Component. Why: Small status labels need a consistent pill styling. How: This wraps the mode name, the 'inactive' tag, and the 'not yet'/'spent' tag.
 import { ProBarCom    } from './ui.jsx';                  // What: Progress Bar Component. Why: A pool item's drift value needs a visual readiness bar, not just a raw number. How: This is rendered inside the pool row's InfTipCom alongside the raw value.
 import { redMotFun    } from './ui.jsx';                  // What: Reduce Motion Function. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
@@ -444,7 +444,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	const disAddBoo = isaTouBoo && touBusObj.tourId === 'page-explore_pickers' && touBusObj.step === 9;
 
 	const [ busPicBoo, setBusPicBoo ] = React.useState( false ); // What: Busy Picking Boolean And Setter. Why: The Pick One button must disable itself and show a busy label while the cycle animation is actually running. How: This is set true by runPicFun and cleared once onAniDonFun fires.
-	const [ picResObj, setPicResObj ] = React.useState( null ); // What: Pick Result Object And Setter. Why: The stage and action buttons both need the most recent PICKERS.pick() outcome to render from. How: This is written by runPicFun/rerActFun and read throughout the render below.
+	const [ picResObj, setPicResObj ] = React.useState( null ); // What: Pick Result Object And Setter. Why: The stage and action buttons both need the most recent PIC_NAM_OBJ.picIteFun() outcome to render from. How: This is written by runPicFun/rerActFun and read throughout the render below.
 	const [ runPhaStr, setRunPhaStr ] = React.useState( 'idle' ); // idle | running | done | sent | empty -- What: Run Phase String And Setter. Why: Every part of this view's stage and action row renders differently depending on where the current run actually is. How: This starts on 'idle' and is advanced by runPicFun, onAniDonFun, sndTdyFun, and the tour-driven effect below.
 	// What: Tour Reset Effect. Why: Resets this view back to idle whenever the Pickers page tour's own onBacTouFun bumps touBusObj.pickerTourResetNonce: a Back from its "Add to Todo List" step to "Manual Generation" needs Pick One showing again, not whatever real Send to Today/Re-roll/Done state a completed pick left behind. How: This is guarded on truthiness (not just present in the deps array) so the unset/0 starting value doesn't also reset on every fresh mount, only a genuine bump does anything.
 	React.useEffect( () => {
@@ -498,11 +498,11 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	const sndIteFun = ( iteIdeStr ) => { // What: Send Item Function. Why: This is full parity with "Pick One" -> Send: it runs the engine forcing this exact item, then stages the identical pending mutation (drift/weight plus bumpPick) so marking it done has the same consequence as a natural pick. How: Ease Down replaces the picker's single entry; other modes add one, both handled inside actions.addTodayEntry.
 
 
-		const sndResObj = PICKERS.pick( picker, state.items, { forceItemId : iteIdeStr } ); // What: Send Result Object. Why: Forcing the pick engine onto this exact item still needs to compute the same pending updates a natural pick would. How: This calls PICKERS.pick with forceItemId set to the item being sent.
+		const sndResObj = PIC_NAM_OBJ.picIteFun( picker, state.items, { forceItemId : iteIdeStr } ); // What: Send Result Object. Why: Forcing the pick engine onto this exact item still needs to compute the same pending updates a natural pick would. How: This calls PIC_NAM_OBJ.picIteFun with forceItemId set to the item being sent.
 
-		if ( !sndResObj || !sndResObj.picked ) return; // What: No Result Guard. Why: An item that's somehow no longer pickable (already removed, say) must not commit a phantom Today entry. How: This bails out before touching the store at all.
+		if ( !sndResObj || !sndResObj.picObj ) return; // What: No Result Guard. Why: An item that's somehow no longer pickable (already removed, say) must not commit a phantom Today entry. How: This bails out before touching the store at all.
 
-		actions.addTodayEntry( picker.id, sndResObj.picked.id, { updates : sndResObj.updates, pickerPatch : sndResObj.pickerPatch, depletedEnd : sndResObj.depletedEnd, pickedId : sndResObj.picked.id, bumpPick : true } ); // What: Add Today Entry Call. Why: This is the actual commit that lands the forced pick as a real Today entry, staged exactly like a natural pick. How: This passes through every computed update alongside the forced pick's own id.
+		actions.addTodayEntry( picker.id, sndResObj.picObj.id, { updates : sndResObj.updArr, pickerPatch : sndResObj.patObj, depletedEnd : sndResObj.depBoo, pickedId : sndResObj.picObj.id, bumpPick : true } ); // What: Add Today Entry Call. Why: This is the actual commit that lands the forced pick as a real Today entry, staged exactly like a natural pick. How: This passes through every computed update alongside the forced pick's own id.
 
 		setSenIdeStr( iteIdeStr ); // What: Sent Row Flag Call. Why: The exact row just sent needs its own brief confirmation state. How: This writes iteIdeStr into senIdeStr.
 
@@ -709,16 +709,16 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 	};
 
-	const runPicFun = () => { // What: Run Pick Function. Why: The Pick One button needs to execute a real, forced-new pick against the engine and stage its result for the cycle animation. How: This calls PICKERS.pick with forceNew and the current Today-excluded ids, then either shows the empty state or starts the running cycle.
+	const runPicFun = () => { // What: Run Pick Function. Why: The Pick One button needs to execute a real, forced-new pick against the engine and stage its result for the cycle animation. How: This calls PIC_NAM_OBJ.picIteFun with forceNew and the current Today-excluded ids, then either shows the empty state or starts the running cycle.
 
 
 		if ( busPicBoo ) return; // What: Already Busy Guard. Why: A second pick must not start while one is already running. How: This bails out entirely while busPicBoo is true.
 
 		const iteSnaArr = state.items; // What: Item Snapshot Array. Why: The pick engine needs a stable snapshot of items to compute against. How: This is just state.items, captured under a clearer local name for the call below.
-		// What: Force New Note. Why: This button is a manual "pick/roll again" action, so for ease-down it should offer a real choice, not just re-confirm whatever item is already active; abandoning it recharges it, same as re-roll. How: forceNew is passed through to PICKERS.pick below.
-		const runResObj = PICKERS.pick( picker, iteSnaArr, { forceNew : true, excludeIds : todIdeSet } ); // What: Run Result Object. Why: This is the actual computed outcome the rest of this function and the stage below render from. How: This calls the shared picking engine with this picker's own current pool.
+		// What: Force New Note. Why: This button is a manual "pick/roll again" action, so for ease-down it should offer a real choice, not just re-confirm whatever item is already active; abandoning it recharges it, same as re-roll. How: forceNew is passed through to PIC_NAM_OBJ.picIteFun below.
+		const runResObj = PIC_NAM_OBJ.picIteFun( picker, iteSnaArr, { forceNew : true, excludeIds : todIdeSet } ); // What: Run Result Object. Why: This is the actual computed outcome the rest of this function and the stage below render from. How: This calls the shared picking engine with this picker's own current pool.
 
-		if ( !runResObj.picked ) { setPicResObj( runResObj ); setRunPhaStr( 'empty' ); return; } // What: Nothing Picked Guard. Why: An exhausted or empty pool has nothing left to cycle through. How: This stores the empty result and switches straight to the 'empty' stage, skipping the cycle animation entirely.
+		if ( !runResObj.picObj ) { setPicResObj( runResObj ); setRunPhaStr( 'empty' ); return; } // What: Nothing Picked Guard. Why: An exhausted or empty pool has nothing left to cycle through. How: This stores the empty result and switches straight to the 'empty' stage, skipping the cycle animation entirely.
 
 		setPicResObj( runResObj ); // What: Result Store Call. Why: The stage and Send/Re-roll buttons both need this exact outcome once the cycle settles. How: This writes runResObj into picResObj.
 
@@ -752,9 +752,9 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 		if ( !touBusObj.pickerTourRedoNonce ) return; // What: Falsy Bus Value Guard. Why: A fresh mount that happens to see an unset/0 starting value must not synthesize a bogus result. How: This bails out unless the nonce is genuinely truthy.
 
-		const runResObj = PICKERS.pick( picker, state.items, { forceNew : true, excludeIds : todIdeSet } ); // What: Run Result Object. Why: The revisited step still needs a real, current pick result to show. How: This calls the shared picking engine exactly like runPicFun does.
+		const runResObj = PIC_NAM_OBJ.picIteFun( picker, state.items, { forceNew : true, excludeIds : todIdeSet } ); // What: Run Result Object. Why: The revisited step still needs a real, current pick result to show. How: This calls the shared picking engine exactly like runPicFun does.
 
-		if ( !runResObj.picked ) { setPicResObj( runResObj ); setRunPhaStr( 'empty' ); return; } // What: Nothing Picked Guard. Why: An exhausted or empty pool still has nothing to synthesize a 'done' result from. How: This stores the empty result and switches to the 'empty' stage instead.
+		if ( !runResObj.picObj ) { setPicResObj( runResObj ); setRunPhaStr( 'empty' ); return; } // What: Nothing Picked Guard. Why: An exhausted or empty pool still has nothing to synthesize a 'done' result from. How: This stores the empty result and switches to the 'empty' stage instead.
 
 		setPicResObj( runResObj ); // What: Result Store Call. Why: The stage needs this exact synthesized outcome to render the revisited 'done' state from. How: This writes runResObj into picResObj.
 
@@ -781,9 +781,9 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 	const sndTdyFun = () => { // What: Send To Today Function. Why: Committing the settled pick's staged mutation only happens once the user actually confirms it, and this is deliberately skipped when the Pickers page tour is intercepting this exact step. How: This applies the pending update via actions.addTodayEntry (unless itcSenBoo), then plays the Sent! confirmation before resetting back to idle.
 
 
-		if ( runPhaStr !== 'done' || !picResObj || !picResObj.picked ) return; // What: Not Ready Guard. Why: There is nothing to send unless the cycle has actually settled on a real pick. How: This bails out unless runPhaStr is 'done' and picResObj holds a real outcome.
+		if ( runPhaStr !== 'done' || !picResObj || !picResObj.picObj ) return; // What: Not Ready Guard. Why: There is nothing to send unless the cycle has actually settled on a real pick. How: This bails out unless runPhaStr is 'done' and picResObj holds a real outcome.
 
-		if ( !itcSenBoo ) actions.addTodayEntry( picker.id, picResObj.picked.id, { updates : picResObj.updates, pickerPatch : picResObj.pickerPatch, depletedEnd : picResObj.depletedEnd, pickedId : picResObj.picked.id, bumpPick : true } ); // What: Real Commit Guard. Why: The Pickers page tour's own "Add to Todo List" step wants the Sent! animation to play without a real entry landing on Today, see itcSenBoo's own comment above. How: This skips the real store commit only during that exact tour step, otherwise landing the settled pick as a real Today entry.
+		if ( !itcSenBoo ) actions.addTodayEntry( picker.id, picResObj.picObj.id, { updates : picResObj.updArr, pickerPatch : picResObj.patObj, depletedEnd : picResObj.depBoo, pickedId : picResObj.picObj.id, bumpPick : true } ); // What: Real Commit Guard. Why: The Pickers page tour's own "Add to Todo List" step wants the Sent! animation to play without a real entry landing on Today, see itcSenBoo's own comment above. How: This skips the real store commit only during that exact tour step, otherwise landing the settled pick as a real Today entry.
 
 		// What: Confirmation Beat Note. Why: The stage swaps to an "Added to Today" checkmark and the button morphs to "Sent!", then the picker resets to idle so it's ready for the next pick. How: setRunPhaStr('sent') below drives that swap; the timeout resets everything 1500ms later.
 		setRunPhaStr( 'sent' ); // What: Sent Phase Call. Why: The stage and button both need to show their own "sent" confirmation state. How: This writes 'sent' into runPhaStr.
@@ -884,12 +884,12 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 					) }
 
-					{ ( runPhaStr === 'running' || runPhaStr === 'done' ) && picResObj && picResObj.picked && ( // What: Running-Or-Done Stage Check. Why: The cycle animation itself spans both the running and just-settled done states. How: This renders PickerStrip only while a real pick result exists in either of those two phases.
+					{ ( runPhaStr === 'running' || runPhaStr === 'done' ) && picResObj && picResObj.picObj && ( // What: Running-Or-Done Stage Check. Why: The cycle animation itself spans both the running and just-settled done states. How: This renders PickerStrip only while a real pick result exists in either of those two phases.
 
 
 						<PickerStrip
-							candidates={ picResObj.cycleCandidates }
-							picked={ picResObj.picked }
+							candidates={ picResObj.cycArr }
+							picked={ picResObj.picObj }
 							style={ animStyle }
 							onDone={ onAniDonFun }
 						/> // What: Picker Strip. Why: This is the actual reel/spotlight/dissolve cycle animation. How: This is passed the computed cycle candidates and the settled pick, and calls onAniDonFun once it lands.
@@ -897,7 +897,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 					) }
 
-					{ runPhaStr === 'sent' && picResObj && picResObj.picked && ( // What: Sent Stage Check. Why: A brief confirmation replaces the stage right after Send to Today commits. How: This renders only while runPhaStr is 'sent' and a real pick result still exists.
+					{ runPhaStr === 'sent' && picResObj && picResObj.picObj && ( // What: Sent Stage Check. Why: A brief confirmation replaces the stage right after Send to Today commits. How: This renders only while runPhaStr is 'sent' and a real pick result still exists.
 
 
 						<div className='stage-sent'>{ /* What: Sent Stage Div Element. Why: The checkmark, the sent item's own name, and its caption read as one confirmation block. How: This wraps those three pieces. */ }
@@ -909,7 +909,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 							</div>
 
-							<div className='stage-sent-name'>{ picResObj.picked.name }</div>{ /* What: Sent Name Div Element. Why: The user should see exactly which item just landed on Today. How: This renders picResObj.picked.name. */ }
+							<div className='stage-sent-name'>{ picResObj.picObj.name }</div>{ /* What: Sent Name Div Element. Why: The user should see exactly which item just landed on Today. How: This renders picResObj.picObj.name. */ }
 
 							<div className='stage-idle-lbl'>Added to Today</div>{ /* What: Sent Label Div Element. Why: The confirmation needs a short caption. How: This renders the fixed literal text. */ }
 
@@ -1038,7 +1038,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 					<div className='pool-h'>{ /* What: Pool Header Div Element. Why: The eligible-count kicker and the drift-toggle link sit on one row. How: This wraps those two pieces. */ }
 
 
-						<span className='kicker'>Pool &middot; { eliIteArr.filter( ( it ) => !todIdeSet.has( it.id ) && PICKERS.modeEligible( it, picker ) ).length } of { picIteArr.length } eligible</span>{ /* What: Kicker Span Element. Why: The user needs a quick sense of how many of the pool's own items are actually pickable right now. How: This renders both the mode-eligible-and-not-on-Today count and the pool's own total size. */ }
+						<span className='kicker'>Pool &middot; { eliIteArr.filter( ( it ) => !todIdeSet.has( it.id ) && PIC_NAM_OBJ.modEliFun( it, picker ) ).length } of { picIteArr.length } eligible</span>{ /* What: Kicker Span Element. Why: The user needs a quick sense of how many of the pool's own items are actually pickable right now. How: This renders both the mode-eligible-and-not-on-Today count and the pool's own total size. */ }
 
 						{ ( picker.mode !== 'random' && picker.mode !== 'weighted' ) && ( // What: Drift Toggle Check. Why: Only a mode that actually tracks a drifting value has anything to show or hide here. How: This renders the Show/Hide drift link only for those modes.
 
@@ -1068,8 +1068,8 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 						{ picIteArr.map( ( curIteObj ) => { // What: Pool Row List Render. Why: Every item in this picker's own pool needs its own row, computed fresh each render from its current readiness/eligibility. How: This maps picIteArr to one row per curIteObj, deriving each row's own tooltip text from its mode-specific meaning.
 
 
-							const reaValNum = PICKERS.readiness( curIteObj, picker.mode, picker.threshold ?? 100 ); // What: Readiness Value Number. Why: The drift bar (when shown) needs a normalized 0..1 progress value. How: This calls the shared readiness helper for this exact item/mode/threshold.
-							const eliHerBoo = PICKERS.modeEligible( curIteObj, picker ); // What: Eligible Here Boolean. Why: The row needs to know whether this item is currently pickable under this picker's own mode rules. How: This calls the shared mode-eligibility helper.
+							const reaValNum = PIC_NAM_OBJ.reaValFun( curIteObj, picker.mode, picker.threshold ?? 100 ); // What: Readiness Value Number. Why: The drift bar (when shown) needs a normalized 0..1 progress value. How: This calls the shared readiness helper for this exact item/mode/threshold.
+							const eliHerBoo = PIC_NAM_OBJ.modEliFun( curIteObj, picker ); // What: Eligible Here Boolean. Why: The row needs to know whether this item is currently pickable under this picker's own mode rules. How: This calls the shared mode-eligibility helper.
 							// What: Weight Tooltip String. Why: The wN pill (itself fixed, it never drifts) benefits from a plain-language hover explanation of what the number means. How: This is computed from curIteObj's own weight below.
 							const wgtValNum = curIteObj.weight; // What: Weight Value Number. Why: The tooltip text needs the item's own current weight. How: This is read directly off curIteObj.weight.
 							const wgtTipStr = wgtValNum === 1
@@ -1338,7 +1338,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 												aria-label='Item name'
 												autoFocus
 												value={ ediNamStr }
-												onChange={ ( chgEveObj ) => setEdiNamStr( chgEveObj.target.value ) }
+												onChange={ ( chaEveObj ) => setEdiNamStr( chaEveObj.target.value ) }
 												onBlur={ ( blrEveObj ) => { const newNamStr = blrEveObj.target.value.trim(); if ( newNamStr ) actions.renameItem( ediLivObj.id, newNamStr ); } }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 											/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This commits via actions.renameItem on blur, and blurs itself on Enter. */ }
@@ -1422,7 +1422,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 											aria-label='Item name'
 											autoFocus
 											value={ newIteObj.name }
-											onChange={ ( chgEveObj ) => dftActObj.updateItem( newIteObj.id, { name : chgEveObj.target.value } ) }
+											onChange={ ( chaEveObj ) => dftActObj.updateItem( newIteObj.id, { name : chaEveObj.target.value } ) }
 											onBlur={ ( blrEveObj ) => { const newNamStr = blrEveObj.target.value.trim(); if ( newNamStr ) dftActObj.renameItem( newIteObj.id, newNamStr ); } }
 											onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 										/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the draft being created. How: This writes into dftActObj (not the real store) on every change, and commits the rename on blur. */ }
@@ -1770,7 +1770,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 
 	};
-	// What: Draft Picker Object. Why: EntryEditor still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: No `id` -- deliberately, since draft items carry no pickerId either (both undefined), so EntryEditor's own PICKERS.avgEase(items, picker.id) fallback still matches every draft item against this pseudo-picker's undefined id and averages them correctly, not a coincidence to "fix" by inventing ids here. No easeMin/easeMax here either, since EntryEditor no longer reads those off the picker directly.
+	// What: Draft Picker Object. Why: EntryEditor still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: No `id` -- deliberately, since draft items carry no pickerId either (both undefined), so EntryEditor's own PIC_NAM_OBJ.aveEasFun(items, picker.id) fallback still matches every draft item against this pseudo-picker's undefined id and averages them correctly, not a coincidence to "fix" by inventing ids here. No easeMin/easeMax here either, since EntryEditor no longer reads those off the picker directly.
 	const dftPicObj = { mode : selModStr, threshold : easThrNum, cadence : cadCurObj.cadence };
 	const addDftFun = () => { // What: Add Draft Function. Why: Starting a brand-new draft item opens the same slot the edit flow uses, seeded with sensible defaults (including any staged tour prefill), then scrolls it into view. How: This bails out if another editor is already open, otherwise generates a fresh id, resolves the tour's own staged name/ease if one applies, then seeds and scrolls the new slot into view.
 
@@ -2040,7 +2040,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 		}
 
-		if ( isaEasBoo && !isaEdiBoo ) { // What: Legacy Ease Summary Guard. Why: Nothing reads picker.easeMin/easeMax anymore (pick(), the Data tab, and the item editor all compute a live per-picker average from the items themselves instead, see PICKERS.avgEase), so this is kept only so store.jsx's addPicker still has a value to accept; harmless dead data on the created picker otherwise. How: This is skipped for edit, since there's no items array here to compute a fresh average from, and the field is inert anyway.
+		if ( isaEasBoo && !isaEdiBoo ) { // What: Legacy Ease Summary Guard. Why: Nothing reads picker.easeMin/easeMax anymore (pick(), the Data tab, and the item editor all compute a live per-picker average from the items themselves instead, see PIC_NAM_OBJ.aveEasFun), so this is kept only so store.jsx's addPicker still has a value to accept; harmless dead data on the created picker otherwise. How: This is skipped for edit, since there's no items array here to compute a fresh average from, and the field is inert anyway.
 
 
 			payFrmObj.easeMin = Math.min( ...pooIteArr.map( ( it ) => it.easeMin ?? defEasObj.easeMin ) ); // What: Legacy Ease Min Attach. Why: A summary value is still expected on the created payload. How: This takes the smallest easeMin across every committed item.
@@ -2162,7 +2162,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 						placeholder='e.g. Daily Chore'
 						autoComplete='off'
 						value={ newNamStr }
-						onChange={ ( chgEveObj ) => setNewNamStr( chgEveObj.target.value ) }
+						onChange={ ( chaEveObj ) => setNewNamStr( chaEveObj.target.value ) }
 					/>{ /* What: Name Input Element. Why: This is the actual live-typed name field. How: This writes into newNamStr on every change. */ }
 
 
@@ -2219,7 +2219,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 							aria-label='New group name'
 							autoComplete='off'
 							value={ newGroStr }
-							onChange={ ( chgEveObj ) => setNewGroStr( chgEveObj.target.value ) }
+							onChange={ ( chaEveObj ) => setNewGroStr( chaEveObj.target.value ) }
 						/>
 
 					</ColDisCom>{ /* What: Collapse Disclosure Component. Why: The new-group input only needs to exist while addGroBoo is actually on. How: This animates the input open/closed around that boolean. */ }
@@ -2698,7 +2698,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 							placeholder='e.g. Chores'
 							autoComplete='off'
 							value={ newNamStr }
-							onChange={ ( chgEveObj ) => setNewNamStr( chgEveObj.target.value ) }
+							onChange={ ( chaEveObj ) => setNewNamStr( chaEveObj.target.value ) }
 						/>
 
 
@@ -2897,7 +2897,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 													aria-label='Item name'
 													autoFocus
 													value={ ediLivObj.name }
-													onChange={ ( chgEveObj ) => dftActObj.updateItem( ediLivObj.id, { name : chgEveObj.target.value } ) }
+													onChange={ ( chaEveObj ) => dftActObj.updateItem( ediLivObj.id, { name : chaEveObj.target.value } ) }
 													onBlur={ ( blrEveObj ) => { const newNamStr = blrEveObj.target.value.trim(); if ( newNamStr ) dftActObj.renameItem( ediLivObj.id, newNamStr ); } }
 													onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 												/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being edited. How: This writes into dftActObj on every change, and commits the rename on blur. */ }
@@ -2984,7 +2984,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 												aria-label='Item name'
 												autoFocus
 												value={ newIteObj.name }
-												onChange={ ( chgEveObj ) => dftActObj.updateItem( newIteObj.id, { name : chgEveObj.target.value } ) }
+												onChange={ ( chaEveObj ) => dftActObj.updateItem( newIteObj.id, { name : chaEveObj.target.value } ) }
 												onBlur={ ( blrEveObj ) => { const newNamStr = blrEveObj.target.value.trim(); if ( newNamStr ) dftActObj.renameItem( newIteObj.id, newNamStr ); } }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 											/>{ /* What: Name Input Element. Why: This is the actual live-typed name field for the item being newly added. How: This writes into dftActObj on every change, and commits the rename on blur. */ }
@@ -3227,17 +3227,17 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 	// What: Previous Filters Reference. Why: The selection-coherence effect below needs to remember the last-seen filter values across renders to detect an actual filter change, distinct from the picker list itself changing for some unrelated reason. How: This starts at the current filters and is updated by that effect whenever either one changes.
 	const preFilRef = React.useRef({ groupFilter : groFilStr, typeFilter : typFilStr });
-	// What: Selection Coherence Effect. Why: Either filter itself just changing should always land on the first card in the new Show row, matching it exactly rather than only reacting once the OLD selection happens to fall out of view (e.g. switching from a wide group to a narrower one that still happens to contain the same active picker used to leave it stranded, not jumped to the new first card); the picker list changing for some unrelated reason (e.g. the active picker got deleted) should only jump when the current selection actually became invalid. How: This computes filChgBoo by comparing against preFilRef, then jumps to srtPicArr's own first entry whenever either that or an invalid selection applies.
+	// What: Selection Coherence Effect. Why: Either filter itself just changing should always land on the first card in the new Show row, matching it exactly rather than only reacting once the OLD selection happens to fall out of view (e.g. switching from a wide group to a narrower one that still happens to contain the same active picker used to leave it stranded, not jumped to the new first card); the picker list changing for some unrelated reason (e.g. the active picker got deleted) should only jump when the current selection actually became invalid. How: This computes filChaBoo by comparing against preFilRef, then jumps to srtPicArr's own first entry whenever either that or an invalid selection applies.
 	React.useEffect( () => {
 
 
 		if ( creOpnBoo ) return; // What: Creating Guard. Why: The create form has no "selection" of its own to keep coherent. How: This bails out entirely while creOpnBoo is true.
 
-		const filChgBoo = preFilRef.current.groupFilter !== groFilStr || preFilRef.current.typeFilter !== typFilStr; // What: Filter Changed Boolean. Why: The jump-to-first behavior below depends specifically on whether a filter itself just changed. How: This compares both current filter values against what preFilRef last recorded.
+		const filChaBoo = preFilRef.current.groupFilter !== groFilStr || preFilRef.current.typeFilter !== typFilStr; // What: Filter Changed Boolean. Why: The jump-to-first behavior below depends specifically on whether a filter itself just changed. How: This compares both current filter values against what preFilRef last recorded.
 
 		preFilRef.current = { groupFilter : groFilStr, typeFilter : typFilStr }; // What: Previous Filters Update. Why: The next run of this effect needs to compare against the filters that are current now. How: This overwrites preFilRef with both current filter values.
 
-		if ( filChgBoo || !visPicArr.some( ( p ) => p.id === actPicStr ) ) setActPicStr( srtPicArr[ 0 ]?.id ); // What: Jump To First Guard. Why: Either a genuine filter change, or the current selection no longer being visible at all, should land on the new first card. How: This writes srtPicArr's own first entry's id into actPicStr.
+		if ( filChaBoo || !visPicArr.some( ( p ) => p.id === actPicStr ) ) setActPicStr( srtPicArr[ 0 ]?.id ); // What: Jump To First Guard. Why: Either a genuine filter change, or the current selection no longer being visible at all, should land on the new first card. How: This writes srtPicArr's own first entry's id into actPicStr.
 
 
 	}, [ groFilStr, typFilStr, visPicArr, srtPicArr, actPicStr, creOpnBoo ] ); // What: Effect Dependency Array. Why: This must re-check whenever any of these could change what "coherent" means. How: groFilStr/typFilStr are the filters themselves, visPicArr/srtPicArr are what they produce, actPicStr is the current selection, and creOpnBoo gates whether this applies at all.

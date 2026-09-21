@@ -592,9 +592,9 @@ function picLogFun( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 	const logPicFun = ( datValObj, curPicObj, curIteObj, donValBoo, souValStr, outValStr, depEndBoo ) => { // What: Log Pick Function. Why: Every simulated pick, toss, skip, or Ease Down tick below shares the same row-building logic. How: This builds one pickLog row shaped to state.pickLog's own contract and pushes it onto picRowArr.
 
 
-		const pikTimObj = new Date( datValObj ); // What: Pick Timestamp Object. Why: A completed pick needs a plausible time of day, not just a bare date. How: This constructs a fresh copy of datValObj to set a random time of day on below.
+		const picTimObj = new Date( datValObj ); // What: Pick Timestamp Object. Why: A completed pick needs a plausible time of day, not just a bare date. How: This constructs a fresh copy of datValObj to set a random time of day on below.
 
-		pikTimObj.setHours( 8 + Math.floor( Math.random() * 12 ), Math.floor( Math.random() * 60 ), 0, 0 ); // What: Pick Timestamp Hours Set. Why: A real completion could happen any time between 8am and 8pm, not always at the same instant. How: This sets a random hour in that range and a random minute, zeroing seconds/milliseconds.
+		picTimObj.setHours( 8 + Math.floor( Math.random() * 12 ), Math.floor( Math.random() * 60 ), 0, 0 ); // What: Pick Timestamp Hours Set. Why: A real completion could happen any time between 8am and 8pm, not always at the same instant. How: This sets a random hour in that range and a random minute, zeroing seconds/milliseconds.
 
 
 
@@ -610,7 +610,7 @@ function picLogFun( allIteArr, allPicArr, onVacFun, totDayNum = 365 ) {
 			pickerName  : curPicObj.name,                                                              // What: Picker Name. Why: This denormalized copy lets the row survive a later rename or deletion of the picker itself. How: This is copied straight from curPicObj's own name.
 			group       : curPicObj.group,                                                             // What: Group. Why: Stats groups rows by their own picker's group. How: This is copied straight from curPicObj's own group.
 			done        : outValStr === 'rejected' ? false : donValBoo,                                // What: Done. Why: A rejected toss was never actually completed, regardless of what donValBoo says. How: This forces false for a rejected row, otherwise uses donValBoo as given.
-			completedAt : ( outValStr !== 'rejected' && donValBoo ) ? pikTimObj.toISOString() : null,  // What: Completed At. Why: Only an actually-completed, non-rejected row has a real completion timestamp. How: This uses pikTimObj's own ISO string only when both conditions hold, otherwise null.
+			completedAt : ( outValStr !== 'rejected' && donValBoo ) ? picTimObj.toISOString() : null,  // What: Completed At. Why: Only an actually-completed, non-rejected row has a real completion timestamp. How: This uses picTimObj's own ISO string only when both conditions hold, otherwise null.
 			source      : souValStr,                                                                    // What: Source. Why: Stats breaks rows down by how the pick was made. How: This is copied straight from souValStr.
 			...( outValStr ? { outcome : outValStr } : {} ),                                           // What: Outcome Spread. Why: Most rows have no special outcome at all, so the field should be entirely absent rather than present-but-null. How: This spreads in an outcome field only when outValStr was actually given.
 			...( depEndBoo ? { depletedEnd : true } : {} )                                             // What: Depleted End Spread. Why: Only the row ending an Ease Down depletion streak needs this flag at all. How: This spreads in depletedEnd : true only when depEndBoo is truthy.
@@ -1049,7 +1049,7 @@ function buiSeeFun() {
 	})();
 
 
-	const todPikArr = [ // What: Today Pick Array. Why: Today's own already-in-progress picks need authoring by picker/item name, before being expanded into real entries/rows below. How: This is read by the 2 map calls directly below to build todayPicks/todayRows.
+	const todPicArr = [ // What: Today Pick Array. Why: Today's own already-in-progress picks need authoring by picker/item name, before being expanded into real entries/rows below. How: This is read by the 2 map calls directly below to build todayPicks/todayRows.
 
 
 		// Chores group
@@ -1071,18 +1071,18 @@ function buiSeeFun() {
 	].map( ( curPikObj ) => ({ ...curPikObj, eid : makEidFun(), itemId : iteNamFun( curPikObj.iteStr ).id }) ); // What: Today Pick Expansion Map. Why: Every authored tuple above still needs a real eid and a resolved itemId before it matches today.entries' own shape. How: This spreads curPikObj, adding a freshly-minted eid and the itemId resolved via iteNamFun.
 
 
-	const todRowArr = todPikArr.map( ( curPikObj ) => { // What: Today Row Array Map. Why: Every one of today's own picks needs a matching pickLog row too, not just a today.entries row. How: This maps todPikArr into full pickLog-shaped rows.
+	const todRowArr = todPicArr.map( ( curPikObj ) => { // What: Today Row Array Map. Why: Every one of today's own picks needs a matching pickLog row too, not just a today.entries row. How: This maps todPicArr into full pickLog-shaped rows.
 
 
 		const curPicObj = picByIdeObj[ curPikObj.pickerId ]; // What: Current Picker Object. Why: This row's own denormalized pickerName/group fields need the real picker looked up. How: This looks curPikObj's own pickerId up in picByIdeObj.
-		const pikTimObj = new Date(); pikTimObj.setHours( 8, 30, 0, 0 ); // What: Pick Timestamp Object. Why: A completed today-row needs a plausible, fixed time of day. How: This is set to 8:30am on today's own real date.
+		const picTimObj = new Date(); picTimObj.setHours( 8, 30, 0, 0 ); // What: Pick Timestamp Object. Why: A completed today-row needs a plausible, fixed time of day. How: This is set to 8:30am on today's own real date.
 
 
 
-		return { // What: Today Row Return. Why: This is one row, in the exact shape state.pickLog itself expects, matching this pick's own today.entries counterpart. How: This builds the row from curPikObj/curPicObj/pikTimObj above.
+		return { // What: Today Row Return. Why: This is one row, in the exact shape state.pickLog itself expects, matching this pick's own today.entries counterpart. How: This builds the row from curPikObj/curPicObj/picTimObj above.
 
 
-			completedAt : curPikObj.donValBoo ? pikTimObj.toISOString() : null, // What: Completed At. Why: Only an actually-completed row has a real completion timestamp. How: This uses pikTimObj's own ISO string only when curPikObj's own donValBoo is true, otherwise null.
+			completedAt : curPikObj.donValBoo ? picTimObj.toISOString() : null, // What: Completed At. Why: Only an actually-completed row has a real completion timestamp. How: This uses picTimObj's own ISO string only when curPikObj's own donValBoo is true, otherwise null.
 			date        : todIsoStr,                                            // What: Date. Why: Every one of today's own rows shares the same calendar day. How: This is todIsoStr, resolved above.
 			done        : curPikObj.donValBoo,                                  // What: Done. Why: Every row must record whether it was actually completed. How: This is copied straight from curPikObj's own donValBoo.
 			eid         : curPikObj.eid,                                        // What: Entry Id. Why: This row must reference the live today.entries row it came from. How: This is copied straight from curPikObj's own eid.
@@ -1106,7 +1106,7 @@ function buiSeeFun() {
 	const friRetStr  = (() => { const retDatObj = new Date(); retDatObj.setHours( 0, 0, 0, 0 ); retDatObj.setDate( retDatObj.getDate() - 5 ); return seeIsoFun( retDatObj ); })(); // What: Fridge Return String. Why: The filter directly below needs this exact same return date buiVacFun already used for this item's own "returned recently" scenario. How: This resolves the ISO date 5 days ago, matching buiVacFun's own hardcoded value for this item.
 
 
-	const pikLogArr = hisRowArr // What: Pick Log Array. Why: This is the final assembled pickLog: the simulated year of history, with the Fridge wipe-down item's own post-return picks deliberately dropped, plus today's own rows appended. How: This filters hisRowArr, then concatenates todRowArr onto it.
+	const picLogArr = hisRowArr // What: Pick Log Array. Why: This is the final assembled pickLog: the simulated year of history, with the Fridge wipe-down item's own post-return picks deliberately dropped, plus today's own rows appended. How: This filters hisRowArr, then concatenates todRowArr onto it.
 
 		.filter( ( curRowObj ) => !( friIteObj && curRowObj.itemId === friIteObj.id && !curRowObj.outcome && curRowObj.date >= friRetStr ) ) // What: Fridge Post-Return Filter. Why: Fridge wipe-down must deterministically read as "returned but not picked since," which means its own ordinary (non-outcome) rows on or after its own return date must not exist at all. How: This drops exactly those rows, keeping every other row untouched.
 
@@ -1132,7 +1132,7 @@ function buiSeeFun() {
 		items           : allIteArr.filter( ( curIteObj ) => !curIteObj.__deleted ),                                        // What: Items. Why: A retired item is kept only long enough to seed its own pick-log history above; the live item list itself must exclude it, so Stats renders it as a "deleted" ghost row instead. How: This drops every item flagged __deleted from allIteArr.
 		onboarding      : { welcomed : true, dismissed : true },                                                            // What: Onboarding. Why: The demo/sample-data build already has pickers and history seeded, so it must never trigger onboarding. How: This marks onboarding as both welcomed and dismissed.
 		pickers         : allPicArr,                                                                                        // What: Pickers. Why: Every seeded picker, already fully resolved (schedule, ease-down state, conditional gate) above. How: This is allPicArr, unchanged.
-		pickLog         : pikLogArr,                                                                                        // What: Pick Log. Why: The demo state needs the full assembled pick history built above. How: This is pikLogArr, resolved above.
+		pickLog         : picLogArr,                                                                                        // What: Pick Log. Why: The demo state needs the full assembled pick history built above. How: This is picLogArr, resolved above.
 		reminderLog     : buiRemFun(),                                                                                      // What: Reminder Log. Why: The demo state needs the seeded reminder completion history built above. How: This calls buiRemFun.
 		reminderOpts    : TASKS.defaultOpts(),                                                                              // What: Reminder Opts. Why: The demo state needs a full, valid reminder-options object, same shape a fresh install would get. How: This calls TASKS's own defaultOpts.
 		reminderSkipLog : rslBuiFun(),                                                                                      // What: Reminder Skip Log. Why: The demo state needs the seeded reminder skip history built above. How: This calls rslBuiFun.
@@ -1153,13 +1153,13 @@ function buiSeeFun() {
 
 		],
 
-		today           : { // What: Today. Why: The demo state needs a real, in-progress-looking Today, not a blank one. How: This builds every field from todIsoStr/todPikArr above, or inline where no further processing is needed.
+		today           : { // What: Today. Why: The demo state needs a real, in-progress-looking Today, not a blank one. How: This builds every field from todIsoStr/todPicArr above, or inline where no further processing is needed.
 
 
 			date          : todIsoStr, // What: Date. Why: Today needs to know which calendar day it represents. How: This is todIsoStr, resolved above.
 			streakClaimed : true,      // What: Streak Claimed. Why: The demo state already has done entries, so today already counts toward the streak. How: This is always true for the demo state.
 
-			entries     : todPikArr.map( ( curPikObj ) => ({ eid : curPikObj.eid, pickerId : curPikObj.pickerId, itemId : curPikObj.itemId, done : curPikObj.donValBoo, skipped : false }) ), // What: Entries. Why: Today needs one real entry per today's own pick, in today.entries' own shape. How: This maps todPikArr down to just the fields that shape actually needs.
+			entries     : todPicArr.map( ( curPikObj ) => ({ eid : curPikObj.eid, pickerId : curPikObj.pickerId, itemId : curPikObj.itemId, done : curPikObj.donValBoo, skipped : false }) ), // What: Entries. Why: Today needs one real entry per today's own pick, in today.entries' own shape. How: This maps todPicArr down to just the fields that shape actually needs.
 			generatedAt : (() => { const genDatObj = new Date(); genDatObj.setHours( 7, 12, 0, 0 ); return genDatObj.toISOString(); })()                                                      // What: Generated At. Why: Today needs a plausible timestamp for when the Daily generator last ran. How: This resolves a fixed 7:12am on today's own real date.
 
 

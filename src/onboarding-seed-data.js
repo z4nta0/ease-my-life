@@ -88,7 +88,7 @@
  *
  * - `weight` (Number): Weight is this item's own fairness weight,
  *   deliberately unused by an ease-up picker's own selection math
- *   (ease-up is a cadence system, not a preference one, per pikIteFun's
+ *   (ease-up is a cadence system, not a preference one, per picIteFun's
  *   own comment in pickers.js), kept at a flat 1 throughout since it
  *   plays no real role here.
  *
@@ -195,7 +195,7 @@ export const ONB_EXA_OBJ = { // What: Onboarding Example Object. Why: This is th
  *
  * - `weight` (Number): Weight is this item's own fairness weight; on
  *   the dynamic-mode Coffee Creamer picker it genuinely drives the
- *   weighted-plus-drift draw (see pikIteFun's own 'dynamic' branch in
+ *   weighted-plus-drift draw (see picIteFun's own 'dynamic' branch in
  *   pickers.js), but on every ease-up/ease-down picker here it is
  *   deliberately unused by the selection math (ease-up/ease-down is a
  *   cadence system, not a preference one) and just kept at a flat 1.

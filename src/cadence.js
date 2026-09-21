@@ -48,13 +48,12 @@
  * The exported CAD_NAM_OBJ namespace object's own property names are a
  * cross-file contract read directly by store.jsx, tab-today.jsx,
  * tab-picker.jsx, tab-data.jsx, tab-stats.jsx, day-log.jsx, and
- * cadence-control.jsx. Unlike pickers.js's own PICKERS (whose external
- * property names stay deliberately different from their internal
- * implementations), CAD_NAM_OBJ's own external names were swept to match
- * their internal implementation exactly (isaCadFun, uniWorFun, norCadFun,
- * tipMesFun, locTipFun, enfWeeFun, isaAncFun, perStaFun, perKeyFun,
- * comPerFun, sumCadFun, forIsoFun, dimCouFun, CAD_STR_ARR), with every
- * external call site updated to match. The explicit `name : name`
+ * cadence-control.jsx. Same as pickers.js's own PIC_NAM_OBJ, CAD_NAM_OBJ's
+ * own external names were swept to match their internal implementation
+ * exactly (isaCadFun, uniWorFun, norCadFun, tipMesFun, locTipFun, enfWeeFun,
+ * isaAncFun, perStaFun, perKeyFun, comPerFun, sumCadFun, forIsoFun,
+ * dimCouFun, CAD_STR_ARR), with every external call site updated to match.
+ * The explicit `name : name`
  * mapping (never JS shorthand) is kept anyway, so a future internal
  * rename still has to touch this export line deliberately rather than
  * silently renaming the external API out from under its callers.

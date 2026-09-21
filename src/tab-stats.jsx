@@ -930,7 +930,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 	React.useEffect( () => { // What: Scope Repair Effect. Why: A stale or now-unreachable scope must be corrected to the new filter's own first alphabetical picker. How: This detects a filter change or an out-of-view scope and reassigns scoValStr accordingly.
 
 
-		const filChgBoo = preFilRef.current.staGroStr !== staGroStr || preFilRef.current.typFilStr !== typFilStr; // What: Filters Changed Boolean. Why: The repair below must run both on a filter change and on a stale scope, not only the latter. How: This compares the previous filter pair against the current one.
+		const filChaBoo = preFilRef.current.staGroStr !== staGroStr || preFilRef.current.typFilStr !== typFilStr; // What: Filters Changed Boolean. Why: The repair below must run both on a filter change and on a stale scope, not only the latter. How: This compares the previous filter pair against the current one.
 
 		preFilRef.current = { staGroStr, typFilStr }; // What: Previous Filter Update. Why: The next run of this effect needs to compare against the filter pair that's current now. How: This overwrites preFilRef with the freshly-observed pair.
 
@@ -941,7 +941,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 		// 'all' right after it's set.
 		if ( typFilStr === 'conditionals' || typFilStr === 'reminders' ) return; // What: Sentinel Type Guard. Why: Neither sentinel value has any "visible pickers" to fall back to. How: This bails out of the repair entirely while either sentinel is active.
 
-		if ( filChgBoo || !visPicArr.some( ( picObj ) => picObj.id === scoValStr ) ) setScoValStr( sorVisArr[ 0 ] ? sorVisArr[ 0 ].id : 'all' ); // What: Scope Reassignment. Why: A changed filter or a scope that fell out of view both need the same fallback behavior. How: This jumps to the first sorted visible picker, or 'all' when there isn't one.
+		if ( filChaBoo || !visPicArr.some( ( picObj ) => picObj.id === scoValStr ) ) setScoValStr( sorVisArr[ 0 ] ? sorVisArr[ 0 ].id : 'all' ); // What: Scope Reassignment. Why: A changed filter or a scope that fell out of view both need the same fallback behavior. How: This jumps to the first sorted visible picker, or 'all' when there isn't one.
 
 
 	}, [ staGroStr, typFilStr, visPicArr, sorVisArr, scoValStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever either filter, the resulting visible/sorted lists, or the scope itself changes. How: staGroStr/typFilStr detect a filter change, visPicArr/sorVisArr supply the fallback target, scoValStr is what's being validated.

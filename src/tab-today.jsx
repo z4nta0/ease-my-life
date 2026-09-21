@@ -39,7 +39,7 @@ import { ONB_PCT_OBJ  } from './onboarding-seed-data.js';       // What: Onboard
 import { ONB_SPI_ARR  } from './onboarding-seed-data.js';       // What: Onboarding Sample-Picker-Ids Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout groEntFun and TabToday's own counts.
 import { ONB_STI_ARR  } from './onboarding-seed-data.js';       // What: Onboarding Sample-Task-Ids Array. Why: Every count/filter that distinguishes a real reminder from a sample one needs this fixed id list. How: This is checked with .includes throughout TabToday's own tutorial-task counts.
 import { PAG_LAB_OBJ  } from './onboarding-app-features.jsx';   // What: Page Label Object. Why: Each App Features card needs the display name of the page it lives on. How: This looks up feature.page to label an AppFeatureCard's own meta row.
-import { PICKERS      } from './pickers.js';                    // What: Pickers Namespace Object. Why: Picking, re-rolling, and reading a picker's own eligibility/average-ease all funnel through this shared namespace. How: This is called throughout generate()/handleReroll/EntryEditor for pick/easeEligible/avgEase.
+import { PIC_NAM_OBJ  } from './pickers.js';                    // What: Pickers Namespace Object. Why: Picking, re-rolling, and reading a picker's own eligibility/average-ease all funnel through this shared namespace. How: This is called throughout generate()/handleReroll/EntryEditor for picIteFun/easEliFun/aveEasFun.
 import { redMotFun    } from './ui.jsx';                        // What: Reduce Motion Function. Why: Nearly every animated sequence in this file (celebration, reel cascade, card flip, scroll) needs to skip or shorten itself for a user who prefers reduced motion. How: This is checked throughout as a plain function call.
 import { RemSecCom    } from './reminders.jsx';                 // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genBlockOrder.
 import { RemTouCom    } from './onboarding-reminder-tours.jsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while actMinTouObj holds a 'reminder' kind entry.
@@ -611,7 +611,7 @@ function GroHeaCom ( { name : groNamStr, doneCount : donCouNum, total : totCouNu
 							value={ draNamStr }
 							maxLength={ 30 }
 							aria-label='Group name'
-							onChange={ ( chgEveObj ) => { setDraNamStr( chgEveObj.target.value ); if ( namErrStr ) setNamErrStr( '' ); } }
+							onChange={ ( chaEveObj ) => { setDraNamStr( chaEveObj.target.value ); if ( namErrStr ) setNamErrStr( '' ); } }
 							onBlur={ comEdiFun }
 							onKeyDown={ ( keyEveObj ) => { // What: Key Down Handler. Why: Enter should commit (via a blur) and Escape should cancel, mirroring every other inline editor in the app. How: This blurs the input on Enter and calls canEdiFun on Escape.
 
@@ -1081,7 +1081,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 	const drfLatFun = ( easMinNum ) => Math.max( 1, Math.round( thrValNum / ( easMinNum || 1 ) ) ); // What: Drift Latest Function. Why: A "Latest" day count is the human face of an item's own ease-min drift value. How: This converts easMinNum into a day count, the same conversion as drfSooFun, mirrored for the opposite bound.
 	const dayDrfFun = ( dayCouNum ) => thrValNum / Math.max( 1, dayCouNum ); // What: Day Drift Function. Why: Writing a user-typed day count back onto the item requires converting it back into a drift value. How: This is the inverse of drfSooFun/drfLatFun.
 
-	const falEasObj = picker ? PICKERS.avgEase( items, picker.id ) : null; // What: Fallback Ease Object. Why: An item with no ease band of its own (e.g. one added before per-item stamping existed, or from an old imported backup) needs the same fallback the picking engine itself uses. How: This calls PICKERS.avgEase against this picker's own items.
+	const falEasObj = picker ? PIC_NAM_OBJ.aveEasFun( items, picker.id ) : null; // What: Fallback Ease Object. Why: An item with no ease band of its own (e.g. one added before per-item stamping existed, or from an old imported backup) needs the same fallback the picking engine itself uses. How: This calls PIC_NAM_OBJ.aveEasFun against this picker's own items.
 	const curEasMinNum = item.easeMin ?? falEasObj?.easeMin ?? 10; // What: Current Ease Min Number. Why: This is the item's own resolved lower drift bound, read once and reused throughout this region. How: This reads item.easeMin, falling back to falEasObj's own easeMin, then a fixed 10.
 	const curEasMaxNum = item.easeMax ?? falEasObj?.easeMax ?? 20; // What: Current Ease Max Number. Why: This is the item's own resolved upper drift bound, read once and reused throughout this region. How: This reads item.easeMax, falling back to falEasObj's own easeMax, then a fixed 20.
 	const sooDayNum = drfSooFun( curEasMaxNum ); // What: Soonest Day Number. Why: The Soonest/Shortest row needs this as a plain day count to display and edit. How: This converts curEasMaxNum via drfSooFun.
@@ -1974,7 +1974,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 	if ( entRecObj.kind === 'charging' ) { // What: Charging Branch. Why: An ease-up picker with nothing charged to its own threshold today still needs a completable placeholder row that applies the day's drift once checked. How: This returns a dedicated article and skips the real-pick branch below.
 
 
-		const chgFreBoo = jusCheStr === entRecObj.eid && entRecObj.done; // What: Charging Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRecObj's own eid, and requires done to already be true.
+		const chrFreBoo = jusCheStr === entRecObj.eid && entRecObj.done; // What: Charging Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRecObj's own eid, and requires done to already be true.
 		const disTipStr = 'This action is disabled for this type of item.'; // What: Disabled Tip String. Why: Every disabled action icon on this row shares the exact same explanation. How: This is passed as every InfTipCom's own label below.
 
 		const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area) should toggle done, but only outside Edit Mode and while not mid-removal. How: This checks both exclusion conditions first, then calls onCheFun.
@@ -1993,7 +1993,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 
 
 			<article
-				className={ ` today-card   today-card--charging   ${ entRecObj.done ? 'is-done' : '' }   ${ chgFreBoo ? 'is-fresh' : '' }   ${ isaRemBoo ? 'is-removing' : '' }   ${ ediModBoo ? 'is-reorderable' : '' } ` }
+				className={ ` today-card   today-card--charging   ${ entRecObj.done ? 'is-done' : '' }   ${ chrFreBoo ? 'is-fresh' : '' }   ${ isaRemBoo ? 'is-removing' : '' }   ${ ediModBoo ? 'is-reorderable' : '' } ` }
 				onClick={ onRowCliFun }
 			>{ /* What: Charging Card Article Element. Why: This is EntCarCom's own root for a charging row. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) 3 fully-disabled actions. */ }
 
@@ -2157,7 +2157,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 
 	const rerPooArr = staAppObj.items.filter( ( curIteObj ) => curIteObj.pickerId === picRecObj.id && !curIteObj.vacation ); // What: Reroll Pool Array. Why: See the doc comment just above. How: This filters state.items down to this picker's own active items.
 	const eliCouNum = picRecObj.mode === 'ease-up'
-		? rerPooArr.filter( ( curIteObj ) => PICKERS.easeEligible( curIteObj, picRecObj.threshold ) ).length
+		? rerPooArr.filter( ( curIteObj ) => PIC_NAM_OBJ.easEliFun( curIteObj, picRecObj.threshold ) ).length
 		: rerPooArr.length; // What: Eligible Count Number. Why: This is the actual number of candidates re-roll could land on. How: This counts only threshold-eligible items for ease-up, or the whole active pool for every other mode.
 
 	/**
@@ -2288,7 +2288,7 @@ function EntCarCom ( { entry : entRecObj, picker : picRecObj, state : staAppObj,
 						aria-label='Item name'
 						autoFocus
 						onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() }
-						onChange={ ( chgEveObj ) => onRenFun( chgEveObj.target.value ) }
+						onChange={ ( chaEveObj ) => onRenFun( chaEveObj.target.value ) }
 						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 					/> // What: Entry Card Name Input Element. Why: This is the actual editable field for renaming the item in place. How: This is wired to onRenFun on every change, committed by blurring on Enter.
 
@@ -3613,7 +3613,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 				const tsOfFun  = ( curIteObj ) => ( curIteObj.lastPicked ? Date.parse( curIteObj.lastPicked ) : 0 ); // What: Timestamp Of Function. Why: The deterministic ordering below needs a numeric sort key for lastPicked. How: This parses curIteObj.lastPicked, or 0 when it has never been picked.
 
 				const eliArr = state.items // What: Eligible Array. Why: This is the actual candidate pool re-roll cycles through; deterministic order (value desc, then oldest lastPicked, then id) is stable since done-gating freezes values between rolls. How: This filters state.items to this picker's own active, threshold-eligible items, then sorts them.
-					.filter( ( curIteObj ) => curIteObj.pickerId === picRecObj.id && !curIteObj.vacation && PICKERS.easeEligible( curIteObj, thrNum ) )
+					.filter( ( curIteObj ) => curIteObj.pickerId === picRecObj.id && !curIteObj.vacation && PIC_NAM_OBJ.easEliFun( curIteObj, thrNum ) )
 					.sort( ( aIteObj, bIteObj ) => ( bIteObj.value - aIteObj.value ) || ( tsOfFun( aIteObj ) - tsOfFun( bIteObj ) ) || ( aIteObj.id < bIteObj.id ? -1 : 1 ) );
 
 				if ( eliArr.length >= 2 ) { // What: Enough Candidates Guard. Why: Fewer than 2 eligible candidates means the UI already disabled the button, so this is a safe no-op rather than a real error case. How: This only proceeds once eliArr has at least 2 entries.
@@ -3621,16 +3621,16 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 					const curFouIndNum = eliArr.findIndex( ( curIteObj ) => curIteObj.id === entRecObj.itemId ); // What: Current Found Index Number. Why: The next candidate is found relative to whichever one is currently picked. How: This finds entRecObj's own itemId within eliArr.
 					const nexIteObj    = eliArr[ ( curFouIndNum + 1 ) % eliArr.length ];                          // What: Next Item Object. Why: This is the actual next candidate to roll to, wrapping back to the front once the end is reached. How: This indexes eliArr one past curFouIndNum, modulo its own length.
-					const resObj       = PICKERS.pick( picRecObj, state.items, { forceItemId : nexIteObj.id } );   // What: Result Object. Why: Forcing the specific next item still needs to run through the real picking engine so its own value/pending mutations compute correctly. How: This calls PICKERS.pick with forceItemId set to nexIteObj's own id.
+					const resObj       = PIC_NAM_OBJ.picIteFun( picRecObj, state.items, { forceItemId : nexIteObj.id } );   // What: Result Object. Why: Forcing the specific next item still needs to run through the real picking engine so its own value/pending mutations compute correctly. How: This calls PIC_NAM_OBJ.picIteFun with forceItemId set to nexIteObj's own id.
 
-					actions.setEntryItem( entRecObj.eid, nexIteObj.id, { // What: Set Entry Item Call. Why: This stages the new pick's own value/weight mutation as pending, applied only once the entry is marked done, preserving the "nothing changes until you actually do it" contract. How: This writes nexIteObj's own id plus resObj's own updates/pickerPatch/depletedEnd.
+					actions.setEntryItem( entRecObj.eid, nexIteObj.id, { // What: Set Entry Item Call. Why: This stages the new pick's own value/weight mutation as pending, applied only once the entry is marked done, preserving the "nothing changes until you actually do it" contract. How: This writes nexIteObj's own id plus resObj's own updArr/patObj/depBoo.
 
 
 						bumpPick    : true,
-						depletedEnd : resObj.depletedEnd,
+						depletedEnd : resObj.depBoo,
 						pickedId    : nexIteObj.id,
-						pickerPatch : resObj.pickerPatch,
-						updates     : resObj.updates
+						pickerPatch : resObj.patObj,
+						updates     : resObj.updArr
 
 
 					} );
@@ -3641,22 +3641,22 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			}
 
-			else { // What: Other Mode Reroll Branch. Why: Every other mode re-rolls via a fresh forced-new pick instead of a manual cycle; forceNew makes ease-down specifically abandon its current active item (recharging it) and roll to a different one, while other modes simply ignore the flag. How: This calls PICKERS.pick with forceNew and stages whatever it returns as pending.
+			else { // What: Other Mode Reroll Branch. Why: Every other mode re-rolls via a fresh forced-new pick instead of a manual cycle; forceNew makes ease-down specifically abandon its current active item (recharging it) and roll to a different one, while other modes simply ignore the flag. How: This calls PIC_NAM_OBJ.picIteFun with forceNew and stages whatever it returns as pending.
 
 
-				const resObj = PICKERS.pick( picRecObj, state.items, { forceNew : true } ); // What: Result Object. Why: This is the actual fresh pick this branch draws. How: This calls PICKERS.pick with forceNew true.
+				const resObj = PIC_NAM_OBJ.picIteFun( picRecObj, state.items, { forceNew : true } ); // What: Result Object. Why: This is the actual fresh pick this branch draws. How: This calls PIC_NAM_OBJ.picIteFun with forceNew true.
 
-				if ( resObj.picked ) { // What: Picked Guard. Why: A pick can legitimately come back empty (no eligible candidates), in which case there is nothing to stage. How: This only proceeds once resObj.picked exists.
+				if ( resObj.picObj ) { // What: Picked Guard. Why: A pick can legitimately come back empty (no eligible candidates), in which case there is nothing to stage. How: This only proceeds once resObj.picObj exists.
 
 
-					actions.setEntryItem( entRecObj.eid, resObj.picked.id, { // What: Set Entry Item Call. Why: Same staging contract as the ease-up branch above: nothing changes until the entry is marked done. How: This writes resObj.picked's own id plus resObj's own updates/pickerPatch/depletedEnd.
+					actions.setEntryItem( entRecObj.eid, resObj.picObj.id, { // What: Set Entry Item Call. Why: Same staging contract as the ease-up branch above: nothing changes until the entry is marked done. How: This writes resObj.picObj's own id plus resObj's own updArr/patObj/depBoo.
 
 
 						bumpPick    : true,
-						depletedEnd : resObj.depletedEnd,
-						pickedId    : resObj.picked.id,
-						pickerPatch : resObj.pickerPatch,
-						updates     : resObj.updates
+						depletedEnd : resObj.depBoo,
+						pickedId    : resObj.picObj.id,
+						pickerPatch : resObj.patObj,
+						updates     : resObj.updArr
 
 
 					} );
@@ -4198,12 +4198,12 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		const dofCarArr    = [];        // What: Dayoff Card Array. Why: One card per triggered conditional (first hit wins) is collected here before the commit. How: This is pushed to inside the main loop below.
 		const carShnSet    = new Set(); // What: Card Shown Set. Why: Only the FIRST suppressed picker for a given conditional should surface its own day-off card. How: This is checked and added to inside the main loop below.
 		const empEasArr    = [];        // What: Empty Ease Array. Why: One card per ease-up picker with nothing eligible today is collected here before the commit. How: This is pushed to inside the main loop below.
-		const newPikArr    = [];        // What: New Pick Array. Why: Every fresh pick this generation actually produced is collected here before the commit. How: This is pushed to inside the main loop below.
+		const newPicArr    = [];        // What: New Pick Array. Why: Every fresh pick this generation actually produced is collected here before the commit. How: This is pushed to inside the main loop below.
 
 		const ordSltArr = []; // What: Ordered Slot Array. Why: Ordered animation slots (encounter order) let day-off/charging cards settle DURING the cascade alongside picks, instead of popping in at the final commit; each slot is keyed by the picker whose list position it occupies during the loader. How: This is pushed to inside the main loop below.
 		const carEntArr = []; // What: Carried Entry Array. Why: A cadence pick persisting from a prior day still needs its own encounter-order slot, wrapped so the commit step below can tell it apart from a fresh pick. How: This is pushed to inside the main loop below.
 
-		const pikNamSet = new Set(); // What: Picked Name Set. Why: Item names already committed to today's list so far (lowercased) are fed to any avoidDuplicates picker below so it won't re-surface an item another picker already put on today's list; seeded with carried-over cadence picks (still "on the list" today, just not freshly picked), then grown as each fresh pick lands, in encounter order, matching "as it is being built" rather than checking against the final list. How: This is read by PICKERS.pick's own excludeNames option and added to throughout the loop below.
+		const picNamSet = new Set(); // What: Picked Name Set. Why: Item names already committed to today's list so far (lowercased) are fed to any avoidDuplicates picker below so it won't re-surface an item another picker already put on today's list; seeded with carried-over cadence picks (still "on the list" today, just not freshly picked), then grown as each fresh pick lands, in encounter order, matching "as it is being built" rather than checking against the final list. How: This is read by PIC_NAM_OBJ.picIteFun's own excludeNames option and added to throughout the loop below.
 		const cadNsObj  = CAD_NAM_OBJ; // What: Cadence Namespace Object. Why: A short local alias reads more naturally throughout the dense loop below than the full import name repeated everywhere. How: This is just CAD_NAM_OBJ itself.
 
 		for ( const curPicIdeStr of state.daily.pickerIds ) { // What: Daily Picker Loop. Why: This is the actual per-picker scheduling/picking pass every other collection above feeds from. How: This walks every picker id in state.daily.pickerIds, gating and picking (or suppressing) each one in turn.
@@ -4249,9 +4249,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 					carEntArr.push( { _carry : true, entry : exiEntObj } ); // What: Carried Entry Push. Why: A not-yet-done entry from the current period must persist verbatim, locked, rather than being replaced. How: This wraps exiEntObj in a { _carry, entry } marker for the commit step below.
 
-					const carIteObj = state.items.find( ( curIteObj ) => curIteObj.id === exiEntObj.itemId ); // What: Carried Item Object. Why: The carried item's own name still needs to join pikNamSet, same as a fresh pick would. How: This finds the item matching exiEntObj's own itemId.
+					const carIteObj = state.items.find( ( curIteObj ) => curIteObj.id === exiEntObj.itemId ); // What: Carried Item Object. Why: The carried item's own name still needs to join picNamSet, same as a fresh pick would. How: This finds the item matching exiEntObj's own itemId.
 
-					if ( carIteObj ) pikNamSet.add( carIteObj.name.toLowerCase() ); // What: Carried Name Add. Why: An avoidDuplicates picker elsewhere in this loop must not re-surface an item this carried card already shows. How: This adds carIteObj's own lowercased name to pikNamSet.
+					if ( carIteObj ) picNamSet.add( carIteObj.name.toLowerCase() ); // What: Carried Name Add. Why: An avoidDuplicates picker elsewhere in this loop must not re-surface an item this carried card already shows. How: This adds carIteObj's own lowercased name to picNamSet.
 
 
 
@@ -4309,37 +4309,37 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			}
 
 			const perKeyStr = picCadStr !== 'daily' ? cadNsObj.perKeyFun( picRecObj, genNowDat ) : null; // What: Period Key String. Why: A fresh non-daily pick still needs to be tagged with the period it belongs to, so a future generation can recognize it as already-current. How: This computes the period key only for a non-daily picker, otherwise null.
-			const pikResObj = PICKERS.pick( picRecObj, state.items, { excludeNames : pikNamSet } ); // What: Pick Result Object. Why: This is the actual picking engine call for this picker. How: This calls PICKERS.pick, passing pikNamSet so an avoidDuplicates picker won't re-surface an already-committed name.
+			const picResObj = PIC_NAM_OBJ.picIteFun( picRecObj, state.items, { excludeNames : picNamSet } ); // What: Pick Result Object. Why: This is the actual picking engine call for this picker. How: This calls PIC_NAM_OBJ.picIteFun, passing picNamSet so an avoidDuplicates picker won't re-surface an already-committed name.
 
-			if ( pikResObj.picked ) { // What: Picked Branch. Why: A successful pick needs collecting into newPikArr plus its own animation slot. How: This adds the picked name to pikNamSet, then pushes both records.
-
-
-				pikNamSet.add( pikResObj.picked.name.toLowerCase() ); // What: Picked Name Add. Why: A LATER avoidDuplicates picker in this same loop must not re-surface this exact name. How: This adds pikResObj.picked's own lowercased name to pikNamSet.
-
-				newPikArr.push( { // What: New Pick Push. Why: This is the actual pending-commit record for this fresh pick. How: This bundles curPicIdeStr, the full pikResObj, its own cycle candidates, picked id, depletedEnd flag, and period key.
+			if ( picResObj.picObj ) { // What: Picked Branch. Why: A successful pick needs collecting into newPicArr plus its own animation slot. How: This adds the picked name to picNamSet, then pushes both records.
 
 
-					candidates  : pikResObj.cycleCandidates || [],
-					depletedEnd : !!pikResObj.depletedEnd,
+				picNamSet.add( picResObj.picObj.name.toLowerCase() ); // What: Picked Name Add. Why: A LATER avoidDuplicates picker in this same loop must not re-surface this exact name. How: This adds picResObj.picObj's own lowercased name to picNamSet.
+
+				newPicArr.push( { // What: New Pick Push. Why: This is the actual pending-commit record for this fresh pick. How: This bundles curPicIdeStr, the full picResObj, its own cycle candidates, picked id, depletedEnd flag, and period key.
+
+
+					candidates  : picResObj.cycArr || [],
+					depletedEnd : !!picResObj.depBoo,
 					periodKey   : perKeyStr,
-					pickedId    : pikResObj.picked.id,
+					pickedId    : picResObj.picObj.id,
 					pickerId    : curPicIdeStr,
-					res         : pikResObj
+					res         : picResObj
 
 
 				} );
 
-				ordSltArr.push( { pickerId : curPicIdeStr, info : { kind : 'pick', candidates : pikResObj.cycleCandidates || [], pickedId : pikResObj.picked.id } } ); // What: Ordered Slot Push. Why: This pick still needs its own animation slot, in encounter order. How: This pushes a { pickerId, info } pair keyed by curPicIdeStr.
+				ordSltArr.push( { pickerId : curPicIdeStr, info : { kind : 'pick', candidates : picResObj.cycArr || [], pickedId : picResObj.picObj.id } } ); // What: Ordered Slot Push. Why: This pick still needs its own animation slot, in encounter order. How: This pushes a { pickerId, info } pair keyed by curPicIdeStr.
 
 
 			}
 
-			else if ( picRecObj.mode === 'ease-up' && pikResObj.updates && pikResObj.updates.length ) { // What: Empty Ease-Up Branch. Why: An ease-up picker with nothing charged to threshold still needs a "charging" card so the day's own drift (pikResObj.updates) is applied only once the user checks it, consistent with done-gating; without this the drift would be dropped and the picker could never climb to eligibility. How: This collects a charging card plus its own animation slot.
+			else if ( picRecObj.mode === 'ease-up' && picResObj.updArr && picResObj.updArr.length ) { // What: Empty Ease-Up Branch. Why: An ease-up picker with nothing charged to threshold still needs a "charging" card so the day's own drift (picResObj.updArr) is applied only once the user checks it, consistent with done-gating; without this the drift would be dropped and the picker could never climb to eligibility. How: This collects a charging card plus its own animation slot.
 
 
 				empEasArr.push( { kind : 'charging', pickerId : curPicIdeStr, group : picRecObj.group || 'Other',
 
-					pending : { updates : pikResObj.updates }, ...( perKeyStr ? { periodKey : perKeyStr } : {} )
+					pending : { updates : picResObj.updArr }, ...( perKeyStr ? { periodKey : perKeyStr } : {} )
 
 				} ); // What: Charging Card Push. Why: This is the actual pending-commit record for this charging card. How: This bundles curPicIdeStr, its own group, the staged drift updates, and an optional period key.
 
@@ -4412,12 +4412,12 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			...carEntArr,
 			...dofCarArr,
 			...empEasArr,
-			...newPikArr.map( ( curPikObj ) => ( {
+			...newPicArr.map( ( curPikObj ) => ( {
 
 				pickerId : curPikObj.pickerId, itemId : curPikObj.pickedId,
 				...( curPikObj.periodKey ? { periodKey : curPikObj.periodKey } : {} ),
-				pending : { updates : curPikObj.res.updates, pickerPatch : curPikObj.res.pickerPatch,
-					depletedEnd : curPikObj.res.depletedEnd, pickedId : curPikObj.pickedId, bumpPick : true }
+				pending : { updates : curPikObj.res.updArr, pickerPatch : curPikObj.res.patObj,
+					depletedEnd : curPikObj.res.depBoo, pickedId : curPikObj.pickedId, bumpPick : true }
 
 			} ) )
 
