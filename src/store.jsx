@@ -16,7 +16,7 @@ import { norPicFun   } from './pickers.js';              // What: Normalize Pick
 import { ONB_CHE_OBJ } from './onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (reaGenFun) from setChecklistItem below.
 import { ONB_SPI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicker below.
 import { PIC_NAM_OBJ } from './pickers.js';              // What: Pickers Namespace Object. Why: The item-authoring/editing actions need this module's own ease-band averaging and per-mode defaults. How: This is called (aveEasFun/DEF_EAS_OBJ) from addItem and commitPickerEdit below.
-import { PWA         } from './pwa.js';                  // What: Progressive Web App. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (noteFirstPicker) once, from inside addPicker below.
+import { PWA_NAM_OBJ } from './pwa.js';                  // What: Progressive Web App Namespace Object. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (askFirFun) once, from inside addPicker below.
 import { STORAGE     } from './storage.js';              // What: Storage. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called from loadState, saveState, flushState, and the reset/importData actions below.
 import { TASKS       } from './tasks.js';                // What: Tasks. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout migrate, reconcileStreak, and the task actions below.
 
@@ -2841,12 +2841,12 @@ function useStore( optArgObj ) {
 		addPicker : ( { id, name, group, mode, items, easeMin, easeMax, includeInDaily = true, daysOfWeek, skipHolidays = false, avoidDuplicates = false, conditionalId = null, newConditional = null, cadence = 'daily', anchorDow, anchorDom, anchorMonth, anchorDay, dateMode, nthOrdinal, nthWeekday, createdFromSample, replaceId, hidden = false } ) => {
 
 
-			try { // What: First-Picker Persistence Request Guard. Why: The first picker a user creates is the first data worth protecting from browser storage eviction, best asked for now rather than on a cold first load (where a denial would be sticky for the session). How: This calls PWA.noteFirstPicker only when this is genuinely the user's very first picker.
+			try { // What: First-Picker Persistence Request Guard. Why: The first picker a user creates is the first data worth protecting from browser storage eviction, best asked for now rather than on a cold first load (where a denial would be sticky for the session). How: This calls PWA_NAM_OBJ.askFirFun only when this is genuinely the user's very first picker.
 
 
 				const curLatObj = latStaRef.current; // What: Current Latest Object. Why: The check below needs the freshest state, not a possibly-stale closed-over one. How: This reads latStaRef's own current value.
 
-				if ( PWA && curLatObj && ( curLatObj.pickers || [] ).length === 0 ) PWA.noteFirstPicker(); // What: First-Picker Call Guard. Why: Only an account with zero existing pickers is about to create its own first one. How: This calls PWA.noteFirstPicker only when PWA/curLatObj exist and curLatObj.pickers is empty.
+				if ( PWA_NAM_OBJ && curLatObj && ( curLatObj.pickers || [] ).length === 0 ) PWA_NAM_OBJ.askFirFun(); // What: First-Picker Call Guard. Why: Only an account with zero existing pickers is about to create its own first one. How: This calls PWA_NAM_OBJ.askFirFun only when PWA_NAM_OBJ/curLatObj exist and curLatObj.pickers is empty.
 
 
 			}

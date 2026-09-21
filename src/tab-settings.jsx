@@ -21,7 +21,7 @@ import { LegModCom    } from './legal-docs.jsx';          // What: Legal Modal C
 import { NOT_NAM_OBJ  } from './notify.js';               // What: Notification Namespace Object. Why: The Daily generator's notify-me row needs to read/request the browser's notification permission. How: This is called via its own permission()/askOnce()/request()/subscribe() methods, kept as this exact external name since it broke production once before under a rename.
 import { ONB_SPI_ARR  } from './onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: Replaying the welcome tour needs to tell a real, established account apart from one still holding only seeded sample pickers. How: This is checked against state.pickers to decide whether to self-heal stale onboarding flags before the tour starts.
 import { PicAniCom    } from './settings-previews.jsx';   // What: Picker Animation Component. Why: The picker-animation style picker needs a live preview the user can play. How: This is rendered inside the Picker Animation card, driven by picPreStr/picTokNum.
-import { PWA          } from './pwa.js';                  // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isStandalone()/canInstall()/installState()/promptInstall()/requestPersistOnce() methods.
+import { PWA_NAM_OBJ  } from './pwa.js';                  // What: Progressive Web App Namespace Object. Why: The Data Control section reports install/persistence state and drives the install prompt. How: This is called via its own subscribe()/isaStaFun()/canInsFun()/insStaFun()/askInsFun()/askPerFun() methods.
 import { redMotFun    } from './ui.jsx';                  // What: Reduce Motion Function. Why: A jump-to-section scroll and both preview stages must not animate for a user who prefers reduced motion. How: This is checked before choosing 'smooth' vs 'auto' scroll behavior, and to track the note shown above each style picker.
 import { SegConCom    } from './reminders.jsx';           // What: Segment Control Component. Why: The tab-bar-placement control is a 3-way exclusive choice, the exact shape this shared control renders. How: This renders the bottom/side/top options, driven by the persisted tabPlacement value.
 import { SET_HEL_ARR  } from './help-content.jsx';        // What: Settings Help Array. Why: Help mode needs this tab's own catalog of tooltip targets. How: This is passed straight to HelOveCom.
@@ -1828,7 +1828,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	// not to evict it, and how fresh the fallback copy is. Refreshed on mount
 	// and whenever the PWA layer changes (install, persistence grant).
 	const [ stoStaObj, setStoStaObj ] = React.useState( null ); // What: Storage Status Object And Setter. Why: The Data Control section's "Where your data lives" row needs the real, live storage status to render at all. How: This is populated by the effect below and read throughout the Data Control section.
-	const [ pwaTikNum, setPwaTikNum ] = React.useState( 0 );    // What: Pwa Tick Number And Setter. Why: A PWA-layer change (install, persistence grant) needs to force a re-render even though it doesn't directly change any other piece of state here. How: This is incremented by the effect below whenever PWA.subscribe fires, and is otherwise unread.
+	const [ pwaTikNum, setPwaTikNum ] = React.useState( 0 );    // What: Pwa Tick Number And Setter. Why: A PWA-layer change (install, persistence grant) needs to force a re-render even though it doesn't directly change any other piece of state here. How: This is incremented by the effect below whenever PWA_NAM_OBJ.subscribe fires, and is otherwise unread.
 	const [ perMesObj, setPerMesObj ] = React.useState( null ); // What: Persist Message Object And Setter. Why: Both the Install and Protect Data actions need somewhere to report their own outcome. How: This is set by onInsFun/onPerFun and rendered as a status line in the storage row.
 
 	React.useEffect( () => { // What: Storage Status Effect. Why: The storage row needs to read real, live status on mount and stay in sync with any later PWA-layer change. How: This reads STORAGE.status() once immediately, then again every time PWA reports a change, guarding against a result landing after unmount.
@@ -1849,23 +1849,23 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 		rdStaFun(); // What: Initial Status Read. Why: The row should already show real status on mount, without waiting for a PWA-layer change. How: This invokes rdStaFun once, synchronously (its own internal read is still async).
 
-		const pwaOffFun = PWA ? PWA.subscribe( () => { setPwaTikNum( ( tikCurNum ) => tikCurNum + 1 ); rdStaFun(); } ) : null; // What: Pwa Off Function. Why: An install or persistence-grant event can change both the storage status and the install/standalone flags read below. How: This subscribes to PWA's own change notifications, bumping pwaTikNum and re-reading status on every one, keeping PWA's own unsubscribe function for cleanup.
+		const pwaOffFun = PWA_NAM_OBJ ? PWA_NAM_OBJ.subscribe( () => { setPwaTikNum( ( tikCurNum ) => tikCurNum + 1 ); rdStaFun(); } ) : null; // What: Pwa Off Function. Why: An install or persistence-grant event can change both the storage status and the install/standalone flags read below. How: This subscribes to PWA_NAM_OBJ's own change notifications, bumping pwaTikNum and re-reading status on every one, keeping PWA_NAM_OBJ's own unsubscribe function for cleanup.
 
 
 
 		return () => { mntAliBoo = false; if ( pwaOffFun ) pwaOffFun(); }; // What: Effect Cleanup Function. Why: Both the alive flag and the PWA subscription must be torn down together on unmount. How: This flips mntAliBoo false and calls pwaOffFun, if one was actually created.
 
 
-	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to wire up its own subscription once, on mount. How: An empty array means it never re-subscribes; STORAGE and PWA are stable module-level imports.
+	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to wire up its own subscription once, on mount. How: An empty array means it never re-subscribes; STORAGE and PWA_NAM_OBJ are stable module-level imports.
 
-	const isaStaBoo = !!( PWA && PWA.isStandalone() ); // What: Is-A Standalone Boolean. Why: Several install-related rows below need to know whether the app is already running installed/standalone. How: This calls PWA.isStandalone(), guarded against PWA itself being unavailable.
-	const canInsBoo = !!( PWA && PWA.canInstall() );   // What: Can Install Boolean. Why: The Install button itself should only render while an install prompt is actually available. How: This calls PWA.canInstall(), guarded against PWA itself being unavailable.
-	const iosInsBoo = !!( PWA && PWA.isIOS && !isaStaBoo ); // What: Ios Install Boolean. Why: iOS/iPadOS need their own "Add to Home Screen" instructions instead of the native install prompt. How: This is true only when PWA reports isIOS and the app is not already standalone.
-	const macInsBoo = !!( PWA && PWA.isMac && !isaStaBoo ); // What: Mac Install Boolean. Why: macOS Safari needs its own "Add to Dock" instructions instead of the native install prompt. How: This is true only when PWA reports isMac and the app is not already standalone.
+	const isaStaBoo = !!( PWA_NAM_OBJ && PWA_NAM_OBJ.isaStaFun() ); // What: Is-A Standalone Boolean. Why: Several install-related rows below need to know whether the app is already running installed/standalone. How: This calls PWA_NAM_OBJ.isaStaFun(), guarded against PWA_NAM_OBJ itself being unavailable.
+	const canInsBoo = !!( PWA_NAM_OBJ && PWA_NAM_OBJ.canInsFun() );   // What: Can Install Boolean. Why: The Install button itself should only render while an install prompt is actually available. How: This calls PWA_NAM_OBJ.canInsFun(), guarded against PWA_NAM_OBJ itself being unavailable.
+	const iosInsBoo = !!( PWA_NAM_OBJ && PWA_NAM_OBJ.isaIosBoo && !isaStaBoo ); // What: Ios Install Boolean. Why: iOS/iPadOS need their own "Add to Home Screen" instructions instead of the native install prompt. How: This is true only when PWA_NAM_OBJ reports isaIosBoo and the app is not already standalone.
+	const macInsBoo = !!( PWA_NAM_OBJ && PWA_NAM_OBJ.isaMacBoo && !isaStaBoo ); // What: Mac Install Boolean. Why: macOS Safari needs its own "Add to Dock" instructions instead of the native install prompt. How: This is true only when PWA_NAM_OBJ reports isaMacBoo and the app is not already standalone.
 	// Feature-detected rather than named-browser: 'unsupported' covers Firefox
 	// and anything else without the install prompt, and stays 'pending' until
 	// we have actually waited long enough to know.
-	const insStaStr = ( PWA && PWA.installState ) ? PWA.installState() : 'pending'; // What: Install State String. Why: The Data Control section's own install-related messaging branches on this exact value. How: This calls PWA.installState(), falling back to 'pending' when that method itself is unavailable.
+	const insStaStr = ( PWA_NAM_OBJ && PWA_NAM_OBJ.insStaFun ) ? PWA_NAM_OBJ.insStaFun() : 'pending'; // What: Install State String. Why: The Data Control section's own install-related messaging branches on this exact value. How: This calls PWA_NAM_OBJ.insStaFun(), falling back to 'pending' when that method itself is unavailable.
 
 	const forBytFun = ( bytNum ) => { // What: Format Byte Function. Why: The storage row needs a human-readable size, not a raw byte count. How: This picks whichever of B/KB/MB unit reads most naturally for bytNum's own magnitude.
 
@@ -1905,10 +1905,10 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 	};
 
-	const onInsFun = async () => { // What: On Install Function. Why: The Install button's own click handler needs to run the real install prompt and report its outcome. How: This awaits PWA.promptInstall() and sets perMesObj based on whether the user accepted or dismissed it.
+	const onInsFun = async () => { // What: On Install Function. Why: The Install button's own click handler needs to run the real install prompt and report its outcome. How: This awaits PWA_NAM_OBJ.askInsFun() and sets perMesObj based on whether the user accepted or dismissed it.
 
 
-		const insResStr = await PWA.promptInstall(); // What: Install Result String. Why: The actual outcome ('accepted' | 'dismissed') decides which message to show. How: This awaits PWA's own promptInstall() call.
+		const insResStr = await PWA_NAM_OBJ.askInsFun(); // What: Install Result String. Why: The actual outcome ('accepted' | 'dismissed') decides which message to show. How: This awaits PWA_NAM_OBJ's own askInsFun() call.
 
 		if ( insResStr === 'accepted' ) setPerMesObj( { ok : true, text : 'Installed. Your data is now protected from browser cleanup.' } ); // What: Accepted Branch. Why: A successful install is worth confirming, including that it also protects the user's data. How: This sets perMesObj to a success message whenever insResStr is 'accepted'.
 
@@ -1917,13 +1917,13 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 	};
 
-	const onPerFun = async () => { // What: On Persist Function. Why: The Protect Data button's own click handler needs to run the real persistence request and report its outcome. How: This awaits PWA.requestPersistOnce(), sets perMesObj accordingly, then refreshes the storage status row.
+	const onPerFun = async () => { // What: On Persist Function. Why: The Protect Data button's own click handler needs to run the real persistence request and report its outcome. How: This awaits PWA_NAM_OBJ.askPerFun(), sets perMesObj accordingly, then refreshes the storage status row.
 
 
-		const perOkBoo = await PWA.requestPersistOnce( true ); // What: Persist Ok Boolean. Why: Whether the browser actually granted persistence decides which message to show. How: This awaits PWA's own requestPersistOnce(true) call.
+		const perOkaBoo = await PWA_NAM_OBJ.askPerFun( true ); // What: Persist Okay Boolean. Why: Whether the browser actually granted persistence decides which message to show. How: This awaits PWA_NAM_OBJ's own askPerFun(true) call.
 
 
-		setPerMesObj( perOkBoo // What: Persist Message Update. Why: The user needs to know whether the grant actually happened, and what to do next if it didn't. How: This sets a success message when perOkBoo is true, otherwise a message suggesting installing the app instead.
+		setPerMesObj( perOkaBoo // What: Persist Message Update. Why: The user needs to know whether the grant actually happened, and what to do next if it didn't. How: This sets a success message when perOkaBoo is true, otherwise a message suggesting installing the app instead.
 
 
 			? { ok : true, text : 'Granted. This browser will not evict your data.' }

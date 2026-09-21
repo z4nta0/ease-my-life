@@ -1840,6 +1840,22 @@ catch ( e ) {
 ```
 
 ### Return and continue statements
+- **This section's own blank-line counts (3 before a standalone
+  return/continue, 3 after a single-line exit guard, 2 before an
+  immediately-following enclosing close) always win over any OTHER
+  rule elsewhere in this doc that would otherwise prescribe a
+  different count for the same gap** — e.g. the "Long boolean
+  expressions" section's own fixed "2 blanks after the final combining
+  boolean" — since a return/continue is always a hard control-flow
+  boundary regardless of what else is going on around it. The ONLY
+  thing that overrides this section's own count instead: a
+  return/continue/guard sitting immediately next to its own enclosing
+  block's opening or closing bracket always gets that block's fixed
+  2-blank open/close padding, the same "first/last entry" exception
+  every other multi-line construct in this doc already gets, nothing
+  unique to returns. E.g. a return that is literally the first
+  statement inside a function body gets 2 blanks after the opening
+  `{`, not this section's own usual 3-before.
 - A `return` that occupies its own line (not a `return;`/`return x;` fused
   into a compact one-line guard clause like `if (!x) return;`) always gets
   3 blank lines directly before it, regardless of whether the returned
@@ -2132,6 +2148,20 @@ attribute) are ordered into these 8 tiers, top to bottom:
     `useState` line, splitting it into its own single-line group rather
     than folding it into the same 0-blank run as the two plain bindings
     above it.
+  - **Even within the same keyword and the same plain/destructured
+    shape, a run further splits by whether each declaration's own
+    VALUE is single-line or spans multiple lines** (a function body,
+    an array/object literal, ...). Two adjacent single-line-valued
+    declarations still tightly group at 0-blank as normal, but any
+    transition where EITHER side of a pair is multi-line-valued gets
+    exactly 1 blank line instead — symmetric in both directions
+    (entering a multi-line value, leaving one back to a single-line
+    value, or between two consecutive multi-line values). E.g.
+    `pwa.js`'s own `staGraNum`/`finProFun`: `const staGraNum = 2500;`
+    (single-line) followed immediately by `const finProFun = () => {
+    ... };` (a multi-line arrow function that reads staGraNum in its
+    own body) gets 1 blank line between them, not 0, even though they
+    share keyword, shape, and a tightly-connected purpose.
   - **This same run gets its `=` signs column-aligned**, the same
     column-alignment mechanism used elsewhere in this doc (named imports,
     object `:` alignment, ...): pad each line's own left-hand side
@@ -2231,6 +2261,15 @@ identifiers) and also stays inline as one line, for the same reason.
   with nothing, gets 2 blank lines before `isBigBoo` even though
   `isBigBoo` directly consumes it and would normally tight-group at
   0-blank.
+  - **Exception — a standalone `return` immediately consuming the
+    combining boolean still gets its own mandatory 3 blank lines
+    before it, not this rule's own 2**, per "### Return and continue
+    statements" below's own precedence modifier: that section's blank-
+    line counts always win over this one's. E.g. `isaStaFun` in
+    `pwa.js`: `const isaStaBoo = disStaBoo || disFulBoo || navStaBoo;`
+    followed by `return isaStaBoo;` gets 3 blank lines, not 2, even
+    though `isaStaBoo` is exactly this rule's own "final combining
+    boolean" shape (three bare identifiers ORed together).
 
 ### General relatedness tiering
 Used for spacing between statements inside a function/block body, and
@@ -2695,6 +2734,20 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     collision: `choIteObj` was not already in use anywhere. The
     comment already spelled "Chosen" out in full, so it needed no text
     changes, only the identifier itself was wrong)
+  - `ok` → `oka` (Okay — a 2-letter abbreviation rather than the usual
+    wrong-3-letter case, since "ok" is the common real-world shorthand
+    people reach for, the same reasoning as the `id`→`ide` case
+    earlier in this list; found in `askOkBoo` (`pwa.js`) and `perOkBoo`
+    (`tab-settings.jsx`), fixed to `askOkaBoo`/`perOkaBoo`, with each
+    one's own comment updated from "Ask/Persist Ok Boolean" to
+    "Ask/Persist Okay Boolean" since the old text was the abbreviation
+    itself, not a full-word spelling that just needed the identifier
+    fixed underneath it. No collision: `oka` was not already in use
+    anywhere. **Not swept**: `Oklab`/`linOklFun`/`okLANum`/`okLBNum`/
+    `okLLitNum`/`oklLinFun` (`store.jsx`) also match a bare `ok`/`Ok`
+    substring search, but none of them mean "Okay" at all; they name
+    the real OKLab color space, an unrelated technical term that
+    happens to share the same 2 letters, left untouched)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
@@ -3064,8 +3117,9 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `cadence.js`'s own `CAD_NAM_OBJ` (originally `CADENCE`),
     `conditionals.js`'s own `CON_NAM_OBJ` (originally `CONDITIONALS`),
     `notify.js`'s own `NOT_NAM_OBJ`, `onboarding-checklist.js`'s own
-    `ONB_CHE_OBJ`, and `pickers.js`'s own `PIC_NAM_OBJ` (originally
-    `PICKERS`) all deliberately swept their external property names to
+    `ONB_CHE_OBJ`, `pickers.js`'s own `PIC_NAM_OBJ` (originally
+    `PICKERS`), and `pwa.js`'s own `PWA_NAM_OBJ` (originally `PWA`) all
+    deliberately swept their external property names to
     match their internal implementation exactly (e.g. `normalize` →
     `norCadFun`, `isCadence` → `isaCadFun` for the first; `cardComplete`
     → `carComFun`, `advanceOnCompletion` → `advValFun` for the second;
@@ -3077,10 +3131,17 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `tutorialsInProgress` → `tutProFun` for the fourth; `pick` →
     `picIteFun`, `readiness` → `reaValFun`, `easeEligible` → `easEliFun`,
     `modeEligible` → `modEliFun`, `EASE_TOL` → `EAS_TOL_NUM`, `avgEase`
-    → `aveEasFun`, `DEFAULT_EASE` → `DEF_EAS_OBJ` for the fifth), with
+    → `aveEasFun`, `DEFAULT_EASE` → `DEF_EAS_OBJ` for the fifth;
+    `noteFirstPicker` → `askFirFun`, `promptInstall` → `askInsFun`,
+    `requestPersistOnce` → `askPerFun`, `canInstall` → `canInsFun`,
+    `installState` → `insStaFun`, `isIOS` → `isaIosBoo`, `isMac` →
+    `isaMacBoo`, `isStandalone` → `isaStaFun` for the sixth, keeping its
+    own already-conventional `subscribe` bare per the Generic JS
+    API-shape exemption above), with
     every external call site (~60 across 7 consumer files for
     CAD_NAM_OBJ, 6 across 3 for CON_NAM_OBJ, 6 across 2 for NOT_NAM_OBJ,
-    ~28 across 4 for ONB_CHE_OBJ, 28 across 4 for PIC_NAM_OBJ) updated
+    ~28 across 4 for ONB_CHE_OBJ, 28 across 4 for PIC_NAM_OBJ, 13 across
+    2 for PWA_NAM_OBJ) updated
     in the same pass. Reusing the already-named
     9-char internal identifier directly as the external key (rather than
     inventing a separately-compressed name, 6-char property-style or

@@ -121,10 +121,21 @@ function proRelFun() {
 
 		if ( !navigator.getInstalledRelatedApps ) return; // What: No Related Apps Api Guard. Why: There is nothing to query at all in a browser without this API. How: This returns immediately when navigator.getInstalledRelatedApps is missing.
 
+
+
 		navigator.getInstalledRelatedApps().then( ( curAppArr ) => { // What: Related Apps Then Callback. Why: A non-empty result is the only real evidence this PWA is already installed elsewhere. How: This is called once the async query resolves, with whatever related apps (if any) the browser found.
 
 
-			if ( curAppArr && curAppArr.length ) { relInsBoo = true; notSubFun(); } // What: Has Related Apps Check. Why: insStaFun must report 'installed' rather than 'unsupported'/'pending' once this is known. How: This sets relInsBoo true and notifies every subscriber, but only when curAppArr actually has entries.
+			if ( curAppArr && curAppArr.length ) { // What: Has Related Apps Check. Why: insStaFun must report 'installed' rather than 'unsupported'/'pending' once this is known. How: This gates the block below on curAppArr actually having entries.
+
+
+				relInsBoo = true; // What: Related Installed Boolean Set. Why: A non-empty result is the only real evidence this PWA is already installed elsewhere. How: This sets relInsBoo true.
+
+
+				notSubFun(); // What: Notify Subscribers Call. Why: insStaFun must now report 'installed' to any already-subscribed UI. How: This calls notSubFun.
+
+
+			}
 
 
 		}, () => {} ); // What: Related Apps Rejection Handler. Why: A rejected query is not an error worth surfacing, just more evidence there is nothing installed. How: This is a deliberate no-op second argument to .then, swallowing any rejection.
@@ -177,6 +188,7 @@ function proSupFun() {
 
 
 	const staGraNum = 2500; // What: Start Grace Number. Why: This is the fixed number of milliseconds to wait, once the service worker is ready, before concluding the install prompt is never coming. How: This is passed as the delay to the setTimeout call inside finProFun below.
+
 	const finProFun = () => { // What: Finish Probe Function. Why: Both branches below (service worker ready, or no service worker support at all) must eventually reach the same conclusion after the same grace period. How: This starts a single setTimeout that flips insProBoo true and notifies every subscriber once staGraNum has elapsed.
 
 
@@ -184,10 +196,10 @@ function proSupFun() {
 
 
 			insProBoo = true; // What: Install Probe Boolean Update. Why: insStaFun must now be allowed to report 'unsupported' rather than 'pending'. How: This sets insProBoo true.
-			notSubFun();       // What: Notify Subscribers Call. Why: insStaFun's own callers must re-read the now-settled insProBoo. How: This calls notSubFun.
+			notSubFun();      // What: Notify Subscribers Call. Why: insStaFun's own callers must re-read the now-settled insProBoo. How: This calls notSubFun.
 
 
-		}, staGraNum );
+		}, staGraNum ); // What: Timeout Delay Argument. Why: The grace-period clock must actually wait the fixed staGraNum milliseconds before this callback fires. How: This is setTimeout's own delay argument, closing the call opened above.
 
 
 	};
@@ -202,11 +214,11 @@ function proSupFun() {
 			Promise.race( [ // What: Service Worker Ready Race. Why: A worker that never activates must not leave the UI stuck on "checking" forever. How: This races the real navigator.serviceWorker.ready promise against a fixed 3-second timeout, running finProFun once whichever settles first.
 
 
-				navigator.serviceWorker.ready,
+				navigator.serviceWorker.ready,                                // What: Service Worker Ready Promise. Why: This is the real signal the race is actually waiting on. How: This is navigator.serviceWorker's own ready promise, passed straight through.
 				new Promise( ( resValFun ) => setTimeout( resValFun, 3000 ) ) // What: Ready Timeout Promise. Why: This is the capped fallback that lets the race above resolve even if the real service worker never becomes ready. How: This resolves on its own after 3 seconds, with no value.
 
 
-			] ).then( finProFun, finProFun );
+			] ).then( finProFun, finProFun ); // What: Race Settle Call. Why: Whichever promise above settles first must run the same finProFun, regardless of success or failure. How: This passes finProFun as both the resolve and reject handler.
 
 
 		}
@@ -229,15 +241,15 @@ proSupFun(); // What: Probe Support Function Call. Why: This must run once at mo
 
 
 
-const iosPlaBoo = /iP(hone|ad|od)/.test( navigator.platform || '' ); // What: Ios Platform Boolean. Why: navigator.platform is the most direct signal an iPhone/iPad/iPod can offer. How: This tests it against an iOS-device pattern, falling back to an empty string when platform itself is unavailable.
+const iosPlaBoo = /iP(hone|ad|od)/.test( navigator.platform || '' );                 // What: Ios Platform Boolean. Why: navigator.platform is the most direct signal an iPhone/iPad/iPod can offer. How: This tests it against an iOS-device pattern, falling back to an empty string when platform itself is unavailable.
 const padMacBoo = /Mac/.test( navigator.userAgent ) && navigator.maxTouchPoints > 1; // What: iPad Mac Boolean. Why: iPadOS 13+ deliberately reports itself as a desktop Mac in its own user agent string, so a touch-capable "Mac" is really an iPad. How: This combines a Mac user-agent match with a real multi-touch capability check.
-const iosUsrBoo = /iPhone|iPad|iPod/.test( navigator.userAgent ); // What: Ios User Boolean. Why: Some environments carry the real device family in the user agent string even when navigator.platform does not. How: This tests navigator.userAgent directly against the same device-family pattern.
+const iosUsrBoo = /iPhone|iPad|iPod/.test( navigator.userAgent );                    // What: Ios User Boolean. Why: Some environments carry the real device family in the user agent string even when navigator.platform does not. How: This tests navigator.userAgent directly against the same device-family pattern.
 
 const isaIosBoo = iosPlaBoo || padMacBoo || iosUsrBoo; // What: Is-An Ios Boolean. Why: iOS/iPadOS Safari never fires beforeinstallprompt at all, so the UI must show manual Share-to-Home-Screen instructions instead of a dead install button. How: This is true whenever any one of the three device-detection checks above holds.
 
 
 const isaSafBoo = /^((?!chrome|android|crios|fxios).)*safari/i.test( navigator.userAgent ); // What: Is-A Safari Boolean. Why: Safari is the specific browser whose own install path differs by platform (Share sheet on iOS, File menu on macOS), so it has to be told apart from every Chromium/Firefox-based browser that also happens to mention "Safari" in its own user agent. How: This matches 'safari' while excluding every user agent that also contains a known non-Safari browser token.
-const isaMacBoo = /Mac/.test( navigator.userAgent ) && !( navigator.maxTouchPoints > 1 ); // What: Is-A Mac Boolean. Why: Genuine desktop macOS, excluding any touch-capable device isaIosBoo already claims above, also never fires beforeinstallprompt; installation there is File menu, then Add to Dock. How: This combines a Mac user-agent match with the negation of the same multi-touch check isaIosBoo uses.
+const isaMacBoo = /Mac/.test( navigator.userAgent ) && !( navigator.maxTouchPoints > 1 );   // What: Is-A Mac Boolean. Why: Genuine desktop macOS, excluding any touch-capable device isaIosBoo already claims above, also never fires beforeinstallprompt; installation there is File menu, then Add to Dock. How: This combines a Mac user-agent match with the negation of the same multi-touch check isaIosBoo uses.
 
 
 
@@ -276,9 +288,10 @@ function isaStaFun() {
 
 		const disStaBoo = window.matchMedia( '(display-mode: standalone)' ).matches; // What: Display Standalone Boolean. Why: This is the standard, spec-defined way a PWA can tell it is running installed. How: This reads the current match state of the 'display-mode: standalone' media query.
 		const disFulBoo = window.matchMedia( '(display-mode: fullscreen)' ).matches; // What: Display Fullscreen Boolean. Why: Some installed configurations report as fullscreen display-mode instead of standalone. How: This reads the current match state of the 'display-mode: fullscreen' media query.
-		const navStaBoo = window.navigator.standalone === true; // What: Navigator Standalone Boolean. Why: Safari on iOS predates the display-mode media queries and only ever exposes this legacy flag. How: This compares window.navigator.standalone against true directly.
+		const navStaBoo = window.navigator.standalone === true;                      // What: Navigator Standalone Boolean. Why: Safari on iOS predates the display-mode media queries and only ever exposes this legacy flag. How: This compares window.navigator.standalone against true directly.
 
 		const isaStaBoo = disStaBoo || disFulBoo || navStaBoo; // What: Is-A Standalone Boolean. Why: insStaFun (and every other caller) only needs one combined answer, true whenever any one of the three underlying checks holds. How: This ORs all three together.
+
 
 
 		return isaStaBoo; // What: Is-A Standalone Return. Why: The caller needs the fully-combined result computed above. How: This returns the same isaStaBoo just assembled.
@@ -327,7 +340,9 @@ async function askInsFun() {
 	if ( !insCapObj ) return 'unavailable'; // What: No Install Event Guard. Why: There is nothing to prompt with when beforeinstallprompt was never captured, or was already consumed by an earlier call. How: This returns 'unavailable' immediately whenever insCapObj is falsy.
 
 
+
 	const curEveObj = insCapObj; // What: Current Event Object. Why: insCapObj is cleared immediately below, so the actual event this call acts on must be captured into its own local first. How: This copies the live insCapObj reference before it is nulled out.
+
 	insCapObj = null; // What: Install Captured Object Reset. Why: A captured prompt can only ever be shown once; leaving insCapObj set would let a later caller try to reuse an already-consumed event. How: This clears insCapObj immediately after curEveObj has captured its own reference.
 
 	notSubFun(); // What: Notify Subscribers Call. Why: canInstall() must now report false, since the captured event is about to be shown (and consumed) below. How: This calls notSubFun so every subscriber re-reads the now-cleared insCapObj.
@@ -337,6 +352,7 @@ async function askInsFun() {
 
 
 		curEveObj.prompt(); // What: Prompt Call. Why: This is the actual native install dialog the browser shows on the captured event's behalf. How: This calls curEveObj's own prompt() method.
+
 		const choResObj = await curEveObj.userChoice; // What: Choice Result Object. Why: The caller needs to know what the user actually chose, not merely that the dialog was shown. How: This awaits curEveObj's own userChoice promise.
 
 
@@ -390,6 +406,8 @@ async function askPerFun( forAskBoo ) {
 
 		if ( !forAskBoo && localStorage.getItem( PER_ASK_KEY ) ) return false; // What: Already Asked Guard. Why: A device that has already been asked once, and was not forced, must not be asked again on every later launch. How: This returns false immediately when forAskBoo is falsy and PER_ASK_KEY is already set.
 
+
+
 		localStorage.setItem( PER_ASK_KEY, '1' ); // What: Persist Ask Key Set Call. Why: The very next unforced call on this device must see PER_ASK_KEY already set. How: This writes '1' under PER_ASK_KEY.
 
 
@@ -401,13 +419,15 @@ async function askPerFun( forAskBoo ) {
 
 	if ( !STORAGE ) return false; // What: No Storage Guard. Why: There is no persistence request to make at all without the storage layer this file delegates to. How: This returns false immediately when STORAGE itself is unavailable.
 
-	const askOkBoo = await STORAGE.requestPersist(); // What: Ask Ok Boolean. Why: The caller needs to know whether persistence is now actually granted. How: This awaits STORAGE's own requestPersist call.
+
+
+	const askOkaBoo = await STORAGE.requestPersist(); // What: Ask Okay Boolean. Why: The caller needs to know whether persistence is now actually granted. How: This awaits STORAGE's own requestPersist call.
 
 	notSubFun(); // What: Notify Subscribers Call. Why: The Settings storage panel must re-read the now-possibly-changed persistence grant. How: This calls notSubFun.
 
 
 
-	return askOkBoo; // What: Ask Persist Return. Why: The caller needs the same grant result STORAGE.requestPersist itself resolved. How: This returns the same askOkBoo just awaited above.
+	return askOkaBoo; // What: Ask Persist Return. Why: The caller needs the same grant result STORAGE.requestPersist itself resolved. How: This returns the same askOkaBoo just awaited above.
 
 
 }
@@ -420,7 +440,7 @@ window.addEventListener( 'beforeinstallprompt', ( insEveObj ) => { // What: Befo
 
 
 	insEveObj.preventDefault(); // What: Prevent Default Call. Why: The browser's own mini-infobar must not appear now that this app is handling the prompt itself. How: This calls the captured event's own preventDefault method.
-	insCapObj = insEveObj; // What: Install Captured Object Assignment. Why: askInsFun and canInstall both need this exact event later, once the user actually clicks the app's own install button. How: This stores insEveObj onto the module-level insCapObj.
+	insCapObj = insEveObj;      // What: Install Captured Object Assignment. Why: askInsFun and canInstall both need this exact event later, once the user actually clicks the app's own install button. How: This stores insEveObj onto the module-level insCapObj.
 
 	notSubFun(); // What: Notify Subscribers Call. Why: canInstall()/insStaFun() must now report differently to any subscribed UI. How: This calls notSubFun so every subscriber re-reads the now-set insCapObj.
 
@@ -489,11 +509,19 @@ function insStaFun() {
 
 	if ( isaStaFun() ) return 'standalone'; // What: Standalone Guard. Why: An already-installed, already-running app has nothing left to offer installing. How: This returns 'standalone' as soon as isaStaFun reports true.
 
+
+
 	if ( insCapObj ) return 'ready'; // What: Ready Guard. Why: A captured beforeinstallprompt event means the in-app install button will actually work. How: This returns 'ready' whenever insCapObj is set.
+
+
 
 	if ( isaIosBoo && isaSafBoo ) return 'ios'; // What: Ios Guard. Why: iOS/iPadOS Safari never fires beforeinstallprompt at all, so its own manual instructions are needed instead. How: This returns 'ios' whenever both isaIosBoo and isaSafBoo hold.
 
+
+
 	if ( isaMacBoo && isaSafBoo ) return 'mac'; // What: Mac Guard. Why: macOS Safari also never fires beforeinstallprompt, so its own manual instructions are needed instead. How: This returns 'mac' whenever both isaMacBoo and isaSafBoo hold.
+
+
 
 	if ( relInsBoo ) return 'installed'; // What: Installed Guard. Why: proRelFun's own async probe found this PWA already installed elsewhere on this device. How: This returns 'installed' whenever relInsBoo is true.
 
@@ -508,20 +536,28 @@ function insStaFun() {
 
 
 
-export const PWA = { // What: Progressive Web App Namespace Object. Why: This is the single public entry point store.jsx and tab-settings.jsx both import by name, kept stable in shape even though every implementation name behind it was renamed. How: This maps each of this file's own internal function/variable names onto the exact public property names those two callers already import.
+const canInsFun = () => !!insCapObj; // What: Can Install Function. Why: tab-settings.jsx calls this to decide whether to render its own install button at all. How: This closes over the module-private insCapObj rather than exposing it directly.
 
 
-	canInstall         : () => !!insCapObj,        // What: Can Install. Why: tab-settings.jsx calls this to decide whether to render its own install button at all. How: This closes over the module-private insCapObj rather than exposing it directly.
-	installState       : insStaFun,                // What: Install State. Why: tab-settings.jsx calls this to choose which install-instructions copy to show. How: This exposes insStaFun under the property name that caller already imports.
-	isIOS              : isaIosBoo,                // What: Is Ios. Why: tab-settings.jsx reads this directly, not called, to decide whether to show the manual Share-to-Home-Screen instructions. How: This re-exports the module-level isaIosBoo constant unchanged.
-	isMac              : isaMacBoo,                // What: Is Mac. Why: tab-settings.jsx reads this directly, not called, to decide whether to show the manual File-menu-Add-to-Dock instructions. How: This re-exports the module-level isaMacBoo constant unchanged.
-	isSafari           : isaSafBoo,                // What: Is Safari. Why: This stays exported as part of PWA's own stable public shape, even though nothing outside this file currently reads it. How: This re-exports the module-level isaSafBoo constant unchanged.
-	isStandalone       : isaStaFun,                // What: Is Standalone. Why: tab-settings.jsx calls this to decide whether the app is already running installed. How: This exposes isaStaFun under the property name that caller already imports.
-	noteFirstPicker    : () => askPerFun( false ), // What: Note First Picker. Why: store.jsx calls this the moment the user creates their first picker, the first instant there is data worth protecting from eviction. How: This calls askPerFun unforced, so a device that already asked (and was denied) is not asked again.
-	promptInstall      : askInsFun,                // What: Prompt Install. Why: tab-settings.jsx calls this from its own install button's click handler. How: This exposes askInsFun under the property name that caller already imports.
-	requestPersistOnce : askPerFun,                // What: Request Persist Once. Why: tab-settings.jsx calls this directly, forced, from its own Settings action. How: This exposes askPerFun under the property name that caller already imports.
 
-	subscribe          : ( newSubFun ) => { // What: Subscribe. Why: A UI component needs to learn about install/persistence changes without polling. How: This adds newSubFun to subFunSet and returns its own unsubscribe function.
+const askFirFun = () => askPerFun( false ); // What: Ask First Function. Why: store.jsx calls this the moment the user creates their first picker, the first instant there is data worth protecting from eviction. How: This calls askPerFun unforced, so a device that already asked (and was denied) is not asked again.
+
+
+
+export const PWA_NAM_OBJ = { // What: Progressive Web App Namespace Object. Why: This is the single public entry point store.jsx and tab-settings.jsx both import by name. How: This maps each of this file's own internal function/variable names directly onto matching external property names.
+
+
+	askFirFun : askFirFun, // What: Ask First Function. Why: store.jsx calls this the moment the user creates their first picker. How: This re-exports askFirFun under its own matching name.
+	askInsFun : askInsFun, // What: Ask Install Function. Why: tab-settings.jsx calls this from its own install button's click handler. How: This re-exports askInsFun under its own matching name.
+	askPerFun : askPerFun, // What: Ask Persist Function. Why: tab-settings.jsx calls this directly, forced, from its own Settings action. How: This re-exports askPerFun under its own matching name.
+	canInsFun : canInsFun, // What: Can Install Function. Why: tab-settings.jsx calls this to decide whether to render its own install button at all. How: This re-exports canInsFun under its own matching name.
+	insStaFun : insStaFun, // What: Install State Function. Why: tab-settings.jsx calls this to choose which install-instructions copy to show. How: This re-exports insStaFun under its own matching name.
+	isaIosBoo : isaIosBoo, // What: Is-An Ios Boolean. Why: tab-settings.jsx reads this directly, not called, to decide whether to show the manual Share-to-Home-Screen instructions. How: This re-exports isaIosBoo under its own matching name.
+	isaMacBoo : isaMacBoo, // What: Is-A Mac Boolean. Why: tab-settings.jsx reads this directly, not called, to decide whether to show the manual File-menu-Add-to-Dock instructions. How: This re-exports isaMacBoo under its own matching name.
+	isaSafBoo : isaSafBoo, // What: Is-A Safari Boolean. Why: This stays exported as part of PWA_NAM_OBJ's own stable public shape, even though nothing outside this file currently reads it. How: This re-exports isaSafBoo under its own matching name.
+	isaStaFun : isaStaFun, // What: Is-A Standalone Function. Why: tab-settings.jsx calls this to decide whether the app is already running installed. How: This re-exports isaStaFun under its own matching name.
+
+	subscribe : ( newSubFun ) => { // What: Subscribe. Why: A UI component needs to learn about install/persistence changes without polling. How: This adds newSubFun to subFunSet and returns its own unsubscribe function.
 
 
 		subFunSet.add( newSubFun ); // What: New Subscriber Add Call. Why: The freshly-added callback must actually be tracked so notSubFun can reach it later. How: This adds newSubFun to subFunSet.
