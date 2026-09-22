@@ -495,7 +495,7 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 									value={ sooDayNum }
 									min={ 1 }
 									max={ 100 }
-									ariaLabel={ sooLabStr }
+									ariLabStr={ sooLabStr }
 									onSet={ appSooFun }
 								/>{ /* What: Number Stepper Component. Why: This is the actual increment/decrement control for the lower drift bound. How: This commits every change through appSooFun. */ }
 
@@ -531,7 +531,7 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 									value={ latDayNum }
 									min={ 1 }
 									max={ 100 }
-									ariaLabel={ latLabStr }
+									ariLabStr={ latLabStr }
 									onSet={ appLatFun }
 								/>{ /* What: Number Stepper Component. Why: This is the actual increment/decrement control for the upper drift bound. How: This commits every change through appLatFun. */ }
 

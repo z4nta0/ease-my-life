@@ -217,7 +217,7 @@ function CadConCom ( { value, onChange } ) {
 				<SegConCom
 					optIteArr={ CAD_OPT_ARR }
 					value={ norCadObj.cadence }
-					ariaLabel='Cadence'
+					ariLabStr='Cadence'
 					onChange={ ( cadKeyStr ) => setPatFun( { cadence : cadKeyStr } ) }
 				/>{ /* What: Segment Control Component. Why: This is the actual top-level cadence picker. How: This commits the clicked cadence key straight through setPatFun. */ }
 
@@ -329,7 +329,7 @@ function CadConCom ( { value, onChange } ) {
 							<SegConCom
 								optIteArr={ DAT_MOD_ARR }
 								value={ norCadObj.dateMode }
-								ariaLabel='Day selection'
+								ariLabStr='Day selection'
 								onChange={ ( modKeyStr ) => setPatFun( { dateMode : modKeyStr } ) }
 							/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
 
@@ -468,7 +468,7 @@ function CadConCom ( { value, onChange } ) {
 							<SegConCom
 								optIteArr={ DAT_MOD_ARR }
 								value={ norCadObj.dateMode }
-								ariaLabel='Day selection'
+								ariLabStr='Day selection'
 								onChange={ ( modKeyStr ) => setPatFun( { dateMode : modKeyStr } ) }
 							/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday picker shared by the monthly and yearly subsections. How: This commits the clicked date-mode key straight through setPatFun. */ }
 

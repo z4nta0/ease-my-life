@@ -149,7 +149,7 @@ function HolEdiCom ( { state, actions } ) {
 
 	const shtDatFun = ( datObj ) => datObj.toLocaleDateString( 'en-US', { weekday : 'short', month : 'short', day : 'numeric' } ); // What: Short Date Function. Why: Every computed holiday row needs a compact "Weekday, Month Day" label for when it lands. How: This formats datObj via toLocaleDateString with short weekday/month and numeric day.
 	const realDayFun = ( datObj ) => datObj.toLocaleDateString( 'en-US', { weekday : 'long' } );                                     // What: Real Day Function. Why: An observed holiday (one shifted off a weekend) needs to also say which weekday it actually falls on. How: This formats datObj as just its own full weekday name.
-	const recDatFun  = ( monNum, dayNum ) => new Date( 2001, monNum - 1, dayNum ).toLocaleDateString( 'en-US', { month : 'short', day : 'numeric' } ); // What: Recur Date Function. Why: A custom holiday recurs every year on the same month/day, so it needs a year-agnostic "Month Day" label instead of a real date. How: This builds a throwaway Date in a fixed dummy year purely to reuse toLocaleDateString's own formatting.
+	const recDatFun  = ( monValNum, dayValNum ) => new Date( 2001, monValNum - 1, dayValNum ).toLocaleDateString( 'en-US', { month : 'short', day : 'numeric' } ); // What: Recur Date Function. Why: A custom holiday recurs every year on the same month/day, so it needs a year-agnostic "Month Day" label instead of a real date. How: This builds a throwaway Date in a fixed dummy year purely to reuse toLocaleDateString's own formatting.
 
 
 	const addCusFun = () => { // What: Add Custom Function. Why: The "add a holiday" form's own Add button needs to turn its 2 draft fields into a real custom holiday. How: This validates both drafts are filled, parses the date input's own month/day, adds the holiday, then clears both drafts.
@@ -158,9 +158,10 @@ function HolEdiCom ( { state, actions } ) {
 		if ( !draNamStr.trim() || !draDatStr ) return; // What: Draft Validity Guard. Why: Both a name and a date are required before anything can be added. How: This bails out early whenever either draft is still empty/blank.
 
 
-		const [ , monNum, dayNum ] = draDatStr.split( '-' ).map( Number ); // What: Month Number And Day Number. Why: A custom holiday recurs by month/day only, not by the specific year the date input happened to show. How: This splits the "YYYY-MM-DD" draft and discards the year, keeping only the numeric month and day.
+		const [ , monValNum, dayValNum ] = draDatStr.split( '-' ).map( Number ); // What: Month Value And Day Value. Why: A custom holiday recurs by month/day only, not by the specific year the date input happened to show. How: This splits the "YYYY-MM-DD" draft and discards the year, keeping only the numeric month and day.
 
-		actions.addCustomHoliday( { name : draNamStr.trim(), month : monNum, day : dayNum } ); // What: Add Custom Holiday Call. Why: This is the actual store mutation that creates the new recurring day off. How: This calls actions.addCustomHoliday with the trimmed name and the parsed month/day.
+
+		actions.addCustomHoliday( { name : draNamStr.trim(), month : monValNum, day : dayValNum } ); // What: Add Custom Holiday Call. Why: This is the actual store mutation that creates the new recurring day off. How: This calls actions.addCustomHoliday with the trimmed name and the parsed month/day.
 
 		setDraNamStr( '' ); setDraDatStr( '' ); // What: Draft Reset Pair. Why: A successfully added holiday should leave the form empty and ready for the next one. How: This clears both draft fields back to their initial empty strings.
 
@@ -496,7 +497,7 @@ function ConSupCom ( { state, actions } ) {
 	const [ draSubStr, setDraSubStr ] = React.useState( '' ); // What: Draft Subject String And Setter. Why: The subject field needs somewhere to hold its own typed value before sending. How: This is bound to the subject input below and read by sndFrmFun.
 	const [ draMesStr, setDraMesStr ] = React.useState( '' ); // What: Draft Message String And Setter. Why: The message field needs somewhere to hold its own typed value before sending. How: This is bound to the message textarea below and read by sndFrmFun.
 	const [ senAtNum, setSenAtNum ] = React.useState( 0 ); // What: Sent At Number And Setter. Why: A successful send needs both a truthy flag and a fresh React key to replay the "sent" note if the user sends a second message later. How: This is set to Date.now() on a successful send and used as both the visibility check and the key below.
-	const [ shwErrBoo, setShwErrBoo ] = React.useState( false ); // What: Show Error Boolean And Setter. Why: Pressing Send with an empty field needs to surface a validation message. How: This is set true by sndFrmFun's own guard and cleared on every subsequent send attempt.
+	const [ shoErrBoo, setShoErrBoo ] = React.useState( false ); // What: Show Error Boolean And Setter. Why: Pressing Send with an empty field needs to surface a validation message. How: This is set true by sndFrmFun's own guard and cleared on every subsequent send attempt.
 	const [ sndFalBoo, setSndFalBoo ] = React.useState( false ); // What: Send Failed Boolean And Setter. Why: A failed POST needs to surface the fallback address instead of leaving the user stuck. How: This is set inside sndFrmFun's own catch handler.
 	const [ adrCpdBoo, setAdrCpdBoo ] = React.useState( false ); // What: Address Copied Boolean And Setter. Why: The fallback "Copy address" button needs to confirm the copy actually happened. How: This is set true by copAdrFun and cleared 2400ms later.
 	// Honeypot. Bots fill every field they find; humans never see this one, so a
@@ -552,7 +553,7 @@ function ConSupCom ( { state, actions } ) {
 	const cnlFrmFun = () => { // What: Cancel Form Function. Why: Cancelling the form should discard the draft and fully reset its own transient state. How: This clears both drafts and every transient flag, then closes the form.
 
 
-		setDraSubStr( '' ); setDraMesStr( '' ); setShwErrBoo( false ); // What: Draft And Error Reset. Why: A cancelled form must not leave stale text or a stale validation message behind for next time. How: This clears both drafts and the validation-error flag.
+		setDraSubStr( '' ); setDraMesStr( '' ); setShoErrBoo( false ); // What: Draft And Error Reset. Why: A cancelled form must not leave stale text or a stale validation message behind for next time. How: This clears both drafts and the validation-error flag.
 
 		setSndFalBoo( false ); setAdrCpdBoo( false ); // What: Failure State Reset. Why: A cancelled form must not leave a stale failure/fallback state behind for next time. How: This clears both the send-failed and address-copied flags.
 
@@ -593,10 +594,10 @@ function ConSupCom ( { state, actions } ) {
 
 		if ( isaSndBoo ) return; // What: Already Sending Guard. Why: A second Send press while one request is already in flight must not fire a second, overlapping one. How: This bails out early whenever isaSndBoo is already true.
 
-		if ( !canSndBoo ) { setShwErrBoo( true ); return; } // What: Draft Validity Guard. Why: Both fields are required before anything can be sent. How: This surfaces the validation message and bails out whenever canSndBoo is false.
+		if ( !canSndBoo ) { setShoErrBoo( true ); return; } // What: Draft Validity Guard. Why: Both fields are required before anything can be sent. How: This surfaces the validation message and bails out whenever canSndBoo is false.
 
 
-		setShwErrBoo( false ); setSndFalBoo( false ); setIsaSndBoo( true ); // What: Send Attempt Reset. Why: A fresh send attempt must not carry over a stale error/failure state from a previous one. How: This clears both message flags and marks the request as now in flight.
+		setShoErrBoo( false ); setSndFalBoo( false ); setIsaSndBoo( true ); // What: Send Attempt Reset. Why: A fresh send attempt must not carry over a stale error/failure state from a previous one. How: This clears both message flags and marks the request as now in flight.
 
 
 		const reqBodStr = new URLSearchParams( { // What: Request Body String. Why: Netlify Forms expects a standard form-encoded POST body, matching the static form's own field names in index.html. How: This builds that body from the form-name, the honeypot, and the 4 real fields.
@@ -801,7 +802,7 @@ function ConSupCom ( { state, actions } ) {
 						<div className='support-form-foot'>{ /* What: Support Form Foot Div Element. Why: The validation/failure messages and the form's own action buttons need their own grouping at the bottom. How: This wraps whichever messages currently apply plus the Cancel/Send buttons. */ }
 
 
-							{ shwErrBoo && !canSndBoo && ( // What: Validation Message Check. Why: A validation message should only show while the form is actually invalid and the user has already tried to send. How: This renders the message only while both conditions hold.
+							{ shoErrBoo && !canSndBoo && ( // What: Validation Message Check. Why: A validation message should only show while the form is actually invalid and the user has already tried to send. How: This renders the message only while both conditions hold.
 
 
 								<span
@@ -812,7 +813,7 @@ function ConSupCom ( { state, actions } ) {
 
 							) }
 
-							{ sndFalBoo && !shwErrBoo && ( // What: Failure Message Check. Why: The fallback address should only show after an actual failed send, and not alongside an unrelated validation message. How: This renders the fallback message only while both conditions hold.
+							{ sndFalBoo && !shoErrBoo && ( // What: Failure Message Check. Why: The fallback address should only show after an actual failed send, and not alongside an unrelated validation message. How: This renders the fallback message only while both conditions hold.
 
 
 								<span
@@ -830,7 +831,7 @@ function ConSupCom ( { state, actions } ) {
 
 							) }
 
-							{ sndFalBoo && !shwErrBoo && ( // What: Copy Address Button Check. Why: The copy-address shortcut should only show alongside the fallback message above. How: This renders the button only while both conditions hold, same as the message above.
+							{ sndFalBoo && !shoErrBoo && ( // What: Copy Address Button Check. Why: The copy-address shortcut should only show alongside the fallback message above. How: This renders the button only while both conditions hold, same as the message above.
 
 
 								<ButBasCom
@@ -2609,7 +2610,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 										] }
 										value={ ( state.appearance && state.appearance.tabPlacement ) || 'bottom' }
-										ariaLabel='Tab bar placement'
+										ariLabStr='Tab bar placement'
 										onChange={ actions.setTabPlacement }
 									/>{ /* What: Segment Control Component. Why: This is the actual 3-way exclusive control for the tab-bar placement. How: This is bound to the persisted tabPlacement, saving via actions.setTabPlacement. */ }
 

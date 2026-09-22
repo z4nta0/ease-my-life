@@ -2148,6 +2148,40 @@ attribute) are ordered into these 8 tiers, top to bottom:
     `useState` line, splitting it into its own single-line group rather
     than folding it into the same 0-blank run as the two plain bindings
     above it.
+  - **A mixed-shape run of genuinely independent declarations gets
+    physically reordered to cluster same-shape declarations together,
+    not just spaced according to whatever order they happened to be
+    written in.** This is a different, further step beyond the shape-
+    split spacing rule just above: that rule only governs blank-line
+    treatment for a run in its existing order, while this one governs
+    whether the run's own order is worth changing in the first place.
+    A run qualifies when every declaration in it is independent of
+    every other one, meaning none of them reads a value another
+    declaration in that same run just produced (a genuine dependency
+    chain, e.g. a destructured `useState` pair immediately consumed by
+    the next line, must stay in its original relative position; only
+    the mutually-independent members of the run are free to move).
+    React's own Rules of Hooks make this safe to apply to a run of
+    `React.useState`/`React.useRef`/etc. calls specifically: React only
+    requires hook calls to run in a *consistent* order across every
+    render, not any particular order, so reordering a set of
+    unconditional, independent hook calls relative to each other
+    changes nothing observable. Once reordered, each same-shape cluster
+    is spaced and column-aligned exactly per the ordinary rules above
+    (0-blank/aligned within a cluster, 1 blank between clusters). Pick
+    which cluster leads by whichever shape appeared first in the
+    original, unreordered sequence, and preserve each cluster's own
+    internal relative order from that original sequence; don't
+    introduce a new ordering within a cluster that wasn't already
+    there. See `RemManCom` in `reminders.jsx` for the reference example:
+    its own `opeIdeStr`/`newAddRef`/`insIdeStr`/`opeEdiRef`/`froIndRef`/
+    `preOpeRef` declarations were originally interleaved
+    useState/useRef/useState/useRef/useRef/useRef (each pair 1-blank
+    apart, since the shape kept alternating); grouped into a
+    `useState` cluster (`opeIdeStr`, `insIdeStr`, in their own original
+    relative order) followed by a `useRef` cluster (`newAddRef`,
+    `opeEdiRef`, `froIndRef`, `preOpeRef`, likewise), since `useState`
+    was the first shape to appear originally.
   - **Even within the same keyword and the same plain/destructured
     shape, a run further splits by whether each declaration's own
     VALUE is single-line or spans multiple lines** (a function body,
@@ -2748,6 +2782,56 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     substring search, but none of them mean "Okay" at all; they name
     the real OKLab color space, an unrelated technical term that
     happens to share the same 2 letters, left untouched)
+  - `shw` → `sho` (Show — found in `shwYeaBoo` (`reminders.jsx`),
+    `shwAllBoo`/`shwConBoo`/`shwEntArr`/`shwPicArr`/`shwRemBoo`/
+    `disShwBoo` (`tab-data.jsx`), `shwErrBoo`/`setShwErrBoo`
+    (`tab-settings.jsx`), and `shwCheBoo`/`shwFeaBoo`/`shwFeaIntBoo`/
+    `setShwFeaIntBoo`/`onbShwNorBoo` (`tab-today.jsx`), fixed across all
+    4 files in one sweep; `sho` was already the established, correct
+    code for this exact word in several OTHER identifiers in this same
+    codebase (`shoSavBoo`/`shoDriBoo`/`shoWgtBoo` in `tab-picker.jsx`,
+    `shoRemBoo` in `tab-stats.jsx`), so no escalation was needed, this
+    was purely an inconsistent spelling of a word already spelled
+    correctly elsewhere. Note `sho` is a heavily multi-meaning segment
+    even before this fix, already carrying Should (`shoDedBoo` in
+    `pickers.js`, `shoPulBoo` in `onboarding-tour-runner.jsx`), Short
+    (`shoPilNum` in `help-mode.jsx`), and Shown (`shoOrdRef`/`shoArr` in
+    `tab-today.jsx`) alongside Show; a name's own surrounding context
+    disambiguates which of the four "sho" stands for in practice, the
+    same reasoning already used for `con`/`sta`/`per`/`fre`/`dow`
+    elsewhere in this list. Every comment referencing these identifiers
+    already spelled "Show" out in full, so none needed text changes,
+    only the identifiers themselves were wrong. No literal-name
+    collision in any of the 4 files: none of the corrected names were
+    already in use anywhere)
+  - `knd` → `kin` (Kind — found in `kndValStr`/`kndWorStr`
+    (`reminders.jsx`) and `kndStr` (`tab-today.jsx`), fixed across both
+    files in one sweep; `kin` was already the established, correct code
+    for this exact word elsewhere in this codebase (`kinStr` in
+    `settings-previews.jsx`), so no escalation was needed, this was
+    purely an inconsistent spelling of a word already spelled correctly
+    elsewhere. Every comment referencing these identifiers already
+    spelled "Kind" out in full, so none needed text changes, only the
+    identifiers themselves were wrong. No collision: neither `kinValStr`/
+    `kinWorStr` nor `kinStr` (in `tab-today.jsx`'s own scope) was already
+    in use anywhere)
+  - `snp` → `sna` (Snapshot/Snap — found in `draSnpObj`/`snpOptRef`/
+    `snpTasObj` (`reminders.jsx`), `curSnpObj`/`preSnpObj`/`snpIteObj`/
+    `snpPicObj`/`snpTasObj` (`store.jsx`), `snpIteObj`/`snpRef`
+    (`tab-data.jsx`), and `ordSnpRef` (`tab-today.jsx`), fixed across
+    all 4 files in one sweep; `sna` was already the established,
+    correct code for this exact word in several OTHER identifiers in
+    this same codebase (`genSnaObj` in `day-log.jsx`, `busSnaObj` in
+    `eml-tour-bus.js`, `recSnaArr` in `reorder.js`, `ediSnaRef`/
+    `snaIteObj`/`iteSnaArr` in `tab-picker.jsx`), so no escalation was
+    needed, this was purely an inconsistent spelling of a word already
+    spelled correctly elsewhere; `tab-picker.jsx`'s own `snaIteObj` in
+    particular already meant the exact same thing (a snapshot value
+    passed to a replaceItem-style call) as the corrected `snpIteObj`
+    instances. Every comment referencing these identifiers already
+    spelled "Snapshot" out in full, so none needed text changes, only
+    the identifiers themselves were wrong. No collision: none of the
+    corrected names were already in use anywhere)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

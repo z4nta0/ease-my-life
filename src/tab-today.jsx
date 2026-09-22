@@ -882,15 +882,15 @@ function LoaCarCom ( { picker : picRecObj, info : infRecObj } ) {
 
 
 	const staStr = infRecObj?.status || 'pending'; // What: Status String. Why: Every branch below renders differently depending on this slot's own current phase. How: This reads infRecObj's own status, defaulting to 'pending' before the effect even sets one.
-	const kndStr = infRecObj?.kind || 'pick';       // What: Kind String. Why: A non-pick slot (day-off/charging) has no candidate reel and a fixed settled name instead. How: This reads infRecObj's own kind, defaulting to 'pick'.
+	const kinStr = infRecObj?.kind || 'pick';       // What: Kind String. Why: A non-pick slot (day-off/charging) has no candidate reel and a fixed settled name instead. How: This reads infRecObj's own kind, defaulting to 'pick'.
 
-	const finNamStr = kndStr === 'dayoff' // What: Final Name String. Why: The settled state needs one final display name, computed differently per kind. How: This resolves a day-off's own cardText (or the picker's own name), a fixed charging message, or the actually-picked candidate's own name.
+	const finNamStr = kinStr === 'dayoff' // What: Final Name String. Why: The settled state needs one final display name, computed differently per kind. How: This resolves a day-off's own cardText (or the picker's own name), a fixed charging message, or the actually-picked candidate's own name.
 		? ( infRecObj.cardText || picRecObj.name )
-		: kndStr === 'charging'
+		: kinStr === 'charging'
 		? 'No eligible items for today'
 		: ( infRecObj && infRecObj.candidates ? infRecObj.candidates.find( ( curCanObj ) => curCanObj.id === infRecObj.pickedId )?.name : '' );
 
-	const hasReeBoo = kndStr === 'pick' && infRecObj && infRecObj.candidates && infRecObj.candidates.length; // What: Has Reel Boolean. Why: Only an actual pick slot with real candidates gets the cycling reel; day-off/charging slots just show dots while active. How: This is true only when every one of those conditions holds.
+	const hasReeBoo = kinStr === 'pick' && infRecObj && infRecObj.candidates && infRecObj.candidates.length; // What: Has Reel Boolean. Why: Only an actual pick slot with real candidates gets the cycling reel; day-off/charging slots just show dots while active. How: This is true only when every one of those conditions holds.
 
 
 	return (
@@ -1199,7 +1199,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 									min={ 1 }
 									max={ 60 }
 									onSet={ setSooFun }
-									ariaLabel={ `${ sooLabStr } for ${ item.name }` }
+									ariLabStr={ `${ sooLabStr } for ${ item.name }` }
 								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Soonest/Shortest day count. How: This is passed sooDayNum and setSooFun, clamped to [1, 60]. */ }
 
 								<span className='np-ease-unit'>{ uniWorFun( sooDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for sooDayNum. */ }
@@ -1250,7 +1250,7 @@ const EntryEditor = React.forwardRef( function EntryEditor ( { item, picker, act
 									min={ 1 }
 									max={ 90 }
 									onSet={ setLatFun }
-									ariaLabel={ `${ latLabStr } for ${ item.name }` }
+									ariLabStr={ `${ latLabStr } for ${ item.name }` }
 								/>{ /* What: Number Stepper Component. Why: This is the actual editable control for the Latest/Longest day count. How: This is passed latDayNum and setLatFun, clamped to [1, 90]. */ }
 
 								<span className='np-ease-unit'>{ uniWorFun( latDayNum ) }</span>{ /* What: Ease Unit Span Element. Why: A bare number needs its own unit word right next to the stepper. How: This renders uniWorFun's own result for latDayNum. */ }
@@ -2978,7 +2978,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const cheDonBoo   = !!( state.onboarding && state.onboarding.checklistDone ); // What: Checklist Done Boolean. Why: This decides whether the mini-tour checklist phase should still be showing at all. How: This reads state.onboarding.checklistDone.
 	const mainEndBoo  = state.pickers.some( ( curPicObj ) => curPicObj.hidden && ONB_SPI_ARR.includes( curPicObj.id ) ) // What: Main Tour Ended Boolean. Why: Whether the main Welcome Tour has concluded (sample pickers/tasks flip hidden exactly once, at that tour's last step) decides whether the checklist phase should be considered at all, independent of cheDonBoo. How: This is true once any sample picker OR sample task is already flagged hidden.
 		|| ( state.tasks || [] ).some( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id ) );
-	const shwCheBoo   = mainEndBoo && !cheDonBoo; // What: Show Checklist Boolean. Why: The whole checklist phase (launcher cards, Page Tours, the closing Generate card) should only show between the main tour ending and the checklist actually concluding. How: This combines mainEndBoo with the negation of cheDonBoo.
+	const shoCheBoo   = mainEndBoo && !cheDonBoo; // What: Show Checklist Boolean. Why: The whole checklist phase (launcher cards, Page Tours, the closing Generate card) should only show between the main tour ending and the checklist actually concluding. How: This combines mainEndBoo with the negation of cheDonBoo.
 
 	/**
 	 * rptVisBoo = Replay-Page-Tours Visible Boolean
@@ -2989,7 +2989,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * checklistDone itself" reasoning as groEntFun's own picker-sample
 	 * cards; no name-collision concept applies here (a page tour isn't
 	 * named after anything the user could "already have"), just whether
-	 * it's still unresolved. Kept separate from shwCheBoo since shwCheBoo
+	 * it's still unresolved. Kept separate from shoCheBoo since shoCheBoo
 	 * ALSO drives the closing Generate card's entire real side-effect
 	 * chain (see the generateCardResolved effect further below); reusing
 	 * it here would risk resurrecting that "auto-generate a fresh list"
@@ -3012,10 +3012,10 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * finish, X to cancel, same as any other tutorial card) it never
 	 * comes back on its own, and the whole section just stops rendering
 	 * once every one of them is resolved. Mutually exclusive with
-	 * shwCheBoo by construction (cheDonBoo can only ever be true once
-	 * shwCheBoo's own gate has already gone false), so there is no
+	 * shoCheBoo by construction (cheDonBoo can only ever be true once
+	 * shoCheBoo's own gate has already gone false), so there is no
 	 * ordering conflict to resolve against Page Tours, but cheDonBoo
-	 * itself, unlike shwCheBoo, never resets back to false on a Replay
+	 * itself, unlike shoCheBoo, never resets back to false on a Replay
 	 * Tour (see onboarding-welcome-tour.jsx), which is exactly why these
 	 * need Settings' replay button to explicitly clear appFeatures back to
 	 * {} to reappear, rather than reappearing automatically the way the
@@ -3030,7 +3030,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const fecDonBoo  = !!( state.onboarding && state.onboarding.appFeaturesEverCompleted ); // What: Feature-Ever-Completed Done Boolean. Why: Unlike fsrFlaBoo, this is NEVER reset by Replay Tour, set once alongside it and staying true forever after, same "permanent, one-way" semantics as cheDonBoo itself; it distinguishes "this is the user's ORIGINAL, first-ever pass" from "this is a REPLAY", since both share the identical feaStaObj shape otherwise. How: This reads state.onboarding.appFeaturesEverCompleted.
 
 	/**
-	 * shwFeaBoo = Show App Features Boolean
+	 * shoFeaBoo = Show App Features Boolean
 	 *
 	 * @summary
 	 * The section (and its rail nav entry, gated on this same boolean
@@ -3051,9 +3051,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 *
 	*/
 
-	const shwFeaBoo = cheDonBoo && ( fecDonBoo ? APP_FEA_ARR.some( ( curFeaObj ) => !feaStaObj[ curFeaObj.ideStr ] ) : !fsrFlaBoo ); // What: Show App Features Boolean. Why: See the doc comment just above. How: This branches on fecDonBoo to pick either the live "some still unresolved" check or the negation of the first-time snapshot.
+	const shoFeaBoo = cheDonBoo && ( fecDonBoo ? APP_FEA_ARR.some( ( curFeaObj ) => !feaStaObj[ curFeaObj.ideStr ] ) : !fsrFlaBoo ); // What: Show App Features Boolean. Why: See the doc comment just above. How: This branches on fecDonBoo to pick either the live "some still unresolved" check or the negation of the first-time snapshot.
 
-	React.useEffect( () => { emlTouObj.set( { showChecklist : shwCheBoo } ); }, [ shwCheBoo ] ); // What: Checklist Bus Publish Effect. Why: reminders.jsx's startAdd needs to hide ANY reminder created while the checklist is up, not just ones a mini-tour itself creates, so a user manually clicking "+" mid-onboarding doesn't clutter the list alongside the still-open launcher cards either (see the unhide side in the generateCardResolved effect further below). How: This republishes shwCheBoo onto the shared tour bus under its own showChecklist field.
+	React.useEffect( () => { emlTouObj.set( { showChecklist : shoCheBoo } ); }, [ shoCheBoo ] ); // What: Checklist Bus Publish Effect. Why: reminders.jsx's startAdd needs to hide ANY reminder created while the checklist is up, not just ones a mini-tour itself creates, so a user manually clicking "+" mid-onboarding doesn't clutter the list alongside the still-open launcher cards either (see the unhide side in the generateCardResolved effect further below). How: This republishes shoCheBoo onto the shared tour bus under its own showChecklist field.
 
 	const pagNamStr = ( state.onboarding && state.onboarding.pageToursName ) || 'Page Tours'; // What: Page Name String. Why: The Page Tours section header needs its own, possibly user-renamed, display name. How: This reads state.onboarding.pageToursName, falling back to the fixed default.
 
@@ -3083,7 +3083,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * @summary
 	 * Mirrors rptVisBoo: once cheDonBoo, mini-tour picker/task cards keep
 	 * offering themselves (per groEntFun's and reminders.jsx's own
-	 * collision-filtered checks) even though shwCheBoo itself has gone
+	 * collision-filtered checks) even though shoCheBoo itself has gone
 	 * false, so these ring/rail counts need to keep counting them too, or
 	 * the ring and the Reminders rail pill (which reuses these) would
 	 * silently stop matching what's actually rendered on screen. During
@@ -3104,28 +3104,28 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	const repActBoo = cheDonBoo && mainEndBoo; // What: Replay Active Boolean. Why: This is the shared gate every count below branches on. How: This combines cheDonBoo with mainEndBoo.
 
-	const tutPicCouNum = ( shwCheBoo || repActBoo ) // What: Tutorial Picker Count Number. Why: See the doc comment just above. How: This counts hidden sample pickers, collision-filtered only once cheDonBoo (repActBoo), 0 while neither gate is open.
+	const tutPicCouNum = ( shoCheBoo || repActBoo ) // What: Tutorial Picker Count Number. Why: See the doc comment just above. How: This counts hidden sample pickers, collision-filtered only once cheDonBoo (repActBoo), 0 while neither gate is open.
 		? state.pickers.filter( ( curPicObj ) => curPicObj.hidden && ONB_SPI_ARR.includes( curPicObj.id )
-			&& ( shwCheBoo || !ONB_CHE_OBJ.entLooFun( state, curPicObj.id ) )
-			&& ( shwCheBoo || !state.pickers.some( ( othPicObj ) => !ONB_SPI_ARR.includes( othPicObj.id ) && othPicObj.name === curPicObj.name ) ) ).length
+			&& ( shoCheBoo || !ONB_CHE_OBJ.entLooFun( state, curPicObj.id ) )
+			&& ( shoCheBoo || !state.pickers.some( ( othPicObj ) => !ONB_SPI_ARR.includes( othPicObj.id ) && othPicObj.name === curPicObj.name ) ) ).length
 		: 0;
-	const tutPicDonNum = shwCheBoo // What: Tutorial Picker Done Number. Why: The first-time phase counts every resolved sample picker card as done. How: This counts hidden sample pickers with an existing checklist entry, 0 outside shwCheBoo.
+	const tutPicDonNum = shoCheBoo // What: Tutorial Picker Done Number. Why: The first-time phase counts every resolved sample picker card as done. How: This counts hidden sample pickers with an existing checklist entry, 0 outside shoCheBoo.
 		? state.pickers.filter( ( curPicObj ) => curPicObj.hidden && ONB_SPI_ARR.includes( curPicObj.id ) && ONB_CHE_OBJ.entLooFun( state, curPicObj.id ) ).length
 		: 0;
-	const tutTasCouNum = ( shwCheBoo || repActBoo ) // What: Tutorial Task Count Number. Why: Same reasoning as tutPicCouNum, for sample reminders. How: This counts hidden sample tasks, collision-filtered only once cheDonBoo (repActBoo), 0 while neither gate is open.
+	const tutTasCouNum = ( shoCheBoo || repActBoo ) // What: Tutorial Task Count Number. Why: Same reasoning as tutPicCouNum, for sample reminders. How: This counts hidden sample tasks, collision-filtered only once cheDonBoo (repActBoo), 0 while neither gate is open.
 		? ( state.tasks || [] ).filter( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id )
-			&& ( shwCheBoo || !ONB_CHE_OBJ.entLooFun( state, curTasObj.id ) )
-			&& ( shwCheBoo || !( state.tasks || [] ).some( ( othTasObj ) => !ONB_STI_ARR.includes( othTasObj.id ) && othTasObj.name === curTasObj.name ) ) ).length
+			&& ( shoCheBoo || !ONB_CHE_OBJ.entLooFun( state, curTasObj.id ) )
+			&& ( shoCheBoo || !( state.tasks || [] ).some( ( othTasObj ) => !ONB_STI_ARR.includes( othTasObj.id ) && othTasObj.name === curTasObj.name ) ) ).length
 		: 0;
-	const tutTasDonNum = shwCheBoo // What: Tutorial Task Done Number. Why: The first-time phase counts every resolved sample task card as done. How: This counts hidden sample tasks with an existing checklist entry, 0 outside shwCheBoo.
+	const tutTasDonNum = shoCheBoo // What: Tutorial Task Done Number. Why: The first-time phase counts every resolved sample task card as done. How: This counts hidden sample tasks with an existing checklist entry, 0 outside shoCheBoo.
 		? ( state.tasks || [] ).filter( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id ) && ONB_CHE_OBJ.entLooFun( state, curTasObj.id ) ).length
 		: 0;
-	const pagTouCouNum = shwCheBoo ? ONB_EPT_ARR.length // What: Page Tour Count Number. Why: Same replay-continuation treatment as the picker/task counts above: still counted while rptVisBoo cards are on screen, but (matching the render map's own resolved-cards-vanish behavior) only the still-unresolved ones. How: This is every tour during shwCheBoo, only the unresolved ones during rptVisBoo, 0 otherwise.
+	const pagTouCouNum = shoCheBoo ? ONB_EPT_ARR.length // What: Page Tour Count Number. Why: Same replay-continuation treatment as the picker/task counts above: still counted while rptVisBoo cards are on screen, but (matching the render map's own resolved-cards-vanish behavior) only the still-unresolved ones. How: This is every tour during shoCheBoo, only the unresolved ones during rptVisBoo, 0 otherwise.
 		: rptVisBoo ? ONB_EPT_ARR.filter( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( state, curTouObj.id ) ).length
 		: 0;
-	const pagTouDonNum = shwCheBoo ? ONB_EPT_ARR.filter( ( curTouObj ) => ONB_CHE_OBJ.entLooFun( state, curTouObj.id ) ).length : 0; // What: Page Tour Done Number. Why: The first-time phase counts every resolved page tour as done. How: This counts resolved ONB_EPT_ARR entries, 0 outside shwCheBoo.
-	const genCarCouNum = shwCheBoo ? 1 : 0; // What: Generate Card Count Number. Why: The closing Generate card only ever contributes 1 slot to the total, and only during the first-time checklist phase. How: This is 1 while shwCheBoo, otherwise 0.
-	const genCarDonNum = ( shwCheBoo && ONB_CHE_OBJ.entLooFun( state, ONB_GII_STR ) ) ? 1 : 0; // What: Generate Card Done Number. Why: The closing Generate card's own done contribution mirrors genCarCouNum. How: This is 1 only while shwCheBoo AND the Generate item already has a checklist entry.
+	const pagTouDonNum = shoCheBoo ? ONB_EPT_ARR.filter( ( curTouObj ) => ONB_CHE_OBJ.entLooFun( state, curTouObj.id ) ).length : 0; // What: Page Tour Done Number. Why: The first-time phase counts every resolved page tour as done. How: This counts resolved ONB_EPT_ARR entries, 0 outside shoCheBoo.
+	const genCarCouNum = shoCheBoo ? 1 : 0; // What: Generate Card Count Number. Why: The closing Generate card only ever contributes 1 slot to the total, and only during the first-time checklist phase. How: This is 1 while shoCheBoo, otherwise 0.
+	const genCarDonNum = ( shoCheBoo && ONB_CHE_OBJ.entLooFun( state, ONB_GII_STR ) ) ? 1 : 0; // What: Generate Card Done Number. Why: The closing Generate card's own done contribution mirrors genCarCouNum. How: This is 1 only while shoCheBoo AND the Generate item already has a checklist entry.
 
 	const donCouNum = entArr.filter( ( curEntObj ) => curEntObj.done ).length + remDonNum
 		+ tutPicDonNum + tutTasDonNum + pagTouDonNum + genCarDonNum; // What: Done Count Number. Why: This is the ring's own numerator, combining every countable source of "done" on the page. How: This sums done picker/day-off entries, done ring reminders, and every tutorial-card category's own done count.
@@ -3832,7 +3832,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		return () => { conEle.removeEventListener( 'scroll', onScrFun ); window.removeEventListener( 'scroll', onScrFun ); }; // What: Effect Cleanup Return. Why: Neither listener may outlive this effect run. How: This removes both.
 
 
-	}, [ groArr.length, blkOrdArr, shwFeaBoo ] ); // What: Effect Dependency Array. Why: A changed group count, block order, or App Features visibility can all change which sections even exist to spy on. How: Each of these 3 can add/remove a whole section.
+	}, [ groArr.length, blkOrdArr, shoFeaBoo ] ); // What: Effect Dependency Array. Why: A changed group count, block order, or App Features visibility can all change which sections even exist to spy on. How: Each of these 3 can add/remove a whole section.
 
 	const jmpGroFun = ( namStr ) => { // What: Jump Group Function. Why: This is the actual click handler behind every rail button, smooth-scrolling the content column to the named section. How: This resolves the sticky offset, computes a target scroll position, pins the group if it can't reach the spy line, then scrolls.
 
@@ -3893,7 +3893,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * @summary
 	 * FeaTipCom is shown exactly once, the first time the App
 	 * Features section is on screen with a real generation already
-	 * behind it. shwFeaBoo alone (gated on cheDonBoo) already guarantees
+	 * behind it. shoFeaBoo alone (gated on cheDonBoo) already guarantees
 	 * a generation happened, since the closing checklist item IS the
 	 * generate() call, so no separate today.generatedAt check is needed
 	 * here. Delayed a beat past genActBoo flipping back to false rather
@@ -3908,20 +3908,20 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	*/
 
 	const feaIntSeeBoo = !!( state.onboarding && state.onboarding.appFeaturesIntroSeen ); // What: Feature Intro Seen Boolean. Why: The tip must never show a second time once the user has already seen it. How: This reads state.onboarding.appFeaturesIntroSeen.
-	const [ shwFeaIntBoo, setShwFeaIntBoo ] = React.useState( false ); // What: Show Feature Intro Boolean And Setter. Why: See the doc comment just above. How: This is set by the effect below.
+	const [ shoFeaIntBoo, setShoFeaIntBoo ] = React.useState( false ); // What: Show Feature Intro Boolean And Setter. Why: See the doc comment just above. How: This is set by the effect below.
 
-	React.useEffect( () => { // What: Feature Intro Timing Effect. Why: See the doc comment just above. How: This stages shwFeaIntBoo true after a fixed delay, only while every gating condition holds, and clears it immediately whenever any of them stop holding.
-
-
-		if ( !shwFeaBoo || feaIntSeeBoo || genActBoo ) { setShwFeaIntBoo( false ); return; } // What: Not Eligible Guard. Why: The tip must not show at all outside these 3 conditions. How: This clears shwFeaIntBoo and bails out early whenever any of them fails.
+	React.useEffect( () => { // What: Feature Intro Timing Effect. Why: See the doc comment just above. How: This stages shoFeaIntBoo true after a fixed delay, only while every gating condition holds, and clears it immediately whenever any of them stop holding.
 
 
-		const feaIntTmoNum = setTimeout( () => setShwFeaIntBoo( true ), 500 ); // What: Feature Intro Timeout Number. Why: This is the actual delayed reveal described in the doc comment above. How: This sets shwFeaIntBoo true 500ms later.
+		if ( !shoFeaBoo || feaIntSeeBoo || genActBoo ) { setShoFeaIntBoo( false ); return; } // What: Not Eligible Guard. Why: The tip must not show at all outside these 3 conditions. How: This clears shoFeaIntBoo and bails out early whenever any of them fails.
+
+
+		const feaIntTmoNum = setTimeout( () => setShoFeaIntBoo( true ), 500 ); // What: Feature Intro Timeout Number. Why: This is the actual delayed reveal described in the doc comment above. How: This sets shoFeaIntBoo true 500ms later.
 
 		return () => clearTimeout( feaIntTmoNum ); // What: Effect Cleanup Return. Why: A stale reveal must not fire after a newer effect run has already begun. How: This cancels feaIntTmoNum.
 
 
-	}, [ shwFeaBoo, feaIntSeeBoo, genActBoo ] ); // What: Effect Dependency Array. Why: Any of these 3 changing can flip whether the tip should be showing at all. How: shwFeaBoo/feaIntSeeBoo/genActBoo are exactly the 3 conditions the guard above checks.
+	}, [ shoFeaBoo, feaIntSeeBoo, genActBoo ] ); // What: Effect Dependency Array. Why: Any of these 3 changing can flip whether the tip should be showing at all. How: shoFeaBoo/feaIntSeeBoo/genActBoo are exactly the 3 conditions the guard above checks.
 
 	/**
 	 * Edit Mode = Edit Mode Toggle State
@@ -3940,7 +3940,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const [ banCloBoo, setBanCloBoo ]     = React.useState( false ); // What: Banner Closing Boolean And Setter. Why: See the doc comment just above. How: This is set true right when Edit Mode ends and cleared once the collapse animation finishes.
 	const groDndRef      = React.useRef( null ); // What: Group Dnd Reference. Why: startGroDraFun below needs a handle on the groups wrapper to scope the drag container to. How: This is attached to the .groups-dnd div's own ref prop further down.
 	const shoOrdRef      = React.useRef( [] );   // What: Shown Order Reference. Why: Drop indices from REORDER are DOM positions, so they must resolve against whatever order the content column was LAST rendered from, not the unpadded blkOrdArr. How: This is written just before the return JSX below and read by startGroDraFun's own onDrop.
-	const ordSnpRef      = React.useRef( null ); // What: Order Snapshot Reference. Why: A snapshot taken on entering Edit Mode lets Cancel/Escape discard every drag made during the whole session. How: This is populated by enterEdiFun and read/cleared by exitEdiFun.
+	const ordSnaRef      = React.useRef( null ); // What: Order Snapshot Reference. Why: A snapshot taken on entering Edit Mode lets Cancel/Escape discard every drag made during the whole session. How: This is populated by enterEdiFun and read/cleared by exitEdiFun.
 	const [ merPmpObj, setMerPmpObj ] = React.useState( null ); // What: Merge Prompt Object And Setter. Why: A pending group-rename that would MERGE into an existing group is held here until the user confirms. How: This is set by reqRenFun below and read by GroHeaCom's own mergePending prop.
 
 	const reqRenFun = ( oldNamStr, rawNewStr ) => { // What: Request Rename Function. Why: A group header's own rename entry point needs to normalize the typed name and, if it resolves to a DIFFERENT existing group, defer to a merge confirm rather than rename straight away. How: This normalizes rawNewStr, then either stages merPmpObj or calls actions.renameGroup directly.
@@ -3959,10 +3959,10 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	};
 
-	const enterEdiFun = () => { // What: Enter Edit Function. Why: Entering Edit Mode needs to snapshot the current order first, so a later Cancel/Escape has something to revert to, and should close any open editor/confirm along the way. How: This stages ordSnpRef, then clears activeEditor/cfmGenBoo before flipping ediModBoo on.
+	const enterEdiFun = () => { // What: Enter Edit Function. Why: Entering Edit Mode needs to snapshot the current order first, so a later Cancel/Escape has something to revert to, and should close any open editor/confirm along the way. How: This stages ordSnaRef, then clears activeEditor/cfmGenBoo before flipping ediModBoo on.
 
 
-		ordSnpRef.current = {
+		ordSnaRef.current = {
 
 
 			groupOrder  : ( state.groupOrder || [] ).slice(),
@@ -3978,15 +3978,15 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	};
 
-	const exitEdiFun = ( comBoo ) => { // What: Exit Edit Function. Why: Leaving Edit Mode needs to either keep or discard every drag made during the session, then play the banner's own collapse-out. How: This reverts to ordSnpRef's own snapshot unless comBoo, clears the snapshot, flips ediModBoo off, and stages banCloBoo.
+	const exitEdiFun = ( comBoo ) => { // What: Exit Edit Function. Why: Leaving Edit Mode needs to either keep or discard every drag made during the session, then play the banner's own collapse-out. How: This reverts to ordSnaRef's own snapshot unless comBoo, clears the snapshot, flips ediModBoo off, and stages banCloBoo.
 
 
 		if ( banCloBoo ) return; // What: Already Closing Guard. Why: A close already in flight must not be re-triggered by a second call. How: This bails out early while banCloBoo is already true.
 
 
-		if ( !comBoo && ordSnpRef.current ) actions.setTodayOrder( ordSnpRef.current.groupOrder, ordSnpRef.current.pickerOrder ); // What: Revert Branch. Why: Cancel/Escape must discard every drag made this session, restoring exactly what was snapshotted on entry. How: This writes ordSnpRef's own snapshot back via actions.setTodayOrder, only when comBoo is false.
+		if ( !comBoo && ordSnaRef.current ) actions.setTodayOrder( ordSnaRef.current.groupOrder, ordSnaRef.current.pickerOrder ); // What: Revert Branch. Why: Cancel/Escape must discard every drag made this session, restoring exactly what was snapshotted on entry. How: This writes ordSnaRef's own snapshot back via actions.setTodayOrder, only when comBoo is false.
 
-		ordSnpRef.current = null; // What: Snapshot Clear. Why: The snapshot is no longer needed once this session has fully ended. How: This clears ordSnpRef back to null.
+		ordSnaRef.current = null; // What: Snapshot Clear. Why: The snapshot is no longer needed once this session has fully ended. How: This clears ordSnaRef back to null.
 
 		setEdiModBoo( false ); // What: Edit Mode Off. Why: This is the actual mode exit. How: This flips ediModBoo to false.
 
@@ -4499,7 +4499,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		actions.replaceTodayEntries( nexEntArr, { resetStreak : isaAutBoo } ); // What: Replace Today Entries Call. Why: This is the actual commit, writing nexEntArr as the new state.today.entries. How: This calls actions.replaceTodayEntries, resetting the streak claim only for an auto-run.
 		actions.markGenerated(); // What: Mark Generated Call. Why: state.today.generatedAt (and every anchor/count derived from it) needs to reflect this fresh generation. How: This calls actions.markGenerated.
 
-		if ( cheDonBoo && APP_FEA_ARR.every( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ) ) { // What: Feature Section Resolve Guard. Why: The App Features section (see shwFeaBoo's own doc comment above) is only allowed to finally disappear here, at a real generation boundary, not the instant the last tutorial resolves; checked fresh on every genFun call (both manual Regenerate and the Daily Generator funnel through this same function) rather than only once, so a generation that happens to land after the very last tutorial finishes is what actually hides it. How: This flips both resolution flags only once every App Feature is already done.
+		if ( cheDonBoo && APP_FEA_ARR.every( ( curFeaObj ) => feaStaObj[ curFeaObj.ideStr ] ) ) { // What: Feature Section Resolve Guard. Why: The App Features section (see shoFeaBoo's own doc comment above) is only allowed to finally disappear here, at a real generation boundary, not the instant the last tutorial resolves; checked fresh on every genFun call (both manual Regenerate and the Daily Generator funnel through this same function) rather than only once, so a generation that happens to land after the very last tutorial finishes is what actually hides it. How: This flips both resolution flags only once every App Feature is already done.
 
 
 			actions.setOnboarding( { appFeaturesSectionResolved : true, appFeaturesEverCompleted : true } ); // What: Set Onboarding Call. Why: fecDonBoo is the permanent half of this pair, see its own doc comment above for why it must never reset alongside fsrFlaBoo on a Replay Tour. How: This writes both flags true.
@@ -4740,8 +4740,8 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	}, [ state.pickers, state.daily.pickerIds, state.holidays ] );
 
-	const hasTutCarBoo = shwCheBoo; // What: Has Tutorial Cards Boolean. Why: onbNoRunBoo's own visibility is suppressed while the mini-tour checklist is still up (any launcher card, checked or not, until cheDonBoo), since the page isn't actually empty then, it's full of tutorial cards instead of real picks; reappears normally once the checklist concludes and there's still genuinely nothing to run. How: This is just shwCheBoo, given its own name here for readability at the call site below.
-	const onbShwNorBoo = !onbCreBoo && obEveBus.phase !== 'tour'
+	const hasTutCarBoo = shoCheBoo; // What: Has Tutorial Cards Boolean. Why: onbNoRunBoo's own visibility is suppressed while the mini-tour checklist is still up (any launcher card, checked or not, until cheDonBoo), since the page isn't actually empty then, it's full of tutorial cards instead of real picks; reappears normally once the checklist concludes and there's still genuinely nothing to run. How: This is just shoCheBoo, given its own name here for readability at the call site below.
+	const onbShoNorBoo = !onbCreBoo && obEveBus.phase !== 'tour'
 		&& onbNoRunBoo && entArr.length === 0 && !hasTutCarBoo; // What: Onboarding Show No-Run Boolean. Why: This is the actual final gate the JSX below renders from. How: This combines every condition above: not the create card, not mid-tour, no runnable picker, no entries at all, and no tutorial cards masking the emptiness.
 
 	const begCreFun = () => { // What: Begin Create Function. Why: The empty-state's own CTA needs to jump to Pickers with the create form already open and prefilled. How: This publishes a startCreate request onto the shared tour bus, then navigates to the Pickers tab.
@@ -4792,21 +4792,21 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	} );
 
-	const strMinFun = ( kndStr, ideStr ) => { // What: Start Mini-Tour Function. Why: Every launcher card's own Play button (or row click) funnels through this one dispatcher, since which state it actually starts depends on kndStr. How: This dispatches picker/pageTour/appFeature tours up to the app level, otherwise stages a local reminder mini-tour.
+	const strMinFun = ( kinStr, ideStr ) => { // What: Start Mini-Tour Function. Why: Every launcher card's own Play button (or row click) funnels through this one dispatcher, since which state it actually starts depends on kinStr. How: This dispatches picker/pageTour/appFeature tours up to the app level, otherwise stages a local reminder mini-tour.
 
 
-		if ( kndStr === 'picker' ) onStartPickerTour( ideStr );
+		if ( kinStr === 'picker' ) onStartPickerTour( ideStr );
 
-		else if ( kndStr === 'pageTour' ) onStartPageTour( ideStr );
+		else if ( kinStr === 'pageTour' ) onStartPageTour( ideStr );
 
-		else if ( kndStr === 'appFeature' ) onStartAppFeatureTour( ideStr );
+		else if ( kinStr === 'appFeature' ) onStartAppFeatureTour( ideStr );
 
-		else setActMinTouObj( { kind : kndStr, id : ideStr } );
+		else setActMinTouObj( { kind : kinStr, id : ideStr } );
 
 
 	};
 
-	const uncTutFun = ( kndStr, ideStr ) => actions.setChecklistItem( ideStr, null ); // What: Uncheck Tutorial Function. Why: This un-resolves an already-resolved launcher card (skipped/cancelled/finished) back to pending, so its mini-tour can be redone; it never touches the sample itself, see onboarding-checklist.js. How: This calls actions.setChecklistItem with a null patch.
+	const uncTutFun = ( kinStr, ideStr ) => actions.setChecklistItem( ideStr, null ); // What: Uncheck Tutorial Function. Why: This un-resolves an already-resolved launcher card (skipped/cancelled/finished) back to pending, so its mini-tour can be redone; it never touches the sample itself, see onboarding-checklist.js. How: This calls actions.setChecklistItem with a null patch.
 	const uncFeaFun = ( ideStr ) => actions.setAppFeatureItem( ideStr, null );        // What: Uncheck Feature Function. Why: Same idea as uncTutFun, but for App Features, which live in their own map rather than the checklist, see onboarding-app-features.jsx's own header comment for why. How: This calls actions.setAppFeatureItem with a null patch.
 
 	/**
@@ -5000,7 +5000,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 				 * was up, whether by finishing a mini-tour or just the
 				 * user clicking "+"/"Add New Picker" themselves (see
 				 * reminders.jsx's startAdd and tab-picker.jsx's onCreate,
-				 * both gated on the shwCheBoo bus field), was seeded
+				 * both gated on the shoCheBoo bus field), was seeded
 				 * hidden so it didn't clutter the list alongside the
 				 * still-open launcher cards. Surfaces them all now, right
 				 * before genFun actually runs. Excludes the eternal
@@ -5434,10 +5434,10 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 								}
 
-								if ( curIdeStr === '__pageTours' ) { // What: Page Tours Rail Branch. Why: Page Tours only ever gets a rail entry while it is actually meant to be showing. How: This returns null unless either shwCheBoo or rptVisBoo holds, otherwise the Page Tours rail button.
+								if ( curIdeStr === '__pageTours' ) { // What: Page Tours Rail Branch. Why: Page Tours only ever gets a rail entry while it is actually meant to be showing. How: This returns null unless either shoCheBoo or rptVisBoo holds, otherwise the Page Tours rail button.
 
 
-									if ( !shwCheBoo && !rptVisBoo ) return null;
+									if ( !shoCheBoo && !rptVisBoo ) return null;
 
 
 									const pagDonNum = ONB_EPT_ARR.filter( ( curTouObj ) => !!ONB_CHE_OBJ.entLooFun( state, curTouObj.id ) ).length; // What: Page Done Number. Why: The rail entry needs its own live done count. How: This counts resolved ONB_EPT_ARR entries.
@@ -5512,7 +5512,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 							} ) }
-							{ shwFeaBoo && ( // What: App Features Rail Visibility Check. Why: Pinned last always, not part of blkOrdArr/state.groupOrder, so it can't be dragged around in Edit Mode and always renders after every real group; see shwFeaBoo's own doc comment above for the render gate. How: This renders the App Features rail entry only while shwFeaBoo is true.
+							{ shoFeaBoo && ( // What: App Features Rail Visibility Check. Why: Pinned last always, not part of blkOrdArr/state.groupOrder, so it can't be dragged around in Edit Mode and always renders after every real group; see shoFeaBoo's own doc comment above for the render gate. How: This renders the App Features rail entry only while shoFeaBoo is true.
 
 
 								<li key='__appFeatures'>{ /* What: App Features List Item Element. Why: App Features gets its own pinned-last rail entry whenever it is visible at all. How: This wraps the App Features rail button below. */ }
@@ -5652,20 +5652,20 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 										<RemSecCom
 											key='__reminders'
-											state={ state }
-											actions={ actions }
-											editMode={ ediModBoo }
-											onGripDown={ startGroDraFun }
-											logOpen={ opeLogStr === '__reminders' }
-											onToggleLog={ () => togLogFun( '__reminders' ) }
-											leavingTaskIds={ lvgTasSet }
-											arrivingTaskIds={ arvTasSet }
-											activeEditor={ activeEditor }
-											setActiveEditor={ setActiveEditor }
-											onPlayTutorial={ strMinFun }
-											onUncheckTutorial={ uncTutFun }
-											checklistExiting={ cheExiBoo }
-											sectionRef={ ( curEle ) => { secRefObj.current[ '__reminders' ] = curEle; } }
+											staAppObj={ state }
+											actStoObj={ actions }
+											ediModBoo={ ediModBoo }
+											onGriDowFun={ startGroDraFun }
+											logOpeBoo={ opeLogStr === '__reminders' }
+											onTogLogFun={ () => togLogFun( '__reminders' ) }
+											leaTasSet={ lvgTasSet }
+											arvTasSet={ arvTasSet }
+											actEdiStr={ activeEditor }
+											setActEdiStr={ setActiveEditor }
+											onPlaTutFun={ strMinFun }
+											onUncTutFun={ uncTutFun }
+											cheExiBoo={ cheExiBoo }
+											secRefFun={ ( curEle ) => { secRefObj.current[ '__reminders' ] = curEle; } }
 										/> // What: Reminder Section Component. Why: This is the whole Reminders block, sharing every reorder/editor/mini-tour mechanism the rest of Today uses. How: This is passed every relevant piece of local state/handlers, keyed by the '__reminders' sentinel.
 
 									);
@@ -5673,13 +5673,13 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 								}
 
-								if ( curIdeStr === '__pageTours' ) { // What: Page Tours Section Branch. Why: Page Tours only ever gets a section while it is actually meant to be showing. How: This returns null unless either shwCheBoo or rptVisBoo holds, otherwise the full Page Tours section.
+								if ( curIdeStr === '__pageTours' ) { // What: Page Tours Section Branch. Why: Page Tours only ever gets a section while it is actually meant to be showing. How: This returns null unless either shoCheBoo or rptVisBoo holds, otherwise the full Page Tours section.
 
 
-									if ( !shwCheBoo && !rptVisBoo ) return null;
+									if ( !shoCheBoo && !rptVisBoo ) return null;
 
 
-									const visTouArr = shwCheBoo ? ONB_EPT_ARR // What: Visible Tour Array. Why: Post-cheDonBoo (replay continuation, see rptVisBoo's own comment), only the still-unresolved tours keep showing; the ORIGINAL first-time checklist still shows every one of them, done or not, unchanged. How: This is every tour during shwCheBoo, only the unresolved ones during rptVisBoo.
+									const visTouArr = shoCheBoo ? ONB_EPT_ARR // What: Visible Tour Array. Why: Post-cheDonBoo (replay continuation, see rptVisBoo's own comment), only the still-unresolved tours keep showing; the ORIGINAL first-time checklist still shows every one of them, done or not, unchanged. How: This is every tour during shoCheBoo, only the unresolved ones during rptVisBoo.
 										: ONB_EPT_ARR.filter( ( curTouObj ) => !ONB_CHE_OBJ.entLooFun( state, curTouObj.id ) );
 									const pagDonNum = ONB_EPT_ARR.filter( ( curTouObj ) => !!ONB_CHE_OBJ.entLooFun( state, curTouObj.id ) ).length; // What: Page Done Number. Why: The section's own header needs this same live done count. How: This counts resolved ONB_EPT_ARR entries.
 
@@ -5894,7 +5894,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 						</div>
 
 
-						{ shwFeaBoo && ( // What: App Features Section Visibility Check. Why: Pinned last always, see shwFeaBoo's own doc comment above and the matching rail entry above for why this isn't part of genBlkOrdArr/state.groupOrder. How: This renders the whole App Features section only while shwFeaBoo is true.
+						{ shoFeaBoo && ( // What: App Features Section Visibility Check. Why: Pinned last always, see shoFeaBoo's own doc comment above and the matching rail entry above for why this isn't part of genBlkOrdArr/state.groupOrder. How: This renders the whole App Features section only while shoFeaBoo is true.
 
 
 							<section
@@ -5943,7 +5943,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 						) }
 
-						{ shwCheBoo && ( // What: Generate Card Visibility Check. Why: The closing checklist card only belongs while the guided checklist is still showing. How: This renders the Generate card only while shwCheBoo is true.
+						{ shoCheBoo && ( // What: Generate Card Visibility Check. Why: The closing checklist card only belongs while the guided checklist is still showing. How: This renders the Generate card only while shoCheBoo is true.
 
 
 							<div
@@ -6028,7 +6028,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 						) }
 
-						{ onbShwNorBoo && ( // What: No-Run Empty State Visibility Check. Why: This CTA only belongs to a user with real pickers but nothing runnable today. How: This renders the card only while onbShwNorBoo is true.
+						{ onbShoNorBoo && ( // What: No-Run Empty State Visibility Check. Why: This CTA only belongs to a user with real pickers but nothing runnable today. How: This renders the card only while onbShoNorBoo is true.
 
 
 							<div className='ob-create ob-create--empty ob-create--norun'>{ /* What: No-Run Empty State Div Element. Why: A user with real pickers but nothing runnable today needs its own explanatory empty state, distinct from the "no pickers at all" one above. How: This renders its own icon/heading/explanation with links out to the Data and Pickers tabs. */ }
@@ -6140,7 +6140,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 											onClick={ togEdiFun }
 										>Edit Mode</ButBasCom>{ /* What: Button Base Component. Why: This is the actual Edit Mode entry point. How: This calls togEdiFun, disabled while a generation is in flight. */ }
 
-										{ shwCheBoo ? ( // What: Checklist-Gated Regenerate Branch. Why: Every picker (sample AND any real one already created mid-checklist, see genResBoo's own comment on why those stay hidden too) is hidden until the closing Generate card runs, and genFun's own picker loop skips anything hidden, so this would always produce an empty list while still updating today.generatedAt, misleadingly showing a fresh "List generated on..." timestamp for a regenerate that couldn't actually draw anything. How: This renders a real, disabled-and-explained Regenerate instead of a working one.
+										{ shoCheBoo ? ( // What: Checklist-Gated Regenerate Branch. Why: Every picker (sample AND any real one already created mid-checklist, see genResBoo's own comment on why those stay hidden too) is hidden until the closing Generate card runs, and genFun's own picker loop skips anything hidden, so this would always produce an empty list while still updating today.generatedAt, misleadingly showing a fresh "List generated on..." timestamp for a regenerate that couldn't actually draw anything. How: This renders a real, disabled-and-explained Regenerate instead of a working one.
 
 
 											<InfTipCom
@@ -6158,7 +6158,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 											</InfTipCom>
 
 
-										) : ( // What: Working Regenerate Branch. Why: Outside the guided checklist, the real working Regenerate control belongs here instead. How: This renders the else branch, taken while shwCheBoo is false.
+										) : ( // What: Working Regenerate Branch. Why: Outside the guided checklist, the real working Regenerate control belongs here instead. How: This renders the else branch, taken while shoCheBoo is false.
 
 
 											<ButBasCom
@@ -6208,9 +6208,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 				/> // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it renders directly here. How: This is passed which variant to run plus a close handler that clears actMinTouObj.
 
 			) }
-			{ shwFeaIntBoo && ( // What: App Features Intro Check. Why: The one-time intro tip only belongs once, right when it first becomes relevant. How: This renders FeaTipCom only while shwFeaIntBoo is true.
+			{ shoFeaIntBoo && ( // What: App Features Intro Check. Why: The one-time intro tip only belongs once, right when it first becomes relevant. How: This renders FeaTipCom only while shoFeaIntBoo is true.
 
-				<FeaTipCom actStoObj={ actions } /> // What: App Features Intro Tip. Why: The App Features section needs its own one-time "One Last Thing..." intro. How: This renders only while shwFeaIntBoo is true.
+				<FeaTipCom actStoObj={ actions } /> // What: App Features Intro Tip. Why: The App Features section needs its own one-time "One Last Thing..." intro. How: This renders only while shoFeaIntBoo is true.
 
 			) }
 

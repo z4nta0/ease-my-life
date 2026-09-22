@@ -716,7 +716,7 @@ function revertEntryPending( curStaObj, curEntObj ) {
 
 	if ( !curRevObj ) return { items : curStaObj.items, pickers : curStaObj.pickers, pickLog : curStaObj.pickLog || [] }; // What: No-Revert Guard. Why: An entry that was never applied (or already reverted) has nothing to restore. How: This returns the state's own arrays untouched.
 
-	const revIdeMap = new Map( curRevObj.items.map( ( curSnpObj ) => [ curSnpObj.id, curSnpObj ] ) ); // What: Revert Identifier Map. Why: The items map below needs O(1) lookup of each item's own pre-apply snapshot. How: This maps every curRevObj.items row by its own id.
+	const revIdeMap = new Map( curRevObj.items.map( ( curSnaObj ) => [ curSnaObj.id, curSnaObj ] ) ); // What: Revert Identifier Map. Why: The items map below needs O(1) lookup of each item's own pre-apply snapshot. How: This maps every curRevObj.items row by its own id.
 
 	const nexIteArr = curStaObj.items.map( ( curIteObj ) => { // What: Next Item Array. Why: Every item must be checked for a matching snapshot to restore. How: This maps curStaObj.items, restoring a matched item's own value/weight/picks/lastPicked/chargeStep, else leaving it unchanged.
 
@@ -816,14 +816,14 @@ function applyConditionalToggle( curStaObj, nexEntArr, togEntObj, nowDoneBoo ) {
 
 			}
 
-			const preSnpObj = curConObj._cardPrev; // What: Previous Snapshot Object And Guard. Why: Un-completing the card only makes sense if it actually recorded a snapshot to restore. How: This reads curConObj's own _cardPrev field.
+			const preSnaObj = curConObj._cardPrev; // What: Previous Snapshot Object And Guard. Why: Un-completing the card only makes sense if it actually recorded a snapshot to restore. How: This reads curConObj's own _cardPrev field.
 
-			if ( !preSnpObj ) return curConObj; // What: No-Snapshot Guard. Why: A card that was never completed (or already reverted) has nothing to restore. How: This returns curConObj unchanged when preSnpObj is falsy.
+			if ( !preSnaObj ) return curConObj; // What: No-Snapshot Guard. Why: A card that was never completed (or already reverted) has nothing to restore. How: This returns curConObj unchanged when preSnaObj is falsy.
 
 			const { _cardPrev, ...remFieObj } = curConObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _cardPrev snapshot. How: This destructures _cardPrev off curConObj, keeping every other field in remFieObj.
 
 
-			return { ...remFieObj, value : preSnpObj.value, triggered : preSnpObj.triggered, chargeStep : preSnpObj.chargeStep }; // What: Restored Card Return. Why: The caller needs curConObj's own pre-completion fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargeStep from preSnpObj.
+			return { ...remFieObj, value : preSnaObj.value, triggered : preSnaObj.triggered, chargeStep : preSnaObj.chargeStep }; // What: Restored Card Return. Why: The caller needs curConObj's own pre-completion fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargeStep from preSnaObj.
 
 
 		} );
@@ -871,11 +871,11 @@ function applyConditionalToggle( curStaObj, nexEntArr, togEntObj, nowDoneBoo ) {
 		if ( !nowDoneBoo && depDonNum === 0 && curConObj._chargePrev ) { // What: Reverting-Edge Branch. Why: Once the LAST dependent completion of the day is un-done, the earlier charge must be undone too. How: This restores curConObj's own pre-charge fields from _chargePrev.
 
 
-			const preSnpObj = curConObj._chargePrev; // What: Previous Snapshot Object. Why: The restoration below needs the exact pre-charge fields recorded earlier. How: This reads curConObj's own _chargePrev field.
+			const preSnaObj = curConObj._chargePrev; // What: Previous Snapshot Object. Why: The restoration below needs the exact pre-charge fields recorded earlier. How: This reads curConObj's own _chargePrev field.
 			const { _chargePrev, ...remFieObj } = curConObj; // What: Remaining Fields Object. Why: The restored object below must drop the now-consumed _chargePrev snapshot. How: This destructures _chargePrev off curConObj, keeping every other field in remFieObj.
 
 
-			return { ...remFieObj, value : preSnpObj.value, triggered : preSnpObj.triggered, chargedToday : preSnpObj.chargedToday, chargeStep : preSnpObj.chargeStep }; // What: Restored Charge Return. Why: The caller needs curConObj's own pre-charge fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargedToday/chargeStep from preSnpObj.
+			return { ...remFieObj, value : preSnaObj.value, triggered : preSnaObj.triggered, chargedToday : preSnaObj.chargedToday, chargeStep : preSnaObj.chargeStep }; // What: Restored Charge Return. Why: The caller needs curConObj's own pre-charge fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargedToday/chargeStep from preSnaObj.
 
 
 		}
@@ -2753,11 +2753,11 @@ function useStore( optArgObj ) {
 
 		} ),
 
-		// What: Replace Item Action. Why: This is the full-replace path used to revert an item to a snapshot on editor Cancel. How: This overwrites the one matching item entirely with snpIteObj.
-		replaceItem : ( tarIdeStr, snpIteObj ) => setAppStaObj( ( curStaObj ) => ( {
+		// What: Replace Item Action. Why: This is the full-replace path used to revert an item to a snapshot on editor Cancel. How: This overwrites the one matching item entirely with snaIteObj.
+		replaceItem : ( tarIdeStr, snaIteObj ) => setAppStaObj( ( curStaObj ) => ( {
 
 			...curStaObj,
-			items : curStaObj.items.map( ( curIteObj ) => curIteObj.id === tarIdeStr ? { ...snpIteObj } : curIteObj )
+			items : curStaObj.items.map( ( curIteObj ) => curIteObj.id === tarIdeStr ? { ...snaIteObj } : curIteObj )
 
 		} ) ),
 
@@ -3224,10 +3224,10 @@ function useStore( optArgObj ) {
 
 		} ),
 
-		// What: Replace Task Action. Why: This is the full-replace path used to revert a reminder to a snapshot on editor Cancel. How: This overwrites the one matching task entirely with snpTasObj.
-		replaceTask : ( tarIdeStr, snpTasObj ) => setAppStaObj( ( curStaObj ) => ( {
+		// What: Replace Task Action. Why: This is the full-replace path used to revert a reminder to a snapshot on editor Cancel. How: This overwrites the one matching task entirely with snaTasObj.
+		replaceTask : ( tarIdeStr, snaTasObj ) => setAppStaObj( ( curStaObj ) => ( {
 
-			...curStaObj, tasks : curStaObj.tasks.map( ( curTasObj ) => curTasObj.id === tarIdeStr ? { ...snpTasObj } : curTasObj )
+			...curStaObj, tasks : curStaObj.tasks.map( ( curTasObj ) => curTasObj.id === tarIdeStr ? { ...snaTasObj } : curTasObj )
 
 		} ) ),
 
@@ -3492,11 +3492,11 @@ function useStore( optArgObj ) {
 
 		} ) ),
 
-		// What: Replace Picker Action. Why: This is the full-replace path used to revert a picker to a snapshot on Controls Cancel. How: This overwrites the one matching picker entirely with snpPicObj.
-		replacePicker : ( pickerId, snpPicObj ) => setAppStaObj( ( curStaObj ) => ( {
+		// What: Replace Picker Action. Why: This is the full-replace path used to revert a picker to a snapshot on Controls Cancel. How: This overwrites the one matching picker entirely with snaPicObj.
+		replacePicker : ( pickerId, snaPicObj ) => setAppStaObj( ( curStaObj ) => ( {
 
 			...curStaObj,
-			pickers : curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === pickerId ? { ...snpPicObj } : curPicObj )
+			pickers : curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === pickerId ? { ...snaPicObj } : curPicObj )
 
 		} ) ),
 

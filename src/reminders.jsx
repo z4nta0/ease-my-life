@@ -51,61 +51,93 @@ import { WeeChiCom    } from './ui.jsx';                  // What: Weekday Chip 
 
 
 
+// #region REP_OPT_ARR
+
+/**
+ * REP_OPT_ARR = Repeat Option Array
+ *
+ * @summary
+ * Every entry below shares this exact shape, passed as SegConCom's own
+ * optIteArr prop from SchEdiCom below; none of the 5 entries repeat
+ * these same fields' own boilerplate comments on their own lines (see
+ * the "Repeated-shape object literals" comment exception in
+ * CLAUDE.md). Each entry's own leading comment instead just names
+ * which specific repeat option it represents.
+ *
+ * - `keyStr` (String): Key String is the value SchEdiCom compares
+ *   against task.repeat and writes back on selection; SegConCom reads
+ *   this against its own value prop and passes it to onChange.
+ *
+ * - `labStr` (String): Label String is the segmented control's own
+ *   visible button text for this option, rendered by SegConCom as the
+ *   button's own text content.
+ *
+ * - `subEle` (Element): Sub Element is the live sub-explanation shown
+ *   under the Repeat control while this entry's own keyStr is
+ *   selected; SchEdiCom looks this up by task.repeat and renders it
+ *   directly.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
 const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat control needs one entry per schedule kind, each with its own live sub-explanation. How: This is passed as SegConCom's own optIteArr prop from SchEdiCom below.
 
 
-	{
+	{ // What: Once Option Entry. Why: A one-time reminder is the default, no-repeat option. How: This entry's own subEle explains it stays included until marked as completed.
 
 
-		keyStr : 'once',                                                                    // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Once',                                                                    // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
-		subEle : <>included in the Today page <strong>until marked as completed</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'once' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
-
-
-	},
-
-	{
-
-
-		keyStr : 'interval',                                                                  // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Every N days',                                                              // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
-		subEle : <>included in the Today page <strong>as often as specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'interval' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
+		keyStr : 'once',
+		labStr : 'Once',
+		subEle : <>included in the Today page <strong>until marked as completed</strong></>
 
 
 	},
 
-	{
+	{ // What: Interval Option Entry. Why: An interval reminder repeats every N days, set via the extra-fields subsection below. How: This entry's own subEle explains it recurs as often as specified there.
 
 
-		keyStr : 'weekly',                                                                    // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Weekly',                                                                    // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
-		subEle : <>included in the Today page <strong>on the days specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'weekly' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
-
-
-	},
-
-	{
-
-
-		keyStr : 'monthly',                                                                      // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Monthly',                                                                      // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
-		subEle : <>included in the Today page <strong>every month as specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'monthly' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
+		keyStr : 'interval',
+		labStr : 'Every N days',
+		subEle : <>included in the Today page <strong>as often as specified below</strong></>
 
 
 	},
 
-	{
+	{ // What: Weekly Option Entry. Why: A weekly reminder repeats on specific days of the week. How: This entry's own subEle explains it shows on the days specified below.
 
 
-		keyStr : 'annual',                                                                      // What: Key String. Why: This is the value SchEdiCom compares against task.repeat and writes back on selection. How: SegConCom reads this against value and passes it to onChange.
-		labStr : 'Yearly',                                                                      // What: Label String. Why: This is the segmented control's own visible button text for this option. How: SegConCom renders this as the button's own text content.
-		subEle : <>included in the Today page <strong>every year as specified below</strong></> // What: Sub Element. Why: This is the live sub-explanation shown under the Repeat control while 'annual' is selected. How: SchEdiCom looks this up by task.repeat and renders it directly.
+		keyStr : 'weekly',
+		labStr : 'Weekly',
+		subEle : <>included in the Today page <strong>on the days specified below</strong></>
+
+
+	},
+
+	{ // What: Monthly Option Entry. Why: A monthly reminder repeats once every month, or every N months. How: This entry's own subEle explains it recurs every month as specified below.
+
+
+		keyStr : 'monthly',
+		labStr : 'Monthly',
+		subEle : <>included in the Today page <strong>every month as specified below</strong></>
+
+
+	},
+
+	{ // What: Annual Option Entry. Why: A yearly reminder repeats once every year, or every N years. How: This entry's own subEle explains it recurs every year as specified below.
+
+
+		keyStr : 'annual',
+		labStr : 'Yearly',
+		subEle : <>included in the Today page <strong>every year as specified below</strong></>
 
 
 	}
 
 
 ];
+
+// #endregion REP_OPT_ARR
 
 
 
@@ -133,27 +165,27 @@ const REP_OPT_ARR = [ // What: Repeat Option Array. Why: SchEdiCom's own Repeat 
  * @param props.value       - Value: The currently-selected entry's own key.
  * @param props.onChange    - On Change: Called with the clicked entry's own
  *                            key.
- * @param props.ariaLabel   - Aria Label: The control's own accessible group
- *                            label.
- * @param props.describedBy - Described By: An optional id of an external
- *                            element (an advisory note) that describes this
- *                            control.
+ * @param props.ariLabStr - Aria Label String: The control's own accessible
+ *                           group label.
+ * @param props.desIdeStr - Description Identifier String: An optional id of
+ *                           an external element (an advisory note) that
+ *                           describes this control.
  *
  * @returns The segmented control's own group element, including the
  * sliding thumb span and one button per entry in props.optIteArr.
  *
  * @example
  * ```tsx
- * SegConCom({ optIteArr, value, onChange, ariaLabel, describedBy }) // => <SegConCom />
+ * SegConCom({ optIteArr, value, onChange, ariLabStr, desIdeStr }) // => <SegConCom />
  * ```
  *
 */
 
-function SegConCom ( { optIteArr, value, onChange, ariaLabel, describedBy } ) {
+function SegConCom ( { optIteArr, value, onChange, ariLabStr, desIdeStr } ) {
 
 
-	const segEleRef = React.useRef( null ); // What: Segment Element Reference. Why: plaThuFun needs a handle on the actual group DOM node to query and measure it. How: This is attached via the group div's own ref prop below.
-	const thuEleRef = React.useRef( null ); // What: Thumb Element Reference. Why: plaThuFun needs a handle on the sliding thumb span to move and resize it. How: This is attached via the thumb span's own ref prop below.
+	const segEleRef = React.useRef( null );                                                               // What: Segment Element Reference. Why: plaThuFun needs a handle on the actual group DOM node to query and measure it. How: This is attached via the group div's own ref prop below.
+	const thuEleRef = React.useRef( null );                                                               // What: Thumb Element Reference. Why: plaThuFun needs a handle on the sliding thumb span to move and resize it. How: This is attached via the thumb span's own ref prop below.
 	const preIndRef = React.useRef( optIteArr.findIndex( ( optConObj ) => optConObj.keyStr === value ) ); // What: Previous Index Reference. Why: plaThuFun needs to know which direction the selection just moved in, to decide which edge of the thumb leads the animation. How: This starts at the initially-selected entry's own index and is updated at the end of every plaThuFun run.
 
 
@@ -163,18 +195,20 @@ function SegConCom ( { optIteArr, value, onChange, ariaLabel, describedBy } ) {
 		const segCurEle = segEleRef.current; // What: Segment Current Element. Why: This gives a stable local reference to the live group DOM node for this placement pass. How: This is read once from segEleRef.current and reused below.
 		const thuCurEle = thuEleRef.current; // What: Thumb Current Element. Why: This gives a stable local reference to the live thumb span for this placement pass. How: This is read once from thuEleRef.current and reused below.
 
+
 		if ( !segCurEle || !thuCurEle ) return; // What: Missing Element Guard. Why: Neither ref may be attached yet, such as before the first render commits. How: This bails out of the placement early when either DOM node is unavailable.
 
 
 
 		const butActEle = segCurEle.querySelector( '.seg-btn.is-on' ); // What: Button Active Element. Why: This is the specific option button the thumb needs to sit under. How: This is found via a CSS query for the "is-on" class inside the group.
 
+
 		if ( !butActEle ) return; // What: No Active Button Guard. Why: No option is currently marked active, such as mid-transition. How: This bails out of the rest of the placement when there is nothing to measure against.
 
 
 
-		const curIndNum = optIteArr.findIndex( ( optConObj ) => optConObj.keyStr === value ); // What: Current Index Number. Why: This is compared against the previous index to decide which direction the thumb is moving. How: This looks up the currently-selected entry's own position in optIteArr.
-		const movDirNum = curIndNum - preIndRef.current;                                  // What: Move Direction Number. Why: A positive value means the selection moved right, negative means left, deciding which edge of the thumb leads. How: This subtracts the previous index from curIndNum.
+		const curIndNum = optIteArr.findIndex( ( optConObj ) => optConObj.keyStr === value );                   // What: Current Index Number. Why: This is compared against the previous index to decide which direction the thumb is moving. How: This looks up the currently-selected entry's own position in optIteArr.
+		const movDirNum = curIndNum - preIndRef.current;                                                        // What: Move Direction Number. Why: A positive value means the selection moved right, negative means left, deciding which edge of the thumb leads. How: This subtracts the previous index from curIndNum.
 		const redMotBoo = window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches; // What: Reduced Motion Boolean. Why: A user who prefers reduced motion shouldn't see the thumb glide between optIteArr. How: This safely checks matchMedia support before querying the prefers-reduced-motion media query's current match state.
 
 
@@ -189,9 +223,9 @@ function SegConCom ( { optIteArr, value, onChange, ariaLabel, describedBy } ) {
 		else { // What: Animated Branch. Why: A genuine selection change should glide, with the leading edge overshooting slightly and the trailing edge easing in. How: This picks which edge leads based on movDirNum, then writes a matching CSS transition.
 
 
-			const leaEasStr = 'cubic-bezier(.22,.9,.24,1.12)'; // What: Lead Ease String. Why: The leading edge of the thumb should overshoot slightly before settling, like real momentum. How: This is assigned to whichever of left/width is leading below.
-			const traEasStr = 'cubic-bezier(.65,0,.5,1)';      // What: Trail Ease String. Why: The trailing edge of the thumb should ease in smoothly, stretching the pill in flight. How: This is assigned to whichever of left/width is trailing below.
-			const movEasStr = 'cubic-bezier(.5,0,.2,1)';       // What: Move Ease String. Why: A vertical move (wrapping to a second line) has no leading/trailing edge concept, so it always uses this single ease-in-out curve. How: This is assigned to both top and height below.
+			const leaEasStr = 'cubic-bezier(.22,.9,.24,1.12)';       // What: Lead Ease String. Why: The leading edge of the thumb should overshoot slightly before settling, like real momentum. How: This is assigned to whichever of left/width is leading below.
+			const traEasStr = 'cubic-bezier(.65,0,.5,1)';            // What: Trail Ease String. Why: The trailing edge of the thumb should ease in smoothly, stretching the pill in flight. How: This is assigned to whichever of left/width is trailing below.
+			const movEasStr = 'cubic-bezier(.5,0,.2,1)';             // What: Move Ease String. Why: A vertical move (wrapping to a second line) has no leading/trailing edge concept, so it always uses this single ease-in-out curve. How: This is assigned to both top and height below.
 			const lefEasStr = movDirNum < 0 ? leaEasStr : traEasStr; // What: Left Ease String. Why: The left edge leads when moving left, trails when moving right. How: This picks leaEasStr or traEasStr based on movDirNum's own sign.
 			const widEasStr = movDirNum < 0 ? traEasStr : leaEasStr; // What: Width Ease String. Why: The right edge (expressed as width) leads when moving right, trails when moving left. How: This picks traEasStr or leaEasStr based on movDirNum's own sign.
 
@@ -228,6 +262,8 @@ function SegConCom ( { optIteArr, value, onChange, ariaLabel, describedBy } ) {
 
 			if ( thuCurEle ) thuCurEle.style.transition = 'none'; // What: Transition Clear Guard. Why: A resize is not a user-driven selection change, so the thumb should snap rather than glide. How: This clears the thumb's own transition only when it's actually mounted.
 
+
+
 			plaThuFun( false ); // What: Resize Placement Call. Why: This re-measures and re-places the thumb after the layout change. How: This invokes plaThuFun with animation disabled, same as the initial call above.
 
 
@@ -237,10 +273,12 @@ function SegConCom ( { optIteArr, value, onChange, ariaLabel, describedBy } ) {
 		if ( segEleRef.current ) resObsObj.observe( segEleRef.current ); // What: Resize Observer Start Guard. Why: This should only begin observing once the group element actually exists. How: This starts watching the group element for size changes.
 
 
+
 		return () => resObsObj.disconnect(); // What: Effect Cleanup Return. Why: The observer must not outlive this effect run. How: This disconnects resObsObj on unmount or before the next run.
 
 
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to subscribe its ResizeObserver once, on mount. How: An empty array means it never re-subscribes or re-runs after the initial mount.
+
 
 
 	return (
@@ -250,8 +288,8 @@ function SegConCom ( { optIteArr, value, onChange, ariaLabel, describedBy } ) {
 			ref={ segEleRef }
 			className='seg'
 			role='group'
-			aria-label={ ariaLabel }
-			aria-describedby={ describedBy }
+			aria-label={ ariLabStr }
+			aria-describedby={ desIdeStr }
 		>{ /* What: Segment Group Element. Why: This is SegConCom's own root element, holding the sliding thumb and every option button. How: This renders as a group landmark, its own aria-label/aria-describedby passed straight through from props. */ }
 
 
@@ -270,7 +308,7 @@ function SegConCom ( { optIteArr, value, onChange, ariaLabel, describedBy } ) {
 					className={ `seg-btn ${ value === optConObj.keyStr ? 'is-on' : '' }` }
 					type='button'
 					aria-pressed={ value === optConObj.keyStr }
-					aria-describedby={ describedBy }
+					aria-describedby={ desIdeStr }
 					onClick={ () => onChange( optConObj.keyStr ) }
 				>{ optConObj.labStr }</button> // What: Option Button Element. Why: This is the clickable control for selecting this specific option. How: This marks itself pressed when its own keyStr matches value, and calls onChange with its keyStr when clicked.
 
@@ -326,13 +364,14 @@ function nexDatFun ( nexDatObj, alwYeaBoo ) {
 
 
 
-	const shwYeaBoo = alwYeaBoo || nexDatObj.getFullYear() !== new Date().getFullYear(); // What: Show Year Boolean. Why: The year clutters a same-year date but is essential context for a yearly reminder or a date in a different year. How: This is true when alwYeaBoo was passed, or when nexDatObj's own year differs from the current year.
+	const shoYeaBoo = alwYeaBoo || nexDatObj.getFullYear() !== new Date().getFullYear(); // What: Show Year Boolean. Why: The year clutters a same-year date but is essential context for a yearly reminder or a date in a different year. How: This is true when alwYeaBoo was passed, or when nexDatObj's own year differs from the current year.
 
 
-	return nexDatObj.toLocaleDateString( [], shwYeaBoo
+
+	return nexDatObj.toLocaleDateString( [], shoYeaBoo
 
 
-		? { weekday : 'long', month : 'long', day : 'numeric', year : 'numeric' } // What: With-Year Format Object. Why: This is the full "Weekday, Month Day, Year" format used whenever shwYeaBoo is true. How: This is passed as toLocaleDateString's own options argument.
+		? { weekday : 'long', month : 'long', day : 'numeric', year : 'numeric' } // What: With-Year Format Object. Why: This is the full "Weekday, Month Day, Year" format used whenever shoYeaBoo is true. How: This is passed as toLocaleDateString's own options argument.
 
 		: { weekday : 'long', month : 'long', day : 'numeric' } // What: Without-Year Format Object. Why: This is the shorter "Weekday, Month Day" format used for a same-year date on a non-yearly reminder. How: This is passed as toLocaleDateString's own options argument.
 
@@ -384,6 +423,7 @@ function reaPhrFun ( visResObj ) {
 	if ( visResObj.causes.includes( 'weekends' ) ) reaParArr.push( 'weekends' ); // What: Weekends Cause Guard. Why: Weekend exclusion is one of the possible settings-based reasons. How: This pushes the plain word onto reaParArr when visResObj's own causes include 'weekends'.
 
 
+
 	if ( visResObj.causes.includes( 'holidays' ) ) { // What: Holidays Cause Guard. Why: Holiday exclusion is the other possible settings-based reason, and it needs its own specific holiday name when one is known. How: This pushes either a named-holiday phrase or the plain word 'holidays' onto reaParArr.
 
 
@@ -399,6 +439,7 @@ function reaPhrFun ( visResObj ) {
 
 
 	}
+
 
 
 	return reaParArr.join( ' and ' ); // What: Reason Phrase Return. Why: The caller needs one joined, readable phrase, not a raw array. How: This joins every collected part with the word 'and'.
@@ -425,7 +466,7 @@ function reaPhrFun ( visResObj ) {
  * reminder-type participation settings rather than this schedule; a
  * schedule-based cause belongs next to the specific schedule
  * subsection whose own values caused it. Each mounted instance only
- * ever shows its note when its own kndValStr matches which placement
+ * ever shows its note when its own kinValStr matches which placement
  * currently applies, so exactly one of the several instances rendered
  * per task ever has content. It always names the next day the
  * reminder WILL appear: for a schedule mismatch that is reassurance
@@ -438,7 +479,7 @@ function reaPhrFun ( visResObj ) {
  *                          advise about.
  * @param props.staAppObj - State App Object: The shared app state, read for
  *                          its own reminderOpts and holidays.
- * @param props.kndValStr - Kind Value String: Which placement this instance
+ * @param props.kinValStr - Kind Value String: Which placement this instance
  *                          renders for, 'settings' (the Repeat row) or
  *                          'schedule' (the specific schedule subsection).
  * @param props.notIdeStr - Note Identifier String: The dom id to assign to
@@ -447,16 +488,16 @@ function reaPhrFun ( visResObj ) {
  *
  * @returns The note's own always-mounted live region, holding the
  * advisory paragraph when one applies to this instance's own
- * kndValStr, or nothing.
+ * kinValStr, or nothing.
  *
  * @example
  * ```tsx
- * VisNotCom({ tasRecObj, staAppObj, kndValStr, notIdeStr }) // => <VisNotCom />
+ * VisNotCom({ tasRecObj, staAppObj, kinValStr, notIdeStr }) // => <VisNotCom />
  * ```
  *
 */
 
-function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
+function VisNotCom ( { tasRecObj, staAppObj, kinValStr, notIdeStr } ) {
 
 
 	const visResObj = tasRecObj && TASKS.todayVisibility // What: Visibility Result Object. Why: Every branch below reads this same computed visibility result. How: This calls TASKS.todayVisibility against tasRecObj's own schedule, or stays null when there's no task yet.
@@ -467,7 +508,7 @@ function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
 	const nevShoBoo = !!visResObj && !visResObj.visible && !visResObj.next; // What: Never Show Boolean. Why: A reminder with no eligible day at all is a dead configuration, not a deferred one, and needs a red warning instead of the calm advisory. How: This is true only when visResObj exists, isn't visible, and has no next eligible date either.
 
 
-	const notConEle = ( () => { // What: Note Content Element. Why: The actual advisory content depends on several branches below, computed once as an IIFE rather than duplicated at each return point. How: This returns null when nothing applies to this instance's own kndValStr, otherwise the advisory paragraph.
+	const notConEle = ( () => { // What: Note Content Element. Why: The actual advisory content depends on several branches below, computed once as an IIFE rather than duplicated at each return point. How: This returns null when nothing applies to this instance's own kinValStr, otherwise the advisory paragraph.
 
 
 		if ( !visResObj || visResObj.visible ) return null; // What: Already-Visible Guard. Why: A reminder that's already showing today needs no advisory at all. How: This returns null when there's no result yet, or the reminder is already visible.
@@ -475,10 +516,12 @@ function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
 
 
 		const setCauArr = visResObj.causes.filter( ( curCauStr ) => curCauStr === 'weekends' || curCauStr === 'holidays' || curCauStr === 'skipUntil' ); // What: Settings Cause Array. Why: This decides which placement (settings vs schedule) the current cause set belongs to. How: This keeps only the 3 settings-based cause values out of visResObj's own causes.
-		const froSetBoo = !nevShoBoo && setCauArr.length > 0;                                                                                              // What: From Settings Boolean. Why: A dead (never-showing) configuration always routes to the schedule subsection instead, regardless of which causes are present. How: This is true only when not nevShoBoo and at least one settings-based cause applies.
-		const notPlaStr = froSetBoo ? 'settings' : 'schedule';                                                                                              // What: Note Placement String. Why: This is compared against this instance's own kndValStr to decide whether IT is the one that should render the note. How: This picks 'settings' or 'schedule' based on froSetBoo.
+		const froSetBoo = !nevShoBoo && setCauArr.length > 0;                                                                                            // What: From Settings Boolean. Why: A dead (never-showing) configuration always routes to the schedule subsection instead, regardless of which causes are present. How: This is true only when not nevShoBoo and at least one settings-based cause applies.
+		const notPlaStr = froSetBoo ? 'settings' : 'schedule';                                                                                           // What: Note Placement String. Why: This is compared against this instance's own kinValStr to decide whether IT is the one that should render the note. How: This picks 'settings' or 'schedule' based on froSetBoo.
 
-		if ( kndValStr !== notPlaStr ) return null; // What: Wrong Placement Guard. Why: Only one of the several mounted instances per task should ever render the note. How: This returns null for every instance whose own kndValStr doesn't match notPlaStr.
+
+		if ( kinValStr !== notPlaStr ) return null; // What: Wrong Placement Guard. Why: Only one of the several mounted instances per task should ever render the note. How: This returns null for every instance whose own kinValStr doesn't match notPlaStr.
+
 
 
 		if ( nevShoBoo ) { // What: Dead Configuration Branch. Why: No eligible day ever is worth a red warning rather than the calm advisory below. How: This builds and returns the "never" warning paragraph.
@@ -487,10 +530,11 @@ function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
 			const whyTexEle = <>Reminders items are currently set to <strong>not show on { reaPhrFun( visResObj ) || 'weekends' }</strong></>; // What: Why Text Element. Why: The warning needs to name the specific settings-based reason, falling back to 'weekends' if none resolved. How: This calls reaPhrFun against visResObj.
 
 
+
 			return (
 
 
-				<p className='rem-vis-note is-never'>{ /* What: Never Note Paragraph Element. Why: This is the red dead-configuration warning shown only in kndValStr 'schedule'. How: This is glued to the schedule control that's the actual thing the user can change to fix it. */ }
+				<p className='rem-vis-note is-never'>{ /* What: Never Note Paragraph Element. Why: This is the red dead-configuration warning shown only in kinValStr 'schedule'. How: This is glued to the schedule control that's the actual thing the user can change to fix it. */ }
 					<strong>WARNING:</strong>{ /* What: Warning Label Element. Why: This flags the paragraph's own severity ahead of the explanation. How: This renders the literal bolded word "WARNING:". */ } Because of the values that you are using and because { whyTexEle }, this
 					item will <strong>never</strong>{ /* What: Never Emphasis Element. Why: This is the paragraph's own key word, bolded for emphasis. How: This renders the literal bolded word "never". */ } show up in your todo list.
 				</p>
@@ -502,8 +546,9 @@ function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
 		}
 
 
+
 		const nexLabStr = nexDatFun( visResObj.next, tasRecObj.repeat === 'annual' ); // What: Next Label String. Why: Both remaining branches below name the next day the reminder WILL appear, whenever one is known. How: This calls nexDatFun against visResObj's own next date, always including the year for an annual reminder.
-		const kndWorStr = TASKS.isRecurring( tasRecObj ) ? 'recurring' : 'one-time';   // What: Kind Word String. Why: The settings-cause branch below needs to name whether it's talking about a recurring or one-time item. How: This picks the word based on TASKS.isRecurring.
+		const kinWorStr = TASKS.isRecurring( tasRecObj ) ? 'recurring' : 'one-time';  // What: Kind Word String. Why: The settings-cause branch below needs to name whether it's talking about a recurring or one-time item. How: This picks the word based on TASKS.isRecurring.
 
 		let bodTexEle; // What: Body Text Element. Why: The actual advisory sentence depends on which of the 3 branches below applies, assigned in exactly one of them. How: This is declared here and read by the shared return at the end of this branch.
 
@@ -513,7 +558,7 @@ function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
 		if ( reaPhrStr ) { // What: Settings Cause Branch. Why: A weekend/holiday exclusion is the most common cause and covers both possibilities in one sentence. How: This names both the item kind and the joined reason phrase.
 
 
-			bodTexEle = <>Because Reminders are set to <strong>not show { kndWorStr } items on { reaPhrStr }</strong>, this item will not show up in your todo list today.</>;
+			bodTexEle = <>Because Reminders are set to <strong>not show { kinWorStr } items on { reaPhrStr }</strong>, this item will not show up in your todo list today.</>; // What: Settings Cause Text Assignment. Why: This is the actual sentence rendered when a weekend/holiday exclusion is the resolved cause. How: This names both kinWorStr and reaPhrStr in one sentence.
 
 
 		}
@@ -521,7 +566,7 @@ function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
 		else if ( visResObj.cause === 'skipUntil' ) { // What: Manual Skip Branch. Why: A user-initiated Skip needs its own distinct wording rather than reusing the settings phrasing above. How: This names the manual skip directly.
 
 
-			bodTexEle = <>This item is <strong>skipped</strong> until a later date, so it will not show up in your todo list today.</>;
+			bodTexEle = <>This item is <strong>skipped</strong> until a later date, so it will not show up in your todo list today.</>; // What: Manual Skip Text Assignment. Why: This is the actual sentence rendered for a user-initiated Skip. How: This assigns the fixed skip-specific wording to bodTexEle.
 
 
 		}
@@ -529,17 +574,18 @@ function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
 		else { // What: Generic Fallback Branch. Why: Some other schedule mismatch (e.g. a weekly reminder off today's weekday) still needs a defined message. How: This falls back to a generic explanation naming no specific cause.
 
 
-			bodTexEle = <>Because of the values that you are using, this item will not show up in your todo list today.</>;
+			bodTexEle = <>Because of the values that you are using, this item will not show up in your todo list today.</>; // What: Generic Fallback Text Assignment. Why: This is the actual sentence rendered when no specific settings-based or manual-skip cause resolved. How: This assigns the generic fallback wording to bodTexEle.
 
 
 		}
+
 
 
 		return (
 
 
 			<p className='rem-vis-note'>{ /* What: Deferred Note Paragraph Element. Why: This is the calm advisory shown for every non-dead mismatch, in whichever placement (settings or schedule) actually caused it. How: This renders bodTexEle followed by the next-appearance date when one is known. */ }
-				{ bodTexEle }{ nexLabStr ? <> It will next appear on <strong>{ nexLabStr }</strong>.</> : null }
+				{ bodTexEle }{ nexLabStr ? <> It will next appear on <strong>{ nexLabStr }</strong>.</> : null }{ /* What: Note Body Render. Why: The advisory sentence itself, plus an optional next-appearance clause when nexLabStr resolved to something. How: This renders bodTexEle directly, followed by the extra sentence only while nexLabStr holds a value. */ }
 			</p>
 
 
@@ -547,6 +593,7 @@ function VisNotCom ( { tasRecObj, staAppObj, kndValStr, notIdeStr } ) {
 
 
 	} )();
+
 
 
 	return (
@@ -615,19 +662,21 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 	const lasExtRef = React.useRef( tasRecObj.repeat === 'once' ? 'interval' : tasRecObj.repeat ); // What: Last Extra Reference. Why: While collapsing back to 'once', the extra-fields subsection needs its last non-once schedule kind to keep animating out instead of blanking instantly. How: This starts at 'interval' for a brand-new 'once' task, or the task's own real repeat otherwise.
 
+
 	if ( tasRecObj.repeat !== 'once' ) lasExtRef.current = tasRecObj.repeat; // What: Last Extra Update Guard. Why: Every time the task genuinely has a non-once repeat, that's the value the collapse-out animation should remember next. How: This overwrites lasExtRef only while tasRecObj's own repeat isn't 'once'.
 
 
-	const monAbbArr = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];                                        // What: Month Abbreviation Array. Why: The annual schedule's month select needs a short label per month. How: This is indexed by month number minus 1 in the annual subsection below.
+
+	const monAbbArr = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];                                       // What: Month Abbreviation Array. Why: The annual schedule's month select needs a short label per month. How: This is indexed by month number minus 1 in the annual subsection below.
 	const monFulArr = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]; // What: Month Full Array. Why: The annual schedule's own live summary needs the full month name to display. How: This is indexed by tasRecObj.month minus 1 in the annual subsection below.
 	const dayAbbArr = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ];                                                                          // What: Day Abbreviation Array. Why: The weekly summary needs a short weekday name for a multi-day list. How: This is indexed by daysOfWeek entries in the weekly subsection below.
-	const dayFulArr = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];                                            // What: Day Full Array. Why: The weekly single-day and monthly/annual Nth-weekday summaries need the full weekday name. How: This is indexed by daysOfWeek/nthWeekday entries throughout this function.
+	const dayFulArr = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];                                             // What: Day Full Array. Why: The weekly single-day and monthly/annual Nth-weekday summaries need the full weekday name. How: This is indexed by daysOfWeek/nthWeekday entries throughout this function.
 
 	const datModArr = [ // What: Date Mode Array. Why: The monthly and annual subsections both offer the same Date-vs-Weekday choice, driven by one shared SegConCom control. How: This is passed as that SegConCom's own optIteArr prop in both subsections below.
 
 
-		{ key : 'date',       label : 'Date' },    // What: Plain Date Option. Why: This is the default day-of-month/day targeting mode. How: SegConCom reads this entry the same way as any other options entry.
-		{ key : 'nthWeekday', label : 'Weekday' }  // What: Nth-Weekday Option. Why: This lets the user target e.g. "the 2nd Tuesday" instead of a fixed day number. How: SegConCom reads this entry the same way as any other options entry.
+		{ keyStr : 'date',       labStr : 'Date'    }, // What: Plain Date Option. Why: This is the default day-of-month/day targeting mode. How: SegConCom reads this entry the same way as any other options entry.
+		{ keyStr : 'nthWeekday', labStr : 'Weekday' }  // What: Nth-Weekday Option. Why: This lets the user target e.g. "the 2nd Tuesday" instead of a fixed day number. How: SegConCom reads this entry the same way as any other options entry.
 
 
 	];
@@ -640,14 +689,17 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 	const ancLabStr = ( () => { // What: Anchor Label String. Why: The anchor link's own visible text needs a locale-formatted date, not the raw ISO string. How: This parses ancIsoStr into a real Date and formats it.
 
 
-		const [ yeaNum, monNum, dayNum ] = ( ancIsoStr || '' ).split( '-' ).map( Number );                    // What: Year Month Day Destructure. Why: A locale-formatted date needs a real Date instance built from 3 numeric parts. How: This splits ancIsoStr (or an empty string when falsy) on '-' and maps each segment through Number.
-		const ancDatObj = ( yeaNum && monNum && dayNum ) ? new Date( yeaNum, monNum - 1, dayNum ) : new Date(); // What: Anchor Date Object. Why: The format call below needs a real Date, not the 3 raw numbers. How: This builds a Date from the destructured parts, falling back to right now if any part was missing.
+		const [ yeaValNum, monValNum, dayValNum ] = ( ancIsoStr || '' ).split( '-' ).map( Number ); // What: Year Value Month Value Day Value Destructure. Why: A locale-formatted date needs a real Date instance built from 3 numeric parts. How: This splits ancIsoStr (or an empty string when falsy) on '-' and maps each segment through Number.
+
+		const ancDatObj = ( yeaValNum && monValNum && dayValNum ) ? new Date( yeaValNum, monValNum - 1, dayValNum ) : new Date(); // What: Anchor Date Object. Why: The format call below needs a real Date, not the 3 raw numbers. How: This builds a Date from the destructured parts, falling back to right now if any part was missing.
+
 
 
 		return ancDatObj.toLocaleDateString( 'en-US', { weekday : 'long', month : 'short', day : 'numeric' } ); // What: Anchor Label Return. Why: The caller needs the actual formatted string. How: This formats ancDatObj using a fixed en-US weekday/short-month/day shape.
 
 
 	} )();
+
 
 	const [ oncEdiBoo, setOncEdiBoo ] = React.useState( false ); // What: Once Editing Boolean And Setter. Why: A one-time reminder's own start date can likewise be amended inline. How: This toggles between the plain date link and a native date input in oncFieEle below.
 
@@ -657,10 +709,11 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 	const oncLabStr = ( () => { // What: Once Label String. Why: The start-date link's own visible text needs a locale-formatted date. How: This parses oncIsoStr into a real Date and formats it.
 
 
-		const [ yeaNum, monNum, dayNum ] = oncIsoStr.split( '-' ).map( Number ); // What: Year Month Day Destructure. Why: A locale-formatted date needs a real Date instance built from 3 numeric parts. How: This splits oncIsoStr on '-' and maps each segment through Number.
+		const [ yeaValNum, monValNum, dayValNum ] = oncIsoStr.split( '-' ).map( Number ); // What: Year Value Month Value Day Value Destructure. Why: A locale-formatted date needs a real Date instance built from 3 numeric parts. How: This splits oncIsoStr on '-' and maps each segment through Number.
 
 
-		return new Date( yeaNum, monNum - 1, dayNum ).toLocaleDateString( 'en-US', { weekday : 'long', month : 'short', day : 'numeric' } ); // What: Once Label Return. Why: The caller needs the actual formatted string. How: This builds a Date from the destructured parts and formats it the same way ancLabStr does.
+
+		return new Date( yeaValNum, monValNum - 1, dayValNum ).toLocaleDateString( 'en-US', { weekday : 'long', month : 'short', day : 'numeric' } ); // What: Once Label Return. Why: The caller needs the actual formatted string. How: This builds a Date from the destructured parts and formats it the same way ancLabStr does.
 
 
 	} )();
@@ -685,14 +738,15 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 					autoFocus
 					onChange={ ( chaEveObj ) => { if ( chaEveObj.target.value ) updPatFun( { anchor : chaEveObj.target.value } ); } }
 					onBlur={ () => setAncEdiBoo( false ) }
-					onKeyDown={ ( keyEveObj ) => {
+					onKeyDown={ ( keyEveObj ) => { // What: Anchor Key Down Handler. Why: Enter/Escape both need to close the inline anchor input, matching onBlur's own behavior. How: This checks for either key and, when matched, prevents the default action and closes the input.
 
 
 						if ( keyEveObj.key === 'Enter' || keyEveObj.key === 'Escape' ) { // What: Commit Key Guard. Why: Enter and Escape should both close the inline anchor input; the value already committed via onChange. How: This prevents the default action and closes the input.
 
 
-							keyEveObj.preventDefault();
-							setAncEdiBoo( false );
+							keyEveObj.preventDefault(); // What: Default Prevent Call. Why: The native date input shouldn't perform its own default Enter/Escape behavior on top of this handler's own close. How: This calls keyEveObj's own preventDefault.
+
+							setAncEdiBoo( false ); // What: Anchor Edit Close Call. Why: Both keys should close the inline input back to the plain link. How: This flips ancEdiBoo back to false.
 
 
 						}
@@ -766,19 +820,20 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 						onChange={ ( chaEveObj ) => { // What: Once Date Change Handler. Why: `min` only disables the picker UI's own earlier dates; typing a date by hand bypasses it in every browser, so a past pick still has to be clamped here. How: This commits chaEveObj's own value, clamped up to today when it's earlier.
 
 
-							if ( chaEveObj.target.value ) updPatFun( { onceDate : chaEveObj.target.value < TASKS.isoToday() ? TASKS.isoToday() : chaEveObj.target.value } );
+							if ( chaEveObj.target.value ) updPatFun( { onceDate : chaEveObj.target.value < TASKS.isoToday() ? TASKS.isoToday() : chaEveObj.target.value } ); // What: Clamped Commit Guard. Why: A typed-in date must still commit, but never earlier than today. How: This calls updPatFun only when a value exists, clamping it up to today when needed.
 
 
 						} }
 						onBlur={ () => setOncEdiBoo( false ) }
-						onKeyDown={ ( keyEveObj ) => {
+						onKeyDown={ ( keyEveObj ) => { // What: Once Key Down Handler. Why: Enter/Escape both need to close the inline once-date input, matching onBlur's own behavior. How: This checks for either key and, when matched, prevents the default action and closes the input.
 
 
 							if ( keyEveObj.key === 'Enter' || keyEveObj.key === 'Escape' ) { // What: Commit Key Guard. Why: Enter and Escape should both close the inline once-date input; the value already committed via onChange. How: This prevents the default action and closes the input.
 
 
-								keyEveObj.preventDefault();
-								setOncEdiBoo( false );
+								keyEveObj.preventDefault(); // What: Default Prevent Call. Why: The native date input shouldn't perform its own default Enter/Escape behavior on top of this handler's own close. How: This calls keyEveObj's own preventDefault.
+
+								setOncEdiBoo( false ); // What: Once Edit Close Call. Why: Both keys should close the inline input back to the plain link. How: This flips oncEdiBoo back to false.
 
 
 							}
@@ -808,7 +863,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 				) }
 			</p>
 
-			{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kndValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Once Visibility Check. Why: The once schedule's own advisory only makes sense once a real staAppObj is available. How: This renders VisNotCom, gated on kndValStr 'schedule', only while staAppObj was actually passed. */ }
+			{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kinValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Once Visibility Check. Why: The once schedule's own advisory only makes sense once a real staAppObj is available. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed. */ }
 
 
 		</div>
@@ -821,6 +876,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 		const curRepStr = tasRecObj.repeat === 'once' ? lasExtRef.current : tasRecObj.repeat; // What: Current Repeat String. Why: While collapsing back to 'once', the subsection below should keep showing its last real kind instead of blanking. How: This picks lasExtRef's own remembered kind only while tasRecObj.repeat is 'once'.
+
 
 
 		return (
@@ -878,7 +934,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 						<WeeChiCom
 							value={ tasRecObj.daysOfWeek || [] }
-							describedBy={ schPlaNot }
+							desIdeStr={ schPlaNot }
 							onChange={ ( weeSelArr ) => updPatFun( { daysOfWeek : weeSelArr } ) }
 						/>{ /* What: Weekday Chips Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This commits the newly-selected day array straight through updPatFun. */ }
 
@@ -886,13 +942,13 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 						<ColDisCom open={ ( tasRecObj.interval || 1 ) > 1 }>{ /* What: Collapse Disclosure Component. Why: The counted-from hint is only meaningful once interval is above 1 week. How: This animates ancHinEle open only while that condition holds. */ }
 
 
-							<div className='cad-anchor-fade'>{ ancHinEle }</div>
+							<div className='cad-anchor-fade'>{ ancHinEle }</div>{ /* What: Anchor Fade Div Element. Why: The counted-from hint needs its own fade wrapper distinct from ColDisCom's own height animation. How: This renders ancHinEle inside a plain div that CSS cross-fades on interval change. */ }
 
 
 						</ColDisCom>
 
 
-						{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kndValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Weekly Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kndValStr 'schedule', only while staAppObj was actually passed. */ }
+						{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kinValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Weekly Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed. */ }
 
 
 					</div>
@@ -937,8 +993,8 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 						</div>
 
-						{ ancHinEle }
-						{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kndValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Interval Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kndValStr 'schedule', only while staAppObj was actually passed. */ }
+						{ ancHinEle }{ /* What: Anchor Hint Render. Why: The every-N-days interval subsection reuses the same shared "counted from" hint every other interval-based subsection does. How: This renders ancHinEle, already fully built above, directly as a JSX child, unlike the weekly/monthly/annual subsections which additionally wrap it in a fade div. */ }
+						{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kinValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Interval Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed. */ }
 
 
 					</div>
@@ -987,7 +1043,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 						<ColDisCom open={ ( tasRecObj.interval || 1 ) > 1 }>{ /* What: Collapse Disclosure Component. Why: The counted-from hint is only meaningful once interval is above 1 month. How: This animates ancHinEle open only while that condition holds. */ }
 
 
-							<div className='cad-anchor-fade'>{ ancHinEle }</div>
+							<div className='cad-anchor-fade'>{ ancHinEle }</div>{ /* What: Anchor Fade Div Element. Why: The counted-from hint needs its own fade wrapper distinct from ColDisCom's own height animation. How: This renders ancHinEle inside a plain div that CSS cross-fades on interval change. */ }
 
 
 						</ColDisCom>
@@ -1026,8 +1082,8 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 						<SegConCom
 							optIteArr={ datModArr }
 							value={ tasRecObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' }
-							ariaLabel='Day selection'
-							describedBy={ schPlaNot }
+							ariLabStr='Day selection'
+							desIdeStr={ schPlaNot }
 							onChange={ ( modKeyStr ) => updPatFun( { dateMode : modKeyStr } ) }
 						/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRecObj's new dateMode. */ }
 
@@ -1049,7 +1105,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 								>{ /* What: Ordinal Select Element. Why: This is the "1st through 5th" occurrence picker. How: This commits the chosen option's own numeric value as tasRecObj's new nthOrdinal. */ }
 
 
-									{ [ 1, 2, 3, 4, 5 ].map( ( nthOptNum ) => <option key={ nthOptNum } value={ nthOptNum }>{ ordSufFun( nthOptNum ) }</option> ) }
+									{ [ 1, 2, 3, 4, 5 ].map( ( nthOptNum ) => <option key={ nthOptNum } value={ nthOptNum }>{ ordSufFun( nthOptNum ) }</option> ) }{ /* What: Ordinal Option List Render. Why: One option is needed per occurrence, 1st through 5th. How: This maps a literal 1-5 array to one option per entry, keyed by its own nthOptNum, labeled with its ordinal suffix. */ }
 
 
 								</select>
@@ -1063,7 +1119,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 								>{ /* What: Weekday Select Element. Why: This is the target-weekday picker for the Nth-weekday mode. How: This commits the chosen option's own numeric value as tasRecObj's new nthWeekday. */ }
 
 
-									{ dayFulArr.map( ( dowNamStr, dowIndNum ) => <option key={ dowNamStr } value={ dowIndNum }>{ dowNamStr }</option> ) }
+									{ dayFulArr.map( ( dowNamStr, dowIndNum ) => <option key={ dowNamStr } value={ dowIndNum }>{ dowNamStr }</option> ) }{ /* What: Weekday Option List Render. Why: One option is needed per weekday. How: This maps dayFulArr to one option per entry, keyed by its own dowNamStr, valued by its own dowIndNum. */ }
 
 
 								</select>
@@ -1116,7 +1172,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 						}
 
 
-						{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kndValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Monthly Day Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kndValStr 'schedule', only while staAppObj was actually passed. */ }
+						{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kinValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Monthly Day Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed. */ }
 
 
 					</div>
@@ -1165,7 +1221,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 						<ColDisCom open={ ( tasRecObj.interval || 1 ) > 1 }>{ /* What: Collapse Disclosure Component. Why: The counted-from hint is only meaningful once interval is above 1 year. How: This animates ancHinEle open only while that condition holds. */ }
 
 
-							<div className='cad-anchor-fade'>{ ancHinEle }</div>
+							<div className='cad-anchor-fade'>{ ancHinEle }</div>{ /* What: Anchor Fade Div Element. Why: The counted-from hint needs its own fade wrapper distinct from ColDisCom's own height animation. How: This renders ancHinEle inside a plain div that CSS cross-fades on interval change. */ }
 
 
 						</ColDisCom>
@@ -1204,8 +1260,8 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 						<SegConCom
 							optIteArr={ datModArr }
 							value={ tasRecObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' }
-							ariaLabel='Day selection'
-							describedBy={ schPlaNot }
+							ariLabStr='Day selection'
+							desIdeStr={ schPlaNot }
 							onChange={ ( modKeyStr ) => updPatFun( { dateMode : modKeyStr } ) }
 						/>{ /* What: Segment Control Component. Why: This is the Date-vs-Weekday targeting mode toggle. How: This commits the clicked option's own key as tasRecObj's new dateMode. */ }
 
@@ -1225,7 +1281,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 								>{ /* What: Ordinal Select Element. Why: This is the "1st through 5th" occurrence picker. How: This commits the chosen option's own numeric value as tasRecObj's new nthOrdinal. */ }
 
 
-									{ [ 1, 2, 3, 4, 5 ].map( ( nthOptNum ) => <option key={ nthOptNum } value={ nthOptNum }>{ ordSufFun( nthOptNum ) }</option> ) }
+									{ [ 1, 2, 3, 4, 5 ].map( ( nthOptNum ) => <option key={ nthOptNum } value={ nthOptNum }>{ ordSufFun( nthOptNum ) }</option> ) }{ /* What: Ordinal Option List Render. Why: One option is needed per occurrence, 1st through 5th. How: This maps a literal 1-5 array to one option per entry, keyed by its own nthOptNum, labeled with its ordinal suffix. */ }
 
 
 								</select>
@@ -1239,7 +1295,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 								>{ /* What: Weekday Select Element. Why: This is the target-weekday picker for the Nth-weekday mode. How: This commits the chosen option's own numeric value as tasRecObj's new nthWeekday. */ }
 
 
-									{ dayFulArr.map( ( dowNamStr, dowIndNum ) => <option key={ dowNamStr } value={ dowIndNum }>{ dowNamStr }</option> ) }
+									{ dayFulArr.map( ( dowNamStr, dowIndNum ) => <option key={ dowNamStr } value={ dowIndNum }>{ dowNamStr }</option> ) }{ /* What: Weekday Option List Render. Why: One option is needed per weekday. How: This maps dayFulArr to one option per entry, keyed by its own dowNamStr, valued by its own dowIndNum. */ }
 
 
 								</select>
@@ -1255,7 +1311,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 								>{ /* What: Month Select Element. Why: This is the target-month picker for the Nth-weekday mode. How: This commits the chosen option's own 1-indexed value as tasRecObj's new month. */ }
 
 
-									{ monAbbArr.map( ( monNamStr, monIndNum ) => <option key={ monNamStr } value={ monIndNum + 1 }>{ monNamStr }</option> ) }
+									{ monAbbArr.map( ( monNamStr, monIndNum ) => <option key={ monNamStr } value={ monIndNum + 1 }>{ monNamStr }</option> ) }{ /* What: Month Option List Render. Why: One option is needed per month. How: This maps monAbbArr to one option per entry, keyed by its own monNamStr, valued by its own 1-indexed monIndNum. */ }
 
 
 								</select>
@@ -1279,7 +1335,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 								>{ /* What: Month Select Element. Why: This is the target-month picker for the default mode. How: This commits the chosen option's own 1-indexed value as tasRecObj's new month. */ }
 
 
-									{ monAbbArr.map( ( monNamStr, monIndNum ) => <option key={ monNamStr } value={ monIndNum + 1 }>{ monNamStr }</option> ) }
+									{ monAbbArr.map( ( monNamStr, monIndNum ) => <option key={ monNamStr } value={ monIndNum + 1 }>{ monNamStr }</option> ) }{ /* What: Month Option List Render. Why: One option is needed per month. How: This maps monAbbArr to one option per entry, keyed by its own monNamStr, valued by its own 1-indexed monIndNum. */ }
 
 
 								</select>
@@ -1312,11 +1368,11 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 						{ tasRecObj.dateMode === 'nthWeekday' && ( tasRecObj.nthOrdinal || 1 ) === 5 && ( // What: Nth-Weekday Clamp Hint Check. Why: A requested 5th occurrence doesn't exist in every year for a given month, so the user needs to know the real fallback rule. How: This renders the hint only when both conditions hold.
 
 
-							<p className='rem-hint'>In years where that month has no 5th, this falls on the 4th instead.</p>
+							<p className='rem-hint'>In years where that month has no 5th, this falls on the 4th instead.</p> // What: Nth-Weekday Clamp Hint Element. Why: A requested 5th occurrence doesn't exist in every year for a given month, so the user needs to know the real fallback rule. How: This renders only when the Clamp Hint Check above holds.
 
 
 						) }
-						{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kndValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Annual Date Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kndValStr 'schedule', only while staAppObj was actually passed. */ }
+						{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kinValStr='schedule' notIdeStr={ schPlaNot } /> }{ /* What: Annual Date Visibility Check. Why: Same reasoning as oncFieEle's own check. How: This renders VisNotCom, gated on kinValStr 'schedule', only while staAppObj was actually passed. */ }
 
 
 					</div>
@@ -1332,6 +1388,7 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 
 
 	} )();
+
 
 
 	return (
@@ -1357,13 +1414,13 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 				<SegConCom
 					optIteArr={ REP_OPT_ARR }
 					value={ tasRecObj.repeat }
-					ariaLabel='Repeat'
-					describedBy={ setPlaNot }
+					ariLabStr='Repeat'
+					desIdeStr={ setPlaNot }
 					onChange={ ( modKeyStr ) => updPatFun( { repeat : modKeyStr, interval : modKeyStr === 'interval' ? 2 : 1 } ) } // What: Repeat Change Handler. Why: interval is shared across interval/weekly/monthly/annual (each its own "every N ___"), so switching kind resets it to that kind's own sensible default instead of carrying over a number that meant something else a moment ago. How: This commits the new repeat kind plus a matching default interval.
 				/>{ /* What: Segment Control Component. Why: This is the actual Repeat kind picker. How: This renders one button per REP_OPT_ARR entry, committing both repeat and a reset interval on change. */ }
 
 
-				{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kndValStr='settings' notIdeStr={ setPlaNot } /> }{ /* What: Repeat Visibility Check. Why: A settings-based mismatch (weekends/holidays/skipUntil) belongs next to this row rather than the schedule subsection below. How: This renders VisNotCom, gated on kndValStr 'settings', only while staAppObj was actually passed. */ }
+				{ staAppObj && <VisNotCom tasRecObj={ tasRecObj } staAppObj={ staAppObj } kinValStr='settings' notIdeStr={ setPlaNot } /> }{ /* What: Repeat Visibility Check. Why: A settings-based mismatch (weekends/holidays/skipUntil) belongs next to this row rather than the schedule subsection below. How: This renders VisNotCom, gated on kinValStr 'settings', only while staAppObj was actually passed. */ }
 
 
 			</div>
@@ -1385,10 +1442,10 @@ function SchEdiCom ( { tasRecObj, actStoObj, aniExtBoo = false, staAppObj } ) {
 				? ( // What: Animated Extra Fields Branch. Why: A caller that opted into animation needs the extra-fields subsection to grow/shrink, and to re-key on kind switch so its own internal ColDisCom states reset cleanly. How: This wraps extFieEle in ColDisCom, open whenever repeat isn't 'once', keyed by curRepStr.
 
 
-					<ColDisCom open={ tasRecObj.repeat !== 'once' }>
+					<ColDisCom open={ tasRecObj.repeat !== 'once' }>{ /* What: Collapse Disclosure Component. Why: A caller that opted into animation needs the extra-fields subsection to grow/shrink instead of snapping. How: This wraps extFieEle, open whenever repeat isn't 'once'. */ }
 
 
-						<div className='rem-extra-fade' key={ tasRecObj.repeat === 'once' ? lasExtRef.current : tasRecObj.repeat }>{ extFieEle }</div>
+						<div className='rem-extra-fade' key={ tasRecObj.repeat === 'once' ? lasExtRef.current : tasRecObj.repeat }>{ extFieEle }</div>{ /* What: Extra Fade Div Element. Why: The extra-fields subsection needs to re-key on a genuine kind switch, so its own internal ColDisCom states reset cleanly instead of carrying over stale open/closed state. How: This keys on lasExtRef's own remembered kind while collapsing back to 'once', otherwise the task's own real repeat. */ }
 
 
 					</ColDisCom>
@@ -1443,7 +1500,8 @@ function ordSufFun ( ordValNum ) {
 
 
 	const sufTexArr = [ 'th', 'st', 'nd', 'rd' ]; // What: Suffix Text Array. Why: Every English ordinal suffix boils down to one of just these 4 words. How: This is indexed below by lasTwoNum's own value.
-	const lasTwoNum = ordValNum % 100;             // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exception every other rule must respect). How: This is ordValNum modulo 100.
+	const lasTwoNum = ordValNum % 100;            // What: Last Two Number. Why: English ordinal suffixes are decided by a number's own last two digits (11th/12th/13th are the exception every other rule must respect). How: This is ordValNum modulo 100.
+
 
 
 	return ordValNum + ( sufTexArr[ ( lasTwoNum - 20 ) % 10 ] || sufTexArr[ lasTwoNum ] || sufTexArr[ 0 ] ); // What: Ordinal Suffix Return. Why: The caller needs the full suffixed string back, not just the suffix. How: This picks sufTexArr's own entry for lasTwoNum minus 20 (handling 21st/22nd/23rd/31st/...), falling back to lasTwoNum directly (handling 11th/12th/13th), falling back to index 0 ('th') for everything else.
@@ -1461,6 +1519,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 
 
 	const oriTasRef = React.useRef( tasRecObj ); // What: Original Task Reference. Why: Cancel needs to restore the task exactly as it was when this footer (and its sibling editor) mounted. How: This snapshots tasRecObj once, on mount, never updated afterward.
+
 	const [ conOpeBoo, setConOpeBoo ] = React.useState( false ); // What: Confirm Open Boolean And Setter. Why: Delete is confirm-gated, morphing this footer into a Delete/Cancel prompt instead of firing immediately. How: This toggles between the plain footer and the confirm prompt below.
 
 
@@ -1470,8 +1529,8 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 
 
 	const canNowFun = () => { expDonRef.current = true; onCanTasFun( oriTasRef.current ); }; // What: Cancel Now Function. Why: An explicit Cancel click needs to both mark itself as handled and actually revert the task. How: This flips expDonRef, then calls onCanTasFun with the original snapshot.
-	const donNowFun = () => { expDonRef.current = true; onDonTasFun(); };                      // What: Done Now Function. Why: An explicit Save click needs to both mark itself as handled and keep the live edits. How: This flips expDonRef, then calls onDonTasFun.
-	const delNowFun = () => { expDonRef.current = true; onDelTasFun(); };                      // What: Delete Now Function. Why: A confirmed Delete needs to both mark itself as handled and actually remove the task. How: This flips expDonRef, then calls onDelTasFun.
+	const donNowFun = () => { expDonRef.current = true; onDonTasFun(); };                    // What: Done Now Function. Why: An explicit Save click needs to both mark itself as handled and keep the live edits. How: This flips expDonRef, then calls onDonTasFun.
+	const delNowFun = () => { expDonRef.current = true; onDelTasFun(); };                    // What: Delete Now Function. Why: A confirmed Delete needs to both mark itself as handled and actually remove the task. How: This flips expDonRef, then calls onDelTasFun.
 
 	React.useEffect( () => () => { if ( isaNewBoo && !expDonRef.current ) onCanTasFun( oriTasRef.current ); }, [] ); // What: Implicit Close Effect. Why: A brand-new, not-yet-kept reminder should be discarded if its editor closes ANY other way, not just an explicit Cancel. How: This runs only on unmount, discarding the draft only when it was new and nothing explicit already handled the close.
 
@@ -1525,6 +1584,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 	}
 
 
+
 	return (
 
 
@@ -1543,6 +1603,7 @@ const EdiFooCom = React.forwardRef( function EdiFooCom ( { tasRecObj, onDelTasFu
 
 
 			) }
+
 			<div className='rem-foot-right'>{ /* What: Foot Right Div Element. Why: Cancel and Save read as a pair, right-aligned opposite Delete. How: This wraps both ButBasCom elements below. */ }
 
 
@@ -1613,6 +1674,7 @@ function InlEdiCom ( { tasRecObj, onCloEdiFun, onDelTasFun, onComTasFun, staAppO
 	const [ draTasObj, setDraTasObj ] = React.useState( () => ( { ...tasRecObj } ) ); // What: Draft Task Object And Setter. Why: The schedule editor below must edit a local copy, not the store directly, so a change doesn't immediately filter the row out of the live list. How: This starts as a shallow copy of tasRecObj and is patched by draActObj below.
 
 	const draActObj = { updateTask : ( _tasIdeStr, patValObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ) }; // What: Draft Actions Object. Why: SchEdiCom expects an actions bag exposing updateTask; this stands in for the real one, patching draTasObj locally instead of the store. How: This ignores its own first argument (SchEdiCom always passes tasRecObj.id, already known here) and merges patValObj into draTasObj.
+
 
 
 	return (
@@ -1730,12 +1792,13 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 
-			if ( tutDonBoo ) onUncTutFun( 'reminder', tasRecObj.id );
+			if ( tutDonBoo ) onUncTutFun( 'reminder', tasRecObj.id ); // What: Done Dispatch Branch. Why: A sample whose mini-tour already finished should un-resolve it back to not-done on click. How: This calls onUncTutFun when tutDonBoo is true.
 
-			else onPlaTutFun( 'reminder', tasRecObj.id );
+			else onPlaTutFun( 'reminder', tasRecObj.id ); // What: Not-Done Dispatch Branch. Why: A sample whose mini-tour hasn't finished yet should start playing it on click. How: This calls onPlaTutFun otherwise.
 
 
 		};
+
 
 
 		return (
@@ -1791,6 +1854,7 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 				) }
+
 				<div className='today-card-body'>{ /* What: Card Body Div Element. Why: The card's own kicker/time meta and name need to sit together, same layout as a real reminder row. How: This wraps the meta row and the name div below. */ }
 
 
@@ -1824,6 +1888,7 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 
 
 				</div>
+
 				{ !tutDonBoo && ( // What: Cancel Visibility Check. Why: A resolved sample has nothing left to cancel. How: This renders the Cancel action only while the sample is still unresolved.
 
 
@@ -1862,21 +1927,28 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
 	}
 
 
-	const isaDonBoo = TASKS.isDoneToday( tasRecObj, cheDatObj );      // What: Is-A Done Boolean. Why: Both the card's own checkbox state and its "fresh" flourish depend on today's real completion state. How: This calls TASKS.isDoneToday against tasRecObj and cheDatObj.
-	const isaFreBoo = jusCheStr === tasRecObj.id && isaDonBoo;         // What: Is-A Fresh Boolean. Why: Only a reminder that was JUST checked (not one that was already done) should play the brief fresh flourish. How: This combines the jusCheStr match with isaDonBoo itself.
+
+	const isaDonBoo = TASKS.isDoneToday( tasRecObj, cheDatObj ); // What: Is-A Done Boolean. Why: Both the card's own checkbox state and its "fresh" flourish depend on today's real completion state. How: This calls TASKS.isDoneToday against tasRecObj and cheDatObj.
+	const isaFreBoo = jusCheStr === tasRecObj.id && isaDonBoo;   // What: Is-A Fresh Boolean. Why: Only a reminder that was JUST checked (not one that was already done) should play the brief fresh flourish. How: This combines the jusCheStr match with isaDonBoo itself.
+
+
 
 	const onRowCliFun = ( cliEveObj ) => { // What: On Row Click Function. Why: Clicking anywhere on the row (other than its own actions area or the open name input) should toggle done. How: This checks both exclusion zones first, then calls onTogTasFun.
 
 
-		if ( cliEveObj.target.closest( '.today-card-actions' ) ) return;   // What: Actions Area Guard. Why: The skip/edit buttons have their own click handling and must not also toggle done. How: This bails out when the click landed inside the actions area.
+		if ( cliEveObj.target.closest( '.today-card-actions' ) ) return; // What: Actions Area Guard. Why: The skip/edit buttons have their own click handling and must not also toggle done. How: This bails out when the click landed inside the actions area.
+
+
 
 		if ( cliEveObj.target.closest( '.rem-card-name-input' ) ) return; // What: Name Input Guard. Why: Typing in the open name input must not also toggle done. How: This bails out when the click landed inside the name input.
 
 
-		onTogTasFun( tasRecObj );
+
+		onTogTasFun( tasRecObj ); // What: Toggle Done Call. Why: Once neither exclusion zone matched, the click is a genuine row toggle. How: This calls onTogTasFun against tasRecObj.
 
 
 	};
+
 
 
 	return (
@@ -2023,42 +2095,47 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
  *
  * @summary
  * Today: the Reminders section (list + inline edit + quick add). This
- * is a cross-file contract read directly by tab-today.jsx, which
- * passes every prop below by these exact names; they are deliberately
- * left unrenamed for now, their own deliberate decision distinct from
- * the RemSecCom/RemManCom/SegConCom component-identity renames already
- * completed this pass.
+ * is a cross-file contract read directly by tab-today.jsx; every prop
+ * below has been renamed to its own compliant name, with the matching
+ * rename swept into tab-today.jsx's own single RemSecCom call site
+ * (the same "rename the prop, sweep the one real caller" treatment
+ * already used for every other reviewed file's own props, rather than
+ * the bare-external/aliased-local pattern GroHeaCom/EntCarCom still use
+ * in that file's own not-yet-reviewed code).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state              - State: The shared app state.
- * @param props.actions            - Actions: The shared actions bag.
- * @param props.sectionRef         - Section Reference: A ref callback
- *                                   registering this section's own DOM node by
- *                                   group key.
- * @param props.editMode           - Edit Mode: Whether Today's own Edit Mode
- *                                   is on.
- * @param props.onGripDown         - On Grip Down: Starts dragging this whole
- *                                   section to reorder it among other groups.
- * @param props.logOpen            - Log Open: Whether the Reminders day-log
- *                                   panel is currently open.
- * @param props.onToggleLog        - On Toggle Log: Toggles the day-log panel
- *                                   above.
- * @param props.leavingTaskIds     - Leaving Task Ids: Ids currently playing a
- *                                   cross-day purge exit animation.
- * @param props.arrivingTaskIds    - Arriving Task Ids: Ids currently playing a
- *                                   cross-day arrival animation.
- * @param props.activeEditor       - Active Editor: The tab-wide "which editor
- *                                   is open" slot, shared with the picker item
- *                                   editor.
- * @param props.setActiveEditor    - Setter Active Editor: Updates
- *                                   props.activeEditor.
- * @param props.onPlayTutorial     - On Play Tutorial: Starts a sample
- *                                   reminder's own mini-tour.
- * @param props.onUncheckTutorial  - On Uncheck Tutorial: Un-resolves a sample
- *                                   reminder's own mini-tour.
- * @param props.checklistExiting   - Checklist Exiting: Whether the onboarding
- *                                   checklist itself is mid-exit animation.
+ * @param props.staAppObj    - State App Object: The entire app's own persisted
+ *                             state.
+ * @param props.actStoObj    - Action Store Object: The shared app actions that
+ *                             mutate props.staAppObj.
+ * @param props.secRefFun    - Section Reference Function: A ref callback
+ *                             registering this section's own DOM node by group
+ *                             key.
+ * @param props.ediModBoo    - Edit Mode Boolean: Whether Today's own Edit Mode
+ *                             is on.
+ * @param props.onGriDowFun  - On Grip Down Function: Starts dragging this
+ *                             whole section to reorder it among other groups.
+ * @param props.logOpeBoo    - Log Open Boolean: Whether the Reminders day-log
+ *                             panel is currently open.
+ * @param props.onTogLogFun  - On Toggle Log Function: Toggles the day-log
+ *                             panel above.
+ * @param props.leaTasSet    - Leaving Task Set: Ids currently playing a cross-
+ *                             day purge exit animation.
+ * @param props.arvTasSet    - Arriving Task Set: Ids currently playing a
+ *                             cross-day arrival animation.
+ * @param props.actEdiStr    - Active Editor String: The tab-wide "which editor
+ *                             is open" slot, shared with the picker item
+ *                             editor.
+ * @param props.setActEdiStr - Setter Active Editor String: Updates
+ *                             props.actEdiStr.
+ * @param props.onPlaTutFun  - On Play Tutorial Function: Starts a sample
+ *                             reminder's own mini-tour.
+ * @param props.onUncTutFun  - On Uncheck Tutorial Function: Un-resolves a
+ *                             sample reminder's own mini-tour.
+ * @param props.cheExiBoo    - Checklist Exiting Boolean: Whether the
+ *                             onboarding checklist itself is mid-exit
+ *                             animation.
  *
  * @returns The full Reminders section: its header, optional day-log
  * panel, and its list of tutorial cards, quick-add form, and real
@@ -2066,49 +2143,53 @@ function RemCarCom ( { tasRecObj, actStoObj, jusCheStr, isaOpeBoo, onEdiTasFun, 
  *
  * @example
  * ```tsx
- * RemSecCom({ state, actions, sectionRef, editMode, ... }) // => <RemSecCom />
+ * RemSecCom({ staAppObj, actStoObj, ... }) // => <RemSecCom />
  * ```
  *
 */
 
-function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, arrivingTaskIds, activeEditor, setActiveEditor, onPlayTutorial, onUncheckTutorial, checklistExiting } ) {
+function RemSecCom ( { staAppObj, actStoObj, secRefFun, ediModBoo, onGriDowFun, logOpeBoo, onTogLogFun, leaTasSet, arvTasSet, actEdiStr, setActEdiStr, onPlaTutFun, onUncTutFun, cheExiBoo } ) {
 
 
-	const ancDatObj = TASKS.anchorDate( state.today && state.today.generatedAt ); // What: Anchor Date Object. Why: A reminder due on a new day shouldn't appear until the generator actually runs on/after that day, exactly like picker entries. How: This calls TASKS.anchorDate against state's own last generation timestamp.
-	const dueTasArr = TASKS.visibleToday( state.tasks, state.reminderOpts, state.holidays, ancDatObj ); // What: Due Task Array. Why: This is the real, non-sample reminder list this section actually renders. How: This calls TASKS.visibleToday against state's own tasks/reminderOpts/holidays, anchored to ancDatObj.
+	const ancDatObj = TASKS.anchorDate( staAppObj.today && staAppObj.today.generatedAt );                           // What: Anchor Date Object. Why: A reminder due on a new day shouldn't appear until the generator actually runs on/after that day, exactly like picker entries. How: This calls TASKS.anchorDate against staAppObj's own last generation timestamp.
+	const dueTasArr = TASKS.visibleToday( staAppObj.tasks, staAppObj.reminderOpts, staAppObj.holidays, ancDatObj ); // What: Due Task Array. Why: This is the real, non-sample reminder list this section actually renders. How: This calls TASKS.visibleToday against staAppObj's own tasks/reminderOpts/holidays, anchored to ancDatObj.
 
 
-	const cheDonBoo = !!( state.onboarding && state.onboarding.checklistDone ); // What: Checklist Done Boolean. Why: Mini-tour launcher cards behave differently before vs. after the ORIGINAL first-time checklist concludes (see tutTasArr below). How: This reads state's own onboarding.checklistDone.
+	const cheDonBoo = !!( staAppObj.onboarding && staAppObj.onboarding.checklistDone ); // What: Checklist Done Boolean. Why: Mini-tour launcher cards behave differently before vs. after the ORIGINAL first-time checklist concludes (see tutTasArr below). How: This reads staAppObj's own onboarding.checklistDone.
 
-	const actTouStr = state.onboarding && state.onboarding.activeTour && state.onboarding.activeTour.id; // What: Active Tour String. Why: This decides whether a reminder mini-tour specifically (not just any tour) is currently running. How: This reads state's own onboarding.activeTour.id, or a falsy value when no tour is active.
-	const remTouBoo = typeof actTouStr === 'string' && actTouStr.startsWith( 'reminder-' );               // What: Reminder Tour Boolean. Why: The add button below must stay clickable during a reminder mini-tour's own Step 1, which needs the user to click it themselves rather than a simulated click. How: This checks actTouStr's own prefix.
-	const tutProBoo = ONB_CHE_OBJ.tutProFun( state ) && !remTouBoo;                            // What: Tutorial Progress Boolean. Why: Every OTHER tutorial still disables the add button as normal; only a reminder tour itself is exempted. How: This combines ONB_CHE_OBJ's own check with the negation of remTouBoo.
+	const actTouStr = staAppObj.onboarding && staAppObj.onboarding.activeTour && staAppObj.onboarding.activeTour.id; // What: Active Tour String. Why: This decides whether a reminder mini-tour specifically (not just any tour) is currently running. How: This reads staAppObj's own onboarding.activeTour.id, or a falsy value when no tour is active.
+	const remTouBoo = typeof actTouStr === 'string' && actTouStr.startsWith( 'reminder-' );                          // What: Reminder Tour Boolean. Why: The add button below must stay clickable during a reminder mini-tour's own Step 1, which needs the user to click it themselves rather than a simulated click. How: This checks actTouStr's own prefix.
+	const tutProBoo = ONB_CHE_OBJ.tutProFun( staAppObj ) && !remTouBoo;                                              // What: Tutorial Progress Boolean. Why: Every OTHER tutorial still disables the add button as normal; only a reminder tour itself is exempted. How: This combines ONB_CHE_OBJ's own check with the negation of remTouBoo.
 
-	const tutTasArr = ( state.tasks || [] ).filter( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id ) // What: Tutorial Task Array. Why: One mini-tour launcher card is needed per still-hidden, still-relevant sample reminder. How: This keeps a hidden sample task unless it's already resolved post-checklistDone, or a same-named real reminder has since been created post-checklistDone.
-
-
-		&& !( cheDonBoo && ONB_CHE_OBJ.entLooFun( state, curTasObj.id ) )
-		&& ( !cheDonBoo || !( state.tasks || [] ).some( ( othTasObj ) => !ONB_STI_ARR.includes( othTasObj.id ) && othTasObj.name === curTasObj.name ) ) );
+	const tutTasArr = ( staAppObj.tasks || [] ).filter( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id ) // What: Tutorial Task Array. Why: One mini-tour launcher card is needed per still-hidden, still-relevant sample reminder. How: This keeps a hidden sample task unless it's already resolved post-checklistDone, or a same-named real reminder has since been created post-checklistDone.
 
 
-	const addOpeBoo = activeEditor === 'reminder-add'; // What: Add Open Boolean. Why: This decides whether the quick-add form's own activeEditor slot is currently claimed. How: This compares activeEditor against the literal 'reminder-add' sentinel.
-	const opeTasStr = ( typeof activeEditor === 'string' && activeEditor.startsWith( 'reminder:' ) ) // What: Open Task String. Why: This is the id of whichever SAVED reminder's own inline editor is currently open, distinct from the quick-add form. How: This strips the 'reminder:' prefix off activeEditor when it has one, otherwise null.
-		? activeEditor.slice( 'reminder:'.length ) : null;
+		&& !( cheDonBoo && ONB_CHE_OBJ.entLooFun( staAppObj, curTasObj.id ) )
+		&& ( !cheDonBoo || !( staAppObj.tasks || [] ).some( ( othTasObj ) => !ONB_STI_ARR.includes( othTasObj.id ) && othTasObj.name === curTasObj.name ) ) );
 
 
-	const [ visForBoo, setVisForBoo ] = React.useState( addOpeBoo ); // What: Visible Form Boolean And Setter. Why: The quick-add form must stay mounted for its own exit animation even after activeEditor has already moved on to a different editor. How: This starts at addOpeBoo and is later driven by the effect below.
-	const wasAddRef  = React.useRef( addOpeBoo );                    // What: Was Adding Reference. Why: The effect below needs to detect an addOpeBoo transition, not just its current value. How: This is read and overwritten at the end of that same effect.
-	const selCloRef  = React.useRef( false );                        // What: Self Closing Reference. Why: Our own cancel/commit already starts the exit animation itself; the effect below must not ALSO re-trigger it as if some other editor forced this one closed. How: This is set just before that self-initiated close begins.
-	const cloTimRef  = React.useRef( null );                         // What: Close Timeout Reference. Why: The scheduled end of an in-progress close animation needs to be cancellable if a fresh open/close interrupts it. How: This holds whichever setTimeout id is currently pending.
+	const addOpeBoo = actEdiStr === 'reminder-add';                                            // What: Add Open Boolean. Why: This decides whether the quick-add form's own actEdiStr slot is currently claimed. How: This compares actEdiStr against the literal 'reminder-add' sentinel.
+	const opeTasStr = ( typeof actEdiStr === 'string' && actEdiStr.startsWith( 'reminder:' ) ) // What: Open Task String. Why: This is the id of whichever SAVED reminder's own inline editor is currently open, distinct from the quick-add form. How: This strips the 'reminder:' prefix off actEdiStr when it has one, otherwise null.
+		? actEdiStr.slice( 'reminder:'.length ) : null;
+
+
+	const [ visForBoo, setVisForBoo ] = React.useState( addOpeBoo ); // What: Visible Form Boolean And Setter. Why: The quick-add form must stay mounted for its own exit animation even after actEdiStr has already moved on to a different editor. How: This starts at addOpeBoo and is later driven by the effect below.
+
+	const wasAddRef  = React.useRef( addOpeBoo ); // What: Was Adding Reference. Why: The effect below needs to detect an addOpeBoo transition, not just its current value. How: This is read and overwritten at the end of that same effect.
+	const selCloRef  = React.useRef( false );     // What: Self Closing Reference. Why: Our own cancel/commit already starts the exit animation itself; the effect below must not ALSO re-trigger it as if some other editor forced this one closed. How: This is set just before that self-initiated close begins.
+	const cloTimRef  = React.useRef( null );      // What: Close Timeout Reference. Why: The scheduled end of an in-progress close animation needs to be cancellable if a fresh open/close interrupts it. How: This holds whichever setTimeout id is currently pending.
 
 	const [ draTasObj, setDraTasObj ] = React.useState( null );  // What: Draft Task Object And Setter. Why: The quick-add form holds a full draft task so the same SchEdiCom used on an existing reminder can configure recurrence before it's ever created. How: This starts null and is populated by staAddFun below.
 	const [ addCloBoo, setAddCloBoo ] = React.useState( false ); // What: Add Closing Boolean And Setter. Why: The quick-add form's own exit animation needs a flag distinct from visForBoo, so the form stays mounted but visually collapsing during the close. How: This is toggled by cancelAdd/commit below.
 	const [ insIdeStr, setInsIdeStr ] = React.useState( null );  // What: Insert Identifier String And Setter. Why: A newly-added card needs to play its own entrance animation exactly once. How: This is set to the new card's own id right when commit finishes, then cleared on that card's own animation end.
 	const [ remIdeStr, setRemIdeStr ] = React.useState( null );  // What: Removing Identifier String And Setter. Why: A card slated for delete/skip needs to play its own collapse-out animation before the underlying task is actually removed. How: This is set right before that animation starts, then cleared once it ends.
-	const remActRef                   = React.useRef( null );    // What: Remove Action Reference. Why: Delete and Skip share the same collapse-out animation, but each needs its own action to run once it finishes. How: This holds whichever thunk should run on the removing card's own animation end.
-	const [ skiIdeStr, setSkiIdeStr ] = React.useState( null );  // What: Skip Identifier String And Setter. Why: A card's own skip confirm is its own independent open/closed slot, separate from activeEditor. How: This holds whichever task's own skip confirm is currently open.
-	const [ jusCheStr, setJusCheStr ] = React.useState( null );  // What: Just-Checked String And Setter. Why: A reminder that was JUST checked needs a brief "fresh" flourish, distinct from one that was already done. How: This is set on every fresh check and cleared 700ms later.
-	const inpEleRef                   = React.useRef( null );    // What: Input Element Reference. Why: The quick-add form's own name input needs to be focusable programmatically. How: This is attached to that input's own ref prop below.
+
+	const remActRef = React.useRef( null ); // What: Remove Action Reference. Why: Delete and Skip share the same collapse-out animation, but each needs its own action to run once it finishes. How: This holds whichever thunk should run on the removing card's own animation end.
+
+	const [ skiIdeStr, setSkiIdeStr ] = React.useState( null ); // What: Skip Identifier String And Setter. Why: A card's own skip confirm is its own independent open/closed slot, separate from actEdiStr. How: This holds whichever task's own skip confirm is currently open.
+	const [ jusCheStr, setJusCheStr ] = React.useState( null ); // What: Just-Checked String And Setter. Why: A reminder that was JUST checked needs a brief "fresh" flourish, distinct from one that was already done. How: This is set on every fresh check and cleared 700ms later.
+
+	const inpEleRef = React.useRef( null ); // What: Input Element Reference. Why: The quick-add form's own name input needs to be focusable programmatically. How: This is attached to that input's own ref prop below.
 
 
 	React.useEffect( () => { if ( addOpeBoo && inpEleRef.current ) inpEleRef.current.focus(); }, [ addOpeBoo ] ); // What: Focus Effect. Why: Opening the quick-add form should focus its own name input immediately. How: This focuses inpEleRef's own current node whenever addOpeBoo becomes true.
@@ -2117,21 +2198,22 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 	React.useEffect( () => { // What: Forced Close Effect. Why: Another editor opening elsewhere should force this quick-add form closed, playing the same exit animation Cancel itself uses rather than snapping shut. How: This detects a addOpeBoo transition to false that WASN'T our own doing, then stages the same close sequence cancelAdd uses.
 
 
-		if ( addOpeBoo ) { setVisForBoo( true ); }
+		if ( addOpeBoo ) { setVisForBoo( true ); } // What: Opening Branch. Why: A genuine open transition just needs the form to become visible again. How: This sets visForBoo true while addOpeBoo is true.
 
-		else if ( wasAddRef.current && !selCloRef.current ) {
+		else if ( wasAddRef.current && !selCloRef.current ) { // What: Forced Close Branch. Why: A transition to closed that wasn't flagged as self-initiated means some other editor forced this one shut. How: This stages the same close sequence cancelAdd uses, respecting reduced motion.
 
 
 			clearTimeout( cloTimRef.current ); // What: Stale Timer Clear. Why: A close already scheduled a moment ago must not also fire after this fresh forced-close begins. How: This clears whatever timeout id cloTimRef currently holds.
 
 
-			if ( redMotFun() ) { setDraTasObj( null ); setVisForBoo( false ); }
+			if ( redMotFun() ) { setDraTasObj( null ); setVisForBoo( false ); } // What: Reduced Motion Branch. Why: A user who prefers reduced motion should get an instant discard instead of an animated close. How: This clears the draft and hides the form immediately.
 
-			else {
+			else { // What: Animated Branch. Why: Otherwise the animated close should play, matching cancelAdd's own sequence. How: This stages addCloBoo, then clears the draft/form after the CSS transition finishes.
 
 
-				setAddCloBoo( true );
-				cloTimRef.current = setTimeout( () => { setDraTasObj( null ); setAddCloBoo( false ); setVisForBoo( false ); }, 180 );
+				setAddCloBoo( true ); // What: Add Closing Flag Set. Why: The form needs to stay mounted but visually collapsing while the transition plays. How: This flips addCloBoo true.
+
+				cloTimRef.current = setTimeout( () => { setDraTasObj( null ); setAddCloBoo( false ); setVisForBoo( false ); }, 180 ); // What: Deferred Discard Call. Why: The actual unmount must wait for the .18s close animation to finish first. How: This schedules the draft clear, then stores the timeout id for possible cancellation.
 
 
 			}
@@ -2139,24 +2221,28 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 		}
 
-		selCloRef.current = false;
-		wasAddRef.current = addOpeBoo;
+
+
+		selCloRef.current = false;     // What: Self-Close Flag Reset. Why: This effect's own guard only needs to suppress ITS reaction to the very next addOpeBoo transition our own code caused. How: This clears selCloRef back to false every run.
+		wasAddRef.current = addOpeBoo; // What: Was-Adding Snapshot Update. Why: The next run of this effect needs to compare against whatever addOpeBoo is right now. How: This overwrites wasAddRef with addOpeBoo's own current value.
 
 
 	}, [ addOpeBoo ] ); // What: Effect Dependency Array. Why: This effect only needs to re-run when addOpeBoo itself changes, since that's the exact transition it's watching for. How: addOpeBoo is compared against wasAddRef's own remembered prior value.
 
 
-	const draActObj = { updateTask : ( _tasIdeStr, patValObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ) }; // What: Draft Actions Object. Why: SchEdiCom expects an actions bag exposing updateTask; this stands in for the real one, patching draTasObj locally instead of the store. How: This ignores its own first argument (already known here) and merges patValObj into draTasObj.
+	const draActObj = { updateTask : ( _tasIdeStr, patValObj ) => setDraTasObj( ( curDraObj ) => ( { ...curDraObj, ...patValObj } ) ) }; // What: Draft Actions Object. Why: SchEdiCom expects an actStoObj bag exposing updateTask; this stands in for the real one, patching draTasObj locally instead of the store. How: This ignores its own first argument (already known here) and merges patValObj into draTasObj.
 
 	React.useEffect( () => { // What: Draft Repeat Publish Effect. Why: A reminder mini-tour's later steps need to show copy matching whichever schedule type is currently selected in this draft, without lifting this local state anywhere else. How: This republishes draTasObj's own repeat field onto the shared tour bus.
 
 
-		emlTouObj.set( { draftRepeat : draTasObj ? draTasObj.repeat : null } );
+		emlTouObj.set( { draftRepeat : draTasObj ? draTasObj.repeat : null } ); // What: Draft Repeat Publish Call. Why: A running mini-tour reads this field to decide which copy variant to show next. How: This writes draTasObj's own repeat (or null while no draft exists) onto the shared tour bus.
 
 
 	}, [ draTasObj && draTasObj.repeat ] ); // What: Effect Dependency Array. Why: Only the draft's own repeat field is published, so only a change to that specific field needs to re-run this effect. How: draTasObj && draTasObj.repeat is the exact value being published.
 
-	const staAddFun = () => { // What: Start Add Function. Why: Opening the quick-add form needs to build a fresh draft task, optionally pre-filled from a running mini-tour's own sample. How: This resolves the tour bus's own prefill (if any), builds a defaulted draft via TASKS.defaultTask, and claims the activeEditor slot.
+
+
+	const staAddFun = () => { // What: Start Add Function. Why: Opening the quick-add form needs to build a fresh draft task, optionally pre-filled from a running mini-tour's own sample. How: This resolves the tour bus's own prefill (if any), builds a defaulted draft via TASKS.defaultTask, and claims the actEdiStr slot.
 
 
 		clearTimeout( cloTimRef.current ); // What: Stale Timer Clear. Why: A pending forced-close discard from a moment ago shouldn't wipe this fresh draft once it lands. How: This clears whatever timeout id cloTimRef currently holds.
@@ -2165,39 +2251,51 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 
 		setDraTasObj( TASKS.defaultTask( { ...( touBusObj.prefill || { repeat : 'once' } ), ...( touBusObj.showChecklist ? { hidden : true } : {} ) } ) ); // What: Draft Task Seed. Why: Any reminder created while the mini-tour checklist is up should stay hidden from the real list until it concludes, not just a tour's own reminders. How: This spreads touBusObj's own prefill (or a plain 'once' default) plus a hidden flag whenever touBusObj's own showChecklist is set.
-		setAddCloBoo( false );
-		setActiveEditor( 'reminder-add' );
+
+		setAddCloBoo( false );          // What: Add Closing Flag Reset. Why: A freshly-opened form must not start out mid-close, in case a previous close was still in flight. How: This clears addCloBoo back to false.
+		setActEdiStr( 'reminder-add' ); // What: Active Editor Claim. Why: The quick-add form needs to claim the shared actEdiStr slot so every other open editor forces itself closed. How: This sets actEdiStr to the 'reminder-add' sentinel.
 
 
 	};
 
-	const cloAddFun = () => setActiveEditor( ( curEdiStr ) => curEdiStr === 'reminder-add' ? null : curEdiStr ); // What: Close Add Function. Why: The shared activeEditor slot may have already moved on to a different editor by the time a scheduled close finishes; only clear it if it's still ours. How: This clears activeEditor only while it still equals the 'reminder-add' sentinel.
+
+
+	const cloAddFun = () => setActEdiStr( ( curEdiStr ) => curEdiStr === 'reminder-add' ? null : curEdiStr ); // What: Close Add Function. Why: The shared actEdiStr slot may have already moved on to a different editor by the time a scheduled close finishes; only clear it if it's still ours. How: This clears actEdiStr only while it still equals the 'reminder-add' sentinel.
+
 	const canAddFun = () => { // What: Cancel Add Function. Why: Cancel (and Escape) both discard the in-progress draft, playing the same collapse animation the forced-close effect above uses. How: This flags selCloRef first, then either discards instantly (reduced motion) or stages the animated close.
 
 
-		selCloRef.current = true;
+		selCloRef.current = true; // What: Self-Close Flag Set. Why: The forced-close effect above must not also react to the addOpeBoo transition this cancel is about to cause. How: This flags selCloRef before anything else below runs.
 
-		if ( redMotFun() ) { setDraTasObj( null ); setVisForBoo( false ); cloAddFun(); setAddCloBoo( false ); return; }
 
-		setAddCloBoo( true );
-		cloTimRef.current = setTimeout( () => { setDraTasObj( null ); setVisForBoo( false ); cloAddFun(); setAddCloBoo( false ); }, 180 );
+
+		if ( redMotFun() ) { setDraTasObj( null ); setVisForBoo( false ); cloAddFun(); setAddCloBoo( false ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant discard instead of an animated close. How: This clears the draft, closes the editor slot, and returns early.
+
+
+
+		setAddCloBoo( true ); // What: Add Closing Flag Set. Why: The form needs to stay mounted but visually collapsing while the transition plays. How: This flips addCloBoo true.
+
+		cloTimRef.current = setTimeout( () => { setDraTasObj( null ); setVisForBoo( false ); cloAddFun(); setAddCloBoo( false ); }, 180 ); // What: Deferred Discard Call. Why: The actual unmount must wait for the .18s close animation to finish first. How: This schedules the draft clear/editor close, then stores the timeout id for possible cancellation.
 
 
 	};
 
 
-	const onTogDonFun = ( curTasObj ) => { // What: On Toggle Done Function. Why: Toggling a reminder's own done state also needs to trigger its brief "fresh" flourish, but only on a genuine 0-to-1 transition. How: This calls actions.toggleTaskDone, then stages jusCheStr only when curTasObj wasn't already done.
+
+	const onTogDonFun = ( curTasObj ) => { // What: On Toggle Done Function. Why: Toggling a reminder's own done state also needs to trigger its brief "fresh" flourish, but only on a genuine 0-to-1 transition. How: This calls actStoObj.toggleTaskDone, then stages jusCheStr only when curTasObj wasn't already done.
 
 
 		const wasDonBoo = TASKS.isDoneToday( curTasObj, ancDatObj ); // What: Was Done Boolean. Why: The fresh flourish must never replay for a reminder that was already checked before this toggle. How: This reads curTasObj's own done state before the toggle below applies.
 
-		actions.toggleTaskDone( curTasObj.id );
+
+		actStoObj.toggleTaskDone( curTasObj.id ); // What: Toggle Done Call. Why: This is the actual state change every branch below reacts to. How: This calls actStoObj.toggleTaskDone against curTasObj's own id.
 
 		if ( !wasDonBoo ) { // What: Fresh Flourish Guard. Why: Only a genuine 0-to-1 transition should play the flourish. How: This stages and later clears jusCheStr only while wasDonBoo was false.
 
 
-			setJusCheStr( curTasObj.id );
-			setTimeout( () => setJusCheStr( ( preIdeStr ) => preIdeStr === curTasObj.id ? null : preIdeStr ), 700 );
+			setJusCheStr( curTasObj.id ); // What: Just-Checked Stage Call. Why: The card needs to know it was JUST checked so it can play its own fresh flourish. How: This sets jusCheStr to curTasObj's own id.
+
+			setTimeout( () => setJusCheStr( ( preIdeStr ) => preIdeStr === curTasObj.id ? null : preIdeStr ), 700 ); // What: Fresh Flourish Clear Call. Why: The flourish must not replay on every future re-render, only the one right after this toggle. How: This clears jusCheStr back to null after 700ms, but only if it still matches curTasObj's own id.
 
 
 		}
@@ -2206,29 +2304,32 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 	};
 
 
+
 	const [ addMesObj, setAddMesObj ] = React.useState( null ); // What: Added Message Object And Setter. Why: After a successful add, silence is indistinguishable from a failed save whenever the new reminder won't actually appear today, so this needs an explicit announcement. How: This is populated by annAddFun below and auto-cleared by the effect right after it.
-	const addTimRef = React.useRef( null );                      // What: Added Timeout Reference. Why: The scheduled clearing of addMesObj needs to be cancellable if a second add happens before the first message times out. How: This holds whichever setTimeout id is currently pending.
+
+	const addTimRef = React.useRef( null ); // What: Added Timeout Reference. Why: The scheduled clearing of addMesObj needs to be cancellable if a second add happens before the first message times out. How: This holds whichever setTimeout id is currently pending.
 
 	React.useEffect( () => () => clearTimeout( addTimRef.current ), [] ); // What: Added Timer Cleanup Effect. Why: A pending message-clear timeout must not outlive this component. How: This clears addTimRef's own timeout id on unmount.
 
 	const annAddFun = ( curTasObj ) => { // What: Announce Added Function. Why: This decides and stages the actual wording of the post-add announcement. How: This computes curTasObj's own real visibility, then picks a success or a "won't show today" message accordingly.
 
 
-		const visResObj = TASKS.todayVisibility( curTasObj, state.reminderOpts, state.holidays ); // What: Visibility Result Object. Why: The message below depends entirely on whether the new reminder is actually visible today. How: This calls TASKS.todayVisibility against curTasObj.
-		const nexLabStr = nexDatFun( visResObj.next, curTasObj.repeat === 'annual' );              // What: Next Label String. Why: A hidden-today message should still say when the reminder WILL next appear, when known. How: This calls nexDatFun against visResObj's own next date.
+		const visResObj = TASKS.todayVisibility( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Visibility Result Object. Why: The message below depends entirely on whether the new reminder is actually visible today. How: This calls TASKS.todayVisibility against curTasObj.
+		const nexLabStr = nexDatFun( visResObj.next, curTasObj.repeat === 'annual' );                     // What: Next Label String. Why: A hidden-today message should still say when the reminder WILL next appear, when known. How: This calls nexDatFun against visResObj's own next date.
 
 
-		setAddMesObj( visResObj.visible
+		setAddMesObj( visResObj.visible // What: Add Message Stage Call. Why: This is the actual announcement staged for the effect below to auto-clear. How: This picks the success or hidden-today message object based on visResObj's own visible flag.
 
 
-			? { ok : true, text : `"${ curTasObj.name }" added.` } // What: Success Message Object. Why: A visible-today add just needs a short confirmation. How: This names curTasObj's own name in the confirmation text.
+			? { okaBoo : true, text : `"${ curTasObj.name }" added.` } // What: Success Message Object. Why: A visible-today add just needs a short confirmation. How: This names curTasObj's own name in the confirmation text.
 
-			: { ok : false, text : `"${ curTasObj.name }" added, but it will not show up in today's todo list.${ nexLabStr ? ` It will next appear on ${ nexLabStr }.` : '' }` } // What: Hidden Message Object. Why: A not-visible-today add needs the fuller explanation, plus the next-appearance date when known. How: This names curTasObj's own name and appends nexLabStr's own sentence when it resolved to something.
+			: { okaBoo : false, text : `"${ curTasObj.name }" added, but it will not show up in today's todo list.${ nexLabStr ? ` It will next appear on ${ nexLabStr }.` : '' }` } // What: Hidden Message Object. Why: A not-visible-today add needs the fuller explanation, plus the next-appearance date when known. How: This names curTasObj's own name and appends nexLabStr's own sentence when it resolved to something.
 
 
 		);
 
-		clearTimeout( addTimRef.current );
+
+		clearTimeout( addTimRef.current );                                                             // What: Stale Timer Clear. Why: A previous message's own scheduled clear must not fire early and wipe this fresh one. How: This clears whatever timeout id addTimRef currently holds.
 		addTimRef.current = setTimeout( () => setAddMesObj( null ), visResObj.visible ? 3000 : 9000 ); // What: Message Auto-Clear Call. Why: A hidden-today message is more important and gets more time on screen before it fades. How: This schedules addMesObj back to null after 3s (visible) or 9s (hidden).
 
 
@@ -2242,37 +2343,47 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 		const tasNamStr = ( draTasObj?.name || '' ).trim(); // What: Task Name String. Why: An empty name is not a valid reminder and must not be committed. How: This trims draTasObj's own name, defaulting to an empty string when draTasObj itself is null.
 
+
 		if ( !tasNamStr || comTasRef.current ) return; // What: Guard: Ignore Rapid Double-Click. Why: Either the name is blank, or a commit is already in flight. How: This bails out of the whole commit when either condition holds.
 
 
-		comTasRef.current = true;
-		selCloRef.current = true;
 
-		const extTasObj = draTasObj.createdFromSample // What: Existing Task Object. Why: A reminder mini-tour replayed after already finishing once should update the SAME real reminder it created before, not spawn a duplicate. How: This looks up state's own tasks by matching createdFromSample, or null when this draft isn't tour-linked at all.
-			? state.tasks.find( ( curTasObj ) => curTasObj.createdFromSample === draTasObj.createdFromSample )
+		comTasRef.current = true; // What: Commit In-Flight Flag Set. Why: This is the actual guard the top-of-function check above reads to reject a rapid second click. How: This flips comTasRef true for the duration of this commit.
+		selCloRef.current = true; // What: Self-Close Flag Set. Why: The forced-close effect above must not also react to the addOpeBoo transition this commit is about to cause. How: This flags selCloRef before the animated close below begins.
+
+
+		const extTasObj = draTasObj.createdFromSample // What: Existing Task Object. Why: A reminder mini-tour replayed after already finishing once should update the SAME real reminder it created before, not spawn a duplicate. How: This looks up staAppObj's own tasks by matching createdFromSample, or null when this draft isn't tour-linked at all.
+			? staAppObj.tasks.find( ( curTasObj ) => curTasObj.createdFromSample === draTasObj.createdFromSample )
 			: null;
 
 		const newIdeStr = extTasObj ? extTasObj.id : draTasObj.id; // What: New Identifier String. Why: The entrance animation below needs to target whichever id the committed reminder actually ends up at. How: This picks extTasObj's own id when one was found, otherwise draTasObj's own id.
 
-		const finAddFun = () => { // What: Finish Add Function. Why: The actual commit is deferred behind the collapse animation below (or run immediately under reduced motion), so it's centralized here. How: This calls actions.addTask, announces the result, stages the entrance animation, and resets every quick-add state slot.
+		const finAddFun = () => { // What: Finish Add Function. Why: The actual commit is deferred behind the collapse animation below (or run immediately under reduced motion), so it's centralized here. How: This calls actStoObj.addTask, announces the result, stages the entrance animation, and resets every quick-add staAppObj slot.
 
 
-			actions.addTask( { ...draTasObj, name : tasNamStr, ...( extTasObj ? { replaceId : extTasObj.id } : {} ) } );
-			annAddFun( { ...draTasObj, name : tasNamStr } );
-			setInsIdeStr( newIdeStr );
-			setDraTasObj( null );
-			setVisForBoo( false );
-			cloAddFun();
-			setAddCloBoo( false );
-			setTimeout( () => { comTasRef.current = false; }, 500 );
+			actStoObj.addTask( { ...draTasObj, name : tasNamStr, ...( extTasObj ? { replaceId : extTasObj.id } : {} ) } ); // What: Add Task Call. Why: This is the actual commit, creating a new reminder or, for a re-run mini-tour, replacing the existing sample-linked one via replaceId. How: This spreads draTasObj with the trimmed name and an optional replaceId.
+
+			annAddFun( { ...draTasObj, name : tasNamStr } ); // What: Announce Add Call. Why: The user needs to know whether the just-added reminder will actually show up today. How: This calls annAddFun against the same committed shape.
+			setInsIdeStr( newIdeStr );                       // What: Insert Identifier Stage Call. Why: The committed reminder needs to play its own entrance animation exactly once. How: This sets insIdeStr to newIdeStr.
+			setDraTasObj( null );                            // What: Draft Clear Call. Why: The quick-add form's own draft is fully spent once committed. How: This resets draTasObj back to null.
+			setVisForBoo( false );                           // What: Visible Form Flag Clear. Why: The form must stop rendering once the commit finishes. How: This flips visForBoo false.
+			cloAddFun();                                     // What: Close Add Call. Why: The shared actEdiStr slot must be released now that the commit is done. How: This calls cloAddFun, which clears actEdiStr only while it's still this form's own sentinel.
+			setAddCloBoo( false );                           // What: Add Closing Flag Reset. Why: The next open must not start out mid-close. How: This clears addCloBoo back to false.
+
+			setTimeout( () => { comTasRef.current = false; }, 500 ); // What: Commit Flag Release Call. Why: A later, genuinely new commit must be allowed once this one has fully settled. How: This clears comTasRef back to false after 500ms.
 
 
 		};
 
-		if ( redMotFun() ) { finAddFun(); return; }
 
-		setAddCloBoo( true );
-		cloTimRef.current = setTimeout( finAddFun, 180 );
+
+		if ( redMotFun() ) { finAddFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant commit instead of an animated close-then-commit. How: This calls finAddFun directly and returns early.
+
+
+
+		setAddCloBoo( true ); // What: Add Closing Flag Set. Why: The form needs to stay mounted but visually collapsing while the transition plays before the real commit lands. How: This flips addCloBoo true.
+
+		cloTimRef.current = setTimeout( finAddFun, 180 ); // What: Deferred Commit Call. Why: The actual commit must wait for the .18s close animation to finish first. How: This schedules finAddFun, then stores the timeout id for possible cancellation.
 
 
 	};
@@ -2281,13 +2392,14 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 	useEscCanFun( visForBoo && !addCloBoo, canAddFun ); // What: Use Escape Cancel Function. Why: Escape should discard the quick-add regardless of what's been typed or which of its controls has focus. How: This calls canAddFun whenever the form is visible and not already mid-close.
 
 
-	const donCouNum = dueTasArr.filter( ( curTasObj ) => TASKS.isDoneToday( curTasObj, ancDatObj ) ).length; // What: Done Count Number. Why: The header's own "N of M" count needs the real completed count among dueTasArr. How: This filters dueTasArr by TASKS.isDoneToday and reads the resulting length.
-	const tutDonNum = tutTasArr.filter( ( curTasObj ) => !!ONB_CHE_OBJ.entLooFun( state, curTasObj.id ) ).length; // What: Tutorial Done Number. Why: A mini-tour launcher card resolved any of the 3 ways counts toward the same header total as a real completed card. How: This filters tutTasArr by ONB_CHE_OBJ.entLooFun and reads the resulting length.
-	const remTotNum = dueTasArr.length + tutTasArr.length;                                                       // What: Reminder Total Number. Why: The header's own "of M" total must include both real due reminders and any still-offered tutorial cards. How: This sums dueTasArr's own length and tutTasArr's own length.
-	const remDonNum = donCouNum + tutDonNum;                                                                     // What: Reminder Done Number. Why: The header's own "N of" count must likewise include both real completions and resolved tutorial cards. How: This sums donCouNum and tutDonNum.
+	const donCouNum = dueTasArr.filter( ( curTasObj ) => TASKS.isDoneToday( curTasObj, ancDatObj ) ).length;          // What: Done Count Number. Why: The header's own "N of M" count needs the real completed count among dueTasArr. How: This filters dueTasArr by TASKS.isDoneToday and reads the resulting length.
+	const tutDonNum = tutTasArr.filter( ( curTasObj ) => !!ONB_CHE_OBJ.entLooFun( staAppObj, curTasObj.id ) ).length; // What: Tutorial Done Number. Why: A mini-tour launcher card resolved any of the 3 ways counts toward the same header total as a real completed card. How: This filters tutTasArr by ONB_CHE_OBJ.entLooFun and reads the resulting length.
+	const remTotNum = dueTasArr.length + tutTasArr.length;                                                            // What: Reminder Total Number. Why: The header's own "of M" total must include both real due reminders and any still-offered tutorial cards. How: This sums dueTasArr's own length and tutTasArr's own length.
+	const remDonNum = donCouNum + tutDonNum;                                                                          // What: Reminder Done Number. Why: The header's own "N of" count must likewise include both real completions and resolved tutorial cards. How: This sums donCouNum and tutDonNum.
 
-	const remPreRef = React.useRef( remDonNum );                    // What: Reminder Previous Reference. Why: The dash-bar animation below needs remDonNum's own PRIOR value to detect a genuine increase, not just its current value. How: This starts at remDonNum and is updated at the end of the effect below.
-	const [ remFreNum, setRemFreNum ] = React.useState( -1 );        // What: Reminder Fresh Number And Setter. Why: The dash-bar's own just-completed dash needs to know WHICH index to briefly animate, mirroring GroupHeader's own freshIdx. How: This is set by the effect below and cleared 520ms later.
+	const remPreRef = React.useRef( remDonNum ); // What: Reminder Previous Reference. Why: The dash-bar animation below needs remDonNum's own PRIOR value to detect a genuine increase, not just its current value. How: This starts at remDonNum and is updated at the end of the effect below.
+
+	const [ remFreNum, setRemFreNum ] = React.useState( -1 ); // What: Reminder Fresh Number And Setter. Why: The dash-bar's own just-completed dash needs to know WHICH index to briefly animate, mirroring GroupHeader's own freshIdx. How: This is set by the effect below and cleared 520ms later.
 
 	React.useEffect( () => { // What: Dash Animation Effect. Why: The dash that just turned on should animate in, exactly like every other group's own progress bar, even though this section isn't rendered by that shared component. How: This detects a genuine increase in remDonNum, stages remFreNum, then clears it after the flourish's own duration.
 
@@ -2298,37 +2410,42 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 			const newFreNum = remDonNum - 1; // What: New Fresh Number. Why: The just-completed dash is always the one immediately before the new total. How: This subtracts 1 from remDonNum.
 
 
-			setRemFreNum( newFreNum );
+			setRemFreNum( newFreNum ); // What: Fresh Index Stage Call. Why: This is what actually tells the dash bar which index to briefly animate. How: This sets remFreNum to newFreNum.
 
 			const freTimNum = setTimeout( () => setRemFreNum( ( curFreNum ) => ( curFreNum === newFreNum ? -1 : curFreNum ) ), 520 ); // What: Fresh Timeout Number. Why: The flourish must clear itself after its own animation duration, but only if nothing newer has already taken over. How: This resets remFreNum back to -1 520ms later, guarded against a staler run clobbering a newer one.
 
 
-			remPreRef.current = remDonNum;
+			remPreRef.current = remDonNum; // What: Previous Snapshot Update. Why: The next run of this effect needs to compare against whatever remDonNum is right now. How: This overwrites remPreRef with remDonNum's own current value.
 
-			return () => clearTimeout( freTimNum );
+
+
+			return () => clearTimeout( freTimNum ); // What: Effect Cleanup Return. Why: A stale fresh-flourish timeout must not outlive this run, in case remDonNum changes again before it fires. How: This returns a closure that clears freTimNum.
 
 
 		}
 
-		remPreRef.current = remDonNum;
+
+
+		remPreRef.current = remDonNum; // What: Previous Snapshot Update. Why: A non-increasing run still needs to keep remPreRef in sync, so a later genuine increase is detected correctly. How: This overwrites remPreRef with remDonNum's own current value.
 
 
 	}, [ remDonNum ] ); // What: Effect Dependency Array. Why: This effect only needs to re-run when remDonNum itself changes, since that's the exact value its own comparison watches. How: remDonNum is compared against remPreRef's own remembered prior value every run.
 
 
+
 	return (
 
 
-		<section className='group-section rem-section' ref={ sectionRef }>{ /* What: Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the today-list below. */ }
+		<section className='group-section rem-section' ref={ secRefFun }>{ /* What: Group Section Element. Why: This is RemSecCom's own root element, matching every other Today group's own outer landmark. How: This renders the header, the optional day-log panel, and the today-list below. */ }
 
 
-			<header className={ `group-h ${ editMode ? 'is-reorderable' : '' }` }>{ /* What: Group Header Element. Why: This groups the section's own name/count/log-chip on the left and its progress/add-button on the right. How: This renders group-h-l and rem-h-r below, marking itself reorderable while editMode is on. */ }
+			<header className={ `group-h ${ ediModBoo ? 'is-reorderable' : '' }` }>{ /* What: Group Header Element. Why: This groups the section's own name/count/log-chip on the left and its progress/add-button on the right. How: This renders group-h-l and rem-h-r below, marking itself reorderable while ediModBoo is on. */ }
 
 
-				<div className='group-h-l'>{ /* What: Group Header Left Div Element. Why: The drag grip, name, count, and log chip read together on the header's own left side. How: This wraps all 4 below, the grip only while editMode is on. */ }
+				<div className='group-h-l'>{ /* What: Group Header Left Div Element. Why: The drag grip, name, count, and log chip read together on the header's own left side. How: This wraps all 4 below, the grip only while ediModBoo is on. */ }
 
 
-					{ editMode && ( // What: Grip Visibility Check. Why: The drag grip only makes sense while Edit Mode is on. How: This renders the grip span only while editMode is true.
+					{ ediModBoo && ( // What: Grip Visibility Check. Why: The drag grip only makes sense while Edit Mode is on. How: This renders the grip span only while ediModBoo is true.
 
 
 						<span
@@ -2338,8 +2455,8 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 							role='button'
 							tabIndex={ 0 }
 							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() }
-							onPointerDown={ ( poiEveObj ) => onGripDown( poiEveObj ) }
-						>{ /* What: Group Grip Span Element. Why: This is the whole section's own drag handle for reordering among other groups. How: This suppresses the native HTML5 drag entirely and forwards pointer-down straight to onGripDown. */ }
+							onPointerDown={ ( poiEveObj ) => onGriDowFun( poiEveObj ) }
+						>{ /* What: Group Grip Span Element. Why: This is the whole section's own drag handle for reordering among other groups. How: This suppresses the native HTML5 drag entirely and forwards pointer-down straight to onGriDowFun. */ }
 
 
 							<IcoSvgCom
@@ -2366,7 +2483,8 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 
 					</span>
-					{ !editMode && onToggleLog && <DayLogChip open={ logOpen } onClick={ onToggleLog } /> }{ /* What: Day Log Chip. Why: The day-log toggle only makes sense outside Edit Mode, and only when a caller actually wired up onToggleLog. How: This renders only while both conditions hold. */ }
+
+					{ !ediModBoo && onTogLogFun && <DayLogChip open={ logOpeBoo } onClick={ onTogLogFun } /> }{ /* What: Day Log Chip. Why: The day-log toggle only makes sense outside Edit Mode, and only when a caller actually wired up onTogLogFun. How: This renders only while both conditions hold. */ }
 
 
 				</div>
@@ -2391,7 +2509,8 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 
 					</div>
-					{ !editMode && ( // What: Add Button Visibility Check. Why: The add button (or its disabled InfTipCom stand-in) only makes sense outside Edit Mode. How: This renders one of the 2 branches below only while editMode is false.
+
+					{ !ediModBoo && ( // What: Add Button Visibility Check. Why: The add button (or its disabled InfTipCom stand-in) only makes sense outside Edit Mode. How: This renders one of the 2 branches below only while ediModBoo is false.
 
 
 						tutProBoo ? ( // What: Tutorials In Progress Check. Why: The add control must stay disabled with an explanation while the guided checklist is still running. How: This renders the disabled InfTipCom while tutProBoo is true, the real button otherwise.
@@ -2444,13 +2563,13 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 			</header>
 
-			{ !editMode && ( // What: Log Panel Visibility Check. Why: The day-log panel only makes sense outside Edit Mode. How: This renders the ColDisCom-wrapped RemLogCom only while editMode is false.
+			{ !ediModBoo && ( // What: Log Panel Visibility Check. Why: The day-log panel only makes sense outside Edit Mode. How: This renders the ColDisCom-wrapped RemLogCom only while ediModBoo is false.
 
 
-				<ColDisCom open={ !!logOpen }>
+				<ColDisCom open={ !!logOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The day-log panel needs to animate open/closed rather than snapping. How: This wraps RemLogCom, open only while logOpeBoo is true. */ }
 
 
-					<RemLogCom state={ state } onClose={ onToggleLog } />
+					<RemLogCom staAppObj={ staAppObj } onClose={ onTogLogFun } />{ /* What: Reminders Log Component. Why: This is the actual "what did the generator do today" audit panel for this group. How: This is passed staAppObj and closes back via onTogLogFun. */ }
 
 
 				</ColDisCom>
@@ -2465,9 +2584,9 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 
 					<p
-						className={ `rem-added-msg ${ addMesObj.ok ? 'is-ok' : 'is-warn' }` }
+						className={ `rem-added-msg ${ addMesObj.okaBoo ? 'is-ok' : 'is-warn' }` }
 						role='status'
-					>{ addMesObj.text }</p> // What: Added Message Paragraph Element. Why: This is the live-announced confirmation or warning text itself. How: This marks itself is-ok or is-warn based on addMesObj's own ok flag.
+					>{ addMesObj.text }</p> // What: Added Message Paragraph Element. Why: This is the live-announced confirmation or warning text itself. How: This marks itself is-ok or is-warn based on addMesObj's own okaBoo flag.
 
 
 				) }
@@ -2502,9 +2621,9 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 							<SchEdiCom
 								tasRecObj={ draTasObj }
 								actStoObj={ draActObj }
-								staAppObj={ state }
+								staAppObj={ staAppObj }
 								aniExtBoo
-							/>{ /* What: Schedule Editor Component. Why: This is the actual live schedule editor, operating on the in-progress draft before it's ever created. How: This is passed draActObj instead of the real store actions, so every field stays local until Add. */ }
+							/>{ /* What: Schedule Editor Component. Why: This is the actual live schedule editor, operating on the in-progress draft before it's ever created. How: This is passed draActObj instead of the real store actStoObj, so every field stays local until Add. */ }
 
 
 							<div className='rem-inline-foot'>{ /* What: Inline Foot Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. */ }
@@ -2534,22 +2653,24 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 
 				) }
+
 				{ tutTasArr.map( ( curTasObj ) => ( // What: Tutorial Card List Render. Why: One mini-tour launcher card is needed per still-relevant hidden sample. How: This maps tutTasArr to one RemCarCom per entry, keyed by its own id.
 
 
 					<RemCarCom
 						key={ curTasObj.id }
 						tasRecObj={ curTasObj }
-						actStoObj={ actions }
+						actStoObj={ actStoObj }
 						isaTutBoo
-						tutDonBoo={ !!ONB_CHE_OBJ.entLooFun( state, curTasObj.id ) }
-						extClaStr={ checklistExiting ? 'is-removing' : '' }
-						onPlaTutFun={ onPlayTutorial }
-						onUncTutFun={ onUncheckTutorial }
-					/> // What: Reminder Card Component. Why: This is one mini-tour launcher card. How: This is flagged isaTutBoo, resolved via ONB_CHE_OBJ.entLooFun, and plays the checklist's own exit class while checklistExiting.
+						tutDonBoo={ !!ONB_CHE_OBJ.entLooFun( staAppObj, curTasObj.id ) }
+						extClaStr={ cheExiBoo ? 'is-removing' : '' }
+						onPlaTutFun={ onPlaTutFun }
+						onUncTutFun={ onUncTutFun }
+					/> // What: Reminder Card Component. Why: This is one mini-tour launcher card. How: This is flagged isaTutBoo, resolved via ONB_CHE_OBJ.entLooFun, and plays the checklist's own exit class while cheExiBoo.
 
 
 				) ) }
+
 				{ dueTasArr.map( ( curTasObj ) => ( // What: Due Card List Render. Why: One real reminder row (plus its own inline editors) is needed per currently-due reminder. How: This maps dueTasArr to one RemCarCom, one skip ColDisCom, and one edit ColDisCom per entry, keyed by its own id.
 
 
@@ -2558,7 +2679,7 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 						<RemCarCom
 							tasRecObj={ curTasObj }
-							actStoObj={ actions }
+							actStoObj={ actStoObj }
 							jusCheStr={ jusCheStr }
 							isaOpeBoo={ opeTasStr === curTasObj.id }
 							isaSkiBoo={ skiIdeStr === curTasObj.id }
@@ -2566,45 +2687,47 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 
 								: remIdeStr === curTasObj.id ? 'rem-card--removing'
-								: ( leavingTaskIds && leavingTaskIds.has( curTasObj.id ) ) ? 'rem-card--purging'
-								: ( arrivingTaskIds && arrivingTaskIds.has( curTasObj.id ) ) ? 'rem-card--insert' : ''
+								: ( leaTasSet && leaTasSet.has( curTasObj.id ) ) ? 'rem-card--purging'
+								: ( arvTasSet && arvTasSet.has( curTasObj.id ) ) ? 'rem-card--insert' : ''
 
 
 							}
 							cheDatObj={ ancDatObj }
 							onTogTasFun={ onTogDonFun }
-							onRenTasFun={ ( namStr ) => actions.renameTask( curTasObj.id, namStr ) }
-							onAniEndFun={ ( aniEveObj ) => {
+							onRenTasFun={ ( namStr ) => actStoObj.renameTask( curTasObj.id, namStr ) }
+							onAniEndFun={ ( aniEveObj ) => { // What: Animation End Handler. Why: This card's own collapse-in/out animations must clear their own staged flags exactly once, and only for the card's own outer element, not a bubbled child animation. How: This guards on the real target first, then clears insIdeStr and/or runs the deferred remove/skip action.
 
 
 								if ( aniEveObj.target !== aniEveObj.currentTarget ) return; // What: Bubbled Animation Guard. Why: A child element's own animation ending must not be mistaken for this card's own outer animation ending. How: This bails out unless the event's own target is this exact element.
 
 
 
-								if ( insIdeStr === curTasObj.id ) setInsIdeStr( null );
+								if ( insIdeStr === curTasObj.id ) setInsIdeStr( null ); // What: Insert Flag Clear Guard. Why: The entrance animation must only ever play once. How: This clears insIdeStr only while it still matches curTasObj's own id.
+
+
 
 								if ( remIdeStr === curTasObj.id ) { // What: Removal Finish Guard. Why: The card's own collapse-out animation ending is exactly when the deferred delete/skip action should actually run. How: This invokes remActRef's own thunk (or a plain removeTask fallback), then clears both remActRef and remIdeStr.
 
 
-									( remActRef.current || ( () => actions.removeTask( curTasObj.id ) ) )();
-									remActRef.current = null;
-									setRemIdeStr( null );
+									( remActRef.current || ( () => actStoObj.removeTask( curTasObj.id ) ) )(); // What: Deferred Action Call. Why: Delete and Skip each stage a different thunk here; a missing thunk still falls back to a plain remove. How: This invokes remActRef's own current thunk, or a plain removeTask call when none was staged.
+									remActRef.current = null; // What: Action Reference Clear. Why: A stale thunk must not accidentally run again on some later animation end. How: This resets remActRef back to null.
+									setRemIdeStr( null ); // What: Removing Flag Clear. Why: The card's own collapse-out animation has now fully finished. How: This clears remIdeStr back to null.
 
 
 								}
 
 
 							} }
-							onEdiTasFun={ () => { setActiveEditor( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : `reminder:${ curTasObj.id }` ); setSkiIdeStr( null ); } }
-							onSkiTasFun={ () => {
+							onEdiTasFun={ () => { setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : `reminder:${ curTasObj.id }` ); setSkiIdeStr( null ); } }
+							onSkiTasFun={ () => { // What: Skip Handler. Why: The row's own Skip button needs to toggle its own confirm prompt open/closed and close any unrelated open editor at the same time. How: This flips skiIdeStr and clears a matching actEdiStr sentinel.
 
 
-								setSkiIdeStr( ( curSkiStr ) => curSkiStr === curTasObj.id ? null : curTasObj.id );
-								setActiveEditor( ( curEdiStr ) => ( typeof curEdiStr === 'string' && curEdiStr.startsWith( 'reminder:' ) ) ? null : curEdiStr );
+								setSkiIdeStr( ( curSkiStr ) => curSkiStr === curTasObj.id ? null : curTasObj.id ); // What: Skip Confirm Toggle Call. Why: This is the actual open/close toggle for this card's own skip confirm prompt. How: This flips skiIdeStr between null and curTasObj's own id.
+								setActEdiStr( ( curEdiStr ) => ( typeof curEdiStr === 'string' && curEdiStr.startsWith( 'reminder:' ) ) ? null : curEdiStr ); // What: Reminder Editor Close Call. Why: Opening the skip confirm should close any open inline schedule editor, but must not clobber some unrelated other editor. How: This clears actEdiStr only while it's currently any 'reminder:' editor sentinel.
 
 
 							} }
-						/>{ /* What: Reminder Card Component. Why: This is one real, due reminder's own row. How: This wires every one of its callback props straight into this section's own local state and actions. */ }
+						/>{ /* What: Reminder Card Component. Why: This is one real, due reminder's own row. How: This wires every one of its callback props straight into this section's own local staAppObj and actStoObj. */ }
 
 
 						<ColDisCom open={ opeTasStr === curTasObj.id }>{ /* What: Collapse Disclosure Component. Why: The inline schedule editor only exists while this exact card's own edit affordance is open. How: This animates InlEdiCom open only while opeTasStr matches curTasObj's own id. */ }
@@ -2612,22 +2735,26 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 
 							<InlEdiCom
 								tasRecObj={ curTasObj }
-								staAppObj={ state }
-								onCloEdiFun={ () => setActiveEditor( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr ) }
-								onDelTasFun={ () => {
+								staAppObj={ staAppObj }
+								onCloEdiFun={ () => setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr ) }
+								onDelTasFun={ () => { // What: Delete Handler. Why: Deleting this reminder needs to close its own inline editor and stage the same collapse-then-remove sequence the card-level Delete uses. How: This closes actEdiStr, then either removes immediately (reduced motion) or defers it behind the collapse-out animation.
 
 
-									setActiveEditor( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr );
+									setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr ); // What: Reminder Editor Close Call. Why: Deleting this reminder must also close its own now-stale inline editor. How: This clears actEdiStr only while it still equals this exact card's own sentinel.
 
-									if ( redMotFun() ) { actions.removeTask( curTasObj.id ); return; }
 
-									remActRef.current = () => actions.removeTask( curTasObj.id );
+
+									if ( redMotFun() ) { actStoObj.removeTask( curTasObj.id ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant remove instead of an animated collapse-then-remove. How: This calls actStoObj.removeTask directly and returns early.
+
+
+
+									remActRef.current = () => actStoObj.removeTask( curTasObj.id ); // What: Remove Action Stage Call. Why: The card's own collapse-out animation must finish before the actual removal runs. How: This stages a thunk remActRef reads on the card's own onAniEndFun.
 									setRemIdeStr( curTasObj.id ); // What: Removal Stage Call. Why: The card above must play its own collapse-out animation before remActRef's own thunk actually runs, on that card's own onAniEndFun. How: This stages curTasObj's own id as the currently-removing card.
 
 
 								} }
-								onComTasFun={ ( draSnpObj ) => actions.updateTask( curTasObj.id, draSnpObj ) }
-							/>
+								onComTasFun={ ( draSnaObj ) => actStoObj.updateTask( curTasObj.id, draSnaObj ) }
+							/>{ /* What: Inline Edit Component. Why: This is the actual schedule editor for this card, committing straight to the real store. How: This is passed curTasObj directly (not a local draft), closing back via onCloEdiFun. */ }
 
 
 						</ColDisCom>
@@ -2638,13 +2765,15 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 							{ ( () => { // What: Skip Confirm Content Function. Why: The confirm prompt's own wording depends on curTasObj's own next eligible day, computed once as an IIFE rather than inline in the JSX below. How: This resolves that next day, then returns the confirm/no-day-available markup.
 
 
-								const nexEliObj = TASKS.nextEligible( curTasObj, state.reminderOpts, state.holidays ); // What: Next Eligible Object. Why: This is the actual date the Skip action would defer curTasObj to. How: This calls TASKS.nextEligible against curTasObj.
-								const tomIsoStr = TASKS.isoOf( new Date( Date.now() + 86400000 ) );                    // What: Tomorrow Iso String. Why: The label below reads "tomorrow" instead of a full date when that's literally what nexEliObj resolves to. How: This computes tomorrow's own iso string from right now plus one day in milliseconds.
-								const nexIsoStr = nexEliObj ? TASKS.isoOf( nexEliObj ) : null;                          // What: Next Iso String. Why: This is compared against tomIsoStr to decide the label below. How: This calls TASKS.isoOf against nexEliObj, or null when there's no eligible day at all.
+								const nexEliObj = TASKS.nextEligible( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Next Eligible Object. Why: This is the actual date the Skip action would defer curTasObj to. How: This calls TASKS.nextEligible against curTasObj.
+								const tomIsoStr = TASKS.isoOf( new Date( Date.now() + 86400000 ) );                            // What: Tomorrow Iso String. Why: The label below reads "tomorrow" instead of a full date when that's literally what nexEliObj resolves to. How: This computes tomorrow's own iso string from right now plus one day in milliseconds.
+								const nexIsoStr = nexEliObj ? TASKS.isoOf( nexEliObj ) : null;                                 // What: Next Iso String. Why: This is compared against tomIsoStr to decide the label below. How: This calls TASKS.isoOf against nexEliObj, or null when there's no eligible day at all.
+
 								const skiLabStr = !nexEliObj ? null // What: Skip Label String. Why: This is the actual day named in the confirm prompt below, or null when there's nothing to skip to. How: This picks 'tomorrow' when nexIsoStr matches tomIsoStr, otherwise a full locale-formatted date, or null when nexEliObj itself is null.
 
 									: ( nexIsoStr === tomIsoStr ? 'tomorrow'
-										: nexEliObj.toLocaleDateString( 'en-US', { weekday : 'long', month : 'short', day : 'numeric' } ) );
+									: nexEliObj.toLocaleDateString( 'en-US', { weekday : 'long', month : 'short', day : 'numeric' } ) );
+
 
 
 								return (
@@ -2673,19 +2802,24 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 													<ButBasCom
 														kind='primary'
 														size='sm'
-														onClick={ () => {
+														onClick={ () => { // What: Confirm Skip Click Handler. Why: Confirming the skip needs to close the prompt and stage the same collapse-then-skip sequence Delete uses. How: This closes skiIdeStr, then either skips immediately (reduced motion) or defers it behind the collapse-out animation.
 
 
-															setSkiIdeStr( null );
+															setSkiIdeStr( null ); // What: Skip Confirm Close Call. Why: The confirm prompt has now been answered, so it must close. How: This clears skiIdeStr back to null.
 
-															if ( redMotFun() ) { actions.skipTask( curTasObj.id, nexIsoStr ); return; }
 
-															remActRef.current = () => actions.skipTask( curTasObj.id, nexIsoStr );
+
+															if ( redMotFun() ) { actStoObj.skipTask( curTasObj.id, nexIsoStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant skip instead of an animated collapse-then-skip. How: This calls actStoObj.skipTask directly and returns early.
+
+
+
+															remActRef.current = () => actStoObj.skipTask( curTasObj.id, nexIsoStr ); // What: Skip Action Stage Call. Why: The card's own collapse-out animation must finish before the actual skip runs. How: This stages a thunk remActRef reads on the card's own onAniEndFun, reusing the same removal machinery Delete uses.
+
 															setRemIdeStr( curTasObj.id ); // What: Removal Stage Call. Why: The card above must play its own collapse-out animation before the deferred skipTask call actually runs, on that card's own onAniEndFun. How: This stages curTasObj's own id as the currently-removing card, reusing the same removal machinery Delete uses.
 
 
 														} }
-													>Confirm</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed skip trigger. How: This stages the deferred actions.skipTask call above. */ }
+													>Confirm</ButBasCom>{ /* What: Button Base Component. Why: This is the actual, confirmed skip trigger. How: This stages the deferred actStoObj.skipTask call above. */ }
 
 
 												</div>
@@ -2774,12 +2908,12 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
  *                    neither-selected phrasing, defaulting to 'and' ('nor'
  *                    reads better for a negatively-phrased verb).
  *
- * @returns A function of (oncOnBoo, recOnBoo) that renders the correct
+ * @returns A function of (oncEnaBoo, recEnaBoo) that renders the correct
  * one of the 4 mutually-exclusive sub-explanation phrases.
  *
  * @example
  * ```ts
- * paiSubFun(verTexStr, neiConStr) // => (oncOnBoo, recOnBoo) => <>...</>
+ * paiSubFun(verTexStr, neiConStr) // => (oncEnaBoo, recEnaBoo) => <>...</>
  * ```
  *
 */
@@ -2787,14 +2921,14 @@ function RemSecCom ( { state, actions, sectionRef, editMode, onGripDown, logOpen
 function paiSubFun ( verTexStr, neiConStr = 'and' ) {
 
 
-	return ( oncOnBoo, recOnBoo ) => // What: Pair Sub Return. Why: The caller (each REM_MAT_ARR entry's own dynFun) needs a function it can call with the live once/recurring toggle states. How: This renders one of the 4 mutually-exclusive phrases below.
+	return ( oncEnaBoo, recEnaBoo ) => // What: Pair Sub Return. Why: The caller (each REM_MAT_ARR entry's own dynFun) needs a function it can call with the live once/recurring toggle states. How: This renders one of the 4 mutually-exclusive phrases below.
 
 
-		oncOnBoo && recOnBoo ? <><strong>both</strong> one-time and recurring items will { verTexStr }</> // What: Both Phrase. Why: Both classes have this setting on. How: This names both item kinds.
+		oncEnaBoo && recEnaBoo ? <><strong>both</strong> one-time and recurring items will { verTexStr }</> // What: Both Phrase. Why: Both classes have this setting on. How: This names both item kinds.
 
-			: oncOnBoo ? <><strong>only</strong> one-time items will { verTexStr }</> // What: Once-Only Phrase. Why: Only the one-time class has this setting on. How: This names only one-time items.
+			: oncEnaBoo ? <><strong>only</strong> one-time items will { verTexStr }</> // What: Once-Only Phrase. Why: Only the one-time class has this setting on. How: This names only one-time items.
 
-			: recOnBoo ? <><strong>only</strong> recurring items will { verTexStr }</> // What: Recurring-Only Phrase. Why: Only the recurring class has this setting on. How: This names only recurring items.
+			: recEnaBoo ? <><strong>only</strong> recurring items will { verTexStr }</> // What: Recurring-Only Phrase. Why: Only the recurring class has this setting on. How: This names only recurring items.
 
 			: <><strong>neither</strong> one-time { neiConStr } recurring items will { verTexStr }</>; // What: Neither Phrase. Why: Neither class has this setting on. How: This names neither item kind, joined by neiConStr.
 
@@ -2805,65 +2939,94 @@ function paiSubFun ( verTexStr, neiConStr = 'and' ) {
 
 
 
+// #region REM_MAT_ARR
+
+/**
+ * REM_MAT_ARR = Reminder Matrix Array
+ *
+ * @summary
+ * Every entry below shares this exact shape, mapped over in OptMatCom's
+ * own JSX to render one participation-matrix row per entry; none of
+ * the 5 entries repeat these same fields' own boilerplate comments on
+ * their own lines (see the "Repeated-shape object literals" comment
+ * exception in CLAUDE.md). Each entry's own leading comment instead
+ * just names which specific setting it represents.
+ *
+ * - `dynFun` (Function): Dynamic Function is the row's own live
+ *   sub-explanation, called by OptMatCom with the once/recurring
+ *   classes' own current on/off state and returning the JSX phrase to
+ *   render; every entry below builds this via paiSubFun, except the
+ *   last, which is written out directly for its own documented reason.
+ *
+ * - `keyStr` (String): Key String ties this row to its own field on
+ *   optObj[class], read and written by OptMatCom throughout.
+ *
+ * - `labStr` (String): Label String is the row's own visible setting
+ *   name, rendered by OptMatCom as the row's own leading text.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
 const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one row per participation setting, each pivoted across the once/recurring classes. How: This is mapped over in OptMatCom's JSX to render one matrix row per entry.
 
 
-	{
+	{ // What: Streak Row Entry. Why: Whether a class counts toward the Today page's own day streak is its own independent participation setting. How: This entry's own dynFun explains which classes currently count.
 
 
-		dynFun : paiSubFun( 'trigger the day streak in the Today page', 'nor' ), // What: Dynamic Function. Why: This row's own sub-explanation must reflect which classes currently count toward the streak. How: OptMatCom calls this with the live once/recurring toggle states.
-		key    : 'streak',                                                       // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
-		label  : 'Counts toward day streak'                                      // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
-
-
-	},
-
-	{
-
-
-		dynFun : paiSubFun( 'trigger the completion ring in the Today page', 'nor' ), // What: Dynamic Function. Why: This row's own sub-explanation must reflect which classes currently count toward the ring. How: OptMatCom calls this with the live once/recurring toggle states.
-		key    : 'ring',                                                              // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
-		label  : 'Include in completion ring'                                         // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
+		dynFun : paiSubFun( 'trigger the day streak in the Today page', 'nor' ),
+		keyStr : 'streak',
+		labStr : 'Counts toward day streak'
 
 
 	},
 
-	{
+	{ // What: Ring Row Entry. Why: Whether a class counts toward the Today page's own completion ring is its own independent participation setting. How: This entry's own dynFun explains which classes currently count.
 
 
-		dynFun : paiSubFun( 'show in the Today page on weekends', 'nor' ), // What: Dynamic Function. Why: This row's own sub-explanation must reflect which classes currently get excluded on weekends. How: OptMatCom calls this with the live once/recurring toggle states.
-		key    : 'excludeWeekends',                                        // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
-		label  : 'Exclude on weekends'                                     // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
-
-
-	},
-
-	{
-
-
-		dynFun : paiSubFun( 'show in the Today page on holidays', 'nor' ), // What: Dynamic Function. Why: This row's own sub-explanation must reflect which classes currently get excluded on holidays. How: OptMatCom calls this with the live once/recurring toggle states.
-		key    : 'excludeHolidays',                                        // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
-		label  : 'Exclude on holidays'                                     // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
+		dynFun : paiSubFun( 'trigger the completion ring in the Today page', 'nor' ),
+		keyStr : 'ring',
+		labStr : 'Include in completion ring'
 
 
 	},
 
-	{
+	{ // What: Exclude Weekends Row Entry. Why: Whether a class is excluded from the Today page on weekends is its own independent participation setting. How: This entry's own dynFun explains which classes are currently excluded.
 
 
-		dynFun : ( oncOnBoo, recOnBoo ) =>        // What: Dynamic Function. Why: This row's own sub-explanation needs custom wording ("statistics") rather than paiSubFun's own generic verb phrasing, so it's written out directly instead of reusing paiSubFun. How: OptMatCom calls this with the live once/recurring toggle states.
+		dynFun : paiSubFun( 'show in the Today page on weekends', 'nor' ),
+		keyStr : 'excludeWeekends',
+		labStr : 'Exclude on weekends'
 
 
-			oncOnBoo && recOnBoo ? <><strong>both</strong> one-time and recurring item statistics will be shown in the Stats page</>
+	},
 
-				: oncOnBoo ? <><strong>only</strong> one-time item statistics will be shown in the Stats page</>
+	{ // What: Exclude Holidays Row Entry. Why: Whether a class is excluded from the Today page on holidays is its own independent participation setting. How: This entry's own dynFun explains which classes are currently excluded.
 
-				: recOnBoo ? <><strong>only</strong> recurring item statistics will be shown in the Stats page</>
+
+		dynFun : paiSubFun( 'show in the Today page on holidays', 'nor' ),
+		keyStr : 'excludeHolidays',
+		labStr : 'Exclude on holidays'
+
+
+	},
+
+	{ // What: Stats Row Entry. Why: Whether a class's own statistics show in the Stats page is its own independent participation setting. How: This entry's own dynFun (written directly, not via paiSubFun) explains which classes currently show.
+
+
+		dynFun : ( oncEnaBoo, recEnaBoo ) => // What: Dynamic Function. Why: This row's own sub-explanation needs custom wording ("statistics") rather than paiSubFun's own generic verb phrasing, so it's written out directly instead of reusing paiSubFun. How: OptMatCom calls this with the live once/recurring toggle states.
+
+
+			oncEnaBoo && recEnaBoo ? <><strong>both</strong> one-time and recurring item statistics will be shown in the Stats page</>
+
+				: oncEnaBoo ? <><strong>only</strong> one-time item statistics will be shown in the Stats page</>
+
+				: recEnaBoo ? <><strong>only</strong> recurring item statistics will be shown in the Stats page</>
 
 				: <><strong>neither</strong> one-time nor recurring item statistics will be shown in the Stats page</>,
 
-		key   : 'stats',           // What: Key. Why: This ties a matrix row to its own opts field. How: OptMatCom reads this against optObj[class][key] for every class.
-		label : 'Include in Stats' // What: Label. Why: This is the row's own visible name. How: OptMatCom renders this as the row's own leading text.
+		keyStr : 'stats',
+		labStr : 'Include in Stats'
 
 
 	}
@@ -2871,16 +3034,7 @@ const REM_MAT_ARR = [ // What: Reminder Matrix Array. Why: OptMatCom needs one r
 
 ];
 
-
-
-const REM_TYP_ARR = [ // What: Reminder Type Array. Why: This documents the 2 recognized reminder classes for whichever future caller needs a type-picker shape; not currently read anywhere in this file. How: This mirrors the same { typStr, labStr, icoStr, bluStr } shape TAB_OBJ_ARR (app.jsx) and similar config arrays use elsewhere.
-
-
-	{ typStr : 'once',      labStr : 'One-time',  icoStr : 'pin',      bluStr : 'A single to-do that sits on Today until done.' },    // What: Once Type. Why: This documents the one-time class. How: Not currently read; kept for parity with REM_TYP_ARR's own recurring entry.
-	{ typStr : 'recurring', labStr : 'Recurring', icoStr : 'calendar', bluStr : 'Weekly, interval, monthly or yearly tasks.' }        // What: Recurring Type. Why: This documents the recurring class. How: Not currently read; kept for parity with REM_TYP_ARR's own once entry.
-
-
-];
+// #endregion REM_MAT_ARR
 
 
 
@@ -2898,9 +3052,9 @@ const REM_TYP_ARR = [ // What: Reminder Type Array. Why: This documents the 2 re
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.remOptObj  - Reminder Option Object: The live { once, recurring
+ * @param props.remOptObj   - Reminder Option Object: The live { once, recurring
  *                           } participation options object.
- * @param props.actStoObj  - Action Store Object: The shared actions bag.
+ * @param props.actStoObj   - Action Store Object: The shared actions bag.
  * @param props.onCloConFun - On Close Control Function: Collapses this
  *                            Controls body, called by both Cancel and Save.
  *
@@ -2917,9 +3071,10 @@ const REM_TYP_ARR = [ // What: Reminder Type Array. Why: This documents the 2 re
 function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
 
 
-	const snpOptRef = React.useRef( { once : { ...remOptObj.once }, recurring : { ...remOptObj.recurring } } ); // What: Snapshot Options Reference. Why: Cancel needs to restore every toggle exactly as it was when this component mounted. How: This shallow-copies both classes of remOptObj once, on mount, never updated afterward.
+	const snaOptRef = React.useRef( { once : { ...remOptObj.once }, recurring : { ...remOptObj.recurring } } ); // What: Snapshot Options Reference. Why: Cancel needs to restore every toggle exactly as it was when this component mounted. How: This shallow-copies both classes of remOptObj once, on mount, never updated afterward.
 
-	const canMatFun = () => { actStoObj.setReminderOpts( snpOptRef.current ); onCloConFun(); }; // What: Cancel Matrix Function. Why: An explicit Cancel needs to both restore the snapshot and collapse the body. How: This calls actStoObj.setReminderOpts with snpOptRef's own snapshot, then onCloConFun.
+	const canMatFun = () => { actStoObj.setReminderOpts( snaOptRef.current ); onCloConFun(); }; // What: Cancel Matrix Function. Why: An explicit Cancel needs to both restore the snapshot and collapse the body. How: This calls actStoObj.setReminderOpts with snaOptRef's own snapshot, then onCloConFun.
+
 
 
 	return (
@@ -2944,25 +3099,27 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
 			{ REM_MAT_ARR.map( ( optDefObj ) => ( // What: Matrix Row List Render. Why: One row is needed per participation setting. How: This maps REM_MAT_ARR to one row div per entry, keyed by its own key.
 
 
-				<div key={ optDefObj.key } className='rd-mx-row'>{ /* What: Matrix Row Div Element. Why: One setting's own name/sub-explanation and both switch cells need to sit together as one row. How: This renders the name span, then maps the 2 classes into their own switch cells below. */ }
+				<div key={ optDefObj.keyStr } className='rd-mx-row'>{ /* What: Matrix Row Div Element. Why: One setting's own name/sub-explanation and both switch cells need to sit together as one row. How: This renders the name span, then maps the 2 classes into their own switch cells below. */ }
 
 
 					<span className='rd-mx-name'>{ /* What: Matrix Name Span Element. Why: The plain label and its own live sub-explanation read together as one unit. How: This renders optDefObj's own label, then either its dynFun's live result or its own static sub. */ }
-						{ optDefObj.label }
+						{ optDefObj.labStr }{ /* What: Matrix Name Render. Why: This is the row's own plain, static setting name. How: This renders optDefObj's own labStr directly as text. */ }
 						{ optDefObj.dynFun
 
 
-							? <span className='rd-mx-sub set-sub-fade' key={ ( remOptObj.once[ optDefObj.key ] ? 1 : 0 ) + '' + ( remOptObj.recurring[ optDefObj.key ] ? 1 : 0 ) }>{ optDefObj.dynFun( !!remOptObj.once[ optDefObj.key ], !!remOptObj.recurring[ optDefObj.key ] ) }</span> // What: Dynamic Sub Span Element. Why: A row with a dynFun needs its own live, re-fading explanation. How: This re-keys on the combined once/recurring toggle state and calls optDefObj's own dynFun.
+							? <span className='rd-mx-sub set-sub-fade' key={ ( remOptObj.once[ optDefObj.keyStr ] ? 1 : 0 ) + '' + ( remOptObj.recurring[ optDefObj.keyStr ] ? 1 : 0 ) }>{ optDefObj.dynFun( !!remOptObj.once[ optDefObj.keyStr ], !!remOptObj.recurring[ optDefObj.keyStr ] ) }</span> // What: Dynamic Sub Span Element. Why: A row with a dynFun needs its own live, re-fading explanation. How: This re-keys on the combined once/recurring toggle state and calls optDefObj's own dynFun.
 
 							: ( optDefObj.sub && <span className='rd-mx-sub'>{ optDefObj.sub }</span> ) // What: Static Sub Span Element. Why: A row without a dynFun (none currently exist) would instead show a plain, non-fading sub. How: This renders optDefObj's own static sub only when one is set.
 
 
 						}
 					</span>
+
 					{ [ 'once', 'recurring' ].map( ( tasClaStr ) => { // What: Switch Cell List Render. Why: Every row needs exactly 2 switch cells, one per participation class. How: This maps the 2 literal class keys to one switch cell each.
 
 
-						const swtEnaBoo = !!remOptObj[ tasClaStr ][ optDefObj.key ]; // What: Switch Enabled Boolean. Why: Each cell's own switch needs to know whether this specific class/setting pair is currently on. How: This reads remOptObj indexed first by tasClaStr, then by optDefObj's own key.
+						const swtEnaBoo = !!remOptObj[ tasClaStr ][ optDefObj.keyStr ]; // What: Switch Enabled Boolean. Why: Each cell's own switch needs to know whether this specific class/setting pair is currently on. How: This reads remOptObj indexed first by tasClaStr, then by optDefObj's own keyStr.
+
 
 
 						return (
@@ -2974,8 +3131,8 @@ function OptMatCom ( { remOptObj, actStoObj, onCloConFun } ) {
 								<button
 									className={ `switch ${ swtEnaBoo ? 'is-on' : '' }` }
 									aria-pressed={ swtEnaBoo }
-									aria-label={ `${ tasClaStr === 'once' ? 'One-time' : 'Recurring' }: ${ optDefObj.label }` }
-									onClick={ () => actStoObj.setReminderOpt( tasClaStr, optDefObj.key, !swtEnaBoo ) }
+									aria-label={ `${ tasClaStr === 'once' ? 'One-time' : 'Recurring' }: ${ optDefObj.labStr }` }
+									onClick={ () => actStoObj.setReminderOpt( tasClaStr, optDefObj.keyStr, !swtEnaBoo ) }
 								>{ /* What: Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips swtEnaBoo via actStoObj.setReminderOpt. */ }
 
 
@@ -3070,8 +3227,8 @@ const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list 
 	{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }, // What: Key String. Why: This is the reverse of the default sort. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
 	{ keyStr : 'type-asc',  labStr : 'Type (A–Z)' }, // What: Key String. Why: Type (One-time vs Recurring) is the only other text-like field reminders have. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
 	{ keyStr : 'type-desc', labStr : 'Type (Z–A)' }, // What: Key String. Why: This is the reverse of the type sort. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
-	{ keyStr : 'date-asc',  labStr : 'Soonest' },    // What: Key String. Why: Date sorts by each reminder's own next eligible occurrence. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
-	{ keyStr : 'date-desc', labStr : 'Latest' }      // What: Key String. Why: This is the reverse of the date sort. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'date-asc',  labStr : 'Soonest'    }, // What: Key String. Why: Date sorts by each reminder's own next eligible occurrence. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
+	{ keyStr : 'date-desc', labStr : 'Latest'     }  // What: Key String. Why: This is the reverse of the date sort. How: SorSelCom reads this against RemManCom's own itemSort and reports it via onChange. // What: Label String. Why: This is the option's own visible menu text. How: SorSelCom renders this as the option's own text content.
 
 
 ];
@@ -3085,18 +3242,21 @@ const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list 
  *
  * @summary
  * Data tab: full reminder management. This is a cross-file contract
- * read directly by tab-data.jsx, which passes every prop below by
- * these exact names; they are deliberately left unrenamed for now,
- * their own deliberate decision distinct from the RemManCom/RemSecCom/
- * SegConCom component-identity renames already completed this pass.
+ * read directly by tab-data.jsx; state/actions have been renamed to
+ * their own compliant names, with the matching rename swept into
+ * tab-data.jsx's own single RemManCom call site, the same "rename the
+ * prop, sweep the one real caller" treatment RemSecCom's own prop
+ * family just received. Its own former hidden prop was removed
+ * outright rather than renamed: it was never actually passed true by
+ * its only real caller, making the style it drove permanently dead
+ * code.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.state   - State: The shared app state.
- * @param props.actions - Actions: The shared actions bag.
- * @param props.hidden  - Hidden: Whether this section should render display:
- *                        none instead of its real markup; currently never
- *                        passed true by its only real caller.
+ * @param props.staAppObj - State App Object: The entire app's own persisted
+ *                          state.
+ * @param props.actStoObj - Action Store Object: The shared app actions that
+ *                          mutate props.staAppObj.
  *
  * @returns The Reminders category: its header, the Controls
  * disclosure (OptMatCom), and the Items disclosure (one row per
@@ -3104,24 +3264,20 @@ const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list 
  *
  * @example
  * ```tsx
- * RemManCom({ state, actions, hidden }) // => <RemManCom />
+ * RemManCom({ staAppObj, actStoObj }) // => <RemManCom />
  * ```
  *
 */
 
-function RemManCom ( { state, actions, hidden } ) {
+function RemManCom ( { staAppObj, actStoObj } ) {
 
 
 	const [ opeIdeStr, setOpeIdeStr ] = React.useState( null ); // What: Open Identifier String And Setter. Why: This tracks which reminder's own row is currently expanded into its editor. How: This is compared against each row's own id throughout the render below.
-
-	const newAddRef = React.useRef( null ); // What: New Added Reference. Why: A reminder just created via "New reminder" hasn't been kept yet; Cancel on such an item discards the whole add (removes it) rather than reverting to an empty snapshot. How: This holds that reminder's own id until it's kept, cleared by kepCloFun.
-
 	const [ insIdeStr, setInsIdeStr ] = React.useState( null ); // What: Insert Identifier String And Setter. Why: A just-inserted reminder row needs to play its own slide-in entrance exactly once. How: This is set right when a row is created or an editor closes, cleared on that row's own animation end.
 
+	const newAddRef = React.useRef( null ); // What: New Added Reference. Why: A reminder just created via "New reminder" hasn't been kept yet; Cancel on such an item discards the whole add (removes it) rather than reverting to an empty snapshot. How: This holds that reminder's own id until it's kept, cleared by kepCloFun.
 	const opeEdiRef = React.useRef( null ); // What: Open Editor Reference. Why: The currently-open reminder's own EdiFooCom instance needs to be reachable from outside itself, so the row's own collapse chevron can call its kepFun before closing. How: This is attached only to the currently-open row's own EdiFooCom, via its ref prop below.
-
 	const froIndRef = React.useRef( null ); // What: Frozen Index Reference. Why: freEdiFun needs a place to remember whichever reminder's own render position is currently frozen. How: This is passed straight through to freEdiFun below.
-
 	const preOpeRef = React.useRef( null ); // What: Previous Open Reference. Why: The effect right below needs opeIdeStr's own PRIOR value to detect a genuine close, not just its current value. How: This is read and overwritten at the end of that same effect.
 
 	React.useEffect( () => { // What: Replay Insert Effect. Why: Whichever reminder's own editor just closed (Done, Cancel-revert, delete, or the row's own collapse chevron) should replay the insert entrance once it settles into its (possibly new, now-unfrozen) sorted position, instead of silently snapping there. How: This detects an opeIdeStr transition away from a real id, then stages that id as insIdeStr.
@@ -3131,7 +3287,9 @@ function RemManCom ( { state, actions, hidden } ) {
 
 		if ( preOpeStr != null && preOpeStr !== opeIdeStr ) setInsIdeStr( preOpeStr ); // What: Close Transition Guard. Why: Only a genuine "was open, now isn't (or moved to a different row)" transition should replay the insert entrance. How: This stages preOpeStr as insIdeStr only when both conditions hold.
 
-		preOpeRef.current = opeIdeStr;
+
+
+		preOpeRef.current = opeIdeStr; // What: Previous Open Snapshot Update. Why: The next run of this effect needs to compare against whatever opeIdeStr is right now. How: This overwrites preOpeRef with opeIdeStr's own current value.
 
 
 	}, [ opeIdeStr ] ); // What: Effect Dependency Array. Why: This effect only needs to re-run when opeIdeStr itself changes, since that's the exact transition it watches for. How: opeIdeStr is compared against preOpeRef's own remembered prior value every run.
@@ -3145,12 +3303,17 @@ function RemManCom ( { state, actions, hidden } ) {
 		if ( !opeIdeStr || newAddRef.current !== opeIdeStr || !opeRowRef.current ) return; // What: Not-A-New-Open Guard. Why: Every other case (no row open, a re-opened existing row, or the ref not yet attached) should do nothing at all. How: This bails out unless all 3 conditions hold.
 
 
+
 		const rowCurEle = opeRowRef.current; // What: Row Current Element. Why: This gives a stable local reference to the live row DOM node for this scroll pass. How: This is read once from opeRowRef.current and reused below.
+
+
 
 		if ( redMotFun() ) { rowCurEle.scrollIntoView( { behavior : 'auto', block : 'nearest' } ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant scroll instead of a smooth, timed one. How: This scrolls instantly and returns early when redMotFun reports true.
 
 
+
 		const scrTimNum = setTimeout( () => rowCurEle.scrollIntoView( { behavior : 'smooth', block : 'nearest' } ), 300 ); // What: Scroll Timeout Number. Why: The ColDisCom open animation (.26s, see .collapse in styles2.css) needs to finish growing the editor below the row header before scrolling, or the scroll target would still be moving. How: This waits 300ms, then scrolls smoothly.
+
 
 
 		return () => clearTimeout( scrTimNum ); // What: Effect Cleanup Return. Why: A pending scroll must not fire after this effect re-runs or the component unmounts. How: This clears scrTimNum.
@@ -3161,14 +3324,15 @@ function RemManCom ( { state, actions, hidden } ) {
 
 	const focInpRef = React.useRef( null ); // What: Focus Input Reference. Why: The open row's own name input focuses itself via a ref callback below instead of plain autoFocus, suppressing the browser's own instant focus-scroll so it doesn't fight the deliberate smooth scroll above. How: This is attached via that input's own ref callback in the render below.
 
-	const visTasArr = ( state.tasks || [] ).filter( ( curTasObj ) => !curTasObj.hidden ); // What: Visible Task Array. Why: A hidden (mini-tour-linked) task must never appear in this real management list. How: This filters state's own tasks by their own hidden flag.
-	const norOptObj = TASKS.normalizeOpts( state.reminderOpts );                          // What: Normalized Options Object. Why: OptMatCom needs a fully-shaped { once, recurring } object even from an older or partial saved state. How: This calls TASKS.normalizeOpts against state's own reminderOpts.
-	const iteSorStr = ( state.ui && state.ui.dataSort && state.ui.dataSort.reminders ) || 'name-asc'; // What: Item Sort String. Why: The Items list's own sort needs a persisted, defaulted value to drive both the sort control and the comparator below. How: This reads state's own ui.dataSort.reminders, falling back to 'name-asc'.
+	const visTasArr = ( staAppObj.tasks || [] ).filter( ( curTasObj ) => !curTasObj.hidden );                     // What: Visible Task Array. Why: A hidden (mini-tour-linked) task must never appear in this real management list. How: This filters staAppObj's own tasks by their own hidden flag.
+	const norOptObj = TASKS.normalizeOpts( staAppObj.reminderOpts );                                              // What: Normalized Options Object. Why: OptMatCom needs a fully-shaped { once, recurring } object even from an older or partial saved staAppObj. How: This calls TASKS.normalizeOpts against staAppObj's own reminderOpts.
+	const iteSorStr = ( staAppObj.ui && staAppObj.ui.dataSort && staAppObj.ui.dataSort.reminders ) || 'name-asc'; // What: Item Sort String. Why: The Items list's own sort needs a persisted, defaulted value to drive both the sort control and the comparator below. How: This reads staAppObj's own ui.dataSort.reminders, falling back to 'name-asc'.
 
 	const tasDatMap = new Map( visTasArr.map( ( curTasObj ) => { // What: Task Date Map. Why: TASKS.nextEligible can walk up to ~3 years of days per call; computing every task's own next date once up front (rather than inside the comparator below, which runs it on every comparison) avoids doing that work redundantly. How: This maps each visible task to a [id, time] pair.
 
 
-		const nexEliObj = TASKS.nextEligible( curTasObj, state.reminderOpts, state.holidays ); // What: Next Eligible Object. Why: This is the actual date sorEntFun sorts by for the date-asc/date-desc options. How: This calls TASKS.nextEligible against curTasObj.
+		const nexEliObj = TASKS.nextEligible( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Next Eligible Object. Why: This is the actual date sorEntFun sorts by for the date-asc/date-desc options. How: This calls TASKS.nextEligible against curTasObj.
+
 
 
 		return [ curTasObj.id, nexEliObj ? nexEliObj.getTime() : null ]; // What: Task Date Pair Return. Why: A Map needs a real, comparable numeric time (or null for "no next occurrence"), not a Date instance. How: This pairs curTasObj's own id with nexEliObj's own getTime(), or null when there's no next occurrence at all.
@@ -3179,8 +3343,32 @@ function RemManCom ( { state, actions, hidden } ) {
 	const sorTasArr = [ ...visTasArr ].sort( ( tasAObj, tasBObj ) => sorEntFun( // What: Sorted Task Array. Why: This is the Items list's own actual render order. How: This sorts a copy of visTasArr via sorEntFun, fed each side's own name/type/date shape and iteSorStr.
 
 
-		{ name : tasAObj.name, type : TASKS.isRecurring( tasAObj ) ? 'Recurring' : 'One-time', group : null, count : null, date : tasDatMap.get( tasAObj.id ), isActive : null },
-		{ name : tasBObj.name, type : TASKS.isRecurring( tasBObj ) ? 'Recurring' : 'One-time', group : null, count : null, date : tasDatMap.get( tasBObj.id ), isActive : null },
+		{ // What: Row A Object. Why: sorEntFun needs a comparable shape for the left-hand side of this comparison. How: This builds it from tasAObj, with every field this shape doesn't use left null.
+
+
+			count    : null,                                                    // What: Count. Why: A reminder has no meaningful count field. How: This is always null for a reminder row.
+			date     : tasDatMap.get( tasAObj.id ),                             // What: Date. Why: This is the field sorEntFun sorts by for the date-asc/date-desc options. How: This looks up tasAObj's own precomputed next-eligible time from tasDatMap.
+			group    : null,                                                    // What: Group. Why: A reminder has no meaningful group field. How: This is always null for a reminder row.
+			isActive : null,                                                    // What: Is Active. Why: A reminder has no meaningful active-state field. How: This is always null for a reminder row.
+			name     : tasAObj.name,                                            // What: Name. Why: This is the field sorEntFun sorts by for the name-asc/name-desc options, and the tie-break for every other sort. How: This reads tasAObj's own name.
+			type     : TASKS.isRecurring( tasAObj ) ? 'Recurring' : 'One-time'  // What: Type. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TASKS.isRecurring.
+
+
+		},
+
+		{ // What: Row B Object. Why: sorEntFun needs a comparable shape for the right-hand side of this comparison. How: This builds it from tasBObj, mirroring Row A Object's own shape.
+
+
+			count    : null,                                                    // What: Count. Why: A reminder has no meaningful count field. How: This is always null for a reminder row.
+			date     : tasDatMap.get( tasBObj.id ),                             // What: Date. Why: This is the field sorEntFun sorts by for the date-asc/date-desc options. How: This looks up tasBObj's own precomputed next-eligible time from tasDatMap.
+			group    : null,                                                    // What: Group. Why: A reminder has no meaningful group field. How: This is always null for a reminder row.
+			isActive : null,                                                    // What: Is Active. Why: A reminder has no meaningful active-state field. How: This is always null for a reminder row.
+			name     : tasBObj.name,                                            // What: Name. Why: This is the field sorEntFun sorts by for the name-asc/name-desc options, and the tie-break for every other sort. How: This reads tasBObj's own name.
+			type     : TASKS.isRecurring( tasBObj ) ? 'Recurring' : 'One-time'  // What: Type. Why: This is the field sorEntFun sorts by for the type-asc/type-desc options. How: This picks the word based on TASKS.isRecurring.
+
+
+		},
+
 		iteSorStr
 
 
@@ -3191,23 +3379,25 @@ function RemManCom ( { state, actions, hidden } ) {
 	const kepCloFun = ( tasIdeStr ) => { // What: Keep Close Function. Why: The row's own collapse chevron AND EdiFooCom's own Save mean "keep this, I'm done", and both need the exact same cleanup so the chevron can't drift out of sync with what Save already does. How: This calls the open editor's own kepFun, clears the new-item flag, and closes only if this row is still the open one.
 
 
-		opeEdiRef.current?.kepFun();
+		opeEdiRef.current?.kepFun(); // What: Keep Call. Why: EdiFooCom's own committed-edit lifecycle (the "keep" side of the mount-time snapshot it takes) must run before this row is allowed to close. How: This optionally chains onto opeEdiRef's own current ref, since it may be unmounted already.
 
-		if ( newAddRef.current === tasIdeStr ) newAddRef.current = null;
+		if ( newAddRef.current === tasIdeStr ) newAddRef.current = null; // What: New-Item Flag Clear Guard. Why: Once kept, a brand-new reminder is no longer "new" for isaNewBoo's own purposes. How: This clears newAddRef only while it still matches tasIdeStr.
 
-		setOpeIdeStr( ( curOpeStr ) => curOpeStr === tasIdeStr ? null : curOpeStr );
+
+
+		setOpeIdeStr( ( curOpeStr ) => curOpeStr === tasIdeStr ? null : curOpeStr ); // What: Open Row Close Call. Why: This is the actual collapse, closing the row only while it's still this exact one that was open. How: This clears opeIdeStr only while it still matches tasIdeStr.
 
 
 	};
 
-	const colMaiMap = ( state.ui && state.ui.controlsCollapsed ) || {}; // What: Collapsed Main Map. Why: The main section's own collapse state persists (like the pickers), so it survives tab switches. How: This reads state's own ui.controlsCollapsed, falling back to an empty object.
-	const secOpeBoo = colMaiMap[ '__reminders_main' ] === false;          // What: Section Open Boolean. Why: This reserved key defaults COLLAPSED, so absent means collapsed and an explicit false means expanded. How: This checks colMaiMap's own '__reminders_main' entry against exactly false.
-	const togMaiFun = () => actions.toggleControlsCollapsed( '__reminders_main', true );    // What: Toggle Main Function. Why: The header's own clickable area needs a single call to flip the main section's own collapse state. How: This calls actions.toggleControlsCollapsed against the same reserved key.
+	const colMaiMap = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {};            // What: Collapsed Main Map. Why: The main section's own collapse state persists (like the pickers), so it survives tab switches. How: This reads staAppObj's own ui.controlsCollapsed, falling back to an empty object.
+	const secOpeBoo = colMaiMap[ '__reminders_main' ] === false;                           // What: Section Open Boolean. Why: This reserved key defaults COLLAPSED, so absent means collapsed and an explicit false means expanded. How: This checks colMaiMap's own '__reminders_main' entry against exactly false.
+	const togMaiFun = () => actStoObj.toggleControlsCollapsed( '__reminders_main', true ); // What: Toggle Main Function. Why: The header's own clickable area needs a single call to flip the main section's own collapse staAppObj. How: This calls actStoObj.toggleControlsCollapsed against the same reserved key.
 
-	const colSubMap    = ( state.ui && state.ui.controlsCollapsed ) || {}; // What: Collapsed Sub Map. Why: The Controls and Items sub-panels each remember their own collapse state independently of the main section and of each other. How: This reads the same state's own ui.controlsCollapsed, kept as a separate read for its own 2 sub-keys below.
-	const conColBoo    = !!colSubMap[ '__reminders' ];                     // What: Controls Collapsed Boolean. Why: The Controls disclosure defaults OPEN, so absent means open. How: This checks colSubMap's own '__reminders' entry.
-	const iteColBoo    = !!colSubMap[ '__reminders:items' ];               // What: Items Collapsed Boolean. Why: The Items disclosure likewise defaults open. How: This checks colSubMap's own '__reminders:items' entry.
-	const tutProBoo    = ONB_CHE_OBJ.tutProFun( state );        // What: Tutorial Progress Boolean. Why: "New reminder" is a second, independent path to a real reminder, reachable from this page, and must stay disabled during any onboarding tutorial the same way RemSecCom's own add button does. How: This calls ONB_CHE_OBJ.tutProFun against state.
+	const colSubMap = ( staAppObj.ui && staAppObj.ui.controlsCollapsed ) || {}; // What: Collapsed Sub Map. Why: The Controls and Items sub-panels each remember their own collapse state independently of the main section and of each other. How: This reads the same staAppObj's own ui.controlsCollapsed, kept as a separate read for its own 2 sub-keys below.
+	const conColBoo = !!colSubMap[ '__reminders' ];                             // What: Controls Collapsed Boolean. Why: The Controls disclosure defaults OPEN, so absent means open. How: This checks colSubMap's own '__reminders' entry.
+	const iteColBoo = !!colSubMap[ '__reminders:items' ];                       // What: Items Collapsed Boolean. Why: The Items disclosure likewise defaults open. How: This checks colSubMap's own '__reminders:items' entry.
+	const tutProBoo = ONB_CHE_OBJ.tutProFun( staAppObj );                       // What: Tutorial Progress Boolean. Why: "New reminder" is a second, independent path to a real reminder, reachable from this page, and must stay disabled during any onboarding tutorial the same way RemSecCom's own add button does. How: This calls ONB_CHE_OBJ.tutProFun against staAppObj.
 
 
 	const addEdiFun = () => { // What: Add Edit Function. Why: "New reminder" needs to create a real, minimal reminder AND immediately open its own editor, ensuring both the main section and the Items disclosure are expanded to actually show it. How: This mints a fresh id, adds the task, stages every relevant "just added"/open/insert flag, and expands whichever section is currently collapsed.
@@ -3216,27 +3406,28 @@ function RemManCom ( { state, actions, hidden } ) {
 		if ( newAddRef.current ) return; // What: Guard: Ignore Rapid Double-Click. Why: A second "New reminder" click while the first add hasn't been kept yet would spawn a stray extra reminder. How: This bails out while newAddRef already holds an id.
 
 
-		const newIdeStr = 'tk_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: The freshly-created reminder needs a real, unique id before actions.addTask is ever called. How: This mints a random 'tk_'-prefixed id, the same scheme TASKS.defaultTask itself uses.
+
+		const newIdeStr = 'tk_' + Math.random().toString( 36 ).slice( 2, 8 ); // What: New Identifier String. Why: The freshly-created reminder needs a real, unique id before actStoObj.addTask is ever called. How: This mints a random 'tk_'-prefixed id, the same scheme TASKS.defaultTask itself uses.
 
 
-		actions.addTask( { id : newIdeStr, name : 'New reminder', repeat : 'once' } );
-		newAddRef.current = newIdeStr;
-		setInsIdeStr( newIdeStr );
-		setOpeIdeStr( newIdeStr );
+		actStoObj.addTask( { id : newIdeStr, name : 'New reminder', repeat : 'once' } ); // What: Add Task Call. Why: This is the actual creation of the new, minimal reminder. How: This calls actStoObj.addTask with newIdeStr, a placeholder name, and a plain 'once' repeat.
 
-		if ( !secOpeBoo ) actions.toggleControlsCollapsed( '__reminders_main', true ); // What: Main Section Expand Guard. Why: The newly-open editor must actually be visible, which requires the main section itself to be expanded. How: This expands the main section only while it was collapsed.
+		newAddRef.current = newIdeStr; // What: New-Item Flag Set. Why: The freshly-created row needs to know it's "new" for its own isaNewBoo prop and for kepCloFun's own guard above. How: This sets newAddRef to newIdeStr.
+
+		setInsIdeStr( newIdeStr ); // What: Insert Identifier Stage Call. Why: The new row needs to play its own entrance animation exactly once. How: This sets insIdeStr to newIdeStr.
+		setOpeIdeStr( newIdeStr ); // What: Open Row Stage Call. Why: The new reminder's own editor should open immediately so the user can fill it in. How: This sets opeIdeStr to newIdeStr.
+
+		if ( !secOpeBoo ) actStoObj.toggleControlsCollapsed( '__reminders_main', true ); // What: Main Section Expand Guard. Why: The newly-open editor must actually be visible, which requires the main section itself to be expanded. How: This expands the main section only while it was collapsed.
 
 
 	};
 
 
+
 	return (
 
 
-		<section
-			className='cat cat--reminders cat--enter'
-			style={ hidden ? { display : 'none' } : undefined }
-		>{ /* What: Category Section Element. Why: This is RemManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. */ }
+		<section className='cat cat--reminders cat--enter'>{ /* What: Category Section Element. Why: This is RemManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. */ }
 
 
 			<header className='cat-h'>{ /* What: Category Header Element. Why: The whole header is one clickable disclosure toggling the main section. How: This wraps the single toggle button below. */ }
@@ -3250,13 +3441,13 @@ function RemManCom ( { state, actions, hidden } ) {
 				>{ /* What: Category Header Button Element. Why: This is the actual clickable disclosure control for the whole category. How: This toggles secOpeBoo via togMaiFun. */ }
 
 
-					<span className={ `chev ${ secOpeBoo ? 'is-open' : '' }` }>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates the disclosure's open/closed state. How: This marks itself is-open while secOpeBoo is true. */ }
+					<span className={ `chev ${ secOpeBoo ? 'is-open' : '' }` }>{ /* What: Chevron Span Element. Why: The chevron's own rotation communicates the disclosure's open/closed staAppObj. How: This marks itself is-open while secOpeBoo is true. */ }
 
 
 						<IcoSvgCom
 							name='chev'
 							size={ 14 }
-						/>
+						/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the whole section's own disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chev' icon at a small 14px size. */ }
 
 
 					</span>
@@ -3270,11 +3461,11 @@ function RemManCom ( { state, actions, hidden } ) {
 						<span className='cat-count'>{ /* What: Category Count Span Element. Why: Reminders have no active/inactive concept yet (unlike pickers' eligible-of-total and Conditionals' active-of-total), so both numbers are the same for now, kept in this "N of N" shape for visual consistency and in case that changes later. How: This wraps 2 identical count spans and the literal word "of" between them. */ }
 
 
-							<span className='cat-count-n'>{ visTasArr.length }</span>
+							<span className='cat-count-n'>{ visTasArr.length }</span>{ /* What: Category Count Number Span Element. Why: Reminders have no active/inactive split yet, so this same number stands in for both halves of the "N of N" shape. How: This renders visTasArr's own length. */ }
 
-							<span className='cat-count-of'>of</span>
+							<span className='cat-count-of'>of</span>{ /* What: Category Count Of Span Element. Why: This joins the two count numbers into one readable "N of N" phrase. How: This renders the literal text "of". */ }
 
-							<span className='cat-count-n'>{ visTasArr.length }</span>
+							<span className='cat-count-n'>{ visTasArr.length }</span>{ /* What: Category Count Number Span Element. Why: See the leading count span's own comment above; this is its mirrored second half. How: This renders visTasArr's own length again. */ }
 
 
 						</span>
@@ -3299,8 +3490,8 @@ function RemManCom ( { state, actions, hidden } ) {
 						className='rd-ctl'
 						type='button'
 						aria-expanded={ !conColBoo }
-						onClick={ () => actions.toggleControlsCollapsed( '__reminders' ) }
-					>{ /* What: Controls Disclosure Button Element. Why: Controls is a nested collapsible, open by default, remembered per section. How: This toggles conColBoo via actions.toggleControlsCollapsed. */ }
+						onClick={ () => actStoObj.toggleControlsCollapsed( '__reminders' ) }
+					>{ /* What: Controls Disclosure Button Element. Why: Controls is a nested collapsible, open by default, remembered per section. How: This toggles conColBoo via actStoObj.toggleControlsCollapsed. */ }
 
 
 						<span className='rd-ctl-l'>{ /* What: Controls Left Span Element. Why: The chevron and the "Controls" kicker read together as one unit. How: This wraps both below. */ }
@@ -3312,7 +3503,7 @@ function RemManCom ( { state, actions, hidden } ) {
 								<IcoSvgCom
 									name='chev'
 									size={ 12 }
-								/>
+								/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chev' icon at a small 12px size. */ }
 
 
 							</span>
@@ -3334,9 +3525,9 @@ function RemManCom ( { state, actions, hidden } ) {
 
 						<OptMatCom
 							remOptObj={ norOptObj }
-							actStoObj={ actions }
-							onCloConFun={ () => actions.toggleControlsCollapsed( '__reminders' ) }
-						/>
+							actStoObj={ actStoObj }
+							onCloConFun={ () => actStoObj.toggleControlsCollapsed( '__reminders' ) }
+						/>{ /* What: Option Matrix Component. Why: This is the actual once/recurring participation matrix, editing the normalized reminderOpts shape. How: This closes back via onCloConFun, collapsing the Controls disclosure above. */ }
 
 
 					</ColDisCom>
@@ -3345,8 +3536,8 @@ function RemManCom ( { state, actions, hidden } ) {
 						className='rd-ctl'
 						type='button'
 						aria-expanded={ !iteColBoo }
-						onClick={ () => actions.toggleControlsCollapsed( '__reminders:items' ) }
-					>{ /* What: Items Disclosure Button Element. Why: Items is the same kind of nested collapsible as Controls, independently remembered. How: This toggles iteColBoo via actions.toggleControlsCollapsed. */ }
+						onClick={ () => actStoObj.toggleControlsCollapsed( '__reminders:items' ) }
+					>{ /* What: Items Disclosure Button Element. Why: Items is the same kind of nested collapsible as Controls, independently remembered. How: This toggles iteColBoo via actStoObj.toggleControlsCollapsed. */ }
 
 
 						<span className='rd-ctl-l'>{ /* What: Items Left Span Element. Why: The chevron and the "Items" kicker read together as one unit. How: This wraps both below. */ }
@@ -3358,7 +3549,7 @@ function RemManCom ( { state, actions, hidden } ) {
 								<IcoSvgCom
 									name='chev'
 									size={ 12 }
-								/>
+								/>{ /* What: Icon Svg Component. Why: A chevron glyph gives the disclosure a recognizable, rotating open/closed affordance. How: This renders the 'chev' icon at a small 12px size. */ }
 
 
 							</span>
@@ -3394,7 +3585,7 @@ function RemManCom ( { state, actions, hidden } ) {
 									<IcoSvgCom
 										name='plus'
 										size={ 13 }
-									/> New reminder
+									/>{ /* What: Icon Svg Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'plus' icon. */ } New reminder
 
 
 								</InfTipCom>
@@ -3412,13 +3603,14 @@ function RemManCom ( { state, actions, hidden } ) {
 									<IcoSvgCom
 										name='plus'
 										size={ 13 }
-									/> New reminder
+									/>{ /* What: Icon Svg Component. Why: This is the add control's own visible glyph, read together with the literal "New reminder" label right after it. How: This renders the 'plus' icon. */ } New reminder
 
 
 								</button>
 
 
 							) }
+
 							{ visTasArr.length === 0 ? ( // What: Empty List Check. Why: With no reminders at all, a plain empty-state message belongs here instead of a list. How: This renders the empty message while visTasArr is empty, the real list otherwise.
 
 
@@ -3439,15 +3631,16 @@ function RemManCom ( { state, actions, hidden } ) {
 											label='Sort'
 											options={ ITE_SOR_ARR }
 											value={ iteSorStr }
-											onChange={ ( sorKeyStr ) => actions.setDataSort( 'reminders', sorKeyStr ) }
-										/>
+											onChange={ ( sorKeyStr ) => actStoObj.setDataSort( 'reminders', sorKeyStr ) }
+										/> // What: Sort Select Component. Why: The Items list needs the same sort control every other Data tab list uses. How: This is driven by ITE_SOR_ARR, committing through actStoObj.setDataSort.
 
 
 									) }
+
 									{ disTasArr.map( ( curTasObj ) => { // What: Task Row List Render. Why: One full-bleed row (plus its own expanding editor) is needed per visible reminder. How: This maps disTasArr to one row div per entry, keyed by its own id.
 
 
-										const carOpeBoo = opeIdeStr === curTasObj.id; // What: Card Open Boolean. Why: This single check decides both this row's own toggle-button-vs-name-input branch and whether its editor ColDisCom is open. How: This compares opeIdeStr against curTasObj's own id.
+										const carOpeBoo = opeIdeStr === curTasObj.id;  // What: Card Open Boolean. Why: This single check decides both this row's own toggle-button-vs-name-input branch and whether its editor ColDisCom is open. How: This compares opeIdeStr against curTasObj's own id.
 										const isaOncBoo = curTasObj.repeat === 'once'; // What: Is-A Once Boolean. Why: The row's own type icon depends on whether this is a one-time or recurring reminder. How: This checks curTasObj's own repeat.
 
 
@@ -3474,7 +3667,7 @@ function RemManCom ( { state, actions, hidden } ) {
 															<IcoSvgCom
 																name={ isaOncBoo ? 'pin' : 'calendar' }
 																size={ 15 }
-															/>
+															/>{ /* What: Icon Svg Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
 
 
 														</span>
@@ -3491,8 +3684,8 @@ function RemManCom ( { state, actions, hidden } ) {
 																placeholder='Reminder name'
 																maxLength={ 60 }
 																aria-label='Reminder name'
-																onChange={ ( chaEveObj ) => actions.updateTask( curTasObj.id, { name : chaEveObj.target.value } ) }
-																onBlur={ ( bluEveObj ) => { const namTriStr = bluEveObj.target.value.trim(); if ( namTriStr ) actions.renameTask( curTasObj.id, namTriStr ); } }
+																onChange={ ( chaEveObj ) => actStoObj.updateTask( curTasObj.id, { name : chaEveObj.target.value } ) }
+																onBlur={ ( bluEveObj ) => { const namTriStr = bluEveObj.target.value.trim(); if ( namTriStr ) actStoObj.renameTask( curTasObj.id, namTriStr ); } }
 																onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
 															/>{ /* What: Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This commits every keystroke, re-trims and re-commits (only if non-empty) on blur, and blurs itself on Enter; its own ref callback suppresses the browser's native focus-scroll so it doesn't fight opeRowRef's own smooth scroll. */ }
 
@@ -3511,7 +3704,7 @@ function RemManCom ( { state, actions, hidden } ) {
 															<IcoSvgCom
 																name='chev'
 																size={ 16 }
-															/>
+															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this row's own open editor a recognizable close affordance. How: This renders the 'chev' icon at a 16px size. */ }
 
 
 														</button>
@@ -3537,7 +3730,7 @@ function RemManCom ( { state, actions, hidden } ) {
 															<IcoSvgCom
 																name={ isaOncBoo ? 'pin' : 'calendar' }
 																size={ 15 }
-															/>
+															/>{ /* What: Icon Svg Component. Why: The row's own icon needs to distinguish a one-time reminder from a recurring one at a glance. How: This renders 'pin' while isaOncBoo, 'calendar' otherwise, at a small 15px size. */ }
 
 
 														</span>
@@ -3560,7 +3753,7 @@ function RemManCom ( { state, actions, hidden } ) {
 															<IcoSvgCom
 																name='chev'
 																size={ 16 }
-															/>
+															/>{ /* What: Icon Svg Component. Why: A chevron glyph gives this closed row's own real toggle a recognizable open affordance. How: This renders the 'chev' icon at a 16px size. */ }
 
 
 														</span>
@@ -3570,6 +3763,7 @@ function RemManCom ( { state, actions, hidden } ) {
 
 
 												) }
+
 												<ColDisCom open={ carOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The schedule editor and its own footer only exist while this exact row is open. How: This animates the editor div below open/closed based on carOpeBoo. */ }
 
 
@@ -3581,53 +3775,62 @@ function RemManCom ( { state, actions, hidden } ) {
 
 															<SchEdiCom
 																tasRecObj={ curTasObj }
-																actStoObj={ actions }
-																staAppObj={ state }
+																actStoObj={ actStoObj }
+																staAppObj={ staAppObj }
 																aniExtBoo
-															/>{ /* What: Schedule Editor Component. Why: Unlike Today's own InlEdiCom, the Data tab commits every field change straight to the real store; there's no local draft to revert on Cancel here except via EdiFooCom's own snapshot. How: This is passed the real actions bag directly as actStoObj. */ }
+															/>{ /* What: Schedule Editor Component. Why: Unlike Today's own InlEdiCom, the Data tab commits every field change straight to the real store; there's no local draft to revert on Cancel here except via EdiFooCom's own snapshot. How: This is passed the real actStoObj bag directly as actStoObj. */ }
 
 
 															<EdiFooCom
 																ref={ carOpeBoo ? opeEdiRef : undefined }
 																tasRecObj={ curTasObj }
 																isaNewBoo={ newAddRef.current === curTasObj.id }
-																onDelTasFun={ () => {
+																onDelTasFun={ () => { // What: Delete Handler. Why: Deleting this row needs to clear a stale "new" flag, close the row, and stage the same collapse-then-remove sequence the card-level Delete uses. How: This snapshots the id, closes opeIdeStr, then either removes immediately (reduced motion) or defers it behind the collapse-out animation.
 
 
-																	if ( newAddRef.current === curTasObj.id ) newAddRef.current = null;
+																	if ( newAddRef.current === curTasObj.id ) newAddRef.current = null; // What: New-Item Flag Clear Guard. Why: Deleting a brand-new reminder must not leave a stale "new" flag pointing at an id that no longer exists. How: This clears newAddRef only while it still matches curTasObj's own id.
+
+
 
 																	const tasIdeStr = curTasObj.id; // What: Task Identifier String. Why: The deferred removeTask call below must not close over curTasObj itself, in case it's captured after a later re-render. How: This snapshots curTasObj's own id right now.
 
 
-																	setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr );
+																	setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: The row must collapse right away rather than wait for the deferred remove below. How: This clears opeIdeStr only while it still matches curTasObj's own id.
 
-																	if ( redMotFun() ) { actions.removeTask( tasIdeStr ); return; }
 
-																	setTimeout( () => actions.removeTask( tasIdeStr ), 280 ); // What: Deferred Remove Call. Why: This can fire well after the user has already switched to a different reminder's editor, so it must only ever remove tasIdeStr's own snapshot, never whatever row happens to be open by then. How: This waits 280ms (matching the editor's own collapse-close animation) before actually removing the task.
+
+																	if ( redMotFun() ) { actStoObj.removeTask( tasIdeStr ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should get an instant remove instead of an animated collapse-then-remove. How: This calls actStoObj.removeTask directly and returns early.
+
+
+
+																	setTimeout( () => actStoObj.removeTask( tasIdeStr ), 280 ); // What: Deferred Remove Call. Why: This can fire well after the user has already switched to a different reminder's editor, so it must only ever remove tasIdeStr's own snapshot, never whatever row happens to be open by then. How: This waits 280ms (matching the editor's own collapse-close animation) before actually removing the task.
 
 
 																} }
-																onCanTasFun={ ( snpTasObj ) => {
+																onCanTasFun={ ( snaTasObj ) => { // What: Cancel Handler. Why: Cancel behaves differently depending on whether this row is a brand-new, not-yet-kept reminder (discard outright) or an already-existing one (revert to its own mount-time snapshot). How: This branches on newAddRef, staging the same collapse-then-remove sequence Delete uses for the new-and-discarded case.
 
 
 																	if ( newAddRef.current === curTasObj.id ) { // What: New-And-Discarded Branch. Why: A brand-new reminder should be discarded outright on Cancel, but still play the collapse-close animation Save uses, rather than vanish instantly. How: This clears newAddRef, snapshots the id, closes this row, then defers the actual removeTask call.
 
 
-																		newAddRef.current = null;
+																		newAddRef.current = null; // What: New-Item Flag Clear. Why: Cancelling a brand-new reminder discards it outright, so nothing "new" is left pointing at a soon-to-be-removed id. How: This resets newAddRef back to null unconditionally, since this whole branch only runs when it already matched curTasObj's own id.
 
-																		const tasIdeStr = curTasObj.id;
 
-																		setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr );
-																		setTimeout( () => actions.removeTask( tasIdeStr ), 280 );
+																		const tasIdeStr = curTasObj.id; // What: Task Identifier String. Why: The deferred removeTask call below must not close over curTasObj itself, in case it's captured after a later re-render. How: This snapshots curTasObj's own id right now.
+
+
+																		setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: The row must collapse right away rather than wait for the deferred remove below. How: This clears opeIdeStr only while it still matches curTasObj's own id.
+
+																		setTimeout( () => actStoObj.removeTask( tasIdeStr ), 280 ); // What: Deferred Remove Call. Why: This gives the row's own collapse-close animation time to finish before the underlying task actually disappears. How: This waits 280ms, then removes tasIdeStr's own snapshot.
 
 
 																	}
 
-																	else { // What: Existing-Reverted Branch. Why: An already-existing reminder should just revert to the snapshot EdiFooCom captured on mount, not be removed at all. How: This calls actions.replaceTask with snpTasObj, then closes this row.
+																	else { // What: Existing-Reverted Branch. Why: An already-existing reminder should just revert to the snapshot EdiFooCom captured on mount, not be removed at all. How: This calls actStoObj.replaceTask with snaTasObj, then closes this row.
 
 
-																		actions.replaceTask( curTasObj.id, snpTasObj );
-																		setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr );
+																		actStoObj.replaceTask( curTasObj.id, snaTasObj ); // What: Replace Task Call. Why: An existing reminder's own Cancel reverts it to the snapshot EdiFooCom captured on mount, discarding any in-progress edits. How: This calls actStoObj.replaceTask with curTasObj's own id and snaTasObj.
+																		setOpeIdeStr( ( curOpeStr ) => curOpeStr === curTasObj.id ? null : curOpeStr ); // What: Open Row Close Call. Why: The row must collapse once the revert is complete. How: This clears opeIdeStr only while it still matches curTasObj's own id.
 
 
 																	}
@@ -3686,6 +3889,6 @@ function RemManCom ( { state, actions, hidden } ) {
 
 
 
-export { RemManCom, RemSecCom, SegConCom }; // What: Named Exports. Why: tab-data.jsx/cadence-control.jsx/tab-settings.jsx import these 3 by these exact names. How: This re-exports the 3 components declared above under their own newly-renamed names, already rippled into every one of those files. RemManCom/RemSecCom's own remaining prop families (sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, arrivingTaskIds, activeEditor, setActiveEditor, onPlayTutorial, onUncheckTutorial, checklistExiting, hidden) are deliberately left unrenamed for now, their own deliberate decision distinct from the component identity rename just completed.
+export { RemManCom, RemSecCom, SegConCom }; // What: Named Exports. Why: tab-data.jsx/cadence-control.jsx/tab-settings.jsx import these 3 by these exact names. How: This re-exports the 3 components declared above under their own newly-renamed names, already rippled into every one of those files. Both RemSecCom's and RemManCom's own prop families are now fully renamed to compliant names (state to staAppObj, actions to actStoObj for both; RemSecCom's own sectionRef, editMode, onGripDown, logOpen, onToggleLog, leavingTaskIds, arrivingTaskIds, activeEditor, setActiveEditor, onPlayTutorial, onUncheckTutorial, and checklistExiting renamed the same way), with the matching rename swept into each one's own single real call site (tab-today.jsx for RemSecCom, tab-data.jsx for RemManCom) rather than left as an external-name/aliased-local split. RemManCom's own former hidden prop was removed outright rather than renamed, since it was never actually passed true by its only real caller.
 
 

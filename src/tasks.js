@@ -98,11 +98,11 @@ const ancDatFun = ( genTimStr ) => genTimStr ? new Date( genTimStr ) : new Date(
 const parIsoFun = ( isoValStr ) => {
 
 
-	const [ yeaNum, monNum, dayNum ] = ( isoValStr || '' ).split( '-' ).map( Number ); // What: Year Month Day Destructure. Why: An anchor/onceDate ISO string needs splitting into its 3 numeric parts before a local-midnight Date can be built from it. How: This splits isoValStr (or an empty string when falsy) on '-' and maps each segment through Number.
+	const [ yeaValNum, monValNum, dayValNum ] = ( isoValStr || '' ).split( '-' ).map( Number ); // What: Year Value Month Value Day Value Destructure. Why: An anchor/onceDate ISO string needs splitting into its 3 numeric parts before a local-midnight Date can be built from it. How: This splits isoValStr (or an empty string when falsy) on '-' and maps each segment through Number.
 
 
 
-	return new Date( yeaNum, ( monNum || 1 ) - 1, dayNum || 1 ); // What: Parsed Iso Date Return. Why: Every anchor/onceDate comparison elsewhere in this file needs a real local-midnight Date, not a string (this avoids the UTC-parsing drift a bare `new Date(isoValStr)` would introduce). How: This builds a Date from the 3 destructured parts, each falling back to a safe default (month 1, day 1) when isoValStr was malformed or empty.
+	return new Date( yeaValNum, ( monValNum || 1 ) - 1, dayValNum || 1 ); // What: Parsed Iso Date Return. Why: Every anchor/onceDate comparison elsewhere in this file needs a real local-midnight Date, not a string (this avoids the UTC-parsing drift a bare `new Date(isoValStr)` would introduce). How: This builds a Date from the 3 destructured parts, each falling back to a safe default (month 1, day 1) when isoValStr was malformed or empty.
 
 
 };
@@ -581,8 +581,9 @@ function sumTasFun( tasRecObj ) {
 
 
 
-			const [ yeaNum, monNum, dayNum ] = tasRecObj.onceDate.split( '-' ).map( Number );                                       // What: Year Month Day Destructure. Why: A locale-formatted date label needs a real Date instance, not the raw ISO string. How: This splits tasRecObj's own onceDate on '-' and maps each segment through Number.
-			const datLabStr = new Date( yeaNum, monNum - 1, dayNum ).toLocaleDateString( 'en-US', { month : 'short', day : 'numeric' } ); // What: Date Label String. Why: This is the actual short, locale-formatted date the label displays. How: This builds a Date from the 3 destructured parts and formats it.
+			const [ yeaValNum, monValNum, dayValNum ] = tasRecObj.onceDate.split( '-' ).map( Number ); // What: Year Value Month Value Day Value Destructure. Why: A locale-formatted date label needs a real Date instance, not the raw ISO string. How: This splits tasRecObj's own onceDate on '-' and maps each segment through Number.
+
+			const datLabStr = new Date( yeaValNum, monValNum - 1, dayValNum ).toLocaleDateString( 'en-US', { month : 'short', day : 'numeric' } ); // What: Date Label String. Why: This is the actual short, locale-formatted date the label displays. How: This builds a Date from the 3 destructured parts and formats it.
 
 
 

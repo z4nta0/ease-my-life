@@ -602,7 +602,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 	const canGroFun = () => { cloGroFun(); }; // What: Cancel Group Function. Why: Escape (or the cancel button) should discard the typed text without creating anything. How: This just runs the shared close routine, with no update call.
 
 
-	const snpRef = React.useRef( { // What: Snapshot Reference. Why: Controls opening (this component mounting) is the moment every field must be remembered, so Cancel can revert every change made while it was open. How: This freezes a shallow copy of the picker, every one of its items, and its own daily-generator membership, captured once on mount.
+	const snaRef = React.useRef( { // What: Snapshot Reference. Why: Controls opening (this component mounting) is the moment every field must be remembered, so Cancel can revert every change made while it was open. How: This freezes a shallow copy of the picker, every one of its items, and its own daily-generator membership, captured once on mount.
 
 
 		inDaily : inDaiBoo,                                            // What: In Daily. Why: Toggling daily-generator membership while Controls is open must also be revertible. How: This is inDaiBoo as it existed the instant Controls opened.
@@ -612,19 +612,19 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 	} );
 
-	const revStaFun = () => { // What: Revert State Function. Why: Cancel must put the picker, every one of its items, and its daily-generator membership back exactly as they were when Controls opened. How: This replaces the picker and every item from snpRef.current, then reconciles daily-generator membership.
+	const revStaFun = () => { // What: Revert State Function. Why: Cancel must put the picker, every one of its items, and its daily-generator membership back exactly as they were when Controls opened. How: This replaces the picker and every item from snaRef.current, then reconciles daily-generator membership.
 
 
-		actObj.replacePicker( picObj.id, snpRef.current.picker ); // What: Replace Picker Call. Why: Every field edited while Controls was open must be rolled back. How: This overwrites the live picker with the snapshot taken on mount.
+		actObj.replacePicker( picObj.id, snaRef.current.picker ); // What: Replace Picker Call. Why: Every field edited while Controls was open must be rolled back. How: This overwrites the live picker with the snapshot taken on mount.
 
-		snpRef.current.items.forEach( ( iteCurObj ) => actObj.replaceItem( iteCurObj.id, iteCurObj ) ); // What: Replace Items Loop. Why: Every item touched (e.g. by a Refill) while Controls was open must also be rolled back. How: This overwrites each live item with its own snapshot.
+		snaRef.current.items.forEach( ( iteCurObj ) => actObj.replaceItem( iteCurObj.id, iteCurObj ) ); // What: Replace Items Loop. Why: Every item touched (e.g. by a Refill) while Controls was open must also be rolled back. How: This overwrites each live item with its own snapshot.
 
 
 		const hasDaiBoo = daiIdeArr.includes( picObj.id ); // What: Has Daily Boolean. Why: Reconciling membership needs to know the picker's CURRENT daily-generator status before deciding whether to add or remove it. How: This checks whether picObj.id is currently in daiIdeArr.
 
-		if ( snpRef.current.inDaily && !hasDaiBoo ) actObj.setDailyPickers( [ ...daiIdeArr, picObj.id ] ); // What: Re-Add Daily Guard. Why: The picker was in the daily generator when Controls opened but has since been removed. How: This adds picObj.id back into the daily-generator list.
+		if ( snaRef.current.inDaily && !hasDaiBoo ) actObj.setDailyPickers( [ ...daiIdeArr, picObj.id ] ); // What: Re-Add Daily Guard. Why: The picker was in the daily generator when Controls opened but has since been removed. How: This adds picObj.id back into the daily-generator list.
 
-		else if ( !snpRef.current.inDaily && hasDaiBoo ) actObj.setDailyPickers( daiIdeArr.filter( ( curIdeStr ) => curIdeStr !== picObj.id ) ); // What: Re-Remove Daily Guard. Why: The picker was NOT in the daily generator when Controls opened but has since been added. How: This filters picObj.id back out of the daily-generator list.
+		else if ( !snaRef.current.inDaily && hasDaiBoo ) actObj.setDailyPickers( daiIdeArr.filter( ( curIdeStr ) => curIdeStr !== picObj.id ) ); // What: Re-Remove Daily Guard. Why: The picker was NOT in the daily generator when Controls opened but has since been added. How: This filters picObj.id back out of the daily-generator list.
 
 
 	};
@@ -647,10 +647,10 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 			const staObj = JSON.parse( rawStr ); // What: State Object. Why: The mirror's own fields need to be read and selectively rewritten. How: This parses the raw JSON string into a plain object.
 
-			if ( Array.isArray( staObj.pickers ) ) staObj.pickers = staObj.pickers.map( ( picCurObj ) => picCurObj.id === picObj.id ? snpRef.current.picker : picCurObj ); // What: Pickers Rollback Guard. Why: Only this one picker's own entry needs replacing. How: This maps every picker through unchanged except a match on picObj.id, which is replaced by the snapshot.
+			if ( Array.isArray( staObj.pickers ) ) staObj.pickers = staObj.pickers.map( ( picCurObj ) => picCurObj.id === picObj.id ? snaRef.current.picker : picCurObj ); // What: Pickers Rollback Guard. Why: Only this one picker's own entry needs replacing. How: This maps every picker through unchanged except a match on picObj.id, which is replaced by the snapshot.
 
 
-			const iteMapObj = new Map( snpRef.current.items.map( ( iteCurObj ) => [ iteCurObj.id, iteCurObj ] ) ); // What: Item Map Object. Why: Rolling back every touched item needs an id-keyed lookup, not a linear scan per item. How: This builds a Map from the snapshot's own items, keyed by id.
+			const iteMapObj = new Map( snaRef.current.items.map( ( iteCurObj ) => [ iteCurObj.id, iteCurObj ] ) ); // What: Item Map Object. Why: Rolling back every touched item needs an id-keyed lookup, not a linear scan per item. How: This builds a Map from the snapshot's own items, keyed by id.
 
 			if ( Array.isArray( staObj.items ) ) staObj.items = staObj.items.map( ( iteCurObj ) => iteMapObj.has( iteCurObj.id ) ? iteMapObj.get( iteCurObj.id ) : iteCurObj ); // What: Items Rollback Guard. Why: Every item the snapshot covers needs replacing; anything else stays untouched. How: This maps every item through unchanged except an id found in iteMapObj, which is replaced by the snapshot's own copy.
 
@@ -662,9 +662,9 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 				const hasDaiBoo = idsArr.includes( picObj.id ); // What: Has Daily Boolean. Why: Same reasoning as revStaFun's own check, applied to the mirror instead of the live store. How: This checks whether picObj.id is currently in idsArr.
 
 
-				if ( snpRef.current.inDaily && !hasDaiBoo ) staObj.daily.pickerIds = [ ...idsArr, picObj.id ]; // What: Re-Add Daily Guard. Why: The mirror must match whatever revStaFun would also restore. How: This adds picObj.id back into the mirrored list.
+				if ( snaRef.current.inDaily && !hasDaiBoo ) staObj.daily.pickerIds = [ ...idsArr, picObj.id ]; // What: Re-Add Daily Guard. Why: The mirror must match whatever revStaFun would also restore. How: This adds picObj.id back into the mirrored list.
 
-				else if ( !snpRef.current.inDaily && hasDaiBoo ) staObj.daily.pickerIds = idsArr.filter( ( curIdeStr ) => curIdeStr !== picObj.id ); // What: Re-Remove Daily Guard. Why: Same reasoning as the guard above, for the opposite direction. How: This filters picObj.id back out of the mirrored list.
+				else if ( !snaRef.current.inDaily && hasDaiBoo ) staObj.daily.pickerIds = idsArr.filter( ( curIdeStr ) => curIdeStr !== picObj.id ); // What: Re-Remove Daily Guard. Why: Same reasoning as the guard above, for the opposite direction. How: This filters picObj.id back out of the mirrored list.
 
 
 			}
@@ -2187,7 +2187,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 	const touObj    = useEmlTouFun();                                                                  // What: Tour Object. Why: Several controls below must disable themselves or highlight during specific onboarding tour steps. How: This reads the shared tour event bus's own phase/tourId/step fields.
 	const disGroBoo = touObj.phase === 'tour' && touObj.tourId === 'page-explore_data' && touObj.step === 1; // What: Disable Group Boolean. Why: Narrating what the Group filter does is the point of this tour step; letting it actually change would strand a later step's own target. How: This is true only during page-explore_data's own Step 1.
-	const disShwBoo = touObj.phase === 'tour' && touObj.tourId === 'page-explore_data' && touObj.step === 3; // What: Disable Show Boolean. Why: Same reasoning as disGroBoo, for the Show filter row. How: This is true only during page-explore_data's own Step 3.
+	const disShoBoo = touObj.phase === 'tour' && touObj.tourId === 'page-explore_data' && touObj.step === 3; // What: Disable Show Boolean. Why: Same reasoning as disGroBoo, for the Show filter row. How: This is true only during page-explore_data's own Step 3.
 	const disCrtBoo = touObj.phase === 'tour' && touObj.tourId === 'page-explore_data' && touObj.step === 6; // What: Disable Create Boolean. Why: Step 7 only points at the Create Picker button; actually clicking it would open a whole new draft form the tour knows nothing about and never cleans up. How: This is true only during page-explore_data's own Step 6.
 
 
@@ -2410,7 +2410,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	const conCouFun = ( cidStr ) => picArr.filter( ( picCurObj ) => picCurObj.conditionalId === cidStr && !picCurObj.hidden ).length; // What: Conditional Count Function. Why: The Conditionals filter row's own per-pill count needs how many (non-hidden) pickers use each one. How: This counts every picker whose own conditionalId matches cidStr.
 
 
-	const shwEntArr = React.useMemo( () => { // What: Show Entry Array. Why: The Show row's own actual rendered order (and "jump to the first card" logic below) both need one shared source of truth. How: This builds Conditionals/Reminders/every visible picker, sorted together, then optionally pins an "All" entry first.
+	const shoEntArr = React.useMemo( () => { // What: Show Entry Array. Why: The Show row's own actual rendered order (and "jump to the first card" logic below) both need one shared source of truth. How: This builds Conditionals/Reminders/every visible picker, sorted together, then optionally pins an "All" entry first.
 
 
 		const resArr = [ // What: Rest Array. Why: Conditionals/Reminders/every visible picker all sort together alphabetically, after any pinned "All" entry. How: This spreads in a Conditionals entry, a Reminders entry, and every visPicArr entry, each only when applicable, then sorts the combined list.
@@ -2429,22 +2429,22 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 	}, [ filGroStr, filTypStr, conIteArr.length, visPicArr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when a filter changes or the underlying conditional/picker lists themselves change. How: Each of these 4 values independently affects which entries appear or how many there are.
 
-	const shwAllBoo = shwEntArr.some( ( entCurObj ) => entCurObj.scope === 'all' ); // What: Show All Boolean. Why: The Show row's own render needs to know whether an "All" card is actually present this render. How: This checks shwEntArr for a 'all' scope entry.
+	const shoAllBoo = shoEntArr.some( ( entCurObj ) => entCurObj.scope === 'all' ); // What: Show All Boolean. Why: The Show row's own render needs to know whether an "All" card is actually present this render. How: This checks shoEntArr for a 'all' scope entry.
 
 
 	const preFilRef = React.useRef( { statGroup : filGroStr, condFilter : filConStr, typeFilter : filTypStr } ); // What: Previous Filter Reference. Why: Landing on the Show row's own first card needs to detect an ACTUAL filter change, not just any render. How: This starts at the initial filter values and is updated by the effect below.
 
-	React.useEffect( () => { // What: Scope Coherence Effect. Why: The active scope must always land on the Show row's own first card whenever any filter changes, not only once the OLD scope happens to fall out of view entirely. How: This detects a filter change (or the current scope no longer being a valid entry) and resets curScoStr to shwEntArr's own first entry.
+	React.useEffect( () => { // What: Scope Coherence Effect. Why: The active scope must always land on the Show row's own first card whenever any filter changes, not only once the OLD scope happens to fall out of view entirely. How: This detects a filter change (or the current scope no longer being a valid entry) and resets curScoStr to shoEntArr's own first entry.
 
 
 		const chaBoo = preFilRef.current.statGroup !== filGroStr || preFilRef.current.condFilter !== filConStr || preFilRef.current.typeFilter !== filTypStr; // What: Changed Boolean. Why: This is the actual "did a filter change since last render" check. How: This compares every one of the 3 tracked filters against their own previous values.
 
 		preFilRef.current = { statGroup : filGroStr, condFilter : filConStr, typeFilter : filTypStr }; // What: Previous Filter Update. Why: The next run of this effect needs to compare against the filters that are current now. How: This overwrites preFilRef with the freshly-read values.
 
-		if ( chaBoo || !shwEntArr.some( ( entCurObj ) => entCurObj.scope === curScoStr ) ) setCurScoStr( shwEntArr[ 0 ] ? shwEntArr[ 0 ].scope : 'all' ); // What: Reset Scope Guard. Why: Either an actual filter change, or the current scope simply no longer existing in the row, both call for landing on the first card. How: This sets curScoStr to shwEntArr's own first entry (or 'all' if the row is somehow empty).
+		if ( chaBoo || !shoEntArr.some( ( entCurObj ) => entCurObj.scope === curScoStr ) ) setCurScoStr( shoEntArr[ 0 ] ? shoEntArr[ 0 ].scope : 'all' ); // What: Reset Scope Guard. Why: Either an actual filter change, or the current scope simply no longer existing in the row, both call for landing on the first card. How: This sets curScoStr to shoEntArr's own first entry (or 'all' if the row is somehow empty).
 
 
-	}, [ filGroStr, filConStr, filTypStr, shwEntArr, curScoStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever any filter changes, the entry list itself changes, or the current scope changes (so its own no-longer-valid check stays accurate). How: Every one of these 5 values can affect whether curScoStr needs resetting.
+	}, [ filGroStr, filConStr, filTypStr, shoEntArr, curScoStr ] ); // What: Effect Dependency Array. Why: This must re-run whenever any filter changes, the entry list itself changes, or the current scope changes (so its own no-longer-valid check stays accurate). How: Every one of these 5 values can affect whether curScoStr needs resetting.
 
 
 	const selScoFun = ( nexScoStr ) => setCurScoStr( nexScoStr ); // What: Select Scope Function. Why: The boxes' own click behavior is a stub for now, ready to wire up later; selection state itself still needs to update. How: This just commits nexScoStr as the new curScoStr.
@@ -2501,20 +2501,20 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	const togSecFun = ( secIdeStr ) => actObj.toggleControlsCollapsed( secIdeStr, true ); // What: Toggle Section Function. Why: Every picker card defaults collapsed, so its own toggle needs that default baked in. How: This calls toggleControlsCollapsed with defaultCollapsed true.
 
 
-	const shwRemBoo = ( filTypStr === 'all' || filTypStr === 'reminders' ) && filConStr === 'all' && ( curScoStr === 'all' || curScoStr === 'reminders' ); // What: Show Reminders Boolean. Why: Reminders is its own scope and isn't part of any picker group/mode, so it only appears when the type filter is "All" (or itself), unfiltered by conditional, at the matching scope. How: This combines all 3 conditions with &&.
-	const shwConBoo = ( filTypStr === 'all' || filTypStr === 'conditionals' ) && filConStr === 'all' // What: Show Conditionals Boolean. Why: The Conditionals manager is shown even with none created, since it's the only place to create one; gating on existence would make it unreachable from a clean state. How: This combines the same 3-condition shape as shwRemBoo.
+	const shoRemBoo = ( filTypStr === 'all' || filTypStr === 'reminders' ) && filConStr === 'all' && ( curScoStr === 'all' || curScoStr === 'reminders' ); // What: Show Reminders Boolean. Why: Reminders is its own scope and isn't part of any picker group/mode, so it only appears when the type filter is "All" (or itself), unfiltered by conditional, at the matching scope. How: This combines all 3 conditions with &&.
+	const shoConBoo = ( filTypStr === 'all' || filTypStr === 'conditionals' ) && filConStr === 'all' // What: Show Conditionals Boolean. Why: The Conditionals manager is shown even with none created, since it's the only place to create one; gating on existence would make it unreachable from a clean state. How: This combines the same 3-condition shape as shoRemBoo.
 		&& ( curScoStr === 'all' || curScoStr === 'conditionals' );
-	const shwPicArr = ( curScoStr === 'reminders' || curScoStr === 'conditionals' ) // What: Shown Picker Array. Why: The rendered picker cards are visPicArr narrowed once more by the active scope. How: This is empty at the Reminders/Conditionals scopes, every visPicArr entry at 'all', or just the one matching picker otherwise.
+	const shoPicArr = ( curScoStr === 'reminders' || curScoStr === 'conditionals' ) // What: Shown Picker Array. Why: The rendered picker cards are visPicArr narrowed once more by the active scope. How: This is empty at the Reminders/Conditionals scopes, every visPicArr entry at 'all', or just the one matching picker otherwise.
 		? []
 		: ( curScoStr === 'all' ? visPicArr : visPicArr.filter( ( picCurObj ) => picCurObj.id === curScoStr ) );
 
 	const remCouNum = ( staAppObj.tasks || [] ).filter( ( tasCurObj ) => !tasCurObj.hidden ).length; // What: Reminders Count Number. Why: The Reminders section entry below needs its own live count, the same as every picker card's own item count. How: This counts every non-hidden task.
-	const picSecMap = React.useMemo( () => { // What: Picker Section Map. Why: The section sort needs each shown picker's own item count and active state, computed once rather than per sort comparison. How: This builds an id-keyed map of { count, isActive } for every entry in shwPicArr.
+	const picSecMap = React.useMemo( () => { // What: Picker Section Map. Why: The section sort needs each shown picker's own item count and active state, computed once rather than per sort comparison. How: This builds an id-keyed map of { count, isActive } for every entry in shoPicArr.
 
 
 		const mapObj = new Map(); // What: Map Object. Why: The loop below needs somewhere to collect each picker's own computed metadata. How: This starts empty and is set on below.
 
-		for ( const picCurObj of shwPicArr ) { // What: Picker Meta Loop. Why: Every shown picker needs its own count/active metadata computed once. How: This filters staAppObj.items per picker and derives both fields from that filtered list.
+		for ( const picCurObj of shoPicArr ) { // What: Picker Meta Loop. Why: Every shown picker needs its own count/active metadata computed once. How: This filters staAppObj.items per picker and derives both fields from that filtered list.
 
 
 			const itsArr = staAppObj.items.filter( ( iteCurObj ) => iteCurObj.pickerId === picCurObj.id ); // What: Items Array. Why: Both fields below depend on this exact picker's own items. How: This filters the whole app's items down to just this picker's own.
@@ -2528,7 +2528,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 		return mapObj; // What: Map Object Return. Why: The section sort below needs this whole map back. How: This returns the same mapObj built and set on above.
 
 
-	}, [ shwPicArr, staAppObj.items ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when the shown pickers or the app's own items change. How: Both values independently affect the computed metadata.
+	}, [ shoPicArr, staAppObj.items ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when the shown pickers or the app's own items change. How: Both values independently affect the computed metadata.
 
 	const secSorStr = ( staAppObj.ui && staAppObj.ui.dataSort && staAppObj.ui.dataSort.sections ) || 'name-asc'; // What: Section Sort String. Why: The top-level section list needs its own persisted sort choice. How: This reads staAppObj.ui.dataSort.sections, falling back to 'name-asc'.
 	const secEntArr = React.useMemo( () => { // What: Section Entry Array. Why: Conditionals/Reminders/every shown picker all need a common comparable shape before they can be sorted together. How: This builds one entry per visible section, then sorts the combined list via sorEntFun.
@@ -2536,10 +2536,10 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 		const entArr = []; // What: Entry Array. Why: The pushes below need somewhere to collect one entry per visible section. How: This starts empty and is conditionally pushed to just below.
 
-		if ( shwConBoo ) entArr.push( { kind : 'conditionals', name : 'Conditionals', type : 'Conditionals', group : null, count : conIteArr.length, isActive : null } ); // What: Conditionals Entry Push. Why: Group/Active have no meaning for Conditionals as a WHOLE section. How: This pushes a null group/isActive entry, with count as the total conditional count.
-		if ( shwRemBoo ) entArr.push( { kind : 'reminders', name : 'Reminders', type : 'Reminders', group : null, count : remCouNum, isActive : null } );        // What: Reminders Entry Push. Why: Same reasoning as the Conditionals entry above, for Reminders. How: This pushes a null group/isActive entry, with count as remCouNum.
+		if ( shoConBoo ) entArr.push( { kind : 'conditionals', name : 'Conditionals', type : 'Conditionals', group : null, count : conIteArr.length, isActive : null } ); // What: Conditionals Entry Push. Why: Group/Active have no meaning for Conditionals as a WHOLE section. How: This pushes a null group/isActive entry, with count as the total conditional count.
+		if ( shoRemBoo ) entArr.push( { kind : 'reminders', name : 'Reminders', type : 'Reminders', group : null, count : remCouNum, isActive : null } );        // What: Reminders Entry Push. Why: Same reasoning as the Conditionals entry above, for Reminders. How: This pushes a null group/isActive entry, with count as remCouNum.
 
-		for ( const picCurObj of shwPicArr ) { // What: Picker Entry Loop. Why: Every shown picker needs its own entry in the same comparable shape. How: This looks up each picker's own precomputed metadata from picSecMap.
+		for ( const picCurObj of shoPicArr ) { // What: Picker Entry Loop. Why: Every shown picker needs its own entry in the same comparable shape. How: This looks up each picker's own precomputed metadata from picSecMap.
 
 
 			const metObj = picSecMap.get( picCurObj.id ) || { count : 0, isActive : true }; // What: Meta Object. Why: This picker's own count/active fields were already computed above. How: This reads picSecMap, falling back to a safe default if somehow missing.
@@ -2553,7 +2553,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 		return entArr.sort( ( aEntObj, bEntObj ) => sorEntFun( aEntObj, bEntObj, secSorStr ) ); // What: Entry Array Return. Why: The rendered list needs to actually be in secSorStr's own order. How: This sorts entArr via sorEntFun.
 
 
-	}, [ shwConBoo, shwRemBoo, shwPicArr, picSecMap, conIteArr.length, remCouNum, secSorStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or reorder a section. How: Each value independently affects the entry list or its own sort order.
+	}, [ shoConBoo, shoRemBoo, shoPicArr, picSecMap, conIteArr.length, remCouNum, secSorStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or reorder a section. How: Each value independently affects the entry list or its own sort order.
 
 
 	const drfPicObj = newDrfStr ? picArr.find( ( picCurObj ) => picCurObj.id === newDrfStr ) : null;                      // What: Draft Picker Object. Why: The draft's own card, appended last below, needs the live picker record itself, not just its id. How: This looks up newDrfStr in picArr, or null when there's no draft.
@@ -2878,17 +2878,17 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 						key={ filGroStr + '|' + filTypStr }
 						className='picker-tabs stat-scope-tabs'
 						ref={ scoRowRef }
-					>{ /* What: Show Boxes Div Element. Why: This is the actual box rail, re-keyed on filter change so its own entrance animation replays. How: This renders the All box (when present) then maps shwEntArr's own remaining entries to one box each. */ }
+					>{ /* What: Show Boxes Div Element. Why: This is the actual box rail, re-keyed on filter change so its own entrance animation replays. How: This renders the All box (when present) then maps shoEntArr's own remaining entries to one box each. */ }
 
 
-						{ shwAllBoo && ( // What: All Box Check. Why: "All" only renders when shwEntArr itself decided to include it. How: This renders the All box only while shwAllBoo is true.
+						{ shoAllBoo && ( // What: All Box Check. Why: "All" only renders when shoEntArr itself decided to include it. How: This renders the All box only while shoAllBoo is true.
 
 
 							<button
 								type='button'
 								className={ ` picker-tab   picker-tab--enter   ${ curScoStr === 'all' ? 'is-on' : '' } ` }
 								style={{ animationDelay : '0ms' }}
-								disabled={ disShwBoo }
+								disabled={ disShoBoo }
 								onClick={ () => selScoFun( 'all' ) }
 							>
 								<span className='picker-tab-name'>All</span>{ /* What: Box Name Span Element. Why: Every box needs its own visible name. How: This renders the literal text "All". */ }
@@ -2918,7 +2918,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 									data-picker-id={ filEntObj.picIdeStr }
 									className={ ` picker-tab   picker-tab--enter   ${ filEntObj.isOn ? 'is-on' : '' } ` }
 									style={{ animationDelay : ( filIndNum + 1 ) * 40 + 'ms' }}
-									disabled={ disShwBoo }
+									disabled={ disShoBoo }
 									onClick={ filEntObj.onClick }
 								>
 									<span className='picker-tab-name'>{ filEntObj.name }</span>
@@ -2954,7 +2954,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed on filter/scope change so section entrance animations replay. How: This renders an empty-state message when nothing matches, otherwise every entry in rdrEntArr plus the Create Picker trigger. */ }
 
 
-				{ !shwConBoo && !shwRemBoo && shwPicArr.length === 0 && ( // What: Empty State Check. Why: Every filter combined leaving nothing at all needs its own explanatory message. How: This renders only while all 3 sections are absent.
+				{ !shoConBoo && !shoRemBoo && shoPicArr.length === 0 && ( // What: Empty State Check. Why: Every filter combined leaving nothing at all needs its own explanatory message. How: This renders only while all 3 sections are absent.
 
 
 					<div className='data-empty'>{ /* What: Empty Div Element. Why: The empty-state title and its own explanation belong together. How: This wraps both paragraphs below. */ }
@@ -2972,7 +2972,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 					if ( entCurObj.kind === 'conditionals' ) return <ConManCom key='cnd-shown' state={ staAppObj } actions={ actObj } />; // What: Conditionals Branch Return. Why: The Conditionals section is its own separately-maintained manager, not a picker card. How: This renders ConManCom directly, keyed statically since only one can ever exist.
 
-					if ( entCurObj.kind === 'reminders' ) return <RemManCom key='rem-shown' state={ staAppObj } actions={ actObj } />; // What: Reminders Branch Return. Why: The Reminders section is its own separately-maintained manager, not a picker card. How: This renders RemManCom directly, keyed statically since only one can ever exist.
+					if ( entCurObj.kind === 'reminders' ) return <RemManCom key='rem-shown' staAppObj={ staAppObj } actStoObj={ actObj } />; // What: Reminders Branch Return. Why: The Reminders section is its own separately-maintained manager, not a picker card. How: This renders RemManCom directly, keyed statically since only one can ever exist.
 
 
 					const picCurObj  = entCurObj.pk;                                                                    // What: Picker Current Object. Why: Every remaining branch below is a real picker card and needs its own record. How: This reads entCurObj.pk.
@@ -3347,7 +3347,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 																	isNew={ newIteRef.current === iteCurObj.id }
 																	itemCount={ iteArr.length }
 																	onClose={ () => keeCloFun( iteCurObj.id ) }
-																	onCancel={ ( snpIteObj ) => {
+																	onCancel={ ( snaIteObj ) => {
 
 																		if ( newIteRef.current === iteCurObj.id ) { // What: Discard New Guard. Why: A brand-new, unsaved item's own Cancel must remove it entirely, not revert it to a snapshot; the row still gets to play the same collapse-close animation as Save first. How: This clears newIteRef, closes the row, then defers the actual removal.
 
@@ -3366,7 +3366,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 																		else {
 
 
-																			actObj.replaceItem( iteCurObj.id, snpIteObj ); // What: Replace Item Call. Why: An existing item's own Cancel must revert every field back to its pre-edit snapshot. How: This overwrites the live item with snpIteObj.
+																			actObj.replaceItem( iteCurObj.id, snaIteObj ); // What: Replace Item Call. Why: An existing item's own Cancel must revert every field back to its pre-edit snapshot. How: This overwrites the live item with snaIteObj.
 
 																			setOpnIteStr( ( curStr ) => curStr === iteCurObj.id ? null : curStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one. How: This nulls opnIteStr only when it currently equals iteCurObj.id.
 

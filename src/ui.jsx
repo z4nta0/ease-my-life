@@ -332,7 +332,7 @@ const WEE_FUL_ARR = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'F
 */
 
 // What: Weekday Chip Component. Why: See the design-rationale block above. How: This renders one chip per weekday, locked (InfTipCom) or toggleable (button) depending on lockedDay.
-const WeeChiCom = ( { value, onChange, size = 'md', lockedDay = null, lockedTip = '', describedBy } ) => {
+const WeeChiCom = ( { value, onChange, size = 'md', lockedDay = null, lockedTip = '', desIdeStr } ) => {
 
 
 	const togDayFun = ( dayIndNum ) => { // What: Toggle Day Function. Why: Clicking an unlocked chip needs to add or remove that single day from the selection, while keeping at least one day selected. How: This flips dayIndNum's membership in value, re-sorts the result, and calls onChange unless doing so would leave the week empty.
@@ -359,7 +359,7 @@ const WeeChiCom = ( { value, onChange, size = 'md', lockedDay = null, lockedTip 
 			className={ `dow-chips ${ size === 'sm' ? 'dow-chips--sm' : '' }` }
 			role='group'
 			aria-label='Days of the week'
-			aria-describedby={ describedBy }
+			aria-describedby={ desIdeStr }
 		>{ /* What: Container Dow Chips Div Element. Why: This groups all 7 weekday toggle chips as one accessible group. How: This renders one chip per WEE_LAB_ARR entry below, locked or toggleable depending on lockedDay. */ }
 
 
@@ -391,7 +391,7 @@ const WeeChiCom = ( { value, onChange, size = 'md', lockedDay = null, lockedTip 
 						className={ `dow-chip ${ onDayBoo ? 'is-on' : '' }` }
 						aria-pressed={ onDayBoo }
 						aria-label={ WEE_FUL_ARR[ dayIndNum ] }
-						aria-describedby={ describedBy }
+						aria-describedby={ desIdeStr }
 						title={ WEE_FUL_ARR[ dayIndNum ] }
 						onClick={ () => togDayFun( dayIndNum ) }
 					>{ labChrStr }</button> // What: Toggle Day Chip Element. Why: This is the actual clickable control for an unlocked day. How: This shows onDayBoo as its own "is-on" class and calls togDayFun with dayIndNum when clicked.
@@ -471,24 +471,25 @@ const ProBarCom = ( { value, max = 1, tone = 'accent' } ) => (
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.value    - Value: {@link value}
- * @param props.min      - Minimum: The lowest allowed value; defaults to 1.
- * @param props.max      - Maximum: The highest allowed value; defaults to 99.
- * @param props.onSet    - On Setter: Receives the newly committed, clamped
- *                         integer.
- * @param props.ariaLabel - Aria Label: The accessible name for the whole
- *                          stepper group and its own text input.
+ * @param props.value     - Value: {@link value}
+ * @param props.min       - Minimum: The lowest allowed value; defaults to 1.
+ * @param props.max       - Maximum: The highest allowed value; defaults to
+ *                          99.
+ * @param props.onSet     - On Setter: Receives the newly committed, clamped
+ *                          integer.
+ * @param props.ariLabStr - Aria Label String: The accessible name for the
+ *                          whole stepper group and its own text input.
  *
  * @returns The stepper's own -/text/+ trio as one grouped control.
  *
  * @example
  * ```tsx
- * NumSteCom({ value, min, max, onSet, ariaLabel }) // => <NumSteCom />
+ * NumSteCom({ value, min, max, onSet, ariLabStr }) // => <NumSteCom />
  * ```
  *
 */
 
-function NumSteCom ( { value, min = 1, max = 99, onSet, ariaLabel } ) {
+function NumSteCom ( { value, min = 1, max = 99, onSet, ariLabStr } ) {
 
 
 	const [ texValStr, setTexValStr ] = React.useState( String( value ) ); // What: Text Value String And Setter. Why: The value must be typeable as free text, not just steppable, so a separate string buffer is needed alongside the real numeric value. How: This starts mirroring the initial value and is kept in sync by the effect below and overwritten locally while the user types.
@@ -520,7 +521,7 @@ function NumSteCom ( { value, min = 1, max = 99, onSet, ariaLabel } ) {
 		<div
 			className='np-stepper'
 			role='group'
-			aria-label={ ariaLabel }
+			aria-label={ ariLabStr }
 		>{ /* What: Container Stepper Div Element. Why: This groups the -/text/+ trio as one accessible group. How: This renders the decrement button, the editable text input, and the increment button below. */ }
 
 
@@ -536,7 +537,7 @@ function NumSteCom ( { value, min = 1, max = 99, onSet, ariaLabel } ) {
 				type='text'
 				inputMode='numeric'
 				value={ texValStr }
-				aria-label={ ariaLabel }
+				aria-label={ ariLabStr }
 				onChange={ ( chaEveObj ) => setTexValStr( chaEveObj.target.value.replace( /[^0-9]/g, '' ) ) }
 				onFocus={ ( focEveObj ) => focEveObj.target.select() }
 				onBlur={ comTexFun }

@@ -1331,9 +1331,9 @@ function forDueFun ( dueDatObj, dayKeyStr ) {
 
 
 
-	const [ yeaNum, monNum, domNum ] = dayKeyStr.split( '-' ).map( Number ); // What: Reference Date Parts. Why: The midnight-stripped reference date below needs its own year/month/day numbers. How: This splits dayKeyStr on its dashes and parses each part as a Number.
+	const [ yeaValNum, monValNum, domValNum ] = dayKeyStr.split( '-' ).map( Number ); // What: Reference Date Parts. Why: The midnight-stripped reference date below needs its own year/month/day numbers. How: This splits dayKeyStr on its dashes and parses each part as a Number.
 
-	const curMidObj = new Date( yeaNum, monNum - 1, domNum );                                         // What: Current Midnight Object. Why: The day-count below must compare 2 midnights, not 2 arbitrary times of day. How: This builds a local Date at midnight from yeaNum/monNum/domNum.
+	const curMidObj = new Date( yeaValNum, monValNum - 1, domValNum );                                // What: Current Midnight Object. Why: The day-count below must compare 2 midnights, not 2 arbitrary times of day. How: This builds a local Date at midnight from yeaValNum/monValNum/domValNum.
 	const dueMidObj = new Date( dueDatObj.getFullYear(), dueDatObj.getMonth(), dueDatObj.getDate() ); // What: Due Midnight Object. Why: The day-count below must compare 2 midnights, not 2 arbitrary times of day. How: This builds a local Date at midnight from dueDatObj's own year/month/day.
 	const dayDifNum = Math.round( ( dueMidObj - curMidObj ) / 86400000 );                             // What: Day Difference Number. Why: The branches below phrase their own label from a whole day count, not a raw millisecond difference. How: This subtracts curMidObj from dueMidObj and divides by the number of milliseconds in a day.
 
