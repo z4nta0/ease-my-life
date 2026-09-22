@@ -649,23 +649,23 @@ export function hydStaFun( staRawObj ) {
 
 
 
-	const rslRowArr = ( staRawObj.reminderSkipLog || [] ).map( ( skpRowObj ) => { // What: Reminder-Skip-Log Row Array. Why: Every precomputed reminder-skip-log row must become a real, dated reminderSkipLog row matching state.reminderSkipLog's own shape. How: This maps staRawObj's own reminderSkipLog array (or an empty array if missing) through the per-row logic below.
+	const rslRowArr = ( staRawObj.reminderSkipLog || [] ).map( ( skiRowObj ) => { // What: Reminder-Skip-Log Row Array. Why: Every precomputed reminder-skip-log row must become a real, dated reminderSkipLog row matching state.reminderSkipLog's own shape. How: This maps staRawObj's own reminderSkipLog array (or an empty array if missing) through the per-row logic below.
 
 
-		const rowTimObj = dayAgoFun( skpRowObj.daysAgo ); // What: Row Timestamp Object. Why: This row's own real skip timestamp needs both a resolved calendar date and, below, a specific time of day. How: This resolves skpRowObj's own daysAgo offset via dayAgoFun.
+		const rowTimObj = dayAgoFun( skiRowObj.daysAgo ); // What: Row Timestamp Object. Why: This row's own real skip timestamp needs both a resolved calendar date and, below, a specific time of day. How: This resolves skiRowObj's own daysAgo offset via dayAgoFun.
 
-		rowTimObj.setHours( skpRowObj.h, skpRowObj.m, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes skpRowObj's own h/m onto rowTimObj, zeroing seconds/milliseconds.
-
-
-
-		return { // What: Reminder Skip Log Row Return. Why: This is one hydrated row, in the exact shape state.reminderSkipLog itself expects. How: This builds the row from rowTimObj above plus skpRowObj's own denormalized fields, passed through unchanged.
+		rowTimObj.setHours( skiRowObj.h, skiRowObj.m, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes skiRowObj's own h/m onto rowTimObj, zeroing seconds/milliseconds.
 
 
-			name      : skpRowObj.name,                            // What: Name. Why: This denormalized copy lets the row survive a later rename or deletion of the task itself. How: This is copied straight from skpRowObj's own name.
+
+		return { // What: Reminder Skip Log Row Return. Why: This is one hydrated row, in the exact shape state.reminderSkipLog itself expects. How: This builds the row from rowTimObj above plus skiRowObj's own denormalized fields, passed through unchanged.
+
+
+			name      : skiRowObj.name,                            // What: Name. Why: This denormalized copy lets the row survive a later rename or deletion of the task itself. How: This is copied straight from skiRowObj's own name.
 			rowId     : 'rs_ob_' + ( seqCouNum++ ).toString( 36 ), // What: Row Id. Why: Every reminderSkipLog row needs its own unique identifier. How: This mints one from the shared seqCouNum counter, prefixed and base-36 encoded.
 			skippedAt : rowTimObj.toISOString(),                   // What: Skipped At. Why: state.reminderSkipLog's own skippedAt field expects a real ISO string. How: This is rowTimObj's own ISO string, resolved above.
-			taskId    : skpRowObj.taskId,                          // What: Task Id. Why: Stats and other consumers filter/group reminderSkipLog rows by the task they belong to. How: This is copied straight from skpRowObj's own taskId.
-			type      : skpRowObj.type                             // What: Type. Why: Stats distinguishes a one-time skip from a recurring one. How: This is copied straight from skpRowObj's own type.
+			taskId    : skiRowObj.taskId,                          // What: Task Id. Why: Stats and other consumers filter/group reminderSkipLog rows by the task they belong to. How: This is copied straight from skiRowObj's own taskId.
+			type      : skiRowObj.type                             // What: Type. Why: Stats distinguishes a one-time skip from a recurring one. How: This is copied straight from skiRowObj's own type.
 
 
 		};

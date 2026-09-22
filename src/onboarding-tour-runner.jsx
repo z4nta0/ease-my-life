@@ -530,7 +530,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 	// #region Tour Completion Actions
 
-	const finTouFun = React.useCallback( () => { // What: Finish Tour Function. Why: This is genuine completion only, the primary button on a step whose `priStr` is 'Done'. How: This clears activeTour, calls the caller's own onFinTouFun, then lands back on a pristine, scrolled-to-top Today the same way skpTouFun below does, so a caller's last step does not need to remember to also be sttBoo just to stick the landing.
+	const finTouFun = React.useCallback( () => { // What: Finish Tour Function. Why: This is genuine completion only, the primary button on a step whose `priStr` is 'Done'. How: This clears activeTour, calls the caller's own onFinTouFun, then lands back on a pristine, scrolled-to-top Today the same way skiTouFun below does, so a caller's last step does not need to remember to also be sttBoo just to stick the landing.
 
 
 		actStoObj.setOnboarding( { activeTour: null } ); // What: Active Tour Clear. Why: A finished tour must not still look resBoo to a future mount. How: This overwrites the persisted checkpoint with null.
@@ -546,7 +546,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 
 
-	const skpTouFun = () => { // What: Skip Tour Function. Why: Everything that is NOT genuine completion (the Skip button, but also the not-found watchdog and a resumed/advanced step index past the end of `steObjArr`) funnels through here instead of onFinTouFun, since none of these mean the tour's content was actually finished. How: This clears activeTour, calls the caller's own onSkiTouFun (or onFinTouFun when onSkiTouFun was omitted), then lands back on a pristine Today.
+	const skiTouFun = () => { // What: Skip Tour Function. Why: Everything that is NOT genuine completion (the Skip button, but also the not-found watchdog and a resumed/advanced step index past the end of `steObjArr`) funnels through here instead of onFinTouFun, since none of these mean the tour's content was actually finished. How: This clears activeTour, calls the caller's own onSkiTouFun (or onFinTouFun when onSkiTouFun was omitted), then lands back on a pristine Today.
 
 
 		actStoObj.setOnboarding( { activeTour: null } ); // What: Active Tour Clear. Why: A skipped tour must not still look resBoo to a future mount. How: This overwrites the persisted checkpoint with null.
@@ -584,7 +584,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 
 
-	const curSteObj = steObjArr[ curSteNum ] || null; // What: Current Step Object. Why: A resumed step index that no longer exists (e.g. a stale activeTour left over from before this tour's step count changed) must read as undefined rather than throw, and the position-tracking effect below bails out to skpTouFun the moment it sees a falsy value here. How: This reads steObjArr at curSteNum, falling back to null.
+	const curSteObj = steObjArr[ curSteNum ] || null; // What: Current Step Object. Why: A resumed step index that no longer exists (e.g. a stale activeTour left over from before this tour's step count changed) must read as undefined rather than throw, and the position-tracking effect below bails out to skiTouFun the moment it sees a falsy value here. How: This reads steObjArr at curSteNum, falling back to null.
 
 
 
@@ -751,7 +751,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 
 	const priActRef = React.useRef( () => {} ); // What: Primary Action Reference. Why: Same lazy-ref pattern as curSteRef: priActFun below closes over curSteNum/curSteObj/finTouFun, all of which change every render, but the click-guard effect below is only ever set up once. How: This starts as a no-op and is overwritten with the latest priActFun at the end of every render.
-	const supGuaRef = React.useRef( false );    // What: Suppress Guard Reference. Why: This lets bacSteFun's/skpTouFun's own side effects click through the guard below, e.g. a picker mini-tour's onBacTouFun simulating a click on the create-form's own "Details" step tab to undo a later step's "Add Items" click. How: That synthetic click is not the step's own target (curSteRef still points at the step being left, since onBacTouFun runs before the step index actually changes), so without this the guard would block onBacTouFun from doing anything at all; the exact clicks meant to fix the page up before navigating back are the ones most likely to look like "not the current target" to it.
+	const supGuaRef = React.useRef( false );    // What: Suppress Guard Reference. Why: This lets bacSteFun's/skiTouFun's own side effects click through the guard below, e.g. a picker mini-tour's onBacTouFun simulating a click on the create-form's own "Details" step tab to undo a later step's "Add Items" click. How: That synthetic click is not the step's own target (curSteRef still points at the step being left, since onBacTouFun runs before the step index actually changes), so without this the guard would block onBacTouFun from doing anything at all; the exact clicks meant to fix the page up before navigating back are the ones most likely to look like "not the current target" to it.
 
 
 
@@ -1054,10 +1054,10 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 
 
-		if ( !curSteObj ) { // What: No Step Guard. Why: See the clamp on curSteObj above; there is no valid step to track at all. How: This bails out cleanly rather than leave a permanent dim with nothing to click, calling skpTouFun (not finTouFun, see its own comment) since this is not a genuine completion.
+		if ( !curSteObj ) { // What: No Step Guard. Why: See the clamp on curSteObj above; there is no valid step to track at all. How: This bails out cleanly rather than leave a permanent dim with nothing to click, calling skiTouFun (not finTouFun, see its own comment) since this is not a genuine completion.
 
 
-			skpTouFun(); // What: Skip Call. Why: A missing step is never genuine completion. How: This calls skpTouFun directly.
+			skiTouFun(); // What: Skip Call. Why: A missing step is never genuine completion. How: This calls skiTouFun directly.
 
 
 
@@ -1511,7 +1511,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 
 				if ( notFouNum == null ) notFouNum = performance.now(); // What: Not-Found Start. Why: The watchdog needs a timestamp to measure how long the target has been missing. How: This records the current time the first frame the target is missing.
 
-				else if ( performance.now() - notFouNum > nftValNum ) { isaCanBoo = true; skpTouFun(); return; } // What: Not-Found Timeout Skip. Why: A target that never resolves within nftValNum must not leave a permanent, unclickable dim on screen. How: This cancels the loop and calls skpTouFun once the missing duration exceeds nftValNum.
+				else if ( performance.now() - notFouNum > nftValNum ) { isaCanBoo = true; skiTouFun(); return; } // What: Not-Found Timeout Skip. Why: A target that never resolves within nftValNum must not leave a permanent, unclickable dim on screen. How: This cancels the loop and calls skiTouFun once the missing duration exceeds nftValNum.
 
 
 			}
@@ -1552,7 +1552,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 	const porBodFun = ( porNodEle ) => createPortal( porNodEle, document.body ); // What: Portal Body Function. Why: Every branch of this component's own render needs to portal its JSX onto document.body rather than wherever GuiTouCom happens to be mounted in the tree. How: This forwards porNodEle straight into React's own createPortal.
 
 
-	if ( !curSteObj ) return porBodFun( <div className='ob-tour' aria-live='polite'><div className='ob-dim' /></div> ); // What: No Step Render Guard. Why: A step index advanced past the end of a `steObjArr` array whose last entry is not priStr:'Done' yet (most likely mid-content-authoring) is caught by the position-tracking effect above, which already calls skpTouFun the moment it sees this, but that is a separate effect firing after this render commits, so this render still needs to not crash reading off a null curSteObj in the meantime. How: This returns the same one-frame dim-only fallback as the "target not found yet" case below.
+	if ( !curSteObj ) return porBodFun( <div className='ob-tour' aria-live='polite'><div className='ob-dim' /></div> ); // What: No Step Render Guard. Why: A step index advanced past the end of a `steObjArr` array whose last entry is not priStr:'Done' yet (most likely mid-content-authoring) is caught by the position-tracking effect above, which already calls skiTouFun the moment it sees this, but that is a separate effect firing after this render commits, so this render still needs to not crash reading off a null curSteObj in the meantime. How: This returns the same one-frame dim-only fallback as the "target not found yet" case below.
 
 
 
@@ -1692,7 +1692,7 @@ function GuiTouCom ( { touIdeStr, steObjArr, resSteNum, actStoObj, actIdeStr, se
 							<div className='ob-lnav'>{ /* What: Left Nav Container Element. Why: This groups Skip and the optional Back button together on the row's own left side. How: This is only rendered for a non-solo step. */ }
 
 
-								<button className='ob-skip' onClick={ skpTouFun }>Skip</button>{ /* What: Skip Button Element. Why: This ends the tour as a non-completion, per skpTouFun's own comment above. How: This calls skpTouFun on click. */ }
+								<button className='ob-skip' onClick={ skiTouFun }>Skip</button>{ /* What: Skip Button Element. Why: This ends the tour as a non-completion, per skiTouFun's own comment above. How: This calls skiTouFun on click. */ }
 
 								{ curSteObj.bacBoo && <button className='ob-back' onClick={ bacSteFun }>&lsaquo; Back</button> }{ /* What: Back Button Element. Why: Only a step that opts in via `bacBoo` shows this. How: This calls bacSteFun on click. */ }
 

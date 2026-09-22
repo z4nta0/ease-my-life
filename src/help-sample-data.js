@@ -41,8 +41,8 @@ const helIdeFun = ( rawIdeStr ) => `hlp_${ rawIdeStr }`; // What: Help Identifie
  *
  * @summary
  * The real onboarding samples only cover ease-up, ease-down, and dynamic:
- * these two round out all 5 picker modes (see seed.js's own MODES) with a
- * 'random' and a 'weighted' example.
+ * these two round out all 5 picker modes (see seed.js's own
+ * SED_NAM_OBJ.MOD_DEF_OBJ) with a 'random' and a 'weighted' example.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

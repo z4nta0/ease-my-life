@@ -13,8 +13,8 @@ import { HelOveCom    } from './help-mode.jsx';       // What: Help Overlay Comp
 import { hidHisFun    } from './help-sample-data.js'; // What: Hide History Function. Why: The real hidden sample pickers borrowed for help mode must be re-hidden once help mode ends. How: This is called whenever helOnBoo turns false, and again on unmount.
 import { IcoSvgCom    } from './ui.jsx';              // What: Icon Svg Component. Why: Several small glyphs (sort-direction arrows, the streak flame) are needed throughout this page. How: This is rendered with a specific name and size wherever one of those glyphs is shown.
 import { InfTipCom    } from './ui.jsx';              // What: Info Tip Component. Why: The Spent metric's "no completed cycle yet" case needs a small inline explanation. How: This renders a "?" bubble with its own label text next to that N/A value.
-import { MODES        } from './seed.js';             // What: Modes. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up by a picker's own mode key throughout the page.
 import { PilTagCom    } from './ui.jsx';              // What: Pill Tag Component. Why: The single-picker header needs a small labelled pill showing the picker's own mode. How: This renders that pill, toned as 'mode'.
+import { SED_NAM_OBJ  } from './seed.js';             // What: Seed Namespace Object. Why: Every picker mode's own display label and hint text live in this shared table. How: This is looked up (MOD_DEF_OBJ) by a picker's own mode key throughout the page.
 import { STA_HEL_ARR  } from './help-content.jsx';    // What: Stats Help Array. Why: Help mode needs this page's own tooltip copy, keyed to its elements. How: This is passed straight through to HelOveCom.
 import { TASKS        } from './tasks.js';            // What: Tasks. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TASKS.normalizeOpts on the raw persisted reminderOpts.
 import { unhHisFun    } from './help-sample-data.js'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helOnBoo turns true, as long as the page tour doesn't already own the same samples.
@@ -842,7 +842,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 	// label: feeds the Type filter row's own picker-mode pills ("All"
 	// pinned first, same as Group). Independent of staGroStr, both narrow
 	// visPicArr together.
-	const exiModArr = React.useMemo( () => { // What: Existing Mode Array Memo. Why: The Type filter row needs the live, deduplicated set of picker modes actually in use, ordered by their own display label. How: This walks picLisArr once collecting non-hidden modes into a Set, then sorts by MODES' own label text.
+	const exiModArr = React.useMemo( () => { // What: Existing Mode Array Memo. Why: The Type filter row needs the live, deduplicated set of picker modes actually in use, ordered by their own display label. How: This walks picLisArr once collecting non-hidden modes into a Set, then sorts by SED_NAM_OBJ.MOD_DEF_OBJ's own label text.
 
 
 		const seenModSet = new Set(); // What: Seen Mode Set. Why: A Set naturally deduplicates without a manual membership check, unlike the group loop above which needed first-seen order preserved. How: This starts empty and is added to below.
@@ -850,7 +850,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 		for ( const picObj of picLisArr ) if ( !picObj.hidden ) seenModSet.add( picObj.mode ); // What: Mode Collection Loop. Why: Every non-hidden picker contributes its own mode key. How: This adds a picker's own mode to the set.
 
 
-		return [ ...seenModSet ].sort( ( aModStr, bModStr ) => MODES[ aModStr ].label.localeCompare( MODES[ bModStr ].label ) ); // What: Sorted Mode Return. Why: The Type row's own pills should list by their user-facing label, not their raw internal mode key. How: This spreads the set into an array and sorts by each mode's own MODES label.
+		return [ ...seenModSet ].sort( ( aModStr, bModStr ) => SED_NAM_OBJ.MOD_DEF_OBJ[ aModStr ].label.localeCompare( SED_NAM_OBJ.MOD_DEF_OBJ[ bModStr ].label ) ); // What: Sorted Mode Return. Why: The Type row's own pills should list by their user-facing label, not their raw internal mode key. How: This spreads the set into an array and sorts by each mode's own SED_NAM_OBJ.MOD_DEF_OBJ label.
 
 
 	}, [ picLisArr ] ); // What: Effect Dependency Array. Why: The mode list only ever needs recomputing when the live picker list itself changes. How: picLisArr is the sole source the loop above reads from.
@@ -2325,7 +2325,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 										count   : picLisArr.filter( ( picObj ) => picObj.mode === picModStr && !picObj.hidden ).length,
 										isOn    : typFilStr === picModStr,
 										key     : picModStr,
-										name    : MODES[ picModStr ].label,
+										name    : SED_NAM_OBJ.MOD_DEF_OBJ[ picModStr ].label,
 										onClick : () => setTypFilStr( picModStr )
 
 
@@ -2434,7 +2434,7 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 									? [ { key : 'reminders', name : 'Reminders', modeLabel : 'Tasks', isOn : isaRemBoo, onClick : () => setScoValStr( 'reminders' ) } ]
 									: [] ),
 
-								...visPicArr.map( ( picObj ) => ( { key : picObj.id, name : picObj.name, modeLabel : MODES[ picObj.mode ].label, isOn : scoValStr === picObj.id, onClick : () => setScoValStr( picObj.id ), pickerId : picObj.id } ) ) // What: Picker Tab Entry Mapping. Why: Every currently-visible picker needs its own scope tab entry before the combined list is sorted. How: This maps each visPicArr entry to a small { key, name, modeLabel, isOn, onClick, pickerId } shape.
+								...visPicArr.map( ( picObj ) => ( { key : picObj.id, name : picObj.name, modeLabel : SED_NAM_OBJ.MOD_DEF_OBJ[ picObj.mode ].label, isOn : scoValStr === picObj.id, onClick : () => setScoValStr( picObj.id ), pickerId : picObj.id } ) ) // What: Picker Tab Entry Mapping. Why: Every currently-visible picker needs its own scope tab entry before the combined list is sorted. How: This maps each visPicArr entry to a small { key, name, modeLabel, isOn, onClick, pickerId } shape.
 
 
 							]
@@ -2519,12 +2519,12 @@ function TabStats ( { state, actions, onHome, onNavTab } ) {
 
 
 							<h2 className='picker-title'>{ scpPicObj.name }</h2>{ /* What: Picker Title Element. Why: The scoped picker's own name is the headline of this identity block. How: This renders scpPicObj.name. */ }
-							<PilTagCom tone='mode'>{ ( MODES[ scpPicObj.mode ] || {} ).label || scpPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own MODES label, falling back to the raw mode key. */ }
+							<PilTagCom tone='mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ scpPicObj.mode ] || {} ).label || scpPicObj.mode }</PilTagCom>{ /* What: Pill Tag Component. Why: The scoped picker's own mode needs a small labelled pill under its name. How: This renders that mode's own SED_NAM_OBJ.MOD_DEF_OBJ label, falling back to the raw mode key. */ }
 
 							{ ( () => { // What: Mode Hint Render. Why: A mode's own hint text can be either a single paragraph or several, and each needs wrapping in its own paragraph element. How: This reads the mode's own hint field and maps an array into one <p> per paragraph, or wraps a plain string in one.
 
 
-								const modHntVal = ( MODES[ scpPicObj.mode ] || {} ).hint; // What: Mode Hint Value. Why: The render below needs this looked up once rather than twice. How: This reads the scoped picker's own mode's hint field, which may be a string or an array of strings.
+								const modHntVal = ( SED_NAM_OBJ.MOD_DEF_OBJ[ scpPicObj.mode ] || {} ).hint; // What: Mode Hint Value. Why: The render below needs this looked up once rather than twice. How: This reads the scoped picker's own mode's hint field, which may be a string or an array of strings.
 
 								return Array.isArray( modHntVal )
 									? modHntVal.map( ( parStr, parIndNum ) => <p key={ parIndNum } className='picker-hint'>{ parStr }</p> )

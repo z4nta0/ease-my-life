@@ -3509,7 +3509,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	};
 
 	/**
-	 * skpAniMsNum = Skip Animation Ms Number
+	 * skiAniMsNum = Skip Animation Ms Number
 	 *
 	 * @summary
 	 * Skip removes the entry: first marks it as removing so the card can
@@ -3520,11 +3520,11 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	*/
-	const skpAniMsNum = 380;
+	const skiAniMsNum = 380;
 
 	const [ remIdeSet, setRemIdeSet ] = React.useState( () => new Set() ); // What: Removing Id Set And Setter. Why: A skipped or deleted row needs to know it is mid-removal so it can play its own collapse animation. How: This is added to right before the animation starts and cleared once the underlying data actually changes.
 
-	const hndSkiFun = ( entIdeStr ) => { // What: Handle Skip Function. Why: This is the actual skip trigger, shared by every EntCarCom's own onSkiFun prop. How: This stages entIdeStr as removing, then calls actions.skipEntry after skpAniMsNum.
+	const hndSkiFun = ( entIdeStr ) => { // What: Handle Skip Function. Why: This is the actual skip trigger, shared by every EntCarCom's own onSkiFun prop. How: This stages entIdeStr as removing, then calls actions.skipEntry after skiAniMsNum.
 
 
 		if ( remIdeSet.has( entIdeStr ) ) return; // What: Already Removing Guard. Why: A row already mid-removal must not be re-triggered by a second click. How: This bails out early when entIdeStr is already in remIdeSet.
@@ -3532,7 +3532,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		setRemIdeSet( ( curSetObj ) => { const nexSetObj = new Set( curSetObj ); nexSetObj.add( entIdeStr ); return nexSetObj; } ); // What: Removing Id Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of remIdeSet.
 
-		setTimeout( () => { // What: Skip Settle Timeout. Why: The actual data removal must wait for the collapse animation to finish playing. How: This runs after skpAniMsNum, matching the CSS animation's own duration.
+		setTimeout( () => { // What: Skip Settle Timeout. Why: The actual data removal must wait for the collapse animation to finish playing. How: This runs after skiAniMsNum, matching the CSS animation's own duration.
 
 
 			actions.skipEntry( entIdeStr ); // What: Skip Entry Call. Why: This is the actual removal, applied only once the animation has had time to play. How: This calls actions.skipEntry with entIdeStr.
@@ -3540,7 +3540,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			setRemIdeSet( ( curSetObj ) => { const nexSetObj = new Set( curSetObj ); nexSetObj.delete( entIdeStr ); return nexSetObj; } ); // What: Removing Id Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of remIdeSet.
 
 
-		}, skpAniMsNum );
+		}, skiAniMsNum );
 
 
 	};
@@ -3558,7 +3558,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		setRemIdeSet( ( curSetObj ) => { const nexSetObj = new Set( curSetObj ); nexSetObj.add( entIdeStr ); return nexSetObj; } ); // What: Removing Id Add. Why: The card needs to start its own collapse animation immediately. How: This adds entIdeStr into a fresh copy of remIdeSet.
 
-		setTimeout( () => { // What: Delete Settle Timeout. Why: The actual item removal must wait for the collapse animation to finish playing. How: This runs after skpAniMsNum, matching the CSS animation's own duration.
+		setTimeout( () => { // What: Delete Settle Timeout. Why: The actual item removal must wait for the collapse animation to finish playing. How: This runs after skiAniMsNum, matching the CSS animation's own duration.
 
 
 			actions.removeItem( iteIdeStr ); // What: Remove Item Call. Why: This is the actual removal, applied only once the animation has had time to play. How: This calls actions.removeItem with iteIdeStr.
@@ -3566,7 +3566,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			setRemIdeSet( ( curSetObj ) => { const nexSetObj = new Set( curSetObj ); nexSetObj.delete( entIdeStr ); return nexSetObj; } ); // What: Removing Id Delete. Why: The removing flag must clear once the row is actually gone. How: This deletes entIdeStr from a fresh copy of remIdeSet.
 
 
-		}, skpAniMsNum );
+		}, skiAniMsNum );
 
 
 	};
@@ -3749,7 +3749,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const [ actGroStr, setActGroStr ] = React.useState( '__reminders' ); // What: Active Group String And Setter. Why: This is the single source of truth for which rail button is highlighted. How: This starts on the Reminders sentinel and is updated by the scroll-spy effect below.
 	const secRefObj = React.useRef( {} );        // What: Section Reference Object. Why: The scroll-spy effect below needs a live handle on every rendered group/Reminders/Page-Tours section element. How: This is populated by each section's own ref callback further down and read here.
 	const mnScrRef  = React.useRef( null );      // What: Main Scroll Reference. Why: Several handlers (scroll spy, generate's own scroll-to-top, jmpGroFun) all need a handle on the shared scroll layout wrapper. How: This is attached to the .today-layout div's own ref prop further down.
-	const skpSpyRef = React.useRef( false );     // What: Skip Spy Reference. Why: A programmatic scroll (jmpGroFun, or generate's own scroll-to-top) must not have the scroll-spy effect immediately fight back and reassign actGroStr mid-animation. How: This is set true right before such a scroll starts and cleared shortly after it settles.
+	const skiSpyRef = React.useRef( false );     // What: Skip Spy Reference. Why: A programmatic scroll (jmpGroFun, or generate's own scroll-to-top) must not have the scroll-spy effect immediately fight back and reassign actGroStr mid-animation. How: This is set true right before such a scroll starts and cleared shortly after it settles.
 	const pinGroRef = React.useRef( null );      // What: Pinned Group Reference. Why: See the doc comment just above. How: This is set by jmpGroFun and read/cleared by the scroll-spy effect below.
 
 	React.useEffect( () => { // What: Scroll Spy Effect. Why: See the doc comment just above. How: This computes, on every scroll, which section's own header sits closest to (without crossing) the sticky offset line, honoring any pinned bottom-cluster group first.
@@ -3764,7 +3764,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		const onScrFun = () => { // What: On Scroll Function. Why: This is the actual recompute triggered by every scroll event. How: This resolves the sticky offset, checks the pinned-group/bottomed-out special cases first, then finds whichever section sits closest to the spy line.
 
 
-			if ( skpSpyRef.current ) return; // What: Skip Spy Guard. Why: A programmatic scroll already in flight must not have this handler fight back. How: This bails out early while skpSpyRef is true.
+			if ( skiSpyRef.current ) return; // What: Skip Spy Guard. Why: A programmatic scroll already in flight must not have this handler fight back. How: This bails out early while skiSpyRef is true.
 
 
 			const tabCurEle = mnScrRef.current?.closest( '.tab--today' );                                                            // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from mnScrRef.current to its nearest .tab--today ancestor.
@@ -3843,7 +3843,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 
 		setActGroStr( namStr );      // What: Active Group Set. Why: The clicked rail button should highlight immediately, without waiting for the scroll-spy effect to catch up. How: This publishes namStr into actGroStr directly.
-		skpSpyRef.current = true;    // What: Skip Spy Set. Why: The scroll-spy effect must not fight this programmatic scroll while it is in flight. How: This flags skpSpyRef true for the duration of the scroll below.
+		skiSpyRef.current = true;    // What: Skip Spy Set. Why: The scroll-spy effect must not fight this programmatic scroll while it is in flight. How: This flags skiSpyRef true for the duration of the scroll below.
 
 		const mnScrEle  = tarEle.closest( '.main' );         // What: Main Scroll Element. Why: The scroll target depends on whether a real scroll container exists. How: This walks up from tarEle to its nearest .main ancestor.
 		const tabCurEle = tarEle.closest( '.tab--today' );   // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from tarEle to its nearest .tab--today ancestor.
@@ -3875,7 +3875,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		}
 
-		setTimeout( () => { skpSpyRef.current = false; }, 600 ); // What: Skip Spy Release Timeout. Why: The scroll-spy effect may resume once the smooth scroll has had time to settle. How: This clears skpSpyRef back to false after 600ms.
+		setTimeout( () => { skiSpyRef.current = false; }, 600 ); // What: Skip Spy Release Timeout. Why: The scroll-spy effect may resume once the smooth scroll has had time to settle. How: This clears skiSpyRef back to false after 600ms.
 
 
 	};
@@ -4146,10 +4146,10 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		const scrCurEle = mnScrRef.current?.closest( '.main' ); // What: Scroller Current Element. Why: The scroll-to-top below needs the real scroll container when one exists. How: This walks up from mnScrRef.current to its nearest .main ancestor.
 		const atTopBoo  = scrCurEle ? scrCurEle.scrollTop <= 1 : window.scrollY <= 1; // What: At Top Boolean. Why: A list already at the top needs no scroll (and no settle wait) at all. How: This checks either the scroller's own scrollTop or the window's own scrollY.
 
-		if ( !atTopBoo ) { // What: Needs Scroll Branch. Why: Only a list that isn't already at the top needs the scroll-and-wait sequence below. How: This flags skpSpyRef, scrolls, waits, then releases skpSpyRef.
+		if ( !atTopBoo ) { // What: Needs Scroll Branch. Why: Only a list that isn't already at the top needs the scroll-and-wait sequence below. How: This flags skiSpyRef, scrolls, waits, then releases skiSpyRef.
 
 
-			skpSpyRef.current = true; // What: Skip Spy Set. Why: The scroll-spy effect must not fight this programmatic scroll while it is in flight. How: This flags skpSpyRef true for the duration of the scroll below.
+			skiSpyRef.current = true; // What: Skip Spy Set. Why: The scroll-spy effect must not fight this programmatic scroll while it is in flight. How: This flags skiSpyRef true for the duration of the scroll below.
 
 			if ( scrCurEle ) scrCurEle.scrollTo( { top : 0, behavior : redMotFun() ? 'auto' : 'smooth' } ); // What: Scroller Scroll Call. Why: A real scroll container needs its own scrollTo. How: This scrolls scrCurEle to the top, smoothly unless reduced motion is preferred.
 
@@ -4158,7 +4158,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			await new Promise( ( resFun ) => setTimeout( resFun, 450 ) ); // What: Settle Wait. Why: The smooth scroll needs time to actually finish before the cascade begins. How: This awaits a fixed 450ms.
 
-			skpSpyRef.current = false; // What: Skip Spy Release. Why: The scroll-spy effect may resume once the scroll has settled. How: This clears skpSpyRef back to false.
+			skiSpyRef.current = false; // What: Skip Spy Release. Why: The scroll-spy effect may resume once the scroll has settled. How: This clears skiSpyRef back to false.
 
 
 		}

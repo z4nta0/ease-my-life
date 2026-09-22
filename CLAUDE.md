@@ -1839,6 +1839,38 @@ catch ( e ) {
 }
 ```
 
+### do/while statements
+Treated the same as an `if`/`else` chain and a `try`/`catch` statement in
+one specific respect: `while` goes on its OWN line, never cuddled onto
+the `do` block's own closing `}` (no `} while ( cond );`), with exactly 1
+blank line between that closing `}` and the `while` keyword, regardless
+of whether the `do` block's own body is compact or multi-line. The
+block's own body still gets the standard 2-blank-line padding from
+"if/else and while statements" above when it spans multiple lines.
+- **One-line vs. multi-line body follows "### Multi-statement one-line
+  blocks" above, exactly like an `if`/`while`/`try`/`catch` body does**:
+  a `do` block whose body is a single statement may stay compact on one
+  line (e.g. `do { tosIteObj = itePooArr[ ... ]; }`); the moment its body
+  needs 2 or more statements, it must become a real multi-line block
+  instead, padded like any other (2 blank lines after `{`, 2 before `}`).
+  This is independent of the "own line" rule above: `while` never shares
+  a physical line with `do`'s own closing `}`, even when the block's own
+  body stays compact — a compact `do { ... }` is still followed by
+  `while ( cond );` on its own fresh line below, per `picLogFun`'s own
+  toss-draw loop in `seed.js` (the reference example this rule was
+  written from).
+```
+do {
+
+
+	example code;
+
+
+}
+
+while ( condition );
+```
+
 ### Return and continue statements
 - **This section's own blank-line counts (3 before a standalone
   return/continue, 3 after a single-line exit guard, 2 before an
@@ -2863,6 +2895,37 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     so none needed text changes, only the identifiers themselves were
     wrong. No collision: neither `edgLooFun` nor `edgLooNum` was
     already in use anywhere)
+  - `skp` → `ski` (Skip — found across 7 files: `seed.js`
+    (`skpRowArr`/`addSkpFun`/`skpDatObj`), `onboarding-seed-data.js`
+    (`skpRowObj`), `tab-settings.jsx`/`tab-today.jsx` (`skpSpyRef`,
+    shared by both), `tab-picker.jsx` (`skpHolBoo`/`setSkpHolBoo`/
+    `skpAutBoo`), `tab-today.jsx`'s own separate `skpAniMsNum`, and
+    `onboarding-tour-runner.jsx` (`skpTouFun`); `ski` was already the
+    established, correct code for this exact word in several OTHER
+    identifiers across this same codebase (`skiBoo`/`skiIdeSet` in
+    day-log.jsx, `skiLabStr`/`onSkiTouFun` in onboarding-intro-modal.jsx
+    and onboarding-welcome-tour.jsx, `skiIdeStr`/`isaSkiBoo` in
+    reminders.jsx, `skiCouMap` in tab-stats.jsx), so no escalation was
+    needed, this was purely an inconsistent spelling of a word already
+    spelled correctly elsewhere. Every comment referencing these
+    identifiers already spelled "Skip" out in full, so none needed text
+    changes, only the identifiers themselves were wrong. No collision:
+    grepped every `ski`-prefixed identifier already in the codebase
+    first and confirmed all of them already meant Skip, nothing else)
+  - `wks`/`wek` → `wee` (Week — two distinct wrong spellings of the same
+    word, both found only in `seed.js`: `wksSinNum` (`buiConFun`, 4
+    instances) and `wekAllArr`/`wekDayArr` (`buiPicFun`)/`wekIndNum`
+    (`buiConFun`, sitting in the very same function as `wksSinNum`).
+    `wee` was already the established, heavily-used code for this exact
+    word elsewhere in this codebase (`weeValNum`/`firWeeNum` in
+    cadence.js/tasks.js, `weeStaObj` in cadence.js, `weeAgoNum`/
+    `remWeeNum` in tab-stats.jsx, `WEE_ABB_ARR`/`weeSumFun` in ui.jsx,
+    `weeSelArr` in reminders.jsx), so no escalation was needed, this was
+    purely 2 inconsistent spellings of a word already spelled correctly
+    elsewhere. Every comment referencing these identifiers already
+    spelled "Week"/"Weeks"/"Weekly" out in full, so none needed text
+    changes, only the identifiers themselves were wrong. No collision:
+    seed.js had no pre-existing `wee`-prefixed identifier of its own)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.

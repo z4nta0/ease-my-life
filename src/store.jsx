@@ -7,7 +7,6 @@ import React from 'react'; // What: React. Why: This is the UI library the whole
 
 
 import { CAD_NAM_OBJ } from './cadence.js';              // What: Cadence. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enfWeeFun/norCadFun/isaCadFun) from migrate and from the picker-authoring actions below.
-import { CLEAN_STATE } from './seed.js';                 // What: Clean State. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called by loadState and by the reset action below.
 import { CON_NAM_OBJ } from './conditionals.js';         // What: Conditionals. Why: Day-off gate resolution/advancement logic lives here, not in this file. How: This is called from resolveConditionalsForDay and from applyConditionalToggle below.
 import { HOL_NAM_OBJ } from './holidays.js';             // What: Holidays Namespace Object. Why: The holiday list backfill and the holiday-editing actions both need the canonical empty holidays shape. How: This is called (defStaFun) from migrate and from the holiday actions below.
 import { norConFun   } from './pickers.js';              // What: Normalize Conditional Function. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicker and commitPickerEdit below.
@@ -17,6 +16,7 @@ import { ONB_CHE_OBJ } from './onboarding-checklist.js'; // What: Onboarding Che
 import { ONB_SPI_ARR } from './onboarding-seed-data.js'; // What: Onboarding Sample-Picker-Ids Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicker below.
 import { PIC_NAM_OBJ } from './pickers.js';              // What: Pickers Namespace Object. Why: The item-authoring/editing actions need this module's own ease-band averaging and per-mode defaults. How: This is called (aveEasFun/DEF_EAS_OBJ) from addItem and commitPickerEdit below.
 import { PWA_NAM_OBJ } from './pwa.js';                  // What: Progressive Web App Namespace Object. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (askFirFun) once, from inside addPicker below.
+import { SED_NAM_OBJ } from './seed.js';                 // What: Seed Namespace Object. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called (buiCleFun) by loadState and by the reset action below.
 import { STORAGE     } from './storage.js';              // What: Storage. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called from loadState, saveState, flushState, and the reset/importData actions below.
 import { TASKS       } from './tasks.js';                // What: Tasks. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout migrate, reconcileStreak, and the task actions below.
 
@@ -1058,9 +1058,9 @@ function newEidFun() {
  * state is sitting in memory and no component had to become async. The
  * localStorage read is kept as a fallback for the case where storage.js
  * failed to load at all. A brand-new user (nothing stored anywhere)
- * starts from CLEAN_STATE() and is met by onboarding; the demo fixture
- * in seed.js (buildSeed/SEED) is design-time only and deliberately not
- * used here.
+ * starts from SED_NAM_OBJ.buiCleFun() and is met by onboarding; the
+ * demo fixture in seed.js (SED_NAM_OBJ.buiSeeFun) is design-time only
+ * and deliberately not used here.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1105,7 +1105,7 @@ function loadState() {
 
 
 
-	return migrate( CLEAN_STATE() ); // What: Clean-State Return. Why: Nothing was stored anywhere, so a brand-new user starts empty and is met by onboarding. How: This returns migrate() of a fresh CLEAN_STATE().
+	return migrate( SED_NAM_OBJ.buiCleFun() ); // What: Clean-State Return. Why: Nothing was stored anywhere, so a brand-new user starts empty and is met by onboarding. How: This returns migrate() of a fresh SED_NAM_OBJ.buiCleFun().
 
 
 }
@@ -1396,7 +1396,7 @@ function migrate( curStaObj ) {
 	 * Fresh clean state sets welcomed:false (and, via the block below,
 	 * checklistDone:false) explicitly to trigger the real first-run
 	 * flow; this branch only ever fires for existing data an actual
-	 * CLEAN_STATE() never produces.
+	 * SED_NAM_OBJ.buiCleFun() never produces.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1422,7 +1422,7 @@ function migrate( curStaObj ) {
 	 * a field) is just as established as one missing onboarding
 	 * entirely, since it predates the checklist system either way.
 	 * Defaulting to welcomed's own value tells the two cases apart:
-	 * CLEAN_STATE()'s own fresh onboarding is {welcomed:false,
+	 * SED_NAM_OBJ.buiCleFun()'s own fresh onboarding is {welcomed:false,
 	 * dismissed:false} at this point (no checklistDone key yet either),
 	 * so this correctly still defaults false for a genuine first-time
 	 * user, but an existing account that had already dismissed the
@@ -2125,7 +2125,7 @@ function useStore( optArgObj ) {
 
 			catch ( errCauObj ) {} // What: Wipe Failure Guard. Why: A wipe failure must never prevent the reload below from still happening. How: This swallows the error silently.
 
-			const cleStaObj = migrate( CLEAN_STATE() ); // What: Clean State Object. Why: The freshly-reloaded app needs a real, migrated empty state ready in latStaRef before reload() fires. How: This builds a fresh CLEAN_STATE() and runs it through migrate().
+			const cleStaObj = migrate( SED_NAM_OBJ.buiCleFun() ); // What: Clean State Object. Why: The freshly-reloaded app needs a real, migrated empty state ready in latStaRef before reload() fires. How: This builds a fresh SED_NAM_OBJ.buiCleFun() and runs it through migrate().
 
 			latStaRef.current = cleStaObj; // What: Latest State Reference Update. Why: The flush effect's own pagehide handler must see this clean state, not the stale pre-wipe one, per the design-rationale comment above. How: This assigns cleStaObj directly onto latStaRef.current.
 			setAppStaObj( cleStaObj );     // What: App State Set. Why: React itself should also reflect the clean state, even though the reload below discards this render anyway. How: This calls setAppStaObj with cleStaObj.
@@ -3243,7 +3243,7 @@ function useStore( optArgObj ) {
 
 
 			const curTasObj = curStaObj.tasks.find( ( tasFinObj ) => tasFinObj.id === tarIdeStr ); // What: Current Task Object And Guard. Why: The skip row below needs this task's own name and recurrence type, when it still exists. How: This looks up tarIdeStr in curStaObj.tasks.
-			const skpRowArr = curTasObj ? [ { // What: Skip Row Array. Why: A stale tarIdeStr (already removed) must log no row at all. How: This builds one reminderSkipLog row when curTasObj was found, else stays empty.
+			const skiRowArr = curTasObj ? [ { // What: Skip Row Array. Why: A stale tarIdeStr (already removed) must log no row at all. How: This builds one reminderSkipLog row when curTasObj was found, else stays empty.
 
 
 				rowId : 'rs_' + Math.random().toString( 36 ).slice( 2, 9 ),
@@ -3259,7 +3259,7 @@ function useStore( optArgObj ) {
 
 				...curStaObj,
 				tasks : curStaObj.tasks.map( ( curTasObj2 ) => curTasObj2.id === tarIdeStr ? { ...curTasObj2, skipUntil : untilIso } : curTasObj2 ),
-				reminderSkipLog : [ ...( curStaObj.reminderSkipLog || [] ), ...skpRowArr ]
+				reminderSkipLog : [ ...( curStaObj.reminderSkipLog || [] ), ...skiRowArr ]
 
 			};
 

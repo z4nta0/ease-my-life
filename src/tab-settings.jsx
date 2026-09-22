@@ -1519,7 +1519,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	// what makes Account/About "click to highlight": once picked, ordinary
 	// scroll-spy (which drives daily/holidays/data) can't silently override
 	// them.
-	const skpSpyRef = React.useRef( false ); // What: Skip Spy Reference. Why: A section just jumped to via the rail must not have scroll-spy immediately recompute over it mid-scroll. How: This is set true for the duration of jmpSecFun's own scroll animation and read as a guard at the top of the scroll-spy handler.
+	const skiSpyRef = React.useRef( false ); // What: Skip Spy Reference. Why: A section just jumped to via the rail must not have scroll-spy immediately recompute over it mid-scroll. How: This is set true for the duration of jmpSecFun's own scroll animation and read as a guard at the top of the scroll-spy handler.
 	const pinSecRef = React.useRef( null );  // What: Pinned Section Reference. Why: The trailing sections (currently just Legal) can't scroll their own top past the spy's base line, so scroll position alone can never confirm they are still being viewed. How: This holds whichever section id is currently pinned active, read and cleared by the scroll-spy handler.
 	// Where a jumped-to section should land below the top of the scroll
 	// viewport (the desktop rail sticks at 16px; on mobile the rail is a
@@ -1565,7 +1565,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 		const onScrFun = () => { // What: On Scroll Function. Why: This is the actual scroll-spy computation, re-run on every scroll event. How: This finds the last spy-eligible section whose own top has crossed the base line, honoring a pinned trailing section along the way.
 
 
-			if ( skpSpyRef.current ) return; // What: Skip Spy Guard. Why: A section the user just explicitly jumped to must not be immediately overridden mid-animation by this same computation. How: This bails out early while skpSpyRef.current is true.
+			if ( skiSpyRef.current ) return; // What: Skip Spy Guard. Why: A section the user just explicitly jumped to must not be immediately overridden mid-animation by this same computation. How: This bails out early while skiSpyRef.current is true.
 
 			const basLinNum = ( scrConEle ? scrConEle.getBoundingClientRect().top : 0 ) + stkOffFun() + 8; // What: Base Line Number. Why: A section only counts as "reached" once its own top has scrolled up past this line. How: This adds the sticky offset plus an 8px margin to the scroll container's own top (or 0 for the window case).
 			// Are we at (or within a hair of) the bottom of the scroll range? The
@@ -1715,7 +1715,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 		// naturally.
 		pinSecRef.current = secIdeStr === 'legal' ? secIdeStr : null; // What: Pin Assignment. Why: Only the trailing Legal section needs its active state protected from the scroll-spy's own base-line test. How: This pins secIdeStr only when it equals 'legal', clearing the pin otherwise.
 
-		skpSpyRef.current = true; // What: Skip Spy Set. Why: The scroll-spy handler must not fight this deliberate jump while it is still animating. How: This flags skpSpyRef true, checked as a guard at the top of onScrFun above.
+		skiSpyRef.current = true; // What: Skip Spy Set. Why: The scroll-spy handler must not fight this deliberate jump while it is still animating. How: This flags skiSpyRef true, checked as a guard at the top of onScrFun above.
 
 		const scrConEle = secCurEle.closest( '.main' ); // What: Scroll Container Element. Why: The shared '.main' scroller, not the window, is what actually needs scrolling in the normal case. How: This walks up from secCurEle to its nearest '.main' ancestor.
 		// The first section is the top of the tab; scroll all the way up so the
@@ -1744,7 +1744,7 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 
 		}
 
-		setTimeout( () => { skpSpyRef.current = false; }, 620 ); // What: Skip Spy Release. Why: The scroll-spy handler should resume normal computation once the jump's own scroll animation has had time to finish. How: This clears skpSpyRef back to false 620ms later.
+		setTimeout( () => { skiSpyRef.current = false; }, 620 ); // What: Skip Spy Release. Why: The scroll-spy handler should resume normal computation once the jump's own scroll animation has had time to finish. How: This clears skiSpyRef back to false 620ms later.
 
 
 	};

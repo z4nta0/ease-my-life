@@ -6,12 +6,12 @@
 import React from 'react'; // What: React. Why: This file's single component is built directly on React's own APIs. How: This is used directly (React.useId) below, instead of importing an individual named hook.
 
 
-import { BooResCom } from './ui.jsx';     // What: Boost Reset Component. Why: The dynamic mode's own accrued miss-boost needs a display plus a manual reset control. How: This is rendered in the dynamic-mode Boost row below.
-import { ColDisCom } from './ui.jsx';     // What: Collapse Disclosure Component. Why: Every mode's own settings subsection needs to animate open and closed as the selected mode changes. How: This wraps the mode hint text and every per-mode settings block throughout this file.
-import { FilButCom } from './ui.jsx';     // What: Fill Button Component. Why: The ease-up and ease-down modes both need a manual full-charge control. How: This is rendered once per direction in the ease-mode settings block below.
-import { MODES     } from './seed.js';    // What: Modes. Why: The mode radio below must offer the exact same options and labels as the picker editor's own mode radio. How: This is walked via Object.entries to render one radio option per mode.
-import { norConFun } from './pickers.js'; // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conDrfFun below.
-import { NumSteCom } from './ui.jsx';     // What: Numeric Stepper Component. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered once per bound in the ease-mode settings block below.
+import { BooResCom   } from './ui.jsx';     // What: Boost Reset Component. Why: The dynamic mode's own accrued miss-boost needs a display plus a manual reset control. How: This is rendered in the dynamic-mode Boost row below.
+import { ColDisCom   } from './ui.jsx';     // What: Collapse Disclosure Component. Why: Every mode's own settings subsection needs to animate open and closed as the selected mode changes. How: This wraps the mode hint text and every per-mode settings block throughout this file.
+import { FilButCom   } from './ui.jsx';     // What: Fill Button Component. Why: The ease-up and ease-down modes both need a manual full-charge control. How: This is rendered once per direction in the ease-mode settings block below.
+import { norConFun   } from './pickers.js'; // What: Normalize Conditional Function. Why: A typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on the name field's own blur and inside conDrfFun below.
+import { NumSteCom   } from './ui.jsx';     // What: Numeric Stepper Component. Why: The ease-up and ease-down modes both need a plain increment/decrement control for their own Soonest/Latest day counts. How: This is rendered once per bound in the ease-mode settings block below.
+import { SED_NAM_OBJ } from './seed.js';    // What: Seed Namespace Object. Why: The mode radio below must offer the exact same options and labels as the picker editor's own mode radio. How: This is walked (MOD_DEF_OBJ) via Object.entries to render one radio option per mode.
 
 // #endregion Imports
 
@@ -54,7 +54,7 @@ const dayEasFun = ( dayCouNum ) => THR_DEF_NUM / Math.max( 1, dayCouNum );      
 
 
 
-const CON_HIN_OBJ = { // What: Conditional Hint Object. Why: Conditional mode explanations differ from the picker editor's own MODES hints, since a conditional's own effect (suppressing a picker) needs its own framing. How: This is looked up by mode key inside the mode radio's own ColDisCom below, falling back to MODES' own hint when a mode has no override here.
+const CON_HIN_OBJ = { // What: Conditional Hint Object. Why: Conditional mode explanations differ from the picker editor's own SED_NAM_OBJ.MOD_DEF_OBJ hints, since a conditional's own effect (suppressing a picker) needs its own framing. How: This is looked up by mode key inside the mode radio's own ColDisCom below, falling back to SED_NAM_OBJ.MOD_DEF_OBJ's own hint when a mode has no override here.
 
 
 	dynamic     : [ 'Ruleset: This conditional’s ruleset is exactly the same as the Weighted conditional, but it also adds a second value that increments the weighted value every time it does not trigger and then resets its value every time that it does.', 'Explanation: This is a good choice for mitigating almost all of the Truly Random drawbacks by tuning the % chance to make it more (or less) likely to trigger. Furthermore, by adding a dynamic value it makes it increasingly likely to trigger when it doesn’t and less likely when it does. e.g. it can still be triggered multiple times in a row or it can go a long time without being triggered, although it is much less likely to do so.' ],
@@ -274,10 +274,10 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 					<div className={ isaInlBoo ? '' : 'cnd-mode-card style-radio-card' }>{ /* What: Mode Card Div Element. Why: The card variant wraps the radio list in its own bordered card, while the inline variant needs no extra wrapper styling. How: This applies the card classes only when isaInlBoo is false. */ }
 
 
-						<div className='rd-mode-radio'>{ /* What: Mode Radio Div Element. Why: This is the actual list of mode options the user picks from. How: This maps MODES below into one option label per mode. */ }
+						<div className='rd-mode-radio'>{ /* What: Mode Radio Div Element. Why: This is the actual list of mode options the user picks from. How: This maps SED_NAM_OBJ.MOD_DEF_OBJ below into one option label per mode. */ }
 
 
-							{ Object.entries( MODES ).map( ( [ modKeyStr, modConObj ] ) => { // What: Mode Option List Render. Why: One radio option is needed per configured mode, and the set of modes is data shared with the picker editor, not hardcoded markup. How: This maps MODES to one label per entry, keyed by its own mode key.
+							{ Object.entries( SED_NAM_OBJ.MOD_DEF_OBJ ).map( ( [ modKeyStr, modConObj ] ) => { // What: Mode Option List Render. Why: One radio option is needed per configured mode, and the set of modes is data shared with the picker editor, not hardcoded markup. How: This maps SED_NAM_OBJ.MOD_DEF_OBJ to one label per entry, keyed by its own mode key.
 
 
 								const modSelBoo = curModStr === modKeyStr; // What: Mode Selected Boolean. Why: Both the label's own "is-on" styling and the nested ColDisCom below need to know whether this specific option is the currently-selected one. How: This compares modKeyStr against curModStr.
@@ -319,7 +319,7 @@ function CodConCom ( { draft, onChange, nameError, variant = 'card', hideName = 
 											<ColDisCom open={ modSelBoo }>{ /* What: Collapse Disclosure Component. Why: The longer explanation of a mode should only take up space while that mode is actually selected. How: This animates the hint text below open only while modSelBoo is true. */ }
 
 
-												{ Array.isArray( CON_HIN_OBJ[ modKeyStr ] ) // What: Hint Array Check. Why: The conditional-specific hints above are each a 2-paragraph array, while a mode with no override here falls back to a single plain hint string from MODES. How: This picks between rendering one span per paragraph or a single fallback span.
+												{ Array.isArray( CON_HIN_OBJ[ modKeyStr ] ) // What: Hint Array Check. Why: The conditional-specific hints above are each a 2-paragraph array, while a mode with no override here falls back to a single plain hint string from SED_NAM_OBJ.MOD_DEF_OBJ. How: This picks between rendering one span per paragraph or a single fallback span.
 													? CON_HIN_OBJ[ modKeyStr ].map( ( parTexStr, parIndNum ) => <span key={ parIndNum } className='rd-mode-hint'>{ parTexStr }</span> )
 													: <span className='rd-mode-hint'>{ CON_HIN_OBJ[ modKeyStr ] || modConObj.hint }</span> }
 

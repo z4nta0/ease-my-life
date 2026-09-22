@@ -10,9 +10,9 @@ import { emlTouObj   } from './eml-tour-bus.js';            // What: Ease My Lif
 import { GuiTouCom  } from './onboarding-tour-runner.jsx'; // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives this picker mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-picker step array.
 import { IcoSvgCom   } from './ui.jsx';                     // What: Icon Svg Component. Why: The intro modal needs a recognizable glyph identifying this as a picker tutorial. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom   } from './onboarding-intro-modal.jsx'; // What: Intro Modal Component. Why: Each picker mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this picker's own icon/title/paragraphs/pills.
-import { MODES       } from './seed.js';                    // What: Modes. Why: The intro modal's own pill needs this picker's own mode label, not its raw mode key. How: This is looked up by picRecObj's own mode to resolve modLabStr below.
 import { ONB_EXA_OBJ } from './onboarding-seed-data.js';    // What: Onboarding Example Object. Why: This is the "Daily Chores" sample picker's own template, one of the entries PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
 import { ONB_ESP_ARR } from './onboarding-seed-data.js';    // What: Onboarding Extra-Sample-Pickers Array. Why: This is every OTHER sample picker's own template, alongside ONB_EXA_OBJ the full set PIC_SAM_OBJ below indexes by id. How: This is spread into PIC_SAM_OBJ's own source array below.
+import { SED_NAM_OBJ } from './seed.js';                    // What: Seed Namespace Object. Why: The intro modal's own pill needs this picker's own mode label, not its raw mode key. How: This is looked up (MOD_DEF_OBJ) by picRecObj's own mode to resolve modLabStr below.
 
 // #endregion Imports
 
@@ -828,7 +828,7 @@ function PicTouCom ( { picIdeStr, staAppObj, actStoObj, actIdeStr, selTabFun, on
 
 	const picRecObj = ( staAppObj.pickers || [] ).find( ( curPicObj ) => curPicObj.id === picIdeStr ); // What: Picker Record Object. Why: The intro modal and every mode-gating check below need this sample's own live picker record. How: This searches staAppObj.pickers for the entry whose own id matches picIdeStr.
 	const picCopObj = PIC_COP_OBJ[ picIdeStr ];                                                        // What: Picker Copy Object. Why: The intro modal's own second paragraph needs this sample's own copy. How: This looks up PIC_COP_OBJ by picIdeStr.
-	const modLabStr = ( ( MODES[ picRecObj.mode ] || {} ).label || picRecObj.mode ).toLowerCase();     // What: Mode Label String. Why: The intro modal's own pill needs a human-readable mode label, not the raw mode key. How: This looks up MODES by picRecObj's own mode, falling back to the raw mode key, then lower-cases the result.
+	const modLabStr = ( ( SED_NAM_OBJ.MOD_DEF_OBJ[ picRecObj.mode ] || {} ).label || picRecObj.mode ).toLowerCase(); // What: Mode Label String. Why: The intro modal's own pill needs a human-readable mode label, not the raw mode key. How: This looks up SED_NAM_OBJ.MOD_DEF_OBJ by picRecObj's own mode, falling back to the raw mode key, then lower-cases the result.
 
 
 

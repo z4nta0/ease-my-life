@@ -47,9 +47,10 @@ import { TodTopFun   } from './onboarding-tour-runner.jsx'; // What: Today Top F
  * elements.
  *
  * Trigger: this shows whenever state.onboarding.welcomed is false (a
- * clean state). The dev SEED ships welcomed:true so the sample-data
- * build is never nagged by it; visit #onboard-demo for a
- * non-destructive clean-state preview (see app.jsx).
+ * clean state). The dev seed.js build (SED_NAM_OBJ.buiSeeFun) ships
+ * welcomed:true so the sample-data build is never nagged by it; visit
+ * #onboard-demo for a non-destructive clean-state preview (see
+ * app.jsx).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

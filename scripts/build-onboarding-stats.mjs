@@ -42,12 +42,11 @@
 import path from 'node:path'; // What: Path. Why: This script needs to resolve the output file's own absolute path. How: This is used with curDirStr to build outPatStr below.
 
 
-import { picLogFun     } from '../src/seed.js';                 // What: Pick Log Function. Why: This is the exact same pick-log simulator seed.js's own dev SEED() uses, reused here for realism. How: This is called once below with a 365-day span.
 import { fileURLToPath } from 'node:url';                       // What: File Url To Path. Why: ESM modules have no native __dirname, so this script reconstructs an equivalent. How: This converts import.meta.url into curDirStr below.
 import { ONB_EXA_OBJ   } from '../src/onboarding-seed-data.js'; // What: Onboarding Example Object. Why: This is the Welcome Tour's own first sample picker definition. How: This is spread into PIC_DEF_ARR below alongside ONB_ESP_ARR.
 import { ONB_ESP_ARR   } from '../src/onboarding-seed-data.js'; // What: Onboarding Extra-Sample-Pickers Array. Why: These are the Welcome Tour's own remaining sample picker definitions. How: This is spread into PIC_DEF_ARR below alongside ONB_EXA_OBJ.
 import { ONB_TAS_ARR   } from '../src/onboarding-seed-data.js'; // What: Onboarding Task Array. Why: The sample reminder history below needs the real "Take trash out" task definition. How: This is searched by id for traTasObj below.
-import { seeIsoFun     } from '../src/seed.js';                 // What: Seed Iso Function. Why: This script needs the exact same date-to-ISO-string conversion seed.js's own SEED() build uses, for consistency. How: This converts todDatObj into an ISO day string below.
+import { SED_NAM_OBJ   } from '../src/seed.js';                 // What: Seed Namespace Object. Why: This script reuses seed.js's own pick-log simulator (picLogFun) and its date-to-ISO-string conversion (seeIsoFun) for realism/consistency with the dev SEED() build. How: This is called (picLogFun) once below with a 365-day span, and (seeIsoFun) to convert todDatObj into an ISO day string.
 import { writeFileSync } from 'node:fs';                        // What: Write File Sync. Why: The generated output must land on disk before this script can report success. How: This writes outConStr to outPatStr below.
 
 // #endregion Imports
@@ -73,14 +72,14 @@ const curDirStr = path.dirname( fileURLToPath( import.meta.url ) ); // What: Cur
 */
 
 const PIC_DEF_ARR = [ ONB_EXA_OBJ, ...ONB_ESP_ARR ]; // What: Picker Definition Array. Why: Both picRecArr and iteRecArr below are derived from this same combined list. How: This spreads ONB_EXA_OBJ and every ONB_ESP_ARR entry into one array.
-const picRecArr = PIC_DEF_ARR.map( ( curPicObj ) => ( { // What: Picker Record Array. Why: picLogFun below needs real picker records, not just their bare seed definitions. How: This maps each PIC_DEF_ARR entry to the exact shape addPicker() builds live.
+const picRecArr = PIC_DEF_ARR.map( ( curPicObj ) => ( { // What: Picker Record Array. Why: SED_NAM_OBJ.picLogFun below needs real picker records, not just their bare seed definitions. How: This maps each PIC_DEF_ARR entry to the exact shape addPicker() builds live.
 
 	id : curPicObj.id, group : curPicObj.group, name : curPicObj.name, mode : curPicObj.mode,
 	easeMin : 10, easeMax : 20, threshold : 100,
 	daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ]
 
 } ) );
-const iteRecArr = PIC_DEF_ARR.flatMap( ( curPicObj ) => curPicObj.items.map( ( curIteObj ) => { // What: Item Record Array. Why: picLogFun below needs real item records for every picker, not just their bare seed definitions. How: This flat-maps every PIC_DEF_ARR entry's own items into the exact shape addPicker() builds live.
+const iteRecArr = PIC_DEF_ARR.flatMap( ( curPicObj ) => curPicObj.items.map( ( curIteObj ) => { // What: Item Record Array. Why: SED_NAM_OBJ.picLogFun below needs real item records for every picker, not just their bare seed definitions. How: This flat-maps every PIC_DEF_ARR entry's own items into the exact shape addPicker() builds live.
 
 
 	const isaDowBoo = curPicObj.mode === 'ease-down'; // What: Is-a Down Boolean. Why: An ease-down item's own weight/value defaults differ from every other mode. How: This checks curPicObj's own mode.
@@ -101,8 +100,8 @@ const iteRecArr = PIC_DEF_ARR.flatMap( ( curPicObj ) => curPicObj.items.map( ( c
 
 
 
-const onVacFun = () => false; // What: On Vacation Function. Why: picLogFun requires a vacation-check callback, but the sample pickers below have no vacation history at all. How: This always returns false, meaning "never on vacation".
-const { rows : rawLogArr } = picLogFun( iteRecArr, picRecArr, onVacFun, 365 ); // What: Raw Log Array. Why: This is the full simulated year of pick-log rows, before daysAgo conversion below. How: This calls picLogFun with iteRecArr/picRecArr/onVacFun over a 365-day span.
+const onVacFun = () => false; // What: On Vacation Function. Why: SED_NAM_OBJ.picLogFun requires a vacation-check callback, but the sample pickers below have no vacation history at all. How: This always returns false, meaning "never on vacation".
+const { rowArr : rawLogArr } = SED_NAM_OBJ.picLogFun( iteRecArr, picRecArr, onVacFun, 365 ); // What: Raw Log Array. Why: This is the full simulated year of pick-log rows, before daysAgo conversion below. How: This calls SED_NAM_OBJ.picLogFun with iteRecArr/picRecArr/onVacFun over a 365-day span.
 
 
 
@@ -116,7 +115,7 @@ const isoIndFun = ( isoStr ) => { // What: Iso Index Function. Why: dayAgoFun be
 	return Math.floor( Date.UTC( yeaNum, monNum - 1, dayNum ) / 86400000 ); // What: Day Index Return. Why: The caller needs one plain integer comparable across any two dates. How: This converts the UTC timestamp to whole days since the epoch.
 
 };
-const todIndNum = isoIndFun( seeIsoFun( todDatObj ) ); // What: Today Index Number. Why: dayAgoFun below needs today's own day index to subtract every row's own day index from. How: This resolves todDatObj through seeIsoFun then isoIndFun.
+const todIndNum = isoIndFun( SED_NAM_OBJ.seeIsoFun( todDatObj ) ); // What: Today Index Number. Why: dayAgoFun below needs today's own day index to subtract every row's own day index from. How: This resolves todDatObj through SED_NAM_OBJ.seeIsoFun then isoIndFun.
 const dayAgoFun = ( isoStr ) => todIndNum - isoIndFun( isoStr ); // What: Day Ago Function. Why: Every row below needs its own real ISO date converted into a portable daysAgo offset. How: This subtracts isoStr's own day index from todIndNum.
 
 
@@ -163,8 +162,8 @@ const finLogArr = rawLogArr.map( ( curRowObj ) => { // What: Final Log Array. Wh
  * it's recurring (weekly, Mondays). "Pick up prescription" is one-time
  * and hasn't been completed yet in this fresh install, so it has no
  * history to seed. ~52 Mondays across a year; the large majority
- * completed, a handful skipped, matching the dev SEED()'s own realism
- * ratio.
+ * completed, a handful skipped, matching the dev seed.js build's
+ * (SED_NAM_OBJ.buiSeeFun) own realism ratio.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -189,7 +188,7 @@ for ( const dayAgoNum of monBacArr ) { // What: Reminder History Populate Loop. 
 
 	const houValNum = 8, minValNum = 10 + Math.floor( Math.random() * 40 ); // What: Hour Minute Values. Why: A completed reminder needs a plausible morning completion time. How: This fixes the hour at 8am, randomizing the minute across a 40-minute window.
 
-	if ( Math.random() < 0.88 ) { // What: Completed Odds Check. Why: The large majority of Mondays should read as completed, matching the dev SEED()'s own realism ratio. How: This rolls true 88% of the time.
+	if ( Math.random() < 0.88 ) { // What: Completed Odds Check. Why: The large majority of Mondays should read as completed, matching the dev seed.js build's (SED_NAM_OBJ.buiSeeFun) own realism ratio. How: This rolls true 88% of the time.
 
 		remLogArr.push( { taskId : traTasObj.id, name : traTasObj.name, type : 'recurring', daysAgo : dayAgoNum, h : houValNum, m : minValNum } ); // What: Reminder Log Push. Why: This is one completed row, in the exact shape state.reminderLog itself expects. How: This pushes traTasObj's own id/name plus dayAgoNum/houValNum/minValNum.
 

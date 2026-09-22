@@ -22,13 +22,13 @@ import { HelButCom    } from './help-mode.jsx';           // What: Help Button C
 import { HelOveCom    } from './help-mode.jsx';           // What: Help Overlay Component. Why: This tab needs the same help-mode badge overlay every other tab exposes. How: This is rendered once, driven by helpOnBoo and DAT_HEL_ARR.
 import { IcoSvgCom    } from './ui.jsx';                  // What: Icon Svg Component. Why: Nearly every button and row in this file needs a recognizable glyph. How: This is rendered throughout every component below.
 import { InfTipCom    } from './ui.jsx';                  // What: Info Tip Component. Why: A disabled control or a truncated pill still needs to explain itself on demand. How: This wraps disabled add buttons and truncatable type/group labels throughout this file.
-import { MODES        } from './seed.js';                 // What: Modes. Why: Every picker/conditional mode's own label and hint text comes from this shared catalog. How: This is read throughout PicConCom, ConManCom, and TabData for mode labels and the mode radio group.
 import { norConFun    } from './pickers.js';              // What: Normalize Conditional Function. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
 import { norGroFun    } from './pickers.js';              // What: Normalize Group Function. Why: A newly-typed picker group needs the same tidy-casing rule picker names already use. How: This is called when committing PicConCom's own "+ New Group" inline input.
 import { ONB_CHE_OBJ  } from './onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: Several add/edit controls in this file must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutProFun throughout TabData and ConManCom.
 import { PIC_NAM_OBJ  } from './pickers.js';              // What: Pickers Namespace Object. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PIC_NAM_OBJ.aveEasFun.
 import { redMotFun    } from './ui.jsx';                  // What: Reduce Motion Function. Why: A user who prefers reduced motion shouldn't see any of this file's own FLIP/scroll/collapse animations. How: This is checked before every animation throughout this file.
 import { RemManCom    } from './reminders.jsx';           // What: Reminder Manager Component. Why: The Reminders section of this tab is a full, separately-maintained editor. How: This is rendered once, in place of a picker card, whenever the Reminders scope is shown.
+import { SED_NAM_OBJ  } from './seed.js';                 // What: Seed Namespace Object. Why: Every picker/conditional mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) throughout PicConCom, ConManCom, and TabData for mode labels and the mode radio group.
 import { sedPicFun    } from './help-sample-data.js';     // What: Seed Pickers Function. Why: Help mode needs a real picker of every mode to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
 import { sedTasFun    } from './help-sample-data.js';     // What: Seed Tasks Function. Why: Help mode needs real reminders of every recurrence kind to show a representative "view and edit" section. How: This is called whenever helpOnBoo turns on.
 import { sorEntFun    } from './ui.jsx';                  // What: Sort Entries Function. Why: Every sortable list in this file (sections, conditional items, picker items) shares the same sort-key vocabulary. How: This is called once per comparison inside each list's own Array.prototype.sort.
@@ -846,10 +846,10 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 
 				<legend className='rd-ctl-subhead'>How it picks</legend>{ /* What: Picks Legend Element. Why: A fieldset needs its own legend to label the radio group it contains. How: This renders the literal text "How it picks". */ }
 
-				<div className='rd-mode-radio'>{ /* What: Mode Radio Div Element. Why: Every supported mode needs its own selectable row. How: This maps Object.entries(MODES) to one label+radio+hint per mode. */ }
+				<div className='rd-mode-radio'>{ /* What: Mode Radio Div Element. Why: Every supported mode needs its own selectable row. How: This maps Object.entries(SED_NAM_OBJ.MOD_DEF_OBJ) to one label+radio+hint per mode. */ }
 
 
-					{ Object.entries( MODES ).map( ( [ modKeyStr, modValObj ] ) => { // What: Mode Entries Map. Why: One row is needed per supported picking mode. How: This maps every [key, definition] pair in MODES to one label below.
+					{ Object.entries( SED_NAM_OBJ.MOD_DEF_OBJ ).map( ( [ modKeyStr, modValObj ] ) => { // What: Mode Entries Map. Why: One row is needed per supported picking mode. How: This maps every [key, definition] pair in SED_NAM_OBJ.MOD_DEF_OBJ to one label below.
 
 
 						const modOnBoo = picObj.mode === modKeyStr; // What: Mode On Boolean. Why: The row's own selected state and its hint's open state both depend on whether this mode is the picker's current one. How: This compares modKeyStr against picObj.mode.
@@ -977,7 +977,7 @@ function PicConCom ( { picker : picObj, items : iteArr, inDaily : inDaiBoo, dail
 									>
 										<span className='cnd-pill-name'>{ conCurObj.name }</span>{ /* What: Pill Name Span Element. Why: Every conditional pill needs its own visible name. How: This renders conCurObj's own name. */ }
 
-										<span className='cnd-pill-mode'>{ ( MODES[ conCurObj.mode ] || {} ).label || conCurObj.mode }</span>{ /* What: Pill Mode Span Element. Why: Every conditional pill also shows its own mode label. How: This looks up conCurObj's own mode in MODES, falling back to the raw mode key. */ }
+										<span className='cnd-pill-mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ conCurObj.mode ] || {} ).label || conCurObj.mode }</span>{ /* What: Pill Mode Span Element. Why: Every conditional pill also shows its own mode label. How: This looks up conCurObj's own mode in SED_NAM_OBJ.MOD_DEF_OBJ, falling back to the raw mode key. */ }
 
 									</button> // What: Conditional Pill Button Element. Why: Clicking a pill attaches that conditional to this picker. How: This marks itself "is-on" when it matches picObj.conditionalId and commits conCurObj.id on click.
 
@@ -1784,7 +1784,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 		name     : aConObj.name,
 			odds     : conOddFun( aConObj ),
 			range    : conRngFun( aConObj ),
-		type     : ( MODES[ aConObj.mode ] || {} ).label || aConObj.mode
+		type     : ( SED_NAM_OBJ.MOD_DEF_OBJ[ aConObj.mode ] || {} ).label || aConObj.mode
 
 
 		},
@@ -1798,7 +1798,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 		name     : bConObj.name,
 			odds     : conOddFun( bConObj ),
 			range    : conRngFun( bConObj ),
-		type     : ( MODES[ bConObj.mode ] || {} ).label || bConObj.mode
+		type     : ( SED_NAM_OBJ.MOD_DEF_OBJ[ bConObj.mode ] || {} ).label || bConObj.mode
 
 
 		},
@@ -2087,7 +2087,7 @@ function ConManCom ( { state : staAppObj, actions : actObj } ) {
 										<span className='rd-main'>{ /* What: Main Span Element. Why: The name and its own summary line belong together. How: This wraps the name and sched spans below. */ }
 
 											<span className='rd-name'>{ conCurObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible name. How: This renders conCurObj's own name. */ }
-											<span className='rd-sched'>{ ( MODES[ conCurObj.mode ] || {} ).label || conCurObj.mode }
+											<span className='rd-sched'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ conCurObj.mode ] || {} ).label || conCurObj.mode }
 												{ ' · ' }{ useCouNum } { useCouNum === 1 ? 'picker' : 'pickers' }
 												{ conCurObj.active === false ? ' · inactive' : '' }</span>{ /* What: Sched Span Element. Why: The closed row's own summary needs mode, usage count, and active state in one line. How: This joins the mode label, the picker count, and an inactive suffix when applicable. */ }
 
@@ -2307,7 +2307,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 	const strNewFun = () => { // What: Start New Function. Why: The "Create Picker" button creates a real, hidden picker immediately, pre-filled from whichever Group/Type/Conditional filter is currently active. How: This calls addPicker with those defaults and opens the resulting id as the new draft.
 
 
-		const isaRelBoo = !!MODES[ filTypStr ]; // What: Is-A Real Mode Boolean. Why: filTypStr can hold a Conditionals/Reminders sentinel value that isn't an actual picker mode. How: This checks whether filTypStr is a genuine key in MODES.
+		const isaRelBoo = !!SED_NAM_OBJ.MOD_DEF_OBJ[ filTypStr ]; // What: Is-A Real Mode Boolean. Why: filTypStr can hold a Conditionals/Reminders sentinel value that isn't an actual picker mode. How: This checks whether filTypStr is a genuine key in SED_NAM_OBJ.MOD_DEF_OBJ.
 
 		const newIdeStr = actObj.addPicker( { // What: New Identifier String. Why: The freshly-created picker's own id is needed immediately to become the new draft. How: This calls addPicker, pre-filled per the active filters, and returns its own new id.
 
@@ -2389,7 +2389,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 		for ( const picCurObj of picArr ) if ( !picCurObj.hidden ) seenSetObj.add( picCurObj.mode ); // What: Mode Collect Loop. Why: Every non-hidden picker's own mode needs collecting. How: This adds picCurObj.mode to seenSetObj whenever the picker isn't hidden.
 
 
-		return [ ...seenSetObj ].sort( ( aModStr, bModStr ) => MODES[ aModStr ].label.localeCompare( MODES[ bModStr ].label ) ); // What: Seen Set Return. Why: The filter row needs these alphabetized by their own display label, not their raw key. How: This spreads seenSetObj into an array and sorts by each mode's own MODES label.
+		return [ ...seenSetObj ].sort( ( aModStr, bModStr ) => SED_NAM_OBJ.MOD_DEF_OBJ[ aModStr ].label.localeCompare( SED_NAM_OBJ.MOD_DEF_OBJ[ bModStr ].label ) ); // What: Seen Set Return. Why: The filter row needs these alphabetized by their own display label, not their raw key. How: This spreads seenSetObj into an array and sorts by each mode's own SED_NAM_OBJ.MOD_DEF_OBJ label.
 
 
 	}, [ picArr ] ); // What: Effect Dependency Array. Why: This only ever needs recomputing when the picker list itself changes. How: picArr is the single value this memo's own recompute is built around.
@@ -2544,7 +2544,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 			const metObj = picSecMap.get( picCurObj.id ) || { count : 0, isActive : true }; // What: Meta Object. Why: This picker's own count/active fields were already computed above. How: This reads picSecMap, falling back to a safe default if somehow missing.
 
-			entArr.push( { kind : 'picker', pk : picCurObj, name : picCurObj.name, type : MODES[ picCurObj.mode ].label, group : picCurObj.group || null, count : metObj.count, isActive : metObj.isActive } ); // What: Picker Entry Push. Why: A picker's own entry needs its own name/type/group alongside the precomputed count/active fields. How: This pushes one entry per picCurObj.
+			entArr.push( { kind : 'picker', pk : picCurObj, name : picCurObj.name, type : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].label, group : picCurObj.group || null, count : metObj.count, isActive : metObj.isActive } ); // What: Picker Entry Push. Why: A picker's own entry needs its own name/type/group alongside the precomputed count/active fields. How: This pushes one entry per picCurObj.
 
 
 		}
@@ -2757,7 +2757,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 									count   : picArr.filter( ( picCurObj ) => picCurObj.mode === modCurStr && !picCurObj.hidden ).length,
 									isOn    : filTypStr === modCurStr,
 									key     : modCurStr,
-									name    : MODES[ modCurStr ].label,
+									name    : SED_NAM_OBJ.MOD_DEF_OBJ[ modCurStr ].label,
 									onClick : () => setFilTypStr( modCurStr )
 
 
@@ -2906,7 +2906,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 							...( filTypStr === 'all' || filTypStr === 'reminders'
 								? [ { key : 'reminders', name : 'Reminders', modLabStr : 'Tasks', isOn : curScoStr === 'reminders', onClick : () => selScoFun( 'reminders' ) } ]
 								: []),
-							...visPicArr.map( ( picCurObj ) => ( { key : picCurObj.id, name : picCurObj.name, modLabStr : MODES[ picCurObj.mode ].label, isOn : curScoStr === picCurObj.id, onClick : () => selScoFun( picCurObj.id ), picIdeStr : picCurObj.id } ) )
+							...visPicArr.map( ( picCurObj ) => ( { key : picCurObj.id, name : picCurObj.name, modLabStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].label, isOn : curScoStr === picCurObj.id, onClick : () => selScoFun( picCurObj.id ), picIdeStr : picCurObj.id } ) )
 
 						]
 							.sort( ( aEntObj, bEntObj ) => aEntObj.name.localeCompare( bEntObj.name ) )
@@ -3113,7 +3113,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 									<span className='cat-h-tags'>{ /* What: Header Tags Span Element. Why: The type and group pills need their own fixed-width columns so they line up across every card regardless of text length. How: This wraps 2 InfTipCom-wrapped labels below. */ }
 
-										<InfTipCom className='cat-mode-label' label={ MODES[ picCurObj.mode ].label } truncationOnly>{ MODES[ picCurObj.mode ].label }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label like "Dynamic Weighted" can still truncate at this width; also read by help-mode's own pickerRow entry to build its "{type} Picker" badge title. How: This reveals the full label on demand only when it's actually truncated. */ }
+										<InfTipCom className='cat-mode-label' label={ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].label } truncationOnly>{ SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].label }</InfTipCom>{ /* What: Info Tip Component. Why: A long mode label like "Dynamic Weighted" can still truncate at this width; also read by help-mode's own pickerRow entry to build its "{type} Picker" badge title. How: This reveals the full label on demand only when it's actually truncated. */ }
 										<InfTipCom className='cat-group' label={ picCurObj.group } truncationOnly>{ picCurObj.group }</InfTipCom>{ /* What: Info Tip Component. Why: A long group name can also still truncate at this width. How: This reveals the full name on demand only when it's actually truncated. */ }
 
 									</span>
@@ -3154,7 +3154,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 											<span className='kicker'>Controls</span>
 										</span>
 
-										{ conColBoo && <span className='rd-ctl-sum'>{ Object.keys( MODES ).length } options</span> }{ /* What: Controls Summary Check. Why: A collapsed disclosure still needs a hint of what's inside. How: This renders only while conColBoo is true. */ }
+										{ conColBoo && <span className='rd-ctl-sum'>{ Object.keys( SED_NAM_OBJ.MOD_DEF_OBJ ).length } options</span> }{ /* What: Controls Summary Check. Why: A collapsed disclosure still needs a hint of what's inside. How: This renders only while conColBoo is true. */ }
 
 
 									</button>

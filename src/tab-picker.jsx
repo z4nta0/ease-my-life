@@ -19,7 +19,6 @@ import { HelButCom    } from './help-mode.jsx';           // What: Help Button C
 import { HelOveCom    } from './help-mode.jsx';           // What: Help Overlay Component. Why: Help mode needs its own highlighted-tooltip overlay layered above the page. How: This is rendered once, fed this page's own PIC_HEL_ARR.
 import { IcoSvgCom    } from './ui.jsx';                  // What: Icon Svg Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
 import { InfTipCom    } from './ui.jsx';                  // What: Info Tip Component. Why: Several controls need an explanatory tooltip on hover/focus. How: This wraps the weight/value pills and the disabled Send/Delete buttons, given the tooltip's own label text.
-import { MODES        } from './seed.js';                 // What: Modes. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read throughout to show the active mode's label/hint and to render the mode-choice radio list.
 import { norConFun    } from './pickers.js';              // What: Normalize Conditional Function. Why: A new inline conditional's name must be compared against existing ones the same way the store itself normalizes them. How: This is called on the conditional draft's own name before checking it for a collision.
 import { norGroFun    } from './pickers.js';              // What: Normalize Group Function. Why: A newly-typed group name must be normalized the same way the store itself normalizes group names. How: This is called on the new-group input's value to compute the picker's effective group.
 import { ONB_CHE_OBJ  } from './onboarding-checklist.js'; // What: Onboarding Checklist Object. Why: The Add New Picker button must stay disabled while the guided-tour checklist is still in progress. How: This is checked via ONB_CHE_OBJ.tutProFun against the shared state.
@@ -28,6 +27,7 @@ import { PIC_NAM_OBJ  } from './pickers.js';              // What: Pickers Names
 import { PilTagCom    } from './ui.jsx';                  // What: Pill Tag Component. Why: Small status labels need a consistent pill styling. How: This wraps the mode name, the 'inactive' tag, and the 'not yet'/'spent' tag.
 import { ProBarCom    } from './ui.jsx';                  // What: Progress Bar Component. Why: A pool item's drift value needs a visual readiness bar, not just a raw number. How: This is rendered inside the pool row's InfTipCom alongside the raw value.
 import { redMotFun    } from './ui.jsx';                  // What: Reduce Motion Function. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
+import { SED_NAM_OBJ  } from './seed.js';                 // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
 import { sedPicFun    } from './help-sample-data.js';     // What: Seed Pickers Function. Why: Help mode needs real pickers of every mode, plus a conditional-gated one, to point its tooltips at. How: This is called the moment help mode turns on.
 import { useEmlTouFun } from './eml-tour-bus.js';         // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
 import { WeeChiCom    } from './ui.jsx';                  // What: Weekday Chip Component. Why: The daily-schedule block needs a 7-day picker for which weekdays a picker may run on. How: This is rendered in PicForCom's schedule block, wired to the local daysOfWeek state.
@@ -669,7 +669,7 @@ function PicVieCom ( { picker, state, actions, animStyle } ) {
 
 	);
 
-	const modInfObj = MODES[ picker.mode ]; // What: Mode Info Object. Why: The header, hint text, and stage all need this picker's own mode's label/hint. How: This looks up picker.mode in the shared MODES table.
+	const modInfObj = SED_NAM_OBJ.MOD_DEF_OBJ[ picker.mode ]; // What: Mode Info Object. Why: The header, hint text, and stage all need this picker's own mode's label/hint. How: This looks up picker.mode in the shared SED_NAM_OBJ.MOD_DEF_OBJ table.
 
 	// What: Editing Open Boolean And Setter. Why: Editing this picker's own Details reuses PicForCom's Details step, pre-filled from its current settings, in place of the normal run/pool view. How: This is NOT an early return: every hook above still needs to run every render regardless of ediOpnBoo, so the branch only happens at the very end, where this component actually returns its JSX.
 	const [ ediOpnBoo, setEdiOpnBoo ] = React.useState( false );
@@ -1584,7 +1584,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 	}, [ incDlyBoo ] ); // What: Effect Dependency Array. Why: This only needs re-evaluating when the Daily toggle itself changes. How: incDlyBoo is the sole value this effect's own guard checks.
 	// What: Run Dow Array And Setter. Why: When included, an optional schedule of which weekdays the picker may run on. How: This defaults to every day, unless a prefill (e.g. a picker mini-tour's sample data) specifies otherwise.
 	const [ runDowArr, setRunDowArr ] = React.useState( ( iniFrmObj && iniFrmObj.daysOfWeek ) || [ 0, 1, 2, 3, 4, 5, 6 ] );
-	const [ skpHolBoo, setSkpHolBoo ] = React.useState( ( iniFrmObj && iniFrmObj.skipHolidays ) || false ); // What: Skip Holidays Boolean And Setter. Why: Whether this picker sits out major U.S. holidays. How: This starts from a prefilled value, or false.
+	const [ skiHolBoo, setSkiHolBoo ] = React.useState( ( iniFrmObj && iniFrmObj.skipHolidays ) || false ); // What: Skip Holidays Boolean And Setter. Why: Whether this picker sits out major U.S. holidays. How: This starts from a prefilled value, or false.
 	// What: Avoid Duplicates Boolean And Setter. Why: Excludes an item from this picker's own pool for the day if its name (case-insensitive) is already present elsewhere on today's list, for pickers that intentionally share items with another picker and don't want the same one to surface twice. How: This defaults off, since most pickers don't share a pool with anything else, so this should stay opt-in.
 	const [ avdDupBoo, setAvdDupBoo ] = React.useState( ( iniFrmObj && iniFrmObj.avoidDuplicates ) || false );
 	// What: Cadence Current Object And Setter. Why: How often this picker surfaces, plus its anchor. How: This defaults to daily, unless editing an existing picker (which prefills its current cadence): CAD_NAM_OBJ.norCadFun's accepted shape matches the same fields addPicker/commitPickerEdit read off iniFrmObj here, so passing it straight through picks up any of them that are present and falls back to daily defaults for the rest.
@@ -2007,7 +2007,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 			mode            : selModStr,
 			includeInDaily  : incDlyBoo,
 			daysOfWeek      : runDowArr,
-			skipHolidays    : skpHolBoo,
+			skipHolidays    : skiHolBoo,
 			avoidDuplicates : avdDupBoo,
 			...cadCurObj
 
@@ -2234,10 +2234,10 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 					<p className='np-help'>This is the ruleset that the picker follows each time it runs. &ldquo;Truly Random&rdquo; is the simplest where every item has an equal chance. The others nudge the odds in different ways. Not sure? We recommend the Dynamic Weighted type but you can change a picker&rsquo;s type at any time.</p>{ /* What: Mode Help Paragraph Element. Why: A first-time user needs to understand what a "mode" even means before picking one. How: This renders a fixed explanatory sentence with a recommendation. */ }
 
-					<div className='mode-radio'>{ /* What: Mode Radio Div Element. Why: Every mode in MODES needs its own selectable radio row. How: This maps Object.entries(MODES) to one label per entry. */ }
+					<div className='mode-radio'>{ /* What: Mode Radio Div Element. Why: Every mode in SED_NAM_OBJ.MOD_DEF_OBJ needs its own selectable radio row. How: This maps Object.entries(SED_NAM_OBJ.MOD_DEF_OBJ) to one label per entry. */ }
 
 
-						{ Object.entries( MODES ).map( ( [ modKeyStr, modInfObj ] ) => ( // What: Mode Option List Render. Why: The picker's own mode choice must be built from the shared MODES table, not hardcoded. How: This maps each [key, info] pair to one radio label.
+						{ Object.entries( SED_NAM_OBJ.MOD_DEF_OBJ ).map( ( [ modKeyStr, modInfObj ] ) => ( // What: Mode Option List Render. Why: The picker's own mode choice must be built from the shared SED_NAM_OBJ.MOD_DEF_OBJ table, not hardcoded. How: This maps each [key, info] pair to one radio label.
 
 
 							<label
@@ -2348,7 +2348,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 										<span className='cnd-pill-name'>{ curConObj.name }</span>{ /* What: Pill Name Span Element. Why: The pill needs its own readable name. How: This renders curConObj.name. */ }
 
-										<span className='cnd-pill-mode'>{ ( MODES[ curConObj.mode ] || {} ).label || curConObj.mode }</span>{ /* What: Pill Mode Span Element. Why: The pill also needs to show which mode the conditional itself runs under. How: This looks up the mode's own label in MODES, falling back to the raw mode string. */ }
+										<span className='cnd-pill-mode'>{ ( SED_NAM_OBJ.MOD_DEF_OBJ[ curConObj.mode ] || {} ).label || curConObj.mode }</span>{ /* What: Pill Mode Span Element. Why: The pill also needs to show which mode the conditional itself runs under. How: This looks up the mode's own label in SED_NAM_OBJ.MOD_DEF_OBJ, falling back to the raw mode string. */ }
 
 
 									</button>
@@ -2482,17 +2482,17 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 								<label className='np-label' htmlFor='np-skiphol'>Skip on holidays</label>{ /* What: Skip Holidays Label Element. Why: The switch below needs an associated, readable label. How: This is linked to the switch via the shared 'np-skiphol' id. */ }
 
-								<p className='np-help set-sub-fade' key={ skpHolBoo ? 'on' : 'off' }>
+								<p className='np-help set-sub-fade' key={ skiHolBoo ? 'on' : 'off' }>
 
-									{ skpHolBoo
+									{ skiHolBoo
 
-										? <React.Fragment>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays, or even add your own, on the Settings page.</React.Fragment> // What: Holidays Skip Phrase. Why: The holiday note needs its own live wording for the skip-enabled state. How: This renders while skpHolBoo is true.
+										? <React.Fragment>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays, or even add your own, on the Settings page.</React.Fragment> // What: Holidays Skip Phrase. Why: The holiday note needs its own live wording for the skip-enabled state. How: This renders while skiHolBoo is true.
 
-										: <React.Fragment>This picker <strong>will always run</strong>, even on major U.S. holidays.</React.Fragment> // What: Holidays Run Phrase. Why: The holiday note needs its own live wording for the always-run state. How: This renders while skpHolBoo is false.
+										: <React.Fragment>This picker <strong>will always run</strong>, even on major U.S. holidays.</React.Fragment> // What: Holidays Run Phrase. Why: The holiday note needs its own live wording for the always-run state. How: This renders while skiHolBoo is false.
 
 									}
 
-								</p>{ /* What: Skip Holidays Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by skpHolBoo so the text cross-fades on every change. */ }
+								</p>{ /* What: Skip Holidays Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by skiHolBoo so the text cross-fades on every change. */ }
 
 
 							</div>
@@ -2500,16 +2500,16 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 							<button
 								id='np-skiphol'
 								type='button'
-								className={ ` switch   ${ skpHolBoo ? 'is-on' : '' } ` }
+								className={ ` switch   ${ skiHolBoo ? 'is-on' : '' } ` }
 								role='switch'
-								aria-checked={ skpHolBoo }
+								aria-checked={ skiHolBoo }
 								aria-label='Skip on holidays'
-								onClick={ () => setSkpHolBoo( ( v ) => !v ) }
+								onClick={ () => setSkiHolBoo( ( v ) => !v ) }
 							>
 
 								<i />
 
-							</button>{ /* What: Button. Why: This is the actual on/off control for skipping holidays. How: This flips skpHolBoo on click. */ }
+							</button>{ /* What: Button. Why: This is the actual on/off control for skipping holidays. How: This flips skiHolBoo on click. */ }
 
 
 						</div>
@@ -2635,7 +2635,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 					This is the list of items that your
 					{ ' ' }{ newNamStr.trim() ? `“${ newNamStr.trim() }”` : 'this picker' } picker chooses from.
 					Each time it runs it picks one of these items, following the
-					{ ' ' }&ldquo;{ MODES[ selModStr ].label }&rdquo; rule that you chose. You will need
+					{ ' ' }&ldquo;{ SED_NAM_OBJ.MOD_DEF_OBJ[ selModStr ].label }&rdquo; rule that you chose. You will need
 					to add at least 2 items before you can finish creating this picker. You
 					can always add, edit or remove items later.
 
@@ -2660,7 +2660,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 				{ selModStr === 'dynamic' && ( // What: Dynamic Note Check. Why: Same reasoning as the Weighted note above, worded to also quote the mode's own live label. How: This renders the note only for that mode.
 
 
-					<p className='picker-hint np-weight-note'>Because you chose &ldquo;{ MODES[ selModStr ].label }&rdquo;, each item also has a weight. A higher weight means an item has a higher chance of being picked. e.g. a w2 item will be picked about twice as often as a w1. Leave them all at w1 for an even start, you can always change these later.</p>
+					<p className='picker-hint np-weight-note'>Because you chose &ldquo;{ SED_NAM_OBJ.MOD_DEF_OBJ[ selModStr ].label }&rdquo;, each item also has a weight. A higher weight means an item has a higher chance of being picked. e.g. a w2 item will be picked about twice as often as a w1. Leave them all at w1 for an even start, you can always change these later.</p>
 
 
 				) }
@@ -3155,9 +3155,9 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 		const hasPfiBoo = !!touBusObj.prefill; // What: Has Prefill Boolean. Why: The chain below combines 3 real-expression operands, so each is named individually per this project's long-boolean-expression rule. How: This is true whenever the bus is currently staging a prefill.
 		const notCreBoo = !creOpnBoo; // What: Not Creating Boolean. Why: See hasPfiBoo's own comment. How: This is true whenever the create form isn't already open.
-		const skpAutBoo = !touBusObj.suppressAutoOpen; // What: Skip Auto-Open Boolean. Why: See hasPfiBoo's own comment. How: This is true whenever the tour hasn't explicitly suppressed this auto-open.
+		const skiAutBoo = !touBusObj.suppressAutoOpen; // What: Skip Auto-Open Boolean. Why: See hasPfiBoo's own comment. How: This is true whenever the tour hasn't explicitly suppressed this auto-open.
 
-		if ( hasPfiBoo && notCreBoo && skpAutBoo ) { setCreOpnBoo( true ); setOpeTouBoo( true ); } // What: Auto-Open Guard. Why: All 3 conditions must hold before this effect may claim credit for opening the form. How: This opens creOpnBoo and flags opeTouBoo together.
+		if ( hasPfiBoo && notCreBoo && skiAutBoo ) { setCreOpnBoo( true ); setOpeTouBoo( true ); } // What: Auto-Open Guard. Why: All 3 conditions must hold before this effect may claim credit for opening the form. How: This opens creOpnBoo and flags opeTouBoo together.
 
 
 	}, [ touBusObj.prefill ] ); // What: Effect Dependency Array. Why: Only a genuine change to the staged prefill should re-evaluate this. How: touBusObj.prefill is the sole trigger.
@@ -3195,7 +3195,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 	}, [ state.pickers ] ); // What: Effect Dependency Array. Why: The group list only needs recomputing when the pickers list itself changes. How: state.pickers is what the loop above actually reads.
 
-	// What: Existing Mode Array. Why: Distinct modes actually in use, alphabetical by their own display label, are this page's own Type filter bar pills ("All" is pinned first, same as Group); unlike Stats/Data, this page has no management section for Conditionals/Reminders, so Type here is purely a picker-mode filter. How: This walks state.pickers collecting each visible picker's own mode once, then alphabetizes by MODES' own label.
+	// What: Existing Mode Array. Why: Distinct modes actually in use, alphabetical by their own display label, are this page's own Type filter bar pills ("All" is pinned first, same as Group); unlike Stats/Data, this page has no management section for Conditionals/Reminders, so Type here is purely a picker-mode filter. How: This walks state.pickers collecting each visible picker's own mode once, then alphabetizes by SED_NAM_OBJ.MOD_DEF_OBJ's own label.
 	const exiModArr = React.useMemo( () => {
 
 
@@ -3203,7 +3203,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 		for ( const curPicObj of state.pickers ) if ( !curPicObj.hidden ) seeModSet.add( curPicObj.mode ); // What: Collect Modes Loop. Why: Every visible picker's own mode belongs in the result. How: This walks state.pickers, adding each one's own mode into seeModSet.
 
-		return [ ...seeModSet ].sort( ( a, b ) => MODES[ a ].label.localeCompare( MODES[ b ].label ) ); // What: Sorted Modes Return. Why: The mode chips should read in a stable order matching their own display labels, not their raw internal keys. How: This spreads seeModSet into an array and sorts by each key's own MODES label.
+		return [ ...seeModSet ].sort( ( a, b ) => SED_NAM_OBJ.MOD_DEF_OBJ[ a ].label.localeCompare( SED_NAM_OBJ.MOD_DEF_OBJ[ b ].label ) ); // What: Sorted Modes Return. Why: The mode chips should read in a stable order matching their own display labels, not their raw internal keys. How: This spreads seeModSet into an array and sorts by each key's own SED_NAM_OBJ.MOD_DEF_OBJ label.
 
 
 	}, [ state.pickers ] ); // What: Effect Dependency Array. Why: The mode list only needs recomputing when the pickers list itself changes. How: state.pickers is what the loop above actually reads.
@@ -3533,7 +3533,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 										onClick={ () => setTypFilStr( curModStr ) }
 									>
 
-										{ MODES[ curModStr ].label }
+										{ SED_NAM_OBJ.MOD_DEF_OBJ[ curModStr ].label }
 
 										<span className='picker-group-count'>{ picCouNum }</span>
 
@@ -3609,7 +3609,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 								<span className='picker-tab-name'>{ curPicObj.name }</span>
 
-								<span className='picker-tab-mode'>{ MODES[ curPicObj.mode ].label }</span>
+								<span className='picker-tab-mode'>{ SED_NAM_OBJ.MOD_DEF_OBJ[ curPicObj.mode ].label }</span>
 
 							</button> // What: Button. Why: Tapping a picker's own tab should select it and close the create form. How: This writes curPicObj.id into actPicStr.
 
