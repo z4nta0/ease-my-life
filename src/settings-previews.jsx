@@ -45,30 +45,90 @@ import { PickerStrip } from './tab-picker.jsx'; // What: Picker Strip. Why: The 
 
 
 
-const PRE_CAN_ARR = [ // What: Preview Candidate Array. Why: The picker-animation preview needs a small mock item pool to cycle through, since it must work even before the user has created any pickers of their own. How: This is passed straight through to PickerStrip as its own candidates prop, whose external contract requires each entry to carry a plain id/name pair, same as a real picker's own pool items.
+// #region PRE_CAN_ARR
+
+/**
+ * PRE_CAN_ARR = Preview Candidate Array
+ *
+ * @summary
+ * The picker-animation preview's own small mock item pool to cycle
+ * through, since it must work even before the user has created any
+ * pickers of their own. This is passed straight through to PickerStrip
+ * as its own candidates prop.
+ *
+ * Every entry shares this exact shape, and none of them repeat these
+ * same fields' own boilerplate comments on their own lines (see the
+ * "Repeated-shape object literals" comment exception in CLAUDE.md):
+ *
+ * - `id` (String): Id is PickerStrip's own required identifier field
+ *   for this mock candidate, compared against the picked candidate's
+ *   own id to find its row/position.
+ *
+ * - `name` (String): Name is the mock candidate's own display text,
+ *   rendered as this row's visible label inside PickerStrip.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const PRE_CAN_ARR = [
 
 
-	{ id : 'pv1', name : 'Sort the mail'      }, // What: Id. Why: This is PickerStrip's own required identifier field for this mock candidate. How: This is compared against the picked candidate's own id to find its row/position. // What: Name. Why: This is the mock candidate's own display text. How: This is rendered as this row's visible label inside PickerStrip.
-	{ id : 'pv2', name : 'Water the plants'   }, // What: Id. Why: This is PickerStrip's own required identifier field for this mock candidate. How: This is compared against the picked candidate's own id to find its row/position. // What: Name. Why: This is the mock candidate's own display text. How: This is rendered as this row's visible label inside PickerStrip.
-	{ id : 'pv3', name : 'Wipe the counters'  }, // What: Id. Why: This is PickerStrip's own required identifier field for this mock candidate. How: This is compared against the picked candidate's own id to find its row/position. // What: Name. Why: This is the mock candidate's own display text. How: This is rendered as this row's visible label inside PickerStrip.
-	{ id : 'pv4', name : 'Take out recycling' }, // What: Id. Why: This is PickerStrip's own required identifier field for this mock candidate. How: This is compared against the picked candidate's own id to find its row/position. // What: Name. Why: This is the mock candidate's own display text. How: This is rendered as this row's visible label inside PickerStrip.
-	{ id : 'pv5', name : 'Sweep the floor'    }, // What: Id. Why: This is PickerStrip's own required identifier field for this mock candidate. How: This is compared against the picked candidate's own id to find its row/position. // What: Name. Why: This is the mock candidate's own display text. How: This is rendered as this row's visible label inside PickerStrip.
-	{ id : 'pv6', name : 'Fold laundry'       }  // What: Id. Why: This is PickerStrip's own required identifier field for this mock candidate. How: This is compared against the picked candidate's own id to find its row/position. // What: Name. Why: This is the mock candidate's own display text. How: This is rendered as this row's visible label inside PickerStrip.
+	{ id : 'pv1', name : 'Sort the mail'      },
+	{ id : 'pv2', name : 'Water the plants'   },
+	{ id : 'pv3', name : 'Wipe the counters'  },
+	{ id : 'pv4', name : 'Take out recycling' },
+	{ id : 'pv5', name : 'Sweep the floor'    },
+	{ id : 'pv6', name : 'Fold laundry'       }
 
 
 ];
 
+// #endregion PRE_CAN_ARR
 
 
-const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview needs a few mock "done" cards for the ripple/confetti/sparkle effects to visibly act on, mirroring the Today list rather than the progress ring. How: This is mapped inside CelPreCom to render one mock .today-card row per entry.
+
+// #region PRE_CAR_ARR
+
+/**
+ * PRE_CAR_ARR = Preview Card Array
+ *
+ * @summary
+ * The celebration preview's own few mock "done" cards for the ripple/
+ * confetti/sparkle effects to visibly act on, mirroring the Today list
+ * rather than the progress ring. This is mapped inside CelPreCom to
+ * render one mock .today-card row per entry.
+ *
+ * Every entry shares this exact shape, and none of them repeat these
+ * same fields' own boilerplate comments on their own lines (see the
+ * "Repeated-shape object literals" comment exception in CLAUDE.md):
+ *
+ * - `ideStr` (String): Identifier String is every rendered mock card's
+ *   own stable, unique React key, used directly as the card row's own
+ *   key.
+ *
+ * - `picStr` (String): Picker String names the picker a real Today
+ *   card's item came from, rendered inside the card's own meta-picker
+ *   span.
+ *
+ * - `namStr` (String): Name String is a real Today card's own item
+ *   name, rendered inside the card's own name line.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+*/
+
+const PRE_CAR_ARR = [
 
 
-	{ ideStr : 'pc1', picStr : 'Morning', namStr : 'Make the bed'      }, // What: Identifier String. Why: Every rendered mock card needs a stable, unique React key. How: This is used directly as the card row's own key. // What: Picker String. Why: A real Today card always names the picker an item came from. How: This is rendered inside the card's own meta-picker span. // What: Name String. Why: A real Today card always shows the item's own name. How: This is rendered inside the card's own name line.
-	{ ideStr : 'pc2', picStr : 'Chores',  namStr : 'Water the plants'  }, // What: Identifier String. Why: Every rendered mock card needs a stable, unique React key. How: This is used directly as the card row's own key. // What: Picker String. Why: A real Today card always names the picker an item came from. How: This is rendered inside the card's own meta-picker span. // What: Name String. Why: A real Today card always shows the item's own name. How: This is rendered inside the card's own name line.
-	{ ideStr : 'pc3', picStr : 'Focus',   namStr : 'Inbox zero'        }  // What: Identifier String. Why: Every rendered mock card needs a stable, unique React key. How: This is used directly as the card row's own key. // What: Picker String. Why: A real Today card always names the picker an item came from. How: This is rendered inside the card's own meta-picker span. // What: Name String. Why: A real Today card always shows the item's own name. How: This is rendered inside the card's own name line.
+	{ ideStr : 'pc1', picStr : 'Morning', namStr : 'Make the bed'      },
+	{ ideStr : 'pc2', picStr : 'Chores',  namStr : 'Water the plants'  },
+	{ ideStr : 'pc3', picStr : 'Focus',   namStr : 'Inbox zero'        }
 
 
 ];
+
+// #endregion PRE_CAR_ARR
 
 
 
@@ -87,10 +147,8 @@ const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.styKeyStr - Style Key String: Which celebration style to
- *                          play: 'ripple', 'confetti', or 'sparkle'.
- * @param props.repTokNum - Replay Token Number: A monotonically-increasing
- *                          counter; bumping it replays the effect.
+ * @param props.styKeyStr - Style Key String: {@link celStyStr}
+ * @param props.repTokNum - Replay Token Number: {@link celTokNum}
  *
  * @returns The preview stage: the mock done-cards row plus whichever
  * particles the current effect has staged on top of it.
@@ -105,9 +163,10 @@ const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview 
 function CelPreCom ( { styKeyStr, repTokNum } ) {
 
 
-	const carConRef                   = React.useRef( null ); // What: Card Container Reference. Why: The ripple style animates the real DOM card elements directly, so it needs a stable handle on their shared wrapper to query into. How: This is attached via the mock cards row's own ref prop below and read inside the replay effect.
+	const carConRef = React.useRef( null ); // What: Card Container Reference. Why: The ripple style animates the real DOM card elements directly, so it needs a stable handle on their shared wrapper to query into. How: This is attached via the mock cards row's own ref prop below and read inside the replay effect.
+	const firMouRef = React.useRef( true ); // What: First Mount Reference. Why: The very first render must not immediately replay the effect just because repTokNum already holds a defined starting value. How: This starts true and is flipped false the first time the effect below runs, gating the early return that skips that first run.
+
 	const [ parIteArr, setParIteArr ] = React.useState( [] ); // What: Particle Item Array And Setter. Why: The confetti/sparkle styles need a list of already-rolled particle items to render. How: This starts empty and is populated by the replay effect below whenever repTokNum bumps.
-	const firMouRef                   = React.useRef( true );  // What: First Mount Reference. Why: The very first render must not immediately replay the effect just because repTokNum already holds a defined starting value. How: This starts true and is flipped false the first time the effect below runs, gating the early return that skips that first run.
 
 
 	React.useEffect( () => { // What: Replay Effect. Why: Bumping repTokNum is Settings' own explicit "Play" trigger, and this is what actually restarts the ripple exhale cascade and/or rolls a fresh batch of confetti/sparkle particles. How: This skips its own first run on mount, then (depending on styKeyStr) restarts the card exhale animation, rolls new particles, or clears them, always tearing down its own timeouts on cleanup.
@@ -116,13 +175,14 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 		if ( firMouRef.current ) { firMouRef.current = false; return; } // What: First Mount Guard. Why: The effect must not fire just because the component mounted; only an actual repTokNum bump (a real Play press) should replay anything. How: This flips firMouRef false and bails out, but only on this component's very first effect run.
 
 
-		const redMotBoo = false;                                                                                     // What: Reduced Motion Boolean. Why: Pressing Play is itself an explicit request to SEE the animation, so this preview must always play at full motion regardless of the OS's own reduced-motion preference. How: This is hardcoded false rather than read from a real media query, unlike the app's own animations elsewhere.
-		const carEleArr = carConRef.current ? [ ...carConRef.current.querySelectorAll( '.today-card' ) ] : [];       // What: Card Element Array. Why: The ripple style needs the actual rendered card DOM elements to animate directly. How: This queries every '.today-card' inside carConRef's own current element, or an empty array before it has mounted.
 
-		let ripCleTmo; // What: Ripple Clear Timeout. Why: The ripple branch below may schedule a cleanup timeout that this same effect's own cleanup function later needs to be able to cancel. How: This starts undefined and is assigned only inside the ripple branch below.
+		const redMotBoo = false;                                                                               // What: Reduced Motion Boolean. Why: Pressing Play is itself an explicit request to SEE the animation, so this preview must always play at full motion regardless of the OS's own reduced-motion preference. How: This is hardcoded false rather than read from a real media query, unlike the app's own animations elsewhere.
+		const carEleArr = carConRef.current ? [ ...carConRef.current.querySelectorAll( '.today-card' ) ] : []; // What: Card Element Array. Why: The ripple style needs the actual rendered card DOM elements to animate directly. How: This queries every '.today-card' inside carConRef's own current element, or an empty array before it has mounted.
+
+		let ripCleTim; // What: Ripple Clear Timeout. Why: The ripple branch below may schedule a cleanup timeout that this same effect's own cleanup function later needs to be able to cancel. How: This starts undefined and is assigned only inside the ripple branch below.
 
 
-		if ( !redMotBoo && styKeyStr === 'ripple' ) {
+		if ( !redMotBoo && styKeyStr === 'ripple' ) { // What: Ripple Style Check. Why: The exhale cascade below only applies when this preview is actually showing the ripple style and reduced motion isn't forcing it off. How: This restarts every mock card's own staggered exhale animation and schedules its cleanup, only once both conditions hold.
 
 
 			carEleArr.forEach( ( carCurEle, iteIndNum ) => { // What: Ripple Start Loop. Why: Every mock card needs its own staggered exhale animation restarted, matching the real Today list's own cascade. How: This iterates carEleArr, giving each card a delay proportional to its own position before re-triggering its 'is-exhaling' class.
@@ -157,24 +217,28 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 			};
 
 
-			ripCleTmo = setTimeout( ripCleFun, carEleArr.length * 70 + 900 ); // What: Ripple Cleanup Schedule. Why: The cleanup must wait until every staggered card has actually finished its own exhale animation. How: This schedules ripCleFun to run once the last card's own delay plus its animation duration has elapsed.
+			ripCleTim = setTimeout( ripCleFun, carEleArr.length * 70 + 900 ); // What: Ripple Cleanup Schedule. Why: The cleanup must wait until every staggered card has actually finished its own exhale animation. How: This schedules ripCleFun to run once the last card's own delay plus its animation duration has elapsed.
 
 
 		}
 
 
-		if ( redMotBoo ) {
+
+		if ( redMotBoo ) { // What: Reduced Motion Check. Why: Reduced motion, were it ever actually reachable here, must clear all particles and bail out before any style-specific roll runs. How: This clears parIteArr and returns a cleanup function early, skipping the confetti/sparkle rolls below.
 
 
 			setParIteArr( [] ); // What: Particle Clear Call. Why: Reduced motion, were it ever actually reachable here, should show no particles at all. How: This writes an empty array into parIteArr.
 
-			return () => clearTimeout( ripCleTmo ); // What: Reduced Motion Cleanup Return. Why: Even this early-exit branch must still cancel a ripple cleanup timeout it may have scheduled above. How: This returns a cleanup function that cancels ripCleTmo.
+
+
+			return () => clearTimeout( ripCleTim ); // What: Reduced Motion Cleanup Return. Why: Even this early-exit branch must still cancel a ripple cleanup timeout it may have scheduled above. How: This returns a cleanup function that cancels ripCleTim.
 
 
 		}
 
 
-		if ( styKeyStr === 'confetti' ) {
+
+		if ( styKeyStr === 'confetti' ) { // What: Confetti Style Check. Why: A fresh batch of confetti particles is only rolled when this preview is actually showing the confetti style. How: This builds and writes 26 randomly-scattered confetti particle items into parIteArr.
 
 
 			setParIteArr( Array.from( { length : 26 }, ( _, iteIndNum ) => ( { // What: Confetti Particle Roll. Why: The confetti style needs a fresh batch of randomly-scattered pieces every time it replays. How: This builds 26 particle items, each with its own random angle, distance, rotation, delay, and opacity.
@@ -194,7 +258,7 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 
 		}
 
-		else if ( styKeyStr === 'sparkle' ) {
+		else if ( styKeyStr === 'sparkle' ) { // What: Sparkle Style Check. Why: A fresh batch of sparkle particles is only rolled when this preview is actually showing the sparkle style. How: This builds and writes 22 randomly-placed sparkle particle items into parIteArr.
 
 
 			setParIteArr( Array.from( { length : 22 }, ( _, iteIndNum ) => ( { // What: Sparkle Particle Roll. Why: The sparkle style needs a fresh batch of randomly-placed glints every time it replays. How: This builds 22 particle items, each with its own random position and delay.
@@ -212,7 +276,7 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 
 		}
 
-		else {
+		else { // What: No Particle Style Fallback. Why: Any style other than confetti/sparkle (the ripple case, whose own effect is card-driven instead) needs no particles of its own. How: This clears parIteArr for every other style.
 
 
 			setParIteArr( [] ); // What: Particle Clear Fallback. Why: Any style other than 'confetti'/'sparkle' (the 'ripple' case, whose own effect is card-driven, not particle-driven) has no particles of its own. How: This writes an empty array into parIteArr.
@@ -221,15 +285,17 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 		}
 
 
-		const parCleTmo = setTimeout( () => setParIteArr( [] ), 1800 ); // What: Particle Clear Schedule. Why: A rolled batch of particles must not linger onscreen forever once its own fly-out/glint animation has finished. How: This schedules parIteArr back to empty 1800ms after this run.
+
+		const parCleTim = setTimeout( () => setParIteArr( [] ), 1800 ); // What: Particle Clear Schedule. Why: A rolled batch of particles must not linger onscreen forever once its own fly-out/glint animation has finished. How: This schedules parIteArr back to empty 1800ms after this run.
+
 
 
 		return () => { // What: Effect Cleanup Function. Why: Neither scheduled timeout may outlive this effect run, whether it re-runs on the next Play press or the component unmounts. How: This clears both the particle-clear and ripple-clear timeouts.
 
 
-			clearTimeout( parCleTmo ); // What: Particle Timeout Clear. Why: A stale particle-clear callback firing after a newer run began would incorrectly clear a different run's particles. How: This cancels the scheduled clearing of parIteArr.
+			clearTimeout( parCleTim ); // What: Particle Timeout Clear. Why: A stale particle-clear callback firing after a newer run began would incorrectly clear a different run's particles. How: This cancels the scheduled clearing of parIteArr.
 
-			clearTimeout( ripCleTmo ); // What: Ripple Timeout Clear. Why: Same reasoning as the particle timeout, for the ripple cleanup callback. How: This cancels the scheduled clearing of the exhale animation state.
+			clearTimeout( ripCleTim ); // What: Ripple Timeout Clear. Why: Same reasoning as the particle timeout, for the ripple cleanup callback. How: This cancels the scheduled clearing of the exhale animation state.
 
 
 		};
@@ -309,7 +375,7 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 				{ parIteArr.map( ( parCurObj ) => ( // What: Particle Item Map. Why: One piece is needed per entry in parIteArr. How: This maps parIteArr to one confetti or sparkle piece per entry, keyed by its own ideStr.
 
 
-					parCurObj.kinStr === 'confetti' ? (
+					parCurObj.kinStr === 'confetti' ? ( // What: Confetti Piece Branch. Why: A confetti particle renders as a falling piece instead of a sparkle. How: This renders the if branch, taken whenever parCurObj.kinStr is 'confetti'.
 
 
 						<i
@@ -336,13 +402,13 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
 								left           : parCurObj.lefNum + '%',
 								top            : parCurObj.topNum + '%'
 							}}
-						>{ /* What: Sparkle Piece Element. Why: This is one glinting sparkle piece of the celebration. How: This is positioned via inline style and renders the fixed sparkle glyph. */ }
+						>
 
 
 							✦
 
 
-						</span>
+						</span> // What: Sparkle Piece Element. Why: This is one glinting sparkle piece of the celebration. How: This is positioned via inline style and renders the fixed sparkle glyph.
 
 
 					)
@@ -385,10 +451,7 @@ function CelPreCom ( { styKeyStr, repTokNum } ) {
  * @param props.styKeyStr - Style Key String: Which of PickerStrip's own
  *                          animation styles to preview: 'reel',
  *                          'spotlight', or 'dissolve'.
- * @param props.repTokNum - Replay Token Number: A monotonically-increasing
- *                          counter; the cycle only plays once this first
- *                          becomes greater than 0, and bumping it again
- *                          replays the cycle.
+ * @param props.repTokNum - Replay Token Number: {@link picTokNum}
  *
  * @returns Either the live PickerStrip cycle (once Play has been pressed
  * at least once) or a static preview of the fixed landing candidate's

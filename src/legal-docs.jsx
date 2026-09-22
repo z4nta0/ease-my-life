@@ -1018,7 +1018,7 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 
 
 
-		const focDelTmo = setTimeout( () => { if ( panEleRef.current ) panEleRef.current.focus(); }, 20 ); // What: Focus Delay Timeout. Why: Moving focus into the panel lets Esc and scroll work immediately, but must wait one tick for the panel to actually be mounted. How: This focuses panEleRef's current element after 20ms, guarded so it no-ops if the ref is not attached yet.
+		const focDelTim = setTimeout( () => { if ( panEleRef.current ) panEleRef.current.focus(); }, 20 ); // What: Focus Delay Timeout. Why: Moving focus into the panel lets Esc and scroll work immediately, but must wait one tick for the panel to actually be mounted. How: This focuses panEleRef's current element after 20ms, guarded so it no-ops if the ref is not attached yet.
 
 
 
@@ -1028,7 +1028,7 @@ function LegModCom ( { legDocStr, onCloModFun } ) {
 			document.removeEventListener( 'keydown', onKeyEscFun ); // What: Escape Listener Teardown. Why: This matches the addEventListener above so the listener does not outlive this effect run. How: This removes the same onKeyEscFun reference that was registered.
 
 
-			clearTimeout( focDelTmo ); // What: Focus Timeout Teardown. Why: A pending focus call must not fire after this effect has already cleaned up. How: This cancels focDelTmo, matching the setTimeout above.
+			clearTimeout( focDelTim ); // What: Focus Timeout Teardown. Why: A pending focus call must not fire after this effect has already cleaned up. How: This cancels focDelTim, matching the setTimeout above.
 
 
 			if ( maiScrEle ) { // What: Scroll Restore Guard. Why: The scroller must end up exactly as it was before this modal opened, but only when the scroller actually existed to lock in the first place. How: This wraps the two restore writes below in a single existence check.

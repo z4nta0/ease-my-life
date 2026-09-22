@@ -702,17 +702,17 @@ function AppRooCom () {
 
 
 
-		const exiEndTmo = setTimeout( () => setExiPlaStr( null ), 380 );  // What: Exit End Timeout. Why: The ghost bar must be unmounted once its own exit keyframe has actually finished playing. How: This clears exiPlaStr, removing the ghost, 380ms later, matching the exit animation's own duration.
-		const entEndTmo = setTimeout( () => setNavEntBoo( false ), 560 ); // What: Enter End Timeout. Why: The "entering" className modifier only needs to apply for the duration of the enter keyframe. How: This clears navEntBoo 560ms later, matching the enter animation's own duration.
+		const exiEndTim = setTimeout( () => setExiPlaStr( null ), 380 );  // What: Exit End Timeout. Why: The ghost bar must be unmounted once its own exit keyframe has actually finished playing. How: This clears exiPlaStr, removing the ghost, 380ms later, matching the exit animation's own duration.
+		const entEndTim = setTimeout( () => setNavEntBoo( false ), 560 ); // What: Enter End Timeout. Why: The "entering" className modifier only needs to apply for the duration of the enter keyframe. How: This clears navEntBoo 560ms later, matching the enter animation's own duration.
 
 
 
 		return () => { // What: Effect Cleanup Function. Why: Both scheduled timeouts must not fire after this effect re-runs or the component unmounts. How: This clears both the exit-end and enter-end timeouts.
 
 
-			clearTimeout( exiEndTmo ); // What: Exit Timeout Clear. Why: A stale exit-end callback firing after a newer effect run began would incorrectly clear a different render's ghost state. How: This cancels the scheduled clearing of exiPlaStr.
+			clearTimeout( exiEndTim ); // What: Exit Timeout Clear. Why: A stale exit-end callback firing after a newer effect run began would incorrectly clear a different render's ghost state. How: This cancels the scheduled clearing of exiPlaStr.
 
-			clearTimeout( entEndTmo ); // What: Enter Timeout Clear. Why: Same reasoning as the exit timeout, for the enter-end callback. How: This cancels the scheduled clearing of navEntBoo.
+			clearTimeout( entEndTim ); // What: Enter Timeout Clear. Why: Same reasoning as the exit timeout, for the enter-end callback. How: This cancels the scheduled clearing of navEntBoo.
 
 
 		};

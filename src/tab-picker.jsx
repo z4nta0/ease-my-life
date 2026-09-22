@@ -147,9 +147,9 @@ function PickerStrip ( { candidates, picked, style, onDone, forceMotion } ) {
 		if ( aniOffBoo ) { // What: Reduced Motion Branch. Why: Under reduced motion the cycle should skip straight to done instead of running its schedule loop. How: This defers the onDone call to the next tick and returns its own cleanup, skipping the rest of the effect.
 
 
-			const defDonTmo = setTimeout( () => { onDone && onDone(); }, 0 ); // What: Deferred Done Timeout. Why: Calling onDone synchronously here could fire the caller's own phase transition ('running' to 'done') mid-render. How: This hands control back on the very next tick instead.
+			const defDonTim = setTimeout( () => { onDone && onDone(); }, 0 ); // What: Deferred Done Timeout. Why: Calling onDone synchronously here could fire the caller's own phase transition ('running' to 'done') mid-render. How: This hands control back on the very next tick instead.
 
-			return () => clearTimeout( defDonTmo ); // What: Effect Cleanup Return. Why: A pending deferred call must not fire after this effect re-runs or unmounts. How: This cancels the scheduled defDonTmo timeout.
+			return () => clearTimeout( defDonTim ); // What: Effect Cleanup Return. Why: A pending deferred call must not fire after this effect re-runs or unmounts. How: This cancels the scheduled defDonTim timeout.
 
 
 		}
@@ -203,9 +203,9 @@ function PickerStrip ( { candidates, picked, style, onDone, forceMotion } ) {
 
 		};
 
-		const kicOffTmo = setTimeout( () => schStpFun( 40 ), 30 ); // What: Kickoff Timeout. Why: The very first step needs a small initial delay before the recursive chain above takes over. How: This starts the whole schedule loop with an initial 40ms gap, 30ms after this effect runs.
+		const kicOffTim = setTimeout( () => schStpFun( 40 ), 30 ); // What: Kickoff Timeout. Why: The very first step needs a small initial delay before the recursive chain above takes over. How: This starts the whole schedule loop with an initial 40ms gap, 30ms after this effect runs.
 
-		return () => { cnlRunBoo = true; clearTimeout( kicOffTmo ); }; // What: Effect Cleanup Return. Why: A stale schedule chain must stop scheduling and its pending kickoff must not fire after this effect re-runs or unmounts. How: This flips cnlRunBoo so every already-queued step's own guard bails out, and cancels the kickoff timeout directly.
+		return () => { cnlRunBoo = true; clearTimeout( kicOffTim ); }; // What: Effect Cleanup Return. Why: A stale schedule chain must stop scheduling and its pending kickoff must not fire after this effect re-runs or unmounts. How: This flips cnlRunBoo so every already-queued step's own guard bails out, and cancels the kickoff timeout directly.
 
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1563,7 +1563,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 		if ( !incDlyBoo || !dlyTogRef.current ) return; // What: Not User-Toggled Guard. Why: Only a genuine user toggle-on should trigger this scroll, not a prefilled initial value. How: This bails out unless both incDlyBoo is true and dlyTogRef.current is true.
 
-		const scrTmo = setTimeout( () => { // What: Scroll Timeout. Why: The block must be measured only after ColDisCom's own unfurl animation has actually finished expanding it to full height. How: This waits redMotFun() ? 0 : 320ms before measuring and scrolling.
+		const scrTim = setTimeout( () => { // What: Scroll Timeout. Why: The block must be measured only after ColDisCom's own unfurl animation has actually finished expanding it to full height. How: This waits redMotFun() ? 0 : 320ms before measuring and scrolling.
 
 
 			const dlyBlkEle = dlyBlkRef.current; // What: Daily Block Element. Why: The scroll calculation needs the actual DOM node. How: This reads dlyBlkRef.current once and reuses it below.
@@ -1578,7 +1578,7 @@ function PicForCom ( { exiGroArr, iniGroStr, conObjArr = [], onCnlFun, onCreFun,
 
 		}, redMotFun() ? 0 : 320 );
 
-		return () => clearTimeout( scrTmo ); // What: Effect Cleanup Return. Why: A stale scroll must not fire after this effect re-runs or unmounts. How: This cancels the scheduled scrTmo timeout.
+		return () => clearTimeout( scrTim ); // What: Effect Cleanup Return. Why: A stale scroll must not fire after this effect re-runs or unmounts. How: This cancels the scheduled scrTim timeout.
 
 
 	}, [ incDlyBoo ] ); // What: Effect Dependency Array. Why: This only needs re-evaluating when the Daily toggle itself changes. How: incDlyBoo is the sole value this effect's own guard checks.

@@ -2021,29 +2021,29 @@ function useStore( optArgObj ) {
 
 	latStaRef.current = appStaObj; // What: Latest State Reference Sync. Why: Every render must re-point latStaRef at whatever appStaObj currently is. How: This assigns appStaObj onto latStaRef.current directly in the render body.
 
-	const idlTmoRef = React.useRef( null ); // What: Idle Timeout Reference And Guard. Why: The debounced save effect below needs to remember its own pending idle-callback/timeout handle so a later update can cancel it. How: This starts at null and is set/cleared by canPenFun and the save effect below.
+	const idlTimRef = React.useRef( null ); // What: Idle Timeout Reference And Guard. Why: The debounced save effect below needs to remember its own pending idle-callback/timeout handle so a later update can cancel it. How: This starts at null and is set/cleared by canPenFun and the save effect below.
 
-	const canPenFun = React.useCallback( () => { // What: Cancel Pending Function. Why: Both the debounced save effect and the flush effect need to cancel any still-pending idle-callback/timeout before scheduling or flushing again. How: This cancels whatever idlTmoRef currently holds and clears the ref.
-
-
-		if ( idlTmoRef.current == null ) return; // What: Nothing-Pending Guard. Why: There's nothing to cancel when no idle callback/timeout is currently scheduled. How: This returns immediately when idlTmoRef.current is null/undefined.
-
-		( window.cancelIdleCallback || clearTimeout )( idlTmoRef.current ); // What: Pending Cancel Call. Why: Whichever scheduling primitive was actually used to schedule it is the one that can cancel it. How: This calls cancelIdleCallback when available, else clearTimeout, passing idlTmoRef's own current handle.
-		idlTmoRef.current = null; // What: Reference Clear. Why: A cancelled handle must not be mistaken for a still-pending one later. How: This resets idlTmoRef.current back to null.
+	const canPenFun = React.useCallback( () => { // What: Cancel Pending Function. Why: Both the debounced save effect and the flush effect need to cancel any still-pending idle-callback/timeout before scheduling or flushing again. How: This cancels whatever idlTimRef currently holds and clears the ref.
 
 
-	}, [] ); // What: Callback Dependency Array. Why: This callback closes over only the stable idlTmoRef, so it never needs to be recreated. How: An empty array means canPenFun is created once and reused for the lifetime of this component.
+		if ( idlTimRef.current == null ) return; // What: Nothing-Pending Guard. Why: There's nothing to cancel when no idle callback/timeout is currently scheduled. How: This returns immediately when idlTimRef.current is null/undefined.
+
+		( window.cancelIdleCallback || clearTimeout )( idlTimRef.current ); // What: Pending Cancel Call. Why: Whichever scheduling primitive was actually used to schedule it is the one that can cancel it. How: This calls cancelIdleCallback when available, else clearTimeout, passing idlTimRef's own current handle.
+		idlTimRef.current = null; // What: Reference Clear. Why: A cancelled handle must not be mistaken for a still-pending one later. How: This resets idlTimRef.current back to null.
+
+
+	}, [] ); // What: Callback Dependency Array. Why: This callback closes over only the stable idlTimRef, so it never needs to be recreated. How: An empty array means canPenFun is created once and reused for the lifetime of this component.
 
 	React.useEffect( () => { // What: Debounced Save Effect. Why: Every app-state change must eventually be persisted, but not synchronously on the hot path of every single update. How: This cancels any previously-scheduled save, then schedules a fresh one during idle time (or a 200ms timeout fallback), capped at a 2s max wait.
 
 
 		if ( !perActBoo ) return; // What: Persist-Disabled Guard. Why: The onboarding demo explicitly opts out of ever persisting at all. How: This returns immediately when perActBoo is false.
 
-		canPenFun(); // What: Prior Schedule Cancel. Why: A save already queued for the previous state must not also fire and overwrite this newer one out of order. How: This calls canPenFun to cancel whatever idlTmoRef currently holds.
+		canPenFun(); // What: Prior Schedule Cancel. Why: A save already queued for the previous state must not also fire and overwrite this newer one out of order. How: This calls canPenFun to cancel whatever idlTimRef currently holds.
 
 		const schIdlFun = window.requestIdleCallback || ( ( schCalFun ) => setTimeout( schCalFun, 200 ) ); // What: Schedule Idle Function. Why: Not every browser supports requestIdleCallback, so a plain 200ms timeout is the fallback scheduler. How: This picks requestIdleCallback when available, else wraps setTimeout at a fixed 200ms delay.
 
-		idlTmoRef.current = schIdlFun( () => { idlTmoRef.current = null; saveState( latStaRef.current ); }, { timeout : 2000 } ); // What: Idle Save Schedule. Why: The scheduled callback must clear its own handle before saving, and save whatever the LATEST state is by the time it actually runs. How: This calls schIdlFun with a callback that clears idlTmoRef.current then calls saveState(latStaRef.current), capped by a 2000ms max wait.
+		idlTimRef.current = schIdlFun( () => { idlTimRef.current = null; saveState( latStaRef.current ); }, { timeout : 2000 } ); // What: Idle Save Schedule. Why: The scheduled callback must clear its own handle before saving, and save whatever the LATEST state is by the time it actually runs. How: This calls schIdlFun with a callback that clears idlTimRef.current then calls saveState(latStaRef.current), capped by a 2000ms max wait.
 
 
 	}, [ appStaObj, perActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever a change to one of these values could need a fresh save scheduled. How: appStaObj changing means there's new state to eventually persist, and perActBoo changing means persistence itself was just turned on or off.

@@ -450,11 +450,11 @@ function GroHeaCom ( { name : groNamStr, doneCount : donCouNum, total : totCouNu
 
 			setFreIndNum( curIndNum ); // What: Fresh Index Set. Why: The dash-row map below needs to know which single dash to flag as freshly lit. How: This publishes curIndNum into freIndNum.
 
-			const freTmoNum = setTimeout( () => setFreIndNum( ( curValNum ) => ( curValNum === curIndNum ? -1 : curValNum ) ), 520 ); // What: Fresh Timeout Number. Why: The fresh cue must clear itself shortly after lighting, but only if a newer cascade hasn't already claimed freIndNum in the meantime. How: This clears freIndNum back to -1 after 520ms, guarded so a stale timeout can't stomp a fresher one.
+			const freTimNum = setTimeout( () => setFreIndNum( ( curValNum ) => ( curValNum === curIndNum ? -1 : curValNum ) ), 520 ); // What: Fresh Timeout Number. Why: The fresh cue must clear itself shortly after lighting, but only if a newer cascade hasn't already claimed freIndNum in the meantime. How: This clears freIndNum back to -1 after 520ms, guarded so a stale timeout can't stomp a fresher one.
 
 			preDonRef.current = donCouNum; // What: Previous Done Update. Why: The next run of this effect must compare against the count that is current now. How: This overwrites preDonRef with the fresh donCouNum.
 
-			return () => clearTimeout( freTmoNum ); // What: Effect Cleanup Return. Why: A stale fresh-cue timeout must not fire after a newer effect run has already begun. How: This cancels freTmoNum.
+			return () => clearTimeout( freTimNum ); // What: Effect Cleanup Return. Why: A stale fresh-cue timeout must not fire after a newer effect run has already begun. How: This cancels freTimNum.
 
 
 		}
@@ -3146,7 +3146,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 		let tikIntNum = null; // What: Tick Interval Number. Why: The recurring interval isn't started until the first aligned tick fires. How: This is assigned inside the alignment timeout below and read by the cleanup.
 
-		const alnTmoNum = setTimeout( () => { // What: Align Timeout Number. Why: The very first tick must wait for nexMinMsNum before the regular 60-second cadence can begin. How: This fires tikFun once, then starts the recurring interval.
+		const alnTimNum = setTimeout( () => { // What: Align Timeout Number. Why: The very first tick must wait for nexMinMsNum before the regular 60-second cadence can begin. How: This fires tikFun once, then starts the recurring interval.
 
 
 			tikFun();
@@ -3157,7 +3157,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		}, nexMinMsNum );
 
 
-		return () => { clearTimeout( alnTmoNum ); if ( tikIntNum ) clearInterval( tikIntNum ); }; // What: Effect Cleanup Return. Why: Neither the alignment timeout nor the recurring interval may outlive this effect run. How: This clears both.
+		return () => { clearTimeout( alnTimNum ); if ( tikIntNum ) clearInterval( tikIntNum ); }; // What: Effect Cleanup Return. Why: Neither the alignment timeout nor the recurring interval may outlive this effect run. How: This clears both.
 
 
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to start once, on mount. How: An empty array means it never re-subscribes.
@@ -3348,7 +3348,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			const celTotMsNum = cardEleLis.length * 70 + 900; // What: Celebration Total Ms Number. Why: The cleanup below must wait for the LONGEST-running piece of the celebration, whichever style is active. How: This adds the cascade's own total duration to a fixed base.
 
-			const celEndTmo = setTimeout( () => { // What: Celebration End Timeout. Why: Every celebration effect (ring class, per-card exhale, particles) must clean itself up once its own animation has actually finished. How: This runs after the longer of a fixed floor or celTotMsNum, clearing every piece of state/CSS this branch set.
+			const celEndTim = setTimeout( () => { // What: Celebration End Timeout. Why: Every celebration effect (ring class, per-card exhale, particles) must clean itself up once its own animation has actually finished. How: This runs after the longer of a fixed floor or celTotMsNum, clearing every piece of state/CSS this branch set.
 
 
 				if ( rngEleRef.current ) rngEleRef.current.classList.remove( 'is-celebrating' );
@@ -3364,7 +3364,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			preDonRef.current = donCouNum;    // What: Previous Done Update. Why: The next run of this effect must compare against the count that is current now. How: This overwrites preDonRef with the fresh donCouNum.
 			preCplRef.current = isaCplNowBoo; // What: Previous Complete Update. Why: The next run of this effect must compare against the completion state that is current now. How: This overwrites preCplRef with isaCplNowBoo.
 
-			return () => clearTimeout( celEndTmo ); // What: Effect Cleanup Return. Why: A stale celebration-end timeout must not fire after a newer effect run has already begun. How: This cancels celEndTmo.
+			return () => clearTimeout( celEndTim ); // What: Effect Cleanup Return. Why: A stale celebration-end timeout must not fire after a newer effect run has already begun. How: This cancels celEndTim.
 
 
 		}
@@ -3378,12 +3378,12 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			void rngCurEle.offsetWidth;                                   // What: Reflow Force. Why: Same reasoning as the fresh-completion branch above. How: Reading offsetWidth forces a synchronous layout pass.
 			rngCurEle.classList.add( 'is-pulsing' );                      // What: Pulsing Class Add. Why: This is the actual CSS trigger for the per-tick pulse. How: This adds the is-pulsing class to rngCurEle.
 
-			const pulEndTmo = setTimeout( () => rngCurEle.classList.remove( 'is-pulsing' ), 700 ); // What: Pulse End Timeout. Why: The pulse class must clear itself once its own short animation finishes. How: This removes is-pulsing 700ms later.
+			const pulEndTim = setTimeout( () => rngCurEle.classList.remove( 'is-pulsing' ), 700 ); // What: Pulse End Timeout. Why: The pulse class must clear itself once its own short animation finishes. How: This removes is-pulsing 700ms later.
 
 			preDonRef.current = donCouNum;    // What: Previous Done Update. Why: The next run of this effect must compare against the count that is current now. How: This overwrites preDonRef with the fresh donCouNum.
 			preCplRef.current = isaCplNowBoo; // What: Previous Complete Update. Why: The next run of this effect must compare against the completion state that is current now. How: This overwrites preCplRef with isaCplNowBoo.
 
-			return () => clearTimeout( pulEndTmo ); // What: Effect Cleanup Return. Why: A stale pulse-end timeout must not fire after a newer effect run has already begun. How: This cancels pulEndTmo.
+			return () => clearTimeout( pulEndTim ); // What: Effect Cleanup Return. Why: A stale pulse-end timeout must not fire after a newer effect run has already begun. How: This cancels pulEndTim.
 
 
 		}
@@ -3408,11 +3408,11 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			void strCurEle.offsetWidth;                 // What: Reflow Force. Why: Removing then immediately re-adding the same class needs a forced reflow in between. How: Reading offsetWidth forces a synchronous layout pass.
 			strCurEle.classList.add( 'is-bumped' );     // What: Bumped Class Add. Why: This is the actual CSS trigger for the streak's own pulse animation. How: This adds the is-bumped class to strCurEle.
 
-			const bmpEndTmo = setTimeout( () => strCurEle.classList.remove( 'is-bumped' ), 900 ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes is-bumped 900ms later.
+			const bmpEndTim = setTimeout( () => strCurEle.classList.remove( 'is-bumped' ), 900 ); // What: Bump End Timeout. Why: The bumped class must clear itself once its own short animation finishes. How: This removes is-bumped 900ms later.
 
 			preClmRef.current = clmNowBoo; // What: Previous Claimed Update. Why: The next run of this effect must compare against the claimed state that is current now. How: This overwrites preClmRef with clmNowBoo.
 
-			return () => clearTimeout( bmpEndTmo ); // What: Effect Cleanup Return. Why: A stale bump-end timeout must not fire after a newer effect run has already begun. How: This cancels bmpEndTmo.
+			return () => clearTimeout( bmpEndTim ); // What: Effect Cleanup Return. Why: A stale bump-end timeout must not fire after a newer effect run has already begun. How: This cancels bmpEndTim.
 
 
 		}
@@ -3916,9 +3916,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 		if ( !shoFeaBoo || feaIntSeeBoo || genActBoo ) { setShoFeaIntBoo( false ); return; } // What: Not Eligible Guard. Why: The tip must not show at all outside these 3 conditions. How: This clears shoFeaIntBoo and bails out early whenever any of them fails.
 
 
-		const feaIntTmoNum = setTimeout( () => setShoFeaIntBoo( true ), 500 ); // What: Feature Intro Timeout Number. Why: This is the actual delayed reveal described in the doc comment above. How: This sets shoFeaIntBoo true 500ms later.
+		const feaIntTimNum = setTimeout( () => setShoFeaIntBoo( true ), 500 ); // What: Feature Intro Timeout Number. Why: This is the actual delayed reveal described in the doc comment above. How: This sets shoFeaIntBoo true 500ms later.
 
-		return () => clearTimeout( feaIntTmoNum ); // What: Effect Cleanup Return. Why: A stale reveal must not fire after a newer effect run has already begun. How: This cancels feaIntTmoNum.
+		return () => clearTimeout( feaIntTimNum ); // What: Effect Cleanup Return. Why: A stale reveal must not fire after a newer effect run has already begun. How: This cancels feaIntTimNum.
 
 
 	}, [ shoFeaBoo, feaIntSeeBoo, genActBoo ] ); // What: Effect Dependency Array. Why: Any of these 3 changing can flip whether the tip should be showing at all. How: shoFeaBoo/feaIntSeeBoo/genActBoo are exactly the 3 conditions the guard above checks.
@@ -4987,9 +4987,9 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 			const celMsNum = rdcBoo ? 200 : 1700;                 // What: Celebrate Ms Number. Why: The exit animation must wait for the celebration to actually finish playing first. How: This is a short reduced-motion beat or the full celebration duration.
 			const extMsNum = rdcBoo ? 0 : 380;                    // What: Exit Ms Number. Why: The checklist's own conclusion must wait for the card-exit animation to finish too. How: This is 0 under reduced motion or the real exit animation's own duration.
 
-			const celTmoNum = setTimeout( () => setCheExiBoo( true ), celMsNum ); // What: Celebrate Timeout Number. Why: The exit animation should only start once the celebration has had its own moment first. How: This flips cheExiBoo true after celMsNum.
+			const celTimNum = setTimeout( () => setCheExiBoo( true ), celMsNum ); // What: Celebrate Timeout Number. Why: The exit animation should only start once the celebration has had its own moment first. How: This flips cheExiBoo true after celMsNum.
 
-			const purTmoNum = setTimeout( () => { // What: Purge Timeout Number. Why: The actual checklist conclusion (unhiding real pickers/tasks, flipping checklistDone, and finally regenerating) must wait for both the celebration AND the exit animation to finish. How: This runs after celMsNum plus extMsNum combined.
+			const purTimNum = setTimeout( () => { // What: Purge Timeout Number. Why: The actual checklist conclusion (unhiding real pickers/tasks, flipping checklistDone, and finally regenerating) must wait for both the celebration AND the exit animation to finish. How: This runs after celMsNum plus extMsNum combined.
 
 
 				/**
@@ -5050,7 +5050,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 			preGenResRef.current = genResBoo; // What: Previous Generate Resolved Update. Why: The next run of this effect must compare against the state that is current now. How: This overwrites preGenResRef with genResBoo.
 
-			return () => { clearTimeout( celTmoNum ); clearTimeout( purTmoNum ); }; // What: Effect Cleanup Return. Why: Neither scheduled step may outlive this effect run. How: This clears both.
+			return () => { clearTimeout( celTimNum ); clearTimeout( purTimNum ); }; // What: Effect Cleanup Return. Why: Neither scheduled step may outlive this effect run. How: This clears both.
 
 
 		}

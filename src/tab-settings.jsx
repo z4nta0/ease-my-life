@@ -1488,12 +1488,12 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 	const [ celStyStr, setCelStyStr ] = React.useState( 'confetti' ); // What: Celebration Style String And Setter. Why: The preview stage needs to know which specific style to actually play. How: This is set by plyCelFun and passed straight through as CelPreCom's own styKeyStr prop.
 	const [ picTokNum, setPicTokNum ] = React.useState( 0 ); // What: Picker Token Number And Setter. Why: PicAniCom needs a bump-to-replay signal distinct from which style is selected. How: This is incremented by plyPicFun and passed straight through as PicAniCom's own repTokNum prop.
 	const [ picPreStr, setPicPreStr ] = React.useState( null ); // What: Picker Preview String And Setter. Why: The picker-animation stage should keep showing whichever style was last previewed, not the selected style, once its own cycle finishes. How: This is set by plyPicFun and, while non-null, overrides the selected pickAnim value passed to PicAniCom.
-	const picPreTmo = React.useRef( null ); // What: Picker Preview Timeout. Why: A rapid second Preview press should not leave 2 overlapping timers around from an earlier press. How: This holds whichever timeout id plyPicFun most recently scheduled, cleared on unmount below.
+	const picPreTim = React.useRef( null ); // What: Picker Preview Timeout. Why: A rapid second Preview press should not leave 2 overlapping timers around from an earlier press. How: This holds whichever timeout id plyPicFun most recently scheduled, cleared on unmount below.
 	const plyCelFun = ( newStyStr ) => { setCelStyStr( newStyStr ); setCelTokNum( ( tokCurNum ) => tokCurNum + 1 ); }; // What: Play Celebration Function. Why: Pressing Preview on a celebration style option needs to both select and immediately replay that style. How: This sets celStyStr to newStyStr, then bumps celTokNum to trigger CelPreCom's own replay effect.
 	const plyPicFun = ( newStyStr ) => { // What: Play Pick Function. Why: Pressing Preview on a picker-animation style option needs to both select and immediately replay that style. How: This clears any pending revert timeout, then sets picPreStr and bumps picTokNum to trigger PicAniCom's own remount.
 
 
-		clearTimeout( picPreTmo.current ); // What: Preview Timeout Clear. Why: A rapid second Preview press must not let an earlier press's own stale timeout fire later and revert this fresh preview. How: This cancels whichever timeout picPreTmo currently holds, if any.
+		clearTimeout( picPreTim.current ); // What: Preview Timeout Clear. Why: A rapid second Preview press must not let an earlier press's own stale timeout fire later and revert this fresh preview. How: This cancels whichever timeout picPreTim currently holds, if any.
 
 		setPicPreStr( newStyStr ); setPicTokNum( ( tokCurNum ) => tokCurNum + 1 ); // What: Preview State And Replay Trigger. Why: This is the actual preview activation, selecting the style and bumping the token PicAniCom remounts on. How: This sets picPreStr to newStyStr and increments picTokNum.
 
@@ -1501,12 +1501,12 @@ function TabSettings ( { state, actions, onHome : onHomFun, onNavTab : onNavTabF
 		// it ends (don't revert to the selected style) so the stage keeps the
 		// previewed animation's final frame instead of snapping to another
 		// style.
-		clearTimeout( picPreTmo.current ); // What: Preview Timeout Clear. Why: This mirrors the guard above; no revert timeout is actually scheduled today, but clearing defensively costs nothing. How: This cancels whichever timeout picPreTmo currently holds, if any.
+		clearTimeout( picPreTim.current ); // What: Preview Timeout Clear. Why: This mirrors the guard above; no revert timeout is actually scheduled today, but clearing defensively costs nothing. How: This cancels whichever timeout picPreTim currently holds, if any.
 
 
 	};
 
-	React.useEffect( () => () => clearTimeout( picPreTmo.current ), [] ); // What: Unmount Cleanup Effect. Why: A pending preview-revert timeout must not fire after this whole tab has unmounted. How: This returns a cleanup function that cancels picPreTmo's own timeout; an empty dependency array means it only runs on unmount.
+	React.useEffect( () => () => clearTimeout( picPreTim.current ), [] ); // What: Unmount Cleanup Effect. Why: A pending preview-revert timeout must not fire after this whole tab has unmounted. How: This returns a cleanup function that cancels picPreTim's own timeout; an empty dependency array means it only runs on unmount.
 
 	const secMapRef  = React.useRef( {} );   // What: Section Map Reference. Why: Every section below registers itself here via its own ref callback, giving the scroll-spy/jump-to logic a live lookup from section id to DOM element. How: This is written to by each section's own ref prop and read throughout this component.
 	const railEleRef = React.useRef( null ); // What: Rail Element Reference. Why: stkOffFun and the rail-fade effect both need a handle on the rail's own outer element. How: This is attached to the aside's own ref prop below.

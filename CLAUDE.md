@@ -2926,6 +2926,34 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     spelled "Week"/"Weeks"/"Weekly" out in full, so none needed text
     changes, only the identifiers themselves were wrong. No collision:
     seed.js had no pre-existing `wee`-prefixed identifier of its own)
+  - `tmo` → `tim` (Timeout — a very widely recurring miscorrection,
+    found across 7 files: `idlTmoRef` (`store.jsx`), `picPreTmo`
+    (`tab-settings.jsx`), `ripCleTmo`/`parCleTmo`
+    (`settings-previews.jsx`), `pulEndTmo`/`freTmoNum`/`feaIntTmoNum`/
+    `celEndTmo`/`bmpEndTmo`/`purTmoNum`/`celTmoNum`/`alnTmoNum`
+    (`tab-today.jsx`), `scrTmo`/`defDonTmo`/`kicOffTmo`
+    (`tab-picker.jsx`), `focDelTmo` (`legal-docs.jsx`), and
+    `exiEndTmo`/`entEndTmo` (`app.jsx`), fixed to their own `tim`
+    equivalents across all 7 files in one sweep. `tim` was already the
+    established, heavily-used code for this exact word in several OTHER
+    identifiers across this same codebase (`cloTimRef`/`addTimRef` in
+    reminders.jsx, `scrTimNum` in tab-data.jsx/reminders.jsx,
+    `annTimNum` in ui.jsx), so no escalation was needed, this was purely
+    an inconsistent spelling of a word already spelled correctly
+    elsewhere; reminders.jsx's own pre-existing `freTimNum` in particular
+    already meant the exact same thing (a fresh-cue clear timeout) as
+    the corrected `freTmoNum` instance in tab-today.jsx. Note `tim` also
+    already carries two other meanings in this codebase, Timestamp (`tsp`
+    → `tim` above) and plain Time (e.g. `staTimNum` in ui.jsx), making
+    this a third; context disambiguates which of the three "tim" stands
+    for in practice, the same reasoning already used for `con`/`sta`/
+    `per`/`fre`/`dow`/`sho` elsewhere in this list. Every comment
+    referencing these identifiers already spelled "Timeout" out in full,
+    so none needed text changes, only the identifiers themselves were
+    wrong; since `tmo`/`tim` are both exactly 3 letters, every rename was
+    a straight 1-for-1 substitution with no column-alignment
+    recalculation needed anywhere. No collision: none of the corrected
+    names were already in use in the same scope anywhere)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
