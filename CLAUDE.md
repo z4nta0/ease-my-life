@@ -2832,6 +2832,37 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     spelled "Snapshot" out in full, so none needed text changes, only
     the identifiers themselves were wrong. No collision: none of the
     corrected names were already in use anywhere)
+  - `cln` → `cle` (Cleanup/Clean — found in `clnDonBoo`/`clnDraFun`
+    (`reorder.js`, the latter also in its own `#region`/`#endregion`
+    markers) and `clnFunArr`/`clnCurFun`/`curClnFun` (`tab-data.jsx`,
+    `tab-picker.jsx`), fixed across all 3 files in one sweep; `cle` was
+    already the established, correct code for this exact word in
+    several OTHER identifiers in this same codebase (`ripCleTmo`/
+    `ripCleFun`/`parCleTmo` in `settings-previews.jsx`, `clePicFun`/
+    `cleTasFun` in `help-sample-data.js`, `buiCleFun` in `seed.js`),
+    so no escalation was needed, this was purely an inconsistent
+    spelling of a word already spelled correctly elsewhere;
+    `tab-stats.jsx`'s own `cleFunArr` in particular already meant the
+    exact same thing (an array of per-row cleanup functions) as the
+    corrected `clnFunArr` instances. Every comment referencing these
+    identifiers already spelled "Cleanup" out in full, so none needed
+    text changes, only the identifiers themselves were wrong. **Not
+    swept**: `seed.js`'s own `'tk_drycln'` also matches a bare `cln`
+    substring search, but it's a literal sample-task-id STRING VALUE
+    (short for "dry cleaning"), not one of our own invented
+    identifiers, so it was left untouched. No collision: none of the
+    corrected identifier names were already in use anywhere)
+  - `lop` → `loo` (Loop — found in `edgLopFun`/`edgLopNum`
+    (`reorder.js`, the former also in its own `#region`/`#endregion`
+    markers); `loo` was already the established, correct code for this
+    exact word elsewhere in this codebase (`looRafFun`/`looCanBoo` in
+    `help-mode.jsx`, `entLooFun` in `onboarding-checklist.js`), so no
+    escalation was needed, this was purely an inconsistent spelling of
+    a word already spelled correctly elsewhere. Every comment
+    referencing these identifiers already spelled "Loop" out in full,
+    so none needed text changes, only the identifiers themselves were
+    wrong. No collision: neither `edgLooFun` nor `edgLooNum` was
+    already in use anywhere)
   This list grows every time a new instance is found; add to it rather
   than only fixing the one file where it turned up, since the same
   miscorrection reliably recurs in later files too.
@@ -2987,6 +3018,30 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
   distinct from the separate `advanceWhen`/`advSelStr` field (which
   polls for a selector to exist, not a click) by using "Sel" there
   instead for the same "value is a selector" reasoning.
+  - **A second instance, this time the under-length word being a
+    complete word rather than a preposition**: `reorder.js`'s own
+    `onUpPoiFun` (the "on"-prefix pattern's own pointerup/pointercancel
+    handler) had "Up" as its literal segment 2, a genuine, complete
+    2-letter English word rather than a truncation, so there was no
+    natural single-letter padding to reach for either (unlike `is`'s own
+    `isa`, nothing reads naturally as "up" + 1 letter). The function
+    handles BOTH `pointerup` and `pointercancel`, and its own JSDoc
+    already described it as "the handler that ends the gesture," so two
+    real-word candidates were considered: `End` (matching that JSDoc
+    language) was rejected because this same file already has a
+    differently-shaped `onEndDraFun` (the caller's own optional
+    lifecycle callback) sitting right next to where this function is
+    defined, and `onEndPoiFun` beside `onEndDraFun` would misleadingly
+    suggest they're the same kind of thing. `Rel` (Release) was chosen
+    instead, the more literal, precise word for what the handler
+    actually captures (the pointer being released, whether by lifting
+    it or having the gesture cancelled out from under it), giving
+    `onRelPoiFun`. `rel` already appears in `pwa.js` meaning "Related"
+    (`relInsBoo`, `proRelFun`), an unrelated word sharing the same
+    3-letter code, the same acceptable multi-meaning-segment pattern
+    already documented for `con`/`sta`/`per`/`fre`/`dow`/`sho` elsewhere
+    in this list. No literal identifier collision: `onRelPoiFun` was not
+    already in use anywhere in the file or the wider codebase.
 - **Acronym-reference rule**: when a name describes or refers to another
   named thing (a component, function, etc.), its own first segment is
   built from the first letter of *that* thing's own three segments,
@@ -3055,6 +3110,31 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     consonant-skeleton technique to reach for on a different project,
     where `rem` would truncate to "Remaining" the normal way with no
     such conflict.
+  - **A second project-scoped override, requested by the user, this
+    time keeping the ORIGINAL unescalated abbreviation rather than
+    accepting a genuinely clean escalated candidate**: `reorder.js`'s
+    own `cmpTarFun` (Compute Target Function) keeps its literal `cmp`
+    for "Compute" instead of the normal first-3-letters truncation
+    `com`, even though `cmp` doesn't match any real word's own literal
+    first 3 letters at all. `com` itself is unusable here (`Component`,
+    the single most heavily-loaded segment in this whole codebase, on
+    the order of 2,700 uses); Phase A's own escalation candidates fare
+    no better: `cop` (the word's own 4th letter) is already `Copy`
+    (roughly 116 uses), and `cou` (5th letter) is already `Count`
+    (roughly 306 uses), both squarely the "heavy pre-existing overload"
+    case rather than a safely available letter. The next Phase A
+    candidate, `cot` (6th letter), genuinely IS clean (zero existing
+    uses anywhere), but per the user's own explicit preference, `cmp`
+    (the common real-world abbreviation for "compute"/"compare") was
+    kept as-is instead, since it already reads clearly on its own even
+    though it isn't a literal segment truncation or an escalation
+    result. **This exact resolution (`Compute` → `cmp`, staying
+    unescalated) is scoped to ease-my-life ONLY**, since it depends on
+    `com`/`cop`/`cou` all already being unusable in THIS codebase
+    specifically; on a different project, `Compute` would truncate to
+    `cot` (the first genuinely clean Phase A candidate) or its own
+    literal first-3-letters form, with no such conflict and no reason
+    to keep `cmp` unescalated.
   - **When even the escalation letters collide, pick a different word
     entirely rather than force one through**: `tab-today.jsx`'s own
     `rndOrdRef`/`rndArr` (holding the group order actually rendered to
@@ -3202,7 +3282,8 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `conditionals.js`'s own `CON_NAM_OBJ` (originally `CONDITIONALS`),
     `notify.js`'s own `NOT_NAM_OBJ`, `onboarding-checklist.js`'s own
     `ONB_CHE_OBJ`, `pickers.js`'s own `PIC_NAM_OBJ` (originally
-    `PICKERS`), and `pwa.js`'s own `PWA_NAM_OBJ` (originally `PWA`) all
+    `PICKERS`), `pwa.js`'s own `PWA_NAM_OBJ` (originally `PWA`), and
+    `reorder.js`'s own `REO_NAM_OBJ` (originally `REORDER`) all
     deliberately swept their external property names to
     match their internal implementation exactly (e.g. `normalize` →
     `norCadFun`, `isCadence` → `isaCadFun` for the first; `cardComplete`
@@ -3221,11 +3302,12 @@ gradually alongside the whitespace rules above (started with `src/app.jsx`).
     `installState` → `insStaFun`, `isIOS` → `isaIosBoo`, `isMac` →
     `isaMacBoo`, `isStandalone` → `isaStaFun` for the sixth, keeping its
     own already-conventional `subscribe` bare per the Generic JS
-    API-shape exemption above), with
+    API-shape exemption above; `startDrag` → `staDraFun` for the
+    seventh, its only property), with
     every external call site (~60 across 7 consumer files for
     CAD_NAM_OBJ, 6 across 3 for CON_NAM_OBJ, 6 across 2 for NOT_NAM_OBJ,
     ~28 across 4 for ONB_CHE_OBJ, 28 across 4 for PIC_NAM_OBJ, 13 across
-    2 for PWA_NAM_OBJ) updated
+    2 for PWA_NAM_OBJ, 14 across 1 for REO_NAM_OBJ) updated
     in the same pass. Reusing the already-named
     9-char internal identifier directly as the external key (rather than
     inventing a separately-compressed name, 6-char property-style or

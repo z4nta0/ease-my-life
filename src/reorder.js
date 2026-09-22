@@ -7,7 +7,7 @@
  * @summary
  * Hand-rolled pointer drag-to-reorder for the Today "Edit Mode", with no
  * external DnD library, built to work with variable-height rows. One
- * entry point, staDraFun (exported as REORDER.startDrag), is called from
+ * entry point, staDraFun (exported as REO_NAM_OBJ.staDraFun), is called from
  * a grip handle's onPointerDown and manages the whole gesture with
  * document-level listeners, committing a new order via the caller's own
  * onDrop callback.
@@ -31,7 +31,7 @@
 
 const SHI_EAS_STR = 'transform 0.18s cubic-bezier(0.4, 0, 0.2, 1)'; // What: Shift Ease String. Why: This is the shared CSS transition every non-dragged sibling uses while shifting out of the way. How: This is written onto each sibling's own inline style.transition inside the prep forEach below.
 const EDG_THR_NUM = 64;                                             // What: Edge Threshold Number. Why: This is how close, in px, the pointer must sit to the scroll container's own top/bottom edge before auto-scroll kicks in. How: This is compared against the pointer's clientY relative to the scroll container's own rect inside onMovPoiFun.
-const EDG_SPE_NUM = 14;                                             // What: Edge Speed Number. Why: This is how many px the scroll container moves per animation frame once auto-scroll is active. How: This is multiplied by the current scroll direction and added to the scroll container's own scrollTop inside edgLopFun.
+const EDG_SPE_NUM = 14;                                             // What: Edge Speed Number. Why: This is how many px the scroll container moves per animation frame once auto-scroll is active. How: This is multiplied by the current scroll direction and added to the scroll container's own scrollTop inside edgLooFun.
 
 
 
@@ -88,39 +88,44 @@ function staDraFun ( dowEveObj, draConObj ) {
 	const iteSelStr   = draConObj.itemSelector; // What: Item Selector String. Why: Not every child of conLisEle is necessarily a draggable sibling. How: This is used as the CSS selector for the initial querySelectorAll below.
 	const hanDraEle   = draConObj.handleEl;     // What: Handle Drag Element. Why: This is the specific row/section actually being dragged. How: This is looked up in iteEleArr to find oriIndNum, and its own transform is set directly inside appShiFun.
 	const griIcoEle   = draConObj.gripEl;       // What: Grip Icon Element. Why: The grip (often a small icon) is the element that actually receives the pointerdown and should own the pointer capture and move/up listeners. How: This is combined with hanDraEle below to resolve capTarEle.
-	const scrConEle   = draConObj.scroller;     // What: Scroll Container Element. Why: Edge auto-scroll is optional and needs its own scrollable ancestor to act on. How: This is read by onMovPoiFun and edgLopFun, both of which no-op when it is absent.
-	const onDroOrdFun = draConObj.onDrop;       // What: On Drop Order Function. Why: The caller needs to be notified of the final reordering, but only once it actually changed. How: This is called from onUpPoiFun with the freshly-built index order.
+	const scrConEle   = draConObj.scroller;     // What: Scroll Container Element. Why: Edge auto-scroll is optional and needs its own scrollable ancestor to act on. How: This is read by onMovPoiFun and edgLooFun, both of which no-op when it is absent.
+	const onDroOrdFun = draConObj.onDrop;       // What: On Drop Order Function. Why: The caller needs to be notified of the final reordering, but only once it actually changed. How: This is called from onRelPoiFun with the freshly-built index order.
 	const onStaDraFun = draConObj.onStart;      // What: On Start Drag Function. Why: The caller may want to react to the gesture beginning, e.g. toggling a body class. How: This is called once, near the end of staDraFun's own setup.
-	const onEndDraFun = draConObj.onEnd;        // What: On End Drag Function. Why: The caller may want to react to the gesture finishing, symmetrically with onStaDraFun above. How: This is called once, at the end of clnDraFun.
+	const onEndDraFun = draConObj.onEnd;        // What: On End Drag Function. Why: The caller may want to react to the gesture finishing, symmetrically with onStaDraFun above. How: This is called once, at the end of cleDraFun.
 	const capTarEle   = griIcoEle || hanDraEle; // What: Capture Target Element. Why: The pointer capture and every move/up listener must attach to whichever element actually received the pointerdown. How: This prefers griIcoEle, falling back to hanDraEle when no separate grip was given.
+
 
 
 	if ( dowEveObj.button != null && dowEveObj.button !== 0 ) return; // What: Primary Button Guard. Why: Only the primary mouse button (or a touch/pen contact, which reports no button at all) should start a drag. How: This bails out early when a real, non-primary button value is present.
 
 
+
 	const iteEleArr = Array.from( conLisEle.querySelectorAll( iteSelStr ) ) // What: Item Element Array. Why: Every reorderable sibling's rect needs to be snapshotted before the gesture moves anything. How: This queries every iteSelStr match under conLisEle, then keeps only its own direct children below.
-		.filter( ( chiCurEle ) => chiCurEle.parentElement === conLisEle ); // What: Direct Child Filter. Why: A nested match (e.g. a card inside a card) would otherwise be mistaken for a top-level sibling. How: This keeps only the elements whose own parentElement is conLisEle itself.
+		.filter( ( chiCurEle ) => chiCurEle.parentElement === conLisEle );  // What: Direct Child Filter. Why: A nested match (e.g. a card inside a card) would otherwise be mistaken for a top-level sibling. How: This keeps only the elements whose own parentElement is conLisEle itself.
 
 	const oriIndNum = iteEleArr.indexOf( hanDraEle ); // What: Origin Index Number. Why: Every later shift/target computation is relative to where the dragged element actually started. How: This looks up hanDraEle's own position inside iteEleArr.
+
 
 	if ( oriIndNum === -1 ) return; // What: No Origin Guard. Why: A dragged element that isn't one of iteEleArr's own entries has nothing valid to reorder against. How: This bails out early when the lookup above found no match.
 
 
+
 	dowEveObj.preventDefault(); // What: Pointerdown Default Prevention. Why: The native press behavior (text selection, native drag-start on some elements) would otherwise fight this gesture. How: This suppresses it on the triggering pointerdown event.
 
-	const poiIdeNum = dowEveObj.pointerId; // What: Pointer Identifier Number. Why: Both the capture call below and the eventual release inside clnDraFun need the exact same pointer id. How: This is read once from dowEveObj and reused in both places.
+	const poiIdeNum = dowEveObj.pointerId; // What: Pointer Identifier Number. Why: Both the capture call below and the eventual release inside cleDraFun need the exact same pointer id. How: This is read once from dowEveObj and reused in both places.
 
-	let capSucBoo = false; // What: Capture Success Boolean. Why: clnDraFun must only attempt to release a capture that actually succeeded. How: This starts false and is flipped true only once setPointerCapture below returns without throwing.
+	let capSucBoo = false; // What: Capture Success Boolean. Why: cleDraFun must only attempt to release a capture that actually succeeded. How: This starts false and is flipped true only once setPointerCapture below returns without throwing.
 
 
 	if ( poiIdeNum != null && capTarEle.setPointerCapture ) { // What: Pointer Capture Availability Guard. Why: Capture should only be attempted when the event actually carries a pointerId and the browser supports the capture API at all. How: This gates the capture attempt below on both conditions holding.
 
 
-		try {
+		try { // What: Pointer Capture Attempt. Why: A small number of environments can throw here even though the feature-detected method exists, so the actual capture call and its success flag must both stay inside this guarded block. How: This wraps the capture call and the success flag update below.
 
 
 			capTarEle.setPointerCapture( poiIdeNum ); // What: Pointer Capture Call. Why: This is the spec-guaranteed mechanism that routes every later pointer event straight to capTarEle, regardless of what is under the cursor. How: This asks the browser to capture the given pointer id on capTarEle.
-			capSucBoo = true; // What: Capture Success Boolean Update. Why: The release call inside clnDraFun must know whether this call actually succeeded. How: This is only reached when the call above did not throw.
+
+			capSucBoo = true; // What: Capture Success Boolean Update. Why: The release call inside cleDraFun must know whether this call actually succeeded. How: This is only reached when the call above did not throw.
 
 
 		}
@@ -131,10 +136,12 @@ function staDraFun ( dowEveObj, draConObj ) {
 	}
 
 
-	const recSnaArr = iteEleArr.map( ( iteCurEle ) => iteCurEle.getBoundingClientRect() ); // What: Rect Snapshot Array. Why: Every later shift/target computation compares against each sibling's position at gesture start, not its live (already-shifting) position. How: This measures every entry of iteEleArr exactly once, up front.
+
+	const recSnaArr = iteEleArr.map( ( iteCurEle ) => iteCurEle.getBoundingClientRect() );    // What: Rect Snapshot Array. Why: Every later shift/target computation compares against each sibling's position at gesture start, not its live (already-shifting) position. How: This measures every entry of iteEleArr exactly once, up front.
 	const cenPosArr = recSnaArr.map( ( recCurObj ) => recCurObj.top + recCurObj.height / 2 ); // What: Center Position Array. Why: The target index is derived from comparing the dragged element's projected center against every sibling's own center. How: This computes each rect's own vertical center from recSnaArr.
 
 	let gapPixNum = 0; // What: Gap Pixel Number. Why: A flex/grid gap between siblings must be folded into the shift distance below, or the opened hole would be short by exactly that gap. How: This starts at 0 and is measured from the first adjacent pair when one exists.
+
 
 	if ( recSnaArr.length > 1 ) gapPixNum = Math.max( 0, recSnaArr[ 1 ].top - recSnaArr[ 0 ].bottom ); // What: Gap Measurement Guard. Why: A single-item list has no adjacent pair to measure a gap from. How: This measures the vertical space between the first two siblings' rects, floored at 0 in case they overlap.
 
@@ -142,12 +149,13 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 
 	const staCliNum = dowEveObj.clientY; // What: Start Client Y Number. Why: Every later delta is measured relative to where the gesture actually began. How: This is read once from the triggering pointerdown event.
-	let delCliNum   = 0;    // What: Delta Client Y Number. Why: This is the gesture's own running vertical offset, driving every shift/target recomputation. How: This starts at 0 and is updated by onMovPoiFun and edgLopFun as the pointer moves and/or the container auto-scrolls.
-	let tarIndNum   = oriIndNum; // What: Target Index Number. Why: This is the currently-computed drop target, read by onUpPoiFun once the gesture ends. How: This starts at oriIndNum (no movement yet) and is reassigned by appShiFun on every recomputation.
-	let edgLopNum   = null; // What: Edge Loop Number. Why: The auto-scroll rAF loop must be cancellable on cleanup. How: This holds the current requestAnimationFrame id, reassigned every frame by edgLopFun itself.
-	let edgDirNum   = 0;    // What: Edge Direction Number. Why: edgLopFun needs to know which way (if any) to auto-scroll on its next frame. How: This is -1 for up, +1 for down, or 0 for no auto-scroll, set by onMovPoiFun.
-	let scrComNum   = 0;    // What: Scroll Compensation Number. Why: Auto-scroll movement must be folded into delCliNum so the dragged element and its siblings stay visually anchored under the pointer. How: This accumulates every actual scroll movement edgLopFun applies.
-	let clnDonBoo   = false; // What: Cleanup Done Boolean. Why: clnDraFun can be reached from more than one path and must not tear things down twice. How: This starts false and is flipped true on clnDraFun's own first run.
+
+	let delCliNum   = 0;         // What: Delta Client Y Number. Why: This is the gesture's own running vertical offset, driving every shift/target recomputation. How: This starts at 0 and is updated by onMovPoiFun and edgLooFun as the pointer moves and/or the container auto-scrolls.
+	let tarIndNum   = oriIndNum; // What: Target Index Number. Why: This is the currently-computed drop target, read by onRelPoiFun once the gesture ends. How: This starts at oriIndNum (no movement yet) and is reassigned by appShiFun on every recomputation.
+	let edgLooNum   = null;      // What: Edge Loop Number. Why: The auto-scroll rAF loop must be cancellable on cleanup. How: This holds the current requestAnimationFrame id, reassigned every frame by edgLooFun itself.
+	let edgDirNum   = 0;         // What: Edge Direction Number. Why: edgLooFun needs to know which way (if any) to auto-scroll on its next frame. How: This is -1 for up, +1 for down, or 0 for no auto-scroll, set by onMovPoiFun.
+	let scrComNum   = 0;         // What: Scroll Compensation Number. Why: Auto-scroll movement must be folded into delCliNum so the dragged element and its siblings stay visually anchored under the pointer. How: This accumulates every actual scroll movement edgLooFun applies.
+	let cleDonBoo   = false;     // What: Cleanup Done Boolean. Why: cleDraFun can be reached from more than one path and must not tear things down twice. How: This starts false and is flipped true on cleDraFun's own first run.
 
 
 	iteEleArr.forEach( ( iteCurEle, iteIndNum ) => { // What: Sibling Prep Loop. Why: Every sibling needs to be readied for smooth shifting before the gesture starts, with the grabbed element floating freely above the rest. How: This gives every sibling a willChange hint, then either marks the dragged one as lifted or gives the rest their shift transition.
@@ -159,9 +167,9 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 
 			iteCurEle.classList.add( 'is-dragging' ); // What: Dragging Class Add. Why: This is the CSS hook the app's stylesheet uses to visually lift the dragged element. How: This adds the class to the dragged element only.
-			iteCurEle.style.transition = 'none'; // What: Transition Disable. Why: The dragged element is translated directly by the pointer every frame and must never animate that, unlike its siblings. How: This clears any transition on the dragged element specifically.
-			iteCurEle.style.zIndex = '50'; // What: Z Index Raise. Why: The dragged element must render above every sibling it passes over while floating. How: This raises its stacking order via an inline z-index.
-			iteCurEle.style.position = 'relative'; // What: Position Relative. Why: The z-index raise above only takes effect on a positioned element. How: This gives the dragged element a relative position context.
+			iteCurEle.style.transition = 'none';      // What: Transition Disable. Why: The dragged element is translated directly by the pointer every frame and must never animate that, unlike its siblings. How: This clears any transition on the dragged element specifically.
+			iteCurEle.style.zIndex = '50';            // What: Z Index Raise. Why: The dragged element must render above every sibling it passes over while floating. How: This raises its stacking order via an inline z-index.
+			iteCurEle.style.position = 'relative';    // What: Position Relative. Why: The z-index raise above only takes effect on a positioned element. How: This gives the dragged element a relative position context.
 
 
 		}
@@ -180,9 +188,11 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 	const kilDraFun = ( draEveObj ) => draEveObj.preventDefault(); // What: Kill Drag Function. Why: Firefox starts a native drag-and-drop on the grip's SVG/icon that silently kills every further pointermove event, and preventDefault on pointerdown alone doesn't stop it. How: This cancels every dragstart event for the gesture's duration.
 
+
 	document.addEventListener( 'dragstart', kilDraFun, true ); // What: Dragstart Suppression Subscribe. Why: kilDraFun must actually run for it to have any effect. How: This registers it on the capture phase, document-wide, for the gesture's duration.
 
 	if ( onStaDraFun ) onStaDraFun(); // What: On Start Callback Guard. Why: The caller's own lifecycle hook is optional. How: This calls onStaDraFun only when the caller actually provided one.
+
 
 
 	// #region cmpTarFun
@@ -214,7 +224,8 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 
 		const proCenNum = cenPosArr[ oriIndNum ] + delCliNum; // What: Projected Center Number. Why: This is where the dragged element's own center currently sits, used to compare against every other sibling's own center below. How: This adds the running delta to the dragged element's original center.
-		let tarCanNum   = oriIndNum; // What: Target Candidate Number. Why: This is the index being walked below until it lands on the sibling whose center the dragged element has crossed. How: This starts at oriIndNum, since no movement means no change yet.
+
+		let tarCanNum = oriIndNum; // What: Target Candidate Number. Why: This is the index being walked below until it lands on the sibling whose center the dragged element has crossed. How: This starts at oriIndNum, since no movement means no change yet.
 
 
 		if ( delCliNum > 0 ) { // What: Downward Movement Check. Why: A positive delta means the dragged element moved down, so the candidate index should only ever walk forward. How: This gates the downward-walking while loop below.
@@ -237,6 +248,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 	}
 
 	// #endregion cmpTarFun
+
 
 
 	// #region appShiFun
@@ -273,16 +285,21 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 			if ( iteIndNum === oriIndNum ) return; // What: Dragged Sibling Skip. Why: The dragged element's own transform is set separately below, driven directly by delCliNum rather than this shift logic. How: This skips straight to the next iteration when the current index is the dragged one.
 
+
+
 			let eleOffNum = 0; // What: Element Offset Number. Why: This is the specific sibling's own shift amount, defaulting to no shift at all. How: This starts at 0 and is set by whichever branch below actually applies to this sibling.
+
 
 			if ( tarIndNum > oriIndNum && iteIndNum > oriIndNum && iteIndNum <= tarIndNum ) eleOffNum = -shiDisNum; // What: Downward Range Check. Why: A sibling strictly between the origin and a lower target must shift up to close the gap the dragged element left behind. How: This applies -shiDisNum when all three range conditions hold.
 
 			else if ( tarIndNum < oriIndNum && iteIndNum < oriIndNum && iteIndNum >= tarIndNum ) eleOffNum = shiDisNum; // What: Upward Range Check. Why: A sibling strictly between a higher target and the origin must shift down to open a hole at the target. How: This applies shiDisNum when all three range conditions hold.
 
+
 			iteCurEle.style.transform = eleOffNum ? `translateY(${ eleOffNum }px)` : ''; // What: Sibling Transform Write. Why: A sibling outside both ranges above must have any earlier shift cleared, not left stuck. How: This writes the computed offset, or clears the transform entirely when eleOffNum is still 0.
 
 
 		} );
+
 
 		hanDraEle.style.transform = `translateY(${ delCliNum }px)`; // What: Dragged Element Transform Write. Why: The dragged element itself floats directly under the pointer, independent of the sibling-shift logic above. How: This translates hanDraEle by the current running delta.
 
@@ -292,10 +309,11 @@ function staDraFun ( dowEveObj, draConObj ) {
 	// #endregion appShiFun
 
 
-	// #region edgLopFun
+
+	// #region edgLooFun
 
 	/**
-	 * edgLopFun = Edge Loop Function
+	 * edgLooFun = Edge Loop Function
 	 *
 	 * @summary
 	 * The auto-scroll animation loop, rescheduled every frame via
@@ -313,12 +331,12 @@ function staDraFun ( dowEveObj, draConObj ) {
 	 *
 	 * @example
 	 * ```ts
-	 * edgLopFun() // => void
+	 * edgLooFun() // => void
 	 * ```
 	 *
 	*/
 
-	function edgLopFun() {
+	function edgLooFun() {
 
 
 		if ( edgDirNum !== 0 && scrConEle ) { // What: Auto-Scroll Active Check. Why: Nudging scrollTop is only meaningful when a direction is set and an actual scroll container was given. How: This gates the whole scroll-and-compensate block below on both conditions holding.
@@ -336,6 +354,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 				scrComNum += movDelNum; // What: Scroll Compensation Accumulate. Why: onMovPoiFun's own next delta computation needs to account for every bit of auto-scroll that has happened so far. How: This adds this frame's own movement onto the running total.
 				delCliNum += movDelNum; // What: Delta Client Y Accumulate. Why: The dragged element and its siblings must visually track the auto-scroll immediately, not wait for the next pointermove. How: This adds this frame's own movement directly onto the running delta.
+
 				appShiFun(); // What: Shift Reapply Call. Why: The just-updated delCliNum needs to be reflected on screen right away. How: This recomputes the target and reapplies every transform.
 
 
@@ -344,15 +363,19 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 		}
 
-		edgLopNum = requestAnimationFrame( edgLopFun ); // What: Next Frame Schedule. Why: This loop must keep running for as long as the gesture is active. How: This reschedules edgLopFun itself for the next animation frame, capturing the new id for clnDraFun to cancel later.
+
+
+		edgLooNum = requestAnimationFrame( edgLooFun ); // What: Next Frame Schedule. Why: This loop must keep running for as long as the gesture is active. How: This reschedules edgLooFun itself for the next animation frame, capturing the new id for cleDraFun to cancel later.
 
 
 	}
 
-	// #endregion edgLopFun
+	// #endregion edgLooFun
 
 
-	edgLopNum = requestAnimationFrame( edgLopFun ); // What: Loop Start Schedule. Why: Auto-scroll must be armed from the very start of the gesture, not only once the pointer first moves. How: This schedules edgLopFun's own first run.
+
+	edgLooNum = requestAnimationFrame( edgLooFun ); // What: Loop Start Schedule. Why: Auto-scroll must be armed from the very start of the gesture, not only once the pointer first moves. How: This schedules edgLooFun's own first run.
+
 
 
 	// #region onMovPoiFun
@@ -390,6 +413,7 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 			const scrRecObj = scrConEle.getBoundingClientRect(); // What: Scroll Rect Object. Why: Edge proximity is measured against the scroll container's own current on-screen position. How: This measures scrConEle fresh on every move, since it could itself be scrolling the page.
 
+
 			if ( movEveObj.clientY < scrRecObj.top + EDG_THR_NUM ) edgDirNum = -1; // What: Top Edge Check. Why: The pointer sitting within EDG_THR_NUM of the container's own top edge should trigger upward auto-scroll. How: This sets edgDirNum to -1 when that threshold is crossed.
 
 			else if ( movEveObj.clientY > scrRecObj.bottom - EDG_THR_NUM ) edgDirNum = 1; // What: Bottom Edge Check. Why: The pointer sitting within EDG_THR_NUM of the container's own bottom edge should trigger downward auto-scroll. How: This sets edgDirNum to 1 when that threshold is crossed.
@@ -399,6 +423,8 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 		}
 
+
+
 		appShiFun(); // What: Shift Reapply Call. Why: Every pointermove must immediately reflect the freshly-updated delCliNum on screen. How: This recomputes the target and reapplies every transform.
 
 
@@ -407,10 +433,11 @@ function staDraFun ( dowEveObj, draConObj ) {
 	// #endregion onMovPoiFun
 
 
-	// #region clnDraFun
+
+	// #region cleDraFun
 
 	/**
-	 * clnDraFun = Cleanup Drag Function
+	 * cleDraFun = Cleanup Drag Function
 	 *
 	 * @summary
 	 * Idempotent teardown for the whole gesture, reachable from both a
@@ -427,20 +454,22 @@ function staDraFun ( dowEveObj, draConObj ) {
 	 *
 	 * @example
 	 * ```ts
-	 * clnDraFun() // => void
+	 * cleDraFun() // => void
 	 * ```
 	 *
 	*/
 
-	function clnDraFun() {
+	function cleDraFun() {
 
 
-		if ( clnDonBoo ) return; // What: Already Done Guard. Why: clnDraFun can be reached from more than one path (a real drop and a cancel) and must never tear down twice. How: This bails out immediately on any call after the first.
-
-		clnDonBoo = true; // What: Cleanup Done Boolean Update. Why: Every call after this one must be caught by the guard above. How: This flips clnDonBoo true before any of the actual teardown below runs.
+		if ( cleDonBoo ) return; // What: Already Done Guard. Why: cleDraFun can be reached from more than one path (a real drop and a cancel) and must never tear down twice. How: This bails out immediately on any call after the first.
 
 
-		cancelAnimationFrame( edgLopNum ); // What: Auto-Scroll Loop Cancel. Why: edgLopFun would otherwise keep rescheduling itself forever. How: This cancels whatever frame id edgLopNum currently holds.
+
+		cleDonBoo = true; // What: Cleanup Done Boolean Update. Why: Every call after this one must be caught by the guard above. How: This flips cleDonBoo true before any of the actual teardown below runs.
+
+
+		cancelAnimationFrame( edgLooNum ); // What: Auto-Scroll Loop Cancel. Why: edgLooFun would otherwise keep rescheduling itself forever. How: This cancels whatever frame id edgLooNum currently holds.
 
 
 		document.removeEventListener( 'dragstart', kilDraFun, true ); // What: Dragstart Suppression Unsubscribe. Why: Native drag-and-drop suppression is only needed for this gesture's own duration. How: This removes the exact same kilDraFun/capture-phase pair that staDraFun added earlier.
@@ -449,28 +478,32 @@ function staDraFun ( dowEveObj, draConObj ) {
 		if ( capSucBoo && capTarEle.releasePointerCapture ) { // What: Capture Release Guard. Why: Releasing a capture that was never actually acquired would be meaningless. How: This gates the release attempt below on both capSucBoo and browser support.
 
 
-			try { capTarEle.releasePointerCapture( poiIdeNum ); } catch ( e ) {} // What: Pointer Capture Release Call. Why: An already-implicitly-released capture (e.g. after a pointercancel) can throw on an explicit release attempt. How: This attempts the release and silently ignores any such failure.
+			try { capTarEle.releasePointerCapture( poiIdeNum ); } // What: Pointer Capture Release Call. Why: This is the actual release, matching the capture acquired earlier in staDraFun. How: This calls releasePointerCapture with the same poiIdeNum.
+
+			catch ( e ) {} // What: Pointer Capture Release Failure Guard. Why: An already-implicitly-released capture (e.g. after a pointercancel) can throw on an explicit release attempt. How: This silently ignores any such failure.
 
 
 		}
 
-		capTarEle.removeEventListener( 'pointermove', onMovPoiFun );         // What: Grip Pointermove Unsubscribe. Why: This is one of the two listener paths staDraFun bound for reliability, and both must be undone. How: This removes onMovPoiFun from capTarEle's own pointermove.
-		capTarEle.removeEventListener( 'pointerup', onUpPoiFun );            // What: Grip Pointerup Unsubscribe. Why: Same reasoning as the pointermove removal above, for the up path instead. How: This removes onUpPoiFun from capTarEle's own pointerup.
-		capTarEle.removeEventListener( 'pointercancel', onUpPoiFun );        // What: Grip Pointercancel Unsubscribe. Why: A cancelled gesture must clean up exactly like a completed one. How: This removes onUpPoiFun from capTarEle's own pointercancel.
-		document.removeEventListener( 'pointermove', onMovPoiFun, true );    // What: Document Pointermove Unsubscribe. Why: This is the capture-phase fallback path bound alongside the grip's own listeners above. How: This removes onMovPoiFun from the document's own capture-phase pointermove.
-		document.removeEventListener( 'pointerup', onUpPoiFun, true );       // What: Document Pointerup Unsubscribe. Why: Same reasoning as the document pointermove removal above, for the up path instead. How: This removes onUpPoiFun from the document's own capture-phase pointerup.
-		document.removeEventListener( 'pointercancel', onUpPoiFun, true );   // What: Document Pointercancel Unsubscribe. Why: A cancelled gesture must clean up exactly like a completed one. How: This removes onUpPoiFun from the document's own capture-phase pointercancel.
+
+
+		capTarEle.removeEventListener( 'pointermove', onMovPoiFun );       // What: Grip Pointermove Unsubscribe. Why: This is one of the two listener paths staDraFun bound for reliability, and both must be undone. How: This removes onMovPoiFun from capTarEle's own pointermove.
+		capTarEle.removeEventListener( 'pointerup', onRelPoiFun );          // What: Grip Pointerup Unsubscribe. Why: Same reasoning as the pointermove removal above, for the up path instead. How: This removes onRelPoiFun from capTarEle's own pointerup.
+		capTarEle.removeEventListener( 'pointercancel', onRelPoiFun );      // What: Grip Pointercancel Unsubscribe. Why: A cancelled gesture must clean up exactly like a completed one. How: This removes onRelPoiFun from capTarEle's own pointercancel.
+		document.removeEventListener( 'pointermove', onMovPoiFun, true );  // What: Document Pointermove Unsubscribe. Why: This is the capture-phase fallback path bound alongside the grip's own listeners above. How: This removes onMovPoiFun from the document's own capture-phase pointermove.
+		document.removeEventListener( 'pointerup', onRelPoiFun, true );     // What: Document Pointerup Unsubscribe. Why: Same reasoning as the document pointermove removal above, for the up path instead. How: This removes onRelPoiFun from the document's own capture-phase pointerup.
+		document.removeEventListener( 'pointercancel', onRelPoiFun, true ); // What: Document Pointercancel Unsubscribe. Why: A cancelled gesture must clean up exactly like a completed one. How: This removes onRelPoiFun from the document's own capture-phase pointercancel.
 
 
 		iteEleArr.forEach( ( iteCurEle ) => { // What: Sibling Restore Loop. Why: Every inline style/class the prep loop and appShiFun added must be fully reverted, or a sibling could be left visually stuck. How: This clears every property staDraFun's own setup wrote, on every sibling.
 
 
 			iteCurEle.classList.remove( 'is-dragging' ); // What: Dragging Class Remove. Why: Only the dragged element ever received this class, but removing it unconditionally here is harmless and keeps this loop uniform. How: This removes the class from every sibling.
-			iteCurEle.style.transition = ''; // What: Transition Clear. Why: A lingering transition value would affect this element's very next unrelated style change. How: This clears the inline transition set by the prep loop.
-			iteCurEle.style.transform = ''; // What: Transform Clear. Why: The final shift/drag transform must not persist once the gesture ends. How: This clears whatever transform appShiFun last wrote.
-			iteCurEle.style.zIndex = ''; // What: Z Index Clear. Why: The dragged element's raised stacking order was only meant for the gesture's own duration. How: This clears the inline z-index set by the prep loop.
-			iteCurEle.style.position = ''; // What: Position Clear. Why: The dragged element's forced relative positioning was only needed to make the z-index raise above take effect. How: This clears the inline position set by the prep loop.
-			iteCurEle.style.willChange = ''; // What: Will Change Clear. Why: The optimization hint given to every sibling is no longer useful once no animation is pending. How: This clears the inline will-change set by the prep loop.
+			iteCurEle.style.transition = '';             // What: Transition Clear. Why: A lingering transition value would affect this element's very next unrelated style change. How: This clears the inline transition set by the prep loop.
+			iteCurEle.style.transform = '';              // What: Transform Clear. Why: The final shift/drag transform must not persist once the gesture ends. How: This clears whatever transform appShiFun last wrote.
+			iteCurEle.style.zIndex = '';                 // What: Z Index Clear. Why: The dragged element's raised stacking order was only meant for the gesture's own duration. How: This clears the inline z-index set by the prep loop.
+			iteCurEle.style.position = '';               // What: Position Clear. Why: The dragged element's forced relative positioning was only needed to make the z-index raise above take effect. How: This clears the inline position set by the prep loop.
+			iteCurEle.style.willChange = '';             // What: Will Change Clear. Why: The optimization hint given to every sibling is no longer useful once no animation is pending. How: This clears the inline will-change set by the prep loop.
 
 
 		} );
@@ -482,13 +515,14 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 	}
 
-	// #endregion clnDraFun
+	// #endregion cleDraFun
 
 
-	// #region onUpPoiFun
+
+	// #region onRelPoiFun
 
 	/**
-	 * onUpPoiFun = On Up Pointer Function
+	 * onRelPoiFun = On Release Pointer Function
 	 *
 	 * @summary
 	 * The pointerup/pointercancel handler that ends the gesture. Snapshots
@@ -504,23 +538,24 @@ function staDraFun ( dowEveObj, draConObj ) {
 	 *
 	 * @example
 	 * ```ts
-	 * onUpPoiFun() // => void
+	 * onRelPoiFun() // => void
 	 * ```
 	 *
 	*/
 
-	function onUpPoiFun() {
+	function onRelPoiFun() {
 
 
-		const finTarNum = tarIndNum; // What: Final Target Number. Why: clnDraFun below doesn't touch tarIndNum, but capturing it first keeps this function's own intent explicit regardless. How: This reads the outer tarIndNum before any teardown runs.
+		const finTarNum = tarIndNum; // What: Final Target Number. Why: cleDraFun below doesn't touch tarIndNum, but capturing it first keeps this function's own intent explicit regardless. How: This reads the outer tarIndNum before any teardown runs.
 
-		clnDraFun(); // What: Cleanup Call. Why: Every listener/style/class this gesture added must be undone as soon as the pointer is released, whether or not the order actually changed. How: This runs the full teardown described in clnDraFun's own comment.
+		cleDraFun(); // What: Cleanup Call. Why: Every listener/style/class this gesture added must be undone as soon as the pointer is released, whether or not the order actually changed. How: This runs the full teardown described in cleDraFun's own comment.
 
 
 		if ( finTarNum !== oriIndNum ) { // What: Order Changed Guard. Why: onDroOrdFun should only ever fire for a real reorder, never for a drag that snapped back to its own start. How: This gates the whole order-building block below on the index having actually moved.
 
 
 			const ordIndArr = iteEleArr.map( ( _, iteIndNum ) => iteIndNum ); // What: Order Index Array. Why: The caller expects an array of original indices in their new order, not the elements themselves. How: This builds the identity order [0, 1, 2, ...] as the starting point for the splice below.
+
 			const [ movIndNum ] = ordIndArr.splice( oriIndNum, 1 ); // What: Moved Index Number. Why: The dragged item's own original index must be pulled out before it can be reinserted at its new position. How: This removes exactly one entry at oriIndNum and captures it.
 
 			ordIndArr.splice( finTarNum, 0, movIndNum ); // What: Moved Index Reinsert. Why: This is what actually produces the final reordered index array. How: This reinserts movIndNum at finTarNum without removing anything else.
@@ -533,15 +568,15 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 	}
 
-	// #endregion onUpPoiFun
+	// #endregion onRelPoiFun
 
 
-	capTarEle.addEventListener( 'pointermove', onMovPoiFun );       // What: Grip Pointermove Subscribe. Why: This is the primary listener path, since it fires reliably everywhere once the pointer is captured. How: This registers onMovPoiFun on capTarEle's own pointermove.
-	capTarEle.addEventListener( 'pointerup', onUpPoiFun );          // What: Grip Pointerup Subscribe. Why: The gesture must end cleanly once the pointer is released. How: This registers onUpPoiFun on capTarEle's own pointerup.
-	capTarEle.addEventListener( 'pointercancel', onUpPoiFun );      // What: Grip Pointercancel Subscribe. Why: A cancelled gesture (e.g. an interrupting system gesture) must be treated the same as a normal release. How: This registers onUpPoiFun on capTarEle's own pointercancel.
-	document.addEventListener( 'pointermove', onMovPoiFun, true );  // What: Document Pointermove Subscribe. Why: This is the capture-phase fallback path, which survives Firefox silently dropping the pointer capture above. How: This registers onMovPoiFun on the document itself, capture phase.
-	document.addEventListener( 'pointerup', onUpPoiFun, true );     // What: Document Pointerup Subscribe. Why: Same reasoning as the document pointermove subscribe above, for the up path instead. How: This registers onUpPoiFun on the document itself, capture phase.
-	document.addEventListener( 'pointercancel', onUpPoiFun, true ); // What: Document Pointercancel Subscribe. Why: A cancelled gesture must be caught by the fallback path too, same as a normal release. How: This registers onUpPoiFun on the document itself, capture phase.
+	capTarEle.addEventListener( 'pointermove', onMovPoiFun );        // What: Grip Pointermove Subscribe. Why: This is the primary listener path, since it fires reliably everywhere once the pointer is captured. How: This registers onMovPoiFun on capTarEle's own pointermove.
+	capTarEle.addEventListener( 'pointerup', onRelPoiFun );          // What: Grip Pointerup Subscribe. Why: The gesture must end cleanly once the pointer is released. How: This registers onRelPoiFun on capTarEle's own pointerup.
+	capTarEle.addEventListener( 'pointercancel', onRelPoiFun );      // What: Grip Pointercancel Subscribe. Why: A cancelled gesture (e.g. an interrupting system gesture) must be treated the same as a normal release. How: This registers onRelPoiFun on capTarEle's own pointercancel.
+	document.addEventListener( 'pointermove', onMovPoiFun, true );   // What: Document Pointermove Subscribe. Why: This is the capture-phase fallback path, which survives Firefox silently dropping the pointer capture above. How: This registers onMovPoiFun on the document itself, capture phase.
+	document.addEventListener( 'pointerup', onRelPoiFun, true );     // What: Document Pointerup Subscribe. Why: Same reasoning as the document pointermove subscribe above, for the up path instead. How: This registers onRelPoiFun on the document itself, capture phase.
+	document.addEventListener( 'pointercancel', onRelPoiFun, true ); // What: Document Pointercancel Subscribe. Why: A cancelled gesture must be caught by the fallback path too, same as a normal release. How: This registers onRelPoiFun on the document itself, capture phase.
 
 
 }
@@ -550,6 +585,6 @@ function staDraFun ( dowEveObj, draConObj ) {
 
 
 
-export const REORDER = { startDrag : staDraFun }; // What: Reorder Namespace Object. Why: tab-today.jsx's own (not yet reformatted) call sites read REORDER.startDrag by that exact literal name. How: This re-exports the freshly-renamed staDraFun under its original external property name, leaving every existing caller unchanged.
+export const REO_NAM_OBJ = { staDraFun : staDraFun }; // What: Reorder Namespace Object. Why: This is the single public entry point tab-today.jsx imports by name. How: This maps this file's own internal staDraFun name directly onto its own matching external property name.
 
 

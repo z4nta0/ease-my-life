@@ -43,7 +43,7 @@ import { PIC_NAM_OBJ  } from './pickers.js';                    // What: Pickers
 import { redMotFun    } from './ui.jsx';                        // What: Reduce Motion Function. Why: Nearly every animated sequence in this file (celebration, reel cascade, card flip, scroll) needs to skip or shorten itself for a user who prefers reduced motion. How: This is checked throughout as a plain function call.
 import { RemSecCom    } from './reminders.jsx';                 // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genBlockOrder.
 import { RemTouCom    } from './onboarding-reminder-tours.jsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.jsx. How: This is rendered while actMinTouObj holds a 'reminder' kind entry.
-import { REORDER      } from './reorder.js';                    // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REORDER.startDrag inside startGroupDrag/startItemDrag.
+import { REO_NAM_OBJ  } from './reorder.js';                    // What: Reorder Namespace Object. Why: Edit Mode's group and item drag-to-reorder both need the shared pointer-drag mechanism. How: This is called via REO_NAM_OBJ.staDraFun inside startGroupDrag/startItemDrag.
 import { TASKS        } from './tasks.js';                      // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for anchorDate/visibleToday/isDoneToday/optsFor/isCompletedOnce.
 import { TOD_HEL_ARR  } from './help-content.jsx';              // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
 import { useEmlTouFun } from './eml-tour-bus.js';                // What: Use Ease My Life Tour. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
@@ -3939,7 +3939,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 	const [ ediModBoo, setEdiModBoo ]     = React.useState( false ); // What: Edit Mode Boolean And Setter. Why: This is the single source of truth for whether the list is currently in Edit Mode. How: This is toggled by togEdiFun/enterEdiFun/exitEdiFun below.
 	const [ banCloBoo, setBanCloBoo ]     = React.useState( false ); // What: Banner Closing Boolean And Setter. Why: See the doc comment just above. How: This is set true right when Edit Mode ends and cleared once the collapse animation finishes.
 	const groDndRef      = React.useRef( null ); // What: Group Dnd Reference. Why: startGroDraFun below needs a handle on the groups wrapper to scope the drag container to. How: This is attached to the .groups-dnd div's own ref prop further down.
-	const shoOrdRef      = React.useRef( [] );   // What: Shown Order Reference. Why: Drop indices from REORDER are DOM positions, so they must resolve against whatever order the content column was LAST rendered from, not the unpadded blkOrdArr. How: This is written just before the return JSX below and read by startGroDraFun's own onDrop.
+	const shoOrdRef      = React.useRef( [] );   // What: Shown Order Reference. Why: Drop indices from REO_NAM_OBJ are DOM positions, so they must resolve against whatever order the content column was LAST rendered from, not the unpadded blkOrdArr. How: This is written just before the return JSX below and read by startGroDraFun's own onDrop.
 	const ordSnaRef      = React.useRef( null ); // What: Order Snapshot Reference. Why: A snapshot taken on entering Edit Mode lets Cancel/Escape discard every drag made during the whole session. How: This is populated by enterEdiFun and read/cleared by exitEdiFun.
 	const [ merPmpObj, setMerPmpObj ] = React.useState( null ); // What: Merge Prompt Object And Setter. Why: A pending group-rename that would MERGE into an existing group is held here until the user confirms. How: This is set by reqRenFun below and read by GroHeaCom's own mergePending prop.
 
@@ -4015,17 +4015,17 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	}, [ ediModBoo ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when ediModBoo itself changes. How: ediModBoo is exactly what gates whether the listener should even be subscribed.
 
-	const startGroDraFun = ( ptdEveObj ) => { // What: Start Group Drag Function. Why: This is the actual pointerdown handler behind every GroHeaCom's own grip. How: This resolves the drag container/handle, then hands off to REORDER.startDrag with the group-specific drop callback.
+	const startGroDraFun = ( ptdEveObj ) => { // What: Start Group Drag Function. Why: This is the actual pointerdown handler behind every GroHeaCom's own grip. How: This resolves the drag container/handle, then hands off to REO_NAM_OBJ.staDraFun with the group-specific drop callback.
 
 
-		const wrpCurEle = groDndRef.current;               // What: Wrapper Current Element. Why: This is the drag container REORDER needs. How: This reads groDndRef.current.
-		const griCurEle = ptdEveObj.currentTarget;          // What: Grip Current Element. Why: REORDER needs the actual grip element that received the pointerdown. How: This reads ptdEveObj.currentTarget.
-		const secCurEle = griCurEle.closest( '.group-section' ); // What: Section Current Element. Why: REORDER needs the whole draggable row (the group's own section), not just its grip. How: This walks up from griCurEle to its nearest .group-section ancestor.
+		const wrpCurEle = groDndRef.current;               // What: Wrapper Current Element. Why: This is the drag container REO_NAM_OBJ needs. How: This reads groDndRef.current.
+		const griCurEle = ptdEveObj.currentTarget;          // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads ptdEveObj.currentTarget.
+		const secCurEle = griCurEle.closest( '.group-section' ); // What: Section Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the group's own section), not just its grip. How: This walks up from griCurEle to its nearest .group-section ancestor.
 
-		if ( !wrpCurEle || !secCurEle || !REORDER ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
+		if ( !wrpCurEle || !secCurEle || !REO_NAM_OBJ ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
 
 
-		REORDER.startDrag( ptdEveObj, { // What: Start Drag Call. Why: This is the actual shared pointer-drag mechanism every reorderable list in the app uses. How: This is passed the container/handle plus 3 callbacks below.
+		REO_NAM_OBJ.staDraFun( ptdEveObj, { // What: Start Drag Call. Why: This is the actual shared pointer-drag mechanism every reorderable list in the app uses. How: This is passed the container/handle plus 3 callbacks below.
 
 
 			container    : wrpCurEle,
@@ -4054,17 +4054,17 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 
 	};
 
-	const startIteDraFun = ( ptdEveObj, curGroObj ) => { // What: Start Item Drag Function. Why: This is the actual pointerdown handler behind every EntCarCom's own grip within a group. How: This resolves the drag container/handle, then hands off to REORDER.startDrag with the item-specific drop callback.
+	const startIteDraFun = ( ptdEveObj, curGroObj ) => { // What: Start Item Drag Function. Why: This is the actual pointerdown handler behind every EntCarCom's own grip within a group. How: This resolves the drag container/handle, then hands off to REO_NAM_OBJ.staDraFun with the item-specific drop callback.
 
 
-		const griCurEle = ptdEveObj.currentTarget;         // What: Grip Current Element. Why: REORDER needs the actual grip element that received the pointerdown. How: This reads ptdEveObj.currentTarget.
-		const lisCurEle = griCurEle.closest( '.today-list' ); // What: List Current Element. Why: This is the drag container REORDER needs, scoped to this one group's own list. How: This walks up from griCurEle to its nearest .today-list ancestor.
-		const carCurEle = griCurEle.closest( '.today-card' ); // What: Card Current Element. Why: REORDER needs the whole draggable row (the item's own card), not just its grip. How: This walks up from griCurEle to its nearest .today-card ancestor.
+		const griCurEle = ptdEveObj.currentTarget;         // What: Grip Current Element. Why: REO_NAM_OBJ needs the actual grip element that received the pointerdown. How: This reads ptdEveObj.currentTarget.
+		const lisCurEle = griCurEle.closest( '.today-list' ); // What: List Current Element. Why: This is the drag container REO_NAM_OBJ needs, scoped to this one group's own list. How: This walks up from griCurEle to its nearest .today-list ancestor.
+		const carCurEle = griCurEle.closest( '.today-card' ); // What: Card Current Element. Why: REO_NAM_OBJ needs the whole draggable row (the item's own card), not just its grip. How: This walks up from griCurEle to its nearest .today-card ancestor.
 
-		if ( !lisCurEle || !carCurEle || !REORDER ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
+		if ( !lisCurEle || !carCurEle || !REO_NAM_OBJ ) return; // What: Missing Prerequisite Guard. Why: A drag cannot start without all 3 of these. How: This bails out early unless every one of them exists.
 
 
-		REORDER.startDrag( ptdEveObj, { // What: Start Drag Call. Why: This is the actual shared pointer-drag mechanism every reorderable list in the app uses. How: This is passed the container/handle plus 3 callbacks below.
+		REO_NAM_OBJ.staDraFun( ptdEveObj, { // What: Start Drag Call. Why: This is the actual shared pointer-drag mechanism every reorderable list in the app uses. How: This is passed the container/handle plus 3 callbacks below.
 
 
 			container    : lisCurEle,
@@ -5638,7 +5638,7 @@ function TabToday ( { state, actions, onHome, onNavTab, onStartPickerTour, onSta
 						<div
 							ref={ groDndRef }
 							className='groups-dnd'
-						>{ /* What: Groups Dnd Div Element. Why: This is the actual drag container REORDER scopes group drags to. How: This maps genBlkOrdArr to one Reminders/Page-Tours/group section per entry. */ }
+						>{ /* What: Groups Dnd Div Element. Why: This is the actual drag container REO_NAM_OBJ scopes group drags to. How: This maps genBlkOrdArr to one Reminders/Page-Tours/group section per entry. */ }
 
 
 							{ genBlkOrdArr.map( ( curIdeStr ) => { // What: Content Column Map. Why: One section is needed per block, dispatched by whichever sentinel or real group id curIdeStr holds. How: This returns the Reminders section, the Page Tours section (when relevant), or a real group's own section.

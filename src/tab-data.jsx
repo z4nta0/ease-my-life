@@ -2460,7 +2460,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 
 		const rowEleArr = [ groRowRef.current, typRowRef.current, scoRowRef.current, conRowRef.current ].filter( Boolean ); // What: Row Element Array. Why: Not every row is always mounted (e.g. a single-group app has no Group row at all). How: This collects only the currently-mounted refs.
 
-		const clnFunArr = rowEleArr.map( ( rowCurEle ) => { // What: Cleanup Function Array. Why: Every row needs its own independent wiring and its own independent teardown. How: This maps each row element to its own cleanup function, collected for the effect's own return below.
+		const cleFunArr = rowEleArr.map( ( rowCurEle ) => { // What: Cleanup Function Array. Why: Every row needs its own independent wiring and its own independent teardown. How: This maps each row element to its own cleanup function, collected for the effect's own return below.
 
 
 			const updFadFun = () => { // What: Update Fade Function. Why: Each row's own fade classes need recomputing on every relevant change. How: This toggles at-start/at-end based on the row's own scrollWidth/clientWidth/scrollLeft.
@@ -2492,7 +2492,7 @@ function TabData ( { state : staAppObj, actions : actObj, onHome : onHomFun, onN
 		} );
 
 
-		return () => clnFunArr.forEach( ( clnCurFun ) => clnCurFun() ); // What: Effect Cleanup Return. Why: Every row's own individual cleanup must actually run. How: This calls every function collected in clnFunArr.
+		return () => cleFunArr.forEach( ( cleCurFun ) => cleCurFun() ); // What: Effect Cleanup Return. Why: Every row's own individual cleanup must actually run. How: This calls every function collected in cleFunArr.
 
 
 	}, [ picArr.length, filGroStr, filTypStr, exiModArr.length, visPicArr.length, curScoStr, conIteArr.length, filConStr ] ); // What: Effect Dependency Array. Why: Any of these changing can add, remove, or resize a row, which can change whether it overflows at all. How: Each value independently affects one or more of the 4 rows' own layout.

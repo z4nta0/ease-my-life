@@ -3251,7 +3251,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 		const vldRalArr = [ tabRailRef.current, groRailRef.current, typRailRef.current ].filter( Boolean ); // What: Valid Rail Array. Why: Only whichever rails are actually mounted right now (the Group/Type rows can be entirely absent) should get listeners. How: This filters out any null ref.
 
-		const clnFunArr = vldRalArr.map( ( curRalEle ) => { // What: Cleanup Function Array. Why: Each rail needs its own independent listener/observer pair, and its own independent teardown. How: This maps each element to a closure removing exactly its own listener and disconnecting its own observer.
+		const cleFunArr = vldRalArr.map( ( curRalEle ) => { // What: Cleanup Function Array. Why: Each rail needs its own independent listener/observer pair, and its own independent teardown. How: This maps each element to a closure removing exactly its own listener and disconnecting its own observer.
 
 
 			const updFadFun = () => { // What: Update Fade Function. Why: The at-start/at-end classes need recomputing every time this rail scrolls or resizes. How: This toggles both classes based on the rail's own current scroll position versus its scrollable width.
@@ -3281,7 +3281,7 @@ export function TabPicker ( { state, actions, animStyle, onHome, onNavTab } ) {
 
 		});
 
-		return () => clnFunArr.forEach( ( curClnFun ) => curClnFun() ); // What: Effect Cleanup Return. Why: Every rail's own cleanup must actually run when this effect re-runs or unmounts. How: This calls every function collected in clnFunArr.
+		return () => cleFunArr.forEach( ( curCleFun ) => curCleFun() ); // What: Effect Cleanup Return. Why: Every rail's own cleanup must actually run when this effect re-runs or unmounts. How: This calls every function collected in cleFunArr.
 
 
 	}, [ state.pickers.length, exiGroArr.length, exiModArr.length, groFilStr, typFilStr, visPicArr.length ] ); // What: Effect Dependency Array. Why: Any of these can change whether a rail's own content actually overflows, requiring the fades to be recomputed. How: state.pickers.length/exiGroArr.length/exiModArr.length/visPicArr.length all reflect content-size changes, and groFilStr/typFilStr reflect the Show row's own content changing under a new filter.
